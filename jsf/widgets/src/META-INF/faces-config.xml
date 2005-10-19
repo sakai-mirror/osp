@@ -48,6 +48,21 @@
         <component-type>org.theospi.XHeaderDrawer</component-type>
         <component-class>org.theospi.jsf.component.XHeaderDrawerComponent</component-class>
     </component>
+    
+    <component>
+        <component-type>org.theospi.TabArea</component-type>
+        <component-class>org.theospi.jsf.component.TabAreaComponent</component-class>
+    </component>
+    
+    <component>
+        <component-type>org.theospi.Tab</component-type>
+        <component-class>org.theospi.jsf.component.TabComponent</component-class>
+    </component>
+    
+    <component>
+        <component-type>org.theospi.TabActionArea</component-type>
+        <component-class>org.theospi.jsf.component.TabActionAreaComponent</component-class>
+    </component>    
 
     <!-- =================== Renderers ============== -->
 
@@ -99,6 +114,24 @@
             <component-family>javax.faces.Output</component-family>
             <renderer-type>org.theospi.XHeaderDrawer</renderer-type>
             <renderer-class>org.theospi.jsf.renderer.XHeaderDrawerRenderer</renderer-class>
+        </renderer>
+        
+        <renderer>
+            <component-family>javax.faces.Output</component-family>
+            <renderer-type>org.theospi.TabArea</renderer-type>
+            <renderer-class>org.theospi.jsf.renderer.TabAreaRenderer</renderer-class>
+        </renderer>
+        
+        <renderer>
+            <component-family>javax.faces.Output</component-family>
+            <renderer-type>org.theospi.Tab</renderer-type>
+            <renderer-class>org.theospi.jsf.renderer.TabRenderer</renderer-class>
+        </renderer>
+        
+        <renderer>
+            <component-family>javax.faces.Output</component-family>
+            <renderer-type>org.theospi.TabActionArea</renderer-type>
+            <renderer-class>org.theospi.jsf.renderer.TabActionAreaRenderer</renderer-class>
         </renderer>
 
     </render-kit>

@@ -455,8 +455,8 @@
   
   
    <tag>  
-    <name>tabarea</name>  
-    <tag-class></tag-class>  
+    <name>tabArea</name>  
+    <tag-class>org.theospi.jsf.tag.TabAreaTag</tag-class>  
     <body-content>JSP</body-content>  
     <description><![CDATA[
     
@@ -507,8 +507,8 @@
   
    <tag>  
     <name>tab</name>  
-    <tag-class></tag-class>  
-    <body-content>empty</body-content>  
+    <tag-class>org.theospi.jsf.tag.TabTag</tag-class>  
+    <body-content>JSP</body-content>  
     <description><![CDATA[
     
        this will display a single tab
@@ -565,9 +565,73 @@
         
       ]]></description>
     </attribute>
+    
+    <attribute>
+      <name>rendered</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[
+      
+        Flag indicating whether or not this component should be rendered
+          (during Render Response Phase), or processed on any subsequent
+          form submit.
+          
+      ]]></description>
+    </attribute>
   </tag>
   
-  
+  <tag>  
+    <name>tabActionArea</name>  
+    <tag-class>org.theospi.jsf.tag.TabActionAreaTag</tag-class>  
+    <body-content>JSP</body-content>  
+    <description><![CDATA[
+    
+       this will display a single tab
+      <br><br>
+       <span class="tag">&lt;ospx:tab</span> 
+         <span="param">title</span> = <span class="value">"Tab Title"</span>
+         <span="param">selected</span> = <span class="value">"true/false"</span>
+         <span="param">disabled</span> = <span class="value">"true/false"</span>
+         <span="param">id</span> = <span class="value">"TabID"</span> /&gt</span>
+         
+    ]]></description>
+   
+    <attribute>
+      <name>disabled</name>  
+      <required>false</required>  
+      <rtexprvalue>false</rtexprvalue>  
+      <description><![CDATA[
+      
+        this will disable the tag
+        
+      ]]></description>  
+    </attribute>
+    
+    <attribute>
+      <name>rendered</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[
+      
+        Flag indicating whether or not this component should be rendered
+          (during Render Response Phase), or processed on any subsequent
+          form submit.
+          
+      ]]></description>
+    </attribute>
+    
+    <attribute>
+      <name>id</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[
+      
+        The tab will get this id, if it is a button, then the name will
+        also be this attributes value
+        
+      ]]></description>
+    </attribute>
+  </tag>
   
   
   

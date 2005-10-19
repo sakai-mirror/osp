@@ -9,6 +9,7 @@
 <h:commandLink action="scrollArea"><h:outputText value="*scrollArea" /></h:commandLink>
 <h:commandLink action="xheader"><h:outputText value="*xheader" /></h:commandLink>
 <h:commandLink action="splitArea"><h:outputText value="*splitarea/splitsection" /></h:commandLink>
+<h:commandLink action="tabArea"><h:outputText value="*tabArea" /></h:commandLink>
 
 </h:panelGrid>
 <f:verbatim><br /></f:verbatim>

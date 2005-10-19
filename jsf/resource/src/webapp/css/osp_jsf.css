@@ -38,3 +38,10 @@
    td.disabled_state {color: #FF0000;}
    div.disabled_state {color: #000000; background-image: url("/osp-jsf-resource/wizardSteps/images/wizard_circle_r.png");
       background-repeat: no-repeat; background-position: center; text-align: center; height: 20;}
+
+ .osp_tab {
+    border-color: #808080;
+     border-style: solid;
+     border-width: thin;
+     background-color: #B7BBC2;
+ }
