@@ -80,7 +80,7 @@ public class SplitSectionRenderer extends Renderer
         
 		if(vertical)
 			writer.write("<tr>");
-		writer.write("<td valign='top'");
+		writer.write("<td");
 		
 		TagUtil.writeAttr(writer, "class", cssclass);
 		TagUtil.writeAttr(writer, "id", id);
