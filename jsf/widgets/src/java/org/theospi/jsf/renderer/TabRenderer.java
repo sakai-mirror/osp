@@ -74,19 +74,31 @@ public class TabRenderer extends Renderer
 		String title = (String) RendererUtil.getAttribute(context, component, "title");
       String directionStr = (String) RendererUtil.getAttribute(context, component.getParent(), "direction");
       String selected = (String) RendererUtil.getAttribute(context, component, "selected");
+      String cssclass = (String) RendererUtil.getAttribute(context, component, "cssclass");
       TabComponent tab = (TabComponent) component;
+      boolean isSelected = false;
       
-      if (selected.equalsIgnoreCase("true"))
+      if (selected.equalsIgnoreCase("true")) {
          tab.setSelected("true");
+         isSelected = true;
+      }
+      if(cssclass == null)
+    	  cssclass = "";
 		
-		//checks for vertical, its abbr., and the y axis
-		if(!OspxTagHelper.isVertical(directionStr))
-			writer.write("<td>");
+	  //checks for vertical, its abbr., and the y axis
+	  if(OspxTagHelper.isVertical(directionStr))
+          writer.write("<div style=\"padding:2px;\">");
+
       
-      writer.write("<div class=\"osp_tab\">");
+      writer.write("<input type=\"submit\" class=\"osp_tab" + (isSelected ? "_selected":"") + " " +
+    		  cssclass	+ 
+    		  "\" value=\"" +
+    		title +
+      		"\" " + (isSelected ? "disabled=\"disabled\"":"") + " />");
+	  //checks for vertical, its abbr., and the y axis
+	  if(OspxTagHelper.isVertical(directionStr))
+          writer.write("</div>");
       
-      writer.write(title);
-      writer.write("<div>");
 	}
 
 
@@ -98,15 +110,10 @@ public class TabRenderer extends Renderer
 	 */
 	public void encodeEnd(FacesContext context, UIComponent component) throws IOException
 	{
-		String directionStr = (String) RendererUtil.getAttribute(context, component.getParent(), "direction");
-		ResponseWriter writer = context.getResponseWriter();
-
-		if(!OspxTagHelper.isVertical(directionStr))
-			writer.write("</td>");
-			
 	}
 
-   public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
+   public void encodeChildren(FacesContext context, UIComponent component) throws IOException
+   {
       //Do nothing
    }
 

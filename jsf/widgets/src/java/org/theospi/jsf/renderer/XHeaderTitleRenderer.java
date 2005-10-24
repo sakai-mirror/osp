@@ -103,8 +103,10 @@ public class XHeaderTitleRenderer extends Renderer
          String divId = "div" + drawer.getClientId(context);
          drawer.setDivId(divId);
 			writer.write("<span onclick=\"showHideDiv('" + divId + "', '" + RESOURCE_PATH + "');\">");
-			
+
+				
          writer.startElement("img", component);
+         writer.writeAttribute("style", "position:relative; float:left; margin-right:10px; left:3px; top:2px;", "style");
          writer.writeAttribute("id", "img" + divId, "id");
          String initiallyexpandedStr = (String) RendererUtil.getAttribute(context, drawer, "initiallyexpanded");
          if (initiallyexpandedStr == null) initiallyexpandedStr = "false";
@@ -112,7 +114,7 @@ public class XHeaderTitleRenderer extends Renderer
             writer.writeAttribute("src", BARIMG_RIGHT, "src");
          else         
             writer.writeAttribute("src", BARIMG_DOWN, "src");
-         writer.endElement("img");         
+         writer.endElement("img");
 		}
 	}
 

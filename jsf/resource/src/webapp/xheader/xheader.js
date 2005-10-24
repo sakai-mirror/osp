@@ -13,13 +13,13 @@ function showHideDiv(divNo, context)
       {
       //alert("in if");
       divisionNo.style.display="block";
-      imgNo.src = context + "/xheader/images/xheader_large_show.png";
+      imgNo.src = context + "/xheader/images/xheader_mid_show.gif";
       }
     else
       {
       //alert("in else");
       divisionNo.style.display ="none";
-      imgNo.src = context + "/xheader/images/xheader_large_hide.png";
+      imgNo.src = context + "/xheader/images/xheader_mid_hide.gif";
       }
     }
   }

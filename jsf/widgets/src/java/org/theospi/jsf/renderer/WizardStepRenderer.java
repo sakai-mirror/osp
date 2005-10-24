@@ -96,12 +96,13 @@ public class WizardStepRenderer extends Renderer
          writer.write("<div class=\"" + state + "\">");
          writer.write(stepNumber);
          writer.write("</div>");
-         writer.write("<br/>");
       }
       
       if (label != null)
       {
+  		 writer.write("&nbsp;");
          writer.write(label);
+ 		 writer.write("&nbsp;");
       }
 		writer.write("</td>");
 	}   

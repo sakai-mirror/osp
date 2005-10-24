@@ -426,6 +426,28 @@
     </attribute>
 
     <attribute>
+      <name>align</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[
+
+         This is a passthrough variable to the td.
+ 
+      ]]></description>
+    </attribute>
+
+    <attribute>
+      <name>valign</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[
+
+         This is a passthrough variable to the td.
+ 
+      ]]></description>
+    </attribute>
+
+    <attribute>
       <name>id</name>
       <required>false</required>
       <rtexprvalue>false</rtexprvalue>
@@ -486,6 +508,32 @@
          
       ]]></description>  
     </attribute>
+
+    <attribute>
+        <name>width</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+        <description>
+            <![CDATA[
+
+        the total width of the area.  the tabs plus the content
+        
+      ]]>
+        </description>
+    </attribute>
+
+    <attribute>
+        <name>height</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+        <description>
+            <![CDATA[
+
+        the total height of the area.  the tabs plus the content
+        
+      ]]>
+        </description>
+    </attribute>
     
     <attribute>
       <name>rendered</name>
@@ -531,7 +579,20 @@
         
       ]]></description>  
     </attribute>
-  
+
+    <attribute>
+        <name>cssclass</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+        <description>
+            <![CDATA[
+
+        this is the css class given to the buttons
+        
+      ]]>
+        </description>
+    </attribute>
+
     <attribute>
       <name>selected</name>  
       <required>false</required>  
@@ -738,4 +799,5 @@
   </tag>
 
   
-</taglib>
+</taglib
+>

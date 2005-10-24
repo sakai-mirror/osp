@@ -65,6 +65,8 @@ public class SplitSectionRenderer extends Renderer
 		ResponseWriter writer = context.getResponseWriter();
 		
 		String cssclass = (String) RendererUtil.getAttribute(context, component, "cssclass");
+		String valign = (String) RendererUtil.getAttribute(context, component, "valign");
+		String align = (String) RendererUtil.getAttribute(context, component, "align");
 		String size = (String) RendererUtil.getAttribute(context, component, "size");
 		String id = (String) RendererUtil.getAttribute(context, component, "id");
 
@@ -84,6 +86,8 @@ public class SplitSectionRenderer extends Renderer
 		
 		TagUtil.writeAttr(writer, "class", cssclass);
 		TagUtil.writeAttr(writer, "id", id);
+		TagUtil.writeAttr(writer, "align", align);
+		TagUtil.writeAttr(writer, "valign", valign);
 		
 		if(vertical)
 			TagUtil.writeAttr(writer, "height", size);

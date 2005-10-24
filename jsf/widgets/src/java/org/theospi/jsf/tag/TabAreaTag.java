@@ -32,6 +32,8 @@ import org.sakaiproject.jsf.util.TagUtil;
 public class TabAreaTag extends UIComponentTag
 {
 	private String direction = null;
+	private String height = null;
+	private String width = null;
 
 	public String getComponentType()
 	{
@@ -47,6 +49,16 @@ public class TabAreaTag extends UIComponentTag
    {	
       return direction;	
    }
+
+	public String getWidth()		
+   {	
+      return width;	
+   }
+
+	public String getHeight()		
+   {	
+      return height;	
+   }
    
    /**
 	 * 
@@ -55,13 +67,25 @@ public class TabAreaTag extends UIComponentTag
 	protected void setProperties(UIComponent component)
 	{
 		super.setProperties(component);
-		TagUtil.setString(component, "direction", direction);    
+		TagUtil.setString(component, "direction", direction);
+		TagUtil.setString(component, "width", width);
+		TagUtil.setString(component, "height", height);  
 	}
 
 	public void setDirection(String direction)
 	{
       this.direction = direction;
-   }
+    }
+
+	public void setWidth(String width)
+	{
+      this.width = width;
+    }
+
+	public void setHeight(String height)
+	{
+      this.height = height;
+    }
    
 }
 

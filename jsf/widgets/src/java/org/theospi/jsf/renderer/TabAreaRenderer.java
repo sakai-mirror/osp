@@ -84,16 +84,21 @@ public class TabAreaRenderer extends Renderer
 	public void encodeBegin(FacesContext context, UIComponent component) throws IOException
 	{
 		ResponseWriter writer = context.getResponseWriter();
-		
+
 		String directionStr = (String) RendererUtil.getAttribute(context, component, "direction");
+		String height = (String) RendererUtil.getAttribute(context, component, "height");
+		String width = (String) RendererUtil.getAttribute(context, component, "width");
 		
 		//checks for vertical, its abbr., and the y axis
 		
-      TagUtil.writeExternalCSSDependencies(context, writer, "osp.jsf.css", CSS_LOC);
-		writer.write("<table border=\"1\"><tr>");		
+        TagUtil.writeExternalCSSDependencies(context, writer, "osp.jsf.css", CSS_LOC);
+		writer.write("<table border=\"0\" ");
+		TagUtil.writeAttr(writer, "height", height);
+		TagUtil.writeAttr(writer, "width", width);
 		
-		if(OspxTagHelper.isVertical(directionStr))
-			writer.write("<td>");
+		//the tab cell needs to be small, it will be expanded
+		writer.write("><tr><td width=\"1%\">");
+		
 	}
 
 
@@ -107,15 +112,15 @@ public class TabAreaRenderer extends Renderer
 	{
 		String directionStr = (String) RendererUtil.getAttribute(context, component, "direction");
 		ResponseWriter writer = context.getResponseWriter();
-      
+
+		writer.write("</td>");
       if(OspxTagHelper.isVertical(directionStr)) {
-			writer.write("</td><td>");
+		 writer.write("<td width=\"*\">");
          encodeTabContent(context, component);
          writer.write("</td>");
       }
       else {
-         int cols = component.getChildCount();
-         writer.write("</tr><tr><td colspan=\"" + cols + "\">");
+         writer.write("</tr><tr><td>");
          encodeTabContent(context, component);
          writer.write("</td>");
       }

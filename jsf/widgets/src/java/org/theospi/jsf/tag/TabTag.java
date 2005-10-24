@@ -34,6 +34,7 @@ public class TabTag extends UIComponentTag
 	private String title = null;
    private String selected = "false";
    private String disabled = "false";
+   private String cssclass = null;
 
 	public String getComponentType()
 	{
@@ -58,6 +59,10 @@ public class TabTag extends UIComponentTag
    public String getDisabled() {
       return disabled;
    }
+   
+   public String getCssclass() {
+      return cssclass;
+   }
 
    
    /**
@@ -70,6 +75,7 @@ public class TabTag extends UIComponentTag
 		TagUtil.setString(component, "title", title);
       TagUtil.setString(component, "selected", selected);
       TagUtil.setString(component, "disabled", disabled);
+      TagUtil.setString(component, "cssclass", cssclass);
 	}
 
 	public void setTitle(String title)
@@ -84,6 +90,10 @@ public class TabTag extends UIComponentTag
    
    public void setDisabled(String disabled) {
       this.disabled = disabled;
+   }
+   
+   public void setCssclass(String cssclass) {
+      this.cssclass = cssclass;
    }
 }
 

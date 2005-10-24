@@ -45,3 +45,9 @@
      border-width: thin;
      background-color: #B7BBC2;
  }
+ .osp_tab_selected {
+    border-color: #B0B0B0;
+     border-style: solid;
+     border-width: thin;
+     background-color: #D7DBD2;
+ }
