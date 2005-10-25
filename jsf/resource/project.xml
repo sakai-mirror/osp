@@ -2,10 +2,11 @@
 
 <project>
 	<pomVersion>3</pomVersion>
+   <extend>../../../master/project.xml</extend>
 	<name>OSP JSF Widgets - Resource</name>
 	<groupId>sakaiproject</groupId>
 	<id>osp-jsf-resource</id>
-	<currentVersion>2.0.0</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>University of Michigan</name>
 		<url>http://sakaiproject.org/</url>
@@ -24,13 +25,6 @@
 	</properties>
 
 	<dependencies>
-		<!-- Sakai plugin -->
-		<dependency>
-			<groupId>sakaiproject</groupId>
-			<artifactId>sakai</artifactId>
-			<version>${pom.currentVersion}</version>
-			<type>plugin</type>
-		</dependency>
 	</dependencies>
 
 	<build>

@@ -36,7 +36,6 @@ public class XHeaderTag extends UIComponentTag
 	private String initiallyexpanded = null;
 	private String italicize = null;
 	private String small = null;
-	private String id = null;
 	private String expandclass = null;
 
 	public String getComponentType()
@@ -54,7 +53,6 @@ public class XHeaderTag extends UIComponentTag
 	public String getInitiallyexpanded(){	return initiallyexpanded;	}
 	public String getItalicize()		{	return italicize;			}
 	public String getSmall()			{	return small;				}
-	public String getId()				{	return id;					}
 	public String getExpandclass()		{	return expandclass;			}
 
 	/**
@@ -69,7 +67,6 @@ public class XHeaderTag extends UIComponentTag
 		TagUtil.setString(component, "initiallyexpanded", initiallyexpanded);
 		TagUtil.setString(component, "italicize", italicize);
 		TagUtil.setString(component, "small", small);
-		TagUtil.setString(component, "id", id);
 		TagUtil.setString(component, "expandclass", expandclass);
 	}
 
@@ -78,7 +75,6 @@ public class XHeaderTag extends UIComponentTag
 	public void setInitiallyexpanded(String string) {	initiallyexpanded = string;		}
 	public void setItalicize(String string)			{	italicize = string;		}
 	public void setSmall(String string)				{	small = string;		}
-	public void setId(String string)				{	id = string;		}
 	public void setExpandclass(String string)		{	expandclass = string;		}
 }
 

@@ -31,7 +31,6 @@ import org.sakaiproject.jsf.util.TagUtil;
 
 public class XHeaderTitleTag extends UIComponentTag
 {
-	private String id = null;
 	private String cssclass = null;
 
 	public String getComponentType()
@@ -44,7 +43,6 @@ public class XHeaderTitleTag extends UIComponentTag
 		return "org.theospi.XHeaderTitle";
 	}
 
-	public String getId()			{	return id;					}
 	public String getCssclass()		{	return cssclass;			}
 
 	/**
@@ -54,11 +52,9 @@ public class XHeaderTitleTag extends UIComponentTag
 	protected void setProperties(UIComponent component)
 	{
 		super.setProperties(component);
-		TagUtil.setString(component, "id", id);
 		TagUtil.setString(component, "cssclass", cssclass);
 	}
 
-	public void setId(String string)			{	id = string;		}
 	public void setCssclass(String string)		{	cssclass = string;	}
 }
 

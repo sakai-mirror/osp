@@ -35,7 +35,6 @@ public class SplitSectionTag extends UIComponentTag
 	private String valign = null;
 	private String align = null;
 	private String size = null;
-	private String id = null;
 
 	public String getComponentType()
 	{
@@ -51,7 +50,6 @@ public class SplitSectionTag extends UIComponentTag
 	public String getValign()	{	return valign;		}
 	public String getAlign()	{	return align;		}
 	public String getSize()		{	return size;		}
-	public String getId()		{	return id;			}
 
 	/**
 	 * 
@@ -64,14 +62,12 @@ public class SplitSectionTag extends UIComponentTag
 		TagUtil.setString(component, "valign", valign);
 		TagUtil.setString(component, "align", align);
 		TagUtil.setString(component, "size", size);
-		TagUtil.setString(component, "id", id);
 	}
 
 	public void setCssclass(String string)			{	cssclass = string;	}
 	public void setValign(String string)			{	valign = string;	}
 	public void setAlign(String string)				{	align = string;		}
 	public void setSize(String string)				{	size = string;		}
-	public void setId(String string)				{	id = string;		}
 }
 
 

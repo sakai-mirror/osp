@@ -32,7 +32,6 @@ import org.sakaiproject.jsf.util.TagUtil;
 public class XHeaderDrawerTag extends UIComponentTag
 {
 	private String initiallyexpanded = null;
-	private String id = null;
 	private String cssclass = null;
 
 	public String getComponentType()
@@ -46,7 +45,6 @@ public class XHeaderDrawerTag extends UIComponentTag
 	}
 
 	public String getInitiallyexpanded(){	return initiallyexpanded;	}
-	public String getId()				{	return id;					}
 	public String getCssclass()			{	return cssclass;			}
 
 	/**
@@ -58,12 +56,10 @@ public class XHeaderDrawerTag extends UIComponentTag
 		super.setProperties(component);
 		
 		TagUtil.setString(component, "initiallyexpanded", initiallyexpanded);
-		TagUtil.setString(component, "id", id);
 		TagUtil.setString(component, "cssclass", cssclass);
 	}
 
 	public void setInitiallyexpanded(String string) {	initiallyexpanded = string;		}
-	public void setId(String string)				{	id = string;		}
 	public void setCssclass(String string)		{	cssclass = string;		}
 }
 

@@ -32,7 +32,6 @@ import org.sakaiproject.jsf.util.TagUtil;
 public class ScrollableAreaTag extends UIComponentTag
 {
 	private String cssClass = null;
-	private String id = null;
 	private String height = null;
 	private String width = null;
 
@@ -47,7 +46,6 @@ public class ScrollableAreaTag extends UIComponentTag
 	}
 
 	public String getCssclass()		{	return cssClass;		}
-	public String getId()			{	return id;				}
 	public String getHeight()		{	return height;		}
 	public String getWidth()		{	return width;		}
 
@@ -59,13 +57,11 @@ public class ScrollableAreaTag extends UIComponentTag
 	{
 		super.setProperties(component);
 		TagUtil.setString(component, "cssclass", cssClass);
-		TagUtil.setString(component, "id", id);
 		TagUtil.setString(component, "height", height);
 		TagUtil.setString(component, "width", width);
 	}
 
 	public void setCssclass(String string)		{	cssClass = string;		}
-	public void setId(String string)			{	id = string;			}
 	public void setHeight(String string)		{	height = string;	}
 	public void setWidth(String string)			{	width = string;		}
 }
