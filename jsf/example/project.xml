@@ -2,11 +2,11 @@
 
 <project>
 	<pomVersion>3</pomVersion>
-   <extend>../../../master/project.xml</extend>
+   <extend>../../master/project.xml</extend>
 	<name>OSP JSF Widgets - Example</name>
 	<groupId>osp</groupId>
 	<id>osp-jsf-example</id>
-	<currentVersion>${sakai.version}</currentVersion>
+	<currentVersion>${osp.version}</currentVersion>
 	<organization>
 		<name>University of Michigan</name>
 		<url>http://sakaiproject.org/</url>
@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-jsf-tool</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-jsf-app</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
@@ -52,7 +52,7 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-util-web</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 			<properties>
 				<war.bundle>true</war.bundle>
 			</properties>
@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-jsf-widgets</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 			<url>http://sakaiproject.org/</url>
 			<properties>
 				<war.bundle>true</war.bundle>
@@ -109,7 +109,7 @@
       <dependency>
          <groupId>osp</groupId>
          <artifactId>osp-jsf-widgets</artifactId>
-         <version>${pom.currentVersion}</version>
+         <version>${osp.version}</version>
          <url>http://www.theospi.org/jsf/osp</url>
          <properties>
             <war.bundle>true</war.bundle>
@@ -120,7 +120,7 @@
 		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-jsf-widgets-sun</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 			<url>http://sakaiproject.org/</url>
 			<properties>
 				<war.bundle>true</war.bundle>
@@ -133,7 +133,7 @@
       <dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai-jsf-widgets-myfaces</artifactId>
-			<version>${pom.currentVersion}</version>
+			<version>${sakai.version}</version>
 			<url>http://sakaiproject.org/</url>
 			<properties>
 				<war.bundle>true</war.bundle>
@@ -144,13 +144,13 @@
       <dependency>
          <groupId>sakaiproject</groupId>
          <artifactId>sakai-session</artifactId>
-         <version>${pom.currentVersion}</version>
+         <version>${sakai.version}</version>
       </dependency>
       
       <dependency>
          <groupId>sakaiproject</groupId>
          <artifactId>sakai-tool</artifactId>
-         <version>${pom.currentVersion}</version>
+         <version>${sakai.version}</version>
       </dependency>
 
 		<dependency>

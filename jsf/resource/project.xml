@@ -2,11 +2,11 @@
 
 <project>
 	<pomVersion>3</pomVersion>
-   <extend>../../../master/project.xml</extend>
+   <extend>../../master/project.xml</extend>
 	<name>OSP JSF Widgets - Resource</name>
 	<groupId>sakaiproject</groupId>
 	<id>osp-jsf-resource</id>
-	<currentVersion>${sakai.version}</currentVersion>
+	<currentVersion>${osp.version}</currentVersion>
 	<organization>
 		<name>University of Michigan</name>
 		<url>http://sakaiproject.org/</url>

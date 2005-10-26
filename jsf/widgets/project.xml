@@ -2,11 +2,11 @@
 
 <project>
   <pomVersion>3</pomVersion>
-  <extend>../../../master/project.xml</extend>
+  <extend>../../master/project.xml</extend>
   <name>OSP JSF Widgets</name>
   <groupId>osp</groupId>
   <id>osp-jsf-widgets</id>
-  <currentVersion>${sakai.version}</currentVersion>
+  <currentVersion>${osp.version}</currentVersion>
   <organization>
     <name>Sakai Project</name>
     <url>http://sakaiproject.org/</url>
@@ -26,32 +26,32 @@
    <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-jsf-widgets</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${sakai.version}</version>
    </dependency>
 
 
 	<dependency>
 		<groupId>sakaiproject</groupId>
 		<artifactId>sakai-jsf-widgets-myfaces</artifactId>
-		<version>${pom.currentVersion}</version>
+		<version>${sakai.version}</version>
 	</dependency>
    
    <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-util-web</artifactId>
-      <version>${pom.currentVersion}</version>
+      <version>${sakai.version}</version>
    </dependency>
 
       <dependency>
          <groupId>sakaiproject</groupId>
          <artifactId>sakai-session</artifactId>
-         <version>${pom.currentVersion}</version>
+         <version>${sakai.version}</version>
       </dependency>
       
       <dependency>
          <groupId>sakaiproject</groupId>
          <artifactId>sakai-tool</artifactId>
-         <version>${pom.currentVersion}</version>
+         <version>${sakai.version}</version>
       </dependency>
 
     <!-- Sun JSF dependencies -->
