@@ -58,7 +58,17 @@
         
       ]]></description>
     </attribute>
-    
+
+     <attribute>
+       <name>id</name>
+       <required>false</required>
+       <rtexprvalue>false</rtexprvalue>
+       <description><![CDATA[
+
+          the id of the header
+
+       ]]></description>
+     </attribute>
   </tag>
   
   <tag>
@@ -376,6 +386,16 @@
           
       ]]></description>
     </attribute>
+     <attribute>
+       <name>id</name>
+       <required>false</required>
+       <rtexprvalue>false</rtexprvalue>
+       <description><![CDATA[
+
+          the id of the splitter
+
+       ]]></description>
+     </attribute>
   </tag>
   
   
@@ -547,6 +567,16 @@
           
       ]]></description>
     </attribute>
+      <attribute>
+        <name>id</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+        <description><![CDATA[
+
+           the id of the area
+
+        ]]></description>
+      </attribute>
   </tag>
   
   

@@ -1,11 +1,13 @@
 <f:view>
 <sakai:view title="Demo Page">
 <h:form>
+<h:commandLink action="main"><h:outputText value="Back to examples index" /></h:commandLink>
+
 <table>
 <tr>
 <td align="right">
 
-    
+
 <ospx:wizardSteps currentStep="2">
    <ospx:wizardStep label="Begin Design" />
    <ospx:wizardStep label="Design" />
