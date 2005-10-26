@@ -78,7 +78,7 @@
                            </ospx:tab>
                            <ospx:tab title="My Styles" selected="true" cssclass="tabSizeMid">
                               <ospx:splitarea direction="vertical" width="100%">
-                                  <ospx:splitsection valign="top" size="170">
+                                  <ospx:splitsection valign="top">
                                       <h:outputText value="Item Name"/>
                                   </ospx:splitsection>
                                   <ospx:splitsection valign="top">
