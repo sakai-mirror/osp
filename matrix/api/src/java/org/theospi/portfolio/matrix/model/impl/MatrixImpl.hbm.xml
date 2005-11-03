@@ -1,0 +1,271 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+<hibernate-mapping package="org.theospi.portfolio.matrix.model">
+
+    <class name="MatrixTool" table="osp_matrix_tool" lazy="true" >
+       <cache usage="nonstrict-read-write"/>
+        <id name="id" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="id">
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="scaffolding" column="scaffolding_id"
+            not-null="true" class="Scaffolding" cascade="none"/>
+        <set name="matrix" cascade="all-delete-orphan" inverse="true"
+            lazy="true">
+            <key column="id" />
+            <one-to-many class="Matrix" />
+        </set>
+
+    </class>
+
+    <class name="Matrix" table="osp_matrix" lazy="true">
+       <cache usage="nonstrict-read-write"/>
+        <id name="id" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="id">
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+        </id>
+        <property name="owner" not-null="true"
+        		type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" />
+        <many-to-one name="matrixTool" column="matrixTool_id"
+            not-null="true" class="MatrixTool" />
+        <set name="cells" cascade="all-delete-orphan" inverse="true"
+            lazy="true">
+            <key column="matrix_id" />
+            <one-to-many class="Cell" />
+        </set>
+
+    </class>
+
+    <class name="Cell" table="osp_matrix_cell" lazy="true">
+       <cache usage="nonstrict-read-write"/>
+        <id name="id" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="id">
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+        </id>
+
+        <property name="status" type="java.lang.String" />
+        <many-to-one name="matrix" column="matrix_id" not-null="true"
+            class="Matrix" />
+        <set name="attachments" cascade="all-delete-orphan"
+            inverse="true" lazy="true">
+            <key column="cell_id" />
+            <one-to-many class="Attachment" />
+        </set>
+
+        <many-to-one name="reflection" column="reflection_id"
+            class="Reflection" cascade="delete" />
+        
+        <set name="reviewerItems" cascade="all-delete-orphan"
+            inverse="true" lazy="true">
+            <key column="cell_id" />
+            <one-to-many class="ReviewerItem" />
+        </set>
+
+        <many-to-one name="scaffoldingCell" column="scaffolding_cell_id"
+            class="ScaffoldingCell" cascade="delete" />
+
+    </class>
+
+    <class name="Reflection" table="osp_reflection" lazy="true">
+       <cache usage="nonstrict-read-write"/>
+        <id name="id" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="id">
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+        </id>
+        <property name="growthStatement" type="text" />
+        <list name="reflectionItems" cascade="all-delete-orphan"
+            inverse="false" lazy="true">
+            <key column="reflection_id" />
+            <index column="seq_num" />
+            <one-to-many class="ReflectionItem" />
+        </list>
+        <many-to-one name="cell" column="cell_id" not-null="true"
+            class="Cell" cascade="save-update" />
+
+    </class>
+
+	<class name="Attachment" table="osp_cell_attachment" lazy="true">
+      <cache usage="nonstrict-read-write"/>
+        <id name="id" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="id">
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+        </id>
+        <property name="artifactId" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" />
+        <many-to-one name="cell" column="cell_id" not-null="true"
+            class="Cell" cascade="none" />
+        <property name="privacyResponse" type="org.theospi.portfolio.matrix.model.impl.HibernatePrivacyResponse" 
+        		not-null="false"/>
+        		
+        <set name="attachmentCriteria" lazy="true" inverse="true" cascade="all">
+            <key column="attachment_id" />
+            <one-to-many class="AttachmentCriterion" />
+        </set>
+    </class>
+
+    <class name="AttachmentCriterion" table="osp_cell_attachment_criterion" lazy="true" >
+       <cache usage="nonstrict-read-write"/>
+        <id name="id" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="id">
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+        </id>
+        <many-to-one name="criterion" column="criterion_id"
+            class="Criterion" cascade="none" />
+        <many-to-one name="attachment" column="attachment_id" not-null="true"
+            class="Attachment" cascade="none" />
+
+    </class>
+    
+    
+
+    <class name="ReflectionItem" table="osp_reflection_item" lazy="true">
+       <cache usage="nonstrict-read-write"/>
+        <id name="id" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="id">
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+        </id>
+        <many-to-one name="reflection" column="reflection_id"
+            not-null="true" class="Reflection" cascade="none" />
+         <many-to-one name="expectation" column="expectation_id"
+            class="Expectation" cascade="none" />
+        <property name="connect" column="connectText" type="text" />
+        <property name="evidence" type="text" />
+    </class>
+
+
+   <class name="Label" table="osp_matrix_label" discriminator-value="?">
+      <cache usage="nonstrict-read-write"/>
+        <id name="id" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="id">
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+        </id>
+        <discriminator column="type" type="character" />
+        <property name="description" type="java.lang.String" />
+        <subclass name="Level" discriminator-value="L"/>
+        <subclass name="Criterion" discriminator-value="C">
+            <property name="indent" type="java.lang.Integer" />
+            <property name="color" type="java.lang.String" length="7" />
+            <list name="criteria" lazy="true" inverse="false" cascade="all-delete-orphan"
+	        		table="osp_subcriteria">
+	            <key column="parent_id" />
+	            <index column="seq_num" />
+	            <many-to-many class="Criterion" />
+	        </list>
+        </subclass>
+		<subclass name="Expectation" discriminator-value="E" >
+		  <property name="required" type="boolean" />
+		  </subclass>
+    </class>
+
+
+    <class name="Scaffolding" table="osp_scaffolding" lazy="true" >
+       <cache usage="nonstrict-read-write"/>
+        <id name="id" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="id">
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+        </id>
+        <property name="ownerId" length="36" not-null="true"
+            type="org.sakaiproject.metaobj.shared.IdType" />
+        <property name="title" type="java.lang.String" />
+        <property name="description" type="java.lang.String" />
+        <property name="documentRoot" type="java.lang.String" />
+        <property name="privacyXsdId" type="org.sakaiproject.metaobj.shared.IdType" />
+        <property name="worksiteId" type="org.sakaiproject.metaobj.shared.IdType" />
+        <list name="levels" lazy="true" inverse="false" cascade="all-delete-orphan"
+            table="osp_scaffolding_levels">
+            <key column="scaffolding_id" />
+            <index column="seq_num" />
+            <many-to-many class="Level" />
+        </list>
+        <list name="criteria" lazy="true" inverse="false" cascade="all-delete-orphan"
+        		table="osp_scaffolding_criteria">
+            <key column="parent_id" />
+            <index column="seq_num" />
+            <many-to-many class="Criterion" />
+        </list>
+
+        <set name="rubric" cascade="all" inverse="true" lazy="true">
+            <key column="scaffolding_id" />
+            <one-to-many class="Rubric" />
+        </set>
+        
+		<set name="scaffoldingCells" lazy="true" inverse="true" cascade="all-delete-orphan">
+            <key column="scaffolding_id" />
+            <one-to-many class="ScaffoldingCell" />
+        </set>
+        
+        <property name="published" type="boolean" />
+        <property name="publishedBy" type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" />
+        <property name="publishedDate" type="java.util.Date" />
+
+    </class>
+
+    <class name="Rubric" table="osp_rubric" lazy="true">
+       <cache usage="nonstrict-read-write"/>
+        <id name="id" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="id">
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+        </id>
+        <many-to-one name="criterion" column="criterion_id"
+            class="Criterion" />
+
+        <many-to-one name="level" column="level_id" class="Level" />
+        <property name="quantity" type="int" />
+        <property name="type" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" />
+        <component name="mimeType"
+            class="org.sakaiproject.metaobj.shared.model.MimeType">
+            <property name="primaryType" />
+            <property name="subType" />
+        </component>
+        <many-to-one name="scaffolding" column="scaffolding_id"
+            not-null="true" class="Scaffolding" />
+    </class>
+
+    <class name="ReviewerItem" table="osp_reviewer_item" lazy="true" >
+       <cache usage="nonstrict-read-write"/>
+        <id name="id" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="id">
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+        </id>
+        <property name="status" type="java.lang.String" />
+        <property name="created" type="java.util.Date" update="false"
+            not-null="true" />
+        <property name="modified" type="java.util.Date" update="true"
+            not-null="false" />
+        <property name="reviewer" column="reviewer_id" not-null="false"
+            type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" />
+        <property name="comments" type="text" not-null="false" />
+        <property name="grade" type="java.lang.String" />
+
+        <many-to-one name="cell" column="cell_id" not-null="true"
+            class="Cell" cascade="none" />
+
+    </class>
+    
+    <class name="ScaffoldingCell" table="osp_scaffolding_cell" lazy="true" >
+      <cache usage="nonstrict-read-write"/>
+    	<id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+			<generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+    	</id>
+    	<many-to-one name="rootCriterion" column="rootcriterion_id" class="Criterion"/>
+      <many-to-one name="level" column="level_id" class="Level"/>
+    	<many-to-one name="scaffolding" column="scaffolding_id" not-null="true" class="Scaffolding"/>
+    	<property name="expectationHeader" type="text" not-null="false"/>
+    	<list name="expectations" lazy="true" inverse="false" table="osp_expectation" cascade="all-delete-orphan">
+            <key column="scaffolding_cell_id" />
+            <index column="seq_num" />
+            <many-to-many class="Expectation" />
+        </list>
+      <property name="initialStatus" type="java.lang.String" />
+      <property name="gradableReflection" type="boolean" />
+      <set name="cells" cascade="all-delete-orphan" inverse="true"
+            lazy="true">
+            <key column="scaffolding_cell_id" />
+            <one-to-many class="Cell" />
+        </set>
+    </class>
+    
+</hibernate-mapping>

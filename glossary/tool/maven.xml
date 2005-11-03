@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project default="war:install">
+
+	<goal name="full">
+		<attainGoal name="war:install" />
+	</goal>
+
+	<!-- move all the registration files to /usr/local/sakai/reg -->
+	<goal name="reg">
+		<copy todir="/usr/local/sakai/reg/" filtering="false" preservelastmodified="true" overwrite="true">
+			<fileset dir="src/reg">
+				<include name="*.xml" />
+			</fileset>
+		</copy>
+	</goal>
+
+</project>
