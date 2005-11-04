@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-lazy-init="true">
+
+   <bean id="helpController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.help.control.HelpController">
+            <property name="helpManager"><ref bean="helpManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">glossaryTerm</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>term</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.help.model.GlossaryEntry</value></property>
+   </bean>
+
+   <bean id="glossaryController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.help.control.GlossaryController">
+            <property name="helpManager"><ref bean="helpManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">glossaryTerm</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>entry</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.help.model.GlossaryEntry</value></property>
+   </bean>
+
+   <bean id="glossaryListController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.help.control.GlossaryListController">
+            <property name="helpManager"><ref bean="helpManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="worksiteManager">
+               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+            </property>
+            <property name="listScrollIndexer">
+               <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
+            </property>
+            <property name="toolManager">
+               <ref bean="org.sakaiproject.api.kernel.tool.ToolManager"/>
+            </property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">glossaryList</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>entry</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.help.model.GlossaryEntry</value></property>
+   </bean>
+
+   
+   <bean id="editGlossaryController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.help.control.GlossaryEditController">
+            <property name="helpManager"><ref bean="helpManager"/></property>
+            <property name="authzManager"><ref bean="authzManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">glossaryListRedirect</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="validator"><ref bean="glossaryEntryValidator"/></property>
+      <property name="commandName"><value>entry</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.help.model.GlossaryEntry</value></property>
+      <property name="formView"><value>editGlossaryTerm</value></property>
+   </bean>
+   
+   <bean id="removeGlossaryController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.help.control.GlossaryRemoveController">
+            <property name="helpManager"><ref bean="helpManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="worksiteManager">
+               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+            </property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">glossaryListRedirect</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>entry</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.help.model.GlossaryEntry</value></property>
+   </bean>
+      
+   <bean id="glossaryEntryValidator" class="org.theospi.utils.mvc.impl.SimpleValidator">
+      <property name="requiredFields">
+         <list>
+            <value>term</value>
+            <value>description</value>
+            <value>longDescription</value>
+         </list>
+      </property>
+   </bean>
+
+</beans>

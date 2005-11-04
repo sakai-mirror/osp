@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-lazy-init="false">
+
+   <bean id="ospMatrixHibernateMappings"
+      class="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappingsImpl">
+      <property name="mappingResources">
+         <list>
+            <value>org/theospi/portfolio/matrix/model/impl/MatrixImpl.hbm.xml</value>
+         </list>
+		</property>
+   </bean>
+
+   <bean id="visibleUserManager" class="org.theospi.portfolio.matrix.mgt.impl.VisibleUserManagerImpl">
+	   <property name="agentManager"><ref bean="agentManager"/></property>
+      <property name="worksiteManager">
+         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+      </property>
+   </bean>
+
+   <bean id="matrixAuthorizer" class="org.theospi.portfolio.matrix.MatrixAuthorizer">
+      <property name="matrixManager"><ref bean="matrixManager"/></property>
+      <property name="explicitAuthz"><ref bean="explicitAuthz"/></property>
+      <property name="functions">
+         <list>
+            <bean id="org.sakaiproject.service.legacy.content.ContentHostingService.EVENT_RESOURCE_READ"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.REVIEW_MATRIX"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_MATRIX"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.CREATE_SCAFFOLDING"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.UNLOCK_REVIEW_MATRIX"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.PUBLISH_SCAFFOLDING"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.security.app.AdditionalAppAuthorizers.matrix"
+      class="org.theospi.portfolio.security.app.AdditionalAppAuthorizers"
+      init-method="init" singleton="true">
+      <property name="authzManager"><ref bean="authzManager"/></property>
+      <property name="additionalAppAuthorizers">
+         <list>
+            <bean class="org.theospi.portfolio.security.app.OrderedAuthorizer">
+               <property name="order"><value>2</value></property>
+               <property name="authorizer"><ref bean="matrixAuthorizer"/></property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.shared.mgt.AdditionalXmlHome.matrix"
+      class="org.theospi.portfolio.shared.mgt.AdditionalXmlHome"
+      init-method="init" singleton="true">
+      <property name="xmlHomeFactory"><ref bean="xmlHomeFactory"/></property>
+      <property name="additionalHomes">
+		<map>
+			<entry key="matrix"><ref bean="matrixManager"/></entry>
+		</map>
+      </property>
+   </bean>
+   
+   <bean id="org.theospi.portfolio.shared.mgt.AdditionalFinder.matrix"
+      class="org.theospi.portfolio.shared.mgt.AdditionalFinder"
+      init-method="init" singleton="true">
+      <property name="artifactFinderManager"><ref bean="artifactFinderManager"/></property>
+      <property name="additionalFinders">
+		<map>
+			<entry key="matrix"><ref bean="matrixManager"/></entry>
+		</map>
+      </property>
+   </bean>
+   
+   <bean id="matrixManager"
+      class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+      singleton="true">
+      <property name="transactionManager">
+        <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
+      </property>
+      <property name="target">
+         <ref bean="matrixManagerTarget"/>
+      </property>
+      <property name="transactionAttributes">
+         <props>
+            <prop key="*">PROPAGATION_REQUIRED</prop>
+         </props>
+      </property>
+   </bean>
+
+   <bean id="matrixManagerTarget" class="org.theospi.portfolio.matrix.HibernateMatrixManagerImpl">
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="sessionFactory">
+         <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
+      </property>
+      <property name="contentHosting">
+         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+      </property>
+      <property name="authnManager"><ref bean="authManager"/></property>
+      <property name="authzManager"><ref bean="authzManager"/></property>
+      <property name="agentManager"><ref bean="agentManager"/></property>
+      <property name="xmlRenderer"><ref bean="matrixXmlRenderer"/></property>
+      <property name="worksiteManager">
+         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+      </property>
+      <property name="lockManager">
+         <ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
+      </property>
+      <property name="reviewRubrics">
+			<list>
+           <bean id="reviewRubricValue1" class="org.theospi.portfolio.matrix.model.ReviewRubricValue">
+              <property name="id"><value>0</value></property>
+              <property name="displayText"><value>osp.review.rubric.value1</value></property>
+              <property name="nextStatus">
+                 <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.COMPLETE_STATUS"/>
+              </property>
+              <property name="unlockContent"><value>false</value></property>
+           </bean>
+           <bean id="reviewRubricValue2" class="org.theospi.portfolio.matrix.model.ReviewRubricValue">
+              <property name="id"><value>1</value></property>
+              <property name="displayText"><value>osp.review.rubric.value2</value></property>
+              <property name="nextStatus">
+                 <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.COMPLETE_STATUS"/>
+              </property>
+              <property name="unlockContent"><value>false</value></property>
+           </bean>
+           <bean id="reviewRubricValue3" class="org.theospi.portfolio.matrix.model.ReviewRubricValue">
+					<property name="id"><value>2</value></property>
+              <property name="displayText"><value>osp.review.rubric.value3</value></property>
+              <property name="nextStatus">
+                 <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.COMPLETE_STATUS"/>
+              </property>
+              <property name="unlockContent"><value>false</value></property>
+           </bean>
+           <bean id="reviewRubricValue4" class="org.theospi.portfolio.matrix.model.ReviewRubricValue">
+              <property name="id"><value>3</value></property>
+              <property name="displayText"><value>osp.review.rubric.value4</value></property>
+              <property name="nextStatus">
+                 <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.READY_STATUS"/>
+              </property>
+              <property name="unlockContent"><value>true</value></property>
+           </bean>        
+        </list>
+		</property>
+   </bean>
+   
+   <bean id="matrixXmlRenderer" class="org.theospi.portfolio.matrix.GenericXmlRenderer">
+      <property name="artifactFinder">
+         <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifact" />
+      </property>
+      <property name="objectStructure"><value>classpath:matrix-structure.xml</value></property>
+      <property name="supportedType"><value>org.theospi.portfolio.matrix.model.Matrix</value></property>
+      <property name="rootName"><value>matrix</value></property>      
+   </bean>
+   
+   <bean id="standardOutlineModel" class="org.theospi.portfolio.matrix.model.ScaffTableModel" singleton="false">
+    	<property name="list">
+    		<!-- <ref bean="standardOutlineOrderedList"/> -->
+    		<ref bean="deweyOrderedList"/>
+    	</property>     
+    </bean>
+    
+    <bean id="webOutlineOrderedList" class="org.theospi.portfolio.matrix.model.OrderedList" singleton="false">   
+       <property name="renderer">
+          <ref bean="webOutlineRenderer"/>
+       </property>
+       <property name="levels">
+          <list>
+			<ref bean="upperRomanNumeral"/>
+            <ref bean="upperEnglishAlphabet"/>
+			<ref bean="arabicNumeral1"/>
+			<ref bean="lowerRomanNumeral"/>
+			<ref bean="lowerEnglishAlphabet"/>
+			<ref bean="arabicNumeral1"/>              
+          </list>
+       </property>
+       <property name="fullyContainedLabels"><value>false</value></property>
+    </bean>
+    
+    <bean id="webDeweyOrderedList" class="org.theospi.portfolio.matrix.model.OrderedList" singleton="false">   
+       <property name="renderer">
+          <ref bean="webDeweyRenderer"/>
+       </property>
+       <property name="levels">
+          <list>
+             <ref bean="arabicNumeral1"/>
+    			<ref bean="arabicNumeral1"/>
+    			<ref bean="arabicNumeral1"/>
+    			<ref bean="arabicNumeral1"/>    			
+    			<ref bean="arabicNumeral1"/>
+    			<ref bean="arabicNumeral1"/>
+    			<ref bean="arabicNumeral1"/>
+    			<ref bean="arabicNumeral1"/>             
+          </list>
+       </property>
+       <property name="fullyContainedLabels"><value>false</value></property>
+    </bean>
+    
+    <bean id="standardOutlineOrderedList" class="org.theospi.portfolio.matrix.model.OrderedList" singleton="false">	
+    	<property name="renderer">
+    		<ref bean="standardOutlineRenderer"/>
+    	</property>
+    	<property name="levels">
+    		<list>
+    			<ref bean="upperRomanNumeral"/>
+    			<ref bean="upperEnglishAlphabet"/>
+    			<ref bean="arabicNumeral1"/>
+    			<ref bean="lowerRomanNumeral"/>
+    			<ref bean="lowerEnglishAlphabet"/>
+    			<ref bean="arabicNumeral1"/>    			
+    		</list>
+    	</property>
+      <property name="fullyContainedLabels"><value>false</value></property>
+    </bean>
+    
+    <bean id="deweyOrderedList" class="org.theospi.portfolio.matrix.model.OrderedList" singleton="false">	
+    	<property name="renderer">
+    		<ref bean="deweyRenderer"/>
+    	</property>
+    	<property name="levels">
+    		<list>
+    			<ref bean="arabicNumeral1"/>
+    			<ref bean="arabicNumeral1"/>
+    			<ref bean="arabicNumeral1"/>
+    			<ref bean="arabicNumeral1"/>    			
+    			<ref bean="arabicNumeral1"/>
+    			<ref bean="arabicNumeral1"/>
+    			<ref bean="arabicNumeral1"/>
+    			<ref bean="arabicNumeral1"/>    			
+    		</list>
+    	</property>
+      <property name="fullyContainedLabels"><value>true</value></property>
+    </bean>
+    
+    
+   <bean id="webOutlineRenderer" class="org.theospi.portfolio.matrix.model.WebOutlineRenderer"/>
+   <bean id="webDeweyRenderer" class="org.theospi.portfolio.matrix.model.WebDeweyRenderer"/>
+    <bean id="standardOutlineRenderer" class="org.theospi.portfolio.matrix.model.StandardOutlineRenderer"/>
+    <bean id="deweyRenderer" class="org.theospi.portfolio.matrix.model.DeweyRenderer"/>
+    
+    <bean id="upperRomanNumeral" class="org.theospi.portfolio.matrix.model.impl.RomanNumeral" singleton="false">
+		<property name="useUpperCase">
+			<value>true</value>
+		</property>
+    </bean>
+
+    <bean id="lowerRomanNumeral" class="org.theospi.portfolio.matrix.model.impl.RomanNumeral" singleton="false">
+		<property name="useUpperCase">
+			<value>false</value>
+		</property>
+    </bean>
+
+    <bean id="upperEnglishAlphabet" class="org.theospi.portfolio.matrix.model.impl.AlphabetGenerator" singleton="false">
+		<property name="useUpperCase">
+			<value>true</value>
+		</property>
+		<property name="alphabet">
+			<value>ABCDEFGHIJKLMNOPQRSTUVWXYZ</value>
+		</property>
+    </bean>
+
+    <bean id="lowerEnglishAlphabet" class="org.theospi.portfolio.matrix.model.impl.AlphabetGenerator" singleton="false">
+		<property name="useUpperCase">
+			<value>false</value>
+		</property>
+		<property name="alphabet">
+			<value>ABCDEFGHIJKLMNOPQRSTUVWXYZ</value>
+		</property>
+    </bean>
+    
+    <bean id="arabicNumeral1" class="org.theospi.portfolio.matrix.model.impl.ArabicNumeral" singleton="false">
+		<property name="initial">
+			<value>1</value>
+		</property>
+    </bean>
+    
+    <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.READY_STATUS"
+       class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+    <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.COMPLETE_STATUS"
+       class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+    <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.PENDING_STATUS"
+       class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+    <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.LOCKED_STATUS"
+       class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+
+   <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.scaffolding"
+      class="org.theospi.portfolio.security.model.SimpleToolPermissionManager" >
+
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="permissionManager">
+         <ref bean="org.theospi.portfolio.security.mgt.PermissionManager" />
+      </property>
+      <property name="agentManager"><ref bean="agentManager" /></property>
+      <property name="permissionEditName"><value>scaffolding</value></property>
+      <property name="defaultPermissions">
+         <map>
+            <entry key="maintain">
+               <list>
+                  <value>osp.matrix.scaffolding.create</value>
+                  <value>osp.matrix.scaffolding.viewUsers</value>
+                  <value>osp.matrix.scaffolding.publish</value>
+               </list>
+            </entry>
+            <entry key="instructor">
+               <list>
+                  <value>osp.matrix.scaffolding.create</value>
+                  <value>osp.matrix.scaffolding.viewUsers</value>
+                  <value>osp.matrix.scaffolding.publish</value>
+               </list>
+            </entry>
+            <entry key="access">
+               <list>
+               </list>
+            </entry>
+            <entry key="project owner">
+               <list>
+                  <value>osp.matrix.scaffolding.create</value>
+                  <value>osp.matrix.scaffolding.viewUsers</value>
+                  <value>osp.matrix.scaffolding.publish</value>
+               </list>
+            </entry>
+         </map>
+      </property>
+      <property name="functions">
+         <list>
+            <value>osp.matrix.scaffolding.create</value>
+            <value>osp.matrix.scaffolding.viewUsers</value>
+            <value>osp.matrix.scaffolding.publish</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.review"
+      class="org.theospi.portfolio.security.model.SimpleToolPermissionManager" >
+
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="permissionManager">
+         <ref bean="org.theospi.portfolio.security.mgt.PermissionManager" />
+      </property>
+      <property name="agentManager"><ref bean="agentManager" /></property>
+      <property name="permissionEditName"><value>review</value></property>
+      <property name="defaultPermissions">
+         <map>
+            <entry key="maintain">
+               <list>
+                  <value>osp.matrix.review</value>
+                  <value>osp.matrix.unlockReview</value>
+                  <value>osp.matrix.viewOwner</value>
+               </list>
+            </entry>
+            <entry key="instructor">
+               <list>
+                  <value>osp.matrix.review</value>
+                  <value>osp.matrix.unlockReview</value>
+                  <value>osp.matrix.viewOwner</value>
+               </list>
+            </entry>
+            <entry key="project owner">
+               <list>
+                  <value>osp.matrix.review</value>
+                  <value>osp.matrix.unlockReview</value>
+                  <value>osp.matrix.viewOwner</value>
+               </list>
+            </entry>
+            <entry key="access">
+               <list>
+               </list>
+            </entry>
+         </map>
+      </property>
+      <property name="functions">
+         <list>
+            <value>osp.matrix.review</value>
+            <value>osp.matrix.unlockReview</value>
+            <value>osp.matrix.viewOwner</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="matrixToolPermissionsMap"
+      class="org.theospi.portfolio.security.mgt.impl.AddPermissionTool"
+      init-method="init" lazy-init="false"  >
+      <property name="manager">
+         <ref bean="org.theospi.portfolio.security.mgt.PermissionManager"/>
+      </property>
+      <property name="additionalTools">
+         <map>
+            <entry key="scaffolding">
+               <ref bean="org.theospi.portfolio.security.mgt.ToolPermissionManager.scaffolding"/>
+            </entry>
+            <entry key="review">
+               <ref bean="org.theospi.portfolio.security.mgt.ToolPermissionManager.review"/>
+            </entry>
+         </map>
+      </property>
+   </bean>
+
+</beans>

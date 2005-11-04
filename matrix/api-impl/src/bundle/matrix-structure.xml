@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ valid values for type attribute are: collection, artifact, object
+ if not specified object is assumed
+ -->
+<matrix class="org.theospi.portfolio.matrix.model.Matrix">
+   <cells type="collection" class="org.theospi.portfolio.matrix.model.Cell">
+      <scaffoldingCell class="org.theospi.portfolio.matrix.model.ScaffoldingCell">
+         <rootCriterion class="org.theospi.portfolio.matrix.model.Criterion"/>
+         <level class="org.theospi.portfolio.matrix.model.Level"/>
+         <expectations type="collection" class="org.theospi.portfolio.matrix.model.Expectation"/>
+      </scaffoldingCell>
+      <attachments type="collection" class="org.theospi.portfolio.matrix.model.Attachment">
+         <artifactId type="artifact" class="org.sakaiproject.metaobj.shared.model.Id">
+         </artifactId>
+      </attachments>
+      <reflection class="org.theospi.portfolio.matrix.model.Reflection">
+         <reflectionItems type="collection" class="org.theospi.portfolio.matrix.model.ReflectionItem">
+				<expectation class="org.theospi.portfolio.matrix.model.Expectation"/>
+         </reflectionItems>
+      </reflection>
+      <reviewerItems type="collection" class="org.theospi.portfolio.matrix.model.ReviewerItem">
+         <reviewer class="org.sakaiproject.metaobj.shared.model.Agent"/>
+      </reviewerItems>
+   </cells>
+   <owner class="org.sakaiproject.metaobj.shared.model.Agent"></owner>
+</matrix>

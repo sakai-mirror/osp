@@ -1,0 +1,177 @@
+/*
+ * $Header: /opt/CVS/osp2.x/presentation/api-impl/src/java/org/theospi/portfolio/presentation/PresentationAuthorizerImpl.java,v 1.3 2005/09/15 17:37:27 jellis Exp $
+ * $Revision$
+ * $Date$
+ */
+package org.theospi.portfolio.presentation;
+
+import org.theospi.portfolio.security.app.ApplicationAuthorizer;
+import org.theospi.portfolio.security.AuthorizationFacade;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.service.legacy.content.ContentHostingService;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationTemplate;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
+   private PresentationManager presentationManager;
+   private IdManager idManager;
+   private List functions;
+
+   /**
+    * This method will ask the application specific functional authorizer to determine authorization.
+    *
+    * @param facade   this can be used to do explicit auths if necessary
+    * @param agent
+    * @param function
+    * @param id
+    * @return null if the authorizer has no opinion, true if authorized, false if explicitly not authorized.
+    */
+   public Boolean isAuthorized(AuthorizationFacade facade, Agent agent,
+                               String function, Id id) {
+
+      // return null if we don't know what is up...
+      if (function.equals(PresentationFunctionConstants.VIEW_PRESENTATION)) {
+         return isPresentationViewAuth(facade, agent, id, true);
+      } else if (function.equals(PresentationFunctionConstants.COMMENT_PRESENTATION)) {
+         return isPresentationCommentAuth(facade, agent, id);
+      } else if (function.equals(PresentationFunctionConstants.CREATE_TEMPLATE)) {
+         return new Boolean(facade.isAuthorized(agent,function,id));
+      } else if (function.equals(PresentationFunctionConstants.EDIT_TEMPLATE)) {
+         return isTemplateAuth(facade, id, agent, PresentationFunctionConstants.EDIT_TEMPLATE);
+      } else if (function.equals(PresentationFunctionConstants.PUBLISH_TEMPLATE)) {
+         PresentationTemplate template = getPresentationManager().getPresentationTemplate(id);
+         Id toolId = getIdManager().getId(template.getToolId());
+         return new Boolean(facade.isAuthorized(agent,function,toolId));
+      } else if (function.equals(PresentationFunctionConstants.DELETE_TEMPLATE)) {
+         return isTemplateAuth(facade, id, agent, PresentationFunctionConstants.DELETE_TEMPLATE);
+      } else if (function.equals(PresentationFunctionConstants.COPY_TEMPLATE)) {
+         return isTemplateAuth(facade, id, agent, PresentationFunctionConstants.COPY_TEMPLATE);
+      } else if (function.equals(PresentationFunctionConstants.EXPORT_TEMPLATE)) {
+         return isTemplateAuth(facade, id, agent, PresentationFunctionConstants.EXPORT_TEMPLATE);
+      } else if (function.equals(PresentationFunctionConstants.CREATE_PRESENTATION)) {
+         return new Boolean(facade.isAuthorized(agent,function,id));
+      } else if (function.equals(PresentationFunctionConstants.EDIT_PRESENTATION)) {
+         return isPresentationAuth(facade, id, agent, PresentationFunctionConstants.EDIT_PRESENTATION);
+      } else if (function.equals(PresentationFunctionConstants.DELETE_PRESENTATION)) {
+         return isPresentationAuth(facade, id, agent, PresentationFunctionConstants.DELETE_PRESENTATION);
+      } else if (function.equals(ContentHostingService.EVENT_RESOURCE_READ)) {
+         return isFileAuth(facade, agent, id);
+      } else {
+         return null;
+      }
+   }
+   protected Boolean isPresentationAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function){
+      Presentation presentation = getPresentationManager().getPresentation(qualifier);
+
+      if (presentation == null) {
+         // must be tool id
+         return new Boolean(facade.isAuthorized(function,qualifier));
+      }
+      
+      //owner can do anything
+      if (presentation.getOwner().equals(agent)){
+         return new Boolean(true);
+      }
+      Id toolId = getIdManager().getId(presentation.getToolConfiguration().getId());
+      return new Boolean(facade.isAuthorized(function,toolId));
+   }
+
+   protected Boolean isTemplateAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function){
+      PresentationTemplate template = getPresentationManager().getPresentationTemplate(qualifier);
+      //owner can do anything
+      if (template.getOwner().equals(agent)){
+         return new Boolean(true);
+      }
+      Id toolId = getIdManager().getId(template.getToolId());
+      return new Boolean(facade.isAuthorized(function,toolId));
+   }
+
+   protected Boolean isPresentationCommentAuth(AuthorizationFacade facade, Agent agent, Id id) {
+      Presentation pres = getPresentationManager().getPresentation(id);
+
+      if (!pres.getTemplate().isIncludeComments()){
+         return new Boolean(false);
+      }
+
+      if (pres.getIsPublic()) {
+         return new Boolean(true);
+      } else if (pres.getOwner().equals(agent)) {
+         return new Boolean(true);
+      } else {
+         Id toolId = getIdManager().getId(pres.getToolConfiguration().getId());
+         return new Boolean(facade.isAuthorized(agent, PresentationFunctionConstants.COMMENT_PRESENTATION, toolId));
+      }
+   }
+
+   protected Boolean isPresentationViewAuth(AuthorizationFacade facade, Agent agent, Id id, boolean allowAnonymous) {
+      Presentation pres = getPresentationManager().getPresentation(id);
+
+      return isPresentationViewAuth(pres, facade, agent, id, allowAnonymous);
+   }
+
+   protected Boolean isPresentationViewAuth(Presentation pres, AuthorizationFacade facade,
+                                            Agent agent, Id id, boolean allowAnonymous) {
+      if (pres.getIsPublic() && (allowAnonymous || !agent.isInRole(Agent.ROLE_ANONYMOUS))) {
+         return new Boolean(true);
+      } else if (pres.getOwner().equals(agent)) {
+         return new Boolean(true);
+      } else {
+         return new Boolean(facade.isAuthorized(agent, PresentationFunctionConstants.VIEW_PRESENTATION, id));
+      }
+   }
+
+   protected Boolean isFileAuth(AuthorizationFacade facade, Agent agent, Id id) {
+      // check if this id is attached to any pres
+
+      if (id == null) return null;
+
+      Collection presItems = getPresentationManager().getPresentationItems(id);
+      presItems.addAll(getPresentationManager().getPresentationsBasedOnTemplateFileRef(id));
+
+      if (presItems.size() == 0) {
+         return null;
+      }
+
+      // does this user have access to any of the above pres
+      for (Iterator i = presItems.iterator(); i.hasNext();) {
+         Presentation pres = (Presentation) i.next();
+
+         Boolean returned = isPresentationViewAuth(pres, facade, agent, pres.getId(), true);
+         if (returned != null && returned.booleanValue()) {
+            return returned;
+         }
+      }
+
+      return null;
+   }
+
+   public PresentationManager getPresentationManager() {
+      return presentationManager;
+   }
+
+   public void setPresentationManager(PresentationManager presentationManager) {
+      this.presentationManager = presentationManager;
+   }
+
+   public IdManager getIdManager() {
+      return idManager;
+   }
+
+   public void setIdManager(IdManager idManager) {
+      this.idManager = idManager;
+   }
+
+   public List getFunctions() {
+      return functions;
+   }
+
+   public void setFunctions(List functions) {
+      this.functions = functions;
+   }
+}

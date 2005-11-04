@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-lazy-init="true">
+
+   <bean id="matrixValidator" class="org.theospi.portfolio.matrix.control.MatrixValidator">
+   	<property name="authManager"><ref bean="authManager"/></property>
+   </bean>
+   <bean id="artifactAssociationController"  class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+		<bean class="org.theospi.portfolio.matrix.control.ArtifactAssociationController">
+        		<property name="authnManager"><ref bean="authManager"/></property>
+        		<property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+        </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">viewCellRedirect</prop>
+            <prop key="privacy">privacyResponseRedirect</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="validator"><ref bean="matrixValidator"/></property>
+      <property name="commandName"><value>matrix</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.MatrixFormBean</value></property>
+      <property name="formView"><value>manageArtifactAssociations</value></property>
+   </bean>
+   
+   <bean id="checkSingleCriteriaController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.CheckSingleCriteriaController">
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">viewCellRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>bean</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellAndNodeForm</value></property>
+   </bean>
+   
+   <bean id="checkForPrivacyController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.CheckForPrivacy">
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="privacy">privacyResponseRedirect</prop>
+            <prop key="manageArtifacts">manageArtifactAssociationsRedirect</prop>
+				<prop key="singleCriteria">checkSingleCriteriaForward</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>bean</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellAndNodeForm</value></property>
+   </bean>
+   
+   <bean id="privacyResponseController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.PrivacyResponseController">
+         	<property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success2">manageArtifactAssociationsRedirect</prop>
+            <prop key="success">checkSingleCriteriaRedirect</prop>
+            <prop key="cancel">viewCellRedirect</prop>
+         </props>
+      </property>
+      <property name="validator"><ref bean="privacyResponseValidator"/></property>
+      <property name="commandName"><value>bean</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.PrivacyFormBean</value></property>
+      <property name="formView"><value>privacyResponse</value></property>
+   </bean>
+   
+   <bean id="privacyResponseValidator" class="org.theospi.portfolio.matrix.control.PrivacyResponseValidator"/>
+   
+   <bean id="MatrixResetController"  class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+		<bean class="org.theospi.portfolio.matrix.control.MatrixResetController">
+        		<property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+        </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">matrixRedirect</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>command</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.MatrixFormBean</value></property>
+   </bean>
+   
+
+   <bean id="viewMatrixController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.ViewMatrixController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="matrixAuthorizer"><ref bean="matrixAuthorizer"/></property>
+            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="agentManager"><ref bean="agentManager" /></property>
+            <property name="worksiteManager">
+               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+            </property>
+            <property name="toolManager">
+               <ref bean="org.sakaiproject.api.kernel.tool.ToolManager" />
+            </property>
+         </bean>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="mimeTypeCustomEditor"/>
+         </list>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">matrixRedirect</prop>
+            <prop key="cellView">viewCell</prop>
+         </props>
+      </property>      
+      <property name="commandName"><value>matrixContents</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.MatrixGridBean</value></property>
+      <property name="formView"><value>viewMatrix</value></property>      
+   </bean>
+   
+   <bean id="cellController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.CellController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <!--property name="repositoryManager"><ref bean="repositoryManager"/></property-->
+            <property name="orderedList"><ref bean="webDeweyOrderedList"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">viewCell</prop>
+            <prop key="cancel">matrixRedirect</prop>
+            <prop key="confirm">removeConfirmationRedirect</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>cellBean</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellFormBean</value></property>
+      <property name="formView"><value>viewCell</value></property>
+   </bean>
+
+   <bean id="removeArtifactController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.RemoveAssociationController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">removeConfirmation</prop>
+            <prop key="continue">viewCellRedirect</prop>
+         </props>
+      </property> 
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>     
+      <property name="commandName"><value>model</value></property>
+      <property name="commandClass"><value>java.util.Map</value></property>
+   </bean>
+   <bean id="cellArtifactController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.CellArtifactController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">selectCellArtifacts</prop>
+            <prop key="viewCell">viewCell</prop>
+         </props>
+      </property>      
+      <property name="commandName"><value>model</value></property>
+      <property name="commandClass"><value>java.util.Map</value></property>
+   </bean>
+   
+   <bean id="reflectionController" class="org.theospi.portfolio.matrix.control.ReflectionController">
+      <property name="matrixManager"><ref bean="matrixManager"/></property>
+      <property name="idManager"><ref bean="idManager"/></property>
+      <!-- <property name="repositoryManager"><ref bean="repositoryManager"/></property> -->
+      <property name="pages">
+         <list>
+            <value>chooseWizard</value>
+            <value>chooseExpectations</value>
+            <value>provideExpectations</value>
+            <value>provideGrowth</value>
+            <value>reflectionSummary</value>
+            <value>submit</value>
+            <value>finishRedirect</value>
+         </list>
+      </property>
+      <property name="virtualPageIndex">
+         <value>2</value>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>  
+      <property name="commandName"><value>reflect</value></property>
+      <property name="validator"><ref bean="matrixValidator"/></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.ReflectionTransport</value></property>
+   </bean>
+   
+   <bean id="listReviewerItemsController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+      <bean class="org.theospi.portfolio.matrix.control.ListReviewerItemController">
+         <property name="matrixManager"><ref bean="matrixManager"/></property>
+         <property name="idManager"><ref bean="idManager"/></property>
+         <property name="authManager"><ref bean="authManager"/></property>
+         <property name="authzManager"><ref bean="authzManager"/></property>
+         <property name="agentManager"><ref bean="agentManager" /></property>
+         <property name="worksiteManager">
+            <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+         </property>
+         <property name="toolManager">
+            <ref bean="org.sakaiproject.api.kernel.tool.ToolManager" />
+         </property>
+         <property name="listScrollIndexer">
+            <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
+         </property>
+      </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">reviewCellRedirect</prop>
+            <prop key="nothing">listReviewerItemsRedirect</prop>
+         </props>
+      </property>
+
+<!--      <property name="validator"><ref bean="matrixValidator"/></property> -->
+      <property name="commandName"><value>reviewerItems</value></property>
+      <property name="commandClass"><value>java.util.List</value></property>
+      <property name="formView"><value>listReviewerItems</value></property>
+   </bean>
+   
+   <bean id="reviewCellController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+      <bean class="org.theospi.portfolio.matrix.control.ReviewCellController">
+         <property name="matrixManager"><ref bean="matrixManager"/></property>
+         <property name="idManager"><ref bean="idManager"/></property>
+<!--          <property name="repositoryManager"><ref bean="repositoryManager"/></property> -->
+         <property name="lockManager">
+			<ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
+		 </property>
+      </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">listReviewerItemsRedirect</prop>
+            <prop key="print">viewPrintableReflectionNew</prop>
+         </props>
+      </property>
+
+      <property name="validator"><ref bean="matrixValidator"/></property>
+      <property name="commandName"><value>reviewerItem</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.ReviewerItem</value></property>
+      <property name="formView"><value>reviewCell</value></property>
+   </bean>
+   
+   <bean id="viewPrintableReflectionController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.ViewPrintableReflectionController">
+         	<property name="matrixManager"><ref bean="matrixManager"/></property>
+	         <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">viewPrintableReflectionRedirect</prop>
+            <prop key="cancel">reviewCellRedirect</prop>
+         </props>
+      </property>      
+      <property name="commandName"><value>reviewerItem</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.ReviewerItem</value></property>
+      <property name="formView"><value>viewPrintableReflection</value></property>
+   </bean>
+
+   <bean id="viewScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.ViewScaffoldingController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="worksiteManager">
+               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+            </property>
+            <property name="toolManager">
+               <ref bean="org.sakaiproject.api.kernel.tool.ToolManager" />
+            </property>
+<!--             <property name="authManager"><ref bean="authManager"/></property>
+            <property name="homeFactory"><ref bean="homeFactory"/></property>
+            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
+            <property name="matrixAuthorizer"><ref bean="matrixAuthorizer"/></property>
+            
+            -->
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">viewScaffolding</prop>
+            <prop key="cellView">viewCell</prop>
+         </props>
+      </property>      
+      <property name="commandName"><value>matrixContents</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.MatrixGridBean</value></property>
+      <property name="formView"><value>viewScaffolding</value></property>      
+   </bean>
+  
+   <bean id="addScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.AddScaffoldingController">
+            <property name="worksiteManager">
+         		<ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+		      </property>
+            <property name="entityManager">
+               <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+            </property>
+		      <property name="matrixManager"><ref bean="matrixManager"/></property>
+		      <property name="idManager"><ref bean="idManager"/></property>
+		      <property name="authzManager"><ref bean="authzManager"/></property>
+		      <property name="sessionManager">
+               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+            </property> 
+		      <property name="authManager"><ref bean="authManager"/></property>
+		      <property name="lockManager">
+		         <ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
+      		</property>
+            <property name="contentHosting">
+               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+            </property>
+         </bean>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">addScaffoldingRedirect</prop>
+            <prop key="view">viewScaffoldingRedirect</prop>
+            <prop key="return">matrixRedirect</prop>
+            <prop key="addLevel">addLevelRedirect</prop>
+            <prop key="addCriterion">addCriterionRedirect</prop>
+            <prop key="deleteLevel">deleteLevelRedirect</prop>
+            <prop key="deleteCriterion">deleteCriterionRedirect</prop>
+            <prop key="moveLevel">moveLevelRedirect</prop>
+            <prop key="moveCriterion">moveCriterionRedirect</prop>
+            <prop key="pickPrivacy">pickPrivacyRedirect</prop>
+            <prop key="removeLevCrit">removeLevCritRedirect</prop>
+            <prop key="editScaffoldingConfirm">editScaffoldingConfirmRedirect</prop>
+         </props>
+      </property>
+      <property name="validator"><ref bean="matrixValidator"/></property>
+		<property name="commandName"><value>scaffolding</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Scaffolding</value></property>
+      <property name="formView"><value>addScaffolding</value></property>
+   </bean>
+   
+   <bean id="addLevelController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.AddLevelController"/>
+         </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">addScaffoldingRedirect</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="validator"><ref bean="matrixValidator"/></property>
+      <property name="commandName"><value>level</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.LevelTransport</value></property>
+      <property name="formView"><value>addLevel</value></property>
+   </bean>
+   
+   <bean id="deleteLevelController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.DeleteLevelController"/>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">addScaffoldingRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>level</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Level</value></property>
+   </bean>
+   
+   <bean id="moveLevelController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.MoveLevelController"/>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">editScaffoldingRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>level</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Level</value></property>
+   </bean>
+   
+   <bean id="moveCriterionController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.MoveCriterionController"/>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">editScaffoldingRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>criterion</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Criterion</value></property>
+   </bean>
+
+   <bean id="addCriterionController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.AddCriterionController"/>
+         </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">addScaffoldingRedirect</prop>
+            <prop key="addCriterion">addCriterionRedirect</prop>
+            <prop key="deleteCriterion">deleteCriterionRedirect</prop>
+            <prop key="moveCriterion">moveCriterionRedirect</prop>
+         </props>
+      </property>
+      <property name="validator"><ref bean="matrixValidator"/></property>
+      <property name="commandName"><value>criterion</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.CriterionTransport</value></property>
+      <property name="formView"><value>addCriterion</value></property>
+   </bean>
+
+   <bean id="deleteCriterionController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.DeleteCriterionController"/>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">addScaffoldingRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>criterion</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Criterion</value></property>
+   </bean>
+   
+   <bean id="removeExpectationConfirmationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.RemoveExpectationConfirmationController">
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">removeExpectation</prop>
+            <prop key="cancel">editScaffoldingCellRedirect</prop>
+            <prop key="deleteExpectation">deleteExpectationRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>model</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.RemoveConfirmationInfoBean</value></property>
+   </bean>
+       
+   <bean id="editScaffoldingConfirmController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.EditScaffoldingConfirmationController">
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="lockManager">
+               <ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
+            </property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">viewScaffoldingRedirect</prop>
+            <prop key="cancel">addScaffoldingRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>scaffolding</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Scaffolding</value></property>
+      <property name="formView"><value>editScaffoldingCellConfirm</value></property>
+   </bean>
+   
+   <bean id="editScaffoldingCellConfirmController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.EditScaffoldingCellConfirmationController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="authzManager"><ref bean="authzManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">viewScaffoldingRedirect</prop>
+            <prop key="cancel">editScaffoldingCellRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>scaffoldingCell</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.ScaffoldingCell</value></property>
+      <property name="formView"><value>editScaffoldingCellConfirm</value></property>
+   </bean>
+       
+   <bean id="importScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.ImportScaffoldingController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="homeFactory"><ref bean="homeFactory"/></property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.api.kernel.session.SessionManager" />
+            </property>
+            <property name="siteService">
+               <ref bean="org.sakaiproject.service.legacy.site.SiteService" />
+            </property>
+            <property name="toolManager">
+               <ref bean="org.sakaiproject.api.kernel.tool.ToolManager" />
+            </property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">addScaffoldingRedirect</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="refCustomEditor"/>
+         </list>
+      </property>
+<!--       <property name="validator"><ref bean="matrixValidator"/></property> -->
+      <property name="commandName"><value>uploadForm</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.ScaffoldingUploadForm</value></property>
+      <property name="formView"><value>importScaffolding</value></property>
+   </bean>
+      
+   <bean id="editScaffoldingCellController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.EditScaffoldingCellController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="agentManager"><ref bean="agentManager" /></property>
+            <property name="worksiteManager">
+               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+            </property>
+         </bean>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+            <ref bean="viewerCustomEditor"/>
+         </list>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">editScaffoldingCell</prop>
+            <prop key="loadReviewers">editScaffoldingCellRedirect</prop>
+				<prop key="return">viewScaffoldingRedirect</prop>
+				<prop key="addExpectation">addExpectationRedirect</prop>
+				<prop key="deleteExpectation">deleteExpectationRedirect</prop>
+				<prop key="moveExpectation">moveExpectationRedirect</prop>
+            <prop key="removeExpectation">removeExpectationRedirect</prop>
+            <prop key="editScaffoldingCellConfirm">editScaffoldingCellConfirmRedirect</prop> 
+         </props>
+      </property>
+      <property name="validator"><ref bean="matrixValidator"/></property>
+      <property name="commandName"><value>scaffoldingCell</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.ScaffoldingCell</value></property>
+      <property name="formView"><value>editScaffoldingCell</value></property>      
+   </bean>
+
+   <bean id="addExpectationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.AddExpectationController"/>
+         </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">editScaffoldingCellRedirect</prop>
+         </props>
+      </property>
+      <property name="validator"><ref bean="matrixValidator"/></property>
+      <property name="commandName"><value>expectation</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.ExpectationTransport</value></property>
+      <property name="formView"><value>addExpectation</value></property>
+   </bean>
+   
+   <bean id="moveExpectationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.MoveExpectationController"/>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">editScaffoldingCellRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>expectation</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Expectation</value></property>
+   </bean>
+   
+   <bean id="deleteExpectationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.DeleteExpectationController"/>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">editScaffoldingCellRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>expectation</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Expectation</value></property>
+   </bean>
+   
+   <bean id="attachCellController" class="org.theospi.utils.mvc.impl.servlet.HelperConsumerFormControllerImpl">
+      <property name="sessionManager">
+         <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+      </property>
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.AttachArtifactController">
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+            </property>
+            <property name="entityManager">
+               <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+            </property>
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="contentHosting">
+				<ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+			</property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">checkPrivacyForward</prop>
+            <prop key="cancel">viewCellRedirect</prop>
+         </props>
+      </property>
+      <property name="formView"><value>attachCell</value></property>
+      <property name="commandName"><value>form</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellAndNodeForm</value></property>
+   </bean>  
+   
+   <bean id="publishScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.PublishScaffoldingController">
+				<property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">viewScaffoldingRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>scaffolding</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Scaffolding</value></property>
+   </bean>
+   
+   <bean id="removeLevCritConfirmationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.RemoveLevCritConfirmationController">
+         	<property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+	         <prop key="success">removeLevCrit</prop>
+            <prop key="cancel">addScaffoldingRedirect</prop>
+            <prop key="deleteLevel">deleteLevelRedirect</prop>
+            <prop key="deleteCriterion">deleteCriterionRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>model</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.RemoveConfirmationInfoBean</value></property>
+   </bean>
+   
+</beans>
