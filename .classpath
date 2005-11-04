@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="common/api/src/java"/>
-	<classpathentry kind="src" path="common/component-shared/src/java"/>
-	<classpathentry kind="src" path="matrix/component/src/webapp"/>
-	<classpathentry kind="src" path="matrix/tool/src/bundle"/>
-	<classpathentry kind="src" path="matrix/tool/src/java"/>
-	<classpathentry kind="src" path="matrix/tool/src/webapp"/>
-	<classpathentry kind="src" path="matrix/api-impl/src/java"/>
 	<classpathentry kind="src" path="common/api-impl/src/java"/>
 	<classpathentry kind="src" path="common/component/src/webapp"/>
+	<classpathentry kind="src" path="common/component-shared/src/java"/>
+	<classpathentry kind="src" path="common/tool/src/bundle"/>
+	<classpathentry kind="src" path="common/tool/src/java"/>
+	<classpathentry kind="src" path="common/tool/src/webapp"/>
 	<classpathentry kind="src" path="common/tool-lib/src/java"/>
 	<classpathentry kind="src" path="glossary/api/src/java"/>
 	<classpathentry kind="src" path="glossary/api-impl/src/java"/>
@@ -18,18 +16,29 @@
 	<classpathentry kind="src" path="glossary/tool/src/webapp"/>
 	<classpathentry kind="src" path="glossary/tool-lib/src/java"/>
 	<classpathentry kind="src" path="glossary/tool-lib/src/META-INF"/>
+	<classpathentry kind="src" path="jsf/example/src/java"/>
+	<classpathentry kind="src" path="jsf/example/src/webapp"/>
+	<classpathentry kind="src" path="jsf/resource/src/webapp"/>
+	<classpathentry kind="src" path="jsf/widgets/src/java"/>
 	<classpathentry kind="src" path="matrix/api/src/java"/>
+	<classpathentry kind="src" path="matrix/api-impl/src/bundle"/>
+	<classpathentry kind="src" path="matrix/api-impl/src/java"/>
+	<classpathentry kind="src" path="matrix/component/src/webapp"/>
+	<classpathentry kind="src" path="matrix/tool/src/bundle"/>
+	<classpathentry kind="src" path="matrix/tool/src/java"/>
+	<classpathentry kind="src" path="matrix/tool/src/webapp"/>
+	<classpathentry kind="src" path="presentation/api/src/java"/>
+	<classpathentry kind="src" path="presentation/api-impl/src/java"/>
+	<classpathentry kind="src" path="presentation/component/src/webapp"/>
+	<classpathentry kind="src" path="presentation/tool/src/bundle"/>
+	<classpathentry kind="src" path="presentation/tool/src/java"/>
+	<classpathentry kind="src" path="presentation/tool/src/webapp"/>
+	<classpathentry kind="src" path="presentation/tool-lib/src/java"/>
 	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.8.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/springframework/jars/spring-1.1.5.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/concurrent/jars/concurrent-1.3.4.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-component-2.0.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-legacy-service-2.0.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-metaobj-api-2.0.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-metaobj-impl-2.0.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-metaobj-tool-lib-2.0.0.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/sakaiproject/jars/sakai-tool-2.0.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-codec/jars/commons-codec-1.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-collections/jars/commons-collections-3.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-dbcp/jars/commons-dbcp-1.2.jar"/>
@@ -51,5 +60,8 @@
 	<classpathentry kind="var" path="MAVEN_REPO/velocity/jars/velocity-1.4-dev.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/quartz/jars/quartz-1.4.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/taglibs/jars/standard-1.1.2.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/metaobj"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/legacy-service"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/legacy"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
