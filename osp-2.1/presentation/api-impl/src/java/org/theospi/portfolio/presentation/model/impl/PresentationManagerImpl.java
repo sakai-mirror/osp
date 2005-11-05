@@ -57,6 +57,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
@@ -81,9 +82,11 @@ import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.ContentResourceEdit;
 import org.sakaiproject.service.legacy.content.LockManager;
+import org.sakaiproject.service.legacy.security.SecurityService;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.shared.model.*;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
@@ -121,6 +124,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private LockManager lockManager;
    private ArtifactFinderManager artifactFinderManager;
    private ContentHostingService contentHosting = null;
+   private SecurityService securityService = null;
 
    private static final String TOOL_ID = "osp.pres.template";
    private static final String TEMPLATE_ID_TAG = "templateId";
@@ -1380,6 +1384,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    
    public Document createDocument(Presentation presentation) {
       // build up the document from objects...
+      viewingPresentation(presentation);
+
       Collection items = presentation.getItems();
 
       Element root = new Element("ospiPresentation");
@@ -1422,7 +1428,40 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       return new Document(root);
    }
-   
+
+   public void viewingPresentation(Presentation presentation) {
+      // go through and setup all pres and pres template files for read access
+      List readableFiles = new ArrayList();
+      Collection artifacts = presentation.getItems();
+
+      for (Iterator i=artifacts.iterator();i.hasNext();) {
+         PresentationItem item = (PresentationItem) i.next();
+         String id = getContentHosting().resolveUuid(item.getArtifactId().getValue());
+         if (id != null) {
+            readableFiles.add(getContentHosting().getReference(id));
+         }
+      }
+
+      if (presentation.getTemplate().getFiles() != null) {
+
+         for (Iterator files = presentation.getTemplate().getFiles().iterator(); files.hasNext(); ){
+            TemplateFileRef fileRef = (TemplateFileRef) files.next();
+            String id = getContentHosting().resolveUuid(fileRef.getFileId());
+            if (id != null) {
+               readableFiles.add(getContentHosting().getReference(id));
+            }
+         }
+      }
+
+      String id = getContentHosting().resolveUuid(presentation.getTemplate().getRenderer().getValue());
+      if (id != null) {
+         readableFiles.add(getContentHosting().getReference(id));
+      }
+
+      getSecurityService().pushAdvisor(
+         new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, readableFiles));
+   }
+
    protected Element getFileRefAsXml(TemplateFileRef fileRef) {
       Element fileRefElement = new Element(fileRef.getUsage());
       String fileId = fileRef.getFileId();
@@ -1623,5 +1662,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public void setContentHosting(ContentHostingService contentHosting) {
       this.contentHosting = contentHosting;
    }
-   
+
+   public SecurityService getSecurityService() {
+      return securityService;
+   }
+
+   public void setSecurityService(SecurityService securityService) {
+      this.securityService = securityService;
+   }
+
 }
