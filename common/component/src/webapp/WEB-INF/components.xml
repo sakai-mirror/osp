@@ -3,7 +3,7 @@
 
 <beans default-lazy-init="true">
 
-   <bean id="org.sakaiproject.service.legacy.security.SecurityService"
+   <!--bean id="org.sakaiproject.service.legacy.security.SecurityService"
          class="org.theospi.portfolio.security.impl.sakai.AuthzSecurityService"
          init-method="init"
          destroy-method="destroy"
@@ -25,7 +25,7 @@
             <prop key="content.read">content.read</prop>
          </props>
       </property>
-   </bean>
+   </bean-->
 
    <bean id="org.sakaiproject.springframework.orm.hibernate.AdditionalHibernateMappings.ospCommon"
       class="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappingsImpl">

@@ -74,7 +74,10 @@
          <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
       </property>
       <property name="contentHosting">
-         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
+      </property>
+      <property name="securityService">
+         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
       </property>
    </bean>
 
