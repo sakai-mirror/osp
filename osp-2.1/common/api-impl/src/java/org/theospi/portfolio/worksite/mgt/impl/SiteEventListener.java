@@ -180,7 +180,7 @@ public class SiteEventListener extends HibernateDaoSupport implements Observer {
          return;
       }
 
-      //tool.setListenerId(toolConfiguration.getProperties().getProperty(LISTENER_PROPERTY_TAG));
+      tool.setListenerId(toolConfiguration.getConfig().getProperty(LISTENER_PROPERTY_TAG));
 
       getHibernateTemplate().saveOrUpdate(tool);
    }

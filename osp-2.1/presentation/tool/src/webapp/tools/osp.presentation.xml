@@ -5,6 +5,7 @@
 	<tool id="osp.presentation" title="Presentation" description="OSP Presentation Tool">
 
        <category name="sakai.main" />
+      <category name="project" />
 
        <keyword name="presentation" />
        <keyword name="help"/>

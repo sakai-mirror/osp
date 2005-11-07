@@ -5,6 +5,7 @@
 	<tool id="osp.matrix" title="Matrix" description="OSP Matrix Tool">
 
        <category name="sakai.main" />
+      <category name="project" />
 
        <keyword name="matrix" />
        <keyword name="review" />
