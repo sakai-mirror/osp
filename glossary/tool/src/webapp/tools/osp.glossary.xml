@@ -6,6 +6,7 @@
        <configuration name="test" value="reg-value" />
 
        <category name="sakai.main" />
+      <category name="project" />
 
        <keyword name="glossary" />
        <keyword name="help"/>
