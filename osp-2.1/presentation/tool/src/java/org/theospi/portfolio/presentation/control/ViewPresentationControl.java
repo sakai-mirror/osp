@@ -112,6 +112,7 @@ public class ViewPresentationControl extends AbstractPresentationController impl
 
       try {
          model.put("presentation", pres);
+         model.put("document", getPresentationManager().createDocument(pres));
          model.put("renderer", getTransformer(pres, request));
 
          if (!getAuthManager().getAgent().isInRole(Agent.ROLE_ANONYMOUS)) {
@@ -126,7 +127,6 @@ public class ViewPresentationControl extends AbstractPresentationController impl
                   new BindException(new PresentationComment(), "newComment"));
          }
 
-         model.put("document", getPresentationManager().createDocument(pres));
       } catch (PersistenceException e) {
          logger.error("",e);
          throw new OspException(e);
