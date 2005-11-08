@@ -61,6 +61,7 @@ import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.User;
@@ -76,6 +77,7 @@ import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.shared.*;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.intf.DownloadableManager;
+import org.theospi.portfolio.shared.intf.EntityContextFinder;
 import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
@@ -206,7 +208,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       };
 
       try {
-         return (PresentationTemplate) getHibernateTemplate().execute(callback);
+         PresentationTemplate template = (PresentationTemplate) getHibernateTemplate().execute(callback);
+         if (template.getPropertyPage() != null) {
+            String propPage = getContentHosting().resolveUuid(template.getPropertyPage().getValue());
+            getSecurityService().pushAdvisor(
+               new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
+                     getContentHosting().getReference(propPage)));
+         }
+         return template;
       } catch (HibernateObjectRetrievalFailureException e) {
          logger.debug(e);
          return null;
@@ -214,10 +223,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    public Presentation getPresentation(final Id id) {
+
       HibernateCallback callback = new HibernateCallback() {
 
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
             Presentation pres = (Presentation) session.load(Presentation.class, id);
+
+            viewingPresentation(pres);
 
             //remove any artifacts that have been removed from the repository
             for (Iterator i= pres.getPresentationItems().iterator();i.hasNext();){
@@ -236,6 +248,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       try {
          Presentation presentation = (Presentation) getHibernateTemplate().execute(callback);
+
+         if (!presentation.getIsPublic()) {
+            getAuthzManager().checkPermission(PresentationFunctionConstants.VIEW_PRESENTATION, presentation.getId());
+         }
 
          Collection viewerAuthzs = getAuthzManager().getAuthorizations(null,
             PresentationFunctionConstants.VIEW_PRESENTATION, presentation.getId());
@@ -1400,7 +1416,16 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
 
          ArtifactFinder finder = getArtifactFinderManager().getArtifactFinderByType(item.getDefinition().getType());
-         Artifact art = finder.load(item.getArtifactId());
+         Artifact art;
+
+         if (finder instanceof EntityContextFinder) {
+            art = ((EntityContextFinder)finder).loadInContext(item.getArtifactId(),
+                  PresentationContentEntityProducer.PRODUCER_NAME, presentation.getId().getValue());
+         }
+         else {
+            art = finder.load(item.getArtifactId());
+         }
+
          if (art.getHome() instanceof PresentableObjectHome) {
             PresentableObjectHome home = (PresentableObjectHome) art.getHome();
             Element node = home.getArtifactAsXml(art);
@@ -1421,10 +1446,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
          for (Iterator files = presentation.getTemplate().getFiles().iterator(); files.hasNext(); ){
             TemplateFileRef fileRef = (TemplateFileRef) files.next();
-            presFiles.addContent(getFileRefAsXml(fileRef));
+            presFiles.addContent(getFileRefAsXml(presentation, fileRef));
          }
       }
-
 
       return new Document(root);
    }
@@ -1462,11 +1486,20 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, readableFiles));
    }
 
-   protected Element getFileRefAsXml(TemplateFileRef fileRef) {
+   protected Element getFileRefAsXml(Presentation presentation, TemplateFileRef fileRef) {
       Element fileRefElement = new Element(fileRef.getUsage());
       String fileId = fileRef.getFileId();
       ArtifactFinder finder = getArtifactFinderManager().getArtifactFinderByType(fileRef.getFileType());
-      Artifact art = finder.load(getIdManager().getId(fileId));
+      Artifact art;
+
+      if (finder instanceof EntityContextFinder) {
+         art = ((EntityContextFinder)finder).loadInContext(getIdManager().getId(fileId),
+               PresentationContentEntityProducer.PRODUCER_NAME, presentation.getId().getValue());
+      }
+      else {
+         art = finder.load(getIdManager().getId(fileId));
+      }
+
       PresentableObjectHome home = (PresentableObjectHome) art.getHome();
       fileRefElement.addContent(home.getArtifactAsXml(art));
       return fileRefElement;

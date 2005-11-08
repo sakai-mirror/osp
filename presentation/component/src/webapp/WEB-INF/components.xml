@@ -45,7 +45,42 @@
          </props>
       </property>
    </bean>
-   
+
+   <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactPresentation"
+      parent="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifact"
+      class="org.theospi.portfolio.shared.mgt.ContentWrappedArtifactFinder" />
+
+   <bean id="org.sakaiproject.metaobj.shared.ArtifactFinderManager.presentation"
+      class="org.theospi.portfolio.shared.mgt.WrappedArtifactFinderManager">
+      <property name="base">
+         <ref bean="artifactFinderManager"/>
+      </property>
+      <property name="substitutions">
+         <map>
+            <entry key="fileArtifact">
+               <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactPresentation" />
+            </entry>
+         </map>
+      </property>
+   </bean>
+
+   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospPresentation"
+      class="org.theospi.portfolio.presentation.model.impl.PresentationContentEntityProducer"
+      init-method="init" >
+      <property name="entityManager">
+         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+      </property>
+      <property name="httpAccess">
+         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.osp" />
+      </property>
+      <property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+      <property name="presentationManager">
+         <ref bean="presentationManager"/> 
+      </property>
+   </bean>
+
    <bean id="presentationManagerTarget"
       class="org.theospi.portfolio.presentation.model.impl.PresentationManagerImpl">
       <property name="lockManager">
@@ -68,7 +103,7 @@
          <ref bean="homeFactory"/>
       </property>
       <property name="artifactFinderManager">
-         <ref bean="artifactFinderManager"/>
+         <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinderManager.presentation"/>
       </property>
       <property name="worksiteManager">
          <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
