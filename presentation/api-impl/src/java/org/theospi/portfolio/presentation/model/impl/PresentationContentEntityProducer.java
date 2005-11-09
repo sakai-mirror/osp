@@ -20,53 +20,13 @@ import org.sakaiproject.exception.PermissionException;
  */
 public class PresentationContentEntityProducer extends OspEntityProducerBase {
    protected static final String PRODUCER_NAME = "ospPresentation";
-   private EntityManager entityManager;
-   private PresentationManager presentationManager;
-   private IdManager idManager;
 
    public String getLabel() {
       return PRODUCER_NAME;
-   }
-
-   public boolean parseEntityReference(String reference, Reference ref) {
-      if (super.parseEntityReference(reference, ref)) {
-         ReferenceParser parser = new ReferenceParser(ref.getReference());
-
-         Presentation pres = presentationManager.getPresentation(
-            getIdManager().getId(parser.id));
-         
-         return true;
-      }
-      else {
-         return false;
-      }
    }
 
    public void init() {
       getEntityManager().registerEntityProducer(this);
    }
 
-   public EntityManager getEntityManager() {
-      return entityManager;
-   }
-
-   public void setEntityManager(EntityManager entityManager) {
-      this.entityManager = entityManager;
-   }
-
-   public PresentationManager getPresentationManager() {
-      return presentationManager;
-   }
-
-   public void setPresentationManager(PresentationManager presentationManager) {
-      this.presentationManager = presentationManager;
-   }
-
-   public IdManager getIdManager() {
-      return idManager;
-   }
-
-   public void setIdManager(IdManager idManager) {
-      this.idManager = idManager;
-   }
 }

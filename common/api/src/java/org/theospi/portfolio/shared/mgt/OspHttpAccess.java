@@ -20,15 +20,21 @@ import java.util.Collection;
  * Time: 3:14:16 PM
  * To change this template use File | Settings | File Templates.
  */
-public class OspHttpAccess implements HttpAccess {
+public abstract class OspHttpAccess implements HttpAccess {
 
    public void handleAccess(HttpServletRequest req, HttpServletResponse res,
                             Reference ref, Collection copyrightAcceptedRefs)
          throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
-
+      ReferenceParser parser =
+            new ReferenceParser(ref.getReference(), ref.getEntityProducer());
+      checkSource(ref, parser);
       ContentEntityWrapper wrapper = (ContentEntityWrapper)ref.getEntity();
       Reference realRef = EntityManager.newReference(wrapper.getBase().getReference());
       EntityProducer producer = realRef.getEntityProducer();
       producer.getHttpAccess().handleAccess(req, res, realRef, copyrightAcceptedRefs);
    }
+
+   protected abstract void checkSource(Reference ref, ReferenceParser parser)
+      throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException;
+
 }

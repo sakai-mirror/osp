@@ -64,6 +64,16 @@
       </property>
    </bean>
 
+   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospPresentation"
+      class="org.theospi.portfolio.presentation.model.impl.PresentationHttpAccess">
+      <property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+      <property name="presentationManager">
+         <ref bean="presentationManager"/>
+      </property>
+   </bean>
+
    <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospPresentation"
       class="org.theospi.portfolio.presentation.model.impl.PresentationContentEntityProducer"
       init-method="init" >
@@ -71,13 +81,7 @@
          <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
       </property>
       <property name="httpAccess">
-         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.osp" />
-      </property>
-      <property name="idManager">
-         <ref bean="idManager"/>
-      </property>
-      <property name="presentationManager">
-         <ref bean="presentationManager"/> 
+         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.ospPresentation" />
       </property>
    </bean>
 

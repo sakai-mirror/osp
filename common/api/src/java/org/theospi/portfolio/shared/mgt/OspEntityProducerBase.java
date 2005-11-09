@@ -63,9 +63,9 @@ public abstract class OspEntityProducerBase implements EntityProducer {
 
    protected ContentEntityWrapper getContentEntityWrapper(Reference ref) {
       String wholeRef = ref.getReference();
-      ReferenceParser parser = new ReferenceParser(wholeRef);
+      ReferenceParser parser = new ReferenceParser(wholeRef, this);
       ContentResource base =
-         (ContentResource) getEntityManager().newReference(parser.ref).getEntity();
+         (ContentResource) getEntityManager().newReference(parser.getRef()).getEntity();
       return new ContentEntityWrapper(base, wholeRef);
    }
 
@@ -100,18 +100,4 @@ public abstract class OspEntityProducerBase implements EntityProducer {
       this.httpAccess = httpAccess;
    }
 
-   protected class ReferenceParser {
-      public String context;
-      public String id;
-      public String ref;
-
-      public ReferenceParser(String reference) {
-         // with /pres/12345/content/etc/etc.xml
-         String baseRef = reference.substring(getContext().length());
-         int sep = baseRef.indexOf(Entity.SEPARATOR);
-         id = baseRef.substring(0, sep);
-         ref = baseRef.substring(sep);
-         context = getLabel();
-      }
-   }
 }
