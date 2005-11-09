@@ -195,4 +195,6 @@ public interface MatrixManager {
 
    Scaffolding uploadScaffolding(Reference uploadedScaffoldingFile,
                                  ToolConfiguration currentPlacement) throws IOException;
+
+   void checkCellAccess(String id);
 }

@@ -76,7 +76,9 @@
 
    <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospPresentation"
       class="org.theospi.portfolio.presentation.model.impl.PresentationContentEntityProducer"
-      init-method="init" >
+      init-method="init"
+		destroy-method="destroy"
+		singleton="true">
       <property name="entityManager">
          <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
       </property>
