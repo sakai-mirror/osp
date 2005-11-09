@@ -92,6 +92,7 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
+import org.sakaiproject.service.legacy.security.SecurityService;
 import org.sakaiproject.exception.*;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.hibernate.HibernateCallback;
@@ -111,11 +112,16 @@ import org.theospi.portfolio.matrix.model.Rubric;
 import org.theospi.portfolio.matrix.model.RubricSatisfactionBean;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
+import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.intf.DownloadableManager;
+import org.theospi.portfolio.shared.intf.EntityContextFinder;
+import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
 import org.theospi.utils.zip.UncloseableZipInputStream;
 
 /**
@@ -136,9 +142,10 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private boolean loadArtifacts = true;
    private List reviewRubrics = new ArrayList();
    private ContentHostingService contentHosting = null;
+   private SecurityService securityService;
 
    private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
-  
+   private EntityContextFinder contentFinder = null;
 
    /**
     * All the criteria for a given Cell
@@ -247,7 +254,19 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    
    public Cell getCell(Id cellId) {
       //return (Cell) this.getHibernateTemplate().load(Cell.class, cellId);
-      return (Cell) this.getHibernateTemplate().get(Cell.class, cellId);
+      Cell cell = (Cell) this.getHibernateTemplate().get(Cell.class, cellId);
+
+      Scaffolding scaffolding = cell.getScaffoldingCell().getScaffolding();
+      Id xsdId = scaffolding.getPrivacyXsdId();
+
+      if (xsdId != null) {
+         String propPage = getContentHosting().resolveUuid(xsdId.getValue());
+         getSecurityService().pushAdvisor(
+            new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
+                  getContentHosting().getReference(propPage)));
+      }
+
+      return cell;
    }
 
    public Id storeMatrixTool(MatrixTool matrixTool) {
@@ -585,7 +604,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       if (cell.getAttachments() != null) {
          for (Iterator iter = cell.getAttachments().iterator(); iter.hasNext();) {
             Attachment attachment = (Attachment) iter.next();
-            Node node = getNode(attachment.getArtifactId());
+            Node node = getNode(attachment.getArtifactId(), cell);
             if (node != null) {
                result.add(node);
             }
@@ -604,16 +623,30 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return result;
    }
 
+   protected Node getNode(Id artifactId, Cell cell) {
+      Node node = getNode(artifactId);
+
+      ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
+            buildRef(cell.getId().getValue(), node.getResource()));
+
+      return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner());
+   }
+
    public Node getNode(Id artifactId) {
       String id = getContentHosting().resolveUuid(artifactId.getValue());
       if (id == null) {
          return null;
       }
 
+      getSecurityService().pushAdvisor(
+         new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
+               getContentHosting().getReference(id)));
+
       try {
          ContentResource resource = getContentHosting().getResource(id);
          String ownerId = resource.getProperties().getProperty(resource.getProperties().getNamePropCreator());
          Agent owner = getAgentFromId(getIdManager().getId(ownerId));
+
          return new Node(artifactId, resource, owner);
       }
       catch (PermissionException e) {
@@ -651,7 +684,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          //TODO is it okay to clear the whole thing here?
          getHibernateTemplate().clear();
          
-         Node node = getNode(att.getArtifactId());
+         Node node = getNode(att.getArtifactId(), cell);
          if (node != null) {
         	 nodeList.add(node);
          } else
@@ -1093,7 +1126,20 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          }
       }
    }
-  
+
+   public void checkCellAccess(String id) {
+      Cell cell = getCell(getIdManager().getId(id));
+      Id toolId = cell.getMatrix().getMatrixTool().getId();
+      if (!getAuthzManager().isAuthorized(MatrixFunctionConstants.VIEW_MATRIX_USERS, toolId) &&
+          !getAuthzManager().isAuthorized(MatrixFunctionConstants.REVIEW_MATRIX, cell.getId())) {
+         // won't setup security advisor, so it won't load
+         return;
+      }
+
+      // this should set the security advisor for the attached artifacts.
+      getCellArtifacts(cell);
+   }
+
    private void createReviewerAuthzForImport(Scaffolding scaffolding) {
       for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
@@ -1484,6 +1530,27 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public void setXmlRenderer(PresentableObjectHome xmlRenderer) {
       this.xmlRenderer = xmlRenderer;
+   }
+
+   public SecurityService getSecurityService() {
+      return securityService;
+   }
+
+   public void setSecurityService(SecurityService securityService) {
+      this.securityService = securityService;
+   }
+
+   public EntityContextFinder getContentFinder() {
+      return contentFinder;
+   }
+
+   public void setContentFinder(EntityContextFinder contentFinder) {
+      this.contentFinder = contentFinder;
+   }
+
+   protected String buildRef(String contextId, ContentResource resource) {
+      return Entity.SEPARATOR + MatrixContentEntityProducer.MATRIX_PRODUCER +
+         Entity.SEPARATOR + contextId + resource.getReference();
    }
 
 }

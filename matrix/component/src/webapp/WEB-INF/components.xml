@@ -107,6 +107,9 @@
       <property name="contentHosting">
          <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
       </property>
+      <property name="securityService">
+         <ref bean="org.sakaiproject.service.legacy.security.SecurityService" />
+      </property>
       <property name="authnManager"><ref bean="authManager"/></property>
       <property name="authzManager"><ref bean="authzManager"/></property>
       <property name="agentManager"><ref bean="agentManager"/></property>
@@ -154,10 +157,52 @@
         </list>
 		</property>
    </bean>
-   
+
+   <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactMatrix"
+      parent="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifact"
+      class="org.theospi.portfolio.shared.mgt.ContentWrappedArtifactFinder" />
+
+   <bean id="org.sakaiproject.metaobj.shared.ArtifactFinderManager.matrix"
+      class="org.theospi.portfolio.shared.mgt.WrappedArtifactFinderManager">
+      <property name="base">
+         <ref bean="artifactFinderManager"/>
+      </property>
+      <property name="substitutions">
+         <map>
+            <entry key="fileArtifact">
+               <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactMatrix" />
+            </entry>
+         </map>
+      </property>
+   </bean>
+
+   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospMatrix"
+      class="org.theospi.portfolio.matrix.model.impl.MatrixHttpAccess">
+      <property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+      <property name="matrixManager">
+         <ref bean="matrixManager"/>
+      </property>
+      <property name="authzManager"><ref bean="authzManager"/></property>
+   </bean>
+
+   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospMatrix"
+      class="org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer"
+      init-method="init"
+		destroy-method="destroy"
+		singleton="true">
+      <property name="entityManager">
+         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+      </property>
+      <property name="httpAccess">
+         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.ospMatrix" />
+      </property>
+   </bean>
+
    <bean id="matrixXmlRenderer" class="org.theospi.portfolio.matrix.GenericXmlRenderer">
       <property name="artifactFinder">
-         <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifact" />
+         <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactMatrix" />
       </property>
       <property name="objectStructure"><value>classpath:matrix-structure.xml</value></property>
       <property name="supportedType"><value>org.theospi.portfolio.matrix.model.Matrix</value></property>

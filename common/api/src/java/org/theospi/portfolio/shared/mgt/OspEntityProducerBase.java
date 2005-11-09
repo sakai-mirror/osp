@@ -100,4 +100,8 @@ public abstract class OspEntityProducerBase implements EntityProducer {
       this.httpAccess = httpAccess;
    }
 
+   public void destroy() {
+      
+   }
+
 }

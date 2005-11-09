@@ -28,5 +28,4 @@ public class PresentationContentEntityProducer extends OspEntityProducerBase {
    public void init() {
       getEntityManager().registerEntityProducer(this);
    }
-
 }

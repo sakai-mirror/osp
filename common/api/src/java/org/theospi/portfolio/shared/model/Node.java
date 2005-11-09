@@ -70,7 +70,7 @@ public class Node {
       name = resource.getProperties().getProperty(
             resource.getProperties().getNamePropDisplayName());
       displayName = name;
-      externalUri = transformUrl(resource.getUrl());
+      externalUri = resource.getUrl();
       mimeType = new MimeType(resource.getContentType());
       String propName = resource.getProperties().getNamePropStructObjType();
       String saType = resource.getProperties().getProperty(propName);
@@ -79,16 +79,6 @@ public class Node {
       setTechnicalMetadata(new TechnicalMetadata(id, resource, owner));
    }
    
-   protected String transformUrl(String url) {
-      String result = url.replaceFirst("access", "sakai.access.helper");
-      int index = result.indexOf("sakai.access.helper");
-      if (index != -1)
-         return result.substring(index);
-      else
-         return url;
-
-   }
-
    /**
     * @return Returns the externalUri.
     */
