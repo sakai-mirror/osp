@@ -91,6 +91,7 @@ import org.sakaiproject.metaobj.security.impl.sakai.SecurityBase;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.api.kernel.thread_local.ThreadLocalManager;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.impl.simple.SimpleAuthorizationFacade;
 
@@ -101,6 +102,10 @@ public class WorksiteAwareAuthorizationFacade extends SimpleAuthorizationFacade 
 
    private AgentManager agentManager = null;
    private SecurityBase sakaiSecurityBase;
+   private ThreadLocalManager threadLocalManager;
+   private static final String AUTHZ_GROUPS_LIST =
+         "org.theospi.portfolio.security.impl.sakai.WorksiteAwareAuthorizationFacade.authzGroups";
+
 
    /**
     * @param agent
@@ -123,6 +128,15 @@ public class WorksiteAwareAuthorizationFacade extends SimpleAuthorizationFacade 
       if (auth != null) {
          getHibernateTemplate().delete(auth);
       }
+   }
+
+   public void pushAuthzGroups(Collection authzGroups) {
+      List authzGroupList = getAuthzGroupsList();
+      authzGroupList.addAll(authzGroups);
+   }
+
+   public void pushAuthzGroups(String siteId) {
+      getAuthzGroupsList().add(siteId);
    }
 
    protected Authorization getAuthorization(Agent agent, String function, Id id, boolean includeRoles) {
@@ -200,6 +214,13 @@ public class WorksiteAwareAuthorizationFacade extends SimpleAuthorizationFacade 
 
    protected Set getAgentRoles(Agent agent) {
       Set agentRoles = new HashSet();
+      List authzGroups = getAuthzGroupsList();
+
+      for (Iterator i = authzGroups.iterator();i.hasNext();) {
+         String site = (String)i.next();
+         agentRoles.addAll(agent.getWorksiteRoles(site));
+      }
+
       agentRoles.addAll(agent.getWorksiteRoles());
       return agentRoles;
    }
@@ -218,5 +239,23 @@ public class WorksiteAwareAuthorizationFacade extends SimpleAuthorizationFacade 
 
    public void setSakaiSecurityBase(SecurityBase sakaiSecurityBase) {
       this.sakaiSecurityBase = sakaiSecurityBase;
+   }
+
+   public ThreadLocalManager getThreadLocalManager() {
+      return threadLocalManager;
+   }
+
+   public void setThreadLocalManager(ThreadLocalManager threadLocalManager) {
+      this.threadLocalManager = threadLocalManager;
+   }
+
+   protected List getAuthzGroupsList() {
+      List returned = (List)threadLocalManager.get(AUTHZ_GROUPS_LIST);
+
+      if (returned == null) {
+         returned = new ArrayList();
+         threadLocalManager.set(AUTHZ_GROUPS_LIST, returned);
+      }
+      return returned;
    }
 }

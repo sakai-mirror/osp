@@ -14,14 +14,20 @@ public class ReferenceParser {
 
    private String context;
    private String id;
+   private String siteId;
    private String ref;
 
    public ReferenceParser(String reference, EntityProducer parent) {
-      // with /pres/12345/content/etc/etc.xml
+      // with /pres/<siteid>/<preseId>/content/etc/etc.xml
       String baseRef = reference.substring(parent.getLabel().length() + 2); // lenght of 2 sperators
       int sep = baseRef.indexOf(Entity.SEPARATOR);
+      siteId = baseRef.substring(0, sep);
+      baseRef = baseRef.substring(sep + 1);
+
+      sep = baseRef.indexOf(Entity.SEPARATOR);
       id = baseRef.substring(0, sep);
       ref = baseRef.substring(sep);
+
       context = parent.getLabel();
    }
 
@@ -47,6 +53,14 @@ public class ReferenceParser {
 
    public void setRef(String ref) {
       this.ref = ref;
+   }
+
+   public String getSiteId() {
+      return siteId;
+   }
+
+   public void setSiteId(String siteId) {
+      this.siteId = siteId;
    }
 
 }

@@ -1420,7 +1420,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
          if (finder instanceof EntityContextFinder) {
             art = ((EntityContextFinder)finder).loadInContext(item.getArtifactId(),
-                  PresentationContentEntityProducer.PRODUCER_NAME, presentation.getId().getValue());
+                  PresentationContentEntityProducer.PRODUCER_NAME, presentation.getTemplate().getSiteId(),
+                  presentation.getId().getValue());
          }
          else {
             art = finder.load(item.getArtifactId());
@@ -1494,7 +1495,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       if (finder instanceof EntityContextFinder) {
          art = ((EntityContextFinder)finder).loadInContext(getIdManager().getId(fileId),
-               PresentationContentEntityProducer.PRODUCER_NAME, presentation.getId().getValue());
+               PresentationContentEntityProducer.PRODUCER_NAME, presentation.getTemplate().getSiteId(),
+               presentation.getId().getValue());
       }
       else {
          art = finder.load(getIdManager().getId(fileId));

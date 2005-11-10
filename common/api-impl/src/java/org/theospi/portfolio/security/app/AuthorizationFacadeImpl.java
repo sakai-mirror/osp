@@ -190,6 +190,14 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade, AppAuthFaca
       getExplicitAuthz().deleteAuthorizations(qualifier);
    }
 
+   public void pushAuthzGroups(Collection authzGroups) {
+      getExplicitAuthz().pushAuthzGroups(authzGroups);
+   }
+
+   public void pushAuthzGroups(String siteId) {
+      getExplicitAuthz().pushAuthzGroups(siteId);
+   }
+
    public AuthenticationManager getAuthManager() {
       return authManager;
    }

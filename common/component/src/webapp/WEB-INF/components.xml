@@ -43,6 +43,9 @@
       </property>
       <property name="authManager"><ref bean="authManager"/></property>
       <property name="agentManager"><ref bean="agentManager"/></property>
+      <property name="threadLocalManager">
+         <ref bean="org.sakaiproject.api.kernel.thread_local.ThreadLocalManager" /> 
+      </property>
       <property name="sakaiSecurityBase">
          <bean id="org.sakaiproject.metaobj.security.impl.sakai.SecurityBase"
             class="org.sakaiproject.metaobj.security.impl.sakai.SecurityBase">

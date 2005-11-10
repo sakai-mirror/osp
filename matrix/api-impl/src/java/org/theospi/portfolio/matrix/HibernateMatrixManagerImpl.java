@@ -625,9 +625,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    protected Node getNode(Id artifactId, Cell cell) {
       Node node = getNode(artifactId);
-
+      String siteId = cell.getScaffoldingCell().getScaffolding().getWorksiteId().getValue();
       ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
-            buildRef(cell.getId().getValue(), node.getResource()));
+            buildRef(siteId, cell.getId().getValue(), node.getResource()));
 
       return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner());
    }
@@ -1548,9 +1548,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       this.contentFinder = contentFinder;
    }
 
-   protected String buildRef(String contextId, ContentResource resource) {
+   protected String buildRef(String siteId, String contextId, ContentResource resource) {
       return Entity.SEPARATOR + MatrixContentEntityProducer.MATRIX_PRODUCER +
-         Entity.SEPARATOR + contextId + resource.getReference();
+         Entity.SEPARATOR + siteId + Entity.SEPARATOR + contextId + resource.getReference();
    }
 
 }
