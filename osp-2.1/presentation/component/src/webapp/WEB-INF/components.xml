@@ -72,6 +72,9 @@
       <property name="presentationManager">
          <ref bean="presentationManager"/>
       </property>
+      <property name="authzManager">
+         <ref bean="authzManager"/>
+      </property>
    </bean>
 
    <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospPresentation"

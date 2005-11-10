@@ -21,30 +21,30 @@ public class ContentWrappedArtifactFinder extends FileArtifactFinder implements 
       return super.load(artifactId);
    }
 
-   public Artifact loadInContext(Id artifactId, String context, String contextId) {
+   public Artifact loadInContext(Id artifactId, String context, String siteId, String contextId) {
       Artifact art = super.load(artifactId);
 
       if (art instanceof ContentResourceArtifact) {
-         return wrap((ContentResourceArtifact)art, context,  contextId);
+         return wrap((ContentResourceArtifact)art, context, siteId, contextId);
       }
 
       return art;
    }
 
    protected Artifact wrap(ContentResourceArtifact contentResourceArtifact,
-                           String context, String contextId) {
+                           String context, String siteId, String contextId) {
       ContentResource resource = contentResourceArtifact.getBase();
 
       ContentResource wrapped = new ContentEntityWrapper(resource,
-            buildRef(context, contextId, resource));
+            buildRef(context, siteId, contextId, resource));
 
       contentResourceArtifact.setBase(wrapped);
 
       return contentResourceArtifact;
    }
 
-   protected String buildRef(String context, String contextId, ContentResource resource) {
-      return Entity.SEPARATOR + context + Entity.SEPARATOR + contextId + resource.getReference();
+   protected String buildRef(String context, String siteId, String contextId, ContentResource resource) {
+      return Entity.SEPARATOR + context + Entity.SEPARATOR + siteId + Entity.SEPARATOR + contextId + resource.getReference();
    }
 
 }

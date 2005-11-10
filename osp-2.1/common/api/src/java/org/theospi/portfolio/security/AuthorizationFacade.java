@@ -47,6 +47,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.Agent;
 
 import java.util.List;
+import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
@@ -96,4 +97,8 @@ public interface AuthorizationFacade {
    public void deleteAuthorization(Agent agent, String function, Id id);
 
    public void deleteAuthorizations(Id qualifier);
+
+   public void pushAuthzGroups(Collection authzGroups);
+
+   void pushAuthzGroups(String siteId);
 }

@@ -98,6 +98,7 @@ import org.sakaiproject.metaobj.security.AuthenticationManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
+import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
@@ -293,6 +294,14 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
 
    public void deleteAuthorizations(Id qualifier) {
       getHibernateTemplate().deleteAll(findById(qualifier));
+   }
+
+   public void pushAuthzGroups(Collection authzGroups) {
+      // does nothing... this impl does not care about groups
+   }
+
+   public void pushAuthzGroups(String siteId) {
+      // does nothing... this impl does not care about groups
    }
 
    public AuthenticationManager getAuthManager() {

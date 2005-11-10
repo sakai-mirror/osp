@@ -26,7 +26,6 @@ public class MatrixHttpAccess extends OspHttpAccess {
 
    private IdManager idManager;
    private MatrixManager matrixManager;
-   private AuthorizationFacade authzManager;
 
    protected void checkSource(Reference ref, ReferenceParser parser)
          throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
@@ -50,11 +49,4 @@ public class MatrixHttpAccess extends OspHttpAccess {
       this.matrixManager = matrixManager;
    }
 
-   public AuthorizationFacade getAuthzManager() {
-      return authzManager;
-   }
-
-   public void setAuthzManager(AuthorizationFacade authzManager) {
-      this.authzManager = authzManager;
-   }
 }

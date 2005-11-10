@@ -12,6 +12,6 @@ import org.sakaiproject.metaobj.shared.model.Id;
  */
 public interface EntityContextFinder {
 
-   public Artifact loadInContext(Id artifactId, String context, String contextId);
+   public Artifact loadInContext(Id artifactId, String context, String siteId, String contextId);
 
 }
