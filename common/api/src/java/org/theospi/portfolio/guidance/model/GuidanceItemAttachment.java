@@ -51,4 +51,12 @@ public class GuidanceItemAttachment extends IdentifiableObject {
    public void setFullReference(Reference fullReference) {
       this.fullReference = fullReference;
    }
+
+   public String getDisplayName() {
+      ContentResource resource = (ContentResource)baseReference.getEntity();
+
+      String displayNameProp = resource.getProperties().getNamePropDisplayName();
+      return resource.getProperties().getProperty(displayNameProp);
+   }
+
 }

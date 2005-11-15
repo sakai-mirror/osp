@@ -39,7 +39,7 @@
                      </f:facet>
                      <h:outputLink title="#{material.fullReference.description}"
                         value="#{material.fullReference.url}" target="_new">
-                        <h:outputText value="#{material.fullReference.description}"/>
+                        <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
                   </h:column>
                </sakai:flat_list>
@@ -67,7 +67,7 @@
                      </f:facet>
                      <h:outputLink title="#{material.fullReference.description}"
                         value="#{material.fullReference.url}" target="_new">
-                        <h:outputText value="#{material.fullReference.description}"/>
+                        <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
                   </h:column>
                </sakai:flat_list>
@@ -95,7 +95,7 @@
                      </f:facet>
                      <h:outputLink title="#{material.fullReference.description}"
                         value="#{material.fullReference.url}" target="_new">
-                        <h:outputText value="#{material.fullReference.description}"/>
+                        <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
                   </h:column>
                </sakai:flat_list>
