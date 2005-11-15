@@ -122,6 +122,7 @@ import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.intf.DownloadableManager;
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
 import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
+import org.theospi.portfolio.shared.mgt.ContentEntityUtil;
 import org.theospi.utils.zip.UncloseableZipInputStream;
 
 /**
@@ -1549,8 +1550,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
 
    protected String buildRef(String siteId, String contextId, ContentResource resource) {
-      return Entity.SEPARATOR + MatrixContentEntityProducer.MATRIX_PRODUCER +
-         Entity.SEPARATOR + siteId + Entity.SEPARATOR + contextId + resource.getReference();
+      return ContentEntityUtil.getInstance().buildRef(
+         MatrixContentEntityProducer.MATRIX_PRODUCER, siteId, contextId, resource.getReference());
    }
 
 }

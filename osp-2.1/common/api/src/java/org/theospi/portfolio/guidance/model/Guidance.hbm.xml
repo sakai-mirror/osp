@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+<hibernate-mapping package="org.theospi.portfolio.guidance.model">
+
+   <class name="Guidance" table="osp_guidance" lazy="false" batch-size="10">
+      <cache usage="nonstrict-read-write"/>
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <property name="description" type="string" column="description" not-null="false"/>
+      <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="true"/>
+
+      <property name="securityQualifier" type="org.sakaiproject.metaobj.shared.IdType" />
+      <property name="securityFunction" type="string" not-null="true"/>
+
+      <set name="items" cascade="all-delete-orphan" inverse="true" lazy="false">
+         <key column="scaffolding_id"/>
+         <one-to-many class="GuidanceItem"/>
+      </set>
+   </class>
+
+   <class name="GuidanceItem" table="osp_guidance_item" lazy="false" batch-size="3">
+      <cache usage="nonstrict-read-write"/>
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <property name="type" type="string" column="type" not-null="false"/>
+      <property name="text" type="text" column="text" not-null="false"/>
+      <many-to-one name="guidance" column="guidance_id" not-null="true" class="Guidance"/>
+      <set name="attachments" cascade="all-delete-orphan" inverse="true" lazy="false">
+         <key column="item_id"/>
+         <one-to-many class="GuidanceItemAttachment"/>
+      </set>
+   </class>
+
+   <class name="GuidanceItemAttachment" table="osp_guidance_item_file" lazy="false" batch-size="10">
+      <cache usage="nonstrict-read-write"/>
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <property name="baseReference" type="org.theospi.portfolio.shared.mgt.EntityReferenceUserType" />
+      <property name="fullReference" type="org.theospi.portfolio.shared.mgt.EntityReferenceUserType" />
+      <many-to-one name="item" column="item_id" not-null="true" class="GuidanceItem"/>
+   </class>
+
+</hibernate-mapping>
