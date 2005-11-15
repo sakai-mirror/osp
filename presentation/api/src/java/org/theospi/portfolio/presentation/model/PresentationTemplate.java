@@ -50,10 +50,8 @@ package org.theospi.portfolio.presentation.model;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.theospi.portfolio.shared.model.IdentifiableObject;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.worksite.model.ToolConfigurationWrapper;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
 
 import java.io.Serializable;
 import java.util.*;

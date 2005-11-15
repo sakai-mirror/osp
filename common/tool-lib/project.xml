@@ -54,6 +54,18 @@
 
      <dependency>
         <groupId>sakaiproject</groupId>
+        <artifactId>sakai-jsf-tool</artifactId>
+        <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-active-tool</artifactId>
+        <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+        <groupId>sakaiproject</groupId>
         <artifactId>sakai-metaobj-api</artifactId>
         <version>${sakai.version}</version>
       </dependency>

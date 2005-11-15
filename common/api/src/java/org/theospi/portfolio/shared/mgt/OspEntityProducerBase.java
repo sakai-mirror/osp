@@ -3,6 +3,7 @@ package org.theospi.portfolio.shared.mgt;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.entity.*;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -74,7 +75,7 @@ public abstract class OspEntityProducerBase implements EntityProducer {
    }
 
    public String getEntityUrl(Reference ref) {
-      return null;
+      return ServerConfigurationService.getAccessUrl() + ref.getReference();
    }
 
    public Collection getEntityAuthzGroups(Reference ref) {

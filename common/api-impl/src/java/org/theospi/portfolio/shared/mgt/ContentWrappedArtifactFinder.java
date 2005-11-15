@@ -44,7 +44,7 @@ public class ContentWrappedArtifactFinder extends FileArtifactFinder implements 
    }
 
    protected String buildRef(String context, String siteId, String contextId, ContentResource resource) {
-      return Entity.SEPARATOR + context + Entity.SEPARATOR + siteId + Entity.SEPARATOR + contextId + resource.getReference();
+      return ContentEntityUtil.getInstance().buildRef(context,  siteId, contextId, resource.getReference());
    }
 
 }
