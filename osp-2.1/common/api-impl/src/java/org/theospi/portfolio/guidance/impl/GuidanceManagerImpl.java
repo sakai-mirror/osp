@@ -51,9 +51,13 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
    }
 
    public Guidance getGuidance(Id guidanceId) {
-      Guidance guidance = (Guidance)getHibernateTemplate().load(Guidance.class, guidanceId);
+      Guidance guidance = (Guidance)getHibernateTemplate().get(Guidance.class, guidanceId);
 
-      if (guidance != null && guidance.getSecurityQualifier() != null) {
+      if (guidance == null) {
+         return null;
+      }
+
+      if (guidance.getSecurityQualifier() != null) {
          getAuthorizationFacade().checkPermission(guidance.getSecurityFunction(),
             guidance.getSecurityQualifier());
       }
@@ -67,6 +71,7 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
             refs.add(attachment.getBaseReference().getReference());
          }
       }
+      
       getSecurityService().pushAdvisor(new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
          refs));
 
