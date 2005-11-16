@@ -45,6 +45,7 @@ package org.theospi.portfolio.presentation.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdom.Document;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -65,6 +66,7 @@ import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -85,6 +87,7 @@ public class ViewPresentationControl extends AbstractPresentationController impl
    private AuthorizationFacade authzManager = null;
    private ArtifactFinderManager artifactFinderManager;
    private Hashtable presentationTemplateCache = new Hashtable();
+   private URIResolver uriResolver;
 
    public Object fillBackingObject(Object incomingModel, Map request,
                                    Map session, Map application) throws Exception {
@@ -112,8 +115,15 @@ public class ViewPresentationControl extends AbstractPresentationController impl
 
       try {
          model.put("presentation", pres);
-         model.put("document", getPresentationManager().createDocument(pres));
+         Document doc = null;
+         if (pres.getPresentationType().equals(Presentation.TEMPLATE_TYPE))
+            doc = getPresentationManager().createDocument(pres);
+         else
+            doc = getPresentationManager().getPresentationPageAsXml(pres);
+         
+         model.put("document", doc);
          model.put("renderer", getTransformer(pres, request));
+         model.put("uriResolver", getUriResolver());
 
          if (!getAuthManager().getAgent().isInRole(Agent.ROLE_ANONYMOUS)) {
             model.put("currentAgent", getAuthManager().getAgent());
@@ -226,5 +236,13 @@ public class ViewPresentationControl extends AbstractPresentationController impl
 
    public void setPresentationTemplateCache(Hashtable presentationTemplateCache) {
       this.presentationTemplateCache = presentationTemplateCache;
+   }
+
+   public URIResolver getUriResolver() {
+      return uriResolver;
+   }
+
+   public void setUriResolver(URIResolver uriResolver) {
+      this.uriResolver = uriResolver;
    }
 }

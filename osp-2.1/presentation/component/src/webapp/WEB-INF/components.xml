@@ -20,6 +20,9 @@
       </property>
       <property name="additionalTools">
          <map>
+            <entry key="presentationLayout">
+               <ref bean="org.theospi.portfolio.security.mgt.ToolPermissionManager.presentationLayout"/>
+            </entry>
             <entry key="presentationTemplate">
                <ref bean="org.theospi.portfolio.security.mgt.ToolPermissionManager.presentationTemplate"/>
             </entry>
@@ -193,6 +196,38 @@
                   <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.DELETE_PRESENTATION</value>
                </property>
             </bean>
+            <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.CREATE_LAYOUT"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.CREATE_LAYOUT</value>
+               </property>
+            </bean>
+            <!-- Not sure if we want to have copy
+            <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.COPY_LAYOUT"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.COPY_LAYOUT</value>
+               </property>
+            </bean> 
+            -->
+            <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.DELETE_LAYOUT"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.DELETE_LAYOUT</value>
+               </property>
+            </bean>
+            <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.EDIT_LAYOUT"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.EDIT_LAYOUT</value>
+               </property>
+            </bean>
+            <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.PUBLISH_LAYOUT"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.PUBLISH_LAYOUT</value>
+               </property>
+            </bean>
          </list>
       </property>
    </bean>
@@ -289,4 +324,41 @@
       </property>
    </bean>
 
+   <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.presentationLayout"
+      class="org.theospi.portfolio.security.model.SimpleToolPermissionManager"
+       singleton="true">
+
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="permissionManager">
+         <ref bean="org.theospi.portfolio.security.mgt.PermissionManager" />
+      </property>
+      <property name="agentManager"><ref bean="agentManager" /></property>
+      <property name="permissionEditName"><value>presentationLayout</value></property>
+      <property name="defaultPermissions">
+         <map>
+            <entry key="maintain">
+               <list>
+                  <value>osp.presentation.layout.publish</value>
+                  <value>osp.presentation.layout.delete</value>
+                  <value>osp.presentation.layout.create</value>
+                  <value>osp.presentation.layout.edit</value>
+               </list>
+            </entry>
+            <entry key="access">
+               <list>
+                  <value>osp.presentation.layout.create</value>
+               </list>
+            </entry>
+         </map>
+      </property>
+      <property name="functions">
+         <list>
+            <value>osp.presentation.layout.publish</value>
+            <value>osp.presentation.layout.delete</value>
+            <value>osp.presentation.layout.create</value>
+            <value>osp.presentation.layout.edit</value>
+         </list>
+      </property>
+   </bean>
+   
 </beans>

@@ -50,6 +50,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamResult;
 
 /**
@@ -63,10 +64,12 @@ public class RenderPresentationTag extends TagSupport {
 
    private Transformer template = null;
    private Document doc = null;
+   private URIResolver uriResolver;
 
    public final int doStartTag() throws JspException {
       // transform xml and spit it out
       try {
+         template.setURIResolver(uriResolver);
          template.transform(new JDOMSource(doc),
             new StreamResult(pageContext.getOut()));
       } catch (TransformerException e) {
@@ -98,6 +101,18 @@ public class RenderPresentationTag extends TagSupport {
 
    public void setDoc(Document doc) {
       this.doc = doc;
+   }
+
+   public URIResolver getUriResolver() {
+      return uriResolver;
+   }
+
+   public void setUriResolver(URIResolver uriResolver) {
+      this.uriResolver = uriResolver;
+   }
+   
+   public void setUriResolver(Object uriResolver) {
+      setUriResolver((URIResolver) uriResolver);
    }
 
 }

@@ -12,6 +12,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 
 import java.util.Collection;
@@ -62,6 +63,16 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
          return isPresentationAuth(facade, id, agent, PresentationFunctionConstants.DELETE_PRESENTATION);
       } else if (function.equals(ContentHostingService.EVENT_RESOURCE_READ)) {
          return isFileAuth(facade, agent, id);
+      } else if (function.equals(PresentationFunctionConstants.CREATE_LAYOUT)) {
+         return new Boolean(facade.isAuthorized(agent,function,id));
+      } else if (function.equals(PresentationFunctionConstants.EDIT_LAYOUT)) {
+         return isLayoutAuth(facade, id, agent, function);
+      } else if (function.equals(PresentationFunctionConstants.PUBLISH_LAYOUT)) {
+         PresentationLayout layout = getPresentationManager().getPresentationLayout(id);
+         Id toolId = getIdManager().getId(layout.getToolId());
+         return new Boolean(facade.isAuthorized(agent,function,toolId));
+      } else if (function.equals(PresentationFunctionConstants.DELETE_LAYOUT)) {
+         return isLayoutAuth(facade, id, agent, function);
       } else {
          return null;
       }
@@ -89,6 +100,16 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
          return new Boolean(true);
       }
       Id toolId = getIdManager().getId(template.getToolId());
+      return new Boolean(facade.isAuthorized(function,toolId));
+   }
+   
+   protected Boolean isLayoutAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function){
+      PresentationLayout layout = getPresentationManager().getPresentationLayout(qualifier);
+      //owner can do anything
+      if (layout.getOwner().equals(agent)){
+         return new Boolean(true);
+      }
+      Id toolId = getIdManager().getId(layout.getToolId());
       return new Boolean(facade.isAuthorized(function,toolId));
    }
 

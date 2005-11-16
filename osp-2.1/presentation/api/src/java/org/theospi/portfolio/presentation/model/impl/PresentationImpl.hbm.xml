@@ -78,6 +78,7 @@
       <property name="description" type="string" column="description" not-null="false"/>
       <property name="isDefault" type="boolean" column="isDefault" not-null="false"/>
       <property name="isPublic" type="boolean" column="isPublic" not-null="false"/>
+      <property name="presentationType" type="string" column="presentationType" not-null="true"/>
       <property name="expiresOn" type="java.util.Date" not-null="false"/>
       <property name="created" type="java.util.Date" update="false" not-null="true"/>
       <property name="modified" type="java.util.Date" update="true" not-null="true"/>
@@ -120,5 +121,71 @@
       <many-to-one name="presentation" column="presentation_id" not-null="true" class="Presentation"/>
       <property name="viewDate" column="view_date" type="java.util.Date" update="false" not-null="false"/>
    </class>
+   
+   <class name="PresentationLayout" table="osp_presentation_layout">
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <property name="name" type="string" column="name" not-null="true"/>
+      <property name="description" type="string" column="description" not-null="false"/>
+      <property name="published" type="boolean" column="published" not-null="false"/>
+      <property name="owner" type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" column="owner_id" not-null="true"/>
+      <property name="created" type="java.util.Date" update="false" not-null="true"/>
+      <property name="modified" type="java.util.Date" update="true" not-null="true"/>
+      <property name="xhtmlFileId" type="org.sakaiproject.metaobj.shared.IdType" column="xhtml_file_id" length="36" not-null="true"/>
+      <property name="previewImageId" type="org.sakaiproject.metaobj.shared.IdType" column="preview_image_id" length="36" not-null="false"/>
+      <property name="toolId" type="string" column="tool_id" length="36" not-null="true"/>
+      <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="false"/>
+   </class>
+   
+   <class name="PresentationPage" table="osp_presentation_page">
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <many-to-one name="presentation" column="presentation_id" not-null="true" class="Presentation"/>
+      <many-to-one name="layout" column="layout_id" not-null="true" class="PresentationLayout"/>
+<!--       <many-to-one name="style" column="style_id" not-null="true" class="Style"/> -->
+      <property name="style" column="style_id" type="string" not-null="false" />
+      <property name="sequence" type="int" column="seq_num" not-null="false"/>
+      <set name="regions" lazy="true" inverse="true" cascade="all-delete-orphan">
+         <key column="presentation_page_id" />
+         <one-to-many class="PresentationPageRegion" />
+      </set>
+   </class>
 
+   <class name="PresentationPageRegion" table="osp_presentation_page_region">
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <many-to-one name="page" column="presentation_page_id" not-null="true" class="PresentationPage"/>
+      <property name="regionId" type="string" column="region_id" not-null="true" />
+      <list name="items" lazy="false" inverse="true" cascade="all-delete-orphan">
+         <key column="presentation_page_region_id" />
+         <index column="seq_num" />
+         <one-to-many class="PresentationPageItem" />
+      </list>
+   </class>
+
+   <class name="PresentationPageItem" table="osp_presentation_page_item">
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <many-to-one name="region" column="presentation_page_region_id" not-null="true" class="PresentationPageRegion"/>
+      <property name="type" column="type" type="string" not-null="false" />
+      <property name="value" column="value" type="string" not-null="false" />
+      <set name="properties" lazy="false" inverse="true" cascade="all-delete-orphan">
+         <key column="presentation_page_item_id" />
+         <one-to-many class="PresentationItemProperty" />
+      </set>
+   </class>
+   
+   <class name="PresentationItemProperty" table="osp_presentation_item_property">
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <many-to-one name="item" column="presentation_page_item_id" not-null="true" class="PresentationPageItem"/>
+      <property name="key" column="property_key" type="string" not-null="true"/>
+      <property name="value" column="property_value" type="string" not-null="false"/>
+   </class>   
+   
 </hibernate-mapping>

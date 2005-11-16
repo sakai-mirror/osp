@@ -56,7 +56,7 @@
     <osp:form />
     
     <div class="instruction">
-        Select the instances of your items foruse in this presentation.
+        Select the instances of your items for use in this presentation.
     </div>
 
     <spring:bind path="presentation.items">

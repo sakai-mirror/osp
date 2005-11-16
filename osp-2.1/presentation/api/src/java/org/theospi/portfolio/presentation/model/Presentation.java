@@ -48,11 +48,9 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.theospi.portfolio.shared.model.DateBean;
-import org.theospi.portfolio.worksite.model.ToolConfigurationWrapper;
 import org.theospi.utils.Config;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
-//import org.apache.tools.ant.types.PropertySet;
 
 import java.util.*;
 
@@ -72,6 +70,11 @@ public class Presentation extends IdentifiableObject {
    private String toolId;
    private DateBean expiresOnBean = new DateBean();
    private Map authz; 
+   private String presentationType = TEMPLATE_TYPE;
+   
+   public final static String FREEFORM_TYPE = "osp.presentation.type.freeForm";
+   public final static String TEMPLATE_TYPE = "osp.presentation.type.template";
+   
 
    public ToolConfiguration getToolConfiguration() {
       // todo 8/10
@@ -223,5 +226,13 @@ public class Presentation extends IdentifiableObject {
 
    protected Config getOspConfig() {
       return (Config)ComponentManager.getInstance().get("ospConfig");
+   }
+
+   public String getPresentationType() {
+      return presentationType;
+   }
+
+   public void setPresentationType(String presentationType) {
+      this.presentationType = presentationType;
    }
 }

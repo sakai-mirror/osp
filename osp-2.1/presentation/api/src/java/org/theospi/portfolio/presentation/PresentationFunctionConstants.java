@@ -21,4 +21,11 @@ public class PresentationFunctionConstants {
    public final static String VIEW_PRESENTATION = PRESENTATION_PREFIX + "view";
    public final static String COMMENT_PRESENTATION = PRESENTATION_PREFIX + "comment";
 
+   public final static String LAYOUT_PREFIX = "osp.presentation.layout.";
+   public final static String DELETE_LAYOUT = LAYOUT_PREFIX + "delete";
+   public final static String EDIT_LAYOUT = LAYOUT_PREFIX + "edit";
+   public final static String COPY_LAYOUT = LAYOUT_PREFIX + "copy";
+   public final static String PUBLISH_LAYOUT = LAYOUT_PREFIX + "publish";
+   public final static String CREATE_LAYOUT = LAYOUT_PREFIX + "create";
+   
 }

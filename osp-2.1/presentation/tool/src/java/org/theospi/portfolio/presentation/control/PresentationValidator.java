@@ -47,6 +47,7 @@ import org.springframework.validation.Errors;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationItem;
 import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
+import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
 import org.sakaiproject.metaobj.utils.TypedMap;
@@ -73,6 +74,7 @@ public class PresentationValidator extends ValidatorBase {
       if (Presentation.class.isAssignableFrom(clazz)) return true;
       if (PresentationItem.class.isAssignableFrom(clazz)) return true;
       if (TemplateFileRef.class.isAssignableFrom(clazz)) return true;
+      if (PresentationLayout.class.isAssignableFrom(clazz)) return true;
       return false;
    }
 
@@ -90,6 +92,7 @@ public class PresentationValidator extends ValidatorBase {
       if (obj instanceof PresentationItemDefinition) validateItemDefinition(obj, errors);
       if (obj instanceof Presentation) validatePresentation(obj, errors);
       if (obj instanceof TemplateFileRef) validateTemplateFileRef((TemplateFileRef)obj, errors);
+      if (obj instanceof PresentationLayout) validateLayout((PresentationLayout)obj, errors);
    }
 
    protected void validateTemplateFileRef(TemplateFileRef templateFileRef, Errors errors) {
@@ -225,6 +228,19 @@ public class PresentationValidator extends ValidatorBase {
          pushNestedPath("properties.", errors);
          propertyValidator.validate(properties, errors);
          popNestedPath(errors);
+      }
+   }
+   
+   protected void validateLayout(PresentationLayout layout, Errors errors) {
+      if (layout.isValidate()) {
+         if (layout.getName() == null || layout.getName().length() == 0) {
+            errors.rejectValue("name", "error.required", "name is required");
+         }
+         if (layout.getXhtmlFileId() == null || 
+               layout.getXhtmlFileId().getValue() == null || 
+               layout.getXhtmlFileId().getValue().length() == 0) {
+            errors.rejectValue("xhtmlFileId", "error.required", "XHTML file is required");
+         }
       }
    }
 }
