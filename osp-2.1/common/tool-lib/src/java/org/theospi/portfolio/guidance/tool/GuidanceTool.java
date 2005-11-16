@@ -4,10 +4,11 @@ import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.guidance.model.GuidanceItem;
 import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
-import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.api.kernel.tool.Placement;
+import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
@@ -17,6 +18,7 @@ import javax.faces.context.FacesContext;
 import java.io.IOException;
 import java.util.List;
 import java.util.Iterator;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,8 +32,7 @@ public class GuidanceTool {
    private DecoratedGuidance current = null;
 
    private GuidanceManager guidanceManager;
-   private String guidanceInstructions = "Add guidance for a wizard.";
-   public static final String ATTACHMENT_TYPE = "org.theospi.portfolio.guidance.tool.GuidanceTool.attachmentType";
+   public static final String ATTACHMENT_TYPE = "org.theospi.portfolio.guidance.attachmentType";
 
    public GuidanceManager getGuidanceManager() {
       return guidanceManager;
@@ -42,18 +43,23 @@ public class GuidanceTool {
    }
 
    public String getGuidanceInstructions() {
-      return guidanceInstructions;
-   }
-
-   public void setGuidanceInstructions(String guidanceInstructions) {
-      this.guidanceInstructions = guidanceInstructions;
+      return getCurrent().getBase().getDescription();
    }
 
    public DecoratedGuidance getCurrent() {
-      if (current == null) {
-         current = new DecoratedGuidance(this,
-            getGuidanceManager().createNew("Worksite", "blah", null, "blahblah"));
+      ToolSession session = SessionManager.getCurrentToolSession();
+
+      if (session.getAttribute(GuidanceManager.CURRENT_GUIDANCE_ID) != null) {
+         String id = (String)session.getAttribute(GuidanceManager.CURRENT_GUIDANCE_ID);
+         current = new DecoratedGuidance(this, getGuidanceManager().getGuidance(id));
+         session.removeAttribute(GuidanceManager.CURRENT_GUIDANCE_ID);
       }
+      else if (session.getAttribute(GuidanceManager.CURRENT_GUIDANCE) != null) {
+         current = new DecoratedGuidance(this,
+               (Guidance)session.getAttribute(GuidanceManager.CURRENT_GUIDANCE));
+         session.removeAttribute(GuidanceManager.CURRENT_GUIDANCE);
+      }
+
       return current;
    }
 
@@ -62,14 +68,14 @@ public class GuidanceTool {
       ToolSession session = SessionManager.getCurrentToolSession();
       session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, new Boolean(true).toString());
       session.setAttribute(GuidanceTool.ATTACHMENT_TYPE, type);
-      GuidanceItem item = current.getBase().getItem(type);
+      GuidanceItem item = getCurrent().getBase().getItem(type);
 
       List attachments = item.getAttachments();
       List attachmentRefs = EntityManager.newReferenceList();
 
       for (Iterator i=attachments.iterator();i.hasNext();) {
          GuidanceItemAttachment attachment = (GuidanceItemAttachment)i.next();
-         attachmentRefs.add(attachment.getBaseReference());
+         attachmentRefs.add(attachment.getBaseReference().getBase());
       }
       session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS, attachmentRefs);
 
@@ -82,11 +88,155 @@ public class GuidanceTool {
       return null;
    }
 
+
    public String processActionSave() {
-      return "tool";
+      getGuidanceManager().saveGuidance(getCurrent().getBase());
+
+      ToolSession session = SessionManager.getCurrentToolSession();
+
+      session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, getCurrent().getBase());
+
+      return returnToCaller();
+   }
+
+   public String processActionCancel() {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.removeAttribute(GuidanceManager.CURRENT_GUIDANCE);
+      session.removeAttribute(GuidanceManager.CURRENT_GUIDANCE_ID);
+      current = null;
+      return returnToCaller();
+   }
+
+   protected String returnToCaller() {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      Tool tool = ToolManager.getCurrentTool();
+      String url = (String) SessionManager.getCurrentToolSession().getAttribute(
+            tool.getId() + Tool.HELPER_DONE_URL);
+      SessionManager.getCurrentToolSession().removeAttribute(tool.getId() + Tool.HELPER_DONE_URL);
+      try {
+         context.redirect(url);
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+      return null;
    }
 
    public Reference decorateReference(String reference) {
-      return getGuidanceManager().decorateReference(current.getBase(), reference);
+      return getGuidanceManager().decorateReference(getCurrent().getBase(), reference);
+   }
+
+   /**
+    * sample
+    * @return
+    */
+   public String getLastSavedId() {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      Guidance guidance = (Guidance) session.getAttribute(GuidanceManager.CURRENT_GUIDANCE);
+      if (guidance != null) {
+         session.removeAttribute(GuidanceManager.CURRENT_GUIDANCE);
+         return guidance.getId().getValue();
+      }
+      return "none";
+   }
+
+   /**
+    * sample
+    * @return
+    */
+   public List getSampleGuidances() {
+      Placement placement = ToolManager.getCurrentPlacement();
+      String currentSiteId = placement.getContext();
+      List returned = new ArrayList();
+      List orig = getGuidanceManager().listGuidances(currentSiteId);
+
+      for (Iterator i=orig.iterator();i.hasNext();) {
+         Guidance guidance = (Guidance)i.next();
+         returned.add(new DecoratedGuidance(this, guidance));
+      }
+      return returned;
+   }
+
+   /**
+    * sample
+    * @param guidance
+    * @return
+    */
+   public String processActionEdit(Guidance guidance) {
+      guidance = getGuidanceManager().getGuidance(guidance.getId());
+      invokeTool(guidance);
+      return null;
+   }
+
+   /**
+    * sample
+    * @param guidance
+    * @return
+    */
+   public String processActionDelete(Guidance guidance) {
+      getGuidanceManager().deleteGuidance(guidance);
+      current = null;
+      return "list";
+   }
+
+   /**
+    * sample
+    * @param guidance
+    * @return
+    */
+   public String processActionView(Guidance guidance) {
+      guidance = getGuidanceManager().getGuidance(guidance.getId());
+      invokeToolView(guidance.getId().getValue());
+      return null;
+   }
+
+   /**
+    * sample
+    * @return
+    */
+   public String processActionNew() {
+      Placement placement = ToolManager.getCurrentPlacement();
+      String currentSite = placement.getContext();
+      Guidance newGuidance = getGuidanceManager().createNew("Sample Guidance", currentSite, null, "", "");
+
+      invokeTool(newGuidance);
+
+      return null;
+   }
+
+   /**
+    * sample
+    * @param guidance
+    */
+   protected void invokeTool(Guidance guidance) {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+
+      session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
+
+      try {
+         context.redirect("osp.guidance.helper/tool");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+   }
+
+   /**
+    * sample
+    * @param id
+    */
+   protected void invokeToolView(String id) {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+
+      session.setAttribute(GuidanceManager.CURRENT_GUIDANCE_ID, id);
+
+      try {
+         context.redirect("osp.guidance.helper/view");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
    }
 }

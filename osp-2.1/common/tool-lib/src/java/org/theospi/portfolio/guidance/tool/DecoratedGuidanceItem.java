@@ -48,12 +48,20 @@ public class DecoratedGuidanceItem {
          for(int i=0; i<refs.size(); i++) {
             Reference ref = (Reference) refs.get(i);
             Reference fullRef = tool.decorateReference(ref.getReference());
-            newAttachments.add(new GuidanceItemAttachment(base,
-               ref, fullRef));
+            GuidanceItemAttachment attachment = new GuidanceItemAttachment(base,
+                           ref, fullRef);
+
+            if (base.getAttachments().contains(attachment)) {
+               attachment =
+                  (GuidanceItemAttachment) base.getAttachments().get(base.getAttachments().indexOf(attachment));
+            }
+
+            newAttachments.add(attachment);
          }
          session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
          session.removeAttribute(GuidanceTool.ATTACHMENT_TYPE);
-         base.setAttachments(newAttachments);
+         base.getAttachments().clear();
+         base.getAttachments().addAll(newAttachments);
       }
 
       return base.getAttachments();

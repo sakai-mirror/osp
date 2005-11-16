@@ -13,12 +13,13 @@
       <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="true"/>
 
       <property name="securityQualifier" type="org.sakaiproject.metaobj.shared.IdType" />
-      <property name="securityFunction" type="string" not-null="true"/>
+      <property name="securityViewFunction" type="string" not-null="true"/>
+      <property name="securityEditFunction" type="string" not-null="true"/>
 
-      <set name="items" cascade="all-delete-orphan" inverse="true" lazy="false">
-         <key column="scaffolding_id"/>
+      <bag name="items" cascade="all-delete-orphan" inverse="true" lazy="false">
+         <key column="guidance_id"/>
          <one-to-many class="GuidanceItem"/>
-      </set>
+      </bag>
    </class>
 
    <class name="GuidanceItem" table="osp_guidance_item" lazy="false" batch-size="3">
@@ -29,10 +30,11 @@
       <property name="type" type="string" column="type" not-null="false"/>
       <property name="text" type="text" column="text" not-null="false"/>
       <many-to-one name="guidance" column="guidance_id" not-null="true" class="Guidance"/>
-      <set name="attachments" cascade="all-delete-orphan" inverse="true" lazy="false">
+
+      <bag name="attachments" cascade="all-delete-orphan" inverse="true" lazy="false">
          <key column="item_id"/>
          <one-to-many class="GuidanceItemAttachment"/>
-      </set>
+      </bag>
    </class>
 
    <class name="GuidanceItemAttachment" table="osp_guidance_item_file" lazy="false" batch-size="10">
