@@ -5,6 +5,8 @@ import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.legacy.entity.Reference;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -14,7 +16,11 @@ import org.sakaiproject.service.legacy.entity.Reference;
  */
 public interface GuidanceManager {
 
-   public Guidance createNew(String description, String siteId, Id securityQualifier, String securityFunction);
+   public final static String CURRENT_GUIDANCE = "org.theospi.portfolio.guidance.currentGuidance";
+   public final static String CURRENT_GUIDANCE_ID = "org.theospi.portfolio.guidance.currentGuidanceId";
+
+   public Guidance createNew(String description, String siteId, Id securityQualifier,
+                             String securityViewFunction, String securityEditFunction);
 
    public Guidance getGuidance(Id guidanceId);
 
@@ -23,4 +29,8 @@ public interface GuidanceManager {
    public void deleteGuidance(Guidance guidance);
 
    public Reference decorateReference(Guidance guidance, String reference);
+
+   public List listGuidances(String siteId);
+
+   public Guidance getGuidance(String id);
 }

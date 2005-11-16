@@ -22,7 +22,7 @@
 <h:form>
   <ospx:xheader>
       <ospx:xheadertitle id="instructionTitle">
-          <h:outputText value="#{msgs.instruction_title}" />
+          <h:outputText value="#{msgs.instruction_title_add}" />
       </ospx:xheadertitle>
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
           <ospx:splitarea direction="horizontal" width="100%">
@@ -37,8 +37,8 @@
                         <h:commandButton action="#{guidance.current.instruction.processActionManageAttachments}"
                            value="#{msgs.manage_instruction}"/>
                      </f:facet>
-                     <h:outputLink title="#{material.fullReference.description}"
-                        value="#{material.fullReference.url}" target="_new">
+                     <h:outputLink title="#{material.displayName}"
+                        value="#{material.fullReference.base.url}" target="_new">
                         <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
                   </h:column>
@@ -50,7 +50,7 @@
 
   <ospx:xheader>
       <ospx:xheadertitle id="exampleTitle">
-          <h:outputText value="#{msgs.example_title}" />
+          <h:outputText value="#{msgs.example_title_add}" />
       </ospx:xheadertitle>
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
           <ospx:splitarea direction="horizontal" width="100%">
@@ -65,8 +65,8 @@
                         <h:commandButton action="#{guidance.current.example.processActionManageAttachments}"
                            value="#{msgs.manage_instruction}"/>
                      </f:facet>
-                     <h:outputLink title="#{material.fullReference.description}"
-                        value="#{material.fullReference.url}" target="_new">
+                     <h:outputLink title="#{material.displayName}"
+                        value="#{material.fullReference.base.url}" target="_new">
                         <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
                   </h:column>
@@ -78,7 +78,7 @@
 
   <ospx:xheader>
       <ospx:xheadertitle id="rationaleTitle">
-          <h:outputText value="#{msgs.rationale_title}" />
+          <h:outputText value="#{msgs.rationale_title_add}" />
       </ospx:xheadertitle>
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
           <ospx:splitarea direction="horizontal" width="100%">
@@ -93,8 +93,8 @@
                         <h:commandButton action="#{guidance.current.rationale.processActionManageAttachments}"
                            value="#{msgs.manage_instruction}"/>
                      </f:facet>
-                     <h:outputLink title="#{material.fullReference.description}"
-                        value="#{material.fullReference.url}" target="_new">
+                     <h:outputLink title="#{material.displayName}"
+                        value="#{material.fullReference.base.url}" target="_new">
                         <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
                   </h:column>

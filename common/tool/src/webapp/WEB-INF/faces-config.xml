@@ -32,23 +32,22 @@
       </managed-property>
 
    </managed-bean>
-   <!--navigation-rule>
-     <from-view-id>/survey/respond.jsp</from-view-id>
+
+   <navigation-rule>
+     <from-view-id>/guidance/tool.jsp</from-view-id>
       <navigation-case>
-         <from-outcome>back</from-outcome>
-         <to-view-id>/survey/respond.jsp</to-view-id>
+         <from-outcome>list</from-outcome>
+         <to-view-id>/guidance/list.jsp</to-view-id>
          <redirect/>
       </navigation-case>
+   </navigation-rule>
+   <navigation-rule>
+     <from-view-id>/guidance/list.jsp</from-view-id>
       <navigation-case>
-         <from-outcome>continue</from-outcome>
-         <to-view-id>/survey/respond.jsp</to-view-id>
+         <from-outcome>tool</from-outcome>
+         <to-view-id>/guidance/tool.jsp</to-view-id>
          <redirect/>
       </navigation-case>
-      <navigation-case>
-         <from-outcome>done</from-outcome>
-         <to-view-id>/survey/main.jsp</to-view-id>
-         <redirect/>
-      </navigation-case>
-   </navigation-rule-->
+   </navigation-rule>
 
 </faces-config>

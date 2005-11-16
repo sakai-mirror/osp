@@ -34,9 +34,10 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
    private EntityManager entityManager;
    private IdManager idManager;
 
-   public Guidance createNew(String description, String siteId, Id securityQualifier, String securityFunction) {
+   public Guidance createNew(String description, String siteId, Id securityQualifier,
+                             String securityViewFunction, String securityEditFunction) {
       Guidance guidance = new Guidance(getIdManager().createId(),
-         description, siteId, securityQualifier, securityFunction);
+         description, siteId, securityQualifier, securityViewFunction, securityEditFunction);
 
       GuidanceItem instruction = new GuidanceItem(guidance, Guidance.INSTRUCTION_TYPE);
       guidance.getItems().add(instruction);
@@ -58,7 +59,7 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
       }
 
       if (guidance.getSecurityQualifier() != null) {
-         getAuthorizationFacade().checkPermission(guidance.getSecurityFunction(),
+         getAuthorizationFacade().checkPermission(guidance.getSecurityViewFunction(),
             guidance.getSecurityQualifier());
       }
 
@@ -68,10 +69,10 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
          GuidanceItem item = (GuidanceItem)i.next();
          for (Iterator j=item.getAttachments().iterator();j.hasNext();) {
             GuidanceItemAttachment attachment = (GuidanceItemAttachment)j.next();
-            refs.add(attachment.getBaseReference().getReference());
+            refs.add(attachment.getBaseReference().getBase().getReference());
          }
       }
-      
+
       getSecurityService().pushAdvisor(new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
          refs));
 
@@ -79,7 +80,14 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
    }
 
    public Guidance saveGuidance(Guidance guidance) {
-      getHibernateTemplate().saveOrUpdate(guidance);
+      if (guidance.isNewObject()) {
+         getHibernateTemplate().save(guidance, guidance.getId());
+         guidance.setNewObject(false);
+      }
+      else {
+         getHibernateTemplate().saveOrUpdate(guidance);
+      }
+
       return guidance;
    }
 
@@ -94,6 +102,14 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
       return getEntityManager().newReference(fullRef);
    }
 
+   public List listGuidances(String siteId) {
+      return getHibernateTemplate().find("from Guidance where site_id=? ",
+         siteId);
+   }
+
+   public Guidance getGuidance(String id) {
+      return getGuidance(getIdManager().getId(id));
+   }
 
    public AuthorizationFacade getAuthorizationFacade() {
       return authorizationFacade;

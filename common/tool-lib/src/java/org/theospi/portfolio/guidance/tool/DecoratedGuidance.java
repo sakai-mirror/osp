@@ -42,4 +42,16 @@ public class DecoratedGuidance {
    public DecoratedGuidanceItem getRationale() {
       return getItem(Guidance.RATIONALE_TYPE);
    }
+
+   public String processActionEdit() {
+      return tool.processActionEdit(base);
+   }
+
+   public String processActionView() {
+      return tool.processActionView(base);
+   }
+
+   public String processActionDelete() {
+      return tool.processActionDelete(base);
+   }
 }

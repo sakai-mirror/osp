@@ -21,23 +21,26 @@ public class Guidance extends IdentifiableObject {
    private String description;
    private String siteId;
    private Id securityQualifier;
-   private String securityFunction;
+   private String securityViewFunction;
+   private String securityEditFunction;
 
-   private Collection items;
+   private List items;
 
    private boolean newObject = false;
 
    public Guidance() {
    }
 
-   public Guidance(Id id, String description, String siteId, Id securityQualifier, String securityFunction) {
+   public Guidance(Id id, String description, String siteId, Id securityQualifier,
+                   String securityViewFunction, String securityEditFunction) {
       this.description = description;
       this.siteId = siteId;
       this.securityQualifier = securityQualifier;
-      this.securityFunction = securityFunction;
-      items = new ArrayList();
+      this.securityViewFunction = securityViewFunction;
+      this.securityEditFunction = securityEditFunction;
       setId(id);
       newObject = true;
+      items = new ArrayList();
    }
 
    public String getDescription() {
@@ -64,19 +67,27 @@ public class Guidance extends IdentifiableObject {
       this.securityQualifier = securityQualifier;
    }
 
-   public String getSecurityFunction() {
-      return securityFunction;
+   public String getSecurityViewFunction() {
+      return securityViewFunction;
    }
 
-   public void setSecurityFunction(String securityFunction) {
-      this.securityFunction = securityFunction;
+   public void setSecurityViewFunction(String securityViewFunction) {
+      this.securityViewFunction = securityViewFunction;
    }
 
-   public Collection getItems() {
+   public String getSecurityEditFunction() {
+      return securityEditFunction;
+   }
+
+   public void setSecurityEditFunction(String securityEditFunction) {
+      this.securityEditFunction = securityEditFunction;
+   }
+
+   public List getItems() {
       return items;
    }
 
-   public void setItems(Collection items) {
+   public void setItems(List items) {
       this.items = items;
    }
 

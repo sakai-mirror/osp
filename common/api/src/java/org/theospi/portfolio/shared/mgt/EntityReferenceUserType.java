@@ -26,7 +26,7 @@ public class EntityReferenceUserType implements UserType, Serializable {
    }
 
    public Class returnedClass() {
-      return Reference.class;
+      return ReferenceHolder.class;
    }
 
    public boolean equals(Object x, Object y) throws HibernateException {
@@ -38,16 +38,16 @@ public class EntityReferenceUserType implements UserType, Serializable {
       if (result == null)
          return null;
 
-      Reference ref = EntityManager.newReference(result);
+      ReferenceHolder ref = new ReferenceHolder(EntityManager.newReference(result));
       return ref;
    }
 
    public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
-      Reference ref = (Reference) value;
+      ReferenceHolder ref = (ReferenceHolder) value;
       if (value == null) {
          st.setNull(index, Types.VARCHAR);
       } else {
-         st.setString(index, ref.getReference());
+         st.setString(index, ref.getBase().getReference());
       }
    }
 
