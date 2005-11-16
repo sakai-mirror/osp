@@ -1414,18 +1414,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             itemElement = new Element(item.getDefinition().getName());
             root.addContent(itemElement);
          }
-
-         ArtifactFinder finder = getArtifactFinderManager().getArtifactFinderByType(item.getDefinition().getType());
-         Artifact art;
-
-         if (finder instanceof EntityContextFinder) {
-            art = ((EntityContextFinder)finder).loadInContext(item.getArtifactId(),
-                  PresentationContentEntityProducer.PRODUCER_NAME, presentation.getTemplate().getSiteId(),
-                  presentation.getId().getValue());
-         }
-         else {
-            art = finder.load(item.getArtifactId());
-         }
+         
+         Artifact art = getPresentationItem(item.getDefinition().getType(), item.getArtifactId(), presentation);
 
          if (art.getHome() instanceof PresentableObjectHome) {
             PresentableObjectHome home = (PresentableObjectHome) art.getHome();
@@ -1482,6 +1472,31 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       if (id != null) {
          readableFiles.add(getContentHosting().getReference(id));
       }
+      
+      //Files related to layouts
+      List pages = getPresentationPagesByPresentation(presentation.getId());
+      for (Iterator pagesIter = pages.iterator(); pagesIter.hasNext();) {
+         PresentationPage page = (PresentationPage) pagesIter.next();
+         String xhtmlFileId = getContentHosting().resolveUuid(page.getLayout().getXhtmlFileId().getValue());
+         if (xhtmlFileId != null) {
+            readableFiles.add(getContentHosting().getReference(xhtmlFileId));
+         }
+         String previewImageId = getContentHosting().resolveUuid(page.getLayout().getPreviewImageId().getValue());
+         if (previewImageId != null) {
+            readableFiles.add(getContentHosting().getReference(previewImageId));
+         }
+         for (Iterator regions = page.getRegions().iterator(); regions.hasNext();) {
+            PresentationPageRegion region = (PresentationPageRegion) regions.next();
+            for (Iterator items = region.getItems().iterator(); items.hasNext();) {
+               PresentationPageItem pageItem = (PresentationPageItem) items.next();
+               String itemId = getContentHosting().resolveUuid(pageItem.getValue());
+               if (itemId != null) {
+                  readableFiles.add(getContentHosting().getReference(itemId));
+               }
+            }
+         }
+      }
+      
 
       getSecurityService().pushAdvisor(
          new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, readableFiles));
@@ -1490,17 +1505,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    protected Element getFileRefAsXml(Presentation presentation, TemplateFileRef fileRef) {
       Element fileRefElement = new Element(fileRef.getUsage());
       String fileId = fileRef.getFileId();
-      ArtifactFinder finder = getArtifactFinderManager().getArtifactFinderByType(fileRef.getFileType());
-      Artifact art;
-
-      if (finder instanceof EntityContextFinder) {
-         art = ((EntityContextFinder)finder).loadInContext(getIdManager().getId(fileId),
-               PresentationContentEntityProducer.PRODUCER_NAME, presentation.getTemplate().getSiteId(),
-               presentation.getId().getValue());
-      }
-      else {
-         art = finder.load(getIdManager().getId(fileId));
-      }
+            
+      Artifact art = getPresentationItem(fileRef.getFileType(), 
+            getIdManager().getId(fileId), presentation);
 
       PresentableObjectHome home = (PresentableObjectHome) art.getHome();
       fileRefElement.addContent(home.getArtifactAsXml(art));
@@ -1704,6 +1711,228 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public void setSecurityService(SecurityService securityService) {
       this.securityService = securityService;
+   }
+
+   public Collection findPublishedLayouts(String siteId) {
+      return getHibernateTemplate().find(
+            "from PresentationLayout where published=? and owner_id!=? and site_id=? Order by name",
+            new Object[]{new Boolean(true), getAuthnManager().getAgent().getId().getValue(), siteId});
+   }
+
+   public Collection findLayoutsByOwner(Agent owner, String siteId) {
+      return getHibernateTemplate().find("from PresentationLayout where owner_id=? and site_id=? Order by name",
+            new Object[]{owner.getId().getValue(), siteId});
+   }
+   
+   public PresentationLayout storeLayout (PresentationLayout layout) {
+      return storeLayout(layout, true);
+   }
+   
+   public PresentationLayout storeLayout (PresentationLayout layout, boolean checkAuthz) {
+      layout.setModified(new Date(System.currentTimeMillis()));
+
+      boolean newLayout = (layout.getId() == null);
+
+      if (newLayout) {
+         layout.setCreated(new Date(System.currentTimeMillis()));
+
+         if (checkAuthz) {
+            getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_LAYOUT,
+               getIdManager().getId(layout.getToolId()));
+         }
+      } else {
+         if (checkAuthz) {
+            getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_LAYOUT,
+                  layout.getId());
+         }
+      }
+      getHibernateTemplate().saveOrUpdateCopy(layout);
+      lockLayoutFiles(layout);
+
+      return layout;
+
+   }
+   
+   protected void lockLayoutFiles(PresentationLayout layout){
+      clearLocks(layout);
+      getLockManager().lockObject(layout.getXhtmlFileId().getValue(), 
+           layout.getId().getValue(), "saving a presentation layout", true);
+      
+      if (layout.getPreviewImageId() != null) {
+         getLockManager().lockObject(layout.getPreviewImageId().getValue(), 
+              layout.getId().getValue(), "saving a presentation layout", true);
+      }
+   }
+   
+   protected void clearLocks(PresentationLayout layout){
+      getLockManager().removeAllLocks(layout.getId().getValue());
+   }
+   
+   public PresentationLayout getPresentationLayout(Id id) {
+      return (PresentationLayout) getHibernateTemplate().get(PresentationLayout.class, id);
+   }
+   
+   protected List getPresentationPagesByPresentation(Id presentationId) {
+      return getHibernateTemplate().find(
+            "from PresentationPage page where page.presentation.id=? ", 
+            new Object[]{presentationId.getValue()});
+   }
+
+   public void deletePresentationLayout(final Id id) {
+      PresentationLayout layout = getPresentationLayout(id);
+      getAuthzManager().checkPermission(PresentationFunctionConstants.DELETE_LAYOUT, layout.getId());
+      clearLocks(layout);
+
+      // first delete all presentations that use this template
+      // this will delete all authorization as well
+      //Collection presentations = getHibernateTemplate().find("from Presentation where template_id=?", id.getValue(), Hibernate.STRING);
+      //for (Iterator i = presentations.iterator(); i.hasNext();) {
+      //   Presentation presentation = (Presentation) i.next();
+      //   deletePresentation(presentation.getId(), false);
+      //}
+
+      HibernateCallback callback = new HibernateCallback() {
+
+         public Object doInHibernate(Session session) throws HibernateException, SQLException {
+            session.delete("from PresentationLayout where id=?", id.getValue(), Hibernate.STRING);
+            return null;
+         }
+
+      };
+      getHibernateTemplate().execute(callback);
+
+
+   }
+   
+   public PresentationPage getPresentationPage(Id id) {
+      return (PresentationPage) getHibernateTemplate().get(PresentationPage.class, id);
+   }
+   
+   public PresentationPage getFirstPresentationPage(Id presentationId) {
+      return getPresentationPage(presentationId, 0);
+   }
+   
+   public PresentationPage getPresentationPage(Id presentationId, int pageIndex) {
+      String query = "from PresentationPage page where page.presentation.id=? and page.sequence=? ";
+
+      List pages = getHibernateTemplate().find(query, 
+            new Object[]{presentationId.getValue(), new Integer(pageIndex)});
+      
+      return (PresentationPage)pages.get(0);
+   }
+   
+   
+   public Document getPresentationPageAsXml(Presentation presentation) {
+      viewingPresentation(presentation);
+      PresentationPage page = getFirstPresentationPage(presentation.getId());
+      return getPresentationPageAsXml(page.getId());
+   }
+   
+   
+   public Document getPresentationPageAsXml(Id pageId) {
+      
+      
+      Element root = new Element("ospiPresentation");
+      Element layoutElement = new Element("layout");
+      Element navigationElement = new Element("navigation");
+      Element regionsElement = new Element("regions");
+      
+      PresentationPage page = getPresentationPage(pageId);
+      
+      Id fileId = page.getLayout().getXhtmlFileId();
+      Artifact art = getPresentationItem("fileArtifact", fileId, page.getPresentation());
+
+      PresentableObjectHome home = (PresentableObjectHome) art.getHome();
+      layoutElement.addContent(home.getArtifactAsXml(art));
+      
+      for (Iterator regions = page.getRegions().iterator(); regions.hasNext();) {
+         PresentationPageRegion region = (PresentationPageRegion) regions.next();
+         int itemSeq = 0;
+         for (Iterator items = region.getItems().iterator(); items.hasNext();) {
+            PresentationPageItem item = (PresentationPageItem) items.next();
+            Element regionElement = new Element("region");
+            regionElement.setAttribute("id", region.getRegionId());
+            if (region.getItems().size() > 1)
+               regionElement.setAttribute("sequence",  String.valueOf(itemSeq));
+            regionElement.setAttribute("type", item.getType());
+            Element itemPropertiesElement = new Element("itemProperties");
+            for (Iterator properties = item.getProperties().iterator(); properties.hasNext();) {
+               PresentationItemProperty prop = (PresentationItemProperty) properties.next();
+               //regionElement.setAttribute(prop.getKey(), prop.getValue());
+               Element itemPropertyElement = new Element(prop.getKey());
+               itemPropertyElement.addContent(prop.getValue());
+               itemPropertiesElement.addContent(itemPropertyElement);
+            }
+            regionElement.addContent(itemPropertiesElement);
+            regionElement.addContent(outputTypedContent(item.getType(), item.getValue(), page.getPresentation()));
+            regionsElement.addContent(regionElement);
+            itemSeq++;
+         }
+      }      
+      
+      root.addContent(layoutElement);
+      root.addContent(navigationElement);
+      root.addContent(regionsElement);
+      return new Document(root);
+   }
+   
+   protected void renderItemProperties() {
+      
+   }
+   
+   protected Element outputTypedContent(String type, String value, Presentation presentation) {
+      if (type.equals("text") || type.equals("richtext")) {
+         Element textRegion = new Element("value");
+         textRegion.addContent(value);
+         return textRegion;
+      }
+      /*
+      else if (type.equals("form")) {
+         Id formId = getIdManager().getId(value);
+         ArtifactFinder finder = getArtifactFinderManager().getArtifactFinderByType("fileArtifact");
+         
+         Artifact art;
+
+         if (finder instanceof EntityContextFinder) {
+            art = ((EntityContextFinder)finder).loadInContext(fileId,
+                  PresentationContentEntityProducer.PRODUCER_NAME, 
+                  presentation.getTemplate().getSiteId(),
+                  presentation.getId().getValue());
+         }
+         else {
+            art = finder.load(formId);
+         }
+
+         PresentableObjectHome home = (PresentableObjectHome) art.getHome();
+         return home.getArtifactAsXml(art);
+      }
+      */
+      else if (type.equals("link") || type.equals("inline")) {         
+         //String fileId = value;
+         Id fileId = getIdManager().getId(value);
+         Artifact art = getPresentationItem("fileArtifact", fileId, presentation);
+
+         PresentableObjectHome home = (PresentableObjectHome) art.getHome();
+         return home.getArtifactAsXml(art);
+      }
+      return new Element("empty");
+   }
+   
+   protected Artifact getPresentationItem(String type, Id itemId, Presentation presentation) {
+      ArtifactFinder finder = getArtifactFinderManager().getArtifactFinderByType(type);
+      
+      Artifact art;
+
+      if (finder instanceof EntityContextFinder) {
+         art = ((EntityContextFinder)finder).loadInContext(itemId,
+               PresentationContentEntityProducer.PRODUCER_NAME, 
+               presentation.getTemplate().getSiteId(),
+               presentation.getId().getValue());
+      }
+      else {
+         art = finder.load(itemId);
+      }
+      return art;
    }
 
 }

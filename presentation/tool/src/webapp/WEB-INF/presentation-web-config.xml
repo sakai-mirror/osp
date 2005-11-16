@@ -16,7 +16,17 @@
       <property name="agentManager"><ref bean="agentManager" /></property>
    </bean>
 
-
+   <bean id="org.theospi.portfolio.shared.control.ContentResourceUriResolver" 
+      class="org.theospi.portfolio.shared.control.ContentResourceUriResolver" >
+      <property name="entityManager">
+         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+      </property>
+      <property name="serverConfigurationService">
+         <ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/>
+      </property>
+      
+   </bean>
+   
    <bean id="mimeTypeCustomEditor" class="org.theospi.portfolio.shared.model.impl.MimeTypeCustomEditor">
    </bean>
 
@@ -368,6 +378,9 @@
             <property name="artifactFinderManager">
                <ref bean="artifactFinderManager"/>
             </property>
+            <property name="uriResolver">
+               <ref bean="org.theospi.portfolio.shared.control.ContentResourceUriResolver"/>
+            </property>
          </bean>
       </property>
       <property name="customTypedEditors">
@@ -708,5 +721,125 @@
       <property name="commandClass"><value>org.theospi.portfolio.presentation.model.TemplateUploadForm</value></property>
       <property name="formView"><value>importTemplate</value></property>
    </bean>
+   
+   <bean id="listLayoutController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.presentation.control.ListLayoutController">
+            <property name="presentationManager"><ref bean="presentationManager"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="agentManager"><ref bean="agentManager"/></property>
+            <property name="homeFactory"><ref bean="homeFactory" /></property>
+            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="worksiteManager">
+               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+            </property>
+            <property name="listScrollIndexer">
+               <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
+            </property>
+         </bean>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">listLayout</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>layouts</value></property>
+      <property name="commandClass"><value>java.util.ArrayList</value></property>
+   </bean>
+   
+   
+   
+   <bean id="addLayoutController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.presentation.control.AddLayoutController">
+            <property name="presentationManager"><ref bean="presentationManager" /></property>
+            <property name="authManager"><ref bean="authManager" /></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="entityManager">
+               <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+            </property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+            </property>
+            <property name="contentHosting">
+               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+            </property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">listLayoutRedirect</prop>
+            <prop key="pickLayoutFiles">pickLayoutFilesRedirect</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="validator"><ref bean="presentationValidator"/></property>
+      <property name="commandName"><value>layout</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.presentation.model.PresentationLayout</value></property>
+      <property name="formView"><value>addLayout</value></property>
+   </bean>
 
+   <bean id="deleteLayoutController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.presentation.control.DeleteLayoutController">
+            <property name="presentationManager"><ref bean="presentationManager"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="agentManager"><ref bean="agentManager"/></property>
+            <property name="homeFactory"><ref bean="homeFactory" /></property>
+            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">listLayoutRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>layout</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.presentation.model.PresentationLayout</value></property>
+   </bean>
+   
+   <bean id="publishLayoutController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.presentation.control.PublishLayoutController">
+            <property name="presentationManager"><ref bean="presentationManager"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="agentManager"><ref bean="agentManager"/></property>
+            <property name="homeFactory"><ref bean="homeFactory" /></property>
+            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="worksiteManager">
+               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+            </property>
+         </bean>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">listLayoutRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>layout</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.presentation.model.PresentationLayout</value></property>
+   </bean>
+   
 </beans>

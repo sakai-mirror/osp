@@ -47,12 +47,15 @@ import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationComment;
 import org.theospi.portfolio.presentation.model.PresentationItem;
 import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
+import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.model.PresentationLog;
+import org.theospi.portfolio.presentation.model.PresentationPage;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.security.model.CleanupableService;
 import org.jdom.Document;
+import org.jdom.Element;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.legacy.entity.Reference;
@@ -76,6 +79,7 @@ public interface PresentationManager extends CleanupableService {
    public PresentationTemplate storeTemplate(PresentationTemplate template);
 
    public void deletePresentationTemplate(Id id);
+   public void deletePresentationLayout(Id id);
 
    public PresentationTemplate getPresentationTemplate(Id id);
 
@@ -135,6 +139,17 @@ public interface PresentationManager extends CleanupableService {
    public Collection findPublishedTemplates(String siteId);
 
    public Collection findPublishedTemplates();
+   
+   public Collection findPublishedLayouts(String siteId);
+   
+   public Collection findLayoutsByOwner(Agent owner, String siteId);
+   
+   public PresentationLayout storeLayout(PresentationLayout layout);
+   
+   public PresentationLayout getPresentationLayout(Id layoutId);
+   
+   public PresentationPage getPresentationPage(Id id);
+   public Document getPresentationPageAsXml(Presentation presentation);
 
    /**
     * returns a list of all presentations agent can view </br>

@@ -119,6 +119,13 @@
                <prop key="/js/htmlarea/popups/insertImage.osp">insertImageController</prop>
 
                <prop key="/notifyViewers.osp">notifyViewersController</prop>
+               
+               <!--  presentation layout -->
+               <prop key="/listLayout.osp">listLayoutController</prop>
+               <prop key="/addLayout.osp">addLayoutController</prop>
+               <prop key="/editLayout.osp">addLayoutController</prop>
+               <prop key="/deleteLayout.osp">deleteLayoutController</prop>
+               <prop key="/publishLayout.osp">publishLayoutController</prop>
             </props>
         </property>
     </bean>

@@ -33,7 +33,11 @@
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-
+      <attribute>
+         <name>uriResolver</name>
+         <required>true</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
 	</tag>
 
 </taglib>
