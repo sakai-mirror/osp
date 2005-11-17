@@ -1782,7 +1782,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       PresentationLayout layout = getPresentationLayout(id);
       getAuthzManager().checkPermission(PresentationFunctionConstants.DELETE_LAYOUT, layout.getId());
       clearLocks(layout);
-
+      
+      //TODO handle things that are using this layout
       // first delete all presentations that use this template
       // this will delete all authorization as well
       //Collection presentations = getHibernateTemplate().find("from Presentation where template_id=?", id.getValue(), Hibernate.STRING);
@@ -1886,27 +1887,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          textRegion.addContent(value);
          return textRegion;
       }
-      /*
       else if (type.equals("form")) {
          Id formId = getIdManager().getId(value);
-         ArtifactFinder finder = getArtifactFinderManager().getArtifactFinderByType("fileArtifact");
-         
-         Artifact art;
-
-         if (finder instanceof EntityContextFinder) {
-            art = ((EntityContextFinder)finder).loadInContext(fileId,
-                  PresentationContentEntityProducer.PRODUCER_NAME, 
-                  presentation.getTemplate().getSiteId(),
-                  presentation.getId().getValue());
-         }
-         else {
-            art = finder.load(formId);
-         }
-
+         Artifact art = getPresentationItem("form", formId, presentation);
          PresentableObjectHome home = (PresentableObjectHome) art.getHome();
          return home.getArtifactAsXml(art);
       }
-      */
+      
       else if (type.equals("link") || type.equals("inline")) {         
          //String fileId = value;
          Id fileId = getIdManager().getId(value);
