@@ -149,7 +149,7 @@ public interface PresentationManager extends CleanupableService {
    public PresentationLayout getPresentationLayout(Id layoutId);
    
    public PresentationPage getPresentationPage(Id id);
-   public Document getPresentationPageAsXml(Presentation presentation);
+   public Document getPresentationLayoutAsXml(Presentation presentation, String pageId);
 
    /**
     * returns a list of all presentations agent can view </br>

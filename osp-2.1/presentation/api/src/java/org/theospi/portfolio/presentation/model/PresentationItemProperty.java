@@ -8,6 +8,7 @@ public class PresentationItemProperty {
    public final static String ITEM_HEIGHT = "itemHeight";
    public final static String ITEM_WIDTH = "itemWidth";
    public final static String LINK_TARGET = "linkTarget";
+   public final static String CONTENT_TYPE = "contentType";
    
    private Id id;
    private PresentationPageItem item;
