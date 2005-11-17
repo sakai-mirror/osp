@@ -16,15 +16,13 @@
 
 <sakai:view>
    <sakai:view_title value="#{msgs.guidance_title}"/>
-   <sakai:instruction_message value="#{guidance.guidanceInstructions}" />
    <sakai:messages />
 
 <h:form>
     <sakai:panel_titled title="#{msgs.instruction_title}" >
        <ospx:splitarea direction="horizontal" width="100%">
           <ospx:splitsection size="475" valign="top">
-            <sakai:instruction_message value="#{msgs.instruction_message}" />
-            <sakai:inputRichText value="#{guidance.current.instruction.base.text}" rows="15" cols="60" buttonSet="large" />
+            <h:outputText value="#{guidance.current.instruction.base.text}" escape="false" />
           </ospx:splitsection>
           <ospx:splitsection valign="top">
             <sakai:flat_list value="#{guidance.current.instruction.attachments}" var="material">
@@ -44,8 +42,7 @@
     <sakai:panel_titled title="#{msgs.example_title}" >
        <ospx:splitarea direction="horizontal" width="100%">
           <ospx:splitsection size="475" valign="top">
-            <sakai:instruction_message value="#{msgs.example_message}" />
-            <sakai:inputRichText value="#{guidance.current.example.base.text}" rows="15" cols="60" buttonSet="large" />
+            <h:outputText value="#{guidance.current.example.base.text}" escape="false" />
           </ospx:splitsection>
           <ospx:splitsection valign="top">
             <sakai:flat_list value="#{guidance.current.example.attachments}" var="material">
@@ -65,8 +62,7 @@
     <sakai:panel_titled title="#{msgs.rationale_title}" >
        <ospx:splitarea direction="horizontal" width="100%">
           <ospx:splitsection size="475" valign="top">
-            <sakai:instruction_message value="#{msgs.rationale_message}" />
-            <sakai:inputRichText value="#{guidance.current.rationale.base.text}" rows="15" cols="60" buttonSet="large" />
+            <h:outputText value="#{guidance.current.rationale.base.text}" escape="false" />
           </ospx:splitsection>
           <ospx:splitsection valign="top">
             <sakai:flat_list value="#{guidance.current.rationale.attachments}" var="material">
