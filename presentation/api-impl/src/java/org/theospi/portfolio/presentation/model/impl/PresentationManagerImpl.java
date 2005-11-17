@@ -1823,14 +1823,18 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
    
    
-   public Document getPresentationPageAsXml(Presentation presentation) {
+   public Document getPresentationLayoutAsXml(Presentation presentation, String pageId) {
       viewingPresentation(presentation);
-      PresentationPage page = getFirstPresentationPage(presentation.getId());
-      return getPresentationPageAsXml(page.getId());
+      PresentationPage page;
+      if (pageId == null || pageId.equals(""))
+         page = getFirstPresentationPage(presentation.getId());
+      else
+         page = getPresentationPage(getIdManager().getId(pageId));
+      return getPresentationLayoutAsXml(page.getId());
    }
    
    
-   public Document getPresentationPageAsXml(Id pageId) {
+   protected Document getPresentationLayoutAsXml(Id pageId) {
       
       
       Element root = new Element("ospiPresentation");
@@ -1857,15 +1861,16 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                regionElement.setAttribute("sequence",  String.valueOf(itemSeq));
             regionElement.setAttribute("type", item.getType());
             Element itemPropertiesElement = new Element("itemProperties");
+            String contentType = "";
             for (Iterator properties = item.getProperties().iterator(); properties.hasNext();) {
                PresentationItemProperty prop = (PresentationItemProperty) properties.next();
-               //regionElement.setAttribute(prop.getKey(), prop.getValue());
-               Element itemPropertyElement = new Element(prop.getKey());
-               itemPropertyElement.addContent(prop.getValue());
-               itemPropertiesElement.addContent(itemPropertyElement);
+               itemPropertiesElement.addContent(createElementNode(prop.getKey(), prop.getValue()));
+               if (prop.getKey().equals(PresentationItemProperty.CONTENT_TYPE))
+                  contentType = prop.getValue();
             }
             regionElement.addContent(itemPropertiesElement);
-            regionElement.addContent(outputTypedContent(item.getType(), item.getValue(), page.getPresentation()));
+            regionElement.addContent(outputTypedContent(item.getType(), 
+                  item.getValue(), page.getPresentation(), contentType));
             regionsElement.addContent(regionElement);
             itemSeq++;
          }
@@ -1877,30 +1882,27 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return new Document(root);
    }
    
-   protected void renderItemProperties() {
-      
-   }
-   
-   protected Element outputTypedContent(String type, String value, Presentation presentation) {
+   protected Element outputTypedContent(String type, String value, 
+         Presentation presentation, String contentType) {
       if (type.equals("text") || type.equals("richtext")) {
          Element textRegion = new Element("value");
          textRegion.addContent(value);
          return textRegion;
       }
-      else if (type.equals("form")) {
-         Id formId = getIdManager().getId(value);
-         Artifact art = getPresentationItem("form", formId, presentation);
-         PresentableObjectHome home = (PresentableObjectHome) art.getHome();
-         return home.getArtifactAsXml(art);
-      }
-      
-      else if (type.equals("link") || type.equals("inline")) {         
+      else if (type.equals("form") || type.equals("link") || type.equals("inline")) {         
          //String fileId = value;
-         Id fileId = getIdManager().getId(value);
-         Artifact art = getPresentationItem("fileArtifact", fileId, presentation);
+         Element artifactAsXml = null;
+         Id itemId = getIdManager().getId(value);
+         if (!contentType.equals("page")) {
+            Artifact art = getPresentationItem(contentType, itemId, presentation);
 
-         PresentableObjectHome home = (PresentableObjectHome) art.getHome();
-         return home.getArtifactAsXml(art);
+            PresentableObjectHome home = (PresentableObjectHome) art.getHome();
+            artifactAsXml = home.getArtifactAsXml(art);
+         }
+         else {
+            artifactAsXml = getPresentationPageAsXml(getPresentationPage(itemId));
+         }
+         return artifactAsXml;
       }
       return new Element("empty");
    }
@@ -1920,6 +1922,37 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          art = finder.load(itemId);
       }
       return art;
+   }
+   
+   protected Element getPresentationPageAsXml(PresentationPage page) {
+      Element root = new Element("artifact");
+      
+      Element metadata = new Element("metaData");
+      metadata.addContent(createElementNode("id", page.getId().getValue()));
+      metadata.addContent(createElementNode("displayName", page.getTitle()));
+
+      Element type = new Element("type");
+      metadata.addContent(type);
+
+      type.addContent(createElementNode("id", "page"));
+      type.addContent(createElementNode("description", "Presentation Page"));
+      
+      Element fileData = new Element("fileArtifact");
+      Element uri = new Element("uri");
+      uri.addContent("viewPresentation.osp?id=" + page.getPresentation().getId().getValue() + 
+            "&page=" + page.getId().getValue());
+      fileData.addContent(uri);
+
+      root.addContent(metadata);
+      root.addContent(fileData);
+      
+      return root;
+   }
+   
+   protected Element createElementNode(String name, String value) {
+      Element newNode = new Element(name);
+      newNode.addContent(value);
+      return newNode;
    }
 
 }

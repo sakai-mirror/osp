@@ -118,8 +118,10 @@ public class ViewPresentationControl extends AbstractPresentationController impl
          Document doc = null;
          if (pres.getPresentationType().equals(Presentation.TEMPLATE_TYPE))
             doc = getPresentationManager().createDocument(pres);
-         else
-            doc = getPresentationManager().getPresentationPageAsXml(pres);
+         else {
+            String page = (String)request.get("page");
+            doc = getPresentationManager().getPresentationLayoutAsXml(pres, page);
+         }            
          
          model.put("document", doc);
          model.put("renderer", getTransformer(pres, request));

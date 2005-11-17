@@ -1,6 +1,7 @@
 package org.theospi.portfolio.presentation.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,12 +11,15 @@ import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 public class PresentationPage extends IdentifiableObject implements Serializable {
    
    private Id id;
+   private String title;
    private Presentation presentation;
    private PresentationLayout layout;
    //private Style style;
    private String style;
    private int sequence;
    private Set regions = new HashSet();
+   private Date created;
+   private Date modified;
    
    
    public Id getId() {
@@ -61,6 +65,24 @@ public class PresentationPage extends IdentifiableObject implements Serializable
    }
    public void setPresentation(Presentation presentation) {
       this.presentation = presentation;
+   }
+   public String getTitle() {
+      return title;
+   }
+   public void setTitle(String title) {
+      this.title = title;
+   }
+   public Date getCreated() {
+      return created;
+   }
+   public void setCreated(Date created) {
+      this.created = created;
+   }
+   public Date getModified() {
+      return modified;
+   }
+   public void setModified(Date modified) {
+      this.modified = modified;
    }
    
    
