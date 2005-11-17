@@ -53,12 +53,14 @@ public class XHeaderRenderer extends Renderer
 	 */
    public void encodeChildren(FacesContext context, UIComponent inComponent) throws IOException
    {
-      Iterator iter = inComponent.getChildren().iterator();
-      while (iter.hasNext())
-      {
-        UIComponent step = (UIComponent) iter.next();
-        RendererUtil.encodeRecursive(context, step);
-      }      
+      if (inComponent.isRendered()) {
+         Iterator iter = inComponent.getChildren().iterator();
+         while (iter.hasNext())
+         {
+           UIComponent step = (UIComponent) iter.next();
+           RendererUtil.encodeRecursive(context, step);
+         }
+      }
    }
    
 	/**

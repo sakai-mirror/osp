@@ -33,6 +33,38 @@
 
    </managed-bean>
 
+   <managed-bean>
+      <description>AudienceTool</description>
+      <managed-bean-name>audience</managed-bean-name>
+      <managed-bean-class>org.theospi.portfolio.security.tool.AudienceTool</managed-bean-class>
+      <managed-bean-scope>session</managed-bean-scope>
+
+      <managed-property>
+         <description>Service Dependency: idManager</description>
+         <property-name>idManager</property-name>
+         <value>#{Components["idManager"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: authzManager</description>
+         <property-name>authzManager</property-name>
+         <value>#{Components["authzManager"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: siteService</description>
+         <property-name>siteService</property-name>
+         <value>#{Components["org.sakaiproject.service.legacy.site.SiteService"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: toolManager</description>
+         <property-name>toolManager</property-name>
+         <value>#{Components["org.sakaiproject.api.kernel.tool.ToolManager"]}</value>
+      </managed-property>
+
+   </managed-bean>
+
    <navigation-rule>
      <from-view-id>/guidance/tool.jsp</from-view-id>
       <navigation-case>

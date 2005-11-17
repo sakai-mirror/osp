@@ -75,6 +75,32 @@
               <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
                | <a href="<osp:url value="PresentationStats.osp"/>&id=<c:out value="${presentation.id.value}" />">View Stats</a>
              </c:if>
+
+              <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
+               | <a href="<osp:url value="osp.audience.helper/tool.jsf?panel=Main">
+                   <osp:param name="session.org.theospi.portfolio.security.audienceFunction"
+                        value="osp.presentation.view"/>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceQualifier"
+                        value="${presentation.id.value}"/>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceInstructions"
+                        value="Add viewers to your presentation"/>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceGlobalTitle"
+                        value="Audiences to Publish To"/>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceIndTitle"
+                        value="Publish to an Individual"/>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceGroupTitle"
+                        value="Publish to a Group"/>
+                   <osp:param name="session.org.theospi.portfolio.security.audiencePublic"
+                        value="${presentation.isPublic}"/>
+                   <osp:param name="session.org.theospi.portfolio.security.audiencePublicTitle"
+                        value="Publish to the Internet"/>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceSelectedTitle"
+                        value="Selected Audience"/>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceGuestEmail"
+                        value="true"/>
+                   </osp:url>"title="Select Audience..." >Select Audience...
+                 </a>
+             </c:if>
          </div>
       </TD>
       <TD><fmt:formatDate value="${presentation.modified}" pattern="yyy-MM-dd hh:mm a" /></TD>

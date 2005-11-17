@@ -4,6 +4,7 @@ import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.guidance.model.GuidanceItem;
 import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
+import org.theospi.portfolio.shared.tool.HelperToolBase;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
@@ -27,7 +28,7 @@ import java.util.ArrayList;
  * Time: 3:33:43 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GuidanceTool {
+public class GuidanceTool extends HelperToolBase {
 
    private DecoratedGuidance current = null;
 
@@ -105,21 +106,6 @@ public class GuidanceTool {
       session.removeAttribute(GuidanceManager.CURRENT_GUIDANCE_ID);
       current = null;
       return returnToCaller();
-   }
-
-   protected String returnToCaller() {
-      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      Tool tool = ToolManager.getCurrentTool();
-      String url = (String) SessionManager.getCurrentToolSession().getAttribute(
-            tool.getId() + Tool.HELPER_DONE_URL);
-      SessionManager.getCurrentToolSession().removeAttribute(tool.getId() + Tool.HELPER_DONE_URL);
-      try {
-         context.redirect(url);
-      }
-      catch (IOException e) {
-         throw new RuntimeException("Failed to redirect to helper", e);
-      }
-      return null;
    }
 
    public Reference decorateReference(String reference) {

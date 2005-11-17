@@ -65,14 +65,13 @@ public class XHeaderDrawerRenderer extends Renderer
 		
 		boolean initiallyexpanded = OspxTagHelper.parseBoolean(initiallyexpandedStr);
 		
-		//writer.write("<table cellspacing='0' cellpadding='0'><tr><td>");
 		writer.write("<div");
 		TagUtil.writeAttr(writer, "class", cssclass);
 		TagUtil.writeAttr(writer, "id", component.getDivId());
 		if(!initiallyexpanded)
-			TagUtil.writeAttr(writer, "style", "display:none;");
+			TagUtil.writeAttr(writer, "style", "display:none;padding:3%");
       else
-         TagUtil.writeAttr(writer, "style", "display:block;");
+         TagUtil.writeAttr(writer, "style", "display:block;;padding:3%");
 		writer.write(">");
 	}
 
@@ -86,8 +85,8 @@ public class XHeaderDrawerRenderer extends Renderer
 	public void encodeEnd(FacesContext context, UIComponent component) throws IOException
 	{
 		ResponseWriter writer = context.getResponseWriter();
-		
-		writer.write("</div>");
+
+      writer.write("</div>");
 	}
 }
 
