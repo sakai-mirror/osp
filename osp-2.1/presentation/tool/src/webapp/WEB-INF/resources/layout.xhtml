@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+   <head>
+      <title>OSP Presentation Page Layout Example</title>
+   </head>
+   <body>
+      <table border="1">
+         <tr>
+            <td colspan="2">
+               <region id="region_1" xmlns="http://www.osportfolio.org/OspML">
+                  <texttype helpText="Click to add title" isRichText="true" />
+               </region>
+            </td>
+         </tr>
+         <tr>
+            <td rowspan="2">
+               <ul>
+                  <sequence maxOccurs="0" xmlns="http://www.osportfolio.org/OspML" firstChild="region_2">
+                     <li>
+                        <region id="region_2" xmlns="http://www.osportfolio.org/OspML">
+                           <texttype minOccurs="0" helpText="Click to add text" />
+                        </region>
+                     </li>
+                  </sequence>
+               </ul>
+            </td>
+            <td>
+               <region id="region_3" xmlns="http://www.osportfolio.org/OspML">
+                  <inlinetype minOccurs="1" helpText="Click to add content">
+                     <include name="" />
+                     <exclude name="" />
+                  </inlinetype>
+               </region>
+            </td>
+         </tr>
+         <tr>
+            <td>
+               <region id="region_4" xmlns="http://www.osportfolio.org/OspML">
+                  <linktype minOccurs="1" helpText="Click to add content">
+                     <include name="" />
+                     <exclude name="" />
+                  </linktype>
+               </region>
+            </td>
+         </tr>
+         <tr>
+            <td colspan="2">
+               <region id="region_5" xmlns="http://www.osportfolio.org/OspML">
+                  <linktype helpText="Click to add a link">
+                     <include name="" />
+                     <exclude name="" />
+                  </linktype>
+               </region>
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>
