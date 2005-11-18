@@ -1962,12 +1962,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             // Go to the next one.
          }
          else if (Integer.parseInt(iterPage.getSequence())+1 == Integer.parseInt(currentPage)) {
-            previousPage.addContent(getPresentationPageAsXml(page));
+            previousPage.addContent(getPresentationPageAsXml(iterPage));
             navigationElement.addContent(previousPage);
             hasPrevious = true;
          }
          else if (Integer.parseInt(iterPage.getSequence())-1 == Integer.parseInt(currentPage)) {
-            nextPage.addContent(getPresentationPageAsXml(page));
+            nextPage.addContent(getPresentationPageAsXml(iterPage));
             navigationElement.addContent(nextPage);
             hasNext = true;
          }
