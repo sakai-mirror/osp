@@ -249,7 +249,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       try {
          Presentation presentation = (Presentation) getHibernateTemplate().execute(callback);
 
-         if (!presentation.getIsPublic()) {
+         if (!presentation.getIsPublic() &&
+             !presentation.getOwner().equals(getAuthnManager().getAgent())) {
             getAuthzManager().checkPermission(PresentationFunctionConstants.VIEW_PRESENTATION, presentation.getId());
          }
 
@@ -498,13 +499,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                authz.getFunction(), authz.getQualifier());
       }
 
-      // make sure owner always has view authz for presentation they own
-      if (!currentAgentFound) {
-         Authorization newAuthz = new Authorization(agent,
-               PresentationFunctionConstants.VIEW_PRESENTATION, presentation.getId());
-         getAuthzManager().createAuthorization(newAuthz.getAgent(),
-               newAuthz.getFunction(), newAuthz.getQualifier());
-      }
    }
 
    public Collection findPresentationsByOwner(Agent owner) {

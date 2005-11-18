@@ -5,7 +5,9 @@ import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.service.legacy.site.Site;
@@ -14,7 +16,10 @@ import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 
+import javax.faces.context.FacesContext;
 import java.util.*;
+
+import com.sun.faces.util.MessageFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,6 +34,7 @@ public class AudienceTool extends HelperToolBase {
    private IdManager idManager;
    private SiteService siteService;
    private ToolManager toolManager;
+   private AgentManager agentManager;
 
    private List selectedMembers = null;
    private List originalMembers = null;
@@ -36,6 +42,9 @@ public class AudienceTool extends HelperToolBase {
    private String searchUsers;
    private String searchEmails;
    private Site site;
+
+   private String function;
+   private Id qualifier;
 
    private boolean publicAudience = false;
 
@@ -49,11 +58,18 @@ public class AudienceTool extends HelperToolBase {
    protected List fillMemberList() {
       List returned = new ArrayList();
 
-      originalMembers = getAuthzManager().getAuthorizations(null, getFunction(), getQualifier());
+      originalMembers = new ArrayList();
 
-      for (Iterator i=originalMembers.iterator();i.hasNext();) {
+      String id = (String)getAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER);
+      setQualifier(getIdManager().getId(id));
+      setFunction((String)getAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION));
+
+      List authzs = getAuthzManager().getAuthorizations(null, getFunction(), getQualifier());
+
+      for (Iterator i=authzs.iterator();i.hasNext();) {
          Authorization authz = (Authorization)i.next();
          returned.add(new DecoratedMember(this, authz.getAgent()));
+         originalMembers.add(authz.getAgent());
       }
 
       removeAttributes(
@@ -62,13 +78,20 @@ public class AudienceTool extends HelperToolBase {
       return returned;
    }
 
-   protected Id getQualifier() {
-      String id = (String)getAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER);
-      return getIdManager().getId(id);
+   public String getFunction() {
+      return function;
    }
 
-   protected String getFunction() {
-      return (String)getAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION);
+   public void setFunction(String function) {
+      this.function = function;
+   }
+
+   public Id getQualifier() {
+      return qualifier;
+   }
+
+   public void setQualifier(Id qualifier) {
+      this.qualifier = qualifier;
    }
 
    public void setSelectedMembers(List selectedMembers) {
@@ -132,6 +155,13 @@ public class AudienceTool extends HelperToolBase {
       return publicAudience;
    }
 
+   public boolean isWorksiteLimited() {
+      if (getAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED) != null) {
+         return "true".equalsIgnoreCase((String)getAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED));
+      }
+      return false;
+   }
+
    public void setPublicAudience(boolean publicAudience) {
       this.publicAudience = publicAudience;
    }
@@ -155,12 +185,12 @@ public class AudienceTool extends HelperToolBase {
    public List getSiteRoles() {
       List returned = new ArrayList();
       Set roles = getSite().getRoles();
+      String siteId = getSite().getId();
 
       for (Iterator i=roles.iterator();i.hasNext();) {
          Role role = (Role)i.next();
-         for (int it=0;it < 15;it++){
-            returned.add(createSelect(role.getId(), role.getId()));
-         }
+         Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), siteId);
+         returned.add(createSelect(roleAgent.getId().getValue(), role.getId()));
       }
 
       return returned;
@@ -219,4 +249,159 @@ public class AudienceTool extends HelperToolBase {
    public void setSelectedRoles(List selectedRoles) {
       this.selectedRoles = selectedRoles;
    }
+
+   public String processActionRemove() {
+      for (Iterator i=getSelectedMembers().iterator();i.hasNext();) {
+         DecoratedMember member = (DecoratedMember)i.next();
+         if (member.isSelectedForRemoval()) {
+            i.remove();
+         }
+      }
+      return "tool";
+   }
+
+   public String processActionAddUser() {
+      boolean worksiteLimited = isWorksiteLimited();
+      if (!findByEmailOrDisplayName(getSearchUsers(), false, worksiteLimited)) {
+         FacesContext.getCurrentInstance().addMessage(null,
+             MessageFactory.getMessage(FacesContext.getCurrentInstance(),
+                 worksiteLimited?"worksite_user_not_found":"user_not_found", (new Object[] { getSearchUsers() })));
+      }
+      else {
+         setSearchUsers("");
+      }
+      return "tool";
+   }
+
+   public String processActionAddEmail() {
+      boolean worksiteLimited = isWorksiteLimited();
+      if (!findByEmailOrDisplayName(getSearchEmails(), true, worksiteLimited)) {
+         if (worksiteLimited) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                MessageFactory.getMessage(FacesContext.getCurrentInstance(),
+                    "worksite_user_not_found", (new Object[] { getSearchUsers() })));
+         }
+      }
+      else {
+         setSearchEmails("");
+      }
+      return "tool";
+   }
+
+   public String processActionAddGroup() {
+      for (Iterator i=getSelectedRoles().iterator();i.hasNext();) {
+         String roleId = (String)i.next();
+         Agent role = getAgentManager().getAgent(getIdManager().getId(roleId));
+         addAgent(role, "role_exists");
+      }
+      getSelectedRoles().clear();
+      return "tool";
+   }
+
+   public String processActionSearchUsers() {
+      return "search";
+   }
+
+   public AgentManager getAgentManager() {
+      return agentManager;
+   }
+
+   public void setAgentManager(AgentManager agentManager) {
+      this.agentManager = agentManager;
+   }
+
+   /**
+    *
+    * @param displayName - for a guest user, this is the email address
+    * @return
+    */
+   protected boolean findByEmailOrDisplayName(String displayName, boolean includeEmail, boolean worksiteLimited) {
+      List retVal = new ArrayList();
+
+      List guestUsers = null;
+
+      if (includeEmail) {
+         guestUsers = getAgentManager().findByProperty("email", displayName);
+      }
+
+      if (guestUsers == null || guestUsers.size() == 0) {
+         guestUsers = getAgentManager().findByProperty("displayName", displayName);
+      }
+
+      if (guestUsers != null) {
+         retVal.addAll(guestUsers);
+      }
+
+      boolean found = false;
+
+      for (Iterator i=retVal.iterator();i.hasNext();) {
+         found = true;
+         Agent agent = (Agent)i.next();
+         if (worksiteLimited) {
+            if (!checkWorksiteMember(agent)) {
+               return false;
+            }
+         }
+         addAgent(agent, "user_exists");
+      }
+
+      return found;
+   }
+
+   protected void addAgent(Agent agent, String key) {
+      DecoratedMember decoratedAgent = new DecoratedMember(this, agent);
+      if (!getSelectedMembers().contains(decoratedAgent)) {
+         getSelectedMembers().add(decoratedAgent);
+      }
+      else {
+         FacesContext.getCurrentInstance().addMessage(null,
+             MessageFactory.getMessage(FacesContext.getCurrentInstance(),
+                 key, (new Object[] { agent.getDisplayName() })));
+      }
+   }
+
+   protected boolean checkWorksiteMember(Agent agent) {
+      List roles = agent.getWorksiteRoles(getSite().getId());
+      return (roles != null && roles.size() > 0);
+   }
+
+   public String processActionSave() {
+      List added = new ArrayList();
+
+      for (Iterator i=getSelectedMembers().iterator();i.hasNext();) {
+         DecoratedMember member = (DecoratedMember)i.next();
+
+         if (originalMembers.contains(member.getBase())) {
+            originalMembers.remove(member.getBase());
+         }
+         else {
+            added.add(member.getBase());
+         }
+      }
+
+      setSelectedMembers(null);
+      addMembers(added);
+      removeMembers(originalMembers);
+
+      return returnToCaller();
+   }
+
+   protected void addMembers(List added) {
+      for (Iterator i=added.iterator();i.hasNext();) {
+         Agent agent = (Agent)i.next();
+
+         getAuthzManager().createAuthorization(agent,
+            getFunction(), getQualifier());
+      }
+   }
+
+   protected void removeMembers(List added) {
+      for (Iterator i=added.iterator();i.hasNext();) {
+         Agent agent = (Agent)i.next();
+
+         getAuthzManager().deleteAuthorization(agent,
+            getFunction(), getQualifier());
+      }
+   }
+
 }

@@ -61,7 +61,7 @@ public class HelperToolBase {
       }
    }
 
-   protected Object createSelect(String id, String description) {
+   protected Object createSelect(Object id, String description) {
       SelectItem item = new SelectItem(id, description);
       return item;
    }

@@ -48,4 +48,25 @@ public class DecoratedMember {
    public void setParent(AudienceTool parent) {
       this.parent = parent;
    }
+
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (!(o instanceof DecoratedMember)) {
+         return false;
+      }
+
+      final DecoratedMember decoratedMember = (DecoratedMember) o;
+
+      if (!base.equals(decoratedMember.base)) {
+         return false;
+      }
+
+      return true;
+   }
+
+   public int hashCode() {
+      return base.hashCode();
+   }
 }

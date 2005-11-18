@@ -39,4 +39,7 @@ public interface AudienceSelectionHelper {
    public static final String AUDIENCE_GUEST_EMAIL =
          "org.theospi.portfolio.security.audienceGuestEmail";
 
+   public static final String AUDIENCE_WORKSITE_LIMITED =
+         "org.theospi.portfolio.security.audienceWorksiteLimited";
+
 }

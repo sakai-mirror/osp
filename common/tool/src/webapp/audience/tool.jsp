@@ -23,46 +23,6 @@
    <ospx:splitarea direction="horizontal" width="100%">
       <ospx:splitsection size="75%" valign="top">
          <ospx:xheader>
-            <ospx:xheadertitle id="individualTitle">
-                <h:outputText value="#{audience.individualTitle}" />
-            </ospx:xheadertitle>
-            <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-               <!-- user drawer -->
-							<ospx:splitarea direction="horizontal" width="100%">
-								<ospx:splitsection size="25%" valign="center">
-									<h:panelGrid columns="1">
-	                  <h:outputLabel value="#{msgs.user_id_label}" for="userId" />
-	                  <h:commandButton action="tool"
-	                     value="#{msgs.search_members}"/>
-	                           <h:outputText value="" />
-	                           <h:outputText value="" />
-	              	</h:panelGrid>
-								</ospx:splitsection>
-								<ospx:splitsection size="50%" valign="top">
-										<sakai:instruction_message value="#{msgs.userid_instructions}" />
-                  	<h:inputTextarea value="#{audience.searchUsers}" id="userId" cols="60" rows="2"/>
-								</ospx:splitsection>
-								<ospx:splitsection size="24%" valign="center">
-	                  <h:commandButton action="tool"
-	                     value="#{msgs.add_members}"/>
-								</ospx:splitsection>
-							</ospx:splitarea>
-							<ospx:splitarea direction="horizontal" width="100%">
-								<ospx:splitsection size="25%" valign="center">
-	                  <h:outputLabel value="#{msgs.email_label}" for="emails" />
-								</ospx:splitsection>
-								<ospx:splitsection size="50%" valign="top">
-										<sakai:instruction_message value="#{msgs.email_instructions}" />
-	                	<h:inputTextarea value="#{audience.searchEmails}" id="emails" cols="60" rows="2"/>
-								</ospx:splitsection>
-								<ospx:splitsection size="24%" valign="center">
-	                  <h:commandButton action="tool"
-	                     value="#{msgs.add_members}"/>
-									</ospx:splitsection>
-							</ospx:splitarea>
-            </ospx:xheaderdrawer>
-         </ospx:xheader>
-         <ospx:xheader>
             <ospx:xheadertitle id="groupTitle">
                 <h:outputText value="#{audience.groupTitle}" />
             </ospx:xheadertitle>
@@ -81,12 +41,50 @@
 								</ospx:splitsection>
 								<ospx:splitsection size="25%" valign="top">
                   <h:panelGrid columns="1">
-                     <h:commandButton action="tool"
+                     <h:commandButton action="#{audience.processActionAddGroup}"
                         value="#{msgs.add_all}"/>
-                     <h:commandButton action="tool"
-                        value="#{msgs.add_selected}"/>
                   </h:panelGrid>
 								</ospx:splitsection>
+							</ospx:splitarea>
+            </ospx:xheaderdrawer>
+         </ospx:xheader>
+         <ospx:xheader>
+            <ospx:xheadertitle id="individualTitle">
+                <h:outputText value="#{audience.individualTitle}" />
+            </ospx:xheadertitle>
+            <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
+               <!-- user drawer -->
+							<ospx:splitarea direction="horizontal" width="75%">
+								<ospx:splitsection size="25%" valign="bottom">
+									<h:panelGrid columns="1">
+	                  <h:outputLabel value="#{msgs.user_id_label}" for="userId" />
+	              	</h:panelGrid>
+								</ospx:splitsection>
+								<ospx:splitsection size="50%" valign="top">
+										<sakai:instruction_message value="#{msgs.userid_instructions}" />
+                  	<h:inputText value="#{audience.searchUsers}" id="userId" size="70" />
+								</ospx:splitsection>
+								<ospx:splitsection size="24%" valign="bottom">
+	                  <h:commandButton action="#{audience.processActionAddUser}"
+	                     value="#{msgs.add_members}"/>
+								</ospx:splitsection>
+							</ospx:splitarea>
+              <h:commandButton action="#{audience.processActionSearchUsers}"
+                 value="#{msgs.search_members}"/>
+                       <h:outputText value="" />
+                       <h:outputText value="" />
+							<ospx:splitarea direction="horizontal" width="75%">
+								<ospx:splitsection size="25%" valign="bottom">
+	                  <h:outputLabel value="#{msgs.email_label}" for="emails" />
+								</ospx:splitsection>
+								<ospx:splitsection size="50%" valign="top">
+										<sakai:instruction_message value="#{msgs.email_instructions}" />
+	                	<h:inputText value="#{audience.searchEmails}" id="emails" size="70" />
+								</ospx:splitsection>
+								<ospx:splitsection size="24%" valign="bottom">
+	                  <h:commandButton action="#{audience.processActionAddEmail}"
+	                     value="#{msgs.add_members}"/>
+									</ospx:splitsection>
 							</ospx:splitarea>
             </ospx:xheaderdrawer>
          </ospx:xheader>
@@ -104,7 +102,7 @@
       <ospx:splitsection size="25%" valign="top">
             <h:panelGrid columns="2">
            <sakai:view_title value="#{audience.selectedTitle}" />
-               <h:commandButton action="tool"
+               <h:commandButton action="#{audience.processActionRemove}"
                   value="#{msgs.remove_member}"/>
             </h:panelGrid>
             <ospx:scrollablearea id="selectedMembers" width="100%" height="100%">
@@ -120,6 +118,8 @@
 
    <h:commandButton action="#{audience.processActionCancel}"
       value="#{msgs.cancel_audience}"/>
+   <h:commandButton action="#{audience.processActionSave}"
+      value="#{msgs.save_audience}"/>
 
 </h:form>
 
