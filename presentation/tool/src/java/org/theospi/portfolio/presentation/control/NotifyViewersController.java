@@ -138,7 +138,8 @@ public class NotifyViewersController extends AbstractPresentationController impl
       request.put(ListScroll.ENSURE_VISIBLE_TAG, "" + getPresentationIndex(presentations, presentation));
 
       model.put("presentations", getListScrollIndexer().indexList(request, model, presentations));
-
+      model.put("osp_agent", getAuthManager().getAgent());
+      
       return new ModelAndView("success", model);
    }
 
