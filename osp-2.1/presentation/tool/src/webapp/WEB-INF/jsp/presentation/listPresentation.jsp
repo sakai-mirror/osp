@@ -98,6 +98,8 @@
                         value="Selected Audience"/>
                    <osp:param name="session.org.theospi.portfolio.security.audienceGuestEmail"
                         value="true"/>
+                    <osp:param name="session.org.theospi.portfolio.security.audienceWorksiteLimited"
+                        value="true"/>
                    </osp:url>"title="Select Audience..." >Select Audience...
                  </a>
              </c:if>

@@ -10,12 +10,19 @@
    <!-- Example custom JSF component used only in this tool -->
 
 
-  <application>
-    <message-bundle>org.theospi.portfolio.guidance.messages</message-bundle>
-    <locale-config>
-      <default-locale>en</default-locale>
-    </locale-config>
-  </application>
+   <application>
+     <message-bundle>org.theospi.portfolio.guidance.messages</message-bundle>
+     <locale-config>
+       <default-locale>en</default-locale>
+     </locale-config>
+   </application>
+
+   <application>
+     <message-bundle>org.theospi.portfolio.audience.messages</message-bundle>
+     <locale-config>
+       <default-locale>en</default-locale>
+     </locale-config>
+   </application>
 
    <!-- =================== Tool Beans ============== -->
 
@@ -49,6 +56,12 @@
          <description>Service Dependency: authzManager</description>
          <property-name>authzManager</property-name>
          <value>#{Components["authzManager"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: agentManager</description>
+         <property-name>agentManager</property-name>
+         <value>#{Components["agentManager"]}</value>
       </managed-property>
 
       <managed-property>
