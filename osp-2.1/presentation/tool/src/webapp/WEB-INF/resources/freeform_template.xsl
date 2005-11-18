@@ -119,21 +119,61 @@
       </a>
       <xsl:text> inline</xsl:text>
    </xsl:template>
-<!-- inline file -->
+   <!-- inline file -->
 
-<xsl:template match="region">
-   <xsl:text>Unknown region type</xsl:text>
-</xsl:template>
+   <xsl:template match="region">
+      <xsl:text>Unknown region type</xsl:text>
+   </xsl:template>
 
-<!-- Identity transformation -->
-<xsl:template match="@*|*">
-   <xsl:param name="currentSeqNo" />
-   <xsl:copy>
-      <xsl:apply-templates select="@*|node()" >
-         <xsl:with-param name="currentSeqNo" select="$currentSeqNo" />
-      </xsl:apply-templates>
-   </xsl:copy>
-</xsl:template>
+   <xsl:template name="apply-navigation">
+      <xsl:if test="$presContent/ospiPresentation/navigation/nextPage |
+                    $presContent/ospiPresentation/navigation/previousPage">
+<div class="navIntraTool">
+   <xsl:if test="$presContent/ospiPresentation/navigation/nextPage">
+<a title="Next">
+<xsl:attribute name="href">
+   <xsl:value-of
+      select="$presContent/ospiPresentation/navigation/nextPage/artifact/fileArtifact/uri"/>
+</xsl:attribute>
+<xsl:value-of
+   select="$presContent/ospiPresentation/navigation/nextPage/artifact/metaData/displayName"/>
+</a>
+   </xsl:if>
+   <xsl:text>   </xsl:text>
+   <xsl:if test="$presContent/ospiPresentation/navigation/previousPage">
+<a title="Previous">
+<xsl:attribute name="href">
+   <xsl:value-of
+      select="$presContent/ospiPresentation/navigation/previousPage/artifact/fileArtifact/uri"/>
+</xsl:attribute>
+<xsl:value-of
+   select="$presContent/ospiPresentation/navigation/previousPage/artifact/metaData/displayName"/>
+</a>
+   </xsl:if>
+</div>
+      </xsl:if>
+   </xsl:template>
+
+   <!-- body tag -->
+   <xsl:template match="xhtml:body">
+      <xsl:param name="currentSeqNo" />
+      <xsl:copy>
+         <xsl:call-template name="apply-navigation"/>
+         <xsl:apply-templates select="@*|node()" >
+            <xsl:with-param name="currentSeqNo" select="$currentSeqNo" />
+         </xsl:apply-templates>
+      </xsl:copy>
+   </xsl:template>
+
+   <!-- Identity transformation -->
+   <xsl:template match="@*|*">
+      <xsl:param name="currentSeqNo" />
+      <xsl:copy>
+         <xsl:apply-templates select="@*|node()" >
+            <xsl:with-param name="currentSeqNo" select="$currentSeqNo" />
+         </xsl:apply-templates>
+      </xsl:copy>
+   </xsl:template>
 
 </xsl:stylesheet>
 
