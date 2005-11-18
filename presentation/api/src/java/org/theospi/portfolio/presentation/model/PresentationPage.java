@@ -16,7 +16,7 @@ public class PresentationPage extends IdentifiableObject implements Serializable
    private PresentationLayout layout;
    //private Style style;
    private String style;
-   private int sequence;
+   private String sequence;
    private Set regions = new HashSet();
    private Date created;
    private Date modified;
@@ -40,10 +40,10 @@ public class PresentationPage extends IdentifiableObject implements Serializable
    public void setLayout(PresentationLayout layout) {
       this.layout = layout;
    }
-   public int getSequence() {
+   public String getSequence() {
       return sequence;
    }
-   public void setSequence(int sequence) {
+   public void setSequence(String sequence) {
       this.sequence = sequence;
    }
 //   public Style getStyle() {

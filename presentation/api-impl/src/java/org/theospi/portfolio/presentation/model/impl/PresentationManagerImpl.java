@@ -118,7 +118,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private AgentManager agentManager;
    private AuthorizationFacade authzManager = null;
    private AuthenticationManager authnManager = null;
-   //private RepositoryManager repositoryManager = null;
    private IdManager idManager = null;
    private WritableObjectHome fileHome;
    private HomeFactory homeFactory = null;
@@ -1833,7 +1832,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       
       Element root = new Element("ospiPresentation");
       Element layoutElement = new Element("layout");
-      Element navigationElement = new Element("navigation");
       Element regionsElement = new Element("regions");
       
       PresentationPage page = getPresentationPage(pageId);
@@ -1871,7 +1869,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }      
       
       root.addContent(layoutElement);
-      root.addContent(navigationElement);
+      root.addContent(createNavigationElement(page));
       root.addContent(regionsElement);
       return new Document(root);
    }
@@ -1947,6 +1945,36 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       Element newNode = new Element(name);
       newNode.addContent(value);
       return newNode;
+   }
+   
+   
+   protected Element createNavigationElement(PresentationPage page) {
+      boolean hasPrevious = false;
+      boolean hasNext = false;
+      String currentPage = page.getSequence();
+      Element navigationElement = new Element("navigation");
+      Element previousPage = new Element("previousPage");
+      Element nextPage = new Element("nextPage");
+      List pages = getPresentationPagesByPresentation(page.getPresentation().getId());
+      for (Iterator i = pages.iterator(); i.hasNext();) {
+         PresentationPage iterPage = (PresentationPage)i.next();
+         if (iterPage.getSequence() == null || iterPage.getSequence().equals("")) {
+            // Go to the next one.
+         }
+         else if (Integer.parseInt(iterPage.getSequence())+1 == Integer.parseInt(currentPage)) {
+            previousPage.addContent(getPresentationPageAsXml(page));
+            navigationElement.addContent(previousPage);
+            hasPrevious = true;
+         }
+         else if (Integer.parseInt(iterPage.getSequence())-1 == Integer.parseInt(currentPage)) {
+            nextPage.addContent(getPresentationPageAsXml(page));
+            navigationElement.addContent(nextPage);
+            hasNext = true;
+         }
+         if (hasPrevious && hasNext)
+            break;
+      }
+      return navigationElement;
    }
 
 }
