@@ -69,8 +69,8 @@
 	                     value="#{msgs.add_members}"/>
 								</ospx:splitsection>
 							</ospx:splitarea>
-              <h:commandButton action="#{audience.processActionSearchUsers}"
-                 value="#{msgs.search_members}"/>
+              <h:commandButton action="browse"
+                 value="#{msgs.browse_members}"/>
                        <h:outputText value="" />
                        <h:outputText value="" />
 							<ospx:splitarea direction="horizontal" width="75%">
@@ -100,19 +100,9 @@
          </ospx:xheader>
       </ospx:splitsection>
       <ospx:splitsection size="25%" valign="top">
-            <h:panelGrid columns="2">
-           <sakai:view_title value="#{audience.selectedTitle}" />
-               <h:commandButton action="#{audience.processActionRemove}"
-                  value="#{msgs.remove_member}"/>
-            </h:panelGrid>
-            <ospx:scrollablearea id="selectedMembers" width="100%" height="100%">
-               <sakai:flat_list value="#{audience.selectedMembers}" var="member">
-                  <h:column>
-                     <h:selectBooleanCheckbox id="memberSelect" value="#{member.selectedForRemoval}" />
-                     <h:outputLabel value="#{member.displayName}" for="memberSelect" />
-                  </h:column>
-               </sakai:flat_list>
-            </ospx:scrollablearea>
+         <f:subview id="selectedAudience">
+            <%@ include file="audience.inc" %>
+         </f:subview>
       </ospx:splitsection>
    </ospx:splitarea>
 

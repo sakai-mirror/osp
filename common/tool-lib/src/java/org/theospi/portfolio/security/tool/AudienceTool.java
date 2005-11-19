@@ -1,6 +1,7 @@
 package org.theospi.portfolio.security.tool;
 
 import org.theospi.portfolio.shared.tool.HelperToolBase;
+import org.theospi.portfolio.shared.tool.PagingList;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
@@ -9,14 +10,17 @@ import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.authzGroup.Member;
 import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.Group;
+import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 
 import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
 import java.util.*;
 
 import com.sun.faces.util.MessageFactory;
@@ -42,6 +46,10 @@ public class AudienceTool extends HelperToolBase {
    private String searchUsers;
    private String searchEmails;
    private Site site;
+
+   private List selectedRolesFilter;
+   private List selectedGroupsFilter;
+   private PagingList browseUsers = null;
 
    private String function;
    private Id qualifier;
@@ -120,6 +128,10 @@ public class AudienceTool extends HelperToolBase {
 
    public String getInstructions() {
       return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS);
+   }
+
+   public String getFilterTitle() {
+      return "Select filter criteria to narrow user list";
    }
 
    public String getGlobalTitle() {
@@ -250,14 +262,13 @@ public class AudienceTool extends HelperToolBase {
       this.selectedRoles = selectedRoles;
    }
 
-   public String processActionRemove() {
+   public void processActionRemove(ActionEvent event) {
       for (Iterator i=getSelectedMembers().iterator();i.hasNext();) {
          DecoratedMember member = (DecoratedMember)i.next();
-         if (member.isSelectedForRemoval()) {
+         if (member.isSelected()) {
             i.remove();
          }
       }
-      return "tool";
    }
 
    public String processActionAddUser() {
@@ -296,10 +307,6 @@ public class AudienceTool extends HelperToolBase {
       }
       getSelectedRoles().clear();
       return "tool";
-   }
-
-   public String processActionSearchUsers() {
-      return "search";
    }
 
    public AgentManager getAgentManager() {
@@ -402,6 +409,78 @@ public class AudienceTool extends HelperToolBase {
          getAuthzManager().deleteAuthorization(agent,
             getFunction(), getQualifier());
       }
+   }
+
+   public void processActionApplyFilter(ActionEvent event) {
+      Set members = getSite().getMembers();
+      List siteUsers = new ArrayList();
+      MemberFilter filter = new MemberFilter(this);
+
+      for (Iterator i=members.iterator();i.hasNext();) {
+         Member user = (Member)i.next();
+         DecoratedMember decoratedMember =
+               new DecoratedMember(this, getAgentManager().getAgent(user.getUserId()));
+         if (filter.includeMember(decoratedMember)) {
+            siteUsers.add(decoratedMember);
+         }
+      }
+
+      setBrowseUsers(new PagingList(siteUsers));
+   }
+
+   public List getRoles() {
+      List siteRoles = getSiteRoles();
+      siteRoles.add(0, createSelect("", "<none>"));
+      return siteRoles;
+   }
+
+   public boolean getHasGroups() {
+      return getSite().hasGroups();
+   }
+
+   public List getGroups() {
+      List siteGroups = getSiteGroups();
+      siteGroups.add(0, createSelect("", "<none>"));
+      return siteGroups;
+   }
+
+   public List getSelectedRolesFilter() {
+      return selectedRolesFilter;
+   }
+
+   public void setSelectedRolesFilter(List selectedRolesFilter) {
+      this.selectedRolesFilter = selectedRolesFilter;
+   }
+
+   public List getSelectedGroupsFilter() {
+      return selectedGroupsFilter;
+   }
+
+   public void setSelectedGroupsFilter(List selectedGroupsFilter) {
+      this.selectedGroupsFilter = selectedGroupsFilter;
+   }
+
+   public PagingList getBrowseUsers() {
+      if (browseUsers == null) {
+         processActionApplyFilter(null);
+      }
+      return browseUsers;
+   }
+
+   public void setBrowseUsers(PagingList browseUsers) {
+      this.browseUsers = browseUsers;
+   }
+
+   public void processActionAddBrowseSelected(ActionEvent event) {
+      for (Iterator i=getBrowseUsers().getWholeList().iterator();i.hasNext();) {
+         DecoratedMember member = (DecoratedMember)i.next();
+         if (member.isSelected()) {
+            Agent user = member.getBase();
+            addAgent(user, "user_exists");
+            member.setSelected(false);
+         }
+      }
+      getSelectedRoles().clear();
    }
 
 }

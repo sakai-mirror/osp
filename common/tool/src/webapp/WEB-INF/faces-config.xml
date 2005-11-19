@@ -79,6 +79,23 @@
    </managed-bean>
 
    <navigation-rule>
+     <from-view-id>/audience/tool.jsp</from-view-id>
+      <navigation-case>
+         <from-outcome>browse</from-outcome>
+         <to-view-id>/audience/browse.jsp</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
+   <navigation-rule>
+     <from-view-id>/audience/browse.jsp</from-view-id>
+      <navigation-case>
+         <from-outcome>main</from-outcome>
+         <to-view-id>/audience/tool.jsp</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
      <from-view-id>/guidance/tool.jsp</from-view-id>
       <navigation-case>
          <from-outcome>list</from-outcome>

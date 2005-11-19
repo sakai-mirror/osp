@@ -2,6 +2,8 @@ package org.theospi.portfolio.security.tool;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -13,7 +15,7 @@ public class DecoratedMember {
 
    private Agent base;
    private AudienceTool parent;
-   private boolean selectedForRemoval = false;
+   private boolean selected = false;
 
    public DecoratedMember(AudienceTool parent, Agent base) {
       this.base = base;
@@ -25,12 +27,12 @@ public class DecoratedMember {
       return base.getDisplayName() + " (" + base.getId().getValue() + ")";
    }
 
-   public boolean isSelectedForRemoval() {
-      return selectedForRemoval;
+   public boolean isSelected() {
+      return selected;
    }
 
-   public void setSelectedForRemoval(boolean selectedForRemoval) {
-      this.selectedForRemoval = selectedForRemoval;
+   public void setSelected(boolean selected) {
+      this.selected = selected;
    }
 
    public Agent getBase() {
@@ -47,6 +49,14 @@ public class DecoratedMember {
 
    public void setParent(AudienceTool parent) {
       this.parent = parent;
+   }
+
+   public Agent getRole() {
+      List roles = getBase().getWorksiteRoles(getParent().getSite().getId());
+      if (roles.size() > 0) {
+         return (Agent)roles.get(0);
+      }
+      return null;
    }
 
    public boolean equals(Object o) {
