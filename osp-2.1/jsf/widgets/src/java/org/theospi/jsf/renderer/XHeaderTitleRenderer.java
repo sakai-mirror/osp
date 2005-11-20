@@ -84,8 +84,9 @@ public class XHeaderTitleRenderer extends Renderer
 		XHeaderTitleComponent component = (XHeaderTitleComponent)inComponent;
 		
 		String id = (String) RendererUtil.getAttribute(context, component, "id");
-		String cssclass = (String) RendererUtil.getAttribute(context, component, "cssclass");
-		
+      String cssclass = (String) RendererUtil.getAttribute(context, component, "cssclass");
+      String value = (String) RendererUtil.getAttribute(context, component, "value");
+
 		if(cssclass == null)
 			cssclass = "xheader";
 		
@@ -115,6 +116,12 @@ public class XHeaderTitleRenderer extends Renderer
          else         
             writer.writeAttribute("src", BARIMG_DOWN, "src");
          writer.endElement("img");
+
+         if (value != null) {
+            writer.write(value);
+         }
+
+         writer.write("</span>");
 		}
 	}
 
@@ -128,7 +135,6 @@ public class XHeaderTitleRenderer extends Renderer
 	public void encodeEnd(FacesContext context, UIComponent component) throws IOException
 	{		
 		ResponseWriter writer = context.getResponseWriter();
-      writer.write("</span>");
 		writer.write("</div>");
 	}
    

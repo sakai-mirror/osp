@@ -96,6 +96,8 @@
                         value="Publish to the Internet"/>
                    <osp:param name="session.org.theospi.portfolio.security.audienceSelectedTitle"
                         value="Selected Audience"/>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceFilterInstructions"
+                        value="Select filter criteria to narrow user list"/>                                               
                    <osp:param name="session.org.theospi.portfolio.security.audienceGuestEmail"
                         value="true"/>
                     <osp:param name="session.org.theospi.portfolio.security.audienceWorksiteLimited"

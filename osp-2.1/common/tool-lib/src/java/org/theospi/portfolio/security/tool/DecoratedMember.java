@@ -23,8 +23,11 @@ public class DecoratedMember {
    }
 
    public String getDisplayName() {
-
-      return base.getDisplayName() + " (" + base.getId().getValue() + ")";
+      String baseName = base.getId().getValue();
+      if (base.isRole()) {
+         baseName = "role";
+      }
+      return base.getDisplayName() + " (" + baseName + ")";
    }
 
    public boolean isSelected() {

@@ -30,11 +30,16 @@ xheader
                 
        <span class="tag">&lt;ospx:xheadertitle</span> 
          <span="param">id</span> = <span class="value">"headerDivId"</span>
+         <span="param">value</span> = <span class="value">"header title"</span>&gt;<br>
+         &nbsp; &nbsp; &nbsp; &nbsp;
+         The title of the bar.  This text will be clickable to collapse the header.
+         <br>
+         &nbsp; &nbsp; &nbsp; &nbsp;
          <span="param">rendered</span> = <span class="value">"true/false"</span>&gt;<br>
-         &nbsp; &nbsp; &nbsp; &nbsp; 
+         &nbsp; &nbsp; &nbsp; &nbsp;
          The title of the bar, no underarea
          <br>
-         &nbsp; &nbsp; &nbsp; &nbsp; 
+         &nbsp; &nbsp; &nbsp; &nbsp;
        <span class="tag">&lt;/ospx:xheadertitle&gt</span>
             <br>
             
@@ -62,15 +67,11 @@ xheader
     <br><br>
     <br><br>
    <ospx:xheader>
-       <ospx:xheadertitle id="testtitle" cssclass="xheader">
-            <h:outputText value="Another Title -" />
-        </ospx:xheadertitle>
+       <ospx:xheadertitle id="testtitle" cssclass="xheader" value="Another Title -" />
        <ospx:xheaderdrawer>
             <h:outputText value="This inner text is what goes into the under area." />
             <ospx:xheader>
-                <ospx:xheadertitle cssclass="xheader">
-                     <h:outputText value="Embeded title -" />
-                 </ospx:xheadertitle>
+                <ospx:xheadertitle cssclass="xheader" value="Embeded title -" />
                 <ospx:xheaderdrawer>
                      <h:outputText value="This inner text is what goes into the embedded under area." />
                  </ospx:xheaderdrawer>
@@ -80,8 +81,7 @@ xheader
     <br><br>
     <br><br>
    <ospx:xheader>
-       <ospx:xheadertitle id="title55544" cssclass="xheader">
-            <h:outputText value="Title -" />
+       <ospx:xheadertitle id="title55544" cssclass="xheader" value="Title -" >
             <h:commandButton value="Preview" type="button" style="act" />
         </ospx:xheadertitle>
        <ospx:xheaderdrawer id="underarea123" initiallyexpanded="true" cssclass="theUnderArea">
