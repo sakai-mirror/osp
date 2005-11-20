@@ -32,6 +32,7 @@ import org.sakaiproject.jsf.util.TagUtil;
 public class XHeaderTitleTag extends UIComponentTag
 {
 	private String cssclass = null;
+   private String value = null;
 
 	public String getComponentType()
 	{
@@ -52,10 +53,19 @@ public class XHeaderTitleTag extends UIComponentTag
 	protected void setProperties(UIComponent component)
 	{
 		super.setProperties(component);
-		TagUtil.setString(component, "cssclass", cssclass);
+      TagUtil.setString(component, "cssclass", cssclass);
+      TagUtil.setString(component, "value", value);
 	}
 
 	public void setCssclass(String string)		{	cssclass = string;	}
+
+   public String getValue() {
+      return value;
+   }
+
+   public void setValue(String value) {
+      this.value = value;
+   }
 }
 
 

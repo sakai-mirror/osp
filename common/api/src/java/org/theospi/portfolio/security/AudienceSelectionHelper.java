@@ -42,4 +42,7 @@ public interface AudienceSelectionHelper {
    public static final String AUDIENCE_WORKSITE_LIMITED =
          "org.theospi.portfolio.security.audienceWorksiteLimited";
 
+   public static final String AUDIENCE_FILTER_INSTRUCTIONS =
+         "org.theospi.portfolio.security.audienceFilterInstructions";
+
 }

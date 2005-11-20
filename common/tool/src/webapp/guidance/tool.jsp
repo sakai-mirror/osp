@@ -21,9 +21,7 @@
 
 <h:form>
   <ospx:xheader>
-      <ospx:xheadertitle id="instructionTitle">
-          <h:outputText value="#{msgs.instruction_title_add}" />
-      </ospx:xheadertitle>
+      <ospx:xheadertitle id="instructionTitle" value="#{msgs.instruction_title_add}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
           <ospx:splitarea direction="horizontal" width="100%">
              <ospx:splitsection size="475" valign="top">
@@ -49,9 +47,7 @@
   </ospx:xheader>
 
   <ospx:xheader>
-      <ospx:xheadertitle id="exampleTitle">
-          <h:outputText value="#{msgs.example_title_add}" />
-      </ospx:xheadertitle>
+      <ospx:xheadertitle id="exampleTitle" value="#{msgs.example_title_add}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
           <ospx:splitarea direction="horizontal" width="100%">
              <ospx:splitsection size="475" valign="top">
@@ -77,9 +73,7 @@
   </ospx:xheader>
 
   <ospx:xheader>
-      <ospx:xheadertitle id="rationaleTitle">
-          <h:outputText value="#{msgs.rationale_title_add}" />
-      </ospx:xheadertitle>
+      <ospx:xheadertitle id="rationaleTitle" value="#{msgs.rationale_title_add}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
           <ospx:splitarea direction="horizontal" width="100%">
              <ospx:splitsection size="475" valign="top">

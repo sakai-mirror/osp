@@ -23,8 +23,7 @@
    <ospx:splitarea direction="horizontal" width="100%">
       <ospx:splitsection size="75%" valign="top">
          <ospx:xheader>
-            <ospx:xheadertitle id="browseFilter">
-               <h:outputText value="#{audience.filterTitle}  " />
+            <ospx:xheadertitle id="browseFilter" value="#{audience.filterTitle}  ">
                <h:commandButton actionListener="#{audience.processActionApplyFilter}"
                   value="#{msgs.apply_filter}"/>
             </ospx:xheadertitle>

@@ -31,9 +31,7 @@
         .tabSizeMid{width:120px;}
         </style></f:verbatim>
         <ospx:xheader>
-            <ospx:xheadertitle id="mainTitleDIV">
-                <h:outputText value="Portfolio: A Portfolio for something" />
-                
+            <ospx:xheadertitle id="mainTitleDIV" value="Portfolio: A Portfolio for something">
                 <h:commandButton value="Preview" alt="Preview" />
             </ospx:xheadertitle>
             <ospx:xheaderdrawer cssclass="drawerBorder">
@@ -125,9 +123,7 @@
         
         
         <ospx:xheader>
-            <ospx:xheadertitle id="portContentsDIV">
-                <h:outputText value="Portfolio Contents" />
-            </ospx:xheadertitle>
+            <ospx:xheadertitle id="portContentsDIV" value="Portfolio Contents" />
         </ospx:xheader>
         
         <ospx:splitarea direction="horizontal" width="100%">

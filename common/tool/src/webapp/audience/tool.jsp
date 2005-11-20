@@ -23,9 +23,7 @@
    <ospx:splitarea direction="horizontal" width="100%">
       <ospx:splitsection size="75%" valign="top">
          <ospx:xheader>
-            <ospx:xheadertitle id="groupTitle">
-                <h:outputText value="#{audience.groupTitle}" />
-            </ospx:xheadertitle>
+            <ospx:xheadertitle id="groupTitle" value="#{audience.groupTitle}" />
             <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
                <!-- worksite group drawer -->
 							<ospx:splitarea direction="horizontal" width="100%">
@@ -49,9 +47,7 @@
             </ospx:xheaderdrawer>
          </ospx:xheader>
          <ospx:xheader>
-            <ospx:xheadertitle id="individualTitle">
-                <h:outputText value="#{audience.individualTitle}" />
-            </ospx:xheadertitle>
+            <ospx:xheadertitle id="individualTitle" value="#{audience.individualTitle}" />
             <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
                <!-- user drawer -->
 							<ospx:splitarea direction="horizontal" width="75%">
@@ -89,9 +85,7 @@
             </ospx:xheaderdrawer>
          </ospx:xheader>
          <ospx:xheader rendered="#{audience.publicCapable}">
-            <ospx:xheadertitle id="publicTitle">
-                <h:outputText value="#{audience.publicTitle}" />
-            </ospx:xheadertitle>
+            <ospx:xheadertitle id="publicTitle" value="#{audience.publicTitle}" />
             <ospx:xheaderdrawer initiallyexpanded="true"
                cssclass="drawerBorder">
                <h:selectBooleanCheckbox id="isPublic" value="#{audience.publicAudience}" />

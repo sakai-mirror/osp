@@ -131,7 +131,7 @@ public class AudienceTool extends HelperToolBase {
    }
 
    public String getFilterTitle() {
-      return "Select filter criteria to narrow user list";
+      return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS);
    }
 
    public String getGlobalTitle() {
@@ -412,7 +412,7 @@ public class AudienceTool extends HelperToolBase {
    }
 
    public void processActionApplyFilter(ActionEvent event) {
-      Set members = getSite().getMembers();
+      Set members = getGroupMembers();
       List siteUsers = new ArrayList();
       MemberFilter filter = new MemberFilter(this);
 
@@ -426,6 +426,25 @@ public class AudienceTool extends HelperToolBase {
       }
 
       setBrowseUsers(new PagingList(siteUsers));
+   }
+
+   protected Set getGroupMembers() {
+      Set members = new HashSet();
+      List filterGroups = new ArrayList();
+      filterGroups.addAll(getSelectedGroupsFilter());
+      filterGroups.remove("");
+
+      if (!getHasGroups() || filterGroups.size() == 0) {
+         return getSite().getMembers();
+      }
+
+      for (Iterator i=filterGroups.iterator();i.hasNext();) {
+         String groupId = (String)i.next();
+         Group group = getSite().getGroup(groupId);
+         members.addAll(group.getMembers());
+      }
+
+      return members;
    }
 
    public List getRoles() {
@@ -453,6 +472,9 @@ public class AudienceTool extends HelperToolBase {
    }
 
    public List getSelectedGroupsFilter() {
+      if (selectedGroupsFilter == null) {
+         selectedGroupsFilter = new ArrayList();
+      }
       return selectedGroupsFilter;
    }
 
