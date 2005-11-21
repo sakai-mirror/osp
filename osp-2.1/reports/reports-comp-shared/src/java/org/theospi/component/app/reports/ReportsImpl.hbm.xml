@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping
+    PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+
+<hibernate-mapping package="org.theospi.component.app.reports">
+
+    <class
+        name="ReportDefinition"
+        table="osp_reports_definitions" lazy="true">
+        
+        <id name="reportDefId" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="reportDefId">
+            <generator class="assigned" />
+        </id>
+        
+        <property name="title" type="java.lang.String" />
+        <property name="query" type="java.lang.String" />
+        <property name="keywords" type="java.lang.String" />
+        <property name="description" type="java.lang.String" />
+        <property name="defaultXsl" type="java.lang.String" />
+        <property name="exportXsl" type="java.lang.String" />
+        
+        <set name="reportDefinitionParams" cascade="all-delete-orphan" inverse="true"
+            lazy="true">
+            <key column="reportDefParamId" />
+            <one-to-many class="ReportDefinitionParam" />
+        </set>
+        <set name="reportDefinitionXsls" cascade="all-delete-orphan" inverse="true"
+            lazy="true">
+            <key column="reportDefXslId" />
+            <one-to-many class="ReportDefinitionXsl" />
+        </set>
+    </class>
+    
+    <class
+        name="ReportDefinitionParam"
+        table="osp_reports_definition_params" lazy="true">
+        
+        <id name="reportDefParamId" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="reportDefParamId">
+            <generator class="assigned" />
+        </id>
+        
+        <many-to-one name="reportDefinition" column="reportDefId"
+            class="ReportDefinition" cascade="delete" />
+            
+        <property name="paramName" type="java.lang.String" />
+        <property name="description" type="java.lang.String" />
+        <property name="type" type="java.lang.String" /> <!-- data type: boolean, int, float, date, string -->
+        <property name="valueType" type="java.lang.String" /> <!-- fill-in, select one/many from set/sql, static -->
+        <property name="value" type="java.lang.String" /> <!-- sql query, validation rules, set -->
+    </class>
+    
+    <class
+        name="ReportDefinitionXsl"
+        table="osp_reports_definition_xsls" lazy="true">
+        
+        <id name="reportDefXslId" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="reportDefXslId">
+            <generator class="assigned" />
+        </id>
+        
+        <many-to-one name="reportDefinition" column="reportDefId"
+            class="ReportDefinition" cascade="delete" />
+            
+        <property name="fileLink" type="java.lang.String" />
+        <property name="isExport" type="boolean" />
+    </class>
+    
+    <class
+        name="Report"
+        table="osp_reports" lazy="true">
+        
+        <id name="reportId" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="reportId">
+            <generator class="assigned" />
+        </id>
+        
+        <many-to-one name="reportDefinition" column="reportDefId"
+            class="ReportDefinition" cascade="delete" />
+            
+        <property name="title" type="java.lang.String" />
+        <property name="keywords" type="java.lang.String" />
+        <property name="description" type="java.lang.String" />
+        <property name="isLive" type="boolean" />
+        <property name="defaultXsl" type="java.lang.String" />
+        <property name="creationDate" type="java.util.Date" />
+    </class>
+    
+    <class
+        name="ReportParam"
+        table="osp_reports_params" lazy="true">
+        
+        <id name="paramId" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="paramId">
+            <generator class="assigned" />
+        </id>
+        
+        <many-to-one name="report" column="reportId"
+            class="Report" cascade="delete" />
+            
+        <many-to-one name="reportDefinitionParam" column="reportDefParamId"
+            class="ReportDefinitionParam" cascade="delete" />
+
+        <property name="value" type="java.lang.String" /> 
+    </class>
+    
+    <class
+        name="ReportResult"
+        table="osp_reports_results" lazy="true">
+        
+        <id name="resultId" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="resultId">
+            <generator class="assigned" />
+        </id>
+        
+        <many-to-one name="report" column="reportId"
+            class="Report" cascade="delete" />
+
+        <property name="title" type="java.lang.String" />
+        <property name="keywords" type="java.lang.String" />
+        <property name="description" type="java.lang.String" />
+        <property name="creationDate" type="java.util.Date" />
+        <property name="xml" type="text" />
+    </class>
+    
+    
+</hibernate-mapping>
