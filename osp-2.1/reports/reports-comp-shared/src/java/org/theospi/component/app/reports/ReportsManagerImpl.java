@@ -57,7 +57,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	{
 		this.reports = reports;
 	}
-	public List setReports()
+	public List getReports()
 	{
 		return reports;
 	}
