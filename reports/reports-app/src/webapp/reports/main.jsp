@@ -3,7 +3,7 @@
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 <% response.setContentType("text/html; charset=UTF-8"); %>
 <f:view>
-<f:loadBundle basename="org.sakaiproject.tool.syllabus.bundle.Messages" var="msgs"/>
+<f:loadBundle basename="org.theospi.tool.reports.bundle.Messages" var="msgs"/>
     <sakai:view_container title="#{msgs.title_list}">
     <sakai:view_content>
         <h:form>
@@ -13,7 +13,7 @@
                     value="#{msgs.options}" />
       </sakai:tool_bar>
 
-            <h:outputText value="#{ReportsTool.reportManager.reports}"/>
+            <h:outputText value="#{ReportsTool.reportsManager.reports}"/>
         </h:form>
     </sakai:view_content>
     </sakai:view_container>

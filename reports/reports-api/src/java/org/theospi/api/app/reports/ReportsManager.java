@@ -50,5 +50,5 @@ public interface ReportsManager
 {
 
 	public void setReports(List reports);
-	public List setReports();
+	public List getReports();
 }

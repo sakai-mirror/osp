@@ -7,18 +7,18 @@
         This bean sets up the reports into the Manager.  The reports being added 
         are the pre-defined report definitions
     -->
-   <bean id="configReportsManager"
-       class="org.theospi.tool.reports.mgt.ConfigReports"
-       init-method="init" lazy-init="false" singleton="true">
-       <property name="reportsManager">
-           <ref
-               bean="org.theospi.api.app.reports.ReportsManager" />
-       </property>
-       <property name="reports">
-           <list>
-           
-           </list>
-       </property>
-   </bean>
+    <bean id="configReportsManager"
+        class="org.theospi.tool.reports.mgt.ConfigReports"
+        init-method="init" lazy-init="false" singleton="true">
+        <property name="reportsManager">
+            <ref bean="org.theospi.api.app.reports.ReportsManager" />
+        </property>
+        <property name="reports">
+            <list>
+                <ref bean="report1" />
+                <ref bean="report1" />
+            </list>
+        </property>
+    </bean>
 
 </beans>

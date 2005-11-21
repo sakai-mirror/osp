@@ -42,7 +42,7 @@
  * $Date: 2005-11-03 18:05:53 -0500 (Thu, 03 Nov 2005) $
  */
 
-package org.theospi.tools.reports;
+package org.theospi.tool.reports;
 
 import org.theospi.api.app.reports.ReportsManager;
 
