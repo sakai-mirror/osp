@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <bean id="report1"
+        class="org.theospi.component.app.reports.ReportDefinition">
+
+        <property name="reportDefId">
+            <value>8b9df0-d90f-d898f-f89f8d78d7f8</value>
+        </property>
+        <property name="title">
+            <value>
+                Portfolio Owner Performance by Portfolio Owner
+            </value>
+        </property>
+        <property name="query">
+            <value>
+                SELECT CIG, worksite, etc, etc FROM table join table on
+                field=something where user= [username]
+            </value>
+        </property>
+        <property name="keywords">
+            <value>CIG user portfolio etc</value>
+        </property>
+        <property name="description">
+            <value>
+                This report is to view the portfolio performance
+            </value>
+        </property>
+        <property name="defaultXsl">
+            <value>/reportxsl/report1.1.xsl</value>
+        </property>
+
+        <property name="params">
+            <list>
+                <map>
+                    <entry key="paramName">
+                        <value>[username]</value>
+                    </entry>
+                    <entry key="description">
+                        <value>
+                            selects the user whom owns the portfolio
+                        </value>
+                    </entry>
+                    <entry key="type">
+                        <value>int/float/date/string</value>
+                    </entry>
+                    <entry key="valueType">
+                        <value>fillin/set/multiset/sql/static</value>
+                    </entry>
+                    <entry key="value">
+                        <value>
+                            (validation rules)/[elem1, elem2, elem3,
+                            etc]/ select username from worksite/value
+                        </value>
+                    </entry>
+                </map>
+            </list>
+        </property>
+        <!-- 
+        <property name="forms">
+            <list>
+                <map>
+                    <entry key="formName">
+                        <value>Address</value>
+                    </entry>
+                    <entry key="formFields">
+                        <list>
+                            <value>state</value>
+                            <value>city</value>
+                        </list>
+                    </entry>
+                </map>
+            </list>
+        </property>
+        -->
+        <property name="xsls">
+            <list>
+                <value>/reportxsl/report1.1.xsl</value>
+                <value>/reportxsl/report1.2.xsl</value>
+                <value>/reportxsl/report1.3.xsl</value>
+            </list>
+        </property>
+
+    </bean>
+
+</beans>
