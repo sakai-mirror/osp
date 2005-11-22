@@ -8,8 +8,10 @@ import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
+import javax.faces.model.SelectItem;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -69,5 +71,19 @@ public class DecoratedGuidanceItem {
 
    public String processActionManageAttachments() {
       return tool.processActionManageAttachments(base.getType());
+   }
+
+   public List getAttchmentLinks() {
+      List attachments = getAttachments();
+      List returned = new ArrayList();
+
+      for (Iterator i=attachments.iterator();i.hasNext();) {
+         GuidanceItemAttachment attachment = (GuidanceItemAttachment)i.next();
+         SelectItem item = new SelectItem(attachment.getFullReference().getBase().getUrl(),
+               attachment.getDisplayName());
+         returned.add(item);
+      }
+
+      return returned;
    }
 }
