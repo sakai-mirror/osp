@@ -23,15 +23,20 @@
 
 package org.theospi.jsf.component;
 
+import org.theospi.jsf.intf.InitObjectContainer;
+
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIComponent;
+import java.util.List;
+import java.util.ArrayList;
 
 
-public class XHeaderDrawerComponent extends UIOutput
+public class XHeaderDrawerComponent extends UIOutput implements InitObjectContainer
 {
 
 	private String divId = null;
-	
+	private List initScripts = null;
+
 	/**
 	 * Constructor-
 	 * Indicates the component that this class is linked to
@@ -40,6 +45,7 @@ public class XHeaderDrawerComponent extends UIOutput
 	public XHeaderDrawerComponent()
 	{
 		super();
+      setInitScripts(new ArrayList());
 		this.setRendererType("org.theospi.XHeaderDrawer");
 	}
 	
@@ -52,6 +58,19 @@ public class XHeaderDrawerComponent extends UIOutput
 	{
 		return divId;
 	}
+
+   public void addInitScript(String script) {
+      getInitScripts().add(script);
+   }
+
+   public List getInitScripts() {
+      return initScripts;
+   }
+
+   public void setInitScripts(List initScripts) {
+      this.initScripts = initScripts;
+   }
+
 }
 
 

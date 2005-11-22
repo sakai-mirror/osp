@@ -78,15 +78,25 @@ public class XHeaderDrawerRenderer extends Renderer
 
 	/**
 	 * @param context FacesContext for the request we are processing
-	 * @param component UIComponent to be rendered
+	 * @param inComponent UIComponent to be rendered
 	 * @exception IOException if an input/output error occurs while rendering
 	 * @exception NullPointerException if <code>context</code> or <code>component</code> is null
 	 */
-	public void encodeEnd(FacesContext context, UIComponent component) throws IOException
+	public void encodeEnd(FacesContext context, UIComponent inComponent) throws IOException
 	{
+      XHeaderDrawerComponent component = (XHeaderDrawerComponent)inComponent;
 		ResponseWriter writer = context.getResponseWriter();
 
       writer.write("</div>");
+      writer.write("<script type=\"text/javascript\">\n");
+      writer.write("function refeshChildren" + component.getDivId().hashCode() + "() {");
+
+      for (Iterator i=component.getInitScripts().iterator();i.hasNext();) {
+         writer.write(i.next().toString());
+      }
+
+      writer.write("}");
+      writer.write("</script>\n");
 	}
 }
 

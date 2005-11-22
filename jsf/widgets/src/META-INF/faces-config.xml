@@ -58,11 +58,16 @@
         <component-type>org.theospi.Tab</component-type>
         <component-class>org.theospi.jsf.component.TabComponent</component-class>
     </component>
-    
-    <component>
-        <component-type>org.theospi.TabActionArea</component-type>
-        <component-class>org.theospi.jsf.component.TabActionAreaComponent</component-class>
-    </component>    
+
+   <component>
+       <component-type>org.theospi.TabActionArea</component-type>
+       <component-class>org.theospi.jsf.component.TabActionAreaComponent</component-class>
+   </component>
+
+   <component>
+       <component-type>org.theospi.LinkListInputRichText</component-type>
+       <component-class>org.theospi.jsf.component.LinkListInputRichTextComponent</component-class>
+   </component>
 
     <!-- =================== Renderers ============== -->
 
@@ -133,6 +138,12 @@
             <renderer-type>org.theospi.TabActionArea</renderer-type>
             <renderer-class>org.theospi.jsf.renderer.TabActionAreaRenderer</renderer-class>
         </renderer>
+
+       <renderer>
+         <component-family>org.sakaiproject.InputRichText</component-family>
+         <renderer-type>org.theospi.LinkListInputRichText</renderer-type>
+         <renderer-class>org.theospi.jsf.renderer.LinkListInputRichTextRenderer</renderer-class>
+       </renderer>
 
     </render-kit>
 

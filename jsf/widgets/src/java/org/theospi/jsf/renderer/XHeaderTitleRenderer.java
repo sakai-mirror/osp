@@ -103,8 +103,8 @@ public class XHeaderTitleRenderer extends Renderer
       if (drawer != null) {
          String divId = "div" + drawer.getClientId(context);
          drawer.setDivId(divId);
-			writer.write("<span onclick=\"showHideDiv('" + divId + "', '" + RESOURCE_PATH + "');\">");
-
+			writer.write("<span onclick=\"showHideDiv('" + divId + "', '" + RESOURCE_PATH + "');" +
+               "refeshChildren" + drawer.getDivId().hashCode() + "();\">");
 				
          writer.startElement("img", component);
          writer.writeAttribute("style", "position:relative; float:left; margin-right:10px; left:3px; top:2px;", "style");
