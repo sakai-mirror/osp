@@ -23,7 +23,7 @@
 
 package org.theospi.jsf.component;
 
-import org.theospi.jsf.intf.InitObjectContainer;
+import org.sakaiproject.jsf.model.InitObjectContainer;
 
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIComponent;
