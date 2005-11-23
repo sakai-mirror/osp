@@ -26,7 +26,7 @@
           <ospx:splitarea direction="horizontal" width="100%">
              <ospx:splitsection size="475" valign="top">
                <sakai:instruction_message value="#{msgs.instruction_message}" />
-               <ospx:inputRichText value="#{guidance.current.instruction.base.text}"
+               <sakai:inputRichText value="#{guidance.current.instruction.base.text}"
                   attachedFiles="#{guidance.current.instruction.attchmentLinks}"
                   rows="15" cols="60" buttonSet="large" />
              </ospx:splitsection>
@@ -54,7 +54,7 @@
           <ospx:splitarea direction="horizontal" width="100%">
              <ospx:splitsection size="475" valign="top">
                <sakai:instruction_message value="#{msgs.example_message}" />
-               <ospx:inputRichText value="#{guidance.current.example.base.text}"
+               <sakai:inputRichText value="#{guidance.current.example.base.text}"
                   attachedFiles="#{guidance.current.example.attchmentLinks}"
                   rows="15" cols="60" buttonSet="large" />
              </ospx:splitsection>
@@ -82,7 +82,7 @@
           <ospx:splitarea direction="horizontal" width="100%">
              <ospx:splitsection size="475" valign="top">
                <sakai:instruction_message value="#{msgs.rationale_message}" />
-               <ospx:inputRichText value="#{guidance.current.rationale.base.text}"
+               <sakai:inputRichText value="#{guidance.current.rationale.base.text}"
                   attachedFiles="#{guidance.current.rationale.attchmentLinks}"                  
                   rows="15" cols="60" buttonSet="large" />
              </ospx:splitsection>
