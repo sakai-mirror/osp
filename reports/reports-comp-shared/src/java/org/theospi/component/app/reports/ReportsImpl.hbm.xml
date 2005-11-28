@@ -6,7 +6,7 @@
 <hibernate-mapping package="org.theospi.component.app.reports">
 
     <class
-        name="ReportDefinition"
+        name="ReportDefinitionImpl"
         table="osp_reports_definitions" lazy="true">
         
         <id name="reportDefId" length="36"
@@ -24,17 +24,17 @@
         <set name="reportDefinitionParams" cascade="all-delete-orphan" inverse="true"
             lazy="true">
             <key column="reportDefParamId" />
-            <one-to-many class="ReportDefinitionParam" />
+            <one-to-many class="ReportDefinitionParamImpl" />
         </set>
         <set name="reportDefinitionXsls" cascade="all-delete-orphan" inverse="true"
             lazy="true">
             <key column="reportDefXslId" />
-            <one-to-many class="ReportDefinitionXsl" />
+            <one-to-many class="ReportDefinitionXslImpl" />
         </set>
     </class>
     
     <class
-        name="ReportDefinitionParam"
+        name="ReportDefinitionParamImpl"
         table="osp_reports_definition_params" lazy="true">
         
         <id name="reportDefParamId" length="36"
@@ -43,7 +43,7 @@
         </id>
         
         <many-to-one name="reportDefinition" column="reportDefId"
-            class="ReportDefinition" cascade="delete" />
+            class="ReportDefinitionImpl" cascade="delete" />
             
         <property name="paramName" type="java.lang.String" />
         <property name="description" type="java.lang.String" />
@@ -53,7 +53,7 @@
     </class>
     
     <class
-        name="ReportDefinitionXsl"
+        name="ReportDefinitionXslImpl"
         table="osp_reports_definition_xsls" lazy="true">
         
         <id name="reportDefXslId" length="36"
@@ -62,14 +62,14 @@
         </id>
         
         <many-to-one name="reportDefinition" column="reportDefId"
-            class="ReportDefinition" cascade="delete" />
+            class="ReportDefinitionImpl" cascade="delete" />
             
         <property name="fileLink" type="java.lang.String" />
         <property name="isExport" type="boolean" />
     </class>
     
     <class
-        name="Report"
+        name="ReportImpl"
         table="osp_reports" lazy="true">
         
         <id name="reportId" length="36"
@@ -78,7 +78,7 @@
         </id>
         
         <many-to-one name="reportDefinition" column="reportDefId"
-            class="ReportDefinition" cascade="delete" />
+            class="ReportDefinitionImpl" cascade="delete" />
             
         <property name="title" type="java.lang.String" />
         <property name="keywords" type="java.lang.String" />
@@ -86,10 +86,16 @@
         <property name="isLive" type="boolean" />
         <property name="defaultXsl" type="java.lang.String" />
         <property name="creationDate" type="java.util.Date" />
+        
+        <set name="reportParams" cascade="all-delete-orphan" inverse="true"
+            lazy="true">
+            <key column="reportParamId" />
+            <one-to-many class="ReportParamImpl" />
+        </set>
     </class>
     
     <class
-        name="ReportParam"
+        name="ReportParamImpl"
         table="osp_reports_params" lazy="true">
         
         <id name="paramId" length="36"
@@ -98,16 +104,16 @@
         </id>
         
         <many-to-one name="report" column="reportId"
-            class="Report" cascade="delete" />
+            class="ReportImpl" cascade="delete" />
             
         <many-to-one name="reportDefinitionParam" column="reportDefParamId"
-            class="ReportDefinitionParam" cascade="delete" />
+            class="ReportDefinitionParamImpl" cascade="delete" />
 
         <property name="value" type="java.lang.String" /> 
     </class>
     
     <class
-        name="ReportResult"
+        name="ReportResultImpl"
         table="osp_reports_results" lazy="true">
         
         <id name="resultId" length="36"
@@ -116,7 +122,7 @@
         </id>
         
         <many-to-one name="report" column="reportId"
-            class="Report" cascade="delete" />
+            class="ReportImpl" cascade="delete" />
 
         <property name="title" type="java.lang.String" />
         <property name="keywords" type="java.lang.String" />

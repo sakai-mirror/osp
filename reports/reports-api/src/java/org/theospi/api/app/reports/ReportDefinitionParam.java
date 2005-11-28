@@ -44,17 +44,118 @@
 
 package org.theospi.api.app.reports;
 
-import java.util.Collection;
 import java.util.List;
 
-public interface ReportsManager
+public interface ReportDefinitionParam
 {
+	public static final String VALUE_TYPE_FILLIN = "fillin";
+	public static final String VALUE_TYPE_ONE_OF_SET = "oneofset";
+	public static final String VALUE_TYPE_MULTI_OF_SET = "nofset";
+	public static final String VALUE_TYPE_ONE_OF_QUERY = "oneofsql";
+	public static final String VALUE_TYPE_MULTI_OF_QUERY = "nofsql";
 
-	public void setReports(List reports);
-	public List getReports();
 	
-
-	public void createReportParameters(Report report);
-	public Report createReport(ReportDefinition reportDefinition);
-	public ReportResult generateResults(Report report);
+	/**
+	 * the getter for the reportDefParamId property
+	 * @return String the unique identifier
+	 */
+	public String getReportDefParamId();
+	
+	
+	/**
+	 * the setter for the reportDefParamId property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param reportDefId String
+	 */
+	public void setReportDefParamId(String reportDefParamId);
+	
+	
+	/**
+	 * the getter for the ReportDefinition property
+	 * @return String the unique identifier
+	 */
+	public ReportDefinition getReportDefinition();
+	
+	
+	/**
+	 * the setter for the ReportDefinition property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param ReportDefinition String
+	 */
+	public void setReportDefinition(ReportDefinition reportDefinition);
+	
+	
+	/**
+	 * the getter for the paramName property
+	 * @return String the paramName
+	 */
+	public String getParamName();
+	
+	
+	/**
+	 * the setter for the paramName property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param paramName String
+	 */
+	public void setParamName(String paramName);
+	
+	
+	/**
+	 * the getter for the description property
+	 * @return String the description
+	 */
+	public String getDescription();
+	
+	
+	/**
+	 * the setter for the description property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param description String
+	 */
+	public void setDescription(String description);
+	
+	
+	/**
+	 * the getter for the type property
+	 * @return String the type
+	 */
+	public String getType();
+	
+	
+	/**
+	 * the setter for the type property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param type String
+	 */
+	public void setType(String type);
+	
+	
+	/**
+	 * the getter for the valueType property
+	 * @return String the valueType
+	 */
+	public String getValueType();
+	
+	
+	/**
+	 * the setter for the valueType property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param valueType String
+	 */
+	public void setValueType(String valueType);
+	
+	
+	/**
+	 * the getter for the value property
+	 * @return String the value
+	 */
+	public String getValue();
+	
+	
+	/**
+	 * the setter for the value property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param value String
+	 */
+	public void setValue(String value);
 }

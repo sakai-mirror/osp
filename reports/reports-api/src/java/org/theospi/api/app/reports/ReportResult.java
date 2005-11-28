@@ -44,17 +44,112 @@
 
 package org.theospi.api.app.reports;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.Date;
 
-public interface ReportsManager
+public interface ReportResult
 {
-
-	public void setReports(List reports);
-	public List getReports();
+	/**
+	 * the getter for the resultId property
+	 * @return String the unique identifier
+	 */
+	public String getResultId();
 	
+	
+	/**
+	 * the setter for the resultId property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param resultId String
+	 */
+	public void setResultId(String resultId);
 
-	public void createReportParameters(Report report);
-	public Report createReport(ReportDefinition reportDefinition);
-	public ReportResult generateResults(Report report);
+	
+	/**
+	 * the getter for the report property
+	 * @return String the unique identifier
+	 */
+	public Report getReport();
+	
+	
+	/**
+	 * the setter for the report property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param report String
+	 */
+	public void setReport(Report report);
+	
+	
+	/**
+	 * the getter for the title property
+	 * @return String the title
+	 */
+	public String getTitle();
+	
+	
+	/**
+	 * the setter for the title property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param reportDefId String
+	 */
+	public void setTitle(String title);
+	
+	
+	/**
+	 * the getter for the keywords property
+	 * @return String the keywords
+	 */
+	public String getKeywords();
+	
+	
+	/**
+	 * the setter for the keywords property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param keywords String
+	 */
+	public void setKeywords(String keywords);
+	
+	
+	/**
+	 * the getter for the description property
+	 * @return String the description
+	 */
+	public String getDescription();
+	
+	
+	/**
+	 * the setter for the description property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param description String
+	 */
+	public void setDescription(String description);
+	
+	
+	/**
+	 * the getter for the creationDate property
+	 * @return List the creationDate
+	 */
+	public Date getCreationDate();
+	
+	
+	/**
+	 * the setter for the creationDate property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param params List
+	 */
+	public void setCreationDate(Date creationDate);
+	
+	
+	/**
+	 * the getter for the xml property
+	 * @return String the xml
+	 */
+	public String getXml();
+	
+	
+	/**
+	 * the setter for the xml property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param xml List
+	 */
+	public void setXml(String xml);
 }

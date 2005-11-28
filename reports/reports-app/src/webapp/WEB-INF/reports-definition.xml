@@ -4,7 +4,7 @@
 <beans>
 
     <bean id="report1"
-        class="org.theospi.component.app.reports.ReportDefinition">
+        class="org.theospi.component.app.reports.ReportDefinitionImpl">
 
         <property name="reportDefId">
             <value>8b9df0-d90f-d898f-f89f8d78d7f8</value>
@@ -16,8 +16,7 @@
         </property>
         <property name="query">
             <value>
-                SELECT CIG, worksite, etc, etc FROM table join table on
-                field=something where user= [username]
+                select * from sakai_site
             </value>
         </property>
         <property name="keywords">
@@ -43,16 +42,16 @@
                             selects the user whom owns the portfolio
                         </value>
                     </entry>
-                    <entry key="type">
-                        <value>int/float/date/string</value>
+                    <entry key="type"><!-- int/float/date/string -->
+                        <value>string</value>
                     </entry>
-                    <entry key="valueType">
-                        <value>fillin/set/multiset/sql/static</value>
+                    <entry key="valueType"><!-- fillin/set/multiset/sql/multisql/static -->
+                        <value>fillin</value>
                     </entry>
-                    <entry key="value">
+                    <entry key="value"><!-- (validation rules)/[elem1, elem2, elem3,
+                            etc]/ select username from worksite/value -->
                         <value>
-                            (validation rules)/[elem1, elem2, elem3,
-                            etc]/ select username from worksite/value
+                            
                         </value>
                     </entry>
                 </map>

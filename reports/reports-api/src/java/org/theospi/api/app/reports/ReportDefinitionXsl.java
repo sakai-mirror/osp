@@ -44,17 +44,66 @@
 
 package org.theospi.api.app.reports;
 
-import java.util.Collection;
 import java.util.List;
 
-public interface ReportsManager
+public interface ReportDefinitionXsl
 {
-
-	public void setReports(List reports);
-	public List getReports();
+	/**
+	 * the getter for the reportDefXslId property
+	 * @return String the unique identifier
+	 */
+	public String getReportDefXslId();
 	
-
-	public void createReportParameters(Report report);
-	public Report createReport(ReportDefinition reportDefinition);
-	public ReportResult generateResults(Report report);
+	
+	/**
+	 * the setter for the reportDefXslId property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param reportDefXslId String
+	 */
+	public void setReportDefXslId(String reportDefXslId);
+	
+	/**
+	 * the getter for the reportDefinition property
+	 * @return String the unique identifier
+	 */
+	public ReportDefinition getReportDefinition();
+	
+	
+	/**
+	 * the setter for the reportDefinition property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param reportDefinition String
+	 */
+	public void setReportDefinition(ReportDefinition reportDefinition);
+	
+	
+	/**
+	 * the getter for the fileLink property
+	 * @return String the fileLink
+	 */
+	public String getFileLink();
+	
+	
+	/**
+	 * the setter for the fileLink property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param fileLink String
+	 */
+	public void setFileLink(String fileLink);
+	
+	
+	/**
+	 * the getter for the isExport property
+	 * @return String the isExport
+	 */
+	public String getIsExport();
+	
+	
+	/**
+	 * the setter for the fileLink property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param isExport String
+	 */
+	public void setIsExport(String isExport);
+	
 }

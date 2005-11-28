@@ -44,201 +44,171 @@
 
 package org.theospi.component.app.reports;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 
-public class Report
+import org.theospi.api.app.reports.Report;
+import org.theospi.api.app.reports.ReportDefinitionParam;
+import org.theospi.api.app.reports.ReportParam;
+
+public class ReportParamImpl implements ReportParam
 {
-	/** the unique identifier for the report */
-	private String reportId;
+	/** the identifier to the report paramater */
+	private String paramId = null;
 	
-	/** the link to the report definition */
-	private ReportDefinition reportDefinition;
-
-	/** the title of the report */
-	private String title;
-
-	/** the keyword for the report */
-	private String keywords;
-
-	/** the description for the report */
-	private String description;
-
-	/** the parameters for the query in the report */
-	private boolean isLive;
-
-	/** the defaultXsl for the report */
-	private String defaultXsl;
-
-	/** the defaultXsl for the report */
-	private Date creationDate;
+	/** the identifier to the report definition for the paramater */
+	private Report report = null;
 	
-	
+	/** the reportDefParamId for the report definition parameter */
+	private ReportDefinitionParam reportDefinitionParam = null;
 
+
+	/** the type for the report definition Parameter 
+	 * 	This is validation rules for fillin parameters,
+	 * 	a set of strings for sets (both value and title),
+	 * and the query if the value type is a sql query
+	 */
+	private String value = null;
+
+	/** true when the value passes the test and false when the value changes */
+	private boolean	validated = false;
+	
+	/** the results of the last validation */
+	private boolean	valid = false;
+	
 	/**
-	 * the getter for the reportId property
+	 * the getter for the paramId property
 	 * @return String the unique identifier
 	 */
-	public String getReportId()
+	public String getParamId()
 	{
-		return reportId;
+		return paramId;
 	}
 	
 	
 	/**
-	 * the setter for the reportId property.  This is set by the bean 
+	 * the setter for the paramId property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param reportId String
+	 * @param paramId String
 	 */
-	public void setReportId(String reportId)
+	public void setParamId(String paramId)
 	{
-		this.reportId = reportId;
-	}
-	/**
-	 * the getter for the reportDefinition property
-	 * @return ReportDefinition the unique identifier
-	 */
-	public ReportDefinition getReportDefinition()
-	{
-		return reportDefinition;
+		this.paramId = paramId;
 	}
 	
 	
 	/**
-	 * the setter for the reportDefinition property.  This is set by the bean 
+	 * the getter for the report property
+	 * @return String the unique identifier
+	 */
+	public Report getReport()
+	{
+		return report;
+	}
+	
+	
+	/**
+	 * the setter for the report property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param reportDefinition String
+	 * @param report Report
 	 */
-	public void setReportDefinition(ReportDefinition reportDefinition)
+	public void setReport(Report report)
 	{
-		this.reportDefinition = reportDefinition;
+		this.report = report;
+	}
+	
+	/**
+	 * the getter for the reportDefinitionParam property
+	 * @return ReportDefinitionParam the unique identifier
+	 */
+	public ReportDefinitionParam getReportDefinitionParam()
+	{
+		return reportDefinitionParam;
 	}
 	
 	
 	/**
-	 * the getter for the title property
-	 * @return String the title
-	 */
-	public String getTitle()
-	{
-		return title;
-	}
-	
-	
-	/**
-	 * the setter for the title property.  This is set by the bean 
+	 * the setter for the reportDefinitionParam property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param reportDefId String
+	 * @param reportDefinitionParam String
 	 */
-	public void setTitle(String title)
+	public void setReportDefinitionParam(ReportDefinitionParam reportDefinitionParam)
 	{
-		this.title = title;
+		this.reportDefinitionParam = reportDefinitionParam;
 	}
 	
 	
 	/**
-	 * the getter for the keywords property
-	 * @return String the keywords
+	 * the getter for the value property
+	 * @return String the value
 	 */
-	public String getKeywords()
+	public String getValue()
 	{
-		return keywords;
+		return value;
 	}
 	
 	
 	/**
-	 * the setter for the keywords property.  This is set by the bean 
+	 * the setter for the value property.  This is set by the bean or the user 
 	 * and by hibernate.
-	 * @param keywords String
+	 * @param value String
 	 */
-	public void setKeywords(String keywords)
+	public void setValue(String value)
 	{
-		this.keywords = keywords;
+		this.value = value;
+		validated = false;
 	}
 	
 	
 	/**
-	 * the getter for the description property
-	 * @return String the description
+	 * gets the list of possible titles and values
+	 * @return List of ...
 	 */
-	public String getDescription()
+	public List getSelectableValues()
 	{
-		return description;
+		return new ArrayList();
 	}
 	
 	
 	/**
-	 * the setter for the description property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param description String
+	 * tells whether this parameter can have multiple values selected
+	 * @return boolean
 	 */
-	public void setDescription(String description)
+	public boolean isMultiSelectable()
 	{
-		this.description = description;
+		String type = reportDefinitionParam.getType();
+		return type == reportDefinitionParam.VALUE_TYPE_MULTI_OF_SET ||
+				type == reportDefinitionParam.VALUE_TYPE_MULTI_OF_QUERY;
 	}
 	
 	
 	/**
-	 * the getter for the isLive property
-	 * @return String the isLive
+	 * tells whether this parameter is a fill in value
+	 * @return boolean
 	 */
-	public boolean getIsLive()
+	public boolean isFillIn()
 	{
-		return isLive;
+		return reportDefinitionParam.getType() == 
+						reportDefinitionParam.VALUE_TYPE_FILLIN;
 	}
 	
 	
 	/**
-	 * the setter for the isLive property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param isLive List
+	 * Checks to make sure that the value can be selected.
+	 * Apply validation rules, check against set, check against the sql results
+	 * @return boolean
 	 */
-	public void setIsLive(boolean isLive)
+	public boolean valid()
 	{
-		this.isLive = isLive;
+		if(value == null)
+			return false;
+		if(!validated) {
+			valid = false;
+			
+			//do the check here
+			
+			validated = true;
+		}
+		return valid;
 	}
-	
-	
-	/**
-	 * the getter for the defaultXsl property
-	 * @return String the defaultXsl
-	 */
-	public String getDefaultXsl()
-	{
-		return defaultXsl;
-	}
-	
-	
-	/**
-	 * the setter for the defaultXsl property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param defaultXsl List
-	 */
-	public void setDefaultXsl(String defaultXsl)
-	{
-		this.defaultXsl = defaultXsl;
-	}
-	
-	
-	/**
-	 * the getter for the creationDate property
-	 * @return List the creationDate
-	 */
-	public Date getCreationDate()
-	{
-		return creationDate;
-	}
-	
-	
-	/**
-	 * the setter for the creationDate property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param params List
-	 */
-	public void setCreationDate(Date creationDate)
-	{
-		this.creationDate = creationDate;
-	}
-	
-	
 }

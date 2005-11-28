@@ -44,19 +44,25 @@
 
 package org.theospi.component.app.reports;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Date;
+import java.util.Map;
 
-public class ReportResult
+
+import org.theospi.api.app.reports.ReportDefinition;
+import org.theospi.api.app.reports.ReportDefinitionParam;
+
+public class ReportDefinitionImpl implements ReportDefinition
 {
 	/** the unique identifier for the report definition */
-	private String resultId;
-	
-	/** the unique identifier for the report definition */
-	private Report report;
+	private String reportDefId;
 
 	/** the title of the report definition */
 	private String title;
+
+	/** the sql query for the report definition */
+	private String query;
 
 	/** the keyword for the report definition */
 	private String keywords;
@@ -64,53 +70,44 @@ public class ReportResult
 	/** the description for the report definition */
 	private String description;
 
-	/** the parameters for the query in the report definition */
-	private List creationDate;
+	/** the defaultXsl for the report definition */
+	private String defaultXsl;
+
+	/** the exportXsl for the report definition */
+	private String exportXsl;
+
+	/** the link to the report parameters for the report definition */
+	private List reportDefinitionParams;
+
+	/** the link to the report XSLs for the report definition */
+	private List reportDefinitionXsls;
 
 	/** the defaultXsl for the report definition */
-	private String xml;
+	//private List forms;
+
+	/** the defaultXsl for the report definition */
+	private List xsls;
 	
-
-
+	
+	
 	/**
-	 * the getter for the resultId property
+	 * the getter for the reportDefId property
 	 * @return String the unique identifier
 	 */
-	public String getResultId()
+	public String getReportDefId()
 	{
-		return resultId;
+		return reportDefId;
 	}
 	
 	
 	/**
-	 * the setter for the resultId property.  This is set by the bean 
+	 * the setter for the reportDefId property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param resultId String
+	 * @param reportDefId String
 	 */
-	public void setResultId(String resultId)
+	public void setReportDefId(String reportDefId)
 	{
-		this.resultId = resultId;
-	}
-
-	
-	/**
-	 * the getter for the report property
-	 * @return String the unique identifier
-	 */
-	public Report getReport()
-	{
-		return report;
-	}
-	
-	
-	/**
-	 * the setter for the report property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param report String
-	 */
-	public void setReport(Report report)
-	{
-		this.report = report;
+		this.reportDefId = reportDefId;
 	}
 	
 	
@@ -132,6 +129,27 @@ public class ReportResult
 	public void setTitle(String title)
 	{
 		this.title = title;
+	}
+	
+	
+	/**
+	 * the getter for the query property
+	 * @return String the query
+	 */
+	public String getQuery()
+	{
+		return query;
+	}
+	
+	
+	/**
+	 * the setter for the query property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param query String
+	 */
+	public void setQuery(String query)
+	{
+		this.query = query;
 	}
 	
 	
@@ -178,43 +196,134 @@ public class ReportResult
 	
 	
 	/**
-	 * the getter for the creationDate property
-	 * @return List the creationDate
+	 * the getter for the defaultXsl property
+	 * @return String the defaultXsl
 	 */
-	public List getCreationDate()
+	public String getDefaultXsl()
 	{
-		return creationDate;
+		return defaultXsl;
 	}
 	
 	
 	/**
-	 * the setter for the creationDate property.  This is set by the bean 
+	 * the setter for the defaultXsl property.  This is set by the bean 
 	 * and by hibernate.
+	 * @param defaultXsl List
+	 */
+	public void setDefaultXsl(String defaultXsl)
+	{
+		this.defaultXsl = defaultXsl;
+	}
+	
+	
+	/**
+	 * the getter for the exportXsl property
+	 * @return String the exportXsl
+	 */
+	public String getExportXsl()
+	{
+		return exportXsl;
+	}
+	
+	
+	/**
+	 * the setter for the exportXsl property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param exportXsl List
+	 */
+	public void setExportXsl(String exportXsl)
+	{
+		this.exportXsl = exportXsl;
+	}
+	
+	
+	/**
+	 * the getter for the reportDefinitionParams property
+	 * @return List of ReportDefinitionParam
+	 */
+	public List getReportDefinitionParams()
+	{
+		return reportDefinitionParams;
+	}
+	
+	
+	/**
+	 * the setter for the reportDefinitionParams property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param reportDefinitionParams List
+	 */
+	public void setReportDefinitionParams(List reportDefinitionParams)
+	{
+		this.reportDefinitionParams = reportDefinitionParams;
+	}
+	
+	
+	/**
+	 * the getter for the reportDefinitionXsls property
+	 * @return Set the reportDefinitionXsls
+	 */
+	public List getReportDefinitionXsls()
+	{
+		return reportDefinitionXsls;
+	}
+	
+	
+	/**
+	 * the setter for the reportDefinitionXsls property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param reportDefinitionXsls Set
+	 */
+	public void setReportDefinitionXsls(List reportDefinitionXsls)
+	{
+		this.reportDefinitionXsls = reportDefinitionXsls;
+	}
+	
+	
+	/**
+	 * the setter for the params property.  This is set by the bean 
 	 * @param params List
 	 */
-	public void setCreationDate(List creationDate)
+	public void setParams(List params)
 	{
-		this.creationDate = creationDate;
+		Iterator iter = params.iterator();
+		
+		if(reportDefinitionParams == null)
+			reportDefinitionParams = new ArrayList();
+		
+		while(iter.hasNext()) {
+			Map param = (Map)iter.next();
+			
+			ReportDefinitionParam rdp = new ReportDefinitionParamImpl();
+			
+			rdp.setReportDefinition(this);
+			rdp.setParamName((String)param.get("paramName"));
+			rdp.setDescription((String)param.get("description"));
+			rdp.setType((String)param.get("type"));
+			rdp.setValueType((String)param.get("valueType"));
+			rdp.setValue((String)param.get("value"));
+			reportDefinitionParams.add(rdp);
+		}
 	}
 	
 	
 	/**
-	 * the getter for the xml property
-	 * @return String the xml
+	 * the getter for the xsls property
+	 * @return List the xsls
 	 */
-	public String getXml()
+	public List getXsls()
 	{
-		return xml;
+		return xsls;
 	}
 	
 	
 	/**
-	 * the setter for the xml property.  This is set by the bean 
+	 * the setter for the xsl property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param xml List
+	 * @param xsl List
 	 */
-	public void setXml(String xml)
+	public void setXsls(List defaultXsls)
 	{
-		this.xml = xml;
+		this.xsls = xsls;
 	}
+	
 }
