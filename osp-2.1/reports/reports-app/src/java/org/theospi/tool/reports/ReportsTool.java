@@ -44,21 +44,160 @@
 
 package org.theospi.tool.reports;
 
-import org.theospi.api.app.reports.ReportsManager;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.theospi.api.app.reports.*;
+
+/**
+ * This class is the controller and model to the jsp view.<BR>
+ * 
+ * There is an inner class for allowing the report data classes to 
+ * interact with the jsp.<BR>
+ * 
+ * Each session gets its own ReportsTool.<BR><BR>
+ * 
+ * &nbsp; &nbsp; Testing procedures:<BR>
+ *
+ *	Test the different parameter types
+ *		Make sure the sql param is pulling data
+ *  Test a live and a non-live report
+ *  Save the results
+ *  Re-run a live report, save results
+ *  External dependencies:
+ *  	worksite, users, tool, 
+ * 
+ * @author andersjb
+ *
+ */
 
 public class ReportsTool 
 {
-	private ReportsManager reportsManager;
+	/** A singlton manager for reports */
+	private ReportsManager reportsManager = null;
+	
+	/** The reports to which the user has access */
+	private List decoratedReportDefinition = null;
+	
+	/** The reportDefinition from which the tool is working with */
+	private DecoratedReportDefinition workingReportDefinition = null;
+	
+	/** The report from which the tool is working with */
+	private DecoratedReportDefinition workingReport = null;
+	
+	/** The reportresult from which the tool is working with */
+	private DecoratedReportDefinition workingReportResult = null;
+
+	private static final String mainPage = "main";
+	private static final String genReportPage = "processCreateReport";
+
+	/**
+	 * getter for the ReportsManager property
+	 * @return ReportsManager
+	 */
 	public ReportsManager getReportsManager()
 	{
 		return reportsManager;
 	}
+	
+	/**
+	 * setter for the ReportsManager
+	 * @param reportsManager ReportsManager
+	 */
+	public void setWorkingReportDefinition(DecoratedReportDefinition workingReportDefinition)
+	{
+		this.workingReportDefinition = workingReportDefinition;
+	}
+	/**
+	 * getter for the WorkingReportDefinition property
+	 * @return DecoratedReportDefinition
+	 */
+	public DecoratedReportDefinition getWorkingReportDefinition()
+	{
+		return workingReportDefinition;
+	}
+	
+	/**
+	 * setter for the WorkingReportDefinition
+	 * @param WorkingReportDefinition DecoratedReportDefinition
+	 */
 	public void setReportsManager(ReportsManager reportsManager)
 	{
 		this.reportsManager = reportsManager;
 	}
+	
+	/**
+	 * This method gets the list of reports encapsulated by 
+	 * DecoratedReportDefinition.
+	 * @return List of DecoratedReportDefinition
+	 */
+	public List getReports()
+	{
+		if(decoratedReportDefinition == null)
+		{
+			List reportDefinitions = reportsManager.getReports();
+			decoratedReportDefinition = new ArrayList();
+			
+			Iterator iter = reportDefinitions.iterator();
+			while(iter.hasNext()) {
+				ReportDefinition reportDef =(ReportDefinition)iter.next();
+				
+				decoratedReportDefinition.add(new DecoratedReportDefinition(reportDef));
+			}
+		}
+		return decoratedReportDefinition;
+	}
+	
+
+	//***********************************************************
+	//***********************************************************
+	//	Actions for the JSP
+	
 	public String gotoOptions()
 	{
-		return "main";
+		return mainPage;
+	}
+
+
+	//***********************************************************
+	//***********************************************************
+	//	Controller Encapsulation Classes
+	
+	/**
+	 * This class allows the ReportDefinition to interact with
+	 *
+	 */
+	public class DecoratedReportDefinition {
+		
+		private ReportDefinition	reportDefinition = null;	
+		
+		public DecoratedReportDefinition(ReportDefinition reportDefinition)
+		{
+			this.reportDefinition = reportDefinition;
+		}
+		
+		public ReportDefinition getReportDefinition()
+		{
+			return reportDefinition;
+		}
+		
+		public String selectReportDefinition()
+		{
+			setWorkingReportDefinition(this);
+			
+			Report report = reportsManager.createReport(reportDefinition);
+			
+			report.setTitle("Report Title");
+			report.setKeywords("keywords for report");
+			report.setDescription("Description of report");
+			report.setIsLive(false);
+			
+			List params = report.getReportParams();
+			
+			ReportResult result = reportsManager.generateResults(report);
+			
+			return genReportPage;
+		}
 	}
 }

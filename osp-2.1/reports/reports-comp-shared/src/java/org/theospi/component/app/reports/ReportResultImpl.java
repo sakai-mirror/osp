@@ -45,102 +45,179 @@
 package org.theospi.component.app.reports;
 
 import java.util.List;
+import java.util.Date;
 
-public class ReportDefinitionXsl
+import org.theospi.api.app.reports.Report;
+import org.theospi.api.app.reports.ReportResult;
+
+public class ReportResultImpl implements ReportResult
 {
-	/** the identifier for the report definition XSL */
-	private String reportDefXslId;
+	/** the unique identifier for the report definition */
+	private String resultId;
 	
-	/** the unique identifier for the report definition XSL */
-	private ReportDefinition reportDefinition;
+	/** the unique identifier for the report definition */
+	private Report report;
 
-	/** the fileLink of the report definition XSL */
-	private String fileLink;
+	/** the title of the report definition */
+	private String title;
 
-	/** the property of whether the xsl is for "view" or "export" */
-	private String isExport;
+	/** the keyword for the report definition */
+	private String keywords;
 
+	/** the description for the report definition */
+	private String description;
+
+	/** the parameters for the query in the report definition */
+	private Date creationDate;
+
+	/** the defaultXsl for the report definition */
+	private String xml;
 	
+
+
 	/**
-	 * the getter for the reportDefXslId property
+	 * the getter for the resultId property
 	 * @return String the unique identifier
 	 */
-	public String getReportDefXslId()
+	public String getResultId()
 	{
-		return reportDefXslId;
+		return resultId;
 	}
 	
 	
 	/**
-	 * the setter for the reportDefXslId property.  This is set by the bean 
+	 * the setter for the resultId property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param reportDefXslId String
+	 * @param resultId String
 	 */
-	public void setReportDefXslId(String reportDefXslId)
+	public void setResultId(String resultId)
 	{
-		this.reportDefXslId = reportDefXslId;
+		this.resultId = resultId;
 	}
+
 	
 	/**
-	 * the getter for the reportDefinition property
+	 * the getter for the report property
 	 * @return String the unique identifier
 	 */
-	public ReportDefinition getReportDefinition()
+	public Report getReport()
 	{
-		return reportDefinition;
+		return report;
 	}
 	
 	
 	/**
-	 * the setter for the reportDefinition property.  This is set by the bean 
+	 * the setter for the report property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param reportDefinition String
+	 * @param report String
 	 */
-	public void setReportDefinition(ReportDefinition reportDefinition)
+	public void setReport(Report report)
 	{
-		this.reportDefinition = reportDefinition;
+		this.report = report;
 	}
 	
 	
 	/**
-	 * the getter for the fileLink property
-	 * @return String the fileLink
+	 * the getter for the title property
+	 * @return String the title
 	 */
-	public String getFileLink()
+	public String getTitle()
 	{
-		return fileLink;
+		return title;
 	}
 	
 	
 	/**
-	 * the setter for the fileLink property.  This is set by the bean 
+	 * the setter for the title property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param fileLink String
+	 * @param reportDefId String
 	 */
-	public void setFileLink(String fileLink)
+	public void setTitle(String title)
 	{
-		this.fileLink = fileLink;
+		this.title = title;
 	}
 	
 	
 	/**
-	 * the getter for the isExport property
-	 * @return String the isExport
+	 * the getter for the keywords property
+	 * @return String the keywords
 	 */
-	public String getIsExport()
+	public String getKeywords()
 	{
-		return isExport;
+		return keywords;
 	}
 	
 	
 	/**
-	 * the setter for the fileLink property.  This is set by the bean 
+	 * the setter for the keywords property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param isExport String
+	 * @param keywords String
 	 */
-	public void setIsExport(String isExport)
+	public void setKeywords(String keywords)
 	{
-		this.isExport = isExport;
+		this.keywords = keywords;
 	}
 	
+	
+	/**
+	 * the getter for the description property
+	 * @return String the description
+	 */
+	public String getDescription()
+	{
+		return description;
+	}
+	
+	
+	/**
+	 * the setter for the description property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param description String
+	 */
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
+	
+	
+	/**
+	 * the getter for the creationDate property
+	 * @return List the creationDate
+	 */
+	public Date getCreationDate()
+	{
+		return creationDate;
+	}
+	
+	
+	/**
+	 * the setter for the creationDate property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param params List
+	 */
+	public void setCreationDate(Date creationDate)
+	{
+		this.creationDate = creationDate;
+	}
+	
+	
+	/**
+	 * the getter for the xml property
+	 * @return String the xml
+	 */
+	public String getXml()
+	{
+		return xml;
+	}
+	
+	
+	/**
+	 * the setter for the xml property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param xml List
+	 */
+	public void setXml(String xml)
+	{
+		this.xml = xml;
+	}
 }

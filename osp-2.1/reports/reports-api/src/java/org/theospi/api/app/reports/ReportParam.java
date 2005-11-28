@@ -42,39 +42,17 @@
  * $Date: 2005-11-03 18:05:53 -0500 (Thu, 03 Nov 2005) $
  */
 
-package org.theospi.component.app.reports;
+package org.theospi.api.app.reports;
 
 import java.util.List;
 
-public class ReportParam
+public interface ReportParam
 {
-	/** the identifier to the report paramater */
-	private String paramId;
-	
-	/** the identifier to the report definition for the paramater */
-	private Report report;
-	
-	/** the reportDefParamId for the report definition parameter */
-	private ReportDefinitionParam reportDefinitionParam;
-
-
-	/** the type for the report definition Parameter 
-	 * 	This is validation rules for fillin parameters,
-	 * 	a set of strings for sets (both value and title),
-	 * and the query if the value type is a sql query
-	 */
-	private String value;
-
-
-	
 	/**
 	 * the getter for the paramId property
 	 * @return String the unique identifier
 	 */
-	public String getParamId()
-	{
-		return paramId;
-	}
+	public String getParamId();
 	
 	
 	/**
@@ -82,20 +60,14 @@ public class ReportParam
 	 * and by hibernate.
 	 * @param paramId String
 	 */
-	public void setParamId(String paramId)
-	{
-		this.paramId = paramId;
-	}
+	public void setParamId(String paramId);
 	
 	
 	/**
 	 * the getter for the report property
 	 * @return String the unique identifier
 	 */
-	public Report getReport()
-	{
-		return report;
-	}
+	public Report getReport();
 	
 	
 	/**
@@ -103,19 +75,13 @@ public class ReportParam
 	 * and by hibernate.
 	 * @param report Report
 	 */
-	public void setReport(Report report)
-	{
-		this.report = report;
-	}
+	public void setReport(Report report);
 	
 	/**
 	 * the getter for the reportDefinitionParam property
 	 * @return ReportDefinitionParam the unique identifier
 	 */
-	public ReportDefinitionParam getreportDefinitionParam()
-	{
-		return reportDefinitionParam;
-	}
+	public ReportDefinitionParam getReportDefinitionParam();
 	
 	
 	/**
@@ -123,20 +89,14 @@ public class ReportParam
 	 * and by hibernate.
 	 * @param reportDefinitionParam String
 	 */
-	public void setReportDefinitionParam(ReportDefinitionParam reportDefinitionParam)
-	{
-		this.reportDefinitionParam = reportDefinitionParam;
-	}
+	public void setReportDefinitionParam(ReportDefinitionParam reportDefinitionParam);
 	
 	
 	/**
 	 * the getter for the value property
 	 * @return String the value
 	 */
-	public String getValue()
-	{
-		return value;
-	}
+	public String getValue();
 	
 	
 	/**
@@ -144,8 +104,13 @@ public class ReportParam
 	 * and by hibernate.
 	 * @param value String
 	 */
-	public void setValue(String value)
-	{
-		this.value = value;
-	}
+	public void setValue(String value);
+	
+	
+	/**
+	 * Checks to make sure that the value can be selected.
+	 * Apply validation rules, check against set, check against the sql results
+	 * @return boolean
+	 */
+	public boolean valid();
 }

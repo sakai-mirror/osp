@@ -42,19 +42,108 @@
  * $Date: 2005-11-03 18:05:53 -0500 (Thu, 03 Nov 2005) $
  */
 
-package org.theospi.api.app.reports;
+package org.theospi.component.app.reports;
 
-import java.util.Collection;
 import java.util.List;
 
-public interface ReportsManager
+import org.theospi.api.app.reports.ReportDefinition;
+import org.theospi.api.app.reports.ReportDefinitionXsl;
+
+public class ReportDefinitionXslImpl implements ReportDefinitionXsl
 {
-
-	public void setReports(List reports);
-	public List getReports();
+	/** the identifier for the report definition XSL */
+	private String reportDefXslId;
 	
+	/** the unique identifier for the report definition XSL */
+	private ReportDefinition reportDefinition;
 
-	public void createReportParameters(Report report);
-	public Report createReport(ReportDefinition reportDefinition);
-	public ReportResult generateResults(Report report);
+	/** the fileLink of the report definition XSL */
+	private String fileLink;
+
+	/** the property of whether the xsl is for "view" or "export" */
+	private String isExport;
+
+	
+	/**
+	 * the getter for the reportDefXslId property
+	 * @return String the unique identifier
+	 */
+	public String getReportDefXslId()
+	{
+		return reportDefXslId;
+	}
+	
+	
+	/**
+	 * the setter for the reportDefXslId property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param reportDefXslId String
+	 */
+	public void setReportDefXslId(String reportDefXslId)
+	{
+		this.reportDefXslId = reportDefXslId;
+	}
+	
+	/**
+	 * the getter for the reportDefinition property
+	 * @return String the unique identifier
+	 */
+	public ReportDefinition getReportDefinition()
+	{
+		return reportDefinition;
+	}
+	
+	
+	/**
+	 * the setter for the reportDefinition property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param reportDefinition String
+	 */
+	public void setReportDefinition(ReportDefinition reportDefinition)
+	{
+		this.reportDefinition = reportDefinition;
+	}
+	
+	
+	/**
+	 * the getter for the fileLink property
+	 * @return String the fileLink
+	 */
+	public String getFileLink()
+	{
+		return fileLink;
+	}
+	
+	
+	/**
+	 * the setter for the fileLink property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param fileLink String
+	 */
+	public void setFileLink(String fileLink)
+	{
+		this.fileLink = fileLink;
+	}
+	
+	
+	/**
+	 * the getter for the isExport property
+	 * @return String the isExport
+	 */
+	public String getIsExport()
+	{
+		return isExport;
+	}
+	
+	
+	/**
+	 * the setter for the fileLink property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param isExport String
+	 */
+	public void setIsExport(String isExport)
+	{
+		this.isExport = isExport;
+	}
+	
 }

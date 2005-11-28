@@ -50,6 +50,7 @@
 
         <init-param>
             <param-name>default</param-name>
+            <!-- the path is inserted before and .jsp inserted after -->
             <param-value>main</param-value>
         </init-param>
          <init-param>

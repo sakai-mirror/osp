@@ -44,67 +44,103 @@
 
 package org.theospi.component.app.reports;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Date;
 
-public class ReportDefinition
+import org.theospi.api.app.reports.*;
+import org.theospi.portfolio.shared.model.OspException;
+
+public class ReportImpl implements Report
 {
-	/** the unique identifier for the report definition */
-	private String reportDefId;
+	/** the unique identifier for the report */
+	private String reportId;
+	
+	/** the link to the report definition */
+	private ReportDefinition reportDefinition = null;
 
-	/** the title of the report definition */
+	/** the title of the report */
 	private String title;
 
-	/** the sql query for the report definition */
-	private String query;
-
-	/** the keyword for the report definition */
+	/** the keyword for the report */
 	private String keywords;
 
-	/** the description for the report definition */
+	/** the description for the report */
 	private String description;
 
-	/** the defaultXsl for the report definition */
+	/** the parameters for the query in the report */
+	private boolean isLive;
+
+	/** the defaultXsl for the report */
 	private String defaultXsl;
 
-	/** the exportXsl for the report definition */
-	private String exportXsl;
-
-	/** the link to the report parameters for the report definition */
-	private Set reportDefinitionParams;
-
-	/** the link to the report XSLs for the report definition */
-	private Set reportDefinitionXsls;
+	/** the defaultXsl for the report */
+	private Date creationDate;
 	
-	/** the parameters for the query in the report definition */
-	private List params;
+	/** the list of report parameters for the report */
+	private List reportParams;
+	
 
-	/** the defaultXsl for the report definition */
-	//private List forms;
-
-	/** the defaultXsl for the report definition */
-	private List xsls;
-	
-	
-	
 	/**
-	 * the getter for the reportDefId property
-	 * @return String the unique identifier
+	 * the getter for the reportId property
 	 */
-	public String getReportDefId()
+	public ReportImpl()
 	{
-		return reportDefId;
+		
 	}
 	
 	
 	/**
-	 * the setter for the reportDefId property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param reportDefId String
+	 * the getter for the reportId property
 	 */
-	public void setReportDefId(String reportDefId)
+	
+	public ReportImpl(ReportDefinition reportDefinition)
 	{
-		this.reportDefId = reportDefId;
+		setReportDefinition(reportDefinition);
+	}
+	
+
+	/**
+	 * the getter for the reportId property
+	 * @return String the unique identifier
+	 */
+	public String getReportId()
+	{
+		return reportId;
+	}
+	
+	
+	/**
+	 * the setter for the reportId property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param reportId String
+	 */
+	public void setReportId(String reportId)
+	{
+		this.reportId = reportId;
+	}
+	/**
+	 * the getter for the reportDefinition property
+	 * @return ReportDefinition the unique identifier
+	 */
+	public ReportDefinition getReportDefinition()
+	{
+		return reportDefinition;
+	}
+	
+	
+	/**
+	 * the setter for the reportDefinition property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param reportDefinition String
+	 */
+	public void setReportDefinition(ReportDefinition reportDefinition)
+	{
+		if(this.reportDefinition != null && reportDefinition != this.reportDefinition)
+			throw new OspException("A report cannot change it's report definition");
+		
+		this.reportDefinition = reportDefinition;
 	}
 	
 	
@@ -126,27 +162,6 @@ public class ReportDefinition
 	public void setTitle(String title)
 	{
 		this.title = title;
-	}
-	
-	
-	/**
-	 * the getter for the query property
-	 * @return String the query
-	 */
-	public String getQuery()
-	{
-		return query;
-	}
-	
-	
-	/**
-	 * the setter for the query property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param query String
-	 */
-	public void setQuery(String query)
-	{
-		this.query = query;
 	}
 	
 	
@@ -193,6 +208,27 @@ public class ReportDefinition
 	
 	
 	/**
+	 * the getter for the isLive property
+	 * @return String the isLive
+	 */
+	public boolean getIsLive()
+	{
+		return isLive;
+	}
+	
+	
+	/**
+	 * the setter for the isLive property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param isLive List
+	 */
+	public void setIsLive(boolean isLive)
+	{
+		this.isLive = isLive;
+	}
+	
+	
+	/**
 	 * the getter for the defaultXsl property
 	 * @return String the defaultXsl
 	 */
@@ -205,7 +241,7 @@ public class ReportDefinition
 	/**
 	 * the setter for the defaultXsl property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param defaultXsl List
+	 * @param defaultXsl String
 	 */
 	public void setDefaultXsl(String defaultXsl)
 	{
@@ -214,106 +250,66 @@ public class ReportDefinition
 	
 	
 	/**
-	 * the getter for the exportXsl property
-	 * @return String the exportXsl
+	 * the getter for the creationDate property
+	 * @return Date the creationDate
 	 */
-	public String getExportXsl()
+	public Date getCreationDate()
 	{
-		return exportXsl;
+		return creationDate;
 	}
 	
 	
 	/**
-	 * the setter for the exportXsl property.  This is set by the bean 
+	 * the setter for the creationDate property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param exportXsl List
+	 * @param params Date
 	 */
-	public void setExportXsl(String exportXsl)
+	public void setCreationDate(Date creationDate)
 	{
-		this.exportXsl = exportXsl;
+		this.creationDate = creationDate;
 	}
 	
 	
 	/**
-	 * the getter for the reportDefinitionParams property
-	 * @return Set the reportDefinitionParams
+	 * the getter for the reportParams property
+	 * @return List the reportParams
 	 */
-	public Set getReportDefinitionParams()
+	public List getReportParams()
 	{
-		return reportDefinitionParams;
+		return reportParams;
 	}
 	
 	
 	/**
-	 * the setter for the reportDefinitionParams property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param reportDefinitionParams Set
+	 * the setter for the reportParams property.  This is set by hibernate.
+	 * @param reportParams List
 	 */
-	public void setReportDefinitionParams(Set reportDefinitionParams)
+	public void setReportParams(List reportParams)
 	{
-		this.reportDefinitionParams = reportDefinitionParams;
+		this.reportParams = reportParams;
+	}
+
+	public void createParamsFromParamDef()
+	{
+		if(reportDefinition == null)
+			throw new OspException("Tried generating report parameters but there was no report definition");
+
+		List reportDefParams = reportDefinition.getReportDefinitionParams();
+		reportParams = new ArrayList(reportDefParams.size());
+
+		Iterator iter = reportDefParams.iterator();
+
+		while (iter.hasNext()) {
+			ReportDefinitionParam rdp = (ReportDefinitionParam) iter.next();
+
+			ReportParam rp = new ReportParamImpl();
+
+			//set the links back, but leave the id and value blank
+			rp.setReportDefinitionParam(rdp);
+			rp.setReport(this);
+			
+			reportParams.add(rp);
+		}
 	}
 	
-	
-	/**
-	 * the getter for the reportDefinitionXsls property
-	 * @return Set the reportDefinitionXsls
-	 */
-	public Set getReportDefinitionXsls()
-	{
-		return reportDefinitionXsls;
-	}
-	
-	
-	/**
-	 * the setter for the reportDefinitionXsls property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param reportDefinitionXsls Set
-	 */
-	public void setReportDefinitionXsls(Set reportDefinitionXsls)
-	{
-		this.reportDefinitionXsls = reportDefinitionXsls;
-	}
-	
-	
-	/**
-	 * the getter for the params property
-	 * @return List the params
-	 */
-	public List getParams()
-	{
-		return params;
-	}
-	
-	
-	/**
-	 * the setter for the params property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param params List
-	 */
-	public void setParams(List params)
-	{
-		this.params = params;
-	}
-	
-	
-	/**
-	 * the getter for the xsls property
-	 * @return List the xsls
-	 */
-	public List getXsls()
-	{
-		return xsls;
-	}
-	
-	
-	/**
-	 * the setter for the xsl property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param xsl List
-	 */
-	public void setXsls(List defaultXsls)
-	{
-		this.xsls = xsls;
-	}
 }

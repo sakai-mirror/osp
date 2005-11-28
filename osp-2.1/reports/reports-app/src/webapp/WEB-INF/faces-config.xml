@@ -110,12 +110,11 @@
     </renderer>
   </render-kit>
   -->
-  
   <navigation-rule>
+    <from-view-id>*</from-view-id>
     <navigation-case>
-      <from-outcome>main</from-outcome>
-      <to-view-id>/report/main.jsp</to-view-id>
-      <redirect/>
+      <from-outcome>processCreateReport</from-outcome>
+      <to-view-id>createReport.jsp</to-view-id>
     </navigation-case>
   </navigation-rule>
   
