@@ -311,29 +311,5 @@ public class Report
 	{
 		this.reportParams = reportParams;
 	}
-
-	//  TODO:  Move this out to the manager
-	public void createParamsFromParamDef()
-	{
-		if(reportDefinition == null)
-			throw new OspException("Tried generating report parameters but there was no report definition");
-
-		List reportDefParams = reportDefinition.getReportDefinitionParams();
-		reportParams = new ArrayList(reportDefParams.size());
-
-		Iterator iter = reportDefParams.iterator();
-
-		while (iter.hasNext()) {
-			ReportDefinitionParam rdp = (ReportDefinitionParam) iter.next();
-
-			ReportParam rp = new ReportParam();
-
-			//set the links back, but leave the id and value blank
-			rp.setReportDefinitionParam(rdp);
-			rp.setReport(this);
-			
-			reportParams.add(rp);
-		}
-	}
 	
 }
