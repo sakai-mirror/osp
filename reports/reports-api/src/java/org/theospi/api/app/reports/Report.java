@@ -59,6 +59,9 @@ public class Report
 	/** the link to the report definition */
 	private ReportDefinition reportDefinition = null;
 
+	/** the owner of the report */
+	private String userId;
+
 	/** the title of the report */
 	private String title;
 
@@ -144,6 +147,27 @@ public class Report
 	
 	
 	/**
+	 * the getter for the userId property
+	 * @return String the userId
+	 */
+	public String getUserId()
+	{
+		return userId;
+	}
+	
+	
+	/**
+	 * the setter for the userId property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param userId String
+	 */
+	public void setUserId(String userId)
+	{
+		this.userId = userId;
+	}
+	
+	
+	/**
 	 * the getter for the title property
 	 * @return String the title
 	 */
@@ -156,7 +180,7 @@ public class Report
 	/**
 	 * the setter for the title property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param reportDefId String
+	 * @param title String
 	 */
 	public void setTitle(String title)
 	{

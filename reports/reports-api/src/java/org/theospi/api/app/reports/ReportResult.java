@@ -55,6 +55,9 @@ public class ReportResult
 	/** the unique identifier for the report definition */
 	private Report report;
 
+	/** the owner of the report */
+	private String userId;
+
 	/** the title of the report definition */
 	private String title;
 
@@ -111,6 +114,27 @@ public class ReportResult
 	public void setReport(Report report)
 	{
 		this.report = report;
+	}
+	
+	
+	/**
+	 * the getter for the userId property
+	 * @return String the userId
+	 */
+	public String getUserId()
+	{
+		return userId;
+	}
+	
+	
+	/**
+	 * the setter for the userId property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param userId String
+	 */
+	public void setUserId(String userId)
+	{
+		this.userId = userId;
 	}
 	
 	

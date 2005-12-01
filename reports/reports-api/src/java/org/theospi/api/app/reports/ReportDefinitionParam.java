@@ -54,6 +54,9 @@ public class ReportDefinitionParam
 	/** the identifier to the report definition for the paramater */
 	private ReportDefinition reportDefinition;
 
+	/** the name of the param as presented to the user */
+	private String title;
+
 	/** the parameter name of the report definition parameter */
 	private String paramName;
 
@@ -126,6 +129,27 @@ public class ReportDefinitionParam
 	public void setReportDefinition(ReportDefinition reportDefinition)
 	{
 		this.reportDefinition = reportDefinition;
+	}
+	
+	
+	/**
+	 * the getter for the title property
+	 * @return String the title
+	 */
+	public String getTitle()
+	{
+		return title;
+	}
+	
+	
+	/**
+	 * the setter for the title property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param title String
+	 */
+	public void setTitle(String title)
+	{
+		this.title = title;
 	}
 	
 	
