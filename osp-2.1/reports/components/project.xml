@@ -22,9 +22,6 @@
             <groupId>osp</groupId>
             <artifactId>osp-reports-api</artifactId>
             <version>${osp.version}</version>
-            <properties>
-                <deploy.target>shared</deploy.target>
-            </properties>        
         </dependency>
       
         <dependency>
@@ -33,18 +30,8 @@
             <version>${osp.version}</version>
             <properties>
                 <deploy.target>shared</deploy.target>
-            </properties>        
+            </properties>
         </dependency>
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
         
 

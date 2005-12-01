@@ -99,7 +99,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	
 	/**
 	 * This is the getter for the total list of reports
-	 * @return
+	 * @return List
 	 */
 	public List getReports()
 	{
@@ -128,11 +128,12 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	//			The process functions (non-getter/setter)
 
 	/**
-	 * Does a test to ensure that the parameters are valid
+	 * Creates parameters in the report linked to the parameters in the report definition
 	 * 
 	 * @param parameters a Collection of ReportParam
 	 */
-	public void createReportParameters(Report report) {
+	public void createReportParameters(Report report)
+	{
 		List reportDefParams = report.getReportDefinition().getReportDefinitionParams();
 		ArrayList reportParams = new ArrayList(reportDefParams.size());
 
@@ -141,9 +142,13 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		while (iter.hasNext()) {
 			ReportDefinitionParam rdp = (ReportDefinitionParam) iter.next();
 
-			ReportParam rp = new ReportParamImpl();
+			ReportParam rp = new ReportParam();
 
 			rp.setReportDefinitionParam(rdp);
+			
+			//	if the parameter is static then copy the value, otherwise it is filled by user
+			if(rdp.getValueType().equals( ReportDefinitionParam.VALUE_TYPE_STATIC))
+				rp.setValue(rdp.getValue());
 			reportParams.add(rp);
 		}
 		report.setReportParams(reportParams);
@@ -167,12 +172,23 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	 */
 	public Report createReport(ReportDefinition reportDefinition)
 	{
-		Report report = new ReportImpl(reportDefinition);
+		Report report = new Report(reportDefinition);
 		
 		//Create the report parameters
 		createReportParameters(report);
 		
 		return report;
+	}
+	
+	
+	public Connection getWarehouseConnection() throws HibernateException
+	{
+		//Get the data warehouse database connection
+		//if fails, use the hibernate connection
+
+		Session				session = getSession();
+		
+		return session.connection();
 	}
 
 	
@@ -193,34 +209,34 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		
 		//If there are params, place them with values in the query
 		if(reportParams != null) {
-			Iterator iter = report.getReportParams().iterator();
+			Iterator iter = reportParams.iterator();
 			
-			//	loop through all the parameters
+			//	loop through all the parameters and find in query for replacement
 			while(iter.hasNext()) {
 				
 				//	get the paremeter and associated parameter definition
 				ReportParam rp = (ReportParam)iter.next();
 				ReportDefinitionParam rdp = rp.getReportDefinitionParam();
 				
+				if(rp.getValue() == null)
+					throw new OspException("The Report Parameter Value was blank.  Offending parameter: " + rdp.getParamName());
+
+				//TODO: what to do?
+				//	if a parameter is not valid, fail gracefully
+				if(!rp.valid()) {
+					return null;
+				}
+				
 				int i = query.indexOf(rdp.getParamName());
 				
+				//	Loop until no instances exist
 				while(i != -1) {
-					if(rp.getValue() == null)
-						throw new OspException("The Report Parameter Value was blank.  Offending parameter: " + rdp.getParamName());
-					
-					//	if a parameter is not valid, fail gracefully
-					if(!rp.valid()) {
-						return null;
-					}
 					
 					//	replace the parameter with the value
 					query.replace(i, i + rdp.getParamName().length(), rp.getValue());
 					
 					//	look for a second instance
 					i = query.indexOf(rdp.getParamName());
-					
-					//	(rinse, lather,) repeat the process until there is no more 
-					//		(shampoo) instances of the parameter string
 				}
 			}
 		}
@@ -232,18 +248,17 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		
 		System.out.println(queryString);
 		
-		ReportResult		rr = new ReportResultImpl();
+		ReportResult		rr = new ReportResult();
 		
 		// run the query
 		Connection			connection = null;
 		PreparedStatement	stmt = null;
-		Session				session = getSession();
 		ResultSet			rs = null;
 		int					resultSetIndex = 0;
 		
 		
 		try {
-			connection = session.connection();
+			connection = getWarehouseConnection();
 			stmt = connection
 					.prepareStatement(queryString);
 			//stmt.setString(1, itemDefId.getValue());
@@ -319,6 +334,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 						data = "";
 					}
 					xml.append("\">");
+					//this handles blob data too
 					xml.append(data);
 					xml.append("</element>");
 					xml.append(returnChar);

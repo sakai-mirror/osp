@@ -47,13 +47,39 @@ package org.theospi.api.app.reports;
 import java.util.List;
 import java.util.Date;
 
-public interface ReportResult
+public class ReportResult
 {
+	/** the unique identifier for the report definition */
+	private String resultId;
+	
+	/** the unique identifier for the report definition */
+	private Report report;
+
+	/** the title of the report definition */
+	private String title;
+
+	/** the keyword for the report definition */
+	private String keywords;
+
+	/** the description for the report definition */
+	private String description;
+
+	/** the parameters for the query in the report definition */
+	private Date creationDate;
+
+	/** the defaultXsl for the report definition */
+	private String xml;
+	
+
+
 	/**
 	 * the getter for the resultId property
 	 * @return String the unique identifier
 	 */
-	public String getResultId();
+	public String getResultId()
+	{
+		return resultId;
+	}
 	
 	
 	/**
@@ -61,14 +87,20 @@ public interface ReportResult
 	 * and by hibernate.
 	 * @param resultId String
 	 */
-	public void setResultId(String resultId);
+	public void setResultId(String resultId)
+	{
+		this.resultId = resultId;
+	}
 
 	
 	/**
 	 * the getter for the report property
 	 * @return String the unique identifier
 	 */
-	public Report getReport();
+	public Report getReport()
+	{
+		return report;
+	}
 	
 	
 	/**
@@ -76,14 +108,20 @@ public interface ReportResult
 	 * and by hibernate.
 	 * @param report String
 	 */
-	public void setReport(Report report);
+	public void setReport(Report report)
+	{
+		this.report = report;
+	}
 	
 	
 	/**
 	 * the getter for the title property
 	 * @return String the title
 	 */
-	public String getTitle();
+	public String getTitle()
+	{
+		return title;
+	}
 	
 	
 	/**
@@ -91,14 +129,20 @@ public interface ReportResult
 	 * and by hibernate.
 	 * @param reportDefId String
 	 */
-	public void setTitle(String title);
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
 	
 	
 	/**
 	 * the getter for the keywords property
 	 * @return String the keywords
 	 */
-	public String getKeywords();
+	public String getKeywords()
+	{
+		return keywords;
+	}
 	
 	
 	/**
@@ -106,14 +150,20 @@ public interface ReportResult
 	 * and by hibernate.
 	 * @param keywords String
 	 */
-	public void setKeywords(String keywords);
+	public void setKeywords(String keywords)
+	{
+		this.keywords = keywords;
+	}
 	
 	
 	/**
 	 * the getter for the description property
 	 * @return String the description
 	 */
-	public String getDescription();
+	public String getDescription()
+	{
+		return description;
+	}
 	
 	
 	/**
@@ -121,14 +171,20 @@ public interface ReportResult
 	 * and by hibernate.
 	 * @param description String
 	 */
-	public void setDescription(String description);
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
 	
 	
 	/**
 	 * the getter for the creationDate property
 	 * @return List the creationDate
 	 */
-	public Date getCreationDate();
+	public Date getCreationDate()
+	{
+		return creationDate;
+	}
 	
 	
 	/**
@@ -136,14 +192,20 @@ public interface ReportResult
 	 * and by hibernate.
 	 * @param params List
 	 */
-	public void setCreationDate(Date creationDate);
+	public void setCreationDate(Date creationDate)
+	{
+		this.creationDate = creationDate;
+	}
 	
 	
 	/**
 	 * the getter for the xml property
 	 * @return String the xml
 	 */
-	public String getXml();
+	public String getXml()
+	{
+		return xml;
+	}
 	
 	
 	/**
@@ -151,5 +213,8 @@ public interface ReportResult
 	 * and by hibernate.
 	 * @param xml List
 	 */
-	public void setXml(String xml);
+	public void setXml(String xml)
+	{
+		this.xml = xml;
+	}
 }
