@@ -46,13 +46,29 @@ package org.theospi.api.app.reports;
 
 import java.util.List;
 
-public interface ReportDefinitionXsl
+public class ReportDefinitionXsl
 {
+	/** the identifier for the report definition XSL */
+	private String reportDefXslId;
+	
+	/** the unique identifier for the report definition XSL */
+	private ReportDefinition reportDefinition;
+
+	/** the fileLink of the report definition XSL */
+	private String fileLink;
+
+	/** the property of whether the xsl is for "view" or "export" */
+	private String isExport;
+
+	
 	/**
 	 * the getter for the reportDefXslId property
 	 * @return String the unique identifier
 	 */
-	public String getReportDefXslId();
+	public String getReportDefXslId()
+	{
+		return reportDefXslId;
+	}
 	
 	
 	/**
@@ -60,13 +76,19 @@ public interface ReportDefinitionXsl
 	 * and by hibernate.
 	 * @param reportDefXslId String
 	 */
-	public void setReportDefXslId(String reportDefXslId);
+	public void setReportDefXslId(String reportDefXslId)
+	{
+		this.reportDefXslId = reportDefXslId;
+	}
 	
 	/**
 	 * the getter for the reportDefinition property
 	 * @return String the unique identifier
 	 */
-	public ReportDefinition getReportDefinition();
+	public ReportDefinition getReportDefinition()
+	{
+		return reportDefinition;
+	}
 	
 	
 	/**
@@ -74,14 +96,20 @@ public interface ReportDefinitionXsl
 	 * and by hibernate.
 	 * @param reportDefinition String
 	 */
-	public void setReportDefinition(ReportDefinition reportDefinition);
+	public void setReportDefinition(ReportDefinition reportDefinition)
+	{
+		this.reportDefinition = reportDefinition;
+	}
 	
 	
 	/**
 	 * the getter for the fileLink property
 	 * @return String the fileLink
 	 */
-	public String getFileLink();
+	public String getFileLink()
+	{
+		return fileLink;
+	}
 	
 	
 	/**
@@ -89,14 +117,20 @@ public interface ReportDefinitionXsl
 	 * and by hibernate.
 	 * @param fileLink String
 	 */
-	public void setFileLink(String fileLink);
+	public void setFileLink(String fileLink)
+	{
+		this.fileLink = fileLink;
+	}
 	
 	
 	/**
 	 * the getter for the isExport property
 	 * @return String the isExport
 	 */
-	public String getIsExport();
+	public String getIsExport()
+	{
+		return isExport;
+	}
 	
 	
 	/**
@@ -104,6 +138,9 @@ public interface ReportDefinitionXsl
 	 * and by hibernate.
 	 * @param isExport String
 	 */
-	public void setIsExport(String isExport);
+	public void setIsExport(String isExport)
+	{
+		this.isExport = isExport;
+	}
 	
 }

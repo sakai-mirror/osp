@@ -111,12 +111,36 @@
   </render-kit>
   -->
   <navigation-rule>
-    <from-view-id>*</from-view-id>
+    <from-view-id>/reports/main.jsp</from-view-id>
     <navigation-case>
       <from-outcome>processCreateReport</from-outcome>
-      <to-view-id>createReport.jsp</to-view-id>
+      <to-view-id>/reports/createReport.jsp</to-view-id>
     </navigation-case>
   </navigation-rule>
+  
+  <navigation-rule>
+    <from-view-id>/reports/createReport.jsp</from-view-id>
+    <navigation-case>
+      <from-outcome>processCreateReportParams</from-outcome>
+      <to-view-id>/reports/createReportParams.jsp</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
+      <from-outcome>main</from-outcome>
+      <to-view-id>/reports/main.jsp</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+  
+  <navigation-rule>
+    <from-view-id>/reports/createReportParams.jsp</from-view-id>
+    <navigation-case>
+      <from-outcome>main</from-outcome>
+      <to-view-id>/reports/main.jsp</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+  
   
 
 </faces-config>

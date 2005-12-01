@@ -46,20 +46,55 @@ package org.theospi.api.app.reports;
 
 import java.util.List;
 
-public interface ReportDefinitionParam
+public class ReportDefinitionParam
 {
-	public static final String VALUE_TYPE_FILLIN = "fillin";
-	public static final String VALUE_TYPE_ONE_OF_SET = "oneofset";
-	public static final String VALUE_TYPE_MULTI_OF_SET = "nofset";
-	public static final String VALUE_TYPE_ONE_OF_QUERY = "oneofsql";
-	public static final String VALUE_TYPE_MULTI_OF_QUERY = "nofsql";
+	/** the reportDefParamId for the report definition parameter */
+	private String reportDefParamId;
+	
+	/** the identifier to the report definition for the paramater */
+	private ReportDefinition reportDefinition;
 
+	/** the parameter name of the report definition parameter */
+	private String paramName;
+
+	/** the description for the report definition parameter */
+	private String description;
+
+	/** the type for the report definition Parameter parameter
+	 *  This is defined as "int", "float", "String", "date"
+	 */
+	private String type;
+
+	/** the valueType for the report definition Parameter 
+	 *	The value type
+	 */
+	private String valueType;
+
+	public static final String VALUE_TYPE_FILLIN = "fillin";
+	public static final String VALUE_TYPE_ONE_OF_SET = "set";
+	public static final String VALUE_TYPE_MULTI_OF_SET = "multiset";
+	public static final String VALUE_TYPE_ONE_OF_QUERY = "sql";
+	public static final String VALUE_TYPE_MULTI_OF_QUERY = "multisql";
+	public static final String VALUE_TYPE_STATIC = "static";
+
+	/** the type for the report definition Parameter 
+	 * 	This is validation rules for fillin parameters,
+	 * 	a set of strings for sets (both value and title),
+	 *  the query if the value type is a sql query,
+	 *  or the static value
+	 */
+	private String value;
+
+	
 	
 	/**
 	 * the getter for the reportDefParamId property
 	 * @return String the unique identifier
 	 */
-	public String getReportDefParamId();
+	public String getReportDefParamId()
+	{
+		return reportDefParamId;
+	}
 	
 	
 	/**
@@ -67,14 +102,20 @@ public interface ReportDefinitionParam
 	 * and by hibernate.
 	 * @param reportDefId String
 	 */
-	public void setReportDefParamId(String reportDefParamId);
+	public void setReportDefParamId(String reportDefParamId)
+	{
+		this.reportDefParamId = reportDefParamId;
+	}
 	
 	
 	/**
 	 * the getter for the ReportDefinition property
 	 * @return String the unique identifier
 	 */
-	public ReportDefinition getReportDefinition();
+	public ReportDefinition getReportDefinition()
+	{
+		return reportDefinition;
+	}
 	
 	
 	/**
@@ -82,14 +123,20 @@ public interface ReportDefinitionParam
 	 * and by hibernate.
 	 * @param ReportDefinition String
 	 */
-	public void setReportDefinition(ReportDefinition reportDefinition);
+	public void setReportDefinition(ReportDefinition reportDefinition)
+	{
+		this.reportDefinition = reportDefinition;
+	}
 	
 	
 	/**
 	 * the getter for the paramName property
 	 * @return String the paramName
 	 */
-	public String getParamName();
+	public String getParamName()
+	{
+		return paramName;
+	}
 	
 	
 	/**
@@ -97,14 +144,20 @@ public interface ReportDefinitionParam
 	 * and by hibernate.
 	 * @param paramName String
 	 */
-	public void setParamName(String paramName);
+	public void setParamName(String paramName)
+	{
+		this.paramName = paramName;
+	}
 	
 	
 	/**
 	 * the getter for the description property
 	 * @return String the description
 	 */
-	public String getDescription();
+	public String getDescription()
+	{
+		return description;
+	}
 	
 	
 	/**
@@ -112,14 +165,20 @@ public interface ReportDefinitionParam
 	 * and by hibernate.
 	 * @param description String
 	 */
-	public void setDescription(String description);
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
 	
 	
 	/**
 	 * the getter for the type property
 	 * @return String the type
 	 */
-	public String getType();
+	public String getType()
+	{
+		return type;
+	}
 	
 	
 	/**
@@ -127,14 +186,20 @@ public interface ReportDefinitionParam
 	 * and by hibernate.
 	 * @param type String
 	 */
-	public void setType(String type);
+	public void setType(String type)
+	{
+		this.type = type.trim();
+	}
 	
 	
 	/**
 	 * the getter for the valueType property
 	 * @return String the valueType
 	 */
-	public String getValueType();
+	public String getValueType()
+	{
+		return valueType;
+	}
 	
 	
 	/**
@@ -142,14 +207,20 @@ public interface ReportDefinitionParam
 	 * and by hibernate.
 	 * @param valueType String
 	 */
-	public void setValueType(String valueType);
+	public void setValueType(String valueType)
+	{
+		this.valueType = valueType.trim();
+	}
 	
 	
 	/**
 	 * the getter for the value property
 	 * @return String the value
 	 */
-	public String getValue();
+	public String getValue()
+	{
+		return value;
+	}
 	
 	
 	/**
@@ -157,5 +228,8 @@ public interface ReportDefinitionParam
 	 * and by hibernate.
 	 * @param value String
 	 */
-	public void setValue(String value);
+	public void setValue(String value)
+	{
+		this.value = value.trim();
+	}
 }

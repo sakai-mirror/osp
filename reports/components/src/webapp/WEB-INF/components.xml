@@ -7,7 +7,7 @@
         <property name="mappingResources">
             <list>
                 <value>
-                    org/theospi/component/app/reports/ReportsImpl.hbm.xml
+                    org/theospi/api/app/reports/ReportsImpl.hbm.xml
                 </value>
             </list>
         </property>

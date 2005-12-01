@@ -3,48 +3,52 @@
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 <% response.setContentType("text/html; charset=UTF-8"); %>
 <f:view>
-    <f:loadBundle basename="org.theospi.tool.reports.bundle.Messages"
-        var="msgs" />
-    <sakai:view_container title="#{msgs.title_list}">
-        <sakai:view_content>
+    <f:loadBundle basename="org.theospi.tool.reports.bundle.Messages" var="msgs" />
+    <sakai:view title="#{msgs.title_create_report}">
             <h:form>
                 
                 The report is: 
                 <h:outputText value="#{ReportsTool.workingReportDefinition.reportDefinition.title}" />
                 
                 
-                <h:dataTable var="report"
-                    value="#{ReportsTool.workingReportDefinition.reportDefinition.reportDefinitionParams}">
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Parameter Name" />
-                        </f:facet>
-
-                        <h:outputText value="#{report.paramName}" />
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Type" />
-                        </f:facet>
-
-                        <h:outputText value="#{report.type}" />
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="value type" />
-                        </f:facet>
-
-                        <h:outputText value="#{report.valueType}" />
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Value" />
-                        </f:facet>
-
-                        <h:outputText value="#{report.value}" />
-                    </h:column>
-                </h:dataTable>
+                <sakai:group_box>
+                    
+                    <sakai:panel_edit>
+                        <sakai:doc_section>
+                            <h:outputText value="*" style="color: red"/>
+                            <h:outputText value="#{msgs.report_title}"/>
+                        </sakai:doc_section>
+                        <sakai:doc_section>
+                            <h:inputText value="#{ReportsTool.workingReport.report.title}" id="title"/>
+                            <h:outputText value="#{msgs.empty_title_validate}" style="color: red" 
+                                rendered="#{ReportsTool.workingReport.invalidTitle}"/>
+                        </sakai:doc_section>
+                        
+                        <sakai:doc_section>
+                            <h:outputText value="#{msgs.report_keywords}"/>
+                        </sakai:doc_section>
+                        <sakai:doc_section>
+                            <h:inputText value="#{ReportsTool.workingReport.report.keywords}" id="keywords"/>
+                        </sakai:doc_section>
+                        
+                        <h:outputText value="#{msgs.report_description}"/>
+                        <sakai:rich_text_area value="#{ReportsTool.workingReport.report.description}" rows="10" columns="70"/>
+                        
+                    </sakai:panel_edit>
+                </sakai:group_box>
+                
+                
+                <sakai:button_bar>
+                    <sakai:button_bar_item
+                        action="#{ReportsTool.workingReport.processReportBaseProperties}"
+                        value="#{msgs.continue}" />
+                    <sakai:button_bar_item
+                        action="#{ReportsTool.workingReport.processCancel}"
+                        value="#{msgs.cancel}" />
+                </sakai:button_bar>
+                
+                <h:messages />
+                
             </h:form>
-        </sakai:view_content>
-    </sakai:view_container>
+    </sakai:view>
 </f:view>

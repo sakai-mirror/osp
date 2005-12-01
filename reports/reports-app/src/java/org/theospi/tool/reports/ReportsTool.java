@@ -48,6 +48,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.faces.model.SelectItem;
+
 import org.theospi.api.app.reports.*;
 
 /**
@@ -84,13 +86,14 @@ public class ReportsTool
 	private DecoratedReportDefinition workingReportDefinition = null;
 	
 	/** The report from which the tool is working with */
-	private DecoratedReportDefinition workingReport = null;
+	private DecoratedReport workingReport = null;
 	
 	/** The reportresult from which the tool is working with */
-	private DecoratedReportDefinition workingReportResult = null;
+	private DecoratedReportResult workingReportResult = null;
 
 	private static final String mainPage = "main";
-	private static final String genReportPage = "processCreateReport";
+	private static final String createReportPage = "processCreateReport";
+	private static final String createReportParamsPage = "processCreateReportParams";
 
 	/**
 	 * getter for the ReportsManager property
@@ -102,6 +105,15 @@ public class ReportsTool
 	}
 	
 	/**
+	 * setter for the ReportsManager property
+	 * @param ReportsManager
+	 */
+	public void setReportsManager(ReportsManager reportsManager)
+	{
+		this.reportsManager = reportsManager;
+	}
+	
+	/**
 	 * setter for the ReportsManager
 	 * @param reportsManager ReportsManager
 	 */
@@ -109,6 +121,7 @@ public class ReportsTool
 	{
 		this.workingReportDefinition = workingReportDefinition;
 	}
+	
 	/**
 	 * getter for the WorkingReportDefinition property
 	 * @return DecoratedReportDefinition
@@ -119,12 +132,21 @@ public class ReportsTool
 	}
 	
 	/**
-	 * setter for the WorkingReportDefinition
-	 * @param WorkingReportDefinition DecoratedReportDefinition
+	 * setter for the Working Report
+	 * @param workingReport DecoratedReport
 	 */
-	public void setReportsManager(ReportsManager reportsManager)
+	public void setWorkingReport(DecoratedReport workingReport)
 	{
-		this.reportsManager = reportsManager;
+		this.workingReport = workingReport;
+	}
+	
+	/**
+	 * getter for the WorkingReport property
+	 * @return DecoratedReport
+	 */
+	public DecoratedReport getWorkingReport()
+	{
+		return workingReport;
 	}
 	
 	/**
@@ -153,7 +175,12 @@ public class ReportsTool
 	//***********************************************************
 	//***********************************************************
 	//	Actions for the JSP
-	
+
+
+	/**
+	 * An action called from the JSP through the JSF framework.
+	 * @return String the next page
+	 */
 	public String gotoOptions()
 	{
 		return mainPage;
@@ -163,7 +190,7 @@ public class ReportsTool
 	//***********************************************************
 	//***********************************************************
 	//	Controller Encapsulation Classes
-	
+
 	/**
 	 * This class allows the ReportDefinition to interact with
 	 *
@@ -181,23 +208,239 @@ public class ReportsTool
 		{
 			return reportDefinition;
 		}
-		
+
+		/**
+		 * An action called from the JSP through the JSF framework.
+		 * @return String the next page
+		 */
 		public String selectReportDefinition()
 		{
 			setWorkingReportDefinition(this);
 			
-			Report report = reportsManager.createReport(reportDefinition);
+			setWorkingReport(new DecoratedReport( reportsManager.createReport(reportDefinition) ));
 			
-			report.setTitle("Report Title");
-			report.setKeywords("keywords for report");
-			report.setDescription("Description of report");
-			report.setIsLive(false);
+			return createReportPage;
+		}
+	}
+	
+	/**
+	 * This class allows the Report to interact with the view
+	 *
+	 */
+	public class DecoratedReport {
+		
+		private Report	report = null;
+		private List	reportParams = null;
+		
+		private boolean	invalidTitle = false;
+		
+		public DecoratedReport(Report report)
+		{
+			this.report = report;
+		}
+		
+		public Report getReport()
+		{
+			return report;
+		}
+		
+		public List getReportParams()
+		{
+			if(reportParams == null) {
+				reportParams = new ArrayList();
+					if(report.getReportParams() != null) {
+					Iterator iter = report.getReportParams().iterator();
+					while(iter.hasNext()) {
+						ReportParam rp = (ReportParam)iter.next();
+						
+						reportParams.add(new DecoratedReportParam(rp));
+					}
+				}
+			}
+			return reportParams;
+		}
+		
+		public boolean getInvalidTitle()
+		{
+			return invalidTitle;
+		}
+		
+		/**
+		 * An action called from the JSP through the JSF framework.
+		 * This is called when the user wants to move to the next screen
+		 * @return String the next page
+		 */
+		public String processReportBaseProperties()
+		{
+			String nextPage = createReportParamsPage;
 			
+			//	reset all the vars
+			invalidTitle = false;
+			
+			//	if no title, then error
+			if(report.getTitle() == null || report.getTitle().trim().equals("")) {
+				nextPage = "";
+				invalidTitle = true;
+			}
+			
+			
+			return nextPage;
+		}
+		
+		/**
+		 * An action called from the JSP through the JSF framework.
+		 * Called when the user wants to stop creating a new report
+		 * @return String the next page
+		 */
+		public String processCancel()
+		{
+			//	remove the working report
+			setWorkingReport(null);
+			
+			return mainPage;
+		}
+		
+		public String processEditParamsContinue()
+		{
+			//do something with the params
 			List params = report.getReportParams();
 			
 			ReportResult result = reportsManager.generateResults(report);
 			
-			return genReportPage;
+			return mainPage;
 		}
+	}
+	
+	/**
+	 * This class allows the ReportResult to interact with the view
+	 *
+	 */
+	public class DecoratedReportParam {
+		private ReportParam reportParam;
+		
+		public DecoratedReportParam(ReportParam reportParam)
+		{
+			setReportParam(reportParam);
+		}
+		public ReportParam getReportParam()
+		{
+			return reportParam;
+		}
+		public void setReportParam(ReportParam reportParam)
+		{
+			this.reportParam = reportParam;
+		}
+		public ReportDefinitionParam getReportDefinitionParam()
+		{
+			return reportParam.getReportDefinitionParam();
+		}
+		
+		
+		/**
+		 * gets the list of possible titles and values
+		 * @return List of ...
+		 */
+		public List getSelectableValues()
+		{
+			ArrayList array = new ArrayList();
+			if(getIsSet()) {
+				if(getIsDynamic()) {
+					
+				} else {
+					String strSet = reportParam.getReportDefinitionParam().getValue();
+					strSet = strSet.substring(strSet.indexOf("[")+1, strSet.indexOf("]"));
+					String[] set = strSet.split(",");
+					
+					for(int i = 0; i < set.length; i++) {
+						String element = set[i].trim();
+						
+						
+						if(element.indexOf("(") != -1) {
+							element = element.substring(element.indexOf("(")+1, element.indexOf(")"));
+							
+							String[] elementData = element.split(";");
+							if(elementData.length == 0)
+								array.add(new SelectItem());
+							if(elementData.length == 1)
+								array.add(new SelectItem(elementData[0].trim()));
+							if(elementData.length > 1)
+								array.add(new SelectItem(elementData[0].trim(), elementData[1].trim()));
+						} else {
+							array.add(new SelectItem(element));
+						}
+					}
+				}
+			}
+			
+			return array;
+		}
+		
+		
+		/**
+		 * tells whether this parameter is a set
+		 * @return boolean
+		 */
+		public boolean getIsSet()
+		{
+			String type = reportParam.getReportDefinitionParam().getValueType();
+			return type.equals(ReportDefinitionParam.VALUE_TYPE_ONE_OF_SET) ||
+					type.equals(ReportDefinitionParam.VALUE_TYPE_ONE_OF_QUERY)||
+					type.equals(ReportDefinitionParam.VALUE_TYPE_MULTI_OF_SET) ||
+					type.equals(ReportDefinitionParam.VALUE_TYPE_MULTI_OF_QUERY);
+		}
+		
+		
+		/**
+		 * tells whether this parameter is the result of a sql query
+		 * @return boolean
+		 */
+		public boolean getIsDynamic()
+		{
+			String type = reportParam.getReportDefinitionParam().getValueType();
+			return type.equals(ReportDefinitionParam.VALUE_TYPE_ONE_OF_QUERY)||
+					type.equals(ReportDefinitionParam.VALUE_TYPE_MULTI_OF_QUERY);
+		}
+		
+		
+		/**
+		 * tells whether this parameter can have multiple values selected
+		 * @return boolean
+		 */
+		public boolean getIsMultiSelectable()
+		{
+			String type = reportParam.getReportDefinitionParam().getValueType();
+			return type.equals(ReportDefinitionParam.VALUE_TYPE_MULTI_OF_SET) ||
+					type.equals(ReportDefinitionParam.VALUE_TYPE_MULTI_OF_QUERY);
+		}
+		
+		
+		/**
+		 * tells whether this parameter is a fill in value
+		 * @return boolean
+		 */
+		public boolean getIsFillIn()
+		{
+			return reportParam.getReportDefinitionParam().getValueType().equals(
+							ReportDefinitionParam.VALUE_TYPE_FILLIN);
+		}
+		
+		
+		/**
+		 * tells whether this parameter is a static value
+		 * @return boolean
+		 */
+		public boolean getIsStatic()
+		{
+			return reportParam.getReportDefinitionParam().getValueType().equals(
+							ReportDefinitionParam.VALUE_TYPE_STATIC);
+		}
+	}
+	
+	/**
+	 * This class allows the ReportResult to interact with the view
+	 *
+	 */
+	public class DecoratedReportResult {
+		
 	}
 }

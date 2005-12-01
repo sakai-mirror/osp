@@ -42,18 +42,14 @@
  * $Date: 2005-11-03 18:05:53 -0500 (Thu, 03 Nov 2005) $
  */
 
-package org.theospi.component.app.reports;
+package org.theospi.api.app.reports;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-
-import org.theospi.api.app.reports.ReportDefinition;
-import org.theospi.api.app.reports.ReportDefinitionParam;
-
-public class ReportDefinitionImpl implements ReportDefinition
+public class ReportDefinition
 {
 	/** the unique identifier for the report definition */
 	private String reportDefId;
@@ -281,6 +277,7 @@ public class ReportDefinitionImpl implements ReportDefinition
 	
 	/**
 	 * the setter for the params property.  This is set by the bean 
+	 * This property needs to be converted into classes
 	 * @param params List
 	 */
 	public void setParams(List params)
@@ -293,7 +290,7 @@ public class ReportDefinitionImpl implements ReportDefinition
 		while(iter.hasNext()) {
 			Map param = (Map)iter.next();
 			
-			ReportDefinitionParam rdp = new ReportDefinitionParamImpl();
+			ReportDefinitionParam rdp = new ReportDefinitionParam();
 			
 			rdp.setReportDefinition(this);
 			rdp.setParamName((String)param.get("paramName"));

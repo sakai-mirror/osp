@@ -44,22 +44,70 @@
 
 package org.theospi.api.app.reports;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Date;
-/**
- * This interface is the front end to a report.
- * A ReportDefinition defines the parameters definitions, and this
- * class feeds off of that and has ReportParams that are filled in
- * @author andersjb
- *
- */
-public interface Report
-{	
+
+import org.theospi.portfolio.shared.model.OspException;
+
+public class Report
+{
+	/** the unique identifier for the report */
+	private String reportId;
+	
+	/** the link to the report definition */
+	private ReportDefinition reportDefinition = null;
+
+	/** the title of the report */
+	private String title;
+
+	/** the keyword for the report */
+	private String keywords;
+
+	/** the description for the report */
+	private String description;
+
+	/** the parameters for the query in the report */
+	private boolean isLive;
+
+	/** the defaultXsl for the report */
+	private String defaultXsl;
+
+	/** the defaultXsl for the report */
+	private Date creationDate;
+	
+	/** the list of report parameters for the report */
+	private List reportParams;
+	
+
+	/**
+	 * the getter for the reportId property
+	 */
+	public Report()
+	{
+		
+	}
+	
+	
+	/**
+	 * the getter for the reportId property
+	 */
+	
+	public Report(ReportDefinition reportDefinition)
+	{
+		setReportDefinition(reportDefinition);
+	}
+	
+
 	/**
 	 * the getter for the reportId property
 	 * @return String the unique identifier
 	 */
-	public String getReportId();
+	public String getReportId()
+	{
+		return reportId;
+	}
 	
 	
 	/**
@@ -67,14 +115,18 @@ public interface Report
 	 * and by hibernate.
 	 * @param reportId String
 	 */
-	public void setReportId(String reportId);
-	
-	
+	public void setReportId(String reportId)
+	{
+		this.reportId = reportId;
+	}
 	/**
 	 * the getter for the reportDefinition property
 	 * @return ReportDefinition the unique identifier
 	 */
-	public ReportDefinition getReportDefinition();
+	public ReportDefinition getReportDefinition()
+	{
+		return reportDefinition;
+	}
 	
 	
 	/**
@@ -82,14 +134,23 @@ public interface Report
 	 * and by hibernate.
 	 * @param reportDefinition String
 	 */
-	public void setReportDefinition(ReportDefinition reportDefinition);
+	public void setReportDefinition(ReportDefinition reportDefinition)
+	{
+		if(this.reportDefinition != null && reportDefinition != this.reportDefinition)
+			throw new OspException("A report cannot change it's report definition");
+		
+		this.reportDefinition = reportDefinition;
+	}
 	
 	
 	/**
 	 * the getter for the title property
 	 * @return String the title
 	 */
-	public String getTitle();
+	public String getTitle()
+	{
+		return title;
+	}
 	
 	
 	/**
@@ -97,14 +158,20 @@ public interface Report
 	 * and by hibernate.
 	 * @param reportDefId String
 	 */
-	public void setTitle(String title);
+	public void setTitle(String title)
+	{
+		this.title = title;
+	}
 	
 	
 	/**
 	 * the getter for the keywords property
 	 * @return String the keywords
 	 */
-	public String getKeywords();
+	public String getKeywords()
+	{
+		return keywords;
+	}
 	
 	
 	/**
@@ -112,14 +179,20 @@ public interface Report
 	 * and by hibernate.
 	 * @param keywords String
 	 */
-	public void setKeywords(String keywords);
+	public void setKeywords(String keywords)
+	{
+		this.keywords = keywords;
+	}
 	
 	
 	/**
 	 * the getter for the description property
 	 * @return String the description
 	 */
-	public String getDescription();
+	public String getDescription()
+	{
+		return description;
+	}
 	
 	
 	/**
@@ -127,14 +200,20 @@ public interface Report
 	 * and by hibernate.
 	 * @param description String
 	 */
-	public void setDescription(String description);
+	public void setDescription(String description)
+	{
+		this.description = description;
+	}
 	
 	
 	/**
 	 * the getter for the isLive property
 	 * @return String the isLive
 	 */
-	public boolean getIsLive();
+	public boolean getIsLive()
+	{
+		return isLive;
+	}
 	
 	
 	/**
@@ -142,57 +221,95 @@ public interface Report
 	 * and by hibernate.
 	 * @param isLive List
 	 */
-	public void setIsLive(boolean isLive);
+	public void setIsLive(boolean isLive)
+	{
+		this.isLive = isLive;
+	}
 	
 	
 	/**
 	 * the getter for the defaultXsl property
 	 * @return String the defaultXsl
 	 */
-	public String getDefaultXsl();
+	public String getDefaultXsl()
+	{
+		return defaultXsl;
+	}
 	
 	
 	/**
 	 * the setter for the defaultXsl property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param defaultXsl List
+	 * @param defaultXsl String
 	 */
-	public void setDefaultXsl(String defaultXsl);
+	public void setDefaultXsl(String defaultXsl)
+	{
+		this.defaultXsl = defaultXsl;
+	}
 	
 	
 	/**
 	 * the getter for the creationDate property
-	 * @return List the creationDate
+	 * @return Date the creationDate
 	 */
-	public Date getCreationDate();
+	public Date getCreationDate()
+	{
+		return creationDate;
+	}
 	
 	
 	/**
 	 * the setter for the creationDate property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param params List
+	 * @param params Date
 	 */
-	public void setCreationDate(Date creationDate);
-
+	public void setCreationDate(Date creationDate)
+	{
+		this.creationDate = creationDate;
+	}
 	
 	
 	/**
 	 * the getter for the reportParams property
 	 * @return List the reportParams
 	 */
-	public List getReportParams();
+	public List getReportParams()
+	{
+		return reportParams;
+	}
 	
 	
 	/**
 	 * the setter for the reportParams property.  This is set by hibernate.
 	 * @param reportParams List
 	 */
-	public void setReportParams(List reportParams);
+	public void setReportParams(List reportParams)
+	{
+		this.reportParams = reportParams;
+	}
 
-	
-	/**
-	 * creates the ReportParams from the ReportDefinitionParams
-	 */
-	public void createParamsFromParamDef();
+	//  TODO:  Move this out to the manager
+	public void createParamsFromParamDef()
+	{
+		if(reportDefinition == null)
+			throw new OspException("Tried generating report parameters but there was no report definition");
+
+		List reportDefParams = reportDefinition.getReportDefinitionParams();
+		reportParams = new ArrayList(reportDefParams.size());
+
+		Iterator iter = reportDefParams.iterator();
+
+		while (iter.hasNext()) {
+			ReportDefinitionParam rdp = (ReportDefinitionParam) iter.next();
+
+			ReportParam rp = new ReportParam();
+
+			//set the links back, but leave the id and value blank
+			rp.setReportDefinitionParam(rdp);
+			rp.setReport(this);
+			
+			reportParams.add(rp);
+		}
+	}
 	
 }

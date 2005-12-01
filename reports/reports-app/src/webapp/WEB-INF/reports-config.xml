@@ -16,7 +16,7 @@
         <property name="reports">
             <list>
                 <ref bean="report1" />
-                <ref bean="report1" />
+                <ref bean="report2" />
             </list>
         </property>
     </bean>
