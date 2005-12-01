@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE faces-config PUBLIC
+  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
+
+<!-- =========== FACES CONFIGURATION FILE ================================== -->
+
+<faces-config>
+   <!-- Example custom JSF component used only in this tool -->
+
+   <application>
+     <message-bundle>org.theospi.portfolio.wizard.messages</message-bundle>
+     <locale-config>
+       <default-locale>en</default-locale>
+     </locale-config>
+   </application>
+
+   <!-- =================== Tool Beans ============== -->
+
+
+   <managed-bean>
+
+      <description>WizardTool</description>
+      <managed-bean-name>wizard</managed-bean-name>
+      <managed-bean-class>org.theospi.portfolio.wizard.tool.WizardTool</managed-bean-class>
+      <managed-bean-scope>session</managed-bean-scope>
+
+      <managed-property>
+         <description>Service Dependency: wizardManager</description>
+         <property-name>wizardManager</property-name>
+         <value>#{Components["org.theospi.portfolio.wizard.mgt.WizardManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: guidanceManager</description>
+         <property-name>guidanceManager</property-name>
+         <value>#{Components["org.theospi.portfolio.guidance.mgt.GuidanceManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: idManager</description>
+         <property-name>idManager</property-name>
+         <value>#{Components["idManager"]}</value>
+      </managed-property>
+   </managed-bean>
+   <!-- 
+   <managed-bean>
+      <description>AudienceTool</description>
+      <managed-bean-name>audience</managed-bean-name>
+      <managed-bean-class>org.theospi.portfolio.security.tool.AudienceTool</managed-bean-class>
+      <managed-bean-scope>session</managed-bean-scope>
+
+      <managed-property>
+         <description>Service Dependency: idManager</description>
+         <property-name>idManager</property-name>
+         <value>#{Components["idManager"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: authzManager</description>
+         <property-name>authzManager</property-name>
+         <value>#{Components["authzManager"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: agentManager</description>
+         <property-name>agentManager</property-name>
+         <value>#{Components["agentManager"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: siteService</description>
+         <property-name>siteService</property-name>
+         <value>#{Components["org.sakaiproject.service.legacy.site.SiteService"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: toolManager</description>
+         <property-name>toolManager</property-name>
+         <value>#{Components["org.sakaiproject.api.kernel.tool.ToolManager"]}</value>
+      </managed-property>
+
+   </managed-bean>
+-->
+
+  <navigation-rule>
+    <navigation-case>
+      <from-outcome>list</from-outcome>
+      <to-view-id>/wizard/listWizards.jsp</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+  <!-- 
+   <navigation-rule>
+     <from-view-id>/guidance/tool.jsp</from-view-id>
+      <navigation-case>
+         <from-outcome>list</from-outcome>
+         <to-view-id>/guidance/list.jsp</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
+   <navigation-rule>
+     <from-view-id>/guidance/list.jsp</from-view-id>
+      <navigation-case>
+         <from-outcome>tool</from-outcome>
+         <to-view-id>/guidance/tool.jsp</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
+-->
+</faces-config>
