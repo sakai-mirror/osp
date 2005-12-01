@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-lazy-init="false">
+
+
+   <bean id="org.sakaiproject.springframework.orm.hibernate.AdditionalHibernateMappings.ospWizard"
+      class="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappingsImpl">
+      <property name="mappingResources">
+         <list>
+            <value>org/theospi/portfolio/wizard/model/impl/WizardImpl.hbm.xml</value>
+         </list>
+      </property>
+   </bean>
+<!-- 
+   <bean id="explicitAuthz" class="org.theospi.portfolio.security.impl.sakai.WorksiteAwareAuthorizationFacade" >
+      <property name="sessionFactory">
+         <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
+      </property>
+      <property name="authManager"><ref bean="authManager"/></property>
+      <property name="agentManager"><ref bean="agentManager"/></property>
+      <property name="threadLocalManager">
+         <ref bean="org.sakaiproject.api.kernel.thread_local.ThreadLocalManager" /> 
+      </property>
+      <property name="sakaiSecurityBase">
+         <bean id="org.sakaiproject.metaobj.security.impl.sakai.SecurityBase"
+            class="org.sakaiproject.metaobj.security.impl.sakai.SecurityBase">
+            <property name="ospiIdManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+   </bean>
+
+   <bean id="worksiteAuthz" class="org.theospi.portfolio.security.impl.sakai.WorksiteAuthorizer">
+      <property name="functions">
+         <list>
+            <bean id="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager.WORKSITE_MAINTAIN"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField"><value>org.sakaiproject.metaobj.worksite.mgt.WorksiteManager.WORKSITE_MAINTAIN</value></property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="authzManagerTarget" class="org.theospi.portfolio.security.app.AuthorizationFacadeImpl" >
+      <property name="authManager"><ref bean="authManager"/></property>
+      <property name="explicitAuthz"><ref bean="explicitAuthz"/></property>
+      <property name="applicationAuthorizers">
+         <list>
+            <bean class="org.theospi.portfolio.security.app.OrderedAuthorizer">
+               <property name="order"><value>1</value></property>
+               <property name="authorizer"><ref bean="worksiteAuthz"/></property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="authzManager"
+      class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+      singleton="true">
+      <property name="transactionManager">
+        <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
+      </property>
+      <property name="target">
+         <ref bean="authzManagerTarget"/>
+      </property>
+      <property name="transactionAttributes">
+         <props>
+            <prop key="*">PROPAGATION_REQUIRED</prop>
+         </props>
+      </property>
+   </bean>
+
+   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospWizard"
+      class="org.theospi.portfolio.wizard.impl.WizardHttpAccess">
+      <property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+      <property name="wizardManager">
+         <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager"/>
+      </property>
+      <property name="authzManager"><ref bean="authzManager"/></property>
+   </bean>
+
+   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospWizard"
+      class="org.theospi.portfolio.wizard.impl.WizardEntityProducer"
+      init-method="init"
+      destroy-method="destroy"
+      singleton="true">
+      <property name="entityManager">
+         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+      </property>
+      <property name="httpAccess">
+         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.ospWizard" />
+      </property>
+   </bean>
+-->
+   <bean id="org.theospi.portfolio.wizard.mgt.WizardManager.target"
+      class="org.theospi.portfolio.wizard.mgt.impl.WizardManagerImpl">
+      <property name="sessionFactory">
+         <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
+      </property>
+      <property name="authorizationFacade">
+         <ref bean="authzManager"/>
+      </property>
+      <property name="securityService">
+         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+      </property>
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="entityManager">
+         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+      </property>
+      <property name="agentManager"><ref bean="agentManager"/></property>
+      <property name="sadManager"><ref bean="structuredArtifactDefinitionManager"/></property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.wizard.mgt.WizardManager"
+      class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+      singleton="true">
+      <property name="transactionManager">
+        <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
+      </property>
+      <property name="target">
+         <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager.target"/>
+      </property>
+      <property name="transactionAttributes">
+         <props>
+            <prop key="*">PROPAGATION_REQUIRED</prop>
+         </props>
+      </property>
+   </bean>
+<!-- 
+   <bean id="idCustomEditor" class="org.theospi.portfolio.shared.mgt.IdCustomEditor">
+       <property name="idManager"><ref bean="idManager"/></property>
+   </bean>
+
+   <bean id="idListCustomEditor" class="org.theospi.portfolio.shared.mgt.IdListCustomEditor">
+       <property name="idManager"><ref bean="idManager"/></property>
+   </bean>
+
+   <bean id="viewerCustomEditor"
+      class="org.theospi.portfolio.shared.model.impl.ViewerCustomEditor">
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="agentManager"><ref bean="agentManager" /></property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.security.mgt.PermissionManager"
+         class="org.theospi.portfolio.security.mgt.impl.PermissionManagerImpl" >
+      <property name="authzManager"><ref bean="authzManager"/></property>
+      <property name="agentManager"><ref bean="agentManager"/></property>
+      <property name="tools">
+         <map>
+         </map>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.worksite.mgt.impl.SiteEventListener"
+      class="org.theospi.portfolio.worksite.mgt.impl.SiteEventListener"
+      init-method="init" lazy-init="false">
+      <property name="sessionFactory">
+         <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
+      </property>
+      <property name="entityManager">
+         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+      </property>
+      <property name="componentManager">
+         <ref bean="org.sakaiproject.service.framework.component.ComponentManager"/>
+      </property>
+   </bean>
+
+   <bean name="org.springframework.web.servlet.HandlerInterceptor.openSessionInView"
+      class="org.springframework.orm.hibernate.support.OpenSessionInViewInterceptor">
+      <property name="sessionFactory">
+         <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
+      </property>
+      <property name="flushMode">
+         <bean id="org.springframework.orm.hibernate.HibernateAccessor.FLUSH_EAGER"
+            class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+      </property>
+  </bean>
+-->
+
+   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.wizardStyleFile"
+      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+      <property name="viewAll"><value>true</value></property>
+      <property name="mimeTypes">
+         <list>
+            <value>text/css</value>
+         </list>
+      </property>
+      <property name="acceptedExtensions">
+         <list>
+            <value>css</value>
+         </list>
+      </property>
+   </bean>
+</beans>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool id="osp.wizard" title="OSP Wizard" description="OSP Wizard Tool">
+
+       <category name="sakai.main" />
+      <category name="project" />
+      
+      <keyword name="wizard" />
+       <keyword name="help"/>
+<!-- 
+       <configuration name="theospi.resetUrl"
+            value="/listWizard.osp" />
+       -->
+	</tool>
+
+</registration>
