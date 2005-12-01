@@ -51,10 +51,12 @@ import java.sql.SQLException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.Date;
 
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Session;
@@ -201,8 +203,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	{
 		ReportDefinition rd = report.getReportDefinition();
 		
-		//	get the query from the Definition
-		StringBuffer query = new StringBuffer(rd.getQuery());
+		//	get the query from the Definition and replace the values
+		//	no should be able to put in a system parameter into a report parameter and have it work
+		//		so replace the system values before processing the report parameters
+		StringBuffer query = new StringBuffer(replaceSystemValues(rd.getQuery()));
 		
 		//	replace the parameters with the values
 		List reportParams = report.getReportParams();
@@ -374,9 +378,39 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		return rr;
 	}
 	
-	private String replaceSiteValues(String inString)
+	public String replaceSystemValues(String inString)
 	{
-		return inString;
+		Map map = new HashMap();
+
+		map.put("{userid}", "admin");
+		map.put("{username}", "The Administrator");
+		map.put("{worksiteid}", "209348029348203984");
+		map.put("{toolid}", "8765897589648");
+		
+
+		Iterator		iter = map.keySet().iterator();
+		StringBuffer	str = new StringBuffer(inString);
+		
+		//	loop through all the parameters and find in query for replacement
+		while(iter.hasNext()) {
+			
+			//	get the paremeter and associated parameter definition
+			String key = (String)iter.next();
+			
+			int i = str.indexOf(key);
+			
+			//	Loop until no instances exist
+			while(i != -1) {
+				
+				//	replace the parameter with the value
+				str.replace(i, i + key.length(), (String)map.get(key));
+				
+				//	look for a second instance
+				i = str.indexOf(key);
+			}
+		}
+		
+		return str.toString();
 	}
 }
 

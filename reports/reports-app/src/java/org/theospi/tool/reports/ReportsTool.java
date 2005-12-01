@@ -354,6 +354,7 @@ public class ReportsTool
 					for(int i = 0; i < set.length; i++) {
 						String element = set[i].trim();
 						
+						element = reportsManager.replaceSystemValues(element);
 						
 						if(element.indexOf("(") != -1) {
 							element = element.substring(element.indexOf("(")+1, element.indexOf(")"));

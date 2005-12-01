@@ -57,4 +57,6 @@ public interface ReportsManager
 	public void createReportParameters(Report report);
 	public Report createReport(ReportDefinition reportDefinition);
 	public ReportResult generateResults(Report report);
+
+	public String replaceSystemValues(String inString);
 }
