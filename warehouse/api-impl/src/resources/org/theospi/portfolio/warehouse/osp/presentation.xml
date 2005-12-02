@@ -1,0 +1,104 @@
+<?xml version="1.0"?>
+
+<!-- 
+  File from uPortal2.0 by JASIG. Modified and adapted to OSPI by <a
+  href="felipeen@udel.edu">Luis F.C. Mendes</a> - University of
+  Delaware
+-->
+<!-- $Revision: 1.19 $ -->
+
+<tables>
+
+  <table>
+    <name>DW_PRESENTATION</name>
+    <desc>Presentation Datawarehouse table</desc>
+    <columns>
+      <column>
+        <name>PERSON_ID</name>
+        <type>VARCHAR</type>
+        <param>16</param>
+      </column>
+      <column>
+        <name>USERNAME</name>
+        <type>VARCHAR</type>
+        <param>255</param>
+      </column>
+      <column>
+        <name>FIRST_NAME</name>
+        <type>VARCHAR</type>
+        <param>64</param>
+      </column>
+      <column>
+        <name>MIDDLENAME</name>
+        <type>VARCHAR</type>
+        <param>64</param>
+      </column>
+      <column>
+        <name>LASTNAME</name>
+        <type>VARCHAR</type>
+        <param>64</param>
+      </column>
+      <column>
+        <name>LAST_LOGIN</name>
+        <type>TIMESTAMP</type>
+      </column>
+      <column>
+        <name>DATE_CREATED</name>
+        <type>TIMESTAMP</type>
+      </column>
+      <column>
+        <name>MAX_STORAGE_SIZE</name>
+        <type>INTEGER</type>
+      </column>
+      <column>
+        <name>EMAIL</name>
+        <type>VARCHAR</type>
+        <param>50</param>
+      </column>
+      <column>
+        <name>USERTYPE</name>
+        <type>VARCHAR</type>
+        <param>8</param>
+      </column>
+      <column>
+        <name>PASSWORD</name>
+        <type>VARCHAR</type>
+        <param>16</param>
+      </column>
+      <column>
+        <name>CAMPUS</name>
+        <type>VARCHAR</type>
+        <param>20</param>
+      </column>
+    </columns>
+    <not-null>PERSON_ID</not-null>
+    <primary-key>PERSON_ID</primary-key>
+  </table>
+
+  <!-- INDEXES (only use this if setting indexes not in primary keys)-->
+
+  <!--index>
+    <index-name>SHARE_DEF_INDEX</index-name>
+    <table-name>SHARE_DEFINITION</table-name>
+    <column>PERSON_ID</column>
+  </index>
+
+  <index>
+    <index-name>UMC_PERS_MAT_ENTRY</index-name>
+    <table-name>UPLOADED_MATERIALS_CATEGORY</table-name>
+    <column>PERSON_ID , MATERIAL_ID, ENTRY_ID</column>
+  </index>
+
+  <index>
+    <index-name>PERSON_EMAIL_INDEX</index-name>
+    <table-name>PERSON</table-name>
+    <column>EMAIL</column>
+  </index>
+
+  <index>
+    <index-name>PERSON_USERNAME_INDEX</index-name>
+    <table-name>PERSON</table-name>
+    <column>USERNAME</column>
+  </index-->
+
+</tables>

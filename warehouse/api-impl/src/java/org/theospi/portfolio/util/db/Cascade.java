@@ -20,21 +20,29 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.portfolio.warehouse.intf;
-
-import org.quartz.JobExecutionException;
-
-import java.io.InputStream;
+package org.theospi.portfolio.util.db;
 
 /**
- * Created by IntelliJ IDEA.
- * User: John Ellis
- * Date: Nov 30, 2005
- * Time: 4:47:38 PM
- * To change this template use File | Settings | File Templates.
+ * Adds cascade constraint to database specific
+ *
+ * @author <a href="felipeen@udel.edu">Luis F.C. Mendes</a> - University of Delaware
+ * @version $Revision 1.0 $
  */
-public interface WarehouseTask {
+public class Cascade{
 
-   public void execute() throws JobExecutionException;
+	private static DbLoader loader = null;
 
+	protected static void setLoader(DbLoader dbloader){
+		loader = dbloader;
+	}
+
+	protected static String cascadeConstraint(String statement){
+		if(loader.getDbName().equalsIgnoreCase("postgresql"))
+			return (statement += " CASCADE");
+		else
+			if(loader.getDbName().equalsIgnoreCase("oracle"))
+				return (statement += " CASCADE CONSTRAINTS");
+		else
+			return statement;
+   }
 }

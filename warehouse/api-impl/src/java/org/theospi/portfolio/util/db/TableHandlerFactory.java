@@ -20,21 +20,32 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.portfolio.warehouse.intf;
+package org.theospi.portfolio.util.db;
 
-import org.quartz.JobExecutionException;
-
-import java.io.InputStream;
+import org.xml.sax.ContentHandler;
 
 /**
- * Created by IntelliJ IDEA.
- * User: John Ellis
- * Date: Nov 30, 2005
- * Time: 4:47:38 PM
- * To change this template use File | Settings | File Templates.
+ * Returns a handler implementation according to the database vendor
+ *
+ * @author <a href="felipeen@udel.edu">Luis F.C. Mendes</a> - University of Delaware
+ * @version $Revision 1.0 $
  */
-public interface WarehouseTask {
+public class TableHandlerFactory{
 
-   public void execute() throws JobExecutionException;
 
+   /**
+	* @param loader instance of the DbLoader class
+	* @return ContentHandler inplementation
+	*/
+   public static ContentHandler getTableHandler(DbLoader loader){
+
+		//set loader for cascade
+		Cascade.setLoader(loader);
+		
+	  if(loader.getDbName().equalsIgnoreCase("mysql"))
+		 return new MySqlHandler(loader);
+	  else
+		 return new GenericTableHandler(loader);
+
+   }
 }

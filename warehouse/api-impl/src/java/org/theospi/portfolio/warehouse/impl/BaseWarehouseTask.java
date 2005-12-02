@@ -24,6 +24,8 @@ package org.theospi.portfolio.warehouse.impl;
 
 import org.theospi.portfolio.warehouse.intf.WarehouseTask;
 import org.theospi.portfolio.warehouse.intf.ChildWarehouseTask;
+import org.theospi.portfolio.warehouse.intf.DataWarehouseManager;
+import org.theospi.portfolio.util.db.DbLoader;
 import org.quartz.JobExecutionException;
 
 import javax.sql.DataSource;
@@ -32,6 +34,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.io.InputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,6 +47,8 @@ public abstract class BaseWarehouseTask implements WarehouseTask {
 
    private DataSource dataSource;
    private ChildWarehouseTask task;
+   private String tableDdlResource;
+   private DataWarehouseManager dataWarehouseManager;
 
    public void execute() throws JobExecutionException {
       Connection connection = null;
@@ -67,6 +72,27 @@ public abstract class BaseWarehouseTask implements WarehouseTask {
       }
    }
 
+   public void init() {
+      try {
+         InputStream tableDdl = getTableDdl();
+         if (tableDdl != null) {
+            DbLoader loader = new DbLoader(getDataSource().getConnection());
+            loader.runLoader(tableDdl);
+         }
+         getDataWarehouseManager().registerTask(this);
+      }
+      catch (SQLException e) {
+         throw new RuntimeException(e);
+      }
+   }
+
+   public InputStream getTableDdl() {
+      if (getTableDdlResource() != null) {
+         return getClass().getResourceAsStream(getTableDdlResource());
+      }
+      return null;
+   }
+
    protected abstract Collection getItems();
 
    public DataSource getDataSource() {
@@ -83,5 +109,21 @@ public abstract class BaseWarehouseTask implements WarehouseTask {
 
    public void setTask(ChildWarehouseTask task) {
       this.task = task;
+   }
+
+   public String getTableDdlResource() {
+      return tableDdlResource;
+   }
+
+   public void setTableDdlResource(String tableDdlResource) {
+      this.tableDdlResource = tableDdlResource;
+   }
+
+   public DataWarehouseManager getDataWarehouseManager() {
+      return dataWarehouseManager;
+   }
+
+   public void setDataWarehouseManager(DataWarehouseManager dataWarehouseManager) {
+      this.dataWarehouseManager = dataWarehouseManager;
    }
 }

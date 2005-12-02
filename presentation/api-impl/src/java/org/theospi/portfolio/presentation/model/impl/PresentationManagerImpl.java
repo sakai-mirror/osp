@@ -1437,6 +1437,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return new Document(root);
    }
 
+   public Collection getAllPresentations() {
+      return getHibernateTemplate().find("from Presentation");
+   }
+
+   public Collection getAllPresentationTemplates() {
+      return getHibernateTemplate().find("from PresentationTemplate");
+   }
+
    public void viewingPresentation(Presentation presentation) {
       // go through and setup all pres and pres template files for read access
       List readableFiles = new ArrayList();
