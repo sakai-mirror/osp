@@ -1,5 +1,6 @@
 package org.theospi.portfolio.wizard.mgt;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -29,5 +30,5 @@ public interface WizardManager {
    
    public Wizard getWizard(String id);
    
-   public List getAvailableForms(String siteId, String type);
+   public Collection getAvailableForms(String siteId, String type);
 }

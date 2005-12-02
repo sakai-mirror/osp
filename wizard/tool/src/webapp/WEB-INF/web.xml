@@ -54,6 +54,25 @@
         </init-param>
    </servlet>
    
+   <servlet>
+      <servlet-name>osp.exposedwizard</servlet-name>
+      <servlet-class>org.theospi.portfolio.shared.control.servlet.HelperAwareJsfTool</servlet-class>
+        <init-param>
+            <param-name>path</param-name>
+            <param-value>/wizard</param-value>
+        </init-param>
+      <load-on-startup>2</load-on-startup>
+
+        <init-param>
+            <param-name>default</param-name>
+            <param-value>completeWizard</param-value>
+        </init-param>
+         <init-param>
+            <param-name>default.last.view</param-name>
+            <param-value>true</param-value>
+        </init-param>
+   </servlet>
+   
    
     <filter>
         <filter-name>sakai.request</filter-name>

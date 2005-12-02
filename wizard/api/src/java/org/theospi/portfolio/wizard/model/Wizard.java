@@ -1,7 +1,9 @@
 package org.theospi.portfolio.wizard.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -21,7 +23,9 @@ public class Wizard extends IdentifiableObject {
    private Set supportItems = new HashSet();
    private boolean published = false;
    private String type = WIZARD_TYPE;
-   private WizardStyleItem wizardStyleItem;
+   private List wizardStyleItems = new ArrayList();
+   private String exposedPageId;
+   private transient boolean exposeAsTool = false;
    
    private String siteId;
    private Id securityQualifier;
@@ -49,7 +53,6 @@ public class Wizard extends IdentifiableObject {
    }
    
    public String getType() {
-      //TODO - We may want to have different types of wizards later.
       return type;
    }
    public void setType(String type) {
@@ -138,12 +141,12 @@ public class Wizard extends IdentifiableObject {
       this.supportItems = supportingObjects;
    }
 
-   public WizardStyleItem getWizardStyleItem() {
-      return wizardStyleItem;
+   public List getWizardStyleItems() {
+      return wizardStyleItems;
    }
 
-   public void setWizardStyleItem(WizardStyleItem wizardStyleItem) {
-      this.wizardStyleItem = wizardStyleItem;
+   public void setWizardStyleItems(List wizardStyleItems) {
+      this.wizardStyleItems = wizardStyleItems;
    }
 
    public Id getGuidanceId() {
@@ -160,6 +163,22 @@ public class Wizard extends IdentifiableObject {
 
    public void setPublished(boolean published) {
       this.published = published;
+   }
+
+   public boolean getExposeAsTool() {
+      return exposeAsTool;
+   }
+
+   public void setExposeAsTool(boolean exposeAsTool) {
+      this.exposeAsTool = exposeAsTool;
+   }
+
+   public String getExposedPageId() {
+      return exposedPageId;
+   }
+
+   public void setExposedPageId(String exposedPageId) {
+      this.exposedPageId = exposedPageId;
    }
   
   

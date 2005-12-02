@@ -7,11 +7,8 @@ import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.theospi.portfolio.guidance.model.Guidance;
-import org.theospi.portfolio.guidance.model.GuidanceItem;
-import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
-import org.theospi.portfolio.guidance.tool.GuidanceTool;
 import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.wizard.model.WizardStyleItem;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,24 +33,32 @@ public class DecoratedWizard {
    public void setBase(Wizard base) {
       this.base = base;
    }
-/*
-   public List getStyle() {
+
+   public List getWizardStyleItems() {
       ToolSession session = SessionManager.getCurrentToolSession();
       if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
          session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
 
          List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-         List newAttachments = new ArrayList();
+         List newStyles = new ArrayList();
+         for(int i=0; i<refs.size(); i++) {
+            Reference ref = (Reference) refs.get(i);
+            Reference fullRef = tool.decorateReference(ref.getReference());
+            WizardStyleItem wsItem = new WizardStyleItem(base, ref, fullRef);
+            if (base.getWizardStyleItems().contains(wsItem)) {
+               wsItem =
+                  (WizardStyleItem) base.getWizardStyleItems().get(base.getWizardStyleItems().indexOf(wsItem));
+            }
 
+            newStyles.add(wsItem);
+            base.setWizardStyleItems(newStyles);
+         }
          session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-         //session.removeAttribute(GuidanceTool.ATTACHMENT_TYPE);
-         //base.setStyle();
-         //base.getAttachments().addAll(newAttachments);
       }
 
-      return base.getStyle();
+      return base.getWizardStyleItems();
    }
-*/
+
    public String processActionEdit() {
       return tool.processActionEdit(base);
    }

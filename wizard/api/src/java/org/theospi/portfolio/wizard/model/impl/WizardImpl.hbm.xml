@@ -26,7 +26,12 @@
       </set>
       <property name="published" type="boolean" column="published" not-null="false"/>
       <property name="type" type="string" column="wizard_type" not-null="false"/>
-      <one-to-one name="wizardStyleItem" class="WizardStyleItem" />
+      <list name="wizardStyleItems" cascade="all-delete-orphan" inverse="false" lazy="false">
+         <key column="wizard_id"/>
+         <index column="seq_num" />
+         <one-to-many class="WizardStyleItem"/>
+      </list>
+      <property name="exposedPageId" type="string" update="false" length="36" column="exposed_page_id" not-null="false"/>
    </class>
    
    <class name="WizardStyleItem" table="osp_wizard_style_item" lazy="false" batch-size="10">
