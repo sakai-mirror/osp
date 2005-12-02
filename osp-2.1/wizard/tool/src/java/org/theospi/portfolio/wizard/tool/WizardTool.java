@@ -21,11 +21,12 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
+import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
-import org.theospi.portfolio.wizard.model.WizardStyleItem;
 import org.theospi.portfolio.wizard.model.WizardSupportItem;
 
 public class WizardTool {
@@ -43,6 +44,7 @@ public class WizardTool {
    public final static String EDIT_PAGE = "editWizard";
    public final static String EDIT_SUPPORT_PAGE = "editWizardSupport";
    public final static String EDIT_DESIGN_PAGE = "editWizardDesign";
+   public final static String EDIT_PROPERTIES_PAGE = "editWizardProperties";
    public final static String COMMENT_TYPE = "comment";
    public final static String REFLECTION_TYPE = "reflection";
    public final static String EVALUATION_TYPE = "evaluation";
@@ -101,6 +103,10 @@ public class WizardTool {
          else  //it's an evaluation
             this.setEvaluationItem(id);
       }
+      
+      if (wizard.getExposedPageId() != null && !wizard.getExposedPageId().equals("")) {
+         wizard.setExposeAsTool(true);
+      }
 
       return current;
    }
@@ -150,7 +156,10 @@ public class WizardTool {
    public String processActionGoToEditWizardDesign() {
       return processActionSave(EDIT_DESIGN_PAGE);
    }
-   
+
+   public String processActionGoToEditWizardProperties() {
+      return processActionSave(EDIT_PROPERTIES_PAGE);
+   }
    
    public String processActionSave() {
       return processActionSave(LIST_PAGE);
@@ -279,10 +288,17 @@ public class WizardTool {
       
       Wizard wizard = getCurrent().getBase();
 
-      WizardStyleItem wsItem = wizard.getWizardStyleItem();
+      //WizardStyleItem wsItem = wizard.getWizardStyleItem();
+      
+      List wsItems = wizard.getWizardStyleItems();
+      List wsItemRefs = EntityManager.newReferenceList();
 
-      if (wsItem != null)
-         session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS, wsItem.getBaseReference().getBase());
+      for (Iterator i=wsItems.iterator();i.hasNext();) {
+         GuidanceItemAttachment attachment = (GuidanceItemAttachment)i.next();
+         wsItemRefs.add(attachment.getBaseReference().getBase());
+      }
+
+      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS, wsItemRefs);
       session.setAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
             ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.wizardStyleFile"));
 
@@ -299,7 +315,7 @@ public class WizardTool {
    protected Collection getFormsForSelect(String type, String selectedId) {
       Placement placement = ToolManager.getCurrentPlacement();
       String currentSiteId = placement.getContext();
-      List commentForms = 
+      Collection commentForms = 
                getWizardManager().getAvailableForms(currentSiteId, type);
       
       List retForms = new ArrayList();

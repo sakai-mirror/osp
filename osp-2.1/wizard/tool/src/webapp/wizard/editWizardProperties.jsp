@@ -15,7 +15,7 @@
 <f:loadBundle basename="org.theospi.portfolio.wizard.messages" var="msgs"/>
 <sakai:view>
 
-<ospx:wizardSteps currentStep="3">
+<ospx:wizardSteps currentStep="4">
    <ospx:wizardStep label="#{msgs.wizard_step_begin}" />
    <ospx:wizardStep label="#{msgs.wizard_step_select}" />
    <ospx:wizardStep label="#{msgs.wizard_step_support}" />
@@ -32,30 +32,12 @@
    <sakai:messages />
    
    <%@include file="wizardPropertiesFrame.jspf"%>
-   
-   <ospx:xheader>
-      <ospx:xheadertitle id="styleTitle" value="#{msgs.style_title}" />
-      <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-         <sakai:instruction_message value="#{msgs.style_instruction_message}" />
-            <sakai:flat_list value="#{wizard.current.wizardStyleItems}" var="style">
-               <h:column>
-                  <f:facet name="header">
-                     <h:commandButton action="#{wizard.processActionManageStyle}"
-                        value="#{msgs.manage_style}"/>
-                  </f:facet>
-                  <h:outputLink title="#{style.displayName}"
-                     value="#{style.fullReference.base.url}" target="_new">
-                     <h:outputText value="#{style.displayName}"/>
-                  </h:outputLink>
-               </h:column>
-            </sakai:flat_list>
-      </ospx:xheaderdrawer>
-   </ospx:xheader>   
-   
+   <h:selectBooleanCheckbox id="asTool" value="#{wizard.current.base.exposeAsTool}" />
+   <h:outputLabel value="#{msgs.expose_as_tool}" for="asTool" />
    <sakai:button_bar>
       <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard}" action="#{wizard.processActionCancel}" immediate="true" />
       <sakai:button_bar_item id="submit" value="#{msgs.save_continue_wizard}" 
-         action="#{wizard.processActionGoToEditWizardProperties}" />
+         action="#{wizard.processActionSave}" />
    </sakai:button_bar>
 </h:form>
 </sakai:view>
