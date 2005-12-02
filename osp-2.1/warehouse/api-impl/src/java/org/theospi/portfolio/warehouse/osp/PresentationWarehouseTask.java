@@ -20,21 +20,33 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.portfolio.warehouse.intf;
+package org.theospi.portfolio.warehouse.osp;
 
-import org.quartz.JobExecutionException;
+import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
+import org.theospi.portfolio.presentation.PresentationManager;
 
-import java.io.InputStream;
+import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Nov 30, 2005
- * Time: 4:47:38 PM
+ * Date: Dec 1, 2005
+ * Time: 10:49:22 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface WarehouseTask {
+public class PresentationWarehouseTask extends BaseWarehouseTask {
 
-   public void execute() throws JobExecutionException;
+   private PresentationManager presentationManager;
 
+   protected Collection getItems() {
+      return getPresentationManager().getAllPresentations();
+   }
+
+   public PresentationManager getPresentationManager() {
+      return presentationManager;
+   }
+
+   public void setPresentationManager(PresentationManager presentationManager) {
+      this.presentationManager = presentationManager;
+   }
 }

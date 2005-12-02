@@ -1,8 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
-<beans default-lazy-init="true">
+<beans default-lazy-init="false">
 
+   <!-- The "slow" connection pool for streaming downloads from db -->
+   <bean id="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource"
+     parent="javax.sql.BaseDataSource">
+   </bean>
+
+   <bean id="org.theospi.portfolio.warehouse.intf.DataWarehouseManager"
+      class="org.theospi.portfolio.warehouse.impl.DataWarehouseManagerImpl">
+      <property name="tasks">
+         <list>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.warehouse.intf.WarehouseTask.presentation"
+      class="org.theospi.portfolio.warehouse.osp.PresentationWarehouseTask"
+      init-method="init" singleton="true">
+      <property name="dataSource">
+         <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+      </property>
+      <property name="dataWarehouseManager">
+         <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+      </property>
+      <property name="tableDdlResource">
+         <value>/org/theospi/portfolio/warehouse/osp/presentation.xml</value>
+      </property>
+   </bean>
+
+   <bean id="org.sakaiproject.api.app.scheduler.JobBeanWrapper.ospDataWarehouse"
+      class="org.sakaiproject.component.app.scheduler.jobs.SpringJobBeanWrapper"
+      singleton="true" init-method="init">
+      <property name="beanId">
+         <value>org.theospi.portfolio.warehouse.intf.DataWarehouseManager</value>
+      </property>
+      <property name="jobName">
+         <value>Data Warehouse Update</value>
+      </property>
+      <property name="schedulerManager">
+         <ref bean="org.sakaiproject.api.app.scheduler.SchedulerManager" />
+      </property>
+   </bean>
+
+<!--
    <bean id="ospHelpHibernateMappings"
       class="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappingsImpl">
       <property name="mappingResources">
@@ -170,5 +212,6 @@
          </map>
       </property>
    </bean>
+   -->
 
 </beans>
