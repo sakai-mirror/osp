@@ -626,6 +626,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    protected Node getNode(Id artifactId, Cell cell) {
       Node node = getNode(artifactId);
+      if (node == null) {
+         return null;
+      }
       String siteId = cell.getScaffoldingCell().getScaffolding().getWorksiteId().getValue();
       ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
             buildRef(siteId, cell.getId().getValue(), node.getResource()));
