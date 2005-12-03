@@ -55,7 +55,9 @@ public abstract class BaseWarehouseTask implements WarehouseTask {
 
       try {
          connection = getDataSource().getConnection();
-         task.execute(getItems(), getDataSource().getConnection());
+         connection.setAutoCommit(true);
+         task.prepare(connection);
+         task.execute(null, getItems(), connection);
       }
       catch (SQLException e) {
          throw new JobExecutionException(e);

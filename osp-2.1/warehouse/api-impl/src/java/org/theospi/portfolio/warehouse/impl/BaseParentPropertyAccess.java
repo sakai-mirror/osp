@@ -20,24 +20,31 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.portfolio.warehouse.intf;
+package org.theospi.portfolio.warehouse.impl;
 
-import org.quartz.JobExecutionException;
-
-import java.util.Collection;
-import java.sql.Connection;
+import org.theospi.portfolio.warehouse.intf.ParentPropertyAccess;
+import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Nov 30, 2005
- * Time: 4:53:55 PM
+ * Date: Dec 2, 2005
+ * Time: 4:49:36 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface ChildWarehouseTask {
+public class BaseParentPropertyAccess implements ParentPropertyAccess {
 
-   public void execute(Object parent, Collection items, Connection connection) throws JobExecutionException;
+   private PropertyAccess base = null;
 
-   public void prepare(Connection connection);
+   public Object getPropertyValue(Object parent, Object source) throws Exception {
+      return base.getPropertyValue(parent);
+   }
 
+   public PropertyAccess getBase() {
+      return base;
+   }
+
+   public void setBase(PropertyAccess base) {
+      this.base = base;
+   }
 }
