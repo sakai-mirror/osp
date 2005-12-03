@@ -20,24 +20,23 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.portfolio.warehouse.intf;
+package org.theospi.portfolio.warehouse.impl;
 
-import org.quartz.JobExecutionException;
-
-import java.util.Collection;
-import java.sql.Connection;
+import org.sakaiproject.metaobj.shared.model.Agent;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Nov 30, 2005
- * Time: 4:53:55 PM
+ * Date: Dec 2, 2005
+ * Time: 3:59:15 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface ChildWarehouseTask {
-
-   public void execute(Object parent, Collection items, Connection connection) throws JobExecutionException;
-
-   public void prepare(Connection connection);
-
+public class AgentPropertyAccess extends BeanPropertyAccess {
+   public Object getPropertyValue(Object source) throws Exception {
+      Agent agent = (Agent)super.getPropertyValue(source);
+      if (agent != null) {
+         return agent.getId().getValue();
+      }
+      return null;
+   }
 }

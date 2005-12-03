@@ -38,6 +38,12 @@
      </dependency>
 
      <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-metaobj-api</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
         <groupId>quartz</groupId>
         <artifactId>quartz</artifactId>
         <version>1.4.0</version>

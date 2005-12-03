@@ -24,6 +24,7 @@ package org.theospi.portfolio.warehouse.impl;
 
 import org.theospi.portfolio.warehouse.intf.ChildWarehouseTask;
 import org.theospi.portfolio.warehouse.intf.PropertyAccess;
+import org.theospi.portfolio.warehouse.intf.ParentPropertyAccess;
 import org.quartz.JobExecutionException;
 
 import java.util.Collection;
@@ -40,20 +41,33 @@ import java.sql.SQLException;
  * Time: 4:58:05 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class BaseChildWarehouseTask implements ChildWarehouseTask {
+public class BaseChildWarehouseTask implements ChildWarehouseTask {
 
    private List fields;
    private String insertStmt;
+   private String clearStmt;
    private List complexFields;
+   private int batchSize = 100;
 
-   public void execute(Collection items, Connection connection)
+   public void execute(Object parent, Collection items, Connection connection)
          throws JobExecutionException {
       PreparedStatement ps = null;
 
       try {
+         int current = 0;
          ps = connection.prepareStatement(getInsertStmt());
          for (Iterator i=items.iterator();i.hasNext();) {
-            processItem(i.next(), ps);
+            processItem(parent, i.next(), ps);
+            ps.addBatch();
+            current++;
+            if (current > batchSize) {
+               current = 0;
+               ps.executeBatch();
+            }
+            ps.clearParameters();
+         }
+         if (current > 0) {
+            ps.executeBatch();
          }
       }
       catch (SQLException e) {
@@ -70,25 +84,46 @@ public abstract class BaseChildWarehouseTask implements ChildWarehouseTask {
 
    }
 
-   protected void processItem(Object item, PreparedStatement ps)
+   public void prepare(Connection connection) {
+      try {
+         connection.createStatement().execute(getClearStmt());
+
+         if (getComplexFields() != null) {
+            for (Iterator i=getComplexFields().iterator();i.hasNext();) {
+               ChildFieldWrapper wrapper = (ChildFieldWrapper)i.next();
+               wrapper.getTask().prepare(connection);
+            }
+         }
+      }
+      catch (SQLException e) {
+         throw new RuntimeException(e);
+      }
+   }
+
+   protected void processItem(Object parent, Object item, PreparedStatement ps)
          throws JobExecutionException {
 
       try {
          int index = 1;
          for (Iterator i=getFields().iterator();i.hasNext();) {
-            PropertyAccess pa = (PropertyAccess)i.next();
-            ps.setObject(index, pa.getPropertyValue(item));
+            Object o = i.next();
+            if (o instanceof PropertyAccess) {
+               PropertyAccess pa = (PropertyAccess)o;
+               ps.setObject(index, pa.getPropertyValue(item));
+            }
+            else if (o instanceof ParentPropertyAccess) {
+               ParentPropertyAccess pa = (ParentPropertyAccess)o;
+               ps.setObject(index, pa.getPropertyValue(parent, item));
+            }
             index++;
          }
-         // does this insert...
-         ps.execute();
 
          // now, lets look for complex fields
          if (getComplexFields() != null) {
             for (Iterator i=getComplexFields().iterator();i.hasNext();) {
                ChildFieldWrapper wrapper = (ChildFieldWrapper)i.next();
 
-               wrapper.getTask().execute(
+               wrapper.getTask().execute(item,
                      (Collection)wrapper.getPropertyAccess().getPropertyValue(item), ps.getConnection());
             }
          }
@@ -120,5 +155,21 @@ public abstract class BaseChildWarehouseTask implements ChildWarehouseTask {
 
    public void setComplexFields(List complexFields) {
       this.complexFields = complexFields;
+   }
+
+   public int getBatchSize() {
+      return batchSize;
+   }
+
+   public void setBatchSize(int batchSize) {
+      this.batchSize = batchSize;
+   }
+
+   public String getClearStmt() {
+      return clearStmt;
+   }
+
+   public void setClearStmt(String clearStmt) {
+      this.clearStmt = clearStmt;
    }
 }

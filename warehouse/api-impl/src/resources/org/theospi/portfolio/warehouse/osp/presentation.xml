@@ -13,67 +13,42 @@
     <name>DW_PRESENTATION</name>
     <desc>Presentation Datawarehouse table</desc>
     <columns>
-      <column>
-        <name>PERSON_ID</name>
-        <type>VARCHAR</type>
-        <param>16</param>
-      </column>
-      <column>
-        <name>USERNAME</name>
-        <type>VARCHAR</type>
-        <param>255</param>
-      </column>
-      <column>
-        <name>FIRST_NAME</name>
-        <type>VARCHAR</type>
-        <param>64</param>
-      </column>
-      <column>
-        <name>MIDDLENAME</name>
-        <type>VARCHAR</type>
-        <param>64</param>
-      </column>
-      <column>
-        <name>LASTNAME</name>
-        <type>VARCHAR</type>
-        <param>64</param>
-      </column>
-      <column>
-        <name>LAST_LOGIN</name>
-        <type>TIMESTAMP</type>
-      </column>
-      <column>
-        <name>DATE_CREATED</name>
-        <type>TIMESTAMP</type>
-      </column>
-      <column>
-        <name>MAX_STORAGE_SIZE</name>
-        <type>INTEGER</type>
-      </column>
-      <column>
-        <name>EMAIL</name>
-        <type>VARCHAR</type>
-        <param>50</param>
-      </column>
-      <column>
-        <name>USERTYPE</name>
-        <type>VARCHAR</type>
-        <param>8</param>
-      </column>
-      <column>
-        <name>PASSWORD</name>
-        <type>VARCHAR</type>
-        <param>16</param>
-      </column>
-      <column>
-        <name>CAMPUS</name>
-        <type>VARCHAR</type>
-        <param>20</param>
-      </column>
+       <column>
+         <name>id</name>
+         <type>VARCHAR</type>
+         <param>36</param>
+       </column>
+       <column>
+         <name>owner</name>
+         <type>VARCHAR</type>
+         <param>255</param>
+       </column>
+       <column>
+         <name>name</name>
+         <type>VARCHAR</type>
+         <param>255</param>
+       </column>
     </columns>
-    <not-null>PERSON_ID</not-null>
-    <primary-key>PERSON_ID</primary-key>
+    <not-null>id</not-null>
+    <primary-key>id</primary-key>
   </table>
+
+   <table>
+     <name>DW_PRES_ITEM</name>
+     <desc>Presentation Item Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>presentation_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>artifact</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+     </columns>
+   </table>
 
   <!-- INDEXES (only use this if setting indexes not in primary keys)-->
 
