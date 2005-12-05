@@ -33,6 +33,17 @@ public class DecoratedWizard {
    public void setBase(Wizard base) {
       this.base = base;
    }
+   
+   public boolean getExposeAsTool() {
+      if (base.getExposeAsTool() == null)
+         return false;
+      else
+         return base.getExposeAsTool().booleanValue();
+   }
+   
+   public void setExposeAsTool(boolean exposeAsTool) {
+      base.setExposeAsTool(new Boolean(exposeAsTool));
+   }
 
    public List getWizardStyleItems() {
       ToolSession session = SessionManager.getCurrentToolSession();
@@ -51,8 +62,8 @@ public class DecoratedWizard {
             }
 
             newStyles.add(wsItem);
-            base.setWizardStyleItems(newStyles);
          }
+         base.setWizardStyleItems(newStyles);
          session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
       }
 
