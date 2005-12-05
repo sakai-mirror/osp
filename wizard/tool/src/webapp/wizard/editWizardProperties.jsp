@@ -32,7 +32,11 @@
    <sakai:messages />
    
    <%@include file="wizardPropertiesFrame.jspf"%>
-   <h:selectBooleanCheckbox id="asTool" value="#{wizard.current.base.exposeAsTool}" />
+   <h:commandLink action="#{wizard.processActionAudienceHelper}">
+      <h:outputText value="#{msgs.select_reviewers}"/>
+   </h:commandLink>
+   
+   <h:selectBooleanCheckbox id="asTool" value="#{wizard.current.exposeAsTool}" />
    <h:outputLabel value="#{msgs.expose_as_tool}" for="asTool" />
    <sakai:button_bar>
       <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard}" action="#{wizard.processActionCancel}" immediate="true" />

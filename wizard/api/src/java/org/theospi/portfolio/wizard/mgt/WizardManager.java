@@ -12,8 +12,8 @@ public interface WizardManager {
    public final static String CURRENT_WIZARD = "org.theospi.portfolio.wizard.currentWizard";
    public final static String CURRENT_WIZARD_ID = "org.theospi.portfolio.wizard.currentWizardId";
 
-   public Wizard createNew(String owner, String siteId, Id securityQualifier,
-         String securityViewFunction, String securityEditFunction);
+   public Wizard createNew(String owner, String siteId, String toolId, 
+         Id securityQualifier, String securityViewFunction, String securityEditFunction);
 
    public Wizard getWizard(Id wizardId);
    

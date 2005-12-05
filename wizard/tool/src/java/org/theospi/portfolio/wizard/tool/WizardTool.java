@@ -15,19 +15,26 @@ import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
+import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
+import org.theospi.portfolio.security.AudienceSelectionHelper;
+import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.wizard.model.WizardStyleItem;
 import org.theospi.portfolio.wizard.model.WizardSupportItem;
+
+import com.sun.faces.util.MessageFactory;
 
 public class WizardTool {
 
@@ -45,10 +52,7 @@ public class WizardTool {
    public final static String EDIT_SUPPORT_PAGE = "editWizardSupport";
    public final static String EDIT_DESIGN_PAGE = "editWizardDesign";
    public final static String EDIT_PROPERTIES_PAGE = "editWizardProperties";
-   public final static String COMMENT_TYPE = "comment";
-   public final static String REFLECTION_TYPE = "reflection";
-   public final static String EVALUATION_TYPE = "evaluation";
-   
+      
    public final static String FORM_TYPE = "form";
    public final static String VALUE_SEPARATOR = ":";
    
@@ -96,16 +100,17 @@ public class WizardTool {
          WizardSupportItem wsi = (WizardSupportItem)iter.next();
          String type = wsi.getGenericType();
          String id = wsi.getId().getValue() + VALUE_SEPARATOR + wsi.getContentType() + VALUE_SEPARATOR + wsi.getItem().getValue();
-         if (type.equals(COMMENT_TYPE))            
+         if (type.equals(WizardFunctionConstants.COMMENT_TYPE))            
             this.setCommentItem(id);
-         else if (type.equals(REFLECTION_TYPE))
+         else if (type.equals(WizardFunctionConstants.REFLECTION_TYPE))
             this.setReflectionItem(id);
          else  //it's an evaluation
             this.setEvaluationItem(id);
       }
       
-      if (wizard.getExposedPageId() != null && !wizard.getExposedPageId().equals("")) {
-         wizard.setExposeAsTool(true);
+      if (wizard.getExposedPageId() != null && !wizard.getExposedPageId().equals("") &&
+            (wizard.getExposeAsTool() == null || wizard.getExposeAsTool().booleanValue())) {
+         wizard.setExposeAsTool(new Boolean(true));
       }
 
       return current;
@@ -178,19 +183,19 @@ public class WizardTool {
          String[] comment = getCommentItem().split(VALUE_SEPARATOR);
          items.add(new WizardSupportItem(cleanBlankId(comment[ID_INDEX]),
                getIdManager().getId(comment[ITEM_ID_INDEX]),
-               COMMENT_TYPE, comment[TYPE_INDEX], wizard));
+               WizardFunctionConstants.COMMENT_TYPE, comment[TYPE_INDEX], wizard));
       }         
       if (getReflectionItem() != null && !getReflectionItem().equals("")) {
          String[] reflection = getReflectionItem().split(VALUE_SEPARATOR);
          items.add(new WizardSupportItem(cleanBlankId(reflection[ID_INDEX]),
                getIdManager().getId(reflection[ITEM_ID_INDEX]), 
-               REFLECTION_TYPE, reflection[TYPE_INDEX], wizard));
+               WizardFunctionConstants.REFLECTION_TYPE, reflection[TYPE_INDEX], wizard));
       }
       if (getEvaluationItem() != null && !getEvaluationItem().equals("")) {
          String[] evaluation = getEvaluationItem().split(VALUE_SEPARATOR);
          items.add(new WizardSupportItem(cleanBlankId(evaluation[ID_INDEX]),
                getIdManager().getId(evaluation[ITEM_ID_INDEX]), 
-               EVALUATION_TYPE, evaluation[TYPE_INDEX], wizard));
+               WizardFunctionConstants.EVALUATION_TYPE, evaluation[TYPE_INDEX], wizard));
       }
       //this.getCommentItem()
       wizard.setSupportItems(items);
@@ -216,8 +221,12 @@ public class WizardTool {
 
    public String processActionNew() {
       Placement placement = ToolManager.getCurrentPlacement();
+      //Tool tool = ToolManager.getCurrentTool();
       String currentSite = placement.getContext();
-      Wizard newWizard = getWizardManager().createNew(SessionManager.getCurrentSessionUserId(), currentSite, null, "", "");
+      String currentTool = PortalService.getCurrentToolId();
+      Wizard newWizard = getWizardManager().createNew(
+            SessionManager.getCurrentSessionUserId(), currentSite, 
+            currentTool, null, "", "");
 
       invokeTool(newWizard);
 
@@ -268,7 +277,7 @@ public class WizardTool {
          guidance = getGuidanceManager().createNew(wizard.getName() + " Guidance", currentSite, null, "", ""); 
       }
       
-      session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);  
+      session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
 
       try {
          context.redirect("osp.guidance.helper/tool");
@@ -276,6 +285,58 @@ public class WizardTool {
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
       }
+   }
+   
+   public void processActionAudienceHelper() {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      //Tool tool = ToolManager.getCurrentTool();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      
+      //Placement placement = ToolManager.getCurrentPlacement();  
+      //String currentSite = placement.getContext();  
+      Wizard wizard = getCurrent().getBase();
+      session.setAttribute(WizardManager.CURRENT_WIZARD, wizard);
+            
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, 
+            WizardFunctionConstants.REVIEW_WIZARD);  
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER, 
+            wizard.getId().getValue());
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS, 
+            getMessageFromBundle("audience_instructions"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE, 
+            getMessageFromBundle("audience_global_title"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE, 
+            getMessageFromBundle("audience_individual_title"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE, 
+            getMessageFromBundle("audience_group_title"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, "false");
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, 
+            getMessageFromBundle("audience_public_title"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE, 
+            getMessageFromBundle("audience_selected_title"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS, 
+            getMessageFromBundle("audience_filter_instructions"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, "false");
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "true");
+      
+      //Guidance guidance = wizard.getGuidance();
+      //if (guidance == null) {
+      //   guidance = getGuidanceManager().createNew(wizard.getName() + " Guidance", currentSite, null, "", ""); 
+      //}
+      
+      //session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);  
+
+      try {
+         context.redirect("osp.audience.helper/tool");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+   }
+   
+   private String getMessageFromBundle(String key) {
+      return MessageFactory.getMessage(FacesContext.getCurrentInstance(),
+            key, null).getSummary();
    }
    
    public String processActionManageStyle() {
@@ -294,8 +355,8 @@ public class WizardTool {
       List wsItemRefs = EntityManager.newReferenceList();
 
       for (Iterator i=wsItems.iterator();i.hasNext();) {
-         GuidanceItemAttachment attachment = (GuidanceItemAttachment)i.next();
-         wsItemRefs.add(attachment.getBaseReference().getBase());
+         WizardStyleItem wsItem = (WizardStyleItem)i.next();
+         wsItemRefs.add(wsItem.getBaseReference().getBase());
       }
 
       session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS, wsItemRefs);
@@ -334,15 +395,15 @@ public class WizardTool {
    }
    
    public Collection getCommentFormsForSelect() {
-      return getFormsForSelect(COMMENT_TYPE, getCommentItem());      
+      return getFormsForSelect(WizardFunctionConstants.COMMENT_TYPE, getCommentItem());      
    }
    
    public Collection getReflectionFormsForSelect() {
-      return getFormsForSelect(REFLECTION_TYPE, getReflectionItem());
+      return getFormsForSelect(WizardFunctionConstants.REFLECTION_TYPE, getReflectionItem());
    }
    
    public Collection getEvaluationFormsForSelect() {
-      return getFormsForSelect(EVALUATION_TYPE, getEvaluationItem());
+      return getFormsForSelect(WizardFunctionConstants.EVALUATION_TYPE, getEvaluationItem());
    }
    
    protected Collection getWizardsForSelect(String type, String selectedId) {
@@ -365,15 +426,15 @@ public class WizardTool {
    }
    
    public Collection getCommentWizardsForSelect() {
-      return getWizardsForSelect(COMMENT_TYPE, getCommentItem());
+      return getWizardsForSelect(WizardFunctionConstants.COMMENT_TYPE, getCommentItem());
    }
    
    public Collection getReflectionWizardsForSelect() {
-      return getWizardsForSelect(REFLECTION_TYPE, getReflectionItem());
+      return getWizardsForSelect(WizardFunctionConstants.REFLECTION_TYPE, getReflectionItem());
    }
    
    public Collection getEvaluationWizardsForSelect() {
-      return getWizardsForSelect(EVALUATION_TYPE, getEvaluationItem());
+      return getWizardsForSelect(WizardFunctionConstants.EVALUATION_TYPE, getEvaluationItem());
    }
 
    public GuidanceManager getGuidanceManager() {

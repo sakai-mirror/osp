@@ -40,9 +40,10 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private AgentManager agentManager;
    
-   public Wizard createNew(String owner, String siteId, Id securityQualifier, String securityViewFunction, String securityEditFunction) {
+   public Wizard createNew(String owner, String siteId, String toolId, 
+         Id securityQualifier, String securityViewFunction, String securityEditFunction) {
       Agent agent = getAgentManager().getAgent(owner);
-      Wizard wizard = new Wizard(getIdManager().createId(), agent, siteId, 
+      Wizard wizard = new Wizard(getIdManager().createId(), agent, siteId, toolId,
             securityQualifier, securityViewFunction, securityEditFunction);
 //      (Agent owner, String siteId, Id securityQualifier,
 //            String securityViewFunction, String securityEditFunction) {
@@ -80,10 +81,14 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
       Date now = new Date(System.currentTimeMillis());
       wizard.setModified(now);
       
-      if (wizard.getExposeAsTool() && wizard.getExposedPageId() == null) {
+      if (wizard.getExposeAsTool() != null && 
+            wizard.getExposeAsTool().booleanValue() && 
+            wizard.getExposedPageId() == null) {
          addTool(wizard);
       }
-      else if (!wizard.getExposeAsTool() && wizard.getExposedPageId() != null) {
+      else if (wizard.getExposeAsTool() != null && 
+            !wizard.getExposeAsTool().booleanValue() && 
+            wizard.getExposedPageId() != null) {
          removeTool(wizard);
       }
       
@@ -106,8 +111,12 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
       
          SitePage page = siteEdit.getPage(wizard.getExposedPageId());
          siteEdit.removePage(page);
+         SiteService.save(siteEdit);
          wizard.setExposedPageId(null);
       } catch (IdUnusedException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } catch (PermissionException e) {
          // TODO Auto-generated catch block
          e.printStackTrace();
       }

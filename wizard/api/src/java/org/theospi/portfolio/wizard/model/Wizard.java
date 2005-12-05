@@ -25,9 +25,10 @@ public class Wizard extends IdentifiableObject {
    private String type = WIZARD_TYPE;
    private List wizardStyleItems = new ArrayList();
    private String exposedPageId;
-   private transient boolean exposeAsTool = false;
+   private transient Boolean exposeAsTool = null;
    
    private String siteId;
+   private String toolId;
    private Id securityQualifier;
    private String securityViewFunction;
    private String securityEditFunction;
@@ -41,11 +42,12 @@ public class Wizard extends IdentifiableObject {
    public Wizard() {
    }
 
-   public Wizard(Id id, Agent owner, String siteId, Id securityQualifier,
+   public Wizard(Id id, Agent owner, String siteId, String toolId, Id securityQualifier,
                    String securityViewFunction, String securityEditFunction) {
       setId(id);
       this.owner = owner;
       this.siteId = siteId;
+      this.toolId = toolId;
       this.securityQualifier = securityQualifier;
       this.securityViewFunction = securityViewFunction;
       this.securityEditFunction = securityEditFunction;
@@ -165,11 +167,11 @@ public class Wizard extends IdentifiableObject {
       this.published = published;
    }
 
-   public boolean getExposeAsTool() {
+   public Boolean getExposeAsTool() {
       return exposeAsTool;
    }
 
-   public void setExposeAsTool(boolean exposeAsTool) {
+   public void setExposeAsTool(Boolean exposeAsTool) {
       this.exposeAsTool = exposeAsTool;
    }
 
@@ -179,6 +181,14 @@ public class Wizard extends IdentifiableObject {
 
    public void setExposedPageId(String exposedPageId) {
       this.exposedPageId = exposedPageId;
+   }
+
+   public String getToolId() {
+      return toolId;
+   }
+
+   public void setToolId(String toolId) {
+      this.toolId = toolId;
    }
   
   

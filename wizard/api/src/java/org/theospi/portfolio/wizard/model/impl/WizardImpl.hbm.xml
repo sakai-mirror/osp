@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
 <hibernate-mapping package="org.theospi.portfolio.wizard.model">
 
-   <class name="Wizard" table="osp_wizard" lazy="false">
+   <class name="Wizard" table="osp_wizard" lazy="true">
       <cache usage="nonstrict-read-write"/>
 
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
@@ -18,6 +18,7 @@
       <property name="created" type="java.util.Date" update="false" not-null="true"/>
       <property name="modified" type="java.util.Date" update="true" not-null="true"/>
       <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="true"/>
+      <property name="toolId" type="string" update="false" length="36" column="tool_id" not-null="true"/>
       <property name="guidanceId" column="guidance_id" not-null="false" length="36"
          type="org.sakaiproject.metaobj.shared.IdType"/>
       <set name="supportItems" lazy="false" inverse="true" cascade="all-delete-orphan">
@@ -26,25 +27,27 @@
       </set>
       <property name="published" type="boolean" column="published" not-null="false"/>
       <property name="type" type="string" column="wizard_type" not-null="false"/>
-      <list name="wizardStyleItems" cascade="all-delete-orphan" inverse="false" lazy="false">
-         <key column="wizard_id"/>
-         <index column="seq_num" />
-         <one-to-many class="WizardStyleItem"/>
-      </list>
-      <property name="exposedPageId" type="string" update="false" length="36" column="exposed_page_id" not-null="false"/>
+      <list name="wizardStyleItems" cascade="all-delete-orphan"
+            inverse="true" lazy="true">
+            <key column="wizard_id" />
+            <index column="seq_num" />
+            <one-to-many class="WizardStyleItem" />
+        </list>
+      <property name="exposedPageId" type="string" length="36" column="exposed_page_id" not-null="false"/>
    </class>
    
-   <class name="WizardStyleItem" table="osp_wizard_style_item" lazy="false" batch-size="10">
+   <class name="WizardStyleItem" table="osp_wizard_style_item" lazy="true">
       <cache usage="nonstrict-read-write"/>
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
          <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
       </id>
       <property name="baseReference" type="org.theospi.portfolio.shared.mgt.EntityReferenceUserType" />
       <property name="fullReference" type="org.theospi.portfolio.shared.mgt.EntityReferenceUserType" />
-      <many-to-one name="wizard" column="wizard_id" not-null="true" class="Wizard"/>
+      <many-to-one name="wizard" column="wizard_id"
+            not-null="true" class="Wizard" cascade="none" />
    </class>
 
-   <class name="WizardSupportItem" table="osp_wizard_support_item" lazy="false">
+   <class name="WizardSupportItem" table="osp_wizard_support_item" lazy="true">
       <cache usage="nonstrict-read-write"/>
 
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">

@@ -13,6 +13,131 @@
       </property>
    </bean>
 
+   <bean id="wizardToolPermissionsMap"
+      class="org.theospi.portfolio.security.mgt.impl.AddPermissionTool"
+      init-method="init" lazy-init="false" singleton="true" >
+      <property name="manager">
+         <ref bean="org.theospi.portfolio.security.mgt.PermissionManager"/>
+      </property>
+      <property name="additionalTools">
+         <map>
+            <entry key="wizard">
+               <ref bean="org.theospi.portfolio.security.mgt.ToolPermissionManager.wizard"/>
+            </entry>
+         </map>
+      </property>
+   </bean>
+   
+   <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.wizard"
+      class="org.theospi.portfolio.security.model.SimpleToolPermissionManager"
+       singleton="true">
+
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="permissionManager">
+         <ref bean="org.theospi.portfolio.security.mgt.PermissionManager" />
+      </property>
+      <property name="agentManager"><ref bean="agentManager" /></property>
+      <property name="permissionEditName"><value>wizard</value></property>
+      <property name="defaultPermissions">
+         <map>
+            <entry key="maintain">
+               <list>
+                  <value>osp.wizard.publish</value>
+                  <value>osp.wizard.delete</value>
+                  <value>osp.wizard.create</value>
+                  <value>osp.wizard.edit</value>
+                  <value>osp.wizard.review</value>
+                  <value>osp.wizard.view</value>
+                  <value>osp.wizard.comment</value>
+                  <value>osp.wizard.copy</value>
+                  <value>osp.wizard.export</value>
+               </list>
+            </entry>
+            <entry key="access">
+               <list>
+                  <value>osp.wizard.create</value>
+                  <value>osp.wizard.view</value>
+               </list>
+            </entry>
+         </map>
+      </property>
+      <property name="functions">
+         <list>
+            <value>osp.wizard.publish</value>
+            <value>osp.wizard.delete</value>
+            <value>osp.wizard.create</value>
+            <value>osp.wizard.edit</value>
+            <value>osp.wizard.review</value>
+            <value>osp.wizard.view</value>
+            <value>osp.wizard.comment</value>
+            <value>osp.wizard.copy</value>
+            <value>osp.wizard.export</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="wizardAuthz" class="org.theospi.portfolio.wizard.WizardAuthorizerImpl">
+      <property name="wizardManager"><ref bean="org.theospi.portfolio.wizard.mgt.WizardManager"/></property>
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="functions">
+         <list>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.CREATE_WIZARD"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.CREATE_WIZARD</value>
+               </property>
+            </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.EDIT_WIZARD"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.EDIT_WIZARD</value>
+               </property>
+            </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.DELETE_WIZARD"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.DELETE_WIZARD</value>
+               </property>
+            </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.PUBLISH_WIZARD"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.PUBLISH_WIZARD</value>
+               </property>
+            </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.REVIEW_WIZARD"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.REVIEW_WIZARD</value>
+               </property>
+            </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.VIEW_WIZARD"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.VIEW_WIZARD</value>
+               </property>
+            </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.COMMENT_WIZARD"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.COMMENT_WIZARD</value>
+               </property>
+            </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.COPY_WIZARD"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.COPY_WIZARD</value>
+               </property>
+            </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.EXPORT_WIZARD"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.EXPORT_WIZARD</value>
+               </property>
+            </bean>
+         </list>
+      </property>
+   </bean>
 
    <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospWizard"
       class="org.theospi.portfolio.wizard.impl.WizardHttpAccess">
