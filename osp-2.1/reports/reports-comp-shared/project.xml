@@ -85,6 +85,9 @@
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
             <version>1.6</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
 
         <dependency>
@@ -98,12 +101,16 @@
             <artifactId>spring</artifactId>
             <version>${sakai.spring.version}</version>          
         </dependency>
-
-        <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xercesImpl</artifactId>
-            <version>2.6.2</version>
-        </dependency>
+        
+    
+    <dependency>
+      <groupId>jdom</groupId>
+      <artifactId>jdom</artifactId>
+      <version>1.0</version>
+      <properties>
+         <deploy.target>shared</deploy.target>
+      </properties>
+    </dependency>
 
     </dependencies>
 

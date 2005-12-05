@@ -276,34 +276,6 @@ public class ReportDefinition
 	
 	
 	/**
-	 * the setter for the params property.  This is set by the bean 
-	 * This property needs to be converted into classes
-	 * @param params List
-	 */
-	public void setParams(List params)
-	{
-		Iterator iter = params.iterator();
-		
-		if(reportDefinitionParams == null)
-			reportDefinitionParams = new ArrayList();
-		
-		while(iter.hasNext()) {
-			Map param = (Map)iter.next();
-			
-			ReportDefinitionParam rdp = new ReportDefinitionParam();
-			
-			rdp.setReportDefinition(this);
-			rdp.setParamName((String)param.get("paramName"));
-			rdp.setDescription((String)param.get("description"));
-			rdp.setType((String)param.get("type"));
-			rdp.setValueType((String)param.get("valueType"));
-			rdp.setValue((String)param.get("value"));
-			reportDefinitionParams.add(rdp);
-		}
-	}
-	
-	
-	/**
 	 * the getter for the xsls property
 	 * @return List the xsls
 	 */

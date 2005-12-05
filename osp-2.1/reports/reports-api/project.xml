@@ -29,6 +29,15 @@
             <artifactId>sakai-legacy-service</artifactId>
             <version>${sakai.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>commons-digester</groupId>
+            <artifactId>commons-digester</artifactId>
+            <version>1.6</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
     </dependencies>
 
     <build>
