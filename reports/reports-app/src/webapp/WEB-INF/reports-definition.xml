@@ -8,7 +8,7 @@
         class="org.theospi.api.app.reports.ReportDefinition">
 
         <property name="reportDefId">
-            <value>8b9df0-d90f-d898f-f89f8d78d7f8</value>
+            <value>8b9df034-d90f-d898-7890-f89f8d78d7f8</value>
         </property>
         <property name="title">
             <value>
@@ -17,7 +17,7 @@
         </property>
         <property name="query">
             <value>
-                select * from sakai_site
+                select * from sakai_site where createby IN (?, ?, ?, ?, ?, ?)
             </value>
         </property>
         <property name="keywords">
@@ -32,102 +32,80 @@
             <value>/reportxsl/report1.1.xsl</value>
         </property>
 
-        <property name="params">
+        <property name="reportDefinitionParams">
             <list>
-                <map>
-                    <entry key="paramName"><value>[fillin]</value></entry>
-                    <entry key="description"><value>
-                            selects the user whom owns the portfolio
-                        </value></entry>
-                    <entry key="type"><!-- int/float/date/string --><value>string</value></entry>
-                    <entry key="valueType"><!-- fillin/set/multiset/sql/multisql/static -->
-                        <value>fillin</value>
-                    </entry>
-                    <entry key="value"><!-- (validation rules)/[elem1, elem2, elem3,
-                            etc]/ select username from worksite/value -->
-                        <value></value>
-                    </entry>
-                </map>
-                <map>
-                    <entry key="paramName"><value>[set]</value></entry>
-                    <entry key="description"><value>
-                            selects the user whom owns the portfolio
-                        </value></entry>
-                    <entry key="type"><!-- int/float/date/string --><value>string</value></entry>
-                    <entry key="valueType"><!-- fillin/set/multiset/sql/multisql/static -->
-                        <value>set</value>
-                    </entry>
-                    <entry key="value"><!-- (validation rules)/[elem1, elem2, elem3,
-                            etc]/ select username from worksite/value -->
-                        <value>
-                        [dog, cat, car, apple, turkey, paper, ]
-                        </value>
-                    </entry>
-                </map>
-                <map>
-                    <entry key="paramName"><value>[multiset]</value></entry>
-                    <entry key="description"><value>
-                            selects the user whom owns the portfolio
-                        </value></entry>
-                    <entry key="type"><!-- int/float/date/string --><value>string</value></entry>
-                    <entry key="valueType"><!-- fillin/set/multiset/sql/multisql/static -->
-                        <value>multiset</value>
-                    </entry>
-                    <entry key="value"><!-- (validation rules)/[elem1, elem2, elem3,
-                            etc]/ select username from worksite/value -->
-                        <value>
-                        [(dog; A Dog), (cat), (car; BMW), (apple; Red Apple), turkey, paper, {userid}]
-                        </value>
-                    </entry>
-                </map>
-                <map>
-                    <entry key="paramName"><value>[sql]</value></entry>
-                    <entry key="description"><value>
-                            allows a user to select from the worksites they have access
-                        </value></entry>
-                    <entry key="type"><!-- int/float/date/string --><value>string</value></entry>
-                    <entry key="valueType"><!-- fillin/set/multiset/sql/multisql/static -->
-                        <value>sql</value>
-                    </entry>
-                    <entry key="value"><!-- (validation rules)/[elem1, elem2, elem3,
-                            etc]/ select username from worksite/value -->
-                        <value>
-                        select site_id from sakai_site_user where user_id="{userid}"
-                        </value>
-                    </entry>
-                </map>
-                <map>
-                    <entry key="paramName"><value>[multisql]</value></entry>
-                    <entry key="description"><value>
-                            allows a user to select from the worksites they have access
-                        </value></entry>
-                    <entry key="type"><!-- int/float/date/string --><value>string</value></entry>
-                    <entry key="valueType"><!-- fillin/set/multiset/sql/multisql/static -->
-                        <value>multisql</value>
-                    </entry>
-                    <entry key="value"><!-- (validation rules)/[elem1, elem2, elem3,
-                            etc]/ select username from worksite/value -->
-                        <value>
-                        select site_id from sakai_site_user where user_id="{userid}"
-                        </value>
-                    </entry>
-                </map>
-                <map>
-                    <entry key="paramName"><value>[static]</value></entry>
-                    <entry key="description"><value>
-                            a static parameter
-                        </value></entry>
-                    <entry key="type"><!-- int/float/date/string --><value>string</value></entry>
-                    <entry key="valueType"><!-- fillin/set/multiset/sql/multisql/static -->
-                        <value>static</value>
-                    </entry>
-                    <entry key="value"><!-- (validation rules)/[elem1, elem2, elem3,
-                            etc]/ select username from worksite/value -->
-                        <value>
-                        {userid} - {username}
-                        </value>
-                    </entry>
-                </map>
+                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                    <property name="title"><value>A Fillin Variable</value></property>
+                    <property name="paramName"><value>[fillin]</value></property>
+                    <property name="description"><value>a param for the user to fill in</value></property>
+                    <property name="type"><value>string</value></property>
+                                    <!-- int/float/date/string -->
+                    <property name="valueType"><value>fillin</value></property>
+                                    <!-- fillin/set/multiset/sql/multisql/static -->
+                    <property name="value"><value>a param for the user to fill in</value></property>
+                            <!-- (validation rules)/[(elem1; title1), (elem2), elem3,
+                                    etc]/ select username, firstName from worksite/value -->
+                </bean>
+                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                    <property name="title"><value>A Set Variable</value></property>
+                    <property name="paramName"><value>[set]</value></property>
+                    <property name="description"><value>a param for the user to select from a drop down</value></property>
+                    <property name="type"><value>string</value></property>
+                                    <!-- int/float/date/string -->
+                    <property name="valueType"><value>set</value></property>
+                                    <!-- fillin/set/multiset/sql/multisql/static -->
+                    <property name="value"><value>[(dogs; Goldie), cat, (car), apple, turkey, paper, ]</value></property>
+                            <!-- (validation rules)/[(elem1; title1), (elem2), elem3,
+                                    etc]/ select username, firstName from worksite/value -->
+                </bean>
+                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                    <property name="title"><value>A multi Set Variable</value></property>
+                    <property name="paramName"><value>[multiset]</value></property>
+                    <property name="description"><value>a param for the user to select from a list box</value></property>
+                    <property name="type"><value>string</value></property>
+                                    <!-- int/float/date/string -->
+                    <property name="valueType"><value>multiset</value></property>
+                                    <!-- fillin/set/multiset/sql/multisql/static -->
+                    <property name="value"><value>[(dogs; Goldie), cat, (car), apple, turkey, paper, {userid}]</value></property>
+                            <!-- (validation rules)/[(elem1; title1), (elem2), elem3,
+                                    etc]/ select username, firstName from worksite/value -->
+                </bean>
+                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                    <property name="title"><value>A sql Variable</value></property>
+                    <property name="paramName"><value>[sql]</value></property>
+                    <property name="description"><value>a param for the user to select from a drop down by sql</value></property>
+                    <property name="type"><value>string</value></property>
+                                    <!-- int/float/date/string -->
+                    <property name="valueType"><value>sql</value></property>
+                                    <!-- fillin/set/multiset/sql/multisql/static -->
+                    <property name="value"><value>select site_id from sakai_site_user where user_id="{userid}"</value></property>
+                            <!-- (validation rules)/[(elem1; title1), (elem2), elem3,
+                                    etc]/ select username, firstName from worksite/value -->
+                </bean>
+                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                    <property name="title"><value>A multi sql Variable</value></property>
+                    <property name="paramName"><value>[multisql]</value></property>
+                    <property name="description"><value>a param for the user to select from a list box by sql</value></property>
+                    <property name="type"><value>string</value></property>
+                                    <!-- int/float/date/string -->
+                    <property name="valueType"><value>multisql</value></property>
+                                    <!-- fillin/set/multiset/sql/multisql/static -->
+                    <property name="value"><value>select site_id from sakai_site_user where user_id="{userid}"</value></property>
+                            <!-- (validation rules)/[(elem1; title1), (elem2), elem3,
+                                    etc]/ select username, firstName from worksite/value -->
+                </bean>
+                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                    <property name="title"><value>A static Variable</value></property>
+                    <property name="paramName"><value>[static]</value></property>
+                    <property name="description"><value>a param set by the definition</value></property>
+                    <property name="type"><value>string</value></property>
+                                    <!-- int/float/date/string -->
+                    <property name="valueType"><value>static</value></property>
+                                    <!-- fillin/set/multiset/sql/multisql/static -->
+                    <property name="value"><value>{userid} - {username}</value></property>
+                            <!-- (validation rules)/[(elem1; title1), (elem2), elem3,
+                                    etc]/ select username, firstName from worksite/value -->
+                </bean>
             </list>
         </property>
         <!-- 
@@ -163,7 +141,7 @@
         class="org.theospi.api.app.reports.ReportDefinition">
 
         <property name="reportDefId">
-            <value>8b9df0-d90f-d898f-f89f8d78d7f9</value>
+            <value>8b9df034-d90f-d898-7890-f89f8d78d7f9</value>
         </property>
         <property name="title">
             <value>
@@ -172,7 +150,7 @@
         </property>
         <property name="query">
             <value>
-                select * from sakai_site where createdby="[user]"
+                select * from sakai_site where createdby=?
             </value><!-- 
             select body, length(body) `bodysize` from content_resource_body_binary
                 -->
@@ -189,24 +167,16 @@
             <value>/reportxsl/report1.1.xsl</value>
         </property>
 
-        <property name="params">
+        <property name="reportDefinitionParams">
             <list>
-                <map>
-                    <entry key="paramName"><value>[user]</value></entry>
-                    <entry key="description"><value>
-                            specify a user
-                        </value></entry>
-                    <entry key="type"><!-- int/float/date/string --><value>string</value></entry>
-                    <entry key="valueType"><!-- fillin/set/multiset/sql/multisql/static -->
-                        <value>static</value>
-                    </entry>
-                    <entry key="value"><!-- (validation rules)/[elem1, elem2, elem3,
-                            etc]/ select username from worksite/value -->
-                        <value>
-                        admin
-                        </value>
-                    </entry>
-                </map>
+                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                    <property name="title"><value>Your user id</value></property>
+                    <property name="paramName"><value>[user]</value></property>
+                    <property name="description"><value>a param set by the definition</value></property>
+                    <property name="type"><value>string</value></property>
+                    <property name="valueType"><value>static</value></property>
+                    <property name="value"><value>{userid}</value></property>
+                </bean>
             </list>
         </property>
         <!-- 

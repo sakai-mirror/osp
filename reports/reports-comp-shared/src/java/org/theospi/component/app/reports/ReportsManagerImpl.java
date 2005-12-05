@@ -69,6 +69,10 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.orm.hibernate.HibernateCallback;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.output.XMLOutputter;
+
 /**
  * This class is a singleton that manages the reports on a general basis
  * 
@@ -150,7 +154,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			
 			//	if the parameter is static then copy the value, otherwise it is filled by user
 			if(rdp.getValueType().equals( ReportDefinitionParam.VALUE_TYPE_STATIC))
-				rp.setValue(rdp.getValue());
+				rp.setValue(replaceSystemValues(rdp.getValue()));
 			reportParams.add(rp);
 		}
 		report.setReportParams(reportParams);
@@ -197,75 +201,77 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	/**
 	 * runs a report and creates a ReportResult.  The parameters were
 	 * verified on the creation of this report object.
+	 * TODO; Use JDC Binding
 	 * @return ReportResult
 	 */
 	public ReportResult generateResults(Report report)
 	{
-		ReportDefinition rd = report.getReportDefinition();
-		
-		//	get the query from the Definition and replace the values
-		//	no should be able to put in a system parameter into a report parameter and have it work
-		//		so replace the system values before processing the report parameters
-		StringBuffer query = new StringBuffer(replaceSystemValues(rd.getQuery()));
-		
-		//	replace the parameters with the values
-		List reportParams = report.getReportParams();
-		
-		//If there are params, place them with values in the query
-		if(reportParams != null) {
-			Iterator iter = reportParams.iterator();
-			
-			//	loop through all the parameters and find in query for replacement
-			while(iter.hasNext()) {
-				
-				//	get the paremeter and associated parameter definition
-				ReportParam rp = (ReportParam)iter.next();
-				ReportDefinitionParam rdp = rp.getReportDefinitionParam();
-				
-				if(rp.getValue() == null)
-					throw new OspException("The Report Parameter Value was blank.  Offending parameter: " + rdp.getParamName());
-
-				//TODO: what to do?
-				//	if a parameter is not valid, fail gracefully
-				if(!rp.valid()) {
-					return null;
-				}
-				
-				int i = query.indexOf(rdp.getParamName());
-				
-				//	Loop until no instances exist
-				while(i != -1) {
-					
-					//	replace the parameter with the value
-					query.replace(i, i + rdp.getParamName().length(), rp.getValue());
-					
-					//	look for a second instance
-					i = query.indexOf(rdp.getParamName());
-				}
-			}
-		}
-		// By here we have the query with the filled in parameters
-		String queryString = query.toString();
-		
-		//	TODO: fill in site values
-		// <worksite-id>, <worksite-name>, <tool-id>, <current-user>, etc.
-		
-		System.out.println(queryString);
-		
 		ReportResult		rr = new ReportResult();
 		
-		// run the query
 		Connection			connection = null;
 		PreparedStatement	stmt = null;
-		ResultSet			rs = null;
-		int					resultSetIndex = 0;
-		
-		
+
 		try {
+			ReportDefinition rd = report.getReportDefinition();
+			
 			connection = getWarehouseConnection();
 			stmt = connection
-					.prepareStatement(queryString);
-			//stmt.setString(1, itemDefId.getValue());
+					.prepareStatement(replaceSystemValues(rd.getQuery()));
+				
+			
+			//	get the query from the Definition and replace the values
+			//	no should be able to put in a system parameter into a report parameter and have it work
+			//		so replace the system values before processing the report parameters
+			
+			//	replace the parameters with the values
+			List reportParams = report.getReportParams();
+			
+			//If there are params, place them with values in the query
+			if(reportParams != null) {
+				Iterator	iter = reportParams.iterator();
+				int			paramIndex = 0;
+				
+				//	loop through all the parameters and find in query for replacement
+				while(iter.hasNext()) {
+					
+					//	get the paremeter and associated parameter definition
+					ReportParam rp = (ReportParam)iter.next();
+					ReportDefinitionParam rdp = rp.getReportDefinitionParam();
+					
+					if(rp.getValue() == null)
+						throw new OspException("The Report Parameter Value was blank.  Offending parameter: " + rdp.getParamName());
+	
+					//TODO: what to do?
+					//	if a parameter is not valid, fail gracefully
+					if(!rp.valid()) {
+						return null;
+					}
+
+					stmt.setString(paramIndex+1, rp.getValue());
+					/*
+					int i = query.indexOf(rdp.getParamName());
+					
+					//	Loop until no instances exist
+					while(i != -1) {
+						
+						//	replace the parameter with the value
+						query.replace(i, i + rdp.getParamName().length(), rp.getValue());
+						
+						//	look for a second instance
+						i = query.indexOf(rdp.getParamName());
+					}*/
+					
+					paramIndex++;
+				}
+			}
+			
+			rr.setCreationDate(new Date());
+			
+			// run the query
+			ResultSet			rs = null;
+			int					resultSetIndex = 0;
+		
+		
 			rs = stmt.executeQuery();
 			
 			int columns = rs.getMetaData().getColumnCount();
@@ -276,20 +282,18 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 				columnNames[i] = rs.getMetaData().getColumnName(i+1);
 			}
 			
-			StringBuffer xml = new StringBuffer();
+			  
+			Element reportElement = new Element("reportResult");
+			
+			Document document = new Document(reportElement);
 
-			xml.append("<report title=\"");
-			xml.append(report.getTitle());
-			xml.append("\" description=\"");
-			xml.append(report.getDescription());
-			xml.append("\" keywords=\"");
-			xml.append(report.getKeywords());
-			xml.append("\">");
-				xml.append(returnChar);
+			reportElement.setAttribute("title", report.getTitle());
+			reportElement.setAttribute("description", report.getDescription());
+			reportElement.setAttribute("keywords", report.getKeywords());
+			reportElement.setAttribute("runDate", rr.getCreationDate().toString());
+			
+			Element paramsNode = new Element("parameters");
 
-			xml.append(tabChar);
-			xml.append("<parameters>");
-				xml.append(returnChar);
 			if(reportParams != null) {
 				Iterator iter = report.getReportParams().iterator();
 				
@@ -300,64 +304,51 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 					ReportParam rp = (ReportParam)iter.next();
 					ReportDefinitionParam rdp = rp.getReportDefinitionParam();
 
-					xml.append(tabChar);
-					xml.append(tabChar);
+					Element paramNode = new Element("parameter");
 
-					xml.append("<parameter name=\"");
-					xml.append(rdp.getParamName());
-					xml.append("\" value=\"");
-					xml.append(rp.getValue());
-					xml.append("\" type=\"");
-					xml.append(rdp.getType());
-					xml.append("\" />");
-						xml.append(returnChar);
+					paramNode.setAttribute("name", rdp.getParamName());
+					paramNode.setAttribute("type", rdp.getType());
+					paramNode.setAttribute("value", rp.getValue());
+					
+					paramsNode.addContent(paramNode);
 				}
 			}
-			xml.append(tabChar);
-			xml.append("</parameters>");
-				xml.append(returnChar);
+			
+			reportElement.addContent(paramsNode);
 				
 			while(rs.next()) {
-				xml.append(tabChar);
-				xml.append("<datarow index=\"");
-				xml.append(resultSetIndex++);
-				xml.append("\">");
-				xml.append(returnChar);
+				
+				Element dataRow = new Element("datarow");;
+				
+				dataRow.setAttribute("index", "" + resultSetIndex++);
+				reportElement.addContent(dataRow);
 					
 				for(int i = 0; i < columns; i++) {
+					
 					String data = rs.getString(i+1);
-					xml.append(tabChar);
-					xml.append(tabChar);
-					xml.append("<element colIndex=\"");
-					xml.append(i);
-					xml.append("\" colName=\"");
-					xml.append(columnNames[i]);
+					
+					Element columnNode = new Element("element");
+					
+					dataRow.addContent(columnNode);
+
+					columnNode.setAttribute("colIndex", "" + i);
+					columnNode.setAttribute("colName", columnNames[i]);
+					
 					if(data == null) {
-						xml.append("\" isNull=\"");
-						xml.append("true");
+						columnNode.setAttribute("isNull", "true");
 						data = "";
 					}
-					xml.append("\">");
-					//this handles blob data too
-					xml.append(data);
-					xml.append("</element>");
-					xml.append(returnChar);
+					columnNode.setText(data);
 				}
 				
-				xml.append(tabChar);
-				xml.append("</datarow>");
-				xml.append(returnChar);
 			}
-				
-			xml.append("</report>");
 
 			rr.setReport(report);
 			rr.setTitle("Report Title");
 			rr.setKeywords("keywords, blah");
 			rr.setDescription("This is the sample description of the report result");
-			rr.setCreationDate(new Date());
-			rr.setXml(xml.toString());
-			System.out.println(xml.toString());
+			rr.setXml(document.toString());
+			System.out.println((new XMLOutputter()).outputString(document));
 			
 		} catch (SQLException e) {
 			logger.error("", e);
