@@ -43,4 +43,25 @@ public class ReferenceHolder implements Serializable {
       setBase(EntityManager.newReference(ref));
    }
 
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (!(o instanceof ReferenceHolder)) {
+         return false;
+      }
+
+      final ReferenceHolder referenceHolder = (ReferenceHolder) o;
+
+      if (base != null ? !base.getReference().equals(referenceHolder.base.getReference()) : referenceHolder.base != null) {
+         return false;
+      }
+
+      return true;
+   }
+
+   public int hashCode() {
+      return (base != null ? base.hashCode() : 0);
+   }
+
 }

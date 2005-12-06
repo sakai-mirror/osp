@@ -51,19 +51,13 @@ public class DecoratedWizard {
          session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
 
          List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-         List newStyles = new ArrayList();
+         base.getWizardStyleItems().clear();
          for(int i=0; i<refs.size(); i++) {
             Reference ref = (Reference) refs.get(i);
             Reference fullRef = tool.decorateReference(ref.getReference());
             WizardStyleItem wsItem = new WizardStyleItem(base, ref, fullRef);
-            if (base.getWizardStyleItems().contains(wsItem)) {
-               wsItem =
-                  (WizardStyleItem) base.getWizardStyleItems().get(base.getWizardStyleItems().indexOf(wsItem));
-            }
-
-            newStyles.add(wsItem);
+            base.getWizardStyleItems().add(wsItem);
          }
-         base.setWizardStyleItems(newStyles);
          session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
       }
 
