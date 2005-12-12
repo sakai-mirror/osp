@@ -1,5 +1,5 @@
-<h:panelGrid columns="2">
-<sakai:view_title value="#{audience.selectedTitle}" />
+<h:panelGrid columns="1">
+   <sakai:view_title value="#{audience.selectedTitle}" />
    <h:commandButton actionListener="#{audience.processActionRemove}"
       value="#{msgs.remove_member}"/>
 </h:panelGrid>
