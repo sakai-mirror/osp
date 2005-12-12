@@ -51,3 +51,7 @@
      border-width: thin;
      background-color: #D7DBD2;
  }
+ 
+ .osp_required_field {
+   color:#FF0000;
+ }
