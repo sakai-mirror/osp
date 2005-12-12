@@ -45,11 +45,13 @@
 
 package org.theospi.portfolio.matrix.control;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Scaffolding;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.sakaiproject.service.legacy.content.LockManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -92,9 +94,17 @@ public class BaseScaffoldingController {
         //Traversing the collections to un-lazily load
       scaffolding.getLevels().size();
       scaffolding.getCriteria().size();
-      scaffolding.getScaffoldingCells().size();
+      traverseScaffoldingCells(scaffolding);
       
       return scaffolding;
+   }
+   
+   protected void traverseScaffoldingCells(Scaffolding scaffolding) {
+      scaffolding.getScaffoldingCells().size();
+      for (Iterator iter=scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
+         ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
+         sCell.getCells().size();
+      }
    }
 
    protected void saveMatrixTool(Scaffolding scaffolding) {
