@@ -840,5 +840,65 @@
     </attribute>
   </tag>
 
+   <tag>
+      <name>formLabel</name>
+      <tag-class>org.theospi.jsf.tag.FormLabelTag</tag-class>
+      <description>Tag for a form label</description>
+      <body-content>JSP</body-content>
+      <attribute>
+         <name>valueRequired</name>
+         <description><![CDATA[
+      
+            Is the value required?
+      
+         ]]></description>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>displayCharOnRight</name>
+         <description><![CDATA[
+      
+            Should the Required indicator be displayed to the right
+            of the label text?  Default is false (display on the left)
+      
+         ]]></description>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>id</name>
+         <required>false</required>
+         <rtexprvalue>false</rtexprvalue>
+         <description><![CDATA[
+         
+           Component id of this component.
+           
+         ]]></description>
+      </attribute>
+      <attribute>
+         <name>rendered</name>
+         <required>false</required>
+         <rtexprvalue>false</rtexprvalue>
+         <description><![CDATA[
+         
+           Flag indicating whether or not this component should be rendered
+             (during Render Response Phase), or processed on any subsequent
+             form submit.
+             
+         ]]></description>
+      </attribute>
+      <attribute>
+         <name>disabled</name>  
+         <required>false</required>  
+         <rtexprvalue>false</rtexprvalue>
+         <description><![CDATA[
+         
+           this will disable the tag
+           
+         ]]></description>  
+      </attribute>
+   </tag>
+   
 </taglib
 >
