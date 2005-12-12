@@ -411,6 +411,12 @@ public class AudienceTool extends HelperToolBase {
       }
    }
 
+   public void processActionClearFilter(ActionEvent event) {
+      selectedGroupsFilter.clear();
+      selectedRolesFilter.clear();
+      processActionApplyFilter(event);
+   }
+
    public void processActionApplyFilter(ActionEvent event) {
       Set members = getGroupMembers();
       List siteUsers = new ArrayList();
@@ -449,7 +455,6 @@ public class AudienceTool extends HelperToolBase {
 
    public List getRoles() {
       List siteRoles = getSiteRoles();
-      siteRoles.add(0, createSelect("", "<none>"));
       return siteRoles;
    }
 
@@ -459,7 +464,6 @@ public class AudienceTool extends HelperToolBase {
 
    public List getGroups() {
       List siteGroups = getSiteGroups();
-      siteGroups.add(0, createSelect("", "<none>"));
       return siteGroups;
    }
 
