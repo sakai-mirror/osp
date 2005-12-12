@@ -90,7 +90,7 @@
                                     <!-- int/float/date/string -->
                     <property name="valueType"><value>multisql</value></property>
                                     <!-- fillin/set/multiset/sql/multisql/static -->
-                    <property name="value"><value>select site_id from sakai_site_user where user_id="{userid}"</value></property>
+                    <property name="value"><value>select site_id from sakai_site</value></property>
                             <!-- (validation rules)/[(elem1; title1), (elem2), elem3,
                                     etc]/ select username, firstName from worksite/value -->
                 </bean>

@@ -58,6 +58,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.sakaiproject.metaobj.shared.ArtifactFinder;
+import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
+import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
+
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Session;
 
@@ -87,11 +94,13 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	/** The global list of reports */
 	private List reports;
 	
+	private IdManager		idManager = null;
+	private ArtifactFinder artifactFinder = null;
+	
+	private ArtifactFinderManager artifactFinderManager = null;
+	
 	/** Tells us if the global database reports were loaded */
 	private boolean isDBLoaded = false;
-
-	private final static char returnChar = '\n';
-	private final static char tabChar = '\t';
 
 	/**
 	 * This is the setter for the predefined reports, via the bean
@@ -113,6 +122,63 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		loadReportsFromDB();
 		
 		return reports;
+	}
+	
+	
+	/**
+	 * This is the setter for the idManager
+	 */
+	public void setIdManager(IdManager idManager)
+	{
+		this.idManager = idManager;
+	}
+	
+	
+	/**
+	 * This is the getter for the idManager
+	 * @return IdManager
+	 */
+	public IdManager getIdManagerr()
+	{
+		return idManager;
+	}
+	
+	
+	/**
+	 * This is the setter for the ArtifactFinder
+	 */
+	public void setArtifactFinder(ArtifactFinder artifactFinder)
+	{
+		this.artifactFinder = artifactFinder;
+	}
+	
+	
+	/**
+	 * This is the getter for the artifactFinder
+	 * @return ArtifactFinder
+	 */
+	public ArtifactFinder getArtifactFinder()
+	{
+		return artifactFinder;
+	}
+	
+	
+	/**
+	 * This is the setter for the ArtifactFinderManager
+	 */
+	public void setArtifactFinderManager(ArtifactFinderManager artifactFinderManager)
+	{
+		this.artifactFinderManager = artifactFinderManager;
+	}
+	
+	
+	/**
+	 * This is the getter for the artifactFinderManager
+	 * @return ArtifactFinderManager
+	 */
+	public ArtifactFinderManager getArtifactFinderManager()
+	{
+		return artifactFinderManager;
 	}
 	
 	
@@ -199,6 +265,56 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
 	
 	/**
+	 * gathers the data for dropdown/list box.
+	 * @return String
+	 */
+	public String generateSQLParameterValue(ReportParam reportParam)
+	{
+		Connection			connection = null;
+		PreparedStatement	stmt = null;
+		ResultSet			rs = null;
+		String				results = "[]";
+		StringBuffer		strbuffer = new StringBuffer();
+		try {
+			connection = getWarehouseConnection();
+			stmt = connection
+					.prepareStatement(replaceSystemValues(reportParam.getReportDefinitionParam().getValue()));
+			
+			rs = stmt.executeQuery();
+			strbuffer.append("[");
+			int columns = rs.getMetaData().getColumnCount();
+			while(rs.next()) {
+				if(columns >= 2)
+					strbuffer.append("(");
+				if(columns >= 1)
+					strbuffer.append(rs.getString(1));
+				if(columns >= 2) {
+					strbuffer.append(";");
+					strbuffer.append(rs.getString(2));
+					strbuffer.append(")");
+				}
+				strbuffer.append(",");
+			}
+			strbuffer.append("]");
+			results = strbuffer.toString();
+		} catch (SQLException e) {
+			logger.error("", e);
+			throw new OspException(e);
+		} catch (HibernateException e) {
+			logger.error("", e);
+			throw new OspException(e);
+		} finally {
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				logger.error("", e);
+			}
+		}
+		return results;
+	}
+
+	
+	/**
 	 * runs a report and creates a ReportResult.  The parameters were
 	 * verified on the creation of this report object.
 	 * TODO; Use JDC Binding
@@ -277,9 +393,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			int columns = rs.getMetaData().getColumnCount();
 			
 			String []columnNames = new String[columns];
+			boolean []columnArtifacts = new boolean[columns];
 			
 			for(int i = 0; i < columns; i++) {
 				columnNames[i] = rs.getMetaData().getColumnName(i+1);
+				columnArtifacts[i] = columnNames[i].endsWith("_artifact");
 			}
 			
 			  
@@ -315,7 +433,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			}
 			
 			reportElement.addContent(paramsNode);
-				
+			
 			while(rs.next()) {
 				
 				Element dataRow = new Element("datarow");;
@@ -338,7 +456,16 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 						columnNode.setAttribute("isNull", "true");
 						data = "";
 					}
-					columnNode.setText(data);
+					if(columnArtifacts[i]) {
+						Artifact art = artifactFinder.load(idManager.getId(data));
+						
+						PresentableObjectHome home = (PresentableObjectHome) art.getHome();
+						Element node = home.getArtifactAsXml(art);
+						node.setName("artifact");
+						columnNode.addContent(node);
+						//	place into the result xml
+					} else
+						columnNode.setText(data);
 				}
 				
 			}
@@ -347,7 +474,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			rr.setTitle("Report Title");
 			rr.setKeywords("keywords, blah");
 			rr.setDescription("This is the sample description of the report result");
-			rr.setXml(document.toString());
+			rr.setXml((new XMLOutputter()).outputString(document));
 			System.out.println((new XMLOutputter()).outputString(document));
 			
 		} catch (SQLException e) {

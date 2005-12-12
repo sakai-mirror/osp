@@ -102,34 +102,38 @@ public class DecoratedReportParam {
 	{
 		ArrayList array = new ArrayList();
 		if(getIsSet()) {
+			String strSet = null;
 			if(getIsDynamic()) {
 				//	run the sql in the report definition parameter value
+				strSet = reportsTool.getReportsManager().generateSQLParameterValue(reportParam);
 			} else {
-				String strSet = reportParam.getReportDefinitionParam().getValue();
-				strSet = strSet.substring(strSet.indexOf("[")+1, strSet.indexOf("]"));
-				String[] set = strSet.split(",");
+				strSet = reportParam.getReportDefinitionParam().getValue();
+			}
+
+			strSet = strSet.substring(strSet.indexOf("[")+1, strSet.indexOf("]"));
+			String[] set = strSet.split(",");
+			
+			for(int i = 0; i < set.length; i++) {
+				String element = set[i].trim();
 				
-				for(int i = 0; i < set.length; i++) {
-					String element = set[i].trim();
+				//	replace any system values for display in the interface
+				element = reportsTool.getReportsManager().replaceSystemValues(element);
+				
+				if(element.indexOf("(") != -1) {
+					element = element.substring(element.indexOf("(")+1, element.indexOf(")"));
 					
-					//	replace any system values for display in the interface
-					element = reportsTool.getReportsManager().replaceSystemValues(element);
-					
-					if(element.indexOf("(") != -1) {
-						element = element.substring(element.indexOf("(")+1, element.indexOf(")"));
-						
-						String[] elementData = element.split(";");
-						if(elementData.length == 0)
-							array.add(new SelectItem());
-						if(elementData.length == 1)
-							array.add(new SelectItem(elementData[0].trim()));
-						if(elementData.length > 1)
-							array.add(new SelectItem(elementData[0].trim(), elementData[1].trim()));
-					} else {
-						array.add(new SelectItem(element));
-					}
+					String[] elementData = element.split(";");
+					if(elementData.length == 0)
+						array.add(new SelectItem());
+					if(elementData.length == 1)
+						array.add(new SelectItem(elementData[0].trim()));
+					if(elementData.length > 1)
+						array.add(new SelectItem(elementData[0].trim(), elementData[1].trim()));
+				} else {
+					array.add(new SelectItem(element));
 				}
 			}
+			
 		}
 		
 		return array;
