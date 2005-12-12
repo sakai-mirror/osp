@@ -54,7 +54,8 @@ function hrefViewCell(cellId) {
 					<c:out value="${matrixContents.scaffolding.title}"/>
 				</th>
 				<c:forEach var="head" items="${columnHeading}">
-					<th class="matrix-column-heading" width="200">
+					<th class="matrix-column-heading" width="200" 
+                  bgcolor="<c:out value="${head.color}"/>">
 						<c:out value="${head.description}"/>
 					</th>
 				</c:forEach>
@@ -66,7 +67,7 @@ function hrefViewCell(cellId) {
 					</th>
 	    
 					<c:forEach var="cell" items="${matrixContents.matrixContents[loopStatus.index]}">
-						<td class="matrix-<c:out value="${cell.initialStatus}"/>" onClick="hrefViewCell('<c:out value="${cell.id}"/>') " style="cursor:pointer">
+						<td class="matrix-cell-border matrix-<c:out value="${cell.initialStatus}"/>" onClick="hrefViewCell('<c:out value="${cell.id}"/>') " style="cursor:pointer">
 							&nbsp;
 						</td>
 					</c:forEach>
@@ -74,28 +75,28 @@ function hrefViewCell(cellId) {
 			</c:forEach>
 		</table>
 	  
-		<table width="550" border="0" cellspacing="10">
-			<tr> 
-				<td width="93" height="21" align="left" valign="bottom"><font size="2" face="Verdana, Arial, Helvetica, sans-serif">Legend</font></td>
-				<td width="78"><font size="2" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;</font></td>
-				<td width="108"><font size="2" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;</font></td>
-				<td width="82"><font size="2" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;</font></td>
-				<td width="167"><font size="2" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;</font></td>
-			</tr>
-			<tr> 
-				<td><font size="2" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;</font></td>
-				<td bgcolor="#86F283"><font size="2" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;</font></td>
-				<td><font size="2" face="Verdana, Arial, Helvetica, sans-serif">Ready</font></td>
-				<td bgcolor="#A6C7EA"><font size="2" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;</font></td>
-				<td><font size="2" face="Verdana, Arial, Helvetica, sans-serif">Completed</font></td>
-			</tr>
-			<tr> 
-				<td><font size="2" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;</font></td>
-				<td bgcolor="#F7EF84"><font size="2" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;</font></td>
-				<td><font size="2" face="Verdana, Arial, Helvetica, sans-serif">Pending</font></td>
-				<td bgcolor="#AC326B"><font size="2" face="Verdana, Arial, Helvetica, sans-serif">&nbsp;</font></td>
-				<td><font size="2" face="Verdana, Arial, Helvetica, sans-serif">Locked</font></td>
-			</tr>
-		</table>
+        <table width="550" border="0" cellspacing="10">
+          <tr> 
+            <td width="93" height="21" align="left" valign="bottom">Legend</td>
+            <td width="78">&nbsp;</td>
+            <td width="108">&nbsp;</td>
+            <td width="82">&nbsp;</td>
+            <td width="167">&nbsp;</td>
+          </tr>
+          <tr> 
+            <td>&nbsp;</td>
+            <td class="matrixLegend-border matrix-READY">&nbsp;</td>
+            <td>Ready</td>
+            <td class="matrixLegend-border matrix-COMPLETE">&nbsp;</td>
+            <td>Completed</td>
+          </tr>
+          <tr> 
+            <td>&nbsp;</td>
+            <td class="matrixLegend-border matrix-PENDING">&nbsp;</td>
+            <td>Pending</td>
+            <td class="matrixLegend-border matrix-LOCKED">&nbsp;</td>
+            <td>Locked</td>
+          </tr>
+        </table>
   
 	</c:if>

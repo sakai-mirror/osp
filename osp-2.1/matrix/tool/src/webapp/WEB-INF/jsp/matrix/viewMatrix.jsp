@@ -90,7 +90,8 @@ function hrefViewCell(cellId) {
                     </osp-h:glossary>
                 </th>
                 <c:forEach var="head" items="${columnHeading}">
-                    <th class="matrix-column-heading" width="200">
+                    <th class="matrix-column-heading" width="200" 
+                        bgcolor="<c:out value="${head.color}"/>">
                         <osp-h:glossary link="true" hover="true">
                         	<c:out value="${head.description}"/>
                         </osp-h:glossary>
@@ -108,7 +109,7 @@ function hrefViewCell(cellId) {
                      <c:set var="cell" value="${cellBean.cell}"/>
                      <c:set var="attachments" value="${cellBean.attachments}"/>
                   
-                     <td class="matrix-<c:out value="${cell.status}"/>" onClick="hrefViewCell('<c:out value="${cell.id}"/>') " style="cursor:pointer">
+                     <td class="matrix-cell-border matrix-<c:out value="${cell.status}"/>" onClick="hrefViewCell('<c:out value="${cell.id}"/>') " style="cursor:pointer">
                         &nbsp;
                         <c:forEach var="node" items="${attachments}">
                             <fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="MM/dd/yyyy" var="date"/>
@@ -133,16 +134,16 @@ function hrefViewCell(cellId) {
           </tr>
           <tr> 
             <td>&nbsp;</td>
-            <td bgcolor="#86F283">&nbsp;</td>
+            <td class="matrixLegend-border matrix-READY">&nbsp;</td>
             <td>Ready</td>
-            <td bgcolor="#A6C7EA">&nbsp;</td>
+            <td class="matrixLegend-border matrix-COMPLETE">&nbsp;</td>
             <td>Completed</td>
           </tr>
           <tr> 
             <td>&nbsp;</td>
-            <td bgcolor="#F7EF84">&nbsp;</td>
+            <td class="matrixLegend-border matrix-PENDING">&nbsp;</td>
             <td>Pending</td>
-            <td bgcolor="#AC326B">&nbsp;</td>
+            <td class="matrixLegend-border matrix-LOCKED">&nbsp;</td>
             <td>Locked</td>
           </tr>
         </table>

@@ -57,35 +57,16 @@ TD.header-info { COLOR: #ffffff; font-size:12pt; font-family: Verdana, Verdana, 
 TD.header-item { COLOR: #000000; font-weight: bold; font-size:.8em; font-family: Verdana, Verdana, Verdana, sans-serif;}
 TD.reviewer-cell { border-color: #000000; border-spacing: 2px; border-width: 1px; border-style: solid; padding: 5px;}
 
-TD.matrix-COMPLETE{ background-color: #a6c7ea;
-      border-bottom: 2px solid black;
-      border-left: 2px solid black;}
-TD.matrix-PENDING{ background-color: #f7ef84;
-      border-bottom: 2px solid black;
-      border-left: 2px solid black;}
-TD.matrix-READY{ background-color: #86f283;
-      border-bottom: 2px solid black;
-      border-left: 2px solid black;}
-TD.matrix-LOCKED{ background-color: #ac326b;
+TD.matrix-cell-border{
       border-bottom: 2px solid black;
       border-left: 2px solid black;}
 
-TD.matrixLegend-COMPLETE{
-		background-color: #a6c7ea;
-		border: 1px solid black;
-}
-TD.matrixLegend-PENDING{
-		background-color: #f7ef84;
-		border: 1px solid black;
-}
-TD.matrixLegend-READY{
-	background-color: White;
-	border: 1px solid black;
-}
-TD.matrixLegend-LOCKED{
-	background-color: #D3D3D3;
-	border: 1px solid black;
-}
+TD.matrix-COMPLETE{ background-color: #a6c7ea;}
+TD.matrix-PENDING{ background-color: #f7ef84;}
+TD.matrix-READY{ background-color: #86f283;}
+TD.matrix-LOCKED{ background-color: #ac326b;}
+
+TD.matrixLegend-border{ border: 1px solid black;}
 
 TH.matrix-column-heading { border-bottom: 2px solid black; border-left: 2px solid black; 
       font-family: Verdana, Verdana, Verdana, sans-serif; font-size: 10pt; }

@@ -143,7 +143,9 @@
         </id>
         <discriminator column="type" type="character" />
         <property name="description" type="java.lang.String" />
-        <subclass name="Level" discriminator-value="L"/>
+        <subclass name="Level" discriminator-value="L">
+         <property name="color" type="java.lang.String" length="7" />
+        </subclass>
         <subclass name="Criterion" discriminator-value="C">
             <property name="indent" type="java.lang.Integer" />
             <property name="color" type="java.lang.String" length="7" />
