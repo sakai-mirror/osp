@@ -54,16 +54,28 @@ package org.theospi.portfolio.matrix.model;
  */
 public class Level extends AbstractLabel {
    
+   String color;
+   
    public Level() {}
    
    public Level(LevelTransport level) {
       this.id = level.getId();
       this.description = level.getDescription();
+      this.color = level.getColor();
    }
    
    public Level copy(LevelTransport level) {
       this.id = level.getId();
       this.description = level.getDescription();
+      this.color = level.getColor();
       return this;
+   }
+
+   public String getColor() {
+      return color;
+   }
+
+   public void setColor(String color) {
+      this.color = color;
    }
 }

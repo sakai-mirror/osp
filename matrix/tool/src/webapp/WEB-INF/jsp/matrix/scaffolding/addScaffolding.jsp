@@ -113,7 +113,7 @@
           
     				<c:forEach var="level" items="${scaffolding.levels}" varStatus="itemLoopStatus">
     					<tr>
-    						<td>
+                        <td <c:if test="${not empty level.color}">bgcolor="<c:out value="${level.color}"/>"</c:if>>
     							<div class="tier0">
     								<c:out value="${level.description}"/>
     					
