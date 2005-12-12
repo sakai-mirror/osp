@@ -28,27 +28,23 @@
              <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
                 <ospx:splitarea direction="vertical" height="85%">
                    <ospx:splitsection valign="top">
-                      <ospx:splitarea direction="horizontal" width="100%">
-                         <ospx:splitsection size="50%" valign="top">
-                            <sakai:panel_edit>
-                               <h:outputLabel value="#{msgs.filter_roles}  " for="filterRoles" />
-                               <h:selectManyListbox size="4" value="#{audience.selectedRolesFilter}" id="filterRoles">
-                                  <f:selectItems value="#{audience.roles}" />
-                               </h:selectManyListbox>
-                            </sakai:panel_edit>
-                         </ospx:splitsection>
-                         <ospx:splitsection size="50%" valign="top">
-                            <sakai:panel_edit>
-                               <h:outputLabel value="#{msgs.filter_groups}  " for="filterGroups" rendered="#{audience.hasGroups}" />
-                               <h:selectManyListbox size="4" value="#{audience.selectedGroupsFilter}"
-                                  id="filterGroups" rendered="#{audience.hasGroups}">
-                                  <f:selectItems value="#{audience.groups}" />
-                               </h:selectManyListbox>
-                            </sakai:panel_edit>
-                         </ospx:splitsection>
-                      </ospx:splitarea>
+                      <h:panelGrid columns="4">
+                         <h:outputLabel value="#{msgs.filter_roles}  " for="filterRoles" />
+                         <h:outputText value=""/>
+                         <h:outputText value=""/>
+                         <h:outputLabel value="#{msgs.filter_groups}  " for="filterGroups" rendered="#{audience.hasGroups}" />
+                         <h:selectManyListbox size="4" value="#{audience.selectedRolesFilter}" id="filterRoles">
+                            <f:selectItems value="#{audience.roles}" />
+                         </h:selectManyListbox>
+                         <h:outputText value=""/>
+                         <h:outputText value=""/>
+                         <h:selectManyListbox size="4" value="#{audience.selectedGroupsFilter}"
+                            id="filterGroups" rendered="#{audience.hasGroups}">
+                            <f:selectItems value="#{audience.groups}" />
+                         </h:selectManyListbox>
+                      </h:panelGrid>
                    </ospx:splitsection>
-                   <ospx:splitsection valign="top">
+                   <ospx:splitsection valign="center">
                       <h:commandButton actionListener="#{audience.processActionApplyFilter}"
                          value="#{msgs.apply_filter}"/>
                       <h:commandButton actionListener="#{audience.processActionClearFilter}"
