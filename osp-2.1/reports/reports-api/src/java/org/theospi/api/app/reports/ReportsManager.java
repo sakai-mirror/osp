@@ -59,4 +59,5 @@ public interface ReportsManager
 	public ReportResult generateResults(Report report);
 
 	public String replaceSystemValues(String inString);
+	public String generateSQLParameterValue(ReportParam reportParam);
 }

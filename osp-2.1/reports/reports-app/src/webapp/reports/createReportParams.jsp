@@ -18,7 +18,7 @@
                             <h:outputText value="Parameter Name" />
                         </f:facet>
 
-                        <h:outputText value="#{decoratedReportParam.reportDefinitionParam.paramName}" />
+                        <h:outputText value="#{decoratedReportParam.reportDefinitionParam.title}" />
                     </h:column>
                     <h:column>
                         <f:facet name="header">
