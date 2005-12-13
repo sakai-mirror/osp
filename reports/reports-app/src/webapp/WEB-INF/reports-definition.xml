@@ -208,5 +208,51 @@
         </property>
 
     </bean>
+    
+    
+    <bean id="report1"
+        class="org.theospi.api.app.reports.ReportDefinition">
+
+        <property name="reportDefId">
+            <value>8b9df034-d90f-d898-7890-f89f8d78d7f3</value>
+        </property>
+        <property name="title">
+            <value>
+                Artifact import test
+            </value>
+        </property>
+        <property name="query">
+            <value>
+                select RESOURCE_ID `RESOURCE_ID_artifact` from content_resource_body_binary where
+            </value>
+        </property>
+        <property name="keywords">
+            <value>CIG user portfolio etc</value>
+        </property>
+        <property name="description">
+            <value>
+                A test to open an artifact and move it into the xml result.
+                the column name must end in artifact in order for the code to open the column 
+                as an artifact
+            </value>
+        </property>
+        <property name="defaultXsl">
+            <value>/reportxsl/report1.1.xsl</value>
+        </property>
+
+        <property name="reportDefinitionParams">
+            <list>
+            </list>
+        </property>
+        <property name="xsls">
+            <list>
+                <value>/reportxsl/report1.1.xsl</value>
+                <value>/reportxsl/report1.2.xsl</value>
+                <value>/reportxsl/report1.3.xsl</value>
+            </list>
+        </property>
+
+    </bean>
+    
 
 </beans>

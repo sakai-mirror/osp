@@ -90,6 +90,8 @@ import org.jdom.output.XMLOutputter;
 public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsManager
 {
 	protected final transient Log logger = LogFactory.getLog(getClass());
+	
+	protected final String	ARTIFACT_EXTENSION = "artifact";
 	   
 	/** The global list of reports */
 	private List reports;
@@ -317,7 +319,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	/**
 	 * runs a report and creates a ReportResult.  The parameters were
 	 * verified on the creation of this report object.
-	 * TODO; Use JDC Binding
 	 * @return ReportResult
 	 */
 	public ReportResult generateResults(Report report)
@@ -333,7 +334,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			connection = getWarehouseConnection();
 			stmt = connection
 					.prepareStatement(replaceSystemValues(rd.getQuery()));
-				
 			
 			//	get the query from the Definition and replace the values
 			//	no should be able to put in a system parameter into a report parameter and have it work
@@ -360,22 +360,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 					//TODO: what to do?
 					//	if a parameter is not valid, fail gracefully
 					if(!rp.valid()) {
-						return null;
+						//return null;
 					}
 
 					stmt.setString(paramIndex+1, rp.getValue());
-					/*
-					int i = query.indexOf(rdp.getParamName());
-					
-					//	Loop until no instances exist
-					while(i != -1) {
-						
-						//	replace the parameter with the value
-						query.replace(i, i + rdp.getParamName().length(), rp.getValue());
-						
-						//	look for a second instance
-						i = query.indexOf(rdp.getParamName());
-					}*/
 					
 					paramIndex++;
 				}
@@ -397,7 +385,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			
 			for(int i = 0; i < columns; i++) {
 				columnNames[i] = rs.getMetaData().getColumnName(i+1);
-				columnArtifacts[i] = columnNames[i].endsWith("_artifact");
+				columnArtifacts[i] = columnNames[i].endsWith(ARTIFACT_EXTENSION);
 			}
 			
 			  
