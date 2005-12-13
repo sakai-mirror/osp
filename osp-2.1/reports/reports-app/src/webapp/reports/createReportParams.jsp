@@ -24,18 +24,14 @@
                         <f:facet name="header">
                             <h:outputText value="Value" />
                         </f:facet>
-                        <h:inputText value="#{decoratedReportParam.reportParam.value}" id="fillin" rendered="#{decoratedReportParam.isFillIn}"/>
+                        <h:inputText value="#{decoratedReportParam.textValue}" id="fillin" rendered="#{decoratedReportParam.isFillIn}"/>
                         
-                        <h:selectOneMenu value="#{decoratedReportParam.reportParam.value}" 
+                        <h:selectOneMenu value="#{decoratedReportParam.menuValue}" 
                                 rendered="#{decoratedReportParam.isSet && !decoratedReportParam.isMultiSelectable}">
                             <f:selectItems value="#{decoratedReportParam.selectableValues}" />
                         </h:selectOneMenu>
-                        <h:selectManyListbox value="#{decoratedReportParam.reportParam.value}" size="6"
-                                rendered="#{decoratedReportParam.isSet && decoratedReportParam.isMultiSelectable}">
-                            <f:selectItems value="#{decoratedReportParam.selectableValues}" />
-                        </h:selectManyListbox>
                         
-                        <h:outputText value="#{decoratedReportParam.reportParam.value}" rendered="#{decoratedReportParam.isStatic}"/>
+                        <h:outputText value="#{decoratedReportParam.staticValue}" rendered="#{decoratedReportParam.isStatic}"/>
                     </h:column>
                 </h:dataTable>
                 

@@ -81,7 +81,44 @@ public class DecoratedReportParam {
 	{
 		return reportParam.getReportDefinitionParam();
 	}
+
+	public String getStaticValue()
+	{
+		return reportParam.getValue();
+	}
 	
+	public String getTextValue()
+	{
+		return reportParam.getValue();
+	}
+	public void setTextValue(String value)
+	{
+		if(getIsFillIn())
+			reportParam.setValue(value);
+	}
+	
+	public String getMenuValue()
+	{
+		return reportParam.getValue();
+	}
+	public void setMenuValue(String value)
+	{
+		if(getIsSet() && !getIsMultiSelectable())
+			reportParam.setValue(value);
+	}
+	
+	public List getListValue()
+	{
+		
+		return new ArrayList();
+	}
+	public void setListValue(List value)
+	{
+		if(getIsSet() && getIsMultiSelectable()) {
+			System.out.println(value);
+			reportParam.setValue(value.toString());
+		}
+	}
 	
 	/**
 	 * gets the list of possible titles and values
