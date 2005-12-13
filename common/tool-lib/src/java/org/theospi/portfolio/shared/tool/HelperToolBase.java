@@ -1,14 +1,12 @@
 package org.theospi.portfolio.shared.tool;
 
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.api.kernel.session.Session;
-import org.sakaiproject.api.kernel.session.ToolSession;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
 import java.io.IOException;
 
 /**
@@ -18,7 +16,7 @@ import java.io.IOException;
  * Time: 2:57:48 PM
  * To change this template use File | Settings | File Templates.
  */
-public class HelperToolBase {
+public class HelperToolBase extends ToolBase {
 
    protected Object getAttribute(String attributeName) {
       ToolSession session = SessionManager.getCurrentToolSession();
@@ -59,11 +57,6 @@ public class HelperToolBase {
       for (int i=0;i<attribs.length;i++) {
          session.removeAttribute(attribs[i]);
       }
-   }
-
-   protected Object createSelect(Object id, String description) {
-      SelectItem item = new SelectItem(id, description);
-      return item;
    }
 
 }

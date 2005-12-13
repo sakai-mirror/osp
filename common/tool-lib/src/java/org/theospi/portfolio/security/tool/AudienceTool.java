@@ -23,8 +23,6 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import java.util.*;
 
-import com.sun.faces.util.MessageFactory;
-
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -275,8 +273,8 @@ public class AudienceTool extends HelperToolBase {
       boolean worksiteLimited = isWorksiteLimited();
       if (!findByEmailOrDisplayName(getSearchUsers(), false, worksiteLimited)) {
          FacesContext.getCurrentInstance().addMessage(null,
-             MessageFactory.getMessage(FacesContext.getCurrentInstance(),
-                 worksiteLimited?"worksite_user_not_found":"user_not_found", (new Object[] { getSearchUsers() })));
+             getFacesMessageFromBundle(worksiteLimited?"worksite_user_not_found":"user_not_found",
+                   (new Object[] { getSearchUsers() })));
       }
       else {
          setSearchUsers("");
@@ -289,8 +287,7 @@ public class AudienceTool extends HelperToolBase {
       if (!findByEmailOrDisplayName(getSearchEmails(), true, worksiteLimited)) {
          if (worksiteLimited) {
             FacesContext.getCurrentInstance().addMessage(null,
-                MessageFactory.getMessage(FacesContext.getCurrentInstance(),
-                    "worksite_user_not_found", (new Object[] { getSearchUsers() })));
+                getFacesMessageFromBundle("worksite_user_not_found", (new Object[] { getSearchUsers() })));
          }
       }
       else {
@@ -362,8 +359,7 @@ public class AudienceTool extends HelperToolBase {
       }
       else {
          FacesContext.getCurrentInstance().addMessage(null,
-             MessageFactory.getMessage(FacesContext.getCurrentInstance(),
-                 key, (new Object[] { agent.getDisplayName() })));
+             getFacesMessageFromBundle(key, (new Object[] { agent.getDisplayName() })));
       }
    }
 
