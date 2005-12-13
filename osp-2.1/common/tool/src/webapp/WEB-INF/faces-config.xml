@@ -11,14 +11,7 @@
 
 
    <application>
-     <message-bundle>org.theospi.portfolio.guidance.messages</message-bundle>
-     <locale-config>
-       <default-locale>en</default-locale>
-     </locale-config>
-   </application>
-
-   <application>
-     <message-bundle>org.theospi.portfolio.audience.messages</message-bundle>
+     <message-bundle>org.theospi.portfolio.common.messages</message-bundle>
      <locale-config>
        <default-locale>en</default-locale>
      </locale-config>

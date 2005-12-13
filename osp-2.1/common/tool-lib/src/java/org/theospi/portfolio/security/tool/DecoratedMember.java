@@ -25,9 +25,13 @@ public class DecoratedMember {
    public String getDisplayName() {
       String baseName = base.getId().getValue();
       if (base.isRole()) {
-         baseName = "role";
+         return parent.getMessageFromBundle("decorated_role_format",
+               new Object[]{base.getDisplayName()});
       }
-      return base.getDisplayName() + " (" + baseName + ")";
+      else {
+         return parent.getMessageFromBundle("decorated_user_format",
+               new Object[]{base.getDisplayName(), baseName});
+      }
    }
 
    public boolean isSelected() {

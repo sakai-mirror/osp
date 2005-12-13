@@ -33,10 +33,9 @@ import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardStyleItem;
 import org.theospi.portfolio.wizard.model.WizardSupportItem;
+import org.theospi.portfolio.shared.tool.ToolBase;
 
-import com.sun.faces.util.MessageFactory;
-
-public class WizardTool {
+public class WizardTool extends ToolBase {
 
    private WizardManager wizardManager;
    private GuidanceManager guidanceManager;
@@ -311,7 +310,7 @@ public class WizardTool {
             getMessageFromBundle("audience_group_title"));
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, "false");
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, 
-            getMessageFromBundle("audience_public_title"));
+            null);
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE, 
             getMessageFromBundle("audience_selected_title"));
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS, 
@@ -332,11 +331,6 @@ public class WizardTool {
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
       }
-   }
-   
-   private String getMessageFromBundle(String key) {
-      return MessageFactory.getMessage(FacesContext.getCurrentInstance(),
-            key, null).getSummary();
    }
    
    public String processActionManageStyle() {
