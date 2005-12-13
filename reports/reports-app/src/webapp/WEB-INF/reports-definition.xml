@@ -16,8 +16,11 @@
             </value>
         </property>
         <property name="query">
-            <value>
+        <!--  
                 select * from sakai_site where createby IN (?, ?, ?, ?, ?, ?)
+                -->
+            <value>
+                select RESOURCE_ID `RESOURCE_ID_artifact` from content_resource_body_binary where 1 IN (1, ?, ?, ?, ?, ?, ?)
             </value>
         </property>
         <property name="keywords">

@@ -138,7 +138,7 @@ public class DecoratedReport {
 	{
 		//do something with the params
 		List params = report.getReportParams();
-		
+
 		ReportResult result = reportsTool.getReportsManager().generateResults(report);
 		
 		return ReportsTool.mainPage;
