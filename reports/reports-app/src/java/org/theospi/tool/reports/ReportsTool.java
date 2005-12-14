@@ -89,11 +89,12 @@ public class ReportsTool
 	private DecoratedReport workingReport = null;
 	
 	/** The reportresult from which the tool is working with */
-	private DecoratedReportResult workingReportResult = null;
+	private DecoratedReportResult workingResult = null;
 
 	protected static final String mainPage = "main";
 	protected static final String createReportPage = "processCreateReport";
 	protected static final String createReportParamsPage = "processCreateReportParams";
+	protected static final String reportResultsPage = "showReportResults";
 
 	/**
 	 * getter for the ReportsManager property
@@ -147,6 +148,24 @@ public class ReportsTool
 	public DecoratedReport getWorkingReport()
 	{
 		return workingReport;
+	}
+	
+	/**
+	 * setter for the Working Report
+	 * @param workingReport DecoratedReport
+	 */
+	public void setWorkingResult(DecoratedReportResult workingResult)
+	{
+		this.workingResult = workingResult;
+	}
+	
+	/**
+	 * getter for the WorkingReport property
+	 * @return DecoratedReport
+	 */
+	public DecoratedReportResult getWorkingResult()
+	{
+		return workingResult;
 	}
 	
 	/**

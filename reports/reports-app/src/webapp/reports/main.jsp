@@ -12,6 +12,7 @@
                         value="#{msgs.options}" />
                 </sakai:tool_bar>
 
+                <sakai:view_title value="#{msgs.title_main}" indent="1" />
 
                 <h:dataTable var="report"
                     value="#{ReportsTool.reports}">

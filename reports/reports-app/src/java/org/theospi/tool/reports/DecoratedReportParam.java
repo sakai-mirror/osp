@@ -115,7 +115,6 @@ public class DecoratedReportParam {
 	public void setListValue(List value)
 	{
 		if(getIsSet() && getIsMultiSelectable()) {
-			System.out.println(value);
 			reportParam.setValue(value.toString());
 		}
 	}

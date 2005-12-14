@@ -7,6 +7,8 @@
     <sakai:view title="#{msgs.title_create_report}">
             <h:form>
                 
+                <sakai:view_title value="#{msgs.title_create_report}" indent="1" />
+                
                 The report is: 
                 <h:outputText value="#{ReportsTool.workingReportDefinition.reportDefinition.title}" />
                 

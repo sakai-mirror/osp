@@ -136,11 +136,13 @@ public class DecoratedReport {
 	
 	public String processEditParamsContinue()
 	{
-		//do something with the params
-		List params = report.getReportParams();
-
+		//	get the results
 		ReportResult result = reportsTool.getReportsManager().generateResults(report);
 		
-		return ReportsTool.mainPage;
+		//	make it the working result
+		reportsTool.setWorkingResult(new DecoratedReportResult(result, reportsTool));
+		
+		//	go to the results page
+		return ReportsTool.reportResultsPage;
 	}
 }
