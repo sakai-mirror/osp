@@ -67,7 +67,7 @@ public class ReportDefinition
 	private String description;
 
 	/** the defaultXsl for the report definition */
-	private String defaultXsl;
+	private ReportXsl defaultXsl;
 
 	/** the exportXsl for the report definition */
 	private String exportXsl;
@@ -193,9 +193,9 @@ public class ReportDefinition
 	
 	/**
 	 * the getter for the defaultXsl property
-	 * @return String the defaultXsl
+	 * @return ReportXsl the defaultXsl
 	 */
-	public String getDefaultXsl()
+	public ReportXsl getDefaultXsl()
 	{
 		return defaultXsl;
 	}
@@ -204,9 +204,9 @@ public class ReportDefinition
 	/**
 	 * the setter for the defaultXsl property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param defaultXsl List
+	 * @param defaultXsl ReportXsl
 	 */
-	public void setDefaultXsl(String defaultXsl)
+	public void setDefaultXsl(ReportXsl defaultXsl)
 	{
 		this.defaultXsl = defaultXsl;
 	}

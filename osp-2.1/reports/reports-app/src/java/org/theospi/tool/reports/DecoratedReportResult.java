@@ -45,6 +45,11 @@
 package org.theospi.tool.reports;
 
 import org.theospi.api.app.reports.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import javax.faces.model.SelectItem;
 
 /**
  * This class allows the ReportResult to interact with the view
@@ -54,13 +59,84 @@ public class DecoratedReportResult {
 	
 	/** The link to the main tool */
 	private ReportsTool	reportsTool = null;
-	
+
 	private ReportResult reportResult = null;
+	private Report report = null;
 	
+	private String currentViewXsl = null;
 	
 	public DecoratedReportResult(ReportResult reportResult, ReportsTool reportsTool)
 	{
 		this.reportResult = reportResult;
 		this.reportsTool = reportsTool;
+		this.report = reportResult.getReport();
 	}
+	
+	public String getTitle()
+	{
+		return report.getTitle();
+	}
+	
+	public List getViewXslSeletionList()
+	{
+		List options = new ArrayList();
+		
+		if(report.getReportDefinition() != null && report.getReportDefinition().getReportDefinitionXsls() != null) {
+			Iterator iter = report.getReportDefinition().getReportDefinitionXsls().iterator();
+			
+			while(iter.hasNext()) {
+				ReportXsl xsl = (ReportXsl)iter.next();
+				
+				if(!xsl.getIsExport())
+					options.add(new SelectItem(xsl.getXslLink(), xsl.getTitle()));
+			}
+		}
+		return options;
+	}
+	
+	public List getExportXslSeletionList()
+	{
+		List options = new ArrayList();
+		
+		
+		
+		return options;
+	}
+	
+	public String getCurrentViewXsl()
+	{
+		if(currentViewXsl == null)
+			return report.getReportDefinition().getDefaultXsl().getXslLink();
+		return currentViewXsl;
+	}
+	
+	public void setCurrentViewXsl(String currentViewXsl)
+	{
+		if(isAView(currentViewXsl))
+			this.currentViewXsl = currentViewXsl;
+	}
+	
+	
+	public String getCurrentViewResults()
+	{
+		return reportResult.getXml();
+	}
+	
+	
+	private boolean isAView(String view)
+	{
+		ReportDefinition rdef = report.getReportDefinition();
+		
+		Iterator iter = rdef.getReportDefinitionXsls().iterator();
+		
+		while(iter.hasNext()) {
+			ReportXsl xsl = (ReportXsl)iter.next();
+			
+			if(!xsl.getIsExport())
+				if(xsl.getXslLink().equals(view))
+					return true;
+		}
+		return false;
+	}
+	
 }
