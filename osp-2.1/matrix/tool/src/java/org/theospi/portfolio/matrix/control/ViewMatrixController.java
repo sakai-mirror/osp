@@ -61,7 +61,6 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.api.kernel.tool.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.matrix.MatrixAuthorizer;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Criterion;
@@ -89,7 +88,6 @@ public class ViewMatrixController implements FormController, LoadObjectControlle
    private MatrixManager matrixManager;
    private AuthenticationManager authManager = null;
    private IdManager idManager = null;
-   private MatrixAuthorizer matrixAuthorizer = null;
    private AuthorizationFacade authzManager = null;
    private WorksiteManager worksiteManager = null;
    private AgentManager agentManager = null;
@@ -271,20 +269,6 @@ public class ViewMatrixController implements FormController, LoadObjectControlle
     */
    public void setIdManager(IdManager manager) {
       idManager = manager;
-   }
-
-   /**
-    * @return
-    */
-   public MatrixAuthorizer getMatrixAuthorizer() {
-      return matrixAuthorizer;
-   }
-
-   /**
-    * @param authorizer
-    */
-   public void setMatrixAuthorizer(MatrixAuthorizer authorizer) {
-      matrixAuthorizer = authorizer;
    }
 
    /**

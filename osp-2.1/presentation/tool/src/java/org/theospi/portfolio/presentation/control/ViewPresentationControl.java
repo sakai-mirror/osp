@@ -93,20 +93,32 @@ public class ViewPresentationControl extends AbstractPresentationController impl
                                    Map session, Map application) throws Exception {
       PresentationManager presentationManager = getPresentationManager();
       Presentation presentation = (Presentation) incomingModel;
-      return presentationManager.getPresentation(presentation.getId());
+
+      if (presentation.getSecretExportKey() != null) {
+         String secretExportKey = presentation.getSecretExportKey();
+         presentation = presentationManager.getPresentation(presentation.getId(),
+               secretExportKey);
+         presentation.setSecretExportKey(secretExportKey);
+         return presentation;
+      }
+      else {
+         return presentationManager.getPresentation(presentation.getId());
+      }
    }
 
    public ModelAndView handleRequest(Object requestModel, Map request,
                                      Map session, Map application, Errors errors) {
       Presentation pres = (Presentation) requestModel;
 
-      if (!pres.getIsPublic()) {
-         getAuthzManager().checkPermission(PresentationFunctionConstants.VIEW_PRESENTATION, pres.getId());
-      }
+      if (pres.getSecretExportKey() == null) {
+         if (!pres.getIsPublic()) {
+            getAuthzManager().checkPermission(PresentationFunctionConstants.VIEW_PRESENTATION, pres.getId());
+         }
 
-      if (pres.isExpired() &&
-         !pres.getOwner().getId().equals(getAuthManager().getAgent().getId())) {
-         return new ModelAndView("expired");
+         if (pres.isExpired() &&
+            !pres.getOwner().getId().equals(getAuthManager().getAgent().getId())) {
+            return new ModelAndView("expired");
+         }
       }
 
       logViewedPresentation(pres);
@@ -121,8 +133,8 @@ public class ViewPresentationControl extends AbstractPresentationController impl
          else {
             String page = (String)request.get("page");
             doc = getPresentationManager().getPresentationLayoutAsXml(pres, page);
-         }            
-         
+         }
+
          model.put("document", doc);
          model.put("renderer", getTransformer(pres, request));
          model.put("uriResolver", getUriResolver());

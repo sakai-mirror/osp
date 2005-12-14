@@ -50,6 +50,7 @@ import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.theospi.portfolio.shared.model.DateBean;
 import org.theospi.utils.Config;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 
 import java.util.*;
@@ -71,7 +72,8 @@ public class Presentation extends IdentifiableObject {
    private DateBean expiresOnBean = new DateBean();
    private Map authz; 
    private String presentationType = TEMPLATE_TYPE;
-   
+   private String secretExportKey;
+
    public final static String FREEFORM_TYPE = "osp.presentation.type.freeForm";
    public final static String TEMPLATE_TYPE = "osp.presentation.type.template";
    
@@ -219,13 +221,9 @@ public class Presentation extends IdentifiableObject {
 
    public String getExternalUri() {
       // http://johnellis.rsmart.com:8080/osp/member/viewPresentation.osp?id=681C15FFA19305D6F7138E652A069FD3
-      String uri = getOspConfig().getProperties().getProperty("baseUrl");
-      uri += "/member/viewPresentation.osp?id=" + getId().getValue();
+      String uri = ServerConfigurationService.getServerUrl();
+      uri += "/osp-presentation-tool/viewPresentation.osp?id=" + getId().getValue();
       return uri;
-   }
-
-   protected Config getOspConfig() {
-      return (Config)ComponentManager.getInstance().get("ospConfig");
    }
 
    public String getPresentationType() {
@@ -234,5 +232,13 @@ public class Presentation extends IdentifiableObject {
 
    public void setPresentationType(String presentationType) {
       this.presentationType = presentationType;
+   }
+
+   public String getSecretExportKey() {
+      return secretExportKey;
+   }
+
+   public void setSecretExportKey(String secretExportKey) {
+      this.secretExportKey = secretExportKey;
    }
 }

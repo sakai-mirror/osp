@@ -242,5 +242,6 @@ public interface PresentationManager extends CleanupableService {
    public Collection getAllPresentations();
 
    public Collection getAllPresentationTemplates();
-   
+
+   public Presentation getPresentation(Id id, String secretExportKey);
 }

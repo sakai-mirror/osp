@@ -14,7 +14,6 @@
 
   <properties>
     <deploy.type>jar</deploy.type>
-    <deploy.target>shared</deploy.target>
   </properties>
 
   <dependencies>
@@ -56,12 +55,18 @@
       <version>${sakai.version}</version>
     </dependency>
 
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-legacy-service</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-legacy-service</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-session</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-tool</artifactId>
@@ -83,11 +88,17 @@
       </properties>
      </dependency>
 
-    <dependency>
-      <groupId>aopalliance</groupId>
-      <artifactId>aopalliance</artifactId>
-      <version>1.0</version>
-    </dependency>
+     <dependency>
+       <groupId>aopalliance</groupId>
+       <artifactId>aopalliance</artifactId>
+       <version>1.0</version>
+     </dependency>
+
+     <dependency>
+       <groupId>websphinx</groupId>
+       <artifactId>websphinx</artifactId>
+       <version>0.5</version>
+     </dependency>
 
     <dependency>
       <groupId>cglib</groupId>
