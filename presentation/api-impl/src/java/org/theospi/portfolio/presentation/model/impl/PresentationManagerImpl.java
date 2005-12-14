@@ -56,6 +56,7 @@ import net.sf.hibernate.Session;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
@@ -72,6 +73,7 @@ import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.theospi.portfolio.presentation.CommentSortBy;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.export.PresentationExport;
 import org.theospi.portfolio.presentation.model.*;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.shared.*;
@@ -89,6 +91,7 @@ import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
+import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.theospi.portfolio.shared.model.*;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
@@ -103,6 +106,7 @@ import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.theospi.utils.zip.UncloseableZipInputStream;
 
 import java.io.*;
@@ -126,9 +130,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private ArtifactFinderManager artifactFinderManager;
    private ContentHostingService contentHosting = null;
    private SecurityService securityService = null;
+   private Map secretExportKeys = new Hashtable();
+   private String tempPresDownloadDir;
 
-   private static final String TOOL_ID = "osp.pres.template";
    private static final String TEMPLATE_ID_TAG = "templateId";
+   private static final String PRESENTATION_ID_TAG = "presentationId";
 
    public PresentationTemplate storeTemplate(final PresentationTemplate template) {
       return storeTemplate(template, true);
@@ -219,6 +225,23 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          logger.debug(e);
          return null;
       }
+   }
+
+   public Presentation getPresentation(final Id id, String secretExportKey) {
+      Presentation pres = (Presentation)secretExportKeys.get(secretExportKey);
+      if (pres == null || !id.equals(pres.getId())) {
+         throw new AuthorizationFailedException("Exporting inappropriate presentation");
+      }
+
+      switchUser(pres.getOwner());
+
+      return getPresentation(id);
+   }
+
+   protected void switchUser(Agent owner) {
+      org.sakaiproject.api.kernel.session.Session sakaiSession = SessionManager.getCurrentSession();
+      sakaiSession.setUserId(owner.getId().getValue());
+      sakaiSession.setUserEid(owner.getId().getValue());
    }
 
    public Presentation getPresentation(final Id id) {
@@ -1630,10 +1653,53 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    public void packageForDownload(Map params, OutputStream out) throws IOException {
-      packageTemplateForExport(getIdManager().getId(((String[])params.get(TEMPLATE_ID_TAG))[0]),
-         out);
+
+      if (params.get(TEMPLATE_ID_TAG) != null) {
+         packageTemplateForExport(getIdManager().getId(((String[])params.get(TEMPLATE_ID_TAG))[0]),
+            out);
+      }
+      else if (params.get(PRESENTATION_ID_TAG) != null) {
+         packagePresentationForExport(getIdManager().getId(((String[])params.get(PRESENTATION_ID_TAG))[0]), out);
+      }
    }
-   
+
+   protected void packagePresentationForExport(Id presentationId, OutputStream out) throws IOException {
+      Presentation presentation = getPresentation(presentationId);
+
+      if (!presentation.getOwner().equals(getAuthnManager().getAgent())) {
+         throw new AuthorizationFailedException("Only the presentation owner can export a presentation");
+      }
+
+      File tempDir = new File(tempPresDownloadDir);
+      if (!tempDir.exists()) {
+         tempDir.mkdirs();
+      }
+
+      String secretExportKey = getIdManager().createId().getValue();
+      String url = presentation.getExternalUri() + "&secretExportKey=" + secretExportKey;
+      File tempDirectory = new File(tempDir, secretExportKey);
+
+      PresentationExport export = new PresentationExport(
+        url, tempDirectory.getPath());
+
+      try {
+         synchronized(secretExportKeys) {
+            secretExportKeys.put(secretExportKey, presentation);
+         }
+
+         export.run();
+
+         synchronized(secretExportKeys) {
+            secretExportKeys.remove(secretExportKey);
+         }
+
+         export.createZip(out);
+      }
+      finally {
+         export.deleteTemp();
+      }
+   }
+
    public Node getNode(Id artifactId) {
       String id = getContentHosting().resolveUuid(artifactId.getValue());
       if (id == null) {
@@ -1983,6 +2049,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             break;
       }
       return navigationElement;
+   }
+
+   public String getTempPresDownloadDir() {
+      return tempPresDownloadDir;
+   }
+
+   public void setTempPresDownloadDir(String tempPresDownloadDir) {
+      this.tempPresDownloadDir = tempPresDownloadDir;
    }
 
 }
