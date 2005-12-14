@@ -210,7 +210,7 @@
     </bean>
     
     
-    <bean id="report1"
+    <bean id="report3"
         class="org.theospi.api.app.reports.ReportDefinition">
 
         <property name="reportDefId">
