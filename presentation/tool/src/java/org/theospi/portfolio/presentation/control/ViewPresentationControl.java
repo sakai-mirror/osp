@@ -62,6 +62,7 @@ import org.theospi.portfolio.shared.model.OspException;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -157,8 +158,17 @@ public class ViewPresentationControl extends AbstractPresentationController impl
       }
 
       boolean headers = pres.getTemplate().isIncludeHeaderAndFooter();
+      String viewName = "withoutHeader";
 
-      return new ModelAndView(headers ? "withHeader" : "withoutHeader", model);
+      if (headers) {
+         if (ToolManager.getCurrentPlacement() == null) {
+            viewName = "withHeaderStandalone";
+         }
+         else {
+            viewName = "withHeader";
+         }
+      }
+      return new ModelAndView(viewName, model);
    }
    
    /**
