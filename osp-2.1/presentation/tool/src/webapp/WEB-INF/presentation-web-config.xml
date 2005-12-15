@@ -393,6 +393,7 @@
             <prop key="expired">presentationExpired</prop>
             <prop key="withoutHeader">renderPresentation</prop>
             <prop key="withHeader">renderPresentationHeader</prop>
+            <prop key="withHeaderStandalone">renderPresentationStandalone</prop> 
          </props>
       </property>
       <property name="commandName"><value>presentation</value></property>

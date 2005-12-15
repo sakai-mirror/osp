@@ -45,6 +45,8 @@ public class PortfolioMirror extends Mirror {
    Vector files = new Vector ();
    private String webappName = null;
 
+   private static final String OSP_LIBRARY_PATH = "/osp-common-tool/";
+
    public PortfolioMirror(String directory, String webappName) throws IOException {
       super(directory);
       base = new File(directory).toURL();
@@ -111,6 +113,11 @@ public class PortfolioMirror extends Mirror {
       if (remoteURL.getFile().startsWith("/access")) {
          File file = new File(remoteURL.getPath());
          local = base + webappName + "/repository/" + file.getName();
+         local = ensureUnique(local);
+      }
+      else if (remoteURL.getFile().startsWith(OSP_LIBRARY_PATH)) {
+         String fileName = "/library/" + remoteURL.getFile().substring(OSP_LIBRARY_PATH.length());
+         local = base + webappName + encode(fileName);
          local = ensureUnique(local);
       }
       else if (remoteURL.getFile().startsWith(webappName + "/viewPresentation.osp?")) {

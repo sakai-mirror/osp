@@ -222,7 +222,7 @@ public class Presentation extends IdentifiableObject {
    public String getExternalUri() {
       // http://johnellis.rsmart.com:8080/osp/member/viewPresentation.osp?id=681C15FFA19305D6F7138E652A069FD3
       String uri = ServerConfigurationService.getServerUrl();
-      uri += "/osp-presentation-tool/viewPresentation.osp?id=" + getId().getValue();
+      uri += "/osp-presentation-tool/viewPresentation.osp?panel=presentation&id=" + getId().getValue();
       return uri;
    }
 

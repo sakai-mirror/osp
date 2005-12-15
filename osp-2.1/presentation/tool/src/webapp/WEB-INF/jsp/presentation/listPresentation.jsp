@@ -77,6 +77,10 @@
              </c:if>
 
               <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
+
+               | <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&presentationId=<c:out value="${presentation.id.value}"/>/<c:out value="${presentation.name}" />.zip">Download</a>
+
+
                | <a href="<osp:url value="osp.audience.helper/tool.jsf?panel=Main">
                    <osp:param name="session.org.theospi.portfolio.security.audienceFunction"
                         value="osp.presentation.view"/>
