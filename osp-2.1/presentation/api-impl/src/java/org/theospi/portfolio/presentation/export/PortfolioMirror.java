@@ -32,6 +32,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Vector;
 
@@ -106,21 +108,48 @@ public class PortfolioMirror extends Mirror {
          return lookup (null, remoteURL);
 
       String local;
-      if (remoteURL.getFile().startsWith(webappName + "/GetFile?")) {
-         Map params = HttpUtils.parseQueryString(remoteURL.getQuery());
-         local = base + webappName + "/repository/" + ((String[])params.get("file"))[0];
+      if (remoteURL.getFile().startsWith("/access")) {
+         File file = new File(remoteURL.getPath());
+         local = base + webappName + "/repository/" + file.getName();
+         local = ensureUnique(local);
       }
-      else if (remoteURL.getFile().startsWith(webappName + "/renderAllPresentationView.do?")) {
-         local = base + webappName + "/myPortfolio.html";
-      }
-      else if (remoteURL.getFile().startsWith(webappName + "/renderDownloadPresentationView.do?")) {
+      else if (remoteURL.getFile().startsWith(webappName + "/viewPresentation.osp?")) {
          local = base + webappName + "/myPresentation.html";
+         local = ensureUnique(local);
+      }
+      else if (!remoteURL.getFile().startsWith(webappName + "/")) {
+         local = base + webappName + encode(remoteURL.getFile());
       }
       else {
          local = base + encode(remoteURL.getFile());
       }
 
       map (remoteURL, local);
+      return local;
+   }
+
+   protected String ensureUnique(String local) {
+      String orig = local;
+      File file = null;
+      try {
+         file = new File(new URI(local));
+         int current = 0;
+         while (file.exists()) {
+            current++;
+            int dotPos = orig.lastIndexOf('.');
+            if (dotPos == -1) {
+               local = orig + current;
+            }
+            else {
+               local = orig.substring(0, dotPos) + "-" + current + orig.substring(dotPos);
+            }
+            file = new File(new URI(local));
+         }
+      }
+      catch (URISyntaxException e) {
+         throw new RuntimeException(e);
+      }
+
       return local;
    }
 

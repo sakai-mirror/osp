@@ -45,9 +45,12 @@ public class PresentationExport extends Crawler implements LinkListener {
    private String tempDirectory = null;
    public static final int BUFFER = 1024 * 10;
    private ArrayList errorLinks = new ArrayList();
+   private static SessionAccess access = new SessionAccess();
 
    public PresentationExport(String url, String tempDirectory) throws IOException {
       this.tempDirectory = tempDirectory;
+
+      Access.setAccess(access);
 
       URL urlObj = new URL(url);
       this.hostName = urlObj.getHost();
@@ -72,6 +75,7 @@ public class PresentationExport extends Crawler implements LinkListener {
       this.addLinkListener(this);
 
       DownloadParameters dp = getDownloadParameters();
+      dp = dp.changeMaxThreads(1);
       setDownloadParameters(dp.changeMaxPageSize(2000));
    }
 
@@ -171,9 +175,9 @@ public class PresentationExport extends Crawler implements LinkListener {
          return false;
       }
 
-      if (link.getURL().getFile().startsWith(webappName + "/showPublicPortfolio.do")) {
-         return false;
-      }
+      // todo maybe if (link.getURL().getFile().startsWith(webappName + "/showPublicPortfolio.do")) {
+      //   return false;
+      //}
 
       return true;
    }
