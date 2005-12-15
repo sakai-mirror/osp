@@ -53,12 +53,12 @@
                 </ospx:splitarea>
              </ospx:xheaderdrawer>
          </ospx:xheader>
-         <ospx:splitarea direction="horizontal" width="60%">
-            <ospx:splitsection size="25%" valign="bottom">
+         <ospx:splitarea direction="horizontal" width="100%">
+            <ospx:splitsection size="50%" valign="bottom">
                <h:commandButton actionListener="#{audience.processActionAddBrowseSelected}"
                   value="#{msgs.add_selected}"/>
             </ospx:splitsection>
-            <ospx:splitsection size="25%" valign="top">
+            <ospx:splitsection size="50%" valign="top" align="right">
                <sakai:pager id="pager"
                    totalItems="#{audience.browseUsers.totalItems}"
                    firstItem="#{audience.browseUsers.firstItem}"
@@ -67,6 +67,7 @@
             </ospx:splitsection>
           </ospx:splitarea>
           <sakai:flat_list value="#{audience.browseUsers.subList}" var="member">
+
             <h:column>
                <f:facet name="header">
                   <h:outputText value="#{msgs.user_column_header}" />
@@ -92,7 +93,7 @@
              value="#{msgs.back_audience}"/>
 
       </ospx:splitsection>
-      <ospx:splitsection size="25%" valign="top">
+      <ospx:splitsection size="25%" valign="top" cssclass="selectedListBox">
          <f:subview id="selectedAudience">
             <%@ include file="audience.inc" %>
          </f:subview>

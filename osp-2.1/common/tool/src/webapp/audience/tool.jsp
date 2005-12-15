@@ -93,7 +93,7 @@
             </ospx:xheaderdrawer>
          </ospx:xheader>
       </ospx:splitsection>
-      <ospx:splitsection size="25%" valign="top">
+      <ospx:splitsection size="25%" valign="top" cssclass="selectedListBox">
          <f:subview id="selectedAudience">
             <%@ include file="audience.inc" %>
          </f:subview>
