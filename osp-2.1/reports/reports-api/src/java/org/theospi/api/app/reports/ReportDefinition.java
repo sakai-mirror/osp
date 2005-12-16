@@ -290,9 +290,21 @@ public class ReportDefinition
 	 * and by hibernate.
 	 * @param xsl List
 	 */
-	public void setXsls(List defaultXsls)
+	public void setXsls(List xsls)
 	{
 		this.xsls = xsls;
+	}
+	
+	public ReportXsl findReportXsl(String link)
+	{
+		Iterator iter = xsls.iterator();
+		
+		while(iter.hasNext()) {
+			ReportXsl xslInfo = (ReportXsl)iter.next();
+			if(xslInfo.getXslLink() != null && xslInfo.getXslLink().equals(link))
+				return xslInfo;
+		}
+		return null;
 	}
 	
 }

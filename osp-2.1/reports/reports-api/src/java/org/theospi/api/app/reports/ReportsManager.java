@@ -60,4 +60,6 @@ public interface ReportsManager
 
 	public String replaceSystemValues(String inString);
 	public String generateSQLParameterValue(ReportParam reportParam);
+
+	public String transform(ReportResult result, String xslFile);
 }

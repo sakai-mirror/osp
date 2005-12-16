@@ -42,10 +42,10 @@
                 
                 <sakai:button_bar>
                     <sakai:button_bar_item
-                        action="#{ReportsTool.workingReport.processReportBaseProperties}"
+                        action="#{ReportsTool.processReportBaseProperties}"
                         value="#{msgs.continue}" />
                     <sakai:button_bar_item
-                        action="#{ReportsTool.workingReport.processCancel}"
+                        action="#{ReportsTool.processCancelReport}"
                         value="#{msgs.cancel}" />
                 </sakai:button_bar>
                 

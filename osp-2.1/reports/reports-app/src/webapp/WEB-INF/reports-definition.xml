@@ -17,7 +17,7 @@
         </property>
         <property name="query">
             <value>
-                select * from sakai_site where createby IN (?, ?, ?, ?)
+                select * from sakai_site where createdby IN (?, ?, ?, ?)
             </value>
         </property>
         <property name="keywords">
@@ -118,23 +118,33 @@
         <property name="xsls">
             <list>
                 <bean id="reportXsl1.1" class="org.theospi.api.app.reports.ReportXsl">
-                    <property name="xslLink"><value>/reportxsl/report1.1.xsl</value></property>
+                    <property name="xslLink"><value>/reportxsls/report1.1.xsl</value></property>
+                    <property name="title"><value>Report Result View X</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
                 <bean id="reportXsl1.2" class="org.theospi.api.app.reports.ReportXsl">
-                    <property name="xslLink"><value>/reportxsl/report1.1.xsl</value></property>
+                    <property name="xslLink"><value>/reportxsls/report1.2.xsl</value></property>
+                    <property name="title"><value>Report Result View Y</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
                 <bean id="reportXsl1.3" class="org.theospi.api.app.reports.ReportXsl">
-                    <property name="xslLink"><value>/reportxsl/report1.1.xsl</value></property>
+                    <property name="xslLink"><value>/reportxsls/report1.3.xsl</value></property>
+                    <property name="title"><value>CSV</value></property>
                     <property name="isExport"><value>true</value></property>
+                    <property name="contentType"><value>application/x-csv</value></property>
+                </bean>
+                <bean id="reportXsl1.4" class="org.theospi.api.app.reports.ReportXsl">
+                    <property name="xslLink"><value>/reportxsls/report1.1.xsl</value></property>
+                    <property name="title"><value>HTML</value></property>
+                    <property name="isExport"><value>true</value></property>
+                    <property name="contentType"><value>text/html</value></property>
                 </bean>
             </list>
         </property>
         
         <property name="defaultXsl">
                 <bean class="org.theospi.api.app.reports.ReportXsl">
-                    <property name="xslLink"><value>/reportxsl/report1.1.xsl</value></property>
+                    <property name="xslLink"><value>/reportxsls/report1.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>
@@ -171,7 +181,7 @@
         </property>
         <property name="defaultXsl">
                 <bean class="org.theospi.api.app.reports.ReportXsl">
-                    <property name="xslLink"><value>/reportxsl/report2.1.xsl</value></property>
+                    <property name="xslLink"><value>/reportxsls/report2.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>
@@ -191,11 +201,12 @@
         <property name="xsls">
             <list>
                 <bean id="reportXsl2.1" class="org.theospi.api.app.reports.ReportXsl">
-                    <property name="xslLink"><value>/reportxsl/report2.1.xsl</value></property>
+                    <property name="xslLink"><value>/reportxsls/report2.1.xsl</value></property>
+                    <property name="title"><value>Report Result View X</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
                 <bean id="reportXsl2.2" class="org.theospi.api.app.reports.ReportXsl">
-                    <property name="xslLink"><value>/reportxsl/report2.2.xsl</value></property>
+                    <property name="xslLink"><value>/reportxsls/report2.2.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
             </list>
@@ -232,7 +243,7 @@
         </property>
         <property name="defaultXsl">
                 <bean class="org.theospi.api.app.reports.ReportXsl">
-                    <property name="xslLink"><value>/reportxsl/report3.1.xsl</value></property>
+                    <property name="xslLink"><value>/reportxsls/report3.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>
@@ -244,11 +255,11 @@
         <property name="xsls">
             <list>
                 <bean id="reportXsl3.1" class="org.theospi.api.app.reports.ReportXsl">
-                    <property name="xslLink"><value>/reportxsl/report3.1.xsl</value></property>
+                    <property name="xslLink"><value>/reportxsls/report3.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
                 <bean id="reportXsl3.2" class="org.theospi.api.app.reports.ReportXsl">
-                    <property name="xslLink"><value>/reportxsl/report3.1.xsl</value></property>
+                    <property name="xslLink"><value>/reportxsls/report3.2.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
             </list>

@@ -34,8 +34,19 @@
         </dependency>
 
         <dependency>
+            <groupId>osp</groupId>
+            <artifactId>osp-common-api</artifactId>
+            <version>${osp.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>sakaiproject</groupId>
             <artifactId>sakai-legacy-service</artifactId>
+            <version>${sakai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-component</artifactId>
             <version>${sakai.version}</version>
         </dependency>
 
@@ -201,7 +212,6 @@
             <artifactId>sakai-session</artifactId>
             <version>${sakai.version}</version>
         </dependency>
-        
 
     </dependencies>
 
