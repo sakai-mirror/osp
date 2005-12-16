@@ -134,7 +134,7 @@ public class ViewMatrixController implements FormController, LoadObjectControlle
      }
 
       List levels = scaffolding.getLevels();
-      List criteria = scaffolding.getRootCriteria();
+      List criteria = scaffolding.getCriteria();
       List matrixContents = new ArrayList();
       Criterion criterion = new Criterion();
       Level level = new Level();
@@ -160,7 +160,7 @@ public class ViewMatrixController implements FormController, LoadObjectControlle
             }
             List nodeList = new ArrayList(matrixManager.getCellContents(cell));
             cellBean.setCell(cell);
-            cellBean.setAttachments(nodeList);
+            cellBean.setNodes(nodeList);
             row.add(cellBean);
          }
          matrixContents.add(row);

@@ -54,16 +54,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.matrix.model.Criterion;
-import org.theospi.portfolio.matrix.model.OrderedList;
-import org.theospi.portfolio.matrix.model.OrderedListElement;
-import org.theospi.portfolio.matrix.model.RubricSatisfactionBean;
-import org.theospi.portfolio.matrix.model.Rubric;
-import org.theospi.portfolio.shared.model.Node;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -73,13 +66,8 @@ public class CellController implements FormController, LoadObjectController {
    private MatrixManager matrixManager;
    private AuthenticationManager authManager = null;
    private IdManager idManager = null;
-   private OrderedList orderedList = null;
 
-/*
-   public Object formBackingObject(Map request, Map session, Map application) {
-      return new CellFormBean();
-   }   
-*/
+
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = new HashMap();
       model.put("reviewRubrics", matrixManager.getReviewRubrics());
@@ -93,83 +81,12 @@ public class CellController implements FormController, LoadObjectController {
 
       cellBean.setCell(cell);
 
-      getCriteriaRequirements(cell);
-      cellBean.setCriteriaRequirements(orderedList);
-      List nodeList = getCellArtifacts(cell);
-      cellBean.setAttachments(nodeList);
+      List nodeList = new ArrayList(matrixManager.getCellContents(cell));
+      cellBean.setNodes(nodeList);
       
       return cellBean;
    }
 
-   private int getCriterionIndex(Cell cell) {
-      List scaffCriteria = cell.getScaffoldingCell().getScaffolding().getRootCriteria();
-      Criterion rootCriterion = cell.getScaffoldingCell().getRootCriterion();
-      int i = 0;
-      for (Iterator iter = scaffCriteria.iterator(); iter.hasNext();) {
-         Criterion currentCriterion = (Criterion) iter.next();
-         if (currentCriterion.equals(rootCriterion)) {
-            return i;
-         }
-         i++;
-      }
-
-      return 0;
-   }
-
-   private void getCriteriaRequirements(Cell cell) {
-      List reqList = getMatrixManager().rubricSatisfaction(cell);
-      List critList = getMatrixManager().getCellCriteria(cell);
-
-      //TODO this is pretty ugly...can we do better?
-      orderedList.clear();
-      int lastIndent = 0;
-      int currentIndent = 0;
-      //orderedList
-      int index = getCriterionIndex(cell);
-      orderedList.setOffset(index);
-
-      for (Iterator iter = critList.iterator(); iter.hasNext();) {
-         Criterion crit = (Criterion) iter.next();
-         OrderedListElement elm = orderedList.append();
-         elm.setDescription(crit.getDescription());
-         currentIndent = crit.getIndent().intValue();
-         if (currentIndent > lastIndent) {
-            elm.indent();
-         } else if (currentIndent < lastIndent) {
-            elm.outdent();
-         }
-         elm.setDisplayString();
-         lastIndent = currentIndent;
-         boolean subIndent = true;
-         for (Iterator foo = reqList.iterator(); foo.hasNext();) {
-            RubricSatisfactionBean rub = (RubricSatisfactionBean) foo.next();
-            Rubric rubric = matrixManager.getRubric(rub.getRubricId());
-
-            if (crit.equals(rubric.getCriterion())) {
-               OrderedListElement sub = orderedList.append();
-               StringBuffer string = new StringBuffer();
-               string.append(rubric.getType().getValue() + " - ");
-               string.append(rubric.getMimeType());
-               string.append(" (" + rub.getActual() + "/");
-               string.append(rub.getNeeded() + ")");
-               sub.setDescription(string.toString());
-               sub.setData(rub.getRubricId());
-               if (subIndent) {
-                  sub.indent();
-                  subIndent = false;
-                  lastIndent++;
-               }
-               sub.setDisplayString();
-            }
-         }
-      }
-      int size = orderedList.size();
-      for (Iterator elms = orderedList.iterator(); elms.hasNext();)
-      {
-          orderedList.render((OrderedListElement) elms.next());
-      }
-   }
-   
    private String ListToString(String[] strArray) {
       String result = "";
       if (strArray != null) {
@@ -201,73 +118,9 @@ public class CellController implements FormController, LoadObjectController {
             return new ModelAndView("cancel");
          }
       }
-      getCriteriaRequirements(cell);
-      cellBean.setCriteriaRequirements(orderedList);
 
       return new ModelAndView("success", "cellBean", cellBean);
    }
-
-   public List getCellArtifacts(Cell cell) {
-      List nodeList = new ArrayList();
-      for (Iterator artifactIdIterator = matrixManager.getCellContents(cell).iterator();
-           artifactIdIterator.hasNext();) {
-         Node node = (Node)artifactIdIterator.next();
-         CellArtifactBean bean = new CellArtifactBean();
-         bean.setNode(node);
-         List list = matrixManager.getRubricByArtifact(node.getId());
-         List myList = buildList(list);
-         bean.setCriteriaList(myList);
-         nodeList.add(bean);
-      }
-      return nodeList;
-   }
-
-   private List buildList(List rubricIds) {
-      List list = new ArrayList();
-      for (Iterator foo = orderedList.iterator(); foo.hasNext();) {
-         OrderedListElement elm = (OrderedListElement) foo.next();
-         if (elm.getData() != null) {
-            if (rubricIds.contains(elm.getData())) {
-               String str = elm.getDisplayString();
-               if (orderedList.isFullyContainedLabels())
-                  list.add(elm.getDisplayString());
-               else
-                  list.add(buildCompleteLabel(elm));
-            }
-         }
-      }
-      return list;
-   }
-
-   private String buildCompleteLabel(OrderedListElement elm) {
-      OrderedListElement parent = null;
-
-      String completeLabel;
-      parent = orderedList.getParent(elm);
-      if (parent != null) {
-         completeLabel = buildCompleteLabel(orderedList.getParent(elm)) + "." + elm.getLabel();
-      } else {
-         completeLabel = elm.getLabel().toString();
-      }
-
-      return completeLabel;
-   }
-   
-   //TODO: 20050715 ContentHosting
-   /*
-
-   public void getNodeList(Node rootNode, List nodeList) {
-      nodeList.add(rootNode);
-      if (rootNode.hasChildren()) {
-         for (Iterator nodeIterator = rootNode.getChildren().iterator(); nodeIterator.hasNext();) {
-            Node node = (Node) nodeIterator.next();
-            getNodeList(node, nodeList);
-         }
-      }
-   }
-
-*/
-   
    
    /**
     * @return
@@ -310,20 +163,4 @@ public class CellController implements FormController, LoadObjectController {
    public void setMatrixManager(MatrixManager matrixManager) {
       this.matrixManager = matrixManager;
    }
-
-   /**
-    * @return
-    */
-   public OrderedList getOrderedList() {
-      return orderedList;
-   }
-
-   /**
-    * @param list
-    */
-   public void setOrderedList(OrderedList list) {
-      orderedList = list;
-   }
-
-
 }

@@ -105,6 +105,7 @@
               <prop key="/privacyResponse.osp">privacyResponseController</prop>
               <prop key="/checkForPrivacy.osp">checkForPrivacyController</prop>
               <prop key="/attachToCell.osp">attachCellController</prop>
+              <prop key="/manageCellStatus.osp">manageCellStatusController</prop>
 
               <!--  Scaffolding -->
               <prop key="/importScaffolding.osp">importScaffoldingController</prop>
@@ -126,6 +127,7 @@
               <prop key="/removeLevCrit.osp">removeLevCritConfirmationController</prop>
               <prop key="/removeExpectation.osp">removeExpectationConfirmationController</prop> 
 				<prop key="/publishScaffolding.osp">publishScaffoldingController</prop>
+            <prop key="/publishScaffoldingConfirmation.osp">publishScaffoldingConfirmationController</prop>
             <prop key="/editScaffoldingConfirm.osp">editScaffoldingConfirmController</prop>
             <prop key="/editScaffoldingCellConfirm.osp">editScaffoldingCellConfirmController</prop>
            

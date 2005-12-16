@@ -2,11 +2,11 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ include file="/js/colorPicker/picker.inc" %>
 
-	<h3>Editing Scaffolding Level</h3>
+	<h3>Editing Scaffolding Column</h3>
 	
 	
 	<div class="instruction">
-		Scaffolding Level
+		Scaffolding Column
 		(required fields are noted with an <span class="reqStarInline">*</span>)
 	</div>
 	
@@ -14,7 +14,7 @@
 		<osp:form/> 
 		<input type="hidden" name="submitAction" value="Update" />
         
-		<h4>Scaffolding Level</h4>
+		<h4>Scaffolding Column</h4>
 		
         <spring:bind path="level.description">
           <c:if test="${status.error}">
@@ -29,6 +29,21 @@
         <p class="shorttext indnt2">
       <spring:bind path="level.color">
          <label>Background Color</label>   
+      
+         <input type="Text" name="<c:out value="${status.expression}"/>" 
+               value="<c:out value="${status.displayValue}"/>"/>
+         <span class="error_message"><c:out value="${status.errorMessage}"/></span>
+         <!--
+            Put icon by the input control.
+            Make it the link calling picker popup.
+            Specify input object reference as first parameter to the function and palete selection as second.
+         -->
+         <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])"><img width="15" height="13" border="0" alt="Click Here to Pick up the color" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
+      </spring:bind>
+   </p>
+           <p class="shorttext indnt2">
+      <spring:bind path="level.textColor">
+         <label>Font Color</label>   
       
          <input type="Text" name="<c:out value="${status.expression}"/>" 
                value="<c:out value="${status.displayValue}"/>"/>

@@ -241,7 +241,7 @@ public class ReflectionController extends AbstractWizardFormController {
       sCell.getExpectations().size();
       sCell.getCells().size();
       sCell.getReviewers().size();
-      sCell.getRootCriterion().getCriteria().size();
+      //sCell.getRootCriterion().getCriteria().size();
    }
    
    private void persist(ReflectionTransport reflect, String cellId) {

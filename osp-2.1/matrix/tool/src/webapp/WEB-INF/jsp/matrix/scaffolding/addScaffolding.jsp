@@ -1,14 +1,15 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ include file="/js/colorPicker/picker.inc" %>
 
 <form method="POST">
     <c:if test="${!scaffolding.published}" >
 	   <div class="navIntraTool">
 			<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].submit();">
-				Add Level...
+				Add Column...
 			</a>
 			<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].submit();">
-				Add Criterion...
+				Add Row...
 			</a>
 	   </div>
     </c:if>
@@ -97,7 +98,19 @@
         <br />
       
       
-		<h4>Levels</h4>
+		<h4>Columns</h4>
+      <spring:bind path="scaffolding.columnLabel">
+            <c:if test="${status.error}">
+                <div class="validation"><c:out value="${status.errorMessage}"/></div>
+            </c:if>
+         <div class="shorttext">
+            <label>Column Label</label>
+            <input type="text" name="<c:out value="${status.expression}"/>" 
+                     value="<c:out value="${status.value}"/>" 
+                  size="25" maxlength="25">
+         </div>
+        </spring:bind>      
+      
         
         <spring:bind path="scaffolding.levels">
             <c:if test="${status.error}">
@@ -115,7 +128,7 @@
     					<tr>
                         <td <c:if test="${not empty level.color}">bgcolor="<c:out value="${level.color}"/>"</c:if>>
     							<div class="tier0">
-    								<c:out value="${level.description}"/>
+    								<font color="<c:out value="${level.textColor}"/>"><c:out value="${level.description}"/></font>
     					
     									<div class="itemAction">
     						
@@ -128,7 +141,7 @@
     				<c:if test="${!scaffolding.published}" >
                          | <a href="javascript:document.forms[0].dest.value='removeLevCrit';
                 	      document.forms[0].finalDest.value='deleteLevel';
-                	      document.forms[0].label.value='Level';
+                	      document.forms[0].label.value='Column';
                 	      document.forms[0].displayText.value='<c:out value="${level.description}"/>';
                 	      document.forms[0].submitAction.value='forward';
                 	      document.forms[0].params.value='level_id=<c:out value="${level.id}"/>:index=<c:out value="${itemLoopStatus.index}"/>';
@@ -161,7 +174,19 @@
       
 		<br />
 		
-		<h4>Criteria</h4>
+		<h4>Rows</h4>
+      <spring:bind path="scaffolding.rowLabel">
+            <c:if test="${status.error}">
+                <div class="validation"><c:out value="${status.errorMessage}"/></div>
+            </c:if>
+            <div class="shorttext">
+            <label>Row Label</label>
+            <input type="text" name="<c:out value="${status.expression}"/>" 
+                     value="<c:out value="${status.value}"/>" 
+                  size="25" maxlength="25">
+</div>
+        </spring:bind>
+      
         <spring:bind path="scaffolding.criteria">
             <c:if test="${status.error}">
                 <div class="validation"><c:out value="${status.errorMessage}"/></div>
@@ -173,15 +198,11 @@
     				</tr>
     			</thead>
     			<tbody>
-					<c:set var="rootIndex" value="-1"/>
 					<c:forEach var="criterion" items="${scaffolding.criteria}" varStatus="itemLoopStatus">
-						<c:if test="${criterion.indent==0}">
-							<c:set var="rootIndex" value="${rootIndex+1}"/>
 							<tr>
 								<td <c:if test="${not empty criterion.color}">bgcolor="<c:out value="${criterion.color}"/>"</c:if>>
 									<div class="tier0">
-										<c:out value="${criterion.description}"/>
-										
+										<font color="<c:out value="${criterion.textColor}"/>"><c:out value="${criterion.description}"/></font>
 										<div class="itemAction">
 										
                       <a href="javascript:document.forms[0].dest.value='addCriterion';
@@ -194,7 +215,7 @@
 											<c:if test="${!scaffolding.published}" >
                       | <a href="javascript:document.forms[0].dest.value='removeLevCrit';
                       document.forms[0].finalDest.value='deleteCriterion';
-                      document.forms[0].label.value='Criterion';
+                      document.forms[0].label.value='Row';
                       document.forms[0].displayText.value='<c:out value="${criterion.description}"/>';
                       document.forms[0].submitAction.value='forward';
                       document.forms[0].params.value='criterion_id=<c:out value="${criterion.id}"/>:index=<c:out value="${itemLoopStatus.index}"/>';
@@ -203,13 +224,13 @@
                       </a>
                       | <a href="javascript:document.forms[0].dest.value='moveCriterion';
                       document.forms[0].submitAction.value='forward';
-                      document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index-1}"/>:current_root_index=<c:out value="${rootIndex}"/>:dest_root_index=<c:out value="${rootIndex-1}"/>';
+                      document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index-1}"/>';
                       document.forms[0].submit();">
                           Up
                       </a>
                       | <a href="javascript:document.forms[0].dest.value='moveCriterion';
                       document.forms[0].submitAction.value='forward';
-                      document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index+1}"/>:current_root_index=<c:out value="${rootIndex}"/>:dest_root_index=<c:out value="${rootIndex+1}"/>';
+                      document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index+1}"/>';
                       document.forms[0].submit();">
                           Down
                       </a>
@@ -218,13 +239,86 @@
 									</div>
 								</td>
 							</tr>
-						</c:if>
 					</c:forEach>
 					
     			</tbody>
     		</table>
         </spring:bind>
 		
+      <h4>Matrix Status Colors</h4>
+      <spring:bind path="scaffolding.readyColor">
+         <c:if test="${status.error}">
+             <div class="validation"><c:out value="${status.errorMessage}"/></div>
+         </c:if>
+      <p class="shorttext">
+         <span class="reqStar">*</span><label>Ready Color</label>
+         <input type="text" name="<c:out value="${status.expression}"/>" 
+                  value="<c:out value="${status.value}"/>" 
+               size="25" maxlength="25" <c:out value="${disabledText}"/>>
+         <!--
+            Put icon by the input control.
+            Make it the link calling picker popup.
+            Specify input object reference as first parameter to the function and palete selection as second.
+         -->
+         <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])">
+         <img width="15" height="13" border="0" alt="Click Here to Pick up the color" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
+      </p>
+     </spring:bind>
+      <spring:bind path="scaffolding.pendingColor">
+         <c:if test="${status.error}">
+             <div class="validation"><c:out value="${status.errorMessage}"/></div>
+         </c:if>
+      <p class="shorttext">
+         <span class="reqStar">*</span><label>Pending Color</label>
+         <input type="text" name="<c:out value="${status.expression}"/>" 
+                  value="<c:out value="${status.value}"/>" 
+               size="25" maxlength="25" <c:out value="${disabledText}"/>>
+         <!--
+            Put icon by the input control.
+            Make it the link calling picker popup.
+            Specify input object reference as first parameter to the function and palete selection as second.
+         -->
+         <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])">
+         <img width="15" height="13" border="0" alt="Click Here to Pick up the color" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
+      </p>
+     </spring:bind>
+      <spring:bind path="scaffolding.completedColor">
+         <c:if test="${status.error}">
+             <div class="validation"><c:out value="${status.errorMessage}"/></div>
+         </c:if>
+      <p class="shorttext">
+         <span class="reqStar">*</span><label>Completed Color</label>
+         <input type="text" name="<c:out value="${status.expression}"/>" 
+                  value="<c:out value="${status.value}"/>" 
+               size="25" maxlength="25" <c:out value="${disabledText}"/>>
+         <!--
+            Put icon by the input control.
+            Make it the link calling picker popup.
+            Specify input object reference as first parameter to the function and palete selection as second.
+         -->
+         <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])">
+         <img width="15" height="13" border="0" alt="Click Here to Pick up the color" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
+      </p>
+     </spring:bind>
+      <spring:bind path="scaffolding.lockedColor">
+         <c:if test="${status.error}">
+             <div class="validation"><c:out value="${status.errorMessage}"/></div>
+         </c:if>
+      <p class="shorttext">
+         <span class="reqStar">*</span><label>Locked Color</label>
+         <input type="text" name="<c:out value="${status.expression}"/>" 
+                  value="<c:out value="${status.value}"/>" 
+               size="25" maxlength="25" <c:out value="${disabledText}"/>>
+         <!--
+            Put icon by the input control.
+            Make it the link calling picker popup.
+            Specify input object reference as first parameter to the function and palete selection as second.
+         -->
+         <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])">
+         <img width="15" height="13" border="0" alt="Click Here to Pick up the color" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
+      </p>
+     </spring:bind>
+      
 		<br />
 		<br />
 		<c:if test="${not empty isInSession}">
@@ -237,6 +331,9 @@
   				        onclick="javascript:document.forms[0].validate.value='true';"/>
 			<input type="submit" name="action" value="Cancel"/>
 		</div>
+      
+    <script type="text/javascript" src="/library/htmlarea/sakai-htmlarea.js"></script>
+    <script type="text/javascript" defer="1">chef_setupformattedtextarea('descriptionTextArea');</script>
     
 </form>
 

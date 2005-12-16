@@ -54,9 +54,9 @@
             <tr>
                 <th scope="col" onclick="sort('dynamic',0,0)"
                     style="cursor:pointer"
-                    title="Sort by Root Criterion">Root Criterion</th>
+                    title="Sort by Row">Row</th>
                 <th scope="col" onclick="sort('dynamic',1,0)"
-                    style="cursor:pointer" title="Sort by Level">Level</th>
+                    style="cursor:pointer" title="Sort by Column">Column</th>
                 <th scope="col" onclick="sort('dynamic',2,0)"
                     style="cursor:pointer" title="Sort Owner"><c:if
                     test="${can.viewOwner}">Owner</c:if> <c:if

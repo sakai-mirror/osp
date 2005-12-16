@@ -147,8 +147,6 @@
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="authManager"><ref bean="authManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
-            <!--property name="repositoryManager"><ref bean="repositoryManager"/></property-->
-            <property name="orderedList"><ref bean="webDeweyOrderedList"/></property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -695,6 +693,24 @@
       <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Scaffolding</value></property>
    </bean>
    
+   <bean id="publishScaffoldingConfirmationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.PublishScaffoldingConfirmationController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">publishScaffoldingConfirm</prop>
+            <prop key="cancel">viewScaffoldingRedirect</prop>
+            <prop key="publish">viewScaffoldingRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>scaffolding</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Scaffolding</value></property>
+   </bean>
+   
    <bean id="removeLevCritConfirmationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.RemoveLevCritConfirmationController">
@@ -711,6 +727,24 @@
       </property>
       <property name="commandName"><value>model</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.matrix.control.RemoveConfirmationInfoBean</value></property>
+   </bean>
+   
+   <bean id="manageCellStatusController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.ManageCellStatusController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">manageCellStatus</prop>
+            <prop key="cancel">viewCellRedirect</prop>
+            <prop key="done">viewCellRedirect</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>cell</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Cell</value></property>
    </bean>
    
 </beans>

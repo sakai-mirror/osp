@@ -47,18 +47,13 @@
  */
 package org.theospi.portfolio.matrix.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
 /**
  * @author rpembry
  */
 public class CriterionTransport extends AbstractLabel implements Label {
 
    String color;
-   Integer indent;
-   private List criteria = new ArrayList();
+   String textColor = "#000000";
    
    public CriterionTransport() {}
    
@@ -66,23 +61,7 @@ public class CriterionTransport extends AbstractLabel implements Label {
       this.id = criterion.getId();
       this.description = criterion.getDescription();
       this.color = criterion.getColor();
-      this.indent = criterion.getIndent();
-      this.criteria = criterion.getCriteria();
-   }
-   
-
-   /**
-    * @return Returns the indent.
-    */
-   public Integer getIndent() {
-      return indent;
-   }
-
-   /**
-    * @param indent The indent to set.
-    */
-   public void setIndent(Integer indent) {
-      this.indent = indent;
+      this.textColor = criterion.getTextColor();
    }
    
    public String getColor() {
@@ -103,26 +82,23 @@ public class CriterionTransport extends AbstractLabel implements Label {
       if (other == this) return true;
       if (other == null || !(other instanceof CriterionTransport)) return false;
       CriterionTransport otherCriterion = (CriterionTransport) other;
-      return otherCriterion.getDescription().equals(this.getDescription()) && otherCriterion.getIndent().equals(this.getIndent());
+      return otherCriterion.getDescription().equals(this.getDescription());
    }
 
    /* (non-Javadoc)
     * @see java.lang.Object#hashCode()
     */
    public int hashCode() {
-      String hashString = this.getDescription() + this.getIndent();
+      String hashString = this.getDescription();
       return hashString.hashCode();
    }
-   /**
-    * @return Returns the criteria.
-    */
-   public List getCriteria() {
-      return criteria;
+
+
+   public String getTextColor() {
+      return textColor;
    }
-   /**
-    * @param criteria The criteria to set.
-    */
-   public void setCriteria(List criteria) {
-      this.criteria = criteria;
+
+   public void setTextColor(String textColor) {
+      this.textColor = textColor;
    }
 }

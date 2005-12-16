@@ -47,7 +47,6 @@
 package org.theospi.portfolio.matrix.control;
 
 import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.matrix.model.OrderedList;
 
 import java.util.List;
 
@@ -57,15 +56,14 @@ import java.util.List;
 public class CellFormBean {
 
    private Cell cell;
-   private List attachments;
-   private OrderedList criteriaRequirements;
+   private List nodes;
    private String[] selectedArtifacts;
 
    /**
     * @return
     */
-   public List getAttachments() {
-      return attachments;
+   public List getNodes() {
+      return nodes;
    }
 
    /**
@@ -78,8 +76,8 @@ public class CellFormBean {
    /**
     * @param list
     */
-   public void setAttachments(List list) {
-      attachments = list;
+   public void setNodes(List list) {
+      nodes = list;
    }
 
    /**
@@ -87,20 +85,6 @@ public class CellFormBean {
     */
    public void setCell(Cell cell) {
       this.cell = cell;
-   }
-
-   /**
-    * @return
-    */
-   public List getCriteriaRequirements() {
-      return criteriaRequirements;
-   }
-
-   /**
-    * @param list
-    */
-   public void setCriteriaRequirements(OrderedList list) {
-      criteriaRequirements = list;
    }
     
     /**

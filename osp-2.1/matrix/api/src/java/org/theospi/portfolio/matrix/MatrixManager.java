@@ -46,15 +46,12 @@
  */
 package org.theospi.portfolio.matrix;
 
-import org.jdom.Element;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.api.kernel.tool.Placement;
 import org.theospi.portfolio.matrix.model.Attachment;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Reflection;
@@ -65,7 +62,6 @@ import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.MatrixTool;
 import org.theospi.portfolio.matrix.model.ReviewerItem;
-import org.theospi.portfolio.matrix.model.Rubric;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.shared.model.Node;
 
@@ -88,8 +84,8 @@ public interface MatrixManager {
    
    ReviewRubricValue findReviewRubricValue(String id);
    List getReviewRubrics();
-   List getCellCriteria(Cell cell);
-   List getCellCriteria(Id cellId);
+   //List getCellCriteria(Cell cell);
+   //List getCellCriteria(Id cellId);
 
    Matrix getMatrix(Id matrixToolId, Id agentId);
    List getCellsByScaffoldingCell(Id scaffoldingCellId);
@@ -129,9 +125,9 @@ public interface MatrixManager {
 
    void detachArtifact(final Id cellId, final Id artifactId);
 
-   List rubricSatisfaction(Cell cell);
+   //List rubricSatisfaction(Cell cell);
 
-   boolean isRubricSatisfied(Cell cell);
+   //boolean isRubricSatisfied(Cell cell);
    
    void removeFromSession(Object obj);
    void clearSession();
@@ -162,13 +158,13 @@ public interface MatrixManager {
     * @param criterion
     * @return List of Rubrics
     */
-   List getRubric(Criterion criterion, Level level);
+   //List getRubric(Criterion criterion, Level level);
 
-   Rubric getRubric(Id rubricId);
+   //Rubric getRubric(Id rubricId);
 
-   List getRubrics(Cell cell);
+   //List getRubrics(Cell cell);
 
-   List getRubricByArtifact(Id artifactId);
+   //List getRubricByArtifact(Id artifactId);
 
    /**
     * @return Returns the idManager.
@@ -197,4 +193,6 @@ public interface MatrixManager {
                                  ToolConfiguration currentPlacement) throws IOException;
 
    void checkCellAccess(String id);
+   
+   Scaffolding createDefaultScaffolding();
 }

@@ -77,6 +77,7 @@ function hrefViewCell(cellId) {
 	<osp:form/>
 
 	<c:set var="cell" value="${cellBean.cell}"/>
+   <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" />
 
 	<div class="navIntraTool">
 		<a name="linkNew" id="linkNew" href="<osp:url value="attachToCell.osp">
@@ -86,20 +87,19 @@ function hrefViewCell(cellId) {
 			<osp:param name="cell_id" value="${cell.id}"/>
 			<osp:param name="id" value="${cell.reflection.id}"/>
 			</osp:url>">Reflection...</a>
+      <c:if test="${can.create}">
+         <a name="linkManageCellStatus" id="linkManageCellStatus" href="<osp:url value="manageCellStatus.osp">
+            <osp:param name="cell_id" value="${cell.id}"/>
+            </osp:url>">Manage Cell Status...</a>
+      </c:if>
 	</div>
 
     <h3>View Cell</h3>
     
 	<osp-h:glossary link="true" hover="true">
 		<table class="itemSummary">
-			<tr><th>Level: </th><td><c:out value="${cell.scaffoldingCell.level.description}"/></td></tr>
-			<tr><th>Criteria: </th><td>
-                
-                <%-- there is only one because sub-criteria was removed --%>
-				<c:forEach var="criterionItem" items="${cellBean.criteriaRequirements}" varStatus="loopCount" >
-					<c:out value="${criterionItem.displayString}" escapeXml="false" />
-				</c:forEach>
-			</td></tr>
+			<tr><th><c:out value="${cell.scaffoldingCell.scaffolding.columnLabel}"/>: </th><td><c:out value="${cell.scaffoldingCell.level.description}"/></td></tr>
+			<tr><th><c:out value="${cell.scaffoldingCell.scaffolding.rowLabel}"/>: </th><td><c:out value="${cell.scaffoldingCell.rootCriterion.description}"/></td></tr>
 		</table>
 	</osp-h:glossary>
 
@@ -128,12 +128,8 @@ function hrefViewCell(cellId) {
 
 
 			<c:set var="canReflect" value="false"/>
-			<c:forEach var="node" items="${cellBean.attachments}">
+			<c:forEach var="node" items="${cellBean.nodes}">
 				<c:set var="canReflect" value="true"/>
-				<c:set var="criteriaList" value="${node.criteriaList}"/>
-				<c:set var="node" value="${node.node}" />
-
-
 
 				<tr>
 					<td>
@@ -142,13 +138,6 @@ function hrefViewCell(cellId) {
                         <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
                             <div class="itemAction">
                                 <a href="<osp:url value="removeConfirmation.osp?&cell_id=${cell.id}&selectedArtifacts=${node.id}"/>">Remove</a>
-                               
-                                <c:forEach var="criterion" items="${criteriaList}" varStatus="loopCount">
-                                    | <c:if test="${loopCount.index!=0}"> </c:if>
-                                    <a href='<osp:url value="manageArtifactAssociations.osp?cell_id=${cell.id}&node_id=${node.id}"/>'>
-                                        <c:out value="${criterion}"/>
-                                    </a>
-                                </c:forEach>
                             </div>
                         </c:if>
 					</td>

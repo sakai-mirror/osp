@@ -20,7 +20,7 @@ function submitWizardForm(direction) {
 		</p>
 	</c:if>
 	<table class="itemSummary">
-   		<tr><th>Level: </th><td><c:out value="${reflect.cell.scaffoldingCell.level.description}"/></td></tr>
-   		<tr><th>Criteria: </th><td><c:out value="${reflect.cell.scaffoldingCell.rootCriterion.description}"/></td></tr>
+   		<tr><th><c:out value="${reflect.cell.scaffoldingCell.scaffolding.columnLabel}"/>: </th><td><c:out value="${reflect.cell.scaffoldingCell.level.description}"/></td></tr>
+   		<tr><th><c:out value="${reflect.cell.scaffoldingCell.scaffolding.rowLabel}"/>: </th><td><c:out value="${reflect.cell.scaffoldingCell.rootCriterion.description}"/></td></tr>
 	</table>
 </osp-h:glossary>

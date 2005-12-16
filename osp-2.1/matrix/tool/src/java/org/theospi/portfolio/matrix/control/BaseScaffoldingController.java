@@ -68,7 +68,6 @@ public class BaseScaffoldingController {
     * @see org.theospi.utils.mvc.intf.CustomCommandController#formBackingObject(java.util.Map, java.util.Map, java.util.Map)
     */
    public Object formBackingObject(Map request, Map session, Map application) {
-      //return new Scaffolding();
       Scaffolding scaffolding;
       if (request.get(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG) == null &&
             session.get(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG) == null) {
@@ -78,7 +77,7 @@ public class BaseScaffoldingController {
             scaffolding = getMatrixManager().getScaffolding(id);
          }
          else {
-            scaffolding = new Scaffolding();
+            scaffolding = getMatrixManager().createDefaultScaffolding();
          }
             EditedScaffoldingStorage sessionBean = new EditedScaffoldingStorage(scaffolding);
             session.put(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY,
@@ -159,5 +158,4 @@ public class BaseScaffoldingController {
    public void setLockManager(LockManager lockManager) {
       this.lockManager = lockManager;
    }
-
 }

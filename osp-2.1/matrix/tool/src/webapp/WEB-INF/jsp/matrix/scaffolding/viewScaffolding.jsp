@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
+<%@ include file="../matrixStyle.jspf" %>
 <SCRIPT LANGUAGE="JavaScript">
 
 function hrefViewCell(cellId) {
@@ -19,7 +19,7 @@ function hrefViewCell(cellId) {
 				<a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>">Edit...</a>
 			</c:if>
 			<c:if test="${!matrixContents.scaffolding.published && can.publish}">
-				<a href="<osp:url value="publishScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>">Publish</a>
+				<a href="<osp:url value="publishScaffoldingConfirmation.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>">Publish</a>
 			</c:if>
 		</div>
 	</c:if>
@@ -56,14 +56,18 @@ function hrefViewCell(cellId) {
 				<c:forEach var="head" items="${columnHeading}">
 					<th class="matrix-column-heading" width="200" 
                   bgcolor="<c:out value="${head.color}"/>">
-						<c:out value="${head.description}"/>
+                  <font color="<c:out value="${head.textColor}"/>">
+						   <c:out value="${head.description}"/>
+                  </font>
 					</th>
 				</c:forEach>
 			</tr>   
 			<c:forEach var="rowLabel" items="${matrixContents.rowLabels}" varStatus="loopStatus" >
 				<tr>
 					<th class="matrix-row-heading" bgcolor="<c:out value="${rowLabel.color}"/>" >
-						<c:out value="${rowLabel.description}"/>
+                  <font color="<c:out value="${rowLabel.textColor}"/>">
+                     <c:out value="${rowLabel.description}"/>
+                  </font>
 					</th>
 	    
 					<c:forEach var="cell" items="${matrixContents.matrixContents[loopStatus.index]}">
@@ -75,28 +79,6 @@ function hrefViewCell(cellId) {
 			</c:forEach>
 		</table>
 	  
-        <table width="550" border="0" cellspacing="10">
-          <tr> 
-            <td width="93" height="21" align="left" valign="bottom">Legend</td>
-            <td width="78">&nbsp;</td>
-            <td width="108">&nbsp;</td>
-            <td width="82">&nbsp;</td>
-            <td width="167">&nbsp;</td>
-          </tr>
-          <tr> 
-            <td>&nbsp;</td>
-            <td class="matrixLegend-border matrix-READY">&nbsp;</td>
-            <td>Ready</td>
-            <td class="matrixLegend-border matrix-COMPLETE">&nbsp;</td>
-            <td>Completed</td>
-          </tr>
-          <tr> 
-            <td>&nbsp;</td>
-            <td class="matrixLegend-border matrix-PENDING">&nbsp;</td>
-            <td>Pending</td>
-            <td class="matrixLegend-border matrix-LOCKED">&nbsp;</td>
-            <td>Locked</td>
-          </tr>
-        </table>
+     <%@ include file="../matrixLegend.jspf" %>
   
 	</c:if>

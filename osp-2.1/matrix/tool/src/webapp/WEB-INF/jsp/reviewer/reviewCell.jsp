@@ -11,8 +11,8 @@
 
     <c:set var="cell" value="${reviewerItem.cell}"/>
     <table class="itemSummary">
-        <tr><th>Level: </th><td><c:out value="${cell.scaffoldingCell.level.description}"/></td></tr>
-        <tr><th>Criteria: </th><td><c:out value="${cell.scaffoldingCell.rootCriterion.description}"/></td></tr>
+        <tr><th><c:out value="${cell.scaffoldingCell.scaffolding.columnLabel}"/>: </th><td><c:out value="${cell.scaffoldingCell.level.description}"/></td></tr>
+        <tr><th><c:out value="${cell.scaffoldingCell.scaffolding.rowLabel}"/>: </th><td><c:out value="${cell.scaffoldingCell.rootCriterion.description}"/></td></tr>
     </table><br />
 
    <c:forEach var="refItem" items="${cell.reflection.reflectionItems}" varStatus="loopStatus">

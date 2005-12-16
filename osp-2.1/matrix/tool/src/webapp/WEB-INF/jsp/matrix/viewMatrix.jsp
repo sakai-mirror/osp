@@ -1,6 +1,6 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
+<%@ include file="matrixStyle.jspf" %>
 <SCRIPT LANGUAGE="JavaScript">
 
 function hrefViewCell(cellId) {
@@ -43,7 +43,12 @@ function hrefViewCell(cellId) {
     <h3>Matrix Manager</h3>
     
     <c:if test="${can.create}">
-    	<p class="instruction">
+      <c:if test="${not empty matrixContents.scaffolding.description}">
+       	<p class="instruction">
+            <c:out value="${matrixContents.scaffolding.description}" escapeXml="false" />
+         </p>
+      </c:if>
+      <p class="instruction">
         	Click Create/Edit to set up Matrix
         </p>
     </c:if>
@@ -93,7 +98,9 @@ function hrefViewCell(cellId) {
                     <th class="matrix-column-heading" width="200" 
                         bgcolor="<c:out value="${head.color}"/>">
                         <osp-h:glossary link="true" hover="true">
-                        	<c:out value="${head.description}"/>
+                        	<font color="<c:out value="${head.textColor}"/>">
+                              <c:out value="${head.description}"/>
+                           </font>
                         </osp-h:glossary>
                     </th>
                 </c:forEach>
@@ -102,16 +109,17 @@ function hrefViewCell(cellId) {
               <tr>
                  <osp-h:glossary link="true" hover="true">
                     <th class="matrix-row-heading" bgcolor="<c:out value="${rowLabel.color}"/>" >
-                       <c:out value="${rowLabel.description}"/>
+                        <font color="<c:out value="${rowLabel.textColor}"/>">
+                           <c:out value="${rowLabel.description}"/>
+                        </font>
                     </th>
                  </osp-h:glossary>
                  <c:forEach var="cellBean" items="${matrixContents.matrixContents[loopStatus.index]}">
                      <c:set var="cell" value="${cellBean.cell}"/>
-                     <c:set var="attachments" value="${cellBean.attachments}"/>
-                  
+                     
                      <td class="matrix-cell-border matrix-<c:out value="${cell.status}"/>" onClick="hrefViewCell('<c:out value="${cell.id}"/>') " style="cursor:pointer">
                         &nbsp;
-                        <c:forEach var="node" items="${attachments}">
+                        <c:forEach var="node" items="${cellBean.nodes}">
                             <fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="MM/dd/yyyy" var="date"/>
                                <c:set var="hover" value="Name:${node.name}; Size:${node.technicalMetadata.size} bytes; Last Modified: ${date}"/>
                                <img border="0" title="<c:out value="${hover}" />"
@@ -124,28 +132,6 @@ function hrefViewCell(cellId) {
             </c:forEach>
         </table>
         
-        <table width="550" border="0" cellspacing="10">
-          <tr> 
-            <td width="93" height="21" align="left" valign="bottom">Legend</td>
-            <td width="78">&nbsp;</td>
-            <td width="108">&nbsp;</td>
-            <td width="82">&nbsp;</td>
-            <td width="167">&nbsp;</td>
-          </tr>
-          <tr> 
-            <td>&nbsp;</td>
-            <td class="matrixLegend-border matrix-READY">&nbsp;</td>
-            <td>Ready</td>
-            <td class="matrixLegend-border matrix-COMPLETE">&nbsp;</td>
-            <td>Completed</td>
-          </tr>
-          <tr> 
-            <td>&nbsp;</td>
-            <td class="matrixLegend-border matrix-PENDING">&nbsp;</td>
-            <td>Pending</td>
-            <td class="matrixLegend-border matrix-LOCKED">&nbsp;</td>
-            <td>Locked</td>
-          </tr>
-        </table>
+        <%@ include file="matrixLegend.jspf" %>
     
     </c:if>

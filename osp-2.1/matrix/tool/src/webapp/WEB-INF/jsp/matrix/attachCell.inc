@@ -19,12 +19,12 @@ request.setAttribute("org_theospi_matrix_attachCell", cell);
   </tr>
   <tr> 
     <td height="22" valign="middle" align="right" width="47"><font face="Verdana, Arial, Helvetica, sans-serif" size="2">&nbsp;</font></td>    
-    <td height="22" valign="middle" align="left" width="603"><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><b>Criteria:</b> 
+    <td height="22" valign="middle" align="left" width="603"><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><b><c:out value="${org_theospi_matrix_attachCell.scaffoldingCell.scaffolding.rowLabel}"/>:</b> 
       <c:out value="${org_theospi_matrix_attachCell.scaffoldingCell.rootCriterion.description}"/></font></td>
   </tr>
   <tr> 
     <td height="21" valign="middle" align="right" width="47">&nbsp;</td>
-    <td height="21" valign="middle" align="left" width="603"><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><b>Level: 
+    <td height="21" valign="middle" align="left" width="603"><font face="Verdana, Arial, Helvetica, sans-serif" size="2"><b><c:out value="${org_theospi_matrix_attachCell.scaffoldingCell.scaffolding.columnLabel}"/>: 
       </b><c:out value="${org_theospi_matrix_attachCell.scaffoldingCell.level.description}"/></font></td>
   </tr>
   <tr> 
