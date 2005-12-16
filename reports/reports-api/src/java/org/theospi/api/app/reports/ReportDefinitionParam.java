@@ -46,10 +46,14 @@ package org.theospi.api.app.reports;
 
 import java.util.List;
 
+import org.sakaiproject.metaobj.shared.model.Id;
+
 public class ReportDefinitionParam
 {
+	private String idString = null;
+	
 	/** the reportDefParamId for the report definition parameter */
-	private String reportDefParamId;
+	private Id reportDefParamId;
 	
 	/** the identifier to the report definition for the paramater */
 	private ReportDefinition reportDefinition;
@@ -94,7 +98,7 @@ public class ReportDefinitionParam
 	 * the getter for the reportDefParamId property
 	 * @return String the unique identifier
 	 */
-	public String getReportDefParamId()
+	public Id getReportDefParamId()
 	{
 		return reportDefParamId;
 	}
@@ -105,9 +109,25 @@ public class ReportDefinitionParam
 	 * and by hibernate.
 	 * @param reportDefId String
 	 */
-	public void setReportDefParamId(String reportDefParamId)
+	public void setReportDefParamId(Id reportDefParamId)
 	{
 		this.reportDefParamId = reportDefParamId;
+	}
+	
+	/**
+	 * return the id as a string.  return the actual id if there is one then
+	 * the configured definition id if not
+	 * @return String
+	 */
+	public String getIdString()
+	{
+		if(reportDefParamId == null)
+			return idString;
+		return reportDefParamId.getValue(); // Is getValue correct?
+	}
+	public void setIdString(String idString)
+	{
+		this.idString = idString;
 	}
 	
 	

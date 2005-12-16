@@ -47,10 +47,12 @@ package org.theospi.api.app.reports;
 import java.util.List;
 import java.util.Date;
 
+import org.sakaiproject.metaobj.shared.model.Id;
+
 public class ReportResult
 {
 	/** the unique identifier for the report definition */
-	private String resultId;
+	private Id resultId;
 	
 	/** the unique identifier for the report definition */
 	private Report report;
@@ -72,6 +74,9 @@ public class ReportResult
 
 	/** the defaultXsl for the report definition */
 	private String xml;
+
+	/** tells whether or not the result has been saved to the database */
+	private boolean isSaved = false;
 	
 
 
@@ -79,7 +84,7 @@ public class ReportResult
 	 * the getter for the resultId property
 	 * @return String the unique identifier
 	 */
-	public String getResultId()
+	public Id getResultId()
 	{
 		return resultId;
 	}
@@ -90,7 +95,7 @@ public class ReportResult
 	 * and by hibernate.
 	 * @param resultId String
 	 */
-	public void setResultId(String resultId)
+	public void setResultId(Id resultId)
 	{
 		this.resultId = resultId;
 	}
@@ -240,5 +245,26 @@ public class ReportResult
 	public void setXml(String xml)
 	{
 		this.xml = xml;
+	}
+	
+	
+	/**
+	 * the getter for the isSaved property
+	 * @return String the isSaved
+	 */
+	public boolean getIsSaved()
+	{
+		return isSaved;
+	}
+	
+	
+	/**
+	 * the setter for the isSaved property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param isSaved List
+	 */
+	public void setisSaved(boolean isSaved)
+	{
+		this.isSaved = isSaved;
 	}
 }

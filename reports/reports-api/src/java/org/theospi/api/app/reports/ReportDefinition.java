@@ -49,10 +49,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.sakaiproject.metaobj.shared.model.Id;
+
 public class ReportDefinition
 {
 	/** the unique identifier for the report definition */
-	private String reportDefId;
+	private Id reportDefId = null;
+	
+	/** the unique identifier for the report definition */
+	private String idString = null;
 
 	/** the title of the report definition */
 	private String title;
@@ -75,9 +80,6 @@ public class ReportDefinition
 	/** the link to the report parameters for the report definition */
 	private List reportDefinitionParams;
 
-	/** the link to the report XSLs for the report definition */
-	private List reportDefinitionXsls;
-
 	/** the defaultXsl for the report definition */
 	//private List forms;
 
@@ -90,7 +92,7 @@ public class ReportDefinition
 	 * the getter for the reportDefId property
 	 * @return String the unique identifier
 	 */
-	public String getReportDefId()
+	public Id getReportDefId()
 	{
 		return reportDefId;
 	}
@@ -101,9 +103,25 @@ public class ReportDefinition
 	 * and by hibernate.
 	 * @param reportDefId String
 	 */
-	public void setReportDefId(String reportDefId)
+	public void setReportDefId(Id reportDefId)
 	{
 		this.reportDefId = reportDefId;
+	}
+	
+	/**
+	 * return the id as a string.  return the actual id if there is one then
+	 * the configured definition id if not
+	 * @return String
+	 */
+	public String getIdString()
+	{
+		if(reportDefId == null)
+			return idString;
+		return reportDefId.getValue(); // Is getValue correct?
+	}
+	public void setIdString(String idString)
+	{
+		this.idString = idString;
 	}
 	
 	
@@ -251,27 +269,6 @@ public class ReportDefinition
 	public void setReportDefinitionParams(List reportDefinitionParams)
 	{
 		this.reportDefinitionParams = reportDefinitionParams;
-	}
-	
-	
-	/**
-	 * the getter for the reportDefinitionXsls property
-	 * @return Set the reportDefinitionXsls
-	 */
-	public List getReportDefinitionXsls()
-	{
-		return reportDefinitionXsls;
-	}
-	
-	
-	/**
-	 * the setter for the reportDefinitionXsls property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param reportDefinitionXsls Set
-	 */
-	public void setReportDefinitionXsls(List reportDefinitionXsls)
-	{
-		this.reportDefinitionXsls = reportDefinitionXsls;
 	}
 	
 	

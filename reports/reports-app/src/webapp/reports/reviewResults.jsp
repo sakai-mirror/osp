@@ -9,7 +9,12 @@
                 <sakai:tool_bar>
                     <sakai:tool_bar_item
                         action="#{ReportsTool.processSaveResults}"
-                        value="#{msgs.saveResults}" />
+                        value="#{msgs.saveResults}" 
+                        rendered="#{!ReportsTool.workingResult.isSaved && !ReportsTool.workingResult.isLive}"/>
+                    <sakai:tool_bar_item
+                        action="#{ReportsTool.processSaveResults}"
+                        value="#{msgs.saveSnapshot}" 
+                        rendered="#{ReportsTool.workingResult.isLive}"/>
                     <sakai:tool_bar_item
                         action="#{ReportsTool.processExportResults}"
                         value="#{msgs.exportResults}" />

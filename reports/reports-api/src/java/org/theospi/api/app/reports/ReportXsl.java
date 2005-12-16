@@ -44,8 +44,13 @@
 
 package org.theospi.api.app.reports;
 
+import org.sakaiproject.metaobj.shared.model.Id;
+
 public class ReportXsl
 {
+	/** The primary key */
+	private Id	reportXslId = null;
+	
 	/** the link to the report definition */
 	private ReportDefinition reportDefinition = null;
 
@@ -70,6 +75,16 @@ public class ReportXsl
 	public ReportXsl()
 	{
 		
+	}
+	
+	public Id getReportXslId()
+	{
+		return reportXslId;
+	}
+	
+	public void setReportXslId(Id reportXslId)
+	{
+		this.reportXslId = reportXslId;
 	}
 	
 	/**

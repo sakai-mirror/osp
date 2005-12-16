@@ -47,10 +47,12 @@ package org.theospi.api.app.reports;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sakaiproject.metaobj.shared.model.Id;
+
 public class ReportParam
 {
 	/** the identifier to the report paramater */
-	private String paramId = null;
+	private Id paramId = null;
 	
 	/** the identifier to the report definition for the paramater */
 	private Report report = null;
@@ -76,7 +78,7 @@ public class ReportParam
 	 * the getter for the paramId property
 	 * @return String the unique identifier
 	 */
-	public String getParamId()
+	public Id getParamId()
 	{
 		return paramId;
 	}
@@ -87,7 +89,7 @@ public class ReportParam
 	 * and by hibernate.
 	 * @param paramId String
 	 */
-	public void setParamId(String paramId)
+	public void setParamId(Id paramId)
 	{
 		this.paramId = paramId;
 	}
@@ -131,6 +133,29 @@ public class ReportParam
 	public void setReportDefinitionParam(ReportDefinitionParam reportDefinitionParam)
 	{
 		this.reportDefinitionParam = reportDefinitionParam;
+	}
+	
+	
+	
+	private String	reportDefParamIdMark = null;
+	/**
+	 * This is a way of separating the report definition from the report in the database
+	 * this is a temp solution while the report definitions aren't being stored in the database
+	 * @return String
+	 */
+	public String getReportDefParamIdMark()
+	{
+		return reportDefinitionParam.getIdString();
+	}
+	
+	/**
+	 * this is the link to report definition
+	 * @param reportDefIdMark String
+	 */
+	public void setReportDefParamIdMark(String reportDefParamIdMark)
+	{
+		reportDefinitionParam = null;
+		this.reportDefParamIdMark = reportDefParamIdMark;
 	}
 	
 	
