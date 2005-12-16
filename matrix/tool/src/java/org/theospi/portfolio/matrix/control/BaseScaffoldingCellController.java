@@ -45,8 +45,6 @@
 
 package org.theospi.portfolio.matrix.control;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -55,10 +53,8 @@ import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
-import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 
 public class BaseScaffoldingCellController {
@@ -70,7 +66,8 @@ public class BaseScaffoldingCellController {
    public Object fillBackingObject(Object incomingModel, Map request,
          Map session, Map application) throws Exception {
        ScaffoldingCell scaffoldingCell = (ScaffoldingCell) incomingModel;
-      if (request.get(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG) == null) {
+      if (request.get(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG) == null && 
+            session.get(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG) == null) {
          Id sCellId = ((ScaffoldingCell) incomingModel).getId();
          if (sCellId == null) {
             sCellId = getIdManager().getId((String)request.get("scaffoldingCell_id"));
@@ -96,8 +93,6 @@ public class BaseScaffoldingCellController {
    
    protected void saveScaffoldingCell (Map request, ScaffoldingCell scaffoldingCell) {
       
-      createAuths(scaffoldingCell);
-
       getMatrixManager().removeFromSession(scaffoldingCell);
       ScaffoldingCell oldScaffoldingCell = getMatrixManager().getScaffoldingCell(scaffoldingCell.getRootCriterion(), scaffoldingCell.getLevel());
       //String oldStatus = matrixManager.getScaffoldingCellsStatus(scaffoldingCell.getId());
@@ -117,35 +112,7 @@ public class BaseScaffoldingCellController {
          }
       }
    }
-   
-   protected void createAuths(ScaffoldingCell scaffoldingCell) {
-      Collection viewers = new HashSet(scaffoldingCell.getReviewers());
-
-      Collection oldViewerAuthzs = getAuthzManager().getAuthorizations(null,
-      MatrixFunctionConstants.REVIEW_MATRIX, scaffoldingCell.getId());
-
-      for (Iterator i = viewers.iterator(); i.hasNext();) {
-         Agent reviewer = (Agent) i.next();
-         
-         Authorization newAuthz = new Authorization(reviewer,
-               MatrixFunctionConstants.REVIEW_MATRIX, scaffoldingCell.getId());
-
-         if (oldViewerAuthzs.contains(newAuthz)) {
-            oldViewerAuthzs.remove(newAuthz);
-         } else {
-            getAuthzManager().createAuthorization(newAuthz.getAgent(),
-                  newAuthz.getFunction(), newAuthz.getQualifier());
-         }
-      }
-
-      // any leftovers must be removes...
-      for (Iterator i = oldViewerAuthzs.iterator(); i.hasNext();) {
-         Authorization authz = (Authorization) i.next();
-         getAuthzManager().deleteAuthorization(authz.getAgent(),
-               authz.getFunction(), authz.getQualifier());
-      }
-   }
-
+ 
    public AuthorizationFacade getAuthzManager() {
       return authzManager;
    }

@@ -56,7 +56,9 @@ import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.security.AudienceSelectionHelper;
 
 /**
  * @author chmaurer
@@ -74,16 +76,17 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = new HashMap();
 
-      String siteId = getWorksiteManager().getCurrentWorksiteId().getValue();
+      //String siteId = getWorksiteManager().getCurrentWorksiteId().getValue();
 
-      String filter = (String) request.get("filterSelect");
-      if (filter != null) {
-         List members = getAgentManager().getWorksiteAgents(siteId);
-         model.put("members", members);
-         model.put("filterSelect", filter);
-      }
+      //String filter = (String) request.get("filterSelect");
+      //if (filter != null) {
+      //   List members = getAgentManager().getWorksiteAgents(siteId);
+      //   model.put("members", members);
+      //   model.put("filterSelect", filter);
+      //}
 
-      model.put("roles", getAgentManager().getWorksiteRoles(siteId));
+      //model.put("roles", getAgentManager().getWorksiteRoles(siteId));
+      model.put("reviewFunction", MatrixFunctionConstants.REVIEW_MATRIX);
       return model;
    }
    /* (non-Javadoc)
@@ -135,7 +138,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
             model.put("scaffolding_id", scaffoldingCell.getScaffolding().getId());
             model.put("scaffoldingCell_id", scaffoldingCell.getId()); 
             
-            if (!forwardView.equals("loadReviewers")) {
+            if (!forwardView.equals("selectEvaluators")) {
                model.put("label", request.get("label"));             
                model.put("finalDest", request.get("finalDest"));
                model.put("displayText", request.get("displayText"));
@@ -153,18 +156,10 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
                }
             }
             else {
-               Object filter = request.get("filterSelect");
-               if (filter != null) {
-                  String filterValue = null;
-                  if (filter instanceof String) {
-                     filterValue = (String)filter;
-                  }
-                  else {
-                     filterValue = ((String[])filter)[0];
-                  }
-                  model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true"); 
-                  model.put("filterSelect", request.get("filterSelect"));
-               }
+               session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+               model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+               setAudienceSelectionVariables(session, scaffoldingCell);        
+               
             }
 
             return new ModelAndView(forwardView, model);
@@ -174,6 +169,36 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          return new ModelAndView("return", model);
       }
       return new ModelAndView("success");
+   }
+   
+   protected void setAudienceSelectionVariables(Map session, ScaffoldingCell sCell) {
+      session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION, MatrixFunctionConstants.REVIEW_MATRIX);
+      session.put(AudienceSelectionHelper.AUDIENCE_QUALIFIER, sCell.getId().getValue());
+      session.put(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS, "Add evaluators to your cell");
+      session.put(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE, "Evaluators to Publish to");
+      session.put(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE, "Publish to an Individual");
+      session.put(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE, "Publish to a Group");
+      session.put(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, "false");
+      session.put(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, "Publish to the Internet");
+      session.put(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE, "Selected Evaluators");
+      session.put(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS, "Select filter criteria to narrow user list");
+      session.put(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, "false");
+      session.put(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "true");
+   }
+   
+   protected void clearAudienceSelectionVariables(Map session) {
+      session.remove(AudienceSelectionHelper.AUDIENCE_FUNCTION);
+      session.remove(AudienceSelectionHelper.AUDIENCE_QUALIFIER);
+      session.remove(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS);
+      session.remove(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE);
+      session.remove(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE);
+      session.remove(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE);
+      session.remove(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG);
+      session.remove(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE);
+      session.remove(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE);
+      session.remove(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS);
+      session.remove(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL);
+      session.remove(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED);
    }
    
    
