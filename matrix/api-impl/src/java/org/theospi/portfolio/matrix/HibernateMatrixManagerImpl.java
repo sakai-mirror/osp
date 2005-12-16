@@ -97,26 +97,11 @@ import org.sakaiproject.exception.*;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.hibernate.HibernateCallback;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
-import org.theospi.portfolio.matrix.model.Attachment;
-import org.theospi.portfolio.matrix.model.AttachmentCriterion;
-import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.matrix.model.Criterion;
-import org.theospi.portfolio.matrix.model.Expectation;
-import org.theospi.portfolio.matrix.model.Level;
-import org.theospi.portfolio.matrix.model.Matrix;
-import org.theospi.portfolio.matrix.model.MatrixTool;
-import org.theospi.portfolio.matrix.model.Reflection;
-import org.theospi.portfolio.matrix.model.ReviewRubricValue;
-import org.theospi.portfolio.matrix.model.ReviewerItem;
-import org.theospi.portfolio.matrix.model.Rubric;
-import org.theospi.portfolio.matrix.model.RubricSatisfactionBean;
-import org.theospi.portfolio.matrix.model.Scaffolding;
-import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.*;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
-import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.intf.DownloadableManager;
@@ -144,36 +129,16 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private List reviewRubrics = new ArrayList();
    private ContentHostingService contentHosting = null;
    private SecurityService securityService;
+   private DefaultScaffoldingBean defaultScaffoldingBean;
 
    private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    private EntityContextFinder contentFinder = null;
 
-   /**
-    * All the criteria for a given Cell
-    *
-    * @param cell
-    * @return
-    */
-   public List getCellCriteria(Cell cell) {
-      Criterion rootCriterion = cell.getScaffoldingCell().getRootCriterion();
-      Integer zero = new Integer(0);
-      ArrayList result = new ArrayList();
-      Iterator iter = cell.getMatrix().getMatrixTool().getScaffolding().getCriteria().iterator();
-      boolean adding = false;
-      while (iter.hasNext()) {
-         Criterion next = (Criterion) iter.next();
-         if (next.getIndent().equals(zero)) {
-            if (adding) break;
-            if (next.equals(rootCriterion)) adding = true;
-         }
-         if (adding) result.add(next);
-      }
-      return result;
+   
+   public Scaffolding createDefaultScaffolding() {
+      return getDefaultScaffoldingBean().createDefaultScaffolding();
    }
 
-   public List getCellCriteria(Id cellId) {
-      return getCellCriteria(getCell(cellId));
-   }
    
    public List getCellsByScaffoldingCell(Id scaffoldingCellId) {
       List list = getHibernateTemplate().find("from Cell cell where cell.scaffoldingCell.id=?", scaffoldingCellId.getValue());
@@ -318,7 +283,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Scaffolding scaffolding = matrixTool.getScaffolding();
 
       List levels = scaffolding.getLevels();
-      List criteria = scaffolding.getRootCriteria();
+      List criteria = scaffolding.getCriteria();
 
       Criterion criterion = null;
       Level level = null;
@@ -402,72 +367,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       getHibernateTemplate().execute(callback);
 
-
-   }
-
-
-
-   public boolean isRubricSatisfied(Cell cell) {
-      List results = rubricSatisfaction(cell);
-      for (Iterator iter = results.iterator(); iter.hasNext();) {
-         RubricSatisfactionBean bean = (RubricSatisfactionBean) iter.next();
-         if (bean.getActual() < bean.getNeeded()) {
-            return false;
-         }
-      }
-
-      return true;
-   }
-
-   public List rubricSatisfaction2(Id cellId) {
-      List retList = new ArrayList();
-
-      List list = this.getHibernateTemplate().find("select rubric, count(webdav) " +
-            "from Rubric rubric, " +
-            "  Cell cell, " +
-            "  Attachment attachment, " +
-            "  NodeMetadata webdav " +
-            "where rubric.criterion.id = attachment.criterion.id " +
-            "  and cell.id = attachment.cell.id " +
-            "  and webdav.id = attachment.artifactId " +
-            "  and rubric.type = webdav.typeId " +
-            "  and rubric.mimeType.primaryType = webdav.primaryMimeType " +
-            "  and rubric.mimeType.subType = webdav.subMimeType " +
-            "  and cell.id=? " +
-            "group by rubric", cellId.getValue());
-
-      
-      for (Iterator iter = list.iterator(); iter.hasNext();) {
-         RubricSatisfactionBean rubSBean = new RubricSatisfactionBean();
-         Object[] obj = (Object[]) iter.next();
-         rubSBean.setRubricId(((Rubric) obj[0]).getId());
-         rubSBean.setNeeded(((Rubric) obj[0]).getQuantity());
-         rubSBean.setActual(((Integer) obj[1]).intValue());
-         retList.add(rubSBean);
-
-      }
-      return retList;
-
-   }
-
-   public List rubricSatisfaction(Cell cell) {
-      List rubrics = this.getRubrics(cell);
-
-      List results = new ArrayList();
-      for (Iterator iter = rubrics.iterator(); iter.hasNext();) {
-         Rubric currentRubric = (Rubric) iter.next();
-         List artifacts = this.getCellArtifactsByCriterion(cell.getId(), currentRubric.getCriterion().getId(),
-               currentRubric.getType().getValue(), currentRubric.getMimeType().getPrimaryType(),
-               currentRubric.getMimeType().getSubType());
-
-         RubricSatisfactionBean rubSBean = new RubricSatisfactionBean();
-         rubSBean.setRubricId(currentRubric.getId());
-         rubSBean.setNeeded(currentRubric.getQuantity());
-         rubSBean.setActual(artifacts.size());
-         results.add(rubSBean);
-      }
-
-      return results;
    }
 
    public Matrix getMatrix(Id matrixId) {
@@ -720,49 +619,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       }
       return new ArrayList();
    }
-   
-   /**
-    * @param criterion
-    * @return List of Rubrics
-    */
-   public List getRubric(Criterion criterion, Level level) {
-      Object[] params = new Object[]{criterion.getId().getValue(), level.getId().getValue()};
-      return this.getHibernateTemplate().find("from Rubric rubric " +
-            "where rubric.criterion.id=? " +
-            "and rubric.level.id=? ", params);
-   }
-
-   public Rubric getRubric(Id rubricId) {
-      return (Rubric) this.getHibernateTemplate().load(Rubric.class, rubricId);
-   }
-
-   public List getRubrics(Cell cell) {
-      List criteria = getCellCriteria(cell);
-      Level level = cell.getScaffoldingCell().getLevel();
-      List rubrics = new ArrayList();
-
-      for (Iterator iter = criteria.iterator(); iter.hasNext();) {
-         Criterion criterion = (Criterion) iter.next();
-         List moreRubrics = getRubric(criterion, level);
-         rubrics.addAll(moreRubrics);
-      }
-
-      return rubrics;
-   }
-
-   public List getRubricByArtifact(Id artifactId) {
-      //return (List)this.getHibernateTemplate().load(Artifact.class, artifactId);
-      //This query used to be "from Cell, Rubric" but SQL Server didn't work,
-      // so it was changed to "from Rubric, Cell".  Not sure why it makes a
-      // difference, but it does.
-      //return this.getHibernateTemplate().find("select rubric.id from " +
-      //      "Rubric rubric, AttachmentCriterion ac, Cell cell " +
-      //      "join ac.attachment.cell cell " +
-      //      "where cell.scaffoldingCell.level.id = rubric.level.id " +
-      //      "and ac.criterion.id = rubric.criterion.id " +
-      //      "and ac.attachment.artifactId=?", artifactId.getValue());
-      return new ArrayList();
-   }
 
    protected Agent getAgentFromId(Id agentId) {
       return agentManager.getAgent(agentId);
@@ -942,15 +798,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       List levels = oldScaffolding.getLevels();
       List criteria = oldScaffolding.getCriteria();
-      Set rubrics = oldScaffolding.getRubric();
       Set scaffoldingCells = oldScaffolding.getScaffoldingCells();
-      
-      for (Iterator crits = criteria.iterator(); crits.hasNext();) {
-         Criterion criterion = (Criterion) crits.next();
-         criterion.setCriteria(new ArrayList());
-         //TODO when support for subcriteria exists, this will need to be fixed
-      }
-      
+            
       for (Iterator iter = scaffoldingCells.iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
          List expectations = sCell.getExpectations();
@@ -964,7 +813,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       oldScaffolding.setLevels(new ArrayList(levels));
       oldScaffolding.setCriteria(new ArrayList(criteria));
-      oldScaffolding.setRubric(new HashSet(rubrics));
       oldScaffolding.setScaffoldingCells(new HashSet(scaffoldingCells));
 
       removeFromSession(oldScaffolding);
@@ -1232,24 +1080,18 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       substituteCriteria(scaffolding);
       substituteLevels(scaffolding);
       substituteScaffoldingCells(scaffolding);
-      substituteRubrics(scaffolding);
    }
 
    protected void substituteIds(Scaffolding scaffolding) {
       substituteScaffoldingCells(scaffolding);
-      substituteRubrics(scaffolding);
    }
    
    protected void substituteCriteria(Scaffolding scaffolding) {
       List newCriteria = new ArrayList();
       for (Iterator i=scaffolding.getCriteria().iterator(); i.hasNext();) {
          Criterion criterion = (Criterion)i.next();
-
-         //TODO handle sub criteria
          criterion.setId(null);
-         criterion.setCriteria(new ArrayList());
          newCriteria.add(criterion);
-
       }
       scaffolding.setCriteria(newCriteria);
    }
@@ -1285,23 +1127,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       }   
       scaffolding.setScaffoldingCells(sCells);
    }
-   
-   protected void substituteRubrics(Scaffolding scaffolding) {
-      for (Iterator iter=scaffolding.getRubric().iterator(); iter.hasNext();) {
-         Rubric rubric = (Rubric) iter.next();
-         rubric.setId(null);
-      }   
-   }
-
-   /*
-   protected WritableObjectHome getFileHome() {
-      return fileHome;
-   }
-
-   public void setFileHome(WritableObjectHome fileHome) {
-      this.fileHome = fileHome;
-   }
-   */
 
    private boolean findInAuthz(Id qualifier, Agent agent, List authzs) {
       for (Iterator iter = authzs.iterator(); iter.hasNext();) {
@@ -1555,6 +1380,15 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    protected String buildRef(String siteId, String contextId, ContentResource resource) {
       return ContentEntityUtil.getInstance().buildRef(
          MatrixContentEntityProducer.MATRIX_PRODUCER, siteId, contextId, resource.getReference());
+   }
+
+   public DefaultScaffoldingBean getDefaultScaffoldingBean() {
+      return defaultScaffoldingBean;
+   }
+
+   public void setDefaultScaffoldingBean(
+         DefaultScaffoldingBean defaultScaffoldingBean) {
+      this.defaultScaffoldingBean = defaultScaffoldingBean;
    }
 
 }

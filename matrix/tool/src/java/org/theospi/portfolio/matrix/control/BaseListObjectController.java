@@ -46,9 +46,7 @@
 package org.theospi.portfolio.matrix.control;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
@@ -86,11 +84,7 @@ public abstract class BaseListObjectController implements FormController, LoadOb
          EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
                EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
          Object obj = null;
-         String path = (String)request.get("path");
          if (incomingModel instanceof CriterionTransport) {
-            obj = new CriterionTransport(findCriterion(sessionBean.getScaffolding(), path.concat("." + index)));
-            //obj = sessionBean.getScaffolding().getCriteria().get(
-            //      Integer.parseInt(index));
          }
          else if (incomingModel instanceof LevelTransport) {
             obj = new LevelTransport((Level)sessionBean.getScaffolding().getLevels().get(
@@ -120,27 +114,20 @@ public abstract class BaseListObjectController implements FormController, LoadOb
             String index = (String)request.get("index");
             if (requestModel instanceof CriterionTransport) {
                CriterionTransport obj = (CriterionTransport) requestModel;
-               String path = (String)request.get("path");
-               obj.setIndent(getIndent(path));
-               //Criterion parent = findCriterion(sessionBean.getScaffolding(), path);
-               List parentList = findCriteria(sessionBean.getScaffolding(), path);
                if (index == null) {
-                  parentList.add(new Criterion(obj));
+                  scaffolding.getCriteria().add(new Criterion(obj));
                }
                else {
                   int idx = Integer.parseInt(index);
-                  Criterion criterion = (Criterion) parentList.get(idx);
+                  Criterion criterion = (Criterion) scaffolding.getCriteria().get(idx);
                   criterion.copy(obj);
-                  parentList.set(idx, criterion);
+                  scaffolding.getCriteria().set(idx, criterion);
                }
-               //updateScaffolding(scaffolding, parentList, path);
-               sessionBean.setScaffolding(scaffolding); 
-               model.put("path", path);
+               sessionBean.setScaffolding(scaffolding);
             }
             else if (requestModel instanceof LevelTransport) {
                LevelTransport obj = (LevelTransport) requestModel;
                if (index == null) {
-                  //scaffolding.add(obj);
                   scaffolding.add(new Level(obj));
                }
                else {
@@ -182,7 +169,6 @@ public abstract class BaseListObjectController implements FormController, LoadOb
                   model.put(pair[0], val);
                }
             }
-            //matrixManager.storeScaffolding(scaffolding);
             sessionBean.setScaffolding(scaffolding);
             model.put("scaffolding_id", scaffolding.getId());
             return new ModelAndView(forwardView, model);
@@ -193,45 +179,5 @@ public abstract class BaseListObjectController implements FormController, LoadOb
       model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
 
       return new ModelAndView("success", model);
-   }
-
-   protected List findCriteria(Scaffolding scaffolding, String path) {
-      StringTokenizer tok = new StringTokenizer(path, ".");
-      //ElementBean current = bean;
-      List current = scaffolding.getCriteria();
-
-      while (tok.hasMoreTokens()) {
-         Criterion obj = (Criterion)current.get(Integer.parseInt(tok.nextToken()));
-         current = obj.getCriteria();
-      }
-
-      return current;
-   }
-   
-   protected Criterion findCriterion(Scaffolding scaffolding, String path) {
-      StringTokenizer tok = new StringTokenizer(path, ".");
-      
-      //ElementBean current = bean;
-      List current = scaffolding.getCriteria();
-      Criterion obj = null;
-      while (tok.hasMoreTokens()) {
-         obj = (Criterion)current.get(Integer.parseInt(tok.nextToken()));
-         current = obj.getCriteria();
-      }
-      //obj = (Criterion)current.get(Integer.parseInt(index));
-
-      return obj;
-   }
-
-   protected Integer getIndent(String path) {
-      int retVal;
-      if (path == null) { 
-         retVal = 0;
-      }
-      else {
-         StringTokenizer tok = new StringTokenizer(path, ".");
-         retVal = tok.countTokens();
-      }
-      return new Integer(retVal);    
    }
 }

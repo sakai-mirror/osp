@@ -95,7 +95,7 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
       Scaffolding scaffolding = getMatrixManager().getScaffolding(sId);
       
       List levels = scaffolding.getLevels();
-      List criteria = scaffolding.getRootCriteria();
+      List criteria = scaffolding.getCriteria();
       List matrixContents = new ArrayList();
       Criterion criterion = new Criterion();
       Level level = new Level();

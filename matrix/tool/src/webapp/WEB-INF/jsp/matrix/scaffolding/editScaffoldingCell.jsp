@@ -35,8 +35,8 @@
     <input type="hidden" name="validate" value="false" />
     
     <table class="itemSummary" cellspacing="0">
-       <tr><th>Level: </th><td><c:out value="${scaffoldingCell.level.description}"/></td></tr>
-       <tr><th>Criteria: </th><td><c:out value="${scaffoldingCell.rootCriterion.description}"/></td></tr>
+       <tr><th><c:out value="${scaffoldingCell.scaffolding.columnLabel}"/>: </th><td><c:out value="${scaffoldingCell.level.description}"/></td></tr>
+       <tr><th><c:out value="${scaffoldingCell.scaffolding.rowLabel}"/>: </th><td><c:out value="${scaffoldingCell.rootCriterion.description}"/></td></tr>
     </table>
     
 		<h4>Cell Settings</h4>

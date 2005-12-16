@@ -1,0 +1,23 @@
+<table width="550" border="0" cellspacing="10">
+   <tr> 
+      <td width="93" height="21" align="left" valign="bottom">Legend</td>
+      <td width="78">&nbsp;</td>
+      <td width="108">&nbsp;</td>
+      <td width="82">&nbsp;</td>
+      <td width="167">&nbsp;</td>
+   </tr>
+   <tr> 
+      <td>&nbsp;</td>
+      <td class="matrixLegend-border matrix-READY">&nbsp;</td>
+      <td>Ready</td>
+      <td class="matrixLegend-border matrix-COMPLETE">&nbsp;</td>
+      <td>Completed</td>
+   </tr>
+   <tr> 
+      <td>&nbsp;</td>
+      <td class="matrixLegend-border matrix-PENDING">&nbsp;</td>
+      <td>Pending</td>
+      <td class="matrixLegend-border matrix-LOCKED">&nbsp;</td>
+      <td>Locked</td>
+   </tr>
+</table>

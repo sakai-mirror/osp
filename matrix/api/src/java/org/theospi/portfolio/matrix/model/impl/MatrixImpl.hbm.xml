@@ -145,16 +145,11 @@
         <property name="description" type="java.lang.String" />
         <subclass name="Level" discriminator-value="L">
          <property name="color" type="java.lang.String" length="7" />
+         <property name="textColor" type="java.lang.String" length="7" />
         </subclass>
         <subclass name="Criterion" discriminator-value="C">
-            <property name="indent" type="java.lang.Integer" />
             <property name="color" type="java.lang.String" length="7" />
-            <list name="criteria" lazy="true" inverse="false" cascade="all-delete-orphan"
-	        		table="osp_subcriteria">
-	            <key column="parent_id" />
-	            <index column="seq_num" />
-	            <many-to-many class="Criterion" />
-	        </list>
+            <property name="textColor" type="java.lang.String" length="7" />
         </subclass>
 		<subclass name="Expectation" discriminator-value="E" >
 		  <property name="required" type="boolean" />
@@ -183,15 +178,10 @@
         </list>
         <list name="criteria" lazy="true" inverse="false" cascade="all-delete-orphan"
         		table="osp_scaffolding_criteria">
-            <key column="parent_id" />
+            <key column="scaffolding_id" />
             <index column="seq_num" />
             <many-to-many class="Criterion" />
         </list>
-
-        <set name="rubric" cascade="all" inverse="true" lazy="true">
-            <key column="scaffolding_id" />
-            <one-to-many class="Rubric" />
-        </set>
         
 		<set name="scaffoldingCells" lazy="true" inverse="true" cascade="all-delete-orphan">
             <key column="scaffolding_id" />
@@ -201,29 +191,13 @@
         <property name="published" type="boolean" />
         <property name="publishedBy" type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" />
         <property name="publishedDate" type="java.util.Date" />
+        <property name="columnLabel" type="java.lang.String" not-null="true" />
+        <property name="rowLabel" type="java.lang.String" not-null="true" />
+        <property name="readyColor" type="java.lang.String" not-null="true" length="7"/>
+        <property name="pendingColor" type="java.lang.String" not-null="true" length="7"/>
+        <property name="completedColor" type="java.lang.String" not-null="true" length="7"/>
+        <property name="lockedColor" type="java.lang.String" not-null="true" length="7"/>
 
-    </class>
-
-    <class name="Rubric" table="osp_rubric" lazy="true">
-       <cache usage="nonstrict-read-write"/>
-        <id name="id" length="36"
-            type="org.sakaiproject.metaobj.shared.IdType" column="id">
-            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
-        </id>
-        <many-to-one name="criterion" column="criterion_id"
-            class="Criterion" />
-
-        <many-to-one name="level" column="level_id" class="Level" />
-        <property name="quantity" type="int" />
-        <property name="type" length="36"
-            type="org.sakaiproject.metaobj.shared.IdType" />
-        <component name="mimeType"
-            class="org.sakaiproject.metaobj.shared.model.MimeType">
-            <property name="primaryType" />
-            <property name="subType" />
-        </component>
-        <many-to-one name="scaffolding" column="scaffolding_id"
-            not-null="true" class="Scaffolding" />
     </class>
 
     <class name="ReviewerItem" table="osp_reviewer_item" lazy="true" >

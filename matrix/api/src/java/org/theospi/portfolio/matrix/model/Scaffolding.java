@@ -51,7 +51,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -71,10 +70,15 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    private Id id;
    private List levels = new ArrayList();
    private List criteria = new ArrayList();
-   private Set rubric = new HashSet();
    private Set scaffoldingCells = new HashSet();
    private Id ownerId;
    private String title;
+   private String columnLabel;
+   private String rowLabel;
+   private String readyColor;
+   private String pendingColor;
+   private String completedColor;
+   private String lockedColor;
    
    private String description;
    private String documentRoot;
@@ -88,6 +92,18 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    transient private boolean validate;
    transient private String xsdName;
 
+   public Scaffolding() {}
+   
+   public Scaffolding (String columnLabel, String rowLabel, String readyColor,
+         String pendingColor, String completedColor, String lockedColor) {
+      this.columnLabel = columnLabel;
+      this.rowLabel = rowLabel;
+      this.readyColor = readyColor;
+      this.pendingColor = pendingColor;
+      this.completedColor = completedColor;
+      this.lockedColor = lockedColor;
+   }
+   
    /* (non-Javadoc)
     * @see java.lang.Object#equals(java.lang.Object)
     */
@@ -117,24 +133,12 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    }
 
    /**
-    * @return List of OrderedListElements (all Criteria, regardless of indent)
+    * @return List of Criteria
     */
    public List getCriteria() {
       return criteria;
    }
 
-
-   /**
-    * @return List of only those Criteria whose indent==0
-    */
-   public List getRootCriteria() {
-      ArrayList result = new ArrayList();
-      for (Iterator iter = criteria.iterator(); iter.hasNext();) {
-         Criterion next = (Criterion) iter.next();
-         if (next.getIndent().equals(new Integer(0))) result.add(next);
-      }
-      return result;
-   }
 
    /**
     * @return Returns the owner.
@@ -148,20 +152,6 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
     */
    public void setOwnerId(Id ownerId) {
       this.ownerId = ownerId;
-   }
-
-   /**
-    * @return Returns the rubric.
-    */
-   public Set getRubric() {
-      return rubric;
-   }
-
-   /**
-    * @param rubric The rubric to set.
-    */
-   public void setRubric(Set rubric) {
-      this.rubric = rubric;
    }
 
    /**
@@ -198,18 +188,6 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
 
    public void add(Level level) {
       this.getLevels().add(level);
-   }
-
-   /**
-    * @param criterion1
-    * @param level1
-    * @param rubric1
-    */
-   public void addRubric(Criterion criterion1, Level level1, Rubric rubric1) {
-      rubric1.setScaffolding(this);
-      rubric1.setCriterion(criterion1);
-      rubric1.setLevel(level1);
-      this.getRubric().add(rubric1);
    }
    
    public void add(ScaffoldingCell scaffoldingCell) {
@@ -346,5 +324,53 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    }
    public void setPublishedDate(Date publishedDate) {
       this.publishedDate = publishedDate;
+   }
+
+   public String getColumnLabel() {
+      return columnLabel;
+   }
+
+   public void setColumnLabel(String columnLabel) {
+      this.columnLabel = columnLabel;
+   }
+
+   public String getRowLabel() {
+      return rowLabel;
+   }
+
+   public void setRowLabel(String rowLabel) {
+      this.rowLabel = rowLabel;
+   }
+
+   public String getCompletedColor() {
+      return completedColor;
+   }
+
+   public void setCompletedColor(String completedColor) {
+      this.completedColor = completedColor;
+   }
+
+   public String getLockedColor() {
+      return lockedColor;
+   }
+
+   public void setLockedColor(String lockedColor) {
+      this.lockedColor = lockedColor;
+   }
+
+   public String getPendingColor() {
+      return pendingColor;
+   }
+
+   public void setPendingColor(String pendingColor) {
+      this.pendingColor = pendingColor;
+   }
+
+   public String getReadyColor() {
+      return readyColor;
+   }
+
+   public void setReadyColor(String readyColor) {
+      this.readyColor = readyColor;
    }
 }

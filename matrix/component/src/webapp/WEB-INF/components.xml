@@ -156,6 +156,18 @@
            </bean>        
         </list>
 		</property>
+      <property name="defaultScaffoldingBean">
+         <ref bean="defaultScaffoldingBean"/>
+      </property>
+   </bean>
+
+   <bean id="defaultScaffoldingBean" class="org.theospi.portfolio.matrix.DefaultScaffoldingBean">
+      <property name="columnLabel"><value>Column</value></property>
+      <property name="rowLabel"><value>Row</value></property>
+      <property name="readyColor"><value>#86F283</value></property>
+      <property name="pendingColor"><value>#F7EF84</value></property>
+      <property name="completedColor"><value>#A6C7EA</value></property>
+      <property name="lockedColor"><value>#AC326B</value></property>
    </bean>
 
    <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactMatrix"
@@ -208,127 +220,6 @@
       <property name="supportedType"><value>org.theospi.portfolio.matrix.model.Matrix</value></property>
       <property name="rootName"><value>matrix</value></property>      
    </bean>
-   
-   <bean id="standardOutlineModel" class="org.theospi.portfolio.matrix.model.ScaffTableModel" singleton="false">
-    	<property name="list">
-    		<!-- <ref bean="standardOutlineOrderedList"/> -->
-    		<ref bean="deweyOrderedList"/>
-    	</property>     
-    </bean>
-    
-    <bean id="webOutlineOrderedList" class="org.theospi.portfolio.matrix.model.OrderedList" singleton="false">   
-       <property name="renderer">
-          <ref bean="webOutlineRenderer"/>
-       </property>
-       <property name="levels">
-          <list>
-			<ref bean="upperRomanNumeral"/>
-            <ref bean="upperEnglishAlphabet"/>
-			<ref bean="arabicNumeral1"/>
-			<ref bean="lowerRomanNumeral"/>
-			<ref bean="lowerEnglishAlphabet"/>
-			<ref bean="arabicNumeral1"/>              
-          </list>
-       </property>
-       <property name="fullyContainedLabels"><value>false</value></property>
-    </bean>
-    
-    <bean id="webDeweyOrderedList" class="org.theospi.portfolio.matrix.model.OrderedList" singleton="false">   
-       <property name="renderer">
-          <ref bean="webDeweyRenderer"/>
-       </property>
-       <property name="levels">
-          <list>
-             <ref bean="arabicNumeral1"/>
-    			<ref bean="arabicNumeral1"/>
-    			<ref bean="arabicNumeral1"/>
-    			<ref bean="arabicNumeral1"/>    			
-    			<ref bean="arabicNumeral1"/>
-    			<ref bean="arabicNumeral1"/>
-    			<ref bean="arabicNumeral1"/>
-    			<ref bean="arabicNumeral1"/>             
-          </list>
-       </property>
-       <property name="fullyContainedLabels"><value>false</value></property>
-    </bean>
-    
-    <bean id="standardOutlineOrderedList" class="org.theospi.portfolio.matrix.model.OrderedList" singleton="false">	
-    	<property name="renderer">
-    		<ref bean="standardOutlineRenderer"/>
-    	</property>
-    	<property name="levels">
-    		<list>
-    			<ref bean="upperRomanNumeral"/>
-    			<ref bean="upperEnglishAlphabet"/>
-    			<ref bean="arabicNumeral1"/>
-    			<ref bean="lowerRomanNumeral"/>
-    			<ref bean="lowerEnglishAlphabet"/>
-    			<ref bean="arabicNumeral1"/>    			
-    		</list>
-    	</property>
-      <property name="fullyContainedLabels"><value>false</value></property>
-    </bean>
-    
-    <bean id="deweyOrderedList" class="org.theospi.portfolio.matrix.model.OrderedList" singleton="false">	
-    	<property name="renderer">
-    		<ref bean="deweyRenderer"/>
-    	</property>
-    	<property name="levels">
-    		<list>
-    			<ref bean="arabicNumeral1"/>
-    			<ref bean="arabicNumeral1"/>
-    			<ref bean="arabicNumeral1"/>
-    			<ref bean="arabicNumeral1"/>    			
-    			<ref bean="arabicNumeral1"/>
-    			<ref bean="arabicNumeral1"/>
-    			<ref bean="arabicNumeral1"/>
-    			<ref bean="arabicNumeral1"/>    			
-    		</list>
-    	</property>
-      <property name="fullyContainedLabels"><value>true</value></property>
-    </bean>
-    
-    
-   <bean id="webOutlineRenderer" class="org.theospi.portfolio.matrix.model.WebOutlineRenderer"/>
-   <bean id="webDeweyRenderer" class="org.theospi.portfolio.matrix.model.WebDeweyRenderer"/>
-    <bean id="standardOutlineRenderer" class="org.theospi.portfolio.matrix.model.StandardOutlineRenderer"/>
-    <bean id="deweyRenderer" class="org.theospi.portfolio.matrix.model.DeweyRenderer"/>
-    
-    <bean id="upperRomanNumeral" class="org.theospi.portfolio.matrix.model.impl.RomanNumeral" singleton="false">
-		<property name="useUpperCase">
-			<value>true</value>
-		</property>
-    </bean>
-
-    <bean id="lowerRomanNumeral" class="org.theospi.portfolio.matrix.model.impl.RomanNumeral" singleton="false">
-		<property name="useUpperCase">
-			<value>false</value>
-		</property>
-    </bean>
-
-    <bean id="upperEnglishAlphabet" class="org.theospi.portfolio.matrix.model.impl.AlphabetGenerator" singleton="false">
-		<property name="useUpperCase">
-			<value>true</value>
-		</property>
-		<property name="alphabet">
-			<value>ABCDEFGHIJKLMNOPQRSTUVWXYZ</value>
-		</property>
-    </bean>
-
-    <bean id="lowerEnglishAlphabet" class="org.theospi.portfolio.matrix.model.impl.AlphabetGenerator" singleton="false">
-		<property name="useUpperCase">
-			<value>false</value>
-		</property>
-		<property name="alphabet">
-			<value>ABCDEFGHIJKLMNOPQRSTUVWXYZ</value>
-		</property>
-    </bean>
-    
-    <bean id="arabicNumeral1" class="org.theospi.portfolio.matrix.model.impl.ArabicNumeral" singleton="false">
-		<property name="initial">
-			<value>1</value>
-		</property>
-    </bean>
     
     <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.READY_STATUS"
        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
