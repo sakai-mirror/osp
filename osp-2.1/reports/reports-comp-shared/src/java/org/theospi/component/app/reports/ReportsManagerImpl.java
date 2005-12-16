@@ -58,9 +58,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.ByteArrayOutputStream;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -102,6 +105,9 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Node;
 
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This class is a singleton that manages the reports on a general basis
@@ -592,5 +598,82 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		
 		return componentsRoot + "osp-reports-components/WEB-INF/" + file;
 	}
+	
+	public void exportResults(ReportResult result, ReportXsl xslInfo, String title)
+	{
+
+		String fileData = transform(result, xslInfo.getXslLink()
+							);
+		String fileName = title + "." + xslInfo.getExtension();
+		writeFile(fileData, fileName, xslInfo.getContentType());
+	}
+
+
+	private void writeFile(String fileString, String fileName, String contentType)
+	{
+		FacesContext faces = FacesContext.getCurrentInstance();
+		HttpServletResponse response = (HttpServletResponse)faces.getExternalContext().getResponse();
+		protectAgainstInstantDeletion(response);
+		response.setContentType(contentType);
+		response.setHeader("Content-disposition", "attachment; filename=" + fileName + ".csv");
+		response.setContentLength(fileString.length());
+		OutputStream out = null;
+		try {
+			out = response.getOutputStream();
+			out.write(fileString.getBytes());
+			out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (out != null) out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		faces.responseComplete();
+	}
+
+    /**
+     * THIS IS TAKEN FROM GRADEBOOK: org.sakai.tool.gradebook.ui.ExportBean
+     * 
+     * Try to head off a problem with downloading files from a secure HTTPS
+     * connection to Internet Explorer.
+     *
+     * When IE sees it's talking to a secure server, it decides to treat all hints
+     * or instructions about caching as strictly as possible. Immediately upon
+     * finishing the download, it throws the data away.
+     *
+     * Unfortunately, the way IE sends a downloaded file on to a helper
+     * application is to use the cached copy. Having just deleted the file,
+     * it naturally isn't able to find it in the cache. Whereupon it delivers
+     * a very misleading error message like:
+     * "Internet Explorer cannot download roster from sakai.yoursite.edu.
+     * Internet Explorer was not able to open this Internet site. The requested
+     * site is either unavailable or cannot be found. Please try again later."
+     *
+     * There are several ways to turn caching off, and so to be safe we use
+     * several ways to turn it back on again.
+     *
+     * This current workaround should let IE users save the files to disk.
+     * Unfortunately, errors may still occur if a user attempts to open the
+     * file directly in a helper application from a secure web server.
+     *
+     * TODO Keep checking on the status of this.
+     */
+    private static void protectAgainstInstantDeletion(HttpServletResponse response) {
+    	response.reset();	// Eliminate the added-on stuff
+    	response.setHeader("Pragma", "public");	// Override old-style cache control
+    	response.setHeader("Cache-Control", "public, must-revalidate, post-check=0, pre-check=0, max-age=0");	// New-style
+    }
+	
+    
+    
+    public void saveResultResult(ReportResult result)
+    {
+        getHibernateTemplate().save(result.getReport());
+        getHibernateTemplate().save(result);
+    }
+    
 }
 

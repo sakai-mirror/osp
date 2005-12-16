@@ -49,12 +49,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Date;
 
+import org.sakaiproject.metaobj.shared.model.Id;
+
 import org.theospi.portfolio.shared.model.OspException;
 
 public class Report
 {
 	/** the unique identifier for the report */
-	private String reportId;
+	private Id reportId;
 	
 	/** the link to the report definition */
 	private ReportDefinition reportDefinition = null;
@@ -107,7 +109,7 @@ public class Report
 	 * the getter for the reportId property
 	 * @return String the unique identifier
 	 */
-	public String getReportId()
+	public Id getReportId()
 	{
 		return reportId;
 	}
@@ -118,7 +120,7 @@ public class Report
 	 * and by hibernate.
 	 * @param reportId String
 	 */
-	public void setReportId(String reportId)
+	public void setReportId(Id reportId)
 	{
 		this.reportId = reportId;
 	}
@@ -143,6 +145,32 @@ public class Report
 			throw new OspException("A report cannot change it's report definition");
 		
 		this.reportDefinition = reportDefinition;
+		
+	}
+	
+	
+	
+	private String	reportDefIdMark = null;
+	/**
+	 * This is a way of separating the report definition from the report in the database
+	 * this is a temp solution while the report definitions aren't being stored in the database
+	 * @return String
+	 */
+	public String getReportDefIdMark()
+	{
+		System.out.println("report Definition: " + reportDefinition);
+		System.out.println("report Definition: " + reportDefinition.getIdString());
+		return reportDefinition.getIdString();
+	}
+	
+	/**
+	 * this is the link to report definition
+	 * @param reportDefIdMark String
+	 */
+	public void setReportDefIdMark(String reportDefIdMark)
+	{
+		reportDefinition = null;
+		this.reportDefIdMark = reportDefIdMark;
 	}
 	
 	

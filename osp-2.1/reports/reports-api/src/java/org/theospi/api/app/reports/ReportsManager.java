@@ -62,4 +62,8 @@ public interface ReportsManager
 	public String generateSQLParameterValue(ReportParam reportParam);
 
 	public String transform(ReportResult result, String xslFile);
+	public void exportResults(ReportResult result, ReportXsl xslInfo, String title);
+	
+
+    public void saveResultResult(ReportResult result);
 }

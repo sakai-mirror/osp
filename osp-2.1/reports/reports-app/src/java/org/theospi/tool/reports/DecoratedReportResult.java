@@ -157,6 +157,16 @@ public class DecoratedReportResult {
 			this.currentExportXsl = currentExportXsl;
 	}
 	
+	public boolean getIsLive()
+	{
+		return report.getIsLive();
+	}
+	
+	public boolean getIsSaved()
+	{
+		return reportResult.getIsSaved();
+	}
+	
 	
 	/**
 	 * This generates the final html based on the selected XSL and the result (xml).

@@ -11,7 +11,7 @@
         
         <id name="reportDefId" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" column="reportDefId">
-            <generator class="assigned" />
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
         </id>
         
         <property name="title" type="java.lang.String" />
@@ -21,15 +21,16 @@
         <property name="defaultXsl" type="java.lang.String" />
         <property name="exportXsl" type="java.lang.String" />
         
-        <set name="reportDefinitionParams" cascade="all-delete-orphan" inverse="true"
+        <list name="reportDefinitionParams" cascade="all-delete-orphan" inverse="true"
             lazy="true">
             <key column="reportDefParamId" />
+            <index column="seq_num" />
             <one-to-many class="ReportDefinitionParam" />
-        </set>
-        <set name="reportDefinitionXsls" cascade="all-delete-orphan" inverse="true"
+        </list>
+        <set name="xsls" cascade="all-delete-orphan" inverse="true"
             lazy="true">
-            <key column="reportDefXslId" />
-            <one-to-many class="ReportDefinitionXsl" />
+            <key column="reportXslId" />
+            <one-to-many class="ReportXsl" />
         </set>
     </class>
     
@@ -39,11 +40,12 @@
         
         <id name="reportDefParamId" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" column="reportDefParamId">
-            <generator class="assigned" />
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
         </id>
-        
+        <!-- 
         <many-to-one name="reportDefinition" column="reportDefId"
             class="ReportDefinition" cascade="delete" />
+        -->
             
         <property name="title" type="java.lang.String" />
         <property name="paramName" type="java.lang.String" />
@@ -54,19 +56,22 @@
     </class>
     
     <class
-        name="ReportDefinitionXsl"
-        table="osp_reports_definition_xsls" lazy="true">
+        name="ReportXsl"
+        table="osp_reports_xsls" lazy="true">
         
-        <id name="reportDefXslId" length="36"
-            type="org.sakaiproject.metaobj.shared.IdType" column="reportDefXslId">
-            <generator class="assigned" />
+        <id name="reportXslId" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="reportXslId">
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
         </id>
         
-        <many-to-one name="reportDefinition" column="reportDefId"
+          <many-to-one name="reportDefinition" column="reportDefId"
             class="ReportDefinition" cascade="delete" />
             
-        <property name="fileLink" type="java.lang.String" />
+        <property name="xslLink" type="java.lang.String" />
         <property name="isExport" type="boolean" />
+        <property name="title" type="java.lang.String" />
+        <property name="contentType" type="java.lang.String" />
+        <property name="extension" type="java.lang.String" />
     </class>
     
     <class
@@ -75,11 +80,12 @@
         
         <id name="reportId" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" column="reportId">
-            <generator class="assigned" />
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
         </id>
         
-        <many-to-one name="reportDefinition" column="reportDefId"
-            class="ReportDefinition" cascade="delete" />
+        <!--  <many-to-one name="reportDefinition" column="reportDefId"
+            class="ReportDefinition" cascade="delete" /> -->
+        <property name="reportDefIdMark" type="java.lang.String" />
             
         <property name="userId" type="java.lang.String" />
         <property name="title" type="java.lang.String" />
@@ -89,11 +95,12 @@
         <property name="defaultXsl" type="java.lang.String" />
         <property name="creationDate" type="java.util.Date" />
         
-        <set name="reportParams" cascade="all-delete-orphan" inverse="true"
+        <list name="reportParams" cascade="all-delete-orphan" inverse="true"
             lazy="true">
             <key column="reportParamId" />
+            <index column="seq_num" />
             <one-to-many class="ReportParam" />
-        </set>
+        </list>
     </class>
     
     <class
@@ -102,14 +109,15 @@
         
         <id name="paramId" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" column="paramId">
-            <generator class="assigned" />
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
         </id>
         
         <many-to-one name="report" column="reportId"
             class="Report" cascade="delete" />
             
-        <many-to-one name="reportDefinitionParam" column="reportDefParamId"
-            class="ReportDefinitionParam" cascade="delete" />
+        <!--  <many-to-one name="reportDefinitionParam" column="reportDefParamId"
+            class="ReportDefinitionParam" cascade="delete" /> -->
+        <property name="reportDefParamIdMark" type="java.lang.String" />
 
         <property name="value" type="java.lang.String" /> 
     </class>
@@ -120,7 +128,7 @@
         
         <id name="resultId" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" column="resultId">
-            <generator class="assigned" />
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
         </id>
         
         <many-to-one name="report" column="reportId"

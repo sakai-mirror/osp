@@ -7,8 +7,8 @@
     <bean id="report1"
         class="org.theospi.api.app.reports.ReportDefinition">
 
-        <property name="reportDefId">
-            <value>8b9df034-d90f-d898-7890-f89f8d78d7f8</value>
+        <property name="idString">
+            <value>11112222-3333-4444-5555-666677778881</value>
         </property>
         <property name="title">
             <value>
@@ -156,8 +156,8 @@
     <bean id="report2"
         class="org.theospi.api.app.reports.ReportDefinition">
 
-        <property name="reportDefId">
-            <value>8b9df034-d90f-d898-7890-f89f8d78d7f9</value>
+        <property name="idString">
+            <value>11112222-3333-4444-5555-666677778882</value>
         </property>
         <property name="title">
             <value>
@@ -218,8 +218,8 @@
     <bean id="report3"
         class="org.theospi.api.app.reports.ReportDefinition">
 
-        <property name="reportDefId">
-            <value>8b9df034-d90f-d898-7891-f89f8d78d7f3</value>
+        <property name="idString">
+            <value>11112222-3333-4444-5555-666677778883</value>
         </property>
         <property name="title">
             <value>

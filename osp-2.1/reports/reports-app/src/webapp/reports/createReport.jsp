@@ -30,6 +30,13 @@
                             <h:outputText value="#{msgs.report_keywords}"/>
                         </sakai:doc_section>
                         <sakai:doc_section>
+                            <h:selectBooleanCheckbox value="#{ReportsTool.workingReport.report.isLive}"/>
+                        </sakai:doc_section>
+                        
+                        <sakai:doc_section>
+                            <h:outputText value="#{msgs.report_keywords}"/>
+                        </sakai:doc_section>
+                        <sakai:doc_section>
                             <h:inputText value="#{ReportsTool.workingReport.report.keywords}" id="keywords"/>
                         </sakai:doc_section>
                         
