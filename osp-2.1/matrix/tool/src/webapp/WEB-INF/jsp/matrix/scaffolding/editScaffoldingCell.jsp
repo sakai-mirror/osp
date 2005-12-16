@@ -1,13 +1,13 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ include file="/WEB-INF/jsp/userSelectFunctions.inc" %>
 
 
-<form method="POST" onsubmit="return updateItems('reviewers');">
+<form method="POST">
   
     <c:if test="${not scaffoldingCell.scaffolding.published}">
 	    <div class="navIntraTool">
-	        <a href="javascript:updateItems('reviewers');document.forms[0].dest.value='addExpectation';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">Add Expectation</a>
+	        <a href="javascript:document.forms[0].dest.value='addExpectation';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">Add Expectation...</a>
+           <a href="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">Select Evaluators...</a>
 	    </div>
     </c:if>
 
@@ -86,15 +86,6 @@
         </spring:bind>
 		
 		<br />
-		<p class="longtext">
-            <label class="block">Reviewers</label>
-			<c:set var="controlName" value="scaffoldingCell.reviewers" />
-			<c:set var="object" value="${scaffoldingCell.reviewers}" />
-			<%@ include file="/WEB-INF/jsp/userSelectControls.inc" %>
-		</p>
-		<br />
-
-
 
 		<h4>Expectations</h4>
 		
@@ -172,13 +163,5 @@
 	</div>
 </form>
 
-<script type="text/javascript" language="JavaScript">
-	//prepopulate first select box
-	updateParticipantList("filterSelect","select1","reviewers");
-</script>
-
 <script type="text/javascript" src="/library/htmlarea/sakai-htmlarea.js"></script>
 <script type="text/javascript" defer="1">chef_setupformattedtextarea('expectationHeader');</script>
-
-
-<%--@ include file="/WEB-INF/jsp/htmlarea.inc" --%>

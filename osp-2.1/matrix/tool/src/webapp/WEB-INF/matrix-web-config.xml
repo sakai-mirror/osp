@@ -598,6 +598,7 @@
 				<prop key="moveExpectation">moveExpectationRedirect</prop>
             <prop key="removeExpectation">removeExpectationRedirect</prop>
             <prop key="editScaffoldingCellConfirm">editScaffoldingCellConfirmRedirect</prop> 
+            <prop key="selectEvaluators">selectCellEvaluators</prop>
          </props>
       </property>
       <property name="validator"><ref bean="matrixValidator"/></property>
