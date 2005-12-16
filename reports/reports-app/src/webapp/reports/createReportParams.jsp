@@ -38,10 +38,10 @@
                 
                 <sakai:button_bar>
                     <sakai:button_bar_item
-                        action="#{ReportsTool.workingReport.processEditParamsContinue}"
+                        action="#{ReportsTool.processEditParamsContinue}"
                         value="#{msgs.generate_report_results}" />
                     <sakai:button_bar_item
-                        action="#{ReportsTool.workingReport.processCancel}"
+                        action="#{ReportsTool.processCancelReport}"
                         value="#{msgs.cancel}" />
                 </sakai:button_bar>
                 

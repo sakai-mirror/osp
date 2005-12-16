@@ -44,6 +44,7 @@
 
 package org.theospi.component.app.reports;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -57,6 +58,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.io.StringReader;
+import java.io.ByteArrayOutputStream;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamSource;
 
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
@@ -79,6 +87,21 @@ import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
+import org.jdom.input.SAXBuilder;
+import org.jdom.transform.JDOMResult;
+import org.jdom.transform.JDOMSource;
+
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.w3c.dom.Node;
+
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 
 /**
  * This class is a singleton that manages the reports on a general basis
@@ -412,6 +435,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
 					Element paramNode = new Element("parameter");
 
+					paramNode.setAttribute("title", rdp.getTitle());
 					paramNode.setAttribute("name", rdp.getParamName());
 					paramNode.setAttribute("type", rdp.getType());
 					paramNode.setAttribute("value", rp.getValue());
@@ -419,12 +443,22 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 					paramsNode.addContent(paramNode);
 				}
 			}
-			
 			reportElement.addContent(paramsNode);
+			
+
+			Element columnsNode = new Element("columns");
+			for(int i = 0; i < columnNames.length; i++) {
+
+				Element column = new Element("column");
+				column.setAttribute("colIndex", "" + i);
+				column.setAttribute("title", columnNames[i]);
+				columnsNode.addContent(column);
+			}
+			reportElement.addContent(columnsNode);
 			
 			while(rs.next()) {
 				
-				Element dataRow = new Element("datarow");;
+				Element dataRow = new Element("datarow");
 				
 				dataRow.setAttribute("index", "" + resultSetIndex++);
 				reportElement.addContent(dataRow);
@@ -463,7 +497,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			rr.setKeywords("keywords, blah");
 			rr.setDescription("This is the sample description of the report result");
 			rr.setXml((new XMLOutputter()).outputString(document));
-			System.out.println((new XMLOutputter()).outputString(document));
 			
 		} catch (SQLException e) {
 			logger.error("", e);
@@ -517,6 +550,47 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		}
 		
 		return str.toString();
+	}
+
+	/**
+	 * 
+	 * @param result ReportResult
+	 * @param xslFile String to xsl resource
+	 * @return
+	 */
+	public String transform(ReportResult reportResult, String xslFile)
+	{
+		try {
+
+			JDOMResult result = new JDOMResult();
+			SAXBuilder builder = new SAXBuilder();
+
+			StreamSource xsltSource = new StreamSource(
+					new java.io.FileInputStream(getResourceFrom(xslFile)));
+			Transformer transformer = TransformerFactory.newInstance()
+					.newTransformer(xsltSource);
+			Document rootElement = builder.build(new StringReader(reportResult
+					.getXml()));
+
+			ByteArrayOutputStream sourceOut = new ByteArrayOutputStream();
+			StreamResult resultstream = new StreamResult(sourceOut);
+
+			transformer.transform(new JDOMSource(rootElement), resultstream);
+
+			return sourceOut.toString();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return e.getMessage();
+		}
+	}
+	
+	
+	private String getResourceFrom(String file)
+	{
+		String componentsRoot = System.getProperty(ComponentManager.SAKAI_COMPONENTS_ROOT_SYS_PROP);
+		
+		return componentsRoot + "osp-reports-components/WEB-INF/" + file;
 	}
 }
 

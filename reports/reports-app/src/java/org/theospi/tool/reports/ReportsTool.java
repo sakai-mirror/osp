@@ -44,6 +44,8 @@
 
 package org.theospi.tool.reports;
 
+import java.io.OutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,6 +53,11 @@ import java.util.List;
 import javax.faces.model.SelectItem;
 
 import org.theospi.api.app.reports.*;
+import org.theospi.portfolio.shared.model.OspException;
+
+
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * This class is the controller and model to the jsp view.<BR>
@@ -95,6 +102,8 @@ public class ReportsTool
 	protected static final String createReportPage = "processCreateReport";
 	protected static final String createReportParamsPage = "processCreateReportParams";
 	protected static final String reportResultsPage = "showReportResults";
+	protected static final String exportResultsPage = "exportReportResults";
+	protected static final String saveResultsPage = "saveReportResults";
 
 	/**
 	 * getter for the ReportsManager property
@@ -195,6 +204,58 @@ public class ReportsTool
 	//***********************************************************
 	//	Actions for the JSP
 
+	
+
+	
+	/**
+	 * An action called from the JSP through the JSF framework.
+	 * This is called when the user wants to move to the next screen
+	 * @return String the next page
+	 */
+	public String processReportBaseProperties()
+	{
+		String nextPage = ReportsTool.createReportParamsPage;
+		
+		if(getWorkingReport().testInvalidateTitle())
+			nextPage = "";
+		
+		return nextPage;
+	}
+	
+	/**
+	 * An action called from the JSP through the JSF framework.
+	 * Called when the user wants to stop creating a new report
+	 * @return String the next page
+	 */
+	public String processCancelReport()
+	{
+		//	remove the working report
+		setWorkingReport(null);
+		
+		return ReportsTool.mainPage;
+	}
+	
+	public String processCancelExport()
+	{
+		return ReportsTool.reportResultsPage;
+	}
+	
+	public String processEditParamsContinue()
+	{
+		//	get the results
+		ReportResult result = getReportsManager().generateResults(getWorkingReport().getReport());
+		
+		//	make it the working result
+		setWorkingResult(new DecoratedReportResult(result, this));
+		
+		//	go to the results page
+		return reportResultsPage;
+	}
+	
+	public String processChangeViewXsl()
+	{
+		return reportResultsPage;
+	}
 
 	/**
 	 * An action called from the JSP through the JSF framework.
@@ -204,5 +265,95 @@ public class ReportsTool
 	{
 		return mainPage;
 	}
+	
+	
+	public String processExportResults()
+	{
+		return exportResultsPage;
+	}
+	
+	
+	public String processExportResultsToFile()
+	{
+		ReportXsl xslInfo = getWorkingResult().getReport().getReportDefinition().findReportXsl(
+														getWorkingResult().getCurrentExportXsl());
+		if(xslInfo == null)
+			throw new OspException("Couldn't find the xsl info: " + getWorkingResult().getCurrentExportXsl());
+		
+		String fileData = reportsManager.transform(
+								getWorkingResult().getReportResult(), 
+								xslInfo.getXslLink()
+							);
+		String fileName = getWorkingResult().getTitle() + "." + xslInfo.getExtension();
+		writeAsCsv(fileData, fileName, xslInfo.getContentType());
+		
+		return exportResultsPage;
+	}
+	
+	public String processSaveResults()
+	{
+		return saveResultsPage;
+	}
+	
+	
 
+	private void writeAsCsv(String csvString, String fileName, String contentType)
+	{
+		FacesContext faces = FacesContext.getCurrentInstance();
+		HttpServletResponse response = (HttpServletResponse)faces.getExternalContext().getResponse();
+		protectAgainstInstantDeletion(response);
+		response.setContentType(contentType);
+		response.setHeader("Content-disposition", "attachment; filename=" + fileName + ".csv");
+		response.setContentLength(csvString.length());
+		OutputStream out = null;
+		try {
+			out = response.getOutputStream();
+			out.write(csvString.getBytes());
+			out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (out != null) out.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		faces.responseComplete();
+	}
+
+    /**
+     * THIS IS TAKEN FROM GRADEBOOK: org.sakai.tool.gradebook.ui.ExportBean
+     * 
+     * Try to head off a problem with downloading files from a secure HTTPS
+     * connection to Internet Explorer.
+     *
+     * When IE sees it's talking to a secure server, it decides to treat all hints
+     * or instructions about caching as strictly as possible. Immediately upon
+     * finishing the download, it throws the data away.
+     *
+     * Unfortunately, the way IE sends a downloaded file on to a helper
+     * application is to use the cached copy. Having just deleted the file,
+     * it naturally isn't able to find it in the cache. Whereupon it delivers
+     * a very misleading error message like:
+     * "Internet Explorer cannot download roster from sakai.yoursite.edu.
+     * Internet Explorer was not able to open this Internet site. The requested
+     * site is either unavailable or cannot be found. Please try again later."
+     *
+     * There are several ways to turn caching off, and so to be safe we use
+     * several ways to turn it back on again.
+     *
+     * This current workaround should let IE users save the files to disk.
+     * Unfortunately, errors may still occur if a user attempts to open the
+     * file directly in a helper application from a secure web server.
+     *
+     * TODO Keep checking on the status of this.
+     */
+    private static void protectAgainstInstantDeletion(HttpServletResponse response) {
+    	response.reset();	// Eliminate the added-on stuff
+    	response.setHeader("Pragma", "public");	// Override old-style cache control
+    	response.setHeader("Cache-Control", "public, must-revalidate, post-check=0, pre-check=0, max-age=0");	// New-style
+    }
+	
+	
 }

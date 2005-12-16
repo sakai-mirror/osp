@@ -98,51 +98,16 @@ public class DecoratedReport {
 	{
 		return invalidTitle;
 	}
-	
-	/**
-	 * An action called from the JSP through the JSF framework.
-	 * This is called when the user wants to move to the next screen
-	 * @return String the next page
-	 */
-	public String processReportBaseProperties()
+
+	public boolean testInvalidateTitle()
 	{
-		String nextPage = ReportsTool.createReportParamsPage;
-		
 		//	reset all the vars
 		invalidTitle = false;
 		
 		//	if no title, then error
-		if(report.getTitle() == null || report.getTitle().trim().equals("")) {
-			nextPage = "";
+		if(report.getTitle() == null || report.getTitle().trim().equals(""))
 			invalidTitle = true;
-		}
-		
-		
-		return nextPage;
-	}
-	
-	/**
-	 * An action called from the JSP through the JSF framework.
-	 * Called when the user wants to stop creating a new report
-	 * @return String the next page
-	 */
-	public String processCancel()
-	{
-		//	remove the working report
-		reportsTool.setWorkingReport(null);
-		
-		return ReportsTool.mainPage;
-	}
-	
-	public String processEditParamsContinue()
-	{
-		//	get the results
-		ReportResult result = reportsTool.getReportsManager().generateResults(report);
-		
-		//	make it the working result
-		reportsTool.setWorkingResult(new DecoratedReportResult(result, reportsTool));
-		
-		//	go to the results page
-		return ReportsTool.reportResultsPage;
+			
+		return invalidTitle;
 	}
 }

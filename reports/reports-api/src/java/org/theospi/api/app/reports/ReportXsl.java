@@ -55,8 +55,14 @@ public class ReportXsl
 	/** the xsl location */
 	private String xslLink;
 
-	/** the titlen */
+	/** the title */
 	private String title;
+
+	/** the contentType */
+	private String contentType;
+
+	/** the extension */
+	private String extension;
 
 	/**
 	 * the getter for the reportId property
@@ -142,10 +148,52 @@ public class ReportXsl
 	/**
 	 * the setter for the title property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param reportDefId String
+	 * @param title String
 	 */
 	public void setTitle(String title)
 	{
 		this.title = title;
+	}
+	
+	
+	/**
+	 * the getter for the contentType property
+	 * @return String the contentType
+	 */
+	public String getContentType()
+	{
+		return contentType;
+	}
+	
+	
+	/**
+	 * the setter for the contentType property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param contentType String
+	 */
+	public void setContentType(String contentType)
+	{
+		this.contentType = contentType;
+	}
+	
+	
+	/**
+	 * the getter for the extension property
+	 * @return String the extension
+	 */
+	public String getExtension()
+	{
+		return extension;
+	}
+	
+	
+	/**
+	 * the setter for the extension property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param extension String
+	 */
+	public void setExtension(String extension)
+	{
+		this.extension = extension;
 	}
 }
