@@ -187,7 +187,7 @@
     <dependency>
       <groupId>springframework</groupId>
       <artifactId>spring</artifactId>
-      <version>1.1.5</version>
+      <version>${sakai.spring.version}</version>
     </dependency>            
     
   </dependencies>
