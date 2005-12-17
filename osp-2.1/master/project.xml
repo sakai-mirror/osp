@@ -2,6 +2,7 @@
 <!--test-->
 <project>
 	<pomVersion>3</pomVersion>
+   <extend>../../master/project.xml</extend>
 	<name>OSP</name>
 	<groupId>osp</groupId>
 	<currentVersion>${osp.version}</currentVersion>
