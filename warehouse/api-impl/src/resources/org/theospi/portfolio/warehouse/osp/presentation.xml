@@ -347,7 +347,6 @@
       <column>
         <name>required</name>
         <type>TINYINT</type>
-        <param>1</param>
       </column>
    </columns>
    <not-null>id</not-null>
@@ -430,12 +429,10 @@
       <column>
         <name>isDefault</name>
         <type>TINYINT</type>
-        <param>1</param>
       </column>
       <column>
         <name>isPublic</name>
         <type>TINYINT</type>
-        <param>1</param>
       </column>
       <column>
         <name>expiresOn</name>
@@ -498,7 +495,6 @@
       <column>
         <name>visibility</name>
         <type>TINYINT</type>
-        <param>4</param>
       </column>
       <column>
         <name>created</name>
@@ -565,7 +561,6 @@
       <column>
         <name>allowMultiple</name>
         <type>TINYINT</type>
-        <param>1</param>
       </column>
       <column>
         <name>type</name>
@@ -649,7 +644,6 @@
       <column>
         <name>published</name>
         <type>TINYINT</type>
-        <param>1</param>
       </column>
       <column>
         <name>owner_id</name>
@@ -803,7 +797,6 @@
       <column>
         <name>seq_num</name>
         <type>INTEGER</type>
-        <param>255</param>
       </column>
    </columns>
    <not-null>id</not-null>
@@ -859,17 +852,14 @@
       <column>
         <name>includeHeaderAndFooter</name>
         <type>TINYINT</type>
-        <param>1</param>
       </column>
       <column>
         <name>includeComments</name>
         <type>TINYINT</type>
-        <param>1</param>
       </column>
       <column>
         <name>published</name>
         <type>TINYINT</type>
-        <param>1</param>
       </column>
       <column>
         <name>owner_id</name>
