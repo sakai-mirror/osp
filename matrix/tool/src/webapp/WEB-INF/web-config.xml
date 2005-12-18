@@ -41,12 +41,8 @@
 	  - using the respective properties file, which defines arbitrary mappings between
 	  - view names and resources.
 	  -->
-	<bean id="viewResolver" class="org.sakaiproject.metaobj.utils.mvc.impl.beans.AddableResourceBundleViewResolver">
-		<property name="baseNames">
-		   <list>
-		      <value>matrix-views</value>
-		   </list>
-		</property>
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.ResourceBundleViewResolver">
+		<property name="basename"><value>matrix-views</value></property>
 	</bean>
 
 	<!--
