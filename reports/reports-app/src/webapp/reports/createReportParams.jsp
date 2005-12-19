@@ -25,8 +25,12 @@
                         <f:facet name="header">
                             <h:outputText value="Value" />
                         </f:facet>
-                        <h:inputText value="#{decoratedReportParam.textValue}" id="fillin" rendered="#{decoratedReportParam.isFillIn}"/>
-                        
+                        <h:inputText value="#{decoratedReportParam.textValue}" id="fillin" 
+                            rendered="#{decoratedReportParam.isFillIn && !decoratedReportParam.isDate}"/>
+
+                        <sakai:input_date value="#{decoratedReportParam.dateValue}" showDate="true"
+                            showTime="true" rendered="#{decoratedReportParam.isFillIn && decoratedReportParam.isDate && false}" />
+                        <br />
                         <h:selectOneMenu value="#{decoratedReportParam.menuValue}" 
                                 rendered="#{decoratedReportParam.isSet && !decoratedReportParam.isMultiSelectable}">
                             <f:selectItems value="#{decoratedReportParam.selectableValues}" />
@@ -37,6 +41,9 @@
                 </h:dataTable>
                 
                 <sakai:button_bar>
+                    <sakai:button_bar_item
+                        action="#{ReportsTool.processEditParamsBack}"
+                        value="#{msgs.btn_back}" />
                     <sakai:button_bar_item
                         action="#{ReportsTool.processEditParamsContinue}"
                         value="#{msgs.generate_report_results}" />

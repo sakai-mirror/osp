@@ -53,6 +53,14 @@ import org.sakaiproject.metaobj.shared.model.Id;
 
 import org.theospi.portfolio.shared.model.OspException;
 
+/**
+ * After loading a report from the database you must call connectToDefinition 
+ * to connect to one of a list of report definitions or setReportDefinition for a specific
+ * Report Definition.  These are good for setting report definitions from the config file and
+ * from the database, respectively.
+ * @author andersjb
+ *
+ */
 public class Report
 {
 	/** the unique identifier for the report */
@@ -60,6 +68,9 @@ public class Report
 	
 	/** the link to the report definition */
 	private ReportDefinition reportDefinition = null;
+
+	/** the database link to the report definition */
+	private String	reportDefIdMark = null;
 
 	/** the owner of the report */
 	private String userId;
@@ -77,14 +88,13 @@ public class Report
 	private boolean isLive;
 
 	/** the defaultXsl for the report */
-	private String defaultXsl;
-
-	/** the defaultXsl for the report */
 	private Date creationDate;
 	
 	/** the list of report parameters for the report */
 	private List reportParams;
 	
+	/** when the report is live it matters if the report is saved or not */
+	private boolean isSaved = false;
 
 	/**
 	 * the getter for the reportId property
@@ -150,7 +160,6 @@ public class Report
 	
 	
 	
-	private String	reportDefIdMark = null;
 	/**
 	 * This is a way of separating the report definition from the report in the database
 	 * this is a temp solution while the report definitions aren't being stored in the database
@@ -158,8 +167,8 @@ public class Report
 	 */
 	public String getReportDefIdMark()
 	{
-		System.out.println("report Definition: " + reportDefinition);
-		System.out.println("report Definition: " + reportDefinition.getIdString());
+		if(reportDefinition == null)
+			return reportDefIdMark;
 		return reportDefinition.getIdString();
 	}
 	
@@ -169,8 +178,29 @@ public class Report
 	 */
 	public void setReportDefIdMark(String reportDefIdMark)
 	{
-		reportDefinition = null;
+		if(reportDefinition != null)
+			if(!reportDefIdMark.equals(reportDefinition.getIdString()))
+				reportDefinition = null;
 		this.reportDefIdMark = reportDefIdMark;
+	}
+	
+	/**
+	 * this is the link to report definition
+	 * @param reportDefIdMark String
+	 */
+	public void connectToDefinition(List reportDefs)
+	{
+		if(reportDefIdMark != null && reportDefinition == null) {
+			Iterator iter = reportDefs.iterator();
+			
+			while(iter.hasNext()) {
+				ReportDefinition rd = (ReportDefinition)iter.next();
+				if(rd.getIdString().equals(reportDefIdMark)){
+					reportDefinition = rd;
+					break;
+				}
+			}
+		}
 	}
 	
 	
@@ -280,27 +310,6 @@ public class Report
 	
 	
 	/**
-	 * the getter for the defaultXsl property
-	 * @return String the defaultXsl
-	 */
-	public String getDefaultXsl()
-	{
-		return defaultXsl;
-	}
-	
-	
-	/**
-	 * the setter for the defaultXsl property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param defaultXsl String
-	 */
-	public void setDefaultXsl(String defaultXsl)
-	{
-		this.defaultXsl = defaultXsl;
-	}
-	
-	
-	/**
 	 * the getter for the creationDate property
 	 * @return Date the creationDate
 	 */
@@ -338,6 +347,27 @@ public class Report
 	public void setReportParams(List reportParams)
 	{
 		this.reportParams = reportParams;
+	}
+	
+	
+	/**
+	 * the getter for the isSaved property
+	 * @return String the isSaved
+	 */
+	public boolean getIsSaved()
+	{
+		return isSaved;
+	}
+	
+	
+	/**
+	 * the setter for the isSaved property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param isSaved List
+	 */
+	public void setIsSaved(boolean isSaved)
+	{
+		this.isSaved = isSaved;
 	}
 	
 }

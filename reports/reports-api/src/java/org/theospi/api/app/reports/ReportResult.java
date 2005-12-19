@@ -263,7 +263,7 @@ public class ReportResult
 	 * and by hibernate.
 	 * @param isSaved List
 	 */
-	public void setisSaved(boolean isSaved)
+	public void setIsSaved(boolean isSaved)
 	{
 		this.isSaved = isSaved;
 	}

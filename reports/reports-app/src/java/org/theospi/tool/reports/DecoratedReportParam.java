@@ -45,6 +45,7 @@
 package org.theospi.tool.reports;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.model.SelectItem;
@@ -93,8 +94,18 @@ public class DecoratedReportParam {
 	}
 	public void setTextValue(String value)
 	{
-		if(getIsFillIn())
+		if(getIsFillIn() && !getIsDate())
 			reportParam.setValue(value);
+	}
+	
+	public Date getDateValue()
+	{
+		return new Date(reportParam.getValue());
+	}
+	public void setDateValue(Date value)
+	{
+		if(getIsFillIn() && getIsDate())
+			reportParam.setValue(value.toString());
 	}
 	
 	public String getMenuValue()
@@ -233,5 +244,10 @@ public class DecoratedReportParam {
 	{
 		return reportParam.getReportDefinitionParam().getValueType().equals(
 						ReportDefinitionParam.VALUE_TYPE_STATIC);
+	}
+	
+	public boolean getIsDate()
+	{
+		return reportParam.getReportDefinitionParam().getType() == ReportDefinitionParam.TYPE_DATE;
 	}
 }
