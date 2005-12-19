@@ -20,26 +20,26 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.portfolio.warehouse.osp;
+package org.theospi.portfolio.warehouse.osp.presentation;
 
-import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
+import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 import org.theospi.portfolio.presentation.PresentationManager;
-
-import java.util.Collection;
+import org.theospi.portfolio.presentation.model.Presentation;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Dec 1, 2005
- * Time: 10:49:22 AM
+ * Date: Dec 18, 2005
+ * Time: 9:46:20 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PresentationWarehouseTask extends BaseWarehouseTask {
+public class PresentationCommentsPropertyAccess implements PropertyAccess {
 
    private PresentationManager presentationManager;
 
-   protected Collection getItems() {
-      return getPresentationManager().getAllPresentations();
+   public Object getPropertyValue(Object source) throws Exception {
+      Presentation pres = (Presentation)source;
+      return getPresentationManager().getPresentationComments(pres.getId(), pres.getOwner());
    }
 
    public PresentationManager getPresentationManager() {
