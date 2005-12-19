@@ -69,15 +69,17 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
+import org.sakaiproject.api.kernel.session.Session;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
+
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
 import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 
 import net.sf.hibernate.HibernateException;
-import net.sf.hibernate.Session;
+//import net.sf.hibernate.Session;
 
 import org.theospi.api.app.reports.*;
 import org.theospi.portfolio.shared.model.OspException;
@@ -105,6 +107,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Node;
 
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
@@ -140,6 +143,13 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	public void setReports(List reports)
 	{
 		this.reports = reports;
+		
+		Iterator iter = reports.iterator();
+		while(iter.hasNext()) {
+			ReportDefinition rd = (ReportDefinition)iter.next();
+			
+			rd.finishLoading();
+		}
 	}
 	
 	
@@ -224,7 +234,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		
 		isDBLoaded = true;
 	}
-	
 
 //	*************************************************************************
 	//	*************************************************************************
@@ -248,6 +257,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			ReportParam rp = new ReportParam();
 
 			rp.setReportDefinitionParam(rdp);
+			rp.setReport(report);
 			
 			//	if the parameter is static then copy the value, otherwise it is filled by user
 			if(rdp.getValueType().equals( ReportDefinitionParam.VALUE_TYPE_STATIC))
@@ -280,6 +290,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		//Create the report parameters
 		createReportParameters(report);
 		
+		Session s = SessionManager.getCurrentSession();
+		report.setUserId(s.getUserId());
+		report.setCreationDate(new Date());
+		
 		return report;
 	}
 	
@@ -289,7 +303,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		//Get the data warehouse database connection
 		//if fails, use the hibernate connection
 
-		Session				session = getSession();
+		net.sf.hibernate.Session				session = getSession();
 		
 		return session.connection();
 	}
@@ -495,13 +509,12 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 					} else
 						columnNode.setText(data);
 				}
-				
 			}
 
 			rr.setReport(report);
-			rr.setTitle("Report Title");
-			rr.setKeywords("keywords, blah");
-			rr.setDescription("This is the sample description of the report result");
+			rr.setTitle(report.getTitle());
+			rr.setKeywords(report.getKeywords());
+			rr.setDescription(report.getDescription());
 			rr.setXml((new XMLOutputter()).outputString(document));
 			
 		} catch (SQLException e) {
@@ -525,9 +538,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	
 	public String replaceSystemValues(String inString)
 	{
+		Session s = SessionManager.getCurrentSession();
+		
 		Map map = new HashMap();
 
-		map.put("{userid}", "admin");
+		map.put("{userid}", s.getUserId());
 		map.put("{username}", "The Administrator");
 		map.put("{worksiteid}", "209348029348203984");
 		map.put("{toolid}", "8765897589648");
@@ -669,10 +684,24 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	
     
     
-    public void saveResultResult(ReportResult result)
+    public void saveReportResult(ReportResult result)
     {
-        getHibernateTemplate().save(result.getReport());
-        getHibernateTemplate().save(result);
+        getHibernateTemplate().saveOrUpdate(result.getReport());
+        getHibernateTemplate().saveOrUpdate(result);
+        
+        //	the user can't save results that have already been saved
+        result.getReport().setIsSaved(true);
+        result.setIsSaved(true);
+    }
+	
+    
+    
+    public void saveReport(Report report)
+    {
+        getHibernateTemplate().saveOrUpdate(report);
+        
+        //	the user can't save results that have already been saved
+        report.setIsSaved(true);
     }
     
 }

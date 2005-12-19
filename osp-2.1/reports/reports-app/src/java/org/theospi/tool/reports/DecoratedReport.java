@@ -98,6 +98,11 @@ public class DecoratedReport {
 	{
 		return invalidTitle;
 	}
+	
+	public boolean getIsSaved()
+	{
+		return report.getIsSaved();
+	}
 
 	public boolean testInvalidateTitle()
 	{

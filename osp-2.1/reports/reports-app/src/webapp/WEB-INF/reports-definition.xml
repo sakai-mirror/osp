@@ -17,7 +17,7 @@
         </property>
         <property name="query">
             <value>
-                select * from sakai_site where createdby IN (?, ?, ?, ?)
+                select * from sakai_site where createdby IN (?, ?, ?, ?, ?)
             </value>
         </property>
         <property name="keywords">
@@ -36,6 +36,18 @@
                     <property name="paramName"><value>[fillin]</value></property>
                     <property name="description"><value>a param for the user to fill in</value></property>
                     <property name="type"><value>string</value></property>
+                                    <!-- int/float/date/string -->
+                    <property name="valueType"><value>fillin</value></property>
+                                    <!-- fillin/set/multiset/sql/multisql/static -->
+                    <property name="value"><value>a param for the user to fill in</value></property>
+                            <!-- (validation rules)/[(elem1; title1), (elem2), elem3,
+                                    etc]/ select username, firstName from worksite/value -->
+                </bean>
+                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                    <property name="title"><value>A Fillin Date</value></property>
+                    <property name="paramName"><value>[fillin]</value></property>
+                    <property name="description"><value>a param for the user to fill in</value></property>
+                    <property name="type"><value>date</value></property>
                                     <!-- int/float/date/string -->
                     <property name="valueType"><value>fillin</value></property>
                                     <!-- fillin/set/multiset/sql/multisql/static -->

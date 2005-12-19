@@ -14,7 +14,11 @@
                     <sakai:tool_bar_item
                         action="#{ReportsTool.processSaveResults}"
                         value="#{msgs.saveSnapshot}" 
-                        rendered="#{ReportsTool.workingResult.isLive}"/>
+                        rendered="#{!ReportsTool.workingResult.isSaved && ReportsTool.workingResult.isLive}"/>
+                    <sakai:tool_bar_item
+                        action="#{ReportsTool.processSaveReport}"
+                        value="#{msgs.saveLiveReport}" 
+                        rendered="#{!ReportsTool.workingReport.isSaved && ReportsTool.workingResult.isLive}"/>
                     <sakai:tool_bar_item
                         action="#{ReportsTool.processExportResults}"
                         value="#{msgs.exportResults}" />
@@ -22,6 +26,8 @@
                 
                 <sakai:view_title value="#{ReportsTool.workingResult.title}" indent="1" />
                 
+                            <h:outputText value="#{msgs.live_report_saved} <br /><br />" style="color: #009900" 
+                                rendered="#{ReportsTool.savedLiveReport}" escape="false" />
                 <h:outputText value="#{msgs.select_view}" />
                 
                 <h:selectOneMenu value="#{ReportsTool.workingResult.currentViewXsl}">

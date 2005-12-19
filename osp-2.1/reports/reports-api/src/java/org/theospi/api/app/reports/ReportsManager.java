@@ -65,5 +65,6 @@ public interface ReportsManager
 	public void exportResults(ReportResult result, ReportXsl xslInfo, String title);
 	
 
-    public void saveResultResult(ReportResult result);
+    public void saveReportResult(ReportResult result);
+    public void saveReport(Report result);
 }

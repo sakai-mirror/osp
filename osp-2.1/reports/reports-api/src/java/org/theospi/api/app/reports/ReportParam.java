@@ -74,6 +74,8 @@ public class ReportParam
 	/** the results of the last validation */
 	private boolean	valid = false;
 	
+	private String	reportDefParamIdMark = null;
+	
 	/**
 	 * the getter for the paramId property
 	 * @return String the unique identifier
@@ -137,7 +139,6 @@ public class ReportParam
 	
 	
 	
-	private String	reportDefParamIdMark = null;
 	/**
 	 * This is a way of separating the report definition from the report in the database
 	 * this is a temp solution while the report definitions aren't being stored in the database
@@ -145,6 +146,8 @@ public class ReportParam
 	 */
 	public String getReportDefParamIdMark()
 	{
+		if(reportDefinitionParam == null)
+			return null;
 		return reportDefinitionParam.getIdString();
 	}
 	

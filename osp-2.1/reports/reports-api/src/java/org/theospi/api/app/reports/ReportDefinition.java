@@ -87,6 +87,19 @@ public class ReportDefinition
 	private List xsls;
 	
 	
+	public void finishLoading()
+	{
+		if(reportDefinitionParams == null)
+			return;
+		Iterator iter = reportDefinitionParams.iterator();
+		
+		while(iter.hasNext()) {
+			ReportDefinitionParam rdp = (ReportDefinitionParam) iter.next();
+			
+			rdp.setReportDefinition(this);
+		}
+	}
+	
 	
 	/**
 	 * the getter for the reportDefId property
@@ -117,7 +130,7 @@ public class ReportDefinition
 	{
 		if(reportDefId == null)
 			return idString;
-		return reportDefId.getValue(); // Is getValue correct?
+		return reportDefId.getValue();
 	}
 	public void setIdString(String idString)
 	{

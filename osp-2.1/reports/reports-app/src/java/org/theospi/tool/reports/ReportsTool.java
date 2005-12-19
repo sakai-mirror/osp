@@ -102,6 +102,10 @@ public class ReportsTool
 	protected static final String exportResultsPage = "exportReportResults";
 	protected static final String saveResultsPage = "saveReportResults";
 
+	/** when a live report is saved, tell the user */
+	private boolean savedLiveReport = false;
+	
+	
 	/**
 	 * getter for the ReportsManager property
 	 * @return ReportsManager
@@ -196,6 +200,13 @@ public class ReportsTool
 		return decoratedReportDefinition;
 	}
 	
+	
+	public boolean getSavedLiveReport()
+	{
+		boolean saved = savedLiveReport;
+		return saved;
+	}
+	
 
 	//***********************************************************
 	//***********************************************************
@@ -226,6 +237,7 @@ public class ReportsTool
 	 */
 	public String processCancelReport()
 	{
+		savedLiveReport = false;
 		//	remove the working report
 		setWorkingReport(null);
 		
@@ -234,6 +246,7 @@ public class ReportsTool
 	
 	public String processCancelExport()
 	{
+		savedLiveReport = false;
 		return ReportsTool.reportResultsPage;
 	}
 	
@@ -249,8 +262,14 @@ public class ReportsTool
 		return reportResultsPage;
 	}
 	
+	public String processEditParamsBack()
+	{
+		return createReportPage;
+	}
+	
 	public String processChangeViewXsl()
 	{
+		savedLiveReport = false;
 		return reportResultsPage;
 	}
 
@@ -266,12 +285,14 @@ public class ReportsTool
 	
 	public String processExportResults()
 	{
+		savedLiveReport = false;
 		return exportResultsPage;
 	}
 	
 	
 	public String processExportResultsToFile()
 	{
+		savedLiveReport = false;
 		ReportXsl xslInfo = getWorkingResult().getReport().getReportDefinition().findReportXsl(
 														getWorkingResult().getCurrentExportXsl());
 		if(xslInfo == null)
@@ -287,16 +308,27 @@ public class ReportsTool
 	
 	public String processSaveResults()
 	{
+		savedLiveReport = false;
 		return saveResultsPage;
 	}
 	public String processCancelSave()
 	{
+		savedLiveReport = false;
 		return reportResultsPage;
 	}
 	public String processSaveResultsToDB()
 	{
-		reportsManager.saveResultResult(getWorkingResult().getReportResult());
+		savedLiveReport = false;
+		reportsManager.saveReportResult(getWorkingResult().getReportResult());
 		
+		return reportResultsPage;
+	}
+	
+	public String processSaveReport()
+	{
+		reportsManager.saveReport(getWorkingResult().getReportResult().getReport());
+        savedLiveReport = true;
+        
 		return reportResultsPage;
 	}
 }

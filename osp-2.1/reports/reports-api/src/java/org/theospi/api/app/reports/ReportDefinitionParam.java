@@ -72,8 +72,13 @@ public class ReportDefinitionParam
 	 */
 	private String type;
 
+	public static final String TYPE_STRING = "string";
+	public static final String TYPE_INT = "int";
+	public static final String TYPE_FLOAT = "float";
+	public static final String TYPE_DATE = "date";
+	
 	/** the valueType for the report definition Parameter 
-	 *	The value type
+	 *	fillin, set, sql, static (multiset and multisql are to be supported later)
 	 */
 	private String valueType;
 
@@ -121,13 +126,20 @@ public class ReportDefinitionParam
 	 */
 	public String getIdString()
 	{
-		if(reportDefParamId == null)
+		if(reportDefParamId == null) {
+			if(idString == null)
+				generateIdString();
 			return idString;
-		return reportDefParamId.getValue(); // Is getValue correct?
+		}
+		return reportDefParamId.getValue();
 	}
 	public void setIdString(String idString)
 	{
 		this.idString = idString;
+	}
+	protected void generateIdString()
+	{
+		idString = String.valueOf(reportDefinition.getReportDefinitionParams().indexOf(this));
 	}
 	
 	
