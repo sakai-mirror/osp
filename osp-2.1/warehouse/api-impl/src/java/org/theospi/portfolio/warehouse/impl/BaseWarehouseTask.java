@@ -27,6 +27,8 @@ import org.theospi.portfolio.warehouse.intf.ChildWarehouseTask;
 import org.theospi.portfolio.warehouse.intf.DataWarehouseManager;
 import org.theospi.portfolio.util.db.DbLoader;
 import org.quartz.JobExecutionException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -45,6 +47,8 @@ import java.io.InputStream;
  */
 public abstract class BaseWarehouseTask implements WarehouseTask {
 
+   protected final Log logger = LogFactory.getLog(getClass());
+
    private DataSource dataSource;
    private ChildWarehouseTask task;
    private String tableDdlResource;
@@ -61,6 +65,10 @@ public abstract class BaseWarehouseTask implements WarehouseTask {
       }
       catch (SQLException e) {
          throw new JobExecutionException(e);
+      }
+      catch(JobExecutionException e) {
+         logger.warn("Error executing warehousing tasks", e);
+         throw e;
       }
       finally {
          if (connection != null) {

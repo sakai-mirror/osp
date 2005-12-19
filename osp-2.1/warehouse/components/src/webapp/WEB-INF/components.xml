@@ -36,7 +36,7 @@
    <!-- /commonly used fields -->
 
    <bean id="org.theospi.portfolio.warehouse.intf.WarehouseTask.presentation"
-      class="org.theospi.portfolio.warehouse.osp.PresentationWarehouseTask"
+      class="org.theospi.portfolio.warehouse.osp.presentation.PresentationWarehouseTask"
       init-method="init" singleton="true">
       <property name="dataSource">
          <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
@@ -61,13 +61,40 @@
          <list>
             <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
             <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.owner" />
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>template</value></property>
+            </bean>
             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                <property name="propertyName"><value>name</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>description</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>isDefault</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>isPublic</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>expiresOn</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>created</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>modified</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>toolId</value></property>
             </bean>
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_PRESENTATION (id, owner, name) values (?, ?, ?)</value>
+         <value>insert into DW_PRESENTATION
+                  (id, owner_id, template_id, name, description, isDefault,
+                  isPublic, expiresOn, created, modified, tool_id)
+               values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)</value>
       </property>
       <property name="clearStmt">
          <value>delete from DW_PRESENTATION</value>
@@ -84,6 +111,18 @@
                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.item"/>
                </property>
             </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+               <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.osp.presentation.PresentationCommentsPropertyAccess">
+                     <property name="presentationManager">
+                        <ref bean="presentationManager" />
+                     </property>
+                  </bean>
+               </property>
+               <property name="task">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.comment"/>
+               </property>
+            </bean>
          </list>
       </property>
    </bean>
@@ -96,13 +135,48 @@
             <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
                <property name="propertyName"><value>artifactId</value></property>
             </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>definition</value></property>
+            </bean>
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_PRES_ITEM (presentation_id, artifact) values (?, ?)</value>
+         <value>insert into DW_PRESENTATION_ITEM (presentation_id, artifact_id, item_definition_id) values (?, ?, ?)</value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_PRES_ITEM</value>
+         <value>delete from DW_PRESENTATION_ITEM</value>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.comment"
+      class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>title</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.AgentPropertyAccess">
+               <property name="propertyName"><value>creator</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>presentation</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>visibility</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>created</value></property>
+            </bean>
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into DW_PRESENTATION_COMMENT (id, title, creator_id, presentation_id, visibility, created)
+                                             values (?, ?, ?, ?, ?, ?)
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from DW_PRESENTATION_COMMENT</value>
       </property>
    </bean>
 
@@ -119,175 +193,5 @@
          <ref bean="org.sakaiproject.api.app.scheduler.SchedulerManager" />
       </property>
    </bean>
-
-<!--
-   <bean id="ospHelpHibernateMappings"
-      class="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappingsImpl">
-      <property name="mappingResources">
-         <list>
-            <value>org/theospi/portfolio/help/model/impl/HelpImpl.hbm.xml</value>
-         </list>
-		</property>
-   </bean>
-
-   <bean id="helpManagerTarget" class="org.theospi.portfolio.help.HelpManagerImpl">
-      <property name="sessionFactory">
-         <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
-      </property>
-      <property name="idManager"><ref bean="idManager"/></property>
-      <property name="worksiteManager">
-         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
-      </property>
-      <property name="toolManager">
-         <ref bean="org.sakaiproject.api.kernel.tool.ToolManager"/>
-      </property>
-      <property name="portalService">
-         <ref bean="org.sakaiproject.service.framework.portal.PortalService"/>
-      </property>
-      <property name="authzManager"><ref bean="authzManager"/></property>
-      <property name="glossary"><ref bean="glossary"/></property>
-   </bean>
-
-   <bean id="glossaryTarget" class="org.theospi.portfolio.help.model.DbGlossary"
-      init-method="init" lazy-init="false">
-      <property name="sessionFactory">
-         <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
-      </property>
-      <property name="idManager"><ref bean="idManager"/></property>
-      <property name="url"><value>${serverUrl}/osp-glossary-tool/glossary.osp</value></property>
-   </bean>
-
-   <bean id="helpManager"
-      class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
-      singleton="true">
-      <property name="transactionManager">
-        <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
-      </property>
-      <property name="target">
-         <ref bean="helpManagerTarget"/>
-      </property>
-      <property name="transactionAttributes">
-         <props>
-            <prop key="*">PROPAGATION_REQUIRED</prop>
-         </props>
-      </property>
-   </bean>
-
-   <bean id="glossary"
-      class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
-      singleton="true">
-      <property name="transactionManager">
-        <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
-      </property>
-      <property name="target">
-         <ref bean="glossaryTarget"/>
-      </property>
-      <property name="transactionAttributes">
-         <props>
-            <prop key="*">PROPAGATION_REQUIRED</prop>
-         </props>
-      </property>
-   </bean>
-
-   <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.glossary"
-      class="org.theospi.portfolio.security.model.SimpleToolPermissionManager" >
-      <property name="idManager"><ref bean="idManager"/></property>
-      <property name="permissionManager">
-         <ref bean="org.theospi.portfolio.security.mgt.PermissionManager" />
-      </property>
-      <property name="agentManager"><ref bean="agentManager" /></property>
-      <property name="permissionEditName"><value>glossary</value></property>
-      <property name="defaultPermissions">
-         <map>
-            <entry key="maintain">
-               <list>
-                  <value>osp.help.glossary.delete</value>
-                  <value>osp.help.glossary.add</value>
-                  <value>osp.help.glossary.edit</value>
-               </list>
-            </entry>
-            <entry key="instructor">
-               <list>
-                  <value>osp.help.glossary.delete</value>
-                  <value>osp.help.glossary.add</value>
-                  <value>osp.help.glossary.edit</value>
-               </list>
-            </entry>
-            <entry key="project owner">
-               <list>
-                  <value>osp.help.glossary.delete</value>
-                  <value>osp.help.glossary.add</value>
-                  <value>osp.help.glossary.edit</value>
-               </list>
-            </entry>
-         </map>
-      </property>
-      <property name="functions">
-         <list>
-            <value>osp.help.glossary.delete</value>
-            <value>osp.help.glossary.add</value>
-            <value>osp.help.glossary.edit</value>
-         </list>
-      </property>
-   </bean>
-
-   <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.glossaryGlobal"
-      class="org.theospi.portfolio.security.model.QualifiedSimpleToolPermissionManager" >
-      <property name="idManager"><ref bean="idManager"/></property>
-      <property name="qualifier"><value>theospi.help.glossary.global</value></property>
-      <property name="permissionManager">
-         <ref bean="org.theospi.portfolio.security.mgt.PermissionManager" />
-      </property>
-      <property name="agentManager"><ref bean="agentManager" /></property>
-      <property name="permissionEditName"><value>glossary</value></property>
-      <property name="defaultPermissions">
-         <map>
-            <entry key="maintain">
-               <list>
-                  <value>osp.help.glossary.delete</value>
-                  <value>osp.help.glossary.add</value>
-                  <value>osp.help.glossary.edit</value>
-               </list>
-            </entry>
-            <entry key="instructor">
-               <list>
-                  <value>osp.help.glossary.delete</value>
-                  <value>osp.help.glossary.add</value>
-                  <value>osp.help.glossary.edit</value>
-               </list>
-            </entry>
-            <entry key="project owner">
-               <list>
-                  <value>osp.help.glossary.delete</value>
-                  <value>osp.help.glossary.add</value>
-                  <value>osp.help.glossary.edit</value>
-               </list>
-            </entry>
-         </map>
-      </property>
-      <property name="functions">
-         <list>
-            <value>osp.help.glossary.delete</value>
-            <value>osp.help.glossary.add</value>
-            <value>osp.help.glossary.edit</value>
-         </list>
-      </property>
-   </bean>
-
-   <bean id="glosasryToolPermissionsMap"
-      class="org.theospi.portfolio.security.mgt.impl.AddPermissionTool"
-      init-method="init" lazy-init="false"  >
-      <property name="manager">
-         <ref bean="org.theospi.portfolio.security.mgt.PermissionManager"/>
-      </property>
-      <property name="additionalTools">
-         <map>
-            <entry key="glossary">
-               <ref bean="org.theospi.portfolio.security.mgt.ToolPermissionManager.glossary"/>
-            </entry>
-         </map>
-      </property>
-   </bean>
-   -->
 
 </beans>
