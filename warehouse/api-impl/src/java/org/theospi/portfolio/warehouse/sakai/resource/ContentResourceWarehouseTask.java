@@ -20,57 +20,34 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.portfolio.warehouse.impl;
+package org.theospi.portfolio.warehouse.sakai.resource;
 
-import org.theospi.portfolio.warehouse.intf.DataWarehouseManager;
-import org.theospi.portfolio.warehouse.intf.WarehouseTask;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.sakaiproject.service.legacy.security.SecurityService;
+import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
+import org.sakaiproject.service.legacy.content.ContentHostingService;
 
-import java.util.List;
-import java.util.Iterator;
+import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Nov 30, 2005
- * Time: 4:48:34 PM
+ * Date: Dec 19, 2005
+ * Time: 12:38:18 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DataWarehouseManagerImpl implements DataWarehouseManager {
+public class ContentResourceWarehouseTask extends BaseWarehouseTask {
 
-   private List tasks;
-   private SecurityService securityService;
+   private ContentHostingService contentHostingService;
 
-   public void registerTask(WarehouseTask task) {
-      getTasks().add(task);
+   protected Collection getItems() {
+      return getContentHostingService().getAllResources("/");
    }
 
-   public void execute(JobExecutionContext jobExecutionContext)
-         throws JobExecutionException {
-
-      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
-      for (Iterator i=getTasks().iterator();i.hasNext();) {
-         WarehouseTask task = (WarehouseTask)i.next();
-         task.execute();
-      }
-      getSecurityService().popAdvisor();
+   public ContentHostingService getContentHostingService() {
+      return contentHostingService;
    }
 
-   public List getTasks() {
-      return tasks;
+   public void setContentHostingService(ContentHostingService contentHostingService) {
+      this.contentHostingService = contentHostingService;
    }
 
-   public void setTasks(List tasks) {
-      this.tasks = tasks;
-   }
-
-   public SecurityService getSecurityService() {
-      return securityService;
-   }
-
-   public void setSecurityService(SecurityService securityService) {
-      this.securityService = securityService;
-   }
 }
