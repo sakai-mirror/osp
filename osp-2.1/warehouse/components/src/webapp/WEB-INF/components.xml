@@ -14,6 +14,9 @@
          <list>
          </list>
       </property>
+      <property name="securityService">
+         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+      </property>
    </bean>
 
    <!-- commonly used fields -->
@@ -55,6 +58,7 @@
       </property>
    </bean>
 
+   <!-- presentation stuff -->
    <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation"
       class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
       <property name="fields">
@@ -179,6 +183,52 @@
          <value>delete from DW_PRESENTATION_COMMENT</value>
       </property>
    </bean>
+   <!-- /presentation stuff -->
+
+   <!-- content resource stuff -->
+   <bean id="org.theospi.portfolio.warehouse.intf.WarehouseTask.contentResources"
+      class="org.theospi.portfolio.warehouse.sakai.resource.ContentResourceWarehouseTask"
+      init-method="init" singleton="true">
+      <property name="dataSource">
+         <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+      </property>
+      <property name="dataWarehouseManager">
+         <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+      </property>
+      <property name="tableDdlResource">
+         <value>/org/theospi/portfolio/warehouse/sakai/resource.xml</value>
+      </property>
+      <property name="contentHostingService">
+         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService" />
+      </property>
+      <property name="task">
+         <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.contentResources"/>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.contentResources"
+      class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.ResourceUuidPropertyAccess"/>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>id</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>contentType</value></property>
+            </bean>
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into DW_RESOURCE
+                  (id, uri, resource_type)
+               values (?, ?, ?)</value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from DW_RESOURCE</value>
+      </property>
+   </bean>
+   <!-- /content resource stuff -->
 
    <bean id="org.sakaiproject.api.app.scheduler.JobBeanWrapper.ospDataWarehouse"
       class="org.sakaiproject.component.app.scheduler.jobs.SpringJobBeanWrapper"

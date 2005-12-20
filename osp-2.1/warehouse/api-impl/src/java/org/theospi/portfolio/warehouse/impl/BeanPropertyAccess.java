@@ -26,6 +26,9 @@ import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 
 import java.lang.reflect.Method;
 import java.beans.PropertyDescriptor;
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,7 +44,16 @@ public class BeanPropertyAccess implements PropertyAccess {
 
    public Object getPropertyValue(Object source) throws Exception {
       if (propertyGettor == null) {
-         propertyGettor = new PropertyDescriptor(getPropertyName(), source.getClass()).getReadMethod();
+         BeanInfo info = Introspector.getBeanInfo(source.getClass());
+
+         PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
+
+         for (int i=0;i<descriptors.length;i++) {
+            if (descriptors[i].getName().equals(getPropertyName())) {
+               propertyGettor = descriptors[i].getReadMethod();
+               break;
+            }
+         }
       }
       return propertyGettor.invoke(source, new Object[]{});
    }

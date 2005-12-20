@@ -22,55 +22,19 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.impl;
 
-import org.theospi.portfolio.warehouse.intf.DataWarehouseManager;
-import org.theospi.portfolio.warehouse.intf.WarehouseTask;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.sakaiproject.service.legacy.security.SecurityService;
-
-import java.util.List;
-import java.util.Iterator;
+import org.sakaiproject.service.legacy.security.SecurityAdvisor;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Nov 30, 2005
- * Time: 4:48:34 PM
+ * Date: Dec 19, 2005
+ * Time: 3:56:30 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DataWarehouseManagerImpl implements DataWarehouseManager {
+public class AllowAllSecurityAdvisor implements SecurityAdvisor {
 
-   private List tasks;
-   private SecurityService securityService;
-
-   public void registerTask(WarehouseTask task) {
-      getTasks().add(task);
+   public SecurityAdvice isAllowed(String userId, String function, String reference) {
+      return SecurityAdvice.ALLOWED;
    }
 
-   public void execute(JobExecutionContext jobExecutionContext)
-         throws JobExecutionException {
-
-      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
-      for (Iterator i=getTasks().iterator();i.hasNext();) {
-         WarehouseTask task = (WarehouseTask)i.next();
-         task.execute();
-      }
-      getSecurityService().popAdvisor();
-   }
-
-   public List getTasks() {
-      return tasks;
-   }
-
-   public void setTasks(List tasks) {
-      this.tasks = tasks;
-   }
-
-   public SecurityService getSecurityService() {
-      return securityService;
-   }
-
-   public void setSecurityService(SecurityService securityService) {
-      this.securityService = securityService;
-   }
 }
