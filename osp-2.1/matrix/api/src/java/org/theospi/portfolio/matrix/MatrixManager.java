@@ -195,4 +195,9 @@ public interface MatrixManager {
    void checkCellAccess(String id);
    
    Scaffolding createDefaultScaffolding();
+
+   public List getScaffolding();
+
+   public List getMatrices(Id scaffoldingId);
+
 }

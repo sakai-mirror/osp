@@ -139,7 +139,24 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return getDefaultScaffoldingBean().createDefaultScaffolding();
    }
 
-   
+   public List getScaffolding() {
+      return getHibernateTemplate().find("from Scaffolding");
+   }
+
+   public List getMatrices(Id scaffoldingId) {
+      List matrices = new ArrayList();
+
+      List tools = getHibernateTemplate().find(
+            "from MatrixTool tool where tool.scaffolding_id = ?", new Object[]{scaffoldingId.getValue()});
+
+      for (Iterator i=tools.iterator();i.hasNext();) {
+         MatrixTool tool = (MatrixTool)i.next();
+         matrices.addAll(tool.getMatrix());
+      }
+
+      return matrices;
+   }
+
    public List getCellsByScaffoldingCell(Id scaffoldingCellId) {
       List list = getHibernateTemplate().find("from Cell cell where cell.scaffoldingCell.id=?", scaffoldingCellId.getValue());
       return list;
