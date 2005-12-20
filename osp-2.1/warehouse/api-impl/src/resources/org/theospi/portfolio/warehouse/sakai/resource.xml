@@ -135,11 +135,6 @@
             <type>VARCHAR</type>
             <param>255</param>
          </column>
-         <column>
-            <name>ORIGINAL_FILENAME</name>
-            <type>VARCHAR</type>
-            <param>255</param>
-         </column>
       </columns>
       <not-null>ID</not-null>
       <not-null>URI</not-null>
