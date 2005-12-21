@@ -213,10 +213,6 @@
        </column>
        <column>
          <name>sequence_no</name>
-         <type>TIMESTAMP</type>
-       </column>
-       <column>
-         <name>modified</name>
          <type>INTEGER</type>
        </column>
        <column>

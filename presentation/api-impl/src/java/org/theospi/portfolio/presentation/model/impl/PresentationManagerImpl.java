@@ -1465,7 +1465,26 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    public Collection getAllPresentationTemplates() {
-      return getHibernateTemplate().find("from PresentationTemplate");
+      HibernateCallback callback = new HibernateCallback() {
+         public Object doInHibernate(Session session) throws HibernateException, SQLException {
+            List templates = getHibernateTemplate().find("from PresentationTemplate");
+            for (Iterator i = templates.iterator();i.hasNext();) {
+               PresentationTemplate template = (PresentationTemplate) i.next();
+               for (Iterator j = template.getItems().iterator();j.hasNext();) {
+                  PresentationItemDefinition itemDef = (PresentationItemDefinition) j.next();
+                  itemDef.getMimeTypes().size();
+               }
+            }
+            return templates;
+         }
+      };
+
+      try {
+         return (Collection) getHibernateTemplate().execute(callback);
+      } catch (HibernateObjectRetrievalFailureException e) {
+         logger.debug(e);
+         return new ArrayList();
+      }
    }
 
    public void viewingPresentation(Presentation presentation) {

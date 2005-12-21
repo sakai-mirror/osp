@@ -20,59 +20,23 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.portfolio.warehouse.impl;
+package org.theospi.portfolio.warehouse.osp.presentation;
 
-import org.theospi.portfolio.warehouse.intf.PropertyAccess;
-
-import java.lang.reflect.Method;
-import java.beans.PropertyDescriptor;
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.IntrospectionException;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Hashtable;
+import org.theospi.portfolio.presentation.model.Presentation;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Nov 30, 2005
- * Time: 5:34:24 PM
+ * Date: Dec 20, 2005
+ * Time: 3:29:32 PM
  * To change this template use File | Settings | File Templates.
  */
-public class BeanPropertyAccess implements PropertyAccess {
-
-   private Map gettorMap = new Hashtable();
-   private String propertyName;
+public class PresentationLogPropertyAccess extends PresentationCommentsPropertyAccess {
 
    public Object getPropertyValue(Object source) throws Exception {
-      return getPropertyGettor(source).invoke(source, new Object[]{});
-   }
-
-   public String getPropertyName() {
-      return propertyName;
-   }
-
-   public void setPropertyName(String propertyName) {
-      this.propertyName = propertyName;
-   }
-
-   public Method getPropertyGettor(Object source) throws IntrospectionException {
-      Method propertyGettor = (Method) gettorMap.get(source.getClass());
-      if (propertyGettor == null) {
-         BeanInfo info = Introspector.getBeanInfo(source.getClass());
-
-         PropertyDescriptor[] descriptors = info.getPropertyDescriptors();
-
-         for (int i=0;i<descriptors.length;i++) {
-            if (descriptors[i].getName().equals(getPropertyName())) {
-               propertyGettor = descriptors[i].getReadMethod();
-               gettorMap.put(source.getClass(), propertyGettor);
-               break;
-            }
-         }
-      }
-      return propertyGettor;
+      Presentation pres = (Presentation) source;
+      return getPresentationManager().findLogsByPresID(pres.getId());
    }
 
 }
+
