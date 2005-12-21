@@ -84,8 +84,6 @@ public interface MatrixManager {
    
    ReviewRubricValue findReviewRubricValue(String id);
    List getReviewRubrics();
-   //List getCellCriteria(Cell cell);
-   //List getCellCriteria(Id cellId);
 
    Matrix getMatrix(Id matrixToolId, Id agentId);
    List getCellsByScaffoldingCell(Id scaffoldingCellId);
@@ -124,10 +122,6 @@ public interface MatrixManager {
    Attachment attachArtifact(Id cellId, String[] criteriaId, Reference artifactId, ElementBean elementBean);
 
    void detachArtifact(final Id cellId, final Id artifactId);
-
-   //List rubricSatisfaction(Cell cell);
-
-   //boolean isRubricSatisfied(Cell cell);
    
    void removeFromSession(Object obj);
    void clearSession();
@@ -150,21 +144,9 @@ public interface MatrixManager {
 
    Cell submitCellForReview(Cell cell);
 
-   List getReviewableCells(Agent agent, Id worksiteId);
+   List getEvaluatableCells(Agent agent, Id worksiteId);
 
    ReviewerItem getReviewerItem(Id id);
-
-   /**
-    * @param criterion
-    * @return List of Rubrics
-    */
-   //List getRubric(Criterion criterion, Level level);
-
-   //Rubric getRubric(Id rubricId);
-
-   //List getRubrics(Cell cell);
-
-   //List getRubricByArtifact(Id artifactId);
 
    /**
     * @return Returns the idManager.

@@ -1,6 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
+
 <script language="javascript">
 var runHide=true;
 
@@ -78,23 +80,31 @@ function hrefViewCell(cellId) {
 
 	<c:set var="cell" value="${cellBean.cell}"/>
    <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" />
+   <osp-c:authZMap prefix="osp.matrix." var="matrixCan" />
 
 	<div class="navIntraTool">
 		<a name="linkNew" id="linkNew" href="<osp:url value="attachToCell.osp">
 			<osp:param name="cell_id" value="${cell.id}"/>
 			</osp:url>">New...</a>
-		<a name="linkReflection" id="linkReflection" href="<osp:url value="reflect.osp">
-			<osp:param name="cell_id" value="${cell.id}"/>
-			<osp:param name="id" value="${cell.reflection.id}"/>
-			</osp:url>">Reflection...</a>
-      <c:if test="${can.create}">
+		<c:if test="${can.create}">
          <a name="linkManageCellStatus" id="linkManageCellStatus" href="<osp:url value="manageCellStatus.osp">
             <osp:param name="cell_id" value="${cell.id}"/>
-            </osp:url>">Manage Cell Status...</a>
+            </osp:url>"><osp:message key="manage_cell_status" bundle="${msgs}" /></a>
+      </c:if>
+      <c:if test="${matrixCan.review && cell.scaffoldingCell.reviewDevice != null}">
+         <a href="<osp:url value="viewCell.osp">
+            <osp:param name="cell_id" value="${cell.id}"/>
+            <osp:param name="action" value="review"/>
+            </osp:url>"><osp:message key="review" bundle="${msgs}" /></a>
+      </c:if>      
+      <c:if test="${matrixCan.evaluate && cell.scaffoldingCell.evaluationDevice != null}">
+         <a href="<osp:url value="manageCellStatus.osp">
+            <osp:param name="cell_id" value="${cell.id}"/>
+            </osp:url>"><osp:message key="evaluate" bundle="${msgs}" /></a>
       </c:if>
 	</div>
 
-    <h3>View Cell</h3>
+    <h3><osp:message key="view_cell" bundle="${msgs}" /></h3>
     
 	<osp-h:glossary link="true" hover="true">
 		<table class="itemSummary">
@@ -108,6 +118,28 @@ function hrefViewCell(cellId) {
 			Cell status is <c:out value="${cell.status}"/> and cannot be altered
 		</div>
 	</c:if>
+   
+   <c:if test="${not empty cell.scaffoldingCell.guidance}">
+      <h4><osp:message key="guidance_header" bundle="${msgs}" /></h4>
+      <c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}" varStatus="loopStatus">
+         <c:if test="${guidanceItem.type == 'instruction'}">
+         <p class="longtext">
+            <div class="indnt2">
+               <c:out value="${guidanceItem.text}" escapeXml="false" />
+               <c:forEach var="guidanceItemAtt" items="${guidanceItem.attachments}" varStatus="loopStatus">
+                  <a href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />" target="_new">
+                     <c:out value="${guidanceItemAtt.diaplayName}" /></a>         
+               </c:forEach>
+            </div>
+         </p>
+         </c:if>
+      </c:forEach>
+      <a href="<osp:url value="viewCell.osp">
+         <osp:param name="cell_id" value="${cell.id}"/>
+         <osp:param name="action" value="guidance"/>
+      </osp:url>" title="<osp:message key="guidance_link_title" bundle="${msgs}" />">
+         <osp:message key="guidance_link_text" bundle="${msgs}" /></a>
+   </c:if>
 
     <h4>Cell Files</h4>
 
@@ -173,13 +205,16 @@ function hrefViewCell(cellId) {
 		</tbody>
 	</table> <!-- End the file list table -->
 
-	<c:if test="${canReflect != 'true' or cell.status != 'READY' or readOnlyMatrix == 'true'}">
-		<script language="javascript">
-			disableLink("linkReflection");
-			<!-- //TODO figure out how better way to disable Reflection and New -->
-		</script>
-	</c:if>
 	<br/>
+   
+   
+   <h4>Reflection Device</h4>
+   
+   <c:if test="${cell.scaffoldingCell.reflectionDeviceType == 'form'}">
+   Pick a form
+   </c:if>
+   
+   
 	<!-- if status is ready -->
     <p class="act">
     	<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
@@ -205,86 +240,8 @@ function hrefViewCell(cellId) {
 	</script>
 </c:if>
 
-<c:if test="${cell.status == 'PENDING' or cell.status == 'COMPLETE' or readOnlyMatrix == 'true' or (numberOfItems > 0 and cell.status == 'READY')}">
-	<br/>
-		<c:forEach var="expectation" items="${cell.scaffoldingCell.expectations}" varStatus="loopStatus">
-			<c:set var="i" value="${loopStatus.index}"/>
-			<c:set var="reflection" value="${cell.reflection.reflectionItems[i]}"/>
-			
-			<h4>Expectation <c:out value="${i+1}"/></h4>
-
-			<c:out value="${expectation.description}" escapeXml="false"/>
-            
-            <p class="longtext">
-                <label class="block">Evidence</label>
-                <p class="instruction">
-                    What evidence demonstrates that you have met this expectation? Please cut and
-                    paste or add a link of your evidence into the space below.
-                </p>
-                <div class="indnt5">
-                    <c:out value="${reflection.evidence}" escapeXml="false"/>
-                </div>
-             </p>
-            
-            
-            <p class="longtext">
-                <label class="block">Connect</label>
-                <p class="instruction">
-                    Explain how your evidence demonstrates this expectation.
-                </p>
-                <div class="indnt5">
-                    <c:out value="${reflection.connect}" escapeXml="false"/>
-                </div>
-            </p>
-            <br /><br />
-		</c:forEach>
-	
-		<h4>Intellectual Growth</h4>
-        
-        <p class="longtext">
-            <div class="indnt5">
-                <c:out value="${cell.reflection.growthStatement}" escapeXml="false"/>
-            </div>
-        </p>
-        <br /><br />
-        
-		<h4>Reviewer Comments:</h4>
-        
-        
-    <table class="itemSummary">
-		<c:forEach var="review" items="${cell.reviewerItems}" varStatus="loopStatus">
-			<c:if test="${review.status=='COMPLETE'}">
-                <tr>
-                    <th>
-                        Grade
-                    </th>
-                    <td>
-                        <spring:message code="${reviewRubrics[review.grade].displayText}" text="${reviewRubrics[review.grade].displayText}" />
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Date
-                    </th>
-                    <td>
-                        <fmt:formatDate value="${review.modified}" pattern="MM-dd-yyyy" />
-                    </td>
-                </tr>
-                <tr>
-                    <th>
-                        Commentary
-                    </th>
-                    <td class="indnt5">
-                        <c:out value="${review.comments}" escapeXml="false" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        &nbsp;
-                    </td>
-                </tr>
-			</c:if>
-		</c:forEach>
-	</table>
-
-</c:if>
+<h4>Reviews</h4>
+<c:forEach var="review" items="${reviews}" varStatus="loopStatus">
+   <c:out value="${review.id}" />
+</c:forEach>
+<h4>Evaluations</h4>

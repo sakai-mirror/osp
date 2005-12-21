@@ -73,8 +73,7 @@ public class BaseScaffoldingCellController {
             sCellId = getIdManager().getId((String)request.get("scaffoldingCell_id"));
          }
          
-         scaffoldingCell = getMatrixManager().getScaffoldingCell(sCellId);
-         
+         scaffoldingCell = getMatrixManager().getScaffoldingCell(sCellId);         
          EditedScaffoldingStorage sessionBean = new EditedScaffoldingStorage(scaffoldingCell);
          session.put(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY,
                sessionBean);
@@ -136,5 +135,4 @@ public class BaseScaffoldingCellController {
    public void setIdManager(IdManager idManager) {
       this.idManager = idManager;
    }
-
 }

@@ -52,6 +52,14 @@
        <dispatcher>FORWARD</dispatcher>
        <dispatcher>INCLUDE</dispatcher>
    </filter-mapping>
+   
+   <filter-mapping>
+       <filter-name>sakai.request</filter-name>
+       <servlet-name>osp.review</servlet-name>
+       <dispatcher>REQUEST</dispatcher>
+       <dispatcher>FORWARD</dispatcher>
+       <dispatcher>INCLUDE</dispatcher>
+   </filter-mapping>
 
    <filter-mapping>
        <filter-name>sakai.request</filter-name>
@@ -149,6 +157,25 @@
        <init-param>
            <param-name>default</param-name>
            <param-value>list</param-value>
+       </init-param>
+        <init-param>
+           <param-name>default.last.view</param-name>
+           <param-value>true</param-value>
+       </init-param>
+  </servlet>
+  
+   <servlet>
+     <servlet-name>osp.review</servlet-name>
+     <servlet-class>org.theospi.portfolio.shared.control.servlet.HelperAwareJsfTool</servlet-class>
+       <init-param>
+           <param-name>path</param-name>
+           <param-value>/review</param-value>
+       </init-param>
+     <load-on-startup>2</load-on-startup>
+
+       <init-param>
+           <param-name>default</param-name>
+           <param-value>tool</param-value>
        </init-param>
         <init-param>
            <param-name>default.last.view</param-name>

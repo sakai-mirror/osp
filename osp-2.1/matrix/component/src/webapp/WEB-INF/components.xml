@@ -30,13 +30,16 @@
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.REVIEW_MATRIX"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EVALUATE_MATRIX"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_MATRIX"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.CREATE_SCAFFOLDING"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
-            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.UNLOCK_REVIEW_MATRIX"
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.UNLOCK_EVAL_MATRIX"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.PUBLISH_SCAFFOLDING"
@@ -243,6 +246,7 @@
          <map>
             <entry key="maintain">
                <list>
+                  <value>osp.matrix.review</value>
                   <value>osp.matrix.scaffolding.create</value>
                   <value>osp.matrix.scaffolding.viewUsers</value>
                   <value>osp.matrix.scaffolding.publish</value>
@@ -250,6 +254,7 @@
             </entry>
             <entry key="instructor">
                <list>
+                  <value>osp.matrix.review</value>
                   <value>osp.matrix.scaffolding.create</value>
                   <value>osp.matrix.scaffolding.viewUsers</value>
                   <value>osp.matrix.scaffolding.publish</value>
@@ -261,6 +266,7 @@
             </entry>
             <entry key="project owner">
                <list>
+                  <value>osp.matrix.review</value>
                   <value>osp.matrix.scaffolding.create</value>
                   <value>osp.matrix.scaffolding.viewUsers</value>
                   <value>osp.matrix.scaffolding.publish</value>
@@ -273,6 +279,7 @@
             <value>osp.matrix.scaffolding.create</value>
             <value>osp.matrix.scaffolding.viewUsers</value>
             <value>osp.matrix.scaffolding.publish</value>
+            <value>osp.matrix.review</value>
          </list>
       </property>
    </bean>
@@ -290,22 +297,22 @@
          <map>
             <entry key="maintain">
                <list>
-                  <value>osp.matrix.review</value>
-                  <value>osp.matrix.unlockReview</value>
+                  <value>osp.matrix.evaluate</value>
+                  <value>osp.matrix.unlockEval</value>
                   <value>osp.matrix.viewOwner</value>
                </list>
             </entry>
             <entry key="instructor">
                <list>
-                  <value>osp.matrix.review</value>
-                  <value>osp.matrix.unlockReview</value>
+                  <value>osp.matrix.evaluate</value>
+                  <value>osp.matrix.unlockEval</value>
                   <value>osp.matrix.viewOwner</value>
                </list>
             </entry>
             <entry key="project owner">
                <list>
-                  <value>osp.matrix.review</value>
-                  <value>osp.matrix.unlockReview</value>
+                  <value>osp.matrix.evaluate</value>
+                  <value>osp.matrix.unlockEval</value>
                   <value>osp.matrix.viewOwner</value>
                </list>
             </entry>
@@ -317,8 +324,8 @@
       </property>
       <property name="functions">
          <list>
-            <value>osp.matrix.review</value>
-            <value>osp.matrix.unlockReview</value>
+            <value>osp.matrix.evaluate</value>
+            <value>osp.matrix.unlockEval</value>
             <value>osp.matrix.viewOwner</value>
          </list>
       </property>

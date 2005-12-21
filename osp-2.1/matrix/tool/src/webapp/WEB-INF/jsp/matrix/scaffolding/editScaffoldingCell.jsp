@@ -65,8 +65,66 @@
 				<span class="error_message"><c:out value="${status.errorMessage}"/></span>
 			</spring:bind>
 		</p>
-		
-		
+		<spring:bind path="scaffoldingCell.reflectionDeviceType">  
+            <input type="hidden" name="<c:out value="${status.expression}"/>"
+               value="<c:out value="${status.value}"/>" />
+        </spring:bind>
+        
+		<spring:bind path="scaffoldingCell.reflectionDevice">  
+            <c:if test="${status.error}">
+                <div class="validation"><c:out value="${status.errorMessage}"/></div>
+            </c:if>
+          <p class="shorttext">
+            <label>Select Reflection Device</label>    
+               <select name="<c:out value="${status.expression}"/>" >
+                     <option onclick="document.forms[0].reflectionDeviceType.value='';" value="">None</option>
+                  <c:forEach var="refDev" items="${reflectionDevices}" varStatus="loopCount">
+                     <option onclick="document.forms[0].reflectionDeviceType.value='<c:out value="${refDev.type}"/>');" 
+                        value="<c:out value="${refDev.id}"/>" <c:if test="${status.value==refDev.id}"> selected</c:if>><c:out value="${refDev.name}"/></option>
+                  </c:forEach>
+               </select>
+          </p>
+        </spring:bind>
+        
+         <spring:bind path="scaffoldingCell.reviewDeviceType">  
+            <input type="hidden" name="<c:out value="${status.expression}"/>"
+               value="<c:out value="${status.value}"/>" />
+        </spring:bind>   
+     <spring:bind path="scaffoldingCell.reviewDevice">  
+         <c:if test="${status.error}">
+             <div class="validation"><c:out value="${status.errorMessage}"/></div>
+         </c:if>
+       <p class="shorttext">
+         <label>Select Review Device</label>    
+            <select name="<c:out value="${status.expression}"/>" >
+                     <option onclick="document.forms[0].reviewDeviceType.value='';" value="">None</option>
+                  <c:forEach var="reviewDev" items="${reviewDevices}" varStatus="loopCount">
+                     <option onclick="document.forms[0].reviewDeviceType.value='<c:out value="${reviewDev.type}"/>';" 
+                        value="<c:out value="${reviewDev.id}"/>" <c:if test="${status.value==reviewDev.id}"> selected</c:if>><c:out value="${reviewDev.name}"/></option>
+                  </c:forEach>
+               </select>
+       </p>
+     </spring:bind>
+     
+         <spring:bind path="scaffoldingCell.evaluationDeviceType">  
+            <input type="hidden" name="<c:out value="${status.expression}"/>"
+               value="<c:out value="${status.value}"/>" />
+        </spring:bind>
+     <spring:bind path="scaffoldingCell.evaluationDevice">  
+         <c:if test="${status.error}">
+             <div class="validation"><c:out value="${status.errorMessage}"/></div>
+         </c:if>
+       <p class="shorttext">
+         <label>Select Evaluation Device</label>    
+            <select name="<c:out value="${status.expression}"/>" >
+                     <option onclick="document.forms[0].evaluationDeviceType.value='';" value="">None</option>
+                  <c:forEach var="evalDev" items="${evaluationDevices}" varStatus="loopCount">
+                     <option onclick="document.forms[0].evaluationDeviceType.value='<c:out value="${evalDev.type}"/>';" 
+                        value="<c:out value="${evalDev.id}"/>" <c:if test="${status.value==evalDev.id}"> selected</c:if>><c:out value="${evalDev.name}"/></option>
+                  </c:forEach>
+               </select>
+       </p>
+     </spring:bind>
 		
         <spring:bind path="scaffoldingCell.gradableReflection">
             <c:if test="${status.error}">

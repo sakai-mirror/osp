@@ -54,12 +54,12 @@ import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.theospi.portfolio.guidance.model.Guidance;
 
 /**
  * @author chmaurer
  */
 public class ScaffoldingCell extends IdentifiableObject implements Serializable {
-   private Id id;
    private Criterion rootCriterion;
    private Level level;
    private String expectationHeader = "";
@@ -70,6 +70,15 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    private Collection reviewers = new HashSet();
    transient private boolean validate;
    private Set cells = new HashSet();
+   transient private Id guidanceId;
+   private Guidance guidance;
+   
+   private Id reflectionDevice;
+   private String reflectionDeviceType;
+   private Id evaluationDevice;
+   private String evaluationDeviceType;
+   private Id reviewDevice;
+   private String reviewDeviceType;
 
    public ScaffoldingCell() {;}
    public ScaffoldingCell(Criterion criterion, Level level, String initialStatus, Scaffolding scaffolding) {
@@ -77,10 +86,6 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
       this.level = level;
       this.initialStatus = initialStatus;
       this.scaffolding = scaffolding;
-   }
-   
-   public void add(Expectation expectation) {
-      this.getExpectations().add(expectation);
    }
    
    public boolean equals(Object other) {
@@ -92,18 +97,6 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
 
    }
    
-   /**
-    * @return Returns the id.
-    */
-   public Id getId() {
-      return id;
-   }
-   /**
-    * @param id The id to set.
-    */
-   public void setId(Id id) {
-      this.id = id;
-   }
    /**
     * @return Returns the level.
     */
@@ -218,4 +211,67 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    public void setCells(Set cells) {
       this.cells = cells;
    }
+   public Id getEvaluationDevice() {
+      return evaluationDevice;
+   }
+   public void setEvaluationDevice(Id evaluationDevice) {
+      this.evaluationDevice = evaluationDevice;
+   }
+   public String getEvaluationDeviceType() {
+      return evaluationDeviceType;
+   }
+   public void setEvaluationDeviceType(String evaluationDeviceType) {
+      this.evaluationDeviceType = evaluationDeviceType;
+   }
+   public Id getReflectionDevice() {
+      return reflectionDevice;
+   }
+   public void setReflectionDevice(Id reflectionDevice) {
+      this.reflectionDevice = reflectionDevice;
+   }
+   public String getReflectionDeviceType() {
+      return reflectionDeviceType;
+   }
+   public void setReflectionDeviceType(String reflectionDeviceType) {
+      this.reflectionDeviceType = reflectionDeviceType;
+   }
+   public Id getReviewDevice() {
+      return reviewDevice;
+   }
+   public void setReviewDevice(Id reviewDevice) {
+      this.reviewDevice = reviewDevice;
+   }
+   public String getReviewDeviceType() {
+      return reviewDeviceType;
+   }
+   public void setReviewDeviceType(String reviewDeviceType) {
+      this.reviewDeviceType = reviewDeviceType;
+   }
+
+   /**
+    * @return Returns the guidanceId.
+    */
+   public Id getGuidanceId() {
+      return guidanceId;
+   }
+   /**
+    * @param guidanceId The guidanceId to set.
+    */
+   public void setGuidanceId(Id guidanceId) {
+      this.guidanceId = guidanceId;
+   }
+   /**
+    * @return Returns the guidance.
+    */
+   public Guidance getGuidance() {
+      return guidance;
+   }
+   /**
+    * @param guidance The guidance to set.
+    */
+   public void setGuidance(Guidance guidance) {
+      this.guidance = guidance;
+   }
+
+   
 }

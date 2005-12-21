@@ -128,8 +128,6 @@
         </id>
         <many-to-one name="reflection" column="reflection_id"
             not-null="true" class="Reflection" cascade="none" />
-         <many-to-one name="expectation" column="expectation_id"
-            class="Expectation" cascade="none" />
         <property name="connect" column="connectText" type="text" />
         <property name="evidence" type="text" />
     </class>
@@ -143,17 +141,10 @@
         </id>
         <discriminator column="type" type="character" />
         <property name="description" type="java.lang.String" />
-        <subclass name="Level" discriminator-value="L">
-         <property name="color" type="java.lang.String" length="7" />
-         <property name="textColor" type="java.lang.String" length="7" />
-        </subclass>
-        <subclass name="Criterion" discriminator-value="C">
-            <property name="color" type="java.lang.String" length="7" />
-            <property name="textColor" type="java.lang.String" length="7" />
-        </subclass>
-		<subclass name="Expectation" discriminator-value="E" >
-		  <property name="required" type="boolean" />
-		  </subclass>
+        <property name="color" type="java.lang.String" length="7" />
+        <property name="textColor" type="java.lang.String" length="7" />
+        <subclass name="Level" discriminator-value="L" />
+        <subclass name="Criterion" discriminator-value="C" />
     </class>
 
 
@@ -197,7 +188,6 @@
         <property name="pendingColor" type="java.lang.String" not-null="true" length="7"/>
         <property name="completedColor" type="java.lang.String" not-null="true" length="7"/>
         <property name="lockedColor" type="java.lang.String" not-null="true" length="7"/>
-
     </class>
 
     <class name="ReviewerItem" table="osp_reviewer_item" lazy="true" >
@@ -229,19 +219,28 @@
     	<many-to-one name="rootCriterion" column="rootcriterion_id" class="Criterion"/>
       <many-to-one name="level" column="level_id" class="Level"/>
     	<many-to-one name="scaffolding" column="scaffolding_id" not-null="true" class="Scaffolding"/>
-    	<property name="expectationHeader" type="text" not-null="false"/>
-    	<list name="expectations" lazy="true" inverse="false" table="osp_expectation" cascade="all-delete-orphan">
-            <key column="scaffolding_cell_id" />
-            <index column="seq_num" />
-            <many-to-many class="Expectation" />
-        </list>
-      <property name="initialStatus" type="java.lang.String" />
-      <property name="gradableReflection" type="boolean" />
+    	<property name="initialStatus" type="java.lang.String" />
       <set name="cells" cascade="all-delete-orphan" inverse="true"
             lazy="true">
             <key column="scaffolding_cell_id" />
             <one-to-many class="Cell" />
         </set>
+
+       <property name="reflectionDevice" column="reflection_device_id" length="36"
+         type="org.sakaiproject.metaobj.shared.IdType"/>
+       <property name="reflectionDeviceType" type="string" column="reflection_device_type" />
+       <property name="evaluationDevice" column="evaluation_device_id" length="36"
+         type="org.sakaiproject.metaobj.shared.IdType"/>
+       <property name="evaluationDeviceType" type="string" column="evaluation_device_type" />
+       <property name="reviewDevice" column="review_device_id" length="36"
+         type="org.sakaiproject.metaobj.shared.IdType"/>
+       <property name="reviewDeviceType" type="string" column="review_device_type" />
+       <!-- property name="guidanceId" column="guidance_id" not-null="false" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType"/-->
+       <many-to-one name="guidance" column="guidance_id" not-null="false" 
+         class="org.theospi.portfolio.guidance.model.Guidance"/>
     </class>
+    
+    
     
 </hibernate-mapping>

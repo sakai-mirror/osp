@@ -54,8 +54,7 @@ package org.theospi.portfolio.matrix.model;
  */
 public class Level extends AbstractLabel {
    
-   String color;
-   String textColor = "#000000";
+   
    
    public Level() {}
    
@@ -72,21 +71,5 @@ public class Level extends AbstractLabel {
       this.color = level.getColor();
       this.textColor = level.getTextColor();
       return this;
-   }
-
-   public String getColor() {
-      return color;
-   }
-
-   public void setColor(String color) {
-      this.color = color;
-   }
-
-   public String getTextColor() {
-      return textColor;
-   }
-
-   public void setTextColor(String textColor) {
-      this.textColor = textColor;
    }
 }

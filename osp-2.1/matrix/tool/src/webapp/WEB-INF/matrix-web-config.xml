@@ -147,6 +147,7 @@
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="authManager"><ref bean="authManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
+            <property name="reviewManager"><ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/></property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -154,6 +155,8 @@
             <prop key="success">viewCell</prop>
             <prop key="cancel">matrixRedirect</prop>
             <prop key="confirm">removeConfirmationRedirect</prop>
+            <prop key="guidance">viewGuidance</prop>
+            <prop key="review">createReview</prop>
          </props>
       </property>
       <property name="customTypedEditors">
@@ -580,6 +583,8 @@
             <property name="worksiteManager">
                <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
             </property>
+            <property name="wizardManager"><ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" /></property>
+            <property name="structuredArtifactDefinitionManager"><ref bean="structuredArtifactDefinitionManager"/></property>
          </bean>
       </property>
       <property name="customTypedEditors">

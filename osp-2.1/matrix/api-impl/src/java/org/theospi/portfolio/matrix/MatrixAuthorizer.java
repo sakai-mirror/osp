@@ -52,7 +52,6 @@ import java.util.List;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.app.ApplicationAuthorizer;
@@ -86,7 +85,7 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
                                String function, Id id) {
       logger.debug("isAuthorized?(...) invoked in MatrixAuthorizer");
          
-      if (MatrixFunctionConstants.REVIEW_MATRIX.equals(function)) {
+      if (MatrixFunctionConstants.EVALUATE_MATRIX.equals(function)) {
          return new Boolean(facade.isAuthorized(function,id));
       }
       else if (MatrixFunctionConstants.VIEW_MATRIX.equals(function)) {
@@ -102,8 +101,8 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       return null;  //don't care
    }
    
-   protected Boolean isCellAuthForReview(AuthorizationFacade facade, Agent agent, Id cellId) {
-      return new Boolean(facade.isAuthorized(agent, MatrixFunctionConstants.REVIEW_MATRIX, cellId));
+   protected Boolean isCellAuthForEval(AuthorizationFacade facade, Agent agent, Id cellId) {
+      return new Boolean(facade.isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, cellId));
    }
 
    public Boolean isFileAuth(AuthorizationFacade facade, Agent agent, Id artifactId) {
@@ -126,7 +125,7 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
             return new Boolean(true);
          }
 
-         Boolean returned = isCellAuthForReview(facade, agent, cell.getId());
+         Boolean returned = isCellAuthForEval(facade, agent, cell.getId());
          if (returned != null && returned.booleanValue()) {
             return returned;
          }

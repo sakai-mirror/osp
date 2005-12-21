@@ -51,9 +51,6 @@ package org.theospi.portfolio.matrix.model;
  * @author rpembry
  */
 public class Criterion extends AbstractLabel implements Label {
-
-   String color;
-   String textColor = "#000000";
    
    public Criterion() {}
    
@@ -71,17 +68,6 @@ public class Criterion extends AbstractLabel implements Label {
       this.textColor = criterion.getTextColor();
       return this;
    }
-   
-   public String getColor() {
-      return color;
-  }
-  
-  public void setColor(String color) {
-      if (color == null)
-          this.color = "";
-      else
-          this.color = color;
-  }
 
    /* (non-Javadoc)
     * @see java.lang.Object#equals(java.lang.Object)
@@ -99,13 +85,5 @@ public class Criterion extends AbstractLabel implements Label {
    public int hashCode() {
       String hashString = this.getDescription();
       return hashString.hashCode();
-   }
-
-   public String getTextColor() {
-      return textColor;
-   }
-
-   public void setTextColor(String textColor) {
-      this.textColor = textColor;
    }
 }
