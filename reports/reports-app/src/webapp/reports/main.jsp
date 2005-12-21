@@ -28,6 +28,29 @@
                         </h:commandLink>
                     </h:column>
                 </h:dataTable>
+                <h:outputText value="<br/><br/>#{msgs.report_results}" escape="false"/>
+                <h:dataTable var="result"
+                    value="#{ReportsTool.results}">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Title" />
+                        </f:facet>
+
+                        <h:commandLink
+                            action="#{result.processSelectReportResult}">
+                            <h:outputText value="#{result.title}" />
+                            
+                            <h:outputText rendered="#{result.isLive}"
+                                value="(#{msgs.is_a_live_report})" />
+                        </h:commandLink>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Creation Date" />
+                        </f:facet>
+                        <h:outputText value="#{result.creationDate}" />
+                    </h:column>
+                </h:dataTable>
             </h:form>
     </sakai:view>
 </f:view>

@@ -78,7 +78,7 @@
     
     <class
         name="Report"
-        table="osp_reports" lazy="true">
+        table="osp_reports">
         
         <id name="reportId" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" column="reportId">
@@ -96,16 +96,16 @@
         <property name="isLive" type="boolean" />
         <property name="creationDate" type="java.util.Date" />
         
-        <list name="reportParams" cascade="all-delete-orphan" inverse="true">
-            <key column="reportParamId" />
-            <index column="seq_num" />
+        <list name="reportParams" cascade="all" inverse="true">
+            <key column="reportId" />
+            <index column="reportDefParamIdMark" />
             <one-to-many class="ReportParam" />
         </list>
     </class>
     
     <class
         name="ReportParam"
-        table="osp_reports_params" lazy="true">
+        table="osp_reports_params">
         
         <id name="paramId" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" column="paramId">
@@ -124,7 +124,7 @@
     
     <class
         name="ReportResult"
-        table="osp_reports_results" lazy="true">
+        table="osp_reports_results">
         
         <id name="resultId" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" column="resultId">

@@ -67,4 +67,8 @@ public interface ReportsManager
 
     public void saveReportResult(ReportResult result);
     public void saveReport(Report result);
+    
+    
+    public List getCurrentUserResults();
+    public ReportResult loadResult(ReportResult result);
 }

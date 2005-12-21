@@ -27,7 +27,7 @@
                         </sakai:doc_section>
                         
                         <sakai:doc_section>
-                            <h:outputText value="#{msgs.report_keywords}"/>
+                            <h:outputText value="#{msgs.report_live_checkbox}"/>
                         </sakai:doc_section>
                         <sakai:doc_section>
                             <h:selectBooleanCheckbox value="#{ReportsTool.workingReport.report.isLive}"/>

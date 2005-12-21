@@ -45,6 +45,7 @@
 package org.theospi.tool.reports;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -54,7 +55,7 @@ import org.theospi.api.app.reports.*;
  * This class allows the Report to interact with the view
  *
  */
-public class DecoratedReport {
+public class DecoratedReport implements DecoratedAbstractResult {
 
 	/** The link to the main tool */
 	private ReportsTool	reportsTool = null;
@@ -114,5 +115,36 @@ public class DecoratedReport {
 			invalidTitle = true;
 			
 		return invalidTitle;
+	}
+	
+	
+	/**
+	 * this function loads the full report result and the report
+	 * sets these in the tool
+	 * @return String which page to go to next
+	 */
+	public String processSelectReportResult()
+	{
+		return reportsTool.processSelectLiveReport(this);
+	}
+
+	public String getResultType()
+	{
+		return DecoratedAbstractResult.REPORT;
+	}
+	
+	public String getTitle()
+	{
+		return report.getTitle();
+	}
+	
+	public Date getCreationDate()
+	{
+		return report.getCreationDate();
+	}
+	
+	public boolean getIsLive()
+	{
+		return report.getIsLive();
 	}
 }

@@ -53,6 +53,8 @@ import org.sakaiproject.metaobj.shared.model.Id;
 
 public class ReportDefinition
 {
+	private static final String DEFAULT_VIEW_LINK = "/reportxsls/default.xsl";
+	
 	/** the unique identifier for the report definition */
 	private Id reportDefId = null;
 	
@@ -87,6 +89,12 @@ public class ReportDefinition
 	private List xsls;
 	
 	
+	
+	/**
+	 * when the report is finished loading the link in the report parameters
+	 * needs to be set to the owning report definition
+	 *
+	 */
 	public void finishLoading()
 	{
 		if(reportDefinitionParams == null)
@@ -228,6 +236,12 @@ public class ReportDefinition
 	 */
 	public ReportXsl getDefaultXsl()
 	{
+		if(defaultXsl == null) {
+			defaultXsl = new ReportXsl();
+			defaultXsl.setIsExport(false);
+			defaultXsl.setReportDefinition(this);
+			defaultXsl.setXslLink(DEFAULT_VIEW_LINK);
+		}
 		return defaultXsl;
 	}
 	
