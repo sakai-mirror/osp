@@ -49,7 +49,12 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.api.kernel.tool.Placement;
+import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
@@ -59,6 +64,9 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
+import org.theospi.portfolio.wizard.WizardFunctionConstants;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
+import org.theospi.portfolio.wizard.model.Wizard;
 
 /**
  * @author chmaurer
@@ -69,24 +77,24 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    protected final Log logger = LogFactory.getLog(getClass());
    private WorksiteManager worksiteManager = null;
    private AgentManager agentManager;
+   private WizardManager wizardManager;
+   private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
+   
+// TODO move this constant somewhere where I can get to them from here and in WizardTool
+   public final static String FORM_TYPE = "form";
    
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.FormController#referenceData(java.util.Map, java.lang.Object, org.springframework.validation.Errors)
     */
    public Map referenceData(Map request, Object command, Errors errors) {
+      ScaffoldingCell sCell = (ScaffoldingCell) command;
       Map model = new HashMap();
-
-      //String siteId = getWorksiteManager().getCurrentWorksiteId().getValue();
-
-      //String filter = (String) request.get("filterSelect");
-      //if (filter != null) {
-      //   List members = getAgentManager().getWorksiteAgents(siteId);
-      //   model.put("members", members);
-      //   model.put("filterSelect", filter);
-      //}
-
-      //model.put("roles", getAgentManager().getWorksiteRoles(siteId));
-      model.put("reviewFunction", MatrixFunctionConstants.REVIEW_MATRIX);
+      
+      model.put("reflectionDevices", getReflectionDevices(sCell));
+      model.put("evaluationDevices", getEvaluationDevices(sCell));
+      model.put("reviewDevices", getReviewDevices(sCell));
+      
+      
       return model;
    }
    /* (non-Javadoc)
@@ -120,6 +128,17 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
             if (request.get("gradableReflection") == null) {
                scaffoldingCell.setGradableReflection(false);
             }
+            
+            /*
+             * 
+             * if (getCommentItem() != null && !getCommentItem().equals("")) {
+         String[] comment = getCommentItem().split(VALUE_SEPARATOR);
+         items.add(new WizardSupportItem(cleanBlankId(comment[ID_INDEX]),
+               getIdManager().getId(comment[ITEM_ID_INDEX]),
+               WizardFunctionConstants.COMMENT_TYPE, comment[TYPE_INDEX], wizard));
+      } 
+             * 
+             */
             
             if (scaffoldingCell.getScaffolding().isPublished()) {
                model.put("scaffoldingCell", scaffoldingCell);
@@ -172,7 +191,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    }
    
    protected void setAudienceSelectionVariables(Map session, ScaffoldingCell sCell) {
-      session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION, MatrixFunctionConstants.REVIEW_MATRIX);
+      session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION, MatrixFunctionConstants.EVALUATE_MATRIX);
       session.put(AudienceSelectionHelper.AUDIENCE_QUALIFIER, sCell.getId().getValue());
       session.put(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS, "Add evaluators to your cell");
       session.put(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE, "Evaluators to Publish to");
@@ -201,6 +220,57 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       session.remove(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED);
    }
    
+   protected Collection getAvailableForms(String siteId, String type) {
+      return getStructuredArtifactDefinitionManager().findHomes(
+            getIdManager().getId(siteId));      
+   }
+   
+   protected Collection getFormsForSelect(String type) {
+      Placement placement = ToolManager.getCurrentPlacement();
+      String currentSiteId = placement.getContext();
+      Collection commentForms = getAvailableForms(currentSiteId, type);
+      
+      List retForms = new ArrayList();
+      for(Iterator iter = commentForms.iterator(); iter.hasNext();) {
+         StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) iter.next(); 
+         retForms.add(new ScaffoldingCellSupportDeviceBean(sad.getId().getValue(), sad.getDescription(), FORM_TYPE));
+      }
+      
+      return retForms;
+   }
+   
+   protected Collection getWizardsForSelect(String type) {
+      Placement placement = ToolManager.getCurrentPlacement();
+      String currentSiteId = placement.getContext();
+      List wizards = getWizardManager().listWizardsByType(
+            SessionManager.getCurrentSessionUserId(), currentSiteId, type);
+      List retWizards = new ArrayList();
+      for(Iterator iter = wizards.iterator(); iter.hasNext();) {
+         Wizard wizard = (Wizard)iter.next();
+         retWizards.add(new ScaffoldingCellSupportDeviceBean(wizard.getId().getValue(), wizard.getName(), Wizard.WIZARD_TYPE));
+      }
+      
+      return retWizards;
+   }
+   
+   protected Collection getReviewDevices(ScaffoldingCell sCell) {
+      Collection all = getFormsForSelect(WizardFunctionConstants.COMMENT_TYPE);
+      all.addAll(getWizardsForSelect(WizardFunctionConstants.COMMENT_TYPE));
+      return all;
+   }
+   
+   protected Collection getReflectionDevices(ScaffoldingCell sCell) {
+      Collection all = getFormsForSelect(WizardFunctionConstants.REFLECTION_TYPE);
+      all.addAll(getWizardsForSelect(WizardFunctionConstants.REFLECTION_TYPE));
+      return all;
+   }
+   
+   protected Collection getEvaluationDevices(ScaffoldingCell sCell) {
+      Collection all = getFormsForSelect(WizardFunctionConstants.EVALUATION_TYPE);
+      all.addAll(getWizardsForSelect(WizardFunctionConstants.EVALUATION_TYPE));
+      return all;
+   }
+   
    
    /**
     * @return Returns the worksiteManager.
@@ -225,5 +295,18 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
     */
    public void setAgentManager(AgentManager agentManager) {
       this.agentManager = agentManager;
+   }
+   public StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {
+      return structuredArtifactDefinitionManager;
+   }
+   public void setStructuredArtifactDefinitionManager(
+         StructuredArtifactDefinitionManager structuredArtifactDefinitionManager) {
+      this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
+   }
+   public WizardManager getWizardManager() {
+      return wizardManager;
+   }
+   public void setWizardManager(WizardManager wizardManager) {
+      this.wizardManager = wizardManager;
    }
 }

@@ -55,12 +55,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.Criterion;
 import org.theospi.portfolio.matrix.model.CriterionTransport;
-import org.theospi.portfolio.matrix.model.Expectation;
-import org.theospi.portfolio.matrix.model.ExpectationTransport;
 import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.LevelTransport;
 import org.theospi.portfolio.matrix.model.Scaffolding;
-import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 
 
 /**
@@ -90,10 +87,6 @@ public abstract class BaseListObjectController implements FormController, LoadOb
             obj = new LevelTransport((Level)sessionBean.getScaffolding().getLevels().get(
                      Integer.parseInt(index)));
          }
-         else if (incomingModel instanceof ExpectationTransport) {
-            obj = new ExpectationTransport((Expectation)sessionBean.getScaffoldingCell().getExpectations().get(
-                  Integer.parseInt(index)));
-         }  
          
          return obj;
       }
@@ -138,20 +131,7 @@ public abstract class BaseListObjectController implements FormController, LoadOb
                }
                sessionBean.setScaffolding(scaffolding);
             }
-            else if (requestModel instanceof ExpectationTransport) {
-               ScaffoldingCell scaffoldingCell = sessionBean.getScaffoldingCell();
-               ExpectationTransport obj = (ExpectationTransport) requestModel;
-               if (index == null) {
-                  scaffoldingCell.add(new Expectation(obj));
-               }
-               else {
-                  int idx = Integer.parseInt(index);
-                  Expectation expectation = (Expectation)scaffoldingCell.getExpectations().get(idx);
-                  expectation.copy(obj);
-                  scaffoldingCell.getExpectations().set(idx, expectation);
-               }
-               sessionBean.setScaffoldingCell(scaffoldingCell);
-            }
+            
             
             session.put(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY,
                   sessionBean);

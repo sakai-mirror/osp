@@ -54,9 +54,6 @@ package org.theospi.portfolio.matrix.model;
  */
 public class LevelTransport extends AbstractLabel {
    
-   String color;
-   String textColor = "#000000";
-   
    public LevelTransport() {}
    
    public LevelTransport(Level level) {
@@ -64,21 +61,5 @@ public class LevelTransport extends AbstractLabel {
       this.description = level.getDescription();
       this.color = level.getColor();
       this.textColor = level.getTextColor();
-   }
-
-   public String getColor() {
-      return color;
-   }
-
-   public void setColor(String color) {
-      this.color = color;
-   }
-
-   public String getTextColor() {
-      return textColor;
-   }
-
-   public void setTextColor(String textColor) {
-      this.textColor = textColor;
    }
 }

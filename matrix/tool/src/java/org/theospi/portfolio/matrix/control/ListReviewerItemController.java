@@ -133,7 +133,7 @@ public class ListReviewerItemController implements FormController, LoadObjectCon
     */
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       List list = (List) incomingModel;
-      list = matrixManager.getReviewableCells(authManager.getAgent(), worksiteManager.getCurrentWorksiteId());
+      list = matrixManager.getEvaluatableCells(authManager.getAgent(), worksiteManager.getCurrentWorksiteId());
 
       list = getListScrollIndexer().indexList(request, request, list);
 
@@ -173,11 +173,11 @@ public class ListReviewerItemController implements FormController, LoadObjectCon
          }
       }
       else if (unlocking && !ri.getReviewer().getId().equals(authManager.getAgent().getId())) {
-         authzManager.checkPermission(MatrixFunctionConstants.UNLOCK_REVIEW_MATRIX,
+         authzManager.checkPermission(MatrixFunctionConstants.UNLOCK_EVAL_MATRIX,
                getIdManager().getId(PortalService.getCurrentToolId()));
       }
       else if (!unlocking) { // must be trying to check out
-         authzManager.checkPermission(MatrixFunctionConstants.REVIEW_MATRIX,
+         authzManager.checkPermission(MatrixFunctionConstants.EVALUATE_MATRIX,
                ri.getCell().getScaffoldingCell().getId());
       }
 

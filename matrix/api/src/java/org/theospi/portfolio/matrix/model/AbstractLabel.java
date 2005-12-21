@@ -57,6 +57,8 @@ import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 public abstract class AbstractLabel extends IdentifiableObject implements Serializable, Label {
    Id id;
    String description;
+   String color;
+   String textColor = "#000000";
 
 
    /**
@@ -85,6 +87,22 @@ public abstract class AbstractLabel extends IdentifiableObject implements Serial
     */
    public void setId(Id id) {
       this.id = id;
+   }
+   
+   public String getColor() {
+      return color;
+   }
+
+   public void setColor(String color) {
+      this.color = color;
+   }
+
+   public String getTextColor() {
+      return textColor;
+   }
+
+   public void setTextColor(String textColor) {
+      this.textColor = textColor;
    }
 
    public String toString() {

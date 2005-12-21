@@ -123,13 +123,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private AgentManager agentManager = null;
    private PresentableObjectHome xmlRenderer;
    private WorksiteManager worksiteManager;
-   //private WritableObjectHome fileHome;
    private LockManager lockManager;
    private boolean loadArtifacts = true;
    private List reviewRubrics = new ArrayList();
    private ContentHostingService contentHosting = null;
    private SecurityService securityService;
    private DefaultScaffoldingBean defaultScaffoldingBean;
+   
 
    private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    private EntityContextFinder contentFinder = null;
@@ -404,7 +404,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
-         Collection reviewers = this.getScaffoldingCellReviewers(sCell.getId(), false);
+         Collection reviewers = this.getScaffoldingCellEvaluators(sCell.getId(), false);
          sCell.setReviewers(new HashSet(reviewers));
       }      
 
@@ -446,15 +446,15 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public ScaffoldingCell getScaffoldingCell(Id id) {
       ScaffoldingCell scaffoldingCell = (ScaffoldingCell)this.getHibernateTemplate().load(ScaffoldingCell.class, id);
       
-      scaffoldingCell.setReviewers(getScaffoldingCellReviewers(id, true));
+      scaffoldingCell.setReviewers(getScaffoldingCellEvaluators(id, true));
 
       return scaffoldingCell;
    }
    
-   protected Collection getScaffoldingCellReviewers(Id scaffoldingCellId, boolean useAgentId) {
+   protected Collection getScaffoldingCellEvaluators(Id scaffoldingCellId, boolean useAgentId) {
       Collection reviewers = new HashSet();
       Collection viewerAuthzs = getAuthzManager().getAuthorizations(null,
-            MatrixFunctionConstants.REVIEW_MATRIX, scaffoldingCellId);
+            MatrixFunctionConstants.EVALUATE_MATRIX, scaffoldingCellId);
 
       for (Iterator i = viewerAuthzs.iterator(); i.hasNext();) {
          Authorization reviewer = (Authorization) i.next();
@@ -763,7 +763,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return null;
    }
    
-   public List getReviewableCells(Agent agent, Id worksiteId) {
+   public List getEvaluatableCells(Agent agent, Id worksiteId) {
       List roles = agent.getWorksiteRoles(worksiteId.getValue());
       Agent role = (Agent)roles.get(0);
 
@@ -779,12 +779,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             "'"+MatrixFunctionConstants.CHECKED_OUT_STATUS+"') and (auth.agent=? " +
             " or auth.agent=?) " +
             " and item.cell.scaffoldingCell.scaffolding.worksiteId=?",
-         new Object[]{MatrixFunctionConstants.REVIEW_MATRIX,
+         new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
             agent.getId().getValue(), role.getId().getValue(),
             worksiteId.getValue()}));
 
 
-      if (getAuthzManager().isAuthorized(MatrixFunctionConstants.UNLOCK_REVIEW_MATRIX,
+      if (getAuthzManager().isAuthorized(MatrixFunctionConstants.UNLOCK_EVAL_MATRIX,
          getIdManager().getId(PortalService.getCurrentToolId()))) {
          returned.addAll(this.getHibernateTemplate().find("select item from " +
             "ReviewerItem item " +
@@ -1000,7 +1000,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Cell cell = getCell(getIdManager().getId(id));
       Id toolId = cell.getMatrix().getMatrixTool().getId();
       if (!getAuthzManager().isAuthorized(MatrixFunctionConstants.VIEW_MATRIX_USERS, toolId) &&
-          !getAuthzManager().isAuthorized(MatrixFunctionConstants.REVIEW_MATRIX, cell.getId())) {
+          !getAuthzManager().isAuthorized(MatrixFunctionConstants.EVALUATE_MATRIX, cell.getId())) {
          // won't setup security advisor, so it won't load
          return;
       }
@@ -1029,7 +1029,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
             if (agent != null) {
                this.getAuthzManager().createAuthorization(agent, 
-                     MatrixFunctionConstants.REVIEW_MATRIX, sCell.getId());
+                     MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getId());
             }
          }
       }
@@ -1407,5 +1407,4 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          DefaultScaffoldingBean defaultScaffoldingBean) {
       this.defaultScaffoldingBean = defaultScaffoldingBean;
    }
-
 }

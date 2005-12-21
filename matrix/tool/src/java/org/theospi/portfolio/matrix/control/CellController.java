@@ -52,8 +52,11 @@ import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.review.ReviewHelper;
+import org.theospi.portfolio.review.mgt.ReviewManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,17 +69,26 @@ public class CellController implements FormController, LoadObjectController {
    private MatrixManager matrixManager;
    private AuthenticationManager authManager = null;
    private IdManager idManager = null;
+   private ReviewManager reviewManager;
 
 
    public Map referenceData(Map request, Object command, Errors errors) {
+      CellFormBean cell = (CellFormBean) command;
       Map model = new HashMap();
       model.put("reviewRubrics", matrixManager.getReviewRubrics());
+      String cellId = cell.getCell().getId().getValue();
+      model.put("reviews", getReviewManager().getReviewsByParent(cellId));
       return model;
    }
    
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       CellFormBean cellBean = (CellFormBean) incomingModel;
-      Id id = getIdManager().getId((String) request.get("cell_id"));
+      String strId = (String) request.get("cell_id");
+      if (strId== null) {
+         strId = (String)session.get("cell_id");
+         session.remove("cell_id");
+      }
+      Id id = getIdManager().getId(strId);
       Cell cell = matrixManager.getCell(id);
 
       cellBean.setCell(cell);
@@ -116,6 +128,20 @@ public class CellController implements FormController, LoadObjectController {
          }
          else if (action.equals("Cancel")) {
             return new ModelAndView("cancel");
+         }
+         else if (action.equals("guidance")) {
+            session.put(GuidanceManager.CURRENT_GUIDANCE_ID, 
+                  cell.getScaffoldingCell().getGuidance().getId().getValue());
+            session.put("cell_id", cell.getId().getValue());
+            return new ModelAndView("guidance");
+         }
+         else if (action.equals("review")) {
+            session.put(ReviewHelper.REVIEW_FORM_TYPE, 
+                  cell.getScaffoldingCell().getReviewDevice().getValue());
+            session.put(ReviewHelper.REVIEW_PARENT, 
+                  cell.getId().getValue());
+            session.put("cell_id", cell.getId().getValue());
+            return new ModelAndView("review");
          }
       }
 
@@ -162,5 +188,19 @@ public class CellController implements FormController, LoadObjectController {
     */
    public void setMatrixManager(MatrixManager matrixManager) {
       this.matrixManager = matrixManager;
+   }
+
+   /**
+    * @return Returns the reviewManager.
+    */
+   public ReviewManager getReviewManager() {
+      return reviewManager;
+   }
+
+   /**
+    * @param reviewManager The reviewManager to set.
+    */
+   public void setReviewManager(ReviewManager reviewManager) {
+      this.reviewManager = reviewManager;
    }
 }

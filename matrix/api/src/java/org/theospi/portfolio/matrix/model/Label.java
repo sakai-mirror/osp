@@ -71,4 +71,12 @@ public interface Label {
     * @param description The description to set.
     */
    public void setDescription(String description);
+   
+   public String getTextColor();
+   
+   public String getColor();
+   
+   public void setTextColor(String textColor);
+   
+   public void setColor(String color);
 }

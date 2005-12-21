@@ -2,7 +2,7 @@
 
 <registration>
 
-	<tool id="osp.review" title="Review" description="OSP Review Tool">
+	<tool id="osp.legacy.review" title="Review" description="OSP Legacy Review Tool">
        <configuration name="test" value="reg-value" />
 
        <category name="sakai.main" />
