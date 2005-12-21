@@ -147,7 +147,7 @@ public class ReportParam
 	public String getReportDefParamIdMark()
 	{
 		if(reportDefinitionParam == null)
-			return null;
+			return reportDefParamIdMark;
 		return reportDefinitionParam.getIdString();
 	}
 	

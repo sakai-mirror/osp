@@ -200,7 +200,29 @@ public class ReportsTool
 		return decoratedReportDefinition;
 	}
 	
+	public List getResults()
+	{
+		List decoratedResults = new ArrayList();
+		
+		List results = reportsManager.getCurrentUserResults();
+		
+
+		Iterator iter = results.iterator();
+		while(iter.hasNext()) {
+			Object rr = iter.next();
+			
+			if(rr instanceof ReportResult)
+				decoratedResults.add(new DecoratedReportResult((ReportResult)rr, this));
+			else if (rr instanceof Report)
+				decoratedResults.add(new DecoratedReport((Report)rr, this));
+		}
+		return decoratedResults;
+	}
 	
+	/**
+	 * Tells the interface if the live report was saved.  it goes to false
+	 * after the message is complete.
+	 */
 	public boolean getSavedLiveReport()
 	{
 		boolean saved = savedLiveReport;
@@ -224,6 +246,7 @@ public class ReportsTool
 	{
 		String nextPage = ReportsTool.createReportParamsPage;
 		
+		//	ensure that there is a title for the report
 		if(getWorkingReport().testInvalidateTitle())
 			nextPage = "";
 		
@@ -238,6 +261,7 @@ public class ReportsTool
 	public String processCancelReport()
 	{
 		savedLiveReport = false;
+		
 		//	remove the working report
 		setWorkingReport(null);
 		
@@ -253,7 +277,7 @@ public class ReportsTool
 	public String processEditParamsContinue()
 	{
 		//	get the results
-		ReportResult result = getReportsManager().generateResults(getWorkingReport().getReport());
+		ReportResult result = reportsManager.generateResults(getWorkingReport().getReport());
 		
 		//	make it the working result
 		setWorkingResult(new DecoratedReportResult(result, this));
@@ -330,5 +354,40 @@ public class ReportsTool
         savedLiveReport = true;
         
 		return reportResultsPage;
+	}
+	
+	/**
+	 * this function loads the full report result and the report
+	 * sets these in the tool
+	 * @return String which page to go to next
+	 */
+	public String processSelectReportResult(DecoratedReportResult reportResult)
+	{
+		ReportResult result = reportsManager.loadResult(reportResult.getReportResult());
+		Report report = result.getReport();
+		
+		setWorkingReport(new DecoratedReport(report, this));
+		setWorkingResult(new DecoratedReportResult(result, this));
+		
+		return ReportsTool.reportResultsPage;
+	}
+	
+	/**
+	 * this function loads a live report.  It generates a new result,
+	 * sets the report as having been saved (aka, it was loaded from the db)
+	 * @param report DecoratedReport
+	 * @return String the next page
+	 */
+	public String processSelectLiveReport(DecoratedReport report)
+	{
+		ReportResult result = reportsManager.generateResults(report.getReport());
+		
+		result.getReport().setIsSaved(true);
+		
+		//	make it the working result
+		setWorkingReport(new DecoratedReport(result.getReport(), this));
+		setWorkingResult(new DecoratedReportResult(result, this));
+		
+		return ReportsTool.reportResultsPage;
 	}
 }

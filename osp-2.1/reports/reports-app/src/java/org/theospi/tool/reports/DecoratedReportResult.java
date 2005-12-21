@@ -46,6 +46,7 @@ package org.theospi.tool.reports;
 
 import org.theospi.api.app.reports.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -58,7 +59,8 @@ import javax.faces.model.SelectItem;
  * This class allows the ReportResult to interact with the view
  *
  */
-public class DecoratedReportResult {
+public class DecoratedReportResult implements DecoratedAbstractResult {
+	
 	
 	/** The link to the main tool */
 	private ReportsTool	reportsTool = null;
@@ -84,11 +86,6 @@ public class DecoratedReportResult {
 	public ReportResult getReportResult()
 	{
 		return reportResult;
-	}
-	
-	public String getTitle()
-	{
-		return report.getTitle();
 	}
 	
 	public List getViewXslSeletionList()
@@ -135,8 +132,9 @@ public class DecoratedReportResult {
 	
 	public String getCurrentViewXsl()
 	{
-		if(currentViewXsl == null)
+		if(currentViewXsl == null) {
 			return report.getReportDefinition().getDefaultXsl().getXslLink();
+		}
 		return currentViewXsl;
 	}
 	
@@ -157,14 +155,19 @@ public class DecoratedReportResult {
 			this.currentExportXsl = currentExportXsl;
 	}
 	
-	public boolean getIsLive()
-	{
-		return report.getIsLive();
-	}
-	
 	public boolean getIsSaved()
 	{
 		return reportResult.getIsSaved();
+	}
+	
+	/**
+	 * this function loads the full report result and the report
+	 * sets these in the tool
+	 * @return String which page to go to next
+	 */
+	public String processSelectReportResult()
+	{
+		return reportsTool.processSelectReportResult(this);
 	}
 	
 	
@@ -220,5 +223,24 @@ public class DecoratedReportResult {
 		}
 		return false;
 	}
+
+	public String getResultType()
+	{
+		return DecoratedAbstractResult.RESULT;
+	}
 	
+	public String getTitle()
+	{
+		return reportResult.getTitle();
+	}
+	
+	public Date getCreationDate()
+	{
+		return reportResult.getCreationDate();
+	}
+	
+	public boolean getIsLive()
+	{
+		return report.getIsLive() && !reportResult.getIsSaved();
+	}
 }

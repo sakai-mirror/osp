@@ -86,6 +86,8 @@ public class Report
 
 	/** the parameters for the query in the report */
 	private boolean isLive;
+	
+	private ReportResult liveResult = null;
 
 	/** the defaultXsl for the report */
 	private Date creationDate;
@@ -185,11 +187,14 @@ public class Report
 	}
 	
 	/**
-	 * this is the link to report definition
+	 * this is links this report to the report definition.
+	 * It searches for the definition and if found it then links the
+	 * report parameters to the report definition parameters
 	 * @param reportDefIdMark String
 	 */
 	public void connectToDefinition(List reportDefs)
 	{
+		reportParams.size();
 		if(reportDefIdMark != null && reportDefinition == null) {
 			Iterator iter = reportDefs.iterator();
 			
@@ -199,6 +204,22 @@ public class Report
 					reportDefinition = rd;
 					break;
 				}
+			}
+			if(reportDefinition != null) {
+				iter = this.getReportParams().iterator();
+				while(iter.hasNext()) {
+					ReportParam rp = (ReportParam)iter.next();
+					
+					Iterator defIter = reportDefinition.getReportDefinitionParams().iterator();
+					while(defIter.hasNext()) {
+						ReportDefinitionParam rdp = (ReportDefinitionParam)defIter.next();
+						if(rp.getReportDefParamIdMark().equals(rdp.getIdString())) {
+							rp.setReportDefinitionParam(rdp);
+							rp.setReport(this);
+							break;
+						}
+					}
+				}// end while(looping through report params)
 			}
 		}
 	}
@@ -369,5 +390,4 @@ public class Report
 	{
 		this.isSaved = isSaved;
 	}
-	
 }

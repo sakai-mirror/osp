@@ -76,8 +76,10 @@ import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 
+import net.sf.hibernate.Hibernate;
 import net.sf.hibernate.HibernateException;
 //import net.sf.hibernate.Session;
 
@@ -106,11 +108,15 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Node;
 
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.api.kernel.component.ComponentManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
+
+import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.service.legacy.user.UserDirectoryService;
+import org.sakaiproject.service.legacy.user.User;
 
 /**
  * This class is a singleton that manages the reports on a general basis
@@ -126,25 +132,25 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	protected final String	ARTIFACT_EXTENSION = "artifact";
 	   
 	/** The global list of reports */
-	private List reports;
+	private List reportDefinitions;
 	
 	private IdManager		idManager = null;
 	private ArtifactFinder artifactFinder = null;
 	
 	private ArtifactFinderManager artifactFinderManager = null;
 	
-	/** Tells us if the global database reports were loaded */
+	/** Tells us if the global database reportDefinitions were loaded */
 	private boolean isDBLoaded = false;
 
 	/**
-	 * This is the setter for the predefined reports, via the bean
-	 * @param reports List of reports
+	 * This is the setter for the predefined reportDefinitions, via the bean
+	 * @param reportDefinitions List of reportDefinitions
 	 */
-	public void setReports(List reports)
+	public void setReports(List reportDefinitions)
 	{
-		this.reports = reports;
+		this.reportDefinitions = reportDefinitions;
 		
-		Iterator iter = reports.iterator();
+		Iterator iter = reportDefinitions.iterator();
 		while(iter.hasNext()) {
 			ReportDefinition rd = (ReportDefinition)iter.next();
 			
@@ -154,15 +160,15 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	
 	
 	/**
-	 * This is the getter for the total list of reports
+	 * This is the getter for the total list of reportDefinitions
 	 * @return List
 	 */
 	public List getReports()
 	{
-		//load any reports in the database
+		//load any reportDefinitions in the database
 		loadReportsFromDB();
 		
-		return reports;
+		return reportDefinitions;
 	}
 	
 	
@@ -224,7 +230,44 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	
 	
 	/**
-	 * Loads the global database reports if they haven't been loaded yet
+	 * this gets the list of report results that a user can open
+	 * 
+	 * TODO: permissions
+	 * @return List of ReportResult objects
+	 */
+	public List getCurrentUserResults()
+	{
+		Session s = SessionManager.getCurrentSession();
+
+		List results = getHibernateTemplate().find("from ReportResult r WHERE r.userId=?", s.getUserId(), Hibernate.STRING);
+
+		Iterator iter = results.iterator();
+		while(iter.hasNext()) {
+			ReportResult r = (ReportResult)iter.next();
+			
+			r.setIsSaved(true);
+		}
+		
+		List liveReports = getHibernateTemplate().find("from Report r WHERE r.userId=? AND r.isLive=1", s.getUserId(), Hibernate.STRING);
+		
+		iter = liveReports.iterator();
+		while(iter.hasNext()) {
+			Report r = (Report)iter.next();
+			
+			r.getReportParams().size();
+			
+			r.connectToDefinition(reportDefinitions);
+			r.setIsSaved(true);
+		}
+		
+		results.addAll(liveReports);
+		
+		return results;
+	}
+	
+	
+	/**
+	 * Loads the global database reportDefinitions if they haven't been loaded yet
 	 *
 	 */
 	private void loadReportsFromDB()
@@ -234,6 +277,42 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		
 		isDBLoaded = true;
 	}
+    public ReportResult loadResult(ReportResult result)
+    {
+    	ReportResult reportResult = 
+    			(ReportResult)getHibernateTemplate().get(
+    					ReportResult.class, 
+    					result.getResultId()
+    			);
+    	
+    	//load the report too
+    	Report report = reportResult.getReport();
+    	
+    	//set the report and report result to that of already been saved
+    	reportResult.setIsSaved(true);
+    	report.setIsSaved(true);
+    	
+    	//link the report deinition
+    	report.connectToDefinition(reportDefinitions);
+    	
+    	
+    	reportResult.setReport(report);
+    	
+    	//give back the result
+    	return reportResult;
+    }
+    
+    public ReportDefinition findReportDefinition(String Id)
+    {
+    	Iterator iter = reportDefinitions.iterator();
+    	
+    	while(iter.hasNext()) {
+    		ReportDefinition rd = (ReportDefinition)iter.next();
+    		if(rd.getIdString().equals(Id))
+    			return rd;
+    	}
+    	return null;
+    }
 
 //	*************************************************************************
 	//	*************************************************************************
@@ -515,6 +594,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			rr.setTitle(report.getTitle());
 			rr.setKeywords(report.getKeywords());
 			rr.setDescription(report.getDescription());
+			rr.setUserId(report.getUserId());
 			rr.setXml((new XMLOutputter()).outputString(document));
 			
 		} catch (SQLException e) {
@@ -538,14 +618,19 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	
 	public String replaceSystemValues(String inString)
 	{
+		UserDirectoryService dirServ = org.sakaiproject.service.legacy.user.cover.UserDirectoryService.getInstance();
+		User u = dirServ.getCurrentUser();
 		Session s = SessionManager.getCurrentSession();
 		
 		Map map = new HashMap();
 
 		map.put("{userid}", s.getUserId());
-		map.put("{username}", "The Administrator");
-		map.put("{worksiteid}", "209348029348203984");
-		map.put("{toolid}", "8765897589648");
+		map.put("{userdisplayname}", u.getDisplayName());
+		map.put("{useremail}", u.getEmail());
+		map.put("{userfirstname}", u.getFirstName());
+		map.put("{userlastname}", u.getLastName());
+		map.put("{worksiteid}", PortalService.getCurrentSiteId());
+		map.put("{toolid}", PortalService.getCurrentToolId());
 		
 
 		Iterator		iter = map.keySet().iterator();
@@ -592,7 +677,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 					.newTransformer(xsltSource);
 			Document rootElement = builder.build(new StringReader(reportResult
 					.getXml()));
-
+			
 			ByteArrayOutputStream sourceOut = new ByteArrayOutputStream();
 			StreamResult resultstream = new StreamResult(sourceOut);
 
@@ -700,7 +785,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
     {
         getHibernateTemplate().saveOrUpdate(report);
         
-        //	the user can't save results that have already been saved
+        //	the user can't save reports that have already been saved
         report.setIsSaved(true);
     }
     
