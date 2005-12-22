@@ -98,14 +98,14 @@ public class DecoratedReportParam {
 			reportParam.setValue(value);
 	}
 	
-	public Date getDateValue()
+	public String getDateValue()
 	{
-		return new Date(reportParam.getValue());
+		return reportParam.getValue();//new Date(reportParam.getValue());
 	}
-	public void setDateValue(Date value)
+	public void setDateValue(String value)
 	{
 		if(getIsFillIn() && getIsDate())
-			reportParam.setValue(value.toString());
+			reportParam.setValue(value);
 	}
 	
 	public String getMenuValue()
@@ -248,6 +248,6 @@ public class DecoratedReportParam {
 	
 	public boolean getIsDate()
 	{
-		return reportParam.getReportDefinitionParam().getType() == ReportDefinitionParam.TYPE_DATE;
+		return reportParam.getReportDefinitionParam().getType().equals(ReportDefinitionParam.TYPE_DATE);
 	}
 }
