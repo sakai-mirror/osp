@@ -5,7 +5,9 @@
 <f:view>
     <f:loadBundle basename="org.theospi.tool.reports.bundle.Messages" var="msgs" />
     <sakai:view title="#{msgs.title_create_report_params}">
-            <h:form>
+            <h:form id="rpForm">
+<script type="text/javascript" src="calendar/popcalendar.js"></script>
+<link href="calendar/theme.css" rel="stylesheet" type="text/css" />
                 
                 <sakai:view_title value="#{msgs.title_create_report_params}" indent="1" />
                 The report is: 
@@ -28,9 +30,22 @@
                         <h:inputText value="#{decoratedReportParam.textValue}" id="fillin" 
                             rendered="#{decoratedReportParam.isFillIn && !decoratedReportParam.isDate}"/>
 
+                        <% /*
                         <sakai:input_date value="#{decoratedReportParam.dateValue}" showDate="true"
-                            showTime="true" rendered="#{decoratedReportParam.isFillIn && decoratedReportParam.isDate && false}" />
-                        <br />
+                            showTime="true" rendered="#{decoratedReportParam.isFillIn && decoratedReportParam.isDate}" />
+						*/ %>
+						<h:inputText id="dueDate" value="#{decoratedReportParam.dateValue}" 
+							rendered="#{decoratedReportParam.isFillIn && decoratedReportParam.isDate}"
+							onkeypress="return submitOnEnter(event, 'rpForm:saveButton');">
+							<f:convertDateTime pattern="MM/dd/yy"/>
+						</h:inputText>
+						<h:outputText escape="false" rendered="#{decoratedReportParam.isFillIn && decoratedReportParam.isDate}"
+							value="
+							<input type=\"image\" id=\"dueDatePopup\" src=\"images/calendar_icon.gif\"
+								onclick=\"jscalendarPopUpCalendar(this,this.form.elements['rpForm:_id3:1:dueDate'],'M/d/yy'); return false;\" />
+							"
+						/>
+		
                         <h:selectOneMenu value="#{decoratedReportParam.menuValue}" 
                                 rendered="#{decoratedReportParam.isSet && !decoratedReportParam.isMultiSelectable}">
                             <f:selectItems value="#{decoratedReportParam.selectableValues}" />
@@ -45,6 +60,7 @@
                         action="#{ReportsTool.processEditParamsBack}"
                         value="#{msgs.btn_back}" />
                     <sakai:button_bar_item
+						id="saveButton"
                         action="#{ReportsTool.processEditParamsContinue}"
                         value="#{msgs.generate_report_results}" />
                     <sakai:button_bar_item
