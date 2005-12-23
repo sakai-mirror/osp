@@ -129,16 +129,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 {
 	protected final transient Log logger = LogFactory.getLog(getClass());
 	
-	protected final String	ARTIFACT_EXTENSION = "artifact";
-	   
 	/** The global list of reports */
 	private List reportDefinitions;
 	
 	private IdManager		idManager = null;
-	private ArtifactFinder artifactFinder = null;
-	
-	private ArtifactFinderManager artifactFinderManager = null;
-	
+
 	/** Tells us if the global database reportDefinitions were loaded */
 	private boolean isDBLoaded = false;
 
@@ -188,44 +183,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	public IdManager getIdManagerr()
 	{
 		return idManager;
-	}
-	
-	
-	/**
-	 * This is the setter for the ArtifactFinder
-	 */
-	public void setArtifactFinder(ArtifactFinder artifactFinder)
-	{
-		this.artifactFinder = artifactFinder;
-	}
-	
-	
-	/**
-	 * This is the getter for the artifactFinder
-	 * @return ArtifactFinder
-	 */
-	public ArtifactFinder getArtifactFinder()
-	{
-		return artifactFinder;
-	}
-	
-	
-	/**
-	 * This is the setter for the ArtifactFinderManager
-	 */
-	public void setArtifactFinderManager(ArtifactFinderManager artifactFinderManager)
-	{
-		this.artifactFinderManager = artifactFinderManager;
-	}
-	
-	
-	/**
-	 * This is the getter for the artifactFinderManager
-	 * @return ArtifactFinderManager
-	 */
-	public ArtifactFinderManager getArtifactFinderManager()
-	{
-		return artifactFinderManager;
 	}
 	
 	
@@ -503,11 +460,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			int columns = rs.getMetaData().getColumnCount();
 			
 			String []columnNames = new String[columns];
-			boolean []columnArtifacts = new boolean[columns];
-			
+
 			for(int i = 0; i < columns; i++) {
 				columnNames[i] = rs.getMetaData().getColumnName(i+1);
-				columnArtifacts[i] = columnNames[i].endsWith(ARTIFACT_EXTENSION);
 			}
 			
 			  
@@ -577,16 +532,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 						columnNode.setAttribute("isNull", "true");
 						data = "";
 					}
-					if(columnArtifacts[i]) {
-						Artifact art = artifactFinder.load(idManager.getId(data));
-						
-						PresentableObjectHome home = (PresentableObjectHome) art.getHome();
-						Element node = home.getArtifactAsXml(art);
-						node.setName("artifact");
-						columnNode.addContent(node);
-						//	place into the result xml
-					} else
-						columnNode.setText(data);
+   				columnNode.setText(data);
 				}
 			}
 
@@ -596,8 +542,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			rr.setDescription(report.getDescription());
 			rr.setUserId(report.getUserId());
 			rr.setXml((new XMLOutputter()).outputString(document));
-			
-		} catch (SQLException e) {
+
+         rr = postProcessResult(rd, rr);
+
+      } catch (SQLException e) {
 			logger.error("", e);
 			throw new OspException(e);
 		} catch (HibernateException e) {
@@ -615,8 +563,19 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		// any xml file links are pulled and entered into the xml in turn
 		return rr;
 	}
-	
-	public String replaceSystemValues(String inString)
+
+   protected ReportResult postProcessResult(ReportDefinition rd, ReportResult rr) {
+      List resultProcessors = rd.getResultProcessors();
+      if (resultProcessors != null) {
+         for (Iterator i=resultProcessors.iterator();i.hasNext();) {
+            ResultProcessor processor = (ResultProcessor) i.next();
+            rr = processor.process(rr);
+         }
+      }
+      return rr;
+   }
+
+   public String replaceSystemValues(String inString)
 	{
 		UserDirectoryService dirServ = org.sakaiproject.service.legacy.user.cover.UserDirectoryService.getInstance();
 		User u = dirServ.getCurrentUser();
@@ -686,8 +645,8 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			return sourceOut.toString();
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			return e.getMessage();
+         logger.error("", e);
+         throw new OspException(e);
 		}
 	}
 	
