@@ -87,8 +87,12 @@ public class ReportDefinition
 
 	/** the defaultXsl for the report definition */
 	private List xsls;
-	
-	
+
+   /** list of any special result processors this report needs.
+    * These should be of type ResultProcessor
+    * @see ResultProcessor
+    */
+	private List resultProcessors;
 	
 	/**
 	 * when the report is finished loading the link in the report parameters
@@ -318,7 +322,19 @@ public class ReportDefinition
 	{
 		this.xsls = xsls;
 	}
-	
+
+   /** list of any special result processors this report needs.
+    * These should be of type ResultProcessor
+    * @see ResultProcessor
+    */
+   public List getResultProcessors() {
+      return resultProcessors;
+   }
+
+   public void setResultProcessors(List resultProcessors) {
+      this.resultProcessors = resultProcessors;
+   }
+
 	public ReportXsl findReportXsl(String link)
 	{
 		Iterator iter = xsls.iterator();

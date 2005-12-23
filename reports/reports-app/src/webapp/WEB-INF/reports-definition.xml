@@ -245,8 +245,13 @@
         </property>
         <property name="query">
             <value>
-                select RESOURCE_ID `RESOURCE_ID_artifact` from content_resource_body_binary
+                select id `RESOURCE_ID_artifact` from dw_resource
             </value>
+        </property>
+        <property name="resultProcessors">
+           <list>
+              <ref bean="org.theospi.api.app.reports.ResultProcessor.defaultArtifactLoader" />
+           </list>
         </property>
         <property name="keywords">
             <value>CIG user portfolio etc</value>

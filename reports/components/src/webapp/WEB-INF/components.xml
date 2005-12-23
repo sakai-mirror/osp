@@ -30,13 +30,6 @@
                 <property name="idManager">
                     <ref bean="idManager" />
                 </property>
-                <property name="artifactFinder">
-                    <ref
-                        bean="org.sakaiproject.metaobj.shared.ArtifactFinder.default" />
-                </property>
-                <property name="artifactFinderManager">
-                    <ref bean="artifactFinderManager" />
-                </property>
             </bean>
         </property>
         <property name="transactionAttributes">
@@ -45,7 +38,36 @@
             </props>
         </property>
     </bean>
-    
+
+   <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactReports"
+      parent="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifact"
+      class="org.theospi.portfolio.shared.mgt.ContentWrappedArtifactFinder" />
+
+   <bean id="org.sakaiproject.metaobj.shared.ArtifactFinderManager.reports"
+      class="org.theospi.portfolio.shared.mgt.WrappedArtifactFinderManager">
+      <property name="base">
+         <ref bean="artifactFinderManager"/>
+      </property>
+      <property name="substitutions">
+         <map>
+            <entry key="fileArtifact">
+               <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactReports" />
+            </entry>
+         </map>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.api.app.reports.ResultProcessor.defaultArtifactLoader"
+      class="org.theospi.component.app.reports.LoadArtifactResultProcessor">
+      <property name="dataSource">
+         <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+      </property>
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="artifactFinderManager">
+         <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinderManager.reports" />
+      </property>
+   </bean>
+
 </beans
 
 >
