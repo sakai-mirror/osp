@@ -23,6 +23,9 @@
 package org.theospi.component.app.reports;
 
 import org.theospi.api.app.reports.ReportResult;
+import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
+import org.theospi.portfolio.shared.intf.EntityContextFinder;
+import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -34,6 +37,7 @@ import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
+import org.sakaiproject.service.legacy.security.SecurityService;
 
 import javax.sql.DataSource;
 import java.util.*;
@@ -54,6 +58,7 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
    private String columnNamePattern = ".*_artifact";
    private DataSource dataSource;
    private ArtifactFinderManager artifactFinderManager;
+   private SecurityService securityService;
 
    public ReportResult process(ReportResult result) {
       Document rootDoc = getResults(result);
@@ -68,21 +73,31 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
 
       loadArtifactTypes(artifactsToLoad);
 
+      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+
       for (Iterator i=artifactsToLoad.values().iterator();i.hasNext();) {
          ArtifactHolder holder = (ArtifactHolder) i.next();
-         loadArtifact(holder);
+         loadArtifact(result, holder);
       }
+
+      getSecurityService().popAdvisor();
 
       return setResult(result, rootDoc);
    }
 
-   protected void loadArtifact(ArtifactHolder holder) {
+   protected void loadArtifact(ReportResult results, ArtifactHolder holder) {
       ArtifactFinder finder = getArtifactFinderManager().getArtifactFinderByType(holder.artifactType);
 
       Artifact art;
 
-      // todo load with the decorated URL
-      art = finder.load(holder.artifactId);
+      if (finder instanceof EntityContextFinder) {
+         art = ((EntityContextFinder)finder).loadInContext(holder.artifactId,
+            ReportsEntityProducer.REPORTS_PRODUCER,
+            "secretKeyHere", "nothingHere");
+      }
+      else {
+         art = finder.load(holder.artifactId);
+      }
 
       PresentableObjectHome home = (PresentableObjectHome)art.getHome();
       Element xml = home.getArtifactAsXml(art);
@@ -212,6 +227,14 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
 
    public void setArtifactFinderManager(ArtifactFinderManager artifactFinderManager) {
       this.artifactFinderManager = artifactFinderManager;
+   }
+
+   public SecurityService getSecurityService() {
+      return securityService;
+   }
+
+   public void setSecurityService(SecurityService securityService) {
+      this.securityService = securityService;
    }
 
    protected class ArtifactHolder {
