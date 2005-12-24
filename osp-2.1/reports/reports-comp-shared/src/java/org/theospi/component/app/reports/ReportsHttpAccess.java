@@ -20,51 +20,54 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.portfolio.warehouse.impl;
+package org.theospi.component.app.reports;
 
-import org.theospi.portfolio.warehouse.intf.DataWarehouseManager;
-import org.theospi.portfolio.warehouse.intf.WarehouseTask;
+import org.theospi.portfolio.shared.mgt.OspHttpAccess;
+import org.theospi.portfolio.shared.mgt.ReferenceParser;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
+import org.theospi.api.app.reports.ReportsManager;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.security.SecurityService;
-
-import java.util.List;
-import java.util.Iterator;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.CopyrightException;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Nov 30, 2005
- * Time: 4:48:34 PM
+ * Date: Dec 24, 2005
+ * Time: 12:03:18 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DataWarehouseManagerImpl implements DataWarehouseManager {
+public class ReportsHttpAccess extends OspHttpAccess {
 
-   private List tasks;
+   private IdManager idManager;
+   private ReportsManager reportsManager;
    private SecurityService securityService;
 
-   public void registerTask(WarehouseTask task) {
-      getTasks().add(task);
-   }
-
-   public void execute(JobExecutionContext jobExecutionContext)
-         throws JobExecutionException {
-
+   protected void checkSource(Reference ref, ReferenceParser parser)
+      throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
+      // todo, this should be more secure
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
-      for (Iterator i=getTasks().iterator();i.hasNext();) {
-         WarehouseTask task = (WarehouseTask)i.next();
-         task.execute();
-      }
-      getSecurityService().popAdvisor();
    }
 
-   public List getTasks() {
-      return tasks;
+   public IdManager getIdManager() {
+      return idManager;
    }
 
-   public void setTasks(List tasks) {
-      this.tasks = tasks;
+   public void setIdManager(IdManager idManager) {
+      this.idManager = idManager;
+   }
+
+   public ReportsManager getReportsManager() {
+      return reportsManager;
+   }
+
+   public void setReportsManager(ReportsManager reportsManager) {
+      this.reportsManager = reportsManager;
    }
 
    public SecurityService getSecurityService() {
@@ -74,4 +77,5 @@ public class DataWarehouseManagerImpl implements DataWarehouseManager {
    public void setSecurityService(SecurityService securityService) {
       this.securityService = securityService;
    }
+
 }

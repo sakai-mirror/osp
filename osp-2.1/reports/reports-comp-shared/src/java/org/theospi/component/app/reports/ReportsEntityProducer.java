@@ -20,21 +20,27 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.portfolio.warehouse.impl;
+package org.theospi.component.app.reports;
 
-import org.sakaiproject.service.legacy.security.SecurityAdvisor;
+import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Dec 19, 2005
- * Time: 3:56:30 PM
+ * Date: Dec 24, 2005
+ * Time: 12:01:24 PM
  * To change this template use File | Settings | File Templates.
  */
-public class AllowAllSecurityAdvisor implements SecurityAdvisor {
+public class ReportsEntityProducer extends OspEntityProducerBase {
 
-   public SecurityAdvice isAllowed(String userId, String function, String reference) {
-      return SecurityAdvice.ALLOWED;
+   public static final String REPORTS_PRODUCER = "ospReports";
+
+   public String getLabel() {
+      return REPORTS_PRODUCER;
+   }
+
+   public void init() {
+      getEntityManager().registerEntityProducer(this);
    }
 
 }

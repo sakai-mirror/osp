@@ -66,6 +66,36 @@
       <property name="artifactFinderManager">
          <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinderManager.reports" />
       </property>
+      <property name="securityService">
+         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+      </property>
+   </bean>
+
+   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospReports"
+      class="org.theospi.component.app.reports.ReportsHttpAccess">
+      <property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+      <property name="reportsManager">
+         <ref bean="org.theospi.api.app.reports.ReportsManager"/>
+      </property>
+      <property name="securityService">
+         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+      </property>
+      <property name="authzManager"><ref bean="authzManager"/></property>
+   </bean>
+
+   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospReports"
+      class="org.theospi.component.app.reports.ReportsEntityProducer"
+      init-method="init"
+		destroy-method="destroy"
+		singleton="true">
+      <property name="entityManager">
+         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+      </property>
+      <property name="httpAccess">
+         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.ospReports" />
+      </property>
    </bean>
 
 </beans
