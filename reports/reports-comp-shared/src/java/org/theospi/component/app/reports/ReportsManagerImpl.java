@@ -78,6 +78,7 @@ import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
+import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 
 import net.sf.hibernate.Hibernate;
 import net.sf.hibernate.HibernateException;
@@ -85,9 +86,11 @@ import net.sf.hibernate.HibernateException;
 
 import org.theospi.api.app.reports.*;
 import org.theospi.portfolio.shared.model.OspException;
+import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.orm.hibernate.HibernateCallback;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 
@@ -117,6 +120,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.service.legacy.security.SecurityService;
 
 /**
  * This class is a singleton that manages the reports on a general basis
@@ -133,6 +137,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	private List reportDefinitions;
 	
 	private IdManager		idManager = null;
+   
+   private String secretKey = "ospReports";
+
+   private SecurityService securityService;
 
 	/** Tells us if the global database reportDefinitions were loaded */
 	private boolean isDBLoaded = false;
@@ -258,8 +266,24 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
     	//give back the result
     	return reportResult;
     }
-    
-    public ReportDefinition findReportDefinition(String Id)
+
+   public String getReportResultKey(ReportResult result, String ref) {
+      String hashCode = DigestUtils.md5Hex(ref + getSecretKey());
+
+      return hashCode;
+   }
+
+   public void checkReportAccess(String id, String ref) {
+      String hashCode = DigestUtils.md5Hex(ref + getSecretKey());
+
+      if (!hashCode.equals(id)) {
+         throw new AuthorizationFailedException();
+      }
+
+      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+   }
+
+   public ReportDefinition findReportDefinition(String Id)
     {
     	Iterator iter = reportDefinitions.iterator();
     	
@@ -406,6 +430,8 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		
 		Connection			connection = null;
 		PreparedStatement	stmt = null;
+
+      rr.setResultId(getIdManagerr().createId());
 
 		try {
 			ReportDefinition rd = report.getReportDefinition();
@@ -747,6 +773,22 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
         //	the user can't save reports that have already been saved
         report.setIsSaved(true);
     }
-    
+
+   public String getSecretKey() {
+      return secretKey;
+   }
+
+   public void setSecretKey(String secretKey) {
+      this.secretKey = secretKey;
+   }
+
+   public SecurityService getSecurityService() {
+      return securityService;
+   }
+
+   public void setSecurityService(SecurityService securityService) {
+      this.securityService = securityService;
+   }
+
 }
 
