@@ -44,22 +44,11 @@ import org.sakaiproject.exception.CopyrightException;
  */
 public class ReportsHttpAccess extends OspHttpAccess {
 
-   private IdManager idManager;
    private ReportsManager reportsManager;
-   private SecurityService securityService;
 
    protected void checkSource(Reference ref, ReferenceParser parser)
       throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
-      // todo, this should be more secure
-      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
-   }
-
-   public IdManager getIdManager() {
-      return idManager;
-   }
-
-   public void setIdManager(IdManager idManager) {
-      this.idManager = idManager;
+      getReportsManager().checkReportAccess(parser.getId(), parser.getRef());
    }
 
    public ReportsManager getReportsManager() {
@@ -68,14 +57,6 @@ public class ReportsHttpAccess extends OspHttpAccess {
 
    public void setReportsManager(ReportsManager reportsManager) {
       this.reportsManager = reportsManager;
-   }
-
-   public SecurityService getSecurityService() {
-      return securityService;
-   }
-
-   public void setSecurityService(SecurityService securityService) {
-      this.securityService = securityService;
    }
 
 }

@@ -23,6 +23,7 @@
 package org.theospi.component.app.reports;
 
 import org.theospi.api.app.reports.ReportResult;
+import org.theospi.api.app.reports.ReportsManager;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
@@ -38,6 +39,7 @@ import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
 import org.sakaiproject.service.legacy.security.SecurityService;
+import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
 
 import javax.sql.DataSource;
 import java.util.*;
@@ -59,6 +61,7 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
    private DataSource dataSource;
    private ArtifactFinderManager artifactFinderManager;
    private SecurityService securityService;
+   private ReportsManager reportsManager;
 
    public ReportResult process(ReportResult result) {
       Document rootDoc = getResults(result);
@@ -91,9 +94,12 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
       Artifact art;
 
       if (finder instanceof EntityContextFinder) {
+         String uri = ContentHostingService.resolveUuid(holder.artifactId.getValue());
+         String hash = getReportsManager().getReportResultKey(
+               results, ContentHostingService.getReference(uri));
          art = ((EntityContextFinder)finder).loadInContext(holder.artifactId,
             ReportsEntityProducer.REPORTS_PRODUCER,
-            "secretKeyHere", "nothingHere");
+            holder.artifactId.getValue(), hash);
       }
       else {
          art = finder.load(holder.artifactId);
@@ -235,6 +241,14 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
 
    public void setSecurityService(SecurityService securityService) {
       this.securityService = securityService;
+   }
+
+   public ReportsManager getReportsManager() {
+      return reportsManager;
+   }
+
+   public void setReportsManager(ReportsManager reportsManager) {
+      this.reportsManager = reportsManager;
    }
 
    protected class ArtifactHolder {

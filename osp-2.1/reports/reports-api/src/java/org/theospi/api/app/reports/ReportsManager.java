@@ -71,4 +71,7 @@ public interface ReportsManager
     
     public List getCurrentUserResults();
     public ReportResult loadResult(ReportResult result);
+
+   public String getReportResultKey(ReportResult result, String ref);
+   public void checkReportAccess(String id, String ref);
 }
