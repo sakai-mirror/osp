@@ -48,9 +48,10 @@ import org.sakaiproject.metaobj.shared.model.Id;
 
 public class ReportXsl
 {
-	/** The primary key */
+
+   /** The primary key */
 	private Id	reportXslId = null;
-	
+
 	/** the link to the report definition */
 	private ReportDefinition reportDefinition = null;
 
@@ -69,6 +70,8 @@ public class ReportXsl
 	/** the extension */
 	private String extension;
 
+   private ResultsPostProcessor resultsPostProcessor;
+
 	/**
 	 * the getter for the reportId property
 	 */
@@ -76,17 +79,17 @@ public class ReportXsl
 	{
 		
 	}
-	
+
 	public Id getReportXslId()
 	{
 		return reportXslId;
 	}
-	
+
 	public void setReportXslId(Id reportXslId)
 	{
 		this.reportXslId = reportXslId;
 	}
-	
+
 	/**
 	 * the getter for the reportDefinition property
 	 * @return ReportDefinition the unique identifier
@@ -211,4 +214,17 @@ public class ReportXsl
 	{
 		this.extension = extension;
 	}
+
+   public ResultsPostProcessor getResultsPostProcessor() {
+      return resultsPostProcessor;
+   }
+
+   public void setResultsPostProcessor(ResultsPostProcessor resultsPostProcessor) {
+      this.resultsPostProcessor = resultsPostProcessor;
+   }
+
+   /** return the singleton's object id, this will be unique and permanent until the next restart **/
+   public String getRuntimeId() {
+      return this.toString().hashCode() + "";
+   }
 }

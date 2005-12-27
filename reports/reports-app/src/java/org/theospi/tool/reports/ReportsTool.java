@@ -99,7 +99,6 @@ public class ReportsTool
 	protected static final String createReportPage = "processCreateReport";
 	protected static final String createReportParamsPage = "processCreateReportParams";
 	protected static final String reportResultsPage = "showReportResults";
-	protected static final String exportResultsPage = "exportReportResults";
 	protected static final String saveResultsPage = "saveReportResults";
 
 	/** when a live report is saved, tell the user */
@@ -167,6 +166,7 @@ public class ReportsTool
 	public void setWorkingResult(DecoratedReportResult workingResult)
 	{
 		this.workingResult = workingResult;
+      getReportsManager().setCurrentResult(workingResult.getReportResult());
 	}
 	
 	/**
@@ -304,30 +304,6 @@ public class ReportsTool
 	public String gotoOptions()
 	{
 		return mainPage;
-	}
-	
-	
-	public String processExportResults()
-	{
-		savedLiveReport = false;
-		return exportResultsPage;
-	}
-	
-	
-	public String processExportResultsToFile()
-	{
-		savedLiveReport = false;
-		ReportXsl xslInfo = getWorkingResult().getReport().getReportDefinition().findReportXsl(
-														getWorkingResult().getCurrentExportXsl());
-		if(xslInfo == null)
-			throw new OspException("Couldn't find the xsl info: " + getWorkingResult().getCurrentExportXsl());
-		
-		reportsManager.exportResults(
-					getWorkingResult().getReportResult(), 
-					xslInfo, getWorkingResult().getTitle()
-				);
-		
-		return exportResultsPage;
 	}
 	
 	public String processSaveResults()

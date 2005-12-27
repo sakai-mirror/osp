@@ -44,11 +44,16 @@
 
 package org.theospi.api.app.reports;
 
+import org.theospi.portfolio.shared.intf.DownloadableManager;
+
 import java.util.Collection;
 import java.util.List;
 
-public interface ReportsManager
+public interface ReportsManager extends DownloadableManager
 {
+
+   public static final String RESULTS_ID = "reportResultsId";
+   public static final String EXPORT_XSL_ID = "reportExportId";
 
 	public void setReports(List reports);
 	public List getReports();
@@ -74,4 +79,6 @@ public interface ReportsManager
 
    public String getReportResultKey(ReportResult result, String ref);
    public void checkReportAccess(String id, String ref);
+
+   public void setCurrentResult(ReportResult result);
 }

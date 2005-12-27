@@ -54,6 +54,13 @@
             <param-value>true</param-value>
         </init-param>
    </servlet>
+
+   <servlet>
+      <servlet-name>repository</servlet-name>
+      <servlet-class>org.theospi.portfolio.shared.control.servlet.FileDownloadServlet</servlet-class>
+      <load-on-startup>2</load-on-startup>
+   </servlet>
+
     <filter>
         <filter-name>sakai.request.syllabus.filepicker</filter-name>
         <filter-class>org.sakaiproject.util.RequestFilter</filter-class>
@@ -77,21 +84,30 @@
         <url-pattern>*.jsf</url-pattern>
     </servlet-mapping>
 
+   <servlet-mapping>
+     <servlet-name>repository</servlet-name>
+     <url-pattern>/reports/repository/*</url-pattern>
+  </servlet-mapping>
+
+   <servlet-mapping>
+     <servlet-name>repository</servlet-name>
+     <url-pattern>/repository/*</url-pattern>
+  </servlet-mapping>
+
 <!--sakai2: take out dispatch and components servlet.-->
 <!--sakai2: add new servlet and listeners-->
-    <filter>
-        <filter-name>sakai.request</filter-name>
-        <filter-class>org.sakaiproject.util.RequestFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>sakai.request</filter-name>
-        <servlet-name>Faces Servlet</servlet-name>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>INCLUDE</dispatcher>
-    </filter-mapping>
-    
-    
+   <filter>
+       <filter-name>sakai.request</filter-name>
+       <filter-class>org.sakaiproject.util.RequestFilter</filter-class>
+   </filter>
+   <filter-mapping>
+       <filter-name>sakai.request</filter-name>
+       <servlet-name>Faces Servlet</servlet-name>
+       <dispatcher>REQUEST</dispatcher>
+       <dispatcher>FORWARD</dispatcher>
+       <dispatcher>INCLUDE</dispatcher>
+   </filter-mapping>
+
     <listener>
         <listener-class>org.sakaiproject.util.ContextLoaderListener</listener-class>
     </listener>

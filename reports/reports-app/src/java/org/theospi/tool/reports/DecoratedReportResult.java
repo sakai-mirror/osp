@@ -52,8 +52,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import javax.faces.model.SelectItem;
+import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 
 /**
  * This class allows the ReportResult to interact with the view
@@ -76,6 +80,7 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 		this.reportResult = reportResult;
 		this.reportsTool = reportsTool;
 		this.report = reportResult.getReport();
+      getExportXslSeletionList();
 	}
 	
 	public Report getReport()
@@ -120,16 +125,47 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 				ReportXsl xsl = (ReportXsl)iter.next();
 				
 				if(xsl.getIsExport()) {
+               if (getCurrentExportXsl() == null) {
+                  setCurrentExportXsl(xsl.getRuntimeId());
+               }
 					String xslTitle = xsl.getTitle();
 					if(xslTitle == null || xslTitle.trim().length() == 0)
 						xslTitle = xsl.getXslLink();
-					options.add(new SelectItem(xsl.getXslLink(), xslTitle));
+					options.add(new SelectItem(xsl.getRuntimeId(), xslTitle));
 				}
 			}
 		}
 		return options;
 	}
-	
+
+   public void changeExportXsl(ValueChangeEvent event) {
+      event.getComponent();
+   }
+
+   public String getCurrentExportLink() {
+      ReportXsl xsl = getReport().getReportDefinition().findReportXslByRuntimeId(getCurrentExportXsl());
+
+      String extention = "";
+      if (xsl.getExtension() != null) {
+         extention = "." + xsl.getExtension();
+      }
+      try {
+         return "repository/" + "manager=" + ReportsManager.class.getName() + "&" +
+               ReportsManager.EXPORT_XSL_ID + "=" +
+               URLEncoder.encode(xsl.getRuntimeId(), "UTF-8") + "/" +
+               URLEncoder.encode(getReport().getTitle() + extention, "UTF-8");
+      }
+      catch (UnsupportedEncodingException e) {
+         throw new RuntimeException(e);
+      }
+   }
+
+   public boolean isExportable() {
+      List xsls = getExportXslSeletionList();
+
+      return xsls != null && xsls.size() > 0;
+   }
+
 	public String getCurrentViewXsl()
 	{
 		if(currentViewXsl == null) {
@@ -149,10 +185,9 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 		return currentExportXsl;
 	}
 	
-	public void setCurrentExportXsl(String currentViewXsl)
+	public void setCurrentExportXsl(String currentExportXsl)
 	{
-		if(isAnExport(currentViewXsl))
-			this.currentExportXsl = currentExportXsl;
+		this.currentExportXsl = currentExportXsl;
 	}
 	
 	public boolean getIsSaved()

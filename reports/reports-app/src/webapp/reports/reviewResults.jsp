@@ -19,9 +19,17 @@
                         action="#{ReportsTool.processSaveReport}"
                         value="#{msgs.saveLiveReport}" 
                         rendered="#{!ReportsTool.workingReport.isSaved && ReportsTool.workingResult.isLive}"/>
-                    <sakai:tool_bar_item
-                        action="#{ReportsTool.processExportResults}"
-                        value="#{msgs.exportResults}" />
+                     <sakai:tool_bar_spacer />
+                     <h:selectOneMenu value="#{ReportsTool.workingResult.currentExportXsl}"
+                        valueChangeListener="#{ReportsTool.workingResult.changeExportXsl}"
+                        onchange="this.form.submit();"
+                        rendered="#{ReportsTool.workingResult.exportable}">
+                        <f:selectItems value="#{ReportsTool.workingResult.exportXslSeletionList}" />
+                     </h:selectOneMenu>
+                    <h:outputLink value="#{ReportsTool.workingResult.currentExportLink}"
+                        rendered="#{ReportsTool.workingResult.exportable}" target="_new">
+                        <h:outputText value="#{msgs.exportResults}" />
+                     </h:outputLink>
                 </sakai:tool_bar>
                 
                 <sakai:view_title value="#{ReportsTool.workingResult.title}" indent="1" />
