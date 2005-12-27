@@ -335,16 +335,28 @@ public class ReportDefinition
       this.resultProcessors = resultProcessors;
    }
 
-	public ReportXsl findReportXsl(String link)
-	{
-		Iterator iter = xsls.iterator();
-		
-		while(iter.hasNext()) {
-			ReportXsl xslInfo = (ReportXsl)iter.next();
-			if(xslInfo.getXslLink() != null && xslInfo.getXslLink().equals(link))
-				return xslInfo;
-		}
-		return null;
-	}
-	
+   public ReportXsl findReportXsl(String link)
+   {
+      Iterator iter = xsls.iterator();
+
+      while(iter.hasNext()) {
+         ReportXsl xslInfo = (ReportXsl)iter.next();
+         if(xslInfo.getXslLink() != null && xslInfo.getXslLink().equals(link))
+            return xslInfo;
+      }
+      return null;
+   }
+
+   public ReportXsl findReportXslByRuntimeId(String runtimeId)
+   {
+      Iterator iter = xsls.iterator();
+
+      while(iter.hasNext()) {
+         ReportXsl xslInfo = (ReportXsl)iter.next();
+         if(xslInfo.getXslLink() != null && xslInfo.getRuntimeId().equals(runtimeId))
+            return xslInfo;
+      }
+      return null;
+   }
+
 }

@@ -305,7 +305,8 @@
         </property>
         <property name="query">
             <value>
-                select RESOURCE_ID `RESOURCE_ID_artifact` from content_resource_body_binary
+                select id, uri, resource_type, sub_type, primary_mime_type,
+                sub_mime_type, copyright, description from dw_resource
                 where 1 or 1 != ?
             </value>
         </property>
@@ -348,10 +349,22 @@
         </property>
         <property name="xsls">
             <list>
-                <bean id="reportXsl4.1" class="org.theospi.api.app.reports.ReportXsl">
-                    <property name="xslLink"><value>/reportxsls/report3.1.xsl</value></property>
-                    <property name="isExport"><value>false</value></property>
-                </bean>
+               <bean class="org.theospi.api.app.reports.ReportXsl">
+                   <property name="xslLink"><value>/reportxsls/report3.1.xsl</value></property>
+                   <property name="isExport"><value>false</value></property>
+               </bean>
+               <bean class="org.theospi.api.app.reports.ReportXsl">
+                   <property name="xslLink"><value>/reportxsls/defaultExport.xsl</value></property>
+                   <property name="isExport"><value>true</value></property>
+                  <property name="extension"><value>csv</value></property>
+                  <property name="resultsPostProcessor">
+                     <ref bean="org.theospi.api.app.reports.ResultsPostProcessor.csv"/>
+                  </property>
+               </bean>
+               <bean class="org.theospi.api.app.reports.ReportXsl">
+                   <property name="xslLink"><value>/reportxsls/report1.2.xsl</value></property>
+                   <property name="isExport"><value>true</value></property>
+               </bean>
             </list>
         </property>
 

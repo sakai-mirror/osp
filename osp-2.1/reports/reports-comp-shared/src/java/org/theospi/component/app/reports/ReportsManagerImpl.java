@@ -70,6 +70,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
 import org.sakaiproject.api.kernel.session.Session;
+import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
@@ -144,8 +145,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
 	/** Tells us if the global database reportDefinitions were loaded */
 	private boolean isDBLoaded = false;
+   private static final String CURRENT_RESULTS_TAG = "org.theospi.api.app.reports.ReportsManager.currentResults";
 
-	/**
+   /**
 	 * This is the setter for the predefined reportDefinitions, via the bean
 	 * @param reportDefinitions List of reportDefinitions
 	 */
@@ -283,6 +285,16 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
    }
 
+   public void setCurrentResult(ReportResult result) {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.setAttribute(CURRENT_RESULTS_TAG, result);
+   }
+
+   public ReportResult getCurrentResult() {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      return (ReportResult) session.getAttribute(CURRENT_RESULTS_TAG);
+   }
+
    public ReportDefinition findReportDefinition(String Id)
     {
     	Iterator iter = reportDefinitions.iterator();
@@ -418,7 +430,22 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		return results;
 	}
 
-	
+   public void packageForDownload(Map params, OutputStream out) throws IOException {
+      ReportResult result = getCurrentResult();
+
+      String exportResultsId = ((String[]) params.get(EXPORT_XSL_ID))[0];
+      ReportXsl xslt = result.getReport().getReportDefinition().findReportXslByRuntimeId(exportResultsId);
+
+      String fileData = transform(result, xslt.getXslLink());
+
+      if (xslt.getResultsPostProcessor() != null) {
+         out.write(xslt.getResultsPostProcessor().postProcess(fileData));
+      }
+      else {
+         out.write(fileData.getBytes());
+      }
+   }
+
 	/**
 	 * runs a report and creates a ReportResult.  The parameters were
 	 * verified on the creation of this report object.
@@ -430,8 +457,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		
 		Connection			connection = null;
 		PreparedStatement	stmt = null;
-
-      rr.setResultId(getIdManagerr().createId());
 
 		try {
 			ReportDefinition rd = report.getReportDefinition();
