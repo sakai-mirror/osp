@@ -1,13 +1,23 @@
 package example;
 
+import javax.faces.event.ActionEvent;
+import java.util.List;
+import java.util.ArrayList;
+
 public class TestBean {
 
    private String label = "Select Content";
    private boolean disabled = true;
    private boolean rendered = false;
    private String currentStep = "1";
-   
-   
+   private List subBeans = new ArrayList();
+
+   public TestBean() {
+      for (int i=0;i<10;i++) {
+         subBeans.add(new TestSubBean());
+      }
+   }
+
    public String getCurrentStep() {
       return currentStep;
    }
@@ -32,6 +42,19 @@ public class TestBean {
    public void setRendered(boolean rendered) {
       this.rendered = rendered;
    }
-   
-   
+
+   public void processTestButton(ActionEvent event) {
+      int i = 1;
+
+      i++;
+   }
+
+   public List getSubBeans() {
+      return subBeans;
+   }
+
+   public void setSubBeans(List subBeans) {
+      this.subBeans = subBeans;
+   }
+
 }

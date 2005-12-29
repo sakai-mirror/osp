@@ -899,6 +899,17 @@
          ]]></description>  
       </attribute>
    </tag>
-   
+
+   <tag>
+     <name>test</name>
+     <tag-class>org.theospi.jsf.tag.TestComponentTag</tag-class>
+     <body-content>JSP</body-content>
+     <description><![CDATA[
+
+     Just a convient place for testing output tag stuff, not for real use.
+
+     ]]></description>
+
+   </tag>
 </taglib
 >
