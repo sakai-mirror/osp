@@ -27,7 +27,8 @@
                         <f:selectItems value="#{ReportsTool.workingResult.exportXslSeletionList}" />
                      </h:selectOneMenu>
                     <h:outputLink value="#{ReportsTool.workingResult.currentExportLink}"
-                        rendered="#{ReportsTool.workingResult.exportable}" target="_new">
+                        rendered="#{ReportsTool.workingResult.exportable}"
+                        target="#{ReportsTool.workingResult.ExportXsl.target}">
                         <h:outputText value="#{msgs.exportResults}" />
                      </h:outputLink>
                 </sakai:tool_bar>

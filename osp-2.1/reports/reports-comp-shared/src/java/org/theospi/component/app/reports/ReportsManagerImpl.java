@@ -314,7 +314,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	/**
 	 * Creates parameters in the report linked to the parameters in the report definition
 	 * 
-	 * @param parameters a Collection of ReportParam
+	 * @param report a Collection of ReportParam
 	 */
 	public void createReportParameters(Report report)
 	{
@@ -353,7 +353,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	/**
 	 * Creates a new blank Report based on a report definition
 	 * 
-	 * @param parameters a Collection of ReportParam
+	 * @param reportDefinition a Collection of ReportParam
 	 */
 	public Report createReport(ReportDefinition reportDefinition)
 	{
@@ -670,7 +670,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
 	/**
 	 * 
-	 * @param result ReportResult
+	 * @param reportResult ReportResult
 	 * @param xslFile String to xsl resource
 	 * @return
 	 */
@@ -709,16 +709,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		return componentsRoot + "osp-reports-components/WEB-INF/" + file;
 	}
 	
-	public void exportResults(ReportResult result, ReportXsl xslInfo, String title)
-	{
-
-		String fileData = transform(result, xslInfo.getXslLink()
-							);
-		String fileName = title + "." + xslInfo.getExtension();
-		writeFile(fileData, fileName, xslInfo.getContentType());
-	}
-
-
 	private void writeFile(String fileString, String fileName, String contentType)
 	{
 		FacesContext faces = FacesContext.getCurrentInstance();

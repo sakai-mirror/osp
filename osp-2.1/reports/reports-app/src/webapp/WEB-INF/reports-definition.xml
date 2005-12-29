@@ -357,6 +357,7 @@
                    <property name="xslLink"><value>/reportxsls/defaultExport.xsl</value></property>
                    <property name="isExport"><value>true</value></property>
                   <property name="extension"><value>csv</value></property>
+                  <property name="target"><value>_self</value></property>
                   <property name="resultsPostProcessor">
                      <ref bean="org.theospi.api.app.reports.ResultsPostProcessor.csv"/>
                   </property>

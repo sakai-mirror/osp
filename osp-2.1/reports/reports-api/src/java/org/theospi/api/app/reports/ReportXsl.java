@@ -72,6 +72,8 @@ public class ReportXsl
 
    private ResultsPostProcessor resultsPostProcessor;
 
+   private String target = "_blank";
+
 	/**
 	 * the getter for the reportId property
 	 */
@@ -226,5 +228,13 @@ public class ReportXsl
    /** return the singleton's object id, this will be unique and permanent until the next restart **/
    public String getRuntimeId() {
       return this.toString().hashCode() + "";
+   }
+
+   public String getTarget() {
+      return target;
+   }
+
+   public void setTarget(String target) {
+      this.target = target;
    }
 }

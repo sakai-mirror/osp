@@ -47,11 +47,11 @@ public class CsvResultPostProcessor extends BaseResultPostProcessor implements R
       Document results = getDocument(fileData);
 
       ByteArrayOutputStream os = new ByteArrayOutputStream(fileData.length());
-      List orderedHeaders = new ArrayList();
-      List orderedData = new ArrayList();
 
       try {
-         processDocument(results, orderedHeaders, orderedData);
+         Element[] orderedHeaders = processDocumentHeaders(results);
+         Element[][] orderedData = processDocumentData(results);
+
          createHeaderRow(orderedHeaders, os);
          createDataArea(orderedData, os);
       }
@@ -65,23 +65,19 @@ public class CsvResultPostProcessor extends BaseResultPostProcessor implements R
       return os.toByteArray();
    }
 
-   protected void createDataArea(List orderedData, OutputStream os) throws IOException {
-      for (Iterator i=orderedData.iterator();i.hasNext();) {
-         List data = (List) i.next();
+   protected void createDataArea(Element[][] orderedData, OutputStream os) throws IOException {
+      for (int i=0;i<orderedData.length;i++) {
+         Element[] data = orderedData[i];
          createDataRow(data, os);
          os.write('\n');
       }
    }
 
-   protected void createDataRow(List data, OutputStream os) throws IOException {
-      boolean first = true;
-      for (Iterator i=data.iterator();i.hasNext();) {
-         Element column = (Element) i.next();
-         if (!first) {
+   protected void createDataRow(Element[] data, OutputStream os) throws IOException {
+      for (int i=0;i<data.length;i++) {
+         Element column = data[i];
+         if (i > 0) {
             os.write(',');
-         }
-         else {
-            first = false;
          }
          writeDataValue(column, os);
       }
@@ -93,16 +89,12 @@ public class CsvResultPostProcessor extends BaseResultPostProcessor implements R
       os.write('"');
    }
 
-   protected void createHeaderRow(List orderedHeaders, OutputStream os) throws IOException {
+   protected void createHeaderRow(Element[] orderedHeaders, OutputStream os) throws IOException {
 
-      boolean first = true;
-      for (Iterator i=orderedHeaders.iterator();i.hasNext();) {
-         Element column = (Element) i.next();
-         if (!first) {
+      for (int i=0;i<orderedHeaders.length;i++) {
+         Element column = orderedHeaders[i];
+         if (i > 0) {
             os.write(',');
-         }
-         else {
-            first = false;
          }
          writeHeaderValue(column, os);
       }
@@ -115,32 +107,37 @@ public class CsvResultPostProcessor extends BaseResultPostProcessor implements R
       os.write('"');
    }
 
-   protected void processDocument(Document results, List orderedHeaders, List orderedData)
-      throws DataConversionException {
-
+   protected Element[] processDocumentHeaders(Document results) throws DataConversionException {
       List headers = results.getRootElement().getChild("columns").getChildren("column");
+      Element[] returned = new Element[headers.size()];
       for (Iterator i=headers.iterator();i.hasNext();) {
          Element column = (Element) i.next();
          int order = column.getAttribute("colIndex").getIntValue();
-         orderedHeaders.add(order, column);
+         returned[order] = column;
       }
+      return returned;
+   }
 
+   protected Element[][] processDocumentData(Document results)
+      throws DataConversionException {
       List data = results.getRootElement().getChildren("datarow");
+      Element[][] returned = new Element[data.size()][];
       for (Iterator i=data.iterator();i.hasNext();) {
          Element row = (Element) i.next();
          int order = row.getAttribute("index").getIntValue();
-         orderedData.add(order, processRow(row));
+         returned[order] = processRow(row);
       }
+      return returned;
    }
 
-   protected List processRow(Element row) throws DataConversionException {
-      List returned = new ArrayList();
+   protected Element[] processRow(Element row) throws DataConversionException {
       List columns = row.getChildren("element");
+      Element[] returned = new Element[columns.size()];
 
       for (Iterator i=columns.iterator();i.hasNext();) {
          Element column = (Element) i.next();
          int order = column.getAttribute("colIndex").getIntValue();
-         returned.add(order, column);
+         returned[order] = column;
       }
 
       return returned;
