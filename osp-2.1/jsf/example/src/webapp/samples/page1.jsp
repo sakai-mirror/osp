@@ -165,6 +165,7 @@
         
     </ospx:splitsection>
 </ospx:splitarea>
+
 </h:form>
 </sakai:view>
 </f:view>

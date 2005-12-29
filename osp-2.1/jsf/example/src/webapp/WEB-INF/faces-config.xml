@@ -51,6 +51,11 @@
          <to-view-id>/samples/tabArea.jsp</to-view-id>
          <redirect />
       </navigation-case>
-		
+      <navigation-case>
+         <from-outcome>testComponent</from-outcome>
+         <to-view-id>/samples/testComponent.jsp</to-view-id>
+         <redirect />
+      </navigation-case>
+
 	</navigation-rule>
 </faces-config>
