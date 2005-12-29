@@ -74,7 +74,7 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 	
 	private String currentViewXsl = null;
 	private String currentExportXsl = null;
-	
+
 	public DecoratedReportResult(ReportResult reportResult, ReportsTool reportsTool)
 	{
 		this.reportResult = reportResult;
@@ -143,7 +143,7 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
    }
 
    public String getCurrentExportLink() {
-      ReportXsl xsl = getReport().getReportDefinition().findReportXslByRuntimeId(getCurrentExportXsl());
+      ReportXsl xsl = getExportXsl();
 
       String extention = "";
       if (xsl.getExtension() != null) {
@@ -158,6 +158,11 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
       catch (UnsupportedEncodingException e) {
          throw new RuntimeException(e);
       }
+   }
+
+   public ReportXsl getExportXsl() {
+      ReportXsl xsl = getReport().getReportDefinition().findReportXslByRuntimeId(getCurrentExportXsl());
+      return xsl;
    }
 
    public boolean isExportable() {

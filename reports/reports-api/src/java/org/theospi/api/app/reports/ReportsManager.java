@@ -56,8 +56,7 @@ public interface ReportsManager extends DownloadableManager
    public static final String EXPORT_XSL_ID = "reportExportId";
 
 	public void setReports(List reports);
-	public List getReports();
-	
+	public List getReports();	
 
 	public void createReportParameters(Report report);
 	public Report createReport(ReportDefinition reportDefinition);
@@ -67,12 +66,9 @@ public interface ReportsManager extends DownloadableManager
 	public String generateSQLParameterValue(ReportParam reportParam);
 
 	public String transform(ReportResult result, String xslFile);
-	public void exportResults(ReportResult result, ReportXsl xslInfo, String title);
-	
 
     public void saveReportResult(ReportResult result);
     public void saveReport(Report result);
-    
     
     public List getCurrentUserResults();
     public ReportResult loadResult(ReportResult result);
