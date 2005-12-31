@@ -10,6 +10,7 @@
 <h:commandLink action="xheader"><h:outputText value="*xheader" /></h:commandLink>
 <h:commandLink action="splitArea"><h:outputText value="*splitarea/splitsection" /></h:commandLink>
 <h:commandLink action="tabArea"><h:outputText value="*tabArea" /></h:commandLink>
+<h:commandLink action="xmlDocument"><h:outputText value="*xmlDocument" /></h:commandLink>
 <h:commandLink action="testComponent"><h:outputText value="*testComponent" /></h:commandLink>
 
 </h:panelGrid>

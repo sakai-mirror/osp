@@ -25,9 +25,11 @@ package org.theospi.jsf.util;
 
 import java.io.Writer;
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import javax.faces.component.UIComponent;
 import javax.servlet.http.HttpServletRequest;
 
 public class TagUtil {
@@ -88,4 +90,38 @@ public class TagUtil {
          writer.write(cssInclude);
       }
    }
+
+   public static void renderChildren(FacesContext facesContext, UIComponent component)
+           throws IOException
+   {
+       if (component.getChildCount() > 0)
+       {
+           for (Iterator it = component.getChildren().iterator(); it.hasNext(); )
+           {
+               UIComponent child = (UIComponent)it.next();
+               renderChild(facesContext, child);
+           }
+       }
+   }
+
+   public static void renderChild(FacesContext facesContext, UIComponent child)
+           throws IOException
+   {
+       if (!child.isRendered())
+       {
+           return;
+       }
+
+       child.encodeBegin(facesContext);
+       if (child.getRendersChildren())
+       {
+           child.encodeChildren(facesContext);
+       }
+       else
+       {
+           renderChildren(facesContext, child);
+       }
+       child.encodeEnd(facesContext);
+   }
+
 }

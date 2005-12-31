@@ -241,7 +241,7 @@
 			<resource>
 				<directory>${basedir}/src/bundle</directory>
 				<includes>
-					<include>**/*.properties</include>
+					<include>**/*</include>
 				</includes>
 			</resource>
 
