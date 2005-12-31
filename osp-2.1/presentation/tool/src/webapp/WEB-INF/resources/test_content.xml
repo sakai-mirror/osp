@@ -231,7 +231,7 @@
       </region>
       <region id="region_1" type="richtext">
          <itemProperties/>
-         <value>This is the &lt;strong&gt;formatted&lt;/strong&gt; title text</value>
+         <value><![CDATA[This JDE is the <strong>formatted</strong> title text]]></value>
       </region>
    </regions>
 </ospiPresentation>

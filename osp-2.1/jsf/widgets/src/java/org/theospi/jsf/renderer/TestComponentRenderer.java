@@ -23,6 +23,7 @@
 package org.theospi.jsf.renderer;
 
 import org.theospi.jsf.component.TestComponent;
+import org.theospi.jsf.util.TagUtil;
 
 import javax.faces.render.Renderer;
 import javax.faces.context.FacesContext;
@@ -91,12 +92,20 @@ public class TestComponentRenderer extends Renderer {
          input.setId(root.createUniqueId());
          column.getChildren().add(input);
          column.getChildren().add(button);
+         HtmlOutputText testVerbatim = new HtmlOutputText();
+         testVerbatim.setEscape(false);
+         testVerbatim.setValue("<some>");
+         column.getChildren().add(testVerbatim);
          column.getChildren().add(testLink);
-         renderChild(context, container);
+         HtmlOutputText testVerbatim2 = new HtmlOutputText();
+         testVerbatim2.setEscape(false);
+         testVerbatim2.setValue("</some>");
+         column.getChildren().add(testVerbatim2);
+         TagUtil.renderChild(context, container);
          testComponent.setLayoutRoot(container);
       }
       else {
-         renderChild(context, layoutRoot);
+         TagUtil.renderChild(context, layoutRoot);
       }
    }
 
@@ -106,40 +115,5 @@ public class TestComponentRenderer extends Renderer {
       writer.write("<b>End JDE Test</b>");
       super.encodeEnd(context, component);
    }
-
-   public static void renderChildren(FacesContext facesContext, UIComponent component)
-           throws IOException
-   {
-       if (component.getChildCount() > 0)
-       {
-           for (Iterator it = component.getChildren().iterator(); it.hasNext(); )
-           {
-               UIComponent child = (UIComponent)it.next();
-               renderChild(facesContext, child);
-           }
-       }
-   }
-
-   public static void renderChild(FacesContext facesContext, UIComponent child)
-           throws IOException
-   {
-       if (!child.isRendered())
-       {
-           return;
-       }
-
-       child.encodeBegin(facesContext);
-       if (child.getRendersChildren())
-       {
-           child.encodeChildren(facesContext);
-       }
-       else
-       {
-           renderChildren(facesContext, child);
-       }
-       child.encodeEnd(facesContext);
-   }
-
-
 
 }

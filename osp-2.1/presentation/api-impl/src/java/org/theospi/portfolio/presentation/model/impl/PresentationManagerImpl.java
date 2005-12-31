@@ -55,6 +55,7 @@ import net.sf.hibernate.Session;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.CDATA;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
@@ -1971,7 +1972,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          Presentation presentation, String contentType) {
       if (type.equals("text") || type.equals("richtext")) {
          Element textRegion = new Element("value");
-         textRegion.addContent(value);
+         textRegion.addContent(new CDATA(value));
          return textRegion;
       }
       else if (type.equals("form") || type.equals("link") || type.equals("inline")) {         
