@@ -5,7 +5,7 @@
 
 <h3>Publish Presentation</h3>
 
-<c:set var="targetPrevious" value="_target2" />
+<c:set var="targetPrevious" value="_target3" />
 <c:set var="targetNext" value="_finish_notify" />
 <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc"%>
 

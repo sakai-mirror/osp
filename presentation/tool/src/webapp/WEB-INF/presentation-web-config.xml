@@ -251,6 +251,7 @@
             <value>addPresentation1</value>
             <value>addPresentationProperty</value>
             <value>addPresentation2</value>
+            <value>freeFormPresentationRedirect</value>
             <value>addPresentation3</value>
          </list>
       </property>

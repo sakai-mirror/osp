@@ -59,4 +59,9 @@ public class HelperToolBase extends ToolBase {
       }
    }
 
+   protected void setAttribute(String attributeName, Object value) {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.setAttribute(attributeName, value);      
+   }
+
 }

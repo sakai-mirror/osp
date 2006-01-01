@@ -64,6 +64,8 @@ import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -73,6 +75,7 @@ import org.springframework.web.servlet.mvc.AbstractWizardFormController;
 import org.springframework.web.util.WebUtils;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationItem;
 import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
@@ -92,8 +95,9 @@ public class AddPresentationController extends AbstractWizardFormController {
    final public static int INITIAL_PAGE = 0;
    final public static int PROPERTY_PAGE = 1;
    final public static int PRESENTATION_ITEMS = 2;
-   final public static int PRESENTATION_AUTHORIZATIONS = 3;
-   final public static int PRESENTATION_NOTIFICATIONS = 4;
+   final public static int PRESETATION_FREE_FORM_PAGES = 3;
+   final public static int PRESENTATION_AUTHORIZATIONS = 4;
+   final public static int PRESENTATION_NOTIFICATIONS = 5;
 
    private IdManager idManager;
    private List customTypedEditors = new ArrayList();
@@ -302,6 +306,21 @@ public class AddPresentationController extends AbstractWizardFormController {
 
       int target = super.getTargetPage(request, command, errors, currentPage);
 
+      if (target == PRESETATION_FREE_FORM_PAGES) {
+         ToolSession session = SessionManager.getCurrentToolSession();
+         String action = (String) session.getAttribute(FreeFormHelper.FREE_FORM_ACTION);
+         if (action != null) {
+            if (action.equals(FreeFormHelper.ACTION_BACK)) {
+               session.removeAttribute(FreeFormHelper.FREE_FORM_ACTION);
+               target--;
+            }
+            else if (action.equals(FreeFormHelper.ACTION_CONTINUE)) {
+               session.removeAttribute(FreeFormHelper.FREE_FORM_ACTION);
+               target++;
+            }
+         }
+      }
+
       if (target == PROPERTY_PAGE) {
          Id templateId = ((Presentation) command).getTemplate().getId();
          Id propId = presentationManager.getPresentationTemplate(templateId).getPropertyPage();
@@ -359,8 +378,27 @@ public class AddPresentationController extends AbstractWizardFormController {
    }
 
    protected boolean isFinish(HttpServletRequest request) {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      String action = (String) session.getAttribute(FreeFormHelper.FREE_FORM_ACTION);
+      if (action != null) {
+         if (action.equals(FreeFormHelper.ACTION_SAVE)) {
+            return true;
+         }
+      }
+
       return WebUtils.hasSubmitParameter(request, PARAM_FINISH) ||
             WebUtils.hasSubmitParameter(request, PARAM_FINISH_AND_NOTIFY);
+   }
+
+   protected boolean isCancel(HttpServletRequest request) {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      String action = (String) session.getAttribute(FreeFormHelper.FREE_FORM_ACTION);
+      if (action != null) {
+         if (action.equals(FreeFormHelper.ACTION_CANCEL)) {
+            return true;
+         }
+      }
+      return super.isCancel(request);
    }
 
    protected void validatePage(Object model, Errors errors, int page) {
@@ -392,6 +430,8 @@ public class AddPresentationController extends AbstractWizardFormController {
    protected ModelAndView processFinish(HttpServletRequest httpServletRequest,
                                         HttpServletResponse httpServletResponse,
                                         Object o, BindException e) throws Exception {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.removeAttribute(FreeFormHelper.FREE_FORM_ACTION);
       Presentation presentation = (Presentation) o;
       Agent agent = getAuthManager().getAgent();
 
@@ -448,6 +488,8 @@ public class AddPresentationController extends AbstractWizardFormController {
    protected ModelAndView processCancel(HttpServletRequest httpServletRequest,
                                         HttpServletResponse httpServletResponse,
                                         Object o, BindException e) throws Exception {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.removeAttribute(FreeFormHelper.FREE_FORM_ACTION);
       Presentation presentation = (Presentation) o;
 
       Map model = new Hashtable();
