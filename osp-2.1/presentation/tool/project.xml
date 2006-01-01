@@ -93,6 +93,15 @@
 
      <dependency>
        <groupId>osp</groupId>
+       <artifactId>osp-jsf-widgets</artifactId>
+       <version>${osp.version}</version>
+       <properties>
+             <war.bundle>true</war.bundle>
+       </properties>
+     </dependency>
+
+     <dependency>
+       <groupId>osp</groupId>
        <artifactId>osp-glossary-tool-lib</artifactId>
        <version>${osp.version}</version>
        <properties>
@@ -126,6 +135,62 @@
         <artifactId>sakai-metaobj-api</artifactId>
         <version>${sakai.version}</version>
       </dependency>
+
+     <dependency>
+       <groupId>jsf</groupId>
+       <artifactId>jsf-api</artifactId>
+       <version>1.1.01</version>
+       <url>http://java.sun.com/j2ee/javaserverfaces/</url>
+        <properties>
+              <war.bundle>true</war.bundle>
+        </properties>
+     </dependency>
+
+     <dependency>
+       <groupId>jsf</groupId>
+       <artifactId>jsf-impl</artifactId>
+       <version>1.1.01</version>
+       <url>http://java.sun.com/j2ee/javaserverfaces/</url>
+        <properties>
+              <war.bundle>true</war.bundle>
+        </properties>
+     </dependency>
+
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-jsf-widgets</artifactId>
+        <version>${sakai.version}</version>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
+     </dependency>
+
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-jsf-widgets-sun</artifactId>
+        <version>${sakai.version}</version>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
+     </dependency>
+
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-jsf-tool</artifactId>
+        <version>${sakai.version}</version>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
+     </dependency>
+
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-jsf-app</artifactId>
+        <version>${sakai.version}</version>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
+     </dependency>
 
      <dependency>
         <groupId>sakaiproject</groupId>
