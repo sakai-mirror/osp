@@ -20,42 +20,16 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.jsf.renderer;
-
-import org.theospi.jsf.component.XmlDocumentComponent;
-import org.theospi.jsf.impl.XmlDocumentHandler;
-import org.theospi.jsf.util.TagUtil;
-import org.xml.sax.SAXException;
-
-import javax.faces.component.*;
-import javax.faces.context.FacesContext;
-import javax.faces.render.Renderer;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
+package org.theospi.jsf.intf;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Dec 29, 2005
- * Time: 2:28:02 PM
+ * Date: Jan 1, 2006
+ * Time: 5:40:20 PM
  * To change this template use File | Settings | File Templates.
  */
-public class XmlDocumentRenderer extends Renderer {
+public interface XmlDocumentContainer {
 
-   public boolean supportsComponentType(UIComponent component) {
-      return (component instanceof XmlDocumentComponent);
-   }
-
-   public boolean getRendersChildren() {
-      return true;
-   }
-
-   public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
-      super.encodeChildren(context, component);
-      XmlDocumentComponent docComponent = (XmlDocumentComponent) component;
-      UIComponent layoutRoot = docComponent.getXmlRootComponent();
-      TagUtil.renderChild(context, layoutRoot);
-   }
-
+   public String getVariableName();
 }

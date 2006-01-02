@@ -20,42 +20,63 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.jsf.renderer;
+package org.theospi.portfolio.presentation.tool;
 
-import org.theospi.jsf.component.XmlDocumentComponent;
-import org.theospi.jsf.impl.XmlDocumentHandler;
-import org.theospi.jsf.util.TagUtil;
-import org.xml.sax.SAXException;
+import org.theospi.portfolio.presentation.model.PresentationPage;
+import org.theospi.portfolio.shared.model.Node;
 
-import javax.faces.component.*;
-import javax.faces.context.FacesContext;
-import javax.faces.render.Renderer;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Dec 29, 2005
- * Time: 2:28:02 PM
+ * Date: Jan 1, 2006
+ * Time: 7:32:11 PM
  * To change this template use File | Settings | File Templates.
  */
-public class XmlDocumentRenderer extends Renderer {
+public class DecoratedPage {
 
-   public boolean supportsComponentType(UIComponent component) {
-      return (component instanceof XmlDocumentComponent);
+   private FreeFormTool parent;
+   private PresentationPage base;
+   private RegionMap regionMap;
+
+   public DecoratedPage(PresentationPage base, FreeFormTool parent) {
+      this.base = base;
+      this.parent = parent;
    }
 
-   public boolean getRendersChildren() {
-      return true;
+   public PresentationPage getBase() {
+      return base;
    }
 
-   public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
-      super.encodeChildren(context, component);
-      XmlDocumentComponent docComponent = (XmlDocumentComponent) component;
-      UIComponent layoutRoot = docComponent.getXmlRootComponent();
-      TagUtil.renderChild(context, layoutRoot);
+   public void setBase(PresentationPage base) {
+      this.base = base;
    }
+
+   public InputStream getXmlFile() {
+      Node node = getParent().getPresentationManager().getNode(getBase().getLayout().getXhtmlFileId());
+      return node.getInputStream();
+   }
+
+   public RegionMap getRegionMap() {
+      if (regionMap == null) {
+         PresentationPage page = getParent().getPresentationManager().getPresentationPage(getBase().getId());
+         regionMap = new RegionMap(page);
+      }
+      return regionMap;
+   }
+
+   public void setRegionMap(RegionMap regionMap) {
+      this.regionMap = regionMap;
+   }
+
+   public FreeFormTool getParent() {
+      return parent;
+   }
+
+   public void setParent(FreeFormTool parent) {
+      this.parent = parent;
+   }
+
 
 }

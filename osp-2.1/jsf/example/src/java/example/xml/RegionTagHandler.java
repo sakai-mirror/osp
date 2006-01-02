@@ -46,7 +46,7 @@ public class RegionTagHandler extends DefaultXmlTagHandler {
 
    public ComponentWrapper startElement(FacesContext context, ComponentWrapper parent, String uri, String localName, String qName, Attributes attributes) throws IOException {
       UIInput container = new UIInput();
-      createOutput("starting region: " + attributes.getValue("id"), container);
+      createOutput(context, "starting region: " + attributes.getValue("id"), container);
       parent.getComponent().getChildren().add(container);
       return new ComponentWrapper(parent, container, this);
    }
@@ -55,6 +55,6 @@ public class RegionTagHandler extends DefaultXmlTagHandler {
    }
 
    public void endElement(FacesContext context, ComponentWrapper current, String uri, String localName, String qName) throws IOException {
-      this.createOutput("ending region", current.getComponent());
+      this.createOutput(context, "ending region", current.getComponent());
    }
 }

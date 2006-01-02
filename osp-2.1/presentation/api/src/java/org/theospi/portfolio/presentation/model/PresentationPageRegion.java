@@ -3,6 +3,7 @@ package org.theospi.portfolio.presentation.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
@@ -37,5 +38,22 @@ public class PresentationPageRegion extends IdentifiableObject implements Serial
    }
    public void setRegionId(String regionId) {
       this.regionId = regionId;
+   }
+
+   public void reorderItems() {
+      int index = 0;
+      for (Iterator i=getItems().iterator();i.hasNext();) {
+         PresentationPageItem item = (PresentationPageItem) i.next();
+         item.setRegionItemSeq(index);
+         index++;
+      }
+   }
+
+   public void addBlank() {
+      PresentationPageItem item = new PresentationPageItem();
+      item.setRegion(this);
+      item.setLayoutRegionId(this.getRegionId());
+      getItems().add(item);
+      reorderItems();
    }
 }

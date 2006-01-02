@@ -20,42 +20,55 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.jsf.renderer;
+package org.theospi.portfolio.presentation.component;
 
-import org.theospi.jsf.component.XmlDocumentComponent;
-import org.theospi.jsf.impl.XmlDocumentHandler;
-import org.theospi.jsf.util.TagUtil;
-import org.xml.sax.SAXException;
+import org.theospi.jsf.intf.XmlDocumentContainer;
+import org.theospi.portfolio.presentation.model.PresentationPageRegion;
+import org.theospi.portfolio.presentation.tool.RegionMap;
+import org.theospi.portfolio.presentation.tool.DecoratedRegion;
+import org.theospi.portfolio.presentation.tool.RegionSequenceMap;
 
-import javax.faces.component.*;
+import javax.faces.component.UIData;
+import javax.faces.component.html.HtmlDataTable;
+import javax.faces.el.ValueBinding;
 import javax.faces.context.FacesContext;
-import javax.faces.render.Renderer;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Dec 29, 2005
- * Time: 2:28:02 PM
+ * Date: Jan 1, 2006
+ * Time: 5:48:27 PM
  * To change this template use File | Settings | File Templates.
  */
-public class XmlDocumentRenderer extends Renderer {
+public class SequenceComponent extends HtmlDataTable implements XmlDocumentContainer {
 
-   public boolean supportsComponentType(UIComponent component) {
-      return (component instanceof XmlDocumentComponent);
+   public static final String COMPONENT_TYPE = "org.theospi.presentation.SequenceComponent";
+
+   private List childRegions = new ArrayList();
+
+   public String getVariableName() {
+      return getVar();
    }
 
-   public boolean getRendersChildren() {
-      return true;
+   public void addRegion(ValueBinding region) {
+      childRegions.add(region);
    }
 
-   public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
-      super.encodeChildren(context, component);
-      XmlDocumentComponent docComponent = (XmlDocumentComponent) component;
-      UIComponent layoutRoot = docComponent.getXmlRootComponent();
-      TagUtil.renderChild(context, layoutRoot);
+   public Object getRowData() {
+      RegionSequenceMap map = (RegionSequenceMap) super.getRowData();
+      map.setChildRegions(childRegions);      
+      return map;
+   }
+
+   public void addToSequence() {
+      for (Iterator i=childRegions.iterator();i.hasNext();) {
+         ValueBinding binding = (ValueBinding) i.next();
+         DecoratedRegion region = (DecoratedRegion) binding.getValue(FacesContext.getCurrentInstance());;
+         region.getBase().addBlank();
+      }
    }
 
 }

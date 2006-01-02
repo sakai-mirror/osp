@@ -9,6 +9,15 @@
 <faces-config>
    <!-- Example custom JSF component used only in this tool -->
 
+   <component>
+      <component-type>org.theospi.presentation.SequenceComponent</component-type>
+       <component-class>org.theospi.portfolio.presentation.component.SequenceComponent</component-class>
+   </component>
+
+   <component>
+      <component-type>org.theospi.presentation.SequenceComponentProxy</component-type>
+       <component-class>org.theospi.portfolio.presentation.component.SequenceComponentProxy</component-class>
+   </component>
 
    <application>
      <message-bundle>org.theospi.portfolio.presentation.messages</message-bundle>
@@ -29,6 +38,12 @@
          <description>Service Dependency: presentationManager</description>
          <property-name>presentationManager</property-name>
          <value>#{Components["presentationManager"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: tag factory</description>
+         <property-name>factory</property-name>
+         <value>#{Components["org.theospi.jsf.intf.XmlTagFactory.freeFormPresentation"]}</value>
       </managed-property>
 
    </managed-bean>

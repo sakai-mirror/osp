@@ -20,42 +20,45 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.jsf.renderer;
+package org.theospi.portfolio.presentation.tool;
 
-import org.theospi.jsf.component.XmlDocumentComponent;
-import org.theospi.jsf.impl.XmlDocumentHandler;
-import org.theospi.jsf.util.TagUtil;
-import org.xml.sax.SAXException;
+import org.theospi.portfolio.presentation.model.PresentationPage;
+import org.theospi.portfolio.presentation.model.PresentationPageRegion;
+import org.theospi.portfolio.presentation.model.PresentationPageItem;
 
-import javax.faces.component.*;
+import javax.faces.event.ActionEvent;
+import javax.faces.el.ValueBinding;
 import javax.faces.context.FacesContext;
-import javax.faces.render.Renderer;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Dec 29, 2005
- * Time: 2:28:02 PM
+ * Date: Jan 1, 2006
+ * Time: 5:52:49 PM
  * To change this template use File | Settings | File Templates.
  */
-public class XmlDocumentRenderer extends Renderer {
+public class RegionMap extends Hashtable {
 
-   public boolean supportsComponentType(UIComponent component) {
-      return (component instanceof XmlDocumentComponent);
+   private PresentationPage page;
+
+   public RegionMap(PresentationPage page) {
+      this.page = page;
+      for (Iterator i=page.getRegions().iterator();i.hasNext();) {
+         PresentationPageRegion region = (PresentationPageRegion) i.next();
+         put(region.getRegionId(), new DecoratedRegion(this, region));
+      }
    }
 
-   public boolean getRendersChildren() {
-      return true;
+   public PresentationPage getPage() {
+      return page;
    }
 
-   public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
-      super.encodeChildren(context, component);
-      XmlDocumentComponent docComponent = (XmlDocumentComponent) component;
-      UIComponent layoutRoot = docComponent.getXmlRootComponent();
-      TagUtil.renderChild(context, layoutRoot);
+   public void setPage(PresentationPage page) {
+      this.page = page;
    }
 
 }

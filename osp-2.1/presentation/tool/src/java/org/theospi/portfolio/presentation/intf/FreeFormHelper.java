@@ -31,6 +31,9 @@ package org.theospi.portfolio.presentation.intf;
  */
 public interface FreeFormHelper {
 
+   public final static String FREE_FORM_PREFIX =
+      "org.theospi.portfolio.presentation.freeForm.";
+
    public final static String FREE_FORM_ACTION =
       "org.theospi.portfolio.presentation.freeFormCancel";
 

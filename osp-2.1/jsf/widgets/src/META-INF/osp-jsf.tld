@@ -942,18 +942,28 @@
 
        ]]></description>
      </attribute>
-     <attribute>
-       <name>rendered</name>
-       <required>false</required>
-       <rtexprvalue>false</rtexprvalue>
-       <description><![CDATA[
+      <attribute>
+        <name>rendered</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+        <description><![CDATA[
 
-         Flag indicating whether or not this component should be rendered
-           (during Render Response Phase), or processed on any subsequent
-           form submit.
+          Flag indicating whether or not this component should be rendered
+            (during Render Response Phase), or processed on any subsequent
+            form submit.
 
-       ]]></description>
-     </attribute>
+        ]]></description>
+      </attribute>
+      <attribute>
+        <name>var</name>
+        <required>false</required>
+        <rtexprvalue>false</rtexprvalue>
+        <description><![CDATA[
+
+        The variable for children to use to get at their data
+
+        ]]></description>
+      </attribute>
    </tag>
    
    <tag>

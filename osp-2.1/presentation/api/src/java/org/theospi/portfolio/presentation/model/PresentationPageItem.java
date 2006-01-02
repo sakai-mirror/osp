@@ -2,6 +2,7 @@ package org.theospi.portfolio.presentation.model;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.Iterator;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
@@ -60,6 +61,5 @@ public class PresentationPageItem extends IdentifiableObject implements Serializ
    public void setValue(String value) {
       this.value = value;
    }
-   
    
 }

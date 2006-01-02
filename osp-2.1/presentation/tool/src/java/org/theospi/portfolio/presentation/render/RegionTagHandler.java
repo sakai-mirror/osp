@@ -25,10 +25,17 @@ package org.theospi.portfolio.presentation.render;
 import org.theospi.jsf.impl.DefaultXmlTagHandler;
 import org.theospi.jsf.intf.XmlTagFactory;
 import org.theospi.jsf.intf.ComponentWrapper;
+import org.theospi.jsf.intf.XmlDocumentContainer;
+import org.theospi.portfolio.presentation.component.SequenceComponent;
 import org.xml.sax.Attributes;
 
 import javax.faces.context.FacesContext;
 import javax.faces.component.UIInput;
+import javax.faces.component.UIOutput;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlInputText;
+import javax.faces.el.ValueBinding;
 import java.io.IOException;
 
 /**
@@ -38,16 +45,39 @@ import java.io.IOException;
  * Time: 3:10:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class RegionTagHandler extends DefaultXmlTagHandler {
+public class RegionTagHandler extends LayoutPageHandlerBase {
 
    public RegionTagHandler(XmlTagFactory factory) {
       super(factory);
    }
 
-   public ComponentWrapper startElement(FacesContext context, ComponentWrapper parent, String uri, String localName, String qName, Attributes attributes) throws IOException {
-      UIInput container = new UIInput();
-      createOutput("starting region: " + attributes.getValue("id"), container);
+   public ComponentWrapper startElement(FacesContext context, ComponentWrapper parent, String uri, String localName,
+                                        String qName, Attributes attributes) throws IOException {
+      UIViewRoot root = context.getViewRoot();
+      UIOutput container = (UIOutput) context.getApplication().createComponent(UIOutput.COMPONENT_TYPE);
+      container.setId(root.createUniqueId());
+
+      createOutput(context, "starting region: " + attributes.getValue("id"), container);
       parent.getComponent().getChildren().add(container);
+
+      XmlDocumentContainer parentContainer = getParentContainer(parent.getComponent());
+      String mapVar = parentContainer.getVariableName();
+      String regionId = attributes.getValue("id");
+
+      if (parentContainer instanceof SequenceComponent) {
+         XmlDocumentContainer parentParentContainer = getParentContainer(((UIComponent)parentContainer).getParent());
+         String globalMapVar = parentParentContainer.getVariableName();
+
+         ValueBinding vb = context.getApplication().createValueBinding("#{"+globalMapVar+ "." + regionId + "}");
+         ((SequenceComponent)parentContainer).addRegion(vb);
+      }
+
+      HtmlInputText input = (HtmlInputText) context.getApplication().createComponent(HtmlInputText.COMPONENT_TYPE);
+      input.setId(root.createUniqueId());
+      ValueBinding vbValue = context.getApplication().createValueBinding("#{"+mapVar+ "." + regionId + ".item.value}");
+      input.setValueBinding("value", vbValue);
+      parent.getComponent().getChildren().add(input);
+
       return new ComponentWrapper(parent, container, this);
    }
 
@@ -55,6 +85,6 @@ public class RegionTagHandler extends DefaultXmlTagHandler {
    }
 
    public void endElement(FacesContext context, ComponentWrapper current, String uri, String localName, String qName) throws IOException {
-      this.createOutput("ending region", current.getComponent());
+      this.createOutput(context, "ending region", current.getComponent());
    }
 }
