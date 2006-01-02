@@ -23,11 +23,16 @@
 package org.theospi.jsf.component;
 
 import org.theospi.jsf.intf.XmlTagFactory;
+import org.theospi.jsf.intf.XmlDocumentContainer;
 
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIComponent;
 import javax.faces.el.ValueBinding;
+import javax.faces.context.FacesContext;
+import javax.faces.event.FacesEvent;
+import javax.faces.event.AbortProcessingException;
 import java.io.InputStream;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,11 +41,12 @@ import java.io.InputStream;
  * Time: 2:28:53 PM
  * To change this template use File | Settings | File Templates.
  */
-public class XmlDocumentComponent extends UIOutput {
+public class XmlDocumentComponent extends UIOutput implements XmlDocumentContainer {
 
    private XmlTagFactory factory;
    private InputStream xmlFile;
    private UIComponent xmlRootComponent;
+   private String var;
 
    public XmlDocumentComponent() {
       super();
@@ -75,5 +81,21 @@ public class XmlDocumentComponent extends UIOutput {
 
    public void setXmlRootComponent(UIComponent xmlRootComponent) {
       this.xmlRootComponent = xmlRootComponent;
+   }
+
+   public String getVariableName() {
+      return getVar();
+   }
+
+   public String getVar() {
+      return var;
+   }
+
+   public void setVar(String var) {
+      this.var = var;
+   }
+
+   public void broadcast(FacesEvent event) throws AbortProcessingException {
+      super.broadcast(event);
    }
 }

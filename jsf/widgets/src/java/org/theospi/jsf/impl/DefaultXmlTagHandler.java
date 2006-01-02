@@ -29,6 +29,7 @@ import org.xml.sax.Attributes;
 
 import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
@@ -68,7 +69,7 @@ public class DefaultXmlTagHandler implements XmlTagHandler {
             }
          }
          writer.writeText("", null);
-         createOutput(buffer, parent.getComponent());
+         createOutput(context, buffer, parent.getComponent());
          return new ComponentWrapper(parent, parent.getComponent(), null);
       }
    }
@@ -88,7 +89,7 @@ public class DefaultXmlTagHandler implements XmlTagHandler {
       StringWriter buffer = new StringWriter();
       ResponseWriter writer = context.getResponseWriter().cloneWithWriter(buffer);
       writer.endElement(qName);
-      createOutput(buffer, current.getComponent());
+      createOutput(context, buffer, current.getComponent());
    }
 
    protected void writeCharsToVerbatim(FacesContext context, ComponentWrapper current,
@@ -96,18 +97,21 @@ public class DefaultXmlTagHandler implements XmlTagHandler {
       StringWriter buffer = new StringWriter();
       ResponseWriter writer = context.getResponseWriter().cloneWithWriter(buffer);
       writer.write(ch, start, length);
-      createOutput(buffer, current.getComponent());
+      createOutput(context, buffer, current.getComponent());
    }
 
-   protected void createOutput(String text, UIComponent parent) {
-      HtmlOutputText outputComponent = new HtmlOutputText();
+   protected void createOutput(FacesContext context, String text, UIComponent parent) {
+      UIViewRoot root = context.getViewRoot();
+      HtmlOutputText outputComponent =
+            (HtmlOutputText) context.getApplication().createComponent(HtmlOutputText.COMPONENT_TYPE);
+      outputComponent.setId(root.createUniqueId());
       outputComponent.setEscape(false);
       outputComponent.setValue(text);
       parent.getChildren().add(outputComponent);
    }
 
-   protected void createOutput(StringWriter buffer, UIComponent parent) {
-      createOutput(buffer.getBuffer().toString(), parent);
+   protected void createOutput(FacesContext context, StringWriter buffer, UIComponent parent) {
+      createOutput(context, buffer.getBuffer().toString(), parent);
    }
 
    public XmlTagFactory getFactory() {

@@ -1525,9 +1525,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          if (xhtmlFileId != null) {
             readableFiles.add(getContentHosting().getReference(xhtmlFileId));
          }
-         String previewImageId = getContentHosting().resolveUuid(page.getLayout().getPreviewImageId().getValue());
-         if (previewImageId != null) {
-            readableFiles.add(getContentHosting().getReference(previewImageId));
+         if (page.getLayout().getPreviewImageId() != null) {
+            String previewImageId = getContentHosting().resolveUuid(page.getLayout().getPreviewImageId().getValue());
+            if (previewImageId != null) {
+               readableFiles.add(getContentHosting().getReference(previewImageId));
+            }
          }
          for (Iterator regions = page.getRegions().iterator(); regions.hasNext();) {
             PresentationPageRegion region = (PresentationPageRegion) regions.next();
@@ -1837,7 +1839,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       lockLayoutFiles(layout);
 
       return layout;
-
    }
    
    protected void lockLayoutFiles(PresentationLayout layout){
@@ -1859,7 +1860,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return (PresentationLayout) getHibernateTemplate().get(PresentationLayout.class, id);
    }
    
-   protected List getPresentationPagesByPresentation(Id presentationId) {
+   public List getPresentationPagesByPresentation(Id presentationId) {
       return getHibernateTemplate().find(
             "from PresentationPage page where page.presentation.id=? ", 
             new Object[]{presentationId.getValue()});
@@ -1888,12 +1889,19 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       };
       getHibernateTemplate().execute(callback);
-
-
    }
    
    public PresentationPage getPresentationPage(Id id) {
-      return (PresentationPage) getHibernateTemplate().get(PresentationPage.class, id);
+      PresentationPage page = (PresentationPage) getHibernateTemplate().get(PresentationPage.class, id);
+
+      for (Iterator i=page.getRegions().iterator();i.hasNext();) {
+         PresentationPageRegion region = (PresentationPageRegion) i.next();
+         for (Iterator j=region.getItems().iterator();j.hasNext();) {
+            PresentationPageItem item = (PresentationPageItem) j.next();
+            item.getProperties().size();
+         }
+      }
+      return page;
    }
    
    public PresentationPage getFirstPresentationPage(Id presentationId) {

@@ -25,6 +25,9 @@ package org.theospi.portfolio.presentation.render;
 import org.theospi.jsf.impl.DefaultXmlTagHandler;
 import org.theospi.jsf.intf.XmlTagFactory;
 import org.theospi.jsf.intf.ComponentWrapper;
+import org.theospi.jsf.intf.XmlDocumentContainer;
+import org.theospi.portfolio.presentation.component.SequenceComponent;
+import org.theospi.portfolio.presentation.component.SequenceComponentProxy;
 import org.xml.sax.Attributes;
 
 import javax.faces.context.FacesContext;
@@ -46,48 +49,60 @@ import java.io.IOException;
  * Time: 1:25:13 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SequenceTagHandler extends DefaultXmlTagHandler {
+public class SequenceTagHandler extends LayoutPageHandlerBase {
 
    public SequenceTagHandler(XmlTagFactory factory) {
       super(factory);
    }
 
-   public ComponentWrapper startElement(FacesContext context, ComponentWrapper parent, String uri, String localName, String qName, Attributes attributes) throws IOException {
+   public ComponentWrapper startElement(FacesContext context, ComponentWrapper parent, String uri,
+                                        String localName, String qName, Attributes attributes) throws IOException {
       UIViewRoot root = context.getViewRoot();
-      UIData container = new UIData();
-      parent.getComponent().getChildren().add(container);
-      ValueBinding vb = context.getApplication().createValueBinding("#{testBean.subBeans}");
-      container.setValueBinding("value", vb);
-      container.setVar("testSubBean");
+      SequenceComponent container =
+            (SequenceComponent) context.getApplication().createComponent(SequenceComponent.COMPONENT_TYPE);
       container.setId(root.createUniqueId());
-      UIColumn column = new UIColumn();
+      root.getChildren().add(container);
+      XmlDocumentContainer docContainer = getParentContainer(parent.getComponent());
+      String mapVar = docContainer.getVariableName();
+      String regionId = attributes.getValue("firstChild");
+
+      ValueBinding vb = context.getApplication().createValueBinding("#{"+mapVar+ "." + regionId + ".regionItemList}");
+      container.setValue(vb.getValue(context));
+      container.setValueBinding("value", vb);
+      container.setVar("sequenceRegion");
+
+      UIColumn column = (UIColumn) context.getApplication().createComponent(UIColumn.COMPONENT_TYPE);
       column.setId(root.createUniqueId());
       container.getChildren().add(column);
-      HtmlOutputLink testLink = new HtmlOutputLink();
-      testLink.setValue("http://www.javasoft.com");
-      HtmlOutputText text = new HtmlOutputText();
-      text.setValue("test");
-      testLink.getChildren().add(text);
-      HtmlCommandButton button = new HtmlCommandButton();
-      button.setId(root.createUniqueId());
-      button.setActionListener(
-            context.getApplication().createMethodBinding("#{testSubBean.processTestButton}",
+
+      HtmlCommandButton addButton =
+            (HtmlCommandButton) context.getApplication().createComponent(HtmlCommandButton.COMPONENT_TYPE);
+      addButton.setId(root.createUniqueId());
+      addButton.setActionListener(
+            context.getApplication().createMethodBinding("#{"+mapVar+ "." + regionId + ".addToSequence}",
                   new Class[]{ActionEvent.class}));
-      button.setValue("test me");
-      HtmlInputText input = new HtmlInputText();
-      input.setValueBinding("value", context.getApplication().createValueBinding("#{testSubBean.index}"));
-      input.setId(root.createUniqueId());
-      column.getChildren().add(input);
-      column.getChildren().add(button);
-      HtmlOutputText testVerbatim = new HtmlOutputText();
-      testVerbatim.setEscape(false);
-      testVerbatim.setValue("<some>");
-      column.getChildren().add(testVerbatim);
-      column.getChildren().add(testLink);
-      HtmlOutputText testVerbatim2 = new HtmlOutputText();
-      testVerbatim2.setEscape(false);
-      testVerbatim2.setValue("</some>");
-      column.getChildren().add(testVerbatim2);
+      // todo from bundle
+      addButton.setValue("Add Row");
+      parent.getComponent().getChildren().add(addButton);
+      column.setHeader(addButton);
+
+      // remove removeButton
+      HtmlCommandButton removeButton =
+            (HtmlCommandButton) context.getApplication().createComponent(HtmlCommandButton.COMPONENT_TYPE);
+      removeButton.setId(root.createUniqueId());
+      removeButton.setActionListener(
+            context.getApplication().createMethodBinding("#{sequenceRegion.remove}",
+                  new Class[]{ActionEvent.class}));
+      // todo from bundle
+      removeButton.setValue("Remove Row");
+      column.getChildren().add(removeButton);
+
+      SequenceComponentProxy proxy = (SequenceComponentProxy) context.getApplication().createComponent(
+            SequenceComponentProxy.COMPONENT_TYPE);
+      proxy.setId(root.createUniqueId());
+      parent.getComponent().getChildren().add(proxy);
+      proxy.setBase(container);
+
       return new ComponentWrapper(parent, column, this);
    }
 

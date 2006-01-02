@@ -25,6 +25,14 @@ package org.theospi.portfolio.presentation.tool;
 import org.theospi.portfolio.shared.tool.HelperToolBase;
 import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationPage;
+import org.theospi.jsf.intf.XmlTagFactory;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,6 +44,10 @@ import org.theospi.portfolio.presentation.PresentationManager;
 public class FreeFormTool extends HelperToolBase {
 
    private PresentationManager presentationManager;
+   private Presentation presentation = null;
+   private DecoratedPage currentPage = null;
+   private List pageList;
+   private XmlTagFactory factory;
 
    public String processActionBack() {
       setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_BACK);
@@ -63,6 +75,51 @@ public class FreeFormTool extends HelperToolBase {
 
    public void setPresentationManager(PresentationManager presentationManager) {
       this.presentationManager = presentationManager;
+   }
+
+   public Presentation getPresentation() {
+      if (presentation == null) {
+         presentation = (Presentation) getAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation");
+      }
+      return presentation;
+   }
+
+   public void setPresentation(Presentation presentation) {
+      this.presentation = presentation;
+   }
+
+   public DecoratedPage getCurrentPage() {
+      if (currentPage == null) {
+         currentPage = (DecoratedPage) getPageList().get(0);
+      }
+      return currentPage;
+   }
+
+   public void setCurrentPage(DecoratedPage currentPage) {
+      this.currentPage = currentPage;
+   }
+
+   public List getPageList() {
+      if (pageList == null) {
+         List pages = getPresentationManager().getPresentationPagesByPresentation(getPresentation().getId());
+         pageList = new ArrayList();
+         for (Iterator i=pages.iterator();i.hasNext();) {
+            pageList.add(new DecoratedPage((PresentationPage) i.next(), this));
+         }
+      }
+      return pageList;
+   }
+
+   public void setPageList(List pageList) {
+      this.pageList = pageList;
+   }
+
+   public XmlTagFactory getFactory() {
+      return factory;
+   }
+
+   public void setFactory(XmlTagFactory factory) {
+      this.factory = factory;
    }
 
 }

@@ -22,11 +22,11 @@
 <h:form>
    <ospx:splitarea direction="horizontal" width="100%">
       <ospx:splitsection size="75%" valign="top">
-         <ospx:xheader>
-            <ospx:xheadertitle id="groupTitle" value="" />
-            <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-            </ospx:xheaderdrawer>
-         </ospx:xheader>
+
+      <ospx:xmlDocument  factory="#{freeForm.factory}"
+         xmlFile="#{freeForm.currentPage.xmlFile}"
+         var="freeForm.currentPage.regionMap"/>
+
       </ospx:splitsection>
       <ospx:splitsection size="25%" valign="top" cssclass="selectedListBox">
          <f:subview id="selectedAudience">

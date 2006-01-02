@@ -148,6 +148,7 @@ public interface PresentationManager extends CleanupableService {
    
    public PresentationLayout getPresentationLayout(Id layoutId);
    
+   public List getPresentationPagesByPresentation(Id presentationId);
    public PresentationPage getPresentationPage(Id id);
    public Document getPresentationLayoutAsXml(Presentation presentation, String pageId);
 
