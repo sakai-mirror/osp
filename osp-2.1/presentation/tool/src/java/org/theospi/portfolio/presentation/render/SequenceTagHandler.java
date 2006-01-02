@@ -61,7 +61,7 @@ public class SequenceTagHandler extends LayoutPageHandlerBase {
       SequenceComponent container =
             (SequenceComponent) context.getApplication().createComponent(SequenceComponent.COMPONENT_TYPE);
       container.setId(root.createUniqueId());
-      root.getChildren().add(container);
+      parent.getComponent().getChildren().add(container);
       XmlDocumentContainer docContainer = getParentContainer(parent.getComponent());
       String mapVar = docContainer.getVariableName();
       String regionId = attributes.getValue("firstChild");
@@ -97,11 +97,12 @@ public class SequenceTagHandler extends LayoutPageHandlerBase {
       removeButton.setValue("Remove Row");
       column.getChildren().add(removeButton);
 
-      SequenceComponentProxy proxy = (SequenceComponentProxy) context.getApplication().createComponent(
+      /*SequenceComponentProxy proxy = (SequenceComponentProxy) context.getApplication().createComponent(
             SequenceComponentProxy.COMPONENT_TYPE);
       proxy.setId(root.createUniqueId());
       parent.getComponent().getChildren().add(proxy);
       proxy.setBase(container);
+      */
 
       return new ComponentWrapper(parent, column, this);
    }
