@@ -85,12 +85,13 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
                                String function, Id id) {
       logger.debug("isAuthorized?(...) invoked in MatrixAuthorizer");
          
-      if (MatrixFunctionConstants.EVALUATE_MATRIX.equals(function)) {
+      if (MatrixFunctionConstants.EVALUATE_MATRIX.equals(function) ||
+            MatrixFunctionConstants.REVIEW_MATRIX.equals(function)) {
          return new Boolean(facade.isAuthorized(function,id));
       }
-      else if (MatrixFunctionConstants.VIEW_MATRIX.equals(function)) {
-         if (!agent.getId().equals(getMatrixManager().getMatrix(id).getOwner().getId())) return new Boolean(false);
-      }
+      //else if (MatrixFunctionConstants.REVIEW_MATRIX.equals(function)) {
+      //   if (!agent.getId().equals(getMatrixManager().getMatrix(id).getOwner().getId())) return new Boolean(false);
+      //}
       else if (ContentHostingService.EVENT_RESOURCE_READ.equals(function)) {
          return isFileAuth(facade, agent, id);
       }
@@ -120,8 +121,10 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       for (Iterator i = cells.iterator(); i.hasNext();) {
          Cell cell = (Cell) i.next();
          Id toolId = cell.getMatrix().getMatrixTool().getId();
-         if (getExplicitAuthz().isAuthorized(agent,
-               MatrixFunctionConstants.VIEW_MATRIX_USERS, toolId)) {
+         if (getExplicitAuthz().isAuthorized(agent, 
+                  MatrixFunctionConstants.REVIEW_MATRIX, toolId) || 
+               getExplicitAuthz().isAuthorized(agent, 
+                  MatrixFunctionConstants.REVIEW_MATRIX, toolId)) {
             return new Boolean(true);
          }
 

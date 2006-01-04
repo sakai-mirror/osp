@@ -69,7 +69,7 @@ function disableLink (linkName) {
 function hrefViewCell(cellId) {
   window.location="<osp:url value="viewCell.osp">
   		<osp:param name="cell_id" value="${cell.id}"/>
-  		<osp:param name="action" value="Browse"/>
+  		<osp:param name="submitAction" value="Browse"/>
   		</osp:url>";
 }
 
@@ -77,6 +77,7 @@ function hrefViewCell(cellId) {
 
 <form name="form" method="POST" action="<osp:url value="viewCell.osp"/>">
 	<osp:form/>
+   <input type="hidden" name="submitAction" value="" />
 
 	<c:set var="cell" value="${cellBean.cell}"/>
    <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" />
@@ -92,11 +93,11 @@ function hrefViewCell(cellId) {
             </osp:url>"><osp:message key="manage_cell_status" bundle="${msgs}" /></a>
       </c:if>
       <c:if test="${matrixCan.review && cell.scaffoldingCell.reviewDevice != null}">
-         <a href="<osp:url value="viewCell.osp">
+               <a href="<osp:url value="reviewHelper.osp">
             <osp:param name="cell_id" value="${cell.id}"/>
-            <osp:param name="action" value="review"/>
-            </osp:url>"><osp:message key="review" bundle="${msgs}" /></a>
-      </c:if>      
+            </osp:url>">
+                  <osp:message key="review" bundle="${msgs}" /></a>
+      </c:if> 
       <c:if test="${matrixCan.evaluate && cell.scaffoldingCell.evaluationDevice != null}">
          <a href="<osp:url value="manageCellStatus.osp">
             <osp:param name="cell_id" value="${cell.id}"/>
@@ -136,7 +137,7 @@ function hrefViewCell(cellId) {
       </c:forEach>
       <a href="<osp:url value="viewCell.osp">
          <osp:param name="cell_id" value="${cell.id}"/>
-         <osp:param name="action" value="guidance"/>
+         <osp:param name="submitAction" value="guidance"/>
       </osp:url>" title="<osp:message key="guidance_link_title" bundle="${msgs}" />">
          <osp:message key="guidance_link_text" bundle="${msgs}" /></a>
    </c:if>
@@ -220,11 +221,11 @@ function hrefViewCell(cellId) {
     	<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
     		<c:if test="${canReflect == 'true'}">
     		
-    			<input type="submit" name="action" class="active" value="Update"/>
+    			<input type="submit" name="submitAction" class="active" value="Update"/>
     		</c:if>
     	</c:if>
     	<input type="hidden" name="cell_id" value="<c:out value="${cell.id}"/>"/>
-    	<input type="submit" name="action" value="Cancel"/>
+    	<input type="submit" name="submitAction" value="Cancel"/>
     </p>
 </form>
 <hr/>
@@ -242,6 +243,21 @@ function hrefViewCell(cellId) {
 
 <h4>Reviews</h4>
 <c:forEach var="review" items="${reviews}" varStatus="loopStatus">
-   <c:out value="${review.id}" />
+   <p class="indnt1">
+      <c:choose>
+         <c:when test="${review.visibility==1 and review.creator.id==currentUser}">
+         Private
+            <c:out value="${review.title}" />
+         </c:when>
+         <c:when test="${review.visibility==2 and (review.creator.id==currentUser or currentUser==cell.matrix.owner.id)}">
+         Shared
+            <c:out value="${review.title}" />
+         </c:when>
+         <c:when test="${review.visibility==3}">
+         Public
+            <c:out value="${review.title}" />
+         </c:when>
+      </c:choose>
+   </p>
 </c:forEach>
 <h4>Evaluations</h4>

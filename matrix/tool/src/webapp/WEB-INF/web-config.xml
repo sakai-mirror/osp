@@ -126,6 +126,7 @@
             <prop key="/publishScaffoldingConfirmation.osp">publishScaffoldingConfirmationController</prop>
             <prop key="/editScaffoldingConfirm.osp">editScaffoldingConfirmController</prop>
             <prop key="/editScaffoldingCellConfirm.osp">editScaffoldingCellConfirmController</prop>
+            <prop key="/reviewHelper.osp">reviewHelperController</prop>
            
 
               <!--  Reflection -->
