@@ -65,10 +65,8 @@ public class XmlDocumentComponent extends UIOutput implements XmlDocumentContain
    }
 
    public InputStream getXmlFile() {
-      if (xmlFile != null) return xmlFile;
       ValueBinding vb = getValueBinding("xmlFile");
-      xmlFile = (InputStream) vb.getValue(getFacesContext());
-      return xmlFile;
+      return (InputStream) vb.getValue(getFacesContext());
    }
 
    public void setXmlFile(InputStream xmlFile) {

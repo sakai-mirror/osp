@@ -245,6 +245,31 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       sakaiSession.setUserEid(owner.getId().getValue());
    }
 
+   public Presentation getLightweightPresentation(final Id id) {
+      HibernateCallback callback = new HibernateCallback() {
+
+         public Object doInHibernate(Session session) throws HibernateException, SQLException {
+            Presentation pres = (Presentation) session.load(Presentation.class, id);
+            return pres;
+         }
+
+      };
+
+      try {
+         Presentation presentation = (Presentation) getHibernateTemplate().execute(callback);
+
+         if (!presentation.getIsPublic() &&
+             !presentation.getOwner().equals(getAuthnManager().getAgent())) {
+            getAuthzManager().checkPermission(PresentationFunctionConstants.VIEW_PRESENTATION, presentation.getId());
+         }
+
+         return presentation;
+      } catch (HibernateObjectRetrievalFailureException e) {
+         logger.debug(e);
+         return null;
+      }
+   }
+
    public Presentation getPresentation(final Id id) {
 
       HibernateCallback callback = new HibernateCallback() {
@@ -473,7 +498,21 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       storePresentationViewers(presentation);
 
+      storePresentationPages(presentation.getPages());
+
       return presentation;
+   }
+
+   protected void storePresentationPages(List pages) {
+      if (pages == null) {
+         return;
+      }
+
+      for (Iterator i=pages.iterator();i.hasNext();) {
+         PresentationPage page = (PresentationPage) i.next();
+         page.setModified(new Date(System.currentTimeMillis()));
+         getHibernateTemplate().saveOrUpdateCopy(page);
+      }
    }
 
    protected Agent createGuestUser(Agent viewer){
@@ -568,7 +607,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       for (Iterator i = presentationAuthzs.iterator(); i.hasNext();) {
          Id presId = ((Authorization) i.next()).getQualifier();
-         Presentation pres = getPresentation(presId);
+         Presentation pres = getLightweightPresentation(presId);
 
          if (!returned.contains(pres) && !pres.isExpired()) {
             getHibernateTemplate().evict(pres);
@@ -1686,7 +1725,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    protected void packagePresentationForExport(Id presentationId, OutputStream out) throws IOException {
-      Presentation presentation = getPresentation(presentationId);
+      Presentation presentation = getLightweightPresentation(presentationId);
 
       if (!presentation.getOwner().equals(getAuthnManager().getAgent())) {
          throw new AuthorizationFailedException("Only the presentation owner can export a presentation");

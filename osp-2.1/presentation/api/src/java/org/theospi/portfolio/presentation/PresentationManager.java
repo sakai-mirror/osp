@@ -88,6 +88,7 @@ public interface PresentationManager extends CleanupableService {
    public void deletePresentationItem(Id item);
 
    public Presentation getPresentation(Id id);
+   public Presentation getLightweightPresentation(Id id);
 
    public Presentation storePresentation(Presentation presentation);
 

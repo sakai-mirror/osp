@@ -60,6 +60,8 @@ public class RegionSequenceMap extends Hashtable {
          ValueBinding binding = (ValueBinding) i.next();
          DecoratedRegion region = (DecoratedRegion) binding.getValue(FacesContext.getCurrentInstance());;
          removeItem(region.getBase());
+         region.setRegionItemList(null);
+         region.initRegionList();
       }
    }
 

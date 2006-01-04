@@ -60,8 +60,7 @@ public class DecoratedPage {
 
    public RegionMap getRegionMap() {
       if (regionMap == null) {
-         PresentationPage page = getParent().getPresentationManager().getPresentationPage(getBase().getId());
-         regionMap = new RegionMap(page);
+         regionMap = new RegionMap(getBase());
       }
       return regionMap;
    }

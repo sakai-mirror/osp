@@ -20,34 +20,45 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.jsf.intf;
+package org.theospi.jsf.impl;
 
-import org.xml.sax.Attributes;
+import org.theospi.jsf.intf.ComponentWrapper;
+import org.theospi.jsf.intf.XmlTagHandler;
 
 import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import java.io.IOException;
+import javax.faces.context.ResponseWriter;
+import java.io.StringWriter;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Dec 29, 2005
- * Time: 10:08:47 AM
+ * Date: Jan 3, 2006
+ * Time: 12:10:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public interface XmlTagHandler {
+public class DefaultComponentWrapper extends ComponentWrapper {
 
-   public void setFactory(XmlTagFactory factory);
+   private ResponseWriter writer;
+   private StringWriter buffer;
 
-   public ComponentWrapper startElement(FacesContext context, ComponentWrapper parent, String uri,
-                                        String localName, String qName, Attributes attributes) throws IOException;
+   public DefaultComponentWrapper(ComponentWrapper parent, UIComponent component, XmlTagHandler handler) {
+      super(parent, component, handler);
+   }
 
-   public void characters(FacesContext context, ComponentWrapper current,
-                          char[] ch, int start, int length) throws IOException;
+   public ResponseWriter getWriter() {
+      return writer;
+   }
 
-   public void endElement(FacesContext context, ComponentWrapper current,
-                          String uri, String localName, String qName) throws IOException;
+   public void setWriter(ResponseWriter writer) {
+      this.writer = writer;
+   }
 
-   public void endDocument(FacesContext context, ComponentWrapper current) throws IOException;
+   public StringWriter getBuffer() {
+      return buffer;
+   }
+
+   public void setBuffer(StringWriter buffer) {
+      this.buffer = buffer;
+   }
 
 }

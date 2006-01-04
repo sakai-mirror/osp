@@ -73,6 +73,7 @@ public class Presentation extends IdentifiableObject {
    private Map authz; 
    private String presentationType = TEMPLATE_TYPE;
    private String secretExportKey;
+   private List pages;
 
    public final static String FREEFORM_TYPE = "osp.presentation.type.freeForm";
    public final static String TEMPLATE_TYPE = "osp.presentation.type.template";
@@ -240,5 +241,13 @@ public class Presentation extends IdentifiableObject {
 
    public void setSecretExportKey(String secretExportKey) {
       this.secretExportKey = secretExportKey;
+   }
+
+   public List getPages() {
+      return pages;
+   }
+
+   public void setPages(List pages) {
+      this.pages = pages;
    }
 }

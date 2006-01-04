@@ -56,11 +56,29 @@ public class DefaultXmlTagHandler implements XmlTagHandler {
 
       XmlTagHandler handler = getFactory().getHandler(uri, localName, qName);
       if (handler != null) {
+         if (parent != null && parent instanceof DefaultComponentWrapper) {
+            DefaultComponentWrapper wrapper = (DefaultComponentWrapper) parent;
+            initWrapper(wrapper, context);
+            createOutput(context, wrapper.getBuffer(), wrapper.getComponent());
+            wrapper.getBuffer().getBuffer().delete(0, Integer.MAX_VALUE);
+         }
+
          return handler.startElement(context, parent, uri, localName, qName, attributes);
       }
       else {
-         StringWriter buffer = new StringWriter();
-         ResponseWriter writer = context.getResponseWriter().cloneWithWriter(buffer);
+         ResponseWriter writer = null;
+         DefaultComponentWrapper wrapper = null;
+         if (parent instanceof DefaultComponentWrapper) {
+            wrapper = (DefaultComponentWrapper) parent;
+            initWrapper(wrapper, context);
+            writer = wrapper.getWriter();
+         }
+         else {
+            wrapper = new DefaultComponentWrapper(parent, parent.getComponent(), null);
+            initWrapper(wrapper, context);
+            writer = wrapper.getWriter();
+         }
+
          writer.startElement(qName, null);
          if (attributes != null) {
             for (int i=0;i < attributes.getLength();i++) {
@@ -69,27 +87,49 @@ public class DefaultXmlTagHandler implements XmlTagHandler {
             }
          }
          writer.writeText("", null);
-         createOutput(context, buffer, parent.getComponent());
-         return new ComponentWrapper(parent, parent.getComponent(), null);
+         return wrapper;
       }
    }
 
    public void characters(FacesContext context, ComponentWrapper current, char[] ch, int start, int length)
          throws IOException {
-      if (current == null || current.getHandler() == null) {
-         writeCharsToVerbatim(context, current, ch, start, length);
+      if (current != null && current.getHandler() != null) {
+         current.getHandler().characters(context, current, ch, start, length);
       }
-      else {
-         current.getHandler().characters(context, current, ch, start,  length);
+      else if (current instanceof DefaultComponentWrapper) {
+         DefaultComponentWrapper wrapper = (DefaultComponentWrapper) current;
+         initWrapper(wrapper, context);
+         wrapper.getWriter().write(ch, start, length);
       }
    }
 
    public void endElement(FacesContext context, ComponentWrapper current,
                           String uri, String localName, String qName) throws IOException {
-      StringWriter buffer = new StringWriter();
-      ResponseWriter writer = context.getResponseWriter().cloneWithWriter(buffer);
-      writer.endElement(qName);
-      createOutput(context, buffer, current.getComponent());
+      if (current != null && current.getHandler() != null) {
+         current.getHandler().endElement(context, current, uri, localName, qName);
+      }
+      else if (current instanceof DefaultComponentWrapper) {
+         DefaultComponentWrapper wrapper = (DefaultComponentWrapper) current;
+         initWrapper(wrapper, context);
+         wrapper.getWriter().endElement(qName);
+      }
+   }
+
+   public void endDocument(FacesContext context, ComponentWrapper current) throws IOException {
+      if (current != null && current instanceof DefaultComponentWrapper) {
+         DefaultComponentWrapper wrapper = (DefaultComponentWrapper) current;
+         initWrapper(wrapper, context);
+         wrapper.getWriter().writeText("", null);
+         createOutput(context, wrapper.getBuffer(), current.getComponent());
+         wrapper.getBuffer().getBuffer().delete(0, Integer.MAX_VALUE);
+      }
+   }
+
+   protected void initWrapper(DefaultComponentWrapper wrapper, FacesContext context) {
+      if (wrapper.getWriter() == null) {
+         wrapper.setBuffer(new StringWriter());
+         wrapper.setWriter(context.getResponseWriter().cloneWithWriter(wrapper.getBuffer()));
+      }
    }
 
    protected void writeCharsToVerbatim(FacesContext context, ComponentWrapper current,
@@ -104,6 +144,7 @@ public class DefaultXmlTagHandler implements XmlTagHandler {
       UIViewRoot root = context.getViewRoot();
       HtmlOutputText outputComponent =
             (HtmlOutputText) context.getApplication().createComponent(HtmlOutputText.COMPONENT_TYPE);
+      outputComponent.setTransient(true);
       outputComponent.setId(root.createUniqueId());
       outputComponent.setEscape(false);
       outputComponent.setValue(text);
