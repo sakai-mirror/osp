@@ -91,6 +91,9 @@ public class Report
 
 	/** the defaultXsl for the report */
 	private Date creationDate;
+
+	/** the type of report */
+	private String type;
 	
 	/** the list of report parameters for the report */
 	private List reportParams;
@@ -157,7 +160,7 @@ public class Report
 			throw new OspException("A report cannot change it's report definition");
 		
 		this.reportDefinition = reportDefinition;
-		
+		type = reportDefinition.getType();
 	}
 	
 	
@@ -348,6 +351,27 @@ public class Report
 	public void setCreationDate(Date creationDate)
 	{
 		this.creationDate = creationDate;
+	}
+	
+	
+	/**
+	 * the getter for the type property
+	 * @return String the type
+	 */
+	public String getType()
+	{
+		return type;
+	}
+	
+	
+	/**
+	 * the setter for the type property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param keywords String
+	 */
+	public void setType(String type)
+	{
+		this.type = type;
 	}
 	
 	

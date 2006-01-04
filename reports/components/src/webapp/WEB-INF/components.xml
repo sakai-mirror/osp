@@ -33,6 +33,9 @@
                 <property name="idManager">
                     <ref bean="idManager" />
                 </property>
+                <property name="dataSource">
+                    <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+                </property>
             </bean>
         </property>
         <property name="transactionAttributes">

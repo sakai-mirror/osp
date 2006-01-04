@@ -120,7 +120,7 @@ public class CsvResultPostProcessor extends BaseResultPostProcessor implements R
 
    protected Element[][] processDocumentData(Document results)
       throws DataConversionException {
-      List data = results.getRootElement().getChildren("datarow");
+      List data = results.getRootElement().getChild("data").getChildren("datarow");
       Element[][] returned = new Element[data.size()][];
       for (Iterator i=data.iterator();i.hasNext();) {
          Element row = (Element) i.next();

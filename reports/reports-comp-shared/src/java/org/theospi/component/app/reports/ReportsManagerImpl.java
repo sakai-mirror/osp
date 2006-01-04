@@ -49,6 +49,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.sql.DataSource;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -138,6 +139,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	private List reportDefinitions;
 	
 	private IdManager		idManager = null;
+	
+	private DataSource	dataSource = null;
+	private boolean		canCloseConnection = true;
    
    private String secretKey = "ospReports";
 
@@ -190,9 +194,28 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	 * This is the getter for the idManager
 	 * @return IdManager
 	 */
-	public IdManager getIdManagerr()
+	public IdManager getIdManager()
 	{
 		return idManager;
+	}
+	
+	
+	/**
+	 * This is the setter for the idManager
+	 */
+	public void setDataSource(DataSource dataSource)
+	{
+		this.dataSource = dataSource;
+	}
+	
+	
+	/**
+	 * This is the getter for the idManager
+	 * @return IdManager
+	 */
+	public DataSource getDataSource()
+	{
+		return dataSource;
 	}
 	
 	
@@ -369,15 +392,36 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		return report;
 	}
 	
-	
-	public Connection getWarehouseConnection() throws HibernateException
+	/**
+	 * This function generates the data warehouse sql connection.
+	 * If the datawarehouse connection fails then we want to fail over to
+	 * the hibernate session connection.
+	 * @return Connection
+	 * @throws HibernateException
+	 * @throws SQLException
+	 */
+	public Connection getWarehouseConnection() throws HibernateException, SQLException
 	{
-		//Get the data warehouse database connection
-		//if fails, use the hibernate connection
-
-		net.sf.hibernate.Session				session = getSession();
+		Connection con = dataSource.getConnection();
 		
-		return session.connection();
+		canCloseConnection = true;
+		
+		//fail over to the session connection
+		if(con == null) {
+			net.sf.hibernate.Session	session = getSession();
+		
+			con = session.connection();
+			canCloseConnection = false;
+		}
+		
+		return con;
+	}
+	
+	
+	public void closeWarehouseConnection(Connection connection) throws SQLException
+	{
+		if(canCloseConnection)
+			connection.close();
 	}
 
 	
@@ -423,6 +467,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		} finally {
 			try {
 				stmt.close();
+			} catch (Exception e) {
+				logger.error("", e);
+			}
+			try {
+				closeWarehouseConnection(connection);
 			} catch (Exception e) {
 				logger.error("", e);
 			}
@@ -521,10 +570,25 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			
 			Document document = new Document(reportElement);
 
-			reportElement.setAttribute("title", report.getTitle());
-			reportElement.setAttribute("description", report.getDescription());
-			reportElement.setAttribute("keywords", report.getKeywords());
-			reportElement.setAttribute("runDate", rr.getCreationDate().toString());
+			Element docAttrNode = new Element("attributes");
+			{
+				Element attr = new Element("title");
+				attr.setText(report.getTitle());
+				reportElement.addContent(attr);
+				
+				attr = new Element("description");
+				attr.setText(report.getDescription());
+				reportElement.addContent(attr);
+				
+				attr = new Element("keywords");
+				attr.setText(report.getKeywords());
+				reportElement.addContent(attr);
+				
+				attr = new Element("runDate");
+				attr.setText(rr.getCreationDate().toString());
+				reportElement.addContent(attr);
+			}
+			reportElement.addContent(docAttrNode);
 			
 			Element paramsNode = new Element("parameters");
 
@@ -543,7 +607,8 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 					paramNode.setAttribute("title", rdp.getTitle());
 					paramNode.setAttribute("name", rdp.getParamName());
 					paramNode.setAttribute("type", rdp.getType());
-					paramNode.setAttribute("value", rp.getValue());
+
+					paramNode.setText(rp.getValue());
 					
 					paramsNode.addContent(paramNode);
 				}
@@ -560,13 +625,14 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 				columnsNode.addContent(column);
 			}
 			reportElement.addContent(columnsNode);
-			
+
+			Element datarowsNode = new Element("data");
 			while(rs.next()) {
 				
 				Element dataRow = new Element("datarow");
 				
 				dataRow.setAttribute("index", "" + resultSetIndex++);
-				reportElement.addContent(dataRow);
+				datarowsNode.addContent(dataRow);
 					
 				for(int i = 0; i < columns; i++) {
 					
@@ -583,9 +649,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 						columnNode.setAttribute("isNull", "true");
 						data = "";
 					}
-   				columnNode.setText(data);
+					columnNode.setText(data);
 				}
 			}
+			reportElement.addContent(datarowsNode);
 
 			rr.setReport(report);
 			rr.setTitle(report.getTitle());
@@ -605,6 +672,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		} finally {
 			try {
 				stmt.close();
+			} catch (Exception e) {
+				logger.error("", e);
+			}
+			try {
+				closeWarehouseConnection(connection);
 			} catch (Exception e) {
 				logger.error("", e);
 			}
