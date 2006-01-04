@@ -45,6 +45,7 @@ package org.theospi.portfolio.matrix.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -78,6 +79,7 @@ public class CellController implements FormController, LoadObjectController {
       model.put("reviewRubrics", matrixManager.getReviewRubrics());
       String cellId = cell.getCell().getId().getValue();
       model.put("reviews", getReviewManager().getReviewsByParent(cellId));
+      model.put("currentUser", SessionManager.getCurrentSessionUserId());
       return model;
    }
    

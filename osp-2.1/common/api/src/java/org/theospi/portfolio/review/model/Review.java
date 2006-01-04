@@ -8,10 +8,10 @@ import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
 public class Review extends IdentifiableObject {
    
-   public static final byte VISABILITY_UNKNOWN = 0;
-   public static final byte VISABILITY_PRIVATE = 1;
-   public static final byte VISABILITY_SHARED = 2;
-   public static final byte VISABILITY_PUBLIC = 3;
+   public static final int VISABILITY_UNKNOWN = 0;
+   public static final int VISABILITY_PRIVATE = 1;
+   public static final int VISABILITY_SHARED = 2;
+   public static final int VISABILITY_PUBLIC = 3;
 
    //private ReviewDevice reviewDevice = new ReviewDevice();
    private String siteId;
@@ -20,7 +20,7 @@ public class Review extends IdentifiableObject {
    private Agent creator = null;
    private String title = null;
    private Date created = null;
-   private byte visibility = 0;
+   private int visibility = 0;
    private ReviewAttachment reviewAttachment;
    
    private boolean newObject = false;
@@ -83,13 +83,13 @@ public class Review extends IdentifiableObject {
    /**
     * @return Returns the visibility.
     */
-   public byte getVisibility() {
+   public int getVisibility() {
       return visibility;
    }
    /**
     * @param visibility The visibility to set.
     */
-   public void setVisibility(byte visibility) {
+   public void setVisibility(int visibility) {
       this.visibility = visibility;
    }
    /**

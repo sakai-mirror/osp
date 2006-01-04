@@ -999,7 +999,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public void checkCellAccess(String id) {
       Cell cell = getCell(getIdManager().getId(id));
       Id toolId = cell.getMatrix().getMatrixTool().getId();
-      if (!getAuthzManager().isAuthorized(MatrixFunctionConstants.VIEW_MATRIX_USERS, toolId) &&
+      if (!getAuthzManager().isAuthorized(MatrixFunctionConstants.REVIEW_MATRIX, toolId) &&
           !getAuthzManager().isAuthorized(MatrixFunctionConstants.EVALUATE_MATRIX, cell.getId())) {
          // won't setup security advisor, so it won't load
          return;

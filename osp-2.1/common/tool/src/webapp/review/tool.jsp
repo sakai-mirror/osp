@@ -15,30 +15,63 @@
 <f:loadBundle basename="org.theospi.portfolio.common.messages" var="msgs"/>
 
 <sakai:view>
-   <sakai:view_title value="#{msgs.review_title}"/>
+   <sakai:view_title value="#{msgs.review_section_title}"/>
    <sakai:messages />
 
 <h:form>
 
 This is the review form.
 
-         <sakai:instruction_message value="#{msgs.review_instruction_message}" />
-            <sakai:flat_list value="#{review.current.base.reviewAttachment}" var="content">
-               <h:column>
-                  <f:facet name="header">
-                     <h:commandButton action="#{review.processActionChooseForm}"
-                        value="#{msgs.manage_review_content}"/>
-                  </f:facet>
-                  <h:outputLink title="#{content.displayName}"
+   <sakai:instruction_message value="#{msgs.review_instruction_message}" />
+         
+   <sakai:panel_edit>
+
+      <ospx:formLabel valueRequired="true">
+         <h:outputLabel for="title" id="titleLabel" value="#{msgs.review_title}" />
+      </ospx:formLabel>
+      <h:panelGroup>
+         <h:inputText id="title" value="#{review.current.base.title}" required="true">
+            <f:validateLength minimum="1" maximum="255" />
+         </h:inputText>
+         <h:message for="title" styleClass="validationEmbedded" />
+      </h:panelGroup>
+       
+      <ospx:formLabel valueRequired="true">
+         <h:outputLabel for="formSelection" id="formSelectionLabel" value="#{msgs.review_form_label}" />
+      </ospx:formLabel>  
+      <h:panelGroup>
+         <sakai:flat_list id="formSelection" value="#{review.current.base.reviewAttachment}" var="content">
+            <h:column>
+               <f:facet name="header">
+                  <h:commandButton action="#{review.processActionChooseForm}"
+                        value="#{msgs.manage_review_content}" immediate="true" />
+               </f:facet>
+               <h:outputLink title="#{content.displayName}"
                      value="#{content.fullReference.base.url}" target="_new">
-                     <h:outputText value="#{content.displayName}"/>
-                  </h:outputLink>
-               </h:column>
-            </sakai:flat_list>
+                  <h:outputText value="#{content.displayName}"/>
+               </h:outputLink>
+            </h:column>
+         </sakai:flat_list>
+         <h:message for="formSelection" styleClass="validationEmbedded" />
+      </h:panelGroup>
+      <ospx:formLabel valueRequired="true">
+         <h:outputLabel for="visibility" id="visibilityLabel" value="#{msgs.review_visibility_label}" />
+      </ospx:formLabel>
+      <h:panelGroup>
+         <h:selectOneRadio id="visibility" value="#{review.current.base.visibility}" 
+               layout="pageDirection" required="true">
+            <f:selectItems value="#{review.visibilityOptions}"/>
+         </h:selectOneRadio>
+         <h:message for="visibility" styleClass="validationEmbedded" />
+      </h:panelGroup>
+   </sakai:panel_edit>
 
-
-   <h:commandButton id="cancel" value="#{msgs.cancel_review}" action="#{review.processActionCancel}" />
-   <h:commandButton id="submit" value="#{msgs.save_review}" action="#{review.processActionSave}" />
+   <sakai:button_bar>
+      <sakai:button_bar_item id="cancel" value="#{msgs.cancel_review}" 
+         action="#{review.processActionCancel}" immediate="true" />
+      <sakai:button_bar_item id="submit" value="#{msgs.save_review}" 
+         action="#{review.processActionSave}" />
+   </sakai:button_bar>
    
 </h:form>
 </sakai:view>

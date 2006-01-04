@@ -1,10 +1,12 @@
 package org.theospi.portfolio.review.tool;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -150,6 +152,19 @@ public class ReviewTool extends HelperToolBase {
       session.setAttribute(ReviewManager.CURRENT_REVIEW, getCurrent().getBase());
 
       return returnToCaller();
+   }
+   
+   public List getVisibilityOptions() {
+      List options = new ArrayList();
+      options.add(new SelectItem(new Integer(Review.VISABILITY_PRIVATE), 
+            getMessageFromBundle("review_visibility_me")));
+      if (!SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
+            current.getBase().getCreator().getId().getValue()))
+         options.add(new SelectItem(new Integer(Review.VISABILITY_SHARED), 
+               getMessageFromBundle("review_visibility_us")));
+      options.add(new SelectItem(new Integer(Review.VISABILITY_PUBLIC), 
+            getMessageFromBundle("review_visibility_all")));
+      return options;
    }
    
    /**
