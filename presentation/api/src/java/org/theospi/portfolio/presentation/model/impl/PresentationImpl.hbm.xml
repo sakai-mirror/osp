@@ -148,7 +148,7 @@
 <!--       <many-to-one name="style" column="style_id" not-null="true" class="Style"/> -->
       <property name="style" column="style_id" type="string" not-null="false" />
       <property name="sequence" type="string" column="seq_num" not-null="false"/>
-      <set name="regions" lazy="true" inverse="true" cascade="all-delete-orphan">
+      <set name="regions" lazy="false" inverse="true" cascade="all-delete-orphan">
          <key column="presentation_page_id" />
          <one-to-many class="PresentationPageRegion" />
       </set>
@@ -177,6 +177,7 @@
       <many-to-one name="region" column="presentation_page_region_id" not-null="true" class="PresentationPageRegion"/>
       <property name="type" column="type" type="string" not-null="false" />
       <property name="value" column="value" type="string" not-null="false" />
+      <property name="regionItemSeq" column="seq_num" type="int" not-null="true" />
       <set name="properties" lazy="false" inverse="true" cascade="all-delete-orphan">
          <key column="presentation_page_item_id" />
          <one-to-many class="PresentationItemProperty" />

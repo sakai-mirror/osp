@@ -97,7 +97,7 @@ public class DecoratedRegion {
       this.regionItemList = regionItemList;
    }
 
-   protected void initRegionList() {
+   public void initRegionList() {
       regionItemList = new ArrayList();
       for (int i=0;i<getBase().getItems().size();i++) {
          regionItemList.add(new RegionSequenceMap(getRegionMap(), i));

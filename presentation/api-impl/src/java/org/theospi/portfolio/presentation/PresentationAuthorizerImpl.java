@@ -78,7 +78,7 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
       }
    }
    protected Boolean isPresentationAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function){
-      Presentation presentation = getPresentationManager().getPresentation(qualifier);
+      Presentation presentation = getPresentationManager().getLightweightPresentation(qualifier);
 
       if (presentation == null) {
          // must be tool id
@@ -114,7 +114,7 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
    }
 
    protected Boolean isPresentationCommentAuth(AuthorizationFacade facade, Agent agent, Id id) {
-      Presentation pres = getPresentationManager().getPresentation(id);
+      Presentation pres = getPresentationManager().getLightweightPresentation(id);
 
       if (!pres.getTemplate().isIncludeComments()){
          return new Boolean(false);
@@ -131,7 +131,7 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
    }
 
    protected Boolean isPresentationViewAuth(AuthorizationFacade facade, Agent agent, Id id, boolean allowAnonymous) {
-      Presentation pres = getPresentationManager().getPresentation(id);
+      Presentation pres = getPresentationManager().getLightweightPresentation(id);
 
       return isPresentationViewAuth(pres, facade, agent, id, allowAnonymous);
    }

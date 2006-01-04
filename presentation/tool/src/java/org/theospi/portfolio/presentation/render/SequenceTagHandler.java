@@ -97,13 +97,6 @@ public class SequenceTagHandler extends LayoutPageHandlerBase {
       removeButton.setValue("Remove Row");
       column.getChildren().add(removeButton);
 
-      /*SequenceComponentProxy proxy = (SequenceComponentProxy) context.getApplication().createComponent(
-            SequenceComponentProxy.COMPONENT_TYPE);
-      proxy.setId(root.createUniqueId());
-      parent.getComponent().getChildren().add(proxy);
-      proxy.setBase(container);
-      */
-
       return new ComponentWrapper(parent, column, this);
    }
 

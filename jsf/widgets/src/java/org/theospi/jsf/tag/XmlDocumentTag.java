@@ -36,6 +36,7 @@ import javax.servlet.jsp.JspException;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -99,30 +100,34 @@ public class XmlDocumentTag extends UIComponentTag {
 
    protected UIComponent findComponent(FacesContext context) throws JspException {
       XmlDocumentComponent docComponent = (XmlDocumentComponent) super.findComponent(context);
-      if (docComponent.getXmlRootComponent() == null) {
-         UIViewRoot root = context.getViewRoot();
-         UIOutput base = (UIOutput) context.getApplication().createComponent("javax.faces.Output");
-         base.setId(root.createUniqueId());
-         docComponent.getChildren().add(base);
-         XmlDocumentHandler handler = new XmlDocumentHandler(
-            context, docComponent.getFactory(), base);
-         try {
-            SAXParserFactory parserFactory = SAXParserFactory.newInstance();
-            parserFactory.setNamespaceAware(true);
-            parserFactory.newSAXParser().parse(docComponent.getXmlFile(), handler);
-         }
-         catch (SAXException e) {
-            throw new JspException(e);
-         }
-         catch (ParserConfigurationException e) {
-            throw new JspException(e);
-         }
-         catch (IOException e) {
-            throw new JspException(e);
-         }
-
-         docComponent.setXmlRootComponent(base);
+      if (docComponent.getXmlRootComponent() != null) {
+         docComponent.getChildren().remove(docComponent.getXmlRootComponent());
       }
+
+      UIViewRoot root = context.getViewRoot();
+      UIOutput base = (UIOutput) context.getApplication().createComponent("javax.faces.Output");
+      base.setId(root.createUniqueId());
+      docComponent.getChildren().add(base);
+      XmlDocumentHandler handler = new XmlDocumentHandler(
+         context, docComponent.getFactory(), base);
+      try {
+         SAXParserFactory parserFactory = SAXParserFactory.newInstance();
+         parserFactory.setNamespaceAware(true);
+         InputStream xmlFile = docComponent.getXmlFile();
+         parserFactory.newSAXParser().parse(xmlFile, handler);
+         xmlFile.close();
+      }
+      catch (SAXException e) {
+         throw new JspException(e);
+      }
+      catch (ParserConfigurationException e) {
+         throw new JspException(e);
+      }
+      catch (IOException e) {
+         throw new JspException(e);
+      }
+
+      docComponent.setXmlRootComponent(base);
       return docComponent;
    }
 

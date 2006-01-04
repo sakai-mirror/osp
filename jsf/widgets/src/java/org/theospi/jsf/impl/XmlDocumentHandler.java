@@ -92,6 +92,9 @@ public class XmlDocumentHandler extends DefaultHandler {
       }
       try {
          handler.endElement(context, component,  uri, localName, qName);
+         if (components.empty()) {
+            handler.endDocument(context, component);
+         }
       }
       catch (IOException e) {
          throw new SAXException(e);

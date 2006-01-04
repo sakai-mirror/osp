@@ -68,6 +68,7 @@ public class SequenceComponent extends HtmlDataTable implements XmlDocumentConta
          ValueBinding binding = (ValueBinding) i.next();
          DecoratedRegion region = (DecoratedRegion) binding.getValue(FacesContext.getCurrentInstance());;
          region.getBase().addBlank();
+         region.initRegionList();
       }
    }
 
