@@ -83,10 +83,10 @@ public class ReportDefinition
 	private List reportDefinitionParams;
 
 	/** the defaultXsl for the report definition */
-	//private List forms;
-
-	/** the defaultXsl for the report definition */
 	private List xsls;
+
+	/** the type of report defining who can view the report definition and derived data */
+	private String type;
 
    /** list of any special result processors this report needs.
     * These should be of type ResultProcessor
@@ -321,6 +321,27 @@ public class ReportDefinition
 	public void setXsls(List xsls)
 	{
 		this.xsls = xsls;
+	}
+	
+	
+	/**
+	 * the getter for the type property
+	 * @return String the type
+	 */
+	public String getType()
+	{
+		return type;
+	}
+	
+	
+	/**
+	 * the setter for the type property.  This is set by the bean 
+	 * and by hibernate.
+	 * @param keywords String
+	 */
+	public void setType(String type)
+	{
+		this.type = type;
 	}
 
    /** list of any special result processors this report needs.

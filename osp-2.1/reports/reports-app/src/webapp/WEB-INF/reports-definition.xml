@@ -33,6 +33,9 @@
                 Tests each of the parameter variable types
             </value>
         </property>
+        <property name="type"><!-- acceptable values: admin, course, project, cig  -->
+            <value>admin</value>
+        </property>
 
         <property name="reportDefinitionParams">
             <list>
@@ -195,6 +198,9 @@
             <value>
                 This report is to view the portfolio performance
             </value>
+        </property>
+        <property name="type">
+            <value>admin</value>
         </property>
         <property name="defaultXsl">
                 <bean class="org.theospi.api.app.reports.ReportXsl">
