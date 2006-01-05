@@ -42,9 +42,6 @@
                 <h:selectOneMenu value="#{ReportsTool.workingResult.currentViewXsl}">
                     <f:selectItems value="#{ReportsTool.workingResult.viewXslSeletionList}" />
                 </h:selectOneMenu>
-                <h:outputText value="save result: #{ReportsTool.workingResult.isSaved}"  />
-                <h:outputText value="save report: #{ReportsTool.workingReport.isSaved}"  />
-                <h:outputText value="live: #{ReportsTool.workingResult.isLive}"  />
                 <sakai:button_bar>
                     <sakai:button_bar_item
                         action="#{ReportsTool.processChangeViewXsl}"

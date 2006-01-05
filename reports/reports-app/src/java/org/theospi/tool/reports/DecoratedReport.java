@@ -66,6 +66,10 @@ public class DecoratedReport implements DecoratedAbstractResult {
 	/** The decorated report parameters */
 	private List	reportParams = null;
 	
+	/** for telling the interface when a parameter is not correct */
+	private String	paramErrorMsgs = "";
+	
+	/** informs the interface if the title is not proper */
 	private boolean	invalidTitle = false;
 	
 	public DecoratedReport(Report report, ReportsTool reportsTool)
@@ -88,7 +92,9 @@ public class DecoratedReport implements DecoratedAbstractResult {
 				while(iter.hasNext()) {
 					ReportParam rp = (ReportParam)iter.next();
 					
-					reportParams.add(new DecoratedReportParam(rp, reportsTool));
+					DecoratedReportParam drp = new DecoratedReportParam(rp, reportsTool);
+					drp.setIndex(reportParams.size());
+					reportParams.add(drp);
 				}
 			}
 		}
@@ -146,5 +152,29 @@ public class DecoratedReport implements DecoratedAbstractResult {
 	public boolean getIsLive()
 	{
 		return report.getIsLive();
+	}
+	
+	public boolean getParamsAreValid()
+	{
+		boolean isGood = true;
+		
+		paramErrorMsgs = "";
+		
+		for(Iterator iter = reportParams.iterator(); iter.hasNext(); ) {
+			DecoratedReportParam drp = (DecoratedReportParam)iter.next();
+			
+			isGood &= drp.getIsValid();
+		}
+		return isGood;
+	}
+	
+	public void setParamErrorMessages(String paramErrorMsgs)
+	{
+		this.paramErrorMsgs = paramErrorMsgs;
+	}
+	
+	public String getParamErrorMessages()
+	{
+		return paramErrorMsgs;
 	}
 }

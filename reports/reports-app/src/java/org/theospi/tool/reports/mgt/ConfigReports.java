@@ -73,7 +73,7 @@ public class ConfigReports
 	 */
 	public void init()
 	{
-		reportsManager.setReports(getReports());
+		reportsManager.setReportDefinitions(getReports());
 	}
 	
 	

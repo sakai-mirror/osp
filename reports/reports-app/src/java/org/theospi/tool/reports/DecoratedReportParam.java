@@ -44,12 +44,17 @@
 
 package org.theospi.tool.reports;
 
+import java.lang.NumberFormatException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 
 import javax.faces.model.SelectItem;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.theospi.api.app.reports.*;
 
 
@@ -59,11 +64,21 @@ import org.theospi.api.app.reports.*;
  */
 public class DecoratedReportParam {
 
+	protected final transient Log logger = LogFactory.getLog(getClass());
+	
 	/** The link to the main tool */
 	private ReportsTool	reportsTool = null;
 	
 	/** the report to decorate */
 	private ReportParam reportParam;
+	
+	private boolean		isValid = false;
+	
+	/** the index in the list of params which contains this class */
+	private int index;
+	
+	private static SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
+	
 	
 	public DecoratedReportParam(ReportParam reportParam, ReportsTool reportsTool)
 	{
@@ -83,6 +98,16 @@ public class DecoratedReportParam {
 		return reportParam.getReportDefinitionParam();
 	}
 
+	
+	public int getIndex()
+	{
+		return index;
+	}
+	public void setIndex(int index)
+	{
+		this.index = index;
+	}
+
 	public String getStaticValue()
 	{
 		return reportParam.getValue();
@@ -94,18 +119,45 @@ public class DecoratedReportParam {
 	}
 	public void setTextValue(String value)
 	{
-		if(getIsFillIn() && !getIsDate())
+		isValid = false;
+		if(getIsFillIn() && !getIsDate()) {
+			if(getIsInteger()) {
+				try {
+					value =  Integer.toString(Integer.parseInt(value));
+					isValid = true;
+				} catch(NumberFormatException pe) {
+				}
+			}
+			if(getIsFloat()) {
+				try {
+					value =  Float.toString(Float.parseFloat(value));
+					isValid = true;
+				} catch(NumberFormatException pe) {
+				}
+			}
+			if(getIsString()) {
+				isValid = value.length() > 0;
+			}
 			reportParam.setValue(value);
+		}
 	}
 	
 	public String getDateValue()
 	{
-		return reportParam.getValue();//new Date(reportParam.getValue());
+		return reportParam.getValue();
 	}
 	public void setDateValue(String value)
 	{
-		if(getIsFillIn() && getIsDate())
-			reportParam.setValue(value);
+		isValid = false;
+		if(getIsFillIn() && getIsDate()) {
+
+			try {
+				reportParam.setValue( dateFormatter.format( dateFormatter.parse(value)));
+				isValid = true;
+			} catch(ParseException pe) {
+				//if it fails to parse then it won't set isValid to true
+			}
+		}
 	}
 	
 	public String getMenuValue()
@@ -114,19 +166,32 @@ public class DecoratedReportParam {
 	}
 	public void setMenuValue(String value)
 	{
-		if(getIsSet() && !getIsMultiSelectable())
+		if(getIsSet() && !getIsMultiSelectable()) {
 			reportParam.setValue(value);
+			isValid = true;
+		}
 	}
 	
+	/**
+	 * defunc - we don't do lists now, it will output the list of 
+	 * selected values
+	 * @return List
+	 */
 	public List getListValue()
 	{
-		
 		return new ArrayList();
 	}
+	
+	/**
+	 * defunc - We don't do lists now, the list value should 
+	 * iterate through and build a string of values
+	 * @param List value
+	 */
 	public void setListValue(List value)
 	{
 		if(getIsSet() && getIsMultiSelectable()) {
 			reportParam.setValue(value.toString());
+			isValid = true;
 		}
 	}
 	
@@ -249,5 +314,26 @@ public class DecoratedReportParam {
 	public boolean getIsDate()
 	{
 		return reportParam.getReportDefinitionParam().getType().equals(ReportDefinitionParam.TYPE_DATE);
+	}
+	
+	public boolean getIsFloat()
+	{
+		return reportParam.getReportDefinitionParam().getType().equals(ReportDefinitionParam.TYPE_INT);
+	}
+	
+	public boolean getIsInteger()
+	{
+		return reportParam.getReportDefinitionParam().getType().equals(ReportDefinitionParam.TYPE_FLOAT);
+	}
+	
+	public boolean getIsString()
+	{
+		return reportParam.getReportDefinitionParam().getType().equals(ReportDefinitionParam.TYPE_STRING);
+	}
+	
+	public boolean getIsValid()
+	{
+		return isValid
+			|| getIsStatic();
 	}
 }

@@ -19,6 +19,7 @@
                 <ref bean="report2" />
                 <ref bean="report3" />
                 <ref bean="report4" />
+                <ref bean="report5" />
             </list>
         </property>
     </bean>
