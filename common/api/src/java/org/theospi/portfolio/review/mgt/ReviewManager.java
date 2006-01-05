@@ -12,8 +12,8 @@ public interface ReviewManager {
    public final static String CURRENT_REVIEW = "org.theospi.portfolio.review.currentReview";
    public final static String CURRENT_REVIEW_ID = "org.theospi.portfolio.review.currentReviewId";
 
-   public Review createNew(String owner, String description, String siteId, Id securityQualifier,
-                             String securityViewFunction, String securityEditFunction);
+   public Review createNew(String owner, String description, String siteId, 
+         Id securityQualifier, String securityViewFunction, String securityEditFunction);
 
    public Review getReview(Id reviewId);
 
@@ -30,4 +30,5 @@ public interface ReviewManager {
    public Node getNode(Reference ref);
    
    public List getReviewsByParent(String parentId);
+   public List getReviewsByParentAndType(String parentId, int type);
 }

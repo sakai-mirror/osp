@@ -46,10 +46,8 @@
 package org.theospi.portfolio.matrix.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -62,16 +60,14 @@ import org.theospi.portfolio.guidance.model.Guidance;
 public class ScaffoldingCell extends IdentifiableObject implements Serializable {
    private Criterion rootCriterion;
    private Level level;
-   private String expectationHeader = "";
-   private List expectations = new ArrayList();
    private Scaffolding scaffolding;
    private String initialStatus = "";
-   private boolean gradableReflection;
    private Collection reviewers = new HashSet();
    transient private boolean validate;
    private Set cells = new HashSet();
    transient private Id guidanceId;
    private Guidance guidance;
+   transient private Id deleteGuidanceId;
    
    private Id reflectionDevice;
    private String reflectionDeviceType;
@@ -134,30 +130,6 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
       this.scaffolding = scaffolding;
    }
    /**
-    * @return Returns the expectations.
-    */
-   public List getExpectations() {
-      return expectations;
-   }
-   /**
-    * @param expectations The expectations to set.
-    */
-   public void setExpectations(List expectations) {
-      this.expectations = expectations;
-   }
-   /**
-    * @return Returns the gradableReflection.
-    */
-   public boolean isGradableReflection() {
-      return gradableReflection;
-   }
-   /**
-    * @param gradableReflection The gradableReflection to set.
-    */
-   public void setGradableReflection(boolean gradableReflection) {
-      this.gradableReflection = gradableReflection;
-   }
-   /**
     * @return Returns the initialStatus.
     */
    public String getInitialStatus() {
@@ -169,18 +141,7 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    public void setInitialStatus(String initialStatus) {
       this.initialStatus = initialStatus.toUpperCase();
    }
-   /**
-    * @return Returns the expectationHeader.
-    */
-   public String getExpectationHeader() {
-      return expectationHeader;
-   }
-   /**
-    * @param expectationHeader The expectationHeader to set.
-    */
-   public void setExpectationHeader(String expectationHeader) {
-      this.expectationHeader = expectationHeader;
-   }
+
    /**
     * @return Returns the reviewers.
     */
@@ -271,6 +232,19 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
     */
    public void setGuidance(Guidance guidance) {
       this.guidance = guidance;
+   }
+
+   /**
+    * @return Returns the deleteGuidanceId.
+    */
+   public Id getDeleteGuidanceId() {
+      return deleteGuidanceId;
+   }
+   /**
+    * @param deleteGuidanceId The deleteGuidanceId to set.
+    */
+   public void setDeleteGuidanceId(Id deleteGuidanceId) {
+      this.deleteGuidanceId = deleteGuidanceId;
    }
 
    

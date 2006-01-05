@@ -12,10 +12,16 @@ public class Review extends IdentifiableObject {
    public static final int VISABILITY_PRIVATE = 1;
    public static final int VISABILITY_SHARED = 2;
    public static final int VISABILITY_PUBLIC = 3;
+   
+   public static final int REFLECTION_TYPE = 0;
+   public static final int EVALUATION_TYPE = 1;
+   public static final int REVIEW_TYPE = 2;
 
    //private ReviewDevice reviewDevice = new ReviewDevice();
    private String siteId;
    private String parent;
+   private String deviceId;
+   private int type;
    private Id reviewContent;
    private Agent creator = null;
    private String title = null;
@@ -193,6 +199,34 @@ public class Review extends IdentifiableObject {
     */
    public void setReviewAttachment(ReviewAttachment reviewAttachment) {
       this.reviewAttachment = reviewAttachment;
+   }
+
+   /**
+    * @return Returns the deviceId.
+    */
+   public String getDeviceId() {
+      return deviceId;
+   }
+
+   /**
+    * @param deviceId The deviceId to set.
+    */
+   public void setDeviceId(String deviceId) {
+      this.deviceId = deviceId;
+   }
+
+   /**
+    * @return Returns the type.
+    */
+   public int getType() {
+      return type;
+   }
+
+   /**
+    * @param type The type to set.
+    */
+   public void setType(int type) {
+      this.type = type;
    }
 
 }

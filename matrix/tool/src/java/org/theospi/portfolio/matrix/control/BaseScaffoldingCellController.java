@@ -49,6 +49,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.theospi.portfolio.guidance.mgt.GuidanceManager;
+import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
@@ -62,6 +64,7 @@ public class BaseScaffoldingCellController {
    private AuthorizationFacade authzManager;
    private MatrixManager matrixManager;
    private IdManager idManager;
+   private GuidanceManager guidanceManager;
    
    public Object fillBackingObject(Object incomingModel, Map request,
          Map session, Map application) throws Exception {
@@ -83,8 +86,17 @@ public class BaseScaffoldingCellController {
                EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
          scaffoldingCell = sessionBean.getScaffoldingCell();
       }
+      //Check for guidance
+      if (session.get(GuidanceManager.CURRENT_GUIDANCE) != null) {
+         Guidance guidance = (Guidance)session.get(GuidanceManager.CURRENT_GUIDANCE);
+         scaffoldingCell.setGuidanceId(guidance.getId());
+         
+         session.remove(GuidanceManager.CURRENT_GUIDANCE);
+      }
+      if (scaffoldingCell.getGuidanceId() != null && scaffoldingCell.getGuidance() == null) {
+         scaffoldingCell.setGuidance(getGuidanceManager().getGuidance(scaffoldingCell.getGuidanceId()));
+      }
       //Traversing the collection to un-lazily load
-      scaffoldingCell.getExpectations().size();
       getMatrixManager().removeFromSession(scaffoldingCell);
       scaffoldingCell.getScaffolding().isPublished();
       return scaffoldingCell;
@@ -110,6 +122,10 @@ public class BaseScaffoldingCellController {
             getMatrixManager().storeCell(cell);
          }
       }
+      if (scaffoldingCell.getDeleteGuidanceId() != null) {
+         Guidance guidance = getGuidanceManager().getGuidance(scaffoldingCell.getDeleteGuidanceId());
+         getGuidanceManager().deleteGuidance(guidance);
+      }
    }
  
    public AuthorizationFacade getAuthzManager() {
@@ -134,5 +150,19 @@ public class BaseScaffoldingCellController {
 
    public void setIdManager(IdManager idManager) {
       this.idManager = idManager;
+   }
+
+   /**
+    * @return Returns the guidanceManager.
+    */
+   public GuidanceManager getGuidanceManager() {
+      return guidanceManager;
+   }
+
+   /**
+    * @param guidanceManager The guidanceManager to set.
+    */
+   public void setGuidanceManager(GuidanceManager guidanceManager) {
+      this.guidanceManager = guidanceManager;
    }
 }

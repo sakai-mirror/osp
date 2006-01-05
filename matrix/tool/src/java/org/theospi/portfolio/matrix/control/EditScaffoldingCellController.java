@@ -55,12 +55,13 @@ import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
-import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.guidance.mgt.GuidanceManager;
+import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
@@ -72,12 +73,13 @@ import org.theospi.portfolio.wizard.model.Wizard;
  * @author chmaurer
  */
 public class EditScaffoldingCellController extends BaseScaffoldingCellController
-   implements FormController, CustomCommandController, LoadObjectController {
+   implements FormController, LoadObjectController {
 
    protected final Log logger = LogFactory.getLog(getClass());
    private WorksiteManager worksiteManager = null;
    private AgentManager agentManager;
    private WizardManager wizardManager;
+   
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    
 // TODO move this constant somewhere where I can get to them from here and in WizardTool
@@ -100,9 +102,9 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.CustomCommandController#formBackingObject(java.util.Map, java.util.Map, java.util.Map)
     */
-   public Object formBackingObject(Map request, Map session, Map application) {
-      return new ScaffoldingCell();
-   }
+   //public Object formBackingObject(Map request, Map session, Map application) {
+   //   return new ScaffoldingCell();
+   //}
    
    
    /* (non-Javadoc)
@@ -125,21 +127,6 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          
          if (action.equals("Save")) {
             
-            if (request.get("gradableReflection") == null) {
-               scaffoldingCell.setGradableReflection(false);
-            }
-            
-            /*
-             * 
-             * if (getCommentItem() != null && !getCommentItem().equals("")) {
-         String[] comment = getCommentItem().split(VALUE_SEPARATOR);
-         items.add(new WizardSupportItem(cleanBlankId(comment[ID_INDEX]),
-               getIdManager().getId(comment[ITEM_ID_INDEX]),
-               WizardFunctionConstants.COMMENT_TYPE, comment[TYPE_INDEX], wizard));
-      } 
-             * 
-             */
-            
             if (scaffoldingCell.getScaffolding().isPublished()) {
                model.put("scaffoldingCell", scaffoldingCell);
                model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
@@ -150,44 +137,71 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          }
          else if (action.equals("forward")) {
             String forwardView = (String)request.get("dest");
-            
-            EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
-                  EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
-            sessionBean.setScaffoldingCell(scaffoldingCell);
-            model.put("scaffolding_id", scaffoldingCell.getScaffolding().getId());
-            model.put("scaffoldingCell_id", scaffoldingCell.getId()); 
-            
-            if (!forwardView.equals("selectEvaluators")) {
-               model.put("label", request.get("label"));             
-               model.put("finalDest", request.get("finalDest"));
-               model.put("displayText", request.get("displayText"));
-               String params = (String)request.get("params");
-               model.put("params", params);
-               if (!params.equals("")) {
-                  String[] paramsList = params.split(":");
-                  for (int i=0; i<paramsList.length; i++) {
-                     String[] pair = paramsList[i].split("=");
-                     String val = null;
-                     if (pair.length>1)
-                        val = pair[1];
-                     model.put(pair[0], val);
-                  }
-               }
-            }
-            else {
-               session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
-               model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
-               setAudienceSelectionVariables(session, scaffoldingCell);        
-               
-            }
-
+            Map forwardModel = doForwardAction(forwardView, request, session, scaffoldingCell); 
+            model.putAll(forwardModel);
             return new ModelAndView(forwardView, model);
-            
          }
          model.put("scaffolding_id", scaffoldingCell.getScaffolding().getId());
          return new ModelAndView("return", model);
       }
       return new ModelAndView("success");
+   }
+   
+   private Map doForwardAction(String forwardView, Map request, Map session, 
+         ScaffoldingCell scaffoldingCell) {
+      Map model = new HashMap();      
+      
+      EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
+            EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
+      sessionBean.setScaffoldingCell(scaffoldingCell);
+      model.put("scaffolding_id", scaffoldingCell.getScaffolding().getId());
+      model.put("scaffoldingCell_id", scaffoldingCell.getId()); 
+      
+      if (forwardView.equals("createGuidance")) {
+         Placement placement = ToolManager.getCurrentPlacement();  
+         String currentSite = placement.getContext();  
+         session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+         model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+         
+         Guidance guidance = scaffoldingCell.getGuidance();
+         if (guidance == null) {
+            String title = "Guidance for Cell";
+            guidance = getGuidanceManager().createNew(title, currentSite, null, "", ""); 
+         }
+         
+         session.put(GuidanceManager.CURRENT_GUIDANCE, guidance);
+      }
+      else if (forwardView.equals("deleteGuidance")) {
+         scaffoldingCell.setDeleteGuidanceId(scaffoldingCell.getGuidanceId());
+         scaffoldingCell.setGuidance(null);
+         session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+         model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+      }
+      else if (!forwardView.equals("selectEvaluators")) {
+         model.put("label", request.get("label"));             
+         model.put("finalDest", request.get("finalDest"));
+         model.put("displayText", request.get("displayText"));
+         String params = (String)request.get("params");
+         model.put("params", params);
+         if (!params.equals("")) {
+            String[] paramsList = params.split(":");
+            for (int i=0; i<paramsList.length; i++) {
+               String[] pair = paramsList[i].split("=");
+               String val = null;
+               if (pair.length>1)
+                  val = pair[1];
+               model.put(pair[0], val);
+            }
+         }
+      }
+      else {
+         session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+         model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+         setAudienceSelectionVariables(session, scaffoldingCell);        
+         
+      }
+      return model;
+      
    }
    
    protected void setAudienceSelectionVariables(Map session, ScaffoldingCell sCell) {
@@ -309,4 +323,5 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    public void setWizardManager(WizardManager wizardManager) {
       this.wizardManager = wizardManager;
    }
+
 }

@@ -15,14 +15,14 @@
 <f:loadBundle basename="org.theospi.portfolio.common.messages" var="msgs"/>
 
 <sakai:view>
-   <sakai:view_title value="#{msgs.review_section_title}"/>
+   <sakai:view_title value="#{review.title}"/>
    <sakai:messages />
 
 <h:form>
 
 This is the review form.
 
-   <sakai:instruction_message value="#{msgs.review_instruction_message}" />
+   <sakai:instruction_message value="#{review.instructions}" />
          
    <sakai:panel_edit>
 
@@ -37,14 +37,14 @@ This is the review form.
       </h:panelGroup>
        
       <ospx:formLabel valueRequired="true">
-         <h:outputLabel for="formSelection" id="formSelectionLabel" value="#{msgs.review_form_label}" />
+         <h:outputLabel for="formSelection" id="formSelectionLabel" value="#{review.formLabel}" />
       </ospx:formLabel>  
       <h:panelGroup>
          <sakai:flat_list id="formSelection" value="#{review.current.base.reviewAttachment}" var="content">
             <h:column>
                <f:facet name="header">
                   <h:commandButton action="#{review.processActionChooseForm}"
-                        value="#{msgs.manage_review_content}" immediate="true" />
+                        value="#{review.manageContentLabel}" immediate="true" />
                </f:facet>
                <h:outputLink title="#{content.displayName}"
                      value="#{content.fullReference.base.url}" target="_new">
@@ -55,7 +55,7 @@ This is the review form.
          <h:message for="formSelection" styleClass="validationEmbedded" />
       </h:panelGroup>
       <ospx:formLabel valueRequired="true">
-         <h:outputLabel for="visibility" id="visibilityLabel" value="#{msgs.review_visibility_label}" />
+         <h:outputLabel for="visibility" id="visibilityLabel" value="#{review.visibilityLabel}" />
       </ospx:formLabel>
       <h:panelGroup>
          <h:selectOneRadio id="visibility" value="#{review.current.base.visibility}" 

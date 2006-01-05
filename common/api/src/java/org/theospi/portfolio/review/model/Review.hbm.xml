@@ -17,7 +17,8 @@
       <property name="created" type="java.util.Date" update="false" not-null="true"/>
       <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="true"/>
       <property name="parent" length="36" type="string" column="parent_id" />
-
+      <property name="deviceId" length="36" type="string" column="review_device_id" />
+      <property name="type" type="int" column="review_type" not-null="true"/>
       <property name="securityQualifier" type="org.sakaiproject.metaobj.shared.IdType" />
       <property name="securityViewFunction" type="string" not-null="true"/>
       <property name="securityEditFunction" type="string" not-null="true"/>

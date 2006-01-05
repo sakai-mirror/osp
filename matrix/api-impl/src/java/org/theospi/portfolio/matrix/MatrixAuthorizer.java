@@ -124,7 +124,7 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
          if (getExplicitAuthz().isAuthorized(agent, 
                   MatrixFunctionConstants.REVIEW_MATRIX, toolId) || 
                getExplicitAuthz().isAuthorized(agent, 
-                  MatrixFunctionConstants.REVIEW_MATRIX, toolId)) {
+                  MatrixFunctionConstants.EVALUATE_MATRIX, toolId)) {
             return new Boolean(true);
          }
 
