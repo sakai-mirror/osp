@@ -720,7 +720,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       getHibernateTemplate().refresh(cell); //TODO not sure if this is necessary
       ScaffoldingCell sCell = cell.getScaffoldingCell();
       
-      if (sCell.isGradableReflection()) {
+      //if (sCell.isGradableReflection()) {
          cell.setStatus(MatrixFunctionConstants.PENDING_STATUS);
          storeCell(cell);
          if (!cellHasOpenReview(cell.getId())) {
@@ -746,7 +746,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          else {
             logger.warn("Cell " + cell.getId().getValue() + " already has an open review.");
          }
-      }
+      //}
       unlockNextCell(cell);
 
       //TODO removing this for sakai - might need it later
@@ -819,8 +819,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             
       for (Iterator iter = scaffoldingCells.iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
-         List expectations = sCell.getExpectations();
-         sCell.setExpectations(new ArrayList(expectations));
+         //List expectations = sCell.getExpectations();
+         //sCell.setExpectations(new ArrayList(expectations));
          sCell.setCells(new HashSet());
          //Collection reviewers = getScaffoldingCellReviewers(sCell.getId());
          Collection reviewers = sCell.getReviewers();
@@ -1131,14 +1131,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          scaffoldingCell.setId(null);
          //scaffoldingCell.getCells().clear();
          scaffoldingCell.setCells(new HashSet());
-         
-         List expectations = new ArrayList();
-         for (Iterator i=scaffoldingCell.getExpectations().iterator(); i.hasNext();) {
-            Expectation ex = (Expectation) i.next();
-            ex.setId(null);
-            expectations.add(ex);
-         }
-         scaffoldingCell.setExpectations(expectations);
          sCells.add(scaffoldingCell);
          //scaffoldingCell.setScaffolding(scaffolding);
       }   

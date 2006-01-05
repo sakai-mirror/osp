@@ -2,78 +2,10 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
+<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="common_msgs"/>
 
-<script language="javascript">
-var runHide=true;
-
-function showHideDiv(divNo)
-  {
-  //alert(divNo);
-  var tmpdiv = "div" + divNo;
-  var tmpimg = "img" + divNo;
-  var divisionNo = ospGetElementById(tmpdiv);
-  var imgNo = ospGetElementById(tmpimg);
-  if(divisionNo)
-    {
-    //alert(divisionNo.style.display);
-    if(divisionNo.style.display =="none")
-      {
-      //alert("in if");
-      divisionNo.style.display="block";
-      imgNo.src ="/osp-common-tool/img/collapse.gif";
-      }
-    else
-      {
-      //alert("in else");
-      divisionNo.style.display ="none";
-      imgNo.src ="/osp-common-tool/img/expand.gif";
-      }
-    }
-  }
-
-function startup()
-  {
-  hideUnhideAllDivs(9,"none");
-  }
-function hideUnhideAllDivs(maxDivs,action)
-  {
-  if(runHide==true)
-    {
-    //alert("called");
-    runHide=false;
-    for(i=0; i <(maxDivs); i++)
-      {
-      //alert(i);
-      divisionNo = "div"+i;
-      document.getElementById(divisionNo).style.display =action;
-      }
-    }
-  }
-
-function cancelLink () {
-  return false;
-}
-
-function disableLink (linkName) {
-  var link = ospGetElementById(linkName);
-  if (link.onclick)
-    link.oldOnClick = link.onclick;
-  link.onclick = cancelLink;
-  if (link.style) {
-    link.style.cursor = 'default';
-    link.style.color = '#999999';
-  }
-  link.disabled='true';
-}
-
-function hrefViewCell(cellId) {
-  window.location="<osp:url value="viewCell.osp">
-  		<osp:param name="cell_id" value="${cell.id}"/>
-  		<osp:param name="submitAction" value="Browse"/>
-  		</osp:url>";
-}
-
-</script>
+<link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
+<script type="text/javascript" src="/osp-jsf-resource/xheader/xheader.js"></script>
 
 <form name="form" method="POST" action="<osp:url value="viewCell.osp"/>">
 	<osp:form/>
@@ -93,14 +25,16 @@ function hrefViewCell(cellId) {
             </osp:url>"><osp:message key="manage_cell_status" bundle="${msgs}" /></a>
       </c:if>
       <c:if test="${matrixCan.review && cell.scaffoldingCell.reviewDevice != null}">
-               <a href="<osp:url value="reviewHelper.osp">
-            <osp:param name="cell_id" value="${cell.id}"/>
+         <a href="<osp:url value="reviewHelper.osp">
+            <osp:param name="cell_id" value="${cell.id}" />
+            <osp:param name="org_theospi_portfolio_review_type" value="2" />
             </osp:url>">
                   <osp:message key="review" bundle="${msgs}" /></a>
       </c:if> 
       <c:if test="${matrixCan.evaluate && cell.scaffoldingCell.evaluationDevice != null}">
-         <a href="<osp:url value="manageCellStatus.osp">
+         <a href="<osp:url value="reviewHelper.osp">
             <osp:param name="cell_id" value="${cell.id}"/>
+            <osp:param name="org_theospi_portfolio_review_type" value="1" />
             </osp:url>"><osp:message key="evaluate" bundle="${msgs}" /></a>
       </c:if>
 	</div>
@@ -241,7 +175,11 @@ function hrefViewCell(cellId) {
 	</script>
 </c:if>
 
-<h4>Reviews</h4>
+
+<h4 style="cursor:pointer" onclick="javascript:showHideDiv('reviewDiv','/osp-jsf-resource')">
+<img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgreviewDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
+Reviews</h4>
+<div id="reviewDiv">
 <c:forEach var="review" items="${reviews}" varStatus="loopStatus">
    <p class="indnt1">
       <c:choose>
@@ -260,4 +198,27 @@ function hrefViewCell(cellId) {
       </c:choose>
    </p>
 </c:forEach>
-<h4>Evaluations</h4>
+</div>
+<h4 style="cursor:pointer" onclick="javascript:showHideDiv('evalDiv','/osp-jsf-resource')">
+<img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgevalDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
+Evaluations</h4>
+<div id="evalDiv">
+<c:forEach var="eval" items="${evaluations}" varStatus="loopStatus">
+   <p class="indnt1">
+      <c:choose>
+         <c:when test="${eval.visibility==1 and eval.creator.id==currentUser}">
+         Private
+            <c:out value="${eval.title}" />
+         </c:when>
+         <c:when test="${eval.visibility==2 and (eval.creator.id==currentUser or currentUser==cell.matrix.owner.id)}">
+         Shared
+            <c:out value="${eval.title}" />
+         </c:when>
+         <c:when test="${eval.visibility==3}">
+         Public
+            <c:out value="${eval.title}" />
+         </c:when>
+      </c:choose>
+   </p>
+</c:forEach>
+</div>

@@ -58,6 +58,7 @@ import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
+import org.theospi.portfolio.review.model.Review;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,7 +79,10 @@ public class CellController implements FormController, LoadObjectController {
       Map model = new HashMap();
       model.put("reviewRubrics", matrixManager.getReviewRubrics());
       String cellId = cell.getCell().getId().getValue();
-      model.put("reviews", getReviewManager().getReviewsByParent(cellId));
+       model.put("reviews", getReviewManager().getReviewsByParentAndType(
+             cellId, Review.REVIEW_TYPE));
+      model.put("evaluations", getReviewManager().getReviewsByParentAndType(
+             cellId, Review.EVALUATION_TYPE));
       model.put("currentUser", SessionManager.getCurrentSessionUserId());
       return model;
    }

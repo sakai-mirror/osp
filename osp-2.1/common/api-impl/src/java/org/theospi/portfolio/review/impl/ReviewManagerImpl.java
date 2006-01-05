@@ -32,8 +32,8 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
    private ContentHostingService contentHosting = null;
    private AgentManager agentManager = null;
    
-   public Review createNew(String owner, String description, String siteId, Id securityQualifier, 
-         String securityViewFunction, String securityEditFunction) {
+   public Review createNew(String owner, String description, String siteId, 
+         Id securityQualifier, String securityViewFunction, String securityEditFunction) {
       Agent agent = getAgentManager().getAgent(owner);
       Review review = new Review(getIdManager().createId(), agent, description, 
             siteId, securityQualifier, securityViewFunction, securityEditFunction);
@@ -59,6 +59,11 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
    public List getReviewsByParent(String parentId) {
       Object[] params = new Object[]{parentId};
       return getHibernateTemplate().find("from Review r where r.parent=? ", params);
+   }
+   
+   public List getReviewsByParentAndType(String parentId, int type) {
+      Object[] params = new Object[]{parentId, new Integer(type)};
+      return getHibernateTemplate().find("from Review r where r.parent=? and r.type=? ", params);
    }
 
    public Review saveReview(Review review) {

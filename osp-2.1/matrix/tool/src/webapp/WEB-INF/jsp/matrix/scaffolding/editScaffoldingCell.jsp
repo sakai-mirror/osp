@@ -1,16 +1,14 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
 
 <form method="POST">
   
-    <c:if test="${not scaffoldingCell.scaffolding.published}">
-	    <div class="navIntraTool">
-	        <a href="javascript:document.forms[0].dest.value='addExpectation';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">Add Expectation...</a>
-           <a href="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">Select Evaluators...</a>
-	    </div>
-    </c:if>
-
+    
+	 <div class="navIntraTool">
+       <a href="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].submit();"><osp:message key="select_evaluators" bundle="${msgs}" /></a>
+	 </div>
 
     <h3>Edit Cell Settings</h3>
 
@@ -39,7 +37,33 @@
        <tr><th><c:out value="${scaffoldingCell.scaffolding.rowLabel}"/>: </th><td><c:out value="${scaffoldingCell.rootCriterion.description}"/></td></tr>
     </table>
     
-		<h4>Cell Settings</h4>
+      <h4><osp:message key="guidance_header" bundle="${msgs}" /></h4>
+      <c:if test="${empty scaffoldingCell.guidance}">
+         <a href="javascript:document.forms[0].dest.value='createGuidance';
+                        document.forms[0].submitAction.value='forward';
+                        document.forms[0].submit();">
+         <osp:message key="create_guidance" bundle="${msgs}" /></a>
+      </c:if>
+      <c:if test="${not empty scaffoldingCell.guidance}">
+      <c:out value="${scaffoldingCell.guidance.description}" />
+         <div class="itemAction">
+             <a href="javascript:document.forms[0].dest.value='createGuidance';
+               document.forms[0].submitAction.value='forward';
+               document.forms[0].params.value='id=<c:out value="${scaffoldingCell.guidance.id}"/>';
+               document.forms[0].submit();">
+                 <osp:message key="edit" bundle="${msgs}" />
+                 </a> | 
+             <a href="javascript:document.forms[0].dest.value='deleteGuidance';
+               document.forms[0].submitAction.value='forward';
+               document.forms[0].params.value='id=<c:out value="${scaffoldingCell.guidance.id}"/>';
+               document.forms[0].submit();">
+                 <osp:message key="delete" bundle="${msgs}" />
+                 </a>
+         </div>
+      </c:if>
+      
+    
+		<h4><osp:message key="cell_settings_header" bundle="${msgs}" /></h4>
       
         <spring:bind path="scaffoldingCell.initialStatus">  
             <c:if test="${status.error}">
@@ -54,17 +78,7 @@
     				</select>
 		    </p>
         </spring:bind>
-		
-		<p class="longtext">
-			<label class="block">Expectation Header</label>
-			<spring:bind path="scaffoldingCell.expectationHeader">
-                    <table><tr>
-					<td><textarea rows="10" cols="75" name="<c:out value="${status.expression}"/>" 
-							id="<c:out value="${status.expression}"/>" ><c:out value="${status.value}"/></textarea></td>
-                    </tr></table>
-				<span class="error_message"><c:out value="${status.errorMessage}"/></span>
-			</spring:bind>
-		</p>
+        
 		<spring:bind path="scaffoldingCell.reflectionDeviceType">  
             <input type="hidden" name="<c:out value="${status.expression}"/>"
                value="<c:out value="${status.value}"/>" />
@@ -126,89 +140,7 @@
        </p>
      </spring:bind>
 		
-        <spring:bind path="scaffoldingCell.gradableReflection">
-            <c:if test="${status.error}">
-                <div class="validation"><c:out value="${status.errorMessage}"/></div>
-            </c:if>
-		    <p class="checkbox">
-    				<input type="checkbox" name="<c:out value="${status.expression}"/>_checkBox"
-                            id="<c:out value="${status.expression}"/>_checkBox"
-    						value="true" 
-    						<c:if test="${status.value}">checked</c:if>
-    						onChange="form['<c:out value="${status.expression}"/>'].value=this.checked" 
-    				/>
-    				<label for="<c:out value="${status.expression}"/>_checkBox">Gradable Reflection</label>
-				<input type="hidden" name="<c:out value="${status.expression}"/>"
-					value="<c:out value="${status.value}"/>" />
-		    </p>
-        </spring:bind>
-		
-		<br />
-
-		<h4>Expectations</h4>
-		
-		<table class="listHier" cellspacing="0" >
-			<thead>
-				<tr>
-					<th scope="col">Description</th>
-					<th scope="col">Required?</th>
-				</tr>
-			</thead>
-	        <tbody>
-	   
-				<c:forEach var="e" items="${scaffoldingCell.expectations}" varStatus="loopCount">
-					<tr>
-						<td>
-							<c:out value="${e.description}" escapeXml="false"/>
-							
-								<div class="itemAction">
-		          	    <a href="javascript:document.forms[0].dest.value='addExpectation';
-		          	      document.forms[0].submitAction.value='forward';
-		          	      document.forms[0].params.value='index=<c:out value="${loopCount.index}"/>';
-		          	      document.forms[0].onsubmit();
-		          	      document.forms[0].submit();">
-		          		     Edit
-		                    </a>
-						<c:if test="${not scaffoldingCell.scaffolding.published}">
-		                    | <a href="javascript:document.forms[0].dest.value='removeExpectation';               
-         				  document.forms[0].finalDest.value='deleteExpectation';               
-         				  document.forms[0].label.value='Expectation';               
-         				  document.forms[0].displayText.value='<c:out value="${e.description}"/>'; 
-	      				  document.forms[0].submitAction.value='forward';
-	      				  document.forms[0].params.value='expectation_id=<c:out value="${e.id}"/>:index=<c:out value="${loopCount.index}"/>';
-	      				  document.forms[0].onsubmit();
-	      				  document.forms[0].submit();">
-		          		     Remove
-		                    </a>
-		                    | <a href="javascript:document.forms[0].dest.value='moveExpectation';
-		          	      document.forms[0].submitAction.value='forward';
-		          	      document.forms[0].params.value='current_index=<c:out value="${loopCount.index}"/>:dest_index=<c:out value="${loopCount.index-1}"/>';
-		          	      document.forms[0].onsubmit();
-		          	      document.forms[0].submit();">
-		          		     Up
-		                    </a>
-		                    | <a href="javascript:document.forms[0].dest.value='moveExpectation';
-		          	      document.forms[0].submitAction.value='forward';
-		          	      document.forms[0].params.value='current_index=<c:out value="${loopCount.index}"/>:dest_index=<c:out value="${loopCount.index+1}"/>';
-		          	      document.forms[0].onsubmit();
-		          	      document.forms[0].submit();">
-		          		     Down
-		                    </a>
-						</c:if>
-		                    	</div>
-						</td>
-						<td>
-							<c:out value="${e.required}"/>
-						</td>
-					</tr>
-		   
-				</c:forEach>
-	        </tbody>
-		</table>
-
-		<br />
-		<br />
-
+        
 
 	<spring:bind path="scaffoldingCell.id">
 		<input type="hidden" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.displayValue}"/>"/>
@@ -220,6 +152,3 @@
 		<input type="button" name="action" value="Cancel" onclick="window.document.location='<osp:url value="viewScaffolding.osp?scaffolding_id=${scaffoldingCell.scaffolding.id}"/>'"/>
 	</div>
 </form>
-
-<script type="text/javascript" src="/library/htmlarea/sakai-htmlarea.js"></script>
-<script type="text/javascript" defer="1">chef_setupformattedtextarea('expectationHeader');</script>

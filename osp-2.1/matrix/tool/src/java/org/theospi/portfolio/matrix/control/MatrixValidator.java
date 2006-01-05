@@ -144,10 +144,6 @@ public class MatrixValidator extends ValidatorBase {
             scaffoldingCell.getInitialStatus().equals("")) {
          errors.rejectValue("initialStatus", "error.required", "required");
       }
-      if (scaffoldingCell.isGradableReflection() && scaffoldingCell.getReviewers().size() == 0) {
-         errors.rejectValue("reviewers", "",
-               "Reviewers must be specified if Gradable Reflection is selected");
-      }
    }
 
    protected void validateCriterion(CriterionTransport criterion, Errors errors) {
@@ -241,12 +237,12 @@ public class MatrixValidator extends ValidatorBase {
          }
          i++;
       }
-      if (reflection.getCell().getScaffoldingCell().isGradableReflection()) {
-         if (reflection.getGrowthStatement() == null || 
-               stripHtml(reflection.getGrowthStatement()).trim().equals("")) {
-            errors.rejectValue("growthStatement", "error.required", "required");      
-         }
-      }
+      //if (reflection.getCell().getScaffoldingCell().isGradableReflection()) {
+      //   if (reflection.getGrowthStatement() == null || 
+      //         stripHtml(reflection.getGrowthStatement()).trim().equals("")) {
+      //      errors.rejectValue("growthStatement", "error.required", "required");      
+      //   }
+      //}
    }
    
    private String stripHtml(String input) {

@@ -30,6 +30,30 @@ public class ReviewTool extends HelperToolBase {
 
    private ReviewManager reviewManager;
    
+   public String getTitle() {
+      String prefix = (String) getAttributeOrDefault(ReviewHelper.REVIEW_BUNDLE_PREFIX);
+      return getMessageFromBundle(prefix + "section_title");
+   }
+   
+   public String getInstructions() {
+      String prefix = (String) getAttributeOrDefault(ReviewHelper.REVIEW_BUNDLE_PREFIX);
+      return getMessageFromBundle(prefix + "instruction_message");
+   }
+   
+   public String getFormLabel() {
+      String prefix = (String)getAttributeOrDefault(ReviewHelper.REVIEW_BUNDLE_PREFIX);
+      return getMessageFromBundle(prefix + "form_label");
+   }
+   
+   public String getVisibilityLabel() {
+      String prefix = (String) getAttributeOrDefault(ReviewHelper.REVIEW_BUNDLE_PREFIX);
+      return getMessageFromBundle(prefix + "visibility_label");
+   }
+   
+   public String getManageContentLabel() {
+      String prefix = (String) getAttributeOrDefault(ReviewHelper.REVIEW_BUNDLE_PREFIX);
+      return getMessageFromBundle(prefix + "manage_content");
+   }
    
    public DecoratedReview getCurrent() {
       ToolSession session = SessionManager.getCurrentToolSession();
@@ -51,12 +75,24 @@ public class ReviewTool extends HelperToolBase {
          Review review = getReviewManager().createNew(SessionManager.getCurrentSessionUserId(), 
                "New Review", currentSite, null, "", ""); 
          current = new DecoratedReview(this, review);
-      }
       
-      if ((String)session.getAttribute(ReviewHelper.REVIEW_PARENT) != null) {
-         String id = (String)session.getAttribute(ReviewHelper.REVIEW_PARENT);
-         current.getBase().setParent(id);
-         this.removeAttribute(ReviewHelper.REVIEW_PARENT);
+      
+         if ((String)session.getAttribute(ReviewHelper.REVIEW_PARENT) != null) {
+            String id = (String)session.getAttribute(ReviewHelper.REVIEW_PARENT);
+            current.getBase().setParent(id);
+            this.removeAttribute(ReviewHelper.REVIEW_PARENT);
+         }
+         
+         if ((String)session.getAttribute(ReviewHelper.REVIEW_FORM_TYPE) != null) {
+            String id = (String)session.getAttribute(ReviewHelper.REVIEW_FORM_TYPE);
+            current.getBase().setDeviceId(id);
+            this.removeAttribute(ReviewHelper.REVIEW_FORM_TYPE);
+         }
+         if ((String)session.getAttribute(ReviewHelper.REVIEW_TYPE) != null) {
+            String type = (String)session.getAttribute(ReviewHelper.REVIEW_TYPE);
+            current.getBase().setType(Integer.parseInt(type));
+            this.removeAttribute(ReviewHelper.REVIEW_TYPE);
+         }
       }
       
       setReviewFormId(current.getBase());
@@ -101,10 +137,10 @@ public class ReviewTool extends HelperToolBase {
       ToolSession session = SessionManager.getCurrentToolSession();
       
       BaseFormResourceFilter crf = new BaseFormResourceFilter();
+      Review review = getCurrent().getBase();
+      session.setAttribute(ReviewManager.CURRENT_REVIEW, review);
       
-      session.setAttribute(ReviewManager.CURRENT_REVIEW, getCurrent().getBase());
-      
-      crf.getFormTypes().add((String)getAttribute(ReviewHelper.REVIEW_FORM_TYPE));
+      crf.getFormTypes().add(review.getDeviceId());
       session.setAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER, crf);
       session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, new Boolean(true).toString());
       

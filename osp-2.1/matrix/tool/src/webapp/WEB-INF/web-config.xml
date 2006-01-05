@@ -116,10 +116,12 @@
               <prop key="/moveCriterion.osp">moveCriterionController</prop>
               <prop key="/viewScaffolding.osp">viewScaffoldingController</prop>
               <prop key="/editScaffoldingCell.osp">editScaffoldingCellController</prop>
+               <!-- 
                <prop key="/addExpectation.osp">addExpectationController</prop>
               <prop key="/moveExpectation.osp">moveExpectationController</prop>
               <prop key="/editExpectation.osp">addExpectationController</prop>
               <prop key="/deleteExpectation.osp">deleteExpectationController</prop>
+              -->
               <prop key="/removeLevCrit.osp">removeLevCritConfirmationController</prop>
               <prop key="/removeExpectation.osp">removeExpectationConfirmationController</prop> 
 				<prop key="/publishScaffolding.osp">publishScaffoldingController</prop>
@@ -129,8 +131,8 @@
             <prop key="/reviewHelper.osp">reviewHelperController</prop>
            
 
-              <!--  Reflection -->
-              <prop key="/reflect.osp">reflectionController</prop>
+              <!--  Reflection 
+              <prop key="/reflect.osp">reflectionController</prop> -->
 
               <!--  Reviewer Stuff -->
               <prop key="/listReviewerItems.osp">listReviewerItemsController</prop>
