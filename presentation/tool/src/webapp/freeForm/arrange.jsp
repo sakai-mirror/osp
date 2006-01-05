@@ -19,8 +19,8 @@
 
    <sakai:tool_bar>
       <sakai:tool_bar_item
-      action="#{freeForm.processActionNewPage}"
-      value="#{msgs.new_page}" />
+      action="main"
+      value="#{msgs.page_list}" />
    </sakai:tool_bar>
 
    <sakai:view_title value=""/>
@@ -30,30 +30,9 @@
    <ospx:splitarea direction="horizontal" width="100%">
       <ospx:splitsection size="75%" valign="top">
 
-
-   <sakai:flat_list value="#{freeForm.pageList}" var="page">
-      <h:column>
-         <f:facet name="header">
-            <h:outputText value="#{msgs.presentation_pages_header}" />
-         </f:facet>
-      </h:column>
-      <h:column>
-         <h:outputText value="#{page.base.title}"/>
-         <h:commandLink action="#{page.processActionArrange}">
-            <h:outputText value="#{msgs.arrangeItems}"/>
-         </h:commandLink>
-         <h:outputText value=" | " />
-         <h:commandLink action="#{page.processActionEdit}">
-            <h:outputText value="#{msgs.editProperties}" />
-         </h:commandLink>
-         <h:outputText value=" | " />
-         <h:commandLink action="#{page.processActionDelete}">
-            <h:outputText value="#{msgs.delete}" />
-         </h:commandLink>
-      </h:column>
-   </sakai:flat_list>
-
-
+      <ospx:xmlDocument  factory="#{freeForm.factory}"
+         xmlFile="#{freeForm.currentPage.xmlFile}"
+         var="freeForm.currentPage.regionMap"/>
 
       </ospx:splitsection>
       <ospx:splitsection size="25%" valign="top" cssclass="selectedListBox">

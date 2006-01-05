@@ -39,6 +39,7 @@ public class DecoratedPage {
    private FreeFormTool parent;
    private PresentationPage base;
    private RegionMap regionMap;
+   private boolean selected;
 
    public DecoratedPage(PresentationPage base, FreeFormTool parent) {
       this.base = base;
@@ -77,5 +78,27 @@ public class DecoratedPage {
       this.parent = parent;
    }
 
+   public String processActionArrange() {
+      getParent().setCurrentPage(this);
+      return "arrange";
+   }
+
+   public String processActionEdit() {
+      getParent().setCurrentPage(this);
+      return "edit";
+   }
+
+   public String processActionDelete() {
+      getParent().setCurrentPage(this);
+      return "delete";
+   }
+
+   public boolean isSelected() {
+      return selected;
+   }
+
+   public void setSelected(boolean selected) {
+      this.selected = selected;
+   }
 
 }
