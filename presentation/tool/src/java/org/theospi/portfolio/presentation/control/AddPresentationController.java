@@ -295,7 +295,7 @@ public class AddPresentationController extends AbstractWizardFormController {
       page.setId(getIdManager().createId());
       page.setPresentation(pres);
       page.setRegions(new HashSet());
-      page.setSequence("");
+      page.setSequence("0");  // first page
       page.setTitle("test page");
 
       Collection layouts = getPresentationManager().findLayoutsByOwner(
