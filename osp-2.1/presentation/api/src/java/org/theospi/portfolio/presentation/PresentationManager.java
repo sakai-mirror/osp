@@ -237,6 +237,15 @@ public interface PresentationManager extends CleanupableService {
 
    public Node getNode(Reference ref);
 
+   /**
+    * Get node within the context of this presentation
+    * @param ref
+    * @param presentation
+    * @return
+    */
+   public Node getNode(Reference ref, Presentation presentation);
+   public Node getNode(Id artifactId, Presentation presentation);
+
    public Collection loadArtifactsForItemDef(PresentationItemDefinition itemDef, Agent agent);
    
    public Document createDocument(Presentation presentation);

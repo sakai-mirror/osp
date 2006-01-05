@@ -206,6 +206,8 @@ public class ViewPresentationControl extends AbstractPresentationController impl
          }
       }
 
+      wrapper.transformer.clearParameters();
+
       //send request params in as transform params
       for(Iterator i=request.keySet().iterator();i.hasNext();){
          String paramName = (String) i.next();

@@ -39,6 +39,7 @@ public class PresentationTagFactory extends DefaultXmlTagFactory {
    private final static String OSP_NS_URI = "http://www.osportfolio.org/OspML";
    private XmlTagHandler regionTagHandler;
    private XmlTagHandler sequenceTagHandler;
+   private XmlTagHandler textTypeTagHandler;
 
    public XmlTagHandler getHandler(String uri, String localName, String qName) {
       if (OSP_NS_URI.equals(uri)) {
@@ -47,6 +48,9 @@ public class PresentationTagFactory extends DefaultXmlTagFactory {
          }
          else if ("sequence".equals(localName)) {
             return sequenceTagHandler;
+         }
+         else if ("texttype".equals(localName)) {
+            return textTypeTagHandler;
          }
       }
       return super.getHandler(uri, localName, qName);
@@ -68,11 +72,20 @@ public class PresentationTagFactory extends DefaultXmlTagFactory {
       this.sequenceTagHandler = sequenceTagHandler;
    }
 
+   public XmlTagHandler getTextTypeTagHandler() {
+      return textTypeTagHandler;
+   }
+
+   public void setTextTypeTagHandler(XmlTagHandler textTypeTagHandler) {
+      this.textTypeTagHandler = textTypeTagHandler;
+   }
+
    public void init() {
       ComponentManager.loadComponent("org.theospi.jsf.intf.XmlTagFactory.freeFormPresentation", this);
       setDefaultHandler(new DefaultXmlTagHandler(this));
       setRegionTagHandler(new RegionTagHandler(this));
       setSequenceTagHandler(new SequenceTagHandler(this));
+      setTextTypeTagHandler(new TextTypeTagHandler(this));
    }
 
 }

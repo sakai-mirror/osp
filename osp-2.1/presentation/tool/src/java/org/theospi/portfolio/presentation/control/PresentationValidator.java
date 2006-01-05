@@ -201,6 +201,10 @@ public class PresentationValidator extends ValidatorBase {
          errors.rejectValue("name", "error.required", "name is required");
       }
 
+      if (presentation.getPresentationType().equals(Presentation.FREEFORM_TYPE)) {
+         presentation.getTemplate().setId(Presentation.FREEFORM_TEMPLATE_ID);
+      }
+
       if (presentation.getTemplate().getId() == null ||
          presentation.getTemplate().getId().getValue() == null ||
          presentation.getTemplate().getId().getValue().length() == 0) {

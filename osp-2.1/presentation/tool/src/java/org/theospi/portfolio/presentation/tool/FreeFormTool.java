@@ -23,15 +23,25 @@
 package org.theospi.portfolio.presentation.tool;
 
 import org.theospi.portfolio.shared.tool.HelperToolBase;
+import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationPage;
+import org.theospi.portfolio.presentation.model.PresentationItem;
+import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
 import org.theospi.jsf.intf.XmlTagFactory;
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import org.sakaiproject.service.legacy.entity.Reference;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import java.util.*;
+import java.io.IOException;
 
 
 /**
@@ -48,6 +58,8 @@ public class FreeFormTool extends HelperToolBase {
    private DecoratedPage currentPage = null;
    private List pageList;
    private XmlTagFactory factory;
+   private List attachableItems = null;
+   private List listableItems = null;
 
    public String processActionBack() {
       setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_BACK);
@@ -96,6 +108,7 @@ public class FreeFormTool extends HelperToolBase {
             presentation.setPages(pages);
             currentPage = null;
             pageList = null;
+            attachableItems = null;
          }
       }
       return presentation;
@@ -132,6 +145,91 @@ public class FreeFormTool extends HelperToolBase {
 
    public void setFactory(XmlTagFactory factory) {
       this.factory = factory;
+   }
+
+   public void processActionManageItems(ActionEvent event) {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, new Boolean(true).toString());
+
+      List attachments = new ArrayList(getPresentation().getItems());
+      List attachmentRefs = EntityManager.newReferenceList();
+
+      for (Iterator i=attachments.iterator();i.hasNext();) {
+         PresentationItem attachment = (PresentationItem)i.next();
+         Node item = getPresentationManager().getNode(attachment.getArtifactId());
+         attachmentRefs.add(EntityManager.newReference(item.getResource().getReference()));
+      }
+
+      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS, attachmentRefs);
+
+      try {
+         context.redirect("sakai.filepicker.helper/tool");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+   }
+
+   public Set getItems() {
+      checkUpdateItems();
+      if (getPresentation().getItems() != null) {
+         return getPresentation().getItems();
+      }
+      getPresentation().setItems(new HashSet());
+      return getPresentation().getItems();
+   }
+
+   protected void checkUpdateItems() {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
+         session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
+
+         List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+         List newAttachments = new ArrayList();
+
+         for(int i=0; i<refs.size(); i++) {
+            Reference ref = (Reference) refs.get(i);
+            PresentationItem item = new PresentationItem();
+            Node node = getPresentationManager().getNode(ref);
+            item.setArtifactId(node.getId());
+            newAttachments.add(item);
+         }
+         session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+         getPresentation().getItems().clear();
+         getPresentation().getItems().addAll(newAttachments);
+         attachableItems = null;
+         listableItems = null;
+      }
+
+   }
+
+   public List getAttachableItems() {
+      checkUpdateItems();
+      if (attachableItems == null) {
+         attachableItems = new ArrayList();
+         for (Iterator i=getListableItems().iterator();i.hasNext();) {
+            DecoratedItem item = (DecoratedItem)i.next();
+            Node node = item.getNode();
+            attachableItems.add(createSelect(node.getExternalUri(),
+                  node.getDisplayName()));
+         }
+      }
+
+      return attachableItems;
+   }
+
+   public List getListableItems() {
+      checkUpdateItems();
+      if (listableItems == null) {
+         listableItems = new ArrayList();
+         for (Iterator i=getItems().iterator();i.hasNext();) {
+            PresentationItem item = (PresentationItem)i.next();
+            listableItems.add(new DecoratedItem(item, this));
+         }
+      }
+
+      return listableItems;
    }
 
 }

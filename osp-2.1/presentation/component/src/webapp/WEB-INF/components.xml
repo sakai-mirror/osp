@@ -94,7 +94,8 @@
    </bean>
 
    <bean id="presentationManagerTarget"
-      class="org.theospi.portfolio.presentation.model.impl.PresentationManagerImpl">
+      class="org.theospi.portfolio.presentation.model.impl.PresentationManagerImpl"
+      singleton="true" init-method="init">
       <property name="lockManager">
          <ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
       </property>

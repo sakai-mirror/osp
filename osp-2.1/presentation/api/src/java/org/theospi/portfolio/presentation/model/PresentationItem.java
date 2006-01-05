@@ -86,8 +86,20 @@ public class PresentationItem extends IdentifiableObject {
       if (getId() != null){
          return getId().hashCode();
       }
-      return (artifactId != null && definition != null && definition.getId() != null) ?
-            DigestUtils.md5Hex(artifactId.getValue() + definition.getId().getValue()).hashCode() : 0;
+      return (artifactId != null) ?
+         DigestUtils.md5Hex(artifactId.getValue() + getHashDefId()).hashCode() : 0;
+   }
+
+   protected String getHashDefId() {
+      if (definition == null) {
+         return "";
+      }
+      else if (definition.getId() == null) {
+         return "";
+      }
+      else {
+         return definition.getId().getValue();
+      }
    }
 
    public void setArtifactId(Id artifactId) {

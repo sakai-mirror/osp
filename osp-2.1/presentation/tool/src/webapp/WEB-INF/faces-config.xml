@@ -10,6 +10,11 @@
    <!-- Example custom JSF component used only in this tool -->
 
    <component>
+      <component-type>org.theospi.presentation.RegionComponent</component-type>
+       <component-class>org.theospi.portfolio.presentation.component.RegionComponent</component-class>
+   </component>
+
+   <component>
       <component-type>org.theospi.presentation.SequenceComponent</component-type>
        <component-class>org.theospi.portfolio.presentation.component.SequenceComponent</component-class>
    </component>

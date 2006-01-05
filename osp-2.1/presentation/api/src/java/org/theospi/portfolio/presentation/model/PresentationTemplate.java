@@ -76,6 +76,7 @@ public class PresentationTemplate extends IdentifiableObject implements Serializ
    private String siteId;
    transient private Set deletedItems = new HashSet();
    transient private boolean validate = true;
+   transient private boolean newObject = false;
 
    /**
     * used in web form
@@ -320,5 +321,13 @@ public class PresentationTemplate extends IdentifiableObject implements Serializ
 
    public void setValidate(boolean validate) {
       this.validate = validate;
+   }
+
+   public boolean isNewObject() {
+      return newObject;
+   }
+
+   public void setNewObject(boolean newObject) {
+      this.newObject = newObject;
    }
 }
