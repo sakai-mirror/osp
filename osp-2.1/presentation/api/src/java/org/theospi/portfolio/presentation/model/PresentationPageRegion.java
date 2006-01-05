@@ -76,4 +76,13 @@ public class PresentationPageRegion extends IdentifiableObject implements Serial
    public void setHelpText(String helpText) {
       this.helpText = helpText;
    }
+
+   public int hashCode() {
+      if (id != null) {
+         return super.hashCode();
+      }
+      else {
+         return regionId.hashCode();
+      }
+   }
 }

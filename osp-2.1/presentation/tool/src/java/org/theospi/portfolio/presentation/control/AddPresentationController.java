@@ -291,6 +291,8 @@ public class AddPresentationController extends AbstractWizardFormController {
       // todo remove sample code
       PresentationPage page = new PresentationPage();
 
+      page.setNewObject(true);
+      page.setId(getIdManager().createId());
       page.setPresentation(pres);
       page.setRegions(new HashSet());
       page.setSequence("");
