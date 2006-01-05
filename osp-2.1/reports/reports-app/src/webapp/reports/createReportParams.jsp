@@ -10,22 +10,24 @@
 <link href="calendar/theme.css" rel="stylesheet" type="text/css" />
                 
                 <sakai:view_title value="#{msgs.title_create_report_params}" indent="1" />
-                The report is: 
-                <h:outputText value="#{ReportsTool.workingReportDefinition.reportDefinition.title}" />
                 
+                <h:outputText value="#{msgs.report_title_is} #{ReportsTool.workingReportDefinition.reportDefinition.title}" />
+                
+                <br /><br /><h:outputText value="<span style='color:#F66'>#{ReportsTool.workingReport.paramErrorMessages}</span>
+                " escape="false" />
                 
                 <h:dataTable var="decoratedReportParam"
                     value="#{ReportsTool.workingReport.reportParams}">
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Parameter Name" />
+                            <h:outputText value="#{msgs.th_param_name}" />
                         </f:facet>
 
                         <h:outputText value="#{decoratedReportParam.reportDefinitionParam.title}" />
                     </h:column>
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Value" />
+                            <h:outputText value="#{msgs.th_value}" />
                         </f:facet>
                         <h:inputText value="#{decoratedReportParam.textValue}" id="fillin" 
                             rendered="#{decoratedReportParam.isFillIn && !decoratedReportParam.isDate}"/>
@@ -37,12 +39,11 @@
 						<h:inputText id="dueDate" value="#{decoratedReportParam.dateValue}" 
 							rendered="#{decoratedReportParam.isFillIn && decoratedReportParam.isDate}"
 							onkeypress="return submitOnEnter(event, 'rpForm:saveButton');">
-							<f:convertDateTime pattern="MM/dd/yy"/>
 						</h:inputText>
 						<h:outputText escape="false" rendered="#{decoratedReportParam.isFillIn && decoratedReportParam.isDate}"
 							value="
 							<input type=\"image\" id=\"dueDatePopup\" src=\"images/calendar_icon.gif\"
-								onclick=\"jscalendarPopUpCalendar(this,this.form.elements['rpForm:_id3:1:dueDate'],'M/d/yy'); return false;\" />
+								onclick=\"jscalendarPopUpCalendar(this,this.form.elements['rpForm:_id4:#{decoratedReportParam.index}:dueDate'],'M/d/yyyy'); return false;\" />
 							"
 						/>
 		

@@ -124,6 +124,10 @@ import org.sakaiproject.service.legacy.user.UserDirectoryService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.security.SecurityService;
 
+import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.exception.IdUnusedException;
+
 /**
  * This class is a singleton that manages the reports on a general basis
  * 
@@ -155,7 +159,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	 * This is the setter for the predefined reportDefinitions, via the bean
 	 * @param reportDefinitions List of reportDefinitions
 	 */
-	public void setReports(List reportDefinitions)
+	public void setReportDefinitions(List reportDefinitions)
 	{
 		this.reportDefinitions = reportDefinitions;
 		
@@ -169,15 +173,34 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	
 	
 	/**
-	 * This is the getter for the total list of reportDefinitions
+	 * Returns the reports that are viewable by the worksite.
 	 * @return List
 	 */
-	public List getReports()
+	public List getReportDefinitions()
 	{
+		String currentWorksiteType = getCurrentSiteType();
+		
 		//load any reportDefinitions in the database
 		loadReportsFromDB();
 		
-		return reportDefinitions;
+		List reportsDefs = new ArrayList();
+		
+		Iterator iter = reportDefinitions.iterator();
+		while(iter.hasNext()) {
+			ReportDefinition rd = (ReportDefinition)iter.next();
+			
+			String typesStr = rd.getType();
+			if(typesStr != null) {
+				String []types = typesStr.split(",");
+				for(int i = 0; i < types.length; i++) {
+					String type = types[i];
+					if(type.trim().equals(currentWorksiteType))
+						reportsDefs.add(rd);
+				}
+			}
+		}
+		
+		return reportsDefs;
 	}
 	
 	
@@ -258,7 +281,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	
 	/**
 	 * Loads the global database reportDefinitions if they haven't been loaded yet
-	 *
+	 * This is a stub.
 	 */
 	private void loadReportsFromDB()
 	{
@@ -267,6 +290,13 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		
 		isDBLoaded = true;
 	}
+	
+	/**
+	 * Reloads a ReportResult.  During the loading process it loads the
+	 * report from which the ReportResult is derived, It links the report to
+	 * the report definition, and sets the report in the report result.
+	 * @return ReportResult
+	 */
     public ReportResult loadResult(ReportResult result)
     {
     	ReportResult reportResult = 
@@ -713,7 +743,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		map.put("{userlastname}", u.getLastName());
 		map.put("{worksiteid}", PortalService.getCurrentSiteId());
 		map.put("{toolid}", PortalService.getCurrentToolId());
-		
 
 		Iterator		iter = map.keySet().iterator();
 		StringBuffer	str = new StringBuffer(inString);
@@ -875,6 +904,21 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
    public void setSecurityService(SecurityService securityService) {
       this.securityService = securityService;
+   }
+   
+   /**
+    * Returns the type of current worksite 
+    * @return String
+    */
+   private String getCurrentSiteType()
+   {
+	   try {
+		   Site site = SiteService.getSite(PortalService.getCurrentSiteId());
+		   return site.getType();
+	   } catch(IdUnusedException iue) {
+		   //	just return null
+	   }
+	   return null;
    }
 
 }

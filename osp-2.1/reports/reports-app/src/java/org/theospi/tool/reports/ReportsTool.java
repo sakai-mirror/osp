@@ -54,6 +54,7 @@ import javax.faces.model.SelectItem;
 
 import org.theospi.api.app.reports.*;
 import org.theospi.portfolio.shared.model.OspException;
+import org.theospi.portfolio.shared.tool.ToolBase;
 
 
 /**
@@ -78,8 +79,8 @@ import org.theospi.portfolio.shared.model.OspException;
  *
  */
 
-public class ReportsTool 
-{
+public class ReportsTool extends ToolBase {
+	
 	/** A singlton manager for reports */
 	private ReportsManager reportsManager = null;
 	
@@ -187,7 +188,7 @@ public class ReportsTool
 	{
 		if(decoratedReportDefinition == null)
 		{
-			List reportDefinitions = reportsManager.getReports();
+			List reportDefinitions = reportsManager.getReportDefinitions();
 			decoratedReportDefinition = new ArrayList();
 			
 			Iterator iter = reportDefinitions.iterator();
@@ -274,8 +275,40 @@ public class ReportsTool
 		return ReportsTool.reportResultsPage;
 	}
 	
+	/**
+	 * This goes from entering the parameter values to the results page
+	 * @return Next page
+	 */
 	public String processEditParamsContinue()
 	{
+		//check that the parameters are all good
+		if(!getWorkingReport().getParamsAreValid()) {
+			
+			String msg = "";
+			for(Iterator iter = getWorkingReport().getReportParams().iterator(); iter.hasNext(); ) {
+				DecoratedReportParam drp = (DecoratedReportParam)iter.next();
+				
+				if(!drp.getIsValid()) {
+					if(msg.length() != 0)
+						msg += "<BR />";
+					msg += getMessageFromBundle("badParam_start");
+					msg += drp.getReportDefinitionParam().getTitle();
+					msg += getMessageFromBundle("badParam_mid");
+					if(drp.getIsString())
+						msg += getMessageFromBundle("badParam_string_reason");
+					if(drp.getIsInteger())
+						msg += getMessageFromBundle("badParam_int_reason");
+					if(drp.getIsFloat())
+						msg += getMessageFromBundle("badParam_float_reason");
+					if(drp.getIsDate())
+						msg += getMessageFromBundle("badParam_date_reason");
+					msg += getMessageFromBundle("badParam_end");
+				}
+			}
+			getWorkingReport().setParamErrorMessages(msg);
+			return "";
+		}
+		
 		//	get the results
 		ReportResult result = reportsManager.generateResults(getWorkingReport().getReport());
 		
