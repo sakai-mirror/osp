@@ -116,11 +116,11 @@ public class FreeFormTool extends HelperToolBase {
    }
 
    public DecoratedPage getCurrentPage() {
-      Presentation presentation = getPresentation();// called to determine if page list and page should be reset
-      if (currentPage == null) {
-         currentPage = (DecoratedPage) getPageList().get(0);
-      }
       return currentPage;
+   }
+
+   public void setCurrentPage(DecoratedPage currentPage) {
+      this.currentPage = currentPage;
    }
 
    public List getPageList() {

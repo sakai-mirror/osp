@@ -50,14 +50,13 @@
          <property-name>factory</property-name>
          <value>#{Components["org.theospi.jsf.intf.XmlTagFactory.freeFormPresentation"]}</value>
       </managed-property>
-
    </managed-bean>
 
-   <!--navigation-rule>
-     <from-view-id>/audience/tool.jsp</from-view-id>
+   <navigation-rule>
+     <from-view-id>/freeForm/tool.jsp</from-view-id>
       <navigation-case>
-         <from-outcome>browse</from-outcome>
-         <to-view-id>/audience/browse.jsp</to-view-id>
+         <from-outcome>arrange</from-outcome>
+         <to-view-id>/freeForm/arrange.jsp</to-view-id>
          <redirect/>
       </navigation-case>
    </navigation-rule>
@@ -68,6 +67,15 @@
          <to-view-id>/audience/tool.jsp</to-view-id>
          <redirect/>
       </navigation-case>
-   </navigation-rule-->
+   </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/freeForm/arrange.jsp</from-view-id>
+      <navigation-case>
+         <from-outcome>main</from-outcome>
+         <to-view-id>/freeForm/tool.jsp</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
 
 </faces-config>

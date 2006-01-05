@@ -16,11 +16,11 @@
    <h:commandButton actionListener="#{freeForm.processActionManageItems}"
       value="#{msgs.add_page}"/>
 </h:panelGrid>
-<ospx:scrollablearea id="attachedItems" width="100%" height="50%">
-   <sakai:flat_list value="#{freeForm.listableItems}" var="item">
+<ospx:scrollablearea id="pages" width="100%" height="50%">
+   <sakai:flat_list value="#{freeForm.pageList}" var="page">
       <h:column>
-         <h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" />
-         <h:outputLabel value="#{item.node.displayName}" for="itemSelect" />
+         <h:selectBooleanCheckbox id="pageSelect" value="#{page.selected}" />
+         <h:outputLabel value="#{page.base.title}" for="pageSelect" />
       </h:column>
    </sakai:flat_list>
 </ospx:scrollablearea>
