@@ -1,1 +1,26 @@
-<h:outputText value="item/page list here" />
+<h:panelGrid columns="1">
+   <sakai:view_title value="#{msgs.items_list_title}" />
+   <h:commandButton actionListener="#{freeForm.processActionManageItems}"
+      value="#{msgs.manage_items}"/>
+</h:panelGrid>
+<ospx:scrollablearea id="attachedItems" width="100%" height="50%">
+   <sakai:flat_list value="#{freeForm.listableItems}" var="item">
+      <h:column>
+         <h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" />
+         <h:outputLabel value="#{item.node.displayName}" for="itemSelect" />
+      </h:column>
+   </sakai:flat_list>
+</ospx:scrollablearea>
+<h:panelGrid columns="1">
+   <sakai:view_title value="#{msgs.page_list_title}" />
+   <h:commandButton actionListener="#{freeForm.processActionManageItems}"
+      value="#{msgs.add_page}"/>
+</h:panelGrid>
+<ospx:scrollablearea id="attachedItems" width="100%" height="50%">
+   <sakai:flat_list value="#{freeForm.listableItems}" var="item">
+      <h:column>
+         <h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" />
+         <h:outputLabel value="#{item.node.displayName}" for="itemSelect" />
+      </h:column>
+   </sakai:flat_list>
+</ospx:scrollablearea>

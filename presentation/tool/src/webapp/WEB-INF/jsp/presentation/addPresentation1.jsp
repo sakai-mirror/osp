@@ -66,54 +66,77 @@
             </p>
         </spring:bind>
 
-        <spring:bind path="presentation.template.id">
-            <p class="shorttext">
-                <c:if test="${status.error}">
-                    <div class="validation"><c:out value="${status.errorMessage}"/></div>
-                </c:if>
-                <span class="reqStar">*</span>
-                <label>Template</label>
-                <select id="<c:out value="${status.expression}"/>"
-                    onchange='closeFrame("previewFrame", "previewButton","closeButton")'
-                    name="<c:out value="${status.expression}"/>">
-                    <option value="">Please select a template</option>
-                    <option value="">- - - - - - - - - - - - - - - - - -
-                    - - -</option>
-                    <c:forEach var="template"
-                        items="${publishedTemplates}"
-                        varStatus="templateStatus">
-                        <option
-                            <c:if test="${presentation.template.id.value == template.id.value }">selected</c:if>
-                            value="<c:out value="${template.id.value}"/>"><c:out
-                            value="${template.name}" /> (Published
-                        Template)
-                    </c:forEach>
-                    <c:forEach var="template" items="${templates}"
-                        varStatus="templateStatus">
-                        <option
-                            <c:if test="${presentation.template.id.value == template.id.value}">selected</c:if>
-                            value="<c:out value="${template.id.value}"/>"><c:out
-                            value="${template.name}" /> (Your Template)
-                        
-                    </c:forEach>
-                </select>
-            </p>
-            
-            <p class="shorttext">
-                <div style="visibility:visible" id="previewButton"><a
-                    href="#"
-                    onclick='showFrame("<c:out value="${status.expression}"/>","previewFrame", "previewButton","closeButton","<osp:url value="previewTemplate.osp"/>&panelId=previewFrame&id=" + getSelectedValue("<c:out value="${status.expression}"/>"),"please select a template first")'>
-                    Preview template</a></div>
-                <div style="visibility:hidden" id="closeButton"><a
-                    href="#"
-                    onclick='closeFrame("previewFrame", "previewButton","closeButton")'>
-                    Close preview</a><br />
-                    <iframe name="previewFrame" id="previewFrame" height="0"
-                        width="650" frameborder="0" marginwidth="0"
-                        marginheight="0" scrolling="auto"> </iframe>
-                </div>
-            </p>
-        </spring:bind>
+   Create a Portfolio Using:<br />
+         <spring:bind path="presentation.presentationType">
+         <label>
+            <input type="radio" name="<c:out value="${status.expression}"/>"
+                  value="osp.presentation.type.freeForm"
+                  <c:if test="${status.value == 'osp.presentation.type.freeForm'}">
+                     checked</c:if> />
+            &nbsp; Free Form</label>
+         (You will manage the design, contents, and sequence of pages yourself)
+
+         <label> <br />
+         <br />
+            <input type="radio" name="<c:out value="${status.expression}"/>"
+                  value="osp.presentation.type.template"
+                  <c:if test="${status.value == 'osp.presentation.type.template'}">
+                     checked</c:if> />
+         Using Template</label>
+         </spring:bind>
+
+
+               <p class="shorttext">
+                 <spring:bind path="presentation.template.id">
+                   <c:if test="${status.error}">
+                       <div class="validation"><c:out value="${status.errorMessage}"/></div>
+                   </c:if>
+                   <span class="reqStar">*</span>
+                   <select id="<c:out value="${status.expression}"/>"
+                       onchange='closeFrame("previewFrame", "previewButton","closeButton")'
+                       name="<c:out value="${status.expression}"/>">
+                       <option value="">Please select a template</option>
+                       <option value="">- - - - - - - - - - - - - - - - - -
+                       - - -</option>
+                       <c:forEach var="template"
+                           items="${publishedTemplates}"
+                           varStatus="templateStatus">
+                           <option
+                               <c:if test="${presentation.template.id.value == template.id.value }">selected</c:if>
+                               value="<c:out value="${template.id.value}"/>"><c:out
+                               value="${template.name}" /> (Published
+                           Template)
+                       </c:forEach>
+                       <c:forEach var="template" items="${templates}"
+                           varStatus="templateStatus">
+                           <option
+                               <c:if test="${presentation.template.id.value == template.id.value}">selected</c:if>
+                               value="<c:out value="${template.id.value}"/>"><c:out
+                               value="${template.name}" /> (Your Template)
+
+                       </c:forEach>
+                   </select>
+                 </spring:bind>
+               </p>
+
+             <spring:bind path="presentation.template.id">
+               <p class="shorttext">
+                   <div style="visibility:visible" id="previewButton"><a
+                       href="#"
+                       onclick='showFrame("<c:out value="${status.expression}"/>","previewFrame", "previewButton","closeButton","<osp:url value="previewTemplate.osp"/>&panelId=previewFrame&id=" + getSelectedValue("<c:out value="${status.expression}"/>"),"please select a template first")'>
+                       Preview template</a></div>
+                   <div style="visibility:hidden" id="closeButton"><a
+                       href="#"
+                       onclick='closeFrame("previewFrame", "previewButton","closeButton")'>
+                       Close preview</a><br />
+                       <iframe name="previewFrame" id="previewFrame" height="0"
+                           width="650" frameborder="0" marginwidth="0"
+                           marginheight="0" scrolling="auto"> </iframe>
+                   </div>
+               </p>
+             </spring:bind>
+
+
 
 
         <c:set var="suppress_submit" value="true" />

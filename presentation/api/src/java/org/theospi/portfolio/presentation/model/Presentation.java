@@ -44,9 +44,7 @@
 
 package org.theospi.portfolio.presentation.model;
 
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.ElementBean;
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.sakaiproject.metaobj.shared.model.*;
 import org.theospi.portfolio.shared.model.DateBean;
 import org.theospi.utils.Config;
 import org.sakaiproject.service.framework.component.cover.ComponentManager;
@@ -74,10 +72,13 @@ public class Presentation extends IdentifiableObject {
    private String presentationType = TEMPLATE_TYPE;
    private String secretExportKey;
    private List pages;
+   private String siteId;
+   private boolean newObject = false;
 
    public final static String FREEFORM_TYPE = "osp.presentation.type.freeForm";
    public final static String TEMPLATE_TYPE = "osp.presentation.type.template";
-   
+   public static final Id FREEFORM_TEMPLATE_ID = new IdImpl("freeFormTemplate", null);
+
 
    public ToolConfiguration getToolConfiguration() {
       // todo 8/10
@@ -249,5 +250,21 @@ public class Presentation extends IdentifiableObject {
 
    public void setPages(List pages) {
       this.pages = pages;
+   }
+
+   public String getSiteId() {
+      return siteId;
+   }
+
+   public void setSiteId(String siteId) {
+      this.siteId = siteId;
+   }
+
+   public boolean isNewObject() {
+      return newObject;
+   }
+
+   public void setNewObject(boolean newObject) {
+      this.newObject = newObject;
    }
 }

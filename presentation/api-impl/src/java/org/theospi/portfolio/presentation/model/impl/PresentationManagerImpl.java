@@ -88,12 +88,16 @@ import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.ContentResourceEdit;
 import org.sakaiproject.service.legacy.content.LockManager;
 import org.sakaiproject.service.legacy.security.SecurityService;
+import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.AuthorizationFailedException;
+import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.shared.model.*;
+import org.theospi.portfolio.shared.mgt.ContentEntityUtil;
+import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -136,6 +140,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    private static final String TEMPLATE_ID_TAG = "templateId";
    private static final String PRESENTATION_ID_TAG = "presentationId";
+   private static final String SYSTEM_COLLECTION_ID = "/system/";
 
    public PresentationTemplate storeTemplate(final PresentationTemplate template) {
       return storeTemplate(template, true);
@@ -146,7 +151,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       boolean newTemplate = (template.getId() == null);
 
-      if (newTemplate) {
+      if (newTemplate || template.isNewObject()) {
          template.setCreated(new Date(System.currentTimeMillis()));
 
          if (checkAuthz) {
@@ -160,7 +165,15 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                   template.getId());
          }
       }
-      getHibernateTemplate().saveOrUpdateCopy(template);
+
+      if (template.isNewObject()) {
+         getHibernateTemplate().save(template, template.getId());
+         template.setNewObject(false);
+      }
+      else {
+         getHibernateTemplate().saveOrUpdateCopy(template);
+      }
+
       lockTemplateFiles(template);
 
       return template;
@@ -486,21 +499,37 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public Presentation storePresentation(Presentation presentation) {
 
       presentation.setModified(new Date(System.currentTimeMillis()));
-      if (presentation.getId() == null) {
+      presentation.setSiteId(PortalService.getCurrentSiteId());
+      setupPresItemDefinition(presentation);
+      if (presentation.isNewObject()) {
          presentation.setCreated(new Date(System.currentTimeMillis()));
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
             getIdManager().getId(PortalService.getCurrentToolId()));
+         getHibernateTemplate().save(presentation, presentation.getId());
       } else {
-            getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
-                  presentation.getId());
+         getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
+            presentation.getId());
+         getHibernateTemplate().saveOrUpdateCopy(presentation);
       }
-      getHibernateTemplate().saveOrUpdateCopy(presentation);
 
       storePresentationViewers(presentation);
 
       storePresentationPages(presentation.getPages());
 
       return presentation;
+   }
+
+   protected void setupPresItemDefinition(Presentation presentation) {
+      if (presentation.getPresentationType().equals(Presentation.FREEFORM_TYPE)) {
+         PresentationTemplate template = getPresentationTemplate(Presentation.FREEFORM_TEMPLATE_ID);
+         presentation.setTemplate(template);
+         PresentationItemDefinition itemDef =
+               (PresentationItemDefinition) template.getItemDefinitions().iterator().next();
+         for (Iterator i = presentation.getItems().iterator();i.hasNext();) {
+            PresentationItem item = (PresentationItem) i.next();
+            item.setDefinition(itemDef);
+         }
+      }
    }
 
    protected void storePresentationPages(List pages) {
@@ -1787,6 +1816,31 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
    }
 
+   public Node getNode(Reference ref, Presentation presentation) {
+     return getNode(getNode(ref), presentation);
+   }
+
+   public Node getNode(Id nodeId, Presentation presentation) {
+      Node node = getNode(nodeId);
+      return getNode(node, presentation);
+   }
+
+   private Node getNode(Node node, Presentation presentation) {
+      if (node == null) {
+         return null;
+      }
+
+      ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
+            buildRef(presentation.getSiteId(), presentation.getId().getValue(), node.getResource()));
+
+      return new Node(node.getId(), wrapped, node.getTechnicalMetadata().getOwner());
+   }
+
+   protected String buildRef(String siteId, String contextId, ContentResource resource) {
+      return ContentEntityUtil.getInstance().buildRef(
+         PresentationContentEntityProducer.PRODUCER_NAME, siteId, contextId, resource.getReference());
+   }
+
    public Node getNode(Reference ref) {
       String nodeId = getContentHosting().getUuid(ref.getId());
 
@@ -2048,7 +2102,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       if (finder instanceof EntityContextFinder) {
          art = ((EntityContextFinder)finder).loadInContext(itemId,
                PresentationContentEntityProducer.PRODUCER_NAME, 
-               presentation.getTemplate().getSiteId(),
+               presentation.getSiteId(),
                presentation.getId().getValue());
       }
       else {
@@ -2126,4 +2180,124 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       this.tempPresDownloadDir = tempPresDownloadDir;
    }
 
+   public void init() {
+      initFreeFormTemplate();
+   }
+
+   protected void initFreeFormTemplate() {
+      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+      try {
+         PresentationTemplate template = getPresentationTemplate(getFreeFormTemplateId());
+         if (template == null) {
+            template = createFreeFormTemplate();
+         }
+         else {
+            updateFreeFormRenderer(template.getId(), template.getRenderer());
+            if (template.getItemDefinitions().size() == 0) {
+               template.getItemDefinitions().add(createFreeFormItemDef(template));
+            }
+         }
+         storeTemplate(template, false);
+      } finally {
+         getSecurityService().popAdvisor();
+      }
+
+   }
+
+   protected PresentationTemplate createFreeFormTemplate() {
+      PresentationTemplate template = new PresentationTemplate();
+      template.setId(getFreeFormTemplateId());
+      template.setName("free form template");
+      template.setRenderer(createFreeFormRenderer());
+      template.setNewObject(true);
+      template.setSiteId(getIdManager().createId().getValue());
+      template.setToolId(getIdManager().createId().getValue());
+      template.setOwner(getAgentManager().getAnonymousAgent());
+      template.getItemDefinitions().add(createFreeFormItemDef(template));
+      return template;
+   }
+
+   protected PresentationItemDefinition createFreeFormItemDef(PresentationTemplate template) {
+      PresentationItemDefinition def = new PresentationItemDefinition();
+      def.setPresentationTemplate(template);
+      def.setAllowMultiple(true);
+      def.setName("freeFormItem");
+      def.setSequence(0);
+      return def;
+   }
+
+   protected Id updateFreeFormRenderer(Id templateId, Id oldRendererId) {
+      ByteArrayOutputStream bos = loadRenderer();
+
+      try {
+         getContentHosting().removeAllLocks(templateId.getValue());
+         ContentResourceEdit resourceEdit =
+               getContentHosting().editResource(getContentHosting().resolveUuid(oldRendererId.getValue()));
+         resourceEdit.setContent(bos.toByteArray());
+         getContentHosting().commitResource(resourceEdit);
+         return oldRendererId;
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+   }
+
+   protected ByteArrayOutputStream loadRenderer() {
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      InputStream is = getClass().getResourceAsStream("/org/theospi/portfolio/presentation/freeform_template.xsl");
+
+      try {
+         int c = is.read();
+         while (c != -1) {
+            bos.write(c);
+            c = is.read();
+         }
+         bos.flush();
+      }
+      catch (IOException e) {
+         throw new RuntimeException(e);
+      } finally {
+         try {
+            is.close();
+         }
+         catch (IOException e) {
+            // can't do anything now..
+         }
+      }
+      return bos;
+   }
+
+   protected Id createFreeFormRenderer() {
+      ByteArrayOutputStream bos = loadRenderer();
+      ContentResource resource;
+      String name = "freeFormRendered";
+      ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
+      resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
+      resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, "used for rendering free form presentations");
+      resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
+      try {
+         ContentCollectionEdit collection = getContentHosting().addCollection(SYSTEM_COLLECTION_ID);
+         getContentHosting().commitCollection(collection);
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
+      try {
+         resource = getContentHosting().addResource(name, SYSTEM_COLLECTION_ID, 0, "text/xml",
+                     bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+      String uuid = getContentHosting().getUuid(resource.getId());
+      return getIdManager().getId(uuid);
+   }
+
+   public Id getFreeFormTemplateId() {
+      return Presentation.FREEFORM_TEMPLATE_ID;
+   }
 }

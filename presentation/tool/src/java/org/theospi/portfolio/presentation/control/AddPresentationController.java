@@ -76,10 +76,7 @@ import org.springframework.web.util.WebUtils;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.intf.FreeFormHelper;
-import org.theospi.portfolio.presentation.model.Presentation;
-import org.theospi.portfolio.presentation.model.PresentationItem;
-import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
-import org.theospi.portfolio.presentation.model.PresentationTemplate;
+import org.theospi.portfolio.presentation.model.*;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.Node;
 
@@ -125,6 +122,9 @@ public class AddPresentationController extends AbstractWizardFormController {
       } else {
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
             getIdManager().getId(PortalService.getCurrentToolId()));
+         presentation.setId(getIdManager().createId());
+         presentation.setNewObject(true);
+         presentation.setSiteId(PortalService.getCurrentSiteId());
       }
 
       if (request.getParameter("templateId") != null) {
@@ -223,6 +223,17 @@ public class AddPresentationController extends AbstractWizardFormController {
             presentation.getProperties().setCurrentSchema(schema);
          }
       }
+      if (page == PRESETATION_FREE_FORM_PAGES) {
+         if (presentation.getPages() == null) {
+            presentation.setPages(
+                  getPresentationManager().getPresentationPagesByPresentation(presentation.getId()));
+         }
+
+         if (presentation.getPages().size() == 0) {
+            presentation.setPages(new ArrayList());
+            presentation.getPages().add(createDefaultPage(presentation));
+         }
+      }
       if (page == PRESENTATION_ITEMS) {
          Map artifacts = new HashMap();
          Map artifactCache = new HashMap();
@@ -276,22 +287,50 @@ public class AddPresentationController extends AbstractWizardFormController {
       return model;
    }
 
+   protected PresentationPage createDefaultPage(Presentation pres) {
+      // todo remove sample code
+      PresentationPage page = new PresentationPage();
+
+      page.setPresentation(pres);
+      page.setRegions(new HashSet());
+      page.setSequence("");
+      page.setTitle("test page");
+
+      Collection layouts = getPresentationManager().findLayoutsByOwner(
+            getAuthManager().getAgent(), PortalService.getCurrentSiteId());
+      if (layouts.size() > 0) {
+         page.setLayout((PresentationLayout) layouts.iterator().next());
+      }
+
+      return page;
+   }
+
    protected Integer getTotalPages(Presentation presentation, int page) {
       if (presentation.getTemplate().getPropertyPage() == null) {
-         return new Integer(4);
+         return new Integer(3);
       }
       else {
-         return new Integer(5);
+         return new Integer(4);
       }
    }
 
    protected Integer getCurrentPageNumber(Presentation presentation, int page) {
-      if (page == 0 || getTotalPages(presentation, page).intValue() == 5) {
-         return new Integer(page + 1);
+      boolean hasProperties = getTotalPages(presentation, page).intValue() == 4;
+
+      if (page == INITIAL_PAGE) {
+         return new Integer(1);
+      }
+      else if (page == PROPERTY_PAGE) {
+         return new Integer(2);
+      }
+      else if (page == PRESENTATION_ITEMS || page == PRESETATION_FREE_FORM_PAGES) {
+         return new Integer(hasProperties?3:2);
+      }
+      else if (page == PRESENTATION_AUTHORIZATIONS) {
+         return new Integer(hasProperties?4:3);
       }
       else {
-         // skipping two
-         return new Integer(page);
+         return new Integer(0);
       }
    }
 
@@ -304,25 +343,40 @@ public class AddPresentationController extends AbstractWizardFormController {
          return currentPage;
       }
 
+      Presentation presentation = ((Presentation) command);
       int target = super.getTargetPage(request, command, errors, currentPage);
 
+      if (target == PROPERTY_PAGE &&
+            presentation.getPresentationType().equals(Presentation.FREEFORM_TYPE)) {
+         return PRESETATION_FREE_FORM_PAGES;
+      }
+
       if (target == PRESETATION_FREE_FORM_PAGES) {
-         ToolSession session = SessionManager.getCurrentToolSession();
-         String action = (String) session.getAttribute(FreeFormHelper.FREE_FORM_ACTION);
-         if (action != null) {
-            if (action.equals(FreeFormHelper.ACTION_BACK)) {
-               session.removeAttribute(FreeFormHelper.FREE_FORM_ACTION);
-               target--;
+         if (presentation.getPresentationType().equals(Presentation.FREEFORM_TYPE)) {
+            ToolSession session = SessionManager.getCurrentToolSession();
+            String action = (String) session.getAttribute(FreeFormHelper.FREE_FORM_ACTION);
+            if (action != null) {
+               if (action.equals(FreeFormHelper.ACTION_BACK)) {
+                  session.removeAttribute(FreeFormHelper.FREE_FORM_ACTION);
+                  target--;
+               }
+               else if (action.equals(FreeFormHelper.ACTION_CONTINUE)) {
+                  session.removeAttribute(FreeFormHelper.FREE_FORM_ACTION);
+                  target++;
+               }
             }
-            else if (action.equals(FreeFormHelper.ACTION_CONTINUE)) {
-               session.removeAttribute(FreeFormHelper.FREE_FORM_ACTION);
-               target++;
-            }
+         }
+         else {
+            // skip free form
+            if (target > currentPage)
+               return target + 1;
+            if (target < currentPage)
+               return target - 1;
          }
       }
 
       if (target == PROPERTY_PAGE) {
-         Id templateId = ((Presentation) command).getTemplate().getId();
+         Id templateId = presentation.getTemplate().getId();
          Id propId = presentationManager.getPresentationTemplate(templateId).getPropertyPage();
 
          if (propId == null && currentPage == INITIAL_PAGE && target > currentPage)

@@ -27,6 +27,7 @@ import org.theospi.jsf.intf.XmlTagFactory;
 import org.theospi.jsf.intf.ComponentWrapper;
 import org.theospi.jsf.intf.XmlDocumentContainer;
 import org.theospi.portfolio.presentation.component.SequenceComponent;
+import org.theospi.portfolio.presentation.component.RegionComponent;
 import org.xml.sax.Attributes;
 
 import javax.faces.context.FacesContext;
@@ -54,15 +55,15 @@ public class RegionTagHandler extends LayoutPageHandlerBase {
    public ComponentWrapper startElement(FacesContext context, ComponentWrapper parent, String uri, String localName,
                                         String qName, Attributes attributes) throws IOException {
       UIViewRoot root = context.getViewRoot();
-      UIOutput container = (UIOutput) context.getApplication().createComponent(UIOutput.COMPONENT_TYPE);
+      String regionId = attributes.getValue("id");
+      RegionComponent container = (RegionComponent) context.getApplication().createComponent(RegionComponent.COMPONENT_TYPE);
+      container.setRegionId(regionId);
       container.setId(root.createUniqueId());
 
-      createOutput(context, "starting region: " + attributes.getValue("id"), container);
       parent.getComponent().getChildren().add(container);
 
       XmlDocumentContainer parentContainer = getParentContainer(parent.getComponent());
       String mapVar = parentContainer.getVariableName();
-      String regionId = attributes.getValue("id");
 
       if (parentContainer instanceof SequenceComponent) {
          XmlDocumentContainer parentParentContainer = getParentContainer(((UIComponent)parentContainer).getParent());
@@ -72,12 +73,6 @@ public class RegionTagHandler extends LayoutPageHandlerBase {
          ((SequenceComponent)parentContainer).addRegion(vb);
       }
 
-      HtmlInputText input = (HtmlInputText) context.getApplication().createComponent(HtmlInputText.COMPONENT_TYPE);
-      input.setId(root.createUniqueId());
-      ValueBinding vbValue = context.getApplication().createValueBinding("#{"+mapVar+ "." + regionId + ".item.value}");
-      input.setValueBinding("value", vbValue);
-      parent.getComponent().getChildren().add(input);
-
       return new ComponentWrapper(parent, container, this);
    }
 
@@ -85,6 +80,5 @@ public class RegionTagHandler extends LayoutPageHandlerBase {
    }
 
    public void endElement(FacesContext context, ComponentWrapper current, String uri, String localName, String qName) throws IOException {
-      this.createOutput(context, "ending region", current.getComponent());
    }
 }

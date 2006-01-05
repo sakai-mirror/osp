@@ -14,7 +14,8 @@ public class PresentationPageRegion extends IdentifiableObject implements Serial
    private PresentationPage page;
    private String regionId;
    private List items = new ArrayList();
-   
+   private String type = "text";
+
    public Id getId() {
       return id;
    }
@@ -53,7 +54,16 @@ public class PresentationPageRegion extends IdentifiableObject implements Serial
       PresentationPageItem item = new PresentationPageItem();
       item.setRegion(this);
       item.setLayoutRegionId(this.getRegionId());
+      item.setType(getType());
       getItems().add(item);
       reorderItems();
+   }
+
+   public String getType() {
+      return type;
+   }
+
+   public void setType(String type) {
+      this.type = type;
    }
 }
