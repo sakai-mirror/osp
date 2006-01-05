@@ -80,24 +80,31 @@ public class TextTypeTagHandler extends LayoutPageHandlerBase {
             "#{"+mapVar+ "." + parentRegion.getRegionId() + ".item.value}");
       input.setValueBinding("value", vbValue);
 
-      if (!(parentContainer instanceof SequenceComponent)) {
-         ValueBinding vbRegion = context.getApplication().createValueBinding(
-               "#{"+mapVar+ "." + parentRegion.getRegionId() + "}");
-         if (vbRegion.getValue(context) == null) {
-            // need to add default region
-            ValueBinding vbRegionMap = context.getApplication().createValueBinding(
-                  "#{"+mapVar + "}");
-            RegionMap map = (RegionMap) vbRegionMap.getValue(context);
-            PresentationPageRegion region = new PresentationPageRegion();
-            region.setRegionId(parentRegion.getRegionId());
-            region.setType(richEdit?"richtext":"text");
-            region.setItems(new ArrayList());
+      boolean sequenceParent = false;
+      if (parentContainer instanceof SequenceComponent) {
+         sequenceParent = true;
+         XmlDocumentContainer parentParentContainer = getParentContainer(((UIComponent)parentContainer).getParent());
+         mapVar = parentParentContainer.getVariableName();
+      }
+
+      ValueBinding vbRegion = context.getApplication().createValueBinding(
+            "#{"+mapVar+ "." + parentRegion.getRegionId() + "}");
+      if (vbRegion.getValue(context) == null) {
+         // need to add default region
+         ValueBinding vbRegionMap = context.getApplication().createValueBinding(
+               "#{"+mapVar + "}");
+         RegionMap map = (RegionMap) vbRegionMap.getValue(context);
+         PresentationPageRegion region = new PresentationPageRegion();
+         region.setRegionId(parentRegion.getRegionId());
+         region.setType(richEdit?"richtext":"text");
+         region.setItems(new ArrayList());
+         region.setHelpText(attributes.getValue("helpText"));
+         map.getPage().getRegions().add(region);
+         if (!sequenceParent) {
             region.addBlank();
-            map.getPage().getRegions().add(region);
-            DecoratedRegion decoratedRegion = new DecoratedRegion(map, region);
-            decoratedRegion.getItem().setValue(attributes.getValue("helpText"));
-            map.put(parentRegion.getId(), decoratedRegion);
          }
+         DecoratedRegion decoratedRegion = new DecoratedRegion(map, region);
+         map.put(parentRegion.getRegionId(), decoratedRegion);
       }
       return new ComponentWrapper(parent, parent.getComponent(), this);
    }
