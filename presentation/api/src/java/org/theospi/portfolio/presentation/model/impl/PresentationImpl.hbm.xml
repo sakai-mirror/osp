@@ -164,6 +164,8 @@
       </id>
       <many-to-one name="page" column="presentation_page_id" not-null="true" class="PresentationPage"/>
       <property name="regionId" type="string" column="region_id" not-null="true" />
+      <property name="type" column="type" type="string" not-null="false" />
+      <property name="helpText" column="help_text" type="string" not-null="false" />
       <list name="items" lazy="false" inverse="true" cascade="all-delete-orphan">
          <key column="presentation_page_region_id" />
          <index column="seq_num" />

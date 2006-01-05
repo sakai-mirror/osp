@@ -54,10 +54,12 @@ import java.io.IOException;
 public class FreeFormTool extends HelperToolBase {
 
    private PresentationManager presentationManager;
+   private XmlTagFactory factory;
+
    private Presentation presentation = null;
+
    private DecoratedPage currentPage = null;
    private List pageList;
-   private XmlTagFactory factory;
    private List attachableItems = null;
    private List listableItems = null;
 
@@ -83,9 +85,10 @@ public class FreeFormTool extends HelperToolBase {
    }
 
    protected void initValues() {
-      presentation = null;
       currentPage = null;
       pageList = null;
+      attachableItems = null;
+      listableItems = null;
    }
 
    public PresentationManager getPresentationManager() {
@@ -106,10 +109,8 @@ public class FreeFormTool extends HelperToolBase {
          if (pages == null) {
             pages = getPresentationManager().getPresentationPagesByPresentation(presentation.getId());
             presentation.setPages(pages);
-            currentPage = null;
-            pageList = null;
-            attachableItems = null;
          }
+         initValues();
       }
       return presentation;
    }

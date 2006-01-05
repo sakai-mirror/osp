@@ -506,6 +506,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
             getIdManager().getId(PortalService.getCurrentToolId()));
          getHibernateTemplate().save(presentation, presentation.getId());
+         presentation.setOwner(getAuthnManager().getAgent());
       } else {
          getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
             presentation.getId());
