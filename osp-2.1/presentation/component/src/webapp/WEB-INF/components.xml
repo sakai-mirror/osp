@@ -138,6 +138,12 @@
             <bean id="org.sakaiproject.service.legacy.content.ContentHostingService.EVENT_RESOURCE_READ"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
+            <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.VIEW_PRESENTATION"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.VIEW_PRESENTATION</value>
+               </property>
+            </bean>
             <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.COMMENT_PRESENTATION"
                class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
                <property name="staticField">
