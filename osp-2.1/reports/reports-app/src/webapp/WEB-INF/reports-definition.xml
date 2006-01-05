@@ -33,7 +33,7 @@
                 Tests each of the parameter variable types
             </value>
         </property>
-        <property name="type"><!-- acceptable values: admin, course, project, cig  -->
+        <property name="type"><!-- some acceptable values: admin,course,project,cig  -->
             <value>admin,project,course,cig</value>
         </property>
 
@@ -275,6 +275,9 @@
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>
+        <property name="type">
+            <value>admin,project,course,cig</value>
+        </property>
 
         <property name="reportDefinitionParams">
             <list>
@@ -331,6 +334,9 @@
                     <property name="xslLink"><value>/reportxsls/report3.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
+        </property>
+        <property name="type">
+            <value>admin,project,course,cig</value>
         </property>
 
         <property name="reportDefinitionParams">
@@ -408,6 +414,9 @@
                 the column name must end in artifact in order for the code to open the column 
                 as an artifact
             </value>
+        </property>
+        <property name="type">
+            <value>admin,project,course,cig</value>
         </property>
         <property name="defaultXsl">
                 <bean class="org.theospi.api.app.reports.ReportXsl">

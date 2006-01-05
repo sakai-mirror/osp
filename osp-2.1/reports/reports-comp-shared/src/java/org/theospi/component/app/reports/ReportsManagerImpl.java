@@ -49,6 +49,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+
 import javax.sql.DataSource;
 
 import java.util.ArrayList;
@@ -63,6 +65,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.ByteArrayOutputStream;
+import java.text.ParseException;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Transformer;
@@ -150,6 +153,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
    private String secretKey = "ospReports";
 
    private SecurityService securityService;
+
+	private static SimpleDateFormat userDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+	private static SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	/** Tells us if the global database reportDefinitions were loaded */
 	private boolean isDBLoaded = false;
@@ -530,7 +536,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	 * verified on the creation of this report object.
 	 * @return ReportResult
 	 */
-	public ReportResult generateResults(Report report)
+	public ReportResult generateResults(Report report) throws ReportExecutionException
 	{
 		ReportResult		rr = new ReportResult();
 		
@@ -571,8 +577,14 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 					if(!rp.valid()) {
 						//return null;
 					}
-
-					stmt.setString(paramIndex+1, rp.getValue());
+					
+					String value = rp.getValue();
+					
+					//	Dates need to be formatted from user format to database format
+					if( ReportDefinitionParam.TYPE_DATE.equals(rdp.getType())) {
+						value = dbDateFormat.format(userDateFormat.parse( rp.getValue() ));
+					}
+					stmt.setString(paramIndex+1, value);
 					
 					paramIndex++;
 				}
@@ -693,9 +705,12 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
          rr = postProcessResult(rd, rr);
 
-      } catch (SQLException e) {
-			logger.error("", e);
-			throw new OspException(e);
+	      } catch (SQLException e) {
+				logger.error("", e);
+				throw new OspException(e);
+	      } catch (ParseException e) {
+				logger.error("", e);
+				throw new ReportExecutionException(e);
 		} catch (HibernateException e) {
 			logger.error("", e);
 			throw new OspException(e);
