@@ -501,12 +501,16 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       presentation.setModified(new Date(System.currentTimeMillis()));
       presentation.setSiteId(PortalService.getCurrentSiteId());
       setupPresItemDefinition(presentation);
+
+      if (presentation.getOwner() == null) {
+         presentation.setOwner(getAuthnManager().getAgent());
+      }
+
       if (presentation.isNewObject()) {
          presentation.setCreated(new Date(System.currentTimeMillis()));
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
             getIdManager().getId(PortalService.getCurrentToolId()));
          getHibernateTemplate().save(presentation, presentation.getId());
-         presentation.setOwner(getAuthnManager().getAgent());
       } else {
          getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
             presentation.getId());
@@ -541,7 +545,21 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       for (Iterator i=pages.iterator();i.hasNext();) {
          PresentationPage page = (PresentationPage) i.next();
          page.setModified(new Date(System.currentTimeMillis()));
-         getHibernateTemplate().saveOrUpdateCopy(page);
+         fixupRegions(page);
+         if (page.isNewObject()) {
+            page.setCreated(new Date(System.currentTimeMillis()));
+            getHibernateTemplate().save(page, page.getId());
+         }
+         else {
+            getHibernateTemplate().saveOrUpdateCopy(page);
+         }
+      }
+   }
+
+   protected void fixupRegions(PresentationPage page) {
+      for (Iterator i = page.getRegions().iterator();i.hasNext();) {
+         PresentationPageRegion region = (PresentationPageRegion) i.next();
+         region.setPage(page);
       }
    }
 
@@ -2208,7 +2226,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    protected PresentationTemplate createFreeFormTemplate() {
       PresentationTemplate template = new PresentationTemplate();
       template.setId(getFreeFormTemplateId());
-      template.setName("free form template");
+      template.setName("Free Form Presentation");
       template.setRenderer(createFreeFormRenderer());
       template.setNewObject(true);
       template.setSiteId(getIdManager().createId().getValue());

@@ -20,8 +20,8 @@ public class PresentationPage extends IdentifiableObject implements Serializable
    private Set regions = new HashSet();
    private Date created;
    private Date modified;
-   
-   
+   private boolean newObject;
+
    public Id getId() {
       return id;
    }
@@ -84,6 +84,13 @@ public class PresentationPage extends IdentifiableObject implements Serializable
    public void setModified(Date modified) {
       this.modified = modified;
    }
-   
-   
+
+   public boolean isNewObject() {
+      return newObject;
+   }
+
+   public void setNewObject(boolean newObject) {
+      this.newObject = newObject;
+   }
+
 }
