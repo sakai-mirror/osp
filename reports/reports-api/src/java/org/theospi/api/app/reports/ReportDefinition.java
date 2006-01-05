@@ -188,7 +188,7 @@ public class ReportDefinition
 	 */
 	public void setQuery(String query)
 	{
-		this.query = query;
+		this.query = query.trim();
 	}
 	
 	

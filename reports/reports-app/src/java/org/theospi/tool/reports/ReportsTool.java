@@ -309,14 +309,19 @@ public class ReportsTool extends ToolBase {
 			return "";
 		}
 		
-		//	get the results
-		ReportResult result = reportsManager.generateResults(getWorkingReport().getReport());
-		
-		//	make it the working result
-		setWorkingResult(new DecoratedReportResult(result, this));
-		
-		//	go to the results page
-		return reportResultsPage;
+		try {
+			//	get the results
+			ReportResult result = reportsManager.generateResults(getWorkingReport().getReport());
+			
+			//	make it the working result
+			setWorkingResult(new DecoratedReportResult(result, this));
+			
+			//	go to the results page
+			return reportResultsPage;
+		} catch(ReportExecutionException ree) {
+			getWorkingReport().setParamErrorMessages(getMessageFromBundle("run_report_problem"));
+			return "";
+		}
 	}
 	
 	public String processEditParamsBack()
