@@ -31,13 +31,14 @@
             </osp:url>">
                   <osp:message key="review" bundle="${msgs}" /></a>
       </c:if> 
-      <c:if test="${matrixCan.evaluate && cell.scaffoldingCell.evaluationDevice != null}">
+      <c:if test="${matrixCan.evaluate && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING'}">
          <a href="<osp:url value="reviewHelper.osp">
             <osp:param name="cell_id" value="${cell.id}"/>
             <osp:param name="org_theospi_portfolio_review_type" value="1" />
             </osp:url>"><osp:message key="evaluate" bundle="${msgs}" /></a>
       </c:if>
 	</div>
+
 
     <h3><osp:message key="view_cell" bundle="${msgs}" /></h3>
     
@@ -50,7 +51,9 @@
 
 	<c:if test="${cell.status != 'READY'}">
 		<div class="validation">
-			Cell status is <c:out value="${cell.status}"/> and cannot be altered
+			<fmt:message key="status_warning" bundle="${msgs}">
+            <fmt:param value="${cell.status}"/>
+         </fmt:message>
 		</div>
 	</c:if>
    
@@ -71,7 +74,7 @@
       </c:forEach>
       <a href="<osp:url value="viewCell.osp">
          <osp:param name="cell_id" value="${cell.id}"/>
-         <osp:param name="submitAction" value="guidance"/>
+         <osp:param name="guidanceAction" value="guidance"/>
       </osp:url>" title="<osp:message key="guidance_link_title" bundle="${msgs}" />">
          <osp:message key="guidance_link_text" bundle="${msgs}" /></a>
    </c:if>
@@ -124,7 +127,7 @@
 					<td>
 						<c:out value="${node.technicalMetadata.owner.displayName}"/>
 					</td>
-					<td align="center">
+					<td>
 						<fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="MM-dd-yyyy" />
 					</td>
 					<td>
@@ -142,24 +145,37 @@
 
 	<br/>
    
-   
-   <h4>Reflection Device</h4>
-   
-   <c:if test="${cell.scaffoldingCell.reflectionDeviceType == 'form'}">
-   Pick a form
+   <c:if test="${cell.scaffoldingCell.reflectionDevice != null}">   
+      <h4><osp:message key="reflection_section_header" bundle="${msgs}" /></h4>
+      
+      <c:if test="${empty reflections}">
+         <a href="<osp:url value="reviewHelper.osp">
+               <osp:param name="cell_id" value="${cell.id}" />
+               <osp:param name="org_theospi_portfolio_review_type" value="0" />
+               </osp:url>">
+                     <osp:message key="reflection_create" bundle="${msgs}" /></a>
+      </c:if>
+      <c:if test="${not empty reflections}">
+         <c:out value="${reflections[0].title}" />
+         <a href="<osp:url value="reviewHelper.osp">
+               <osp:param name="cell_id" value="${cell.id}" />
+               <osp:param name="org_theospi_portfolio_review_type" value="0" />
+               <osp:param name="current_review_id" value="${reflections[0].id}" />
+               </osp:url>">
+                     <osp:message key="reflection_edit" bundle="${msgs}" /></a>
+      </c:if>
    </c:if>
-   
    
 	<!-- if status is ready -->
     <p class="act">
     	<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
     		<c:if test="${canReflect == 'true'}">
     		
-    			<input type="submit" name="submitAction" class="active" value="Update"/>
+    			<input type="submit" name="submit" class="active" value="<osp:message key="submit" bundle="${msgs}" />"/>
     		</c:if>
     	</c:if>
     	<input type="hidden" name="cell_id" value="<c:out value="${cell.id}"/>"/>
-    	<input type="submit" name="submitAction" value="Cancel"/>
+    	<input type="submit" name="matrix" value="<osp:message key="matrix" bundle="${msgs}" />"/>
     </p>
 </form>
 <hr/>
@@ -178,47 +194,15 @@
 
 <h4 style="cursor:pointer" onclick="javascript:showHideDiv('reviewDiv','/osp-jsf-resource')">
 <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgreviewDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
-Reviews</h4>
+<osp:message key="reviews_section_header" bundle="${msgs}" /></h4>
 <div id="reviewDiv">
-<c:forEach var="review" items="${reviews}" varStatus="loopStatus">
-   <p class="indnt1">
-      <c:choose>
-         <c:when test="${review.visibility==1 and review.creator.id==currentUser}">
-         Private
-            <c:out value="${review.title}" />
-         </c:when>
-         <c:when test="${review.visibility==2 and (review.creator.id==currentUser or currentUser==cell.matrix.owner.id)}">
-         Shared
-            <c:out value="${review.title}" />
-         </c:when>
-         <c:when test="${review.visibility==3}">
-         Public
-            <c:out value="${review.title}" />
-         </c:when>
-      </c:choose>
-   </p>
-</c:forEach>
+   <c:set value="${reviews}" var="objectList" />
+   <%@ include file="review_eval_table.jspf" %>
 </div>
 <h4 style="cursor:pointer" onclick="javascript:showHideDiv('evalDiv','/osp-jsf-resource')">
 <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgevalDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
-Evaluations</h4>
+<osp:message key="evals_section_header" bundle="${msgs}" /></h4>
 <div id="evalDiv">
-<c:forEach var="eval" items="${evaluations}" varStatus="loopStatus">
-   <p class="indnt1">
-      <c:choose>
-         <c:when test="${eval.visibility==1 and eval.creator.id==currentUser}">
-         Private
-            <c:out value="${eval.title}" />
-         </c:when>
-         <c:when test="${eval.visibility==2 and (eval.creator.id==currentUser or currentUser==cell.matrix.owner.id)}">
-         Shared
-            <c:out value="${eval.title}" />
-         </c:when>
-         <c:when test="${eval.visibility==3}">
-         Public
-            <c:out value="${eval.title}" />
-         </c:when>
-      </c:choose>
-   </p>
-</c:forEach>
+   <c:set value="${evaluations}" var="objectList" />
+   <%@ include file="review_eval_table.jspf" %>
 </div>

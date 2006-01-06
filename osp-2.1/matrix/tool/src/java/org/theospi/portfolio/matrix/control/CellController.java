@@ -56,7 +56,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 
@@ -83,6 +82,8 @@ public class CellController implements FormController, LoadObjectController {
              cellId, Review.REVIEW_TYPE));
       model.put("evaluations", getReviewManager().getReviewsByParentAndType(
              cellId, Review.EVALUATION_TYPE));
+      model.put("reflections", getReviewManager().getReviewsByParentAndType(
+            cellId, Review.REFLECTION_TYPE));
       model.put("currentUser", SessionManager.getCurrentSessionUserId());
       return model;
    }
@@ -122,33 +123,26 @@ public class CellController implements FormController, LoadObjectController {
       CellFormBean cellBean = (CellFormBean) requestModel;
       Cell cell = cellBean.getCell();
 
-      String action = (String)request.get("action");
+      //String action = (String)request.get("action");
+      String submitAction = (String)request.get("submit");
+      String matrixAction = (String)request.get("matrix");
+      String guidanceAction = (String) request.get("guidanceAction");
       
-      if (action != null) {
-         if (action.equals("Update") && cellBean.getSelectedArtifacts() != null) {
-            Map map = new HashMap();
-            map.put("cell_id", cell.getId());
-            map.put("selectedArtifacts", ListToString(cellBean.getSelectedArtifacts()));
-            map.put("cellBean", cellBean);
-            return new ModelAndView("confirm", map); 
-         }
-         else if (action.equals("Cancel")) {
-            return new ModelAndView("cancel");
-         }
-         else if (action.equals("guidance")) {
-            session.put(GuidanceManager.CURRENT_GUIDANCE_ID, 
-                  cell.getScaffoldingCell().getGuidance().getId().getValue());
-            session.put("cell_id", cell.getId().getValue());
-            return new ModelAndView("guidance");
-         }
-         else if (action.equals("review")) {
-            session.put(ReviewHelper.REVIEW_FORM_TYPE, 
-                  cell.getScaffoldingCell().getReviewDevice().getValue());
-            session.put(ReviewHelper.REVIEW_PARENT, 
-                  cell.getId().getValue());
-            session.put("cell_id", cell.getId().getValue());
-            return new ModelAndView("review");
-         }
+      if (submitAction != null) {
+         Map map = new HashMap();
+         map.put("cell_id", cell.getId());
+         map.put("selectedArtifacts", ListToString(cellBean.getSelectedArtifacts()));
+         map.put("cellBean", cellBean);
+         return new ModelAndView("confirm", map); 
+      }
+      if (matrixAction != null) {
+         return new ModelAndView("cancel");
+      }
+      if (guidanceAction != null) {
+         session.put(GuidanceManager.CURRENT_GUIDANCE_ID, 
+               cell.getScaffoldingCell().getGuidance().getId().getValue());
+         session.put("cell_id", cell.getId().getValue());
+         return new ModelAndView("guidance");
       }
 
       return new ModelAndView("success", "cellBean", cellBean);
