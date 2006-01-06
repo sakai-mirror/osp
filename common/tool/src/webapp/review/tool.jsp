@@ -20,8 +20,6 @@
 
 <h:form>
 
-This is the review form.
-
    <sakai:instruction_message value="#{review.instructions}" />
          
    <sakai:panel_edit>

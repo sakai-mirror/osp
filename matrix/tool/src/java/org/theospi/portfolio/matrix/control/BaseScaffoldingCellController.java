@@ -95,6 +95,7 @@ public class BaseScaffoldingCellController {
       }
       if (scaffoldingCell.getGuidanceId() != null && scaffoldingCell.getGuidance() == null) {
          scaffoldingCell.setGuidance(getGuidanceManager().getGuidance(scaffoldingCell.getGuidanceId()));
+         scaffoldingCell.setGuidanceId(null);
       }
       //Traversing the collection to un-lazily load
       getMatrixManager().removeFromSession(scaffoldingCell);

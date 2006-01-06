@@ -176,6 +176,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          scaffoldingCell.setGuidance(null);
          session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
          model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+         forwardView = "success";
       }
       else if (!forwardView.equals("selectEvaluators")) {
          model.put("label", request.get("label"));             
