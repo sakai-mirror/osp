@@ -52,6 +52,7 @@ import java.util.List;
 
 import javax.faces.model.SelectItem;
 
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.theospi.api.app.reports.*;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.tool.ToolBase;
@@ -123,6 +124,24 @@ public class ReportsTool extends ToolBase {
 	{
 		this.reportsManager = reportsManager;
 	}
+    
+    
+    public String getToolTitle()
+    {
+    	return "toolTitle";
+    }
+    
+    
+    public String getWorksiteTitle()
+    {
+    	return "worksiteTitle";
+    }
+    
+    
+    public String getWorksiteReference()
+    {
+    	return PortalService.getCurrentSiteId();
+    }
 	
 	/**
 	 * setter for the ReportsManager

@@ -21,7 +21,7 @@
         <property name="target">
             <bean
                 class="org.theospi.component.app.reports.ReportsManagerImpl"
-                singleton="true">
+                singleton="true" init-method="init">
                 
                 <property name="sessionFactory">
                     <ref

@@ -37,7 +37,8 @@
     <servlet>
 <!--      <servlet-name>sakai.syllabus.filepicker</servlet-name>-->
       <servlet-name>osp.reports</servlet-name>
-      <servlet-class>org.sakaiproject.jsf.util.JsfTool</servlet-class>
+     <!--  <servlet-class>org.sakaiproject.jsf.util.JsfTool</servlet-class> -->
+      <servlet-class>org.theospi.portfolio.shared.control.servlet.HelperAwareJsfTool</servlet-class>
         <init-param>
             <param-name>path</param-name>
             <param-value>/reports</param-value>

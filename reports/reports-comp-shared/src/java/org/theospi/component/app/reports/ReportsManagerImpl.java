@@ -119,7 +119,7 @@ import org.w3c.dom.Node;
 import org.sakaiproject.api.kernel.component.ComponentManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
-import javax.faces.context.FacesContext;
+import javax.faces.context.*;
 import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.service.framework.portal.cover.PortalService;
@@ -130,6 +130,8 @@ import org.sakaiproject.service.legacy.security.SecurityService;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.exception.IdUnusedException;
+
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 
 /**
  * This class is a singleton that manages the reports on a general basis
@@ -161,6 +163,14 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	private boolean isDBLoaded = false;
    private static final String CURRENT_RESULTS_TAG = "org.theospi.api.app.reports.ReportsManager.currentResults";
 
+    protected void init() throws Exception
+    {
+    	FunctionManager.registerFunction("reports.runReports");
+    	FunctionManager.registerFunction("reports.viewReports");
+    }
+   
+   
+   
    /**
 	 * This is the setter for the predefined reportDefinitions, via the bean
 	 * @param reportDefinitions List of reportDefinitions
