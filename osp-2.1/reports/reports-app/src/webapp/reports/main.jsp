@@ -1,6 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %>
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
+<%@ taglib uri="http://www.theospi.org" prefix="osp" %>
 <% response.setContentType("text/html; charset=UTF-8"); %>
 <f:view>
     <f:loadBundle basename="org.theospi.tool.reports.bundle.Messages" var="msgs" />
@@ -10,6 +11,8 @@
                     <sakai:tool_bar_item
                         action="#{ReportsTool.gotoOptions}"
                         value="#{msgs.options}" />
+       <h:outputText value="<a href=\"sakai.permissions.helper.helper/tool?1=1&session.sakaiproject.permissions.description=Set+permissions+for+#{ReportsTool.toolTitle}+in+worksite+\'#{ReportsTool.worksiteTitle}\'&session.sakaiproject.permissions.siteRef=#{ReportsTool.worksiteReference}&session.sakaiproject.permissions.prefix=reports.&panel=Main\" title=\"Permissions...\" >Permissions...</a>" escape="false" />
+     
                 </sakai:tool_bar>
 
                 <sakai:view_title value="#{msgs.title_main}" indent="1" />
