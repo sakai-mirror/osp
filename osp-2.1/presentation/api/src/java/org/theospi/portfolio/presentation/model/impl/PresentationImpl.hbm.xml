@@ -144,6 +144,8 @@
          <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
       </id>
       <property name="title" column="title" type="string" not-null="false" />
+      <property name="description" column="description" type="string" not-null="false" />
+      <property name="keywords" column="keywords" type="string" not-null="false" />
       <many-to-one name="presentation" column="presentation_id" not-null="true" class="Presentation"/>
       <many-to-one name="layout" column="layout_id" not-null="true" class="PresentationLayout"/>
 <!--       <many-to-one name="style" column="style_id" not-null="true" class="Style"/> -->

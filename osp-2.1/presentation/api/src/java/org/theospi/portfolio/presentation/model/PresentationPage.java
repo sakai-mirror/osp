@@ -12,6 +12,8 @@ public class PresentationPage extends IdentifiableObject implements Serializable
    
    private Id id;
    private String title;
+   private String description;
+   private String keywords;
    private Presentation presentation;
    private PresentationLayout layout;
    //private Style style;
@@ -100,6 +102,22 @@ public class PresentationPage extends IdentifiableObject implements Serializable
 
    public void setNavigation(boolean navigation) {
       this.navigation = navigation;
+   }
+
+   public String getDescription() {
+      return description;
+   }
+
+   public void setDescription(String description) {
+      this.description = description;
+   }
+
+   public String getKeywords() {
+      return keywords;
+   }
+
+   public void setKeywords(String keywords) {
+      this.keywords = keywords;
    }
 
 }

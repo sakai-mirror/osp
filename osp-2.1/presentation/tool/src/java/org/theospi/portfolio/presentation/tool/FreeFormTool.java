@@ -62,6 +62,8 @@ public class FreeFormTool extends HelperToolBase {
    private List pageList;
    private List attachableItems = null;
    private List listableItems = null;
+   
+
 
    public String processActionBack() {
       setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_BACK);
@@ -217,6 +219,9 @@ public class FreeFormTool extends HelperToolBase {
          }
       }
 
+      // todo pages here
+
+
       return attachableItems;
    }
 
@@ -231,6 +236,31 @@ public class FreeFormTool extends HelperToolBase {
       }
 
       return listableItems;
+   }
+
+   public String getCurrentPageId() {
+      return getCurrentPage().getBase().getId().getValue();
+   }
+
+   public void setCurrentPageId(String pageId) {
+      List base = getPageList();
+      for (Iterator i=base.iterator();i.hasNext();) {
+         DecoratedPage page = (DecoratedPage) i.next();
+         if (page.getBase().getId().getValue().equals(pageId)) {
+            setCurrentPage(page);
+            break;
+         }
+      }
+   }
+
+   public List getPageDropList() {
+      List base = getPageList();
+      List returned = new ArrayList();
+      for (Iterator i=base.iterator();i.hasNext();) {
+         DecoratedPage page = (DecoratedPage)i.next();
+         returned.add(createSelect(page.getBase().getId().getValue(), page.getBase().getTitle()));
+      }
+      return returned;
    }
 
 }

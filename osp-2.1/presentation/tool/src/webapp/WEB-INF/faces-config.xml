@@ -59,12 +59,9 @@
          <to-view-id>/freeForm/arrange.jsp</to-view-id>
          <redirect/>
       </navigation-case>
-   </navigation-rule>
-   <navigation-rule>
-     <from-view-id>/audience/browse.jsp</from-view-id>
       <navigation-case>
-         <from-outcome>main</from-outcome>
-         <to-view-id>/audience/tool.jsp</to-view-id>
+         <from-outcome>edit</from-outcome>
+         <to-view-id>/freeForm/pageProperties.jsp</to-view-id>
          <redirect/>
       </navigation-case>
    </navigation-rule>
@@ -74,6 +71,20 @@
       <navigation-case>
          <from-outcome>main</from-outcome>
          <to-view-id>/freeForm/tool.jsp</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/freeForm/pageProperties.jsp</from-view-id>
+      <navigation-case>
+         <from-outcome>main</from-outcome>
+         <to-view-id>/freeForm/tool.jsp</to-view-id>
+         <redirect/>
+      </navigation-case>
+      <navigation-case>
+         <from-outcome>arrange</from-outcome>
+         <to-view-id>/freeForm/arrange.jsp</to-view-id>
          <redirect/>
       </navigation-case>
    </navigation-rule>
