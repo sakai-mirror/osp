@@ -44,7 +44,6 @@
 
 package org.theospi.component.app.reports;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -60,7 +59,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
@@ -69,7 +67,6 @@ import java.text.ParseException;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamSource;
 
@@ -77,12 +74,7 @@ import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
-import org.sakaiproject.metaobj.shared.ArtifactFinder;
-import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
-import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.security.model.AuthZMap;
@@ -90,9 +82,7 @@ import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 
 import net.sf.hibernate.Hibernate;
 import net.sf.hibernate.HibernateException;
-//import net.sf.hibernate.Session;
 
-import org.theospi.api.app.reports.*;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.reports.model.*;
@@ -100,7 +90,6 @@ import org.theospi.portfolio.reports.model.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.orm.hibernate.HibernateCallback;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 
 import org.jdom.Document;
@@ -110,21 +99,10 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.transform.JDOMResult;
 import org.jdom.transform.JDOMSource;
 
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Node;
+import javax.faces.context.FacesContext;
 
 import org.sakaiproject.api.kernel.component.ComponentManager;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-
-import javax.faces.context.*;
-import javax.servlet.http.HttpServletResponse;
 
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;

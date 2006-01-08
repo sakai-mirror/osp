@@ -49,7 +49,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.theospi.api.app.reports.*;
 import org.theospi.portfolio.reports.model.ReportParam;
 import org.theospi.portfolio.reports.model.Report;
 
