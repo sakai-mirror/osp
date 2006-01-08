@@ -22,11 +22,13 @@
 **********************************************************************************/
 package org.theospi.component.app.reports;
 
-import org.theospi.api.app.reports.ReportResult;
-import org.theospi.api.app.reports.ReportsManager;
+import org.theospi.portfolio.reports.model.ReportResult;
+import org.theospi.portfolio.reports.model.ReportsManager;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
+import org.theospi.portfolio.reports.model.ReportsManager;
+import org.theospi.portfolio.reports.model.ReportResult;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.sakaiproject.metaobj.shared.model.Id;

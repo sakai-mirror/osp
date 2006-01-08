@@ -10,7 +10,7 @@
 
 
     <bean id="report1"
-        class="org.theospi.api.app.reports.ReportDefinition">
+        class="org.theospi.portfolio.reports.model.ReportDefinition">
 
         <property name="idString">
             <value>11112222-3333-4444-5555-666677778881</value>
@@ -39,7 +39,7 @@
 
         <property name="reportDefinitionParams">
             <list>
-                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>A Fillin Variable</value></property>
                     <property name="paramName"><value>[fillin]</value></property>
                     <property name="description"><value>a param for the user to fill in</value></property>
@@ -51,7 +51,7 @@
                             <!-- (validation rules)/[(elem1; title1), (elem2), elem3,
                                     etc]/ select username, firstName from worksite/value -->
                 </bean>
-                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>A Fillin Date</value></property>
                     <property name="paramName"><value>[fillin]</value></property>
                     <property name="description"><value>a param for the user to fill in</value></property>
@@ -63,7 +63,7 @@
                             <!-- (validation rules)/[(elem1; title1), (elem2), elem3,
                                     etc]/ select username, firstName from worksite/value -->
                 </bean>
-                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>A Set Variable</value></property>
                     <property name="paramName"><value>[set]</value></property>
                     <property name="description"><value>a param for the user to select from a drop down</value></property>
@@ -74,7 +74,7 @@
                     <property name="value"><value>[(dogs; Goldie), cat, (car), apple, turkey, paper, ]</value></property>
                 </bean>
                 <!-- 
-                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>A multi Set Variable</value></property>
                     <property name="paramName"><value>[multiset]</value></property>
                     <property name="description"><value>a param for the user to select from a list box</value></property>
@@ -82,7 +82,7 @@
                     <property name="valueType"><value>multiset</value></property>
                     <property name="value"><value>[(dogs; Goldie), cat, (car), apple, turkey, paper, {userid}]</value></property>
                 </bean> -->
-                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>A sql Variable</value></property>
                     <property name="paramName"><value>[sql]</value></property>
                     <property name="description"><value>a param for the user to select from a drop down by sql</value></property>
@@ -95,7 +95,7 @@
                                     etc]/ select username, firstName from worksite/value -->
                 </bean>
                 <!-- 
-                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>A multi sql Variable</value></property>
                     <property name="paramName"><value>[multisql]</value></property>
                     <property name="description"><value>a param for the user to select from a list box by sql</value></property>
@@ -104,7 +104,7 @@
                     <property name="value"><value>select site_id from sakai_site</value></property>
                 </bean>
                 -->
-                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>A static Variable</value></property>
                     <property name="paramName"><value>[static]</value></property>
                     <property name="description"><value>a param set by the definition</value></property>
@@ -137,23 +137,23 @@
         -->
         <property name="xsls">
             <list>
-                <bean id="reportXsl1.1" class="org.theospi.api.app.reports.ReportXsl">
+                <bean id="reportXsl1.1" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report1.1.xsl</value></property>
                     <property name="title"><value>Report Result View X</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
-                <bean id="reportXsl1.2" class="org.theospi.api.app.reports.ReportXsl">
+                <bean id="reportXsl1.2" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report1.2.xsl</value></property>
                     <property name="title"><value>Report Result View Y</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
-                <bean id="reportXsl1.3" class="org.theospi.api.app.reports.ReportXsl">
+                <bean id="reportXsl1.3" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report1.3.xsl</value></property>
                     <property name="title"><value>CSV</value></property>
                     <property name="isExport"><value>true</value></property>
                     <property name="contentType"><value>application/x-csv</value></property>
                 </bean>
-                <bean id="reportXsl1.4" class="org.theospi.api.app.reports.ReportXsl">
+                <bean id="reportXsl1.4" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report1.1.xsl</value></property>
                     <property name="title"><value>HTML</value></property>
                     <property name="isExport"><value>true</value></property>
@@ -163,7 +163,7 @@
         </property>
         
         <property name="defaultXsl">
-                <bean class="org.theospi.api.app.reports.ReportXsl">
+                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report1.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
@@ -174,7 +174,7 @@
     
     
     <bean id="report2"
-        class="org.theospi.api.app.reports.ReportDefinition">
+        class="org.theospi.portfolio.reports.model.ReportDefinition">
 
         <property name="idString">
             <value>11112222-3333-4444-5555-666677778882</value>
@@ -203,7 +203,7 @@
             <value>admin,project,course</value>
         </property>
         <property name="defaultXsl">
-                <bean class="org.theospi.api.app.reports.ReportXsl">
+                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report2.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
@@ -211,7 +211,7 @@
 
         <property name="reportDefinitionParams">
             <list>
-                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>Your user id</value></property>
                     <property name="paramName"><value>[user]</value></property>
                     <property name="description"><value>a param set by the definition</value></property>
@@ -223,12 +223,12 @@
         </property>
         <property name="xsls">
             <list>
-                <bean id="reportXsl2.1" class="org.theospi.api.app.reports.ReportXsl">
+                <bean id="reportXsl2.1" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report2.1.xsl</value></property>
                     <property name="title"><value>Report Result View X</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
-                <bean id="reportXsl2.2" class="org.theospi.api.app.reports.ReportXsl">
+                <bean id="reportXsl2.2" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report2.2.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
@@ -239,7 +239,7 @@
     
     
     <bean id="report3"
-        class="org.theospi.api.app.reports.ReportDefinition">
+        class="org.theospi.portfolio.reports.model.ReportDefinition">
 
         <property name="idString">
             <value>11112222-3333-4444-5555-666677778883</value>
@@ -256,7 +256,7 @@
         </property>
         <property name="resultProcessors">
            <list>
-              <ref bean="org.theospi.api.app.reports.ResultProcessor.defaultArtifactLoader" />
+              <ref bean="org.theospi.portfolio.reports.model.ResultProcessor.defaultArtifactLoader" />
            </list>
         </property>
         <property name="keywords">
@@ -270,7 +270,7 @@
             </value>
         </property>
         <property name="defaultXsl">
-                <bean class="org.theospi.api.app.reports.ReportXsl">
+                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report3.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
@@ -285,11 +285,11 @@
         </property>
         <property name="xsls">
             <list>
-                <bean id="reportXsl3.1" class="org.theospi.api.app.reports.ReportXsl">
+                <bean id="reportXsl3.1" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report3.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
-                <bean id="reportXsl3.2" class="org.theospi.api.app.reports.ReportXsl">
+                <bean id="reportXsl3.2" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report3.2.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
@@ -302,7 +302,7 @@
     
     
     <bean id="report4"
-        class="org.theospi.api.app.reports.ReportDefinition">
+        class="org.theospi.portfolio.reports.model.ReportDefinition">
 
         <property name="idString">
             <value>11112222-3333-4444-5555-666677778884</value>
@@ -330,7 +330,7 @@
             </value>
         </property>
         <property name="defaultXsl">
-                <bean class="org.theospi.api.app.reports.ReportXsl">
+                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report3.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
@@ -341,7 +341,7 @@
 
         <property name="reportDefinitionParams">
             <list>
-                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>System Values</value></property>
                     <property name="paramName"><value>[set]</value></property>
                     <property name="description"><value>to test all the variables are substituted</value></property>
@@ -361,20 +361,20 @@
         </property>
         <property name="xsls">
             <list>
-               <bean class="org.theospi.api.app.reports.ReportXsl">
+               <bean class="org.theospi.portfolio.reports.model.ReportXsl">
                    <property name="xslLink"><value>/reportxsls/report3.1.xsl</value></property>
                    <property name="isExport"><value>false</value></property>
                </bean>
-               <bean class="org.theospi.api.app.reports.ReportXsl">
+               <bean class="org.theospi.portfolio.reports.model.ReportXsl">
                    <property name="xslLink"><value>/reportxsls/defaultExport.xsl</value></property>
                    <property name="isExport"><value>true</value></property>
                   <property name="extension"><value>csv</value></property>
                   <property name="target"><value>_self</value></property>
                   <property name="resultsPostProcessor">
-                     <ref bean="org.theospi.api.app.reports.ResultsPostProcessor.csv"/>
+                     <ref bean="org.theospi.portfolio.reports.model.ResultsPostProcessor.csv"/>
                   </property>
                </bean>
-               <bean class="org.theospi.api.app.reports.ReportXsl">
+               <bean class="org.theospi.portfolio.reports.model.ReportXsl">
                    <property name="xslLink"><value>/reportxsls/report1.2.xsl</value></property>
                    <property name="isExport"><value>true</value></property>
                </bean>
@@ -385,7 +385,7 @@
     
     
     <bean id="report5"
-        class="org.theospi.api.app.reports.ReportDefinition">
+        class="org.theospi.portfolio.reports.model.ReportDefinition">
 
         <property name="idString">
             <value>11112222-3333-4444-5555-666677778834</value>
@@ -402,7 +402,7 @@
         </property>
         <property name="resultProcessors">
            <list>
-              <ref bean="org.theospi.api.app.reports.ResultProcessor.defaultArtifactLoader" />
+              <ref bean="org.theospi.portfolio.reports.model.ResultProcessor.defaultArtifactLoader" />
            </list>
         </property>
         <property name="keywords">
@@ -419,7 +419,7 @@
             <value>admin,project,course,cig</value>
         </property>
         <property name="defaultXsl">
-                <bean class="org.theospi.api.app.reports.ReportXsl">
+                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report1.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
@@ -427,7 +427,7 @@
 
         <property name="reportDefinitionParams">
             <list>
-                <bean class="org.theospi.api.app.reports.ReportDefinitionParam">
+                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>Last Session Date</value></property>
                     <property name="paramName"><value>[last_session_date]</value></property>
                     <property name="description"><value>the date to limit the sessions</value></property>
@@ -439,12 +439,12 @@
         </property>
         <property name="xsls">
             <list>
-                <bean id="reportXsl5.1" class="org.theospi.api.app.reports.ReportXsl">
+                <bean id="reportXsl5.1" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report1.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                     <property name="title"><value>Report Result View X</value></property>
                 </bean>
-                <bean id="reportXsl5.2" class="org.theospi.api.app.reports.ReportXsl">
+                <bean id="reportXsl5.2" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/reportxsls/report1.2.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                     <property name="title"><value>Report Result View Y</value></property>

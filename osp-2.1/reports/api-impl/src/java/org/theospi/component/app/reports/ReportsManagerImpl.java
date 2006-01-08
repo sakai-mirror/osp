@@ -95,6 +95,7 @@ import net.sf.hibernate.HibernateException;
 import org.theospi.api.app.reports.*;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
+import org.theospi.portfolio.reports.model.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -165,7 +166,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
 	/** Tells us if the global database reportDefinitions were loaded */
 	private boolean isDBLoaded = false;
-   private static final String CURRENT_RESULTS_TAG = "org.theospi.api.app.reports.ReportsManager.currentResults";
+   private static final String CURRENT_RESULTS_TAG = "org.theospi.portfolio.reports.model.ReportsManager.currentResults";
 
     protected void init() throws Exception
     {

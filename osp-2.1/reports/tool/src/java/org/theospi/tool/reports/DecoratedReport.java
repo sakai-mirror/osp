@@ -50,6 +50,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.theospi.api.app.reports.*;
+import org.theospi.portfolio.reports.model.ReportParam;
+import org.theospi.portfolio.reports.model.Report;
 
 /**
  * This class allows the Report to interact with the view

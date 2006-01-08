@@ -20,17 +20,18 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.api.app.reports;
+package org.theospi.portfolio.reports.model;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Dec 25, 2005
- * Time: 5:58:54 PM
+ * Date: Jan 7, 2006
+ * Time: 12:43:30 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface ResultsPostProcessor {
-
-   public byte[] postProcess(String fileData);
-
+public interface ReportFunctions {
+   public static final String REPORT_FUNCTION_PREFIX = "osp.reports.";
+   public static final String REPORT_FUNCTION_CREATE = REPORT_FUNCTION_PREFIX + "createReport";
+   public static final String REPORT_FUNCTION_RUN = REPORT_FUNCTION_PREFIX + "runReport";
+   public static final String REPORT_FUNCTION_VIEW = REPORT_FUNCTION_PREFIX + "viewReport";
 }

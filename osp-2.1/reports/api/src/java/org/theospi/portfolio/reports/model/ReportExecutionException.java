@@ -20,17 +20,18 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.api.app.reports;
+
+package org.theospi.portfolio.reports.model;
+
+import org.theospi.portfolio.shared.model.OspException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: John Ellis
- * Date: Dec 22, 2005
- * Time: 5:27:47 PM
- * To change this template use File | Settings | File Templates.
+ * @author andersjb
+ *
  */
-public interface ResultProcessor {
-
-   public ReportResult process(ReportResult result);    
-
+public class ReportExecutionException extends OspException {
+	
+	public ReportExecutionException(Exception e){
+		super(e);
+	}
 }

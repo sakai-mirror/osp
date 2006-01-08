@@ -20,43 +20,17 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.component.app.reports;
-
-import org.theospi.portfolio.shared.mgt.OspHttpAccess;
-import org.theospi.portfolio.shared.mgt.ReferenceParser;
-import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
-import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
-import org.theospi.portfolio.reports.model.ReportsManager;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.security.SecurityService;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.CopyrightException;
+package org.theospi.portfolio.reports.model;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Dec 24, 2005
- * Time: 12:03:18 PM
+ * Date: Dec 25, 2005
+ * Time: 5:58:54 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ReportsHttpAccess extends OspHttpAccess {
+public interface ResultsPostProcessor {
 
-   private ReportsManager reportsManager;
-
-   protected void checkSource(Reference ref, ReferenceParser parser)
-      throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
-      getReportsManager().checkReportAccess(parser.getId(), parser.getRef());
-   }
-
-   public ReportsManager getReportsManager() {
-      return reportsManager;
-   }
-
-   public void setReportsManager(ReportsManager reportsManager) {
-      this.reportsManager = reportsManager;
-   }
+   public byte[] postProcess(String fileData);
 
 }

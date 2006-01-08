@@ -11,7 +11,7 @@
         class="org.theospi.tool.reports.mgt.ConfigReports"
         init-method="init" lazy-init="false" singleton="true">
         <property name="reportsManager">
-            <ref bean="org.theospi.api.app.reports.ReportsManager" />
+            <ref bean="org.theospi.portfolio.reports.model.ReportsManager" />
         </property>
         <property name="reports">
             <list>

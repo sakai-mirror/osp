@@ -45,6 +45,7 @@
 package org.theospi.tool.reports;
 
 import org.theospi.api.app.reports.*;
+import org.theospi.portfolio.reports.model.ReportDefinition;
 
 /**
  * This class allows the ReportDefinition to interact with
