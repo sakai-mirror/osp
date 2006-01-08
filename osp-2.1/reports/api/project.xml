@@ -51,6 +51,13 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
+       
+       <dependency>
+         <groupId>springframework</groupId>
+         <artifactId>spring</artifactId>
+         <version>${sakai.spring.version}</version>
+       </dependency>
+
     </dependencies>
 
     <build>

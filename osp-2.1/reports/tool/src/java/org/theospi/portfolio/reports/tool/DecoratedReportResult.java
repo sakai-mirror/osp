@@ -170,7 +170,11 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
       return xsls != null && xsls.size() > 0;
    }
 
-	public String getCurrentViewXsl()
+   protected ReportXsl getCurrentView() {
+      return getView(getCurrentViewXsl());
+   }
+
+   public String getCurrentViewXsl()
 	{
 		if(currentViewXsl == null) {
 			return report.getReportDefinition().getDefaultXsl().getXslLink();
@@ -217,51 +221,33 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 	public String getCurrentViewResults()
 	{
 		//use the getter for the currentViewXsl so we handle null correctly
-		return reportsTool.getReportsManager().transform(reportResult, getCurrentViewXsl());
-		
+		return reportsTool.getReportsManager().transform(reportResult, getCurrentView());		
 	}
-	
-	/**
+
+   /**
 	 * This is the tester for whether a view is in the list of views (not exports)
 	 * @param view String
 	 * @return boolean
 	 */
 	private boolean isAView(String view)
 	{
-		ReportDefinition rdef = report.getReportDefinition();
-		
-		Iterator iter = rdef.getXsls().iterator();
-		
-		while(iter.hasNext()) {
-			ReportXsl xsl = (ReportXsl)iter.next();
-			
-			if(!xsl.getIsExport())
-				if(xsl.getXslLink().equals(view))
-					return true;
-		}
-		return false;
+      return getView(view) != null;
 	}
-	
-	/**
-	 * This is the tester for whether a export xsl is in the list of export xsls (does not consider the views)
-	 * @param view String
-	 * @return boolean
-	 */
-	private boolean isAnExport(String view)
-	{
-		ReportDefinition rdef = report.getReportDefinition();
-		
-		Iterator iter = rdef.getXsls().iterator();
-		
-		while(iter.hasNext()) {
-			ReportXsl xsl = (ReportXsl)iter.next();
-			
-			if(xsl.getIsExport())
-				if(xsl.getXslLink().equals(view))
-					return true;
-		}
-		return false;
-	}
+
+   protected ReportXsl getView(String link) {
+      ReportDefinition rdef = report.getReportDefinition();
+
+      Iterator iter = rdef.getXsls().iterator();
+
+      while(iter.hasNext()) {
+         ReportXsl xsl = (ReportXsl)iter.next();
+
+         if(!xsl.getIsExport())
+            if(xsl.getXslLink().equals(link))
+               return xsl;
+      }
+      return null;
+   }
 
 	public String getResultType()
 	{

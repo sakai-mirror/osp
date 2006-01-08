@@ -47,8 +47,11 @@ package org.theospi.portfolio.reports.model;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.reports.model.ReportDefinition;
 import org.theospi.portfolio.reports.model.ResultsPostProcessor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.context.ResourceLoaderAware;
 
-public class ReportXsl
+public class ReportXsl implements ResourceLoaderAware
 {
 
    /** The primary key */
@@ -75,6 +78,8 @@ public class ReportXsl
    private ResultsPostProcessor resultsPostProcessor;
 
    private String target = "_blank";
+
+   private Resource resource;
 
 	/**
 	 * the getter for the reportId property
@@ -239,4 +244,17 @@ public class ReportXsl
    public void setTarget(String target) {
       this.target = target;
    }
+
+   public Resource getResource() {
+      return resource;
+   }
+
+   public void setResource(Resource resource) {
+      this.resource = resource;
+   }
+
+   public void setResourceLoader(ResourceLoader resourceLoader) {
+      setResource(resourceLoader.getResource(getXslLink()));
+   }
+
 }

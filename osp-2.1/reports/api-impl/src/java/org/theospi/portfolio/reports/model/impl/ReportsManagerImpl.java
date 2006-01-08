@@ -534,7 +534,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
       String exportResultsId = ((String[]) params.get(EXPORT_XSL_ID))[0];
       ReportXsl xslt = result.getReport().getReportDefinition().findReportXslByRuntimeId(exportResultsId);
 
-      String fileData = transform(result, xslt.getXslLink());
+      String fileData = transform(result, xslt);
 
       if (xslt.getResultsPostProcessor() != null) {
          out.write(xslt.getResultsPostProcessor().postProcess(fileData));
@@ -803,15 +803,14 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	 * @param xslFile String to xsl resource
 	 * @return
 	 */
-	public String transform(ReportResult reportResult, String xslFile)
+	public String transform(ReportResult reportResult, ReportXsl reportXsl)
 	{
 		try {
 
 			JDOMResult result = new JDOMResult();
 			SAXBuilder builder = new SAXBuilder();
 
-			StreamSource xsltSource = new StreamSource(
-					new java.io.FileInputStream(getResourceFrom(xslFile)));
+			StreamSource xsltSource = new StreamSource(reportXsl.getResource().getInputStream());
 			Transformer transformer = TransformerFactory.newInstance()
 					.newTransformer(xsltSource);
 			Document rootElement = builder.build(new StringReader(reportResult
