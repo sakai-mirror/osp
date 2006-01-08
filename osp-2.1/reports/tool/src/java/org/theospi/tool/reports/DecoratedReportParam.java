@@ -46,7 +46,6 @@ package org.theospi.tool.reports;
 
 import java.lang.NumberFormatException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
@@ -55,7 +54,6 @@ import javax.faces.model.SelectItem;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.theospi.api.app.reports.*;
 import org.theospi.portfolio.reports.model.ReportParam;
 import org.theospi.portfolio.reports.model.ReportDefinitionParam;
 

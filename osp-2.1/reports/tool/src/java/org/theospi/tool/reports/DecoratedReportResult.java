@@ -44,7 +44,6 @@
 
 package org.theospi.tool.reports;
 
-import org.theospi.api.app.reports.*;
 import org.theospi.portfolio.reports.model.*;
 
 import java.util.Date;
@@ -52,12 +51,10 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import javax.faces.model.SelectItem;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 
 /**
