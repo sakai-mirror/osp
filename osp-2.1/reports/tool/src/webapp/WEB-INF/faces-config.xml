@@ -6,7 +6,7 @@
 <faces-config>
 
   <application>
-    <message-bundle>org.theospi.tool.reports.bundle.Messages</message-bundle>
+    <message-bundle>org.theospi.portfolio.reports.bundle.Messages</message-bundle>
     <locale-config>
       <default-locale>en</default-locale>
       <!-- 
@@ -36,7 +36,7 @@
 
         <description>ReportsTool</description>
         <managed-bean-name>ReportsTool</managed-bean-name>
-        <managed-bean-class>org.theospi.tool.reports.ReportsTool</managed-bean-class>
+        <managed-bean-class>org.theospi.portfolio.reports.tool.ReportsTool</managed-bean-class>
 <!--sakai2      <managed-bean-scope>request</managed-bean-scope>-->
         <managed-bean-scope>session</managed-bean-scope>
 
