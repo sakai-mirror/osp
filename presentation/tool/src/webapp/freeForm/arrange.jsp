@@ -18,9 +18,10 @@
 <h:form>
 
    <sakai:tool_bar>
-      <sakai:tool_bar_item
-      action="main"
-      value="#{msgs.page_list}" />
+      <h:selectOneMenu value="#{freeForm.currentPageId}"
+         onchange="this.form.submit();">
+         <f:selectItems value="#{freeForm.pageDropList}" />
+      </h:selectOneMenu>
    </sakai:tool_bar>
 
    <sakai:view_title value=""/>
@@ -42,10 +43,19 @@
       </ospx:splitsection>
    </ospx:splitarea>
 
-   <f:subview id="navigation">
-      <%@ include file="navigation.jspf" %>
-   </f:subview>
 
+   <ospx:splitarea direction="vertical" width="100%">
+      <ospx:splitsection>
+         <h:commandButton action="main"
+            value="#{msgs.saveAndReturnToPageList}"/>
+      </ospx:splitsection>
+      <ospx:splitsection>
+         <f:subview id="navigation">
+            <%@ include file="navigation.jspf" %>
+         </f:subview>
+      </ospx:splitsection>
+   </ospx:splitarea>
+   
 </h:form>
 
 </sakai:view>
