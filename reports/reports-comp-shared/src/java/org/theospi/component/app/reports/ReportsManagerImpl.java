@@ -84,6 +84,9 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
+import org.sakaiproject.metaobj.security.AuthorizationFacade;
+import org.sakaiproject.metaobj.security.model.AuthZMap;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 
 import net.sf.hibernate.Hibernate;
 import net.sf.hibernate.HibernateException;
@@ -148,7 +151,8 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	private List reportDefinitions;
 	
 	private IdManager		idManager = null;
-	
+   private AuthorizationFacade authzManager;
+
 	private DataSource	dataSource = null;
 	private boolean		canCloseConnection = true;
    
@@ -165,8 +169,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
     protected void init() throws Exception
     {
-    	FunctionManager.registerFunction("reports.runReports");
-    	FunctionManager.registerFunction("reports.viewReports");
+       FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_CREATE);
+       FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_RUN);
+       FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_VIEW);
     }
    
    
@@ -268,30 +273,40 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	{
 		Session s = SessionManager.getCurrentSession();
 
-		List results = getHibernateTemplate().find("from ReportResult r WHERE r.userId=?", s.getUserId(), Hibernate.STRING);
+      boolean runReports = can(ReportFunctions.REPORT_FUNCTION_RUN);
+      boolean viewReports = can(ReportFunctions.REPORT_FUNCTION_VIEW);
 
-		Iterator iter = results.iterator();
-		while(iter.hasNext()) {
-			ReportResult r = (ReportResult)iter.next();
-			
-			r.setIsSaved(true);
-		}
-		
-		List liveReports = getHibernateTemplate().find("from Report r WHERE r.userId=? AND r.isLive=1", s.getUserId(), Hibernate.STRING);
-		
-		iter = liveReports.iterator();
-		while(iter.hasNext()) {
-			Report r = (Report)iter.next();
-			
-			r.getReportParams().size();
-			
-			r.connectToDefinition(reportDefinitions);
-			r.setIsSaved(true);
-		}
-		
-		results.addAll(liveReports);
-		
-		return results;
+      List returned = new ArrayList();
+
+      if (viewReports | runReports) {
+         List results = getHibernateTemplate().find("from ReportResult r WHERE r.userId=?", s.getUserId(), Hibernate.STRING);
+
+         Iterator iter = results.iterator();
+         while(iter.hasNext()) {
+            ReportResult r = (ReportResult)iter.next();
+
+            r.setIsSaved(true);
+         }
+         returned.addAll(results);
+      }
+
+      if (runReports) {
+         List liveReports = getHibernateTemplate().find("from Report r WHERE r.userId=? AND r.isLive=1", s.getUserId(), Hibernate.STRING);
+
+         Iterator iter = liveReports.iterator();
+         while(iter.hasNext()) {
+            Report r = (Report)iter.next();
+
+            r.getReportParams().size();
+
+            r.connectToDefinition(reportDefinitions);
+            r.setIsSaved(true);
+         }
+
+         returned.addAll(liveReports);
+      }
+
+		return returned;
 	}
 	
 	
@@ -315,15 +330,21 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	 */
     public ReportResult loadResult(ReportResult result)
     {
-    	ReportResult reportResult = 
+    	ReportResult reportResult =
     			(ReportResult)getHibernateTemplate().get(
     					ReportResult.class, 
     					result.getResultId()
     			);
-    	
-    	//load the report too
-    	Report report = reportResult.getReport();
-    	
+
+      //load the report too
+      Report report = reportResult.getReport();
+
+      String function = report.getIsLive()?
+            ReportFunctions.REPORT_FUNCTION_RUN:ReportFunctions.REPORT_FUNCTION_VIEW;
+
+      getAuthzManager().checkPermission(function,
+        getIdManager().getId(PortalService.getCurrentToolId()));
+
     	//set the report and report result to that of already been saved
     	reportResult.setIsSaved(true);
     	report.setIsSaved(true);
@@ -426,15 +447,18 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	 */
 	public Report createReport(ReportDefinition reportDefinition)
 	{
-		Report report = new Report(reportDefinition);
-		
+		getAuthzManager().checkPermission(ReportFunctions.REPORT_FUNCTION_CREATE,
+        getIdManager().getId(PortalService.getCurrentToolId()));
+
+      Report report = new Report(reportDefinition);
+
 		//Create the report parameters
 		createReportParameters(report);
-		
+
 		Session s = SessionManager.getCurrentSession();
 		report.setUserId(s.getUserId());
 		report.setCreationDate(new Date());
-		
+
 		return report;
 	}
 	
@@ -944,6 +968,33 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		   //	just return null
 	   }
 	   return null;
+   }
+
+   public AuthorizationFacade getAuthzManager() {
+      return authzManager;
+   }
+
+   public void setAuthzManager(AuthorizationFacade authzManager) {
+      this.authzManager = authzManager;
+   }
+
+   protected void checkPermission(String function) {
+      getAuthzManager().checkPermission(function, getIdManager().getId(PortalService.getCurrentToolId()));
+   }
+
+   public Map getAuthorizationsMap() {
+      return new AuthZMap(getAuthzManager(), ReportFunctions.REPORT_FUNCTION_PREFIX,
+            getIdManager().getId(PortalService.getCurrentToolId()));
+   }
+
+   protected boolean can(String function) {
+      return new Boolean(getAuthzManager().isAuthorized(function,
+            getIdManager().getId(PortalService.getCurrentToolId()))).booleanValue();
+   }
+
+   public boolean isMaintaner() {
+      return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
+            getIdManager().getId(PortalService.getCurrentSiteId()))).booleanValue();
    }
 
 }
