@@ -45,7 +45,7 @@
 package org.theospi.tool.reports.mgt;
 
 import java.util.List;
-import org.theospi.api.app.reports.ReportsManager;
+import org.theospi.portfolio.reports.model.ReportsManager;
 /**
  * This class takes the reportsfrom the given list and sets them in the ReportsManager
  * This class is needed because the reports annot be directly implanted into the 

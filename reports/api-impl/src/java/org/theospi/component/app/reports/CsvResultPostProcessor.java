@@ -22,7 +22,8 @@
 **********************************************************************************/
 package org.theospi.component.app.reports;
 
-import org.theospi.api.app.reports.ResultsPostProcessor;
+import org.theospi.portfolio.reports.model.ResultsPostProcessor;
+import org.theospi.portfolio.reports.model.ResultsPostProcessor;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.DataConversionException;

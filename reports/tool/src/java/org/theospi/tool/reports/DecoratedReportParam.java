@@ -56,6 +56,8 @@ import javax.faces.model.SelectItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.theospi.api.app.reports.*;
+import org.theospi.portfolio.reports.model.ReportParam;
+import org.theospi.portfolio.reports.model.ReportDefinitionParam;
 
 
 /**

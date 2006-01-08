@@ -22,9 +22,11 @@
 **********************************************************************************/
 package org.theospi.component.app.reports;
 
-import org.theospi.api.app.reports.ResultProcessor;
-import org.theospi.api.app.reports.ReportResult;
+import org.theospi.portfolio.reports.model.ResultProcessor;
+import org.theospi.portfolio.reports.model.ReportResult;
 import org.theospi.portfolio.shared.model.OspException;
+import org.theospi.portfolio.reports.model.ReportResult;
+import org.theospi.portfolio.reports.model.ResultProcessor;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;

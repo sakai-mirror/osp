@@ -43,7 +43,7 @@
         <managed-property>
             <description>reportsManager</description>
             <property-name>reportsManager</property-name>
-            <value>#{Components["org.theospi.api.app.reports.ReportsManager"]}</value>
+            <value>#{Components["org.theospi.portfolio.reports.model.ReportsManager"]}</value>
         </managed-property>
         <!-- 
         <managed-property>
