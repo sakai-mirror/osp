@@ -65,7 +65,7 @@ public interface ReportsManager extends DownloadableManager
 	public String replaceSystemValues(String inString);
 	public String generateSQLParameterValue(ReportParam reportParam);
 
-	public String transform(ReportResult result, String xslFile);
+	public String transform(ReportResult result, ReportXsl reportXsl);
 
     public void saveReportResult(ReportResult result);
     public void saveReport(Report result);
