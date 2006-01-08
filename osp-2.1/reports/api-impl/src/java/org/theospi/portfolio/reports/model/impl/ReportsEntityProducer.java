@@ -20,44 +20,27 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.component.app.reports;
+package org.theospi.portfolio.reports.model.impl;
 
-import org.jdom.Document;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.theospi.portfolio.shared.model.OspException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.StringReader;
-import java.io.IOException;
+import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Dec 25, 2005
- * Time: 6:39:37 PM
+ * Date: Dec 24, 2005
+ * Time: 12:01:24 PM
  * To change this template use File | Settings | File Templates.
  */
-public class BaseResultPostProcessor {
+public class ReportsEntityProducer extends OspEntityProducerBase {
 
-   protected final transient Log logger = LogFactory.getLog(getClass());
-   private SAXBuilder builder = new SAXBuilder();
+   public static final String REPORTS_PRODUCER = "ospReports";
 
-   public Document getDocument(String document) {
-      Document rootElement = null;
-      try {
-         rootElement = builder.build(new StringReader(document));
-      }
-      catch (JDOMException e) {
-         logger.error("", e);
-         throw new OspException(e);
-      }
-      catch (IOException e) {
-         logger.error("", e);
-         throw new OspException(e);
-      }
-      return rootElement;
+   public String getLabel() {
+      return REPORTS_PRODUCER;
+   }
+
+   public void init() {
+      getEntityManager().registerEntityProducer(this);
    }
 
 }

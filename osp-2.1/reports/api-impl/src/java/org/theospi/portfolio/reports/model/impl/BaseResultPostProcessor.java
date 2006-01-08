@@ -20,17 +20,12 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.component.app.reports;
+package org.theospi.portfolio.reports.model.impl;
 
-import org.theospi.portfolio.reports.model.ResultProcessor;
-import org.theospi.portfolio.reports.model.ReportResult;
-import org.theospi.portfolio.shared.model.OspException;
-import org.theospi.portfolio.reports.model.ReportResult;
-import org.theospi.portfolio.reports.model.ResultProcessor;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
+import org.theospi.portfolio.shared.model.OspException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -40,20 +35,19 @@ import java.io.IOException;
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Dec 22, 2005
- * Time: 5:32:24 PM
+ * Date: Dec 25, 2005
+ * Time: 6:39:37 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class BaseResultProcessor implements ResultProcessor {
+public class BaseResultPostProcessor {
 
    protected final transient Log logger = LogFactory.getLog(getClass());
    private SAXBuilder builder = new SAXBuilder();
 
-   protected Document getResults(ReportResult result) {
+   public Document getDocument(String document) {
       Document rootElement = null;
       try {
-         rootElement = builder.build(new StringReader(result
-                     .getXml()));
+         rootElement = builder.build(new StringReader(document));
       }
       catch (JDOMException e) {
          logger.error("", e);
@@ -64,11 +58,6 @@ public abstract class BaseResultProcessor implements ResultProcessor {
          throw new OspException(e);
       }
       return rootElement;
-   }
-
-   protected ReportResult setResult(ReportResult result, Document doc) {
-      result.setXml((new XMLOutputter()).outputString(doc));
-      return result;
    }
 
 }

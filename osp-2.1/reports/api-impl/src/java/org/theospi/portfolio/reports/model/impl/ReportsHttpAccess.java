@@ -20,27 +20,43 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.component.app.reports;
+package org.theospi.portfolio.reports.model.impl;
 
-import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
+import org.theospi.portfolio.shared.mgt.OspHttpAccess;
+import org.theospi.portfolio.shared.mgt.ReferenceParser;
+import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
+import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
+import org.theospi.portfolio.reports.model.ReportsManager;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.service.legacy.security.SecurityService;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.CopyrightException;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
  * Date: Dec 24, 2005
- * Time: 12:01:24 PM
+ * Time: 12:03:18 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ReportsEntityProducer extends OspEntityProducerBase {
+public class ReportsHttpAccess extends OspHttpAccess {
 
-   public static final String REPORTS_PRODUCER = "ospReports";
+   private ReportsManager reportsManager;
 
-   public String getLabel() {
-      return REPORTS_PRODUCER;
+   protected void checkSource(Reference ref, ReferenceParser parser)
+      throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
+      getReportsManager().checkReportAccess(parser.getId(), parser.getRef());
    }
 
-   public void init() {
-      getEntityManager().registerEntityProducer(this);
+   public ReportsManager getReportsManager() {
+      return reportsManager;
+   }
+
+   public void setReportsManager(ReportsManager reportsManager) {
+      this.reportsManager = reportsManager;
    }
 
 }

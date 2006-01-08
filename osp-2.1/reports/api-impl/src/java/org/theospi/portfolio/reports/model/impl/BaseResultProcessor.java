@@ -20,43 +20,55 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.component.app.reports;
+package org.theospi.portfolio.reports.model.impl;
 
-import org.theospi.portfolio.shared.mgt.OspHttpAccess;
-import org.theospi.portfolio.shared.mgt.ReferenceParser;
-import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
-import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
-import org.theospi.portfolio.reports.model.ReportsManager;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.security.SecurityService;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.CopyrightException;
+import org.theospi.portfolio.reports.model.ResultProcessor;
+import org.theospi.portfolio.reports.model.ReportResult;
+import org.theospi.portfolio.shared.model.OspException;
+import org.theospi.portfolio.reports.model.ReportResult;
+import org.theospi.portfolio.reports.model.ResultProcessor;
+import org.jdom.Document;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.StringReader;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Dec 24, 2005
- * Time: 12:03:18 PM
+ * Date: Dec 22, 2005
+ * Time: 5:32:24 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ReportsHttpAccess extends OspHttpAccess {
+public abstract class BaseResultProcessor implements ResultProcessor {
 
-   private ReportsManager reportsManager;
+   protected final transient Log logger = LogFactory.getLog(getClass());
+   private SAXBuilder builder = new SAXBuilder();
 
-   protected void checkSource(Reference ref, ReferenceParser parser)
-      throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
-      getReportsManager().checkReportAccess(parser.getId(), parser.getRef());
+   protected Document getResults(ReportResult result) {
+      Document rootElement = null;
+      try {
+         rootElement = builder.build(new StringReader(result
+                     .getXml()));
+      }
+      catch (JDOMException e) {
+         logger.error("", e);
+         throw new OspException(e);
+      }
+      catch (IOException e) {
+         logger.error("", e);
+         throw new OspException(e);
+      }
+      return rootElement;
    }
 
-   public ReportsManager getReportsManager() {
-      return reportsManager;
-   }
-
-   public void setReportsManager(ReportsManager reportsManager) {
-      this.reportsManager = reportsManager;
+   protected ReportResult setResult(ReportResult result, Document doc) {
+      result.setXml((new XMLOutputter()).outputString(doc));
+      return result;
    }
 
 }

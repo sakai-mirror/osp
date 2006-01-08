@@ -20,7 +20,7 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.component.app.reports;
+package org.theospi.portfolio.reports.model.impl;
 
 import org.theospi.portfolio.reports.model.ReportResult;
 import org.theospi.portfolio.reports.model.ReportsManager;
@@ -29,6 +29,7 @@ import org.theospi.portfolio.shared.intf.EntityContextFinder;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.reports.model.ReportsManager;
 import org.theospi.portfolio.reports.model.ReportResult;
+import org.theospi.portfolio.reports.model.impl.BaseResultProcessor;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.sakaiproject.metaobj.shared.model.Id;
