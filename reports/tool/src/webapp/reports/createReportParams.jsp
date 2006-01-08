@@ -3,7 +3,7 @@
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 <% response.setContentType("text/html; charset=UTF-8"); %>
 <f:view>
-    <f:loadBundle basename="org.theospi.tool.reports.bundle.Messages" var="msgs" />
+    <f:loadBundle basename="org.theospi.portfolio.reports.bundle.Messages" var="msgs" />
     <sakai:view title="#{msgs.title_create_report_params}">
             <h:form id="rpForm">
 <script type="text/javascript" src="calendar/popcalendar.js"></script>

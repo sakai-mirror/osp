@@ -8,7 +8,7 @@
         are the pre-defined report definitions
     -->
     <bean id="configReportsManager"
-        class="org.theospi.tool.reports.mgt.ConfigReports"
+        class="org.theospi.portfolio.reports.tool.mgt.ConfigReports"
         init-method="init" lazy-init="false" singleton="true">
         <property name="reportsManager">
             <ref bean="org.theospi.portfolio.reports.model.ReportsManager" />
