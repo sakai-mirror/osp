@@ -20,10 +20,11 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.component.app.reports;
+package org.theospi.portfolio.reports.model.impl;
 
 import org.theospi.portfolio.reports.model.ResultsPostProcessor;
 import org.theospi.portfolio.reports.model.ResultsPostProcessor;
+import org.theospi.portfolio.reports.model.impl.BaseResultPostProcessor;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.DataConversionException;

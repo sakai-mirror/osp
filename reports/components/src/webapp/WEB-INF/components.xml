@@ -20,7 +20,7 @@
         </property>
         <property name="target">
             <bean
-                class="org.theospi.component.app.reports.ReportsManagerImpl"
+                class="org.theospi.portfolio.reports.model.impl.ReportsManagerImpl"
                 singleton="true" init-method="init">
                 
                 <property name="sessionFactory">
@@ -67,7 +67,7 @@
    </bean>
 
    <bean id="org.theospi.portfolio.reports.model.ResultProcessor.defaultArtifactLoader"
-      class="org.theospi.component.app.reports.LoadArtifactResultProcessor">
+      class="org.theospi.portfolio.reports.model.impl.LoadArtifactResultProcessor">
       <property name="dataSource">
          <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
       </property>
@@ -84,7 +84,7 @@
    </bean>
 
    <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospReports"
-      class="org.theospi.component.app.reports.ReportsHttpAccess">
+      class="org.theospi.portfolio.reports.model.impl.ReportsHttpAccess">
       <property name="reportsManager">
          <ref bean="org.theospi.portfolio.reports.model.ReportsManager"/>
       </property>
@@ -92,7 +92,7 @@
    </bean>
 
    <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospReports"
-      class="org.theospi.component.app.reports.ReportsEntityProducer"
+      class="org.theospi.portfolio.reports.model.impl.ReportsEntityProducer"
       init-method="init"
 		destroy-method="destroy"
 		singleton="true">
@@ -105,7 +105,7 @@
    </bean>
 
    <bean id="org.theospi.portfolio.reports.model.ResultsPostProcessor.csv"
-      class="org.theospi.component.app.reports.CsvResultPostProcessor" />
+      class="org.theospi.portfolio.reports.model.impl.CsvResultPostProcessor" />
 
 </beans
 
