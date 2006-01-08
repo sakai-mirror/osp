@@ -44,18 +44,19 @@
 
 package org.theospi.tool.reports;
 
-import java.io.OutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.faces.model.SelectItem;
+import java.util.Map;
 
 import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.theospi.api.app.reports.*;
-import org.theospi.portfolio.shared.model.OspException;
+import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.theospi.portfolio.shared.tool.ToolBase;
+import org.theospi.api.app.reports.*;
 
 
 /**
@@ -97,6 +98,11 @@ public class ReportsTool extends ToolBase {
 	/** The reportresult from which the tool is working with */
 	private DecoratedReportResult workingResult = null;
 
+   private Site worksite = null;
+
+   private Tool tool = null;
+   private Map userCan = null;
+
 	protected static final String mainPage = "main";
 	protected static final String createReportPage = "processCreateReport";
 	protected static final String createReportParamsPage = "processCreateReportParams";
@@ -118,35 +124,45 @@ public class ReportsTool extends ToolBase {
 	
 	/**
 	 * setter for the ReportsManager property
-	 * @param ReportsManager
+	 * @param reportsManager
 	 */
 	public void setReportsManager(ReportsManager reportsManager)
 	{
 		this.reportsManager = reportsManager;
 	}
-    
-    
-    public String getToolTitle()
-    {
-    	return "toolTitle";
-    }
-    
-    
-    public String getWorksiteTitle()
-    {
-    	return "worksiteTitle";
-    }
-    
-    
-    public String getWorksiteReference()
-    {
-    	return PortalService.getCurrentSiteId();
-    }
-	
-	/**
-	 * setter for the ReportsManager
-	 * @param reportsManager ReportsManager
-	 */
+
+   public Tool getTool() {
+      if (tool == null) {
+         tool = ToolManager.getCurrentTool();
+      }
+      return tool;
+   }
+
+   public void setTool(Tool tool) {
+      this.tool = tool;
+   }
+
+   public Site getWorksite() {
+      if (worksite == null) {
+         try {
+            worksite = SiteService.getSite(PortalService.getCurrentSiteId());
+         }
+         catch (IdUnusedException e) {
+            throw new RuntimeException(e);
+         }
+      }
+      return worksite;
+   }
+
+   public String getReportFunctionPrefix() {
+      return ReportFunctions.REPORT_FUNCTION_PREFIX;
+   }
+
+   public String getPermissionsMessage() {
+      return getMessageFromBundle("perm_description", new Object[]{
+         getTool().getTitle(), getWorksite().getTitle()});
+   }
+
 	public void setWorkingReportDefinition(DecoratedReportDefinition workingReportDefinition)
 	{
 		this.workingReportDefinition = workingReportDefinition;
@@ -179,10 +195,6 @@ public class ReportsTool extends ToolBase {
 		return workingReport;
 	}
 	
-	/**
-	 * setter for the Working Report
-	 * @param workingReport DecoratedReport
-	 */
 	public void setWorkingResult(DecoratedReportResult workingResult)
 	{
 		this.workingResult = workingResult;
@@ -222,7 +234,7 @@ public class ReportsTool extends ToolBase {
 	
 	public List getResults()
 	{
-		List decoratedResults = new ArrayList();
+      List decoratedResults = new ArrayList();
 		
 		List results = reportsManager.getCurrentUserResults();
 		
@@ -423,4 +435,20 @@ public class ReportsTool extends ToolBase {
 		
 		return ReportsTool.reportResultsPage;
 	}
+
+   public Map getUserCan() {
+      if (userCan == null) {
+         userCan = getReportsManager().getAuthorizationsMap();
+      }
+      return userCan;
+   }
+
+   public void setUserCan(Map userCan) {
+      this.userCan = userCan;
+   }
+
+   public boolean isMaintainer() {
+      return getReportsManager().isMaintaner();
+   }
+
 }

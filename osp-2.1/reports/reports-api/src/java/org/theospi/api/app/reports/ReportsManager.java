@@ -48,10 +48,10 @@ import org.theospi.portfolio.shared.intf.DownloadableManager;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface ReportsManager extends DownloadableManager
 {
-
    public static final String RESULTS_ID = "reportResultsId";
    public static final String EXPORT_XSL_ID = "reportExportId";
 
@@ -77,4 +77,8 @@ public interface ReportsManager extends DownloadableManager
    public void checkReportAccess(String id, String ref);
 
    public void setCurrentResult(ReportResult result);
+
+   public Map getAuthorizationsMap();
+
+   public boolean isMaintaner();
 }

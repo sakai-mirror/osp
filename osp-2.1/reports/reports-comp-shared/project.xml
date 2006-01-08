@@ -39,6 +39,12 @@
          <version>${osp.version}</version>
        </dependency>
 
+       <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-metaobj-tool-lib</artifactId>
+         <version>${sakai.version}</version>
+       </dependency>
+
         <dependency>
             <groupId>sakaiproject</groupId>
             <artifactId>sakai-session</artifactId>

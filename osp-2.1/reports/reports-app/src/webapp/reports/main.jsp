@@ -8,17 +8,23 @@
     <sakai:view title="#{msgs.title_main}">
             <h:form>
                 <sakai:tool_bar>
-                    <sakai:tool_bar_item
-                        action="#{ReportsTool.gotoOptions}"
-                        value="#{msgs.options}" />
-       <h:outputText value="<a href=\"sakai.permissions.helper.helper/tool?1=1&session.sakaiproject.permissions.description=Set+permissions+for+#{ReportsTool.toolTitle}+in+worksite+\'#{ReportsTool.worksiteTitle}\'&session.sakaiproject.permissions.siteRef=#{ReportsTool.worksiteReference}&session.sakaiproject.permissions.prefix=reports.&panel=Main\" title=\"Permissions...\" >Permissions...</a>" escape="false" />
-     
+                    <h:outputLink value="sakai.permissions.helper.helper/tool"
+                        rendered="#{ReportsTool.maintainer}"
+                        title="#{msgs.permissions_link}">
+                       <f:param name="session.sakaiproject.permissions.description"
+                        value="#{ReportsTool.permissionsMessage}" />
+                       <f:param name="session.sakaiproject.permissions.siteRef"
+                           value="#{ReportsTool.worksite.reference}" />
+                       <f:param name="session.sakaiproject.permissions.prefix"
+                           value="#{ReportsTool.reportFunctionPrefix}" />
+                       <h:outputText value="#{msgs.permissions_link}" />
+                    </h:outputLink>
                 </sakai:tool_bar>
 
                 <sakai:view_title value="#{msgs.title_main}" indent="1" />
 
                 <h:dataTable var="report"
-                    value="#{ReportsTool.reports}">
+                    value="#{ReportsTool.reports}" rendered="#{ReportsTool.userCan.createReport}">
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Title" />
@@ -33,7 +39,10 @@
                 </h:dataTable>
                 <h:outputText value="<br/><br/>#{msgs.report_results}" escape="false"/>
                 <h:dataTable var="result"
-                    value="#{ReportsTool.results}">
+                    value="#{ReportsTool.results}"
+                        rendered="#{ReportsTool.userCan.createReport ||
+                                    ReportsTool.userCan.runReport ||
+                                    ReportsTool.userCan.viewReport}">
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Title" />
