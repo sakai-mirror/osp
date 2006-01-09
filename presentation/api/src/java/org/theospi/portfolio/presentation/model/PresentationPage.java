@@ -8,7 +8,7 @@ import java.util.Set;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
-public class PresentationPage extends IdentifiableObject implements Serializable {
+public class PresentationPage extends IdentifiableObject implements Serializable, Comparable {
    
    private Id id;
    private String title;
@@ -18,11 +18,11 @@ public class PresentationPage extends IdentifiableObject implements Serializable
    private PresentationLayout layout;
    //private Style style;
    private String style;
-   private String sequence;
+   private int sequence;
    private Set regions = new HashSet();
    private Date created;
    private Date modified;
-   private boolean navigation;
+   private boolean advancedNavigation;
    private boolean newObject;
 
    public Id getId() {
@@ -37,18 +37,23 @@ public class PresentationPage extends IdentifiableObject implements Serializable
    public void setRegions(Set regions) {
       this.regions = regions;
    }
+
    public PresentationLayout getLayout() {
       return layout;
    }
+
    public void setLayout(PresentationLayout layout) {
       this.layout = layout;
    }
-   public String getSequence() {
+
+   public int getSequence() {
       return sequence;
    }
-   public void setSequence(String sequence) {
+
+   public void setSequence(int sequence) {
       this.sequence = sequence;
    }
+
 //   public Style getStyle() {
 //      return style;
 //   }
@@ -96,12 +101,12 @@ public class PresentationPage extends IdentifiableObject implements Serializable
       this.newObject = newObject;
    }
 
-   public boolean isNavigation() {
-      return navigation;
+   public boolean isAdvancedNavigation() {
+      return advancedNavigation;
    }
 
-   public void setNavigation(boolean navigation) {
-      this.navigation = navigation;
+   public void setAdvancedNavigation(boolean advancedNavigation) {
+      this.advancedNavigation = advancedNavigation;
    }
 
    public String getDescription() {
@@ -118,6 +123,18 @@ public class PresentationPage extends IdentifiableObject implements Serializable
 
    public void setKeywords(String keywords) {
       this.keywords = keywords;
+   }
+
+   public String getUrl() {
+      return "viewPresentation.osp?id=" + getPresentation().getId().getValue() +
+         "&page=" + getId().getValue();
+   }
+
+   public int compareTo(Object o) {
+      PresentationPage other = (PresentationPage) o;
+      Integer seq = new Integer(getSequence());
+      Integer seqOther = new Integer(other.getSequence());
+      return seq.compareTo(seqOther);
    }
 
 }

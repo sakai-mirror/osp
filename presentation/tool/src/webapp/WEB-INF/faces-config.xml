@@ -46,6 +46,12 @@
       </managed-property>
 
       <managed-property>
+         <description>Service Dependency: idManager</description>
+         <property-name>idManager</property-name>
+         <value>#{Components["idManager"]}</value>
+      </managed-property>
+
+      <managed-property>
          <description>Service Dependency: tag factory</description>
          <property-name>factory</property-name>
          <value>#{Components["org.theospi.jsf.intf.XmlTagFactory.freeFormPresentation"]}</value>
@@ -64,6 +70,11 @@
          <to-view-id>/freeForm/pageProperties.jsp</to-view-id>
          <redirect/>
       </navigation-case>
+      <navigation-case>
+         <from-outcome>main</from-outcome>
+         <to-view-id>/freeForm/tool.jsp</to-view-id>
+         <redirect/>
+      </navigation-case>
    </navigation-rule>
 
    <navigation-rule>
@@ -71,6 +82,11 @@
       <navigation-case>
          <from-outcome>main</from-outcome>
          <to-view-id>/freeForm/tool.jsp</to-view-id>
+         <redirect/>
+      </navigation-case>
+      <navigation-case>
+         <from-outcome>edit</from-outcome>
+         <to-view-id>/freeForm/pageProperties.jsp</to-view-id>
          <redirect/>
       </navigation-case>
    </navigation-rule>
@@ -85,6 +101,11 @@
       <navigation-case>
          <from-outcome>arrange</from-outcome>
          <to-view-id>/freeForm/arrange.jsp</to-view-id>
+         <redirect/>
+      </navigation-case>
+      <navigation-case>
+         <from-outcome>edit</from-outcome>
+         <to-view-id>/freeForm/pageProperties.jsp</to-view-id>
          <redirect/>
       </navigation-case>
    </navigation-rule>
