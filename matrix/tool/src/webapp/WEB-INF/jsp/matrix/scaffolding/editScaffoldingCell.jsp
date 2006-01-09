@@ -90,7 +90,7 @@
             </c:if>
           <p class="shorttext">
             <label>Select Reflection Device</label>    
-               <select name="<c:out value="${status.expression}"/>" >
+               <select name="<c:out value="${status.expression}"/>" <c:out value="${localDisabledText}"/>>
                      <option onclick="document.forms[0].reflectionDeviceType.value='';" value="">None</option>
                   <c:forEach var="refDev" items="${reflectionDevices}" varStatus="loopCount">
                      <option onclick="document.forms[0].reflectionDeviceType.value='<c:out value="${refDev.type}"/>');" 
@@ -110,7 +110,7 @@
          </c:if>
        <p class="shorttext">
          <label>Select Review Device</label>    
-            <select name="<c:out value="${status.expression}"/>" >
+            <select name="<c:out value="${status.expression}"/>" <c:out value="${localDisabledText}"/>>
                      <option onclick="document.forms[0].reviewDeviceType.value='';" value="">None</option>
                   <c:forEach var="reviewDev" items="${reviewDevices}" varStatus="loopCount">
                      <option onclick="document.forms[0].reviewDeviceType.value='<c:out value="${reviewDev.type}"/>';" 
@@ -130,7 +130,7 @@
          </c:if>
        <p class="shorttext">
          <label>Select Evaluation Device</label>    
-            <select name="<c:out value="${status.expression}"/>" >
+            <select name="<c:out value="${status.expression}"/>" <c:out value="${localDisabledText}"/>>
                      <option onclick="document.forms[0].evaluationDeviceType.value='';" value="">None</option>
                   <c:forEach var="evalDev" items="${evaluationDevices}" varStatus="loopCount">
                      <option onclick="document.forms[0].evaluationDeviceType.value='<c:out value="${evalDev.type}"/>';" 
