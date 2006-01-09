@@ -140,9 +140,9 @@ public interface PresentationManager extends CleanupableService {
    public Collection findPublishedTemplates(String siteId);
 
    public Collection findPublishedTemplates();
-   
+
+   public List getLayouts();   
    public Collection findPublishedLayouts(String siteId);
-   
    public Collection findLayoutsByOwner(Agent owner, String siteId);
    
    public PresentationLayout storeLayout(PresentationLayout layout);
@@ -245,6 +245,8 @@ public interface PresentationManager extends CleanupableService {
     */
    public Node getNode(Reference ref, Presentation presentation);
    public Node getNode(Id artifactId, Presentation presentation);
+
+   public Node getNode(Id artifactId, PresentationLayout layout);
 
    public Collection loadArtifactsForItemDef(PresentationItemDefinition itemDef, Agent agent);
    

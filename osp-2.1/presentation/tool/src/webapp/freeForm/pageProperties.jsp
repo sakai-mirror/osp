@@ -24,9 +24,9 @@
    <ospx:splitarea direction="horizontal" width="100%">
       <ospx:splitsection size="75%" valign="top">
           <ospx:splitarea direction="horizontal" width="100%">
-             <ospx:splitsection size="85%" valign="top">
+             <ospx:splitsection size="80%" valign="top">
                <sakai:panel_edit>
-                  <h:outputLabel for="title" id="titleLabel" value="#{msgs.page_itle}" />
+                  <h:outputLabel for="title" id="titleLabel" value="#{msgs.page_title}" />
                   <h:panelGroup>
                      <h:inputText id="title" value="#{freeForm.currentPage.base.title}" required="true">
                         <f:validateLength minimum="1" maximum="255" />
@@ -48,11 +48,40 @@
                      </h:inputTextarea>
                      <h:message for="keywords" styleClass="validationEmbedded" />
                   </h:panelGroup>
+
+                  <h:outputLabel for="layout" id="layoutLabel" value="#{msgs.page_layout}" />
+                  <h:panelGroup>
+                     <f:subview id="originalLayout" rendered="#{freeForm.currentPage.hasLayout}">
+                        <sakai:doc_properties>
+                           <h:outputLabel for="layout" id="layoutLabel" value="#{msgs.original_layout}"/>
+                           <h:outputText id="layout" value="#{freeForm.currentPage.base.layout.name}"/>
+                        </sakai:doc_properties>
+                     </f:subview>
+                     <h:selectOneMenu id="layout" value="#{freeForm.currentPage.selectedLayoutId}"
+                        onchange="this.form.submit();">
+                        <f:selectItems value="#{freeForm.layouts}" />
+                     </h:selectOneMenu>
+                     <h:graphicImage height="125" width="100"
+                        value="#{freeForm.currentPage.selectedLayout.previewImage.externalUri}"
+                        rendered="#{freeForm.currentPage.layoutSelected}"
+                        />
+                  </h:panelGroup>
+
+                  <h:outputLabel for="advancedNavigation" id="advancedNavigationLabel" value="#{msgs.advanced_navigation}" />
+                  <h:panelGroup>
+                     <h:selectBooleanCheckbox id="advancedNavigation" value="#{freeForm.currentPage.base.advancedNavigation}" />
+                     <h:outputText value="#{msgs.advanced_navigation_disclaimer}"/>
+                  </h:panelGroup>
+
                </sakai:panel_edit>
              </ospx:splitsection>
              <ospx:splitsection valign="top">
-               <h:outputLabel for="modified" id="modifiedLabel" value="#{msgs.page_modified}" />
-               <h:outputText id="modified" value="#{freeForm.currentPage.base.modified}" />
+               <sakai:panel_edit>
+                  <h:outputLabel for="modified" id="modifiedLabel" value="#{msgs.page_modified}" />
+                  <h:outputFormat id="modified" value="#{msgs.date_format}" >
+                     <f:param value="#{freeForm.currentPage.base.modified}" />
+                  </h:outputFormat>
+               </sakai:panel_edit>
              </ospx:splitsection>
          </ospx:splitarea>
       </ospx:splitsection>
@@ -63,9 +92,21 @@
       </ospx:splitsection>
    </ospx:splitarea>
 
-   <f:subview id="navigation">
-      <%@ include file="navigation.jspf" %>
-   </f:subview>
+   <ospx:splitarea direction="vertical" width="100%">
+      <ospx:splitsection>
+         <h:commandButton action="main"
+            actionListener="#{freeForm.currentPage.pagePropertiesSaved}"
+            value="#{msgs.saveAndReturnToPageList}"/>
+         <h:commandButton action="arrange"
+            actionListener="#{freeForm.currentPage.pagePropertiesSaved}"
+            value="#{msgs.arrangePage}"/>
+      </ospx:splitsection>
+      <ospx:splitsection>
+         <f:subview id="navigation">
+            <%@ include file="navigationFromPage.jspf" %>
+         </f:subview>
+      </ospx:splitsection>
+   </ospx:splitarea>
 
 </h:form>
 

@@ -26,16 +26,14 @@ import org.theospi.portfolio.shared.tool.HelperToolBase;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 import org.theospi.portfolio.presentation.PresentationManager;
-import org.theospi.portfolio.presentation.model.Presentation;
-import org.theospi.portfolio.presentation.model.PresentationPage;
-import org.theospi.portfolio.presentation.model.PresentationItem;
-import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
+import org.theospi.portfolio.presentation.model.*;
 import org.theospi.jsf.intf.XmlTagFactory;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -54,6 +52,7 @@ import java.io.IOException;
 public class FreeFormTool extends HelperToolBase {
 
    private PresentationManager presentationManager;
+   private IdManager idManager;
    private XmlTagFactory factory;
 
    private Presentation presentation = null;
@@ -62,8 +61,7 @@ public class FreeFormTool extends HelperToolBase {
    private List pageList;
    private List attachableItems = null;
    private List listableItems = null;
-   
-
+   private List layouts = null;
 
    public String processActionBack() {
       setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_BACK);
@@ -219,8 +217,12 @@ public class FreeFormTool extends HelperToolBase {
          }
       }
 
-      // todo pages here
-
+      List pages = getPageList();
+      for (Iterator i=pages.iterator();i.hasNext();) {
+         DecoratedPage page = (DecoratedPage) i.next();
+         attachableItems.add(createSelect(page.getBase().getUrl(),
+               page.getBase().getTitle()));
+      }
 
       return attachableItems;
    }
@@ -261,6 +263,77 @@ public class FreeFormTool extends HelperToolBase {
          returned.add(createSelect(page.getBase().getId().getValue(), page.getBase().getTitle()));
       }
       return returned;
+   }
+
+   public List getLayouts() {
+      if (layouts == null) {
+         layouts = new ArrayList();
+         List baseLayouts = getPresentationManager().getLayouts();
+         for (Iterator i=baseLayouts.iterator();i.hasNext();) {
+            PresentationLayout layout = (PresentationLayout) i.next();
+            layouts.add(createSelect(layout.getId().getValue(), layout.getName()));
+         }
+      }
+
+      return layouts;
+   }
+
+   public void setLayouts(List layouts) {
+      this.layouts = layouts;
+   }
+
+   public IdManager getIdManager() {
+      return idManager;
+   }
+
+   public void setIdManager(IdManager idManager) {
+      this.idManager = idManager;
+   }
+
+   public String processActionNewPage() {
+      PresentationPage page = new PresentationPage();
+
+      page.setNewObject(true);
+      page.setId(getIdManager().createId());
+      page.setPresentation(getPresentation());
+      page.setRegions(new HashSet());
+      page.setAdvancedNavigation(true); // this is the default
+      presentation.getPages().add(page);
+      reorderPages();
+      DecoratedPage decoratedPage = new DecoratedPage(page, this);
+      setCurrentPage(decoratedPage);
+      return "edit";
+   }
+
+   protected void reorderPages() {
+      int index = 0;
+      for (Iterator i=presentation.getPages().iterator();i.hasNext();) {
+         PresentationPage page = (PresentationPage) i.next();
+         page.setSequence(index);
+         index++;
+      }
+      pageList = null;
+      attachableItems = null; // make sure list gets re-created in order
+   }
+
+   public String processRemoveSelectedPages() {
+      List localPageList = pageList;
+
+      for (Iterator i=localPageList.iterator();i.hasNext();) {
+         DecoratedPage page = (DecoratedPage) i.next();
+         if (page.isSelected()) {
+            deletePage(page);
+         }
+      }
+
+      reorderPages();
+      return "main";
+   }
+
+   public void deletePage(DecoratedPage page) {
+      getPresentation().getPages().remove(page.getBase());
+      pageList = null;
+      attachableItems = null; // make sure list gets re-created in order
    }
 
 }

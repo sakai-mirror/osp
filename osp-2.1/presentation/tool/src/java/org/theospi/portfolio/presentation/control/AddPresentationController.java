@@ -231,7 +231,6 @@ public class AddPresentationController extends AbstractWizardFormController {
 
          if (presentation.getPages().size() == 0) {
             presentation.setPages(new ArrayList());
-            presentation.getPages().add(createDefaultPage(presentation));
          }
       }
       if (page == PRESENTATION_ITEMS) {
@@ -287,26 +286,6 @@ public class AddPresentationController extends AbstractWizardFormController {
       return model;
    }
 
-   protected PresentationPage createDefaultPage(Presentation pres) {
-      // todo remove sample code
-      PresentationPage page = new PresentationPage();
-
-      page.setNewObject(true);
-      page.setId(getIdManager().createId());
-      page.setPresentation(pres);
-      page.setRegions(new HashSet());
-      page.setSequence("0");  // first page
-      page.setTitle("test page");
-
-      Collection layouts = getPresentationManager().findLayoutsByOwner(
-            getAuthManager().getAgent(), PortalService.getCurrentSiteId());
-      if (layouts.size() > 0) {
-         page.setLayout((PresentationLayout) layouts.iterator().next());
-      }
-
-      return page;
-   }
-
    protected Integer getTotalPages(Presentation presentation, int page) {
       if (presentation.getTemplate().getPropertyPage() == null) {
          return new Integer(3);
@@ -360,7 +339,7 @@ public class AddPresentationController extends AbstractWizardFormController {
             if (action != null) {
                if (action.equals(FreeFormHelper.ACTION_BACK)) {
                   session.removeAttribute(FreeFormHelper.FREE_FORM_ACTION);
-                  target--;
+                  target -= hasProperties(presentation)?2:3;
                }
                else if (action.equals(FreeFormHelper.ACTION_CONTINUE)) {
                   session.removeAttribute(FreeFormHelper.FREE_FORM_ACTION);
@@ -378,16 +357,22 @@ public class AddPresentationController extends AbstractWizardFormController {
       }
 
       if (target == PROPERTY_PAGE) {
-         Id templateId = presentation.getTemplate().getId();
-         Id propId = presentationManager.getPresentationTemplate(templateId).getPropertyPage();
+         boolean hasProperties = hasProperties(presentation);
 
-         if (propId == null && currentPage == INITIAL_PAGE && target > currentPage)
+         if (!hasProperties && currentPage == INITIAL_PAGE && target > currentPage)
             return target + 1;
-         if (propId == null && currentPage == PRESENTATION_ITEMS && target < currentPage)
+         if (!hasProperties && currentPage == PRESENTATION_ITEMS && target < currentPage)
             return target - 1;
       }
 
       return target;
+   }
+
+   protected boolean hasProperties(Presentation presentation) {
+      Id templateId = presentation.getTemplate().getId();
+      Id propId = presentationManager.getPresentationTemplate(templateId).getPropertyPage();
+      boolean hasProperties = propId != null;
+      return hasProperties;
    }
 
    protected boolean isFormSubmission(HttpServletRequest request) {

@@ -519,7 +519,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       storePresentationViewers(presentation);
 
-      storePresentationPages(presentation.getPages());
+      storePresentationPages(presentation.getPages(), presentation.getId());
 
       return presentation;
    }
@@ -537,7 +537,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
    }
 
-   protected void storePresentationPages(List pages) {
+   protected void storePresentationPages(List pages, Id presentationId) {
       if (pages == null) {
          return;
       }
@@ -552,6 +552,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
          else {
             getHibernateTemplate().saveOrUpdateCopy(page);
+         }
+      }
+
+      List allPages = getPresentationPagesByPresentation(presentationId);
+      for (Iterator i=allPages.iterator();i.hasNext();) {
+         PresentationPage page = (PresentationPage) i.next();
+         if (!pages.contains(page)) {
+            getHibernateTemplate().delete(page);
          }
       }
    }
@@ -1844,7 +1852,16 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return getNode(node, presentation);
    }
 
-   private Node getNode(Node node, Presentation presentation) {
+   public Node getNode(Id artifactId, PresentationLayout layout) {
+      String id = getContentHosting().resolveUuid(artifactId.getValue());
+      String ref = getContentHosting().getReference(id);
+      getSecurityService().pushAdvisor(
+            new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, ref));
+      Node node = getNode(artifactId);
+      return getNode(node, layout);
+   }
+
+   protected Node getNode(Node node, Presentation presentation) {
       if (node == null) {
          return null;
       }
@@ -1855,9 +1872,25 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return new Node(node.getId(), wrapped, node.getTechnicalMetadata().getOwner());
    }
 
+   protected Node getNode(Node node, PresentationLayout layout) {
+      if (node == null) {
+         return null;
+      }
+
+      ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
+            buildLayoutRef(layout.getSiteId(), layout.getId().getValue(), node.getResource()));
+
+      return new Node(node.getId(), wrapped, node.getTechnicalMetadata().getOwner());
+   }
+
    protected String buildRef(String siteId, String contextId, ContentResource resource) {
       return ContentEntityUtil.getInstance().buildRef(
          PresentationContentEntityProducer.PRODUCER_NAME, siteId, contextId, resource.getReference());
+   }
+
+   protected String buildLayoutRef(String siteId, String contextId, ContentResource resource) {
+      return ContentEntityUtil.getInstance().buildRef(
+         LayoutEntityProducer.PRODUCER_NAME, siteId, contextId, resource.getReference());
    }
 
    public Node getNode(Reference ref) {
@@ -1912,6 +1945,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public void setSecurityService(SecurityService securityService) {
       this.securityService = securityService;
+   }
+
+   public List getLayouts() {
+      List returned = new ArrayList();
+      String currentSiteId = PortalService.getCurrentSiteId();
+      returned.addAll(findLayoutsByOwner(getAuthnManager().getAgent(), currentSiteId));
+      returned.addAll(findPublishedLayouts(currentSiteId));
+      return returned;
    }
 
    public Collection findPublishedLayouts(String siteId) {
@@ -1974,7 +2015,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    
    public List getPresentationPagesByPresentation(Id presentationId) {
       return getHibernateTemplate().find(
-            "from PresentationPage page where page.presentation.id=? ", 
+            "from PresentationPage page where page.presentation.id=? order by seq_num",
             new Object[]{presentationId.getValue()});
    }
 
@@ -2042,8 +2083,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    
    
    protected Document getPresentationLayoutAsXml(Id pageId) {
-      
-      
+
       Element root = new Element("ospiPresentation");
       Element layoutElement = new Element("layout");
       Element regionsElement = new Element("regions");
@@ -2112,7 +2152,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
       return new Element("empty");
    }
-   
+
    protected Artifact getPresentationItem(String type, Id itemId, Presentation presentation) {
       ArtifactFinder finder = getArtifactFinderManager().getArtifactFinderByType(type);
       
@@ -2145,8 +2185,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       
       Element fileData = new Element("fileArtifact");
       Element uri = new Element("uri");
-      uri.addContent("viewPresentation.osp?id=" + page.getPresentation().getId().getValue() + 
-            "&page=" + page.getId().getValue());
+      uri.addContent(page.getUrl());
       fileData.addContent(uri);
 
       root.addContent(metadata);
@@ -2163,31 +2202,38 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    
    
    protected Element createNavigationElement(PresentationPage page) {
-      boolean hasPrevious = false;
-      boolean hasNext = false;
-      String currentPage = page.getSequence();
+      int currentPage = page.getSequence();
       Element navigationElement = new Element("navigation");
       Element previousPage = new Element("previousPage");
       Element nextPage = new Element("nextPage");
 
-      if (page.isNavigation()) {
+      if (page.isAdvancedNavigation()) {
          List pages = getPresentationPagesByPresentation(page.getPresentation().getId());
+         PresentationPage lastNavPage = null;
+         PresentationPage nextNavPage = null;
+         boolean foundCurrent = false;
+
          for (Iterator i = pages.iterator(); i.hasNext();) {
             PresentationPage iterPage = (PresentationPage)i.next();
-            if (iterPage.isNavigation() &&
-                  Integer.parseInt(iterPage.getSequence())+1 == Integer.parseInt(currentPage)) {
-               previousPage.addContent(getPresentationPageAsXml(iterPage));
-               navigationElement.addContent(previousPage);
-               hasPrevious = true;
+            if (iterPage.getSequence() == currentPage) {
+               foundCurrent = true;
             }
-            else if (iterPage.isNavigation() &&
-                  Integer.parseInt(iterPage.getSequence())-1 == Integer.parseInt(currentPage)) {
-               nextPage.addContent(getPresentationPageAsXml(iterPage));
-               navigationElement.addContent(nextPage);
-               hasNext = true;
+            else if (iterPage.isAdvancedNavigation() && !foundCurrent) {
+               lastNavPage = iterPage;
             }
-            if (hasPrevious && hasNext)
+            else if (iterPage.isAdvancedNavigation()) {
+               nextNavPage = iterPage;
                break;
+            }
+         }
+
+         if (lastNavPage != null) {
+            previousPage.addContent(getPresentationPageAsXml(lastNavPage));
+            navigationElement.addContent(previousPage);
+         }
+         if (nextNavPage != null) {
+            nextPage.addContent(getPresentationPageAsXml(nextNavPage));
+            navigationElement.addContent(nextPage);
          }
       }
       return navigationElement;
