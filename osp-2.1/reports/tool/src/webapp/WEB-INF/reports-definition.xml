@@ -366,6 +366,7 @@
                    <property name="isExport"><value>false</value></property>
                </bean>
                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
+                  <property name="title"><value>CSV</value></property>
                    <property name="xslLink"><value>WEB-INF/reportxsls/defaultExport.xsl</value></property>
                    <property name="isExport"><value>true</value></property>
                   <property name="extension"><value>csv</value></property>
@@ -375,8 +376,11 @@
                   </property>
                </bean>
                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
+                  <property name="title"><value>HTML</value></property>
                    <property name="xslLink"><value>WEB-INF/reportxsls/report1.2.xsl</value></property>
                    <property name="isExport"><value>true</value></property>
+                  <property name="target"><value>_blank</value></property>
+                  <property name="extension"><value>html</value></property>
                </bean>
             </list>
         </property>
