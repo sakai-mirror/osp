@@ -297,7 +297,7 @@ public class FreeFormTool extends HelperToolBase {
       page.setId(getIdManager().createId());
       page.setPresentation(getPresentation());
       page.setRegions(new HashSet());
-      page.setAdvancedNavigation(true); // this is the default
+      page.setAdvancedNavigation(false); // this is the default
       presentation.getPages().add(page);
       reorderPages();
       DecoratedPage decoratedPage = new DecoratedPage(page, this);

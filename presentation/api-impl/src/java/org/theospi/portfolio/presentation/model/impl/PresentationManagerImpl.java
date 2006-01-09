@@ -2207,7 +2207,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       Element previousPage = new Element("previousPage");
       Element nextPage = new Element("nextPage");
 
-      if (page.isAdvancedNavigation()) {
+      if (!page.isAdvancedNavigation()) {
          List pages = getPresentationPagesByPresentation(page.getPresentation().getId());
          PresentationPage lastNavPage = null;
          PresentationPage nextNavPage = null;
@@ -2218,10 +2218,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             if (iterPage.getSequence() == currentPage) {
                foundCurrent = true;
             }
-            else if (iterPage.isAdvancedNavigation() && !foundCurrent) {
+            else if (!iterPage.isAdvancedNavigation() && !foundCurrent) {
                lastNavPage = iterPage;
             }
-            else if (iterPage.isAdvancedNavigation()) {
+            else if (!iterPage.isAdvancedNavigation()) {
                nextNavPage = iterPage;
                break;
             }

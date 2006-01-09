@@ -151,7 +151,7 @@
 <!--       <many-to-one name="style" column="style_id" not-null="true" class="Style"/> -->
       <property name="style" column="style_id" type="string" not-null="false" />
       <property name="sequence" type="int" column="seq_num" not-null="false"/>
-      <property name="advancedNavigation" type="boolean" />
+      <property name="advancedNavigation" column="advanced_navigation" type="boolean" />
       <set name="regions" lazy="false" inverse="true" cascade="all-delete-orphan">
          <key column="presentation_page_id" />
          <one-to-many class="PresentationPageRegion" />
@@ -182,7 +182,7 @@
       </id>
       <many-to-one name="region" column="presentation_page_region_id" not-null="true" class="PresentationPageRegion"/>
       <property name="type" column="type" type="string" not-null="false" />
-      <property name="value" column="value" type="string" not-null="false" />
+      <property name="value" column="value" type="string" not-null="false" length="2147483647" />
       <property name="regionItemSeq" column="seq_num" type="int" not-null="true" />
       <set name="properties" lazy="false" inverse="true" cascade="all-delete-orphan">
          <key column="presentation_page_item_id" />

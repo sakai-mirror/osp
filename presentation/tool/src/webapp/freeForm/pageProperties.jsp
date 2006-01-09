@@ -78,7 +78,8 @@
              <ospx:splitsection valign="top">
                <sakai:panel_edit>
                   <h:outputLabel for="modified" id="modifiedLabel" value="#{msgs.page_modified}" />
-                  <h:outputFormat id="modified" value="#{msgs.date_format}" >
+                  <h:outputFormat id="modified" value="#{msgs.date_format}"
+                     rendered="#{!empty freeForm.currentPage.base.modified}">
                      <f:param value="#{freeForm.currentPage.base.modified}" />
                   </h:outputFormat>
                </sakai:panel_edit>
