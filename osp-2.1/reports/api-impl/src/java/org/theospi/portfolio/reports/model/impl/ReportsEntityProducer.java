@@ -25,6 +25,13 @@ package org.theospi.portfolio.reports.model.impl;
 import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
 
 /**
+ * This class is a singleton from components.xml.
+ * 
+ * It munges/decorates a resource url with info so as the artifact manager
+ * will ask the reports code base about access to the particular artifact
+ * 
+ * @see ReportsHttpAccess
+ * 
  * Created by IntelliJ IDEA.
  * User: John Ellis
  * Date: Dec 24, 2005

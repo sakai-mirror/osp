@@ -119,33 +119,51 @@ import org.sakaiproject.api.kernel.function.cover.FunctionManager;
  * This class is a singleton that manages the reports on a general basis
  * 
  * 
+ * 
  * @author andersjb
  *
  */
 public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsManager
 {
+	/** Enebles logging */
 	protected final transient Log logger = LogFactory.getLog(getClass());
 	
 	/** The global list of reports */
 	private List reportDefinitions;
 	
+	/** Class for converting a Id string to an Id class */
 	private IdManager		idManager = null;
+	
+	/** the sakai class that manages permissions */
    private AuthorizationFacade authzManager;
 
+   /** The class that generates the database connection.  it is pulled from the datawarehouse */
 	private DataSource	dataSource = null;
+	
+	/** an internal variable for whether or not the database connection should be closed after its use */
 	private boolean		canCloseConnection = true;
    
+	/** used to hash a reference so the hash isn't straight from the reference */
    private String secretKey = "ospReports";
 
+   /** used to allow artifacts to be downloaded (through adding an advisor)  */
    private SecurityService securityService;
 
+   /** convert between the user formatted date and the database formatted date */
 	private static SimpleDateFormat userDateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	private static SimpleDateFormat dbDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-	/** Tells us if the global database reportDefinitions were loaded */
+	/** Tells us if the global database reportDefinitions was loaded */
 	private boolean isDBLoaded = false;
+	
+	/** the name of key in the session into which the result is saved into */
    private static final String CURRENT_RESULTS_TAG = "org.theospi.portfolio.reports.model.ReportsManager.currentResults";
 
+   	/**
+   	 * Called on after the startup of the singleton.  This sets the global
+   	 * list of functions which will will have permission managed by sakai
+   	 * @throws Exception
+   	 */
     protected void init() throws Exception
     {
        FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_CREATE);
@@ -156,7 +174,8 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
    
    
    /**
-	 * This is the setter for the predefined reportDefinitions, via the bean
+	 * Sets the list of ReportDefinitions.  It also iterates through the list
+	 * and tells the report definition to complete it's loading.
 	 * @param reportDefinitions List of reportDefinitions
 	 */
 	public void setReportDefinitions(List reportDefinitions)
@@ -173,7 +192,8 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	
 	
 	/**
-	 * Returns the reports that are viewable by the worksite.
+	 * Returns the ReportDefinitions.  The list returned is filtered
+	 * for the worksite type against the report types
 	 * @return List
 	 */
 	public List getReportDefinitions()
@@ -243,47 +263,50 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	
 	
 	/**
-	 * this gets the list of report results that a user can open
+	 * this gets the list of report results that a user can view.
+	 * If the user has permissions to run or view reports, 
+	 *   then this grabs the ReportResults
+	 * If the user has permissions to run reports,
+	 *   then this grabs the Live Reports
 	 * 
-	 * TODO: permissions
 	 * @return List of ReportResult objects
 	 */
 	public List getCurrentUserResults()
 	{
 		Session s = SessionManager.getCurrentSession();
 
-      boolean runReports = can(ReportFunctions.REPORT_FUNCTION_RUN);
-      boolean viewReports = can(ReportFunctions.REPORT_FUNCTION_VIEW);
+		boolean runReports = can(ReportFunctions.REPORT_FUNCTION_RUN);
+		boolean viewReports = can(ReportFunctions.REPORT_FUNCTION_VIEW);
 
-      List returned = new ArrayList();
+		List returned = new ArrayList();
 
-      if (viewReports | runReports) {
-         List results = getHibernateTemplate().find("from ReportResult r WHERE r.userId=?", s.getUserId(), Hibernate.STRING);
+		if (viewReports | runReports) {
+			List results = getHibernateTemplate().find("from ReportResult r WHERE r.userId=?", s.getUserId(), Hibernate.STRING);
 
-         Iterator iter = results.iterator();
-         while(iter.hasNext()) {
-            ReportResult r = (ReportResult)iter.next();
+			Iterator iter = results.iterator();
+			while(iter.hasNext()) {
+				ReportResult r = (ReportResult)iter.next();
 
-            r.setIsSaved(true);
-         }
-         returned.addAll(results);
-      }
+				r.setIsSaved(true);
+			}
+			returned.addAll(results);
+		}
 
-      if (runReports) {
-         List liveReports = getHibernateTemplate().find("from Report r WHERE r.userId=? AND r.isLive=1", s.getUserId(), Hibernate.STRING);
+		if (runReports) {
+			List liveReports = getHibernateTemplate().find("from Report r WHERE r.userId=? AND r.isLive=1", s.getUserId(), Hibernate.STRING);
 
-         Iterator iter = liveReports.iterator();
-         while(iter.hasNext()) {
-            Report r = (Report)iter.next();
+			Iterator iter = liveReports.iterator();
+			while(iter.hasNext()) {
+				Report r = (Report)iter.next();
 
-            r.getReportParams().size();
+				r.getReportParams().size();
 
-            r.connectToDefinition(reportDefinitions);
-            r.setIsSaved(true);
-         }
+				r.connectToDefinition(reportDefinitions);
+				r.setIsSaved(true);
+			}
 
-         returned.addAll(liveReports);
-      }
+			returned.addAll(liveReports);
+		}
 
 		return returned;
 	}
@@ -305,6 +328,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	 * Reloads a ReportResult.  During the loading process it loads the
 	 * report from which the ReportResult is derived, It links the report to
 	 * the report definition, and sets the report in the report result.
+	 * @param ReportResult result
 	 * @return ReportResult
 	 */
     public ReportResult loadResult(ReportResult result)
@@ -338,12 +362,25 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
     	return reportResult;
     }
 
+    /**
+     * Generates a unique id for a reference
+     * @param result
+     * @param ref
+     * @return
+     */
    public String getReportResultKey(ReportResult result, String ref) {
       String hashCode = DigestUtils.md5Hex(ref + getSecretKey());
 
       return hashCode;
    }
 
+   /**
+    * checks the id against the generated unique id of the reference.
+    * It throws an AuthorizationFailedException if the ids don't match.
+    * Otherwise it adds the AllowAllSecurityAdvisor to the securityService
+    * @param id
+    * @param ref
+    */
    public void checkReportAccess(String id, String ref) {
       String hashCode = DigestUtils.md5Hex(ref + getSecretKey());
 
@@ -354,16 +391,29 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
    }
 
+   /**
+    * Puts the ReportResult into the session
+    * @param result
+    */
    public void setCurrentResult(ReportResult result) {
       ToolSession session = SessionManager.getCurrentToolSession();
       session.setAttribute(CURRENT_RESULTS_TAG, result);
    }
 
+   /**
+    * Pulls the ReportResults out of the session
+    * @return ReportResult
+    */
    public ReportResult getCurrentResult() {
       ToolSession session = SessionManager.getCurrentToolSession();
       return (ReportResult) session.getAttribute(CURRENT_RESULTS_TAG);
    }
 
+   /**
+    * Given an id, this method finds and returns the ReportDefinition
+    * @param Id
+    * @return ReportDefinition
+    */
    public ReportDefinition findReportDefinition(String Id)
     {
     	Iterator iter = reportDefinitions.iterator();
@@ -466,7 +516,13 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		return con;
 	}
 	
-	
+	/**
+	 * This closes the database connection if it was pulled from the
+	 * data warehouse.  (IOW, doesn't close if the connection came from
+	 * the hibernate session)
+	 * @param connection
+	 * @throws SQLException
+	 */
 	public void closeWarehouseConnection(Connection connection) throws SQLException
 	{
 		if(canCloseConnection)
@@ -528,6 +584,15 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		return results;
 	}
 
+	/**
+	 * gets the xsl tranform file, does the transform on the Results,
+	 * then applies the post processor.
+	 * 
+	 * The result is a file being placed into the output Stream.
+	 * @param params
+	 * @param out
+	 * @throws IOException
+	 */
    public void packageForDownload(Map params, OutputStream out) throws IOException {
       ReportResult result = getCurrentResult();
 
@@ -745,6 +810,12 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		return rr;
 	}
 
+	/**
+	 * applies all the post processing filters and returns the processed results
+	 * @param rd
+	 * @param rr
+	 * @return
+	 */
    protected ReportResult postProcessResult(ReportDefinition rd, ReportResult rr) {
       List resultProcessors = rd.getResultProcessors();
       if (resultProcessors != null) {
@@ -756,6 +827,15 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
       return rr;
    }
 
+   /**
+    * Replaces the the system value proxy with the values.
+    * The list of system value proxies(without quote characters):
+    * "{userid}", "{userdisplayname}", "{useremail}", 
+    * "{userfirstname}", "{userlastname}", "{worksiteid}", 
+    * "{toolid}", 
+    * @param inString
+    * @return String with replaced values
+    */
    public String replaceSystemValues(String inString)
 	{
 		UserDirectoryService dirServ = org.sakaiproject.service.legacy.user.cover.UserDirectoryService.getInstance();

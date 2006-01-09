@@ -44,18 +44,29 @@
 
 package org.theospi.portfolio.reports.tool;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+
 import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
+import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.theospi.portfolio.shared.tool.ToolBase;
+import org.theospi.portfolio.guidance.model.GuidanceItem;
+import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
+import org.theospi.portfolio.guidance.tool.GuidanceTool;
 import org.theospi.portfolio.reports.model.*;
 import org.theospi.portfolio.reports.tool.DecoratedReport;
 import org.theospi.portfolio.reports.tool.DecoratedReportDefinition;
@@ -368,6 +379,33 @@ public class ReportsTool extends ToolBase {
 	{
 		savedLiveReport = false;
 		return reportResultsPage;
+	}
+	
+	/**
+	 * We want to use an action to forward to the helper.  This is because we
+	 * need to clear out the cached permissions
+	 * @return String unused
+	 */
+	public String processPermissions()
+	{
+		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+	    ToolSession session = SessionManager.getCurrentToolSession();
+	    
+	    userCan = null;
+	    
+	    try {
+	        context.redirect("sakai.permissions.helper.helper/tool?" + 
+	        		"session.sakaiproject.permissions.description=" + 
+	        			getPermissionsMessage() + 
+	        		"&session.sakaiproject.permissions.siteRef=" + 
+	        			getWorksite().getReference() + 
+	        		"&session.sakaiproject.permissions.prefix=" + 
+	        			getReportFunctionPrefix());
+	    }
+	    catch (IOException e) {
+	        throw new RuntimeException("Failed to redirect to helper", e);
+	    }
+	    return null;
 	}
 
 	/**
