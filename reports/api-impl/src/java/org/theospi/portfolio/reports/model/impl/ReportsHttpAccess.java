@@ -36,7 +36,8 @@ import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.CopyrightException;
 
 /**
- * Created by IntelliJ IDEA.
+ * This class can check for access permissions on a particular reference
+ * 
  * User: John Ellis
  * Date: Dec 24, 2005
  * Time: 12:03:18 PM
@@ -46,15 +47,27 @@ public class ReportsHttpAccess extends OspHttpAccess {
 
    private ReportsManager reportsManager;
 
+   /**
+    * Given a file reference and the reference parser (fill in what these are)
+    * This method asks the ReportsManager Singleton whether or not the request
+    * has access to the particular file.  This method throws an exception
+    * when something isn't correct about the user, the request, or the file
+    * @throws PermissionException
+    * @throws IdUnusedException
+    * @throws ServerOverloadException
+    * @throws CopyrightException
+    */
    protected void checkSource(Reference ref, ReferenceParser parser)
       throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
       getReportsManager().checkReportAccess(parser.getId(), parser.getRef());
    }
 
+   /** gets the class */
    public ReportsManager getReportsManager() {
       return reportsManager;
    }
 
+   /** sets the class, from the components.xml */
    public void setReportsManager(ReportsManager reportsManager) {
       this.reportsManager = reportsManager;
    }

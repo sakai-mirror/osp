@@ -8,17 +8,11 @@
     <sakai:view title="#{msgs.title_main}">
             <h:form>
                 <sakai:tool_bar>
-                    <h:outputLink value="sakai.permissions.helper.helper/tool"
-                        rendered="#{ReportsTool.maintainer}"
-                        title="#{msgs.permissions_link}">
-                       <f:param name="session.sakaiproject.permissions.description"
-                        value="#{ReportsTool.permissionsMessage}" />
-                       <f:param name="session.sakaiproject.permissions.siteRef"
-                           value="#{ReportsTool.worksite.reference}" />
-                       <f:param name="session.sakaiproject.permissions.prefix"
-                           value="#{ReportsTool.reportFunctionPrefix}" />
-                       <h:outputText value="#{msgs.permissions_link}" />
-                    </h:outputLink>
+                        <h:commandLink rendered="#{ReportsTool.maintainer}"
+                            action="#{ReportsTool.processPermissions}">
+                            <h:outputText
+                                value="#{msgs.permissions_link}" />
+                        </h:commandLink>
                 </sakai:tool_bar>
 
                 <sakai:view_title value="#{msgs.title_main}" indent="1" />
