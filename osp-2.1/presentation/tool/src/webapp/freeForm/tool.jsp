@@ -36,19 +36,22 @@
          <f:facet name="header">
             <h:outputText value="#{msgs.presentation_pages_header}" />
          </f:facet>
-         <h:outputText value="#{page.base.title}"/>
-         <br/>
-         <h:commandLink action="#{page.processActionArrange}">
-            <h:outputText value="#{msgs.arrangeItems}"/>
-         </h:commandLink>
-         <h:outputText value=" | " />
-         <h:commandLink action="#{page.processActionEdit}">
-            <h:outputText value="#{msgs.editProperties}" />
-         </h:commandLink>
-         <h:outputText value=" | " />
-         <h:commandLink action="#{page.processActionDelete}">
-            <h:outputText value="#{msgs.delete}" />
-         </h:commandLink>
+   		<sakai:doc_section>
+            <h:outputText value="#{page.base.title}"/>
+         </sakai:doc_section>
+   		<sakai:doc_section>
+            <h:commandLink action="#{page.processActionArrange}">
+               <h:outputText value="#{msgs.arrangeItems}"/>
+            </h:commandLink>
+            <h:outputText value=" | " />
+            <h:commandLink action="#{page.processActionEdit}">
+               <h:outputText value="#{msgs.editProperties}" />
+            </h:commandLink>
+            <h:outputText value=" | " />
+            <h:commandLink action="#{page.processActionDelete}">
+               <h:outputText value="#{msgs.delete}" />
+            </h:commandLink>
+         </sakai:doc_section>
       </h:column>
       <h:column>
          <f:facet name="header">
@@ -71,7 +74,8 @@
          <f:facet name="header">
             <h:outputText value="#{msgs.modified}" />
          </f:facet>
-         <h:outputFormat id="modified" value="#{msgs.date_format}" >
+         <h:outputFormat id="modified" value="#{msgs.date_format}"
+            rendered="#{!empty page.base.modified}">
             <f:param value="#{page.base.modified}" />
          </h:outputFormat>
       </h:column>
