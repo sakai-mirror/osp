@@ -16,7 +16,7 @@
                 <br /><br /><h:outputText value="<span style='color:#F66'>#{ReportsTool.workingReport.paramErrorMessages}</span>
                 " escape="false" />
                 
-                <h:dataTable var="decoratedReportParam"
+                <h:dataTable var="decoratedReportParam" id="paramsTable"
                     value="#{ReportsTool.workingReport.reportParams}">
                     <h:column>
                         <f:facet name="header">
@@ -43,7 +43,7 @@
 						<h:outputText escape="false" rendered="#{decoratedReportParam.isFillIn && decoratedReportParam.isDate}"
 							value="
 							<input type=\"image\" id=\"dueDatePopup\" src=\"images/calendar_icon.gif\"
-								onclick=\"jscalendarPopUpCalendar(this,this.form.elements['rpForm:_id4:#{decoratedReportParam.index}:dueDate'],'M/d/yyyy'); return false;\" />
+								onclick=\"jscalendarPopUpCalendar(this,this.form.elements['rpForm:paramsTable:#{decoratedReportParam.index}:dueDate'],'M/d/yyyy'); return false;\" />
 							"
 						/>
 		
