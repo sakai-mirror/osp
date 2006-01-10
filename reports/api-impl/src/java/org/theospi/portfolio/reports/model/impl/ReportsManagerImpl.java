@@ -649,12 +649,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 					
 					if(rp.getValue() == null)
 						throw new OspException("The Report Parameter Value was blank.  Offending parameter: " + rdp.getParamName());
-	
-					//TODO: what to do?
-					//	if a parameter is not valid, fail gracefully
-					if(!rp.valid()) {
-						//return null;
-					}
 					
 					String value = rp.getValue();
 					
