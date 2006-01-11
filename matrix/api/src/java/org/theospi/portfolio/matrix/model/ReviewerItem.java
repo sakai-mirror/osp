@@ -54,6 +54,8 @@ import java.util.Date;
 
 /**
  * @author chmaurer
+ * 
+ * @deprecated ReviewerItem is now deprecated.
  */
 public class ReviewerItem {
 

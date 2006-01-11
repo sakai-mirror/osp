@@ -154,7 +154,7 @@
          <props>
             <prop key="success">viewCell</prop>
             <prop key="cancel">matrixRedirect</prop>
-            <prop key="confirm">removeConfirmationRedirect</prop>
+            <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="guidance">viewGuidance</prop>
             <prop key="review">createReview</prop>
          </props>
@@ -167,6 +167,29 @@
       <property name="commandName"><value>cellBean</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellFormBean</value></property>
       <property name="formView"><value>viewCell</value></property>
+   </bean>
+   
+   
+      <bean id="submitCellConfirmationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.SubmitCellConfirmationController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">submitCellConfirmation</prop>
+            <prop key="continue">viewCellRedirect</prop>
+         </props>
+      </property> 
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>     
+      <property name="commandName"><value>model</value></property>
+      <property name="commandClass"><value>java.util.Map</value></property>
    </bean>
 
    <bean id="reviewHelperController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
@@ -617,7 +640,7 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">editScaffoldingCell</prop>
+            <prop key="success">editScaffoldingCellRedirect</prop>
             <prop key="loadReviewers">editScaffoldingCellRedirect</prop>
 				<prop key="return">viewScaffoldingRedirect</prop>
 				<prop key="addExpectation">addExpectationRedirect</prop>

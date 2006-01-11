@@ -91,7 +91,6 @@
 				<th scope="col">Size</th>
 				<th scope="col">Created By</th>
 				<th scope="col">Last Modified</th>
-				<th scope="col">Remove?</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -130,11 +129,6 @@
 					<td>
 						<fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="MM-dd-yyyy" />
 					</td>
-					<td>
-						<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
-							<input type="checkbox" name="selectedArtifacts" value="<c:out value="${node.id}"/>">
-						</c:if>
-					</td>
 				</tr>
 			</c:forEach>
 			<c:if test="${canReflect != 'true'}">
@@ -144,6 +138,19 @@
 	</table> <!-- End the file list table -->
 
 	<br/>
+   
+   <c:forEach var="cellFormDef" items="${cell.scaffoldingCell.additionalForms}">
+         <h4><c:out value="${cellFormDef}" /></h4>
+         <a href="<osp:url value="sakai.filepicker.helper/tool?panel=Main&session.sakaiproject.filepicker.attachLinks=true">
+                        <osp:param name="session.cell_id" value="${cell.id}" />
+                        </osp:url>">
+                     Manage Forms</a>
+         <c:forEach var="cellForm" items="${cell.cellForms}">
+            <c:if test="${cellForm.formType == cellFormDef}" >
+               <c:out value="${cellForm.id}" />
+            </c:if>
+         </c:forEach>
+   </c:forEach>
    
    <c:if test="${cell.scaffoldingCell.reflectionDevice != null}">   
       <h4><osp:message key="reflection_section_header" bundle="${msgs}" /></h4>

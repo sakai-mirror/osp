@@ -92,9 +92,11 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       ScaffoldingCell sCell = (ScaffoldingCell) command;
       Map model = new HashMap();
       
-      model.put("reflectionDevices", getReflectionDevices(sCell));
-      model.put("evaluationDevices", getEvaluationDevices(sCell));
-      model.put("reviewDevices", getReviewDevices(sCell));
+      model.put("reflectionDevices", getReflectionDevices());
+      model.put("evaluationDevices", getEvaluationDevices());
+      model.put("reviewDevices", getReviewDevices());
+      model.put("additionalFormDevices", getAdditionalFormDevices());
+      model.put("selectedAdditionalFormDevices", getSelectedAdditionalFormDevices(sCell));
       
       
       return model;
@@ -113,13 +115,24 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    
    public ModelAndView handleRequest(Object requestModel, Map request,
          Map session, Map application, Errors errors) {
+      ScaffoldingCell scaffoldingCell = (ScaffoldingCell) requestModel; 
       String action = (String) request.get("action");
+      String addFormAction = (String) request.get("addForm");
+      
+      if (addFormAction != null) {
+         Map model = new HashMap();
+         String id = (String)request.get("selectAdditionalFormId");
+         scaffoldingCell.getAdditionalForms().add(id);
+         session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+         //model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+         model.put("scaffoldingCell", scaffoldingCell);
+         return new ModelAndView("success", model);
+      }
+      
       if (action  == null) action = (String) request.get("submitAction");
       
       if (action != null && action.length() > 0) {
          Map model = new HashMap();
-         
-         ScaffoldingCell scaffoldingCell = (ScaffoldingCell) requestModel; 
          
          if (request.get("reviewers") == null) {
             scaffoldingCell.getReviewers().clear();
@@ -268,23 +281,41 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       return retWizards;
    }
    
-   protected Collection getReviewDevices(ScaffoldingCell sCell) {
+   protected Collection getReviewDevices() {
       Collection all = getFormsForSelect(WizardFunctionConstants.COMMENT_TYPE);
       all.addAll(getWizardsForSelect(WizardFunctionConstants.COMMENT_TYPE));
       return all;
    }
    
-   protected Collection getReflectionDevices(ScaffoldingCell sCell) {
+   protected Collection getReflectionDevices() {
       Collection all = getFormsForSelect(WizardFunctionConstants.REFLECTION_TYPE);
       all.addAll(getWizardsForSelect(WizardFunctionConstants.REFLECTION_TYPE));
       return all;
    }
    
-   protected Collection getEvaluationDevices(ScaffoldingCell sCell) {
+   protected Collection getEvaluationDevices() {
       Collection all = getFormsForSelect(WizardFunctionConstants.EVALUATION_TYPE);
       all.addAll(getWizardsForSelect(WizardFunctionConstants.EVALUATION_TYPE));
       return all;
    }
+   
+   protected Collection getAdditionalFormDevices() {
+      //Return all forms
+      return getFormsForSelect(null);
+   }
+   
+   protected Collection getSelectedAdditionalFormDevices(ScaffoldingCell sCell) {
+      //TODO need to preserve the ordering
+      Collection returnCol = new ArrayList();
+      Collection col = getAdditionalFormDevices();
+      for (Iterator iter = col.iterator(); iter.hasNext();) {
+         ScaffoldingCellSupportDeviceBean bean = (ScaffoldingCellSupportDeviceBean) iter.next();
+         if (sCell.getAdditionalForms().contains(bean.getId()))
+            returnCol.add(bean);
+      }
+      return returnCol;
+   }
+   
    
    
    /**

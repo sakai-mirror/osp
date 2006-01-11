@@ -79,6 +79,41 @@
 		    </p>
         </spring:bind>
         
+      <h4>Additional Forms</h4>
+
+      <p class="shorttext">
+         <label>Select Form</label>    
+         <select name="selectAdditionalFormId" >
+            <option value="" selected>None</option>
+            <c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
+               <option value="<c:out value="${addtlForm.id}"/>">
+                  <c:out value="${addtlForm.name}"/></option>
+            </c:forEach>
+         </select>
+         <span class="act">
+            <input type="submit" name="addForm" value="Add" class="active" onclick="javascript:document.forms[0].validate.value='false';" />
+         </span>
+      </p>
+      
+      <c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
+      <c:out value="${chosenForm.name}" />
+         <div class="itemAction">
+             <a href="javascript:document.forms[0].dest.value='createGuidance';
+               document.forms[0].submitAction.value='forward';
+               document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
+               document.forms[0].submit();">
+                 <osp:message key="edit" bundle="${msgs}" />
+                 </a> | 
+             <a href="javascript:document.forms[0].dest.value='deleteGuidance';
+               document.forms[0].submitAction.value='forward';
+               document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
+               document.forms[0].submit();">
+                 <osp:message key="delete" bundle="${msgs}" />
+                 </a>
+         </div>
+      
+      </c:forEach>
+        
 		<spring:bind path="scaffoldingCell.reflectionDeviceType">  
             <input type="hidden" name="<c:out value="${status.expression}"/>"
                value="<c:out value="${status.value}"/>" />

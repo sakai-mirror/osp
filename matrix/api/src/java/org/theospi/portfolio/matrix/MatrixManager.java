@@ -142,7 +142,7 @@ public interface MatrixManager {
    List getCellArtifacts(Cell cell);
    List getCellsByArtifact(Id artifactId);
 
-   Cell submitCellForReview(Cell cell);
+   Cell submitCellForEvaluation(Cell cell);
 
    List getEvaluatableCells(Agent agent, Id worksiteId);
 

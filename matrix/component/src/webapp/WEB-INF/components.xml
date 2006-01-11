@@ -123,6 +123,9 @@
       <property name="lockManager">
          <ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
       </property>
+      <property name="workflowManager">
+         <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager"/>
+      </property>
       <property name="reviewRubrics">
 			<list>
            <bean id="reviewRubricValue1" class="org.theospi.portfolio.matrix.model.ReviewRubricValue">
