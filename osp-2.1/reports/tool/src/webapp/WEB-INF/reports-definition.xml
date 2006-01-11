@@ -148,10 +148,15 @@
                     <property name="isExport"><value>false</value></property>
                 </bean>
                 <bean id="reportXsl1.3" class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>WEB-INF/reportxsls/report1.3.xsl</value></property>
                     <property name="title"><value>CSV</value></property>
+                    <property name="xslLink"><value>WEB-INF/reportxsls/defaultExport.xsl</value></property>
                     <property name="isExport"><value>true</value></property>
+                    <property name="extension"><value>csv</value></property>
+                    <property name="target"><value>_self</value></property>
                     <property name="contentType"><value>application/x-csv</value></property>
+                    <property name="resultsPostProcessor">
+                        <ref bean="org.theospi.portfolio.reports.model.ResultsPostProcessor.csv"/>
+                    </property>
                 </bean>
                 <bean id="reportXsl1.4" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>WEB-INF/reportxsls/report1.1.xsl</value></property>

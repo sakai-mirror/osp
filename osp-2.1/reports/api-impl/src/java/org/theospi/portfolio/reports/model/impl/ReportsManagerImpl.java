@@ -94,6 +94,7 @@ import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.CDATA;
 import org.jdom.output.XMLOutputter;
 import org.jdom.input.SAXBuilder;
 import org.jdom.transform.JDOMResult;
@@ -763,7 +764,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 						columnNode.setAttribute("isNull", "true");
 						data = "";
 					}
-					columnNode.setText(data);
+					columnNode.addContent(new CDATA(data));
 				}
 			}
 			reportElement.addContent(datarowsNode);
@@ -775,7 +776,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			rr.setUserId(report.getUserId());
 			rr.setXml((new XMLOutputter()).outputString(document));
 
-         rr = postProcessResult(rd, rr);
+			rr = postProcessResult(rd, rr);
 
 	      } catch (SQLException e) {
 				logger.error("", e);
