@@ -48,6 +48,7 @@ package org.theospi.portfolio.matrix.model;
 
 /**
  * @author chmaurer
+ * @deprecated ExpectationTransport is now deprecated.
  */
 public class ExpectationTransport extends AbstractLabel implements Label{
    private boolean required = false;

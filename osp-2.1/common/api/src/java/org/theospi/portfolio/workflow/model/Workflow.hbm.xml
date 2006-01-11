@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+<hibernate-mapping package="org.theospi.portfolio.workflow.model">
+
+   <class name="Workflow" table="osp_workflow" lazy="false" batch-size="10">
+      <cache usage="nonstrict-read-write"/>
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <property name="title" type="string" column="title" not-null="false"/>
+<!-- 
+      <property name="securityQualifier" type="org.sakaiproject.metaobj.shared.IdType" />
+      <property name="securityViewFunction" type="string" not-null="true"/>
+      <property name="securityEditFunction" type="string" not-null="true"/>
+-->
+      <list name="items" cascade="all-delete-orphan" inverse="true" lazy="false">
+         <key column="workflow_id"/>
+         <index column="seq_num" />
+         <one-to-many class="WorkflowItem"/>
+      </list>
+   </class>
+
+   <class name="WorkflowItem" table="osp_workflow_item" lazy="false" batch-size="3">
+      <cache usage="nonstrict-read-write"/>
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <property name="actionType" type="int" column="actionType" not-null="true"/>
+      <property name="actionObjectId" type="org.sakaiproject.metaobj.shared.IdType" 
+         column="action_object_id" not-null="true"/>
+      <property name="actionValue" type="string" column="action_value" not-null="true"/>
+      <many-to-one name="workflow" column="workflow_id" not-null="true" class="Workflow"/>
+
+   </class>
+   
+   
+</hibernate-mapping>

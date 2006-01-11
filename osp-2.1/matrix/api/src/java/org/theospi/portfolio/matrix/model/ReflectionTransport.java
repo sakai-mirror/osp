@@ -53,6 +53,7 @@ import java.util.List;
  * User: apple
  * Date: Jun 9, 2004
  * Time: 4:44:54 PM
+ * @deprecated ReflectionTransport is now deprecated.
  */
 public class ReflectionTransport {
    private Id id;

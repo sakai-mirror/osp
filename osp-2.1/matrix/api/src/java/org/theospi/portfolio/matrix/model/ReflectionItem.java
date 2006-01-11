@@ -50,6 +50,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 
 /**
  * @author chmaurer
+ * @deprecated ReflectionItem is now deprecated.
  */
 public class ReflectionItem {
 

@@ -66,10 +66,12 @@ public class Cell {
    private Set reviewerItems = new HashSet();
    private String status;
    private ScaffoldingCell scaffoldingCell;
+   private Set cellForms = new HashSet();
 
    public Reflection getReflection() {
       return reflection;
    }
+
    public void setReflection(Reflection reflection) {
       this.reflection = reflection;
    }
@@ -195,5 +197,19 @@ public class Cell {
     */
    public void setReviewerItems(Set reviewerItems) {
       this.reviewerItems = reviewerItems;
+   }
+
+   /**
+    * @return Returns the cellForms.
+    */
+   public Set getCellForms() {
+      return cellForms;
+   }
+
+   /**
+    * @param cellForms The cellForms to set.
+    */
+   public void setCellForms(Set cellForms) {
+      this.cellForms = cellForms;
    }
 }

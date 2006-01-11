@@ -53,6 +53,8 @@ import java.util.List;
  * User: apple
  * Date: Jun 9, 2004
  * Time: 4:44:54 PM
+ *
+ * @deprecated Reflection is now deprecated.
  */
 public class Reflection {
    private Id id;

@@ -106,8 +106,12 @@ import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.intf.DownloadableManager;
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
+import org.theospi.portfolio.shared.intf.WorkflowServiceManager;
 import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
 import org.theospi.portfolio.shared.mgt.ContentEntityUtil;
+import org.theospi.portfolio.workflow.mgt.WorkflowManager;
+import org.theospi.portfolio.workflow.model.Workflow;
+import org.theospi.portfolio.workflow.model.WorkflowItem;
 import org.theospi.utils.zip.UncloseableZipInputStream;
 
 /**
@@ -115,7 +119,7 @@ import org.theospi.utils.zip.UncloseableZipInputStream;
  */
 public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    implements MatrixManager, ReadableObjectHome, ArtifactFinder, DownloadableManager,
-   PresentableObjectHome, DuplicatableToolService {
+   PresentableObjectHome, DuplicatableToolService, WorkflowServiceManager {
 
    private IdManager idManager;
    private AuthenticationManager authnManager = null;
@@ -129,6 +133,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private ContentHostingService contentHosting = null;
    private SecurityService securityService;
    private DefaultScaffoldingBean defaultScaffoldingBean;
+   private WorkflowManager workflowManager;
    
 
    private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
@@ -225,6 +230,16 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             storeCell(nextCell);
          }
       }
+   }
+   
+   protected Cell getMatrixCellByScaffoldingCell(Matrix matrix, Id scaffoldingCellId) {
+      for (Iterator cells = matrix.getCells().iterator(); cells.hasNext();) {
+         Cell cell = (Cell)cells.next();
+         if (cell.getScaffoldingCell().getId().getValue().equals(scaffoldingCellId.getValue())) {
+            return cell;
+         }
+      }
+      return null;
    }
 
    public Criterion getCriterion(Id criterionId) {
@@ -716,10 +731,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return (result.size() > 0);
    }
    
-   public Cell submitCellForReview(Cell cell) {
+   public Cell submitCellForEvaluation(Cell cell) {
       getHibernateTemplate().refresh(cell); //TODO not sure if this is necessary
       ScaffoldingCell sCell = cell.getScaffoldingCell();
       
+      processWorkflow(sCell.getSubmitWorkflow().getId(), cell.getId());
+  /*    
       //if (sCell.isGradableReflection()) {
          cell.setStatus(MatrixFunctionConstants.PENDING_STATUS);
          storeCell(cell);
@@ -751,6 +768,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       //TODO removing this for sakai - might need it later
       //createReviewerAuthz(cell.getId());
+
+       */
       return cell;
    }
    
@@ -1398,5 +1417,74 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public void setDefaultScaffoldingBean(
          DefaultScaffoldingBean defaultScaffoldingBean) {
       this.defaultScaffoldingBean = defaultScaffoldingBean;
+   }
+   
+   public void processWorkflow(Id workflowId, Id objId) {
+      // TODO Auto-generated method stub
+      Workflow workflow = getWorkflowManager().getWorkflow(workflowId);
+      Cell cell = getCell(objId);
+      
+      List items = workflow.getItems();
+      for (Iterator i = items.iterator(); i.hasNext();) {
+         WorkflowItem wi = (WorkflowItem)i.next();
+         Cell actionCell = this.getMatrixCellByScaffoldingCell(cell.getMatrix(), 
+               wi.getActionObjectId());
+         switch (wi.getActionType()) {
+            case(WorkflowItem.STATUS_CHANGE_WORKFLOW):
+               processStatusChangeWorkflow(wi, actionCell);
+               break;
+            case(WorkflowItem.NOTIFICATION_WORKFLOW):
+               processNotificationWorkflow(wi);
+               break;
+            case(WorkflowItem.CONTENT_LOCKING_WORKFLOW):
+               processContentLockingWorkflow(wi, actionCell);
+               break;
+         }
+      }      
+   }
+
+   private void processContentLockingWorkflow(WorkflowItem wi, Cell actionCell) {
+      //Cell cell = getCell(wi.getActionObjectId());
+      //Cell actionCell = this.getMatrixCellByScaffoldingCell(cell.getMatrix(), 
+      //      wi.getActionObjectId());
+      
+//    Lock/unlock artifacts
+      for (Iterator iter = actionCell.getAttachments().iterator(); iter.hasNext();) {
+         Attachment att = (Attachment)iter.next();
+         
+         if (wi.getActionValue().equals(WorkflowItem.CONTENT_LOCKING_LOCK)) {
+            getLockManager().lockObject(att.getArtifactId().getValue(), 
+                  actionCell.getId().getValue(), 
+                  "Submitting cell for evaluation", true);
+         }
+         else {
+            getLockManager().removeLock(att.getArtifactId().getValue(), 
+                  actionCell.getId().getValue());
+         }         
+      }      
+   }
+
+   private void processNotificationWorkflow(WorkflowItem wi) {
+      // TODO Auto-generated method stub
+      
+   }
+
+   private void processStatusChangeWorkflow(WorkflowItem wi, Cell actionCell) {
+      //Cell cell = getCell(wi.getActionObjectId());
+      actionCell.setStatus(wi.getActionValue());
+   }
+
+   /**
+    * @return Returns the workflowManager.
+    */
+   public WorkflowManager getWorkflowManager() {
+      return workflowManager;
+   }
+
+   /**
+    * @param workflowManager The workflowManager to set.
+    */
+   public void setWorkflowManager(WorkflowManager workflowManager) {
+      this.workflowManager = workflowManager;
    }
 }

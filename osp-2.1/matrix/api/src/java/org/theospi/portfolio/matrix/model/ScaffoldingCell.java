@@ -46,13 +46,16 @@
 package org.theospi.portfolio.matrix.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.theospi.portfolio.guidance.model.Guidance;
+import org.theospi.portfolio.workflow.model.Workflow;
 
 /**
  * @author chmaurer
@@ -68,6 +71,8 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    transient private Id guidanceId;
    private Guidance guidance;
    transient private Id deleteGuidanceId;
+   private Workflow submitWorkflow;
+   transient private Id submitWorkflowId;
    
    private Id reflectionDevice;
    private String reflectionDeviceType;
@@ -75,6 +80,8 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    private String evaluationDeviceType;
    private Id reviewDevice;
    private String reviewDeviceType;
+   
+   private List additionalForms = new ArrayList();
 
    public ScaffoldingCell() {;}
    public ScaffoldingCell(Criterion criterion, Level level, String initialStatus, Scaffolding scaffolding) {
@@ -245,6 +252,42 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
     */
    public void setDeleteGuidanceId(Id deleteGuidanceId) {
       this.deleteGuidanceId = deleteGuidanceId;
+   }
+   /**
+    * @return Returns the submitWorkflow.
+    */
+   public Workflow getSubmitWorkflow() {
+      return submitWorkflow;
+   }
+   /**
+    * @param submitWorkflow The submitWorkflow to set.
+    */
+   public void setSubmitWorkflow(Workflow submitWorkflow) {
+      this.submitWorkflow = submitWorkflow;
+   }
+   /**
+    * @return Returns the submitWorkflowId.
+    */
+   public Id getSubmitWorkflowId() {
+      return submitWorkflowId;
+   }
+   /**
+    * @param submitWorkflowId The submitWorkflowId to set.
+    */
+   public void setSubmitWorkflowId(Id submitWorkflowId) {
+      this.submitWorkflowId = submitWorkflowId;
+   }
+   /**
+    * @return Returns the additionalForms.
+    */
+   public List getAdditionalForms() {
+      return additionalForms;
+   }
+   /**
+    * @param additionalForms The additionalForms to set.
+    */
+   public void setAdditionalForms(List additionalForms) {
+      this.additionalForms = additionalForms;
    }
 
    

@@ -54,8 +54,7 @@ public class ReviewHelperController implements Controller {
          case Review.REFLECTION_TYPE:
             bundlePrefix = "reflection_";
             break;
-      }
-      
+      }      
       
       session.put(ReviewHelper.REVIEW_TYPE, type);
       session.put(ReviewHelper.REVIEW_BUNDLE_PREFIX, bundlePrefix); 

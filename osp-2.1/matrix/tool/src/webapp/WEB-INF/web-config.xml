@@ -95,6 +95,7 @@
               <prop key="/selectCellArtifacts.osp">cellArtifactController</prop>
               <prop key="/manageArtifactAssociations.osp">artifactAssociationController</prop>
               <prop key="/resetMatrix.osp">MatrixResetController</prop>
+              <prop key="/submitCellConfirmation.osp">submitCellConfirmationController</prop>
 
               <prop key="/checkSingleCriteria.osp">checkSingleCriteriaController</prop>
 

@@ -84,6 +84,10 @@ public class CellController implements FormController, LoadObjectController {
              cellId, Review.EVALUATION_TYPE));
       model.put("reflections", getReviewManager().getReviewsByParentAndType(
             cellId, Review.REFLECTION_TYPE));
+      
+      //model.put("additionalForms", getReviewManager().getReviewsByParentAndType(
+      //      cellId, Review.REFLECTION_TYPE));
+      
       model.put("currentUser", SessionManager.getCurrentSessionUserId());
       return model;
    }
@@ -133,6 +137,7 @@ public class CellController implements FormController, LoadObjectController {
          map.put("cell_id", cell.getId());
          map.put("selectedArtifacts", ListToString(cellBean.getSelectedArtifacts()));
          map.put("cellBean", cellBean);
+         //TODO change this to use the reflection submission confirmation
          return new ModelAndView("confirm", map); 
       }
       if (matrixAction != null) {
