@@ -11,6 +11,7 @@ import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
+import org.sakaiproject.service.legacy.filepicker.ResourceEditingHelper;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
 
@@ -31,6 +32,8 @@ import java.util.ArrayList;
 public class GuidanceTool extends HelperToolBase {
 
    private DecoratedGuidance current = null;
+   private String formTypeId = null;
+   private String formId = null;
 
    private GuidanceManager guidanceManager;
    public static final String ATTACHMENT_TYPE = "org.theospi.portfolio.guidance.attachmentType";
@@ -225,4 +228,54 @@ public class GuidanceTool extends HelperToolBase {
          throw new RuntimeException("Failed to redirect to helper", e);
       }
    }
+
+   public String processTestResourceHelper() {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.setAttribute(ResourceEditingHelper.CREATE_TYPE,
+            ResourceEditingHelper.CREATE_TYPE_FORM);
+      session.setAttribute(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
+      session.setAttribute(ResourceEditingHelper.CREATE_PARENT, "/");
+
+      try {
+         context.redirect("sakai.resource.helper.helper/tool");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+
+      return null;
+   }
+
+   public String processTestResourceEditHelper() {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.setAttribute(ResourceEditingHelper.ATTACHMENT_ID, getFormId());
+
+      try {
+         context.redirect("sakai.resource.helper.helper/tool");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+
+      return null;
+   }
+
+   public String getFormTypeId() {
+      return formTypeId;
+   }
+
+   public void setFormTypeId(String formTypeId) {
+      this.formTypeId = formTypeId;
+   }
+
+   public String getFormId() {
+      return formId;
+   }
+
+   public void setFormId(String formId) {
+      this.formId = formId;
+   }
+
 }
