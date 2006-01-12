@@ -1,0 +1,46 @@
+<table class="listHier" cellspacing="0" >
+      <thead>
+         <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Size</th>
+            <th scope="col">Created By</th>
+            <th scope="col">Last Modified</th>
+         </tr>
+      </thead>
+      <tbody>
+
+         <c:forEach var="node" items="${nodes}">
+            <c:if test="${node.fileType == allowedNodeType or allowedNodeType == ''}" >
+            <c:set var="canReflect" value="true"/>
+
+            <tr>
+               <td>
+                  <a href='<c:out value="${node.externalUri}"/>' target="_blank" ><c:out value="${node.name}"/></a>
+               </td>
+               <td>
+                  <c:choose>
+                     <c:when test="${node.technicalMetadata.size > 1024 * 1024}">
+                        <fmt:formatNumber value="${node.technicalMetadata.size / (1024 * 1024)}" maxFractionDigits="1"/>MB
+                     </c:when>
+                     <c:when test="${node.technicalMetadata.size > 1024}">
+                        <fmt:formatNumber value="${node.technicalMetadata.size / (1024)}"  maxFractionDigits="1"/>KB
+                     </c:when>
+                     <c:when test="${node.technicalMetadata.size > 0}">
+                        <fmt:formatNumber value="${node.technicalMetadata.size}" />
+                     </c:when>
+                  </c:choose>
+               </td>
+               <td>
+                  <c:out value="${node.technicalMetadata.owner.displayName}"/>
+               </td>
+               <td>
+                  <fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="MM-dd-yyyy" />
+               </td>
+            </tr>
+            </c:if>
+         </c:forEach>
+         <c:if test="${canReflect != 'true'}">
+            <tr><td>&nbsp;&nbsp;&nbsp;There are no resource items at this location.</td></tr>
+         </c:if>
+      </tbody>
+   </table> <!-- End the file list table -->

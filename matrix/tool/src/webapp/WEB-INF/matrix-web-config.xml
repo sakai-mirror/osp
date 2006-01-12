@@ -147,7 +147,12 @@
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="authManager"><ref bean="authManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
-            <property name="reviewManager"><ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/></property>
+            <property name="reviewManager">
+               <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
+            </property>
+            <property name="structuredArtifactDefinitionManager">
+               <ref bean="structuredArtifactDefinitionManager"/>
+            </property>            
          </bean>
       </property>
       <property name="screenMappings">
@@ -157,6 +162,7 @@
             <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="guidance">viewGuidance</prop>
             <prop key="review">createReview</prop>
+            <prop key="formPicker">formPicker</prop>
          </props>
       </property>
       <property name="customTypedEditors">
@@ -169,8 +175,38 @@
       <property name="formView"><value>viewCell</value></property>
    </bean>
    
+   <bean id="cellFormPickerController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.CellFormPickerController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="contentHosting">
+               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+            </property>
+            <property name="entityManager">
+               <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+            </property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+            </property>            
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="cell">viewCellRedirect</prop>
+            <prop key="formPicker">formPicker</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>cellBean</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellFormBean</value></property>
+   </bean>
    
-      <bean id="submitCellConfirmationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+   <bean id="submitCellConfirmationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.SubmitCellConfirmationController">
             <property name="matrixManager"><ref bean="matrixManager"/></property>

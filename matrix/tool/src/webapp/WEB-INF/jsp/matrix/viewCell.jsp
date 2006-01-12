@@ -16,9 +16,6 @@
    <osp-c:authZMap prefix="osp.matrix." var="matrixCan" />
 
 	<div class="navIntraTool">
-		<a name="linkNew" id="linkNew" href="<osp:url value="attachToCell.osp">
-			<osp:param name="cell_id" value="${cell.id}"/>
-			</osp:url>">New...</a>
 		<c:if test="${can.create}">
          <a name="linkManageCellStatus" id="linkManageCellStatus" href="<osp:url value="manageCellStatus.osp">
             <osp:param name="cell_id" value="${cell.id}"/>
@@ -79,78 +76,36 @@
          <osp:message key="guidance_link_text" bundle="${msgs}" /></a>
    </c:if>
 
-    <h4>Cell Files</h4>
+    <h4>Cell Items
+      <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+      <a name="linkNew" id="linkNew" href="<osp:url value="attachToCell.osp">
+         <osp:param name="cell_id" value="${cell.id}"/>
+         </osp:url>">Manage Cell Items...</a>
+      </c:if>
+    </h4>
 
 	<p class="instruction">Items currently associated with cell:</p>
-
-
-	<table class="listHier" cellspacing="0" >
-		<thead>
-			<tr>
-				<th scope="col">Title</th>
-				<th scope="col">Size</th>
-				<th scope="col">Created By</th>
-				<th scope="col">Last Modified</th>
-			</tr>
-		</thead>
-		<tbody>
-
-
-			<c:set var="canReflect" value="false"/>
-			<c:forEach var="node" items="${cellBean.nodes}">
-				<c:set var="canReflect" value="true"/>
-
-				<tr>
-					<td>
-						<a href='<c:out value="${node.externalUri}"/>' target="_blank" ><c:out value="${node.name}"/></a>
-                        <!-- if status is ready -->
-                        <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
-                            <div class="itemAction">
-                                <a href="<osp:url value="removeConfirmation.osp?&cell_id=${cell.id}&selectedArtifacts=${node.id}"/>">Remove</a>
-                            </div>
-                        </c:if>
-					</td>
-					<td>
-						<c:choose>
-							<c:when test="${node.technicalMetadata.size > 1024 * 1024}">
-								<fmt:formatNumber value="${node.technicalMetadata.size / (1024 * 1024)}" maxFractionDigits="1"/>MB
-							</c:when>
-							<c:when test="${node.technicalMetadata.size > 1024}">
-								<fmt:formatNumber value="${node.technicalMetadata.size / (1024)}"  maxFractionDigits="1"/>KB
-							</c:when>
-							<c:when test="${node.technicalMetadata.size > 0}">
-								<fmt:formatNumber value="${node.technicalMetadata.size}" />
-							</c:when>
-						</c:choose>
-					</td>
-					<td>
-						<c:out value="${node.technicalMetadata.owner.displayName}"/>
-					</td>
-					<td>
-						<fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="MM-dd-yyyy" />
-					</td>
-				</tr>
-			</c:forEach>
-			<c:if test="${canReflect != 'true'}">
-				<tr><td>&nbsp;&nbsp;&nbsp;There are no resource items at this location.</td></tr>
-			</c:if>
-		</tbody>
-	</table> <!-- End the file list table -->
+   <c:set var="nodes" value="${cellBean.nodes}"/>
+   <c:set var="allowedNodeType" value=""/>
+   <%@ include file="cellContent.jspf" %>
+	
 
 	<br/>
    
-   <c:forEach var="cellFormDef" items="${cell.scaffoldingCell.additionalForms}">
-         <h4><c:out value="${cellFormDef}" /></h4>
-         <a href="<osp:url value="sakai.filepicker.helper/tool?panel=Main&session.sakaiproject.filepicker.attachLinks=true">
-                        <osp:param name="session.cell_id" value="${cell.id}" />
+   <c:forEach var="cellFormDef" items="${cellFormDefs}">
+         <h4><c:out value="${cellFormDef.name}" />
+         <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+         <a href="<osp:url value="cellFormPicker.osp">
+                        <osp:param name="cell_id" value="${cell.id}" />
+                        <osp:param name="attachFormAction" value="${cellFormDef.id}" />
                         </osp:url>">
                      Manage Forms</a>
-         <c:forEach var="cellForm" items="${cell.cellForms}">
-            <c:if test="${cellForm.formType == cellFormDef}" >
-               <c:out value="${cellForm.id}" />
-            </c:if>
-         </c:forEach>
-   </c:forEach>
+</c:if>
+</h4>
+      <c:set var="nodes" value="${cellForms}"/>
+      <c:set var="allowedNodeType" value="${cellFormDef.id}"/>
+      <%@ include file="cellContent.jspf" %>
+      </c:forEach>
    
    <c:if test="${cell.scaffoldingCell.reflectionDevice != null}">   
       <h4><osp:message key="reflection_section_header" bundle="${msgs}" /></h4>

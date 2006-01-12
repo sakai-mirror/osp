@@ -118,9 +118,9 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       ScaffoldingCell scaffoldingCell = (ScaffoldingCell) requestModel; 
       String action = (String) request.get("action");
       String addFormAction = (String) request.get("addForm");
-      
+      Map model = new HashMap();
       if (addFormAction != null) {
-         Map model = new HashMap();
+         
          String id = (String)request.get("selectAdditionalFormId");
          scaffoldingCell.getAdditionalForms().add(id);
          session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
@@ -132,13 +132,21 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       if (action  == null) action = (String) request.get("submitAction");
       
       if (action != null && action.length() > 0) {
-         Map model = new HashMap();
          
          if (request.get("reviewers") == null) {
             scaffoldingCell.getReviewers().clear();
          }
-         
-         if (action.equals("Save")) {
+         if (action.equals("removeFormDef")) {
+            String params = (String)request.get("params");
+            Map parmModel = parseParams(params);
+            String formDefId = (String)parmModel.get("id");
+            scaffoldingCell.getWizardPageDefinition().getAdditionalForms().remove(formDefId);
+            session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+            //model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+            model.put("scaffoldingCell", scaffoldingCell);
+            return new ModelAndView("success", model);
+         }
+         else if (action.equals("Save")) {
             
             if (scaffoldingCell.getScaffolding().isPublished()) {
                model.put("scaffoldingCell", scaffoldingCell);
@@ -198,14 +206,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          String params = (String)request.get("params");
          model.put("params", params);
          if (!params.equals("")) {
-            String[] paramsList = params.split(":");
-            for (int i=0; i<paramsList.length; i++) {
-               String[] pair = paramsList[i].split("=");
-               String val = null;
-               if (pair.length>1)
-                  val = pair[1];
-               model.put(pair[0], val);
-            }
+            model.putAll(parseParams(params));
          }
       }
       else {
@@ -216,6 +217,21 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       }
       return model;
       
+   }
+   
+   protected Map parseParams(String params) {
+      Map model = new HashMap();
+      if (!params.equals("")) {
+         String[] paramsList = params.split(":");
+         for (int i=0; i<paramsList.length; i++) {
+            String[] pair = paramsList[i].split("=");
+            String val = null;
+            if (pair.length>1)
+               val = pair[1];
+            model.put(pair[0], val);
+         }
+      }
+      return model;
    }
    
    protected void setAudienceSelectionVariables(Map session, ScaffoldingCell sCell) {
