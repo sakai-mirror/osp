@@ -44,34 +44,46 @@
             type="org.sakaiproject.metaobj.shared.IdType" column="id">
             <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
         </id>
-
-        <property name="status" type="java.lang.String" />
         <many-to-one name="matrix" column="matrix_id" not-null="true"
             class="Matrix" />
-        <set name="attachments" cascade="all-delete-orphan"
-            inverse="true" lazy="true">
-            <key column="cell_id" />
-            <one-to-many class="Attachment" />
-        </set>
-
-        <many-to-one name="reflection" column="reflection_id"
-            class="Reflection" cascade="delete" />
-        
-        <set name="reviewerItems" cascade="all-delete-orphan"
-            inverse="true" lazy="true">
-            <key column="cell_id" />
-            <one-to-many class="ReviewerItem" />
-        </set>
-
+        <many-to-one name="wizardPage" class="WizardPage" column="wizard_page_id"
+           cascade="all" unique="true" />
         <many-to-one name="scaffoldingCell" column="scaffolding_cell_id"
             class="ScaffoldingCell" cascade="delete" />
-            
-        <set name="cellForms" cascade="all-delete-orphan"
-            inverse="true" lazy="true">
-            <key column="cell_id" />
-            <one-to-many class="CellForm" />
-        </set>
+       <set name="reviewerItems" cascade="all-delete-orphan"
+           inverse="true" lazy="true">
+           <key column="cell_id" />
+           <one-to-many class="ReviewerItem" />
+       </set>
+
+       <many-to-one name="reflection" column="reflection_id"
+           class="Reflection" cascade="delete" />
+
     </class>
+
+   <class name="WizardPage" table="osp_wizard_page" lazy="true">
+      <cache usage="nonstrict-read-write"/>
+       <id name="id" length="36"
+           type="org.sakaiproject.metaobj.shared.IdType" column="id">
+           <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+       </id>
+
+       <property name="status" type="java.lang.String" />
+       <set name="attachments" cascade="all-delete-orphan"
+           inverse="true" lazy="true">
+           <key column="page_id" />
+           <one-to-many class="Attachment" />
+       </set>
+
+       <many-to-one name="pageDefinition" column="wiz_page_def_id"
+           class="WizardPageDefinition" cascade="delete" />
+
+       <set name="pageForms" cascade="all-delete-orphan"
+           inverse="true" lazy="true">
+           <key column="page_id" />
+           <one-to-many class="WizardPageForm" />
+       </set>
+   </class>
 
     <class name="Reflection" table="osp_reflection" lazy="true">
        <cache usage="nonstrict-read-write"/>
@@ -91,7 +103,7 @@
 
     </class>
 
-	<class name="Attachment" table="osp_cell_attachment" lazy="true">
+	<class name="Attachment" table="osp_wiz_page_attachment" lazy="true">
       <cache usage="nonstrict-read-write"/>
         <id name="id" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" column="id">
@@ -99,8 +111,8 @@
         </id>
         <property name="artifactId" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" />
-        <many-to-one name="cell" column="cell_id" not-null="true"
-            class="Cell" cascade="none" />
+        <many-to-one name="wizardPage" column="page_id" not-null="true"
+            class="WizardPage" cascade="none" />
         <property name="privacyResponse" type="org.theospi.portfolio.matrix.model.impl.HibernatePrivacyResponse" 
         		not-null="false"/>
         		
@@ -110,7 +122,7 @@
         </set>
     </class>
     
-   <class name="CellForm" table="osp_cell_form" lazy="true">
+   <class name="WizardPageForm" table="osp_wiz_page_form" lazy="true">
       <cache usage="nonstrict-read-write"/>
         <id name="id" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" column="id">
@@ -118,8 +130,8 @@
         </id>
         <property name="artifactId" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" />
-        <many-to-one name="cell" column="cell_id" not-null="true"
-            class="Cell" cascade="none" />
+        <many-to-one name="wizardPage" column="page_id" not-null="true"
+            class="WizardPage" cascade="none" />
         <property name="formType" length="36" type="string" />
 
     </class>
@@ -238,38 +250,50 @@
     	<many-to-one name="rootCriterion" column="rootcriterion_id" class="Criterion"/>
       <many-to-one name="level" column="level_id" class="Level"/>
     	<many-to-one name="scaffolding" column="scaffolding_id" not-null="true" class="Scaffolding"/>
-    	<property name="initialStatus" type="java.lang.String" />
       <set name="cells" cascade="all-delete-orphan" inverse="true"
             lazy="true">
             <key column="scaffolding_cell_id" />
             <one-to-many class="Cell" />
         </set>
-
-       <property name="reflectionDevice" column="reflection_device_id" length="36"
-         type="org.sakaiproject.metaobj.shared.IdType"/>
-       <property name="reflectionDeviceType" type="string" column="reflection_device_type" />
-       <property name="evaluationDevice" column="evaluation_device_id" length="36"
-         type="org.sakaiproject.metaobj.shared.IdType"/>
-       <property name="evaluationDeviceType" type="string" column="evaluation_device_type" />
-       <property name="reviewDevice" column="review_device_id" length="36"
-         type="org.sakaiproject.metaobj.shared.IdType"/>
-       <property name="reviewDeviceType" type="string" column="review_device_type" />
-       <!-- property name="guidanceId" column="guidance_id" not-null="false" length="36"
-            type="org.sakaiproject.metaobj.shared.IdType"/-->
-       <many-to-one name="guidance" column="guidance_id" not-null="false" 
-         class="org.theospi.portfolio.guidance.model.Guidance"/>
-       <many-to-one name="submitWorkflow" column="submit_workflow_id" not-null="false" 
-         class="org.theospi.portfolio.workflow.model.Workflow"/>
-       
-       <list name="additionalForms" cascade="all-delete-orphan"
-            inverse="false" lazy="false" table="osp_scaffolding_cell_form_defs">
-            <key column="scaffolding_cell_id" />
-            <index column="seq_num" />
-            <element column="form_def_id" type="string"/>
-        </list>
-         
+       <many-to-one name="wizardPageDefinition" class="WizardPageDefinition" column="wiz_page_def_id"
+          cascade="all" unique="true" />
     </class>
-    
-    
-    
+
+   <class name="WizardPageDefinition" table="osp_wiz_page_def" lazy="true" >
+     <cache usage="nonstrict-read-write"/>
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+        <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <property name="initialStatus" type="java.lang.String" />
+     <set name="pages" cascade="all-delete-orphan" inverse="true"
+           lazy="true">
+           <key column="wiz_page_def_id" />
+           <one-to-many class="WizardPage" />
+       </set>
+
+      <property name="reflectionDevice" column="reflection_device_id" length="36"
+        type="org.sakaiproject.metaobj.shared.IdType"/>
+      <property name="reflectionDeviceType" type="string" column="reflection_device_type" />
+      <property name="evaluationDevice" column="evaluation_device_id" length="36"
+        type="org.sakaiproject.metaobj.shared.IdType"/>
+      <property name="evaluationDeviceType" type="string" column="evaluation_device_type" />
+      <property name="reviewDevice" column="review_device_id" length="36"
+        type="org.sakaiproject.metaobj.shared.IdType"/>
+      <property name="reviewDeviceType" type="string" column="review_device_type" />
+      <!-- property name="guidanceId" column="guidance_id" not-null="false" length="36"
+           type="org.sakaiproject.metaobj.shared.IdType"/-->
+      <many-to-one name="guidance" column="guidance_id" not-null="false"
+        class="org.theospi.portfolio.guidance.model.Guidance"/>
+      <many-to-one name="submitWorkflow" column="submit_workflow_id" not-null="false"
+        class="org.theospi.portfolio.workflow.model.Workflow"/>
+
+      <list name="additionalForms" cascade="all-delete-orphan"
+           inverse="false" lazy="false" table="osp_scaffolding_cell_form_defs">
+           <key column="wiz_page_def_id" />
+           <index column="seq_num" />
+           <element column="form_def_id" type="string"/>
+       </list>
+
+   </class>
+
 </hibernate-mapping>

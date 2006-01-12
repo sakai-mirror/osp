@@ -156,7 +156,7 @@
        </renderer>
 
        <renderer>
-           <component-family>javax.faces.Output</component-family>
+           <component-family>org.theospi.xml</component-family>
            <renderer-type>org.theospi.XmlDocument</renderer-type>
            <renderer-class>org.theospi.jsf.renderer.XmlDocumentRenderer</renderer-class>
        </renderer>

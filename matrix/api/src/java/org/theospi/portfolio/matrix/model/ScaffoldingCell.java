@@ -64,30 +64,15 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    private Criterion rootCriterion;
    private Level level;
    private Scaffolding scaffolding;
-   private String initialStatus = "";
-   private Collection reviewers = new HashSet();
-   transient private boolean validate;
    private Set cells = new HashSet();
-   transient private Id guidanceId;
-   private Guidance guidance;
-   transient private Id deleteGuidanceId;
-   private Workflow submitWorkflow;
-   transient private Id submitWorkflowId;
-   
-   private Id reflectionDevice;
-   private String reflectionDeviceType;
-   private Id evaluationDevice;
-   private String evaluationDeviceType;
-   private Id reviewDevice;
-   private String reviewDeviceType;
-   
-   private List additionalForms = new ArrayList();
+   private WizardPageDefinition wizardPageDefinition;
 
    public ScaffoldingCell() {;}
    public ScaffoldingCell(Criterion criterion, Level level, String initialStatus, Scaffolding scaffolding) {
       this.rootCriterion = criterion;
       this.level = level;
-      this.initialStatus = initialStatus;
+      this.wizardPageDefinition = new WizardPageDefinition();
+      wizardPageDefinition.setInitialStatus(initialStatus);
       this.scaffolding = scaffolding;
    }
    
@@ -140,38 +125,38 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
     * @return Returns the initialStatus.
     */
    public String getInitialStatus() {
-      return initialStatus.toUpperCase();
+      return wizardPageDefinition.getInitialStatus();
    }
    /**
     * @param initialStatus The initialStatus to set.
     */
    public void setInitialStatus(String initialStatus) {
-      this.initialStatus = initialStatus.toUpperCase();
+      wizardPageDefinition.setInitialStatus(initialStatus);
    }
 
    /**
     * @return Returns the reviewers.
     */
    public Collection getReviewers() {
-      return reviewers;
+      return wizardPageDefinition.getReviewers();
    }
    /**
     * @param reviewers The reviewers to set.
     */
    public void setReviewers(Collection reviewers) {
-      this.reviewers = reviewers;
+      wizardPageDefinition.setReviewers(reviewers);
    }
    /**
     * @return Returns the validate.
     */
    public boolean isValidate() {
-      return validate;
+      return wizardPageDefinition.isValidate();
    }
    /**
     * @param validate The validate to set.
     */
    public void setValidate(boolean validate) {
-      this.validate = validate;
+      wizardPageDefinition.setValidate(validate);
    }
    public Set getCells() {
       return cells;
@@ -180,115 +165,121 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
       this.cells = cells;
    }
    public Id getEvaluationDevice() {
-      return evaluationDevice;
+      return wizardPageDefinition.getEvaluationDevice();
    }
    public void setEvaluationDevice(Id evaluationDevice) {
-      this.evaluationDevice = evaluationDevice;
+      wizardPageDefinition.setEvaluationDevice(evaluationDevice);
    }
    public String getEvaluationDeviceType() {
-      return evaluationDeviceType;
+      return wizardPageDefinition.getEvaluationDeviceType();
    }
    public void setEvaluationDeviceType(String evaluationDeviceType) {
-      this.evaluationDeviceType = evaluationDeviceType;
+      wizardPageDefinition.setEvaluationDeviceType(evaluationDeviceType);
    }
    public Id getReflectionDevice() {
-      return reflectionDevice;
+      return wizardPageDefinition.getReflectionDevice();
    }
    public void setReflectionDevice(Id reflectionDevice) {
-      this.reflectionDevice = reflectionDevice;
+      wizardPageDefinition.setReflectionDevice(reflectionDevice);
    }
    public String getReflectionDeviceType() {
-      return reflectionDeviceType;
+      return wizardPageDefinition.getReflectionDeviceType();
    }
    public void setReflectionDeviceType(String reflectionDeviceType) {
-      this.reflectionDeviceType = reflectionDeviceType;
+      wizardPageDefinition.setReflectionDeviceType(reflectionDeviceType);
    }
    public Id getReviewDevice() {
-      return reviewDevice;
+      return wizardPageDefinition.getReviewDevice();
    }
    public void setReviewDevice(Id reviewDevice) {
-      this.reviewDevice = reviewDevice;
+      wizardPageDefinition.setReviewDevice(reviewDevice);
    }
    public String getReviewDeviceType() {
-      return reviewDeviceType;
+      return wizardPageDefinition.getReviewDeviceType();
    }
    public void setReviewDeviceType(String reviewDeviceType) {
-      this.reviewDeviceType = reviewDeviceType;
+      wizardPageDefinition.setReviewDeviceType(reviewDeviceType);
    }
 
    /**
     * @return Returns the guidanceId.
     */
    public Id getGuidanceId() {
-      return guidanceId;
+      return wizardPageDefinition.getGuidanceId();
    }
    /**
     * @param guidanceId The guidanceId to set.
     */
    public void setGuidanceId(Id guidanceId) {
-      this.guidanceId = guidanceId;
+      wizardPageDefinition.setGuidanceId(guidanceId);
    }
    /**
     * @return Returns the guidance.
     */
    public Guidance getGuidance() {
-      return guidance;
+      return wizardPageDefinition.getGuidance();
    }
    /**
     * @param guidance The guidance to set.
     */
    public void setGuidance(Guidance guidance) {
-      this.guidance = guidance;
+      wizardPageDefinition.setGuidance(guidance);
    }
 
    /**
     * @return Returns the deleteGuidanceId.
     */
    public Id getDeleteGuidanceId() {
-      return deleteGuidanceId;
+      return wizardPageDefinition.getDeleteGuidanceId();
    }
    /**
     * @param deleteGuidanceId The deleteGuidanceId to set.
     */
    public void setDeleteGuidanceId(Id deleteGuidanceId) {
-      this.deleteGuidanceId = deleteGuidanceId;
+      wizardPageDefinition.setDeleteGuidanceId(deleteGuidanceId);
    }
    /**
     * @return Returns the submitWorkflow.
     */
    public Workflow getSubmitWorkflow() {
-      return submitWorkflow;
+      return wizardPageDefinition.getSubmitWorkflow();
    }
    /**
     * @param submitWorkflow The submitWorkflow to set.
     */
    public void setSubmitWorkflow(Workflow submitWorkflow) {
-      this.submitWorkflow = submitWorkflow;
+      wizardPageDefinition.setSubmitWorkflow(submitWorkflow);
    }
    /**
     * @return Returns the submitWorkflowId.
     */
    public Id getSubmitWorkflowId() {
-      return submitWorkflowId;
+      return wizardPageDefinition.getSubmitWorkflowId();
    }
    /**
     * @param submitWorkflowId The submitWorkflowId to set.
     */
    public void setSubmitWorkflowId(Id submitWorkflowId) {
-      this.submitWorkflowId = submitWorkflowId;
+      wizardPageDefinition.setSubmitWorkflowId(submitWorkflowId);
    }
    /**
     * @return Returns the additionalForms.
     */
    public List getAdditionalForms() {
-      return additionalForms;
+      return wizardPageDefinition.getAdditionalForms();
    }
    /**
     * @param additionalForms The additionalForms to set.
     */
    public void setAdditionalForms(List additionalForms) {
-      this.additionalForms = additionalForms;
+      wizardPageDefinition.setAdditionalForms(additionalForms);
    }
 
-   
+   public WizardPageDefinition getWizardPageDefinition() {
+      return wizardPageDefinition;
+   }
+
+   public void setWizardPageDefinition(WizardPageDefinition wizardPageDefinition) {
+      this.wizardPageDefinition = wizardPageDefinition;
+   }
 }

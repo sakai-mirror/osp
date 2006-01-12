@@ -172,13 +172,13 @@ public class ReviewerItem {
    }
 
    /**
-    * @return Returns the cell.
+    * @return Returns the wizardPage.
     */
    public Cell getCell() {
       return cell;
    }
    /**
-    * @param cell The cell to set.
+    * @param cell The wizardPage to set.
     */
    public void setCell(Cell cell) {
       this.cell = cell;

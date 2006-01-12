@@ -220,7 +220,7 @@ public class MatrixValidator extends ValidatorBase {
    
    protected void validateReflectionSubmit(Object o, Errors errors) {
       //Reflection bean = (Reflection) o;
-      //Reflection reflection = bean.getCell().getReflection();
+      //Reflection reflection = bean.getWizardPage().getReflection();
       //Reflection reflection = (Reflection) o;
       ReflectionTransport reflection = (ReflectionTransport) o;
       int i=0;
@@ -237,7 +237,7 @@ public class MatrixValidator extends ValidatorBase {
          }
          i++;
       }
-      //if (reflection.getCell().getScaffoldingCell().isGradableReflection()) {
+      //if (reflection.getWizardPage().getScaffoldingCell().isGradableReflection()) {
       //   if (reflection.getGrowthStatement() == null || 
       //         stripHtml(reflection.getGrowthStatement()).trim().equals("")) {
       //      errors.rejectValue("growthStatement", "error.required", "required");      
