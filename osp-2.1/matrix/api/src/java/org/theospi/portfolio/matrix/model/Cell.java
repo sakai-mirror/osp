@@ -61,12 +61,14 @@ public class Cell {
 
    private Id id;
    private Matrix matrix;
-   private Set attachments = new HashSet();
-   private Reflection reflection;
-   private Set reviewerItems = new HashSet();
-   private String status;
    private ScaffoldingCell scaffoldingCell;
-   private Set cellForms = new HashSet();
+   private WizardPage wizardPage;
+   private Reflection reflection;
+   private Set reviewerItems;
+
+   public Cell() {
+      setWizardPage(new WizardPage());
+   }
 
    public Reflection getReflection() {
       return reflection;
@@ -80,14 +82,14 @@ public class Cell {
     * @return Returns Set of Attachments
     */
    public Set getAttachments() {
-      return attachments;
+      return wizardPage.getAttachments();
    }
 
    /**
     * @param attachments A Set of Attachments to set.
     */
    public void setAttachments(Set attachments) {
-      this.attachments = attachments;
+      wizardPage.setAttachments(attachments);
    }
 
    /**
@@ -108,14 +110,14 @@ public class Cell {
     * @return Returns the status.
     */
    public String getStatus() {
-      return status.toUpperCase();
+      return wizardPage.getStatus().toUpperCase();
    }
 
    /**
     * @param status The status to set.
     */
    public void setStatus(String status) {
-      this.status = status.toUpperCase();
+      wizardPage.setStatus(status.toUpperCase());
    }
 
    /**
@@ -164,12 +166,9 @@ public class Cell {
       return null;
    }
 
-   /**
-    * @param item
-    */
    public void setReviewerItem(ReviewerItem reviewerItem) {
       if (reviewerItem != null) {
-         this.reviewerItems.add(reviewerItem);
+         reviewerItems.add(reviewerItem);
       }
    }
 
@@ -185,6 +184,7 @@ public class Cell {
     */
    public void setScaffoldingCell(ScaffoldingCell scaffoldingCell) {
       this.scaffoldingCell = scaffoldingCell;
+      wizardPage.setPageDefinition(scaffoldingCell.getWizardPageDefinition());
    }
    /**
     * @return Returns the reviewerItems.
@@ -192,6 +192,7 @@ public class Cell {
    public Set getReviewerItems() {
       return reviewerItems;
    }
+
    /**
     * @param reviewerItems The reviewerItems to set.
     */
@@ -203,13 +204,21 @@ public class Cell {
     * @return Returns the cellForms.
     */
    public Set getCellForms() {
-      return cellForms;
+      return wizardPage.getPageForms();
    }
 
    /**
     * @param cellForms The cellForms to set.
     */
    public void setCellForms(Set cellForms) {
-      this.cellForms = cellForms;
+      wizardPage.setPageForms(cellForms);
+   }
+
+   public WizardPage getWizardPage() {
+      return wizardPage;
+   }
+
+   public void setWizardPage(WizardPage wizardPage) {
+      this.wizardPage = wizardPage;
    }
 }

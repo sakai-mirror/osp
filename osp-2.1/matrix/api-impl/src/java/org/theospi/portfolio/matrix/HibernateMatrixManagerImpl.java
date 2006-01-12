@@ -351,7 +351,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Cell cell = getCell(cellId);
       Attachment attachment = new Attachment();
       attachment.setArtifactId(artifactId);
-      attachment.setCell(cell);
+      attachment.setWizardPage(cell.getWizardPage());
       attachment.setPrivacyResponse(elementBean);
 
       Set attCrit = new HashSet();
@@ -744,7 +744,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             ReviewerItem ri = new ReviewerItem();
             ri.setCreated(new Date(System.currentTimeMillis()));
             ri.setStatus(MatrixFunctionConstants.WAITING_STATUS);
-            ri.setCell(cell);
+            ri.setWizardPage(cell);
             
             cell.setReviewerItem(ri);
             storeCell(cell);
@@ -1444,7 +1444,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
 
    private void processContentLockingWorkflow(WorkflowItem wi, Cell actionCell) {
-      //Cell cell = getCell(wi.getActionObjectId());
+      //Cell cell = getWizardPage(wi.getActionObjectId());
       //Cell actionCell = this.getMatrixCellByScaffoldingCell(cell.getMatrix(), 
       //      wi.getActionObjectId());
       
@@ -1470,7 +1470,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
 
    private void processStatusChangeWorkflow(WorkflowItem wi, Cell actionCell) {
-      //Cell cell = getCell(wi.getActionObjectId());
+      //Cell cell = getWizardPage(wi.getActionObjectId());
       actionCell.setStatus(wi.getActionValue());
    }
 

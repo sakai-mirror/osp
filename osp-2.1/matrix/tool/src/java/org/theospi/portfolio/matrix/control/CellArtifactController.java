@@ -101,7 +101,7 @@ public class CellArtifactController implements CustomCommandController {
             Id artifactId = idManager.getId((String) request.get("ARTIFACT_ID"));
             //TODO remove this attachArtifactCall
             matrixManager.attachArtifact(cell, cell.getScaffoldingCell().getRootCriterion(), artifactId, null);
-            cell = matrixManager.getCell(cellId);
+            cell = matrixManager.getWizardPage(cellId);
          }
          */
          return new ModelAndView("viewCell", "cell", cell);

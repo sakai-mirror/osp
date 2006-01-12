@@ -60,7 +60,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 public class Attachment {
    Id id;
    Id artifactId;
-   Cell cell;
+   WizardPage wizardPage;
    Set attachmentCriteria = new HashSet();
    ElementBean privacyResponse;
 
@@ -93,17 +93,17 @@ public class Attachment {
    }
 
    /**
-    * @return Returns the cell that contains this Attachment
+    * @return Returns the wizardPage that contains this Attachment
     */
-   public Cell getCell() {
-      return cell;
+   public WizardPage getWizardPage() {
+      return wizardPage;
    }
 
    /**
-    * @param cell The parent cell for this Attachment
+    * @param wizardPage The parent wizardPage for this Attachment
     */
-   public void setCell(Cell cell) {
-      this.cell = cell;
+   public void setWizardPage(WizardPage wizardPage) {
+      this.wizardPage = wizardPage;
    }
 
 
@@ -155,7 +155,7 @@ public class Attachment {
    }
 /*      
    public String toString() {
-      return "<Cell id:" + this.cell.getId() + ", artifactId:" + this.getArtifactId() + "]>";
+      return "<Cell id:" + this.wizardPage.getId() + ", artifactId:" + this.getArtifactId() + "]>";
    }
 */
 }

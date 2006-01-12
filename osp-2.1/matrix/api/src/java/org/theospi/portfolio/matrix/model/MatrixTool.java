@@ -68,14 +68,14 @@ public class MatrixTool {
       this.scaffolding = scaffolding;
    }
    /**
-    * @return Returns the cell.
+    * @return Returns the wizardPage.
     */
    public Set getMatrix() {
       return matrix;
    }
 
    /**
-    * @param cell The cell to set.
+    * @param cell The wizardPage to set.
     */
    public void setMatrix(Set matrix) {
       this.matrix = matrix;

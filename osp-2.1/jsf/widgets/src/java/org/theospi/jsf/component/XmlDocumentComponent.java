@@ -27,6 +27,7 @@ import org.theospi.jsf.intf.XmlDocumentContainer;
 
 import javax.faces.component.UIOutput;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIComponentBase;
 import javax.faces.el.ValueBinding;
 import javax.faces.context.FacesContext;
 import javax.faces.event.FacesEvent;
@@ -41,7 +42,7 @@ import java.io.IOException;
  * Time: 2:28:53 PM
  * To change this template use File | Settings | File Templates.
  */
-public class XmlDocumentComponent extends UIOutput implements XmlDocumentContainer {
+public class XmlDocumentComponent extends UIComponentBase implements XmlDocumentContainer {
 
    private XmlTagFactory factory;
    private InputStream xmlFile;
@@ -51,6 +52,10 @@ public class XmlDocumentComponent extends UIOutput implements XmlDocumentContain
    public XmlDocumentComponent() {
       super();
       this.setRendererType("org.theospi.XmlDocument");
+   }
+
+   public String getFamily() {
+      return "org.theospi.xml";
    }
 
    public XmlTagFactory getFactory() {
@@ -95,5 +100,17 @@ public class XmlDocumentComponent extends UIOutput implements XmlDocumentContain
 
    public void broadcast(FacesEvent event) throws AbortProcessingException {
       super.broadcast(event);
+   }
+
+   public Object saveState(FacesContext context) {
+      return super.saveState(context);
+   }
+
+   public void restoreState(FacesContext context, Object state) {
+      super.restoreState(context, state);
+   }
+
+   public void setTransient(boolean transientFlag) {
+      super.setTransient(transientFlag);
    }
 }

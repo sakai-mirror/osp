@@ -23,6 +23,7 @@
 package org.theospi.portfolio.presentation.component;
 
 import javax.faces.component.UIOutput;
+import javax.faces.component.UIComponentBase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,10 +32,14 @@ import javax.faces.component.UIOutput;
  * Time: 7:04:37 PM
  * To change this template use File | Settings | File Templates.
  */
-public class RegionComponent extends UIOutput {
+public class RegionComponent extends UIComponentBase {
 
    public static final String COMPONENT_TYPE = "org.theospi.presentation.RegionComponent";
    private String regionId;
+
+   public String getFamily() {
+      return "org.theospi.presentation";
+   }
 
    public String getRegionId() {
       return regionId;
