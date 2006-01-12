@@ -27,6 +27,12 @@
    <sakai:instruction_message value="#{guidance.lastSavedId}" />
    <sakai:messages />
 
+   <h:inputText value="#{guidance.formTypeId}" />
+   <h:commandButton value="test resource helper" action="#{guidance.processTestResourceHelper}" />
+
+   <h:inputText value="#{guidance.formId}" />
+   <h:commandButton value="test resource edit" action="#{guidance.processTestResourceEditHelper}" />
+
    <sakai:flat_list value="#{guidance.sampleGuidances}" var="sampleGuidance">
       <h:column>
          <f:facet name="header">
