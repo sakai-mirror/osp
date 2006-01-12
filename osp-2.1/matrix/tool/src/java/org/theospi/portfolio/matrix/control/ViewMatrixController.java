@@ -159,6 +159,7 @@ public class ViewMatrixController implements FormController, LoadObjectControlle
                matrixManager.storeCell(cell);
             }
             List nodeList = new ArrayList(matrixManager.getCellContents(cell));
+            nodeList.addAll(matrixManager.getCellForms(cell));
             cellBean.setCell(cell);
             cellBean.setNodes(nodeList);
             row.add(cellBean);

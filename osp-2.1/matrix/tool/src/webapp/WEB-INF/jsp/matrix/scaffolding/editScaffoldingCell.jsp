@@ -98,17 +98,10 @@
       <c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
       <c:out value="${chosenForm.name}" />
          <div class="itemAction">
-             <a href="javascript:document.forms[0].dest.value='createGuidance';
-               document.forms[0].submitAction.value='forward';
+             <a href="javascript:document.forms[0].submitAction.value='removeFormDef';
                document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
                document.forms[0].submit();">
-                 <osp:message key="edit" bundle="${msgs}" />
-                 </a> | 
-             <a href="javascript:document.forms[0].dest.value='deleteGuidance';
-               document.forms[0].submitAction.value='forward';
-               document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
-               document.forms[0].submit();">
-                 <osp:message key="delete" bundle="${msgs}" />
+                 <osp:message key="remove" bundle="${msgs}" />
                  </a>
          </div>
       

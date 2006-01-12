@@ -139,6 +139,7 @@ public interface MatrixManager {
    List getArtifactAssociationCriteria(Id cellId, Id nodeId);
 
    Set getCellContents(Cell cell);
+   Set getCellForms(Cell cell);
    List getCellArtifacts(Cell cell);
    List getCellsByArtifact(Id artifactId);
 

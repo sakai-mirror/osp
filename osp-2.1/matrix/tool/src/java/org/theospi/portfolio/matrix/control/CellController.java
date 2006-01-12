@@ -48,7 +48,9 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.springframework.validation.Errors;
@@ -61,6 +63,7 @@ import org.theospi.portfolio.review.model.Review;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -71,6 +74,7 @@ public class CellController implements FormController, LoadObjectController {
    private AuthenticationManager authManager = null;
    private IdManager idManager = null;
    private ReviewManager reviewManager;
+   private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
 
 
    public Map referenceData(Map request, Object command, Errors errors) {
@@ -85,8 +89,10 @@ public class CellController implements FormController, LoadObjectController {
       model.put("reflections", getReviewManager().getReviewsByParentAndType(
             cellId, Review.REFLECTION_TYPE));
       
-      //model.put("additionalForms", getReviewManager().getReviewsByParentAndType(
-      //      cellId, Review.REFLECTION_TYPE));
+      model.put("cellFormDefs", processAdditionalForms(
+            cell.getCell().getScaffoldingCell().getAdditionalForms()));
+      
+      model.put("cellForms", getMatrixManager().getCellForms(cell.getCell()));
       
       model.put("currentUser", SessionManager.getCurrentSessionUserId());
       return model;
@@ -149,8 +155,22 @@ public class CellController implements FormController, LoadObjectController {
          session.put("cell_id", cell.getId().getValue());
          return new ModelAndView("guidance");
       }
+      
 
       return new ModelAndView("success", "cellBean", cellBean);
+   }
+   
+   protected List processAdditionalForms(List formTypes) {
+      List retList = new ArrayList();
+      for (Iterator iter = formTypes.iterator(); iter.hasNext();) {
+         String strFormDefId = (String) iter.next();
+         StructuredArtifactDefinitionBean bean = 
+            getStructuredArtifactDefinitionManager().loadHome(strFormDefId);
+         bean.getDescription();
+         //TODO use a different bean below, as the name has implications
+         retList.add(new ScaffoldingCellSupportDeviceBean(strFormDefId, bean.getDescription(), strFormDefId));
+      }
+      return retList;
    }
    
    /**
@@ -207,5 +227,20 @@ public class CellController implements FormController, LoadObjectController {
     */
    public void setReviewManager(ReviewManager reviewManager) {
       this.reviewManager = reviewManager;
+   }
+
+   /**
+    * @return Returns the structuredArtifactDefinitionManager.
+    */
+   public StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {
+      return structuredArtifactDefinitionManager;
+   }
+
+   /**
+    * @param structuredArtifactDefinitionManager The structuredArtifactDefinitionManager to set.
+    */
+   public void setStructuredArtifactDefinitionManager(
+         StructuredArtifactDefinitionManager structuredArtifactDefinitionManager) {
+      this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
    }
 }

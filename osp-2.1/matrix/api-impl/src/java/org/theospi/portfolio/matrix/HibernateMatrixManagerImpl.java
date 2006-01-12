@@ -400,6 +400,35 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       getHibernateTemplate().execute(callback);
 
    }
+   
+   public void detachForm(final Id cellId, final Id artifactId) {
+
+      HibernateCallback callback = new HibernateCallback() {
+         public Object doInHibernate(Session session) throws HibernateException, SQLException {
+            Object[] params = new Object[]{cellId, artifactId};
+            Type[] types = new Type[]{Hibernate.custom(IdType.class), Hibernate.custom(IdType.class)};
+
+            Cell cell = (Cell) session.load(Cell.class, cellId);
+            Set forms = cell.getCellForms();
+            Iterator iter = forms.iterator();
+            List toRemove = new ArrayList();
+            while (iter.hasNext()) {
+               WizardPageForm wpf = (WizardPageForm) iter.next();
+               if (wpf.getArtifactId()==null || artifactId.equals(wpf.getArtifactId())) {
+                  toRemove.add(wpf);
+               }
+            }
+            forms.removeAll(toRemove);
+
+            session.update(cell);
+            return null;
+         }
+
+      };
+
+      getHibernateTemplate().execute(callback);
+
+   }
 
    public Matrix getMatrix(Id matrixId) {
       return (Matrix) this.getHibernateTemplate().load(Matrix.class, matrixId);
@@ -528,6 +557,31 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public List getArtifactAssociationCriteria(Id cellId, Id nodeId) {
       Object[] params = new Object[]{cellId.getValue(), nodeId.getValue()};
       return this.getHibernateTemplate().find("select ac.criterion from AttachmentCriterion ac where ac.attachment.cell=? and ac.attachment.artifactId=?", params);
+   }
+   
+   public Set getCellForms(Cell cell) {
+      Set result = new HashSet();
+      Set removes = new HashSet();
+      if (cell.getCellForms() != null) {
+         for (Iterator iter = cell.getCellForms().iterator(); iter.hasNext();) {
+            WizardPageForm wpf = (WizardPageForm) iter.next();
+            Node node = getNode(wpf.getArtifactId(), cell);
+            if (node != null) {
+               result.add(node);
+            }
+            else {
+               //logger.warn("Cell contains stale artifact references (null node encountered) for Cell: " + cell.getId().getValue() + ". Detaching");
+               //detachArtifact(cell.getId(),attachment.getArtifactId());
+               removes.add(wpf.getArtifactId());
+            }
+         }
+         for (Iterator iter2 = removes.iterator(); iter2.hasNext();) {
+            Id id = (Id) iter2.next();
+            logger.warn("Cell contains stale form references (null node encountered) for Cell: " + cell.getId().getValue() + ". Detaching");
+            detachForm(cell.getId(), id);
+         }
+      }
+      return result;
    }
    
    public Set getCellContents(Cell cell) {
