@@ -81,12 +81,10 @@ implements Controller, FormController {
       }
       else if (next != null) {
          saveMatrixTool(scaffolding);
-         //sessionBean.setScaffolding(scaffolding);
-         //session.put(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY,
-         //      sessionBean);
-         //model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
-         session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
       }
+      
+      session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
+      session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
       
       return new ModelAndView(viewName, model);
    }

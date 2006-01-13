@@ -26,6 +26,7 @@ function TCBuildCell (R, G, B, w, h) {
 
 function TCSelect(c) {
 	this.field.value = '#' + c.toUpperCase();
+   this.field.onchange();
 	this.win.close();
 }
 

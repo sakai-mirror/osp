@@ -45,6 +45,7 @@
 
 package org.theospi.portfolio.matrix.control;
 
+import java.text.MessageFormat;
 import java.util.*;
 
 import org.apache.commons.logging.Log;
@@ -54,6 +55,7 @@ import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
@@ -65,6 +67,8 @@ import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
+import org.theospi.portfolio.security.Authorization;
+import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
@@ -79,6 +83,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    private WorksiteManager worksiteManager = null;
    private AgentManager agentManager;
    private WizardManager wizardManager;
+   private AuthorizationFacade authzManager = null;
    
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    
@@ -97,6 +102,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       model.put("reviewDevices", getReviewDevices());
       model.put("additionalFormDevices", getAdditionalFormDevices());
       model.put("selectedAdditionalFormDevices", getSelectedAdditionalFormDevices(sCell));
+      model.put("evaluators", getEvaluators(sCell));
       
       
       return model;
@@ -155,6 +161,8 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
             }
             
             saveScaffoldingCell(request, scaffoldingCell);
+            session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
+            session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
          }
          else if (action.equals("forward")) {
             String forwardView = (String)request.get("dest");
@@ -232,6 +240,31 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          }
       }
       return model;
+   }
+   
+   protected List getEvaluators(ScaffoldingCell sCell) {
+      ResourceBundle myResources = 
+         ResourceBundle.getBundle("org.theospi.portfolio.matrix.messages");
+
+      List evalList = new ArrayList();
+      List evaluators = getAuthzManager().getAuthorizations(null, 
+            MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getId());
+      
+      for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
+         Authorization az = (Authorization) iter.next();
+         Agent agent = az.getAgent();
+         String userId = az.getAgent().getId().getValue();
+         if (agent.isRole()) {
+            evalList.add(MessageFormat.format(myResources.getString("decorated_role_format"), 
+                  new Object[]{agent.getDisplayName()}));
+         }
+         else {
+            evalList.add(MessageFormat.format(myResources.getString("decorated_user_format"),
+                  new Object[]{agent.getDisplayName(), userId}));
+         }
+      }
+      
+      return evalList;
    }
    
    protected void setAudienceSelectionVariables(Map session, ScaffoldingCell sCell) {
@@ -370,6 +403,18 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    }
    public void setWizardManager(WizardManager wizardManager) {
       this.wizardManager = wizardManager;
+   }
+   /**
+    * @return Returns the authzManager.
+    */
+   public AuthorizationFacade getAuthzManager() {
+      return authzManager;
+   }
+   /**
+    * @param authzManager The authzManager to set.
+    */
+   public void setAuthzManager(AuthorizationFacade authzManager) {
+      this.authzManager = authzManager;
    }
 
 }

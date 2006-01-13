@@ -145,11 +145,15 @@ public class AddScaffoldingController extends BaseScaffoldingController
             }           
             
             saveMatrixTool(scaffolding);
+            session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
+            session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
             model.put("scaffolding_id", scaffolding.getId());
             return new ModelAndView("view", model);
          }
          else if (action.equals("Save")) {
             saveMatrixTool(scaffolding);
+            session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
+            session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
             return new ModelAndView("return");
          }
          else if (action.equals("Cancel")) {

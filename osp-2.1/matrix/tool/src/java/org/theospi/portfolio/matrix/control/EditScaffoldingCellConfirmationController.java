@@ -79,7 +79,10 @@ public class EditScaffoldingCellConfirmationController extends BaseScaffoldingCe
          saveScaffoldingCell(request, scaffoldingCell);
          model.put("scaffolding_id", scaffoldingCell.getScaffolding().getId());
       }
-
+      
+      session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
+      session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
+      
       return new ModelAndView(viewName, model);
    }
 

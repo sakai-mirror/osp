@@ -5,10 +5,10 @@
 <form method="POST">
     <c:if test="${!scaffolding.published}" >
 	   <div class="navIntraTool">
-			<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].submit();">
+			<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
 				Add Column...
 			</a>
-			<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].submit();">
+			<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
 				Add Row...
 			</a>
 	   </div>
@@ -69,7 +69,7 @@
 				<font color="red"><c:out value="${status.errorMessage}"/></font>
 			</spring:bind>
 		</p>
-		
+<%--		
 		<p class="shorttext">
 			<label>Permission Statement Definition File</label>
 			<spring:bind path="scaffolding.privacyXsdId">
@@ -94,7 +94,7 @@
 				</select>
 			</spring:bind>
 		</p>
-        
+   --%>     
         <br />
       
       
@@ -135,6 +135,7 @@
                          <a href="javascript:document.forms[0].dest.value='addLevel';
                 	      document.forms[0].submitAction.value='forward';
                 	      document.forms[0].params.value='index=<c:out value="${itemLoopStatus.index}"/>';
+                        document.forms[0].onsubmit();
                 	      document.forms[0].submit();">
                 		     Edit
                 	   </a>
@@ -145,18 +146,21 @@
                 	      document.forms[0].displayText.value='<c:out value="${level.description}"/>';
                 	      document.forms[0].submitAction.value='forward';
                 	      document.forms[0].params.value='level_id=<c:out value="${level.id}"/>:index=<c:out value="${itemLoopStatus.index}"/>';
+                        document.forms[0].onsubmit();
                 	      document.forms[0].submit();">
                 		     Remove
                 	   </a>
                          | <a href="javascript:document.forms[0].dest.value='moveLevel';
                 	      document.forms[0].submitAction.value='forward';
                 	      document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index-1}"/>';
+                        document.forms[0].onsubmit();
                 	      document.forms[0].submit();">
                 		     Up
                 	   </a>
                          | <a href="javascript:document.forms[0].dest.value='moveLevel';
                 	      document.forms[0].submitAction.value='forward';
                 	      document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index+1}"/>';
+                        document.forms[0].onsubmit();
                 	      document.forms[0].submit();">
                 		     Down
                 	   </a>
@@ -208,6 +212,7 @@
                       <a href="javascript:document.forms[0].dest.value='addCriterion';
                       document.forms[0].submitAction.value='forward';
                       document.forms[0].params.value='index=<c:out value="${itemLoopStatus.index}"/>:path=';
+                      document.forms[0].onsubmit();
                       document.forms[0].submit();">
                           Edit
                       </a>
@@ -219,18 +224,21 @@
                       document.forms[0].displayText.value='<c:out value="${criterion.description}"/>';
                       document.forms[0].submitAction.value='forward';
                       document.forms[0].params.value='criterion_id=<c:out value="${criterion.id}"/>:index=<c:out value="${itemLoopStatus.index}"/>';
+                      document.forms[0].onsubmit();
                       document.forms[0].submit();">
                           Remove
                       </a>
                       | <a href="javascript:document.forms[0].dest.value='moveCriterion';
                       document.forms[0].submitAction.value='forward';
                       document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index-1}"/>';
+                      document.forms[0].onsubmit();
                       document.forms[0].submit();">
                           Up
                       </a>
                       | <a href="javascript:document.forms[0].dest.value='moveCriterion';
                       document.forms[0].submitAction.value='forward';
                       document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index+1}"/>';
+                      document.forms[0].onsubmit();
                       document.forms[0].submit();">
                           Down
                       </a>
@@ -252,9 +260,13 @@
          </c:if>
       <p class="shorttext">
          <span class="reqStar">*</span><label>Ready Color</label>
+         <input type="text" disabled="disabled" value="" size="2" 
+                  name="<c:out value="${status.expression}"/>_sample"
+                  style="background-color: <c:out value="${status.value}"/>" />
          <input type="text" name="<c:out value="${status.expression}"/>" 
                   value="<c:out value="${status.value}"/>" 
-               size="25" maxlength="25" <c:out value="${disabledText}"/>>
+               size="25" maxlength="25" <c:out value="${disabledText}"/>
+               onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value">
          <!--
             Put icon by the input control.
             Make it the link calling picker popup.
@@ -270,9 +282,13 @@
          </c:if>
       <p class="shorttext">
          <span class="reqStar">*</span><label>Pending Color</label>
+         <input type="text" disabled="disabled" value="" size="2" 
+                  name="<c:out value="${status.expression}"/>_sample"
+                  style="background-color: <c:out value="${status.value}"/>" />
          <input type="text" name="<c:out value="${status.expression}"/>" 
                   value="<c:out value="${status.value}"/>" 
-               size="25" maxlength="25" <c:out value="${disabledText}"/>>
+               size="25" maxlength="25" <c:out value="${disabledText}"/>
+               onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value">
          <!--
             Put icon by the input control.
             Make it the link calling picker popup.
@@ -288,9 +304,13 @@
          </c:if>
       <p class="shorttext">
          <span class="reqStar">*</span><label>Completed Color</label>
+         <input type="text" disabled="disabled" value="" size="2" 
+                  name="<c:out value="${status.expression}"/>_sample"
+                  style="background-color: <c:out value="${status.value}"/>" />
          <input type="text" name="<c:out value="${status.expression}"/>" 
                   value="<c:out value="${status.value}"/>" 
-               size="25" maxlength="25" <c:out value="${disabledText}"/>>
+               size="25" maxlength="25" <c:out value="${disabledText}"/>
+               onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value">
          <!--
             Put icon by the input control.
             Make it the link calling picker popup.
@@ -306,9 +326,14 @@
          </c:if>
       <p class="shorttext">
          <span class="reqStar">*</span><label>Locked Color</label>
+         <input type="text" disabled="disabled" value="" size="2" 
+                  name="<c:out value="${status.expression}"/>_sample"
+                  style="background-color: <c:out value="${status.value}"/>" />
          <input type="text" name="<c:out value="${status.expression}"/>" 
                   value="<c:out value="${status.value}"/>" 
-               size="25" maxlength="25" <c:out value="${disabledText}"/>>
+               size="25" maxlength="25" <c:out value="${disabledText}"/>
+               onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value">
+
          <!--
             Put icon by the input control.
             Make it the link calling picker popup.
