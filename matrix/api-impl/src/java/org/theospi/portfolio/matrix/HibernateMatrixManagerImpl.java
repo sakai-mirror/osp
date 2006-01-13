@@ -789,7 +789,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       getHibernateTemplate().refresh(cell); //TODO not sure if this is necessary
       ScaffoldingCell sCell = cell.getScaffoldingCell();
       
-      processWorkflow(sCell.getSubmitWorkflow().getId(), cell.getId());
+      if (sCell.getSubmitWorkflow() != null)
+         processWorkflow(sCell.getSubmitWorkflow().getId(), cell.getId());
   /*    
       //if (sCell.isGradableReflection()) {
          cell.setStatus(MatrixFunctionConstants.PENDING_STATUS);
