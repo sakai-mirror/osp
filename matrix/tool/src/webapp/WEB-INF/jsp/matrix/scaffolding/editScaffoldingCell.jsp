@@ -3,6 +3,9 @@
 
 <fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
 
+<link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
+<script type="text/javascript" src="/osp-jsf-resource/xheader/xheader.js"></script>
+
 <form method="POST">
   
     
@@ -168,8 +171,14 @@
        </p>
      </spring:bind>
 		
-        
-
+   <h4 style="cursor:pointer" onclick="javascript:showHideDiv('evaluatorsDiv','/osp-jsf-resource')">
+      <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgevaluatorsDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
+      Evaluators</h4>
+   <div id="evaluatorsDiv">  
+      <c:forEach var="eval" items="${evaluators}">
+         <div class="indnt1"><c:out value="${eval}" /></div>
+      </c:forEach>
+   </div>
 	<spring:bind path="scaffoldingCell.id">
 		<input type="hidden" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.displayValue}"/>"/>
 		<span class="error_message"><c:out value="${status.errorMessage}"/></span>

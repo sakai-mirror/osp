@@ -2,7 +2,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
-<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="common_msgs"/>
 
 <link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" src="/osp-jsf-resource/xheader/xheader.js"></script>

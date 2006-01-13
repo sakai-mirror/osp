@@ -59,7 +59,6 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.api.kernel.tool.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -125,6 +124,11 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
       grid.setColumnLabels(levels);
       grid.setRowLabels(criteria);
       grid.setMatrixContents(matrixContents);
+      
+      //Make sure these are not in session.
+      session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
+      session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
+      
       return incomingModel;
    }
    
