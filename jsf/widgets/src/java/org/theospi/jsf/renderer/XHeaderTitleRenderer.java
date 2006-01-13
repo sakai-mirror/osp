@@ -77,6 +77,7 @@ public class XHeaderTitleRenderer extends Renderer
 			throw new IOException("the xheadertitle was expecting an xheadertitlecomponent");
 		
 		ResponseWriter writer = context.getResponseWriter();
+		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
       
       TagUtil.writeExternalCSSDependencies(context, writer, "osp.jsf.css", CSS_LOC);
       TagUtil.writeExternalJSDependencies(context, writer, "osp.jsf.xheader.js", JS_LOC);
@@ -104,7 +105,9 @@ public class XHeaderTitleRenderer extends Renderer
          String divId = "div" + drawer.getClientId(context);
          drawer.setDivId(divId);
 			writer.write("<span onclick=\"showHideDiv('" + divId + "', '" + RESOURCE_PATH + "');" +
-               "refeshChildren" + drawer.getDivId().hashCode() + "();\">");
+		              request.getAttribute("sakai.html.body.onload") +
+               " refeshChildren" + drawer.getDivId().hashCode() + "(); "
+               +"\">");
 				
          writer.startElement("img", component);
          writer.writeAttribute("style", "position:relative; float:left; margin-right:10px; left:3px; top:2px;", "style");
