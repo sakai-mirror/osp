@@ -83,20 +83,18 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
     * @see org.theospi.utils.mvc.intf.Controller#handleRequest(java.lang.Object, java.util.Map, java.util.Map, java.util.Map, org.springframework.validation.Errors)
     */
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-      Map map = new HashMap();
       Id cellId = idManager.getId((String) request.get("cell_id"));
       Cell cell = getMatrixManager().getCell(cellId);
-      map.put("cell_id", cellId);
       String submitAction = (String)request.get("submit");
       String cancelAction = (String)request.get("cancel");
       if (submitAction != null) {
          getMatrixManager().submitCellForEvaluation(cell);
-         return new ModelAndView("continue", map);
+         return new ModelAndView("continue", "cell_id", cellId);
       }
       if (cancelAction != null) {
-         return new ModelAndView("continue", map);
+         return new ModelAndView("continue", "cell_id", cellId);
       }
-      return new ModelAndView("success");
+      return new ModelAndView("success", "cell", cell);
    }
    
    
