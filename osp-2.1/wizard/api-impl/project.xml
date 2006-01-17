@@ -26,11 +26,17 @@
          <type>plugin</type>
       </dependency>
 
-    <dependency>
-      <groupId>osp</groupId>
-      <artifactId>osp-wizard-api</artifactId>
-      <version>${osp.version}</version>
-    </dependency>
+     <dependency>
+       <groupId>osp</groupId>
+       <artifactId>osp-wizard-api</artifactId>
+       <version>${osp.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>osp</groupId>
+       <artifactId>osp-matrix-api</artifactId>
+       <version>${osp.version}</version>
+     </dependency>
 
     <dependency>
       <groupId>osp</groupId>

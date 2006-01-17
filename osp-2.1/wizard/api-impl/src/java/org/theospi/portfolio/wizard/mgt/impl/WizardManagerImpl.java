@@ -30,6 +30,9 @@ import org.theospi.portfolio.wizard.impl.WizardEntityProducer;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardStyleItem;
+import org.theospi.portfolio.wizard.model.WizardCategory;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 
 public class WizardManagerImpl extends HibernateDaoSupport implements WizardManager {
 
@@ -39,7 +42,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
    private IdManager idManager;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private AgentManager agentManager;
-   
+
    public Wizard createNew(String owner, String siteId, String toolId, 
          Id securityQualifier, String securityViewFunction, String securityEditFunction) {
       Agent agent = getAgentManager().getAgent(owner);
@@ -69,18 +72,35 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
          WizardStyleItem item = (WizardStyleItem)i.next();
          refs.add(item.getBaseReference().getBase().getReference());
       }
-      
-      
+
+      WizardCategory rootCategory = (WizardCategory)wizard.getRootCategory();
+      loadCategory(rootCategory, refs);
+
       getSecurityService().pushAdvisor(new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
          refs));
 
       return wizard;
    }
 
+   protected void loadCategory(WizardCategory category, List refs) {
+
+      for (Iterator i=category.getChildPages().iterator();i.hasNext();) {
+         WizardPageSequence page = (WizardPageSequence) i.next();
+         WizardPageDefinition pageDef = page.getWizardPageDefinition(); // make sure this loads
+         pageDef.getTitle();
+      }
+
+      if (category.getChildCategories() != null) {
+         for (Iterator i=category.getChildCategories().iterator();i.hasNext();) {
+            loadCategory((WizardCategory) i.next(), refs);
+         }
+      }
+   }
+
    public Wizard saveWizard(Wizard wizard) {
       Date now = new Date(System.currentTimeMillis());
       wizard.setModified(now);
-      
+
       if (wizard.getExposeAsTool() != null && 
             wizard.getExposeAsTool().booleanValue() && 
             wizard.getExposedPageId() == null) {
@@ -94,7 +114,11 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
       
       if (wizard.isNewObject()) {
          wizard.setCreated(now);
+         wizard.getRootCategory().setCreated(now);
+         wizard.getRootCategory().setModified(now);
+         wizard.getRootCategory().setWizard(null);
          getHibernateTemplate().save(wizard, wizard.getId());
+         wizard.getRootCategory().setWizard(wizard);
          wizard.setNewObject(false);
       }
       else {

@@ -54,12 +54,18 @@
        </properties>
    </dependency>
 
-   <dependency>
-      <groupId>osp</groupId>
-      <artifactId>osp-common-api</artifactId>
-      <version>${osp.version}</version>
-    </dependency>
-    
+       <dependency>
+          <groupId>osp</groupId>
+          <artifactId>osp-common-api</artifactId>
+          <version>${osp.version}</version>
+        </dependency>
+
+       <dependency>
+          <groupId>osp</groupId>
+          <artifactId>osp-matrix-api</artifactId>
+          <version>${osp.version}</version>
+        </dependency>
+
     <!-- OSP tag library -->
      <dependency>
         <groupId>osp</groupId>

@@ -52,11 +52,17 @@
          </h:inputText>
          <h:message for="keywords" styleClass="validationEmbedded" />
       </h:panelGroup>
+      <h:outputLabel for="type" id="typeLabel" value="#{msgs.wizard_type}" />
+      <h:panelGroup>
+         <h:selectOneRadio value="#{wizard.current.base.type}" >
+            <f:selectItems value="#{wizard.wizardTypes}" />
+         </h:selectOneRadio>
+      </h:panelGroup>
    </sakai:panel_edit>
    <sakai:button_bar>
       <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard}" action="#{wizard.processActionCancel}" immediate="true" />
       <sakai:button_bar_item id="submit" value="#{msgs.save_continue_wizard}" 
-         action="#{wizard.processActionGoToEditWizardSupport}" />
+         action="#{wizard.processActionGoToEditWizardPages}" />
    </sakai:button_bar>
 </h:form>
 </sakai:view>

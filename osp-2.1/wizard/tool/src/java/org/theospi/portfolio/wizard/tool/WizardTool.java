@@ -45,21 +45,23 @@ public class WizardTool extends ToolBase {
    private String reflectionItem;
    private String evaluationItem;
    private String expandedGuidanceSection = "false";
+   private List wizardTypes = null;
 
    public final static String LIST_PAGE = "listWizards";
    public final static String EDIT_PAGE = "editWizard";
+   public final static String EDIT_PAGES_PAGE = "editWizardPages";
    public final static String EDIT_SUPPORT_PAGE = "editWizardSupport";
    public final static String EDIT_DESIGN_PAGE = "editWizardDesign";
    public final static String EDIT_PROPERTIES_PAGE = "editWizardProperties";
-      
+
    public final static String FORM_TYPE = "form";
    public final static String VALUE_SEPARATOR = ":";
    
    final public static int ID_INDEX = 0;
    final public static int TYPE_INDEX = 1;
    final public static int ITEM_ID_INDEX = 2;
-   
-   
+
+
    public WizardManager getWizardManager() {
       return wizardManager;
    }
@@ -153,10 +155,14 @@ public class WizardTool extends ToolBase {
       return goToPage(LIST_PAGE);
    }
    
+   public String processActionGoToEditWizardPages() {
+      return processActionSave(EDIT_PAGES_PAGE);
+   }
+
    public String processActionGoToEditWizardSupport() {
       return processActionSave(EDIT_SUPPORT_PAGE);
    }
-   
+
    public String processActionGoToEditWizardDesign() {
       return processActionSave(EDIT_DESIGN_PAGE);
    }
@@ -410,7 +416,7 @@ public class WizardTool extends ToolBase {
       List retWizards = new ArrayList();
       for(Iterator iter = wizards.iterator(); iter.hasNext();) {
          Wizard wizard = (Wizard)iter.next();
-         String id = VALUE_SEPARATOR + Wizard.WIZARD_TYPE + VALUE_SEPARATOR + wizard.getId().getValue();
+         String id = VALUE_SEPARATOR + wizard.getType() + VALUE_SEPARATOR + wizard.getId().getValue();
          if (selectedId != null && selectedId.endsWith(id))
             id = selectedId;
          retWizards.add(new SelectItem(id, wizard.getName()));
@@ -477,5 +483,20 @@ public class WizardTool extends ToolBase {
 
    public void setIdManager(IdManager idManager) {
       this.idManager = idManager;
+   }
+
+   public List getWizardTypes() {
+      if (wizardTypes == null) {
+         wizardTypes = new ArrayList();
+         wizardTypes.add(createSelect(Wizard.WIZARD_TYPE_SEQUENTIAL,
+               getMessageFromBundle(Wizard.WIZARD_TYPE_SEQUENTIAL)));
+         wizardTypes.add(createSelect(Wizard.WIZARD_TYPE_HIERARCHICAL,
+               getMessageFromBundle(Wizard.WIZARD_TYPE_HIERARCHICAL)));
+      }
+      return wizardTypes;
+   }
+
+   public void setWizardTypes(List wizardTypes) {
+      this.wizardTypes = wizardTypes;
    }
 }

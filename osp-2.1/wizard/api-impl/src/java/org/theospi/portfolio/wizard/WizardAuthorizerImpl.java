@@ -21,7 +21,7 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
    private WizardManager wizardManager;
    private IdManager idManager;
    private List functions;
-
+                    
    /**
     * This method will ask the application specific functional authorizer to determine authorization.
     *

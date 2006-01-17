@@ -16,7 +16,7 @@ public interface WizardManager {
          Id securityQualifier, String securityViewFunction, String securityEditFunction);
 
    public Wizard getWizard(Id wizardId);
-   
+
    public Wizard saveWizard(Wizard wizard);
    
    public void deleteWizard(Wizard wizard);

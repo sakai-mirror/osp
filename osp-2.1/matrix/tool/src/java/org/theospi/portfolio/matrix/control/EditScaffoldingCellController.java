@@ -324,7 +324,8 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       List retWizards = new ArrayList();
       for(Iterator iter = wizards.iterator(); iter.hasNext();) {
          Wizard wizard = (Wizard)iter.next();
-         retWizards.add(new ScaffoldingCellSupportDeviceBean(wizard.getId().getValue(), wizard.getName(), Wizard.WIZARD_TYPE));
+         retWizards.add(new ScaffoldingCellSupportDeviceBean(wizard.getId().getValue(),
+               wizard.getName(), Wizard.WIZARD_TYPE_SEQUENTIAL));
       }
       
       return retWizards;

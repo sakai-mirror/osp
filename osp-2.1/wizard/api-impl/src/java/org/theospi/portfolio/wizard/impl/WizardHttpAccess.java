@@ -18,7 +18,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
  * To change this template use File | Settings | File Templates.
  */
 public class WizardHttpAccess extends OspHttpAccess {
-
+               
    private IdManager idManager;
    private WizardManager wizardManager;
    

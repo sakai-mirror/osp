@@ -38,6 +38,8 @@ import java.util.*;
  */
 public class WizardPageDefinition extends IdentifiableObject {
 
+   private String title;
+   private String description;
    private String initialStatus = "";
    private Collection reviewers = new HashSet();
    transient private boolean validate;
@@ -56,8 +58,6 @@ public class WizardPageDefinition extends IdentifiableObject {
    private String reviewDeviceType;
 
    private List additionalForms = new ArrayList();
-
-   public WizardPageDefinition() {;}
 
    public boolean equals(Object other) {
       if (other == this) return true;
@@ -220,6 +220,22 @@ public class WizardPageDefinition extends IdentifiableObject {
     */
    public void setAdditionalForms(List additionalForms) {
       this.additionalForms = additionalForms;
+   }
+
+   public String getTitle() {
+      return title;
+   }
+
+   public void setTitle(String title) {
+      this.title = title;
+   }
+
+   public String getDescription() {
+      return description;
+   }
+
+   public void setDescription(String description) {
+      this.description = description;
    }
 
 }
