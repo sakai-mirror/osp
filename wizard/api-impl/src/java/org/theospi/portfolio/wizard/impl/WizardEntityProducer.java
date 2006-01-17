@@ -10,7 +10,7 @@ import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
  * To change this template use File | Settings | File Templates.
  */
 public class WizardEntityProducer extends OspEntityProducerBase {
-
+           
    public static final String WIZARD_PRODUCER = "ospWizard";
 
    public String getLabel() {

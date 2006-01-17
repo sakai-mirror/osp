@@ -61,7 +61,7 @@
 
     </class>
 
-   <class name="WizardPage" table="osp_wizard_page" lazy="true">
+   <class name="WizardPage" table="osp_wizard_page" lazy="false">
       <cache usage="nonstrict-read-write"/>
        <id name="id" length="36"
            type="org.sakaiproject.metaobj.shared.IdType" column="id">
@@ -259,7 +259,7 @@
           cascade="all" unique="true" />
     </class>
 
-   <class name="WizardPageDefinition" table="osp_wiz_page_def" lazy="true" >
+   <class name="WizardPageDefinition" table="osp_wiz_page_def" lazy="false" >
      <cache usage="nonstrict-read-write"/>
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
@@ -271,6 +271,8 @@
            <one-to-many class="WizardPage" />
        </set>
 
+      <property name="title" type="string" column="name" not-null="false"/>
+      <property name="description" type="string" column="description" not-null="false"/>
       <property name="reflectionDevice" column="reflection_device_id" length="36"
         type="org.sakaiproject.metaobj.shared.IdType"/>
       <property name="reflectionDeviceType" type="string" column="reflection_device_type" />

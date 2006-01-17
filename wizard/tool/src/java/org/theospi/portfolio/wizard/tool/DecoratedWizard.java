@@ -1,14 +1,13 @@
 package org.theospi.portfolio.wizard.tool;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardStyleItem;
+
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,11 +18,13 @@ import org.theospi.portfolio.wizard.model.WizardStyleItem;
  */
 public class DecoratedWizard {
    private Wizard base;
-   private WizardTool tool;
+   private WizardTool parent;
+   private DecoratedCategory rootCategory = null;
 
    public DecoratedWizard(WizardTool tool, Wizard base) {
       this.base = base;
-      this.tool = tool;
+      this.parent = tool;
+      rootCategory = new DecoratedCategory(base.getRootCategory(), tool);
    }
 
    public Wizard getBase() {
@@ -54,7 +55,7 @@ public class DecoratedWizard {
          base.getWizardStyleItems().clear();
          for(int i=0; i<refs.size(); i++) {
             Reference ref = (Reference) refs.get(i);
-            Reference fullRef = tool.decorateReference(ref.getReference());
+            Reference fullRef = parent.decorateReference(ref.getReference());
             WizardStyleItem wsItem = new WizardStyleItem(base, ref, fullRef);
             base.getWizardStyleItems().add(wsItem);
          }
@@ -65,10 +66,26 @@ public class DecoratedWizard {
    }
 
    public String processActionEdit() {
-      return tool.processActionEdit(base);
+      return parent.processActionEdit(base);
    }
 
    public String processActionDelete() {
-      return tool.processActionDelete(base);
+      return parent.processActionDelete(base);
+   }
+
+   public WizardTool getParent() {
+      return parent;
+   }
+
+   public void setParent(WizardTool parent) {
+      this.parent = parent;
+   }
+
+   public DecoratedCategory getRootCategory() {
+      return rootCategory;
+   }
+
+   public void setRootCategory(DecoratedCategory rootCategory) {
+      this.rootCategory = rootCategory;
    }
 }

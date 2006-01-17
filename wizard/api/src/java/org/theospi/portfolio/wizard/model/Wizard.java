@@ -13,6 +13,9 @@ import org.theospi.portfolio.guidance.model.Guidance;
 
 public class Wizard extends IdentifiableObject {
 
+   public final static String WIZARD_TYPE_SEQUENTIAL = "org.theospi.portfolio.wizard.model.Wizard.sequential";
+   public final static String WIZARD_TYPE_HIERARCHICAL = "org.theospi.portfolio.wizard.model.Wizard.hierarchical";
+
    private String name;
    private String description;
    private String keywords;
@@ -22,7 +25,7 @@ public class Wizard extends IdentifiableObject {
    private Id guidanceId;
    private Set supportItems = new HashSet();
    private boolean published = false;
-   private String type = WIZARD_TYPE;
+   private String type = WIZARD_TYPE_SEQUENTIAL;
    private List wizardStyleItems = new ArrayList();
    private String exposedPageId;
    private transient Boolean exposeAsTool = null;
@@ -32,12 +35,11 @@ public class Wizard extends IdentifiableObject {
    private Id securityQualifier;
    private String securityViewFunction;
    private String securityEditFunction;
-   
+   private WizardCategory rootCategory;
+
    private transient Guidance guidance;
    
    private boolean newObject = false;
-   
-   public final static String WIZARD_TYPE = "wizard";
    
    public Wizard() {
    }
@@ -52,6 +54,11 @@ public class Wizard extends IdentifiableObject {
       this.securityViewFunction = securityViewFunction;
       this.securityEditFunction = securityEditFunction;
       newObject = true;
+      rootCategory = new WizardCategory();
+      rootCategory.setWizard(this);
+      rootCategory.setTitle("root");
+      rootCategory.setChildCategories(new ArrayList());
+      rootCategory.setChildPages(new ArrayList());
    }
    
    public String getType() {
@@ -190,6 +197,13 @@ public class Wizard extends IdentifiableObject {
    public void setToolId(String toolId) {
       this.toolId = toolId;
    }
-  
-  
+
+   public WizardCategory getRootCategory() {
+      return rootCategory;
+   }
+
+   public void setRootCategory(WizardCategory rootCategory) {
+      this.rootCategory = rootCategory;
+   }
+
 }

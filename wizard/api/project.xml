@@ -64,6 +64,12 @@
 
      <dependency>
        <groupId>osp</groupId>
+       <artifactId>osp-matrix-api</artifactId>
+       <version>${osp.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>osp</groupId>
        <artifactId>osp-common-tool-lib</artifactId>
        <version>${osp.version}</version>
      </dependency>

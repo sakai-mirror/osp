@@ -33,6 +33,9 @@
             <one-to-many class="WizardStyleItem" />
         </bag>
       <property name="exposedPageId" type="string" length="36" column="exposed_page_id" not-null="false"/>
+      <many-to-one name="rootCategory"
+         class="WizardCategory" column="root_category"
+         cascade="all" unique="true" />
    </class>
    
    <class name="WizardStyleItem" table="osp_wizard_style_item" lazy="true">
@@ -57,6 +60,45 @@
          type="org.sakaiproject.metaobj.shared.IdType"/>
       <property name="genericType" type="string" column="generic_type" not-null="true"/>
       <property name="contentType" type="string" column="content_type" not-null="true"/>
+   </class>
+
+   <class name="WizardPageSequence" table="osp_wizard_page_sequence">
+      <cache usage="nonstrict-read-write"/>
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <property name="sequence" type="int" column="seq_num" not-null="false"/>
+
+      <many-to-one name="category" column="category_id"
+          not-null="true" class="WizardCategory" cascade="none" />
+
+      <many-to-one name="wizardPageDefinition"
+         class="org.theospi.portfolio.matrix.model.WizardPageDefinition" column="wiz_page_def_id"
+         cascade="all" unique="true" />
+   </class>
+
+   <class name="WizardCategory" table="osp_wizard_category">
+      <cache usage="nonstrict-read-write"/>
+      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+
+      <property name="title" type="string" column="name" not-null="false"/>
+      <property name="description" type="string" column="description" not-null="false"/>
+      <property name="keywords" type="string" column="keywords" not-null="false"/>
+      <property name="created" type="java.util.Date" update="false" not-null="true"/>
+      <property name="modified" type="java.util.Date" update="true" not-null="true"/>
+
+      <many-to-one name="wizard" column="wizard_id"
+          not-null="false" class="Wizard" cascade="none" />
+
+      <list name="childPages" cascade="all-delete-orphan"
+          inverse="true" lazy="false">
+          <key column="category_id" />
+          <index column="seq_num" />
+          <one-to-many class="WizardPageSequence" />
+      </list>
+
    </class>
 
 </hibernate-mapping>
