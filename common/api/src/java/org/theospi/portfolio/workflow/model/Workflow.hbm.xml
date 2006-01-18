@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
 <hibernate-mapping package="org.theospi.portfolio.workflow.model">
 
-   <class name="Workflow" table="osp_workflow" lazy="false" batch-size="10">
+   <class name="Workflow" table="osp_workflow" lazy="true">
       <cache usage="nonstrict-read-write"/>
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
          <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
@@ -15,14 +15,14 @@
       <property name="securityViewFunction" type="string" not-null="true"/>
       <property name="securityEditFunction" type="string" not-null="true"/>
 -->
-      <list name="items" cascade="all-delete-orphan" inverse="true" lazy="false">
+      <list name="items" cascade="all-delete-orphan" inverse="false" lazy="false">
          <key column="workflow_id"/>
          <index column="seq_num" />
          <one-to-many class="WorkflowItem"/>
       </list>
    </class>
 
-   <class name="WorkflowItem" table="osp_workflow_item" lazy="false" batch-size="3">
+   <class name="WorkflowItem" table="osp_workflow_item" lazy="true">
       <cache usage="nonstrict-read-write"/>
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
          <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
@@ -31,7 +31,7 @@
       <property name="actionObjectId" type="org.sakaiproject.metaobj.shared.IdType" 
          column="action_object_id" not-null="true"/>
       <property name="actionValue" type="string" column="action_value" not-null="true"/>
-      <many-to-one name="workflow" column="workflow_id" not-null="true" class="Workflow"/>
+      <many-to-one name="workflow" column="workflow_id" not-null="true" class="Workflow" cascade="none"/>
 
    </class>
    

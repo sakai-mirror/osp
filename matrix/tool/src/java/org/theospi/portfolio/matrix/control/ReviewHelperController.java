@@ -1,5 +1,6 @@
 package org.theospi.portfolio.matrix.control;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -22,19 +23,25 @@ public class ReviewHelperController implements Controller {
       String strId = (String) request.get("cell_id");
       if (strId== null) {
          strId = (String)session.get("cell_id");
+         
+         Map model = new HashMap();
+         model.put("cell_id", strId);
+         
          session.remove("cell_id");
          session.remove(ReviewHelper.REVIEW_TYPE);
          session.remove(ReviewHelper.REVIEW_FORM_TYPE);
          session.remove(ReviewHelper.REVIEW_PARENT);
          session.remove(ReviewHelper.REVIEW_BUNDLE_PREFIX);
-         return new ModelAndView("return", "cell_id", strId);
+         if (session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS) != null) {
+            model.put("workflows", session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS));
+            return new ModelAndView("postProcessor", model);
+         }
+         return new ModelAndView("return", model);
       }
       
       Id id = getIdManager().getId(strId);
       Cell cell = matrixManager.getCell(id);
       
-      session.put(ReviewHelper.REVIEW_FORM_TYPE, 
-            cell.getScaffoldingCell().getReviewDevice().getValue());
       session.put(ReviewHelper.REVIEW_PARENT, 
             cell.getId().getValue());
       
@@ -44,18 +51,24 @@ public class ReviewHelperController implements Controller {
       int intType = Integer.parseInt(type);
       
       String bundlePrefix = ""; 
+      String formType = "";
       switch (intType) {
          case Review.REVIEW_TYPE:
             bundlePrefix = "review_";
+            formType = cell.getScaffoldingCell().getReviewDevice().getValue();
             break;
          case Review.EVALUATION_TYPE:
             bundlePrefix = "eval_";
+            formType = cell.getScaffoldingCell().getEvaluationDevice().getValue();
+            session.put(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS, 
+                  cell.getScaffoldingCell().getWizardPageDefinition().getEvalWorkflows());
             break;
          case Review.REFLECTION_TYPE:
             bundlePrefix = "reflection_";
+            formType = cell.getScaffoldingCell().getReflectionDevice().getValue();
             break;
       }      
-      
+      session.put(ReviewHelper.REVIEW_FORM_TYPE, formType);
       session.put(ReviewHelper.REVIEW_TYPE, type);
       session.put(ReviewHelper.REVIEW_BUNDLE_PREFIX, bundlePrefix); 
       session.put("cell_id", cell.getId().getValue());

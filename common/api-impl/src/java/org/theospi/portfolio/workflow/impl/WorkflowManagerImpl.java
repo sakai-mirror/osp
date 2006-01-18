@@ -57,7 +57,13 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
    }
 
    public void deleteWorkflow(Workflow workflow) {
+      //for(Iterator iter = workflow.getItems().iterator(); iter.hasNext();) {
+      //   WorkflowItem item = (WorkflowItem)iter.next();
+      //   getHibernateTemplate().delete(item);
+      //}
+      workflow.getItems().clear();
       getHibernateTemplate().delete(workflow);
+      //getHibernateTemplate().
       
    }
 

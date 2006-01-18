@@ -14,4 +14,7 @@ public interface ReviewHelper {
    public static final String REVIEW_BUNDLE_PREFIX = 
       "org.theospi.portfolio.review.bundle_prefix";
    
+   public static final String REVIEW_POST_PROCESSOR_WORKFLOWS = 
+      "org.theospi.portfolio.review.postProcessorWorkflows";
+   
 }

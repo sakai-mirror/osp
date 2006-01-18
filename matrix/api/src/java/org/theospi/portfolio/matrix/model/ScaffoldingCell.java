@@ -251,18 +251,6 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
       wizardPageDefinition.setSubmitWorkflow(submitWorkflow);
    }
    /**
-    * @return Returns the submitWorkflowId.
-    */
-   public Id getSubmitWorkflowId() {
-      return wizardPageDefinition.getSubmitWorkflowId();
-   }
-   /**
-    * @param submitWorkflowId The submitWorkflowId to set.
-    */
-   public void setSubmitWorkflowId(Id submitWorkflowId) {
-      wizardPageDefinition.setSubmitWorkflowId(submitWorkflowId);
-   }
-   /**
     * @return Returns the additionalForms.
     */
    public List getAdditionalForms() {

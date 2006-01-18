@@ -48,7 +48,7 @@ public class WizardPageDefinition extends IdentifiableObject {
    private Guidance guidance;
    transient private Id deleteGuidanceId;
    private Workflow submitWorkflow;
-   transient private Id submitWorkflowId;
+   private List evalWorkflows = new ArrayList();
 
    private Id reflectionDevice;
    private String reflectionDeviceType;
@@ -198,18 +198,6 @@ public class WizardPageDefinition extends IdentifiableObject {
       this.submitWorkflow = submitWorkflow;
    }
    /**
-    * @return Returns the submitWorkflowId.
-    */
-   public Id getSubmitWorkflowId() {
-      return submitWorkflowId;
-   }
-   /**
-    * @param submitWorkflowId The submitWorkflowId to set.
-    */
-   public void setSubmitWorkflowId(Id submitWorkflowId) {
-      this.submitWorkflowId = submitWorkflowId;
-   }
-   /**
     * @return Returns the additionalForms.
     */
    public List getAdditionalForms() {
@@ -236,6 +224,20 @@ public class WizardPageDefinition extends IdentifiableObject {
 
    public void setDescription(String description) {
       this.description = description;
+   }
+
+   /**
+    * @return Returns the evalWorkflows.
+    */
+   public List getEvalWorkflows() {
+      return evalWorkflows;
+   }
+
+   /**
+    * @param evalWorkflows The evalWorkflows to set.
+    */
+   public void setEvalWorkflows(List evalWorkflows) {
+      this.evalWorkflows = evalWorkflows;
    }
 
 }

@@ -43,24 +43,17 @@
  */
 package org.theospi.portfolio.matrix.control;
 
-import java.util.Iterator;
-import java.util.List;
 
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.springframework.validation.Errors;
 import org.theospi.portfolio.matrix.model.CriterionTransport;
-import org.theospi.portfolio.matrix.model.Expectation;
-import org.theospi.portfolio.matrix.model.ExpectationTransport;
 import org.theospi.portfolio.matrix.model.LevelTransport;
-import org.theospi.portfolio.matrix.model.ReflectionItemTransport;
-import org.theospi.portfolio.matrix.model.ReflectionTransport;
 import org.theospi.portfolio.matrix.model.ReviewerItem;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.ScaffoldingUploadForm;
 import org.theospi.utils.mvc.impl.ValidatorBase;
 
-import java.util.Arrays;
 
 /**
  * Created by IntelliJ IDEA.
@@ -84,9 +77,7 @@ public class MatrixValidator extends ValidatorBase {
       else if (ScaffoldingCell.class.isAssignableFrom(clazz)) return true;
       else if (LevelTransport.class.isAssignableFrom(clazz)) return true;
       else if (CriterionTransport.class.isAssignableFrom(clazz)) return true;
-      else if (ExpectationTransport.class.isAssignableFrom(clazz)) return true;
       else if (ReviewerItem.class.isAssignableFrom(clazz)) return true;
-      else if (ReflectionTransport.class.isAssignableFrom(clazz)) return true;
       else if (CellAndNodeForm.class.isAssignableFrom(clazz)) return true;
       else return false;
    }
@@ -111,8 +102,6 @@ public class MatrixValidator extends ValidatorBase {
          if (scaffolding.isValidate())
             validateScaffolding(scaffolding, errors);
       }
-      else if (obj instanceof ExpectationTransport)
-         validateExpectation((ExpectationTransport)obj, errors);
       else if (obj instanceof ScaffoldingCell) {
          ScaffoldingCell scaffoldingCell = (ScaffoldingCell) obj;
          if (scaffoldingCell.isValidate())
@@ -158,13 +147,6 @@ public class MatrixValidator extends ValidatorBase {
       }
    }
    
-   protected void validateExpectation(ExpectationTransport expectation, Errors errors) {
-      if (expectation.getDescription() == null || expectation.getDescription().equals("") || 
-            stripHtml(expectation.getDescription()).trim().equals("")) {
-         errors.rejectValue("description", "error.required", "required");
-      }
-   }
-   
    protected void validateScaffolding(Scaffolding scaffolding, Errors errors) {
       if (scaffolding.getTitle() == null || scaffolding.getTitle().equals("")) {
          errors.rejectValue("title", "error.required", "required");
@@ -175,74 +157,6 @@ public class MatrixValidator extends ValidatorBase {
       if (scaffolding.getCriteria() == null || scaffolding.getCriteria().size() == 0) {
          errors.rejectValue("criteria", "error.required", "required");
       }
-   }
-   
-   protected void validateReflectionCheckBoxes(Object o, Errors errors) {
-      ReflectionTransport bean = (ReflectionTransport) o;
-      if (bean.getSelectedExpectations() == null ||
-            bean.getSelectedExpectations().length == 0 || 
-            bean.getSelectedExpectations()[0] == null ||
-            allOff(bean.getSelectedExpectations())) {
-         errors.rejectValue("selectedExpectations", "error.required", "required");
-      }
-   }
-   
-   private boolean allOff(String[] items) {
-      List list = Arrays.asList(items);
-      for (Iterator i = list.iterator(); i.hasNext();) {
-         //Object obj = i.next();
-         String val = (String)i.next();
-         //if (obj instanceof String) {
-            // off, on
-           // String val = (String)obj;
-            if (val.equals("on") || isNumber(val))
-               return false;
-         //}
-         //else {
-            // the index of the page that's on
-         //   return false;
-         //}
-      }
-      return true;
-   }
-   
-   private static boolean isNumber(String n) {
-      try {
-         double d = Double.valueOf(n).doubleValue();
-         return true;
-      }
-      catch (NumberFormatException e) {
-         //swallow exception because we don't care
-         return false;
-      }
-   }
-
-   
-   protected void validateReflectionSubmit(Object o, Errors errors) {
-      //Reflection bean = (Reflection) o;
-      //Reflection reflection = bean.getWizardPage().getReflection();
-      //Reflection reflection = (Reflection) o;
-      ReflectionTransport reflection = (ReflectionTransport) o;
-      int i=0;
-      for (Iterator iter = reflection.getReflectionItems().iterator(); iter.hasNext();) {
-         ReflectionItemTransport item = (ReflectionItemTransport) iter.next();
-         Expectation ex = item.getExpectation();
-         if (ex.isRequired()) {
-            if (item.getConnect() == null || stripHtml(item.getConnect()).trim().equals("")) {
-               errors.rejectValue("reflectionItems[" + i + "].connect", "error.required", "required");      
-            }
-            if (item.getEvidence() == null || stripHtml(item.getEvidence()).trim().equals("")) {
-               errors.rejectValue("reflectionItems[" + i + "].evidence", "error.required", "required");      
-            }
-         }
-         i++;
-      }
-      //if (reflection.getWizardPage().getScaffoldingCell().isGradableReflection()) {
-      //   if (reflection.getGrowthStatement() == null || 
-      //         stripHtml(reflection.getGrowthStatement()).trim().equals("")) {
-      //      errors.rejectValue("growthStatement", "error.required", "required");      
-      //   }
-      //}
    }
    
    private String stripHtml(String input) {

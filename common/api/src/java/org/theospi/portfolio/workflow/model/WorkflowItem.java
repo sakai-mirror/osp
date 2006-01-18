@@ -11,13 +11,21 @@ public class WorkflowItem extends IdentifiableObject {
    public final static int CONTENT_LOCKING_WORKFLOW = 2;
    
    public final static String CONTENT_LOCKING_LOCK = "LOCK";
-   public final static String CONTENT_UNLOCKING_UNLOCK = "UNLOCK";
+   public final static String CONTENT_LOCKING_UNLOCK = "UNLOCK";
    
    
    private int actionType;
    private Id actionObjectId;
    private String actionValue;
    private Workflow workflow;
+   
+   public WorkflowItem() {;}
+   
+   public WorkflowItem(int actionType, Id actionObjectId, String actionValue) {
+      this.actionType = actionType;
+      this.actionObjectId = actionObjectId;
+      this.actionValue = actionValue;
+   }
    
    /**
     * @return Returns the action.

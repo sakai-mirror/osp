@@ -49,7 +49,6 @@ package org.theospi.portfolio.matrix.model;
 
 
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -63,19 +62,10 @@ public class Cell {
    private Matrix matrix;
    private ScaffoldingCell scaffoldingCell;
    private WizardPage wizardPage;
-   private Reflection reflection;
    private Set reviewerItems;
 
    public Cell() {
       setWizardPage(new WizardPage());
-   }
-
-   public Reflection getReflection() {
-      return reflection;
-   }
-
-   public void setReflection(Reflection reflection) {
-      this.reflection = reflection;
    }
 
    /**
