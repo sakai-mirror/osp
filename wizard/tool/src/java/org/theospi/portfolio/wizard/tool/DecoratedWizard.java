@@ -6,6 +6,7 @@ import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardStyleItem;
+import org.theospi.portfolio.wizard.model.WizardCategory;
 
 import java.util.List;
 
@@ -71,6 +72,13 @@ public class DecoratedWizard {
 
    public String processActionDelete() {
       return parent.processActionDelete(base);
+   }
+
+   public String processActionNewCategory() {
+      WizardCategory wizardCategory = new WizardCategory(getBase());
+      parent.setCurrentCategory(
+            new DecoratedCategory(getRootCategory(), wizardCategory, parent, getRootCategory().getIndent() + 1));
+      return "editWizardCategory";
    }
 
    public WizardTool getParent() {

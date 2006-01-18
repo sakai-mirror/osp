@@ -38,13 +38,24 @@ import java.util.ArrayList;
  * Time: 11:44:25 AM
  * To change this template use File | Settings | File Templates.
  */
-public class DecoratedCategory {
+public class DecoratedCategory extends DecoratedCategoryChild {
 
    private WizardCategory base;
    private WizardTool parent;
    private List categoryPageList;
+   private boolean selected;
+
+   private DecoratedCategory parentCategory = null;
 
    public DecoratedCategory(WizardCategory base, WizardTool tool) {
+      super(0);
+      this.base = base;
+      this.parent = tool;
+   }
+
+   public DecoratedCategory(DecoratedCategory parentCategory, WizardCategory base, WizardTool tool, int indent) {
+      super(indent);
+      this.parentCategory = parentCategory;
       this.base = base;
       this.parent = tool;
    }
@@ -85,19 +96,97 @@ public class DecoratedCategory {
       categoryPageList = null;
    }
 
+   protected void resequenceCategories() {
+      int index = 0;
+      for (Iterator i=getBase().getChildCategories().iterator();i.hasNext();) {
+         WizardCategory category = (WizardCategory) i.next();
+         category.setSequence(index);
+         index++;
+      }
+      categoryPageList = null;
+   }
+
    public List getCategoryPageList() {
       if (categoryPageList == null) {
          categoryPageList = new ArrayList();
-         for (Iterator i=getBase().getChildPages().iterator();i.hasNext();) {
-            WizardPageSequence page = (WizardPageSequence) i.next();
-            categoryPageList.add(new DecoratedWizardPage(this, page, getParent()));
-         }
+         addCategoriesPages(categoryPageList);
       }
       return categoryPageList;
    }
 
+   protected List addCategoriesPages(List categoryPages) {
+      for (Iterator i=getBase().getChildCategories().iterator();i.hasNext();) {
+         WizardCategory category = (WizardCategory) i.next();
+         categoryPages.add(new DecoratedCategory(this, category, getParent(), getIndent()+1));
+      }
+
+      for (Iterator i=getBase().getChildPages().iterator();i.hasNext();) {
+         WizardPageSequence page = (WizardPageSequence) i.next();
+         categoryPages.add(new DecoratedWizardPage(this, page, getParent(), getIndent()+1));
+      }
+      return categoryPages;
+   }
+
    public void setCategoryPageList(List categoryPageList) {
       this.categoryPageList = categoryPageList;
+   }
+
+   public DecoratedCategory getParentCategory() {
+      return parentCategory;
+   }
+
+   public void setParentCategory(DecoratedCategory parentCategory) {
+      this.parentCategory = parentCategory;
+   }
+
+   public String processActionSave() {
+      List parentCategories = getParentCategory().getBase().getChildCategories();
+
+      if (!parentCategories.contains(getBase())) {
+         parentCategories.add(getBase());
+         getBase().setParentCategory(getParentCategory().getBase());
+      }
+
+      getParentCategory().resequenceCategories();
+
+      return "editWizardPages";
+   }
+
+   public String getTitle() {
+      return getBase().getTitle();
+   }
+
+   public String processActionEdit() {
+      getParent().setCurrentCategory(this);
+      return "editWizardCategory";
+   }
+
+   public String processActionDelete() {
+      return null;
+   }
+
+   public String moveUp() {
+      return null;
+   }
+
+   public String moveDown() {
+      return null;
+   }
+
+   public boolean isSelected() {
+      return selected;
+   }
+
+   public void setSelected(boolean selected) {
+      this.selected = selected;
+   }
+
+   public boolean isFirst() {
+      return getBase().getSequence() == 0 && getIndent() == 1;      
+   }
+
+   public boolean isLast() {
+      return false;
    }
 
 }

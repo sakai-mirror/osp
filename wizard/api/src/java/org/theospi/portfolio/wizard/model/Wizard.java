@@ -54,11 +54,8 @@ public class Wizard extends IdentifiableObject {
       this.securityViewFunction = securityViewFunction;
       this.securityEditFunction = securityEditFunction;
       newObject = true;
-      rootCategory = new WizardCategory();
-      rootCategory.setWizard(this);
+      rootCategory = new WizardCategory(this);
       rootCategory.setTitle("root");
-      rootCategory.setChildCategories(new ArrayList());
-      rootCategory.setChildPages(new ArrayList());
    }
    
    public String getType() {
