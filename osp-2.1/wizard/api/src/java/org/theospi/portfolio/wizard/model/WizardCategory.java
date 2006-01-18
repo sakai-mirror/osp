@@ -26,6 +26,7 @@ import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,9 +43,22 @@ public class WizardCategory extends IdentifiableObject {
    private Date created;
    private Date modified;
    private Wizard wizard;
+   private WizardCategory parentCategory;
+   private int sequence = 0;
 
    private List childCategories;
    private List childPages;
+
+   public WizardCategory() {
+   }
+
+   public WizardCategory(Wizard wizard) {
+      this.wizard = wizard;
+      setChildCategories(new ArrayList());
+      setChildPages(new ArrayList());
+      setCreated(new Date());
+      setModified(new Date());
+   }
 
    public String getTitle() {
       return title;
@@ -108,6 +122,36 @@ public class WizardCategory extends IdentifiableObject {
 
    public void setWizard(Wizard wizard) {
       this.wizard = wizard;
+   }
+
+   public WizardCategory getParentCategory() {
+      return parentCategory;
+   }
+
+   public void setParentCategory(WizardCategory parentCategory) {
+      this.parentCategory = parentCategory;
+   }
+
+   public int getSequence() {
+      return sequence;
+   }
+
+   public void setSequence(int sequence) {
+      this.sequence = sequence;
+   }
+
+   public boolean equals(Object in) {
+      if (in == null && this == null) return true;
+      if (in == null && this != null) return false;
+      if (this == null && in != null) return false;
+      if (!this.getClass().isAssignableFrom(in.getClass())) return false;
+
+      if (this.getId() == null && ((IdentifiableObject) in).getId() == null ) {
+         return this.getTitle().equals(((WizardCategory)in).getTitle());
+      }
+
+      if (this.getId() == null || ((IdentifiableObject) in).getId() == null ) return false;
+      return this.getId().equals(((IdentifiableObject) in).getId());
    }
 
 }

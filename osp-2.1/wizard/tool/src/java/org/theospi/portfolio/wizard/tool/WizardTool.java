@@ -46,6 +46,7 @@ public class WizardTool extends ToolBase {
    private String evaluationItem;
    private String expandedGuidanceSection = "false";
    private List wizardTypes = null;
+   private DecoratedCategory currentCategory;
 
    public final static String LIST_PAGE = "listWizards";
    public final static String EDIT_PAGE = "editWizard";
@@ -214,14 +215,7 @@ public class WizardTool extends ToolBase {
    }
    
    protected String goToPage(String nextPage) {
-      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      try {
-         context.redirect(nextPage);
-      }
-      catch (IOException e) {
-         throw new RuntimeException("Failed to redirect to page", e);
-      }
-      return null;
+      return nextPage;
    }
 
    public String processActionNew() {
@@ -498,5 +492,13 @@ public class WizardTool extends ToolBase {
 
    public void setWizardTypes(List wizardTypes) {
       this.wizardTypes = wizardTypes;
+   }
+
+   public DecoratedCategory getCurrentCategory() {
+      return currentCategory;
+   }
+
+   public void setCurrentCategory(DecoratedCategory currentCategory) {
+      this.currentCategory = currentCategory;
    }
 }

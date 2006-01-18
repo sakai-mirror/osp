@@ -33,14 +33,15 @@ import java.util.Collections;
  * Time: 11:44:37 AM
  * To change this template use File | Settings | File Templates.
  */
-public class DecoratedWizardPage {
+public class DecoratedWizardPage extends DecoratedCategoryChild {
 
    private DecoratedCategory category = null;
    private WizardPageSequence base;
    private WizardTool parent;
    private boolean selected = false;
 
-   public DecoratedWizardPage(DecoratedCategory category, WizardPageSequence base, WizardTool parent) {
+   public DecoratedWizardPage(DecoratedCategory category, WizardPageSequence base, WizardTool parent, int indent) {
+      super(indent);
       this.base = base;
       this.parent = parent;
       this.category = category;
@@ -92,6 +93,10 @@ public class DecoratedWizardPage {
       return null;
    }
 
+   public boolean isFirst() {
+      return getBase().getSequence() == 0;
+   }
+
    public boolean isLast() {
       return getBase().getSequence() >= getBase().getCategory().getChildPages().size() - 1;
    }
@@ -101,5 +106,13 @@ public class DecoratedWizardPage {
 
    public void setCategory(DecoratedCategory category) {
       this.category = category;
+   }
+
+   public String processActionEdit() {
+      return null;
+   }
+
+   public String processActionDelete() {
+      return null;
    }
 }

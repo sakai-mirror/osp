@@ -46,14 +46,27 @@
          <f:facet name="header">
             <h:outputText value="#{msgs.user_column_header}" />
          </f:facet>
-         <h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" />
-         <h:outputLabel value="#{item.title}" for="itemSelect" />
+   		<sakai:doc_section>
+            <h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" />
+            <h:outputLabel value="#{item.indentString}" for="itemSelect" />
+            <h:outputLabel value="#{item.title}" for="itemSelect" />
+         </sakai:doc_section>
+   		<sakai:doc_section>
+            <h:outputText value=" | " />
+            <h:commandLink action="#{item.processActionEdit}">
+               <h:outputText value="#{msgs.editProperties}" />
+            </h:commandLink>
+            <h:outputText value=" | " />
+            <h:commandLink action="#{item.processActionDelete}">
+               <h:outputText value="#{msgs.delete}" />
+            </h:commandLink>
+         </sakai:doc_section>
       </h:column>
       <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.re_order}" />
          </f:facet>
-         <h:commandLink action="#{item.moveUp}" rendered="#{item.base.sequence != 0}">
+         <h:commandLink action="#{item.moveUp}" rendered="#{!item.first}">
             <h:graphicImage value="/img/arrowUp.gif" />
          </h:commandLink>
          <h:commandLink action="#{item.moveDown}" rendered="#{!item.last}">
