@@ -56,6 +56,8 @@ import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.workflow.model.Workflow;
+import org.theospi.portfolio.workflow.model.WorkflowItem;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 
@@ -111,6 +113,8 @@ public class BaseScaffoldingCellController {
       getMatrixManager().removeFromSession(oldScaffoldingCell);
 
       String oldStatus = oldScaffoldingCell.getInitialStatus();
+      scaffoldingCell.getWizardPageDefinition().setEvalWorkflows(
+            createEvalWorkflows(scaffoldingCell));
       getMatrixManager().storeScaffoldingCell(scaffoldingCell);
       List cells = getMatrixManager().getCellsByScaffoldingCell(
             scaffoldingCell.getId());
@@ -127,6 +131,26 @@ public class BaseScaffoldingCellController {
          Guidance guidance = getGuidanceManager().getGuidance(scaffoldingCell.getDeleteGuidanceId());
          getGuidanceManager().deleteGuidance(guidance);
       }
+   }
+   
+   private List createEvalWorkflows(ScaffoldingCell scaffoldingCell) {
+      List workflows = scaffoldingCell.getWizardPageDefinition().getEvalWorkflows();
+      if (scaffoldingCell.getEvaluationDevice() != null && 
+            scaffoldingCell.getWizardPageDefinition().getEvalWorkflows().size() == 0) {
+         Workflow w_complete = new Workflow("Complete Workflow");
+         Workflow w_return = new Workflow("Return Workflow");
+         
+         w_complete.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
+               scaffoldingCell.getId(), MatrixFunctionConstants.COMPLETE_STATUS));
+         w_return.add(new WorkflowItem(WorkflowItem.CONTENT_LOCKING_WORKFLOW, 
+               scaffoldingCell.getId(), WorkflowItem.CONTENT_LOCKING_UNLOCK));
+         w_return.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
+               scaffoldingCell.getId(), MatrixFunctionConstants.READY_STATUS));
+         workflows.add(w_complete);
+         workflows.add(w_return);
+         
+      }
+      return workflows;
    }
  
    public AuthorizationFacade getAuthzManager() {

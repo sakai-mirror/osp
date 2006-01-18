@@ -69,6 +69,9 @@ import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.workflow.mgt.WorkflowManager;
+import org.theospi.portfolio.workflow.model.Workflow;
+import org.theospi.portfolio.workflow.model.WorkflowItem;
 
 /**
  * @author chmaurer
@@ -81,6 +84,7 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
    private WorksiteManager worksiteManager = null;
    private AuthorizationFacade authzManager;
    private ToolManager toolManager;
+   private WorkflowManager workflowManager;
 
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.LoadObjectController#fillBackingObject(java.lang.Object, java.util.Map, java.util.Map, java.util.Map)
@@ -101,6 +105,8 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
       List row = new ArrayList();
 
       Set cells = scaffolding.getScaffoldingCells();
+      boolean firstRow = true;
+      boolean firstColumn = true;
        
       for (Iterator criteriaIterator = criteria.iterator(); criteriaIterator.hasNext();) {
          row = new ArrayList();
@@ -109,12 +115,23 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
             level = (Level) levelsIterator.next();
             ScaffoldingCell scaffoldingCell = getScaffoldingCell(cells, criterion, level);
             if (scaffoldingCell == null) {
-               scaffoldingCell = new ScaffoldingCell(criterion, level, MatrixFunctionConstants.LOCKED_STATUS, scaffolding);
+               String status = MatrixFunctionConstants.READY_STATUS;
+               if ((scaffolding.getWorkflowOption() == Scaffolding.HORIZONTAL_PROGRESSION && !firstColumn) ||
+                     (scaffolding.getWorkflowOption() == Scaffolding.VERTICAL_PROGRESSION && !firstRow) ||
+                     (scaffolding.getWorkflowOption() == Scaffolding.MANUAL_PROGRESSION)) {
+                  status = MatrixFunctionConstants.LOCKED_STATUS;
+               }
+               
+               scaffoldingCell = new ScaffoldingCell(criterion, level, status, scaffolding);
                getMatrixManager().storeScaffoldingCell(scaffoldingCell);
             }
             row.add(scaffoldingCell);
+            firstColumn = false;
          }
          matrixContents.add(row);
+         firstRow = false;
+         //Need to reset firstColumn when moving to the next row
+         firstColumn = true;
       }
       
       //grid.setMaintainer(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
@@ -125,11 +142,73 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
       grid.setRowLabels(criteria);
       grid.setMatrixContents(matrixContents);
       
+      //processWorkflow(scaffolding);
+      
       //Make sure these are not in session.
       session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
       session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
       
       return incomingModel;
+   }
+   
+   private void processWorkflow(Scaffolding scaffolding) {
+      Set cells = scaffolding.getScaffoldingCells();      
+      
+      for (Iterator cellIterator = cells.iterator(); cellIterator.hasNext();) {
+         ScaffoldingCell sCell = (ScaffoldingCell) cellIterator.next();
+         Workflow oldWorkflow = null;
+         if (sCell.getSubmitWorkflow() != null) {
+            oldWorkflow = sCell.getSubmitWorkflow();
+            //sCell.setSubmitWorkflowId(null);
+            sCell.setSubmitWorkflow(null);
+            //getMatrixManager().storeScaffoldingCell(sCell);
+         }
+         
+         Workflow wf = new Workflow();
+         wf.setTitle("New Workflow");
+         wf.setNewObject(true);
+         WorkflowItem wfi_current_status = new WorkflowItem();
+         wfi_current_status.setActionType(WorkflowItem.STATUS_CHANGE_WORKFLOW);
+         wfi_current_status.setActionObjectId(sCell.getId());
+         wfi_current_status.setActionValue(MatrixFunctionConstants.PENDING_STATUS);
+         wf.add(wfi_current_status);
+         
+         WorkflowItem wfi_current_lock = new WorkflowItem();
+         wfi_current_lock.setActionType(WorkflowItem.CONTENT_LOCKING_WORKFLOW);
+         wfi_current_lock.setActionObjectId(sCell.getId());
+         wfi_current_lock.setActionValue(WorkflowItem.CONTENT_LOCKING_LOCK);
+         wf.add(wfi_current_lock);
+         
+         //Only horizontal and vertical progressions have a "next" cell for a status change
+         switch (scaffolding.getWorkflowOption()) {
+            case Scaffolding.HORIZONTAL_PROGRESSION:
+            case Scaffolding.VERTICAL_PROGRESSION:
+               ScaffoldingCell nextCell = getMatrixManager().getNextScaffoldingCell(
+                     sCell, scaffolding.getWorkflowOption());
+               if (nextCell != null) {
+                  WorkflowItem wfi_next = new WorkflowItem();
+                  wfi_next.setActionType(WorkflowItem.STATUS_CHANGE_WORKFLOW);
+                  wfi_next.setActionObjectId(nextCell.getId());
+                  wfi_next.setActionValue(MatrixFunctionConstants.READY_STATUS);
+                  wf.add(wfi_next);
+                  
+                  WorkflowItem wfi_next_lock = new WorkflowItem();
+                  wfi_next_lock.setActionType(WorkflowItem.CONTENT_LOCKING_WORKFLOW);
+                  wfi_next_lock.setActionObjectId(nextCell.getId());
+                  wfi_next_lock.setActionValue(WorkflowItem.CONTENT_LOCKING_LOCK);
+                  wf.add(wfi_next_lock);
+               }
+               break;               
+         }
+         sCell.setSubmitWorkflow(wf);
+         getMatrixManager().storeScaffoldingCell(sCell);
+         
+         if (oldWorkflow != null) {
+            //getMatrixManager().clearSession();
+            //oldWorkflow.setItems(null);
+            getWorkflowManager().deleteWorkflow(oldWorkflow);
+         }
+      }
    }
    
    /* (non-Javadoc)
@@ -220,5 +299,19 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
 
    public void setToolManager(ToolManager toolManager) {
       this.toolManager = toolManager;
+   }
+
+   /**
+    * @return Returns the workflowManager.
+    */
+   public WorkflowManager getWorkflowManager() {
+      return workflowManager;
+   }
+
+   /**
+    * @param workflowManager The workflowManager to set.
+    */
+   public void setWorkflowManager(WorkflowManager workflowManager) {
+      this.workflowManager = workflowManager;
    }
 }

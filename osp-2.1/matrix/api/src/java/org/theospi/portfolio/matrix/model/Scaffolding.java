@@ -91,6 +91,14 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    
    transient private boolean validate;
    transient private String xsdName;
+   
+   private int workflowOption;
+   
+   public static final int NO_PROGRESSION = 0;
+   public static final int HORIZONTAL_PROGRESSION = 1;
+   public static final int VERTICAL_PROGRESSION = 2;
+   public static final int OPEN_PROGRESSION = 3;
+   public static final int MANUAL_PROGRESSION = 4;
 
    public Scaffolding() {}
    
@@ -372,5 +380,19 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
 
    public void setReadyColor(String readyColor) {
       this.readyColor = readyColor;
+   }
+   
+   /**
+    * @return Returns the workflowOption.
+    */
+   public int getWorkflowOption() {
+      return workflowOption;
+   }
+
+   /**
+    * @param workflowOption The workflowOption to set.
+    */
+   public void setWorkflowOption(int workflowOption) {
+      this.workflowOption = workflowOption;
    }
 }

@@ -54,7 +54,6 @@ import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.theospi.portfolio.matrix.model.Attachment;
 import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.matrix.model.Reflection;
 import org.theospi.portfolio.matrix.model.ReviewRubricValue;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.Criterion;
@@ -99,8 +98,6 @@ public interface MatrixManager {
    
    List getCells(Matrix matrix);
    
-   Reflection getReflection(Id reflectionId);
-   
    Id storeMatrixTool(MatrixTool matrixTool);
 
    Id storeCell(Cell cell);
@@ -132,6 +129,8 @@ public interface MatrixManager {
 
    Scaffolding getScaffolding(Id scaffoldingId);
    
+   ScaffoldingCell getNextScaffoldingCell(ScaffoldingCell scaffoldingCell, 
+         int progressionOption);
    ScaffoldingCell getScaffoldingCell(Criterion criterion, Level level);
    ScaffoldingCell getScaffoldingCell(Id id);
    String getScaffoldingCellsStatus(Id id);
@@ -182,5 +181,8 @@ public interface MatrixManager {
    public List getScaffolding();
 
    public List getMatrices(Id scaffoldingId);
+   
+   void processWorkflow(Id workflowId, Id objId);
+   void processWorkflow(int workflowOption, Id cellId);
 
 }

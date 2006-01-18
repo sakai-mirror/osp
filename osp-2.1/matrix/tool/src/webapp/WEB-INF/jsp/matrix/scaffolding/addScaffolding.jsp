@@ -98,7 +98,11 @@
         <br />
       
       
-		<h4>Columns</h4>
+		<h4>Columns  &nbsp;&nbsp;&nbsp;
+         <a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+            Add Column...
+         </a>
+      </h4>
       <spring:bind path="scaffolding.columnLabel">
             <c:if test="${status.error}">
                 <div class="validation"><c:out value="${status.errorMessage}"/></div>
@@ -178,7 +182,11 @@
       
 		<br />
 		
-		<h4>Rows</h4>
+		<h4>Rows  &nbsp;&nbsp;&nbsp;
+         <a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
+            Add Row...
+         </a>
+      </h4>
       <spring:bind path="scaffolding.rowLabel">
             <c:if test="${status.error}">
                 <div class="validation"><c:out value="${status.errorMessage}"/></div>
@@ -253,6 +261,38 @@
     		</table>
         </spring:bind>
 		
+      <spring:bind path="scaffolding.workflowOption">
+      <h4>Matrix Progression</h4>
+      <fieldset>
+         <legend class="radio">Set Matrix Progression to: </legend>
+         <div class="checkbox indnt1">
+            <input type="radio" id="none" name="<c:out value="${status.expression}"/>" value="0" 
+               <c:if test="${status.value == 0}"> checked="checked" </c:if> />
+            <label for="none">None</label>
+         </div>
+         <div class="checkbox indnt1">
+            <input type="radio" id="horizontal" name="<c:out value="${status.expression}"/>" value="1" 
+               <c:if test="${status.value == 1}"> checked="checked" </c:if> />
+            <label for="horizontal">Horizontal</label>
+         </div>
+         <div class="checkbox indnt1">
+            <input type="radio" id="vertical" name="<c:out value="${status.expression}"/>" value="2"
+               <c:if test="${status.value == 2}"> checked="checked" </c:if> />
+            <label for="vertical">Vertical</label>
+         </div>
+         <div class="checkbox indnt1">
+            <input type="radio" id="open" name="<c:out value="${status.expression}"/>" value="3"
+               <c:if test="${status.value == 3}"> checked="checked" </c:if> />
+            <label for="open">Open</label>
+         </div>
+         <div class="checkbox indnt1">
+            <input type="radio" id="manual" name="<c:out value="${status.expression}"/>" value="4"
+               <c:if test="${status.value == 4}"> checked="checked" </c:if> />
+            <label for="manual">Manual</label>
+         </div>
+      </fieldset>
+      </spring:bind>
+      
       <h4>Matrix Status Colors</h4>
       <spring:bind path="scaffolding.readyColor">
          <c:if test="${status.error}">

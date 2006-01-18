@@ -106,7 +106,6 @@ import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.intf.DownloadableManager;
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
-import org.theospi.portfolio.shared.intf.WorkflowServiceManager;
 import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
 import org.theospi.portfolio.shared.mgt.ContentEntityUtil;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
@@ -119,7 +118,7 @@ import org.theospi.utils.zip.UncloseableZipInputStream;
  */
 public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    implements MatrixManager, ReadableObjectHome, ArtifactFinder, DownloadableManager,
-   PresentableObjectHome, DuplicatableToolService, WorkflowServiceManager {
+   PresentableObjectHome, DuplicatableToolService {
 
    private IdManager idManager;
    private AuthenticationManager authnManager = null;
@@ -230,6 +229,54 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             storeCell(nextCell);
          }
       }
+   }
+   
+   public ScaffoldingCell getNextScaffoldingCell(ScaffoldingCell scaffoldingCell, 
+         int progressionOption) {
+      Scaffolding scaffolding = scaffoldingCell.getScaffolding();      
+      ScaffoldingCell nextCell = null;
+      
+      if (progressionOption == Scaffolding.HORIZONTAL_PROGRESSION) {
+         List columns = scaffolding.getLevels();
+         int i = columns.indexOf(scaffoldingCell.getLevel());
+         if (i < columns.size() - 1) {
+            Level column = (Level)columns.get(i+1);
+            nextCell = getScaffoldingCell(scaffoldingCell.getRootCriterion(), column);
+         }
+      }
+      else if (progressionOption == Scaffolding.VERTICAL_PROGRESSION) {
+         List rows = scaffolding.getCriteria();
+         int i = rows.indexOf(scaffoldingCell.getRootCriterion());
+         if (i < rows.size() - 1) {
+            Criterion row = (Criterion)rows.get(i+1);
+            nextCell = getScaffoldingCell(row, scaffoldingCell.getLevel());
+         }
+      }
+      return nextCell;
+   }
+   
+   public Cell getNextCell(Cell cell, int progressionOption) {
+      ScaffoldingCell scaffoldingCell = cell.getScaffoldingCell();
+      Scaffolding scaffolding = scaffoldingCell.getScaffolding();      
+      Cell nextCell = null;
+      
+      if (progressionOption == Scaffolding.HORIZONTAL_PROGRESSION) {
+         List columns = scaffolding.getLevels();
+         int i = columns.indexOf(scaffoldingCell.getLevel());
+         if (i < columns.size() - 1) {
+            Level column = (Level)columns.get(i+1);
+            nextCell = getCell(cell.getMatrix(), scaffoldingCell.getRootCriterion(), column);
+         }
+      }
+      else if (progressionOption == Scaffolding.VERTICAL_PROGRESSION) {
+         List rows = scaffolding.getCriteria();
+         int i = rows.indexOf(scaffoldingCell.getRootCriterion());
+         if (i < rows.size() - 1) {
+            Criterion row = (Criterion)rows.get(i+1);
+            nextCell = getCell(cell.getMatrix(), row, scaffoldingCell.getLevel());
+         }
+      }
+      return nextCell;
    }
    
    protected Cell getMatrixCellByScaffoldingCell(Matrix matrix, Id scaffoldingCellId) {
@@ -657,11 +704,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       return getNode(getIdManager().getId(nodeId));
    }
-
-   public Reflection getReflection(Id reflectionId) {
-      //return (Reflection) this.getHibernateTemplate().load(Reflection.class, reflectionId);
-      return (Reflection) this.getHibernateTemplate().get(Reflection.class, reflectionId);
-   }
    
    public List getCellArtifacts(Cell cell)
    {
@@ -789,42 +831,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       getHibernateTemplate().refresh(cell); //TODO not sure if this is necessary
       ScaffoldingCell sCell = cell.getScaffoldingCell();
       
-      if (sCell.getSubmitWorkflow() != null)
-         processWorkflow(sCell.getSubmitWorkflow().getId(), cell.getId());
-  /*    
-      //if (sCell.isGradableReflection()) {
-         cell.setStatus(MatrixFunctionConstants.PENDING_STATUS);
-         storeCell(cell);
-         if (!cellHasOpenReview(cell.getId())) {
-            ReviewerItem ri = new ReviewerItem();
-            ri.setCreated(new Date(System.currentTimeMillis()));
-            ri.setStatus(MatrixFunctionConstants.WAITING_STATUS);
-            ri.setWizardPage(cell);
-            
-            cell.setReviewerItem(ri);
-            storeCell(cell);
-            //getHibernateTemplate().flush();
-   
-            //Lock artifacts
-            for (Iterator iter = cell.getAttachments().iterator(); iter.hasNext();) {
-               Attachment att = (Attachment)iter.next();
-               
-               getLockManager().lockObject(att.getArtifactId().getValue(), 
-                     cell.getId().getValue(), 
-                     "Submitting cell for review", true);
-               
-            }
-         }
-         else {
-            logger.warn("Cell " + cell.getId().getValue() + " already has an open review.");
-         }
-      //}
-      unlockNextCell(cell);
+      if (sCell.getScaffolding().getWorkflowOption() > 0)
+         processWorkflow(sCell.getScaffolding().getWorkflowOption(), cell.getId());
 
-      //TODO removing this for sakai - might need it later
-      //createReviewerAuthz(cell.getId());
-
-       */
       return cell;
    }
    
@@ -1474,8 +1483,10 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       this.defaultScaffoldingBean = defaultScaffoldingBean;
    }
    
+   /**
+    * @deprecated
+    */
    public void processWorkflow(Id workflowId, Id objId) {
-      // TODO Auto-generated method stub
       Workflow workflow = getWorkflowManager().getWorkflow(workflowId);
       Cell cell = getCell(objId);
       
@@ -1497,17 +1508,31 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          }
       }      
    }
+   
+   public void processWorkflow(int workflowOption, Id cellId) {
+      Cell cell = getCell(cellId);
 
-   private void processContentLockingWorkflow(WorkflowItem wi, Cell actionCell) {
-      //Cell cell = getWizardPage(wi.getActionObjectId());
-      //Cell actionCell = this.getMatrixCellByScaffoldingCell(cell.getMatrix(), 
-      //      wi.getActionObjectId());
+      //Actions for current cell
+      processContentLockingWorkflow(WorkflowItem.CONTENT_LOCKING_LOCK, cell);
+      processStatusChangeWorkflow(MatrixFunctionConstants.PENDING_STATUS, cell);
       
-//    Lock/unlock artifacts
+      //Actions for "next" cell
+      if (workflowOption == Scaffolding.HORIZONTAL_PROGRESSION || 
+            workflowOption == Scaffolding.VERTICAL_PROGRESSION) {
+
+         Cell actionCell = getNextCell(cell, workflowOption);
+         if (actionCell != null) {               
+            processContentLockingWorkflow(WorkflowItem.CONTENT_LOCKING_UNLOCK, actionCell);
+            processStatusChangeWorkflow(MatrixFunctionConstants.READY_STATUS, actionCell);
+         }             
+      }
+   }
+   
+   private void processContentLockingWorkflow(String lockAction, Cell actionCell) {
       for (Iterator iter = actionCell.getAttachments().iterator(); iter.hasNext();) {
          Attachment att = (Attachment)iter.next();
          
-         if (wi.getActionValue().equals(WorkflowItem.CONTENT_LOCKING_LOCK)) {
+         if (lockAction.equals(WorkflowItem.CONTENT_LOCKING_LOCK)) {
             getLockManager().lockObject(att.getArtifactId().getValue(), 
                   actionCell.getId().getValue(), 
                   "Submitting cell for evaluation", true);
@@ -1516,7 +1541,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             getLockManager().removeLock(att.getArtifactId().getValue(), 
                   actionCell.getId().getValue());
          }         
-      }      
+      } 
+   }
+
+   private void processContentLockingWorkflow(WorkflowItem wi, Cell actionCell) {
+      processContentLockingWorkflow(wi.getActionValue(), actionCell);     
    }
 
    private void processNotificationWorkflow(WorkflowItem wi) {
@@ -1524,9 +1553,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       
    }
 
+   private void processStatusChangeWorkflow(String status, Cell actionCell) {
+      actionCell.setStatus(status);
+   }
+   
    private void processStatusChangeWorkflow(WorkflowItem wi, Cell actionCell) {
-      //Cell cell = getWizardPage(wi.getActionObjectId());
-      actionCell.setStatus(wi.getActionValue());
+      processStatusChangeWorkflow(wi.getActionValue(), actionCell);
    }
 
    /**

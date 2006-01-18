@@ -10,6 +10,7 @@ function hrefViewCell(cellId) {
 
 </SCRIPT>
 <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" />
+<osp-c:authZMap prefix="osp.matrix." var="matrixCan" />
 
 
     <div class="navIntraTool">
@@ -63,7 +64,7 @@ function hrefViewCell(cellId) {
     
 
     <c:if test="${(not empty matrixContents.scaffolding) && matrixContents.scaffolding.published}">
-        <c:if test="${can.viewUsers && not empty members}">
+        <c:if test="${matrixCan.review && not empty members}">
             <form method="GET" action="<osp:url value="viewMatrix.osp"/>">
                 <osp:form/>
                 <div class="act">

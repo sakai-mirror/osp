@@ -176,6 +176,7 @@ public class ReviewTool extends HelperToolBase {
       ToolSession session = SessionManager.getCurrentToolSession();
       session.removeAttribute(ReviewManager.CURRENT_REVIEW);
       session.removeAttribute(ReviewManager.CURRENT_REVIEW_ID);
+      session.setAttribute(ReviewManager.CANCEL_REVIEW, "true");
       current = null;
       return returnToCaller();
    }
