@@ -154,7 +154,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          }
          else if (action.equals("Save")) {
             
-            if (scaffoldingCell.getScaffolding().isPublished()) {
+            if (isPublished(scaffoldingCell)) {
                model.put("scaffoldingCell", scaffoldingCell);
                model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
                return new ModelAndView("editScaffoldingCellConfirm", model);
@@ -170,21 +170,29 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
             model.putAll(forwardModel);
             return new ModelAndView(forwardView, model);
          }
-         model.put("scaffolding_id", scaffoldingCell.getScaffolding().getId());
+         prepareModelWithScaffoldingId(model, scaffoldingCell);
          return new ModelAndView("return", model);
       }
       return new ModelAndView("success");
    }
-   
-   private Map doForwardAction(String forwardView, Map request, Map session, 
+
+   protected void prepareModelWithScaffoldingId(Map model, ScaffoldingCell scaffoldingCell) {
+      model.put("scaffolding_id", scaffoldingCell.getScaffolding().getId());
+   }
+
+   protected boolean isPublished(ScaffoldingCell scaffoldingCell) {
+      return scaffoldingCell.getScaffolding().isPublished();
+   }
+
+   private Map doForwardAction(String forwardView, Map request, Map session,
          ScaffoldingCell scaffoldingCell) {
       Map model = new HashMap();      
       
       EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
             EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
       sessionBean.setScaffoldingCell(scaffoldingCell);
-      model.put("scaffolding_id", scaffoldingCell.getScaffolding().getId());
-      model.put("scaffoldingCell_id", scaffoldingCell.getId()); 
+      prepareModelWithScaffoldingId(model, scaffoldingCell);
+      model.put("scaffoldingCell_id", scaffoldingCell.getId());
       
       if (forwardView.equals("createGuidance")) {
          Placement placement = ToolManager.getCurrentPlacement();  

@@ -26,10 +26,14 @@ import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardCategory;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
 import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,24 +44,23 @@ import java.util.ArrayList;
  */
 public class DecoratedCategory extends DecoratedCategoryChild {
 
+   public static final String NEW_PAGE = "org.theospi.portfolio.wizard.tool.DecoratedCategory.newPage";
+
    private WizardCategory base;
-   private WizardTool parent;
    private List categoryPageList;
    private boolean selected;
 
    private DecoratedCategory parentCategory = null;
 
    public DecoratedCategory(WizardCategory base, WizardTool tool) {
-      super(0);
+      super(tool, 0);
       this.base = base;
-      this.parent = tool;
    }
 
    public DecoratedCategory(DecoratedCategory parentCategory, WizardCategory base, WizardTool tool, int indent) {
-      super(indent);
+      super(tool, indent);
       this.parentCategory = parentCategory;
       this.base = base;
-      this.parent = tool;
    }
 
    public WizardCategory getBase() {
@@ -68,22 +71,15 @@ public class DecoratedCategory extends DecoratedCategoryChild {
       this.base = base;
    }
 
-   public WizardTool getParent() {
-      return parent;
-   }
-
-   public void setParent(WizardTool parent) {
-      this.parent = parent;
-   }
-
    public String processActionNewPage() {
-      WizardPageSequence wizardPage = null;
-            //new WizardPageSequence(new WizardPageDefinition());
+      WizardPageSequence wizardPage =
+            new WizardPageSequence(new WizardPageDefinition());
+      wizardPage.getWizardPageDefinition().setNewId(getParent().getIdManager().createId());
       wizardPage.setCategory(getBase());
 
-      getBase().getChildPages().add(wizardPage);
-      resequencePages();
-      return null;
+      getParent().getCurrent().getRootCategory().setCategoryPageList(null);
+
+      return new DecoratedWizardPage(this, wizardPage, getParent(), getIndent() + 1).processActionEdit(true);
    }
 
    protected void resequencePages() {
@@ -93,7 +89,7 @@ public class DecoratedCategory extends DecoratedCategoryChild {
          page.setSequence(index);
          index++;
       }
-      categoryPageList = null;
+      getParent().getCurrent().getRootCategory().setCategoryPageList(null);
    }
 
    protected void resequenceCategories() {
@@ -103,11 +99,18 @@ public class DecoratedCategory extends DecoratedCategoryChild {
          category.setSequence(index);
          index++;
       }
-      categoryPageList = null;
+      getParent().getCurrent().getRootCategory().setCategoryPageList(null);
    }
 
    public List getCategoryPageList() {
       if (categoryPageList == null) {
+         ToolSession session = SessionManager.getCurrentToolSession();
+         if (session.getAttribute(NEW_PAGE) != null &&
+               session.getAttribute(WizardPageHelper.CANCELED) == null) {
+            WizardPageSequence page = (WizardPageSequence) session.getAttribute(NEW_PAGE);
+            page.getCategory().getChildPages().add(page);
+         }
+
          categoryPageList = new ArrayList();
          addCategoriesPages(categoryPageList);
       }
@@ -115,9 +118,13 @@ public class DecoratedCategory extends DecoratedCategoryChild {
    }
 
    protected List addCategoriesPages(List categoryPages) {
-      for (Iterator i=getBase().getChildCategories().iterator();i.hasNext();) {
-         WizardCategory category = (WizardCategory) i.next();
-         categoryPages.add(new DecoratedCategory(this, category, getParent(), getIndent()+1));
+      if (getParent().getCurrent().getBase().getType().equals(Wizard.WIZARD_TYPE_HIERARCHICAL)) {
+         for (Iterator i=getBase().getChildCategories().iterator();i.hasNext();) {
+            WizardCategory category = (WizardCategory) i.next();
+            DecoratedCategory decoratedCategory = new DecoratedCategory(this, category, getParent(), getIndent()+1);
+            categoryPages.add(decoratedCategory);
+            decoratedCategory.addCategoriesPages(categoryPages);
+         }
       }
 
       for (Iterator i=getBase().getChildPages().iterator();i.hasNext();) {
@@ -166,10 +173,20 @@ public class DecoratedCategory extends DecoratedCategoryChild {
    }
 
    public String moveUp() {
+      if (getBase().getSequence() != 0) {
+         Collections.swap(getBase().getParentCategory().getChildCategories(),
+               getBase().getSequence(), getBase().getSequence() - 1);
+         getParentCategory().resequenceCategories();
+      }
       return null;
    }
 
    public String moveDown() {
+      if (getBase().getSequence() < getBase().getParentCategory().getChildCategories().size() - 1) {
+         Collections.swap(getBase().getParentCategory().getChildCategories(),
+               getBase().getSequence(), getBase().getSequence() + 1);
+         getParentCategory().resequenceCategories();
+      }
       return null;
    }
 
@@ -182,11 +199,63 @@ public class DecoratedCategory extends DecoratedCategoryChild {
    }
 
    public boolean isFirst() {
-      return getBase().getSequence() == 0 && getIndent() == 1;      
+      return getBase().getSequence() == 0;
    }
 
    public boolean isLast() {
+      return getBase().getSequence() >= getBase().getParentCategory().getChildCategories().size() - 1;
+   }
+
+   public String processActionNewCategory() {
+      WizardCategory wizardCategory = new WizardCategory(getBase().getWizard());
+      getParent().setCurrentCategory(
+            new DecoratedCategory(this, wizardCategory, getParent(), getIndent() + 1));
+      return "editWizardCategory";
+   }
+
+   public boolean isCategory() {
+      return true;
+   }
+
+   public boolean isContainerForMove() {
+      if (getParent().getMoveCategoryChild() == null) {
+         return false;
+      }
+      DecoratedCategoryChild child = getParent().getMoveCategoryChild();
+      if (child instanceof DecoratedCategory) {
+         DecoratedCategory category = (DecoratedCategory) child;
+         return category.getParentCategory() != this && category != this;
+      }
+      else if (child instanceof DecoratedWizardPage){
+         DecoratedWizardPage page = (DecoratedWizardPage) child;
+         return page.getCategory() != this;
+      }
       return false;
    }
 
+   public String processActionMoveTo() {
+      DecoratedCategoryChild child = getParent().getMoveCategoryChild();
+      child.setMoveTarget(false);
+      if (child instanceof DecoratedCategory) {
+         DecoratedCategory category = (DecoratedCategory) child;
+         DecoratedCategory oldParent = category.getParentCategory();
+         oldParent.getBase().getChildCategories().remove(category.getBase());
+         getBase().getChildCategories().add(category.getBase());
+         category.getBase().setParentCategory(getBase());
+         oldParent.resequenceCategories();
+         resequenceCategories();
+      }
+      else if (child instanceof DecoratedWizardPage) {
+         DecoratedWizardPage page = (DecoratedWizardPage) child;
+         DecoratedCategory oldParent = page.getCategory();
+         oldParent.getBase().getChildPages().remove(page.getBase());
+         getBase().getChildPages().add(page.getBase());
+         page.getBase().setCategory(getBase());
+         oldParent.resequencePages();
+         resequencePages();
+      }
+      child.setMoveTarget(false);
+      getParent().setMoveCategoryChild(null);
+      return null;
+   }
 }

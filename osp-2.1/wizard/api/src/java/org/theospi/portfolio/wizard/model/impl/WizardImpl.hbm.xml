@@ -97,14 +97,14 @@
 
       <property name="sequence" type="int" column="seq_num" not-null="false"/>
 
-      <list name="childPages" cascade="all-delete-orphan"
+      <list name="childPages" cascade="all"
           inverse="true" lazy="false">
           <key column="category_id" />
           <index column="seq_num" />
           <one-to-many class="WizardPageSequence" />
       </list>
 
-      <list name="childCategories" cascade="all-delete-orphan"
+      <list name="childCategories" cascade="all"
           inverse="true" lazy="false">
           <key column="parent_category_id" />
           <index column="seq_num" />

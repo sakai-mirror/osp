@@ -23,8 +23,17 @@
 package org.theospi.portfolio.wizard.tool;
 
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
+import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,13 +46,11 @@ public class DecoratedWizardPage extends DecoratedCategoryChild {
 
    private DecoratedCategory category = null;
    private WizardPageSequence base;
-   private WizardTool parent;
    private boolean selected = false;
 
    public DecoratedWizardPage(DecoratedCategory category, WizardPageSequence base, WizardTool parent, int indent) {
-      super(indent);
+      super(parent, indent);
       this.base = base;
-      this.parent = parent;
       this.category = category;
    }
 
@@ -53,14 +60,6 @@ public class DecoratedWizardPage extends DecoratedCategoryChild {
 
    public void setBase(WizardPageSequence base) {
       this.base = base;
-   }
-
-   public WizardTool getParent() {
-      return parent;
-   }
-
-   public void setParent(WizardTool parent) {
-      this.parent = parent;
    }
 
    public String getTitle() {
@@ -109,10 +108,29 @@ public class DecoratedWizardPage extends DecoratedCategoryChild {
    }
 
    public String processActionEdit() {
-      return null;
+      return processActionEdit(false);
    }
 
    public String processActionDelete() {
+      return null;
+   }
+
+   public String processActionEdit(boolean isNew) {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.setAttribute(WizardPageHelper.WIZARD_PAGE, getBase().getWizardPageDefinition());
+
+      if (isNew) {
+         session.setAttribute(DecoratedCategory.NEW_PAGE, getBase());
+      }
+
+      try {
+         context.redirect("osp.wizard.page.def.helper/wizardPageDefinition.osp");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+
       return null;
    }
 }

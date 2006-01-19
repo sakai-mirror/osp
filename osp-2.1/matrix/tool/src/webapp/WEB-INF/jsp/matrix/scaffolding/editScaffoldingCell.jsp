@@ -35,11 +35,36 @@
 	<input type="hidden" name="finalDest" value="" /> 
     <input type="hidden" name="validate" value="false" />
     
-    <table class="itemSummary" cellspacing="0">
-       <tr><th><c:out value="${scaffoldingCell.scaffolding.columnLabel}"/>: </th><td><c:out value="${scaffoldingCell.level.description}"/></td></tr>
-       <tr><th><c:out value="${scaffoldingCell.scaffolding.rowLabel}"/>: </th><td><c:out value="${scaffoldingCell.rootCriterion.description}"/></td></tr>
-    </table>
-    
+
+      <c:if test="${empty helperPage}">
+          <table class="itemSummary" cellspacing="0">
+             <tr><th><c:out value="${scaffoldingCell.scaffolding.columnLabel}"/>: </th><td><c:out value="${scaffoldingCell.level.description}"/></td></tr>
+             <tr><th><c:out value="${scaffoldingCell.scaffolding.rowLabel}"/>: </th><td><c:out value="${scaffoldingCell.rootCriterion.description}"/></td></tr>
+          </table>
+      </c:if>
+
+        <spring:bind path="scaffoldingCell.wizardPageDefinition.title">
+          <c:if test="${status.error}">
+             <div class="validation"><c:out value="${status.errorMessage}"/></div>
+          </c:if>
+		  <p class="shorttext indnt2">
+				<span class="reqStar">*</span><label>Title</label>
+				<input type="text" name="<c:out value="${status.expression}"/>"
+					   value="<c:out value="${status.displayValue}"/>"/>
+		    </p>
+        </spring:bind>
+
+        <spring:bind path="scaffoldingCell.wizardPageDefinition.description">
+          <c:if test="${status.error}">
+             <div class="validation"><c:out value="${status.errorMessage}"/></div>
+          </c:if>
+		  <p class="shorttext indnt2">
+				<label>Description</label>
+				<input type="text" name="<c:out value="${status.expression}"/>"
+					   value="<c:out value="${status.displayValue}"/>"/>
+		    </p>
+        </spring:bind>
+
       <h4><osp:message key="guidance_header" bundle="${msgs}" /></h4>
       <c:if test="${empty scaffoldingCell.guidance}">
          <a href="javascript:document.forms[0].dest.value='createGuidance';
@@ -186,6 +211,16 @@
 
 	<div class="act">
 		<input type="submit" name="action" value="Save" class="active" onclick="javascript:document.forms[0].validate.value='true';" />
-		<input type="button" name="action" value="Cancel" onclick="window.document.location='<osp:url value="viewScaffolding.osp?scaffolding_id=${scaffoldingCell.scaffolding.id}"/>'"/>
+
+      <c:if test="${empty helperPage}">
+         <input type="button" name="action" value="Cancel"
+            onclick="window.document.location='<osp:url value="viewScaffolding.osp?scaffolding_id=${scaffoldingCell.scaffolding.id}"/>'"/>
+      </c:if>
+      <c:if test="${not empty helperPage}">
+   		<input type="submit" name="action" value="Cancel" class="active"
+            onclick="javascript:document.forms[0].validate.value='false';document.forms[0].canceling.value='true'" />
+         <input type="hidden" name="canceling" value="" />
+      </c:if>
+
 	</div>
 </form>

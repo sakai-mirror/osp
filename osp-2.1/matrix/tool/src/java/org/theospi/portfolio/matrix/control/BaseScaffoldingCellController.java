@@ -89,22 +89,26 @@ public class BaseScaffoldingCellController {
          scaffoldingCell = sessionBean.getScaffoldingCell();
       }
       //Check for guidance
+      checkForGuidance(session, scaffoldingCell);
+      //Traversing the collection to un-lazily load
+      getMatrixManager().removeFromSession(scaffoldingCell);
+      scaffoldingCell.getScaffolding().isPublished();
+      return scaffoldingCell;
+   }
+
+   protected void checkForGuidance(Map session, ScaffoldingCell scaffoldingCell) {
       if (session.get(GuidanceManager.CURRENT_GUIDANCE) != null) {
          Guidance guidance = (Guidance)session.get(GuidanceManager.CURRENT_GUIDANCE);
          scaffoldingCell.setGuidanceId(guidance.getId());
-         
+
          session.remove(GuidanceManager.CURRENT_GUIDANCE);
       }
       if (scaffoldingCell.getGuidanceId() != null && scaffoldingCell.getGuidance() == null) {
          scaffoldingCell.setGuidance(getGuidanceManager().getGuidance(scaffoldingCell.getGuidanceId()));
          scaffoldingCell.setGuidanceId(null);
       }
-      //Traversing the collection to un-lazily load
-      getMatrixManager().removeFromSession(scaffoldingCell);
-      scaffoldingCell.getScaffolding().isPublished();
-      return scaffoldingCell;
    }
-   
+
    protected void saveScaffoldingCell (Map request, ScaffoldingCell scaffoldingCell) {
       
       getMatrixManager().removeFromSession(scaffoldingCell);

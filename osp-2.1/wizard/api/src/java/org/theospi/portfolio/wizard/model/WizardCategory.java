@@ -140,18 +140,4 @@ public class WizardCategory extends IdentifiableObject {
       this.sequence = sequence;
    }
 
-   public boolean equals(Object in) {
-      if (in == null && this == null) return true;
-      if (in == null && this != null) return false;
-      if (this == null && in != null) return false;
-      if (!this.getClass().isAssignableFrom(in.getClass())) return false;
-
-      if (this.getId() == null && ((IdentifiableObject) in).getId() == null ) {
-         return this.getTitle().equals(((WizardCategory)in).getTitle());
-      }
-
-      if (this.getId() == null || ((IdentifiableObject) in).getId() == null ) return false;
-      return this.getId().equals(((IdentifiableObject) in).getId());
-   }
-
 }

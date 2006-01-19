@@ -59,15 +59,6 @@ public class WizardPageDefinition extends IdentifiableObject {
 
    private List additionalForms = new ArrayList();
 
-   public boolean equals(Object other) {
-      if (other == this) return true;
-      if (other == null || !(other instanceof WizardPageDefinition)) return false;
-      //TODO need better equals method
-      if (this.getId() == null) return false;
-      return (this.getId().equals(((WizardPageDefinition) other).getId()));
-
-   }
-
    /**
     * @return Returns the initialStatus.
     */

@@ -35,8 +35,11 @@ public abstract class DecoratedCategoryChild {
 
    private String indentString;
    private int indent;
+   private WizardTool parent;
+   private boolean moveTarget;
 
-   public DecoratedCategoryChild(int indent) {
+   public DecoratedCategoryChild(WizardTool parent, int indent) {
+      this.parent = parent;
       this.indent = indent;
       this.indentString = "";
       for (int i=0;i<indent - 1;i++) {
@@ -73,4 +76,36 @@ public abstract class DecoratedCategoryChild {
 
    public abstract boolean isFirst();
    public abstract boolean isLast();
+
+   public boolean isCategory() {
+      return false;
+   }
+
+   public String processActionMove() {
+      setMoveTarget(true);
+      getParent().setMoveCategoryChild(this);
+      return null;
+   }
+
+   public WizardTool getParent() {
+      return parent;
+   }
+
+   public void setParent(WizardTool parent) {
+      this.parent = parent;
+   }
+
+   public boolean isMoveTarget() {
+      return moveTarget;
+   }
+
+   public void setMoveTarget(boolean moveTarget) {
+      this.moveTarget = moveTarget;
+   }
+
+   public String processActionCancelMove() {
+      getParent().setMoveCategoryChild(null);      
+      setMoveTarget(false);
+      return null;
+   }
 }

@@ -1,0 +1,99 @@
+/**********************************************************************************
+* $URL$
+* $Id$
+***********************************************************************************
+*
+* Copyright (c) 2003, 2004 The Regents of the University of Michigan, Trustees of Indiana University,
+*                  Board of Trustees of the Leland Stanford, Jr., University, and The MIT Corporation
+*
+* Licensed under the Educational Community License Version 1.0 (the "License");
+* By obtaining, using and/or copying this Original Work, you agree that you have read,
+* understand, and will comply with the terms and conditions of the Educational Community License.
+* You may obtain a copy of the License at:
+*
+*      http://cvs.sakaiproject.org/licenses/license_1_0.html
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+* AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+* DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*
+**********************************************************************************/
+package org.theospi.portfolio.matrix.control;
+
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.validation.Errors;
+
+import java.util.Map;
+
+/**
+ * Created by IntelliJ IDEA.
+ * User: John Ellis
+ * Date: Jan 18, 2006
+ * Time: 3:18:48 PM
+ * To change this template use File | Settings | File Templates.
+ */
+public class WizardPageDefinitionController extends EditScaffoldingCellController implements CancelableController {
+
+   /* (non-Javadoc)
+    * @see org.theospi.utils.mvc.intf.FormController#referenceData(java.util.Map, java.lang.Object, org.springframework.validation.Errors)
+    */
+   public Map referenceData(Map request, Object command, Errors errors) {
+      Map model = super.referenceData(request, command, errors);
+      model.put("helperPage", "true");
+      return model;
+   }
+
+   public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
+      WizardPageDefinition page = (WizardPageDefinition) session.get(WizardPageHelper.WIZARD_PAGE);
+      session.remove(WizardPageHelper.CANCELED);
+      
+      ScaffoldingCell cell = new ScaffoldingCell();
+      cell.setWizardPageDefinition(page);
+      if (page.getId() == null) {
+         cell.setId(page.getNewId());
+      }
+      else {
+         cell.setId(page.getId());
+      }
+      EditedScaffoldingStorage sessionBean = new EditedScaffoldingStorage(cell);
+      session.put(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY, sessionBean);
+      checkForGuidance(session, cell);
+      return cell;
+   }
+
+   public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
+      return super.handleRequest(requestModel, request, session, application, errors);    //To change body of overridden methods use File | Settings | File Templates.
+   }
+
+   protected boolean isPublished(ScaffoldingCell scaffoldingCell) {
+      return false;
+   }
+
+   protected void saveScaffoldingCell(Map request, ScaffoldingCell scaffoldingCell) {
+      // do nothing... let caller deal with it...
+   }
+
+   protected void prepareModelWithScaffoldingId(Map model, ScaffoldingCell scaffoldingCell) {
+      // do nothing... don't care about scaffolding id
+   }
+
+   public boolean isCancel(Map request) {
+      Object cancel = request.get("canceling");
+      if (cancel == null) {
+         return false;
+      }
+      return cancel.equals("true");
+   }
+
+   public ModelAndView processCancel(Map request, Map session, Map application, Object command, Errors errors) throws Exception {
+      return new ModelAndView("return", WizardPageHelper.CANCELED, "true");
+   }
+}

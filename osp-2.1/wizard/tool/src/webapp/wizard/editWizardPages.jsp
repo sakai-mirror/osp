@@ -26,13 +26,13 @@
 
    <sakai:tool_bar>
       <sakai:tool_bar_item
-         rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.sequential'}"
          action="#{wizard.current.rootCategory.processActionNewPage}"
-         value="#{msgs.new_wizard_page}" />
+         value="#{msgs.new_root_wizard_page}" rendered="#{!wizard.moving}"/>
       <sakai:tool_bar_item
-         rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"
-         action="#{wizard.current.processActionNewCategory}"
-         value="#{msgs.new_wizard_category}" />
+         rendered="#{wizard.current.base.type ==
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.moving}"
+         action="#{wizard.current.rootCategory.processActionNewCategory}"
+         value="#{msgs.new_root_wizard_category}" />
    </sakai:tool_bar>
 
    <sakai:view_title value="#{msgs.edit_wizard_content}"/>
@@ -42,27 +42,65 @@
    <sakai:messages />
 
    <sakai:flat_list value="#{wizard.current.rootCategory.categoryPageList}" var="item">
-      <h:column>
+      <h:column rendered="#{wizard.moving}">
          <f:facet name="header">
-            <h:outputText value="#{msgs.user_column_header}" />
+            <h:outputText value="" />
          </f:facet>
-   		<sakai:doc_section>
-            <h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" />
-            <h:outputLabel value="#{item.indentString}" for="itemSelect" />
-            <h:outputLabel value="#{item.title}" for="itemSelect" />
-         </sakai:doc_section>
-   		<sakai:doc_section>
-            <h:outputText value=" | " />
-            <h:commandLink action="#{item.processActionEdit}">
-               <h:outputText value="#{msgs.editProperties}" />
-            </h:commandLink>
-            <h:outputText value=" | " />
-            <h:commandLink action="#{item.processActionDelete}">
-               <h:outputText value="#{msgs.delete}" />
-            </h:commandLink>
-         </sakai:doc_section>
+         <h:graphicImage value="/img/arrowhere.gif" rendered="#{item.moveTarget}" />
       </h:column>
       <h:column>
+         <f:facet name="header">
+            <h:outputText value="#{msgs.category_page_title_column_header}" />
+         </f:facet>
+         <h:outputLabel value="#{item.indentString}" for="itemSelect"
+            rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
+         <h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" />
+         <h:outputLabel value="#{item.title}" for="itemSelect" />
+         <f:facet name="footer">
+            <f:subview id="moveFooter" rendered="#{wizard.moving}">
+               <h:commandLink action="#{wizard.current.rootCategory.processActionMoveTo}"
+                  rendered="#{wizard.current.rootCategory.containerForMove}">
+                  <h:outputText value="#{msgs.move_to_here}" />
+               </h:commandLink>
+               <h:outputText value=" | " rendered="#{wizard.current.rootCategory.containerForMove}"/>
+               <h:commandLink action="#{wizard.moveCategoryChild.processActionCancelMove}" rendered="#{wizard.moving}">
+                  <h:outputText value="#{msgs.cancel_move}" />
+               </h:commandLink>
+            </f:subview>
+         </f:facet>
+      </h:column>
+      <h:column>
+         <f:facet name="header">
+            <h:outputText value="#{msgs.actions_column_header}" />
+         </f:facet>
+         <h:commandLink action="#{item.processActionEdit}" rendered="#{!wizard.moving}">
+            <h:outputText value="#{msgs.editProperties}" />
+         </h:commandLink>
+         <h:outputText value=" | "  rendered="#{!wizard.moving}"/>
+         <h:commandLink action="#{item.processActionDelete}" rendered="#{!wizard.moving}">
+            <h:outputText value="#{msgs.delete}" />
+         </h:commandLink>
+
+         <h:outputText value=" | " rendered="#{item.category && !wizard.moving}"/>
+         <h:commandLink action="#{item.processActionNewCategory}" rendered="#{item.category && !wizard.moving}">
+            <h:outputText value="#{msgs.new_category}" />
+         </h:commandLink>
+         <h:outputText value=" | "  rendered="#{item.category && !wizard.moving}"/>
+         <h:commandLink action="#{item.processActionNewPage}" rendered="#{item.category && !wizard.moving}">
+            <h:outputText value="#{msgs.new_page}" />
+         </h:commandLink>
+
+         <h:outputText value=" | " rendered="#{!wizard.moving}"/>
+         <h:commandLink action="#{item.processActionMove}" rendered="#{!wizard.moving}">
+            <h:outputText value="#{msgs.move}" />
+         </h:commandLink>
+
+         <h:commandLink action="#{item.processActionMoveTo}" rendered="#{item.category && item.containerForMove}">
+            <h:outputText value="#{msgs.move_to_here}" />
+         </h:commandLink>
+
+      </h:column>
+      <h:column rendered="#{!wizard.moving}">
          <f:facet name="header">
             <h:outputText value="#{msgs.re_order}" />
          </f:facet>
@@ -75,7 +113,7 @@
       </h:column>
    </sakai:flat_list>
 
-   <sakai:button_bar>
+   <sakai:button_bar  rendered="#{!wizard.moving}">
       <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard}" action="#{wizard.processActionCancel}" immediate="true" />
       <sakai:button_bar_item id="submit" value="#{msgs.save_continue_wizard}" 
          action="#{wizard.processActionGoToEditWizardSupport}" />

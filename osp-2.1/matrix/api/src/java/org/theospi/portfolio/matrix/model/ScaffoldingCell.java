@@ -67,7 +67,10 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    private Set cells = new HashSet();
    private WizardPageDefinition wizardPageDefinition;
 
-   public ScaffoldingCell() {;}
+   public ScaffoldingCell() {
+      this.wizardPageDefinition = new WizardPageDefinition();
+   }
+
    public ScaffoldingCell(Criterion criterion, Level level, String initialStatus, Scaffolding scaffolding) {
       this.rootCriterion = criterion;
       this.level = level;
