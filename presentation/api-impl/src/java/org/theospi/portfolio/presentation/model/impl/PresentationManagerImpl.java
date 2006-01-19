@@ -1206,7 +1206,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
          for (Iterator i=template.getFiles().iterator();i.hasNext();) {
             TemplateFileRef ref = (TemplateFileRef)i.next();
-            ref.setFileId((String)fileMap.get(ref.getFileId()));
+            Id refFileId = getIdManager().getId(ref.getFileId());
+            ref.setFileId(((Id)fileMap.get(refFileId)).getValue());
             ref.setPresentationTemplate(template);
          }
 
