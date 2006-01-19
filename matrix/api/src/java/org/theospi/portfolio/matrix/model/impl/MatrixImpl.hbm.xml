@@ -227,7 +227,7 @@
    <class name="WizardPageDefinition" table="osp_wiz_page_def" lazy="false" >
      <cache usage="nonstrict-read-write"/>
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-        <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+        <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="initialStatus" type="java.lang.String" />
      <set name="pages" cascade="all-delete-orphan" inverse="true"

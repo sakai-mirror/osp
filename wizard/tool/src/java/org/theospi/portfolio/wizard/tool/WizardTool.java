@@ -47,6 +47,7 @@ public class WizardTool extends ToolBase {
    private String expandedGuidanceSection = "false";
    private List wizardTypes = null;
    private DecoratedCategory currentCategory;
+   private DecoratedCategoryChild moveCategoryChild;
 
    public final static String LIST_PAGE = "listWizards";
    public final static String EDIT_PAGE = "editWizard";
@@ -157,6 +158,23 @@ public class WizardTool extends ToolBase {
    }
    
    public String processActionGoToEditWizardPages() {
+      // re-arrange if necessary for a sequential wizard
+      if (getCurrent().getBase().getType().equals(Wizard.WIZARD_TYPE_SEQUENTIAL)) {
+         boolean foundOne = false;
+         List pageList = getCurrent().getRootCategory().getBase().getChildPages();
+         List decoratedPageList = getCurrent().getRootCategory().getCategoryPageList();
+         for (Iterator i=decoratedPageList.iterator();i.hasNext();) {
+            DecoratedWizardPage page = (DecoratedWizardPage) i.next();
+            if (!pageList.contains(page.getBase())) {
+               pageList.add(page.getBase());
+               page.getBase().setCategory(getCurrent().getRootCategory().getBase());
+               foundOne = true;
+            }
+         }
+         if (foundOne) {
+            getCurrent().getRootCategory().resequencePages();
+         }
+      }
       return processActionSave(EDIT_PAGES_PAGE);
    }
 
@@ -500,5 +518,17 @@ public class WizardTool extends ToolBase {
 
    public void setCurrentCategory(DecoratedCategory currentCategory) {
       this.currentCategory = currentCategory;
+   }
+
+   public DecoratedCategoryChild getMoveCategoryChild() {
+      return moveCategoryChild;
+   }
+
+   public void setMoveCategoryChild(DecoratedCategoryChild moveCategoryChild) {
+      this.moveCategoryChild = moveCategoryChild;
+   }
+
+   public boolean isMoving() {
+      return getMoveCategoryChild() != null;
    }
 }

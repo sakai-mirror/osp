@@ -74,13 +74,6 @@ public class DecoratedWizard {
       return parent.processActionDelete(base);
    }
 
-   public String processActionNewCategory() {
-      WizardCategory wizardCategory = new WizardCategory(getBase());
-      parent.setCurrentCategory(
-            new DecoratedCategory(getRootCategory(), wizardCategory, parent, getRootCategory().getIndent() + 1));
-      return "editWizardCategory";
-   }
-
    public WizardTool getParent() {
       return parent;
    }
