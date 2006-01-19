@@ -26,6 +26,7 @@ import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.mgt.ContentEntityUtil;
+import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.wizard.impl.WizardEntityProducer;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
@@ -33,6 +34,7 @@ import org.theospi.portfolio.wizard.model.WizardStyleItem;
 import org.theospi.portfolio.wizard.model.WizardCategory;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import net.sf.hibernate.HibernateException;
 
 public class WizardManagerImpl extends HibernateDaoSupport implements WizardManager {
 
@@ -192,23 +194,23 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
    public List listWizardsByType(String owner, String siteId, String type) {
       Object[] params = new Object[]{owner, new Boolean(true), siteId, type};
       return getHibernateTemplate().find("from Wizard w where " +
-            "(w.owner=? or w.published=?) and w.siteId=? and w.type=?", params);
+            "(w.owner=? or w.published=?) and w.siteId=? and w.type=? order by seq_num", params);
    }
    
    public List listAllWizards(String owner, String siteId) {
       Object[] params = new Object[]{owner, new Boolean(true), siteId};
       return getHibernateTemplate().find("from Wizard w where " +
-            "(w.owner=? or w.published=?) and w.siteId=? ", params);
+            "(w.owner=? or w.published=?) and w.siteId=? order by seq_num", params);
    }
    
    public List findWizardsByOwner(String ownerId, String siteId) {
       Object[] params = new Object[]{ownerId, siteId};
-      return getHibernateTemplate().find("from Wizard w where w.owner=? and w.siteId=? ", params);
+      return getHibernateTemplate().find("from Wizard w where w.owner=? and w.siteId=? order by seq_num", params);
    }
    
    public List findPublishedWizards(String siteId) {
       Object[] params = new Object[]{new Boolean(true), siteId};
-      return getHibernateTemplate().find("from Wizard w where w.published=? and w.siteId=? ", params);
+      return getHibernateTemplate().find("from Wizard w where w.published=? and w.siteId=? order by seq_num", params);
    }
 
    public Wizard getWizard(String id) {
@@ -219,7 +221,20 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
       return getStructuredArtifactDefinitionManager().findHomes(
             getIdManager().getId(siteId));      
    }
-   
+
+   public void deleteObjects(List deletedItems) {
+
+      for (Iterator i=deletedItems.iterator();i.hasNext();) {
+         try {
+            getSession().delete(i.next());
+         }
+         catch (HibernateException e) {
+            throw new OspException(e);
+         }
+      }
+
+   }
+
 
    public AuthorizationFacade getAuthorizationFacade() {
       return authorizationFacade;

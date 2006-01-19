@@ -15,13 +15,7 @@
 <f:loadBundle basename="org.theospi.portfolio.wizard.messages" var="msgs"/>
 <sakai:view>
 
-<ospx:wizardSteps currentStep="2">
-   <ospx:wizardStep label="#{msgs.wizard_step_begin}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_select}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_support}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_design}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_properties}" />
-</ospx:wizardSteps>
+   <%@include file="steps.jspf"%>
 
 <h:form>
 
@@ -102,13 +96,9 @@
          </h:selectOneMenu>
       </ospx:xheaderdrawer>
    </ospx:xheader>
+
+   <%@include file="builderButtons.jspf"%>
    
-   
-   <sakai:button_bar>
-      <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard}" action="#{wizard.processActionCancel}" immediate="true" />
-      <sakai:button_bar_item id="submit" value="#{msgs.save_continue_wizard}" 
-         action="#{wizard.processActionGoToEditWizardDesign}" />
-   </sakai:button_bar>
 </h:form>
 </sakai:view>
 

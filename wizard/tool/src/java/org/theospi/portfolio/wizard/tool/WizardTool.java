@@ -10,12 +10,10 @@ import java.util.Set;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
-import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -26,16 +24,16 @@ import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
-import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardStyleItem;
 import org.theospi.portfolio.wizard.model.WizardSupportItem;
-import org.theospi.portfolio.shared.tool.ToolBase;
+import org.theospi.portfolio.shared.tool.BuilderTool;
+import org.theospi.portfolio.shared.tool.BuilderScreen;
 
-public class WizardTool extends ToolBase {
+public class WizardTool extends BuilderTool {
 
    private WizardManager wizardManager;
    private GuidanceManager guidanceManager;
@@ -48,6 +46,8 @@ public class WizardTool extends ToolBase {
    private List wizardTypes = null;
    private DecoratedCategory currentCategory;
    private DecoratedCategoryChild moveCategoryChild;
+   private List deletedItems = new ArrayList();
+   private int nextWizard = 0;
 
    public final static String LIST_PAGE = "listWizards";
    public final static String EDIT_PAGE = "editWizard";
@@ -63,6 +63,22 @@ public class WizardTool extends ToolBase {
    final public static int TYPE_INDEX = 1;
    final public static int ITEM_ID_INDEX = 2;
 
+   private BuilderScreen[] screens = {
+      new BuilderScreen(EDIT_PAGE),
+      new BuilderScreen(EDIT_PAGES_PAGE),
+      new BuilderScreen(EDIT_SUPPORT_PAGE),
+      new BuilderScreen(EDIT_DESIGN_PAGE),
+      new BuilderScreen(EDIT_PROPERTIES_PAGE)
+      };
+
+
+   public WizardTool() {
+      setScreens(screens);
+   }
+
+   protected void saveScreen(BuilderScreen screen) {
+      processActionSave(screen.getNavigationKey());
+   }
 
    public WizardManager getWizardManager() {
       return wizardManager;
@@ -74,18 +90,7 @@ public class WizardTool extends ToolBase {
    
    public DecoratedWizard getCurrent() {
       ToolSession session = SessionManager.getCurrentToolSession();
-      
-      if (session.getAttribute(WizardManager.CURRENT_WIZARD_ID) != null) {
-         String id = (String)session.getAttribute(WizardManager.CURRENT_WIZARD_ID);
-         current = new DecoratedWizard(this, getWizardManager().getWizard(id));
-         session.removeAttribute(WizardManager.CURRENT_WIZARD_ID);
-      }
-      else if (session.getAttribute(WizardManager.CURRENT_WIZARD) != null) {
-         current = new DecoratedWizard(this,
-               (Wizard)session.getAttribute(WizardManager.CURRENT_WIZARD));
-         session.removeAttribute(WizardManager.CURRENT_WIZARD);
-      }
-      
+
       Wizard wizard = current.getBase();
       
       if (session.getAttribute(GuidanceManager.CURRENT_GUIDANCE) != null) {
@@ -118,7 +123,11 @@ public class WizardTool extends ToolBase {
 
       return current;
    }
-   
+
+   public void setCurrent(DecoratedWizard current) {
+      this.current = current;
+   }
+
    public Reference decorateReference(String reference) {
       return getWizardManager().decorateReference(getCurrent().getBase(), reference);
    }
@@ -129,37 +138,56 @@ public class WizardTool extends ToolBase {
       List returned = new ArrayList();
       List wizards = getWizardManager().listAllWizards(
             SessionManager.getCurrentSessionUserId(), currentSiteId);
-      
+
+      DecoratedWizard lastWizard = null;
+
       for (Iterator i=wizards.iterator();i.hasNext();) {
          Wizard wizard = (Wizard)i.next();
-         returned.add(new DecoratedWizard(this, wizard));
+         DecoratedWizard current = new DecoratedWizard(this, wizard);
+         returned.add(current);
+         if (lastWizard != null) {
+            lastWizard.setNext(current);
+            current.setPrev(lastWizard);
+         }
+         lastWizard = current;
       }
+
+      if (lastWizard != null) {
+         setNextWizard(lastWizard.getBase().getSequence() + 1);
+      }
+
       return returned;
    }
    
    public String processActionEdit(Wizard wizard) {
       wizard = getWizardManager().getWizard(wizard.getId());
-      invokeTool(wizard);
-      return null;
+      setCurrent(new DecoratedWizard(this, wizard));
+      return startBuilder();
    }
 
    public String processActionDelete(Wizard wizard) {
       getWizardManager().deleteWizard(wizard);
       current = null;
-      return "list";
+      return LIST_PAGE;
    }
    
    public String processActionCancel() {
-      ToolSession session = SessionManager.getCurrentToolSession();
-      session.removeAttribute(WizardManager.CURRENT_WIZARD);
-      session.removeAttribute(WizardManager.CURRENT_WIZARD_ID);
-      current = null;
-      return goToPage(LIST_PAGE);
+      setCurrent(null);
+      return LIST_PAGE;
    }
    
-   public String processActionGoToEditWizardPages() {
-      // re-arrange if necessary for a sequential wizard
-      if (getCurrent().getBase().getType().equals(Wizard.WIZARD_TYPE_SEQUENTIAL)) {
+   protected Id cleanBlankId(String id) {
+      if (id.equals("")) return null;
+      return getIdManager().getId(id);
+   }
+
+   public String processActionSaveFinished() {
+      processActionSave(getCurrentScreen().getNavigationKey());
+      return LIST_PAGE;
+   }
+
+   protected void processActionSave(String currentView) {
+      if (currentView.equals(EDIT_PAGE) && getCurrent().getBase().getType().equals(Wizard.WIZARD_TYPE_SEQUENTIAL)) {
          boolean foundOne = false;
          List pageList = getCurrent().getRootCategory().getBase().getChildPages();
          List decoratedPageList = getCurrent().getRootCategory().getCategoryPageList();
@@ -175,31 +203,8 @@ public class WizardTool extends ToolBase {
             getCurrent().getRootCategory().resequencePages();
          }
       }
-      return processActionSave(EDIT_PAGES_PAGE);
-   }
-
-   public String processActionGoToEditWizardSupport() {
-      return processActionSave(EDIT_SUPPORT_PAGE);
-   }
-
-   public String processActionGoToEditWizardDesign() {
-      return processActionSave(EDIT_DESIGN_PAGE);
-   }
-
-   public String processActionGoToEditWizardProperties() {
-      return processActionSave(EDIT_PROPERTIES_PAGE);
-   }
-   
-   public String processActionSave() {
-      return processActionSave(LIST_PAGE);
-   }
-   
-   protected Id cleanBlankId(String id) {
-      if (id.equals("")) return null;
-      return getIdManager().getId(id);
-   }
-   
-   protected String processActionSave(String nextView) {
+      getWizardManager().deleteObjects(deletedItems);
+      deletedItems.clear();
       Wizard wizard = getCurrent().getBase();
       Set items = new HashSet();
       
@@ -224,18 +229,8 @@ public class WizardTool extends ToolBase {
       //this.getCommentItem()
       wizard.setSupportItems(items);
       getWizardManager().saveWizard(wizard);
-
-      ToolSession session = SessionManager.getCurrentToolSession();
-
-      session.setAttribute(WizardManager.CURRENT_WIZARD, getCurrent().getBase());
-
-      return goToPage(nextView);
    }
    
-   protected String goToPage(String nextPage) {
-      return nextPage;
-   }
-
    public String processActionNew() {
       Placement placement = ToolManager.getCurrentPlacement();
       //Tool tool = ToolManager.getCurrentTool();
@@ -245,9 +240,11 @@ public class WizardTool extends ToolBase {
             SessionManager.getCurrentSessionUserId(), currentSite, 
             currentTool, null, "", "");
 
-      invokeTool(newWizard);
+      newWizard.setSequence(getNextWizard());
+      
+      setCurrent(new DecoratedWizard(this, newWizard));
 
-      return null;
+      return startBuilder();
    }
    
    public String processActionRemoveGuidance() {
@@ -257,26 +254,10 @@ public class WizardTool extends ToolBase {
       getGuidanceManager().deleteGuidance(wizard.getGuidance());
       wizard.setGuidance(null);
       //session.setAttribute(WizardManager.CURRENT_WIZARD, getCurrent().getBase());
-      goToPage(EDIT_SUPPORT_PAGE);
 
-      return null;
+      return getCurrentScreen().getNavigationKey();
    }
    
-   protected void invokeTool(Wizard wizard) {
-      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      ToolSession session = SessionManager.getCurrentToolSession();
-
-      session.setAttribute(WizardManager.CURRENT_WIZARD, wizard);
-
-      try {
-         context.redirect(EDIT_PAGE);
-      }
-      catch (IOException e) {
-         throw new RuntimeException("Failed to redirect to helper", e);
-      }
-   }
-
-
    public void processActionGuidanceHelper() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       //Tool tool = ToolManager.getCurrentTool();
@@ -287,8 +268,7 @@ public class WizardTool extends ToolBase {
       //session.setAttribute(tool.getId() + Tool.HELPER_DONE_URL, "");
       //session.setAttribute(WizardManager.CURRENT_WIZARD_ID, getCurrent().getBase().getId());
       Wizard wizard = getCurrent().getBase();
-      session.setAttribute(WizardManager.CURRENT_WIZARD, wizard);
-      
+
       Guidance guidance = wizard.getGuidance();
       if (guidance == null) {
          guidance = getGuidanceManager().createNew(wizard.getName() + " Guidance", currentSite, null, "", ""); 
@@ -312,8 +292,7 @@ public class WizardTool extends ToolBase {
       //Placement placement = ToolManager.getCurrentPlacement();  
       //String currentSite = placement.getContext();  
       Wizard wizard = getCurrent().getBase();
-      session.setAttribute(WizardManager.CURRENT_WIZARD, wizard);
-            
+
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, 
             WizardFunctionConstants.REVIEW_WIZARD);  
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER, 
@@ -400,7 +379,7 @@ public class WizardTool extends ToolBase {
          String id = VALUE_SEPARATOR + FORM_TYPE + VALUE_SEPARATOR + sad.getId().getValue();
          if (selectedId != null && selectedId.endsWith(id))
             id = selectedId;
-         retForms.add(new SelectItem(id, sad.getDescription()));
+         retForms.add(createSelect(id, sad.getDescription()));
       }
       
       return retForms;
@@ -431,7 +410,7 @@ public class WizardTool extends ToolBase {
          String id = VALUE_SEPARATOR + wizard.getType() + VALUE_SEPARATOR + wizard.getId().getValue();
          if (selectedId != null && selectedId.endsWith(id))
             id = selectedId;
-         retWizards.add(new SelectItem(id, wizard.getName()));
+         retWizards.add(createSelect(id, wizard.getName()));
       }
       
       return retWizards;
@@ -530,5 +509,38 @@ public class WizardTool extends ToolBase {
 
    public boolean isMoving() {
       return getMoveCategoryChild() != null;
+   }
+
+   public List getDeletedItems() {
+      return deletedItems;
+   }
+
+   public void setDeletedItems(List deletedItems) {
+      this.deletedItems = deletedItems;
+   }
+
+   public String getMovingInstructions() {
+      String key = null;
+
+      if (getMoveCategoryChild() == null) {
+         return null;
+      }
+
+      if (getMoveCategoryChild().isCategory()) {
+         key = "move_category_instructions";
+      }
+      else {
+         key = "move_page_instructions";
+      }
+
+      return getMessageFromBundle(key, new Object[]{getMoveCategoryChild().getTitle()});
+   }
+
+   public int getNextWizard() {
+      return nextWizard;
+   }
+
+   public void setNextWizard(int nextWizard) {
+      this.nextWizard = nextWizard;
    }
 }

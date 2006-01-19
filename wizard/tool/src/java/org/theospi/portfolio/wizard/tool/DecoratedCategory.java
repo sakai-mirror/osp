@@ -108,7 +108,13 @@ public class DecoratedCategory extends DecoratedCategoryChild {
          if (session.getAttribute(NEW_PAGE) != null &&
                session.getAttribute(WizardPageHelper.CANCELED) == null) {
             WizardPageSequence page = (WizardPageSequence) session.getAttribute(NEW_PAGE);
+            page.setSequence(page.getCategory().getChildPages().size());
             page.getCategory().getChildPages().add(page);
+            session.removeAttribute(NEW_PAGE);
+         }
+         else if (session.getAttribute(WizardPageHelper.CANCELED) != null) {
+            session.removeAttribute(NEW_PAGE);
+            session.removeAttribute(WizardPageHelper.CANCELED);
          }
 
          categoryPageList = new ArrayList();
@@ -169,6 +175,10 @@ public class DecoratedCategory extends DecoratedCategoryChild {
    }
 
    public String processActionDelete() {
+      DecoratedCategory parentCategory = getParentCategory();
+      parentCategory.getBase().getChildCategories().remove(getBase());
+      parentCategory.resequenceCategories();
+      getParent().getDeletedItems().add(getBase());
       return null;
    }
 

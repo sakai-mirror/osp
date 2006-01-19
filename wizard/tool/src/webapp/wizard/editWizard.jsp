@@ -16,13 +16,7 @@
 <sakai:view>
 <h:form styleClass="portletBody">
 
-<ospx:wizardSteps currentStep="0">
-   <ospx:wizardStep label="#{msgs.wizard_step_begin}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_select}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_support}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_design}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_properties}" />
-</ospx:wizardSteps>
+   <%@include file="steps.jspf"%>
 
    <sakai:view_title value="#{msgs.edit_wizard}"/>
    <sakai:instruction_message value="#{msgs.wizard_instructions}" />
@@ -40,16 +34,16 @@
       </h:panelGroup>
       <h:outputLabel for="description" id="descriptionLabel" value="#{msgs.wizard_description}" />
       <h:panelGroup>
-         <h:inputText id="description" value="#{wizard.current.base.description}" required="true">
+         <h:inputTextarea id="description" value="#{wizard.current.base.description}">
             <f:validateLength minimum="1" maximum="255" />
-         </h:inputText>
+         </h:inputTextarea>
          <h:message for="description" styleClass="validationEmbedded" />
       </h:panelGroup>
       <h:outputLabel for="keywords" id="keywordsLabel" value="#{msgs.wizard_keywords}" />
       <h:panelGroup>
-         <h:inputText id="keywords" value="#{wizard.current.base.keywords}" required="true">
+         <h:inputTextarea id="keywords" value="#{wizard.current.base.keywords}">
             <f:validateLength minimum="1" maximum="255" />
-         </h:inputText>
+         </h:inputTextarea>
          <h:message for="keywords" styleClass="validationEmbedded" />
       </h:panelGroup>
       <h:outputLabel for="type" id="typeLabel" value="#{msgs.wizard_type}" />
@@ -59,11 +53,9 @@
          </h:selectOneRadio>
       </h:panelGroup>
    </sakai:panel_edit>
-   <sakai:button_bar>
-      <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard}" action="#{wizard.processActionCancel}" immediate="true" />
-      <sakai:button_bar_item id="submit" value="#{msgs.save_continue_wizard}" 
-         action="#{wizard.processActionGoToEditWizardPages}" />
-   </sakai:button_bar>
+
+   <%@include file="builderButtons.jspf"%>
+
 </h:form>
 </sakai:view>
 
