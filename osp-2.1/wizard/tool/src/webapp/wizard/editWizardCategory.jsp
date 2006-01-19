@@ -16,15 +16,9 @@
 <sakai:view>
 <h:form styleClass="portletBody">
 
-<ospx:wizardSteps currentStep="1">
-   <ospx:wizardStep label="#{msgs.wizard_step_begin}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_select}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_support}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_design}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_properties}" />
-</ospx:wizardSteps>
+   <%@include file="steps.jspf"%>
 
-   <sakai:view_title value="#{msgs.edit_wizard_content}"/>
+   <sakai:view_title value="#{msgs.edit_wizard}"/>
    <sakai:instruction_message value="#{msgs.wizard_instructions}" />
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
@@ -41,16 +35,16 @@
       </h:panelGroup>
       <h:outputLabel for="description" id="descriptionLabel" value="#{msgs.wizard_category_description}" />
       <h:panelGroup>
-         <h:inputText id="description" value="#{wizard.currentCategory.base.description}" required="true">
-            <f:validateLength minimum="1" maximum="255" />
-         </h:inputText>
+         <h:inputTextarea id="description" value="#{wizard.currentCategory.base.description}">
+            <f:validateLength minimum="0" maximum="255" />
+         </h:inputTextarea>
          <h:message for="description" styleClass="validationEmbedded" />
       </h:panelGroup>
       <h:outputLabel for="keywords" id="keywordsLabel" value="#{msgs.wizard_category_keywords}" />
       <h:panelGroup>
-         <h:inputText id="keywords" value="#{wizard.currentCategory.base.keywords}" required="true">
-            <f:validateLength minimum="1" maximum="255" />
-         </h:inputText>
+         <h:inputTextarea id="keywords" value="#{wizard.currentCategory.base.keywords}">
+            <f:validateLength minimum="0" maximum="255" />
+         </h:inputTextarea>
          <h:message for="keywords" styleClass="validationEmbedded" />
       </h:panelGroup>
    </sakai:panel_edit>

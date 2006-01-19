@@ -36,6 +36,7 @@
       <many-to-one name="rootCategory"
          class="WizardCategory" column="root_category"
          cascade="all" unique="true" />
+      <property name="sequence" type="int" column="seq_num" not-null="false"/>
    </class>
    
    <class name="WizardStyleItem" table="osp_wizard_style_item" lazy="true">

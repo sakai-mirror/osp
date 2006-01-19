@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,21 +19,25 @@ import java.util.Hashtable;
  * Time: 2:06:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ToolFinishedView extends RedirectView {
+public class ToolFinishedView extends HelperView {
 
    public void render(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
       ToolSession toolSession = SessionManager.getCurrentToolSession();
       Tool tool = ToolManager.getCurrentTool();
 
-      String url = (String) SessionManager.getCurrentToolSession().getAttribute(
+      String url = (String) toolSession.getAttribute(
             tool.getId() + Tool.HELPER_DONE_URL);
 
-      SessionManager.getCurrentToolSession().removeAttribute(tool.getId() + Tool.HELPER_DONE_URL);
+      toolSession.removeAttribute(tool.getId() + Tool.HELPER_DONE_URL);
 
       setUrl(url);
-      if (model == null) {
-         model = new Hashtable();
+
+      if (getModelPrefix() == null) {
+         setModelPrefix("");
       }
+
       super.render(model, request, response);
    }
+
+
 }

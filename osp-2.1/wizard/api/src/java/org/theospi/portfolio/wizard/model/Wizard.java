@@ -36,6 +36,7 @@ public class Wizard extends IdentifiableObject {
    private String securityViewFunction;
    private String securityEditFunction;
    private WizardCategory rootCategory;
+   private int sequence = 0;
 
    private transient Guidance guidance;
    
@@ -203,4 +204,11 @@ public class Wizard extends IdentifiableObject {
       this.rootCategory = rootCategory;
    }
 
+   public int getSequence() {
+      return sequence;
+   }
+
+   public void setSequence(int sequence) {
+      this.sequence = sequence;
+   }
 }

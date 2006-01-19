@@ -16,13 +16,7 @@
 <sakai:view>
 <h:form styleClass="portletBody">
 
-<ospx:wizardSteps currentStep="1">
-   <ospx:wizardStep label="#{msgs.wizard_step_begin}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_select}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_support}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_design}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_properties}" />
-</ospx:wizardSteps>
+   <%@include file="steps.jspf"%>
 
    <sakai:tool_bar>
       <sakai:tool_bar_item
@@ -35,11 +29,24 @@
          value="#{msgs.new_root_wizard_category}" />
    </sakai:tool_bar>
 
-   <sakai:view_title value="#{msgs.edit_wizard_content}"/>
-   <sakai:instruction_message value="#{msgs.wizard_instructions}" />
+   <sakai:view_title value="#{msgs.edit_wizard}"/>
+   <f:subview id="instructionsHier" rendered="#{wizard.current.base.type ==
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.moving}">
+      <sakai:instruction_message value="#{msgs.wizard_pages_instructions_hier}" />
+   </f:subview>
+   <f:subview id="instructionsSeq" rendered="#{wizard.current.base.type ==
+               'org.theospi.portfolio.wizard.model.Wizard.sequential' && !wizard.moving}">
+      <sakai:instruction_message value="#{msgs.wizard_pages_instructions_seq}" />
+   </f:subview>
+   <f:subview id="instructionsMove" rendered="#{wizard.moving}">
+      <sakai:instruction_message value="#{wizard.movingInstructions}" />
+   </f:subview>
+
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />
+
+   <%@include file="wizardPropertiesFrame.jspf"%>
 
    <sakai:flat_list value="#{wizard.current.rootCategory.categoryPageList}" var="item">
       <h:column rendered="#{wizard.moving}">
@@ -50,17 +57,25 @@
       </h:column>
       <h:column>
          <f:facet name="header">
-            <h:outputText value="#{msgs.category_page_title_column_header}" />
+            <f:subview id="header">
+               <h:outputText value="#{msgs.category_page_title_column_header_hier}"
+               		rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}" />
+               <h:outputText value="#{msgs.category_page_title_column_header_seq}"
+               		rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.sequential'}"/>
+            </f:subview>
          </f:facet>
-         <h:outputLabel value="#{item.indentString}" for="itemSelect"
+         <h:outputLabel value="#{item.indentString}"
             rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
-         <h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" />
-         <h:outputLabel value="#{item.title}" for="itemSelect" />
+         <h:graphicImage value="/img/category.gif" rendered="#{item.category}" />
+         <h:graphicImage value="/img/page.gif" rendered="#{!item.category}" />
+         <!--h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" /-->
+         <h:outputLabel value="#{item.title}"/>
          <f:facet name="footer">
             <f:subview id="moveFooter" rendered="#{wizard.moving}">
                <h:commandLink action="#{wizard.current.rootCategory.processActionMoveTo}"
                   rendered="#{wizard.current.rootCategory.containerForMove}">
-                  <h:outputText value="#{msgs.move_to_here}" />
+                  <h:outputText value="#{msgs.move_to_here_category}" rendered="#{wizard.moveCategoryChild.category}"/>
+                  <h:outputText value="#{msgs.move_to_here_page}" rendered="#{!wizard.moveCategoryChild.category}"/>
                </h:commandLink>
                <h:outputText value=" | " rendered="#{wizard.current.rootCategory.containerForMove}"/>
                <h:commandLink action="#{wizard.moveCategoryChild.processActionCancelMove}" rendered="#{wizard.moving}">
@@ -90,13 +105,17 @@
             <h:outputText value="#{msgs.new_page}" />
          </h:commandLink>
 
-         <h:outputText value=" | " rendered="#{!wizard.moving}"/>
-         <h:commandLink action="#{item.processActionMove}" rendered="#{!wizard.moving}">
-            <h:outputText value="#{msgs.move}" />
+         <h:outputText value=" | " rendered="#{!wizard.moving &&
+               wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
+         <h:commandLink action="#{item.processActionMove}" rendered="#{!wizard.moving &&
+               wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
+            <h:outputText value="#{msgs.move_category}" rendered="#{item.category}"/>
+            <h:outputText value="#{msgs.move_page}" rendered="#{!item.category}"/>
          </h:commandLink>
 
          <h:commandLink action="#{item.processActionMoveTo}" rendered="#{item.category && item.containerForMove}">
-            <h:outputText value="#{msgs.move_to_here}" />
+            <h:outputText value="#{msgs.move_to_here_category}" rendered="#{wizard.moveCategoryChild.category}"/>
+            <h:outputText value="#{msgs.move_to_here_page}" rendered="#{!wizard.moveCategoryChild.category}"/>
          </h:commandLink>
 
       </h:column>
@@ -112,12 +131,10 @@
          </h:commandLink>
       </h:column>
    </sakai:flat_list>
+   <f:subview id="buttonBar" rendered="#{!wizard.moving}">
+      <%@include file="builderButtons.jspf"%>
+   </f:subview>
 
-   <sakai:button_bar  rendered="#{!wizard.moving}">
-      <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard}" action="#{wizard.processActionCancel}" immediate="true" />
-      <sakai:button_bar_item id="submit" value="#{msgs.save_continue_wizard}" 
-         action="#{wizard.processActionGoToEditWizardSupport}" />
-   </sakai:button_bar>
 </h:form>
 </sakai:view>
 

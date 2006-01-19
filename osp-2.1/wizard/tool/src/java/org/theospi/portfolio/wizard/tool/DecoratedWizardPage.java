@@ -112,6 +112,10 @@ public class DecoratedWizardPage extends DecoratedCategoryChild {
    }
 
    public String processActionDelete() {
+      DecoratedCategory parentCategory = getCategory();
+      parentCategory.getBase().getChildPages().remove(getBase());
+      parentCategory.resequencePages();
+      getParent().getDeletedItems().add(getBase());
       return null;
    }
 

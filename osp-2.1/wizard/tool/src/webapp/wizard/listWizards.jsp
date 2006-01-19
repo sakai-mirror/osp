@@ -33,15 +33,29 @@
          <f:facet name="header">
             <h:outputText value="#{msgs.wizards}" />
          </f:facet>
+         <h:outputText value="#{wizardItem.base.name}"/>
       </h:column>
       <h:column>
-         <h:outputText value="#{wizardItem.base.name}"/>
+         <f:facet name="header">
+            <h:outputText value="#{msgs.actions_column_header}" />
+         </f:facet>
          <h:commandLink action="#{wizardItem.processActionEdit}">
             <h:outputText value="#{msgs.edit}"/>
          </h:commandLink>
          <h:outputText value=" | " />
          <h:commandLink action="#{wizardItem.processActionDelete}">
             <h:outputText value="#{msgs.delete}" />
+         </h:commandLink>
+      </h:column>
+      <h:column>
+         <f:facet name="header">
+            <h:outputText value="#{msgs.re_order}" />
+         </f:facet>
+         <h:commandLink action="#{wizardItem.moveUp}" rendered="#{!wizardItem.first}">
+            <h:graphicImage value="/img/arrowUp.gif" />
+         </h:commandLink>
+         <h:commandLink action="#{wizardItem.moveDown}" rendered="#{!wizardItem.last}">
+            <h:graphicImage value="/img/arrowDown.gif" />
          </h:commandLink>
       </h:column>
    </sakai:flat_list>

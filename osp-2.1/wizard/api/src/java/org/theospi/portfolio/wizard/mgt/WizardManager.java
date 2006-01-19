@@ -9,9 +9,6 @@ import org.theospi.portfolio.wizard.model.Wizard;
 
 public interface WizardManager {
 
-   public final static String CURRENT_WIZARD = "org.theospi.portfolio.wizard.currentWizard";
-   public final static String CURRENT_WIZARD_ID = "org.theospi.portfolio.wizard.currentWizardId";
-
    public Wizard createNew(String owner, String siteId, String toolId, 
          Id securityQualifier, String securityViewFunction, String securityEditFunction);
 
@@ -31,4 +28,7 @@ public interface WizardManager {
    public Wizard getWizard(String id);
    
    public Collection getAvailableForms(String siteId, String type);
+
+   public void deleteObjects(List deletedItems);
+
 }

@@ -21,6 +21,8 @@ public class DecoratedWizard {
    private Wizard base;
    private WizardTool parent;
    private DecoratedCategory rootCategory = null;
+   private DecoratedWizard next;
+   private DecoratedWizard prev;
 
    public DecoratedWizard(WizardTool tool, Wizard base) {
       this.base = base;
@@ -89,4 +91,47 @@ public class DecoratedWizard {
    public void setRootCategory(DecoratedCategory rootCategory) {
       this.rootCategory = rootCategory;
    }
+
+   public boolean isFirst() {
+      return getPrev() == null;
+   }
+
+   public boolean isLast() {
+      return getNext() == null;
+   }
+
+   public String moveUp() {
+      return switchSeq(getPrev());
+   }
+
+   public String moveDown() {
+      return switchSeq(getNext());
+   }
+
+   protected String switchSeq(DecoratedWizard other) {
+      int otherSeq = other.getBase().getSequence();
+      int thisSeq = getBase().getSequence();
+      other.getBase().setSequence(thisSeq);
+      getBase().setSequence(otherSeq);
+      getParent().getWizardManager().saveWizard(getBase());
+      getParent().getWizardManager().saveWizard(other.getBase());
+      return null;
+   }
+
+   public DecoratedWizard getNext() {
+      return next;
+   }
+
+   public void setNext(DecoratedWizard next) {
+      this.next = next;
+   }
+
+   public DecoratedWizard getPrev() {
+      return prev;
+   }
+
+   public void setPrev(DecoratedWizard prev) {
+      this.prev = prev;
+   }
+
 }
