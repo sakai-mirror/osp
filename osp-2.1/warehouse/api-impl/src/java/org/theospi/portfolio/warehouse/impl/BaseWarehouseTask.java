@@ -81,7 +81,13 @@ public abstract class BaseWarehouseTask implements WarehouseTask {
          }
       }
    }
-
+   
+   /**
+    * This method loads the tables and registers the task.
+    * 
+    * This function is called after the task bean properties have been set.
+    * Children are singletons where there bean init function is this method.
+    */
    public void init() {
       try {
          InputStream tableDdl = getTableDdl();
