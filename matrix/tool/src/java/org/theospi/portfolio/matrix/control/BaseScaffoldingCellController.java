@@ -45,9 +45,11 @@
 
 package org.theospi.portfolio.matrix.control;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
@@ -91,6 +93,12 @@ public class BaseScaffoldingCellController {
       //Check for guidance
       checkForGuidance(session, scaffoldingCell);
       //Traversing the collection to un-lazily load
+      scaffoldingCell.getWizardPageDefinition().getEvalWorkflows().size();
+      for (Iterator i = scaffoldingCell.getWizardPageDefinition().getEvalWorkflows().iterator(); i.hasNext();) {
+         Workflow w = (Workflow) i.next();
+         w.getItems().size();
+      }
+      
       getMatrixManager().removeFromSession(scaffoldingCell);
       scaffoldingCell.getScaffolding().isPublished();
       return scaffoldingCell;
@@ -118,7 +126,7 @@ public class BaseScaffoldingCellController {
 
       String oldStatus = oldScaffoldingCell.getInitialStatus();
       scaffoldingCell.getWizardPageDefinition().setEvalWorkflows(
-            createEvalWorkflows(scaffoldingCell));
+            new HashSet(createEvalWorkflows(scaffoldingCell)));
       getMatrixManager().storeScaffoldingCell(scaffoldingCell);
       List cells = getMatrixManager().getCellsByScaffoldingCell(
             scaffoldingCell.getId());
@@ -137,12 +145,14 @@ public class BaseScaffoldingCellController {
       }
    }
    
-   private List createEvalWorkflows(ScaffoldingCell scaffoldingCell) {
-      List workflows = scaffoldingCell.getWizardPageDefinition().getEvalWorkflows();
+   private Set createEvalWorkflows(ScaffoldingCell scaffoldingCell) {
+      Set workflows = scaffoldingCell.getWizardPageDefinition().getEvalWorkflows();
       if (scaffoldingCell.getEvaluationDevice() != null && 
             scaffoldingCell.getWizardPageDefinition().getEvalWorkflows().size() == 0) {
-         Workflow w_complete = new Workflow("Complete Workflow");
-         Workflow w_return = new Workflow("Return Workflow");
+         Workflow w_complete = new Workflow("Complete Workflow", 
+               scaffoldingCell.getWizardPageDefinition());
+         Workflow w_return = new Workflow("Return Workflow", 
+               scaffoldingCell.getWizardPageDefinition());
          
          w_complete.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
                scaffoldingCell.getId(), MatrixFunctionConstants.COMPLETE_STATUS));
@@ -153,6 +163,16 @@ public class BaseScaffoldingCellController {
          workflows.add(w_complete);
          workflows.add(w_return);
          
+      }
+      else if (scaffoldingCell.getEvaluationDevice() == null) {
+         /*
+         for (Iterator iter = workflows.iterator(); iter.hasNext();) {
+            Workflow w = (Workflow)iter.next();
+            w.getItems().clear();
+         }
+         workflows.clear();
+         */
+         workflows = new HashSet();
       }
       return workflows;
    }

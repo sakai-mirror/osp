@@ -895,6 +895,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(checksum));
 
       storeScaffoldingFile(zos, oldScaffolding.getPrivacyXsdId());
+      //TODO CM - add other files/forms
 
       List levels = oldScaffolding.getLevels();
       List criteria = oldScaffolding.getCriteria();
@@ -908,6 +909,19 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          //Collection reviewers = getScaffoldingCellReviewers(sCell.getId());
          Collection reviewers = sCell.getReviewers();
          sCell.setReviewers(new HashSet(reviewers));
+
+         sCell.getWizardPageDefinition().setPages(new HashSet());
+         
+         Collection forms = sCell.getWizardPageDefinition().getAdditionalForms();
+         sCell.getWizardPageDefinition().setAdditionalForms(new ArrayList(forms));
+         
+         Collection evalWorkflows = sCell.getWizardPageDefinition().getEvalWorkflows();
+         for (Iterator iter2 = evalWorkflows.iterator(); iter2.hasNext();) {
+            Workflow wf = (Workflow)iter2.next();
+            Collection items = wf.getItems();
+            wf.setItems(new HashSet(items));
+         }
+         sCell.getWizardPageDefinition().setEvalWorkflows(new HashSet(evalWorkflows));
          //sCell.setInitialStatus(sCell.getInitialStatus());
       }
 
@@ -1483,14 +1497,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       this.defaultScaffoldingBean = defaultScaffoldingBean;
    }
    
-   /**
-    * @deprecated
-    */
-   public void processWorkflow(Id workflowId, Id objId) {
+   public void processWorkflow(Id workflowId, Id cellId) {
       Workflow workflow = getWorkflowManager().getWorkflow(workflowId);
-      Cell cell = getCell(objId);
+      Cell cell = getCell(cellId);
       
-      List items = workflow.getItems();
+      Collection items = workflow.getItems();
       for (Iterator i = items.iterator(); i.hasNext();) {
          WorkflowItem wi = (WorkflowItem)i.next();
          Cell actionCell = this.getMatrixCellByScaffoldingCell(cell.getMatrix(), 

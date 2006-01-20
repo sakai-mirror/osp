@@ -70,8 +70,6 @@ import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
-import org.theospi.portfolio.workflow.model.Workflow;
-import org.theospi.portfolio.workflow.model.WorkflowItem;
 
 /**
  * @author chmaurer
@@ -150,7 +148,7 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
       
       return incomingModel;
    }
-   
+   /*
    private void processWorkflow(Scaffolding scaffolding) {
       Set cells = scaffolding.getScaffoldingCells();      
       
@@ -210,7 +208,7 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
          }
       }
    }
-   
+   */
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.FormController#referenceData(java.util.Map, java.lang.Object, org.springframework.validation.Errors)
     */

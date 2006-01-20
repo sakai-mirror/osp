@@ -46,7 +46,6 @@
 package org.theospi.portfolio.matrix.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -55,7 +54,6 @@ import java.util.Set;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.theospi.portfolio.guidance.model.Guidance;
-import org.theospi.portfolio.workflow.model.Workflow;
 
 /**
  * @author chmaurer
@@ -240,18 +238,6 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
     */
    public void setDeleteGuidanceId(Id deleteGuidanceId) {
       wizardPageDefinition.setDeleteGuidanceId(deleteGuidanceId);
-   }
-   /**
-    * @return Returns the submitWorkflow.
-    */
-   public Workflow getSubmitWorkflow() {
-      return wizardPageDefinition.getSubmitWorkflow();
-   }
-   /**
-    * @param submitWorkflow The submitWorkflow to set.
-    */
-   public void setSubmitWorkflow(Workflow submitWorkflow) {
-      wizardPageDefinition.setSubmitWorkflow(submitWorkflow);
    }
    /**
     * @return Returns the additionalForms.

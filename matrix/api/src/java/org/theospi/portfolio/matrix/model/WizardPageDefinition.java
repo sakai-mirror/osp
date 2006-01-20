@@ -25,7 +25,6 @@ package org.theospi.portfolio.matrix.model;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.guidance.model.Guidance;
-import org.theospi.portfolio.workflow.model.Workflow;
 
 import java.util.*;
 
@@ -47,8 +46,7 @@ public class WizardPageDefinition extends IdentifiableObject {
    transient private Id guidanceId;
    private Guidance guidance;
    transient private Id deleteGuidanceId;
-   private Workflow submitWorkflow;
-   private List evalWorkflows = new ArrayList();
+   private Set evalWorkflows = new HashSet();
 
    private Id reflectionDevice;
    private String reflectionDeviceType;
@@ -177,18 +175,6 @@ public class WizardPageDefinition extends IdentifiableObject {
       this.deleteGuidanceId = deleteGuidanceId;
    }
    /**
-    * @return Returns the submitWorkflow.
-    */
-   public Workflow getSubmitWorkflow() {
-      return submitWorkflow;
-   }
-   /**
-    * @param submitWorkflow The submitWorkflow to set.
-    */
-   public void setSubmitWorkflow(Workflow submitWorkflow) {
-      this.submitWorkflow = submitWorkflow;
-   }
-   /**
     * @return Returns the additionalForms.
     */
    public List getAdditionalForms() {
@@ -220,14 +206,14 @@ public class WizardPageDefinition extends IdentifiableObject {
    /**
     * @return Returns the evalWorkflows.
     */
-   public List getEvalWorkflows() {
+   public Set getEvalWorkflows() {
       return evalWorkflows;
    }
 
    /**
     * @param evalWorkflows The evalWorkflows to set.
     */
-   public void setEvalWorkflows(List evalWorkflows) {
+   public void setEvalWorkflows(Set evalWorkflows) {
       this.evalWorkflows = evalWorkflows;
    }
 

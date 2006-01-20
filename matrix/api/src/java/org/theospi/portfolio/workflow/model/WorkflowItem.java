@@ -76,6 +76,23 @@ public class WorkflowItem extends IdentifiableObject {
       this.workflow = workflow;
    }
    
-   
+   public boolean equals(Object in) {
+      // TODO Auto-generated method stub
+      //return super.equals(in);
+      
+      if (this == in) return true;
+      if (in == null && this == null) return true;
+      if (in == null && this != null) return false;
+      if (this == null && in != null) return false;
+      if (this.getId() == null && ((WorkflowItem)in).getId() != null) return false;
+      if (this.getId() != null && ((WorkflowItem)in).getId() == null) return false;
+      if (this.getId() == null && ((WorkflowItem)in).getId() == null && 
+            !this.getWorkflow().equals(((WorkflowItem)in).getWorkflow())) return false;
+      if (!this.getActionObjectId().equals(((WorkflowItem)in).getActionObjectId())) return false;
+      if (this.getActionType() != ((WorkflowItem)in).getActionType()) return false;
+      if (!this.getActionValue().equals(((WorkflowItem)in).getActionValue())) return false;
+      return this.getId().equals(((WorkflowItem)in).getId());
+      
+   }
    
 }

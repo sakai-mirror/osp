@@ -251,8 +251,6 @@
            type="org.sakaiproject.metaobj.shared.IdType"/-->
       <many-to-one name="guidance" column="guidance_id" not-null="false"
         class="org.theospi.portfolio.guidance.model.Guidance"/>
-      <many-to-one name="submitWorkflow" column="submit_workflow_id" not-null="false"
-        class="org.theospi.portfolio.workflow.model.Workflow" cascade="all"/>
 
       <list name="additionalForms" cascade="all-delete-orphan"
            inverse="false" lazy="false" table="osp_scaffolding_cell_form_defs">
@@ -261,13 +259,10 @@
            <element column="form_def_id" type="string"/>
        </list>
        
-       <list name="evalWorkflows" cascade="all-delete-orphan"
-           inverse="false" lazy="false" >
+       <set name="evalWorkflows" cascade="all-delete-orphan" inverse="true" lazy="true" >
            <key column="wiz_page_def_id" />
-           <index column="seq_num" />
            <one-to-many class="org.theospi.portfolio.workflow.model.Workflow" />
-       </list>
-
+       </set>
    </class>
 
 </hibernate-mapping>
