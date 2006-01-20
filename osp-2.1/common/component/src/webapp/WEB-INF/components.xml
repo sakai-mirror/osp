@@ -35,7 +35,6 @@
             <value>org/theospi/portfolio/worksite/mgt/impl/SiteTool.hbm.xml</value>
             <value>org/theospi/portfolio/guidance/model/Guidance.hbm.xml</value>
             <value>org/theospi/portfolio/review/model/Review.hbm.xml</value>
-            <value>org/theospi/portfolio/workflow/model/Workflow.hbm.xml</value>
          </list>
       </property>
    </bean>
@@ -207,63 +206,6 @@
       </property>
       <property name="target">
          <ref bean="org.theospi.portfolio.review.mgt.ReviewManager.target"/>
-      </property>
-      <property name="transactionAttributes">
-         <props>
-            <prop key="*">PROPAGATION_REQUIRED</prop>
-         </props>
-      </property>
-   </bean>
-   
-   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospWorkflow"
-      class="org.theospi.portfolio.workflow.impl.WorkflowHttpAccess">
-      <property name="idManager">
-         <ref bean="idManager"/>
-      </property>
-      <property name="workflowManager">
-         <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager"/>
-      </property>
-      <property name="authzManager"><ref bean="authzManager"/></property>
-   </bean>
-
-   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospWorkflow"
-      class="org.theospi.portfolio.workflow.impl.WorkflowEntityProducer"
-      init-method="init"
-      destroy-method="destroy"
-      singleton="true">
-      <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
-      </property>
-      <property name="httpAccess">
-         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.ospWorkflow" />
-      </property>
-   </bean>
-
-   <bean id="org.theospi.portfolio.workflow.mgt.WorkflowManager.target"
-      class="org.theospi.portfolio.workflow.impl.WorkflowManagerImpl">
-      <property name="sessionFactory">
-         <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
-      </property>
-      <property name="authorizationFacade">
-         <ref bean="authzManager"/>
-      </property>
-      <property name="securityService">
-         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
-      </property>
-      <property name="idManager"><ref bean="idManager"/></property>
-      <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
-      </property>
-   </bean>
-
-   <bean id="org.theospi.portfolio.workflow.mgt.WorkflowManager"
-      class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
-      singleton="true">
-      <property name="transactionManager">
-        <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
-      </property>
-      <property name="target">
-         <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager.target"/>
       </property>
       <property name="transactionAttributes">
          <props>

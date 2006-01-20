@@ -2,6 +2,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ include file="/js/colorPicker/picker.inc" %>
 
+<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
+
 <form method="POST">
     <c:if test="${!scaffolding.published}" >
 	   <div class="navIntraTool">
@@ -99,9 +101,11 @@
       
       
 		<h4>Columns  &nbsp;&nbsp;&nbsp;
+         <c:if test="${!scaffolding.published}" >
          <a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
             Add Column...
          </a>
+         </c:if>
       </h4>
       <spring:bind path="scaffolding.columnLabel">
             <c:if test="${status.error}">
@@ -183,9 +187,11 @@
 		<br />
 		
 		<h4>Rows  &nbsp;&nbsp;&nbsp;
+         <c:if test="${!scaffolding.published}" >
          <a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
             Add Row...
          </a>
+         </c:if>
       </h4>
       <spring:bind path="scaffolding.rowLabel">
             <c:if test="${status.error}">
@@ -262,127 +268,48 @@
         </spring:bind>
 		
       <spring:bind path="scaffolding.workflowOption">
-      <h4>Matrix Progression</h4>
+      <h4><osp:message key="matrix_progression" bundle="${msgs}" /></h4>
       <fieldset>
-         <legend class="radio">Set Matrix Progression to: </legend>
-         <div class="checkbox indnt1">
-            <input type="radio" id="none" name="<c:out value="${status.expression}"/>" value="0" 
-               <c:if test="${status.value == 0}"> checked="checked" </c:if> />
-            <label for="none">None</label>
+         <legend class="radio"><osp:message key="matrix_progression_text" bundle="${msgs}" /></legend>
+         <c:forTokens var="token" items="none,horizontal,vertical,open,manual"
+                    delims="," varStatus="loopCount">
+            <div class="checkbox indnt1">
+            <input type="radio" id="<c:out value="${token}" />" name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
+               <c:if test="${status.value == loopCount.index}"> checked="checked" </c:if> />
+            <label for="<c:out value="${token}" />"><osp:message key="${token}_progression_label" bundle="${msgs}" />
+               <osp:message key="${token}_progression_desc" bundle="${msgs}" />
+            </label>
          </div>
-         <div class="checkbox indnt1">
-            <input type="radio" id="horizontal" name="<c:out value="${status.expression}"/>" value="1" 
-               <c:if test="${status.value == 1}"> checked="checked" </c:if> />
-            <label for="horizontal">Horizontal</label>
-         </div>
-         <div class="checkbox indnt1">
-            <input type="radio" id="vertical" name="<c:out value="${status.expression}"/>" value="2"
-               <c:if test="${status.value == 2}"> checked="checked" </c:if> />
-            <label for="vertical">Vertical</label>
-         </div>
-         <div class="checkbox indnt1">
-            <input type="radio" id="open" name="<c:out value="${status.expression}"/>" value="3"
-               <c:if test="${status.value == 3}"> checked="checked" </c:if> />
-            <label for="open">Open</label>
-         </div>
-         <div class="checkbox indnt1">
-            <input type="radio" id="manual" name="<c:out value="${status.expression}"/>" value="4"
-               <c:if test="${status.value == 4}"> checked="checked" </c:if> />
-            <label for="manual">Manual</label>
-         </div>
+         </c:forTokens>
       </fieldset>
       </spring:bind>
       
       <h4>Matrix Status Colors</h4>
-      <spring:bind path="scaffolding.readyColor">
-         <c:if test="${status.error}">
-             <div class="validation"><c:out value="${status.errorMessage}"/></div>
-         </c:if>
-      <p class="shorttext">
-         <span class="reqStar">*</span><label>Ready Color</label>
-         <input type="text" disabled="disabled" value="" size="2" 
-                  name="<c:out value="${status.expression}"/>_sample"
-                  style="background-color: <c:out value="${status.value}"/>" />
-         <input type="text" name="<c:out value="${status.expression}"/>" 
-                  value="<c:out value="${status.value}"/>" 
-               size="25" maxlength="25" <c:out value="${disabledText}"/>
-               onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value">
-         <!--
-            Put icon by the input control.
-            Make it the link calling picker popup.
-            Specify input object reference as first parameter to the function and palete selection as second.
-         -->
-         <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])">
-         <img width="15" height="13" border="0" alt="Click Here to Pick up the color" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
-      </p>
-     </spring:bind>
-      <spring:bind path="scaffolding.pendingColor">
-         <c:if test="${status.error}">
-             <div class="validation"><c:out value="${status.errorMessage}"/></div>
-         </c:if>
-      <p class="shorttext">
-         <span class="reqStar">*</span><label>Pending Color</label>
-         <input type="text" disabled="disabled" value="" size="2" 
-                  name="<c:out value="${status.expression}"/>_sample"
-                  style="background-color: <c:out value="${status.value}"/>" />
-         <input type="text" name="<c:out value="${status.expression}"/>" 
-                  value="<c:out value="${status.value}"/>" 
-               size="25" maxlength="25" <c:out value="${disabledText}"/>
-               onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value">
-         <!--
-            Put icon by the input control.
-            Make it the link calling picker popup.
-            Specify input object reference as first parameter to the function and palete selection as second.
-         -->
-         <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])">
-         <img width="15" height="13" border="0" alt="Click Here to Pick up the color" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
-      </p>
-     </spring:bind>
-      <spring:bind path="scaffolding.completedColor">
-         <c:if test="${status.error}">
-             <div class="validation"><c:out value="${status.errorMessage}"/></div>
-         </c:if>
-      <p class="shorttext">
-         <span class="reqStar">*</span><label>Completed Color</label>
-         <input type="text" disabled="disabled" value="" size="2" 
-                  name="<c:out value="${status.expression}"/>_sample"
-                  style="background-color: <c:out value="${status.value}"/>" />
-         <input type="text" name="<c:out value="${status.expression}"/>" 
-                  value="<c:out value="${status.value}"/>" 
-               size="25" maxlength="25" <c:out value="${disabledText}"/>
-               onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value">
-         <!--
-            Put icon by the input control.
-            Make it the link calling picker popup.
-            Specify input object reference as first parameter to the function and palete selection as second.
-         -->
-         <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])">
-         <img width="15" height="13" border="0" alt="Click Here to Pick up the color" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
-      </p>
-     </spring:bind>
-      <spring:bind path="scaffolding.lockedColor">
-         <c:if test="${status.error}">
-             <div class="validation"><c:out value="${status.errorMessage}"/></div>
-         </c:if>
-      <p class="shorttext">
-         <span class="reqStar">*</span><label>Locked Color</label>
-         <input type="text" disabled="disabled" value="" size="2" 
-                  name="<c:out value="${status.expression}"/>_sample"
-                  style="background-color: <c:out value="${status.value}"/>" />
-         <input type="text" name="<c:out value="${status.expression}"/>" 
-                  value="<c:out value="${status.value}"/>" 
-               size="25" maxlength="25" <c:out value="${disabledText}"/>
-               onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value">
-
-         <!--
-            Put icon by the input control.
-            Make it the link calling picker popup.
-            Specify input object reference as first parameter to the function and palete selection as second.
-         -->
-         <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])">
-         <img width="15" height="13" border="0" alt="Click Here to Pick up the color" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
-      </p>
-     </spring:bind>
+      <c:forTokens var="token" items="scaffolding.readyColor,scaffolding.pendingColor,scaffolding.completedColor,scaffolding.lockedColor"
+                    delims=",">
+        <spring:bind path="${token}">
+               <c:if test="${status.error}">
+                   <div class="validation"><c:out value="${status.errorMessage}"/></div>
+               </c:if>
+            <p class="shorttext">
+               <span class="reqStar">*</span><label><osp:message key="${status.expression}_label" bundle="${msgs}" /></label>
+               <input type="text" disabled="disabled" value="" size="2" 
+                        name="<c:out value="${status.expression}"/>_sample"
+                        style="background-color: <c:out value="${status.value}"/>" />
+               <input type="text" name="<c:out value="${status.expression}"/>" 
+                        value="<c:out value="${status.value}"/>" 
+                     size="25" maxlength="25"
+                     onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value">
+               <!--
+                  Put icon by the input control.
+                  Make it the link calling picker popup.
+                  Specify input object reference as first parameter to the function and palete selection as second.
+               -->
+               <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])">
+               <img width="15" height="13" border="0" alt="Click Here to Pick up the color" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
+            </p>
+           </spring:bind>
+      </c:forTokens>
       
 		<br />
 		<br />

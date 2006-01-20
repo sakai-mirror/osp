@@ -182,7 +182,7 @@ public interface MatrixManager {
 
    public List getMatrices(Id scaffoldingId);
    
-   void processWorkflow(Id workflowId, Id objId);
+   void processWorkflow(Id workflowId, Id cellId);
    void processWorkflow(int workflowOption, Id cellId);
 
 }

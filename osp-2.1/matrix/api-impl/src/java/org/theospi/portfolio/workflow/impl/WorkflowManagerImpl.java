@@ -15,7 +15,6 @@ import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
-import org.theospi.portfolio.workflow.model.WorkflowItem;
 
 public class WorkflowManagerImpl extends HibernateDaoSupport implements WorkflowManager {
 
