@@ -11,7 +11,9 @@
 
    <table>
    <name>DW_HELP_GLOSSARY</name>
-   <desc>Help Glossary Datawarehouse table</desc>
+   <desc>Help Glossary Datawarehouse table
+        This contains the terms for the glossary, worksite, and short description
+   </desc>
    <columns>
       <column>
         <name>id</name>
@@ -44,7 +46,9 @@
 
  <table>
    <name>DW_HELP_GLOSSARY_DESC</name>
-   <desc>Help Glossary Description Datawarehouse table</desc>
+   <desc>Help Glossary Description Datawarehouse table
+        This is for the long description
+   </desc>
    <columns>
       <column>
         <name>id</name>
