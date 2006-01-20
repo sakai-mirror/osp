@@ -124,6 +124,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       ScaffoldingCell scaffoldingCell = (ScaffoldingCell) requestModel; 
       String action = (String) request.get("action");
       String addFormAction = (String) request.get("addForm");
+      String saveAction = (String) request.get("saveAction");
       Map model = new HashMap();
       if (addFormAction != null) {
          
@@ -133,6 +134,17 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          //model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
          model.put("scaffoldingCell", scaffoldingCell);
          return new ModelAndView("success", model);
+      }
+      if (saveAction != null) {
+         if (isPublished(scaffoldingCell)) {
+            model.put("scaffoldingCell", scaffoldingCell);
+            model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+            return new ModelAndView("editScaffoldingCellConfirm", model);
+         }
+         
+         saveScaffoldingCell(request, scaffoldingCell);
+         session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
+         session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
       }
       
       if (action  == null) action = (String) request.get("submitAction");
@@ -151,18 +163,6 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
             //model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
             model.put("scaffoldingCell", scaffoldingCell);
             return new ModelAndView("success", model);
-         }
-         else if (action.equals("Save")) {
-            
-            if (isPublished(scaffoldingCell)) {
-               model.put("scaffoldingCell", scaffoldingCell);
-               model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
-               return new ModelAndView("editScaffoldingCellConfirm", model);
-            }
-            
-            saveScaffoldingCell(request, scaffoldingCell);
-            session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
-            session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
          }
          else if (action.equals("forward")) {
             String forwardView = (String)request.get("dest");

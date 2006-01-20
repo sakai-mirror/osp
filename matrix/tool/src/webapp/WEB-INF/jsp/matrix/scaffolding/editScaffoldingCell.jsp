@@ -210,10 +210,10 @@
 	</spring:bind>
 
 	<div class="act">
-		<input type="submit" name="action" value="Save" class="active" onclick="javascript:document.forms[0].validate.value='true';" />
+		<input type="submit" name="saveAction" value="Save" class="active" onclick="javascript:document.forms[0].validate.value='true';" />
 
       <c:if test="${empty helperPage}">
-         <input type="button" name="action" value="Cancel"
+         <input type="button" name="action" value="<osp:message key="cancel" bundle="${msgs}" />"
             onclick="window.document.location='<osp:url value="viewScaffolding.osp?scaffolding_id=${scaffoldingCell.scaffolding.id}"/>'"/>
       </c:if>
       <c:if test="${not empty helperPage}">

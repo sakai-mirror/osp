@@ -2,17 +2,10 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ include file="/js/colorPicker/picker.inc" %>
 
+<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
 	
 	
 	<h3>Editing Scaffolding Row</h3>
-	
-	<%--  Hiding Sub criteria for now
-	<div class="chefToolBarWrapForm">
-		<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=<c:out value="${path}"/>.<c:out value="${index}"/>';document.forms[0].submit();">
-			Add Sub Criterion...
-		</a>
-	</div>
-	--%>
 	
 	<div class="instructions">
 		Scaffolding Row
@@ -22,7 +15,6 @@
 <form method="POST">
 	<osp:form/> 
 	<input type="hidden" name="params" value="" />
-	<input type="hidden" name="submitAction" value="" />
 	<input type="hidden" name="dest" value="" />
 	<input type="hidden" name="validate" value="false" />
 	
@@ -70,8 +62,8 @@
    </p>
 	
 	<div class="act">
-		<input type="submit" name="action" class="active" value="Update"/>
-		<input type="button" name="action" value="Cancel" onclick="javascript:doCancel()"/>
+		<input type="submit" name="updateAction" class="active" value="<osp:message key="update" bundle="${msgs}" />"/>
+		<input type="button" name="action" value="<osp:message key="cancel" bundle="${msgs}" />" onclick="javascript:doCancel()"/>
 	</div>
 
 </form>

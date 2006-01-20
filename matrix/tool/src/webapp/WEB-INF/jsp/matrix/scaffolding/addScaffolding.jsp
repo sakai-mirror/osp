@@ -318,10 +318,10 @@
 		</c:if>
 		
 		<div class="act">
-			     <input type="submit" name="action" class="active" 
-                        value="Generate Matrix" 
+			     <input type="submit" name="generateAction" class="active" 
+                        value="<osp:message key="generate_matrix" bundle="${msgs}" />" 
   				        onclick="javascript:document.forms[0].validate.value='true';"/>
-			<input type="submit" name="action" value="Cancel"/>
+			<input type="submit" name="cancelAction" value="<osp:message key="cancel" bundle="${msgs}" />"/>
 		</div>
       
     <script type="text/javascript" src="/library/htmlarea/sakai-htmlarea.js"></script>
