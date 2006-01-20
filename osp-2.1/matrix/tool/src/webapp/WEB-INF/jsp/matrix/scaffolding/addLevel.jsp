@@ -2,6 +2,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ include file="/js/colorPicker/picker.inc" %>
 
+<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
+
 	<h3>Editing Scaffolding Column</h3>
 	
 	
@@ -12,7 +14,6 @@
 	
 	<form method="POST">
 		<osp:form/> 
-		<input type="hidden" name="submitAction" value="Update" />
         
 		<h4>Scaffolding Column</h4>
 		
@@ -62,8 +63,8 @@
 				<input type="hidden" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.displayValue}"/>"/>
 				<span class="error_message"><c:out value="${status.errorMessage}"/></span>
 			</spring:bind>
-			<input type="submit" name="action" class="active" value="Update"/>
-			<input type="button" name="action" value="Cancel" onclick="javascript:doCancel()"/>
+			<input type="submit" name="updateAction" class="active" value="<osp:message key="update" bundle="${msgs}" />"/>
+			<input type="button" name="action" value="<osp:message key="cancel" bundle="${msgs}" />" onclick="javascript:doCancel()"/>
 		</div>
 		
 	</form>

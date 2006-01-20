@@ -82,6 +82,8 @@ public abstract class BaseListObjectController implements FormController, LoadOb
                EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
          Object obj = null;
          if (incomingModel instanceof CriterionTransport) {
+            obj = new CriterionTransport((Criterion)sessionBean.getScaffolding().getCriteria().get(
+                  Integer.parseInt(index)));
          }
          else if (incomingModel instanceof LevelTransport) {
             obj = new LevelTransport((Level)sessionBean.getScaffolding().getLevels().get(
@@ -100,60 +102,38 @@ public abstract class BaseListObjectController implements FormController, LoadOb
       Scaffolding scaffolding = sessionBean.getScaffolding();
       Map model = new HashMap();
       
-      String action = (String) request.get("action");
-      if (action == null) action = (String) request.get("submitAction");
+      String action = (String) request.get("updateAction");
       if (action != null) {
-         if (action.equals("Update")) {
-            String index = (String)request.get("index");
-            if (requestModel instanceof CriterionTransport) {
-               CriterionTransport obj = (CriterionTransport) requestModel;
-               if (index == null) {
-                  scaffolding.getCriteria().add(new Criterion(obj));
-               }
-               else {
-                  int idx = Integer.parseInt(index);
-                  Criterion criterion = (Criterion) scaffolding.getCriteria().get(idx);
-                  criterion.copy(obj);
-                  scaffolding.getCriteria().set(idx, criterion);
-               }
-               sessionBean.setScaffolding(scaffolding);
+         String index = (String)request.get("index");
+         if (requestModel instanceof CriterionTransport) {
+            CriterionTransport obj = (CriterionTransport) requestModel;
+            if (index == null) {
+               scaffolding.getCriteria().add(new Criterion(obj));
             }
-            else if (requestModel instanceof LevelTransport) {
-               LevelTransport obj = (LevelTransport) requestModel;
-               if (index == null) {
-                  scaffolding.add(new Level(obj));
-               }
-               else {
-                  int idx = Integer.parseInt(index);
-                  Level level = (Level)scaffolding.getLevels().get(idx);
-                  level.copy(obj);
-                  scaffolding.getLevels().set(idx, level);
-               }
-               sessionBean.setScaffolding(scaffolding);
-            }
-            
-            
-            session.put(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY,
-                  sessionBean);
-         }
-         else if (action.equals("forward")) {
-            String forwardView = (String)request.get("dest");
-            String params = (String)request.get("params");
-            if (!params.equals("")) {
-               String[] paramsList = params.split(":");
-               for (int i=0; i<paramsList.length; i++) {
-                  String[] pair = paramsList[i].split("=");
-                  String val = null;
-                  if (pair.length>1)
-                     val = pair[1];
-                  model.put(pair[0], val);
-               }
+            else {
+               int idx = Integer.parseInt(index);
+               Criterion criterion = (Criterion) scaffolding.getCriteria().get(idx);
+               criterion.copy(obj);
+               scaffolding.getCriteria().set(idx, criterion);
             }
             sessionBean.setScaffolding(scaffolding);
-            model.put("scaffolding_id", scaffolding.getId());
-            return new ModelAndView(forwardView, model);
-            
          }
+         else if (requestModel instanceof LevelTransport) {
+            LevelTransport obj = (LevelTransport) requestModel;
+            if (index == null) {
+               scaffolding.add(new Level(obj));
+            }
+            else {
+               int idx = Integer.parseInt(index);
+               Level level = (Level)scaffolding.getLevels().get(idx);
+               level.copy(obj);
+               scaffolding.getLevels().set(idx, level);
+            }
+            sessionBean.setScaffolding(scaffolding);
+         }         
+         
+         session.put(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY,
+               sessionBean);         
       }
 
       model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");

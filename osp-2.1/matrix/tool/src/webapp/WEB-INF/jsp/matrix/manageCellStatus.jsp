@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
 
 <h3>Manage Cell Status</h3>
    
@@ -26,7 +27,7 @@
    </fieldset>
     
    <div class="act">
-      <input name="continue" type="submit" value="Continue"/>
-      <input name="cancel" type="submit" value="Cancel"/>
+      <input name="continue" type="submit" value="<osp:message key="continue" bundle="${msgs}" />"/>
+      <input name="cancel" type="submit" value="<osp:message key="cancel" bundle="${msgs}" />"/>
    </div>
 </form>

@@ -128,43 +128,35 @@ public class AddScaffoldingController extends BaseScaffoldingController
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String action = (String) request.get("action");
       if (action == null) action = (String) request.get("submitAction");
+      String generateAction = (String)request.get("generateAction");
+      String cancelAction = (String)request.get("cancelAction");
+      
       Id worksiteId = worksiteManager.getCurrentWorksiteId();
+      Map model = new HashMap();
+      
+      EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
+            EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
+      Scaffolding scaffolding = sessionBean.getScaffolding();
+      scaffolding.setWorksiteId(worksiteId);
+      scaffolding.setOwnerId(authManager.getAgent().getId());
+      
+      if (generateAction != null) {
+         if (scaffolding.isPublished()) {                              
+            return new ModelAndView("editScaffoldingConfirm");             
+         }           
+         
+         saveMatrixTool(scaffolding);
+         session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
+         session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
+         model.put("scaffolding_id", scaffolding.getId());
+         return new ModelAndView("view", model);
+      }
+      if (cancelAction != null) {
+         return new ModelAndView("return");
+      }
       
       if (action != null) {
-         Map model = new HashMap();
-         
-         EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
-               EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
-         Scaffolding scaffolding = sessionBean.getScaffolding();
-         scaffolding.setWorksiteId(worksiteId);
-         scaffolding.setOwnerId(authManager.getAgent().getId());
-         
-         if (action.equals("Generate Matrix")) {
-            if (scaffolding.isPublished()) {                              
-               return new ModelAndView("editScaffoldingConfirm");             
-            }           
-            
-            saveMatrixTool(scaffolding);
-            session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
-            session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
-            model.put("scaffolding_id", scaffolding.getId());
-            return new ModelAndView("view", model);
-         }
-         else if (action.equals("Save")) {
-            saveMatrixTool(scaffolding);
-            session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
-            session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
-            return new ModelAndView("return");
-         }
-         else if (action.equals("Cancel")) {
-            return new ModelAndView("return");
-         }
-         else if (action.equals("Export")) {
-            saveMatrixTool(scaffolding);
-            model.put("scaffolding_id", scaffolding.getId());
-            return new ModelAndView("export", model);
-         }
-         else if (action.equals("forward")) {
+         if (action.equals("forward")) {
             String forwardView = (String)request.get("dest");
             model.put("label", request.get("label"));
             model.put("finalDest", request.get("finalDest"));
