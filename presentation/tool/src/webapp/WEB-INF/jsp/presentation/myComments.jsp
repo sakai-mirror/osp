@@ -1,14 +1,28 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+
 <c:set var="commentsCount" value="0" scope="request" />
 <c:forEach var="comment" items="${comments}" varStatus="commentsStatus">
     <c:set var="commentsCount" value="${commentsStatus.count}"
         scope="request" />
 </c:forEach>
 
-<h3>I've Written <c:out value="${commentsCount}" /> Comment<c:if
-    test="${commentsCount != 1}">s</c:if></h3>
+<h3>
+    <c:if test="${commentsCount == 0}">
+      <fmt:message key="title_commentsByMe_none"/>
+    </c:if>
+    <c:if test="${commentsCount == 1}">
+      <fmt:message key="title_commentsByMe_one"/>
+    </c:if>
+    <c:if test="${commentsCount > 1}">
+      <fmt:message key="title_commentsByMe_more">
+        <param><c:out value="${commentsCount}" /></param>
+      </fmt:message>
+    </c:if>
+</h3>
 
 <table class="listHier" cellspacing="0">
     <thead>
@@ -20,7 +34,7 @@
                 </c:if>
             </c:if> <a
                 href="<osp:url value="myComments.osp"/>&sortByColumn=name&direction=<c:out value="${sortDir}" />">
-            Presentation</a>&nbsp;</th>
+            <fmt:message key="table_header_presentation"/></a>&nbsp;</th>
             <c:set var="sortDir" value="asc" />
             <th><c:if test="${sortByColumn == 'title'}">
                 <c:if test="${direction == 'asc'}">
@@ -28,7 +42,7 @@
                 </c:if>
             </c:if> <a
                 href="<osp:url value="myComments.osp"/>&sortByColumn=title&direction=<c:out value="${sortDir}" />">
-            Comment</a>&nbsp;</th>
+            <fmt:message key="table_header_comment"/></a>&nbsp;</th>
             <c:set var="sortDir" value="asc" />
             <th><c:if test="${sortByColumn == 'created'}">
                 <c:if test="${direction == 'asc'}">
@@ -36,7 +50,7 @@
                 </c:if>
             </c:if> <a
                 href="<osp:url value="myComments.osp"/>&sortByColumn=created&direction=<c:out value="${sortDir}" />">
-            Date</a>&nbsp;</th>
+            <fmt:message key="table_header_date"/></a>&nbsp;</th>
             <c:set var="sortDir" value="asc" />
             <th><c:if test="${sortByColumn == 'owner_id'}">
                 <c:if test="${direction == 'asc'}">
@@ -44,7 +58,7 @@
                 </c:if>
             </c:if> <a
                 href="<osp:url value="myComments.osp"/>&sortByColumn=owner_id&direction=<c:out value="${sortDir}" />">
-            Presentation Owner</a>&nbsp;</th>
+            <fmt:message key="table_header_presentationOwner"/></a>&nbsp;</th>
             <c:set var="sortDir" value="asc" />
             <th><c:if test="${sortByColumn == 'visibility'}">
                 <c:if test="${direction == 'asc'}">
@@ -52,7 +66,7 @@
                 </c:if>
             </c:if> <a
                 href="<osp:url value="myComments.osp"/>&sortByColumn=visibility&direction=<c:out value="${sortDir}" />">
-            Visibility</a>&nbsp;</th>
+            <fmt:message key="table_header_visibility"/></a>&nbsp;</th>
         </tr>
     </thead>
     <tbody>
@@ -89,11 +103,11 @@
                 </td>
                 <td>
                 <P><c:if test="${comment.visibility == 1}">
-               &nbsp;Private&nbsp;
+               &nbsp;<fmt:message key="comments_private"/>&nbsp;
             </c:if> <c:if test="${comment.visibility == 2}">
-               &nbsp;Shared&nbsp;
+               &nbsp;<fmt:message key="comments_shared"/>&nbsp;
             </c:if> <c:if test="${comment.visibility == 3}">
-               &nbsp;Public&nbsp;
+               &nbsp;<fmt:message key="comments_public"/>&nbsp;
             </c:if></P>
                 </td>
             </tr>

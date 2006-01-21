@@ -1,14 +1,19 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<h3>Notify Viewers</h3>
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+
+<h3><fmt:message key="title_notifyViewers"/></h3>
 
 <form method="POST">
     <osp:form/>
 
-    <h4>Notify Viewers of changes to <em><c:out value="${presentation.name}"/></em></h4>
-    <p class="instruction">Pick the users from the list that you would like to notify of updates to this share.
-    You may also include your own message to the viewers.</p>
+    <h4><fmt:message key="instructions_notifyViewersChangesToX">
+           <param><c:out value="${presentation.name}"/></param>
+        </fmt:message>
+    </h4>
+    <p class="instruction"><fmt:message key="instructions_pickUsersFromList"/></p>
     
     <spring:bind path="form.recipients">
     <p class="indnt2">
@@ -34,15 +39,15 @@
     
     <spring:bind path="form.message">
     <p class="longtext">
-        <label class="block">Your Message</label>
+        <label class="block"><fmt:message key="label_yourMessage"/></label>
         <textarea name="<c:out value="${status.expression}"/>" rows="5" cols="80"></textarea>
     </p>
     </spring:bind>
     <br /><br />
     
     <div class="act">
-        <input type="submit" name="submit" value="Send"/>
-        <input type="submit" name="_cancel" value="Cancel"/>
+        <input type="submit" name="submit"  value="<fmt:message key="button_send"/>"/>
+        <input type="submit" name="_cancel" value="<fmt:message key="button_cancel"/>"/>
     </div>
 
 </form>

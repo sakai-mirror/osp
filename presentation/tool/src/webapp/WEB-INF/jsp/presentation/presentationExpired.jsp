@@ -1,4 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
-<div class="validation">Alert: This presentation has expired.</div>
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+
+<div class="validation"><fmt:message key="alert_presentationExpired"/></div>
 
 

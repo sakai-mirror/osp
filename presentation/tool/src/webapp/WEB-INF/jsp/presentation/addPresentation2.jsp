@@ -1,6 +1,9 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+
 <script type="text/javascript" language="JavaScript">
     function updateItems() {
        var arrBox = new Array();
@@ -43,7 +46,7 @@
     }
 </script>
 
-<h3>Add Content</h3>
+<h3><fmt:message key="title_addPresentation2"/></h3>
 
 <c:set var="targetPrevious" value="_target1" />
 <c:set var="targetNext" value="_target3" />
@@ -56,7 +59,7 @@
     <osp:form />
     
     <div class="instruction">
-        Select the instances of your items for use in this presentation.
+        <fmt:message key="instructions_addPresentation2"/>
     </div>
 
     <spring:bind path="presentation.items">
@@ -98,7 +101,7 @@
                                 <c:set var="selectBox">
                                     <c:out value="${list1}" />
                                 </c:set>
-                                <c:set var="nothingSelectedMessage">please select an item first</c:set>
+                                <c:set var="nothingSelectedMessage"><fmt:message key="addPresentation2_selectItemFirst"/></c:set>
                                 <c:set var="previewUrl">"<osp:url
                                         value="/viewNode.osp" />&panelId=<c:out
                                         value="${previewFrame}" />&type=<c:out
@@ -114,8 +117,7 @@
                                     <c:out
                                         value="${itemDefinition.description}" /></td>
                                     <td class="underline" colspan="3"
-                                        align="center" valign="top">Available
-                                    Items :</td>
+                                        align="center" valign="top"><fmt:message key="label_availableItems"/></td>
                                 </tr>
                                 <tr class="underline">
                                     <td width="23%" align="center"
@@ -158,13 +160,13 @@
                                     <div class="chefButtonRow"><input
                                         name="add" type="button" style="width:100px;"
                                         onClick="move('<c:out value="${list1}"/>','<c:out value="${list2}"/>',false)"
-                                        value="Add >"> <br />
-                         <input name="add all" type="button"  style="width:100px;" onClick="move('<c:out value="${list1}"/>','<c:out value="${list2}"/>',true)" value="Add All >>"> <br/>
+                                        value="<fmt:message key="button_add"/> >"> <br />
+                         <input name="add all" type="button"  style="width:100px;" onClick="move('<c:out value="${list1}"/>','<c:out value="${list2}"/>',true)" value="<fmt:message key="button_addAll"/> >>"> <br/>
                          <br />
                                     <input name="remove" type="button"  style="width:100px;"
                                         onClick="move('<c:out value="${list2}"/>','<c:out value="${list1}"/>',false)"
-                                        value="Remove <"> <br/>
-                         <input name="remove all" type="button"  style="width:100px;" onClick="move('<c:out value="${list2}"/>','<c:out value="${list1}"/>',true)" value="Remove All <<"> <br/>
+                                        value="<fmt:message key="button_remove"/> <"> <br/>
+                         <input name="remove all" type="button"  style="width:100px;" onClick="move('<c:out value="${list2}"/>','<c:out value="${list1}"/>',true)" value="<fmt:message key="button_removeAll"/> <<"> <br/>
                       </div>
                    </td>
                    <td width="25%" align="center" valign="top">
@@ -196,7 +198,7 @@
                 <c:set var="previewButton">previewButton<c:out value="${loopCounter.index}"/></c:set>
                 <c:set var="closeButton">metadataArea<c:out value="${loopCounter.index}"/></c:set>
                 <c:set var="selectBox"><c:out value="${status.expression}"/><c:out value="${loopCounter.index}"/></c:set>
-                <c:set var="nothingSelectedMessage">please select an item first</c:set>
+                <c:set var="nothingSelectedMessage"><fmt:message key="addPresentation2_selectItemFirst"/></c:set>
                 <c:set var="previewUrl">"<osp:url value="/viewNode.osp"/>&
                                         panelId=<c:out value="${previewFrame}"/>
                                         &type=<c:out value="${itemDefinition.type}"/>
@@ -208,13 +210,12 @@
                                     <br />
                                     <c:out
                                         value="${itemDefinition.description}" /></td>
-                                    <td align="right" valign="top">Available
-                                    Items : <select
+                                    <td align="right" valign="top"><fmt:message key="label_availableItems"/> <select
                                         id="<c:out value="${selectBox}"/>"
                                         name="<c:out value="${status.expression}"/>"
                                         onchange='closeFrame("<c:out value="${previewFrame}"/>", "<c:out value="${previewButton}"/>","<c:out value="${closeButton}"/>")'>
-                                        <option value="">Please select an
-                                        item</option>
+                                        <option value=""><fmt:message key="addPresentation2_selectItem"/>
+                                           </option>
                                         <option value="">- - - - - - - - - -
                                         - - - - - - - - - - -</option>
                                         <c:forEach var="artifact"
@@ -238,13 +239,13 @@
                                     <div style="visibility:visible"
                                         id="<c:out value="${previewButton}"/>">
                                     <a href="#"
-                                        onclick='return showFrame("<c:out value="${selectBox}"/>","<c:out value="${previewFrame}"/>", "<c:out value="${previewButton}"/>","<c:out value="${closeButton}"/>",<c:out escapeXml="false" value="${previewUrl}"/>,"<c:out value="${nothingSelectedMessage}"/>")'>preview
-                                    selected item</a></div>
+                                        onclick='return showFrame("<c:out value="${selectBox}"/>","<c:out value="${previewFrame}"/>", "<c:out value="${previewButton}"/>","<c:out value="${closeButton}"/>",<c:out escapeXml="false" value="${previewUrl}"/>,"<c:out value="${nothingSelectedMessage}"/>")'><fmt:message key="addPresentation2_previewSelectedItem"/>
+                                        </a></div>
                                     <div style="visibility:hidden"
                                         id="<c:out value="${closeButton}"/>">
                                     <a href="#"
-                                        onclick='return closeFrame("<c:out value="${previewFrame}"/>", "<c:out value="${previewButton}"/>","<c:out value="${closeButton}"/>")'>close
-                                    preview</a> <iframe
+                                        onclick='return closeFrame("<c:out value="${previewFrame}"/>", "<c:out value="${previewButton}"/>","<c:out value="${closeButton}"/>")'><fmt:message key="addPresentation_closePreview"/>
+                                        </a> <iframe
                                         name="<c:out value="${previewFrame}"/>"
                                         id="<c:out value="${previewFrame}"/>"
                                         height="0" width="650"

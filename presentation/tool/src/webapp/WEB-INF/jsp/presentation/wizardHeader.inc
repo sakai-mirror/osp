@@ -9,5 +9,9 @@
 </div>-->
 
 <p class="step">
-	Step <c:out value="${currentPage}"/> of <c:out value="${totalPages}"/>
+        <fmt:message key="paging_steps">
+          <fmt:param value="${currentPage}"/>
+          <fmt:param value="${totalPages}"/>
+        </fmt:message>
+
 </p>
