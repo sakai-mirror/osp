@@ -1,9 +1,12 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+
 <%@ include file="/WEB-INF/jsp/userSelectFunctions.inc" %>
 
-<h3>Publish Presentation</h3>
+<h3><fmt:message key="title_addPresentation3"/></h3>
 
 <c:set var="targetPrevious" value="_target3" />
 <c:set var="targetNext" value="_finish_notify" />
@@ -15,10 +18,10 @@
     <osp:form />
 
     <div class="instruction">
-        Select who will have access to view your presentation.
+        <fmt:message key="instructions_addPresentation3"/>
     </div>
 
-    <h4>Worksite Users:</h4>
+    <h4><fmt:message key="addPresentation3_worksiteUsers"/></h4>
     
     <c:set var="controlName" value="presentation.viewers" />
     <c:set var="object" value="${presentation.viewers}" />
@@ -26,18 +29,18 @@
     
     <br /><br />
     
-    <h4>Other user:</h4>
+    <h4><fmt:message key="addPresentation3_otherUser"/></h4>
     
     <p class="instruction">
-        Enter the email address of a user from another worksite<c:if 
-        test="${allowGuests == 'true'}">, or for someone without an official username, ex. jdoe@yahoo.com</c:if>.
+        <fmt:message key="instructions_addPresentation3_enterEmailUser"/><c:if 
+        test="${allowGuests == 'true'}"><fmt:message key="instructions_addPresentation3_enterEmailOther"/></c:if>.
     </p>
     <spring:bind path="viewer.displayName">
         <c:if test="${status.error}">
             <div class="validation"><c:out value="${status.errorMessage}" /></div>
         </c:if>
         <p class="shorttext">
-            <label>Email Address</label>
+            <label><fmt:message key="label_email"/></label>
             <c:if test="${status.error}">
                 <c:set var="otherUserValue" value="${status.value}" />
             </c:if>
@@ -46,7 +49,7 @@
                 id="<c:out value="${status.expression}"/>" type="text" 
                 size="30" value="<c:out value="${otherUserValue}"/>"/>
             &nbsp;
-            <input type="button" value="add"
+            <input type="button" value="<fmt:message key='button_add'/>"
                 onclick="addViewer('<c:out value="${status.expression}"/>','<osp:url value="addViewer.osp"/>&isGuest=true&displayName=');"
         />
         </p>
@@ -55,51 +58,50 @@
         <%--
     
     <tr>
-    <td class="chefLabel" nowrap="nowrap">Other Users (enter user id)</td>
+    <td class="chefLabel" nowrap="nowrap"><fmt:message key="table_header_otherUsers"/></td>
     <td nowrap>
       <div class="chefButtonRow">
-      <input align="absmiddle" name="newViewer" type="text" size="30" />&nbsp; <input type="button" value="add" onclick="alert('not implemented yet');"/>
+      <input align="absmiddle" name="newViewer" type="text" size="30" />&nbsp; <input type="button" value="<fmt:message key="button_add"/>" onclick="alert('<fmt:message key="alert_notImplemented"/>');"/>
       </div>
     </td>
     </tr>
     <c:if test="${allowGuests == 'true'}">
     <tr>
-    <td class="chefLabel" nowrap="nowrap">Guest Email</td>
+    <td class="chefLabel" nowrap="nowrap"><fmt:message key="table_header_guestEmail"/></td>
     <td nowrap>
       <div class="chefButtonRow">
-      <input align="absmiddle" name="newViewer" type="text" size="30" />&nbsp; <input type="button" value="add" onclick="alert('not implemented yet');"/>
+      <input align="absmiddle" name="newViewer" type="text" size="30" />&nbsp; <input type="button" value="<fmt:message key="button_add"/>" onclick="alert('<fmt:message key="alert_notImplemented"/>');"/>
       </div>
     </td>
     </tr>
     </c:if>
     --%>
     
-    <h4>Presentation Sharing:</h4>
+    <h4><fmt:message key="addPresentation3_sharing"/></h4>
     
         <spring:bind path="presentation.isPublic">
             <fieldset>
-                <legend class="radio">Make this a public share?</legend>
+                <legend class="radio"><fmt:message key="legend_makePublicShare"/></legend>
                 <div class="checkbox indnt1">
                     <input type="radio" id="publicYes"
                         name="<c:out value="${status.expression}"/>"
                         value="true" <c:if test="${status.value}">checked</c:if> />
-                    <label for="publicYes">Yes</label>
+                    <label for="publicYes"><fmt:message key="label_yes"/></label>
                 </div>
                 <div class="checkbox indnt1">
                     <input type="radio" id="publicNo"
                         name="<c:out value="${status.expression}"/>"
                         value="false"
                         <c:if test="${status.value == false}">checked</c:if> />
-                    <label for="publicNo">No</label>
+                    <label for="publicNo"><fmt:message key="label_no"/></label>
                 </div>
             </fieldset>
                      
             <p class="instruction">
-                If you select yes, anyone will be able to view this share 
-                without logging in.
+                <fmt:message key="instructions_addPresentation3_publicPresentation"/>
             </p>
             <c:if test="${!empty presentation.id}">
-                Send the following link to people who you would like to view this public share:<br />
+                <fmt:message key="instructions_addPresentation3_sendPublicLink"/><br />
                  <c:set var="url">
                         <c:out value="${baseUrl}"/>/osp-presentation-tool/viewPresentation.osp?id=<c:out value="${presentation.id.value}"/>
                 </c:set>

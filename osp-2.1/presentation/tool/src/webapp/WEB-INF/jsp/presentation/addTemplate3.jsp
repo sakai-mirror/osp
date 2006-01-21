@@ -3,13 +3,14 @@
 <c:set var="targetPrevious" value="_target1"/>
 <c:set var="targetNext" value="_target3"/>
 
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
 
-<h3>List Content</h3>
+<h3><fmt:message key="title_addTemplate3"/></h3>
 
 <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc" %>
 <div class="instruction">
-   Please specify items that will appear in the presentation. Users of the
-   template will fill in content from their repository or by uploading files.
+   <fmt:message key="instructions_template_new3"/>
 </div>
 
 <form  method="POST" action="addTemplate.osp">
@@ -24,15 +25,15 @@
 <table class="listHier" cellspacing="0">
             <thead>
                <tr>
-                  <th scope="col" width="12%">Sequence</th>
-                  <th scope="col">Title</th>
+                  <th scope="col" width="12%"><fmt:message key="table_header_sequence"/></th>
+                  <th scope="col"><fmt:message key="table_header_title"/></th>
                </tr>
             </thead>
          <tbody>
            <c:if test="${template.itemDefinitions['empty']}">
                  <TR>
                    <TD colspan="2" align="center">
-                        <b>There is no content yet</b>
+                        <b><fmt:message key="addTemplate_thereIsNoContentYet"/></b>
                    </TD>
                  </TR>
            </c:if>
@@ -45,9 +46,9 @@
                    </TD>
                    <TD><c:out value="${itemDef.title}" />
                         <div class="itemAction">
-                            <a href="<osp:url value="editItemDefinition.osp"/>&id=<c:out value="${itemDef.id.value}" />">Edit</a>
+                            <a href="<osp:url value="editItemDefinition.osp"/>&id=<c:out value="${itemDef.id.value}" />"><fmt:message key="action_edit"/></a>
                             |
-                            <a href="<osp:url value="deleteItemDefinition.osp"/>&id=<c:out value="${itemDef.id.value}" />">Delete</a>
+                            <a href="<osp:url value="deleteItemDefinition.osp"/>&id=<c:out value="${itemDef.id.value}" />"><fmt:message key="action_delete"/></a>
                         </div>
                    </TD>
     

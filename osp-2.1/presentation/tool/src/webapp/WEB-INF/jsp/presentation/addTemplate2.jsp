@@ -3,6 +3,8 @@
 <c:set var="targetPrevious" value="_target0" />
 <c:set var="targetNext" value="_target2" />
 
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
 
 <form method="POST" action="addTemplate.osp">
     <osp:form />
@@ -13,11 +15,11 @@
     </spring:bind>
 
 
-    <h3>Build Template</h3>
+    <h3><fmt:message key="title_addTemplate2"/></h3>
     <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc"%>
     <p class="instruction">
-        Select the files that define the structure of the template
-        (required fields are noted with an <span class="reqStarInline">*</span>)
+        <fmt:message key="instructions_template_new2"/>
+        <fmt:message key="instructions_requiredFields"/>
     </p>
 
     <spring:bind path="template.renderer">
@@ -26,7 +28,7 @@
         </c:if>
         <p class="shorttext">
             <span class="reqStar">*</span>
-            <label>Basic Template Outline</label>
+            <label><fmt:message key="label_basicTemplateOutline"/></label>
             
             <input type="text" id="rendererName" disabled="true"
                 value="<c:out value="${rendererName}"/>" />
@@ -36,24 +38,24 @@
             <input type="hidden" name="returnPage" id="returnPage"
                 value="<c:out value="${currentPage-1}"/>" />
             <a href="javascript:document.forms[0].pickerField.value='<c:out value="${TEMPLATE_RENDERER}"/>';javascript:document.forms[0]._target4.value='picker';document.forms[0].validate.value='false';document.forms[0].submit();">
-            Pick file </a>
+            <fmt:message key="action_pickFile"/> </a>
     </spring:bind>
 
     <spring:bind path="template.propertyPage">
         <p class="shorttext">
-            <label>Outline Options</label>
+            <label><fmt:message key="label_outlineOptions"/></label>
             <input type="text" id="propertyPageName" disabled="true"
                 value="<c:out value="${propertyPageName}"/>" />
             <input type="hidden" name="propertyPage" id="propertyPage"
                 value="<c:out value="${status.value}"/>" />
             <a href="javascript:document.forms[0].pickerField.value='<c:out value="${TEMPLATE_PROPERTYFILE}"/>';javascript:document.forms[0]._target4.value='picker';document.forms[0].validate.value='false';document.forms[0].submit();">
-                Pick file </a>
+                <fmt:message key="action_pickFile"/> </a>
         </p>
     </spring:bind>
 
     <spring:bind path="template.documentRoot">
         <p class="shorttext">
-            <label>Outline Options File Element</label>
+            <label><fmt:message key="label_outlineOptionsFileElement"/></label>
             <select name="<c:out value="${status.expression}" />"
                 id="<c:out value="${status.expression}" />">
                 <c:forEach var="element" items="${elements}"

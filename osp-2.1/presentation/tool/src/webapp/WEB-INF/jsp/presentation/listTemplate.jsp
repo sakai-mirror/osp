@@ -6,14 +6,17 @@
 
 <osp-c:authZMap prefix="osp.presentation.template." var="can" />
 
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+
 <c:if test="${can.create || isMaintainer}">
     <div class="navIntraTool">
        <c:if test="${can.create}">
-          <a href="<osp:url value="addTemplate.osp"/>" title="New..." >
-          New...
+          <a href="<osp:url value="addTemplate.osp"/>" title="<fmt:message key="action_new_title"/>" >
+          <fmt:message key="action_new"/>
           </a>
-          <a href="<osp:url value="importTemplate.osp"/>" title="Import..." >
-          Import...
+          <a href="<osp:url value="importTemplate.osp"/>" title="<fmt:message key="action_import_title"/>" >
+          <fmt:message key="action_import"/>
           </a>
        </c:if>
        <c:if test="${isMaintainer}">
@@ -23,27 +26,26 @@
                 <osp:param name="qualifier" value="${tool.id}"/>
                 <osp:param name="returnView" value="listTemplateRedirect"/>
                 </osp:url>"
-                title="Permissions..." >
-          Permissions...
+                title="<fmt:message key="action_permissions_title"/>" >
+          <fmt:message key="action_permissions"/>
           </a>
        </c:if>
     </div>
 </c:if>
 
 
-
 <osp:url var="listUrl" value="listTemplate.osp"/>
 <osp:listScroll listUrl="${listUrl}" className="chefToolBarWrap" />
 
-<h3>Presentation Template Manager</h3>
+<h3><fmt:message key="title_listTemplate"/></h3>
 
 <table class="listHier" cellspacing="0" >
    <thead>
       <tr>
-         <th scope="col">Name</th>
-         <th scope="col">Description</th>
-         <th scope="col">Include Header</th>
-         <th scope="col">Owner</th>
+         <th scope="col"><fmt:message key="table_header_name"/></th>
+         <th scope="col"><fmt:message key="table_header_description"/></th>
+         <th scope="col"><fmt:message key="table_header_includeHeader"/></th>
+         <th scope="col"><fmt:message key="table_header_owner"/></th>
       </tr>
    </thead>
    <tbody>
@@ -54,23 +56,23 @@
          <c:out value="${template.name}" />
          <div class="itemAction">
              <c:if test="${isAuthorizedTo.copy}">
-             <a href="<osp:url value="copyTemplate.osp"/>&id=<c:out value="${template.id.value}" />">Copy</a>
+             <a href="<osp:url value="copyTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_copy"/></a>
              </c:if>
     
              <c:if test="${isAuthorizedTo.edit}">
-             | <a href="<osp:url value="editTemplate.osp"/>&id=<c:out value="${template.id.value}" />">Edit</a>
+             | <a href="<osp:url value="editTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_edit"/></a>
              </c:if>
     
              <c:if test="${isAuthorizedTo.delete}">
              | <a onclick="return confirmDeletion();"
-                   href="<osp:url value="deleteTemplate.osp"/>&id=<c:out value="${template.id.value}" />">Delete</a>
+                   href="<osp:url value="deleteTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_delete"/></a>
              </c:if>
     
              <c:if test="${isAuthorizedTo.publish && template.published == false}">
-             | <a href="<osp:url value="publishTemplate.osp"/>&id=<c:out value="${template.id.value}" />">Publish</a>
+             | <a href="<osp:url value="publishTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_publish"/></a>
              </c:if>
              <c:if test="${isAuthorizedTo.export}">
-             | <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&templateId=<c:out value="${template.id.value}"/>/<c:out value="${template.name}" />.zip">Export</a>
+             | <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&templateId=<c:out value="${template.id.value}"/>/<c:out value="${template.name}" />.zip"><fmt:message key="table_action_export"/></a>
              </c:if>
          </div>
       </TD>

@@ -2,6 +2,9 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+
 <osp-c:authZMap prefix="osp.presentation." var="can" />
 
 <!-- GUID=<c:out value="${newPresentationId}"/> -->
@@ -9,18 +12,18 @@
 <div class="navIntraTool">
     <c:if test="${can.create}">
         <a href="<osp:url value="addPresentation.osp"/>&resetForm=true"
-            title="New..."> New... </a>
+            title="<fmt:message key="action_new_title"/>"> <fmt:message key="action_new"/> </a>
     </c:if>
     <a href="<osp:url value="myComments.osp">
                <osp:param name="sortByColumn" value="created"/>
                <osp:param name="direction" value="desc"/>
             </osp:url>"
-        title="My Comments..."> My Comments... </a>
+        title="<fmt:message key="action_myComments_title"/>"> <fmt:message key="action_myComments"/> </a>
     <a href="<osp:url value="commentsForMe.osp">
                <osp:param name="sortByColumn" value="created"/>
                <osp:param name="direction" value="desc"/>
             </osp:url>"
-        title="Comments from others about me..."> Comments from others... </a>
+        title="<fmt:message key="action_commentsOthers_title"/>"> <fmt:message key="action_commentsOthers"/> </a>
 
     <c:if test="${isMaintainer}">
         <a href="<osp:url value="osp.permissions.helper/editPermissions">
@@ -29,7 +32,7 @@
                 <osp:param name="qualifier" value="${tool.id}"/>
                 <osp:param name="returnView" value="listPresentationRedirect"/>
                 </osp:url>"
-            title="Permissions..."> Permissions... </a>
+            title="<fmt:message key="action_permissions_title"/>"> <fmt:message key="action_permissions"/> </a>
     </c:if>
 </div>
 
@@ -41,16 +44,16 @@
 <osp:url var="listUrl" value="listPresentation.osp"/>
 <osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
 
-<h3>Presentation Manager</h3>
+<h3><fmt:message key="title_presentationManager"/></h3>
 
 <table class="listHier" cellspacing="0" >
    <thead>
       <tr>
-         <th scope="col">Name</th>
-         <th scope="col">Date Modified</th>
-         <th scope="col">Template</th>
-         <th scope="col">Owner</th>
-         <th scope="col">Expired</th>
+         <th scope="col"><fmt:message key="table_header_name"/></th>
+         <th scope="col"><fmt:message key="table_header_dateModified"/></th>
+         <th scope="col"><fmt:message key="table_header_template"/></th>
+         <th scope="col"><fmt:message key="table_header_owner"/></th>
+         <th scope="col"><fmt:message key="table_header_expired"/></th>
       </tr>
    </thead>
     <tbody>
@@ -62,23 +65,23 @@
       <c:out value="${presentation.name}" />
          <div class="itemAction">
              <a <c:if test="${presentation.template.includeHeaderAndFooter == false}">target="_new"</c:if>
-                href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />">View</a>
+                href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_view"/></a>
     
              <c:if test="${isAuthorizedTo.edit || can.edit}">
-               | <a href="<osp:url value="addPresentation.osp"/>&resetForm=true&id=<c:out value="${presentation.id.value}" />">Edit</a>
+               | <a href="<osp:url value="addPresentation.osp"/>&resetForm=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_edit"/></a>
              </c:if>
     
              <c:if test="${isAuthorizedTo.delete || can.delete}">
-               | <a onclick="return confirmDeletion();" href="<osp:url value="deletePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />">Delete</a>
+               | <a onclick="return confirmDeletion();" href="<osp:url value="deletePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_delete"/></a>
              </c:if>
     
               <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
-               | <a href="<osp:url value="PresentationStats.osp"/>&id=<c:out value="${presentation.id.value}" />">View Stats</a>
+               | <a href="<osp:url value="PresentationStats.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_viewStats"/></a>
              </c:if>
 
               <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
 
-               | <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&presentationId=<c:out value="${presentation.id.value}"/>/<c:out value="${presentation.name}" />.zip">Download</a>
+               | <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&presentationId=<c:out value="${presentation.id.value}"/>/<c:out value="${presentation.name}" />.zip"><fmt:message key="table_action_download"/></a>
 
 
                | <a href="<osp:url value="osp.audience.helper/tool.jsf?panel=Main">
@@ -86,37 +89,38 @@
                         value="osp.presentation.view"/>
                    <osp:param name="session.org.theospi.portfolio.security.audienceQualifier"
                         value="${presentation.id.value}"/>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceInstructions"
-                        value="Add viewers to your presentation"/>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceGlobalTitle"
-                        value="Audiences to Publish To"/>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceIndTitle"
-                        value="Publish to an Individual"/>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceGroupTitle"
-                        value="Publish to a Group"/>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceInstructions">
+                        <fmt:message key='instructions_addViewersToPresentation'/></osp:param>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceGlobalTitle">
+                        <fmt:message key='instructions_audiencesToPublishTo'/></osp:param>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceIndTitle">
+                        <fmt:message key='instructions_publishToIndividual'/></osp:param>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceGroupTitle">
+                        <fmt:message key='instructions_publishToGroup'/></osp:param>
                    <osp:param name="session.org.theospi.portfolio.security.audiencePublic"
                         value="${presentation.isPublic}"/>
-                   <osp:param name="session.org.theospi.portfolio.security.audiencePublicTitle"
-                        value="Publish to the Internet"/>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceSelectedTitle"
-                        value="Selected Audience"/>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceFilterInstructions"
-                        value="Select filter criteria to narrow user list"/>                                               
+                   <osp:param name="session.org.theospi.portfolio.security.audiencePublicTitle">
+                        Publish to the Internet</osp:param>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceSelectedTitle">
+                        <fmt:message key="instructions_selectedAudience"/></osp:param>
+                   <osp:param name="session.org.theospi.portfolio.security.audienceFilterInstructions">
+                        Select filter criteria to narrow user list</osp:param>
                    <osp:param name="session.org.theospi.portfolio.security.audienceGuestEmail"
                         value="true"/>
-                    <osp:param name="session.org.theospi.portfolio.security.audienceWorksiteLimited"
+                   <osp:param name="session.org.theospi.portfolio.security.audienceWorksiteLimited"
                         value="true"/>
-                   </osp:url>"title="Select Audience..." >Select Audience...
+                   </osp:url>"title="<fmt:message key='action_selectAudience_title'/>" ><fmt:message key="action_selectAudience"/>
                  </a>
              </c:if>
          </div>
+
       </TD>
-      <TD><fmt:formatDate value="${presentation.modified}" pattern="yyy-MM-dd hh:mm a" /></TD>
+      <TD><c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${presentation.modified}" pattern="${dateFormat}"/></TD> 
       <TD><c:out value="${presentation.template.name}" /></TD>
       <TD><c:out value="${presentation.owner.displayName}" /></TD>
       <TD style="text-align: center;">
          <c:if test="${presentation.expired}">
-            <img alt="This presentation has expired"  src="<osp:url value="/img/checkon.gif"/>" border="0"/>
+            <img alt="<fmt:message key="linktitle_presentationExpired"/>"  src="<osp:url value="/img/checkon.gif"/>" border="0"/>
          </c:if>
       </TD>
     </TR>

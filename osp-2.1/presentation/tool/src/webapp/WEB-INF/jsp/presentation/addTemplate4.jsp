@@ -2,8 +2,10 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <c:set var="targetPrevious" value="_target2" />
 
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
 
-<h3>Select supporting files</h3>
+<h3><fmt:message key="title_addTemplate4"/></h3>
 
 <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc"%>
 
@@ -19,9 +21,7 @@
     </spring:bind>
 
     <div class="instruction">
-        Add any supporting files needed for this
-        template. These may include cascading Styles Sheets (css),
-        pictures/images (jpg, gif, png), utilities or scripts (xml,jvs)
+        <fmt:message key="instructions_template_new4"/>
     </div>
 
     <spring:bind path="template.fileRef.usage">
@@ -30,7 +30,7 @@
         </c:if>
         <p class="shorttext">
             <span class="reqStar">*</span>
-            <label>Name (used in xpath)</label>
+            <label><fmt:message key="label_nameUsedInXpath"/></label>
             <input type="text"
                 name="<c:out value="${status.expression}"/>"
                 value="<c:out value="${status.value}"/>">
@@ -44,7 +44,7 @@
     </spring:bind>
     <p class="shorttext">
         <span class="reqStar">*</span>
-        <label>Choose File</label>
+        <label><fmt:message key="label_chooseFile"/></label>
         <spring:bind path="template.fileRef.artifactName">
             <input type="text" id="fileName" disabled="true"
                 value="<c:out value="${status.value}" />" />
@@ -58,7 +58,7 @@
             <input type="hidden" name="returnPage" id="returnPage"
                 value="<c:out value="${currentPage-1}"/>" />
             <a href="javascript:callPicker('<c:out value="${TEMPLATE_SUPPORTFILE}"/>');">
-            Pick file </a>
+            <fmt:message key="action_pickFile"/> </a>
 
             <script language="javascript">
                 function callPicker(pickerField) {
@@ -78,11 +78,11 @@
     <p class="act">
         <c:choose>
             <c:when test="${param.editFile}">
-                <input type="submit" name="_target3" value="Save Edit"
+                <input type="submit" name="_target3" value="<fmt:message key="button_saveEdit"/>"
                     onclick="setElementValue(<spring:bind path="template.fileRef.action">'<c:out value="${status.expression}"/>'</spring:bind>,'addFile');return true;" />
             </c:when>
             <c:otherwise>
-                <input type="submit" name="_target3" value="Add To List"
+                <input type="submit" name="_target3" value="<fmt:message key="button_addToList"/>"
                     onclick="setElementValue(<spring:bind path="template.fileRef.action">'<c:out value="${status.expression}"/>'</spring:bind>,'addFile');return true;" />
             </c:otherwise>
         </c:choose>
@@ -92,14 +92,14 @@
     <table class="listHier" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col">File Name</th>
-                <th scope="col">Full Xpath</th>
+                <th scope="col"><fmt:message key="table_header_fileName"/></th>
+                <th scope="col"><fmt:message key="table_header_fullXpath"/></th>
             </tr>
         </thead>
         <tbody>
             <c:if test="${template.files['empty']}">
                 <tr>
-                    <td colspan="3" align="center"><b>There are no supporting files</b></td>
+                    <td colspan="3" align="center"><b><fmt:message key="addTemplate_thereAreNoSupportingFiles"/></b></td>
                 </tr>
             </c:if>
             <c:if test="${not template.files['empty']}">
@@ -107,9 +107,9 @@
                     <tr>
                         <td><c:out value="${file.artifactName}" />
                             <div class="itemAction">
-                                <a href="<osp:url value="editTemplateFile.osp"/>&id=<c:out value="${file.id.value}" />">Edit</a>
+                                <a href="<osp:url value="editTemplateFile.osp"/>&id=<c:out value="${file.id.value}" />"><fmt:message key="action_edit"/></a>
                                 |
-                                <a href="<osp:url value="deleteTemplateFile.osp"/>&id=<c:out value="${file.id.value}" />">Delete</a>
+                                <a href="<osp:url value="deleteTemplateFile.osp"/>&id=<c:out value="${file.id.value}" />"><fmt:message key="action_delete"/></a>
                             </div>
                         </td>
                         <td nowrap>/ospiPresentation/presentationFiles/<c:out
