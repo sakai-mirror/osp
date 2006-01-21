@@ -73,6 +73,12 @@
        <version>${osp.version}</version>
      </dependency>
 
+     <dependency>
+       <groupId>osp</groupId>
+       <artifactId>osp-matrix-api</artifactId>
+       <version>${osp.version}</version>
+     </dependency>
+
     <dependency>
       <groupId>aopalliance</groupId>
       <artifactId>aopalliance</artifactId>
