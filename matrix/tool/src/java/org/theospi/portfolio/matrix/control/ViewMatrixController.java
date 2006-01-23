@@ -55,10 +55,16 @@ import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.service.legacy.authzGroup.Member;
 import org.sakaiproject.service.legacy.security.cover.SecurityService;
+import org.sakaiproject.service.legacy.site.Group;
+import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.ToolManager;
+import org.sakaiproject.exception.IdUnusedException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
@@ -187,24 +193,9 @@ public class ViewMatrixController implements FormController, LoadObjectControlle
 
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", getToolManager().getCurrentPlacement());
-      model.put("isMaintainer", isMaintainer());
+      model.put("isMaintainer", isMaintainer());      
 
-      ToolConfiguration tool = getWorksiteManager().getTool(getToolManager().getCurrentPlacement().getId());
-      String courses = tool.getConfig().getProperty("theospi.courseCompareList");
-      if (courses == null || courses.equals(""))
-         courses = worksiteId;
-
-      String[] realms = courses.split(",");
-      Set users = new HashSet();
-      for (int i=0; i<realms.length; i++) {
-         String realm = "/site/" + realms[i];
-//       TODO - maybe use this one: SECURE_VIEW_ROSTER?
-         if (SecurityService.unlock(SiteService.SECURE_UPDATE_SITE, realm)) {
-            users.addAll(SecurityService.unlockUsers(SiteService.SITE_VISIT, realm));
-         }
-      }
-
-      List userList = new ArrayList(users);
+      List userList = new ArrayList(getUserList(worksiteId));
       Collections.sort(userList);
       model.put("members", userList);
       
@@ -219,6 +210,34 @@ public class ViewMatrixController implements FormController, LoadObjectControlle
       model.put("readOnlyMatrix", readOnly);
       
       return model;
+   }
+   
+   private Set getUserList(String worksiteId) {
+      Set members = new HashSet();
+      Set users = new HashSet();
+      
+      try {
+         Site site = SiteService.getSite(worksiteId);
+         if (site.hasGroups()) {
+            String currentUser = SessionManager.getCurrentSessionUserId();
+            Collection groups = site.getGroupsWithMember(currentUser);
+            for (Iterator iter = groups.iterator(); iter.hasNext();) {
+               Group group = (Group) iter.next();
+               members.addAll(group.getMembers());
+            }
+         }
+         else {
+            members.addAll(site.getMembers());
+         }
+         
+         for (Iterator memb = members.iterator(); memb.hasNext();) {
+            Member member = (Member) memb.next();
+            users.add(UserDirectoryService.getUser(member.getUserId()));
+         }
+      } catch (IdUnusedException e) {
+         logger.error("", e);
+      }
+      return users;
    }
    
    private Boolean isMaintainer(){
