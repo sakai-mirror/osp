@@ -20,7 +20,7 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 *
 **********************************************************************************/
-package org.theospi.portfolio.warehouse.osp.scaffolding;
+package org.theospi.portfolio.warehouse.osp.matrix;
 
 import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
 import org.theospi.portfolio.matrix.MatrixManager;
