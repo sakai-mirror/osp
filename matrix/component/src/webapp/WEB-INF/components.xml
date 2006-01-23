@@ -13,13 +13,6 @@
 		</property>
    </bean>
 
-   <bean id="visibleUserManager" class="org.theospi.portfolio.matrix.mgt.impl.VisibleUserManagerImpl">
-	   <property name="agentManager"><ref bean="agentManager"/></property>
-      <property name="worksiteManager">
-         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
-      </property>
-   </bean>
-
    <bean id="matrixAuthorizer" class="org.theospi.portfolio.matrix.MatrixAuthorizer">
       <property name="matrixManager"><ref bean="matrixManager"/></property>
       <property name="explicitAuthz"><ref bean="explicitAuthz"/></property>
