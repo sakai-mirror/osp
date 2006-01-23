@@ -145,6 +145,8 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          saveScaffoldingCell(request, scaffoldingCell);
          session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
          session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
+         prepareModelWithScaffoldingId(model, scaffoldingCell);
+         return new ModelAndView("return", model);
       }
       
       if (action  == null) action = (String) request.get("submitAction");
