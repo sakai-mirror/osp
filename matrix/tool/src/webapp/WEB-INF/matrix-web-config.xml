@@ -796,6 +796,9 @@
          <bean class="org.theospi.portfolio.matrix.control.ManageCellStatusController">
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
+            <property name="lockManager">
+               <ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
