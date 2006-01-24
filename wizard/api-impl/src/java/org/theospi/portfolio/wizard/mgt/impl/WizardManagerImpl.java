@@ -36,6 +36,7 @@ import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.*;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import net.sf.hibernate.HibernateException;
 
 public class WizardManagerImpl extends HibernateDaoSupport implements WizardManager {
@@ -47,6 +48,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private AgentManager agentManager;
    private AuthnManager authManager;
+   private GuidanceManager guidanceManager;
 
    protected void init() throws Exception {
       FunctionManager.registerFunction(WizardFunctionConstants.CREATE_WIZARD);
@@ -249,7 +251,6 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
       Agent agent = getAuthManager().getAgent();
 
       return getUsersWizard(wizard, agent);
-
    }
 
    public CompletedWizard saveWizard(CompletedWizard wizard) {
@@ -258,7 +259,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
    }
 
    public CompletedWizard getUsersWizard(Wizard wizard, Agent agent) {
-      List completedWizards = getHibernateTemplate().find(" CompletedWizard where wizard_id=? and owner_id=?",
+      List completedWizards = getHibernateTemplate().find(" from CompletedWizard where wizard_id=? and owner_id=?",
             new Object[]{wizard.getId().getValue(), agent.getId().getValue()});
 
       if (completedWizards.size() == 0) {
@@ -326,5 +327,13 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 
    public void setAuthManager(AuthnManager authManager) {
       this.authManager = authManager;
+   }
+
+   public GuidanceManager getGuidanceManager() {
+      return guidanceManager;
+   }
+
+   public void setGuidanceManager(GuidanceManager guidanceManager) {
+      this.guidanceManager = guidanceManager;
    }
 }

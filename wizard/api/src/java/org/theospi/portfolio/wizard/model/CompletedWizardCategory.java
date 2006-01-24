@@ -69,7 +69,7 @@ public class CompletedWizardCategory extends IdentifiableObject {
    protected List initChildPages() {
       List pages = new ArrayList();
 
-      for (Iterator i=category.getChildCategories().iterator();i.hasNext();) {
+      for (Iterator i=category.getChildPages().iterator();i.hasNext();) {
          WizardPageSequence page = (WizardPageSequence) i.next();
          pages.add(new CompletedWizardPage(page, this));
       }

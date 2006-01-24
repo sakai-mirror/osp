@@ -49,7 +49,6 @@ public class CompletedWizardPage extends IdentifiableObject {
       this.wizardPageDefinition = wizardPageDefinition;
       this.category = category;
       setCreated(new Date());
-      setLastVisited(new Date());
       setWizardPage(new WizardPage());
       getWizardPage().setPageDefinition(wizardPageDefinition.getWizardPageDefinition());
       getWizardPage().setStatus(wizardPageDefinition.getWizardPageDefinition().getInitialStatus());
