@@ -30,6 +30,7 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
+import org.theospi.portfolio.guidance.model.GuidanceItem;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
@@ -261,31 +262,39 @@ public class WizardTool extends BuilderTool {
    }
    
    public void processActionGuidanceHelper() {
+      showGuidance("tool");
+   }
+
+   public void processActionViewGuidance() {
+      showGuidance("view");
+   }
+
+   protected void showGuidance(String view) {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       //Tool tool = ToolManager.getCurrentTool();
       ToolSession session = SessionManager.getCurrentToolSession();
-      
-      Placement placement = ToolManager.getCurrentPlacement();  
-      String currentSite = placement.getContext();  
+
+      Placement placement = ToolManager.getCurrentPlacement();
+      String currentSite = placement.getContext();
       //session.setAttribute(tool.getId() + Tool.HELPER_DONE_URL, "");
       //session.setAttribute(WizardManager.CURRENT_WIZARD_ID, getCurrent().getBase().getId());
       Wizard wizard = getCurrent().getBase();
 
       Guidance guidance = wizard.getGuidance();
       if (guidance == null) {
-         guidance = getGuidanceManager().createNew(wizard.getName() + " Guidance", currentSite, null, "", ""); 
+         guidance = getGuidanceManager().createNew(wizard.getName() + " Guidance", currentSite, null, "", "");
       }
-      
+
       session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
 
       try {
-         context.redirect("osp.guidance.helper/tool");
+         context.redirect("osp.guidance.helper/" + view);
       }
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
       }
    }
-   
+
    public void processActionAudienceHelper() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       //Tool tool = ToolManager.getCurrentTool();
@@ -597,4 +606,5 @@ public class WizardTool extends BuilderTool {
    public void setAuthzManager(AuthorizationFacade authzManager) {
       this.authzManager = authzManager;
    }
+
 }

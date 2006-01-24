@@ -169,6 +169,9 @@
       <property name="sessionFactory">
          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
       </property>
+      <property name="guidanceManager">
+         <ref bean="org.theospi.portfolio.guidance.mgt.GuidanceManager"/> 
+      </property>
       <property name="authorizationFacade">
          <ref bean="org.sakaiproject.metaobj.security.AuthorizationFacade"/>
       </property>

@@ -44,6 +44,10 @@
          <f:facet name="header">
             <h:outputText value="#{msgs.actions_column_header}" />
          </f:facet>
+         <h:commandLink action="#{wizardItem.processActionRunWizard}">
+            <h:outputText value="#{msgs.run_wizard}"/>
+         </h:commandLink>
+         <h:outputText value=" | " />
          <h:commandLink action="#{wizardItem.processActionEdit}">
             <h:outputText value="#{msgs.edit}"/>
          </h:commandLink>

@@ -7,6 +7,7 @@ import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardStyleItem;
 import org.theospi.portfolio.wizard.model.WizardCategory;
+import org.theospi.portfolio.guidance.model.GuidanceItem;
 
 import java.util.List;
 
@@ -23,6 +24,8 @@ public class DecoratedWizard {
    private DecoratedCategory rootCategory = null;
    private DecoratedWizard next;
    private DecoratedWizard prev;
+
+   private DecoratedCompletedWizard runningWizard;
 
    public DecoratedWizard(WizardTool tool, Wizard base) {
       this.base = base;
@@ -134,4 +137,27 @@ public class DecoratedWizard {
       this.prev = prev;
    }
 
+   public String processActionRunWizard() {
+      getParent().setCurrent(this);
+      setRunningWizard(new DecoratedCompletedWizard(getParent(), this,
+         parent.getWizardManager().getCompletedWizard(getBase())));
+
+      return "runWizard";
+   }
+
+   public DecoratedCompletedWizard getRunningWizard() {
+      return runningWizard;
+   }
+
+   public void setRunningWizard(DecoratedCompletedWizard runningWizard) {
+      this.runningWizard = runningWizard;
+   }
+
+   public GuidanceItem getInstruction() {
+      return getBase().getGuidance().getInstruction();
+   }
+
+   public boolean isGuidanceAvailable() {
+      return getBase().getGuidance() != null;
+   }
 }
