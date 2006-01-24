@@ -95,6 +95,7 @@ public class CellController implements FormController, LoadObjectController {
       model.put("cellForms", getMatrixManager().getCellForms(cell.getCell()));
       
       model.put("currentUser", SessionManager.getCurrentSessionUserId());
+      model.put("CURRENT_GUIDANCE_ID_KEY", "session." + GuidanceManager.CURRENT_GUIDANCE_ID);
       return model;
    }
    
@@ -136,7 +137,6 @@ public class CellController implements FormController, LoadObjectController {
       //String action = (String)request.get("action");
       String submitAction = (String)request.get("submit");
       String matrixAction = (String)request.get("matrix");
-      String guidanceAction = (String) request.get("guidanceAction");
       
       if (submitAction != null) {
          Map map = new HashMap();
@@ -148,14 +148,7 @@ public class CellController implements FormController, LoadObjectController {
       }
       if (matrixAction != null) {
          return new ModelAndView("cancel");
-      }
-      if (guidanceAction != null) {
-         session.put(GuidanceManager.CURRENT_GUIDANCE_ID, 
-               cell.getScaffoldingCell().getGuidance().getId().getValue());
-         session.put("cell_id", cell.getId().getValue());
-         return new ModelAndView("guidance");
-      }
-      
+      }      
 
       return new ModelAndView("success", "cellBean", cellBean);
    }

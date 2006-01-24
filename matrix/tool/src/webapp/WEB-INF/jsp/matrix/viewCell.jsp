@@ -68,9 +68,9 @@
          </p>
          </c:if>
       </c:forEach>
-      <a href="<osp:url value="viewCell.osp">
-         <osp:param name="cell_id" value="${cell.id}"/>
-         <osp:param name="guidanceAction" value="guidance"/>
+      <a href="<osp:url value="osp.guidance.helper/view">
+         <osp:param name="session.cell_id" value="${cell.id}"/>
+         <osp:param name="${CURRENT_GUIDANCE_ID_KEY}" value="${cell.scaffoldingCell.guidance.id}"/>
       </osp:url>" title="<osp:message key="guidance_link_title" bundle="${msgs}" />">
          <osp:message key="guidance_link_text" bundle="${msgs}" /></a>
    </c:if>
