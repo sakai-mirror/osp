@@ -14,14 +14,20 @@ import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
+import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.exception.IdUnusedException;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
@@ -32,11 +38,13 @@ import org.theospi.portfolio.wizard.model.WizardStyleItem;
 import org.theospi.portfolio.wizard.model.WizardSupportItem;
 import org.theospi.portfolio.shared.tool.BuilderTool;
 import org.theospi.portfolio.shared.tool.BuilderScreen;
+import org.theospi.portfolio.shared.model.OspException;
 
 public class WizardTool extends BuilderTool {
 
    private WizardManager wizardManager;
    private GuidanceManager guidanceManager;
+   private AuthorizationFacade authzManager;
    private IdManager idManager;
    private DecoratedWizard current = null;
    private String commentItem;
@@ -232,13 +240,7 @@ public class WizardTool extends BuilderTool {
    }
    
    public String processActionNew() {
-      Placement placement = ToolManager.getCurrentPlacement();
-      //Tool tool = ToolManager.getCurrentTool();
-      String currentSite = placement.getContext();
-      String currentTool = PortalService.getCurrentToolId();
-      Wizard newWizard = getWizardManager().createNew(
-            SessionManager.getCurrentSessionUserId(), currentSite, 
-            currentTool, null, "", "");
+      Wizard newWizard = getWizardManager().createNew();
 
       newWizard.setSequence(getNextWizard());
       
@@ -329,7 +331,51 @@ public class WizardTool extends BuilderTool {
          throw new RuntimeException("Failed to redirect to helper", e);
       }
    }
-   
+
+   public boolean isMaintainer() {
+      return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
+         getIdManager().getId(PortalService.getCurrentSiteId()))).booleanValue();
+   }
+
+   public String processPermissions()
+   {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+
+       //todo userCan = null;
+
+       try {
+           context.redirect("sakai.permissions.helper.helper/tool?" +
+                 "session.sakaiproject.permissions.description=" +
+                    getPermissionsMessage() +
+                 "&session.sakaiproject.permissions.siteRef=" +
+                    getWorksite().getReference() +
+                 "&session.sakaiproject.permissions.prefix=" +
+                    WizardFunctionConstants.WIZARD_PREFIX);
+       }
+       catch (IOException e) {
+           throw new RuntimeException("Failed to redirect to helper", e);
+       }
+       return null;
+   }
+
+   public String getPermissionsMessage() {
+      return getMessageFromBundle("perm_description", new Object[]{
+         getTool().getTitle(), getWorksite().getTitle()});
+   }
+
+   public Tool getTool() {
+      return ToolManager.getCurrentTool();
+   }
+
+   public Site getWorksite() {
+      try {
+         return SiteService.getSite(PortalService.getCurrentSiteId());
+      }
+      catch (IdUnusedException e) {
+         throw new OspException(e);
+      }
+   }
+
    public String processActionManageStyle() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
@@ -542,5 +588,13 @@ public class WizardTool extends BuilderTool {
 
    public void setNextWizard(int nextWizard) {
       this.nextWizard = nextWizard;
+   }
+
+   public AuthorizationFacade getAuthzManager() {
+      return authzManager;
+   }
+
+   public void setAuthzManager(AuthorizationFacade authzManager) {
+      this.authzManager = authzManager;
    }
 }

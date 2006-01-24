@@ -32,9 +32,6 @@ public class Wizard extends IdentifiableObject {
    
    private String siteId;
    private String toolId;
-   private Id securityQualifier;
-   private String securityViewFunction;
-   private String securityEditFunction;
    private WizardCategory rootCategory;
    private int sequence = 0;
 
@@ -45,15 +42,11 @@ public class Wizard extends IdentifiableObject {
    public Wizard() {
    }
 
-   public Wizard(Id id, Agent owner, String siteId, String toolId, Id securityQualifier,
-                   String securityViewFunction, String securityEditFunction) {
+   public Wizard(Id id, Agent owner, String siteId, String toolId) {
       setId(id);
       this.owner = owner;
       this.siteId = siteId;
       this.toolId = toolId;
-      this.securityQualifier = securityQualifier;
-      this.securityViewFunction = securityViewFunction;
-      this.securityEditFunction = securityEditFunction;
       newObject = true;
       rootCategory = new WizardCategory(this);
       rootCategory.setTitle("root");
@@ -102,24 +95,6 @@ public class Wizard extends IdentifiableObject {
    }
    public void setNewObject(boolean newObject) {
       this.newObject = newObject;
-   }
-   public String getSecurityEditFunction() {
-      return securityEditFunction;
-   }
-   public void setSecurityEditFunction(String securityEditFunction) {
-      this.securityEditFunction = securityEditFunction;
-   }
-   public Id getSecurityQualifier() {
-      return securityQualifier;
-   }
-   public void setSecurityQualifier(Id securityQualifier) {
-      this.securityQualifier = securityQualifier;
-   }
-   public String getSecurityViewFunction() {
-      return securityViewFunction;
-   }
-   public void setSecurityViewFunction(String securityViewFunction) {
-      this.securityViewFunction = securityViewFunction;
    }
    public String getSiteId() {
       return siteId;
