@@ -19,6 +19,11 @@
       <sakai:tool_bar_item
       action="#{wizard.processActionNew}"
       value="#{msgs.new_wizard}" />
+
+      <sakai:tool_bar_item rendered="#{wizard.maintainer}"
+          action="#{wizard.processPermissions}"
+          value="#{msgs.permissions_link}" />
+
    </sakai:tool_bar>
 
    <sakai:view_title value="#{msgs.wizard_title}"/>

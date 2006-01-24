@@ -41,6 +41,11 @@
          <property-name>idManager</property-name>
          <value>#{Components["idManager"]}</value>
       </managed-property>
+      <managed-property>
+         <description>Service Dependency: authzManager</description>
+         <property-name>authzManager</property-name>
+         <value>#{Components["org.sakaiproject.metaobj.security.AuthorizationFacade"]}</value>
+      </managed-property>
    </managed-bean>
    <!-- 
    <managed-bean>

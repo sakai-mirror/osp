@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
+import org.sakaiproject.api.kernel.tool.Placement;
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
@@ -14,6 +16,8 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.security.impl.sakai.AuthnManager;
+import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
@@ -22,17 +26,15 @@ import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
-import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.mgt.ContentEntityUtil;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.wizard.impl.WizardEntityProducer;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
-import org.theospi.portfolio.wizard.model.Wizard;
-import org.theospi.portfolio.wizard.model.WizardStyleItem;
-import org.theospi.portfolio.wizard.model.WizardCategory;
-import org.theospi.portfolio.wizard.model.WizardPageSequence;
+import org.theospi.portfolio.wizard.model.*;
+import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import net.sf.hibernate.HibernateException;
 
@@ -44,14 +46,24 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
    private IdManager idManager;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private AgentManager agentManager;
+   private AuthnManager authManager;
 
-   public Wizard createNew(String owner, String siteId, String toolId, 
-         Id securityQualifier, String securityViewFunction, String securityEditFunction) {
-      Agent agent = getAgentManager().getAgent(owner);
-      Wizard wizard = new Wizard(getIdManager().createId(), agent, siteId, toolId,
-            securityQualifier, securityViewFunction, securityEditFunction);
-//      (Agent owner, String siteId, Id securityQualifier,
-//            String securityViewFunction, String securityEditFunction) {
+   protected void init() throws Exception {
+      FunctionManager.registerFunction(WizardFunctionConstants.CREATE_WIZARD);
+      FunctionManager.registerFunction(WizardFunctionConstants.EDIT_WIZARD);
+      FunctionManager.registerFunction(WizardFunctionConstants.DELETE_WIZARD);
+      FunctionManager.registerFunction(WizardFunctionConstants.PUBLISH_WIZARD);
+      FunctionManager.registerFunction(WizardFunctionConstants.REVIEW_WIZARD);
+      FunctionManager.registerFunction(WizardFunctionConstants.VIEW_WIZARD);
+      FunctionManager.registerFunction(WizardFunctionConstants.EXPORT_WIZARD);
+   }
+
+   public Wizard createNew() {
+      Placement placement = ToolManager.getCurrentPlacement();
+      String currentSite = placement.getContext();
+      String currentTool = PortalService.getCurrentToolId();
+      Agent agent = getAuthManager().getAgent();
+      Wizard wizard = new Wizard(getIdManager().createId(), agent, currentSite, currentTool);
       return wizard;
    }
 
@@ -62,10 +74,8 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
          return null;
       }
 
-      if (wizard.getSecurityQualifier() != null) {
-         getAuthorizationFacade().checkPermission(wizard.getSecurityViewFunction(),
-               wizard.getSecurityQualifier());
-      }
+      getAuthorizationFacade().checkPermission(WizardFunctionConstants.VIEW_WIZARD,
+         getIdManager().getId(wizard.getToolId()));
 
       // setup access to the files
       List refs = new ArrayList();
@@ -235,6 +245,29 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 
    }
 
+   public CompletedWizard getCompletedWizard(Wizard wizard) {
+      Agent agent = getAuthManager().getAgent();
+
+      return getUsersWizard(wizard, agent);
+
+   }
+
+   public CompletedWizard saveWizard(CompletedWizard wizard) {
+      getHibernateTemplate().saveOrUpdate(wizard);
+      return wizard;
+   }
+
+   public CompletedWizard getUsersWizard(Wizard wizard, Agent agent) {
+      List completedWizards = getHibernateTemplate().find(" CompletedWizard where wizard_id=? and owner_id=?",
+            new Object[]{wizard.getId().getValue(), agent.getId().getValue()});
+
+      if (completedWizards.size() == 0) {
+         return new CompletedWizard(wizard, agent);
+      }
+      else {
+         return (CompletedWizard)completedWizards.get(0);
+      }
+   }
 
    public AuthorizationFacade getAuthorizationFacade() {
       return authorizationFacade;
@@ -285,5 +318,13 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 
    public void setAgentManager(AgentManager agentManager) {
       this.agentManager = agentManager;
+   }
+
+   public AuthnManager getAuthManager() {
+      return authManager;
+   }
+
+   public void setAuthManager(AuthnManager authManager) {
+      this.authManager = authManager;
    }
 }

@@ -4,13 +4,14 @@ import java.util.Collection;
 import java.util.List;
 
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.wizard.model.CompletedWizard;
 
 public interface WizardManager {
 
-   public Wizard createNew(String owner, String siteId, String toolId, 
-         Id securityQualifier, String securityViewFunction, String securityEditFunction);
+   public Wizard createNew();
 
    public Wizard getWizard(Id wizardId);
 
@@ -30,5 +31,9 @@ public interface WizardManager {
    public Collection getAvailableForms(String siteId, String type);
 
    public void deleteObjects(List deletedItems);
+
+   public CompletedWizard getCompletedWizard(Wizard wizard);
+
+   public CompletedWizard saveWizard(CompletedWizard wizard);
 
 }
