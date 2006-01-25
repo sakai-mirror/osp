@@ -24,6 +24,13 @@ package org.theospi.portfolio.wizard.tool;
 
 import org.theospi.portfolio.wizard.model.CompletedWizardCategory;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
+import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -75,4 +82,18 @@ public class DecoratedCompletedPage {
       return (DecoratedCategoryChild)page;
    }
 
+   public String processActionEdit() {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.setAttribute(WizardPageHelper.WIZARD_PAGE, getBase().getWizardPage());
+
+      try {
+         context.redirect("osp.wizard.page.helper/wizardPage.osp");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+
+      return null;
+   }
 }

@@ -263,7 +263,9 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
             new Object[]{wizard.getId().getValue(), agent.getId().getValue()});
 
       if (completedWizards.size() == 0) {
-         return new CompletedWizard(wizard, agent);
+         CompletedWizard returned = new CompletedWizard(wizard, agent);
+         getHibernateTemplate().save(returned);
+         return returned;
       }
       else {
          return (CompletedWizard)completedWizards.get(0);

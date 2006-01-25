@@ -58,6 +58,10 @@
          <f:facet name="header">
             <h:outputText value="#{msgs.actions_column_header}" />
          </f:facet>
+         <h:commandLink action="#{item.processActionEdit}"
+                  rendered="#{!item.categoryChild.category}">
+            <h:outputText value="#{msgs.view_page}"/>
+         </h:commandLink>
       </h:column>
       <h:column>
          <f:facet name="header">

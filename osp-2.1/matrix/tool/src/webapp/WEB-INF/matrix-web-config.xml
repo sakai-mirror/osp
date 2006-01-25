@@ -152,7 +152,7 @@
             </property>
             <property name="structuredArtifactDefinitionManager">
                <ref bean="structuredArtifactDefinitionManager"/>
-            </property>            
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -174,21 +174,63 @@
       <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellFormBean</value></property>
       <property name="formView"><value>viewCell</value></property>
    </bean>
-   
+
+   <bean id="wizardPageController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.WizardPageController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="reviewManager">
+               <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
+            </property>
+            <property name="structuredArtifactDefinitionManager">
+               <ref bean="structuredArtifactDefinitionManager"/>
+            </property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">wizardPageRedirect</prop>
+            <prop key="cancel">helperDone</prop>
+            <prop key="confirm">submitWizardPageConfirmationRedirect</prop>
+            <prop key="guidance">viewGuidance</prop>
+            <prop key="review">createReview</prop>
+            <prop key="formPicker">formPicker</prop>
+            <!--
+            <prop key="success">wizardPageDefinitionRedirect</prop>
+            <prop key="loadReviewers">wizardPageDefinitionRedirect</prop>
+            <prop key="return">helperDone</prop>
+            <prop key="editScaffoldingCellConfirm">helperDone</prop>
+            <prop key="selectEvaluators">selectCellEvaluators</prop>
+            <prop key="createGuidance">createGuidance</prop>
+            -->
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>cellBean</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellFormBean</value></property>
+      <property name="formView"><value>viewCell</value></property>
+   </bean>
+
    <bean id="cellFormPickerController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.CellFormPickerController">
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
             <property name="contentHosting">
-               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
             </property>
             <property name="entityManager">
                <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
             </property>
             <property name="sessionManager">
                <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
-            </property>            
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -205,7 +247,7 @@
       <property name="commandName"><value>cellBean</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellFormBean</value></property>
    </bean>
-   
+
    <bean id="submitCellConfirmationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.SubmitCellConfirmationController">
@@ -218,12 +260,12 @@
             <prop key="success">submitCellConfirmation</prop>
             <prop key="continue">viewCellRedirect</prop>
          </props>
-      </property> 
+      </property>
       <property name="customTypedEditors">
          <list>
             <ref bean="idCustomEditor"/>
          </list>
-      </property>     
+      </property>
       <property name="commandName"><value>model</value></property>
       <property name="commandClass"><value>java.util.Map</value></property>
    </bean>
@@ -241,16 +283,16 @@
             <prop key="return">viewCellRedirect</prop>
             <prop key="postProcessor">postProcessorWorkflow</prop>
          </props>
-      </property> 
+      </property>
       <property name="customTypedEditors">
          <list>
             <ref bean="idCustomEditor"/>
          </list>
-      </property>     
+      </property>
       <property name="commandName"><value>string</value></property>
       <property name="commandClass"><value>java.lang.String</value></property>
    </bean>
-   
+
    <bean id="reviewPostProcessor" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.ReviewPostProcessor">
@@ -262,17 +304,17 @@
          <props>
             <prop key="success">viewCellRedirect</prop>
          </props>
-      </property> 
+      </property>
       <property name="customTypedEditors">
          <list>
             <ref bean="idCustomEditor"/>
          </list>
-      </property>     
+      </property>
       <property name="commandName"><value>string</value></property>
       <property name="commandClass"><value>java.lang.String</value></property>
       <property name="formView"><value>postProcessorWorkflow</value></property>
    </bean>
-   
+
    <bean id="removeArtifactController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.RemoveAssociationController">
@@ -285,12 +327,12 @@
             <prop key="success">removeConfirmation</prop>
             <prop key="continue">viewCellRedirect</prop>
          </props>
-      </property> 
+      </property>
       <property name="customTypedEditors">
          <list>
             <ref bean="idCustomEditor"/>
          </list>
-      </property>     
+      </property>
       <property name="commandName"><value>model</value></property>
       <property name="commandClass"><value>java.util.Map</value></property>
    </bean>
@@ -308,11 +350,11 @@
             <prop key="success">selectCellArtifacts</prop>
             <prop key="viewCell">viewCell</prop>
          </props>
-      </property>      
+      </property>
       <property name="commandName"><value>model</value></property>
       <property name="commandClass"><value>java.util.Map</value></property>
    </bean>
-  
+
    <bean id="listReviewerItemsController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
       <bean class="org.theospi.portfolio.matrix.control.ListReviewerItemController">

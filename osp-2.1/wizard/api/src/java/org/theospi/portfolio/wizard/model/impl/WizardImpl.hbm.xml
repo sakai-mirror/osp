@@ -149,6 +149,11 @@
 
       <property name="expanded" type="boolean" column="expanded" not-null="false"/>
 
+      <property name="sequence" type="int" column="seq_num" not-null="false"/>
+
+      <many-to-one name="parentCategory" column="parent_category_id"
+          not-null="false" class="CompletedWizardCategory" cascade="none" />
+
       <list name="childPages" cascade="all"
           inverse="true" lazy="false">
           <key column="category_id" />
@@ -158,7 +163,7 @@
 
       <list name="childCategories" cascade="all"
           inverse="true" lazy="false">
-          <key column="category_id" />
+          <key column="parent_category_id" />
           <index column="seq_num" />
           <one-to-many class="CompletedWizardCategory" />
       </list>
@@ -177,11 +182,13 @@
           not-null="false" class="WizardPageSequence" cascade="none" />
 
       <many-to-one name="wizardPage" column="wizard_page_id"
-          not-null="false" class="org.theospi.portfolio.matrix.model.WizardPage" cascade="none" />
+         not-null="false" class="org.theospi.portfolio.matrix.model.WizardPage"
+         cascade="all" unique="true" />
 
+      <property name="sequence" type="int" column="seq_num" not-null="false"/>
       <property name="created" type="java.util.Date" update="false" not-null="true"/>
       <property name="lastVisited" type="java.util.Date" update="true" not-null="false"/>
 
    </class>
-   
+
 </hibernate-mapping>
