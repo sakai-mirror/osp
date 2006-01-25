@@ -134,7 +134,7 @@
               <prop key="/viewPrintableReflection.osp">viewPrintableReflectionController</prop>
 
               <!-- helpers -->
-              <!--prop key="/wizardPage.osp">wizardPageController</prop-->
+              <prop key="/wizardPage.osp">wizardPageController</prop>
               <prop key="/wizardPageDefinition.osp">wizardPageDefinitionController</prop>
            </props>
        </property>

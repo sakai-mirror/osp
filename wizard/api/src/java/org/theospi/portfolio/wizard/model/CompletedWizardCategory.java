@@ -42,6 +42,8 @@ public class CompletedWizardCategory extends IdentifiableObject {
    private CompletedWizard wizard;
    private List childPages;
    private List childCategories;
+   private int sequence;
+   private CompletedWizardCategory parentCategory;
 
    private boolean expanded = false;
 
@@ -51,6 +53,7 @@ public class CompletedWizardCategory extends IdentifiableObject {
    public CompletedWizardCategory(CompletedWizard wizard, WizardCategory category) {
       this.wizard = wizard;
       this.category = category;
+      setSequence(category.getSequence());
       setChildPages(initChildPages());
       setChildCategories(initChildCategories());
    }
@@ -60,7 +63,9 @@ public class CompletedWizardCategory extends IdentifiableObject {
 
       for (Iterator i=category.getChildCategories().iterator();i.hasNext();) {
          WizardCategory category = (WizardCategory) i.next();
-         categories.add(new CompletedWizardCategory(wizard, category));
+         CompletedWizardCategory completed = new CompletedWizardCategory(wizard, category);
+         completed.setParentCategory(this);
+         categories.add(completed);
       }
 
       return categories;
@@ -117,4 +122,19 @@ public class CompletedWizardCategory extends IdentifiableObject {
       this.childCategories = childCategories;
    }
 
+   public int getSequence() {
+      return sequence;
+   }
+
+   public void setSequence(int sequence) {
+      this.sequence = sequence;
+   }
+
+   public CompletedWizardCategory getParentCategory() {
+      return parentCategory;
+   }
+
+   public void setParentCategory(CompletedWizardCategory parentCategory) {
+      this.parentCategory = parentCategory;
+   }
 }

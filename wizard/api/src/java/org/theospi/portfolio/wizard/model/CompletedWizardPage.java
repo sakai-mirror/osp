@@ -41,6 +41,7 @@ public class CompletedWizardPage extends IdentifiableObject {
    private WizardPage wizardPage;
    private Date created;
    private Date lastVisited;
+   private int sequence;
 
    public CompletedWizardPage() {
    }
@@ -49,6 +50,7 @@ public class CompletedWizardPage extends IdentifiableObject {
       this.wizardPageDefinition = wizardPageDefinition;
       this.category = category;
       setCreated(new Date());
+      setSequence(wizardPageDefinition.getSequence());
       setWizardPage(new WizardPage());
       getWizardPage().setPageDefinition(wizardPageDefinition.getWizardPageDefinition());
       getWizardPage().setStatus(wizardPageDefinition.getWizardPageDefinition().getInitialStatus());
@@ -92,6 +94,14 @@ public class CompletedWizardPage extends IdentifiableObject {
 
    public void setLastVisited(Date lastVisited) {
       this.lastVisited = lastVisited;
+   }
+
+   public int getSequence() {
+      return sequence;
+   }
+
+   public void setSequence(int sequence) {
+      this.sequence = sequence;
    }
 
 }
