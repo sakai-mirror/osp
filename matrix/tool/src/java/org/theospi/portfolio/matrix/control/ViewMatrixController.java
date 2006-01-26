@@ -164,8 +164,8 @@ public class ViewMatrixController implements FormController, LoadObjectControlle
                cell.setStatus(scaffoldingCell.getInitialStatus());
                matrixManager.storeCell(cell);
             }
-            List nodeList = new ArrayList(matrixManager.getCellContents(cell));
-            nodeList.addAll(matrixManager.getCellForms(cell));
+            List nodeList = new ArrayList(matrixManager.getPageContents(cell.getWizardPage()));
+            nodeList.addAll(matrixManager.getPageForms(cell.getWizardPage()));
             cellBean.setCell(cell);
             cellBean.setNodes(nodeList);
             row.add(cellBean);

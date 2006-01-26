@@ -53,8 +53,21 @@ public class WizardPageController extends CellController {
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       WizardPage page = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
+      page = getMatrixManager().getWizardPage(page.getId());
+      session.put(WizardPageHelper.WIZARD_PAGE, page);
       session.remove(WizardPageHelper.CANCELED);
 
+      Cell cell = createCellWrapper(page);
+
+      CellFormBean cellBean = (CellFormBean) incomingModel;
+      cellBean.setCell(cell);
+      List nodeList = new ArrayList(getMatrixManager().getPageContents(page));
+      cellBean.setNodes(nodeList);
+
+      return cellBean;
+   }
+
+   public static Cell createCellWrapper(WizardPage page) {
       Cell cell = new Cell();
       cell.setWizardPage(page);
       if (page.getId() == null) {
@@ -74,15 +87,9 @@ public class WizardPageController extends CellController {
       else {
          cellDef.setId(pageDef.getId());
       }
-      
+
       cell.setScaffoldingCell(cellDef);
-
-      CellFormBean cellBean = (CellFormBean) incomingModel;
-      cellBean.setCell(cell);
-      List nodeList = new ArrayList(getMatrixManager().getCellContents(cell));
-      cellBean.setNodes(nodeList);
-
-      return cellBean;
+      return cell;
    }
 
 }

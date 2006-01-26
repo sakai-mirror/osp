@@ -23,8 +23,8 @@ import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPageForm;
+import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.shared.tool.BaseFormResourceFilter;
 
 public class CellFormPickerController implements FormController, LoadObjectController {
@@ -40,23 +40,23 @@ public class CellFormPickerController implements FormController, LoadObjectContr
       
 
       ToolSession session = getSessionManager().getCurrentToolSession();
-      String cellId = (String) request.get("cell_id");
-      if (cellId == null) {
-         cellId = (String)session.getAttribute("cell_id");
+      String pageId = (String) request.get("page_id");
+      if (pageId == null) {
+         pageId = (String)session.getAttribute("page_id");
       }
-      Cell cell = getMatrixManager().getCell(getIdManager().getId(cellId));
+      WizardPage page = getMatrixManager().getWizardPage(getIdManager().getId(pageId));
       
       if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
             session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
          // here is where we setup the id
          List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-         cell.getCellForms().clear();
+         page.getPageForms().clear();
          for (Iterator iter = refs.iterator(); iter.hasNext();) {
             Reference ref = (Reference) iter.next();
             String strId = getMatrixManager().getNode(ref).getId().getValue();
-            cell.getCellForms().add(strId);
+            page.getPageForms().add(strId);
          }
-         getMatrixManager().storeCell(cell);
+         getMatrixManager().storePage(page);
          
          session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
          session.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
@@ -68,17 +68,17 @@ public class CellFormPickerController implements FormController, LoadObjectContr
          Map session, Map application) throws Exception {
       
       //ToolSession session = getSessionManager().getCurrentToolSession();
-      String cellId = (String) request.get("cell_id");
-      if (cellId == null) {
-         cellId = (String)session.get("cell_id");
+      String pageId = (String) request.get("page_id");
+      if (pageId == null) {
+         pageId = (String)session.get("page_id");
       }
-      Cell cell = getMatrixManager().getCell(getIdManager().getId(cellId));
+      WizardPage page = getMatrixManager().getWizardPage(getIdManager().getId(pageId));
       
       if (session.get(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
             session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
          // here is where we setup the id
          List refs = (List)session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-         cell.getCellForms().clear();
+         page.getPageForms().clear();
          for (Iterator iter = refs.iterator(); iter.hasNext();) {
             Reference ref = (Reference) iter.next();
             Id id = getMatrixManager().getNode(ref).getId();
@@ -86,10 +86,10 @@ public class CellFormPickerController implements FormController, LoadObjectContr
             wpf.setArtifactId(id);
             wpf.setFormType(ref.getProperties().getProperty(
                   ref.getProperties().getNamePropStructObjType()));
-            wpf.setWizardPage(cell.getWizardPage());
-            cell.getCellForms().add(wpf);
+            wpf.setWizardPage(page);
+            page.getPageForms().add(wpf);
          }
-         getMatrixManager().storeCell(cell);
+         getMatrixManager().storePage(page);
          
          session.remove(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
          session.remove(FilePickerHelper.FILE_PICKER_CANCEL);
@@ -99,12 +99,12 @@ public class CellFormPickerController implements FormController, LoadObjectContr
    
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String attachFormAction = (String) request.get("attachFormAction");
-      String cellId = (String) request.get("cell_id");
-      if (cellId == null) {
-         cellId = (String)session.get("cell_id");
-         session.remove("cell_id");
+      String pageId = (String) request.get("page_id");
+      if (pageId == null) {
+         pageId = (String)session.get("page_id");
+         session.remove("page_id");
       }
-      Cell cell = getMatrixManager().getCell(getIdManager().getId(cellId));
+      WizardPage page = getMatrixManager().getWizardPage(getIdManager().getId(pageId));
       
       if (attachFormAction != null) {
          //session.setAttribute(TEMPLATE_PICKER, request.getParameter("pickerField"));
@@ -115,7 +115,7 @@ public class CellFormPickerController implements FormController, LoadObjectContr
          
          //String pickField = (String)request.get("formType");
          String id = "";
-         for (Iterator iter = cell.getCellForms().iterator(); iter.hasNext();) {
+         for (Iterator iter = page.getPageForms().iterator(); iter.hasNext();) {
             WizardPageForm wpf = (WizardPageForm) iter.next();
             if (wpf.getFormType().equals(attachFormAction)) {
                id = getContentHosting().resolveUuid(wpf.getArtifactId().getValue());
@@ -136,13 +136,13 @@ public class CellFormPickerController implements FormController, LoadObjectContr
          
          crf.getFormTypes().add(attachFormAction);
          session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER, crf);
-         session.put("cell_id", cellId);
+         session.put("page_id", pageId);
          session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
          return new ModelAndView("formPicker");
          
       }
 
-      return new ModelAndView("cell", "cell_id", cellId);
+      return new ModelAndView("page", "page_id", pageId);
    }
 
    /**

@@ -76,7 +76,8 @@ public class CompletedWizardCategory extends IdentifiableObject {
 
       for (Iterator i=category.getChildPages().iterator();i.hasNext();) {
          WizardPageSequence page = (WizardPageSequence) i.next();
-         pages.add(new CompletedWizardPage(page, this));
+         CompletedWizardPage completedPage = new CompletedWizardPage(page, this);
+         pages.add(completedPage);
       }
 
       return pages;

@@ -50,20 +50,20 @@ package org.theospi.portfolio.matrix.control;
  */
 public class CellAndNodeForm {
    
-   private String cell_id = null;
+   private String page_id = null;
    private String node_id = null;
 
    /**
-    * @return Returns the cell_id.
+    * @return Returns the page_id.
     */
-   public String getCell_id() {
-      return cell_id;
+   public String getPage_id() {
+      return page_id;
    }
    /**
-    * @param cell_id The cell_id to set.
+    * @param page_id The page_id to set.
     */
-   public void setCell_id(String cell_id) {
-      this.cell_id = cell_id;
+   public void setPage_id(String page_id) {
+      this.page_id = page_id;
    }
    /**
     * @return Returns the node_id.

@@ -42,6 +42,11 @@
          <value>#{Components["idManager"]}</value>
       </managed-property>
       <managed-property>
+         <description>Service Dependency: matrixManager</description>
+         <property-name>matrixManager</property-name>
+         <value>#{Components["matrixManager"]}</value>
+      </managed-property>
+      <managed-property>
          <description>Service Dependency: authzManager</description>
          <property-name>authzManager</property-name>
          <value>#{Components["org.sakaiproject.metaobj.security.AuthorizationFacade"]}</value>

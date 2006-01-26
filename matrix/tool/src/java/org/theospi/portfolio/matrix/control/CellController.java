@@ -57,6 +57,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
@@ -81,18 +82,18 @@ public class CellController implements FormController, LoadObjectController {
       CellFormBean cell = (CellFormBean) command;
       Map model = new HashMap();
       model.put("reviewRubrics", matrixManager.getReviewRubrics());
-      String cellId = cell.getCell().getId().getValue();
+      String pageId = cell.getCell().getWizardPage().getId().getValue();
        model.put("reviews", getReviewManager().getReviewsByParentAndType(
-             cellId, Review.REVIEW_TYPE));
+             pageId, Review.REVIEW_TYPE));
       model.put("evaluations", getReviewManager().getReviewsByParentAndType(
-             cellId, Review.EVALUATION_TYPE));
+             pageId, Review.EVALUATION_TYPE));
       model.put("reflections", getReviewManager().getReviewsByParentAndType(
-            cellId, Review.REFLECTION_TYPE));
+            pageId, Review.REFLECTION_TYPE));
       
       model.put("cellFormDefs", processAdditionalForms(
             cell.getCell().getScaffoldingCell().getAdditionalForms()));
       
-      model.put("cellForms", getMatrixManager().getCellForms(cell.getCell()));
+      model.put("cellForms", getMatrixManager().getPageForms(cell.getCell().getWizardPage()));
       
       model.put("currentUser", SessionManager.getCurrentSessionUserId());
       model.put("CURRENT_GUIDANCE_ID_KEY", "session." + GuidanceManager.CURRENT_GUIDANCE_ID);
@@ -100,18 +101,20 @@ public class CellController implements FormController, LoadObjectController {
    }
    
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
+      session.remove(WizardPageHelper.WIZARD_PAGE); // coming from matrix cell, not helper      
       CellFormBean cellBean = (CellFormBean) incomingModel;
-      String strId = (String) request.get("cell_id");
+      String strId = (String) request.get("page_id");
       if (strId== null) {
-         strId = (String)session.get("cell_id");
-         session.remove("cell_id");
+         strId = (String)session.get("page_id");
+         session.remove("page_id");
       }
+      Cell cell;
       Id id = getIdManager().getId(strId);
-      Cell cell = matrixManager.getCell(id);
+      cell = matrixManager.getCellFromPage(id);
 
       cellBean.setCell(cell);
 
-      List nodeList = new ArrayList(matrixManager.getCellContents(cell));
+      List nodeList = new ArrayList(matrixManager.getPageContents(cell.getWizardPage()));
       cellBean.setNodes(nodeList);
       
       return cellBean;
@@ -140,7 +143,7 @@ public class CellController implements FormController, LoadObjectController {
       
       if (submitAction != null) {
          Map map = new HashMap();
-         map.put("cell_id", cell.getId());
+         map.put("page_id", cell.getWizardPage().getId());
          map.put("selectedArtifacts", ListToString(cellBean.getSelectedArtifacts()));
          map.put("cellBean", cellBean);
          //TODO change this to use the reflection submission confirmation

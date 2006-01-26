@@ -11,8 +11,6 @@
 </div>
 
 <form method="POST">
-	<!-- <input name="cell_id" type="hidden" value="<c:out value="${cell_id}"/>"/>
-	<input name="selectedArtifacts" type="hidden" value="<c:out value="${selectedArtifacts}"/>"/> -->
 	<div class="act">
 		<input name="continue" type="submit" value="<osp:message key="continue" bundle="${msgs}" />"/>
       <input name="cancel" type="submit" value="<osp:message key="cancel" bundle="${msgs}" />"/>

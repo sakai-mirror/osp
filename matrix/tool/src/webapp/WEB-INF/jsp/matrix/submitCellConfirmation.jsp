@@ -22,7 +22,7 @@
 <form>
 
    <p class="act">
-      <input type="hidden" name="cell_id" value="<c:out value="${cell_id}" />">
+      <input type="hidden" name="page_id" value="<c:out value="${page_id}" />">
       <input type="submit" name="submit" value="<osp:message key="submit_cell" bundle="${msgs}" />" class="active">
       <input type="submit" name="cancel" value="<osp:message key="cancel" bundle="${msgs}" />">
    </p>

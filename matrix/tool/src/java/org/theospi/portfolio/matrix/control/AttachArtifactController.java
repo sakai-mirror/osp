@@ -46,6 +46,7 @@ package org.theospi.portfolio.matrix.control;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
@@ -58,8 +59,10 @@ import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Attachment;
 import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.WizardPage;
 
 import java.util.*;
 
@@ -75,11 +78,20 @@ public class AttachArtifactController implements Controller, LoadObjectControlle
    public Object fillBackingObject(Object incomingModel, Map request,
          Map session, Map application) throws Exception {
       CellAndNodeForm form = (CellAndNodeForm)incomingModel;
-      String cell_id = (String)request.get("cell_id");
-      if (cell_id != null) {
-         form.setCell_id(cell_id);
+      String page_id = (String)request.get("page_id");
+      if (page_id != null) {
+         form.setPage_id(page_id);
          session.put(getModelName(), form);
-         Cell cell = matrixManager.getCell(idManager.getId(cell_id));
+
+         Cell cell;
+         WizardPage page = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
+         if (page != null) {
+            cell = WizardPageController.createCellWrapper(page);
+         }
+         else {
+            cell = matrixManager.getCellFromPage(idManager.getId(page_id));
+         }
+
          Set attachments = cell.getAttachments();
          List files = new ArrayList();
          for (Iterator iter=attachments.iterator(); iter.hasNext();) {
@@ -106,11 +118,52 @@ public class AttachArtifactController implements Controller, LoadObjectControlle
    public ModelAndView handleRequest(Object requestModel, Map request, Map session,
                                      Map application, Errors errors) {
       CellAndNodeForm form = (CellAndNodeForm)requestModel;
+      WizardPage page = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
+      boolean sessionPage = true;
+      if (page == null) {
+         sessionPage = false;
+         Cell cell = getMatrixManager().getCellFromPage(getIdManager().getId(form.getPage_id()));
+         page = cell.getWizardPage();
+      }
+      attachArtifacts(session,  page);
+      if (sessionPage) {
+         session.put(WizardPageHelper.WIZARD_PAGE, getMatrixManager().getWizardPage(page.getId()));
+      }
       session.remove(getModelName());
       request.put(ATTACH_ARTIFACT_FORM, form);
       // track all the attachments here...
-      return new ModelAndView("success");
+      return new ModelAndView("success", "page_id", page.getId());
    }
+
+   protected void attachArtifacts(Map session, WizardPage page) {
+      List files = (List)session.get(
+            FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+      Set attachments = page.getAttachments();
+      List existing = new ArrayList();
+      for (Iterator i = attachments.iterator();i.hasNext();) {
+         Attachment attach = (Attachment)i.next();
+         existing.add(attach.getArtifactId());
+      }
+
+      for (Iterator i = files.iterator();i.hasNext();) {
+         Object node = i.next();
+         Reference ref = null;
+         if (node instanceof Reference) {
+            ref = (Reference)node;
+         }
+         Attachment attachment = getMatrixManager().attachArtifact(
+               page.getId(), ref);
+         existing.remove(attachment.getArtifactId());
+      }
+
+      for (Iterator i = existing.iterator();i.hasNext();) {
+         Id oldAttachment = (Id)i.next();
+         getMatrixManager().detachArtifact(page.getId(), oldAttachment);
+      }
+
+      session.remove(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+   }
+
 
    public boolean isCancel(Map request) {
       ToolSession toolSession = getSessionManager().getCurrentToolSession();
@@ -124,7 +177,7 @@ public class AttachArtifactController implements Controller, LoadObjectControlle
       session.remove(getModelName());
 
       Map model = new Hashtable();
-      model.put("cell_id", form.getCell_id());
+      model.put("page_id", form.getPage_id());
       model.put("readOnlyMatrix", new Boolean("false"));
 
       return new ModelAndView("cancel", model);

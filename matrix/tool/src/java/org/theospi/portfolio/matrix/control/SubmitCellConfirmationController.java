@@ -55,7 +55,9 @@ import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.WizardPage;
 
 /**
  * @author chmaurer
@@ -83,16 +85,25 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
     * @see org.theospi.utils.mvc.intf.Controller#handleRequest(java.lang.Object, java.util.Map, java.util.Map, java.util.Map, org.springframework.validation.Errors)
     */
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-      Id cellId = idManager.getId((String) request.get("cell_id"));
-      Cell cell = getMatrixManager().getCell(cellId);
+      WizardPage page = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
+      Id cellId = idManager.getId((String) request.get("page_id"));
+      Cell cell = getMatrixManager().getCellFromPage(cellId);
+      if (page == null) {
+         page = cell.getWizardPage();
+      }
       String submitAction = (String)request.get("submit");
       String cancelAction = (String)request.get("cancel");
       if (submitAction != null) {
-         getMatrixManager().submitCellForEvaluation(cell);
-         return new ModelAndView("continue", "cell_id", cellId);
+         if (page != null) {
+            getMatrixManager().submitPageForEvaluation(page);
+         }
+         else {
+            getMatrixManager().submitCellForEvaluation(cell);
+         }
+         return new ModelAndView("continue", "page_id", page.getId().getValue());
       }
       if (cancelAction != null) {
-         return new ModelAndView("continue", "cell_id", cellId);
+         return new ModelAndView("continue", "page_id", page.getId().getValue());
       }
       return new ModelAndView("success", "cell", cell);
    }

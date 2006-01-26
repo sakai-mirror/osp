@@ -28,11 +28,11 @@ public class ManageCellStatusController implements FormController {
    
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String viewName = "success";
-      Id id = idManager.getId((String)request.get("cell_id"));
+      Id id = idManager.getId((String)request.get("page_id"));
       
       Map model = new HashMap();
-      model.put("cell_id", id);
-      Cell cell = getMatrixManager().getCell(id);
+      model.put("page_id", id);
+      Cell cell = getMatrixManager().getCellFromPage(id);
       String newStatus = getNewCellStatus(cell);
       model.put("newStatus", newStatus);
       
@@ -90,11 +90,11 @@ public class ManageCellStatusController implements FormController {
    }
    
    public Map referenceData(Map request, Object command, Errors errors) {
-      Id id = idManager.getId((String)request.get("cell_id"));
+      Id id = idManager.getId((String)request.get("page_id"));
       
       Map model = new HashMap();
-      model.put("cell_id", id);
-      Cell cell = getMatrixManager().getCell(id);
+      model.put("page_id", id);
+      Cell cell = getMatrixManager().getCellFromPage(id);
       
       model.put("newStatus", getNewCellStatus(cell));
       return model;

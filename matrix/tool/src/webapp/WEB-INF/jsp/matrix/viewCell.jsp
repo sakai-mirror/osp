@@ -6,8 +6,16 @@
 <link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" src="/osp-jsf-resource/xheader/xheader.js"></script>
 
-<form name="form" method="POST" action="<osp:url value="viewCell.osp"/>">
-	<osp:form/>
+<form name="form" method="POST"
+	<c:if test="${helperPage == 'true'}">
+      action="<osp:url value="wizardPage.osp"/>"
+   </c:if>
+	<c:if test="${helperPage != 'true'}">
+      action="<osp:url value="viewCell.osp"/>"
+   </c:if>
+   >
+
+   <osp:form/>
    <input type="hidden" name="submitAction" value="" />
 
 	<c:set var="cell" value="${cellBean.cell}"/>
@@ -17,19 +25,19 @@
 	<div class="navIntraTool">
 		<c:if test="${can.create}">
          <a name="linkManageCellStatus" id="linkManageCellStatus" href="<osp:url value="manageCellStatus.osp">
-            <osp:param name="cell_id" value="${cell.id}"/>
+            <osp:param name="page_id" value="${cell.wizardPage.id}"/>
             </osp:url>"><osp:message key="manage_cell_status" bundle="${msgs}" /></a>
       </c:if>
       <c:if test="${matrixCan.review && cell.scaffoldingCell.reviewDevice != null}">
          <a href="<osp:url value="reviewHelper.osp">
-            <osp:param name="cell_id" value="${cell.id}" />
+               <osp:param name="page_id" value="${cell.wizardPage.id}" />
             <osp:param name="org_theospi_portfolio_review_type" value="2" />
             </osp:url>">
                   <osp:message key="review" bundle="${msgs}" /></a>
       </c:if> 
       <c:if test="${matrixCan.evaluate && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING'}">
          <a href="<osp:url value="reviewHelper.osp">
-            <osp:param name="cell_id" value="${cell.id}"/>
+               <osp:param name="page_id" value="${cell.wizardPage.id}" />
             <osp:param name="org_theospi_portfolio_review_type" value="1" />
             </osp:url>"><osp:message key="evaluate" bundle="${msgs}" /></a>
       </c:if>
@@ -69,7 +77,7 @@
          </c:if>
       </c:forEach>
       <a href="<osp:url value="osp.guidance.helper/view">
-         <osp:param name="session.cell_id" value="${cell.id}"/>
+         <osp:param name="session.page_id" value="${cell.wizardPage.id}"/>
          <osp:param name="${CURRENT_GUIDANCE_ID_KEY}" value="${cell.scaffoldingCell.guidance.id}"/>
       </osp:url>" title="<osp:message key="guidance_link_title" bundle="${msgs}" />">
          <osp:message key="guidance_link_text" bundle="${msgs}" /></a>
@@ -78,7 +86,7 @@
     <h4>Cell Items
       <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
       <a name="linkNew" id="linkNew" href="<osp:url value="attachToCell.osp">
-         <osp:param name="cell_id" value="${cell.id}"/>
+         <osp:param name="page_id" value="${cell.wizardPage.id}"/>
          </osp:url>">Manage Cell Items...</a>
       </c:if>
     </h4>
@@ -95,7 +103,7 @@
          <h4><c:out value="${cellFormDef.name}" />
          <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
          <a href="<osp:url value="cellFormPicker.osp">
-                        <osp:param name="cell_id" value="${cell.id}" />
+                        <osp:param name="page_id" value="${cell.wizardPage.id}" />
                         <osp:param name="attachFormAction" value="${cellFormDef.id}" />
                         </osp:url>">
                      Manage Forms</a>
@@ -111,7 +119,7 @@
       
       <c:if test="${empty reflections}">
          <a href="<osp:url value="reviewHelper.osp">
-               <osp:param name="cell_id" value="${cell.id}" />
+               <osp:param name="page_id" value="${cell.wizardPage.id}" />
                <osp:param name="org_theospi_portfolio_review_type" value="0" />
                </osp:url>">
                      <osp:message key="reflection_create" bundle="${msgs}" /></a>
@@ -119,7 +127,7 @@
       <c:if test="${not empty reflections}">
          <c:out value="${reflections[0].title}" />
          <a href="<osp:url value="reviewHelper.osp">
-               <osp:param name="cell_id" value="${cell.id}" />
+               <osp:param name="page_id" value="${cell.wizardPage.id}" />
                <osp:param name="org_theospi_portfolio_review_type" value="0" />
                <osp:param name="current_review_id" value="${reflections[0].id}" />
                </osp:url>">
@@ -135,7 +143,7 @@
     			<input type="submit" name="submit" class="active" value="<osp:message key="submit" bundle="${msgs}" />"/>
     		</c:if>
     	</c:if>
-    	<input type="hidden" name="cell_id" value="<c:out value="${cell.id}"/>"/>
+    	<input type="hidden" name="page_id" value="<c:out value="${cell.wizardPage.id}"/>"/>
     	<input type="submit" name="matrix" value="<osp:message key="matrix" bundle="${msgs}" />"/>
     </p>
 </form>

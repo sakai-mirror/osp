@@ -3,8 +3,8 @@
 <%@ include file="matrixStyle.jspf" %>
 <SCRIPT LANGUAGE="JavaScript">
 
-function hrefViewCell(cellId) {
-  window.location="<osp:url value="viewCell.osp?cell_id="/>"+cellId+"&readOnlyMatrix=<c:out value="${readOnlyMatrix}"/>";
+function hrefViewCell(pageId) {
+  window.location="<osp:url value="viewCell.osp?page_id="/>"+pageId+"&readOnlyMatrix=<c:out value="${readOnlyMatrix}"/>";
 }
 
 
@@ -118,7 +118,7 @@ function hrefViewCell(cellId) {
                  <c:forEach var="cellBean" items="${matrixContents.matrixContents[loopStatus.index]}">
                      <c:set var="cell" value="${cellBean.cell}"/>
                      
-                     <td class="matrix-cell-border matrix-<c:out value="${cell.status}"/>" onClick="hrefViewCell('<c:out value="${cell.id}"/>') " style="cursor:pointer">
+                     <td class="matrix-cell-border matrix-<c:out value="${cell.status}"/>" onClick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') " style="cursor:pointer">
                         &nbsp;
                         <c:forEach var="node" items="${cellBean.nodes}">
                             <fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="MM/dd/yyyy" var="date"/>

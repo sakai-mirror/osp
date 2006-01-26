@@ -40,12 +40,15 @@ import org.theospi.portfolio.wizard.model.WizardSupportItem;
 import org.theospi.portfolio.shared.tool.BuilderTool;
 import org.theospi.portfolio.shared.tool.BuilderScreen;
 import org.theospi.portfolio.shared.model.OspException;
+import org.theospi.portfolio.matrix.MatrixManager;
 
 public class WizardTool extends BuilderTool {
 
    private WizardManager wizardManager;
    private GuidanceManager guidanceManager;
    private AuthorizationFacade authzManager;
+   private MatrixManager matrixManager;
+
    private IdManager idManager;
    private DecoratedWizard current = null;
    private String commentItem;
@@ -605,6 +608,14 @@ public class WizardTool extends BuilderTool {
 
    public void setAuthzManager(AuthorizationFacade authzManager) {
       this.authzManager = authzManager;
+   }
+
+   public MatrixManager getMatrixManager() {
+      return matrixManager;
+   }
+
+   public void setMatrixManager(MatrixManager matrixManager) {
+      this.matrixManager = matrixManager;
    }
 
 }
