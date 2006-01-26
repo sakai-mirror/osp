@@ -28,6 +28,12 @@
       </property>
       <property name="authzManager"><ref bean="authzManager"/></property>
       <property name="glossary"><ref bean="glossary"/></property>
+      <property name="contentHosting">
+         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService" /> 
+      </property>
+      <property name="agentManager">
+         <ref bean="agentManager" />
+      </property>
    </bean>
 
    <bean id="glossaryTarget" class="org.theospi.portfolio.help.model.DbGlossary"
@@ -86,6 +92,7 @@
                   <value>osp.help.glossary.delete</value>
                   <value>osp.help.glossary.add</value>
                   <value>osp.help.glossary.edit</value>
+                  <value>osp.help.glossary.export</value>
                </list>
             </entry>
             <entry key="instructor">
@@ -93,6 +100,7 @@
                   <value>osp.help.glossary.delete</value>
                   <value>osp.help.glossary.add</value>
                   <value>osp.help.glossary.edit</value>
+                  <value>osp.help.glossary.export</value>
                </list>
             </entry>
             <entry key="project owner">
@@ -100,6 +108,7 @@
                   <value>osp.help.glossary.delete</value>
                   <value>osp.help.glossary.add</value>
                   <value>osp.help.glossary.edit</value>
+                  <value>osp.help.glossary.export</value>
                </list>
             </entry>
          </map>
@@ -109,6 +118,7 @@
             <value>osp.help.glossary.delete</value>
             <value>osp.help.glossary.add</value>
             <value>osp.help.glossary.edit</value>
+            <value>osp.help.glossary.export</value>
          </list>
       </property>
    </bean>
@@ -129,6 +139,7 @@
                   <value>osp.help.glossary.delete</value>
                   <value>osp.help.glossary.add</value>
                   <value>osp.help.glossary.edit</value>
+                  <value>osp.help.glossary.export</value>
                </list>
             </entry>
             <entry key="instructor">
@@ -136,6 +147,7 @@
                   <value>osp.help.glossary.delete</value>
                   <value>osp.help.glossary.add</value>
                   <value>osp.help.glossary.edit</value>
+                  <value>osp.help.glossary.export</value>
                </list>
             </entry>
             <entry key="project owner">
@@ -143,6 +155,7 @@
                   <value>osp.help.glossary.delete</value>
                   <value>osp.help.glossary.add</value>
                   <value>osp.help.glossary.edit</value>
+                  <value>osp.help.glossary.export</value>
                </list>
             </entry>
          </map>
@@ -152,6 +165,7 @@
             <value>osp.help.glossary.delete</value>
             <value>osp.help.glossary.add</value>
             <value>osp.help.glossary.edit</value>
+            <value>osp.help.glossary.export</value>
          </list>
       </property>
    </bean>
@@ -168,6 +182,26 @@
                <ref bean="org.theospi.portfolio.security.mgt.ToolPermissionManager.glossary"/>
             </entry>
          </map>
+      </property>
+   </bean>
+   
+   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.glossaryStyleFile"
+      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+      <property name="viewAll"><value>true</value></property>
+      <property name="mimeTypes">
+         <list>
+            <value>text/xml</value>
+            <value>application/x-osp</value>
+            <value>application/xml</value>
+            <value>application/zip</value>
+            <value>application/x-zip-compressed</value>
+         </list>
+      </property>
+      <property name="acceptedExtensions">
+         <list>
+            <value>zip</value>
+            <value>xml</value>
+         </list>
       </property>
    </bean>
 

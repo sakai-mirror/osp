@@ -87,6 +87,7 @@
                <prop key="/glossaryList.osp">glossaryListController</prop>
                <prop key="/editGlossaryTerm.osp">editGlossaryController</prop>
                <prop key="/removeGlossaryTerm.osp">removeGlossaryController</prop>
+               <prop key="/importGlossaryTerm.osp">importGlossaryController</prop>
             </props>
         </property>
     </bean>

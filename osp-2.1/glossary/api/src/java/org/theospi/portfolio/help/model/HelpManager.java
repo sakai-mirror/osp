@@ -20,8 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.help.model;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
+
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.theospi.portfolio.shared.model.Node;
 
 /**
  * Responsible for managing help activities.  This includes
@@ -63,5 +67,11 @@ public interface HelpManager {
    public void removeFromSession(Object obj);
 
    public Set getSortedWorksiteTerms();
+   
+   public Node getNode(Id artifactId);
+   
+   public void importTermsResource(String resourceId, boolean replaceExisting) throws IOException;
+	
+   public void importTermsResource(Id worksiteId, String resourceId, boolean replaceExisting) throws IOException;
 }
 
