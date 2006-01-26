@@ -25,4 +25,5 @@ public interface HelpFunctionConstants {
    public final static String ADD_TERM = GLOSSARY_PREFIX + "add";
    public final static String EDIT_TERM = GLOSSARY_PREFIX + "edit";
    public final static String DELETE_TERM = GLOSSARY_PREFIX + "delete";
+   public final static String EXPORT_TERMS = GLOSSARY_PREFIX + "export";
 }

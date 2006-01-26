@@ -34,13 +34,22 @@
                 </osp:url>"
             title="Permissions..."> Permissions... </a>
     </c:if>
+    <c:if test="${can.export}">
+    <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=helpManagerTarget&templateId=<c:out value="${template.id.value}"/>/<c:out value="${worksite.title}" /> Glossary.zip">Export</a>
+            
+    </c:if>
+    <c:if test="${can.add}">
+        <a href="<osp:url value="importGlossaryTerm.osp"/>" title="Import...">
+        Import... </a>
+    </c:if>
 </div>
 
 <osp:url var="listUrl" value="glossaryList.osp" />
+
+<div class="rightNav">
 <osp:listScroll listUrl="${listUrl}" className="chefToolBarWrap" />
-
+</div>
 <h3>Glossary Manager</h3>
-
 <table class="listHier" cellspacing="0">
     <thead>
         <tr>

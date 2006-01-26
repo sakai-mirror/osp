@@ -24,6 +24,11 @@ import net.sf.hibernate.HibernateException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdom.Document;
+import org.jdom.CDATA;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.portfolio.help.model.Glossary;
@@ -31,19 +36,50 @@ import org.theospi.portfolio.help.model.HelpFunctionConstants;
 import org.theospi.portfolio.help.model.HelpManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.AuthorizationFailedException;
+import org.sakaiproject.service.legacy.content.ContentHostingService;
+import org.sakaiproject.service.legacy.content.ContentResource;
+import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.framework.portal.PortalService;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.ToolManager;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.TypeException;
+import org.theospi.portfolio.shared.intf.DownloadableManager;
+import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.shared.model.OspException;
+import org.theospi.utils.zip.UncloseableZipInputStream;
+import org.theospi.portfolio.help.model.GlossaryDescription;
 
+import java.io.BufferedReader;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.Properties;
+import java.util.zip.Adler32;
+import java.util.zip.CheckedOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * This implementation uses the spring config to configure the system, and
@@ -99,16 +135,17 @@ import java.util.Properties;
  *
  */
 public class HelpManagerImpl extends HibernateDaoSupport
-   implements HelpManager, HelpFunctionConstants {
+   implements HelpManager, HelpFunctionConstants, DownloadableManager {
 
    protected final Log logger = LogFactory.getLog(getClass());
-   private boolean initialized = false;
    private Glossary glossary;
    private IdManager idManager;
    private AuthorizationFacade authzManager;
    private WorksiteManager worksiteManager;
    private PortalService portalService;
    private ToolManager toolManager;
+   private ContentHostingService contentHosting;
+   private AgentManager agentManager;
 
    public GlossaryEntry searchGlossary(String keyword) {
       return getGlossary().find(keyword, portalService.getCurrentSiteId());
@@ -128,6 +165,22 @@ public class HelpManagerImpl extends HibernateDaoSupport
 
    public void setGlossary(Glossary glossary) {
       this.glossary = glossary;
+   }
+
+   public ContentHostingService getContentHosting() {
+      return contentHosting;
+   }
+
+   public void setContentHosting(ContentHostingService contentHosting) {
+      this.contentHosting = contentHosting;
+   }
+
+   public AgentManager getAgentManager() {
+      return agentManager;
+   }
+
+   public void setAgentManager(AgentManager agentManager) {
+      this.agentManager = agentManager;
    }
 
    public GlossaryEntry addEntry(GlossaryEntry newEntry) {
@@ -198,13 +251,17 @@ public class HelpManagerImpl extends HibernateDaoSupport
    }
 
    public Collection getWorksiteTerms() {
-      if (isGlobal()) {
-         return getGlossary().findAllGlobal();
-      }
-      else {
-         return getGlossary().findAll(getWorksiteManager().getCurrentWorksiteId().getValue());
-      }
+	   return getWorksiteTerms(getWorksiteManager().getCurrentWorksiteId().getValue());
    }
+   
+   public Collection getWorksiteTerms(String workSite) {
+	      if (isGlobal()) {
+	         return getGlossary().findAllGlobal();
+	      }
+	      else {
+	         return getGlossary().findAll(workSite);
+	      }
+	   }
 
    public boolean isGlobal() {
       Placement placement = toolManager.getCurrentPlacement();
@@ -225,25 +282,243 @@ public class HelpManagerImpl extends HibernateDaoSupport
    }
    
    protected boolean entryExists(GlossaryEntry entry){
-      Collection entryFound = getGlossary().findAll(entry.getTerm(), portalService.getCurrentSiteId());
-		for (Iterator i = entryFound.iterator();i.hasNext();){
-			GlossaryEntry entryIter = (GlossaryEntry)i.next();
-			String entryWID = entryIter.getWorksiteId();
-
-         if (entryIter.getId().equals(entry.getId())) {
-            continue;
-         }
-         else if (entryWID == null && isGlobal()) {
-            return true;
-         }
-         else if (entryWID != null) {
-            return true;
-         }
-		}
-		
-		return false;
-		
+      return entryExists(entry, portalService.getCurrentSiteId());
    }
+   protected boolean entryExists(GlossaryEntry entry, String worksite){
+	      Collection entryFound = getGlossary().findAll(entry.getTerm(), worksite);
+			for (Iterator i = entryFound.iterator();i.hasNext();){
+				GlossaryEntry entryIter = (GlossaryEntry)i.next();
+				String entryWID = entryIter.getWorksiteId();
+
+	         if (entryIter.getId().equals(entry.getId())) {
+	            continue;
+	         }
+	         else if (entryWID == null && isGlobal()) {
+	            return true;
+	         }
+	         else if (entryWID != null) {
+	            return true;
+	         }
+			}
+			
+			return false;
+	   }
+   
+
+   public void packageForDownload(Map params, OutputStream out) throws IOException {
+
+	   packageGlossaryForExport(getWorksiteManager().getCurrentWorksiteId(), out);
+   }
+   
+   public void packageGlossaryForExport(Id worksiteId, OutputStream os)
+			throws IOException {
+		getAuthzManager().checkPermission(HelpFunctionConstants.EXPORT_TERMS,
+				getToolId());
+
+		CheckedOutputStream checksum = new CheckedOutputStream(os,
+				new Adler32());
+		ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(
+				checksum));
+		
+		putWorksiteTermsIntoZip(worksiteId, zos);
+
+		zos.finish();
+		zos.flush();
+	}
+	public void putWorksiteTermsIntoZip(Id worksiteId, ZipOutputStream zout) throws IOException
+	{
+		Collection terms = getWorksiteTerms(worksiteId.getValue());
+
+	    Element rootNode = new Element("ospiGlossary");
+	    
+		for (Iterator iter = terms.iterator(); iter.hasNext();) {
+			GlossaryEntry ge = (GlossaryEntry) iter.next();
+			
+			//loads the long description
+			ge = getGlossary().load(ge.getId());
+			
+		    Element termNode = new Element("ospiTerm");
+		    
+		    Element attrNode = new Element("term");
+		    attrNode.addContent(new CDATA(ge.getTerm()));
+		    termNode.addContent(attrNode);
+		    
+		    attrNode = new Element("description");
+		    attrNode.addContent(new CDATA(ge.getDescription()));
+		    termNode.addContent(attrNode);
+		    
+		    attrNode = new Element("longDescription");
+		    attrNode.addContent(new CDATA(ge.getLongDescription()));
+		    termNode.addContent(attrNode);
+			
+			rootNode.addContent(termNode);
+		}
+		storeFileInZip(zout, new java.io.StringReader(
+					(new XMLOutputter()).outputString(new Document(rootNode))), "glossaryTerms.xml");
+	}
+
+	protected void storeFileInZip(ZipOutputStream zos, Reader in,
+			String entryName) throws IOException {
+
+		char data[] = new char[1024 * 10];
+
+		if (File.separatorChar == '\\') {
+			entryName = entryName.replace('\\', '/');
+		}
+
+		ZipEntry newfileEntry = new ZipEntry(entryName);
+
+		zos.putNextEntry(newfileEntry);
+
+		BufferedReader origin = new BufferedReader(in, data.length);
+		OutputStreamWriter osw = new OutputStreamWriter(zos);
+		int count;
+		while ((count = origin.read(data, 0, data.length)) != -1) {
+			osw.write(data, 0, count);
+		}
+		osw.close();
+		zos.closeEntry();
+		in.close();
+	}
+
+	public Node getNode(Id artifactId) {
+		String id = getContentHosting().resolveUuid(artifactId.getValue());
+		if (id == null) {
+			return null;
+		}
+
+		try {
+			ContentResource resource = getContentHosting().getResource(id);
+			String ownerId = resource.getProperties().getProperty(
+					resource.getProperties().getNamePropCreator());
+			Agent owner = getAgentManager().getAgent(
+					idManager.getId(ownerId));
+			return new Node(artifactId, resource, owner);
+		} catch (PermissionException e) {
+			logger.error("", e);
+			throw new RuntimeException(e);
+		} catch (IdUnusedException e) {
+			logger.error("", e);
+			throw new RuntimeException(e);
+		} catch (TypeException e) {
+			logger.error("", e);
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
+	/**
+	 * Given a resource id, this parses out the GlossaryEntries from its input stream.
+	 * Once the enties are found, they are inserted into the users current worksite.  If a term exists
+	 * in the worksite, then execute based on the last parameter.
+	 * @param worksiteId Id
+	 * @param resourceId an String
+	 * @param replaceExisting boolean
+	 */
+	public void importTermsResource(String resourceId, boolean replaceExisting) throws IOException
+	{
+		importTermsResource(getWorksiteManager().getCurrentWorksiteId(), resourceId, replaceExisting);
+	}
+	
+	
+	/**
+	 * Given a resource id, this parses out the GlossaryEntries from its input stream.
+	 * Once the enties are found, they are inserted into the given worksite.  If a term exists
+	 * in the worksite, then execute based on the last parameter.
+	 * @param worksiteId Id
+	 * @param resourceId an String
+	 * @param replaceExisting boolean
+	 */
+	public void importTermsResource(Id worksiteId, String resourceId, boolean replaceExisting) throws IOException
+	{
+		Node node = getNode(idManager.getId(resourceId));
+		if(node.getMimeType().equals(new MimeType("text/xml")) || 
+				node.getMimeType().equals(new MimeType("application/x-osp")) ||
+				node.getMimeType().equals(new MimeType("application/xml"))) {
+			importTermsStream(worksiteId, node.getInputStream(), replaceExisting);
+		} else if(node.getMimeType().equals(new MimeType("application/zip")) || 
+				node.getMimeType().equals(new MimeType("application/x-zip-compressed"))) {
+			ZipInputStream zis = new UncloseableZipInputStream(node.getInputStream());
+
+		    ZipEntry currentEntry = zis.getNextEntry();
+		    
+		    while(currentEntry != null) {
+		    	if(currentEntry.getName().endsWith("xml")) {
+					importTermsStream(worksiteId, zis, replaceExisting);
+		    	}
+	            zis.closeEntry();
+	            currentEntry = zis.getNextEntry();
+		    }
+		} else {
+			throw new OspException("Unsupported file type");
+		}
+	}
+	
+	
+	/**
+	 * Given an xml File stream, this parses out the GlossaryEntries from the input stream.
+	 * Once the enties are found, they are inserted into the given worksite.  If a term exists
+	 * in the worksite, then execute based on the last parameter.
+	 * @param worksiteId Id
+	 * @param inStream an xml InputStream
+	 * @param replaceExisting boolean
+	 */
+	public void importTermsStream(Id worksiteId, InputStream inStream, boolean replaceExisting)
+	{
+
+		SAXBuilder builder = new SAXBuilder();
+
+		try {
+		   Document document	= builder.build(new InputStreamReader(inStream));
+		   List		entries		= extractEntries(document);
+		   String	worksiteStr = worksiteId.getValue();
+		   
+		   for(Iterator iter = entries.iterator(); iter.hasNext(); ) {
+			   GlossaryEntry entry = (GlossaryEntry)iter.next();
+			   entry.setWorksiteId(worksiteStr);
+			   boolean exists = entryExists(entry, worksiteStr);
+			   if(!exists || (exists && replaceExisting)) {
+				   if(!exists) {
+					   addEntry(entry);
+				   } else {
+					   GlossaryEntry existingEntry = getGlossary().find(entry.getTerm(), worksiteStr);
+					   existingEntry.setDescription(entry.getDescription());
+					   existingEntry.setLongDescription(entry.getLongDescription());
+					   updateEntry(existingEntry);
+				   }
+			   }
+		   }
+		   
+		} catch(Exception jdome) {
+			
+		}
+	}
+	
+	
+	/**
+	 * Given an xml document this reads out the glossary entries.
+	 * @param document XML Dom Document
+	 * @return List of GlossaryEntry
+	 */
+	public List extractEntries(Document document)
+	{
+		Element topNode = document.getRootElement();
+
+		List ospiTerms = topNode.getChildren("ospiTerm");
+		List entries = new ArrayList();
+
+		for (Iterator iter = ospiTerms.iterator(); iter.hasNext();) {
+			Element ospiTerm = (Element) iter.next();
+			
+			GlossaryEntry entry = new GlossaryEntry();
+			entry.setLongDescriptionObject(new GlossaryDescription());
+			entry.setTerm(ospiTerm.getChildTextTrim("term"));
+			entry.setDescription(ospiTerm.getChildTextTrim("description"));
+			entry.setLongDescription(ospiTerm.getChildTextTrim("longDescription"));
+			entries.add(entry);
+		}
+		return entries;
+	}
 		
    protected Id getToolId() {
       Placement placement = toolManager.getCurrentPlacement();

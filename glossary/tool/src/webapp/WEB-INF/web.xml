@@ -58,6 +58,12 @@
       <load-on-startup>2</load-on-startup>
    </servlet>
 
+   <servlet>
+      <servlet-name>repository</servlet-name>
+      <servlet-class>org.theospi.portfolio.shared.control.servlet.FileDownloadServlet</servlet-class>
+      <load-on-startup>2</load-on-startup>
+   </servlet>
+
    
    <listener>
       <listener-class>org.sakaiproject.metaobj.utils.ioc.web.WebContextLoaderListener</listener-class>
@@ -80,5 +86,10 @@
       <servlet-name>springapp</servlet-name>
       <url-pattern>*.osp</url-pattern>
    </servlet-mapping>
+   
+   <servlet-mapping>
+     <servlet-name>repository</servlet-name>
+     <url-pattern>/repository/*</url-pattern>
+  </servlet-mapping>
 
 </web-app>
