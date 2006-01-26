@@ -156,7 +156,7 @@
 
       <list name="childPages" cascade="all"
           inverse="true" lazy="false">
-          <key column="category_id" />
+          <key column="completed_category_id" />
           <index column="seq_num" />
           <one-to-many class="CompletedWizardPage" />
       </list>

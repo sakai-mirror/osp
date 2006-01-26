@@ -55,6 +55,8 @@ public class WizardPageDefinition extends IdentifiableObject {
    private Id reviewDevice;
    private String reviewDeviceType;
 
+   private String siteId;
+
    private List additionalForms = new ArrayList();
 
    /**
@@ -215,6 +217,14 @@ public class WizardPageDefinition extends IdentifiableObject {
     */
    public void setEvalWorkflows(Set evalWorkflows) {
       this.evalWorkflows = evalWorkflows;
+   }
+
+   public String getSiteId() {
+      return siteId;
+   }
+
+   public void setSiteId(String siteId) {
+      this.siteId = siteId;
    }
 
 }

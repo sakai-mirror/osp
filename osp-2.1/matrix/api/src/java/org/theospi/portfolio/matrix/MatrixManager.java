@@ -48,20 +48,10 @@ package org.theospi.portfolio.matrix;
 
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.theospi.portfolio.matrix.model.Attachment;
-import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.matrix.model.ReviewRubricValue;
-import org.theospi.portfolio.matrix.model.ScaffoldingCell;
-import org.theospi.portfolio.matrix.model.Criterion;
-import org.theospi.portfolio.matrix.model.Level;
-import org.theospi.portfolio.matrix.model.Matrix;
-import org.theospi.portfolio.matrix.model.MatrixTool;
-import org.theospi.portfolio.matrix.model.ReviewerItem;
-import org.theospi.portfolio.matrix.model.Scaffolding;
+import org.theospi.portfolio.matrix.model.*;
 import org.theospi.portfolio.shared.model.Node;
 
 import java.io.IOException;
@@ -95,12 +85,16 @@ public interface MatrixManager {
    Level getLevel(Id levelId);
 
    Cell getCell(Id cellId);
-   
+
+   Cell getCellFromPage(Id pageId);
+
    List getCells(Matrix matrix);
    
    Id storeMatrixTool(MatrixTool matrixTool);
 
    Id storeCell(Cell cell);
+
+   Id storePage(WizardPage page);
 
    Id storeScaffolding(Scaffolding scaffolding);
    
@@ -116,9 +110,9 @@ public interface MatrixManager {
 
    Attachment getAttachment(Id attachmentId);
    
-   Attachment attachArtifact(Id cellId, String[] criteriaId, Reference artifactId, ElementBean elementBean);
+   Attachment attachArtifact(Id pageId, Reference artifactId);
 
-   void detachArtifact(final Id cellId, final Id artifactId);
+   void detachArtifact(final Id pageId, final Id artifactId);
    
    void removeFromSession(Object obj);
    void clearSession();
@@ -137,12 +131,14 @@ public interface MatrixManager {
 
    List getArtifactAssociationCriteria(Id cellId, Id nodeId);
 
-   Set getCellContents(Cell cell);
-   Set getCellForms(Cell cell);
-   List getCellArtifacts(Cell cell);
+   Set getPageContents(WizardPage page);
+   Set getPageForms(WizardPage page);
+   List getPageArtifacts(WizardPage page);
    List getCellsByArtifact(Id artifactId);
 
    Cell submitCellForEvaluation(Cell cell);
+
+   WizardPage submitPageForEvaluation(WizardPage page);
 
    List getEvaluatableCells(Agent agent, Id worksiteId);
 
@@ -174,7 +170,7 @@ public interface MatrixManager {
    Scaffolding uploadScaffolding(Reference uploadedScaffoldingFile,
                                  ToolConfiguration currentPlacement) throws IOException;
 
-   void checkCellAccess(String id);
+   void checkPageAccess(String id);
    
    Scaffolding createDefaultScaffolding();
 
@@ -182,7 +178,9 @@ public interface MatrixManager {
 
    public List getMatrices(Id scaffoldingId);
    
-   void processWorkflow(Id workflowId, Id cellId);
+   void processWorkflow(Id workflowId, Id pageId);
    void processWorkflow(int workflowOption, Id cellId);
+
+   WizardPage getWizardPage(Id pageId);
 
 }

@@ -91,16 +91,10 @@
            <props>
               <prop key="/viewMatrix.osp">viewMatrixController</prop>
               <prop key="/viewCell.osp">cellController</prop>
-              <prop key="/removeConfirmation.osp">removeArtifactController</prop>
               <prop key="/selectCellArtifacts.osp">cellArtifactController</prop>
-              <prop key="/manageArtifactAssociations.osp">artifactAssociationController</prop>
               <prop key="/resetMatrix.osp">MatrixResetController</prop>
               <prop key="/submitCellConfirmation.osp">submitCellConfirmationController</prop>
 
-              <prop key="/checkSingleCriteria.osp">checkSingleCriteriaController</prop>
-
-              <prop key="/privacyResponse.osp">privacyResponseController</prop>
-              <prop key="/checkForPrivacy.osp">checkForPrivacyController</prop>
               <prop key="/attachToCell.osp">attachCellController</prop>
               <prop key="/manageCellStatus.osp">manageCellStatusController</prop>
               <prop key="/cellFormPicker.osp">cellFormPickerController</prop>

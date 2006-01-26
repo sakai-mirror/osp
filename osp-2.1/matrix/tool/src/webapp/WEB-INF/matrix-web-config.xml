@@ -6,87 +6,7 @@
    <bean id="matrixValidator" class="org.theospi.portfolio.matrix.control.MatrixValidator">
    	<property name="authManager"><ref bean="authManager"/></property>
    </bean>
-   <bean id="artifactAssociationController"  class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
-      <property name="controller">
-		<bean class="org.theospi.portfolio.matrix.control.ArtifactAssociationController">
-        		<property name="authnManager"><ref bean="authManager"/></property>
-        		<property name="matrixManager"><ref bean="matrixManager"/></property>
-            <property name="idManager"><ref bean="idManager"/></property>
-        </bean>
-      </property>
-      <property name="screenMappings">
-         <props>
-            <prop key="success">viewCellRedirect</prop>
-            <prop key="privacy">privacyResponseRedirect</prop>
-         </props>
-      </property>
-      <property name="customTypedEditors">
-         <list>
-            <ref bean="idCustomEditor"/>
-         </list>
-      </property>
-      <property name="validator"><ref bean="matrixValidator"/></property>
-      <property name="commandName"><value>matrix</value></property>
-      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.MatrixFormBean</value></property>
-      <property name="formView"><value>manageArtifactAssociations</value></property>
-   </bean>
-   
-   <bean id="checkSingleCriteriaController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
-      <property name="controller">
-         <bean class="org.theospi.portfolio.matrix.control.CheckSingleCriteriaController">
-            <property name="idManager"><ref bean="idManager"/></property>
-            <property name="matrixManager"><ref bean="matrixManager"/></property>
-         </bean>
-      </property>
-      <property name="screenMappings">
-         <props>
-            <prop key="success">viewCellRedirect</prop>
-         </props>
-      </property>
-      <property name="commandName"><value>bean</value></property>
-      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellAndNodeForm</value></property>
-   </bean>
-   
-   <bean id="checkForPrivacyController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
-      <property name="controller">
-         <bean class="org.theospi.portfolio.matrix.control.CheckForPrivacy">
-            <property name="idManager"><ref bean="idManager"/></property>
-            <property name="matrixManager"><ref bean="matrixManager"/></property>
-         </bean>
-      </property>
-      <property name="screenMappings">
-         <props>
-            <prop key="privacy">privacyResponseRedirect</prop>
-            <prop key="manageArtifacts">manageArtifactAssociationsRedirect</prop>
-				<prop key="singleCriteria">checkSingleCriteriaForward</prop>
-         </props>
-      </property>
-      <property name="commandName"><value>bean</value></property>
-      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellAndNodeForm</value></property>
-   </bean>
-   
-   <bean id="privacyResponseController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
-      <property name="controller">
-         <bean class="org.theospi.portfolio.matrix.control.PrivacyResponseController">
-         	<property name="matrixManager"><ref bean="matrixManager"/></property>
-            <property name="idManager"><ref bean="idManager"/></property>
-         </bean>
-      </property>
-      <property name="screenMappings">
-         <props>
-            <prop key="success2">manageArtifactAssociationsRedirect</prop>
-            <prop key="success">checkSingleCriteriaRedirect</prop>
-            <prop key="cancel">viewCellRedirect</prop>
-         </props>
-      </property>
-      <property name="validator"><ref bean="privacyResponseValidator"/></property>
-      <property name="commandName"><value>bean</value></property>
-      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.PrivacyFormBean</value></property>
-      <property name="formView"><value>privacyResponse</value></property>
-   </bean>
-   
-   <bean id="privacyResponseValidator" class="org.theospi.portfolio.matrix.control.PrivacyResponseValidator"/>
-   
+
    <bean id="MatrixResetController"  class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
 		<bean class="org.theospi.portfolio.matrix.control.MatrixResetController">
@@ -140,7 +60,7 @@
       <property name="commandClass"><value>org.theospi.portfolio.matrix.control.MatrixGridBean</value></property>
       <property name="formView"><value>viewMatrix</value></property>      
    </bean>
-   
+
    <bean id="cellController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.CellController">
@@ -193,7 +113,7 @@
          <props>
             <prop key="success">wizardPageRedirect</prop>
             <prop key="cancel">helperDone</prop>
-            <prop key="confirm">submitWizardPageConfirmationRedirect</prop>
+            <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="guidance">viewGuidance</prop>
             <prop key="review">createReview</prop>
             <prop key="formPicker">formPicker</prop>
@@ -235,7 +155,7 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="cell">viewCellRedirect</prop>
+            <prop key="page">wizardPageRedirect</prop>
             <prop key="formPicker">formPicker</prop>
          </props>
       </property>
@@ -258,7 +178,7 @@
       <property name="screenMappings">
          <props>
             <prop key="success">submitCellConfirmation</prop>
-            <prop key="continue">viewCellRedirect</prop>
+            <prop key="continue">wizardPageRedirect</prop>
          </props>
       </property>
       <property name="customTypedEditors">
@@ -280,7 +200,7 @@
       <property name="screenMappings">
          <props>
             <prop key="success">createReview</prop>
-            <prop key="return">viewCellRedirect</prop>
+            <prop key="return">wizardPageRedirect</prop>
             <prop key="postProcessor">postProcessorWorkflow</prop>
          </props>
       </property>
@@ -302,7 +222,7 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">viewCellRedirect</prop>
+            <prop key="success">wizardPageRedirect</prop>
          </props>
       </property>
       <property name="customTypedEditors">
@@ -313,46 +233,6 @@
       <property name="commandName"><value>string</value></property>
       <property name="commandClass"><value>java.lang.String</value></property>
       <property name="formView"><value>postProcessorWorkflow</value></property>
-   </bean>
-
-   <bean id="removeArtifactController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
-      <property name="controller">
-         <bean class="org.theospi.portfolio.matrix.control.RemoveAssociationController">
-            <property name="matrixManager"><ref bean="matrixManager"/></property>
-            <property name="idManager"><ref bean="idManager"/></property>
-         </bean>
-      </property>
-      <property name="screenMappings">
-         <props>
-            <prop key="success">removeConfirmation</prop>
-            <prop key="continue">viewCellRedirect</prop>
-         </props>
-      </property>
-      <property name="customTypedEditors">
-         <list>
-            <ref bean="idCustomEditor"/>
-         </list>
-      </property>
-      <property name="commandName"><value>model</value></property>
-      <property name="commandClass"><value>java.util.Map</value></property>
-   </bean>
-   <bean id="cellArtifactController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
-      <property name="controller">
-         <bean class="org.theospi.portfolio.matrix.control.CellArtifactController">
-            <property name="matrixManager"><ref bean="matrixManager"/></property>
-            <property name="authManager"><ref bean="authManager"/></property>
-            <property name="idManager"><ref bean="idManager"/></property>
-            <property name="repositoryManager"><ref bean="repositoryManager"/></property>
-         </bean>
-      </property>
-      <property name="screenMappings">
-         <props>
-            <prop key="success">selectCellArtifacts</prop>
-            <prop key="viewCell">viewCell</prop>
-         </props>
-      </property>
-      <property name="commandName"><value>model</value></property>
-      <property name="commandClass"><value>java.util.Map</value></property>
    </bean>
 
    <bean id="listReviewerItemsController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
@@ -772,8 +652,8 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">checkPrivacyForward</prop>
-            <prop key="cancel">viewCellRedirect</prop>
+            <prop key="success">wizardPageRedirect</prop>
+            <prop key="cancel">wizardPageRedirect</prop>
          </props>
       </property>
       <property name="formView"><value>attachCell</value></property>
@@ -846,8 +726,8 @@
       <property name="screenMappings">
          <props>
             <prop key="success">manageCellStatus</prop>
-            <prop key="cancel">viewCellRedirect</prop>
-            <prop key="done">viewCellRedirect</prop>
+            <prop key="cancel">wizardPageRedirect</prop>
+            <prop key="done">wizardPageRedirect</prop>
          </props>
       </property>
       <property name="commandName"><value>cell</value></property>

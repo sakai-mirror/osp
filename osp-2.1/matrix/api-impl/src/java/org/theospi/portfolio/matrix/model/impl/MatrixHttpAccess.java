@@ -30,7 +30,7 @@ public class MatrixHttpAccess extends OspHttpAccess {
    protected void checkSource(Reference ref, ReferenceParser parser)
          throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
 
-      getMatrixManager().checkCellAccess(parser.getId());
+      getMatrixManager().checkPageAccess(parser.getId());
    }
 
    public IdManager getIdManager() {

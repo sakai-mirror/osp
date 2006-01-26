@@ -74,7 +74,7 @@
 
     <br/>
     <div class="act">
-        <input type="hidden" name="cell_id" value="<c:out value="${cell.id}"/>"/>
+        <input type="hidden" name="page_id" value="<c:out value="${cell.wizardPage.id}"/>"/>
         <input type="button" name="action" value="Printable View" onclick="open('<osp:url value="viewPrintableReflection.osp"/>&action=Printable View&reviewerItem_id=<c:out value="${reviewerItem.id.value}" />','Sample',
             'location=no,scrollbars=yes')"/>
         <input type="submit" name="action" value="Save"/>

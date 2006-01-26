@@ -9,8 +9,7 @@ Are you sure you want to change this <c:out value="${label}"/>?  Users may have 
 added content to matrix cells or created/submitted reflections.
 
 <form method="POST">
-<!-- <input name="cell_id" type="hidden" value="<c:out value="${cell_id}"/>"/>
-<input name="selectedArtifacts" type="hidden" value="<c:out value="${selectedArtifacts}"/>"/> -->
+
 <input type="hidden" name="<c:out value="${isInSession}"/>" value="true"/>
 <div class="chefButtonRow">
 <input name="continue" type="submit" value="<osp:message key="continue" bundle="${msgs}" />"/>

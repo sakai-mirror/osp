@@ -25,6 +25,7 @@ package org.theospi.portfolio.wizard.tool;
 import org.theospi.portfolio.wizard.model.CompletedWizardCategory;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.theospi.portfolio.matrix.model.WizardPage;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 
@@ -85,7 +86,8 @@ public class DecoratedCompletedPage {
    public String processActionEdit() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
-      session.setAttribute(WizardPageHelper.WIZARD_PAGE, getBase().getWizardPage());
+      WizardPage page = getParent().getMatrixManager().getWizardPage(getBase().getWizardPage().getId());
+      session.setAttribute(WizardPageHelper.WIZARD_PAGE, page);
 
       try {
          context.redirect("osp.wizard.page.helper/wizardPage.osp");

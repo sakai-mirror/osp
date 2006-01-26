@@ -9,7 +9,7 @@ import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
@@ -20,14 +20,14 @@ public class ReviewHelperController implements Controller {
    private IdManager idManager = null;
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-      String strId = (String) request.get("cell_id");
+      String strId = (String) request.get("page_id");
       if (strId== null) {
-         strId = (String)session.get("cell_id");
+         strId = (String)session.get("page_id");
          
          Map model = new HashMap();
-         model.put("cell_id", strId);
+         model.put("page_id", strId);
          
-         session.remove("cell_id");
+         session.remove("page_id");
          session.remove(ReviewHelper.REVIEW_TYPE);
          session.remove(ReviewHelper.REVIEW_FORM_TYPE);
          session.remove(ReviewHelper.REVIEW_PARENT);
@@ -40,10 +40,10 @@ public class ReviewHelperController implements Controller {
       }
       
       Id id = getIdManager().getId(strId);
-      Cell cell = matrixManager.getCell(id);
+      WizardPage page = matrixManager.getWizardPage(id);
       
       session.put(ReviewHelper.REVIEW_PARENT, 
-            cell.getId().getValue());
+            page.getId().getValue());
       
       session.put(ReviewManager.CURRENT_REVIEW_ID, request.get("current_review_id"));
       
@@ -55,23 +55,23 @@ public class ReviewHelperController implements Controller {
       switch (intType) {
          case Review.REVIEW_TYPE:
             bundlePrefix = "review_";
-            formType = cell.getScaffoldingCell().getReviewDevice().getValue();
+            formType = page.getPageDefinition().getReviewDevice().getValue();
             break;
          case Review.EVALUATION_TYPE:
             bundlePrefix = "eval_";
-            formType = cell.getScaffoldingCell().getEvaluationDevice().getValue();
+            formType = page.getPageDefinition().getEvaluationDevice().getValue();
             session.put(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS, 
-                  cell.getScaffoldingCell().getWizardPageDefinition().getEvalWorkflows());
+                  page.getPageDefinition().getEvalWorkflows());
             break;
          case Review.REFLECTION_TYPE:
             bundlePrefix = "reflection_";
-            formType = cell.getScaffoldingCell().getReflectionDevice().getValue();
+            formType = page.getPageDefinition().getReflectionDevice().getValue();
             break;
       }      
       session.put(ReviewHelper.REVIEW_FORM_TYPE, formType);
       session.put(ReviewHelper.REVIEW_TYPE, type);
       session.put(ReviewHelper.REVIEW_BUNDLE_PREFIX, bundlePrefix); 
-      session.put("cell_id", cell.getId().getValue());
+      session.put("page_id", page.getId().getValue());
       return new ModelAndView("success");
       
    }

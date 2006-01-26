@@ -2254,6 +2254,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    protected void initFreeFormTemplate() {
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+
+      org.sakaiproject.api.kernel.session.Session sakaiSession = SessionManager.getCurrentSession();
+      String userId = sakaiSession.getUserId();
+      sakaiSession.setUserId("admin");
+      sakaiSession.setUserEid("admin");
+
       try {
          PresentationTemplate template = getPresentationTemplate(getFreeFormTemplateId());
          if (template == null) {
@@ -2268,6 +2274,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          storeTemplate(template, false);
       } finally {
          getSecurityService().popAdvisor();
+         sakaiSession.setUserEid(userId);
+         sakaiSession.setUserId(userId);
       }
 
    }

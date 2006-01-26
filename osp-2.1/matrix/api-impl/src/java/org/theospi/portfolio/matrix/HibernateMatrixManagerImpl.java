@@ -298,20 +298,19 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
    
    public Cell getCell(Id cellId) {
-      //return (Cell) this.getHibernateTemplate().load(Cell.class, cellId);
       Cell cell = (Cell) this.getHibernateTemplate().get(Cell.class, cellId);
+      return cell;
+   }
 
-      Scaffolding scaffolding = cell.getScaffoldingCell().getScaffolding();
-      Id xsdId = scaffolding.getPrivacyXsdId();
+   public Cell getCellFromPage(Id pageId) {
+      List cells = getHibernateTemplate().find(
+         "from Cell where wizard_page_id=?", new Object[]{pageId.getValue()});
 
-      if (xsdId != null) {
-         String propPage = getContentHosting().resolveUuid(xsdId.getValue());
-         getSecurityService().pushAdvisor(
-            new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
-                  getContentHosting().getReference(propPage)));
+      if (cells.size() > 0) {
+         return (Cell)cells.get(0);
       }
 
-      return cell;
+      return null;
    }
 
    public Id storeMatrixTool(MatrixTool matrixTool) {
@@ -322,6 +321,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public Id storeCell(Cell cell) {
       this.getHibernateTemplate().saveOrUpdate(cell);
       return cell.getId();
+   }
+
+   public Id storePage(WizardPage page) {
+      this.getHibernateTemplate().saveOrUpdate(page);
+      return page.getId();
    }
 
    public void publishScaffolding(Id scaffoldingId) {
@@ -391,27 +395,30 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return matrix;
    }
 
-   public Attachment attachArtifact(Id cellId, String[] criteriaId, Reference artifactRef,
-                                    ElementBean elementBean) {
+   public Attachment attachArtifact(Id pageId, Reference artifactRef) {
       Id artifactId = convertRef(artifactRef);
-      detachArtifact(cellId, artifactId);
-      Cell cell = getCell(cellId);
+      detachArtifact(pageId, artifactId);
+      WizardPage page = getWizardPage(pageId);
       Attachment attachment = new Attachment();
       attachment.setArtifactId(artifactId);
-      attachment.setWizardPage(cell.getWizardPage());
-      attachment.setPrivacyResponse(elementBean);
+      attachment.setWizardPage(page);
 
-      Set attCrit = new HashSet();
-      for (int i = 0; i < criteriaId.length; i++) {
-         AttachmentCriterion ac = new AttachmentCriterion();
-         ac.setCriterion(this.getCriterion(getIdManager().getId(criteriaId[i])));
-         ac.setAttachment(attachment);
-         attCrit.add(ac);
-      }
-      attachment.setAttachmentCriteria(attCrit);
-      
       this.getHibernateTemplate().save(attachment);
       return attachment;
+   }
+
+   public WizardPage getWizardPage(Id pageId) {
+      WizardPage page = (WizardPage) this.getHibernateTemplate().get(WizardPage.class, pageId);
+      for (Iterator i=page.getAttachments().iterator();i.hasNext();) {
+         Attachment a = (Attachment) i.next();
+         a.getAttachmentCriteria().size();
+      }
+
+      for (Iterator i=page.getPageForms().iterator();i.hasNext();) {
+         WizardPageForm wpf = (WizardPageForm) i.next();
+      }
+
+      return page;
    }
 
    protected Id convertRef(Reference artifactRef) {
@@ -419,15 +426,15 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return getIdManager().getId(uuid);
    }
 
-   public void detachArtifact(final Id cellId, final Id artifactId) {
+   public void detachArtifact(final Id pageId, final Id artifactId) {
 
       HibernateCallback callback = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
-            Object[] params = new Object[]{cellId, artifactId};
+            Object[] params = new Object[]{pageId, artifactId};
             Type[] types = new Type[]{Hibernate.custom(IdType.class), Hibernate.custom(IdType.class)};
 
-            Cell cell = (Cell) session.load(Cell.class, cellId);
-            Set attachments = cell.getAttachments();
+            WizardPage page = (WizardPage) session.load(WizardPage.class, pageId);
+            Set attachments = page.getAttachments();
             Iterator iter = attachments.iterator();
             List toRemove = new ArrayList();
             while (iter.hasNext()) {
@@ -438,7 +445,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             }
             attachments.removeAll(toRemove);
 
-            session.update(cell);
+            session.update(page);
             return null;
          }
 
@@ -606,13 +613,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return this.getHibernateTemplate().find("select ac.criterion from AttachmentCriterion ac where ac.attachment.cell=? and ac.attachment.artifactId=?", params);
    }
    
-   public Set getCellForms(Cell cell) {
+   public Set getPageForms(WizardPage page) {
       Set result = new HashSet();
       Set removes = new HashSet();
-      if (cell.getCellForms() != null) {
-         for (Iterator iter = cell.getCellForms().iterator(); iter.hasNext();) {
+      if (page.getPageForms() != null) {
+         for (Iterator iter = page.getPageForms().iterator(); iter.hasNext();) {
             WizardPageForm wpf = (WizardPageForm) iter.next();
-            Node node = getNode(wpf.getArtifactId(), cell);
+            Node node = getNode(wpf.getArtifactId(), page);
             if (node != null) {
                result.add(node);
             }
@@ -624,20 +631,20 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          }
          for (Iterator iter2 = removes.iterator(); iter2.hasNext();) {
             Id id = (Id) iter2.next();
-            logger.warn("Cell contains stale form references (null node encountered) for Cell: " + cell.getId().getValue() + ". Detaching");
-            detachForm(cell.getId(), id);
+            logger.warn("Cell contains stale form references (null node encountered) for Cell: " + page.getId().getValue() + ". Detaching");
+            detachForm(page.getId(), id);
          }
       }
       return result;
    }
    
-   public Set getCellContents(Cell cell) {
+   public Set getPageContents(WizardPage page) {
       Set result = new HashSet();
       Set removes = new HashSet();
-      if (cell.getAttachments() != null) {
-         for (Iterator iter = cell.getAttachments().iterator(); iter.hasNext();) {
+      if (page.getAttachments() != null) {
+         for (Iterator iter = page.getAttachments().iterator(); iter.hasNext();) {
             Attachment attachment = (Attachment) iter.next();
-            Node node = getNode(attachment.getArtifactId(), cell);
+            Node node = getNode(attachment.getArtifactId(), page);
             if (node != null) {
                result.add(node);
             }
@@ -649,21 +656,21 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          }
          for (Iterator iter2 = removes.iterator(); iter2.hasNext();) {
             Id id = (Id) iter2.next();
-            logger.warn("Cell contains stale artifact references (null node encountered) for Cell: " + cell.getId().getValue() + ". Detaching");
-            detachArtifact(cell.getId(), id);
+            logger.warn("Cell contains stale artifact references (null node encountered) for Cell: " + page.getId().getValue() + ". Detaching");
+            detachArtifact(page.getId(), id);
          }
       }
       return result;
    }
 
-   protected Node getNode(Id artifactId, Cell cell) {
+   protected Node getNode(Id artifactId, WizardPage page) {
       Node node = getNode(artifactId);
       if (node == null) {
          return null;
       }
-      String siteId = cell.getScaffoldingCell().getScaffolding().getWorksiteId().getValue();
+      String siteId = page.getPageDefinition().getSiteId();
       ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
-            buildRef(siteId, cell.getId().getValue(), node.getResource()));
+            buildRef(siteId, page.getId().getValue(), node.getResource()));
 
       return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner());
    }
@@ -705,21 +712,21 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return getNode(getIdManager().getId(nodeId));
    }
    
-   public List getCellArtifacts(Cell cell)
+   public List getPageArtifacts(WizardPage page)
    {
       List nodeList = new ArrayList();
-      Set attachments = cell.getAttachments();
+      Set attachments = page.getAttachments();
       
       for (Iterator attachmentIterator = attachments.iterator(); attachmentIterator.hasNext();) {
          Attachment att = (Attachment)attachmentIterator.next();
          //TODO is it okay to clear the whole thing here?
          getHibernateTemplate().clear();
          
-         Node node = getNode(att.getArtifactId(), cell);
+         Node node = getNode(att.getArtifactId(), page);
          if (node != null) {
         	 nodeList.add(node);
          } else
-             logger.warn("Cell contains stale artifact references (null node encountered) for Cell: " + cell.getId());
+             logger.warn("Cell contains stale artifact references (null node encountered) for Cell: " + page.getId());
          
       } 
       return nodeList;
@@ -836,7 +843,14 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       return cell;
    }
-   
+
+   public WizardPage submitPageForEvaluation(WizardPage page) {
+      getHibernateTemplate().refresh(page); //TODO not sure if this is necessary
+      page.setStatus(MatrixFunctionConstants.PENDING_STATUS);
+      getHibernateTemplate().saveOrUpdate(page);
+      return page;
+   }
+
    public ReviewRubricValue findReviewRubricValue(String id) {
       for (Iterator iter = getReviewRubrics().iterator(); iter.hasNext();) {
          ReviewRubricValue rrv = (ReviewRubricValue)iter.next();
@@ -1093,17 +1107,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       }
    }
 
-   public void checkCellAccess(String id) {
-      Cell cell = getCell(getIdManager().getId(id));
-      Id toolId = cell.getMatrix().getMatrixTool().getId();
-      if (!getAuthzManager().isAuthorized(MatrixFunctionConstants.REVIEW_MATRIX, toolId) &&
-          !getAuthzManager().isAuthorized(MatrixFunctionConstants.EVALUATE_MATRIX, cell.getId())) {
-         // won't setup security advisor, so it won't load
-         return;
-      }
+   public void checkPageAccess(String id) {
+      WizardPage page = getWizardPage(getIdManager().getId(id));
+      // todo need to figure out matrix or wizard authz stuff here
 
       // this should set the security advisor for the attached artifacts.
-      getCellArtifacts(cell);
+      getPageArtifacts(page);
    }
 
    private void createReviewerAuthzForImport(Scaffolding scaffolding) {
@@ -1497,9 +1506,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       this.defaultScaffoldingBean = defaultScaffoldingBean;
    }
    
-   public void processWorkflow(Id workflowId, Id cellId) {
+   public void processWorkflow(Id workflowId, Id pageId) {
       Workflow workflow = getWorkflowManager().getWorkflow(workflowId);
-      Cell cell = getCell(cellId);
+      Cell cell = getCellFromPage(pageId);
       
       Collection items = workflow.getItems();
       for (Iterator i = items.iterator(); i.hasNext();) {
@@ -1538,7 +1547,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          }             
       }
    }
-   
+
    private void processContentLockingWorkflow(String lockAction, Cell actionCell) {
       for (Iterator iter = actionCell.getAttachments().iterator(); iter.hasNext();) {
          Attachment att = (Attachment)iter.next();

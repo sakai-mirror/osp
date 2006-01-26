@@ -18,16 +18,16 @@ public class ReviewPostProcessor  implements Controller {
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Id id = idManager.getId((String)request.get("workflowId"));
-      Id cellId = idManager.getId((String)request.get("cellId"));
-      getMatrixManager().processWorkflow(id, cellId);
-      return new ModelAndView("success", "cell_id", cellId);
+      Id pageId = idManager.getId((String)request.get("pageId"));
+      getMatrixManager().processWorkflow(id, pageId);
+      return new ModelAndView("success", "page_id", pageId);
    }
 
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = new HashMap();
       List workflows = (List)request.get("workflows");
       model.put("workflows", workflows);
-      model.put("cell_id", request.get("cell_id"));
+      model.put("page_id", request.get("page_id"));
       return model;
    }
 

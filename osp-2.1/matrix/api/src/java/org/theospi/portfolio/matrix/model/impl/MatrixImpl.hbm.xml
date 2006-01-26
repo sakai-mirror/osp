@@ -249,6 +249,9 @@
       <property name="reviewDeviceType" type="string" column="review_device_type" />
       <!-- property name="guidanceId" column="guidance_id" not-null="false" length="36"
            type="org.sakaiproject.metaobj.shared.IdType"/-->
+
+      <property name="siteId" type="string" column="site_id" />
+
       <many-to-one name="guidance" column="guidance_id" not-null="false"
         class="org.theospi.portfolio.guidance.model.Guidance"/>
 

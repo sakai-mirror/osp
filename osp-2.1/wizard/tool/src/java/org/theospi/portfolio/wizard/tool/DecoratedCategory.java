@@ -74,6 +74,7 @@ public class DecoratedCategory extends DecoratedCategoryChild {
    public String processActionNewPage() {
       WizardPageSequence wizardPage =
             new WizardPageSequence(new WizardPageDefinition());
+      wizardPage.getWizardPageDefinition().setSiteId(getParent().getWorksite().getId());
       wizardPage.getWizardPageDefinition().setNewId(getParent().getIdManager().createId());
       wizardPage.setCategory(getBase());
 
