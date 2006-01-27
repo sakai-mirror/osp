@@ -376,6 +376,7 @@ public class HelpManagerImpl extends HibernateDaoSupport
 		while ((count = origin.read(data, 0, data.length)) != -1) {
 			osw.write(data, 0, count);
 		}
+		origin.close();
 		osw.close();
 		zos.closeEntry();
 		in.close();
@@ -490,7 +491,7 @@ public class HelpManagerImpl extends HibernateDaoSupport
 		   }
 		   
 		} catch(Exception jdome) {
-			
+	         logger.error(jdome);
 		}
 	}
 	
