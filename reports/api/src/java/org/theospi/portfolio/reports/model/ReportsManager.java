@@ -20,7 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model;
 
-import org.theospi.portfolio.shared.intf.DownloadableManager;
+import org.sakaiproject.metaobj.shared.DownloadableManager;
 
 import java.util.Collection;
 import java.util.List;
