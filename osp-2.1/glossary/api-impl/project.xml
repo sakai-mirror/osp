@@ -7,8 +7,8 @@
   <name>OSP Glossary Implementation</name>
   <currentVersion>${osp.version}</currentVersion>
   <organization>
-      <name>Sakai Project</name>
-      <url>http://sakaiproject.org/</url>
+      <name>OSPI</name>
+      <url>http://theospi.org/</url>
   </organization>
   <inceptionYear>2004</inceptionYear>
 
@@ -36,6 +36,18 @@
       <artifactId>sakai-legacy-service</artifactId>
       <version>${sakai.version}</version>
     </dependency>
+
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-tool</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+
+     <dependency>
+       <groupId>osp</groupId>
+       <artifactId>osp-common-api</artifactId>
+       <version>${osp.version}</version>
+     </dependency>
     
     <dependency>
       <groupId>sakaiproject</groupId>
@@ -44,9 +56,12 @@
     </dependency>
 
      <dependency>
-       <groupId>osp</groupId>
-       <artifactId>osp-common-api</artifactId>
-       <version>${osp.version}</version>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-metaobj-impl</artifactId>
+       <version>${sakai.version}</version>
+       <properties>
+         <deploy.target>shared</deploy.target>
+      </properties>
      </dependency>
 
      <dependency>
@@ -83,6 +98,9 @@
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
       <version>1.2</version>
+      <properties>
+         <deploy.target>shared</deploy.target>
+      </properties>
     </dependency>
 
     <dependency>

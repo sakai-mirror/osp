@@ -51,7 +51,6 @@ import org.theospi.portfolio.presentation.model.*;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.shared.*;
 import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.shared.intf.DownloadableManager;
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
 import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
