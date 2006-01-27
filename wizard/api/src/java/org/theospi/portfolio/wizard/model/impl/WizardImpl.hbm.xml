@@ -126,6 +126,8 @@
       <property name="created" type="java.util.Date" update="false" not-null="true"/>
       <property name="lastVisited" type="java.util.Date" update="true" not-null="true"/>
 
+      <property name="status" type="java.lang.String" />
+
       <many-to-one name="wizard" column="wizard_id"
           not-null="false" class="Wizard" cascade="none" />
 

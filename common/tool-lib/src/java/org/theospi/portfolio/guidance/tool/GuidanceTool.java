@@ -252,6 +252,7 @@ public class GuidanceTool extends HelperToolBase {
    public String processTestResourceHelper() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
+      session.removeAttribute(ResourceEditingHelper.ATTACHMENT_ID);
       session.setAttribute(ResourceEditingHelper.CREATE_TYPE,
             ResourceEditingHelper.CREATE_TYPE_FORM);
       session.setAttribute(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
@@ -270,6 +271,11 @@ public class GuidanceTool extends HelperToolBase {
    public String processTestResourceEditHelper() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
+      session.removeAttribute(ResourceEditingHelper.CREATE_TYPE);
+      session.removeAttribute(ResourceEditingHelper.CREATE_SUB_TYPE);
+      session.removeAttribute(ResourceEditingHelper.CREATE_PARENT);
+      session.setAttribute(ResourceEditingHelper.CREATE_TYPE,
+         ResourceEditingHelper.CREATE_TYPE_FORM);
       session.setAttribute(ResourceEditingHelper.ATTACHMENT_ID, getFormId());
 
       try {

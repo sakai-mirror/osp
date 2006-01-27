@@ -21,6 +21,7 @@
 package org.theospi.portfolio.wizard.tool;
 
 import org.theospi.portfolio.wizard.model.CompletedWizard;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 
 /**
  * Created by IntelliJ IDEA.
@@ -78,4 +79,11 @@ public class DecoratedCompletedWizard {
    public void setRootCategory(DecoratedCompletedCategory rootCategory) {
       this.rootCategory = rootCategory;
    }
+
+   public String processSubmitWizard() {
+      getBase().setStatus(MatrixFunctionConstants.PENDING_STATUS);
+      getParent().getWizardManager().saveWizard(getBase());
+      return "runWizard";
+   }
+
 }

@@ -22,6 +22,7 @@ package org.theospi.portfolio.wizard.model;
 
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.metaobj.shared.model.Agent;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 
 import java.util.Date;
 import java.util.Collection;
@@ -40,6 +41,7 @@ public class CompletedWizard extends IdentifiableObject {
    private Agent owner;
    private Date created;
    private Date lastVisited;
+   private String status;
 
    public CompletedWizard() {
    }
@@ -47,6 +49,7 @@ public class CompletedWizard extends IdentifiableObject {
    public CompletedWizard(Wizard wizard, Agent owner) {
       this.wizard = wizard;
       this.owner = owner;
+      setStatus(MatrixFunctionConstants.READY_STATUS);
       setCreated(new Date());
       setLastVisited(new Date());
       setRootCategory(new CompletedWizardCategory(this, wizard.getRootCategory()));
@@ -91,6 +94,14 @@ public class CompletedWizard extends IdentifiableObject {
 
    public void setRootCategory(CompletedWizardCategory rootCategory) {
       this.rootCategory = rootCategory;
+   }
+
+   public String getStatus() {
+      return status;
+   }
+
+   public void setStatus(String status) {
+      this.status = status;
    }
 
 }
