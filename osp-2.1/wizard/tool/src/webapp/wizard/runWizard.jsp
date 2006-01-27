@@ -17,6 +17,15 @@
 <h:form styleClass="portletBody">
 
    <sakai:tool_bar>
+      <sakai:tool_bar_item
+         action="main"
+         value="#{msgs.wizard_list}" />
+      <sakai:tool_bar_item
+         rendered="#{wizard.current.runningWizard.base.status == 'READY' &&
+            wizard.current.base.type ==
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"
+         action="confirmSubmit"
+         value="#{msgs.submit_wizard}" />
    </sakai:tool_bar>
 
    <sakai:view_title value="#{msgs.run_wizard}"/>
