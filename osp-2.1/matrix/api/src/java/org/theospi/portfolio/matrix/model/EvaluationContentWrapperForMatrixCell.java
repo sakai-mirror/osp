@@ -22,6 +22,8 @@
 package org.theospi.portfolio.matrix.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -33,13 +35,20 @@ public class EvaluationContentWrapperForMatrixCell extends EvaluationContentWrap
    
    public EvaluationContentWrapperForMatrixCell(Id wizardPageId, Id wizardPageDefinitionId, 
          String title, Agent owner, Date submittedDate) throws IdUnusedException {
-      this.wizardPageId = wizardPageId;
-      this.wizardPageDefinitionId = wizardPageDefinitionId;
-      this.title = title;
-      this.submittedDate = submittedDate;
+      setWizardPageId(wizardPageId);
+      setWizardPageDefinitionId(wizardPageDefinitionId);
+      setTitle(title);
+      setSubmittedDate(submittedDate);
       
-      this.owner = UserDirectoryService.getUser(owner.getId().getValue());
-      this.evalType = Cell.TYPE;
+      setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
+      setEvalType(Cell.TYPE);
+      
+      setUrl("viewCell.osp");
+      
+      Set params = new HashSet();
+      
+      params.add(new ParamBean("page_id", getWizardPageId().getValue()));
+      params.add(new ParamBean("readOnlyMatrix", "true"));
+      setUrlParams(params);      
    }
-
 }

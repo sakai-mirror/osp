@@ -96,8 +96,19 @@
                      </c:if>
                   </a>
                 </th>
-                <th>
-                  Type
+                <th title="Sort by Type">
+                  <c:if test="${sortByColumn == 'type'}">
+                     <c:if test="${direction == 'asc'}">
+                        <c:set var="sortDir" value="desc" />
+                        <c:set var="sortDirectionText" value="ascending" />
+                     </c:if>
+                  </c:if>
+                  <a href="<osp:url value="listReviewerItems.osp"/>&sortByColumn=type&direction=<c:out value="${sortDir}" />">
+                     Type 
+                     <c:if test="${sortByColumn == 'type'}">
+                     <img src="/library/image/sakai/sort<c:out value="${sortDirectionText}" />.gif?panel=Main" border="0" alt ="Sort by type <c:out value="${sortDirectionText}" />" />
+                     </c:if>
+                  </a>
                 </th>
             </tr>
         </thead>
@@ -107,10 +118,15 @@
 
                 <tr>
                     <td>
-                    <div align="left"><c:out
-                        value="${item.title}" />
-                        &nbsp; <!-- reviewer item actions -->
-                        <%--@ include file="actions.inc"--%></div>
+                    <div align="left">
+                        <a href="<osp:url value="${item.url}">
+                           <c:forEach var="paramBean" items="${item.urlParams}">
+                              <osp:param name="${paramBean.key}" value="${paramBean.value}" />
+                           </c:forEach>
+                           </osp:url>">
+                        <c:out value="${item.title}" />
+                        </a>
+                    </div>
                     </td>
                     <td>
                     <div align="left"><c:if test="${can.viewOwner}">

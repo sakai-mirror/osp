@@ -22,6 +22,8 @@
 package org.theospi.portfolio.shared.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -31,12 +33,14 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 
 public abstract class EvaluationContentWrapper {
 
-   public Id wizardPageId;
-   public Id wizardPageDefinitionId;
-   public String title;
-   public User owner;
-   public Date submittedDate;
-   public String evalType;
+   private Id wizardPageId;
+   private Id wizardPageDefinitionId;
+   private String title;
+   private User owner;
+   private Date submittedDate;
+   private String evalType;
+   private String url;
+   private Set urlParams = new HashSet();
    
    public EvaluationContentWrapper() {;}
    
@@ -69,6 +73,46 @@ public abstract class EvaluationContentWrapper {
       this.title = title;
       this.owner = owner;
       this.submittedDate = submittedDate;
+   }
+   
+   protected class ParamBean {
+      
+      private String key;
+      private String value;
+      
+      public ParamBean(String key, String value) {
+         this.key = key;
+         this.value = value;
+      }
+      
+      /**
+       * @return Returns the key.
+       */
+      public String getKey() {
+         return key;
+      }
+
+      /**
+       * @param key The key to set.
+       */
+      public void setKey(String key) {
+         this.key = key;
+      }
+
+      /**
+       * @return Returns the value.
+       */
+      public String getValue() {
+         return value;
+      }
+
+      /**
+       * @param value The value to set.
+       */
+      public void setValue(String value) {
+         this.value = value;
+      }
+      
    }
    
    /**
@@ -145,7 +189,32 @@ public abstract class EvaluationContentWrapper {
    public void setEvalType(String evalType) {
       this.evalType = evalType;
    }
-   
-   
-   
+
+   /**
+    * @return Returns the url.
+    */
+   public String getUrl() {
+      return url;
+   }
+
+   /**
+    * @param url The url to set.
+    */
+   public void setUrl(String url) {
+      this.url = url;
+   }
+
+   /**
+    * @return Returns the urlParams.
+    */
+   public Set getUrlParams() {
+      return urlParams;
+   }
+
+   /**
+    * @param urlParams The urlParams to set.
+    */
+   public void setUrlParams(Set urlParams) {
+      this.urlParams = urlParams;
+   }
 }
