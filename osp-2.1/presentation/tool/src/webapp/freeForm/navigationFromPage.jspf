@@ -8,4 +8,4 @@
       actionListener="#{freeForm.currentPage.pagePropertiesSaved}"
       value="#{msgs.save}"/>
    <h:commandButton action="#{freeForm.processActionCancel}"
-      value="#{msgs.cancel}"/>
+      value="#{msgs.cancel}" immediate="true"/>

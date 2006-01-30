@@ -58,9 +58,10 @@
                         </sakai:doc_properties>
                      </f:subview>
                      <h:selectOneMenu id="layout" value="#{freeForm.currentPage.selectedLayoutId}"
-                        onchange="this.form.submit();">
+                        onchange="this.form.submit();" required="true">
                         <f:selectItems value="#{freeForm.layouts}" />
                      </h:selectOneMenu>
+                     <h:message for="layout" styleClass="validationEmbedded" />
                      <h:graphicImage height="125" width="100"
                         value="#{freeForm.currentPage.selectedLayout.previewImage.externalUri}"
                         rendered="#{freeForm.currentPage.layoutSelected}"
