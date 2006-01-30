@@ -125,7 +125,7 @@
    
    <class name="PresentationLayout" table="osp_presentation_layout">
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="name" type="string" column="name" not-null="true"/>
       <property name="description" type="string" column="description" not-null="false"/>
@@ -135,7 +135,7 @@
       <property name="modified" type="java.util.Date" update="true" not-null="true"/>
       <property name="xhtmlFileId" type="org.sakaiproject.metaobj.shared.IdType" column="xhtml_file_id" length="36" not-null="true"/>
       <property name="previewImageId" type="org.sakaiproject.metaobj.shared.IdType" column="preview_image_id" length="36" not-null="false"/>
-      <property name="toolId" type="string" column="tool_id" length="36" not-null="true"/>
+      <property name="toolId" type="string" column="tool_id" length="36" not-null="false"/>
       <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="false"/>
    </class>
    

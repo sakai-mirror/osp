@@ -55,6 +55,7 @@ public class FreeFormTool extends HelperToolBase {
 
    private Presentation presentation = null;
 
+   private DecoratedLayout firstLayout;
    private DecoratedPage currentPage = null;
    private List pageList;
    private List attachableItems = null;
@@ -62,16 +63,35 @@ public class FreeFormTool extends HelperToolBase {
    private List layouts = null;
 
    public String processActionBack() {
+      if (!validPages()) {
+         return null;
+      }
       setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_BACK);
       return returnToCaller();
    }
 
+   protected boolean validPages() {
+      if (getPageList() == null || getPageList().size() == 0) {
+         FacesContext.getCurrentInstance().addMessage(null,
+            getFacesMessageFromBundle("one_page_required", new Object[]{}));
+         return false;
+      }
+
+      return true;
+   }
+
    public String processActionContinue() {
+      if (!validPages()) {
+         return null;
+      }
       setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_CONTINUE);
       return returnToCaller();
    }
 
    public String processActionSave() {
+      if (!validPages()) {
+         return null;
+      }
       setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_SAVE);
       return returnToCaller();
    }
@@ -332,6 +352,20 @@ public class FreeFormTool extends HelperToolBase {
       getPresentation().getPages().remove(page.getBase());
       pageList = null;
       attachableItems = null; // make sure list gets re-created in order
+   }
+
+   public DecoratedLayout getFirstLayout() {
+      if (firstLayout == null) {
+         List layouts = getPresentationManager().getLayouts();
+         if (layouts.size() > 0) {
+            firstLayout = new DecoratedLayout(this, (PresentationLayout) layouts.get(0));
+         }
+      }
+      return firstLayout;
+   }
+
+   public void setFirstLayout(DecoratedLayout firstLayout) {
+      this.firstLayout = firstLayout;
    }
 
 }

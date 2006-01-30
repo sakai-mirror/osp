@@ -154,6 +154,36 @@
          <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
       </property>
       <property name="tempPresDownloadDir"><value>${sakai.home}/tempPresDownloadDir/</value></property>
+      <property name="definedLayouts">
+         <list>
+            <bean class="org.theospi.portfolio.presentation.model.impl.PresentationLayoutWrapper">
+               <property name="idValue"><value>contentOverText</value></property>
+               <property name="name"><value>Content Over Text</value></property>
+               <property name="description"><value>Content Over Text Layout File</value></property>
+               <property name="layoutFileLocation">
+                  <value>/org/theospi/portfolio/presentation/layouts/contentOverText.xhtml</value>
+               </property>
+               <property name="previewFileLocation">
+                  <value>/org/theospi/portfolio/presentation/layouts/contentOverText.jpg</value>
+               </property>
+               <property name="previewFileName"><value>contentOverText.jpg</value></property>
+               <property name="previewFileType"><value>image/jpg</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.presentation.model.impl.PresentationLayoutWrapper">
+               <property name="idValue"><value>twoColumn</value></property>
+               <property name="name"><value>Two Column</value></property>
+               <property name="description"><value>Two Column Layout File</value></property>
+               <property name="layoutFileLocation">
+                  <value>/org/theospi/portfolio/presentation/layouts/2column.xhtml</value>
+               </property>
+               <property name="previewFileLocation">
+                  <value>/org/theospi/portfolio/presentation/layouts/2column.jpg</value>
+               </property>
+               <property name="previewFileName"><value>2column.jpg</value></property>
+               <property name="previewFileType"><value>image/jpg</value></property>
+            </bean>
+         </list>
+      </property>
    </bean>
 
    <bean id="presentationAuthz" class="org.theospi.portfolio.presentation.PresentationAuthorizerImpl">

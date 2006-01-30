@@ -95,6 +95,7 @@ import java.util.zip.*;
 public class PresentationManagerImpl extends HibernateDaoSupport
    implements PresentationManager, DuplicatableToolService, DownloadableManager {
 
+   private List definedLayouts;
    private AgentManager agentManager;
    private AuthorizationFacade authzManager = null;
    private AuthenticationManager authnManager = null;
@@ -1848,7 +1849,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       if (node == null) {
          return null;
       }
-
+      String siteId = layout.getSiteId();
+      if (siteId == null) {
+         siteId = "~admin";
+      }
       ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
             buildLayoutRef(layout.getSiteId(), layout.getId().getValue(), node.getResource()));
 
@@ -1924,6 +1928,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       String currentSiteId = PortalService.getCurrentSiteId();
       returned.addAll(findLayoutsByOwner(getAuthnManager().getAgent(), currentSiteId));
       returned.addAll(findPublishedLayouts(currentSiteId));
+      returned.addAll(findGlobalLayouts());
       return returned;
    }
 
@@ -1937,7 +1942,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return getHibernateTemplate().find("from PresentationLayout where owner_id=? and site_id=? Order by name",
             new Object[]{owner.getId().getValue(), siteId});
    }
-   
+
+   public Collection findGlobalLayouts() {
+      return getHibernateTemplate().find(
+         "from PresentationLayout where published=? and site_id is null Order by name",
+         new Object[]{new Boolean(true)});
+   }
+
    public PresentationLayout storeLayout (PresentationLayout layout) {
       return storeLayout(layout, true);
    }
@@ -2221,6 +2232,76 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public void init() {
       initFreeFormTemplate();
+      initGlobalLayouts();
+   }
+
+   protected void initGlobalLayouts() {
+      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+
+      org.sakaiproject.api.kernel.session.Session sakaiSession = SessionManager.getCurrentSession();
+      String userId = sakaiSession.getUserId();
+      sakaiSession.setUserId("admin");
+      sakaiSession.setUserEid("admin");
+
+      try {
+         for (Iterator i=getDefinedLayouts().iterator();i.hasNext();) {
+            processDefinedLayout((PresentationLayoutWrapper)i.next());
+         }
+      } finally {
+         getSecurityService().popAdvisor();
+         sakaiSession.setUserEid(userId);
+         sakaiSession.setUserId(userId);
+      }
+
+   }
+
+   protected void processDefinedLayout(PresentationLayoutWrapper wrapper) {
+      PresentationLayout layout = getPresentationLayout(getIdManager().getId(wrapper.getIdValue()));
+
+      if (layout == null) {
+         layout = new PresentationLayout();
+         layout.setCreated(new Date());
+         layout.setNewId(getIdManager().getId(wrapper.getIdValue()));
+      }
+
+      updateLayout(wrapper, layout);
+   }
+
+   protected void updateLayout(PresentationLayoutWrapper wrapper, PresentationLayout layout) {
+      if (layout.getPreviewImageId() != null) {
+         deleteResource(layout.getId(), layout.getPreviewImageId());
+      }
+      if (layout.getXhtmlFileId() != null) {
+         deleteResource(layout.getId(), layout.getXhtmlFileId());
+      }
+
+      layout.setPreviewImageId(createResource(wrapper.getPreviewFileLocation(),
+         wrapper.getPreviewFileName(), wrapper.getIdValue() + " layout preview", wrapper.getPreviewFileType()));
+      layout.setXhtmlFileId(createResource(wrapper.getLayoutFileLocation(),
+         wrapper.getIdValue() + ".xml", wrapper.getIdValue() + " layout file", "text/xml"));
+
+      layout.setModified(new Date());
+      layout.setName(wrapper.getName());
+      layout.setDescription(wrapper.getDescription());
+      layout.setPublished(true);
+      layout.setSiteId(null);
+      layout.setToolId(null);
+      layout.setOwner(getAgentManager().getAgent("admin"));
+      getHibernateTemplate().saveOrUpdate(layout);
+   }
+
+   protected void deleteResource(Id qualifierId, Id resourceId) {
+      try {
+         getContentHosting().removeAllLocks(qualifierId.getValue());
+         String id = getContentHosting().resolveUuid(resourceId.getValue());
+         if (id == null) {
+            return;
+         }
+         getContentHosting().removeResource(id);
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
    }
 
    protected void initFreeFormTemplate() {
@@ -2230,14 +2311,16 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       String userId = sakaiSession.getUserId();
       sakaiSession.setUserId("admin");
       sakaiSession.setUserEid("admin");
+      String resourceLocation = "/org/theospi/portfolio/presentation/freeform_template.xsl";
 
       try {
          PresentationTemplate template = getPresentationTemplate(getFreeFormTemplateId());
          if (template == null) {
-            template = createFreeFormTemplate();
+            template = createFreeFormTemplate(createResource(resourceLocation,
+               "freeFormRenderer", "used for rendering the free form template", "text/xml"));
          }
          else {
-            updateFreeFormRenderer(template.getId(), template.getRenderer());
+            updateResource(template.getId(), template.getRenderer(), resourceLocation);
             if (template.getItemDefinitions().size() == 0) {
                template.getItemDefinitions().add(createFreeFormItemDef(template));
             }
@@ -2248,14 +2331,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          sakaiSession.setUserEid(userId);
          sakaiSession.setUserId(userId);
       }
-
    }
 
-   protected PresentationTemplate createFreeFormTemplate() {
+   protected PresentationTemplate createFreeFormTemplate(Id rendererId) {
       PresentationTemplate template = new PresentationTemplate();
       template.setId(getFreeFormTemplateId());
       template.setName("Free Form Presentation");
-      template.setRenderer(createFreeFormRenderer());
+      template.setRenderer(rendererId);
       template.setNewObject(true);
       template.setSiteId(getIdManager().createId().getValue());
       template.setToolId(getIdManager().createId().getValue());
@@ -2273,25 +2355,25 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return def;
    }
 
-   protected Id updateFreeFormRenderer(Id templateId, Id oldRendererId) {
-      ByteArrayOutputStream bos = loadRenderer();
+   protected Id updateResource(Id qualifierId, Id resourceId, String resourceLocation) {
+      ByteArrayOutputStream bos = loadResource(resourceLocation);
 
       try {
-         getContentHosting().removeAllLocks(templateId.getValue());
+         getContentHosting().removeAllLocks(qualifierId.getValue());
          ContentResourceEdit resourceEdit =
-               getContentHosting().editResource(getContentHosting().resolveUuid(oldRendererId.getValue()));
+               getContentHosting().editResource(getContentHosting().resolveUuid(resourceId.getValue()));
          resourceEdit.setContent(bos.toByteArray());
          getContentHosting().commitResource(resourceEdit);
-         return oldRendererId;
+         return resourceId;
       }
       catch (Exception e) {
          throw new RuntimeException(e);
       }
    }
 
-   protected ByteArrayOutputStream loadRenderer() {
+   protected ByteArrayOutputStream loadResource(String name) {
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      InputStream is = getClass().getResourceAsStream("/org/theospi/portfolio/presentation/freeform_template.xsl");
+      InputStream is = getClass().getResourceAsStream(name);
 
       try {
          int c = is.read();
@@ -2314,13 +2396,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return bos;
    }
 
-   protected Id createFreeFormRenderer() {
-      ByteArrayOutputStream bos = loadRenderer();
+   protected Id createResource(String resourceLocation,
+                               String name, String description, String type) {
+      ByteArrayOutputStream bos = loadResource(resourceLocation);
       ContentResource resource;
-      String name = "freeFormRendered";
       ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
       resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
-      resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, "used for rendering free form presentations");
+      resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
       resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
       try {
          ContentCollectionEdit collection = getContentHosting().addCollection(SYSTEM_COLLECTION_ID);
@@ -2334,7 +2416,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
 
       try {
-         resource = getContentHosting().addResource(name, SYSTEM_COLLECTION_ID, 0, "text/xml",
+         resource = getContentHosting().addResource(name, SYSTEM_COLLECTION_ID, 0, type,
                      bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
       }
       catch (Exception e) {
@@ -2346,5 +2428,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public Id getFreeFormTemplateId() {
       return Presentation.FREEFORM_TEMPLATE_ID;
+   }
+
+   public List getDefinedLayouts() {
+      return definedLayouts;
+   }
+
+   public void setDefinedLayouts(List definedLayouts) {
+      this.definedLayouts = definedLayouts;
    }
 }
