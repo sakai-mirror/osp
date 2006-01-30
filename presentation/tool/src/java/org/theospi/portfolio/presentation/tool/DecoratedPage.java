@@ -28,6 +28,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import javax.faces.event.ActionEvent;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -53,6 +54,9 @@ public class DecoratedPage implements Comparable {
    protected void initLayout() {
       if (base.getLayout() != null) {
          setSelectedLayout(new DecoratedLayout(parent, base.getLayout()));
+      }
+      else if (getParent().getLayouts().size() > 0) {
+         setSelectedLayout(getParent().getFirstLayout());
       }
    }
 
