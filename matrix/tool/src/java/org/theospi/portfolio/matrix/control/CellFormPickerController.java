@@ -161,7 +161,7 @@ public class CellFormPickerController implements FormController, LoadObjectContr
          return new ModelAndView("formPicker");
          
       }
-
+      session.remove(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER);
       return new ModelAndView("page", "page_id", pageId);
    }
 

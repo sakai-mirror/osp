@@ -120,42 +120,6 @@
       <property name="workflowManager">
          <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager"/>
       </property>
-      <property name="reviewRubrics">
-			<list>
-           <bean id="reviewRubricValue1" class="org.theospi.portfolio.matrix.model.ReviewRubricValue">
-              <property name="id"><value>0</value></property>
-              <property name="displayText"><value>osp.review.rubric.value1</value></property>
-              <property name="nextStatus">
-                 <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.COMPLETE_STATUS"/>
-              </property>
-              <property name="unlockContent"><value>false</value></property>
-           </bean>
-           <bean id="reviewRubricValue2" class="org.theospi.portfolio.matrix.model.ReviewRubricValue">
-              <property name="id"><value>1</value></property>
-              <property name="displayText"><value>osp.review.rubric.value2</value></property>
-              <property name="nextStatus">
-                 <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.COMPLETE_STATUS"/>
-              </property>
-              <property name="unlockContent"><value>false</value></property>
-           </bean>
-           <bean id="reviewRubricValue3" class="org.theospi.portfolio.matrix.model.ReviewRubricValue">
-					<property name="id"><value>2</value></property>
-              <property name="displayText"><value>osp.review.rubric.value3</value></property>
-              <property name="nextStatus">
-                 <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.COMPLETE_STATUS"/>
-              </property>
-              <property name="unlockContent"><value>false</value></property>
-           </bean>
-           <bean id="reviewRubricValue4" class="org.theospi.portfolio.matrix.model.ReviewRubricValue">
-              <property name="id"><value>3</value></property>
-              <property name="displayText"><value>osp.review.rubric.value4</value></property>
-              <property name="nextStatus">
-                 <ref bean="org.theospi.portfolio.matrix.MatrixFunctionConstants.READY_STATUS"/>
-              </property>
-              <property name="unlockContent"><value>true</value></property>
-           </bean>        
-        </list>
-		</property>
       <property name="defaultScaffoldingBean">
          <ref bean="defaultScaffoldingBean"/>
       </property>

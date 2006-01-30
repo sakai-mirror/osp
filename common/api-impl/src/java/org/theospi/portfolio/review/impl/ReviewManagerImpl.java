@@ -21,6 +21,7 @@
 package org.theospi.portfolio.review.impl;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.sakaiproject.exception.IdUnusedException;
@@ -52,10 +53,9 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
    private ContentHostingService contentHosting = null;
    private AgentManager agentManager = null;
    
-   public Review createNew(String owner, String description, String siteId, 
+   public Review createNew(String description, String siteId, 
          Id securityQualifier, String securityViewFunction, String securityEditFunction) {
-      Agent agent = getAgentManager().getAgent(owner);
-      Review review = new Review(getIdManager().createId(), agent, description, 
+      Review review = new Review(getIdManager().createId(), description, 
             siteId, securityQualifier, securityViewFunction, securityEditFunction);
 
       return review;
@@ -83,15 +83,20 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
    
    public List getReviewsByParentAndType(String parentId, int type) {
       Object[] params = new Object[]{parentId, new Integer(type)};
-      return getHibernateTemplate().find("from Review r where r.parent=? and r.type=? ", params);
+      List reviews = getHibernateTemplate().find("from Review r where r.parent=? and r.type=? ", params);
+      for (Iterator i = reviews.iterator(); i.hasNext();) {
+         Review review = (Review) i.next();
+         Node node = getNode(review.getReviewContent());
+         review.setReviewContentNode(node);
+      }
+      
+      return reviews;
    }
 
    public Review saveReview(Review review) {
-      Date now = new Date(System.currentTimeMillis());
       //review.setModified(now);
       
       if (review.isNewObject()) {
-         review.setCreated(now);
          getHibernateTemplate().save(review, review.getId());
          review.setNewObject(false);
       }

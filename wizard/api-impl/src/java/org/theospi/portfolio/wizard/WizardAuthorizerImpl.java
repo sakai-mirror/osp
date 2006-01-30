@@ -20,6 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard;
 
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.security.app.ApplicationAuthorizer;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
@@ -68,6 +69,9 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
          return isWizardAuth(facade, id, agent, WizardFunctionConstants.COPY_WIZARD);
       } else if (function.equals(WizardFunctionConstants.EXPORT_WIZARD)) {
          return isWizardAuth(facade, id, agent, WizardFunctionConstants.EXPORT_WIZARD);
+      } else if (WizardFunctionConstants.EVALUATE_WIZARD.equals(function) ||
+            WizardFunctionConstants.REVIEW_WIZARD.equals(function)) {
+         return new Boolean(facade.isAuthorized(function,id));
       } else {
          return null;
       }

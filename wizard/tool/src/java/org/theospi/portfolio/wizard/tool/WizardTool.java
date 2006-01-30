@@ -55,12 +55,15 @@ import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.wizard.model.WizardStyleItem;
 import org.theospi.portfolio.wizard.model.WizardSupportItem;
+import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.shared.tool.BuilderTool;
 import org.theospi.portfolio.shared.tool.BuilderScreen;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 
 public class WizardTool extends BuilderTool {
 
@@ -68,6 +71,7 @@ public class WizardTool extends BuilderTool {
    private GuidanceManager guidanceManager;
    private AuthorizationFacade authzManager;
    private MatrixManager matrixManager;
+   private WorkflowManager workflowManager;
 
    private IdManager idManager;
    private DecoratedWizard current = null;
@@ -260,6 +264,7 @@ public class WizardTool extends BuilderTool {
       }
       //this.getCommentItem()
       wizard.setSupportItems(items);
+      
       getWizardManager().saveWizard(wizard);
    }
    
@@ -328,7 +333,7 @@ public class WizardTool extends BuilderTool {
       Wizard wizard = getCurrent().getBase();
 
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, 
-            WizardFunctionConstants.REVIEW_WIZARD);  
+            WizardFunctionConstants.EVALUATE_WIZARD);  
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER, 
             wizard.getId().getValue());
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS, 
@@ -375,14 +380,12 @@ public class WizardTool extends BuilderTool {
 
        //todo userCan = null;
 
-       try {
-           context.redirect("sakai.permissions.helper.helper/tool?" +
-                 "session.sakaiproject.permissions.description=" +
-                    getPermissionsMessage() +
-                 "&session.sakaiproject.permissions.siteRef=" +
-                    getWorksite().getReference() +
-                 "&session.sakaiproject.permissions.prefix=" +
-                    WizardFunctionConstants.WIZARD_PREFIX);
+      try {
+           context.redirect("osp.permissions.helper/editPermissions?" +
+                 "message=" + getPermissionsMessage() +
+                 "&name=wizard" +
+                 "&qualifier=" + ToolManager.getCurrentPlacement().getId() +
+                 "&returnView=matrixRedirect");
        }
        catch (IOException e) {
            throw new RuntimeException("Failed to redirect to helper", e);
@@ -636,6 +639,20 @@ public class WizardTool extends BuilderTool {
 
    public void setMatrixManager(MatrixManager matrixManager) {
       this.matrixManager = matrixManager;
+   }
+
+   /**
+    * @return Returns the workflowManager.
+    */
+   public WorkflowManager getWorkflowManager() {
+      return workflowManager;
+   }
+
+   /**
+    * @param workflowManager The workflowManager to set.
+    */
+   public void setWorkflowManager(WorkflowManager workflowManager) {
+      this.workflowManager = workflowManager;
    }
 
 }

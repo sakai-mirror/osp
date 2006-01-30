@@ -29,23 +29,14 @@ import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
-import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.api.kernel.session.SessionManager;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.TypeException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
-import org.theospi.portfolio.shared.model.Node;
 
 
 /**
@@ -67,33 +58,9 @@ public class AddScaffoldingController extends BaseScaffoldingController
     */
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = new HashMap();
-      Scaffolding scaffolding = (Scaffolding) command;
 
-      ToolSession session = getSessionManager().getCurrentToolSession();
-      if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
-            session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
-         // here is where we setup the id
-         List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-         if (refs.size() == 1) {
-            Reference ref = (Reference)refs.get(0);
-            scaffolding.setPrivacyXsdId(getMatrixManager().getNode(ref).getId());
-         }
-         else {
-            scaffolding.setPrivacyXsdId(null);
-            scaffolding.setDocumentRoot("");
-         }
-      }
       model.put("isInSession", EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
       
-      session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-      session.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
-
-      if (scaffolding.getPrivacyXsdId() != null){
-         Node schemaFile = getMatrixManager().getNode(scaffolding.getPrivacyXsdId());
-         model.put("xsdName",schemaFile.getDisplayName());
-         SchemaNode schemaNode = SchemaFactory.getInstance().getSchema(schemaFile.getInputStream());
-         model.put("elements", schemaNode.getRootChildren());
-      }
       return model;
    }
    
@@ -154,27 +121,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
             //touchAllCells(scaffolding);
             sessionBean.setScaffolding(scaffolding);
             model.put("scaffolding_id", scaffolding.getId());
-            if ("pickPrivacy".equals(forwardView)) {
-               session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
-               List files = new ArrayList();
-               if (scaffolding.getPrivacyXsdId() != null){
-                  String id = getContentHosting().resolveUuid(scaffolding.getPrivacyXsdId().getValue());
-                  Reference ref;
-                  try {
-                     ref = getEntityManager().newReference(getContentHosting().getResource(id).getReference());
-                     files.add(ref);
-                  } catch (PermissionException e) {
-                     logger.error("", e);
-                  } catch (IdUnusedException e) {
-                     logger.error("", e);
-                  } catch (TypeException e) {
-                     logger.error("", e);
-                  }
-               }
-               
-               session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
-               
-            }
+            
             return new ModelAndView(forwardView, model);
             
          }

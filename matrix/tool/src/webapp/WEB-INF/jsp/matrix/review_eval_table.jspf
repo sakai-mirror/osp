@@ -10,23 +10,13 @@
       <c:forEach var="object" items="${objectList}" varStatus="loopStatus">
          <tr>
             <td>
-               <c:choose>
-                  <c:when test="${object.visibility==1 and object.creator.id==currentUser}">
-                     Private <c:out value="${object.title}" />
-                  </c:when>
-                  <c:when test="${object.visibility==2 and (object.creator.id==currentUser or currentUser==cell.matrix.owner.id)}">
-                     Shared <c:out value="${object.title}" />
-                  </c:when>
-                  <c:when test="${object.visibility==3}">
-                     Public <c:out value="${object.title}" />
-                  </c:when>
-               </c:choose>
+               <c:out value="${object.reviewContentNode.displayName}" />
             </td>
             <td>
-               <c:out value="${object.creator.displayName}" />
+               <c:out value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
             </td>
             <td>
-               <fmt:formatDate value="${object.created}" pattern="MM-dd-yyyy" />
+               <fmt:formatDate value="${object.reviewContentNode.technicalMetadata.creation}" pattern="MM-dd-yyyy" />
             </td>
          </tr>
       </c:forEach>

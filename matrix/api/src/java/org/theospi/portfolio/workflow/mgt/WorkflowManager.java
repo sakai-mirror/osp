@@ -21,9 +21,11 @@
 package org.theospi.portfolio.workflow.mgt;
 
 import java.util.List;
+import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.legacy.entity.Reference;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.workflow.model.Workflow;
 
 public interface WorkflowManager {
@@ -45,4 +47,6 @@ public interface WorkflowManager {
    public List listWorkflows(String siteId);
 
    public Workflow getWorkflow(String id);
+   
+   public Set createEvalWorkflows(WizardPageDefinition wpd);
 }

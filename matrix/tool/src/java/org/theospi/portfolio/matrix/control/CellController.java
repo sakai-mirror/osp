@@ -58,8 +58,8 @@ public class CellController implements FormController, LoadObjectController {
    public Map referenceData(Map request, Object command, Errors errors) {
       CellFormBean cell = (CellFormBean) command;
       Map model = new HashMap();
-      model.put("reviewRubrics", matrixManager.getReviewRubrics());
       String pageId = cell.getCell().getWizardPage().getId().getValue();
+
        model.put("reviews", getReviewManager().getReviewsByParentAndType(
              pageId, Review.REVIEW_TYPE));
       model.put("evaluations", getReviewManager().getReviewsByParentAndType(
@@ -123,7 +123,7 @@ public class CellController implements FormController, LoadObjectController {
          map.put("page_id", cell.getWizardPage().getId());
          map.put("selectedArtifacts", ListToString(cellBean.getSelectedArtifacts()));
          map.put("cellBean", cellBean);
-         //TODO change this to use the reflection submission confirmation
+         //cwm change this to use the reflection submission confirmation
          return new ModelAndView("confirm", map); 
       }
       if (matrixAction != null) {
@@ -140,7 +140,7 @@ public class CellController implements FormController, LoadObjectController {
          StructuredArtifactDefinitionBean bean = 
             getStructuredArtifactDefinitionManager().loadHome(strFormDefId);
          bean.getDescription();
-         //TODO use a different bean below, as the name has implications
+         //cwm use a different bean below, as the name has implications
          retList.add(new ScaffoldingCellSupportDeviceBean(strFormDefId, bean.getDescription(), strFormDefId));
       }
       return retList;

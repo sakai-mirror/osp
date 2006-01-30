@@ -20,9 +20,8 @@
    logger.error("uncaught exception displayed to user: '" + UsageSessionService.getSessionId() + "'",ex);
    //pageContext.getOut().print(ex.toString());
 %>
-</div>
 
-<hr  size="1" noshade>
+<hr  size="1" noshade />
   <p>Please help us solve this problem by following these quick and easy steps:</p>
 	 <ol>
 	   <li>Call your <a href="http://kb.indiana.edu/data/abxl.html" target="_blank">campus help desk</a> or send an 
@@ -40,7 +39,7 @@
 	 </ol>
   <p>Thank you for your providing this information. Your assistance will be an aid in improving the application.</p> 
 
-<hr size="1" noshade>
+<hr size="1" noshade />
 <h3>The full error message follows:</h3>
 <span class="error_message">Your session id: <%= UsageSessionService.getSessionId() %></span>
 <pre>

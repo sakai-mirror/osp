@@ -10,11 +10,6 @@
          <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
       </id>
       <property name="reviewContent" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="review_content_id" />
-      <property name="title" type="string" column="title" not-null="false"/>
-      <property name="creator" column="creator_id" not-null="true"
-         type="org.sakaiproject.metaobj.shared.mgt.AgentUserType"/>
-      <property name="visibility" type="int" not-null="true"/>
-      <property name="created" type="java.util.Date" update="false" not-null="true"/>
       <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="true"/>
       <property name="parent" length="36" type="string" column="parent_id" />
       <property name="deviceId" length="36" type="string" column="review_device_id" />

@@ -23,12 +23,14 @@ package org.theospi.portfolio.matrix.control;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.Errors;
 
+import java.util.HashSet;
 import java.util.Map;
 
 /**
@@ -52,7 +54,7 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       WizardPageDefinition page = (WizardPageDefinition) session.get(WizardPageHelper.WIZARD_PAGE);
       session.remove(WizardPageHelper.CANCELED);
-      
+      page.setSiteId(PortalService.getCurrentSiteId());
       ScaffoldingCell cell = new ScaffoldingCell();
       cell.setWizardPageDefinition(page);
       if (page.getId() == null) {
@@ -77,6 +79,8 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
 
    protected void saveScaffoldingCell(Map request, ScaffoldingCell scaffoldingCell) {
       // do nothing... let caller deal with it...
+      scaffoldingCell.getWizardPageDefinition().setEvalWorkflows(
+            new HashSet(super.createEvalWorkflows(scaffoldingCell)));
    }
 
    protected void prepareModelWithScaffoldingId(Map model, ScaffoldingCell scaffoldingCell) {

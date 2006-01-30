@@ -97,6 +97,7 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
                }
                
                scaffoldingCell = new ScaffoldingCell(criterion, level, status, scaffolding);
+               scaffoldingCell.getWizardPageDefinition().setSiteId(scaffolding.getWorksiteId().getValue());
                getMatrixManager().storeScaffoldingCell(scaffoldingCell);
             }
             row.add(scaffoldingCell);

@@ -35,7 +35,6 @@ public class Attachment {
    Id artifactId;
    WizardPage wizardPage;
    Set attachmentCriteria = new HashSet();
-   ElementBean privacyResponse;
 
    /**
     * @return Returns the artifactId.
@@ -77,20 +76,6 @@ public class Attachment {
     */
    public void setWizardPage(WizardPage wizardPage) {
       this.wizardPage = wizardPage;
-   }
-
-
-   /**
-    * @return Returns the privacyResponse.
-    */
-   public ElementBean getPrivacyResponse() {
-      return privacyResponse;
-   }
-   /**
-    * @param privacyResponse The privacyResponse to set.
-    */
-   public void setPrivacyResponse(ElementBean privacyResponse) {
-      this.privacyResponse = privacyResponse;
    }
    
    /**

@@ -36,6 +36,7 @@ public interface WizardFunctionConstants {
    public final static String DELETE_WIZARD = WIZARD_PREFIX + "delete";
    public final static String PUBLISH_WIZARD = WIZARD_PREFIX + "publish";
    public static final String REVIEW_WIZARD = WIZARD_PREFIX + "review";
+   public static final String EVALUATE_WIZARD = WIZARD_PREFIX + "evaluate";
    public static final String VIEW_WIZARD = WIZARD_PREFIX + "view";
    public static final String COMMENT_WIZARD = WIZARD_PREFIX + "comment";
    public static final String COPY_WIZARD = WIZARD_PREFIX + "copy";

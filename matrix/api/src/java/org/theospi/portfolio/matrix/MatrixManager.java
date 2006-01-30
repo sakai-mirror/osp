@@ -38,16 +38,8 @@ import java.util.Set;
  * @author apple
  */
 public interface MatrixManager {
-   /**
-    * All the criteria for a given Cell
-    *
-    * @param cell
-    * @return
-    */
-   
-   ReviewRubricValue findReviewRubricValue(String id);
-   List getReviewRubrics();
 
+   
    Matrix getMatrix(Id matrixToolId, Id agentId);
    List getCellsByScaffoldingCell(Id scaffoldingCellId);
 
@@ -114,9 +106,8 @@ public interface MatrixManager {
 
    WizardPage submitPageForEvaluation(WizardPage page);
 
-   List getEvaluatableCells(Agent agent, Id worksiteId);
+   List getEvaluatableItems(Agent agent, Id worksiteId);
 
-   ReviewerItem getReviewerItem(Id id);
 
    /**
     * @return Returns the idManager.

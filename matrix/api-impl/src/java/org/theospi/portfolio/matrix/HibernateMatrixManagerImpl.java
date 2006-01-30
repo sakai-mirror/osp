@@ -58,7 +58,6 @@ import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.content.*;
 import org.sakaiproject.service.legacy.entity.*;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
@@ -81,6 +80,7 @@ import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
 import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
 import org.theospi.portfolio.shared.mgt.ContentEntityUtil;
+import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
 import org.theospi.portfolio.workflow.model.WorkflowItem;
@@ -101,7 +101,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private WorksiteManager worksiteManager;
    private LockManager lockManager;
    private boolean loadArtifacts = true;
-   private List reviewRubrics = new ArrayList();
    private ContentHostingService contentHosting = null;
    private SecurityService securityService;
    private DefaultScaffoldingBean defaultScaffoldingBean;
@@ -808,8 +807,14 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
    
    public Cell submitCellForEvaluation(Cell cell) {
+      Date now = new Date(System.currentTimeMillis());
       getHibernateTemplate().refresh(cell); //TODO not sure if this is necessary
       ScaffoldingCell sCell = cell.getScaffoldingCell();
+      
+      //    Actions for current cell
+      processContentLockingWorkflow(WorkflowItem.CONTENT_LOCKING_LOCK, cell);
+      processStatusChangeWorkflow(MatrixFunctionConstants.PENDING_STATUS, cell);
+      cell.getWizardPage().setModified(now);
       
       if (sCell.getScaffolding().getWorkflowOption() > 0)
          processWorkflow(sCell.getScaffolding().getWorkflowOption(), cell.getId());
@@ -823,56 +828,80 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       getHibernateTemplate().saveOrUpdate(page);
       return page;
    }
+   
+   protected List getEvaluatableCells(Agent agent, Agent role, Id worksiteId) {
+      List returned = this.getHibernateTemplate().find("select new " +
+            "org.theospi.portfolio.matrix.model.EvaluationContentWrapperForMatrixCell(" +
+            "wp.id, " +
+            "wp.pageDefinition.id, wp.pageDefinition.title, c.matrix.owner, " +
+            "c.wizardPage.modified) " +
+            "from WizardPage wp, Authorization auth, Cell c " +
+            "where wp.pageDefinition.id = auth.qualifier " +
+            "and wp.id = c.wizardPage.id " +
+            "and auth.function = ? and wp.status = ? and (auth.agent=? " +
+            " or auth.agent=?) " +
+            " and wp.pageDefinition.siteId=?",
+         new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+            MatrixFunctionConstants.PENDING_STATUS,
+            agent.getId().getValue(), role.getId().getValue(),
+            worksiteId.getValue()});
 
-   public ReviewRubricValue findReviewRubricValue(String id) {
-      for (Iterator iter = getReviewRubrics().iterator(); iter.hasNext();) {
-         ReviewRubricValue rrv = (ReviewRubricValue)iter.next();
-         if (rrv.getId().equals(id))
-            return rrv;
-      }
-      return null;
+      return returned;
    }
    
-   public List getEvaluatableCells(Agent agent, Id worksiteId) {
+   protected List getEvaluatableWizardPages(Agent agent, Agent role, Id worksiteId) {
+      List wizardPages = this.getHibernateTemplate().find("select new " +
+            "org.theospi.portfolio.matrix.model.EvaluationContentWrapperForWizardPage(" +
+            "cwp.id, " +
+            "cwp.wizardPage.pageDefinition.id, cwp.wizardPage.pageDefinition.title, cwp.category.wizard.owner, " +
+            "cwp.wizardPage.modified) " +
+            "from CompletedWizardPage cwp, " +
+            "Authorization auth " +
+            "where cwp.wizardPage.pageDefinition.id = auth.qualifier " +
+            "and auth.function = ? and cwp.wizardPage.status = ? and (auth.agent=? " +
+            " or auth.agent=?) " +
+            " and cwp.wizardPage.pageDefinition.siteId=?",
+         new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+            MatrixFunctionConstants.PENDING_STATUS,
+            agent.getId().getValue(), role.getId().getValue(),
+            worksiteId.getValue()});
+      
+      return wizardPages;
+   }
+   
+   protected List getEvaluatableWizards(Agent agent, Agent role, Id worksiteId) {
+     
+      List wizards = this.getHibernateTemplate().find("select new " +
+            "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizard(" +
+            "cw.wizard.id, " +
+            "cw.id, cw.wizard.name, cw.owner, " +
+            "cw.created) " +
+            "from CompletedWizard cw, " +
+            "Authorization auth " +
+            "where cw.wizard.id = auth.qualifier " +
+            "and auth.function = ? and cw.status = ? and (auth.agent=? " +
+            " or auth.agent=?) " +
+            " and cw.wizard.siteId=?",
+         new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
+            MatrixFunctionConstants.PENDING_STATUS,
+            agent.getId().getValue(), role.getId().getValue(),
+            worksiteId.getValue()});
+      return wizards;
+   }
+   
+   public List getEvaluatableItems(Agent agent, Id worksiteId) {
       List roles = agent.getWorksiteRoles(worksiteId.getValue());
       Agent role = (Agent)roles.get(0);
+//CWM add the ability to get all sites
+      
+      List returned = getEvaluatableCells(agent, role, worksiteId);
+      List wizardPages = getEvaluatableWizardPages(agent, role, worksiteId);
+      List wizards = getEvaluatableWizards(agent, role, worksiteId);
+      
+      returned.addAll(wizardPages);
+      returned.addAll(wizards);
 
-      List returned = this.getHibernateTemplate().find("select item from " +
-         " ReviewerItem item where item.cell.scaffoldingCell.scaffolding.worksiteId=? and" +
-         " item.reviewer = ? and item.status = '"+MatrixFunctionConstants.CHECKED_OUT_STATUS+"'",
-         new Object[] {worksiteId.getValue(), agent.getId().getValue()});
-
-      returned.addAll(this.getHibernateTemplate().find("select item from " +
-            "ReviewerItem item, Authorization auth " +
-            "where item.cell.scaffoldingCell.id = auth.qualifier " +
-            "and auth.function = ? and item.status not in ('"+MatrixFunctionConstants.COMPLETE_STATUS+"'," +
-            "'"+MatrixFunctionConstants.CHECKED_OUT_STATUS+"') and (auth.agent=? " +
-            " or auth.agent=?) " +
-            " and item.cell.scaffoldingCell.scaffolding.worksiteId=?",
-         new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
-            agent.getId().getValue(), role.getId().getValue(),
-            worksiteId.getValue()}));
-
-
-      if (getAuthzManager().isAuthorized(MatrixFunctionConstants.UNLOCK_EVAL_MATRIX,
-         getIdManager().getId(PortalService.getCurrentToolId()))) {
-         returned.addAll(this.getHibernateTemplate().find("select item from " +
-            "ReviewerItem item " +
-            " where item.status = '"+MatrixFunctionConstants.CHECKED_OUT_STATUS+"' " +
-            " and item.cell.scaffoldingCell.scaffolding.worksiteId=? and item.reviewer != ?",
-            new Object[]{worksiteId.getValue(), agent.getId().getValue()}));
-      }
-
-      List unique = new ArrayList();
-
-      for (Iterator i=returned.iterator();i.hasNext();) {
-         Object item = i.next();
-         if (!unique.contains(item)) {
-            unique.add(item);
-         }
-      }
-
-      return unique;
+      return returned;
    }
    
    public void packageScffoldingForExport(Id scaffoldingId, OutputStream os) throws IOException {
@@ -881,8 +910,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       CheckedOutputStream checksum = new CheckedOutputStream(os, new Adler32());
       ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(checksum));
 
-      storeScaffoldingFile(zos, oldScaffolding.getPrivacyXsdId());
-      //TODO CM - add other files/forms
+      //cwm - add other files/forms
 
       List levels = oldScaffolding.getLevels();
       List criteria = oldScaffolding.getCriteria();
@@ -1049,10 +1077,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          }
          else {
             getContentHosting().cancelCollection(fileParent);
-         }
-
-         if (scaffolding.getPrivacyXsdId() != null) {
-            scaffolding.setPrivacyXsdId((Id)fileMap.get(scaffolding.getPrivacyXsdId()));
          }
 
          storeScaffolding(scaffolding);
@@ -1226,12 +1250,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return false;
    }
 
-   public ReviewerItem getReviewerItem(Id id) {
-      return (ReviewerItem) this.getHibernateTemplate().load(ReviewerItem.class, id);
-   }
-
-
-
    /* (non-Javadoc)
     * @see org.theospi.portfolio.shared.mgt.ReadableObjectHome#getType()
     */
@@ -1388,12 +1406,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public void setLockManager(LockManager lockManager) {
       this.lockManager = lockManager;
    }
-   public List getReviewRubrics() {
-      return reviewRubrics;
-   }
-   public void setReviewRubrics(List reviewRubrics) {
-      this.reviewRubrics = reviewRubrics;
-   }
 
    public void packageForDownload(Map params, OutputStream out) throws IOException {
       packageScffoldingForExport(
@@ -1504,11 +1516,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    
    public void processWorkflow(int workflowOption, Id cellId) {
       Cell cell = getCell(cellId);
+      Date now = new Date(System.currentTimeMillis());
 
-      //Actions for current cell
-      processContentLockingWorkflow(WorkflowItem.CONTENT_LOCKING_LOCK, cell);
-      processStatusChangeWorkflow(MatrixFunctionConstants.PENDING_STATUS, cell);
-      
       //Actions for "next" cell
       if (workflowOption == Scaffolding.HORIZONTAL_PROGRESSION || 
             workflowOption == Scaffolding.VERTICAL_PROGRESSION) {
@@ -1517,6 +1526,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          if (actionCell != null) {               
             processContentLockingWorkflow(WorkflowItem.CONTENT_LOCKING_UNLOCK, actionCell);
             processStatusChangeWorkflow(MatrixFunctionConstants.READY_STATUS, actionCell);
+            cell.getWizardPage().setModified(now);
          }             
       }
    }

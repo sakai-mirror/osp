@@ -42,6 +42,7 @@ import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
@@ -78,7 +79,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       model.put("reviewDevices", getReviewDevices());
       model.put("additionalFormDevices", getAdditionalFormDevices());
       model.put("selectedAdditionalFormDevices", getSelectedAdditionalFormDevices(sCell));
-      model.put("evaluators", getEvaluators(sCell));
+      model.put("evaluators", getEvaluators(sCell.getWizardPageDefinition()));
       
       
       return model;
@@ -181,7 +182,9 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          Guidance guidance = scaffoldingCell.getGuidance();
          if (guidance == null) {
             String title = "Guidance for Cell";
-            guidance = getGuidanceManager().createNew(title, currentSite, null, "", ""); 
+            //CWM fix guidance stuff
+            guidance = getGuidanceManager().createNew(title, currentSite, 
+                  null, "", MatrixFunctionConstants.CREATE_SCAFFOLDING); 
          }
          
          session.put(GuidanceManager.CURRENT_GUIDANCE, guidance);
@@ -206,7 +209,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       else {
          session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
          model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
-         setAudienceSelectionVariables(session, scaffoldingCell);        
+         setAudienceSelectionVariables(session, scaffoldingCell.getWizardPageDefinition());
          
       }
       return model;
@@ -228,13 +231,13 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       return model;
    }
    
-   protected List getEvaluators(ScaffoldingCell sCell) {
+   protected List getEvaluators(WizardPageDefinition wpd) {
       ResourceBundle myResources = 
          ResourceBundle.getBundle("org.theospi.portfolio.matrix.messages");
 
       List evalList = new ArrayList();
       List evaluators = getAuthzManager().getAuthorizations(null, 
-            MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getId());
+            MatrixFunctionConstants.EVALUATE_MATRIX, wpd.getId());
       
       for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
          Authorization az = (Authorization) iter.next();
@@ -253,9 +256,12 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       return evalList;
    }
    
-   protected void setAudienceSelectionVariables(Map session, ScaffoldingCell sCell) {
+   protected void setAudienceSelectionVariables(Map session, WizardPageDefinition wpd) {
       session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION, MatrixFunctionConstants.EVALUATE_MATRIX);
-      session.put(AudienceSelectionHelper.AUDIENCE_QUALIFIER, sCell.getId().getValue());
+      
+      String id = wpd.getId()!=null ? wpd.getId().getValue() : wpd.getNewId().getValue();
+      
+      session.put(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
       session.put(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS, "Add evaluators to your cell");
       session.put(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE, "Evaluators to Publish to");
       session.put(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE, "Publish to an Individual");
@@ -341,7 +347,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    }
    
    protected Collection getSelectedAdditionalFormDevices(ScaffoldingCell sCell) {
-      //TODO need to preserve the ordering
+      //cwm need to preserve the ordering
       Collection returnCol = new ArrayList();
       Collection col = getAdditionalFormDevices();
       for (Iterator iter = col.iterator(); iter.hasNext();) {
