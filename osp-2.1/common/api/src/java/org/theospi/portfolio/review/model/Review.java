@@ -20,34 +20,22 @@
 **********************************************************************************/
 package org.theospi.portfolio.review.model;
 
-import java.util.Date;
-
-import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.theospi.portfolio.shared.model.Node;
 
 public class Review extends IdentifiableObject {
-   
-   public static final int VISABILITY_UNKNOWN = 0;
-   public static final int VISABILITY_PRIVATE = 1;
-   public static final int VISABILITY_SHARED = 2;
-   public static final int VISABILITY_PUBLIC = 3;
    
    public static final int REFLECTION_TYPE = 0;
    public static final int EVALUATION_TYPE = 1;
    public static final int REVIEW_TYPE = 2;
 
-   //private ReviewDevice reviewDevice = new ReviewDevice();
    private String siteId;
    private String parent;
    private String deviceId;
    private int type;
    private Id reviewContent;
-   private Agent creator = null;
-   private String title = null;
-   private Date created = null;
-   private int visibility = 0;
-   private ReviewAttachment reviewAttachment;
+   transient private Node reviewContentNode;
    
    private boolean newObject = false;
    
@@ -57,10 +45,9 @@ public class Review extends IdentifiableObject {
    
    public Review() {}
    
-   public Review(Id id, Agent owner, String description, String siteId, Id securityQualifier,
+   public Review(Id id, String description, String siteId, Id securityQualifier,
          String securityViewFunction, String securityEditFunction) {
       this.siteId = siteId;
-      this.creator = owner;
       this.securityQualifier = securityQualifier;
       this.securityViewFunction = securityViewFunction;
       this.securityEditFunction = securityEditFunction;
@@ -70,54 +57,6 @@ public class Review extends IdentifiableObject {
    }
    
    
-   /**
-    * @return Returns the created.
-    */
-   public Date getCreated() {
-      return created;
-   }
-   /**
-    * @param created The created to set.
-    */
-   public void setCreated(Date created) {
-      this.created = created;
-   }
-   /**
-    * @return Returns the creator.
-    */
-   public Agent getCreator() {
-      return creator;
-   }
-   /**
-    * @param creator The creator to set.
-    */
-   public void setCreator(Agent creator) {
-      this.creator = creator;
-   }
-   /**
-    * @return Returns the title.
-    */
-   public String getTitle() {
-      return title;
-   }
-   /**
-    * @param title The title to set.
-    */
-   public void setTitle(String title) {
-      this.title = title;
-   }
-   /**
-    * @return Returns the visibility.
-    */
-   public int getVisibility() {
-      return visibility;
-   }
-   /**
-    * @param visibility The visibility to set.
-    */
-   public void setVisibility(int visibility) {
-      this.visibility = visibility;
-   }
    /**
     * @return Returns the reviewContent.
     */
@@ -208,20 +147,6 @@ public class Review extends IdentifiableObject {
    }
 
    /**
-    * @return Returns the reviewAttachment.
-    */
-   public ReviewAttachment getReviewAttachment() {
-      return reviewAttachment;
-   }
-
-   /**
-    * @param reviewAttachment The reviewAttachment to set.
-    */
-   public void setReviewAttachment(ReviewAttachment reviewAttachment) {
-      this.reviewAttachment = reviewAttachment;
-   }
-
-   /**
     * @return Returns the deviceId.
     */
    public String getDeviceId() {
@@ -247,6 +172,20 @@ public class Review extends IdentifiableObject {
     */
    public void setType(int type) {
       this.type = type;
+   }
+
+   /**
+    * @return Returns the reviewContentNode.
+    */
+   public Node getReviewContentNode() {
+      return reviewContentNode;
+   }
+
+   /**
+    * @param reviewContentNode The reviewContentNode to set.
+    */
+   public void setReviewContentNode(Node reviewContentNode) {
+      this.reviewContentNode = reviewContentNode;
    }
 
 }

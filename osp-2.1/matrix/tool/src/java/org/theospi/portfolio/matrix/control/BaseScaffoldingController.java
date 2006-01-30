@@ -85,18 +85,6 @@ public class BaseScaffoldingController {
    protected void saveMatrixTool(Scaffolding scaffolding) {
       getMatrixManager().storeScaffolding(scaffolding);
       
-      //Lock file if it's been set
-
-      if (scaffolding.getPrivacyXsdId() != null) {
-         //getLockManager().addLock(scaffolding.getPrivacyXsdId(), scaffolding.getId(), "Locking permission statement definition file for scaffolding");
-         getLockManager().lockObject(scaffolding.getPrivacyXsdId().getValue(), 
-               scaffolding.getId().getValue(), 
-               "Locking permission statement definition file for scaffolding", true);
-      }
-      else { //unlock
-         getLockManager().removeAllLocks(scaffolding.getId().getValue());
-      }
-      
       String toolId = PortalService.getCurrentToolId();
       if (getMatrixManager().getMatrixTool(getIdManager().getId(toolId)) == null) {
          getMatrixManager().createMatrixTool(toolId, scaffolding);

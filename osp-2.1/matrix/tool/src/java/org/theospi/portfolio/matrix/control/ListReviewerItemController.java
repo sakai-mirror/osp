@@ -27,7 +27,6 @@ import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
@@ -36,9 +35,8 @@ import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.matrix.model.ReviewerItem;
+import org.theospi.portfolio.matrix.model.EvaluationContentComparator;
 
 import java.util.*;
 
@@ -61,9 +59,22 @@ public class ListReviewerItemController implements FormController, LoadObjectCon
     * @see org.theospi.utils.mvc.intf.LoadObjectController#fillBackingObject(java.lang.Object, java.util.Map, java.util.Map, java.util.Map)
     */
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
-      List list = (List) incomingModel;
-      list = matrixManager.getEvaluatableCells(authManager.getAgent(), worksiteManager.getCurrentWorksiteId());
+      //List list = (List) incomingModel;
+      //list = matrixManager.getEvaluatableItems(authManager.getAgent(), worksiteManager.getCurrentWorksiteId());
+      //Set sortedSet = new TreeSet(new EvaluationContentComparator(
+      //      EvaluationContentComparator.SORT_TITLE, true));
+      
+      String sortColumn = (String)request.get("sortByColumn");
+      if (sortColumn == null)
+         sortColumn = EvaluationContentComparator.SORT_TITLE;
+      String strAsc = (String)request.get("direction");
+      boolean asc = true;
+      if (strAsc != null)
+         asc = strAsc.equalsIgnoreCase("asc");
 
+      List list = matrixManager.getEvaluatableItems(authManager.getAgent(), worksiteManager.getCurrentWorksiteId());
+      Collections.sort(list, new EvaluationContentComparator(
+            sortColumn, asc));
       list = getListScrollIndexer().indexList(request, request, list);
 
       return list;
@@ -80,58 +91,7 @@ public class ListReviewerItemController implements FormController, LoadObjectCon
     * @see org.theospi.utils.mvc.intf.Controller#handleRequest(java.lang.Object, java.util.Map, java.util.Map, java.util.Map, org.springframework.validation.Errors)
     */
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-      Map model = new HashMap();
-
-      Id id = idManager.getId((String) request.get("reviewItem"));
-      String newStatus = (String) request.get("newStatus");
-
-      boolean unlocking = newStatus.equals(MatrixFunctionConstants.WAITING_STATUS);
-
-      if (id.getValue() == null) {
-         return new ModelAndView("nothing");
-      }
-
-      ReviewerItem ri = matrixManager.getReviewerItem(id);
-
-      if (ri.getStatus().equals(MatrixFunctionConstants.CHECKED_OUT_STATUS) && !unlocking) {
-         // already checked out... make sure they are the reviewer
-         if (ri.getReviewer() != null &&
-               !ri.getReviewer().getId().equals(authManager.getAgent().getId())) {
-            return new ModelAndView("nothing", "errorMessage",
-                  "Review is already checked out.");
-         }
-      }
-      else if (unlocking && !ri.getReviewer().getId().equals(authManager.getAgent().getId())) {
-         authzManager.checkPermission(MatrixFunctionConstants.UNLOCK_EVAL_MATRIX,
-               getIdManager().getId(PortalService.getCurrentToolId()));
-      }
-      else if (!unlocking) { // must be trying to check out
-         authzManager.checkPermission(MatrixFunctionConstants.EVALUATE_MATRIX,
-               ri.getCell().getScaffoldingCell().getId());
-      }
-
-      if (unlocking) {
-         ri.setStatus(MatrixFunctionConstants.WAITING_STATUS);
-         ri.setReviewer(null);
-      }
-      else {
-
-         ri.setStatus(MatrixFunctionConstants.CHECKED_OUT_STATUS);
-
-         ri.setReviewer(authManager.getAgent());
-
-      }
-
-      ri.setModified(new Date(System.currentTimeMillis()));
-      matrixManager.store(ri);
-      model.put("reviewerItem_id", ri.getId());
-
-      if (unlocking) {
-         return new ModelAndView("nothing");
-      }
-      else {
-         return new ModelAndView("success", model);
-      }
+      return new ModelAndView("success");
    }
 
    public Map referenceData(Map request, Object command, Errors errors) {
@@ -141,7 +101,19 @@ public class ListReviewerItemController implements FormController, LoadObjectCon
       model.put("tool", getToolManager().getCurrentPlacement());
       model.put("isMaintainer", isMaintainer());
       model.put("currentUser", authManager.getAgent());
-
+      
+      String asc = (String)request.get("direction");
+      //Boolean asc = new Boolean(true);
+      if (asc == null)
+         asc = "asc";
+      
+      model.put("direction", asc);
+      
+      String sortColumn = (String)request.get("sortByColumn");
+      if (sortColumn == null)
+         sortColumn = EvaluationContentComparator.SORT_TITLE;
+      model.put("sortByColumn", sortColumn);
+      
       return model;
    }
 

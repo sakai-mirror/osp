@@ -25,7 +25,6 @@ import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.springframework.validation.Errors;
 import org.theospi.portfolio.matrix.model.CriterionTransport;
 import org.theospi.portfolio.matrix.model.LevelTransport;
-import org.theospi.portfolio.matrix.model.ReviewerItem;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.ScaffoldingUploadForm;
@@ -54,7 +53,6 @@ public class MatrixValidator extends ValidatorBase {
       else if (ScaffoldingCell.class.isAssignableFrom(clazz)) return true;
       else if (LevelTransport.class.isAssignableFrom(clazz)) return true;
       else if (CriterionTransport.class.isAssignableFrom(clazz)) return true;
-      else if (ReviewerItem.class.isAssignableFrom(clazz)) return true;
       else if (CellAndNodeForm.class.isAssignableFrom(clazz)) return true;
       else return false;
    }

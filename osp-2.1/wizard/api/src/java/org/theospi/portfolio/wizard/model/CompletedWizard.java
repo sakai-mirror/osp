@@ -43,6 +43,8 @@ public class CompletedWizard extends IdentifiableObject {
    private Date lastVisited;
    private String status;
 
+   public final static String TYPE = "wizard_type";
+   
    public CompletedWizard() {
    }
 

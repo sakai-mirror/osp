@@ -21,8 +21,10 @@
 package org.theospi.portfolio.workflow.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -31,10 +33,13 @@ import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.security.SecurityService;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
+import org.theospi.portfolio.workflow.model.WorkflowItem;
 
 public class WorkflowManagerImpl extends HibernateDaoSupport implements WorkflowManager {
 
@@ -98,6 +103,33 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
 
    public Workflow getWorkflow(String id) {
       return getWorkflow(getIdManager().getId(id));
+   }
+   
+   public Set createEvalWorkflows(WizardPageDefinition wpd) {
+      Set workflows = wpd.getEvalWorkflows();
+      if (wpd.getEvaluationDevice() != null && 
+            wpd.getEvalWorkflows().size() == 0) {
+         Workflow w_none = new Workflow("No Workflow", wpd);
+         Workflow w_complete = new Workflow("Complete Workflow", wpd);
+         Workflow w_return = new Workflow("Return Workflow", wpd);
+         
+         Id id = wpd.getId() != null ? wpd.getId() : wpd.getNewId();
+         
+         w_complete.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
+               id, MatrixFunctionConstants.COMPLETE_STATUS));
+         w_return.add(new WorkflowItem(WorkflowItem.CONTENT_LOCKING_WORKFLOW, 
+               id, WorkflowItem.CONTENT_LOCKING_UNLOCK));
+         w_return.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
+               id, MatrixFunctionConstants.READY_STATUS));
+         workflows.add(w_none);
+         workflows.add(w_complete);
+         workflows.add(w_return);
+         
+      }
+      else if (wpd.getEvaluationDevice() == null) {
+         workflows = new HashSet();
+      }
+      return workflows;
    }
 
    /**

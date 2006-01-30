@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
 
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -92,8 +91,7 @@ public class ReviewTool extends HelperToolBase {
       {
          Placement placement = ToolManager.getCurrentPlacement();
          String currentSite = placement.getContext();
-         Review review = getReviewManager().createNew(SessionManager.getCurrentSessionUserId(), 
-               "New Review", currentSite, null, "", ""); 
+         Review review = getReviewManager().createNew("New Review", currentSite, null, "", ""); 
          current = new DecoratedReview(this, review);
       
       
@@ -141,7 +139,7 @@ public class ReviewTool extends HelperToolBase {
             ReviewAttachment attachment = new ReviewAttachment(review,
                            ref, fullRef);
 
-            review.setReviewAttachment(attachment);
+            //review.setReviewAttachment(attachment);
             review.setReviewContent(id);
          }
          session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
@@ -213,6 +211,7 @@ public class ReviewTool extends HelperToolBase {
    
    public List getVisibilityOptions() {
       List options = new ArrayList();
+      /*
       options.add(new SelectItem(new Integer(Review.VISABILITY_PRIVATE), 
             getMessageFromBundle("review_visibility_me")));
       if (!SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
@@ -221,6 +220,7 @@ public class ReviewTool extends HelperToolBase {
                getMessageFromBundle("review_visibility_us")));
       options.add(new SelectItem(new Integer(Review.VISABILITY_PUBLIC), 
             getMessageFromBundle("review_visibility_all")));
+      */
       return options;
    }
    

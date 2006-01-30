@@ -58,8 +58,6 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    private String lockedColor;
    
    private String description;
-   private String documentRoot;
-   private Id privacyXsdId;
    private Id worksiteId;
    
    private boolean published = false;
@@ -204,30 +202,7 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    public void setScaffoldingCells(Set scaffoldingCells) {
       this.scaffoldingCells = scaffoldingCells;
    }
-   /**
-    * @return Returns the privacyDocRoot.
-    */
-   public String getDocumentRoot() {
-      return documentRoot;
-   }
-   /**
-    * @param privacyDocRoot The privacyDocRoot to set.
-    */
-   public void setDocumentRoot(String documentRoot) {
-      this.documentRoot = documentRoot;
-   }
-   /**
-    * @return Returns the privacyXsdId.
-    */
-   public Id getPrivacyXsdId() {
-      return privacyXsdId;
-   }
-   /**
-    * @param privacyXsdId The privacyXsdId to set.
-    */
-   public void setPrivacyXsdId(Id privacyXsdId) {
-      this.privacyXsdId = privacyXsdId;
-   }
+
    /**
     * @return Returns the description.
     */

@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.api.kernel.tool.Placement;
-import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
@@ -37,7 +36,6 @@ import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.security.impl.sakai.AuthnManager;
-import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
@@ -49,6 +47,7 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
+import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.mgt.ContentEntityUtil;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.wizard.impl.WizardEntityProducer;
@@ -71,13 +70,16 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
    private GuidanceManager guidanceManager;
 
    protected void init() throws Exception {
+      /*
       FunctionManager.registerFunction(WizardFunctionConstants.CREATE_WIZARD);
       FunctionManager.registerFunction(WizardFunctionConstants.EDIT_WIZARD);
       FunctionManager.registerFunction(WizardFunctionConstants.DELETE_WIZARD);
       FunctionManager.registerFunction(WizardFunctionConstants.PUBLISH_WIZARD);
       FunctionManager.registerFunction(WizardFunctionConstants.REVIEW_WIZARD);
+      FunctionManager.registerFunction(WizardFunctionConstants.EVALUATE_WIZARD);
       FunctionManager.registerFunction(WizardFunctionConstants.VIEW_WIZARD);
       FunctionManager.registerFunction(WizardFunctionConstants.EXPORT_WIZARD);
+      */
    }
 
    public Wizard createNew() {

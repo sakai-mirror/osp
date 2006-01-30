@@ -195,6 +195,9 @@
          <bean class="org.theospi.portfolio.matrix.control.ReviewHelperController">
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
+            <property name="reviewManager">
+               <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -265,48 +268,6 @@
       <property name="commandName"><value>reviewerItems</value></property>
       <property name="commandClass"><value>java.util.List</value></property>
       <property name="formView"><value>listReviewerItems</value></property>
-   </bean>
-   
-   <bean id="reviewCellController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
-      <property name="controller">
-      <bean class="org.theospi.portfolio.matrix.control.ReviewCellController">
-         <property name="matrixManager"><ref bean="matrixManager"/></property>
-         <property name="idManager"><ref bean="idManager"/></property>
-<!--          <property name="repositoryManager"><ref bean="repositoryManager"/></property> -->
-         <property name="lockManager">
-			<ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
-		 </property>
-      </bean>
-      </property>
-      <property name="screenMappings">
-         <props>
-            <prop key="success">listReviewerItemsRedirect</prop>
-            <prop key="print">viewPrintableReflectionNew</prop>
-         </props>
-      </property>
-
-      <property name="validator"><ref bean="matrixValidator"/></property>
-      <property name="commandName"><value>reviewerItem</value></property>
-      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.ReviewerItem</value></property>
-      <property name="formView"><value>reviewCell</value></property>
-   </bean>
-   
-   <bean id="viewPrintableReflectionController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
-      <property name="controller">
-         <bean class="org.theospi.portfolio.matrix.control.ViewPrintableReflectionController">
-         	<property name="matrixManager"><ref bean="matrixManager"/></property>
-	         <property name="idManager"><ref bean="idManager"/></property>
-         </bean>
-      </property>
-      <property name="screenMappings">
-         <props>
-            <prop key="success">viewPrintableReflectionRedirect</prop>
-            <prop key="cancel">reviewCellRedirect</prop>
-         </props>
-      </property>      
-      <property name="commandName"><value>reviewerItem</value></property>
-      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.ReviewerItem</value></property>
-      <property name="formView"><value>viewPrintableReflection</value></property>
    </bean>
 
    <bean id="viewScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
@@ -383,7 +344,6 @@
             <prop key="deleteCriterion">deleteCriterionRedirect</prop>
             <prop key="moveLevel">moveLevelRedirect</prop>
             <prop key="moveCriterion">moveCriterionRedirect</prop>
-            <prop key="pickPrivacy">pickPrivacyRedirect</prop>
             <prop key="removeLevCrit">removeLevCritRedirect</prop>
             <prop key="editScaffoldingConfirm">editScaffoldingConfirmRedirect</prop>
          </props>
@@ -512,6 +472,9 @@
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
             <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="workflowManager">
+               <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -570,6 +533,9 @@
             <property name="wizardManager"><ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" /></property>
             <property name="guidanceManager"><ref bean="org.theospi.portfolio.guidance.mgt.GuidanceManager" /></property>
             <property name="structuredArtifactDefinitionManager"><ref bean="structuredArtifactDefinitionManager"/></property>
+            <property name="workflowManager">
+               <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
+            </property>
          </bean>
       </property>
       <property name="customTypedEditors">
@@ -607,6 +573,9 @@
             <property name="wizardManager"><ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" /></property>
             <property name="guidanceManager"><ref bean="org.theospi.portfolio.guidance.mgt.GuidanceManager" /></property>
             <property name="structuredArtifactDefinitionManager"><ref bean="structuredArtifactDefinitionManager"/></property>
+            <property name="workflowManager">
+               <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
+            </property>
          </bean>
       </property>
       <property name="customTypedEditors">

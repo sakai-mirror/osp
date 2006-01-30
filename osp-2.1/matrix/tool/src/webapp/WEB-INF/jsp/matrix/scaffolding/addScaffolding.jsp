@@ -71,32 +71,7 @@
 				<font color="red"><c:out value="${status.errorMessage}"/></font>
 			</spring:bind>
 		</p>
-<%--		
-		<p class="shorttext">
-			<label>Permission Statement Definition File</label>
-			<spring:bind path="scaffolding.privacyXsdId">
-				<input type="text" id="xsdName" disabled="true" value="<c:out value="${xsdName}"/>"/>
-				<input type="hidden" name="privacyXsdId" id="privacyXsdId" value="<c:out value="${status.value}"/>" />
-				<span class="error_message"><c:out value="${status.errorMessage}"/></span>
-				<c:if test="${not scaffolding.published}">
-                    <a href="javascript:document.forms[0].dest.value='pickPrivacy';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].submit();">
-    				    Pick file
-				    </a>
-                </c:if>
-			</spring:bind>
-		</p>
-        <br/>
-		<p class="shorttext">
-			<label>Permission Statement File Element</label>
-			<spring:bind path="scaffolding.documentRoot">
-				<select name="documentRoot" id="<c:out value="${status.expression}" />" <c:out value="${disabledText}"/>>
-					<c:forEach var="element" items="${elements}" varStatus="status">
-						<option value="<c:out value="${element}"/>"><c:out value="${element}"/></option>
-					</c:forEach>
-				</select>
-			</spring:bind>
-		</p>
-   --%>     
+     
         <br />
       
       

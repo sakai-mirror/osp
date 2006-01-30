@@ -33,7 +33,7 @@ public interface ReviewManager {
    public final static String CURRENT_REVIEW_ID = "org.theospi.portfolio.review.currentReviewId";
    public final static String CANCEL_REVIEW = "org.theospi.portfolio.review.cancelReview";
 
-   public Review createNew(String owner, String description, String siteId, 
+   public Review createNew(String description, String siteId, 
          Id securityQualifier, String securityViewFunction, String securityEditFunction);
 
    public Review getReview(Id reviewId);

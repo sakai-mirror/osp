@@ -21,6 +21,7 @@
 	<c:set var="cell" value="${cellBean.cell}"/>
    <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" />
    <osp-c:authZMap prefix="osp.matrix." var="matrixCan" />
+   <osp-c:authZMap prefix="osp.wizard." var="wizardCan" />
 
 	<div class="navIntraTool">
 		<c:if test="${can.create}">
@@ -35,7 +36,7 @@
             </osp:url>">
                   <osp:message key="review" bundle="${msgs}" /></a>
       </c:if> 
-      <c:if test="${matrixCan.evaluate && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING'}">
+      <c:if test="${(matrixCan.evaluate || wizardCan.evaluate) && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING'}">
          <a href="<osp:url value="reviewHelper.osp">
                <osp:param name="page_id" value="${cell.wizardPage.id}" />
             <osp:param name="org_theospi_portfolio_review_type" value="1" />
@@ -125,13 +126,16 @@
                      <osp:message key="reflection_create" bundle="${msgs}" /></a>
       </c:if>
       <c:if test="${not empty reflections}">
-         <c:out value="${reflections[0].title}" />
+         <c:set var="canReflect" value="true"/>
+         <c:out value="${reflections[0].reviewContentNode.displayName}" />
+         <c:if test="${readOnlyMatrix != 'true'}">
          <a href="<osp:url value="reviewHelper.osp">
                <osp:param name="page_id" value="${cell.wizardPage.id}" />
                <osp:param name="org_theospi_portfolio_review_type" value="0" />
-               <osp:param name="current_review_id" value="${reflections[0].id}" />
+               <osp:param name="current_review_id" value="${reflections[0].reviewContentNode.resource.id}" />
                </osp:url>">
                      <osp:message key="reflection_edit" bundle="${msgs}" /></a>
+         </c:if>
       </c:if>
    </c:if>
    
@@ -148,10 +152,6 @@
     </p>
 </form>
 <hr/>
-<c:set var="numberOfItems" value="0" />
-<c:forEach var="thing" items="${cell.reviewerItems}" varStatus="loopStatus">
-	<c:set var="numberOfItems" value="${loopStatus.index+1}" />
-</c:forEach>
 
 <c:if test="${cell.status != 'READY' or readOnlyMatrix == 'true'}">
 	<script language="javascript">

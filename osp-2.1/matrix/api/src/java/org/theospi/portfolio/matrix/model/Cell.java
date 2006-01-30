@@ -35,7 +35,8 @@ public class Cell {
    private Matrix matrix;
    private ScaffoldingCell scaffoldingCell;
    private WizardPage wizardPage;
-   private Set reviewerItems;
+   
+   public final static String TYPE = "matrix_cell_type";
 
    public Cell() {
       setWizardPage(new WizardPage());
@@ -121,22 +122,6 @@ public class Cell {
    }
 
    /**
-    * @return
-    */
-   public ReviewerItem getReviewerItem() {
-      if (reviewerItems.size() > 0)
-         return (ReviewerItem)reviewerItems.toArray()[0];
-      return null;
-   }
-
-   public void setReviewerItem(ReviewerItem reviewerItem) {
-      if (reviewerItem != null) {
-         reviewerItems.add(reviewerItem);
-      }
-   }
-
-
-   /**
     * @return Returns the scaffoldingCell.
     */
    public ScaffoldingCell getScaffoldingCell() {
@@ -149,19 +134,7 @@ public class Cell {
       this.scaffoldingCell = scaffoldingCell;
       wizardPage.setPageDefinition(scaffoldingCell.getWizardPageDefinition());
    }
-   /**
-    * @return Returns the reviewerItems.
-    */
-   public Set getReviewerItems() {
-      return reviewerItems;
-   }
 
-   /**
-    * @param reviewerItems The reviewerItems to set.
-    */
-   public void setReviewerItems(Set reviewerItems) {
-      this.reviewerItems = reviewerItems;
-   }
 
    /**
     * @return Returns the cellForms.

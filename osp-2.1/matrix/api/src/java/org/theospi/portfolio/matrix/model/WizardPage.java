@@ -23,6 +23,7 @@ package org.theospi.portfolio.matrix.model;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.metaobj.shared.model.Id;
 
+import java.util.Date;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -39,6 +40,9 @@ public class WizardPage extends IdentifiableObject {
    private String status;
    private WizardPageDefinition pageDefinition;
    private Set pageForms = new HashSet();
+   private Date modified;
+   
+   public final static String TYPE = "wizard_page_type";
 
    /**
     * @return Returns Set of Attachments
@@ -110,6 +114,20 @@ public class WizardPage extends IdentifiableObject {
     */
    public void setPageForms(Set pageForms) {
       this.pageForms = pageForms;
+   }
+
+   /**
+    * @return Returns the modified.
+    */
+   public Date getModified() {
+      return modified;
+   }
+
+   /**
+    * @param modified The modified to set.
+    */
+   public void setModified(Date modified) {
+      this.modified = modified;
    }
 
 }

@@ -50,11 +50,6 @@
            cascade="all" unique="true" />
         <many-to-one name="scaffoldingCell" column="scaffolding_cell_id"
             class="ScaffoldingCell" cascade="delete" />
-       <set name="reviewerItems" cascade="all-delete-orphan"
-           inverse="true" lazy="true">
-           <key column="cell_id" />
-           <one-to-many class="ReviewerItem" />
-       </set>
 
     </class>
 
@@ -80,6 +75,7 @@
            <key column="page_id" />
            <one-to-many class="WizardPageForm" />
        </set>
+       <property name="modified" type="java.util.Date" update="true" not-null="false"/>
    </class>
 
 	<class name="Attachment" table="osp_wiz_page_attachment" lazy="true">
@@ -92,8 +88,6 @@
             type="org.sakaiproject.metaobj.shared.IdType" />
         <many-to-one name="wizardPage" column="page_id" not-null="true"
             class="WizardPage" cascade="none" />
-        <property name="privacyResponse" type="org.theospi.portfolio.matrix.model.impl.HibernatePrivacyResponse" 
-        		not-null="false"/>
         		
         <set name="attachmentCriteria" lazy="true" inverse="true" cascade="all">
             <key column="attachment_id" />
@@ -153,8 +147,6 @@
             type="org.sakaiproject.metaobj.shared.IdType" />
         <property name="title" type="java.lang.String" />
         <property name="description" type="java.lang.String" />
-        <property name="documentRoot" type="java.lang.String" />
-        <property name="privacyXsdId" type="org.sakaiproject.metaobj.shared.IdType" />
         <property name="worksiteId" type="org.sakaiproject.metaobj.shared.IdType" />
         <list name="levels" lazy="true" inverse="false" cascade="all-delete-orphan"
             table="osp_scaffolding_levels">
@@ -186,27 +178,6 @@
         <property name="workflowOption" type="int" not-null="true" />
     </class>
 
-    <class name="ReviewerItem" table="osp_reviewer_item" lazy="true" >
-       <cache usage="nonstrict-read-write"/>
-        <id name="id" length="36"
-            type="org.sakaiproject.metaobj.shared.IdType" column="id">
-            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
-        </id>
-        <property name="status" type="java.lang.String" />
-        <property name="created" type="java.util.Date" update="false"
-            not-null="true" />
-        <property name="modified" type="java.util.Date" update="true"
-            not-null="false" />
-        <property name="reviewer" column="reviewer_id" not-null="false"
-            type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" />
-        <property name="comments" type="text" not-null="false" />
-        <property name="grade" type="java.lang.String" />
-
-        <many-to-one name="cell" column="cell_id" not-null="true"
-            class="Cell" cascade="none" />
-
-    </class>
-    
     <class name="ScaffoldingCell" table="osp_scaffolding_cell" lazy="true" >
       <cache usage="nonstrict-read-write"/>
     	<id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
@@ -262,7 +233,7 @@
            <element column="form_def_id" type="string"/>
        </list>
        
-       <set name="evalWorkflows" cascade="all-delete-orphan" inverse="true" lazy="true" >
+       <set name="evalWorkflows" cascade="all-delete-orphan" inverse="true" lazy="false" >
            <key column="wiz_page_def_id" />
            <one-to-many class="org.theospi.portfolio.workflow.model.Workflow" />
        </set>

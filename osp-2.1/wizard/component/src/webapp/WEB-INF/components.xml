@@ -47,6 +47,7 @@
                   <value>osp.wizard.create</value>
                   <value>osp.wizard.edit</value>
                   <value>osp.wizard.review</value>
+                  <value>osp.wizard.evaluate</value>
                   <value>osp.wizard.view</value>
                   <value>osp.wizard.comment</value>
                   <value>osp.wizard.copy</value>
@@ -68,6 +69,7 @@
             <value>osp.wizard.create</value>
             <value>osp.wizard.edit</value>
             <value>osp.wizard.review</value>
+            <value>osp.wizard.evaluate</value>
             <value>osp.wizard.view</value>
             <value>osp.wizard.comment</value>
             <value>osp.wizard.copy</value>
@@ -109,6 +111,12 @@
                class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
                <property name="staticField">
                   <value>org.theospi.portfolio.wizard.WizardFunctionConstants.REVIEW_WIZARD</value>
+               </property>
+            </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.EVALUATE_WIZARD"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.EVALUATE_WIZARD</value>
                </property>
             </bean>
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.VIEW_WIZARD"
@@ -173,7 +181,7 @@
          <ref bean="org.theospi.portfolio.guidance.mgt.GuidanceManager"/> 
       </property>
       <property name="authorizationFacade">
-         <ref bean="org.sakaiproject.metaobj.security.AuthorizationFacade"/>
+         <ref bean="authzManager"/>
       </property>
       <property name="authManager"><ref bean="authManager"/></property>
       <property name="securityService">

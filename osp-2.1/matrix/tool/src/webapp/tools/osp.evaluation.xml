@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool id="osp.evaluation" title="Evaluation" description="OSP Evaluation Tool">
+
+       <category name="sakai.main" />
+      <category name="project" />
+
+       <keyword name="matrix" />
+       <keyword name="evaluate" />
+       <keyword name="evaluation" />
+       <keyword name="evaluator" />
+       <keyword name="reflect" />
+       <keyword name="reflection" />
+
+       <configuration name="theospi.resetUrl"
+            value="/member/listReviewerItems.osp" />
+       <configuration name="theospi.toolListenerId"
+            value="org.theospi.portfolio.security.mgt.ToolPermissionManager.review" /> 
+       
+	</tool>
+
+</registration>

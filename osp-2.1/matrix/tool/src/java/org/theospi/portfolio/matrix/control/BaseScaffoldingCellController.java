@@ -33,7 +33,9 @@ import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
 import org.theospi.portfolio.workflow.model.WorkflowItem;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -45,6 +47,7 @@ public class BaseScaffoldingCellController {
    private MatrixManager matrixManager;
    private IdManager idManager;
    private GuidanceManager guidanceManager;
+   private WorkflowManager workflowManager;
    
    public Object fillBackingObject(Object incomingModel, Map request,
          Map session, Map application) throws Exception {
@@ -121,37 +124,11 @@ public class BaseScaffoldingCellController {
       }
    }
    
-   private Set createEvalWorkflows(ScaffoldingCell scaffoldingCell) {
-      Set workflows = scaffoldingCell.getWizardPageDefinition().getEvalWorkflows();
-      if (scaffoldingCell.getEvaluationDevice() != null && 
-            scaffoldingCell.getWizardPageDefinition().getEvalWorkflows().size() == 0) {
-         Workflow w_complete = new Workflow("Complete Workflow", 
-               scaffoldingCell.getWizardPageDefinition());
-         Workflow w_return = new Workflow("Return Workflow", 
-               scaffoldingCell.getWizardPageDefinition());
-         
-         w_complete.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
-               scaffoldingCell.getId(), MatrixFunctionConstants.COMPLETE_STATUS));
-         w_return.add(new WorkflowItem(WorkflowItem.CONTENT_LOCKING_WORKFLOW, 
-               scaffoldingCell.getId(), WorkflowItem.CONTENT_LOCKING_UNLOCK));
-         w_return.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
-               scaffoldingCell.getId(), MatrixFunctionConstants.READY_STATUS));
-         workflows.add(w_complete);
-         workflows.add(w_return);
-         
-      }
-      else if (scaffoldingCell.getEvaluationDevice() == null) {
-         /*
-         for (Iterator iter = workflows.iterator(); iter.hasNext();) {
-            Workflow w = (Workflow)iter.next();
-            w.getItems().clear();
-         }
-         workflows.clear();
-         */
-         workflows = new HashSet();
-      }
-      return workflows;
+   protected Set createEvalWorkflows(ScaffoldingCell scaffoldingCell) {
+      return getWorkflowManager().createEvalWorkflows(scaffoldingCell.getWizardPageDefinition());      
    }
+   
+
  
    public AuthorizationFacade getAuthzManager() {
       return authzManager;
@@ -189,5 +166,19 @@ public class BaseScaffoldingCellController {
     */
    public void setGuidanceManager(GuidanceManager guidanceManager) {
       this.guidanceManager = guidanceManager;
+   }
+
+   /**
+    * @return Returns the workflowManager.
+    */
+   public WorkflowManager getWorkflowManager() {
+      return workflowManager;
+   }
+
+   /**
+    * @param workflowManager The workflowManager to set.
+    */
+   public void setWorkflowManager(WorkflowManager workflowManager) {
+      this.workflowManager = workflowManager;
    }
 }

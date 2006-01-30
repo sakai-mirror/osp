@@ -51,6 +51,11 @@
          <property-name>authzManager</property-name>
          <value>#{Components["org.sakaiproject.metaobj.security.AuthorizationFacade"]}</value>
       </managed-property>
+      <managed-property>
+         <description>Service Dependency: workflowManager</description>
+         <property-name>workflowManager</property-name>
+         <value>#{Components["org.theospi.portfolio.workflow.mgt.WorkflowManager"]}</value>
+      </managed-property>
    </managed-bean>
    <!-- 
    <managed-bean>
