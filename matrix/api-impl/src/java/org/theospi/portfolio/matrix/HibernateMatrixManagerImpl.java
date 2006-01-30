@@ -852,7 +852,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    protected List getEvaluatableWizardPages(Agent agent, Agent role, Id worksiteId) {
       List wizardPages = this.getHibernateTemplate().find("select new " +
             "org.theospi.portfolio.matrix.model.EvaluationContentWrapperForWizardPage(" +
-            "cwp.id, " +
+            "cwp.wizardPage.id, " +
             "cwp.wizardPage.pageDefinition.id, cwp.wizardPage.pageDefinition.title, cwp.category.wizard.owner, " +
             "cwp.wizardPage.modified) " +
             "from CompletedWizardPage cwp, " +

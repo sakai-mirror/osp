@@ -33,13 +33,13 @@ public class EvaluationContentWrapperForWizard extends EvaluationContentWrapper 
 
    public EvaluationContentWrapperForWizard(Id wizardPageId, Id wizardPageDefinitionId, 
          String title, Agent owner, Date submittedDate) throws IdUnusedException {
-      this.wizardPageId = wizardPageId;
-      this.wizardPageDefinitionId = wizardPageDefinitionId;
-      this.title = title;
-      this.submittedDate = submittedDate;
+      setWizardPageId(wizardPageId);
+      setWizardPageDefinitionId(wizardPageDefinitionId);
+      setTitle(title);
+      setSubmittedDate(submittedDate);
       
-      this.owner = UserDirectoryService.getUser(owner.getId().getValue());
-      this.evalType = CompletedWizard.TYPE;
+      setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
+      setEvalType(CompletedWizard.TYPE);
    }
    
 }

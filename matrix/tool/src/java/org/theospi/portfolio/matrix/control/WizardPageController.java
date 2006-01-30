@@ -20,6 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.springframework.validation.Errors;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
@@ -51,7 +52,12 @@ public class WizardPageController extends CellController {
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       WizardPage page = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
-      page = getMatrixManager().getWizardPage(page.getId());
+      Id pageId = null;
+      if (page != null)
+         pageId = page.getId();
+      else
+         pageId = getIdManager().getId((String)request.get("page_id"));
+      page = getMatrixManager().getWizardPage(pageId);
       session.put(WizardPageHelper.WIZARD_PAGE, page);
       session.remove(WizardPageHelper.CANCELED);
 
