@@ -120,9 +120,9 @@
        <groupId>sakaiproject</groupId>
        <artifactId>sakai-metaobj-impl</artifactId>
        <version>${sakai.version}</version>
-       <properties>
-         <deploy.target>shared</deploy.target>
-      </properties>
+        <properties>
+              <war.bundle>true</war.bundle>
+           </properties>
      </dependency>
         
         
