@@ -41,6 +41,9 @@ public class DecoratedLayout {
    }
 
    public Node getPreviewImage() {
+      if (getBase().getPreviewImageId() == null) {
+         return null;
+      }
       return getParent().getPresentationManager().getNode(base.getPreviewImageId(), base);
    }
 
