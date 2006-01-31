@@ -2242,11 +2242,18 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       String userId = sakaiSession.getUserId();
       sakaiSession.setUserId("admin");
       sakaiSession.setUserEid("admin");
+      List layouts = new ArrayList();
 
       try {
          for (Iterator i=getDefinedLayouts().iterator();i.hasNext();) {
-            processDefinedLayout((PresentationLayoutWrapper)i.next());
+            layouts.add(processDefinedLayout((PresentationLayoutWrapper)i.next()));
          }
+
+         for (Iterator i=layouts.iterator();i.hasNext();) {
+            PresentationLayout layout = (PresentationLayout) i.next();
+            getHibernateTemplate().saveOrUpdate(layout);
+         }
+
       } finally {
          getSecurityService().popAdvisor();
          sakaiSession.setUserEid(userId);
@@ -2255,7 +2262,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    }
 
-   protected void processDefinedLayout(PresentationLayoutWrapper wrapper) {
+   protected PresentationLayout processDefinedLayout(PresentationLayoutWrapper wrapper) {
       PresentationLayout layout = getPresentationLayout(getIdManager().getId(wrapper.getIdValue()));
 
       if (layout == null) {
@@ -2265,6 +2272,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
 
       updateLayout(wrapper, layout);
+      return layout;
    }
 
    protected void updateLayout(PresentationLayoutWrapper wrapper, PresentationLayout layout) {
@@ -2287,7 +2295,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       layout.setSiteId(null);
       layout.setToolId(null);
       layout.setOwner(getAgentManager().getAgent("admin"));
-      getHibernateTemplate().saveOrUpdate(layout);
    }
 
    protected void deleteResource(Id qualifierId, Id resourceId) {
@@ -2404,8 +2411,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
       resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
       resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
+
       try {
          ContentCollectionEdit collection = getContentHosting().addCollection(SYSTEM_COLLECTION_ID);
+         collection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "system");
          getContentHosting().commitCollection(collection);
       }
       catch (IdUsedException e) {
