@@ -142,7 +142,7 @@ public class DefaultXmlTagHandler implements XmlTagHandler {
       UIViewRoot root = context.getViewRoot();
       HtmlOutputText outputComponent =
             (HtmlOutputText) context.getApplication().createComponent(HtmlOutputText.COMPONENT_TYPE);
-      outputComponent.setTransient(true);
+      outputComponent.setTransient(false);
       outputComponent.setId(root.createUniqueId());
       outputComponent.setEscape(false);
       outputComponent.setValue(text);

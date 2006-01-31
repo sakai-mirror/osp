@@ -60,6 +60,9 @@ public class DecoratedRegion {
    }
 
    public PresentationPageItem getItem() {
+      if (getRegion().getItems().size() <= 0) {
+         return null;
+      }
       return (PresentationPageItem) getRegion().getItems().get(regionItemSeq);
    }
 

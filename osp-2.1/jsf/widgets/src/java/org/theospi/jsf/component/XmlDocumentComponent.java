@@ -45,6 +45,8 @@ public class XmlDocumentComponent extends UIComponentBase implements XmlDocument
    private XmlTagFactory factory;
    private InputStream xmlFile;
    private UIComponent xmlRootComponent;
+   private String xmlFileId;
+   private String oldXmlFileId;
    private String var;
 
    public XmlDocumentComponent() {
@@ -110,5 +112,25 @@ public class XmlDocumentComponent extends UIComponentBase implements XmlDocument
 
    public void setTransient(boolean transientFlag) {
       super.setTransient(transientFlag);
+   }
+
+   public String getXmlFileId() {
+      ValueBinding vb = getValueBinding("xmlFileId");
+      if (vb != null) {
+         return (String) vb.getValue(getFacesContext());
+      }
+      return null;
+   }
+
+   public void setXmlFileId(String xmlFileId) {
+      this.xmlFileId = xmlFileId;
+   }
+
+   public String getOldXmlFileId() {
+      return oldXmlFileId;
+   }
+
+   public void setOldXmlFileId(String oldXmlFileId) {
+      this.oldXmlFileId = oldXmlFileId;
    }
 }

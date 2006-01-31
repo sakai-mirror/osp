@@ -932,6 +932,16 @@
          <required>false</required>
          <rtexprvalue>false</rtexprvalue>
       </attribute>
+      <attribute>
+         <name>xmlFileId</name>
+         <description><![CDATA[
+
+         Id that can be used to determine if xml file has changed        
+
+         ]]></description>
+         <required>false</required>
+         <rtexprvalue>false</rtexprvalue>
+      </attribute>
     <attribute>
        <name>id</name>
        <required>false</required>

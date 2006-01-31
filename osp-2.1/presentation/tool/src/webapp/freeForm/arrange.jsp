@@ -18,10 +18,11 @@
 <h:form>
 
    <sakai:tool_bar>
-      <h:selectOneMenu value="#{freeForm.currentPageId}"
-         onchange="this.form.submit();">
+      <h:selectOneMenu value="#{freeForm.currentPageId}">
          <f:selectItems value="#{freeForm.pageDropList}" />
       </h:selectOneMenu>
+      <h:commandButton value="#{msgs.change_arrange_page}"
+         action="#{freeForm.processChangeCurrentPage}" />
    </sakai:tool_bar>
 
    <sakai:view_title value=""/>
@@ -31,9 +32,11 @@
    <ospx:splitarea direction="horizontal" width="100%">
       <ospx:splitsection size="75%" valign="top">
 
-      <ospx:xmlDocument  factory="#{freeForm.factory}"
-         xmlFile="#{freeForm.currentPage.xmlFile}"
-         var="freeForm.currentPage.regionMap"/>
+         <f:subview id="arrange">
+            <ospx:xmlDocument  factory="#{freeForm.factory}"
+               xmlFile="#{freeForm.currentPage.xmlFile}"
+               var="freeForm.currentPage.regionMap"/>
+         </f:subview>
 
       </ospx:splitsection>
       <ospx:splitsection size="25%" valign="top" cssclass="selectedListBox">

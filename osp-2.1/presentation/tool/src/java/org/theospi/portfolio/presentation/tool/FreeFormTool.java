@@ -36,6 +36,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.ValueChangeEvent;
 import java.util.*;
 import java.io.IOException;
 
@@ -61,6 +62,7 @@ public class FreeFormTool extends HelperToolBase {
    private List attachableItems = null;
    private List listableItems = null;
    private List layouts = null;
+   private String nextPageId = null;
 
    public String processActionBack() {
       if (!validPages()) {
@@ -138,7 +140,12 @@ public class FreeFormTool extends HelperToolBase {
    }
 
    public void setCurrentPage(DecoratedPage currentPage) {
+      nextPageId = null;
       this.currentPage = currentPage;
+   }
+
+   public void processPageSelectChange(ValueChangeEvent event) {
+
    }
 
    public List getPageList() {
@@ -263,14 +270,7 @@ public class FreeFormTool extends HelperToolBase {
    }
 
    public void setCurrentPageId(String pageId) {
-      List base = getPageList();
-      for (Iterator i=base.iterator();i.hasNext();) {
-         DecoratedPage page = (DecoratedPage) i.next();
-         if (page.getBase().getId().getValue().equals(pageId)) {
-            setCurrentPage(page);
-            break;
-         }
-      }
+      nextPageId = pageId;
    }
 
    public List getPageDropList() {
@@ -366,6 +366,18 @@ public class FreeFormTool extends HelperToolBase {
 
    public void setFirstLayout(DecoratedLayout firstLayout) {
       this.firstLayout = firstLayout;
+   }
+
+   public String processChangeCurrentPage() {
+      List base = getPageList();
+      for (Iterator i=base.iterator();i.hasNext();) {
+         DecoratedPage page = (DecoratedPage) i.next();
+         if (page.getBase().getId().getValue().equals(nextPageId)) {
+            setCurrentPage(page);
+            break;
+         }
+      }
+      return "arrange";
    }
 
 }

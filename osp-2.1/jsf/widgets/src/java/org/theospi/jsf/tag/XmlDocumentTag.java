@@ -35,6 +35,7 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,6 +48,7 @@ public class XmlDocumentTag extends UIComponentTag {
 
    private String factory;
    private String xmlFile;
+   private String xmlFileId;
 
    private String var;
 
@@ -70,6 +72,7 @@ public class XmlDocumentTag extends UIComponentTag {
       TagUtil.setObject(component, "factory", factory);
       TagUtil.setObject(component, "xmlFile", xmlFile);
       TagUtil.setString(component, "var", var);
+      TagUtil.setString(component, "xmlFileId", xmlFileId);
    }
 
    public String getFactory() {
@@ -96,12 +99,30 @@ public class XmlDocumentTag extends UIComponentTag {
       this.var = var;
    }
 
+   public String getXmlFileId() {
+      return xmlFileId;
+   }
+
+   public void setXmlFileId(String xmlFileId) {
+      this.xmlFileId = xmlFileId;
+   }
+
    protected UIComponent findComponent(FacesContext context) throws JspException {
       XmlDocumentComponent docComponent = (XmlDocumentComponent) super.findComponent(context);
+
+      if (docComponent.getXmlRootComponent() != null && docComponent.getOldXmlFileId() != null) {
+         String lastId = docComponent.getOldXmlFileId();
+         String newId = docComponent.getXmlFileId();
+         if (lastId.equals(newId)) {
+            return docComponent;
+         }
+      }
+
       if (docComponent.getXmlRootComponent() != null) {
          docComponent.getChildren().remove(docComponent.getXmlRootComponent());
       }
 
+      docComponent.setOldXmlFileId(docComponent.getXmlFileId());
       UIViewRoot root = context.getViewRoot();
       UIOutput base = (UIOutput) context.getApplication().createComponent("javax.faces.Output");
       base.setId(root.createUniqueId());
