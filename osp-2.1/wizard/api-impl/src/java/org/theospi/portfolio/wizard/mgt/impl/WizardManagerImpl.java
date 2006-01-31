@@ -35,7 +35,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.security.impl.sakai.AuthnManager;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
@@ -66,7 +66,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
    private IdManager idManager;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private AgentManager agentManager;
-   private AuthnManager authManager;
+   private AuthenticationManager authManager;
    private GuidanceManager guidanceManager;
 
    protected void init() throws Exception {
@@ -345,11 +345,11 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
       this.agentManager = agentManager;
    }
 
-   public AuthnManager getAuthManager() {
+   public AuthenticationManager getAuthManager() {
       return authManager;
    }
 
-   public void setAuthManager(AuthnManager authManager) {
+   public void setAuthManager(AuthenticationManager authManager) {
       this.authManager = authManager;
    }
 

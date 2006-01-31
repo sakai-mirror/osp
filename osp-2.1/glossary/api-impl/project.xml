@@ -60,8 +60,8 @@
        <artifactId>sakai-metaobj-impl</artifactId>
        <version>${sakai.version}</version>
        <properties>
-         <deploy.target>shared</deploy.target>
-      </properties>
+          <war.bundle>true</war.bundle>
+       </properties>
      </dependency>
 
      <dependency>
