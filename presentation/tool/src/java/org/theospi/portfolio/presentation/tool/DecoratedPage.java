@@ -74,6 +74,10 @@ public class DecoratedPage implements Comparable {
       return node.getInputStream();
    }
 
+   public String getXmlFileId() {
+      return getBase().getLayout().getId().getValue() + getBase().getLayout().getModified().toString();
+   }
+
    public RegionMap getRegionMap() {
       if (regionMap == null) {
          regionMap = new RegionMap(getBase());
