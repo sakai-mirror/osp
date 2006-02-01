@@ -139,7 +139,6 @@
          <props>
             <prop key="success">glossaryListRedirect</prop>
             <prop key="pickImport">pickImportRedirect</prop>
-            <prop key="cancel">glossaryListRedirect</prop>
          </props>
       </property>
       <property name="customTypedEditors">
