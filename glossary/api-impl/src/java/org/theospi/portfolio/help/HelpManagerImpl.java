@@ -331,7 +331,7 @@ public class HelpManagerImpl extends HibernateDaoSupport
 
 	    Element rootNode = new Element("ospiGlossary");
 	    
-	    rootNode.setAttribute("formatVersion", "1");
+	    rootNode.setAttribute("formatVersion", "2.1");
 	    
 		for (Iterator iter = terms.iterator(); iter.hasNext();) {
 			GlossaryEntry ge = (GlossaryEntry) iter.next();
