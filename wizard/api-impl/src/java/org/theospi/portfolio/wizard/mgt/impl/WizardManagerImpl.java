@@ -54,6 +54,11 @@ import org.theospi.portfolio.wizard.impl.WizardEntityProducer;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.*;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
+import org.theospi.portfolio.workflow.mgt.WorkflowManager;
+import org.theospi.portfolio.workflow.model.Workflow;
+import org.theospi.portfolio.workflow.model.WorkflowItem;
+import org.theospi.portfolio.matrix.model.Attachment;
+import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import net.sf.hibernate.HibernateException;
@@ -68,6 +73,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
    private AgentManager agentManager;
    private AuthenticationManager authManager;
    private GuidanceManager guidanceManager;
+   private WorkflowManager workflowManager;
 
    protected void init() throws Exception {
       /*
@@ -268,9 +274,20 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
       }
 
    }
+   
+   public CompletedWizard getCompletedWizard(Id completedWizardId) {
+      CompletedWizard wizard = (CompletedWizard)getHibernateTemplate().get(CompletedWizard.class, completedWizardId);
+      return wizard;
+   }
 
    public CompletedWizard getCompletedWizard(Wizard wizard) {
       Agent agent = getAuthManager().getAgent();
+
+      return getUsersWizard(wizard, agent);
+   }
+   
+   public CompletedWizard getCompletedWizard(Wizard wizard, String userId) {
+      Agent agent = getAgentManager().getAgent(userId);
 
       return getUsersWizard(wizard, agent);
    }
@@ -293,7 +310,55 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
          return (CompletedWizard)completedWizards.get(0);
       }
    }
+   
+   public void processWorkflow(int workflowOption, Id id) {
+      //TODO Unimplemented
+   }
 
+   public void processWorkflow(Id workflowId, Id completedWizardId) {
+      Workflow workflow = getWorkflowManager().getWorkflow(workflowId);
+      CompletedWizard compWizard = this.getCompletedWizard(completedWizardId);
+      
+      Collection items = workflow.getItems();
+      for (Iterator i = items.iterator(); i.hasNext();) {
+         WorkflowItem wi = (WorkflowItem)i.next();
+         //Cell actionCell = this.getMatrixCellByScaffoldingCell(cell.getMatrix(), 
+         //      wi.getActionObjectId());
+         switch (wi.getActionType()) {
+            case(WorkflowItem.STATUS_CHANGE_WORKFLOW):
+               processStatusChangeWorkflow(wi, compWizard);
+               break;
+            case(WorkflowItem.NOTIFICATION_WORKFLOW):
+               processNotificationWorkflow(wi);
+               break;
+            case(WorkflowItem.CONTENT_LOCKING_WORKFLOW):
+               processContentLockingWorkflow(wi, compWizard);
+               break;
+         }
+      }      
+   }
+   
+   private void processStatusChangeWorkflow(String status, CompletedWizard actionWizard) {
+      actionWizard.setStatus(status);
+   }
+   
+   private void processStatusChangeWorkflow(WorkflowItem wi, CompletedWizard actionWizard) {
+      processStatusChangeWorkflow(wi.getActionValue(), actionWizard);
+   }
+   
+   private void processContentLockingWorkflow(String lockAction, CompletedWizard actionWizard) {
+      //TODO implement
+   }
+
+   private void processContentLockingWorkflow(WorkflowItem wi, CompletedWizard actionWizard) {
+      processContentLockingWorkflow(wi.getActionValue(), actionWizard);     
+   }
+
+   private void processNotificationWorkflow(WorkflowItem wi) {
+      // TODO implement
+      
+   }
+   
    public AuthorizationFacade getAuthorizationFacade() {
       return authorizationFacade;
    }
@@ -359,5 +424,19 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 
    public void setGuidanceManager(GuidanceManager guidanceManager) {
       this.guidanceManager = guidanceManager;
+   }
+
+   /**
+    * @return Returns the workflowManager.
+    */
+   public WorkflowManager getWorkflowManager() {
+      return workflowManager;
+   }
+
+   /**
+    * @param workflowManager The workflowManager to set.
+    */
+   public void setWorkflowManager(WorkflowManager workflowManager) {
+      this.workflowManager = workflowManager;
    }
 }

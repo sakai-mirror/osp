@@ -40,21 +40,48 @@ import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
+import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
+import org.theospi.portfolio.wizard.model.CompletedWizard;
 
 public class ReviewHelperController implements Controller {
    
    private MatrixManager matrixManager;
    private IdManager idManager = null;
    private ReviewManager reviewManager;
+   private WizardManager wizardManager;
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-      String strId = (String) request.get("page_id");
-      if (strId== null) {
-         strId = (String)session.get("page_id");
+      String strId = null;
+      String lookupId = null;
+      String returnView = "return";
+      
+      if (request.get("process_type_key") != null) {
+         session.put("process_type_key", request.get("process_type_key"));
+         session.put(ReviewHelper.REVIEW_TYPE_KEY, request.get(ReviewHelper.REVIEW_TYPE_KEY));
+      }
+      
+      String processTypeKey = (String)session.get("process_type_key");
+      
+      
+      if (processTypeKey != null && !processTypeKey.equals(WizardPage.PROCESS_TYPE_KEY)) {
+         lookupId = processTypeKey;
+         returnView = "helperDone";
+      }
+      else if (processTypeKey != null) {
+         lookupId = processTypeKey;
+      }
+      strId = (String) request.get(lookupId);
+      if (strId==null) {
+         strId = (String) session.get(lookupId);
+      }
+      String secondPass = (String)session.get("secondPass");
+      if (secondPass != null) {
+         strId = (String)session.get(lookupId);
          String formType = (String)session.get(ResourceEditingHelper.CREATE_SUB_TYPE);
          
          Map model = new HashMap();
-         model.put("page_id", strId);
+         model.put(lookupId, strId);
          
          Placement placement = ToolManager.getCurrentPlacement();
          String currentSite = placement.getContext();
@@ -69,7 +96,9 @@ public class ReviewHelperController implements Controller {
          session.remove(ResourceEditingHelper.CREATE_SUB_TYPE);
          session.remove(ReviewHelper.REVIEW_TYPE);
          session.remove(ResourceEditingHelper.CREATE_PARENT);
-         session.remove("page_id");
+         session.remove(lookupId);
+         //session.remove("process_type_key");
+         session.remove("secondPass");
          
          if (session.get(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
                session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
@@ -93,29 +122,38 @@ public class ReviewHelperController implements Controller {
          }        
          
          session.remove(FilePickerHelper.FILE_PICKER_CANCEL);
-         return new ModelAndView("return", model);
+         return new ModelAndView(returnView, model);
       }
       
       Id id = getIdManager().getId(strId);
-      WizardPage page = matrixManager.getWizardPage(id);
+      ObjectWithWorkflow obj = null;
+      if (lookupId.equals(WizardPage.PROCESS_TYPE_KEY)) {
+         WizardPage page = matrixManager.getWizardPage(id);
+         obj = page.getPageDefinition();
+      }
+      else {
+         CompletedWizard cw = wizardManager.getCompletedWizard(id);
+         obj = cw.getWizard();
+      }
 
       
       
-      String type = (String)request.get("org_theospi_portfolio_review_type");
+      String type = (String)session.get(ReviewHelper.REVIEW_TYPE_KEY);
+      session.remove(ReviewHelper.REVIEW_TYPE_KEY);
       int intType = Integer.parseInt(type);
       
       String formTypeId = "";
       switch (intType) {
          case Review.REVIEW_TYPE:
-            formTypeId = page.getPageDefinition().getReviewDevice().getValue();
+            formTypeId = obj.getReviewDevice().getValue();
             break;
          case Review.EVALUATION_TYPE:
-            formTypeId = page.getPageDefinition().getEvaluationDevice().getValue();
+            formTypeId = obj.getEvaluationDevice().getValue();
             session.put(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS, 
-                  page.getPageDefinition().getEvalWorkflows());
+                  obj.getEvalWorkflows());
             break;
          case Review.REFLECTION_TYPE:
-            formTypeId = page.getPageDefinition().getReflectionDevice().getValue();
+            formTypeId = obj.getReflectionDevice().getValue();
             break;
       }      
       
@@ -136,7 +174,8 @@ public class ReviewHelperController implements Controller {
          session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_review_id"));
       }
       
-      session.put("page_id", page.getId().getValue());
+      session.put("page_id", strId);
+      session.put("secondPass", "true");
       return new ModelAndView("success");
       
    }
@@ -181,6 +220,20 @@ public class ReviewHelperController implements Controller {
     */
    public void setReviewManager(ReviewManager reviewManager) {
       this.reviewManager = reviewManager;
+   }
+
+   /**
+    * @return Returns the wizardManager.
+    */
+   public WizardManager getWizardManager() {
+      return wizardManager;
+   }
+
+   /**
+    * @param wizardManager The wizardManager to set.
+    */
+   public void setWizardManager(WizardManager wizardManager) {
+      this.wizardManager = wizardManager;
    }
    
 }

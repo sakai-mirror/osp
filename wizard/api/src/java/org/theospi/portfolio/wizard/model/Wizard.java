@@ -22,16 +22,14 @@ package org.theospi.portfolio.wizard.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.theospi.portfolio.guidance.model.Guidance;
+import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 
-public class Wizard extends IdentifiableObject {
+public class Wizard extends ObjectWithWorkflow {
 
    public final static String WIZARD_TYPE_SEQUENTIAL = "org.theospi.portfolio.wizard.model.Wizard.sequential";
    public final static String WIZARD_TYPE_HIERARCHICAL = "org.theospi.portfolio.wizard.model.Wizard.hierarchical";
@@ -43,7 +41,7 @@ public class Wizard extends IdentifiableObject {
    private Date modified;
    private transient Agent owner;
    private Id guidanceId;
-   private Set supportItems = new HashSet();
+   //private Set supportItems = new HashSet();
    private boolean published = false;
    private String type = WIZARD_TYPE_SEQUENTIAL;
    private List wizardStyleItems = new ArrayList();
@@ -134,7 +132,7 @@ public class Wizard extends IdentifiableObject {
    public void setGuidance(Guidance guidance) {
       this.guidance = guidance;
    }
-
+/*
    public Set getSupportItems() {
       return supportItems;
    }
@@ -142,7 +140,7 @@ public class Wizard extends IdentifiableObject {
    public void setSupportItems(Set supportingObjects) {
       this.supportItems = supportingObjects;
    }
-
+*/
    public List getWizardStyleItems() {
       return wizardStyleItems;
    }

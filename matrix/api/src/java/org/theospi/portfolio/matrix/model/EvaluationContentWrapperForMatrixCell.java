@@ -33,10 +33,8 @@ import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 
 public class EvaluationContentWrapperForMatrixCell extends EvaluationContentWrapper{
    
-   public EvaluationContentWrapperForMatrixCell(Id wizardPageId, Id wizardPageDefinitionId, 
-         String title, Agent owner, Date submittedDate) throws IdUnusedException {
-      setWizardPageId(wizardPageId);
-      setWizardPageDefinitionId(wizardPageDefinitionId);
+   public EvaluationContentWrapperForMatrixCell(Id id, String title, Agent owner, Date submittedDate) throws IdUnusedException {
+      setId(id);
       setTitle(title);
       setSubmittedDate(submittedDate);
       
@@ -47,7 +45,7 @@ public class EvaluationContentWrapperForMatrixCell extends EvaluationContentWrap
       
       Set params = new HashSet();
       
-      params.add(new ParamBean("page_id", getWizardPageId().getValue()));
+      params.add(new ParamBean("page_id", getId().getValue()));
       params.add(new ParamBean("readOnlyMatrix", "true"));
       setUrlParams(params);      
    }

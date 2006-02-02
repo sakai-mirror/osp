@@ -43,6 +43,7 @@ public class WizardPage extends IdentifiableObject {
    private Date modified;
    
    public final static String TYPE = "wizard_page_type";
+   public final static String PROCESS_TYPE_KEY = "page_id";
 
    /**
     * @return Returns Set of Attachments

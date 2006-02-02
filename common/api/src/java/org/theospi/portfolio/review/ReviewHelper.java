@@ -37,4 +37,7 @@ public interface ReviewHelper {
    public static final String REVIEW_POST_PROCESSOR_WORKFLOWS = 
       "org.theospi.portfolio.review.postProcessorWorkflows";
    
+   public static final String REVIEW_TYPE_KEY = 
+      "org_theospi_portfolio_review_type";
+   
 }

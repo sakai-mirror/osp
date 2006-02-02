@@ -19,8 +19,10 @@
          <key column="workflow_id"/>
          <one-to-many class="WorkflowItem"/>
       </set>
-      <many-to-one name="wizardPageDefinition" column="wiz_page_def_id" 
-         not-null="true" class="org.theospi.portfolio.matrix.model.WizardPageDefinition"/>
+      
+      <many-to-one name="parentObject" column="parent_id" 
+         not-null="true" class="org.theospi.portfolio.shared.model.ObjectWithWorkflow"/>
+  
    </class>
 
    <class name="WorkflowItem" table="osp_workflow_item" lazy="true">

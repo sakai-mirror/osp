@@ -24,20 +24,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 
 public class Workflow extends IdentifiableObject {
 
    private String title;
    private Set items = new HashSet();
    private boolean newObject = false;
-   private WizardPageDefinition wizardPageDefinition;
+   private ObjectWithWorkflow parentObject;
    
    public Workflow() {;}
    
-   public Workflow(String title, WizardPageDefinition wizardPageDefinition) {
+   public Workflow(String title, ObjectWithWorkflow parentObject) {
       this.title = title;
-      this.wizardPageDefinition = wizardPageDefinition;
+      this.parentObject = parentObject;
    }
    
    /**
@@ -102,17 +102,17 @@ public class Workflow extends IdentifiableObject {
    }
 
    /**
-    * @return Returns the wizardPageDefinition.
+    * @return Returns the parentObject.
     */
-   public WizardPageDefinition getWizardPageDefinition() {
-      return wizardPageDefinition;
+   public ObjectWithWorkflow getParentObject() {
+      return parentObject;
    }
 
    /**
-    * @param wizardPageDefinition The wizardPageDefinition to set.
+    * @param parentObject The parentObject to set.
     */
-   public void setWizardPageDefinition(WizardPageDefinition wizardPageDefinition) {
-      this.wizardPageDefinition = wizardPageDefinition;
+   public void setParentObject(ObjectWithWorkflow parentObject) {
+      this.parentObject = parentObject;
    }
    
    

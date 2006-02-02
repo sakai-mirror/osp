@@ -22,6 +22,8 @@
 package org.theospi.portfolio.wizard.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -31,15 +33,21 @@ import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 
 public class EvaluationContentWrapperForWizard extends EvaluationContentWrapper {
 
-   public EvaluationContentWrapperForWizard(Id wizardPageId, Id wizardPageDefinitionId, 
+   public EvaluationContentWrapperForWizard(Id id, 
          String title, Agent owner, Date submittedDate) throws IdUnusedException {
-      setWizardPageId(wizardPageId);
-      setWizardPageDefinitionId(wizardPageDefinitionId);
+      setId(id);
       setTitle(title);
       setSubmittedDate(submittedDate);
       
       setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
       setEvalType(CompletedWizard.TYPE);
+      
+      setUrl("osp.wizard.run.helper/runWizard");
+      
+      Set params = new HashSet();      
+      params.add(new ParamBean("session.CURRENT_WIZARD_ID", getId().getValue()));
+      params.add(new ParamBean("session.WIZARD_USER_ID", getOwner().getId()));
+      setUrlParams(params);  
    }
    
 }

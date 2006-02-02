@@ -98,6 +98,7 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
                
                scaffoldingCell = new ScaffoldingCell(criterion, level, status, scaffolding);
                scaffoldingCell.getWizardPageDefinition().setSiteId(scaffolding.getWorksiteId().getValue());
+               scaffoldingCell.getWizardPageDefinition().setTitle(getDefaultTitle(scaffolding, criterion, level));
                getMatrixManager().storeScaffoldingCell(scaffoldingCell);
             }
             row.add(scaffoldingCell);
@@ -125,6 +126,14 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
       
       return incomingModel;
    }
+   
+   protected String getDefaultTitle(Scaffolding scaffolding, Criterion criterion, Level level) {
+      String title = scaffolding.getRowLabel() + ": " + criterion.getDescription() + "; " +
+            scaffolding.getColumnLabel() + ": " + level.getDescription();
+      
+      return title;
+   }
+   
    /*
    private void processWorkflow(Scaffolding scaffolding) {
       Set cells = scaffolding.getScaffoldingCells();      

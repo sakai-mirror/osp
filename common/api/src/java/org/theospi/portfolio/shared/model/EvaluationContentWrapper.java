@@ -33,8 +33,7 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 
 public abstract class EvaluationContentWrapper {
 
-   private Id wizardPageId;
-   private Id wizardPageDefinitionId;
+   private Id id;
    private String title;
    private User owner;
    private Date submittedDate;
@@ -44,21 +43,19 @@ public abstract class EvaluationContentWrapper {
    
    public EvaluationContentWrapper() {;}
    
-   public EvaluationContentWrapper(Id wizardPageId, Id wizardPageDefinitionId, 
-         String title, Agent owner, Date submittedDate) throws IdUnusedException {
-      this.wizardPageId = wizardPageId;
-      this.wizardPageDefinitionId = wizardPageDefinitionId;
+   public EvaluationContentWrapper(Id id, String title, Agent owner, 
+         Date submittedDate) throws IdUnusedException {
+      this.id = id;
       this.title = title;
       this.submittedDate = submittedDate;
       
       this.owner = UserDirectoryService.getUser(owner.getId().getValue());
    }
    
-   public EvaluationContentWrapper(Id wizardPageId, Id wizardPageDefinitionId, 
-         String title, Agent owner, Date submittedDate, String type) throws IdUnusedException {
+   public EvaluationContentWrapper(Id id, String title, Agent owner, 
+         Date submittedDate, String type) throws IdUnusedException {
       
-      this.wizardPageId = wizardPageId;
-      this.wizardPageDefinitionId = wizardPageDefinitionId;
+      this.id = id;
       this.title = title;
       this.submittedDate = submittedDate;
       
@@ -66,10 +63,8 @@ public abstract class EvaluationContentWrapper {
       this.evalType = type;
    }
    
-   public EvaluationContentWrapper(Id wizardPageId, Id wizardPageDefinitionId, 
-         String title, User owner, Date submittedDate) {
-      this.wizardPageId = wizardPageId;
-      this.wizardPageDefinitionId = wizardPageDefinitionId;
+   public EvaluationContentWrapper(Id id, String title, User owner, Date submittedDate) {
+      this.id = id;
       this.title = title;
       this.owner = owner;
       this.submittedDate = submittedDate;
@@ -152,28 +147,16 @@ public abstract class EvaluationContentWrapper {
       this.title = title;
    }
    /**
-    * @return Returns the wizardPageDefinitionId.
+    * @return Returns the id.
     */
-   public Id getWizardPageDefinitionId() {
-      return wizardPageDefinitionId;
+   public Id getId() {
+      return id;
    }
    /**
-    * @param wizardPageDefinitionId The wizardPageDefinitionId to set.
+    * @param id The id to set.
     */
-   public void setWizardPageDefinitionId(Id wizardPageDefinitionId) {
-      this.wizardPageDefinitionId = wizardPageDefinitionId;
-   }
-   /**
-    * @return Returns the wizardPageId.
-    */
-   public Id getWizardPageId() {
-      return wizardPageId;
-   }
-   /**
-    * @param wizardPageId The wizardPageId to set.
-    */
-   public void setWizardPageId(Id wizardPageId) {
-      this.wizardPageId = wizardPageId;
+   public void setId(Id id) {
+      this.id = id;
    }
 
    /**

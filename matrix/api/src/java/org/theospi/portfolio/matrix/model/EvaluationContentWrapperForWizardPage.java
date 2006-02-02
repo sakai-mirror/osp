@@ -35,11 +35,10 @@ public class EvaluationContentWrapperForWizardPage extends
       EvaluationContentWrapper {
 
    
-   public EvaluationContentWrapperForWizardPage(Id wizardPageId, Id wizardPageDefinitionId, 
+   public EvaluationContentWrapperForWizardPage(Id id, 
          String title, Agent owner, Date submittedDate) throws IdUnusedException {
      
-      setWizardPageId(wizardPageId);
-      setWizardPageDefinitionId(wizardPageDefinitionId);
+      setId(id);
       setTitle(title);
       setSubmittedDate(submittedDate);
       
@@ -50,7 +49,7 @@ public class EvaluationContentWrapperForWizardPage extends
       
       Set params = new HashSet();
       
-      params.add(new ParamBean("page_id", getWizardPageId().getValue()));
+      params.add(new ParamBean("page_id", getId().getValue()));
       params.add(new ParamBean("readOnlyMatrix", "true"));
       setUrlParams(params);
    }

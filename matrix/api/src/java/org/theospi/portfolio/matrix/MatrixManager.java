@@ -26,6 +26,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.theospi.portfolio.matrix.model.*;
+import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
 import org.theospi.portfolio.shared.model.Node;
 
 import java.io.IOException;
@@ -37,7 +38,7 @@ import java.util.Set;
 /**
  * @author apple
  */
-public interface MatrixManager {
+public interface MatrixManager extends WorkflowEnabledManager {
 
    
    Matrix getMatrix(Id matrixToolId, Id agentId);
@@ -142,9 +143,6 @@ public interface MatrixManager {
    public List getScaffolding();
 
    public List getMatrices(Id scaffoldingId);
-   
-   void processWorkflow(Id workflowId, Id pageId);
-   void processWorkflow(int workflowOption, Id cellId);
 
    WizardPage getWizardPage(Id pageId);
 
