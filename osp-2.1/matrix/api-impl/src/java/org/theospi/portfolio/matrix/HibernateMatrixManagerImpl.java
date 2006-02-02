@@ -812,10 +812,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Date now = new Date(System.currentTimeMillis());
       getHibernateTemplate().refresh(cell); //TODO not sure if this is necessary
       ScaffoldingCell sCell = cell.getScaffoldingCell();
+      WizardPage page = cell.getWizardPage();
       
       //    Actions for current cell
-      processContentLockingWorkflow(WorkflowItem.CONTENT_LOCKING_LOCK, cell);
-      processStatusChangeWorkflow(MatrixFunctionConstants.PENDING_STATUS, cell);
+      processContentLockingWorkflow(WorkflowItem.CONTENT_LOCKING_LOCK, page);
+      processStatusChangeWorkflow(MatrixFunctionConstants.PENDING_STATUS, page);
       cell.getWizardPage().setModified(now);
       
       if (sCell.getScaffolding().getWorkflowOption() > 0)
@@ -1495,22 +1496,23 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    
    public void processWorkflow(Id workflowId, Id pageId) {
       Workflow workflow = getWorkflowManager().getWorkflow(workflowId);
-      Cell cell = getCellFromPage(pageId);
+      //Cell cell = getCellFromPage(pageId);
+      WizardPage page = getWizardPage(pageId);
       
       Collection items = workflow.getItems();
       for (Iterator i = items.iterator(); i.hasNext();) {
          WorkflowItem wi = (WorkflowItem)i.next();
-         Cell actionCell = this.getMatrixCellByWizardPageDef(cell.getMatrix(), 
-               wi.getActionObjectId());
+         //Cell actionCell = this.getMatrixCellByWizardPageDef(cell.getMatrix(), 
+         //      wi.getActionObjectId());
          switch (wi.getActionType()) {
             case(WorkflowItem.STATUS_CHANGE_WORKFLOW):
-               processStatusChangeWorkflow(wi, actionCell);
+               processStatusChangeWorkflow(wi, page);
                break;
             case(WorkflowItem.NOTIFICATION_WORKFLOW):
                processNotificationWorkflow(wi);
                break;
             case(WorkflowItem.CONTENT_LOCKING_WORKFLOW):
-               processContentLockingWorkflow(wi, actionCell);
+               processContentLockingWorkflow(wi, page);
                break;
          }
       }      
@@ -1518,6 +1520,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    
    public void processWorkflow(int workflowOption, Id cellId) {
       Cell cell = getCell(cellId);
+      WizardPage page = cell.getWizardPage();
       Date now = new Date(System.currentTimeMillis());
 
       //Actions for "next" cell
@@ -1525,32 +1528,33 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             workflowOption == Scaffolding.VERTICAL_PROGRESSION) {
 
          Cell actionCell = getNextCell(cell, workflowOption);
-         if (actionCell != null) {               
-            processContentLockingWorkflow(WorkflowItem.CONTENT_LOCKING_UNLOCK, actionCell);
-            processStatusChangeWorkflow(MatrixFunctionConstants.READY_STATUS, actionCell);
-            cell.getWizardPage().setModified(now);
+         WizardPage actionPage = actionCell.getWizardPage();
+         if (actionPage != null) {               
+            processContentLockingWorkflow(WorkflowItem.CONTENT_LOCKING_UNLOCK, actionPage);
+            processStatusChangeWorkflow(MatrixFunctionConstants.READY_STATUS, actionPage);
+            page.setModified(now);
          }             
       }
    }
 
-   private void processContentLockingWorkflow(String lockAction, Cell actionCell) {
-      for (Iterator iter = actionCell.getAttachments().iterator(); iter.hasNext();) {
+   private void processContentLockingWorkflow(String lockAction, WizardPage page) {
+      for (Iterator iter = page.getAttachments().iterator(); iter.hasNext();) {
          Attachment att = (Attachment)iter.next();
          
          if (lockAction.equals(WorkflowItem.CONTENT_LOCKING_LOCK)) {
             getLockManager().lockObject(att.getArtifactId().getValue(), 
-                  actionCell.getId().getValue(), 
+                  page.getId().getValue(), 
                   "Submitting cell for evaluation", true);
          }
          else {
             getLockManager().removeLock(att.getArtifactId().getValue(), 
-                  actionCell.getId().getValue());
+                  page.getId().getValue());
          }         
       } 
    }
 
-   private void processContentLockingWorkflow(WorkflowItem wi, Cell actionCell) {
-      processContentLockingWorkflow(wi.getActionValue(), actionCell);     
+   private void processContentLockingWorkflow(WorkflowItem wi, WizardPage page) {
+      processContentLockingWorkflow(wi.getActionValue(), page);     
    }
 
    private void processNotificationWorkflow(WorkflowItem wi) {
@@ -1558,12 +1562,14 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       
    }
 
-   private void processStatusChangeWorkflow(String status, Cell actionCell) {
-      actionCell.setStatus(status);
+   private void processStatusChangeWorkflow(String status, WizardPage page) {
+      Date now = new Date(System.currentTimeMillis());
+      page.setStatus(status);
+      page.setModified(now);
    }
    
-   private void processStatusChangeWorkflow(WorkflowItem wi, Cell actionCell) {
-      processStatusChangeWorkflow(wi.getActionValue(), actionCell);
+   private void processStatusChangeWorkflow(WorkflowItem wi, WizardPage page) {
+      processStatusChangeWorkflow(wi.getActionValue(), page);
    }
 
    /**

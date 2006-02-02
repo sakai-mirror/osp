@@ -23,6 +23,7 @@
    
    <p class="act">      
       <input type="submit" name="submit" class="active" value="<osp:message key="submit" bundle="${msgs}" />"/>
-      <input type="hidden" name="pageId" value="<c:out value="${page_id}"/>"/>
+      <input type="hidden" name="objId" value="<c:out value="${obj_id}"/>"/>
+      <input type="hidden" name="manager" value="<c:out value="${manager}"/>"/>
    </p>
 </form>

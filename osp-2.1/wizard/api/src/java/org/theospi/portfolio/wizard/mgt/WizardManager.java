@@ -48,6 +48,8 @@ public interface WizardManager extends WorkflowEnabledManager {
    
    public Wizard getWizard(String id);
    
+   public void publishWizard(Wizard wizard);
+   
    public Collection getAvailableForms(String siteId, String type);
 
    public void deleteObjects(List deletedItems);

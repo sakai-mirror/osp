@@ -23,8 +23,10 @@ package org.theospi.portfolio.wizard.tool;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -39,12 +41,15 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.service.legacy.authzGroup.Member;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.sakaiproject.service.legacy.filepicker.ResourceEditingHelper;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
@@ -186,6 +191,12 @@ public class WizardTool extends BuilderTool {
       }
 
       return returned;
+   }
+   
+   public String processActionPublish(Wizard wizard) {
+      getWizardManager().publishWizard(wizard);
+      current = null;
+      return LIST_PAGE;
    }
    
    public String processActionEdit(Wizard wizard) {
@@ -436,11 +447,43 @@ public class WizardTool extends BuilderTool {
       return null;
    }
    
+   private Set getUserList(String worksiteId) {
+      Set members = new HashSet();
+      Set users = new HashSet();
+      
+      try {
+         Site site = SiteService.getSite(worksiteId);
+         if (site.hasGroups()) {
+            String currentUser = SessionManager.getCurrentSessionUserId();
+            Collection groups = site.getGroupsWithMember(currentUser);
+            for (Iterator iter = groups.iterator(); iter.hasNext();) {
+               Group group = (Group) iter.next();
+               members.addAll(group.getMembers());
+            }
+         }
+         else {
+            members.addAll(site.getMembers());
+         }
+         
+         for (Iterator memb = members.iterator(); memb.hasNext();) {
+            Member member = (Member) memb.next();
+            users.add(UserDirectoryService.getUser(member.getUserId()));
+         }
+      } catch (IdUnusedException e) {
+         throw new OspException(e);
+      }
+      return users;
+   }
+   
    public boolean getCanEvaluate() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
             current.getBase().getId());
    }
    
+   public boolean getCanPublish(Wizard wizard) {
+      return getAuthzManager().isAuthorized(WizardFunctionConstants.PUBLISH_WIZARD, 
+            wizard.getId()) && !wizard.isPublished();
+   }
    
    protected Collection getFormsForSelect(String type) {
       Placement placement = ToolManager.getCurrentPlacement();
@@ -450,13 +493,7 @@ public class WizardTool extends BuilderTool {
       
       List retForms = new ArrayList();
       for(Iterator iter = forms.iterator(); iter.hasNext();) {
-         //Artifact art = (Artifact)iter.next();
          StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) iter.next(); 
-         //String type = art.getHome().getType().getId().getValue();
-         
-         //String id = VALUE_SEPARATOR + FORM_TYPE + VALUE_SEPARATOR + sad.getId().getValue();
-         //if (selectedId != null && selectedId.endsWith(id))
-         //   id = selectedId;
          retForms.add(createSelect(sad.getId().getValue(), sad.getDescription()));
       }
       
@@ -486,9 +523,6 @@ public class WizardTool extends BuilderTool {
       List retWizards = new ArrayList();
       for(Iterator iter = wizards.iterator(); iter.hasNext();) {
          Wizard wizard = (Wizard)iter.next();
-         //String id = VALUE_SEPARATOR + wizard.getType() + VALUE_SEPARATOR + wizard.getId().getValue();
-         //if (selectedId != null && selectedId.endsWith(id))
-         //   id = selectedId;
          retWizards.add(createSelect(wizard.getId().getValue(), wizard.getName()));
       }
       

@@ -20,7 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard;
 
-import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.security.app.ApplicationAuthorizer;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
@@ -29,7 +28,6 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class WizardAuthorizerImpl implements ApplicationAuthorizer{
@@ -118,7 +116,7 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
 
    protected Boolean isWizardViewAuth(Wizard wizard, AuthorizationFacade facade,
                                             Agent agent, Id id, boolean allowAnonymous) {
-      if (wizard.getOwner().equals(agent)) {
+      if (wizard != null && wizard.getOwner().equals(agent)) {
          return new Boolean(true);
       } else {
          return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.VIEW_WIZARD, id));

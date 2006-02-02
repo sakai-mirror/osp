@@ -26,7 +26,6 @@ import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardStyleItem;
-import org.theospi.portfolio.wizard.model.WizardCategory;
 import org.theospi.portfolio.guidance.model.GuidanceItem;
 
 import java.io.IOException;
@@ -75,6 +74,10 @@ public class DecoratedWizard {
    public void setExposeAsTool(boolean exposeAsTool) {
       base.setExposeAsTool(new Boolean(exposeAsTool));
    }
+   
+   public boolean getCanPublish() {
+      return parent.getCanPublish(base);
+   }
 
    public List getWizardStyleItems() {
       ToolSession session = SessionManager.getCurrentToolSession();
@@ -101,6 +104,10 @@ public class DecoratedWizard {
 
    public String processActionDelete() {
       return parent.processActionDelete(base);
+   }
+   
+   public String processActionPublish() {
+      return parent.processActionPublish(base);
    }
 
    public WizardTool getParent() {

@@ -222,7 +222,6 @@
    <bean id="reviewPostProcessor" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.ReviewPostProcessor">
-            <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
          </bean>
       </property>

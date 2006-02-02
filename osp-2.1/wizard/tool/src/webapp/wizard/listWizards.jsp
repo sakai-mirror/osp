@@ -55,6 +55,11 @@
          <h:commandLink action="#{wizardItem.processActionDelete}">
             <h:outputText value="#{msgs.delete}" />
          </h:commandLink>
+         <h:outputText value=" | " />
+         <h:commandLink action="#{wizardItem.processActionPublish}" 
+               rendered="#{wizardItem.canPublish}">
+            <h:outputText value="#{msgs.publish}" />
+         </h:commandLink>
       </h:column>
       <h:column>
          <f:facet name="header">
