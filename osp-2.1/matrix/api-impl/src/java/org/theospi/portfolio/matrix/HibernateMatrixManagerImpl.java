@@ -1235,6 +1235,25 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       for (Iterator iter=scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell scaffoldingCell = (ScaffoldingCell) iter.next();
          scaffoldingCell.setId(null);
+         
+         WizardPageDefinition wpd = scaffoldingCell.getWizardPageDefinition();
+         wpd.setId(null);
+         if (wpd.getGuidance() != null)
+            wpd.getGuidance().setId(null);
+         Set newWorkflows = new HashSet();
+         for (Iterator jiter=wpd.getEvalWorkflows().iterator(); jiter.hasNext();) {
+            Workflow w = (Workflow)jiter.next();
+            w.setId(null);
+            Set newItems = new HashSet();
+            for (Iterator kiter=w.getItems().iterator(); kiter.hasNext();) {
+               WorkflowItem wfi = (WorkflowItem)kiter.next();
+               wfi.setId(null);
+               newItems.add(wfi);
+            }
+            
+            newWorkflows.add(w);
+         }
+         
          //scaffoldingCell.getCells().clear();
          scaffoldingCell.setCells(new HashSet());
          sCells.add(scaffoldingCell);
