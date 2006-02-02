@@ -30,16 +30,18 @@
             </osp:url>"><osp:message key="manage_cell_status" bundle="${msgs}" /></a>
       </c:if>
       <c:if test="${matrixCan.review && cell.scaffoldingCell.reviewDevice != null}">
-         <a href="<osp:url value="reviewHelper.osp">
+         <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                <osp:param name="page_id" value="${cell.wizardPage.id}" />
             <osp:param name="org_theospi_portfolio_review_type" value="2" />
+            <osp:param name="process_type_key" value="page_id" />
             </osp:url>">
                   <osp:message key="review" bundle="${msgs}" /></a>
       </c:if> 
       <c:if test="${(matrixCan.evaluate || wizardCan.evaluate) && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING'}">
-         <a href="<osp:url value="reviewHelper.osp">
+         <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                <osp:param name="page_id" value="${cell.wizardPage.id}" />
             <osp:param name="org_theospi_portfolio_review_type" value="1" />
+            <osp:param name="process_type_key" value="page_id" />
             </osp:url>"><osp:message key="evaluate" bundle="${msgs}" /></a>
       </c:if>
 	</div>
@@ -119,7 +121,7 @@
       <h4><osp:message key="reflection_section_header" bundle="${msgs}" /></h4>
       
       <c:if test="${empty reflections}">
-         <a href="<osp:url value="reviewHelper.osp">
+         <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                <osp:param name="page_id" value="${cell.wizardPage.id}" />
                <osp:param name="org_theospi_portfolio_review_type" value="0" />
                </osp:url>">
@@ -133,6 +135,7 @@
                <osp:param name="page_id" value="${cell.wizardPage.id}" />
                <osp:param name="org_theospi_portfolio_review_type" value="0" />
                <osp:param name="current_review_id" value="${reflections[0].reviewContentNode.resource.id}" />
+               <osp:param name="process_type_key" value="page_id" />
                </osp:url>">
                      <osp:message key="reflection_edit" bundle="${msgs}" /></a>
          </c:if>

@@ -29,7 +29,11 @@ import org.theospi.portfolio.wizard.model.WizardStyleItem;
 import org.theospi.portfolio.wizard.model.WizardCategory;
 import org.theospi.portfolio.guidance.model.GuidanceItem;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 
 /**
  * Created by IntelliJ IDEA.
@@ -158,11 +162,22 @@ public class DecoratedWizard {
    }
 
    public String processActionRunWizard() {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      
       getParent().setCurrent(this);
       setRunningWizard(new DecoratedCompletedWizard(getParent(), this,
          parent.getWizardManager().getCompletedWizard(getBase())));
 
-      return "runWizard";
+      //return "runWizard";
+      
+      try {
+         context.redirect("osp.wizard.run.helper/runWizard");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+      return null;
    }
 
    public DecoratedCompletedWizard getRunningWizard() {

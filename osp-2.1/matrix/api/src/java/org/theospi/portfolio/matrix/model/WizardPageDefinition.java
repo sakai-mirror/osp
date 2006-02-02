@@ -20,9 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.model;
 
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.guidance.model.Guidance;
+import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 
 import java.util.*;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * Time: 4:14:09 PM
  * To change this template use File | Settings | File Templates.
  */
-public class WizardPageDefinition extends IdentifiableObject {
+public class WizardPageDefinition extends ObjectWithWorkflow {
 
    private String title;
    private String description;
@@ -44,15 +44,7 @@ public class WizardPageDefinition extends IdentifiableObject {
    transient private Id guidanceId;
    private Guidance guidance;
    transient private Id deleteGuidanceId;
-   private Set evalWorkflows = new HashSet();
-
-   private Id reflectionDevice;
-   private String reflectionDeviceType;
-   private Id evaluationDevice;
-   private String evaluationDeviceType;
-   private Id reviewDevice;
-   private String reviewDeviceType;
-
+   
    private String siteId;
 
    private List additionalForms = new ArrayList();
@@ -99,42 +91,6 @@ public class WizardPageDefinition extends IdentifiableObject {
    }
    public void setPages(Set pages) {
       this.pages = pages;
-   }
-   public Id getEvaluationDevice() {
-      return evaluationDevice;
-   }
-   public void setEvaluationDevice(Id evaluationDevice) {
-      this.evaluationDevice = evaluationDevice;
-   }
-   public String getEvaluationDeviceType() {
-      return evaluationDeviceType;
-   }
-   public void setEvaluationDeviceType(String evaluationDeviceType) {
-      this.evaluationDeviceType = evaluationDeviceType;
-   }
-   public Id getReflectionDevice() {
-      return reflectionDevice;
-   }
-   public void setReflectionDevice(Id reflectionDevice) {
-      this.reflectionDevice = reflectionDevice;
-   }
-   public String getReflectionDeviceType() {
-      return reflectionDeviceType;
-   }
-   public void setReflectionDeviceType(String reflectionDeviceType) {
-      this.reflectionDeviceType = reflectionDeviceType;
-   }
-   public Id getReviewDevice() {
-      return reviewDevice;
-   }
-   public void setReviewDevice(Id reviewDevice) {
-      this.reviewDevice = reviewDevice;
-   }
-   public String getReviewDeviceType() {
-      return reviewDeviceType;
-   }
-   public void setReviewDeviceType(String reviewDeviceType) {
-      this.reviewDeviceType = reviewDeviceType;
    }
 
    /**
@@ -201,20 +157,6 @@ public class WizardPageDefinition extends IdentifiableObject {
 
    public void setDescription(String description) {
       this.description = description;
-   }
-
-   /**
-    * @return Returns the evalWorkflows.
-    */
-   public Set getEvalWorkflows() {
-      return evalWorkflows;
-   }
-
-   /**
-    * @param evalWorkflows The evalWorkflows to set.
-    */
-   public void setEvalWorkflows(Set evalWorkflows) {
-      this.evalWorkflows = evalWorkflows;
    }
 
    public String getSiteId() {

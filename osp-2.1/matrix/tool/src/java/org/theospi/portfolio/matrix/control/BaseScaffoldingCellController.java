@@ -105,7 +105,7 @@ public class BaseScaffoldingCellController {
 
       String oldStatus = oldScaffoldingCell.getInitialStatus();
       scaffoldingCell.getWizardPageDefinition().setEvalWorkflows(
-            new HashSet(createEvalWorkflows(scaffoldingCell)));
+            new HashSet(createEvalWorkflows(scaffoldingCell.getWizardPageDefinition())));
       getMatrixManager().storeScaffoldingCell(scaffoldingCell);
       List cells = getMatrixManager().getCellsByScaffoldingCell(
             scaffoldingCell.getId());
@@ -124,8 +124,8 @@ public class BaseScaffoldingCellController {
       }
    }
    
-   protected Set createEvalWorkflows(ScaffoldingCell scaffoldingCell) {
-      return getWorkflowManager().createEvalWorkflows(scaffoldingCell.getWizardPageDefinition());      
+   protected Set createEvalWorkflows(WizardPageDefinition wpd) {
+      return getWorkflowManager().createEvalWorkflows(wpd);      
    }
    
 

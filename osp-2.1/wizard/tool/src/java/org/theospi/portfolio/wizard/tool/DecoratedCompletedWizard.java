@@ -20,6 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.tool;
 
+import java.util.List;
+
+import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 
@@ -84,6 +87,12 @@ public class DecoratedCompletedWizard {
       getBase().setStatus(MatrixFunctionConstants.PENDING_STATUS);
       getParent().getWizardManager().saveWizard(getBase());
       return "runWizard";
+   }
+   
+   public List getEvaluations() {
+      return getParent().getReviewManager().getReviewsByParentAndType(
+            getBase().getId().getValue(), 
+            Review.EVALUATION_TYPE);
    }
 
 }

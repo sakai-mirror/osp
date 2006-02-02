@@ -80,7 +80,7 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
    protected void saveScaffoldingCell(Map request, ScaffoldingCell scaffoldingCell) {
       // do nothing... let caller deal with it...
       scaffoldingCell.getWizardPageDefinition().setEvalWorkflows(
-            new HashSet(super.createEvalWorkflows(scaffoldingCell)));
+            new HashSet(super.createEvalWorkflows(scaffoldingCell.getWizardPageDefinition())));
    }
 
    protected void prepareModelWithScaffoldingId(Map model, ScaffoldingCell scaffoldingCell) {

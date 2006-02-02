@@ -44,6 +44,7 @@ public class CompletedWizard extends IdentifiableObject {
    private String status;
 
    public final static String TYPE = "wizard_type";
+   public final static String PROCESS_TYPE_KEY = "completed_wizard_id";
    
    public CompletedWizard() {
    }

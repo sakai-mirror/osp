@@ -25,7 +25,6 @@ import org.theospi.portfolio.security.app.ApplicationAuthorizer;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
-import org.theospi.portfolio.wizard.model.WizardSupportItem;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -96,11 +95,9 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       Wizard wizard = getWizardManager().getWizard(id);
 
       //Is there a comment form/wizard supplied?
-      for (Iterator iter = wizard.getSupportItems().iterator(); iter.hasNext();) {
-         WizardSupportItem wsi = (WizardSupportItem)iter.next();
-         if (wsi.getGenericType().equals(WizardFunctionConstants.COMMENT_TYPE))
-               return new Boolean(true);
-      }
+      if (wizard.getReviewDevice() != null)
+         return new Boolean(true);
+      
       //if (!wizard.getSupportItems()..isIncludeComments()){
       //   return new Boolean(false);
       //}

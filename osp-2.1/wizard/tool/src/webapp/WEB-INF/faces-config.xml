@@ -49,12 +49,17 @@
       <managed-property>
          <description>Service Dependency: authzManager</description>
          <property-name>authzManager</property-name>
-         <value>#{Components["org.sakaiproject.metaobj.security.AuthorizationFacade"]}</value>
+         <value>#{Components["authzManager"]}</value>
       </managed-property>
       <managed-property>
          <description>Service Dependency: workflowManager</description>
          <property-name>workflowManager</property-name>
          <value>#{Components["org.theospi.portfolio.workflow.mgt.WorkflowManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: reviewManager</description>
+         <property-name>reviewManager</property-name>
+         <value>#{Components["org.theospi.portfolio.review.mgt.ReviewManager"]}</value>
       </managed-property>
    </managed-bean>
    <!-- 

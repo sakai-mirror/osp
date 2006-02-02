@@ -198,12 +198,15 @@
             <property name="reviewManager">
                <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
             </property>
+            <property name="wizardManager">
+               <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
          <props>
             <prop key="success">createReview</prop>
-            <prop key="return">wizardPageRedirect</prop>
+            <prop key="return">helperDone</prop>
             <prop key="postProcessor">postProcessorWorkflow</prop>
          </props>
       </property>
@@ -225,7 +228,7 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">wizardPageRedirect</prop>
+            <prop key="success">helperDone</prop>
          </props>
       </property>
       <property name="customTypedEditors">

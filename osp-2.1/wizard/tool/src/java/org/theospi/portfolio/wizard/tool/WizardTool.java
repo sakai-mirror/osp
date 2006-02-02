@@ -23,10 +23,8 @@ package org.theospi.portfolio.wizard.tool;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -40,30 +38,31 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
+import org.sakaiproject.service.legacy.filepicker.ResourceEditingHelper;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
-import org.theospi.portfolio.guidance.model.GuidanceItem;
+import org.theospi.portfolio.review.ReviewHelper;
+import org.theospi.portfolio.review.mgt.ReviewManager;
+import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
+import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
+import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.wizard.model.Wizard;
-import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.wizard.model.WizardStyleItem;
-import org.theospi.portfolio.wizard.model.WizardSupportItem;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.shared.tool.BuilderTool;
 import org.theospi.portfolio.shared.tool.BuilderScreen;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 
 public class WizardTool extends BuilderTool {
 
@@ -72,12 +71,11 @@ public class WizardTool extends BuilderTool {
    private AuthorizationFacade authzManager;
    private MatrixManager matrixManager;
    private WorkflowManager workflowManager;
+   private ReviewManager reviewManager;
 
    private IdManager idManager;
    private DecoratedWizard current = null;
-   private String commentItem;
-   private String reflectionItem;
-   private String evaluationItem;
+
    private String expandedGuidanceSection = "false";
    private List wizardTypes = null;
    private DecoratedCategory currentCategory;
@@ -91,13 +89,6 @@ public class WizardTool extends BuilderTool {
    public final static String EDIT_SUPPORT_PAGE = "editWizardSupport";
    public final static String EDIT_DESIGN_PAGE = "editWizardDesign";
    public final static String EDIT_PROPERTIES_PAGE = "editWizardProperties";
-
-   public final static String FORM_TYPE = "form";
-   public final static String VALUE_SEPARATOR = ":";
-   
-   final public static int ID_INDEX = 0;
-   final public static int TYPE_INDEX = 1;
-   final public static int ITEM_ID_INDEX = 2;
 
    private BuilderScreen[] screens = {
       new BuilderScreen(EDIT_PAGE),
@@ -127,6 +118,20 @@ public class WizardTool extends BuilderTool {
    public DecoratedWizard getCurrent() {
       ToolSession session = SessionManager.getCurrentToolSession();
 
+      if (current == null)
+      {
+         //This should have come from the eval tool...
+         String id = (String)session.getAttribute("CURRENT_WIZARD_ID");
+         String userId = (String)session.getAttribute("WIZARD_USER_ID");
+         Wizard wizard = getWizardManager().getWizard(id);
+         setCurrent(new DecoratedWizard(this, wizard));
+         current.setRunningWizard(new DecoratedCompletedWizard(this, current,
+               getWizardManager().getCompletedWizard(wizard, userId)));
+         
+         session.removeAttribute("WIZARD_USER_ID");
+         session.removeAttribute("CURRENT_WIZARD_ID");
+         
+      }
       Wizard wizard = current.getBase();
       
       if (session.getAttribute(GuidanceManager.CURRENT_GUIDANCE) != null) {
@@ -138,18 +143,6 @@ public class WizardTool extends BuilderTool {
       }
       if (wizard.getGuidanceId() != null && wizard.getGuidance() == null) {
          wizard.setGuidance(getGuidanceManager().getGuidance(wizard.getGuidanceId()));
-      }
-      
-      for (Iterator iter = wizard.getSupportItems().iterator(); iter.hasNext();) {
-         WizardSupportItem wsi = (WizardSupportItem)iter.next();
-         String type = wsi.getGenericType();
-         String id = wsi.getId().getValue() + VALUE_SEPARATOR + wsi.getContentType() + VALUE_SEPARATOR + wsi.getItem().getValue();
-         if (type.equals(WizardFunctionConstants.COMMENT_TYPE))            
-            this.setCommentItem(id);
-         else if (type.equals(WizardFunctionConstants.REFLECTION_TYPE))
-            this.setReflectionItem(id);
-         else  //it's an evaluation
-            this.setEvaluationItem(id);
       }
       
       if (wizard.getExposedPageId() != null && !wizard.getExposedPageId().equals("") &&
@@ -242,28 +235,7 @@ public class WizardTool extends BuilderTool {
       getWizardManager().deleteObjects(deletedItems);
       deletedItems.clear();
       Wizard wizard = getCurrent().getBase();
-      Set items = new HashSet();
-      
-      if (getCommentItem() != null && !getCommentItem().equals("")) {
-         String[] comment = getCommentItem().split(VALUE_SEPARATOR);
-         items.add(new WizardSupportItem(cleanBlankId(comment[ID_INDEX]),
-               getIdManager().getId(comment[ITEM_ID_INDEX]),
-               WizardFunctionConstants.COMMENT_TYPE, comment[TYPE_INDEX], wizard));
-      }         
-      if (getReflectionItem() != null && !getReflectionItem().equals("")) {
-         String[] reflection = getReflectionItem().split(VALUE_SEPARATOR);
-         items.add(new WizardSupportItem(cleanBlankId(reflection[ID_INDEX]),
-               getIdManager().getId(reflection[ITEM_ID_INDEX]), 
-               WizardFunctionConstants.REFLECTION_TYPE, reflection[TYPE_INDEX], wizard));
-      }
-      if (getEvaluationItem() != null && !getEvaluationItem().equals("")) {
-         String[] evaluation = getEvaluationItem().split(VALUE_SEPARATOR);
-         items.add(new WizardSupportItem(cleanBlankId(evaluation[ID_INDEX]),
-               getIdManager().getId(evaluation[ITEM_ID_INDEX]), 
-               WizardFunctionConstants.EVALUATION_TYPE, evaluation[TYPE_INDEX], wizard));
-      }
-      //this.getCommentItem()
-      wizard.setSupportItems(items);
+      wizard.setEvalWorkflows(getWorkflowManager().createEvalWorkflows(wizard));
       
       getWizardManager().saveWizard(wizard);
    }
@@ -321,6 +293,26 @@ public class WizardTool extends BuilderTool {
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
       }
+   }
+   
+   public void processActionEvaluate() {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+
+      //CWM use a constant for the below values
+      session.setAttribute("process_type_key", CompletedWizard.PROCESS_TYPE_KEY);
+      session.setAttribute(CompletedWizard.PROCESS_TYPE_KEY, 
+            current.getRunningWizard().getBase().getId().getValue());
+      session.setAttribute(ReviewHelper.REVIEW_TYPE_KEY, 
+            Integer.toString(Review.EVALUATION_TYPE));
+
+      try {
+         context.redirect("osp.review.processor.helper/reviewHelper.osp");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+
    }
 
    public void processActionAudienceHelper() {
@@ -444,69 +436,82 @@ public class WizardTool extends BuilderTool {
       return null;
    }
    
+   public boolean getCanEvaluate() {
+      return getAuthzManager().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
+            current.getBase().getId());
+   }
    
-   protected Collection getFormsForSelect(String type, String selectedId) {
+   
+   protected Collection getFormsForSelect(String type) {
       Placement placement = ToolManager.getCurrentPlacement();
       String currentSiteId = placement.getContext();
-      Collection commentForms = 
+      Collection forms = 
                getWizardManager().getAvailableForms(currentSiteId, type);
       
       List retForms = new ArrayList();
-      for(Iterator iter = commentForms.iterator(); iter.hasNext();) {
+      for(Iterator iter = forms.iterator(); iter.hasNext();) {
          //Artifact art = (Artifact)iter.next();
          StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) iter.next(); 
          //String type = art.getHome().getType().getId().getValue();
          
-         String id = VALUE_SEPARATOR + FORM_TYPE + VALUE_SEPARATOR + sad.getId().getValue();
-         if (selectedId != null && selectedId.endsWith(id))
-            id = selectedId;
-         retForms.add(createSelect(id, sad.getDescription()));
+         //String id = VALUE_SEPARATOR + FORM_TYPE + VALUE_SEPARATOR + sad.getId().getValue();
+         //if (selectedId != null && selectedId.endsWith(id))
+         //   id = selectedId;
+         retForms.add(createSelect(sad.getId().getValue(), sad.getDescription()));
       }
       
       return retForms;
    }
    
    public Collection getCommentFormsForSelect() {
-      return getFormsForSelect(WizardFunctionConstants.COMMENT_TYPE, getCommentItem());      
+      return getFormsForSelect(WizardFunctionConstants.COMMENT_TYPE);      
    }
    
    public Collection getReflectionFormsForSelect() {
-      return getFormsForSelect(WizardFunctionConstants.REFLECTION_TYPE, getReflectionItem());
+      return getFormsForSelect(WizardFunctionConstants.REFLECTION_TYPE);
    }
    
    public Collection getEvaluationFormsForSelect() {
-      return getFormsForSelect(WizardFunctionConstants.EVALUATION_TYPE, getEvaluationItem());
+      return getFormsForSelect(WizardFunctionConstants.EVALUATION_TYPE);
    }
    
-   protected Collection getWizardsForSelect(String type, String selectedId) {
+   protected Collection getWizardsForSelect(String type) {
       //TODO is only here just in case we decide to give wizards types
       // The type isn't being used yet
       Placement placement = ToolManager.getCurrentPlacement();
       String currentSiteId = placement.getContext();
       List wizards = getWizardManager().listWizardsByType(
             SessionManager.getCurrentSessionUserId(), currentSiteId, type);
+      
       List retWizards = new ArrayList();
       for(Iterator iter = wizards.iterator(); iter.hasNext();) {
          Wizard wizard = (Wizard)iter.next();
-         String id = VALUE_SEPARATOR + wizard.getType() + VALUE_SEPARATOR + wizard.getId().getValue();
-         if (selectedId != null && selectedId.endsWith(id))
-            id = selectedId;
-         retWizards.add(createSelect(id, wizard.getName()));
+         //String id = VALUE_SEPARATOR + wizard.getType() + VALUE_SEPARATOR + wizard.getId().getValue();
+         //if (selectedId != null && selectedId.endsWith(id))
+         //   id = selectedId;
+         retWizards.add(createSelect(wizard.getId().getValue(), wizard.getName()));
       }
       
       return retWizards;
    }
    
    public Collection getCommentWizardsForSelect() {
-      return getWizardsForSelect(WizardFunctionConstants.COMMENT_TYPE, getCommentItem());
+      return getWizardsForSelect(WizardFunctionConstants.COMMENT_TYPE);
    }
    
    public Collection getReflectionWizardsForSelect() {
-      return getWizardsForSelect(WizardFunctionConstants.REFLECTION_TYPE, getReflectionItem());
+      return getWizardsForSelect(WizardFunctionConstants.REFLECTION_TYPE);
    }
    
    public Collection getEvaluationWizardsForSelect() {
-      return getWizardsForSelect(WizardFunctionConstants.EVALUATION_TYPE, getEvaluationItem());
+      return getWizardsForSelect(WizardFunctionConstants.EVALUATION_TYPE);
+   }
+   
+   private String safeGetValue(Id id) {
+      if (id == null)
+         return "";
+      else
+         return id.getValue();
    }
 
    public GuidanceManager getGuidanceManager() {
@@ -518,27 +523,27 @@ public class WizardTool extends BuilderTool {
    }
 
    public String getCommentItem() {
-      return commentItem;
+      return safeGetValue(current.getBase().getReviewDevice());
    }
 
    public void setCommentItem(String commentItem) {
-      this.commentItem = commentItem;
+      current.getBase().setReviewDevice(getIdManager().getId(commentItem));
    }
 
    public String getEvaluationItem() {
-      return evaluationItem;
+      return safeGetValue(current.getBase().getEvaluationDevice());
    }
 
    public void setEvaluationItem(String evaluationItem) {
-      this.evaluationItem = evaluationItem;
+      current.getBase().setEvaluationDevice(getIdManager().getId(evaluationItem));
    }
 
    public String getReflectionItem() {
-      return reflectionItem;
+      return safeGetValue(current.getBase().getReflectionDevice());
    }
 
    public void setReflectionItem(String reflectionItem) {
-      this.reflectionItem = reflectionItem;
+      current.getBase().setReflectionDevice(getIdManager().getId(reflectionItem));
    }
 
    public String getExpandedGuidanceSection() {
@@ -653,6 +658,20 @@ public class WizardTool extends BuilderTool {
     */
    public void setWorkflowManager(WorkflowManager workflowManager) {
       this.workflowManager = workflowManager;
+   }
+
+   /**
+    * @return Returns the reviewManager.
+    */
+   public ReviewManager getReviewManager() {
+      return reviewManager;
+   }
+
+   /**
+    * @param reviewManager The reviewManager to set.
+    */
+   public void setReviewManager(ReviewManager reviewManager) {
+      this.reviewManager = reviewManager;
    }
 
 }

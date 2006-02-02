@@ -24,12 +24,12 @@ import java.util.Collection;
 import java.util.List;
 
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.service.legacy.entity.Reference;
+import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 
-public interface WizardManager {
+public interface WizardManager extends WorkflowEnabledManager {
 
    public Wizard createNew();
 
@@ -52,7 +52,9 @@ public interface WizardManager {
 
    public void deleteObjects(List deletedItems);
 
+   public CompletedWizard getCompletedWizard(Id completedWizardId);
    public CompletedWizard getCompletedWizard(Wizard wizard);
+   public CompletedWizard getCompletedWizard(Wizard wizard, String userId);
 
    public CompletedWizard saveWizard(CompletedWizard wizard);
 

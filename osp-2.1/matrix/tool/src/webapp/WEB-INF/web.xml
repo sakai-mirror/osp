@@ -53,6 +53,15 @@
        <dispatcher>INCLUDE</dispatcher>
    </filter-mapping>
 
+   <filter-mapping>
+       <filter-name>sakai.request</filter-name>
+       <servlet-name>osp.review.processor</servlet-name>
+       <dispatcher>REQUEST</dispatcher>
+       <dispatcher>FORWARD</dispatcher>
+       <dispatcher>INCLUDE</dispatcher>
+   </filter-mapping>
+
+
    <servlet>
       <servlet-name>springapp</servlet-name>
       <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -91,7 +100,7 @@
       </init-param>
       <init-param>
           <param-name>default.last.view</param-name>
-          <param-value>false</param-value>
+          <param-value>true</param-value>
       </init-param>
       <load-on-startup>2</load-on-startup>
    </servlet>
@@ -128,6 +137,24 @@
             <param-value></param-value>
         </init-param>
       <load-on-startup>2</load-on-startup>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>osp.review.processor</servlet-name>
+      <servlet-class>org.sakaiproject.spring.util.SpringTool</servlet-class>
+      <init-param>
+            <param-name>default</param-name>
+            <param-value></param-value>
+        </init-param>
+        <init-param>
+            <param-name>path</param-name>
+            <param-value></param-value>
+        </init-param>
+      <load-on-startup>2</load-on-startup>
+      <init-param>
+          <param-name>default.last.view</param-name>
+          <param-value>true</param-value>
+      </init-param>
    </servlet>
 
    <listener>

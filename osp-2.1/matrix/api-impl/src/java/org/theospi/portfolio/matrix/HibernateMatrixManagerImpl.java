@@ -80,6 +80,7 @@ import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
 import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
 import org.theospi.portfolio.shared.mgt.ContentEntityUtil;
+import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
@@ -251,10 +252,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return nextCell;
    }
    
-   protected Cell getMatrixCellByScaffoldingCell(Matrix matrix, Id scaffoldingCellId) {
+   protected Cell getMatrixCellByWizardPageDef(Matrix matrix, Id wizardPageDefId) {
       for (Iterator cells = matrix.getCells().iterator(); cells.hasNext();) {
          Cell cell = (Cell)cells.next();
-         if (cell.getScaffoldingCell().getId().getValue().equals(scaffoldingCellId.getValue())) {
+         if (cell.getScaffoldingCell().getWizardPageDefinition()
+               .getId().getValue().equals(wizardPageDefId.getValue())) {
             return cell;
          }
       }
@@ -833,7 +835,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       List returned = this.getHibernateTemplate().find("select new " +
             "org.theospi.portfolio.matrix.model.EvaluationContentWrapperForMatrixCell(" +
             "wp.id, " +
-            "wp.pageDefinition.id, wp.pageDefinition.title, c.matrix.owner, " +
+            "wp.pageDefinition.title, c.matrix.owner, " +
             "c.wizardPage.modified) " +
             "from WizardPage wp, Authorization auth, Cell c " +
             "where wp.pageDefinition.id = auth.qualifier " +
@@ -853,7 +855,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       List wizardPages = this.getHibernateTemplate().find("select new " +
             "org.theospi.portfolio.matrix.model.EvaluationContentWrapperForWizardPage(" +
             "cwp.wizardPage.id, " +
-            "cwp.wizardPage.pageDefinition.id, cwp.wizardPage.pageDefinition.title, cwp.category.wizard.owner, " +
+            "cwp.wizardPage.pageDefinition.title, cwp.category.wizard.owner, " +
             "cwp.wizardPage.modified) " +
             "from CompletedWizardPage cwp, " +
             "Authorization auth " +
@@ -874,7 +876,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       List wizards = this.getHibernateTemplate().find("select new " +
             "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizard(" +
             "cw.wizard.id, " +
-            "cw.id, cw.wizard.name, cw.owner, " +
+            "cw.wizard.name, cw.owner, " +
             "cw.created) " +
             "from CompletedWizard cw, " +
             "Authorization auth " +
@@ -1498,7 +1500,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Collection items = workflow.getItems();
       for (Iterator i = items.iterator(); i.hasNext();) {
          WorkflowItem wi = (WorkflowItem)i.next();
-         Cell actionCell = this.getMatrixCellByScaffoldingCell(cell.getMatrix(), 
+         Cell actionCell = this.getMatrixCellByWizardPageDef(cell.getMatrix(), 
                wi.getActionObjectId());
          switch (wi.getActionType()) {
             case(WorkflowItem.STATUS_CHANGE_WORKFLOW):
@@ -1552,7 +1554,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
 
    private void processNotificationWorkflow(WorkflowItem wi) {
-      // TODO Auto-generated method stub
+      // TODO implement
       
    }
 

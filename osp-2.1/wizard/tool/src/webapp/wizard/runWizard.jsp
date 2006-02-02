@@ -26,6 +26,11 @@
                'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"
          action="confirmSubmit"
          value="#{msgs.submit_wizard}" />
+      <sakai:tool_bar_item
+         rendered="#{wizard.current.runningWizard.base.status == 'PENDING' &&
+            wizard.canEvaluate}"
+         action="#{wizard.processActionEvaluate}"
+         value="#{msgs.eval_wizard}" />
    </sakai:tool_bar>
 
    <sakai:view_title value="#{msgs.run_wizard}"/>
@@ -78,6 +83,33 @@
          </f:facet>
       </h:column>
    </sakai:flat_list>
+   
+   <ospx:xheader rendered="#{not empty wizard.current.runningWizard.evaluations}">
+      <ospx:xheadertitle id="wizardEvals" value="#{msgs.wizard_evals}" />
+      <ospx:xheaderdrawer initiallyexpanded="false" cssclass="drawerBorder">
+
+         <sakai:flat_list value="#{wizard.current.runningWizard.evaluations}" var="eval">
+            <h:column>
+               <f:facet name="header">
+                  <h:outputText value="#{msgs.wizard_eval_name}" />
+               </f:facet>
+               <h:outputText value="#{eval.reviewContentNode.displayName}" />
+            </h:column>
+            <h:column>
+               <f:facet name="header">
+                  <h:outputText value="#{msgs.wizard_eval_owner}" />
+               </f:facet>
+               <h:outputText value="#{eval.reviewContentNode.technicalMetadata.owner.displayName}" />
+            </h:column>
+            <h:column>
+               <f:facet name="header">
+                  <h:outputText value="#{msgs.wizard_eval_date}" />
+               </f:facet>
+               <h:outputText value="#{eval.reviewContentNode.technicalMetadata.creation}" />
+            </h:column>
+         </sakai:flat_list>
+      </ospx:xheaderdrawer>
+  </ospx:xheader>
 
 </h:form>
 </sakai:view>
