@@ -1,9 +1,9 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<div class ="chefPortletContent">
+<div class ="portletBody">
 
-<div class="chefPageviewTitle">
+<div class="instruction">
    <c:out value="${message}"/>
 </div>
 
@@ -19,7 +19,7 @@
 
 <input type="hidden" name="<c:out value="${status.expression}"/>" value="" />
 
-   <table class="chefFlatListViewTable" cellspacing="0" summary ="List of roles and permissions that can be applied to this folder. Layout: each row lists the permissions of a role. Layout: column 1 lists the roles, the other columns list the permissions, checkboxes permit enabling a permission for a role." border="0">
+   <table class="listHier lines" cellspacing="0" summary ="List of roles and permissions that can be applied to this folder. Layout: each row lists the permissions of a role. Layout: column 1 lists the roles, the other columns list the permissions, checkboxes permit enabling a permission for a role." border="0">
       <tr>
          <th id="role">
             Role
@@ -68,7 +68,7 @@
 
   <br/>
 
-   <div class="chefButtonRow">
+   <div class="act">
       <input type="submit" value="save" />
       <input name="_cancel" type="submit" value="cancel"/>
    </div>
