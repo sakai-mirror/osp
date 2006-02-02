@@ -50,17 +50,7 @@
       <property name="toolId" type="string" update="false" length="36" column="tool_id" not-null="true"/>
       <property name="guidanceId" column="guidance_id" not-null="false" length="36"
          type="org.sakaiproject.metaobj.shared.IdType"/>
-      <!-- 
-      <property name="reflectionDevice" column="reflection_device_id" length="36"
-        type="org.sakaiproject.metaobj.shared.IdType"/>
-      <property name="reflectionDeviceType" type="string" column="reflection_device_type" />
-      <property name="evaluationDevice" column="evaluation_device_id" length="36"
-        type="org.sakaiproject.metaobj.shared.IdType"/>
-      <property name="evaluationDeviceType" type="string" column="evaluation_device_type" />
-      <property name="reviewDevice" column="review_device_id" length="36"
-        type="org.sakaiproject.metaobj.shared.IdType"/>
-      <property name="reviewDeviceType" type="string" column="review_device_type" />
--->
+
       <property name="published" type="boolean" column="published" not-null="false"/>
       <property name="type" type="string" column="wizard_type" not-null="false"/>
       <bag name="wizardStyleItems" cascade="all-delete-orphan"

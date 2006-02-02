@@ -55,6 +55,7 @@ public class ReviewHelperController implements Controller {
       String strId = null;
       String lookupId = null;
       String returnView = "return";
+      String manager = "";
       
       if (request.get("process_type_key") != null) {
          session.put("process_type_key", request.get("process_type_key"));
@@ -67,9 +68,11 @@ public class ReviewHelperController implements Controller {
       if (processTypeKey != null && !processTypeKey.equals(WizardPage.PROCESS_TYPE_KEY)) {
          lookupId = processTypeKey;
          returnView = "helperDone";
+         manager = "org.theospi.portfolio.wizard.mgt.WizardManager";
       }
       else if (processTypeKey != null) {
          lookupId = processTypeKey;
+         manager = "matrixManager";
       }
       strId = (String) request.get(lookupId);
       if (strId==null) {
@@ -117,6 +120,8 @@ public class ReviewHelperController implements Controller {
          
             if (session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS) != null) {
                model.put("workflows", session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS));
+               model.put("manager", manager);
+               model.put("obj_id", strId);
                return new ModelAndView("postProcessor", model);
             }         
          }        

@@ -223,6 +223,12 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
    public void deleteWizard(Wizard wizard) {
       getHibernateTemplate().delete(wizard);      
    }
+   
+   public void publishWizard(Wizard wizard) {
+      wizard.setPublished(true);
+      wizard.setModified(new Date(System.currentTimeMillis()));
+      this.saveWizard(wizard);
+   }
 
    public Reference decorateReference(Wizard wizard, String reference) {
       String fullRef = ContentEntityUtil.getInstance().buildRef(WizardEntityProducer.WIZARD_PRODUCER,
@@ -340,6 +346,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
    
    private void processStatusChangeWorkflow(String status, CompletedWizard actionWizard) {
       actionWizard.setStatus(status);
+      //actionWizard.setm
    }
    
    private void processStatusChangeWorkflow(WorkflowItem wi, CompletedWizard actionWizard) {

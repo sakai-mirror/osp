@@ -77,71 +77,55 @@
          </list>
       </property>
    </bean>
+   
+   <bean id="org.theospi.portfolio.security.app.AdditionalAppAuthorizers.wizard"
+      class="org.theospi.portfolio.security.app.AdditionalAppAuthorizers"
+      init-method="init" singleton="true">
+      <property name="authzManager"><ref bean="authzManager"/></property>
+      <property name="additionalAppAuthorizers">
+         <list>
+            <bean class="org.theospi.portfolio.security.app.OrderedAuthorizer">
+               <property name="order"><value>4</value></property>
+               <property name="authorizer"><ref bean="wizardAuthz"/></property>
+            </bean>
+         </list>
+      </property>
+   </bean>
 
    <bean id="wizardAuthz" class="org.theospi.portfolio.wizard.WizardAuthorizerImpl">
       <property name="wizardManager"><ref bean="org.theospi.portfolio.wizard.mgt.WizardManager"/></property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="functions">
-         <list>
+         <list>            
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.CREATE_WIZARD"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.CREATE_WIZARD</value>
-               </property>
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.EDIT_WIZARD"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.EDIT_WIZARD</value>
-               </property>
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.DELETE_WIZARD"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.DELETE_WIZARD</value>
-               </property>
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.PUBLISH_WIZARD"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.PUBLISH_WIZARD</value>
-               </property>
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.REVIEW_WIZARD"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.REVIEW_WIZARD</value>
-               </property>
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.EVALUATE_WIZARD"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.EVALUATE_WIZARD</value>
-               </property>
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.VIEW_WIZARD"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.VIEW_WIZARD</value>
-               </property>
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.COMMENT_WIZARD"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.COMMENT_WIZARD</value>
-               </property>
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.COPY_WIZARD"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.COPY_WIZARD</value>
-               </property>
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.EXPORT_WIZARD"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.wizard.WizardFunctionConstants.EXPORT_WIZARD</value>
-               </property>
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
          </list>
       </property>
@@ -193,6 +177,9 @@
       </property>
       <property name="agentManager"><ref bean="agentManager"/></property>
       <property name="structuredArtifactDefinitionManager"><ref bean="structuredArtifactDefinitionManager"/></property>
+      <property name="workflowManager">
+         <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager"/>
+      </property>
    </bean>
 
    <bean id="org.theospi.portfolio.wizard.mgt.WizardManager"
