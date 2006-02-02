@@ -27,12 +27,20 @@
    </sakai:tool_bar>
 
    <sakai:view_title value="#{msgs.wizard_title}"/>
-   <sakai:instruction_message value="Guidance Test Tool" />
+   <sakai:instruction_message value="Wizard Tool" />
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />
-
-
+   
+   
+   <h:selectOneMenu id="users" immediate="true" value="#{wizard.currentUserId}">
+      <f:selectItems value="#{wizard.userListForSelect}"/>
+   </h:selectOneMenu>
+   <sakai:button_bar>
+      <sakai:button_bar_item id="go" value="#{msgs.go}"
+         action="#{wizard.processActionChangeUser}" />
+   </sakai:button_bar>
+   
    <sakai:flat_list value="#{wizard.wizards}" var="wizardItem">
       <h:column>
          <f:facet name="header">

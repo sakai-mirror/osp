@@ -23,6 +23,7 @@ package org.theospi.portfolio.wizard.tool;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -44,11 +45,11 @@ import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.authzGroup.Member;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.sakaiproject.service.legacy.filepicker.ResourceEditingHelper;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
@@ -87,6 +88,7 @@ public class WizardTool extends BuilderTool {
    private DecoratedCategoryChild moveCategoryChild;
    private List deletedItems = new ArrayList();
    private int nextWizard = 0;
+   private String currentUserId;
 
    public final static String LIST_PAGE = "listWizards";
    public final static String EDIT_PAGE = "editWizard";
@@ -120,6 +122,22 @@ public class WizardTool extends BuilderTool {
       this.wizardManager = wizardManager;
    }
    
+   
+   
+   /**
+    * @return Returns the currentUserId.
+    */
+   public String getCurrentUserId() {
+      return currentUserId;
+   }
+
+   /**
+    * @param currentUserId The currentUserId to set.
+    */
+   public void setCurrentUserId(String currentUserId) {
+      this.currentUserId = currentUserId;
+   }
+
    public DecoratedWizard getCurrent() {
       ToolSession session = SessionManager.getCurrentToolSession();
 
@@ -170,8 +188,12 @@ public class WizardTool extends BuilderTool {
       Placement placement = ToolManager.getCurrentPlacement();
       String currentSiteId = placement.getContext();
       List returned = new ArrayList();
-      List wizards = getWizardManager().listAllWizards(
-            SessionManager.getCurrentSessionUserId(), currentSiteId);
+      
+      String user = currentUserId!=null ? 
+            currentUserId : SessionManager.getCurrentSessionUserId();
+      setCurrentUserId(user);
+      
+      List wizards = getWizardManager().listAllWizards(user, currentSiteId);
 
       DecoratedWizard lastWizard = null;
 
@@ -213,6 +235,12 @@ public class WizardTool extends BuilderTool {
    
    public String processActionCancel() {
       setCurrent(null);
+      return LIST_PAGE;
+   }
+   
+   public String processActionChangeUser() {
+      
+      
       return LIST_PAGE;
    }
    
@@ -447,6 +475,18 @@ public class WizardTool extends BuilderTool {
       return null;
    }
    
+   public List getUserListForSelect() {
+      Placement placement = ToolManager.getCurrentPlacement();
+      String currentSiteId = placement.getContext();
+      List theList = new ArrayList(getUserList(currentSiteId));
+      
+      String user = currentUserId!=null ? 
+            currentUserId : SessionManager.getCurrentSessionUserId();
+      setCurrentUserId(user);
+      
+      return theList;
+   }
+   
    private Set getUserList(String worksiteId) {
       Set members = new HashSet();
       Set users = new HashSet();
@@ -465,9 +505,12 @@ public class WizardTool extends BuilderTool {
             members.addAll(site.getMembers());
          }
          
+         Collections.sort(new ArrayList(members));
+         
          for (Iterator memb = members.iterator(); memb.hasNext();) {
             Member member = (Member) memb.next();
-            users.add(UserDirectoryService.getUser(member.getUserId()));
+            User user = UserDirectoryService.getUser(member.getUserId());
+            users.add(createSelect(user.getId(), user.getSortName()));
          }
       } catch (IdUnusedException e) {
          throw new OspException(e);
