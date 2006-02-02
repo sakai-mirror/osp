@@ -67,19 +67,12 @@ import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.shared.model.*;
+import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.mgt.ContentEntityUtil;
 import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
-import org.sakaiproject.metaobj.shared.mgt.AgentManager;
-import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.WritableObjectHome;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
-import org.sakaiproject.metaobj.shared.model.MimeType;
+import org.sakaiproject.metaobj.shared.mgt.*;
+import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -109,6 +102,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private SecurityService securityService = null;
    private Map secretExportKeys = new Hashtable();
    private String tempPresDownloadDir;
+   private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
 
    private static final String TEMPLATE_ID_TAG = "templateId";
    private static final String PRESENTATION_ID_TAG = "presentationId";
@@ -1064,6 +1058,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          oldTemplate.setFiles(new HashSet(files));
       }
 
+      Collection exportedFormIds = new ArrayList();
+
       if (items != null) {
          oldTemplate.setItems(new HashSet(items));
          for (Iterator i=oldTemplate.getItems().iterator();i.hasNext();) {
@@ -1074,6 +1070,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
             if (home != null) {
                item.setExternalType(home.getExternalType());
+            }
+
+            if (home instanceof StructuredArtifactHomeInterface &&
+                  !exportedFormIds.contains(home.getType().getId().getValue())) {
+               // need to store the form
+               storeFormInZip(zos, home);
+               exportedFormIds.add(home.getType().getId().getValue());
             }
 
             if (item.getMimeTypes() != null) {
@@ -1096,6 +1099,17 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       zos.finish();
       zos.flush();
+   }
+
+   protected void storeFormInZip(ZipOutputStream zos, ReadableObjectHome home) throws IOException {
+
+      ZipEntry newfileEntry = new ZipEntry("forms/" + home.getType().getId().getValue() + ".form");
+
+      zos.putNextEntry(newfileEntry);
+
+      getStructuredArtifactDefinitionManager().packageFormForExport(home.getType().getId().getValue(), zos);
+
+      zos.closeEntry();
    }
 
    public PresentationTemplate uploadTemplate(String templateFileName, String toolId,
@@ -1123,6 +1137,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       ZipEntry currentEntry = zis.getNextEntry();
       Hashtable fileMap = new Hashtable();
+      Hashtable formMap = new Hashtable();
       PresentationTemplate template = null;
 
       String tempDirName = getIdManager().createId().getValue();
@@ -1145,8 +1160,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                }
             }
             else if (!currentEntry.isDirectory()) {
-               gotFile = true;
-               processTemplateFile(currentEntry, zis, fileMap, fileParent);
+               if (currentEntry.getName().startsWith("forms/")) {
+                  processTemplateForm(currentEntry, zis, formMap,
+                        getIdManager().getId(toolConfiguration.getSiteId()));
+               }
+               else {
+                  gotFile = true;
+                  processTemplateFile(currentEntry, zis, fileMap, fileParent);
+               }
             }
 
             zis.closeEntry();
@@ -1192,12 +1213,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             }
             index++;
 
-            if (item.getExternalType() != null) {
-               ReadableObjectHome home = getHomeFactory().findHomeByExternalId(
-                  item.getExternalType(), getIdManager().getId(template.getSiteId()));
-               if (home != null) {
-                  item.setType(home.getType().getId().getValue());
-               }
+            if (formMap.containsKey(item.getType())) {
+               item.setType((String) formMap.get(item.getType()));
             }
 
             item.setId(null);
@@ -1228,6 +1245,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
       }
    }
+
 // TODO: 20050810 ContentHosting
    /*
    protected String getUniqueTemplateName(Node currentNode, String name) {
@@ -1243,6 +1261,18 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return newName;
    }
 */
+   protected void processTemplateForm(ZipEntry currentEntry, ZipInputStream zis, Map formMap, Id worksite)
+         throws IOException {
+      File file = new File(currentEntry.getName());
+      String fileName = file.getName();
+      String oldId = fileName.substring(0, fileName.indexOf(".form"));
+
+      StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager().importSad(
+         worksite, zis, true, true);
+
+      formMap.put(oldId, bean.getId().getValue());
+   }
+
    protected void processTemplateFile(ZipEntry currentEntry, ZipInputStream zis,
                                       Hashtable fileMap, ContentCollection fileParent) throws IOException {
 
@@ -2445,5 +2475,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public void setDefinedLayouts(List definedLayouts) {
       this.definedLayouts = definedLayouts;
+   }
+
+   public StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {
+      return structuredArtifactDefinitionManager;
+   }
+
+   public void setStructuredArtifactDefinitionManager(StructuredArtifactDefinitionManager structuredArtifactDefinitionManager) {
+      this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
    }
 }
