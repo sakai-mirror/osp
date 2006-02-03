@@ -131,7 +131,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       if (action != null && action.length() > 0) {
          
          if (request.get("reviewers") == null) {
-            scaffoldingCell.getReviewers().clear();
+            scaffoldingCell.getEvaluators().clear();
          }
          if (action.equals("removeFormDef")) {
             String params = (String)request.get("params");
