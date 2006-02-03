@@ -71,10 +71,12 @@
          <p class="longtext">
             <div class="indnt2">
                <c:out value="${guidanceItem.text}" escapeXml="false" />
+               <%--
                <c:forEach var="guidanceItemAtt" items="${guidanceItem.attachments}" varStatus="loopStatus">
                   <a href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />" target="_new">
                      <c:out value="${guidanceItemAtt.diaplayName}" /></a>         
                </c:forEach>
+               --%>
             </div>
          </p>
          </c:if>
