@@ -38,7 +38,7 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    private String title;
    private String description;
    private String initialStatus = "";
-   private Collection reviewers = new HashSet();
+   private Collection evaluators = new HashSet();
    transient private boolean validate;
    private Set pages = new HashSet();
    transient private Id guidanceId;
@@ -63,16 +63,16 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    }
 
    /**
-    * @return Returns the reviewers.
+    * @return Returns the evaluators.
     */
-   public Collection getReviewers() {
-      return reviewers;
+   public Collection getEvaluators() {
+      return evaluators;
    }
    /**
-    * @param reviewers The reviewers to set.
+    * @param reviewers The evaluators to set.
     */
-   public void setReviewers(Collection reviewers) {
-      this.reviewers = reviewers;
+   public void setEvaluators(Collection evaluators) {
+      this.evaluators = evaluators;
    }
    /**
     * @return Returns the validate.

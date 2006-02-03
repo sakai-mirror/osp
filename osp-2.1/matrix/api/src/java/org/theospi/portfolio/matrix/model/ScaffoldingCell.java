@@ -113,16 +113,16 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    }
 
    /**
-    * @return Returns the reviewers.
+    * @return Returns the evaluators.
     */
-   public Collection getReviewers() {
-      return wizardPageDefinition.getReviewers();
+   public Collection getEvaluators() {
+      return wizardPageDefinition.getEvaluators();
    }
    /**
-    * @param reviewers The reviewers to set.
+    * @param evaluators The evaluators to set.
     */
-   public void setReviewers(Collection reviewers) {
-      wizardPageDefinition.setReviewers(reviewers);
+   public void setEvaluators(Collection evaluators) {
+      wizardPageDefinition.setEvaluators(evaluators);
    }
    /**
     * @return Returns the validate.

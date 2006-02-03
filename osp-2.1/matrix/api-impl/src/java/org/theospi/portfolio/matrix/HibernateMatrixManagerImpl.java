@@ -476,8 +476,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
-         Collection reviewers = this.getScaffoldingCellEvaluators(sCell.getId(), false);
-         sCell.setReviewers(new HashSet(reviewers));
+         Collection evaluators = this.getScaffoldingCellEvaluators(sCell.getWizardPageDefinition().getId(), false);
+         sCell.setEvaluators(new HashSet(evaluators));
       }      
 
       return scaffolding;
@@ -518,24 +518,24 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public ScaffoldingCell getScaffoldingCell(Id id) {
       ScaffoldingCell scaffoldingCell = (ScaffoldingCell)this.getHibernateTemplate().load(ScaffoldingCell.class, id);
       
-      scaffoldingCell.setReviewers(getScaffoldingCellEvaluators(id, true));
+      scaffoldingCell.setEvaluators(getScaffoldingCellEvaluators(scaffoldingCell.getWizardPageDefinition().getId(), true));
 
       return scaffoldingCell;
    }
    
-   protected Collection getScaffoldingCellEvaluators(Id scaffoldingCellId, boolean useAgentId) {
-      Collection reviewers = new HashSet();
+   protected Collection getScaffoldingCellEvaluators(Id wizardPageDefId, boolean useAgentId) {
+      Collection evaluators = new HashSet();
       Collection viewerAuthzs = getAuthzManager().getAuthorizations(null,
-            MatrixFunctionConstants.EVALUATE_MATRIX, scaffoldingCellId);
+            MatrixFunctionConstants.EVALUATE_MATRIX, wizardPageDefId);
 
       for (Iterator i = viewerAuthzs.iterator(); i.hasNext();) {
-         Authorization reviewer = (Authorization) i.next();
+         Authorization evaluator = (Authorization) i.next();
          if (useAgentId)
-            reviewers.add(reviewer.getAgent());
+            evaluators.add(evaluator.getAgent());
          else
-            reviewers.add(reviewer.getAgent().getId());
+            evaluators.add(evaluator.getAgent().getId());
       }
-      return reviewers;
+      return evaluators;
    }
    
    public void removeFromSession(Object obj) {
@@ -923,8 +923,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       for (Iterator iter = scaffoldingCells.iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
          sCell.setCells(new HashSet());
-         Collection reviewers = sCell.getReviewers();
-         sCell.setReviewers(new HashSet(reviewers));
+         Collection evaluators = sCell.getEvaluators();
+         sCell.setEvaluators(new HashSet(evaluators));
 
          sCell.getWizardPageDefinition().setPages(new HashSet());
          
@@ -1220,10 +1220,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private void createReviewerAuthzForImport(Scaffolding scaffolding) {
       for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
-         Collection revs = sCell.getReviewers();
-         for (Iterator i = revs.iterator(); i.hasNext();) {
-            //Agent importedAgent = (Agent)i.next();
-            //Id id = importedAgent.getId();
+         Collection evals = sCell.getEvaluators();
+         for (Iterator i = evals.iterator(); i.hasNext();) {
             Id id = (Id)i.next();
             if (id.getValue().startsWith("/site/")) {
                // it's a role
@@ -1237,7 +1235,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
             if (agent != null) {
                this.getAuthzManager().createAuthorization(agent, 
-                     MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getId());
+                     MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getWizardPageDefinition().getId());
             }
          }
       }
