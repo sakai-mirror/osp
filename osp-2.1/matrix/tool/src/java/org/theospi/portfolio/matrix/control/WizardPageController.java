@@ -20,6 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.springframework.validation.Errors;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
@@ -46,6 +48,9 @@ public class WizardPageController extends CellController {
     */
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = super.referenceData(request, command, errors);
+      ToolSession session = SessionManager.getCurrentToolSession();
+      model.put("readOnlyMatrix", session.getAttribute("readOnlyMatrix"));
+      session.removeAttribute("readOnlyMatrix");
       model.put("helperPage", "true");
       return model;
    }

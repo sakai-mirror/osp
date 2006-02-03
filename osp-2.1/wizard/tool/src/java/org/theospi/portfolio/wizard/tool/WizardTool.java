@@ -89,6 +89,7 @@ public class WizardTool extends BuilderTool {
    private List deletedItems = new ArrayList();
    private int nextWizard = 0;
    private String currentUserId;
+   
 
    public final static String LIST_PAGE = "listWizards";
    public final static String EDIT_PAGE = "editWizard";
@@ -136,6 +137,22 @@ public class WizardTool extends BuilderTool {
     */
    public void setCurrentUserId(String currentUserId) {
       this.currentUserId = currentUserId;
+   }
+   
+   public String getOwnerCheckMessage() {
+      String message = "";
+      String readOnly = "";
+      try {
+         if (!currentUserId.equalsIgnoreCase(SessionManager.getCurrentSessionUserId())) {
+            readOnly = getMessageFromBundle("read_only");
+         }
+         User user = UserDirectoryService.getUser(currentUserId);
+         message = getMessageFromBundle("wizard_owner_message", new Object[]{
+               readOnly, user.getDisplayName()});
+      } catch (IdUnusedException e) {
+         throw new OspException(e);
+      }
+      return message;
    }
 
    public DecoratedWizard getCurrent() {
@@ -335,6 +352,14 @@ public class WizardTool extends BuilderTool {
    }
    
    public void processActionEvaluate() {
+      processActionReviewHelper(Review.EVALUATION_TYPE);
+   }
+   
+   public void processActionReview() {
+      processActionReviewHelper(Review.REVIEW_TYPE);
+   }
+   
+   protected void processActionReviewHelper(int type) {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
 
@@ -343,7 +368,7 @@ public class WizardTool extends BuilderTool {
       session.setAttribute(CompletedWizard.PROCESS_TYPE_KEY, 
             current.getRunningWizard().getBase().getId().getValue());
       session.setAttribute(ReviewHelper.REVIEW_TYPE_KEY, 
-            Integer.toString(Review.EVALUATION_TYPE));
+            Integer.toString(type));
 
       try {
          context.redirect("osp.review.processor.helper/reviewHelper.osp");
@@ -351,7 +376,6 @@ public class WizardTool extends BuilderTool {
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
       }
-
    }
 
    public void processActionAudienceHelper() {
@@ -517,6 +541,11 @@ public class WizardTool extends BuilderTool {
       }
       return users;
    }
+
+   public boolean getCanReview() {
+      return getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
+            current.getBase().getId());
+   }
    
    public boolean getCanEvaluate() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
@@ -526,6 +555,18 @@ public class WizardTool extends BuilderTool {
    public boolean getCanPublish(Wizard wizard) {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.PUBLISH_WIZARD, 
             wizard.getId()) && !wizard.isPublished();
+   }
+   
+   public boolean getCanDelete(Wizard wizard) {
+      return getAuthzManager().isAuthorized(WizardFunctionConstants.DELETE_WIZARD, 
+            wizard.getId()) && wizard.getOwner().getId().getValue().equalsIgnoreCase(
+                  SessionManager.getCurrentSessionUserId());
+   }
+   
+   public boolean getCanEdit(Wizard wizard) {
+      return getAuthzManager().isAuthorized(WizardFunctionConstants.EDIT_WIZARD, 
+            wizard.getId()) && wizard.getOwner().getId().getValue().equalsIgnoreCase(
+                  SessionManager.getCurrentSessionUserId());
    }
    
    protected Collection getFormsForSelect(String type) {

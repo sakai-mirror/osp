@@ -1173,7 +1173,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
          storeScaffolding(scaffolding);
          
-         createReviewerAuthzForImport(scaffolding);
+         createEvaluatorAuthzForImport(scaffolding);
          
          itWorked = true;
          createMatrixTool(currentPlacement.getId(), scaffolding);
@@ -1217,7 +1217,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       getPageArtifacts(page);
    }
 
-   private void createReviewerAuthzForImport(Scaffolding scaffolding) {
+   private void createEvaluatorAuthzForImport(Scaffolding scaffolding) {
       for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
          Collection evals = sCell.getEvaluators();

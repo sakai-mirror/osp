@@ -267,7 +267,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       session.put(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE, "Publish to an Individual");
       session.put(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE, "Publish to a Group");
       session.put(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, "false");
-      session.put(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, "Publish to the Internet");
+      session.put(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, null);
       session.put(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE, "Selected Evaluators");
       session.put(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS, "Select filter criteria to narrow user list");
       session.put(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, "false");

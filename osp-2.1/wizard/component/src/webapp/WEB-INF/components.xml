@@ -49,7 +49,6 @@
                   <value>osp.wizard.review</value>
                   <value>osp.wizard.evaluate</value>
                   <value>osp.wizard.view</value>
-                  <value>osp.wizard.comment</value>
                   <value>osp.wizard.copy</value>
                   <value>osp.wizard.export</value>
                </list>
@@ -71,7 +70,6 @@
             <value>osp.wizard.review</value>
             <value>osp.wizard.evaluate</value>
             <value>osp.wizard.view</value>
-            <value>osp.wizard.comment</value>
             <value>osp.wizard.copy</value>
             <value>osp.wizard.export</value>
          </list>
@@ -116,9 +114,6 @@
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.VIEW_WIZARD"
-               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
-            </bean>
-            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.COMMENT_WIZARD"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.COPY_WIZARD"
