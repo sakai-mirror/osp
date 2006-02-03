@@ -135,6 +135,9 @@
       <property name="entityManager">
          <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
       </property>
+      <property name="contentHostingService">
+         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
+      </property>
    </bean>
 
    <bean id="org.theospi.portfolio.guidance.mgt.GuidanceManager"

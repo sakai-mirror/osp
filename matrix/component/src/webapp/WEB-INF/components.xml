@@ -123,6 +123,12 @@
       <property name="defaultScaffoldingBean">
          <ref bean="defaultScaffoldingBean"/>
       </property>
+      <property name="guidanceManager">
+         <ref bean="org.theospi.portfolio.guidance.mgt.GuidanceManager"/>
+      </property>
+      <property name="structuredArtifactDefinitionManager">
+         <ref bean="structuredArtifactDefinitionManager"/>
+      </property>
    </bean>
 
    <bean id="defaultScaffoldingBean" class="org.theospi.portfolio.matrix.DefaultScaffoldingBean">
