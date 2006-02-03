@@ -46,7 +46,7 @@
   </head>
 
   <body onload="loaded();">
-      <div class="chefPortletContainer">
+      <div class="portletBody">
          <c:if test="${not empty requestScope.panelId}"><div class="ospEmbedded"></c:if>
             <jsp:include page="<%= (String)request.getAttribute("_body")%>" />
          <c:if test="${not empty requestScope.panelId}"></div></c:if>

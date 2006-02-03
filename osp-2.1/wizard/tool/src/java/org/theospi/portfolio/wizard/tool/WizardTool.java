@@ -31,6 +31,9 @@ import java.util.Set;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -42,6 +45,8 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.service.legacy.content.ContentHostingService;
+import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.authzGroup.Member;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
@@ -52,6 +57,8 @@ import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.TypeException;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.review.ReviewHelper;
@@ -72,11 +79,14 @@ import org.theospi.portfolio.matrix.MatrixManager;
 
 public class WizardTool extends BuilderTool {
 
+   protected final Log logger = LogFactory.getLog(getClass());
+	
    private WizardManager wizardManager;
    private GuidanceManager guidanceManager;
    private AuthorizationFacade authzManager;
    private MatrixManager matrixManager;
    private WorkflowManager workflowManager;
+   private ContentHostingService contentHosting;
    private ReviewManager reviewManager;
 
    private IdManager idManager;
@@ -90,13 +100,20 @@ public class WizardTool extends BuilderTool {
    private int nextWizard = 0;
    private String currentUserId;
    
+   //	import variables
+   private String importFilesString = "";
+   private List importFiles = new ArrayList();
 
+   
+   //	Constants
+   
    public final static String LIST_PAGE = "listWizards";
    public final static String EDIT_PAGE = "editWizard";
    public final static String EDIT_PAGES_PAGE = "editWizardPages";
    public final static String EDIT_SUPPORT_PAGE = "editWizardSupport";
    public final static String EDIT_DESIGN_PAGE = "editWizardDesign";
    public final static String EDIT_PROPERTIES_PAGE = "editWizardProperties";
+   public final static String IMPORT_PAGE = "importWizard";
 
    private BuilderScreen[] screens = {
       new BuilderScreen(EDIT_PAGE),
@@ -138,7 +155,7 @@ public class WizardTool extends BuilderTool {
    public void setCurrentUserId(String currentUserId) {
       this.currentUserId = currentUserId;
    }
-   
+
    public String getOwnerCheckMessage() {
       String message = "";
       String readOnly = "";
@@ -376,6 +393,7 @@ public class WizardTool extends BuilderTool {
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
       }
+
    }
 
    public void processActionAudienceHelper() {
@@ -465,38 +483,136 @@ public class WizardTool extends BuilderTool {
          throw new OspException(e);
       }
    }
+   
+   public String importWizard()
+   {
+	   return IMPORT_PAGE;
+   }
+   
+   public String processPickImportFiles()
+   {
+	      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+	      ToolSession session = SessionManager.getCurrentToolSession();
+	      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, new Boolean(true).toString());
+	      /*
+	      List wsItemRefs = EntityManager.newReferenceList();
+
+	      for (Iterator i=importFiles.iterator();i.hasNext();) {
+	         WizardStyleItem wsItem = (WizardStyleItem)i.next();
+	         wsItemRefs.add(wsItem.getBaseReference().getBase());
+	      }*/
+
+	      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS, importFiles);
+	      session.setAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
+	            ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.wizardImportFile"));
+
+	      try {
+	         context.redirect("sakai.filepicker.helper/tool");
+	      }
+	      catch (IOException e) {
+	         throw new RuntimeException("Failed to redirect to helper", e);
+	      }
+	      return null;
+   }
+   
+   /**
+    * This is called to put the file names into the text box.
+    * It updates the list of files if the user is returning from the file picker
+    * @return String the names of the files being imported
+    */
+   public String getImportFilesString()
+   {
+		ToolSession session = SessionManager.getCurrentToolSession();
+		if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null
+				&& session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
+
+			List refs = (List) session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+			importFiles.clear();
+			importFilesString = "";
+			for (int i = 0; i < refs.size(); i++) {
+				Reference ref = (Reference) refs.get(i);
+	    		String nodeId = getContentHosting().getUuid(ref.getId());
+	    		String id = getContentHosting().resolveUuid(nodeId);
+	    		
+	    		ContentResource resource = null;
+	    		try {
+				   resource = getContentHosting().getResource(id);
+	    		} catch(PermissionException pe) {
+			           logger.warn("Failed loading content: no permission to view file", pe);
+	    		} catch(TypeException pe) {
+			           logger.warn("Wrong type", pe);
+			    } catch(IdUnusedException pe) {
+			           logger.warn("UnusedId: ", pe);
+			    }
+	    		
+			    importFilesString += resource.getProperties().getProperty(
+	                        resource.getProperties().getNamePropDisplayName()) + " ";
+			}
+			importFiles = refs;
+			session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+		}
+
+		return importFilesString;
+   }
+   public void setImportFilesString(String importFilesString)
+   {
+	   this.importFilesString = importFilesString;
+   }
+   
+   
+   /**
+    * Called when the user clicks the Import Button
+    * @return String next view
+    */
+   public String processImportWizards()
+   {
+	   if(importFiles.size() == 0) {
+		   return IMPORT_PAGE;
+	   }
+	   
+	   for(Iterator i = importFiles.iterator(); i.hasNext(); ) {
+		   Reference ref = (Reference)i.next();
+		   
+		   wizardManager.importResource(
+				   getIdManager().getId(getWorksite().getId()),
+				   getContentHosting().getUuid(ref.getId()));
+	   }
+	   
+	   return LIST_PAGE;
+   }
+   
 
    public String processActionManageStyle() {
-      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      ToolSession session = SessionManager.getCurrentToolSession();
-      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, new Boolean(true).toString());
-      //session.setAttribute(GuidanceTool.ATTACHMENT_TYPE, type);
-      
-      //getCurrent().getBase().getStyle()
-      
-      Wizard wizard = getCurrent().getBase();
+	      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+	      ToolSession session = SessionManager.getCurrentToolSession();
+	      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, new Boolean(true).toString());
+	      //session.setAttribute(GuidanceTool.ATTACHMENT_TYPE, type);
+	      
+	      //getCurrent().getBase().getStyle()
+	      
+	      Wizard wizard = getCurrent().getBase();
 
-      //WizardStyleItem wsItem = wizard.getWizardStyleItem();
-      
-      List wsItems = wizard.getWizardStyleItems();
-      List wsItemRefs = EntityManager.newReferenceList();
+	      //WizardStyleItem wsItem = wizard.getWizardStyleItem();
+	      
+	      List wsItems = wizard.getWizardStyleItems();
+	      List wsItemRefs = EntityManager.newReferenceList();
 
-      for (Iterator i=wsItems.iterator();i.hasNext();) {
-         WizardStyleItem wsItem = (WizardStyleItem)i.next();
-         wsItemRefs.add(wsItem.getBaseReference().getBase());
-      }
+	      for (Iterator i=wsItems.iterator();i.hasNext();) {
+	         WizardStyleItem wsItem = (WizardStyleItem)i.next();
+	         wsItemRefs.add(wsItem.getBaseReference().getBase());
+	      }
 
-      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS, wsItemRefs);
-      session.setAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
-            ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.wizardStyleFile"));
+	      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS, wsItemRefs);
+	      session.setAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
+	            ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.wizardStyleFile"));
 
-      try {
-         context.redirect("sakai.filepicker.helper/tool");
-      }
-      catch (IOException e) {
-         throw new RuntimeException("Failed to redirect to helper", e);
-      }
-      return null;
+	      try {
+	         context.redirect("sakai.filepicker.helper/tool");
+	      }
+	      catch (IOException e) {
+	         throw new RuntimeException("Failed to redirect to helper", e);
+	      }
+	      return null;
    }
    
    public List getUserListForSelect() {
@@ -541,7 +657,7 @@ public class WizardTool extends BuilderTool {
       }
       return users;
    }
-
+   
    public boolean getCanReview() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
             current.getBase().getId());
@@ -776,6 +892,14 @@ public class WizardTool extends BuilderTool {
     */
    public void setWorkflowManager(WorkflowManager workflowManager) {
       this.workflowManager = workflowManager;
+   }
+
+   public ContentHostingService getContentHosting() {
+      return contentHosting;
+   }
+
+   public void setContentHosting(ContentHostingService contentHosting) {
+      this.contentHosting = contentHosting;
    }
 
    /**

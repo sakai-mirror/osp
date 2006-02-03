@@ -27,7 +27,10 @@ import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardStyleItem;
 import org.theospi.portfolio.guidance.model.GuidanceItem;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.io.IOException;
 import java.util.List;
 
@@ -78,7 +81,7 @@ public class DecoratedWizard {
    public boolean getCanPublish() {
       return parent.getCanPublish(base);
    }
-   
+
    public boolean getCanDelete() {
       return parent.getCanDelete(base);
    }
@@ -105,6 +108,19 @@ public class DecoratedWizard {
 
       return base.getWizardStyleItems();
    }
+   
+   public String getCurrentExportLink() {
+
+	      try {
+	         return "repository/" + "manager=org.theospi.portfolio.wizard.mgt.WizardManager&" +
+	               WizardManager.WIZARD_PARAM_ID + "=" +
+	               URLEncoder.encode(getBase().getId().getValue(), "UTF-8") + "/" +
+	               URLEncoder.encode(getBase().getName() + " Wizard.zip", "UTF-8");
+	      }
+	      catch (UnsupportedEncodingException e) {
+	         throw new RuntimeException(e);
+	      }
+	   }
 
    public String processActionEdit() {
       return parent.processActionEdit(base);
