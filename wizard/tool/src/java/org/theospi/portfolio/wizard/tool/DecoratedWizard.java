@@ -78,6 +78,14 @@ public class DecoratedWizard {
    public boolean getCanPublish() {
       return parent.getCanPublish(base);
    }
+   
+   public boolean getCanDelete() {
+      return parent.getCanDelete(base);
+   }
+   
+   public boolean getCanEdit() {
+      return parent.getCanEdit(base);
+   }
 
    public List getWizardStyleItems() {
       ToolSession session = SessionManager.getCurrentToolSession();

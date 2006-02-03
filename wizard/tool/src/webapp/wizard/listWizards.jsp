@@ -41,6 +41,8 @@
          action="#{wizard.processActionChangeUser}" />
    </sakai:button_bar>
    
+   <%@include file="showWizardOwnerMessage.jspf"%>
+   
    <sakai:flat_list value="#{wizard.wizards}" var="wizardItem">
       <h:column>
          <f:facet name="header">
@@ -55,19 +57,24 @@
          <h:commandLink action="#{wizardItem.processActionRunWizard}">
             <h:outputText value="#{msgs.run_wizard}"/>
          </h:commandLink>
-         <h:outputText value=" | " />
-         <h:commandLink action="#{wizardItem.processActionEdit}">
-            <h:outputText value="#{msgs.edit}"/>
-         </h:commandLink>
-         <h:outputText value=" | " />
-         <h:commandLink action="#{wizardItem.processActionDelete}">
-            <h:outputText value="#{msgs.delete}" />
-         </h:commandLink>
-         <h:outputText value=" | " />
-         <h:commandLink action="#{wizardItem.processActionPublish}" 
-               rendered="#{wizardItem.canPublish}">
-            <h:outputText value="#{msgs.publish}" />
-         </h:commandLink>
+         <f:subview id="editLink" rendered="#{wizardItem.canEdit}">
+            <h:outputText value=" | " />
+            <h:commandLink action="#{wizardItem.processActionEdit}" >
+               <h:outputText value="#{msgs.edit}"/>
+            </h:commandLink>
+         </f:subview>
+         <f:subview id="deleteLink" rendered="#{wizardItem.canDelete}">
+            <h:outputText value=" | " />
+            <h:commandLink action="#{wizardItem.processActionDelete}" >
+               <h:outputText value="#{msgs.delete}" />
+            </h:commandLink>
+         </f:subview>
+         <f:subview id="publishLink" rendered="#{wizardItem.canPublish}">
+            <h:outputText value=" | " />
+            <h:commandLink action="#{wizardItem.processActionPublish}">
+               <h:outputText value="#{msgs.publish}" />
+            </h:commandLink>
+         </f:subview>
       </h:column>
       <h:column>
          <f:facet name="header">

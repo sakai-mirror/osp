@@ -86,6 +86,7 @@ public class DecoratedCompletedPage {
       ToolSession session = SessionManager.getCurrentToolSession();
       WizardPage page = getParent().getMatrixManager().getWizardPage(getBase().getWizardPage().getId());
       session.setAttribute(WizardPageHelper.WIZARD_PAGE, page);
+      session.setAttribute("readOnlyMatrix", "true");
 
       try {
          context.redirect("osp.wizard.page.helper/wizardPage.osp");

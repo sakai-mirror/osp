@@ -50,8 +50,6 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       // return null if we don't know what is up...
       if (function.equals(WizardFunctionConstants.VIEW_WIZARD)) {
          return isWizardViewAuth(facade, agent, id, true);
-      } else if (function.equals(WizardFunctionConstants.COMMENT_WIZARD)) {
-         return isWizardCommentAuth(facade, agent, id);
       } else if (function.equals(WizardFunctionConstants.CREATE_WIZARD)) {
          return new Boolean(facade.isAuthorized(agent,function,id));
       } else if (function.equals(WizardFunctionConstants.EDIT_WIZARD)) {
@@ -66,9 +64,10 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
          return isWizardAuth(facade, id, agent, WizardFunctionConstants.COPY_WIZARD);
       } else if (function.equals(WizardFunctionConstants.EXPORT_WIZARD)) {
          return isWizardAuth(facade, id, agent, WizardFunctionConstants.EXPORT_WIZARD);
-      } else if (WizardFunctionConstants.EVALUATE_WIZARD.equals(function) ||
-            WizardFunctionConstants.REVIEW_WIZARD.equals(function)) {
-         return new Boolean(facade.isAuthorized(function,id));
+      } else if (WizardFunctionConstants.REVIEW_WIZARD.equals(function)) {
+         return isWizardAuthForReview(facade, agent, id);
+      } else if (WizardFunctionConstants.EVALUATE_WIZARD.equals(function)) {
+         return isWizardAuthForEval(facade, agent, id);
       } else {
          return null;
       }
@@ -89,25 +88,6 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       return new Boolean(facade.isAuthorized(function,toolId));
    }
 
-   protected Boolean isWizardCommentAuth(AuthorizationFacade facade, Agent agent, Id id) {
-      Wizard wizard = getWizardManager().getWizard(id);
-
-      //Is there a comment form/wizard supplied?
-      if (wizard.getReviewDevice() != null)
-         return new Boolean(true);
-      
-      //if (!wizard.getSupportItems()..isIncludeComments()){
-      //   return new Boolean(false);
-      //}
-
-      if (wizard.getOwner().equals(agent)) {
-         return new Boolean(true);
-      } else {
-         Id toolId = getIdManager().getId(wizard.getToolId());
-         return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.COMMENT_WIZARD, toolId));
-      }
-   }
-
    protected Boolean isWizardViewAuth(AuthorizationFacade facade, Agent agent, Id id, boolean allowAnonymous) {
       Wizard wizard = getWizardManager().getWizard(id);
 
@@ -122,6 +102,19 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
          return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.VIEW_WIZARD, id));
       }
    }
+
+   protected Boolean isWizardAuthForReview(AuthorizationFacade facade, Agent agent, Id wizardId) {
+      Wizard wizard = getWizardManager().getWizard(wizardId);
+      Id toolId = getIdManager().getId(wizard.getToolId());
+      return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.REVIEW_WIZARD, toolId));
+   }
+   
+   protected Boolean isWizardAuthForEval(AuthorizationFacade facade, Agent agent, Id id) {
+      //Wizard wizard = getWizardManager().getWizard(wizardId);
+      //Id toolId = getIdManager().getId(wizard.getToolId());
+      return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.EVALUATE_WIZARD, id));
+   }
+   
 /*
    protected Boolean isFileAuth(AuthorizationFacade facade, Agent agent, Id id) {
       // check if this id is attached to any pres

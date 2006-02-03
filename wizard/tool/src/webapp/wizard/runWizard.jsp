@@ -23,17 +23,29 @@
       <sakai:tool_bar_item
          rendered="#{wizard.current.runningWizard.base.status == 'READY' &&
             wizard.current.base.type ==
-               'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' &&
+            wizard.current.base.owner.id.value == wizard.currentUserId}"
          action="confirmSubmit"
          value="#{msgs.submit_wizard}" />
       <sakai:tool_bar_item
+         rendered="#{wizard.canReview &&
+            wizard.current.base.reviewDevice != null &&
+            wizard.current.base.reviewDevice.value != ''}"
+         action="#{wizard.processActionReview}"
+         value="#{msgs.review_wizard}" />
+      <sakai:tool_bar_item
          rendered="#{wizard.current.runningWizard.base.status == 'PENDING' &&
-            wizard.canEvaluate}"
+            wizard.canEvaluate &&
+            wizard.current.base.evaluationDevice != null &&
+            wizard.current.base.evaluationDevice.value != ''}"
          action="#{wizard.processActionEvaluate}"
          value="#{msgs.eval_wizard}" />
    </sakai:tool_bar>
 
    <sakai:view_title value="#{msgs.run_wizard}"/>
+
+   <%@include file="showWizardOwnerMessage.jspf"%>
+   
    <f:subview id="instructionsHier" rendered="#{wizard.current.base.type ==
                'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
       <sakai:instruction_message value="#{msgs.run_wizard_pages_instructions_hier}" />
@@ -83,7 +95,34 @@
          </f:facet>
       </h:column>
    </sakai:flat_list>
-   
+
+   <ospx:xheader rendered="#{not empty wizard.current.runningWizard.reviews}">
+      <ospx:xheadertitle id="wizardReviews" value="#{msgs.wizard_reviews}" />
+      <ospx:xheaderdrawer initiallyexpanded="false" cssclass="drawerBorder">
+
+         <sakai:flat_list value="#{wizard.current.runningWizard.reviews}" var="review">
+            <h:column>
+               <f:facet name="header">
+                  <h:outputText value="#{msgs.wizard_eval_name}" />
+               </f:facet>
+               <h:outputText value="#{review.reviewContentNode.displayName}" />
+            </h:column>
+            <h:column>
+               <f:facet name="header">
+                  <h:outputText value="#{msgs.wizard_eval_owner}" />
+               </f:facet>
+               <h:outputText value="#{reviewreviewContentNode.technicalMetadata.owner.displayName}" />
+            </h:column>
+            <h:column>
+               <f:facet name="header">
+                  <h:outputText value="#{msgs.wizard_eval_date}" />
+               </f:facet>
+               <h:outputText value="#{review.reviewContentNode.technicalMetadata.creation}" />
+            </h:column>
+         </sakai:flat_list>
+      </ospx:xheaderdrawer>
+  </ospx:xheader>
+     
    <ospx:xheader rendered="#{not empty wizard.current.runningWizard.evaluations}">
       <ospx:xheadertitle id="wizardEvals" value="#{msgs.wizard_evals}" />
       <ospx:xheaderdrawer initiallyexpanded="false" cssclass="drawerBorder">

@@ -94,5 +94,11 @@ public class DecoratedCompletedWizard {
             getBase().getId().getValue(), 
             Review.EVALUATION_TYPE);
    }
+   
+   public List getReviews() {
+      return getParent().getReviewManager().getReviewsByParentAndType(
+            getBase().getId().getValue(), 
+            Review.REVIEW_TYPE);
+   }
 
 }
