@@ -175,6 +175,9 @@
       <property name="workflowManager">
          <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager"/>
       </property>
+      <property name="contentHosting">
+         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
+      </property>
    </bean>
 
    <bean id="org.theospi.portfolio.wizard.mgt.WizardManager"
@@ -204,6 +207,22 @@
       <property name="acceptedExtensions">
          <list>
             <value>css</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.wizardImportFile"
+      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+      <property name="viewAll"><value>true</value></property>
+      <property name="mimeTypes">
+         <list>
+            <value>application/zip</value>
+            <value>application/x-zip-compressed</value>
+         </list>
+      </property>
+      <property name="acceptedExtensions">
+         <list>
+            <value>zip</value>
          </list>
       </property>
    </bean>

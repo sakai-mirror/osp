@@ -31,6 +31,8 @@ import org.theospi.portfolio.wizard.model.CompletedWizard;
 
 public interface WizardManager extends WorkflowEnabledManager {
 
+	   public static final String WIZARD_PARAM_ID = "wizardId";
+	
    public Wizard createNew();
 
    public Wizard getWizard(Id wizardId);
@@ -60,4 +62,5 @@ public interface WizardManager extends WorkflowEnabledManager {
 
    public CompletedWizard saveWizard(CompletedWizard wizard);
 
+   public boolean importResource(Id worksite, String reference);
 }

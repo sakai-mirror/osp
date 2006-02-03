@@ -73,10 +73,16 @@ public class GuidanceItem extends IdentifiableObject {
       this.guidance = guidance;
    }
 
+   /**
+    * @return List of GuidanceItemAttachment
+    */
    public List getAttachments() {
       return attachments;
    }
 
+   /**
+    * @param attachments List of GuidanceItemAttachment
+    */
    public void setAttachments(List attachments) {
       this.attachments = attachments;
    }

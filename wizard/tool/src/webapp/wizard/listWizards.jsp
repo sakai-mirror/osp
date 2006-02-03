@@ -23,6 +23,10 @@
       <sakai:tool_bar_item rendered="#{wizard.maintainer}"
           action="#{wizard.processPermissions}"
           value="#{msgs.permissions_link}" />
+          
+      <sakai:tool_bar_item 
+          action="#{wizard.importWizard}"
+          value="#{msgs.import}" />
 
    </sakai:tool_bar>
 
@@ -58,22 +62,26 @@
             <h:outputText value="#{msgs.run_wizard}"/>
          </h:commandLink>
          <f:subview id="editLink" rendered="#{wizardItem.canEdit}">
-            <h:outputText value=" | " />
-            <h:commandLink action="#{wizardItem.processActionEdit}" >
-               <h:outputText value="#{msgs.edit}"/>
-            </h:commandLink>
+         <h:outputText value=" | " />
+         <h:commandLink action="#{wizardItem.processActionEdit}">
+            <h:outputText value="#{msgs.edit}"/>
+         </h:commandLink>
          </f:subview>
          <f:subview id="deleteLink" rendered="#{wizardItem.canDelete}">
-            <h:outputText value=" | " />
-            <h:commandLink action="#{wizardItem.processActionDelete}" >
-               <h:outputText value="#{msgs.delete}" />
-            </h:commandLink>
+         <h:outputText value=" | " />
+         <h:outputLink value="#{wizardItem.currentExportLink}">
+             <h:outputText value="#{msgs.export}"/>
+         </h:outputLink>
+         <h:outputText value=" | " />
+         <h:commandLink action="#{wizardItem.processActionDelete}">
+            <h:outputText value="#{msgs.delete}" />
+         </h:commandLink>
          </f:subview>
          <f:subview id="publishLink" rendered="#{wizardItem.canPublish}">
-            <h:outputText value=" | " />
+         <h:outputText value=" | " />
             <h:commandLink action="#{wizardItem.processActionPublish}">
-               <h:outputText value="#{msgs.publish}" />
-            </h:commandLink>
+            <h:outputText value="#{msgs.publish}" />
+         </h:commandLink>
          </f:subview>
       </h:column>
       <h:column>

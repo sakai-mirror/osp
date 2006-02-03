@@ -29,6 +29,11 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 
+/**
+ * The super class has the evaluation, reflection and review
+ * 
+ */
+
 public class Wizard extends ObjectWithWorkflow {
 
    public final static String WIZARD_TYPE_SEQUENTIAL = "org.theospi.portfolio.wizard.model.Wizard.sequential";
