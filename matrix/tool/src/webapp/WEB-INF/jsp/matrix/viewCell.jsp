@@ -126,6 +126,7 @@
          <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                <osp:param name="page_id" value="${cell.wizardPage.id}" />
                <osp:param name="org_theospi_portfolio_review_type" value="0" />
+               <osp:param name="process_type_key" value="page_id" />
                </osp:url>">
                      <osp:message key="reflection_create" bundle="${msgs}" /></a>
       </c:if>
