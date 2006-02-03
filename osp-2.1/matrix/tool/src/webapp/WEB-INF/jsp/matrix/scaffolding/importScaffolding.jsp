@@ -15,7 +15,7 @@
             <label>Import File</label>
 			<input type="text" id="name" disabled="true" value="<c:out value="${uploadForm.scaffoldingFileName}"/>"/>
 			<input type="hidden" name="uploadedScaffolding" id="uploadedScaffolding" value="<c:out value="${status.value}"/>" />
-			<a href="<osp:url value="sakai.filepicker.helper/tool?panel=Main&sakaiproject.filepicker.attachLinks=true">
+			<a href="<osp:url value="sakai.filepicker.helper/tool?panel=Main&session.sakaiproject.filepicker.attachLinks=true">
 			</osp:url>"
 				title="Choose File..." >
 				Choose File...

@@ -24,8 +24,14 @@ import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.service.legacy.content.ContentCollection;
+import org.sakaiproject.exception.ServerOverloadException;
 
 import java.util.List;
+import java.util.Map;
+import java.io.OutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -53,4 +59,16 @@ public interface GuidanceManager {
    public List listGuidances(String siteId);
 
    public Guidance getGuidance(String id);
+
+   public void packageGuidanceForExport(List guidanceIds, OutputStream os) throws IOException;
+
+   /**
+    *
+    * @param siteId
+    * @param in
+    * @return map of old id (String) to new Guidance object
+    * @throws IOException
+    */
+   public Map importGuidanceList(ContentCollection parent, String siteId, InputStream in) throws IOException;
+
 }
