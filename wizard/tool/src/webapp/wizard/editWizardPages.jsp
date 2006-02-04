@@ -66,7 +66,10 @@
          </f:facet>
          <h:outputLabel value="#{item.indentString}"
             rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
-         <h:graphicImage value="/img/category.gif" rendered="#{item.category}" />
+
+         <h:graphicImage value="/img/categoryExpanded.gif" rendered="#{item.category && item.hasChildren}" />
+         <h:graphicImage value="/img/category.gif" rendered="#{item.category && !item.hasChildren}" />
+
          <h:graphicImage value="/img/page.gif" rendered="#{!item.category}" />
          <!--h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" /-->
          <h:outputLabel value="#{item.title}"/>

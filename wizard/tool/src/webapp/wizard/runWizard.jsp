@@ -74,7 +74,7 @@
          <f:subview id="expander" rendered="#{item.categoryChild.category}">
             <h:commandLink action="#{item.processActionExpandToggle}">
                <h:graphicImage value="/img/categoryExpanded.gif" rendered="#{item.base.expanded}" />
-               <h:graphicImage value="/img/categoryCollapsed.gif" rendered="#{!item.base.expanded}" />
+               <h:graphicImage value="/img/category.gif" rendered="#{!item.base.expanded}" />
             </h:commandLink>
          </f:subview>
          <h:graphicImage value="/img/page.gif" rendered="#{!item.categoryChild.category}" />
