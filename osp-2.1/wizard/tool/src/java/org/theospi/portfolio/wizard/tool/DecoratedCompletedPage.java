@@ -22,6 +22,7 @@ package org.theospi.portfolio.wizard.tool;
 
 import org.theospi.portfolio.wizard.model.CompletedWizardCategory;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
+import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.sakaiproject.api.kernel.session.ToolSession;
@@ -30,6 +31,9 @@ import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -86,15 +90,34 @@ public class DecoratedCompletedPage {
       ToolSession session = SessionManager.getCurrentToolSession();
       WizardPage page = getParent().getMatrixManager().getWizardPage(getBase().getWizardPage().getId());
       session.setAttribute(WizardPageHelper.WIZARD_PAGE, page);
+      String redirectAddress = "osp.wizard.page.helper/wizardPage.osp";
       session.setAttribute("readOnlyMatrix", "true");
 
+      if (Wizard.WIZARD_TYPE_SEQUENTIAL.equals(
+            getBase().getCategory().getWizard().getWizard().getType())) {
+         session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES, getPageList());
+         session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP,
+               new Integer(getBase().getSequence()));
+         redirectAddress = "osp.wizard.page.helper/sequentialWizardPage.osp";
+      }
+
       try {
-         context.redirect("osp.wizard.page.helper/wizardPage.osp");
+         context.redirect(redirectAddress);
       }
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
       }
 
       return null;
+   }
+
+   protected List getPageList() {
+      List pageList = new ArrayList();
+
+      for (Iterator i=getBase().getCategory().getChildPages().iterator();i.hasNext();) {
+         CompletedWizardPage page = (CompletedWizardPage) i.next();
+         pageList.add(page.getWizardPage());
+      }
+      return pageList;
    }
 }

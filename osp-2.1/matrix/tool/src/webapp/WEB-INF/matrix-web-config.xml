@@ -137,6 +137,48 @@
       <property name="formView"><value>viewCell</value></property>
    </bean>
 
+   <bean id="sequentialWizardPageController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.SequentialWizardPageController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="reviewManager">
+               <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
+            </property>
+            <property name="structuredArtifactDefinitionManager">
+               <ref bean="structuredArtifactDefinitionManager"/>
+            </property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">wizardPageRedirect</prop>
+            <prop key="cancel">helperDone</prop>
+            <prop key="confirm">submitCellConfirmationRedirect</prop>
+            <prop key="guidance">viewGuidance</prop>
+            <prop key="review">createReview</prop>
+            <prop key="formPicker">formPicker</prop>
+            <!--
+            <prop key="success">wizardPageDefinitionRedirect</prop>
+            <prop key="loadReviewers">wizardPageDefinitionRedirect</prop>
+            <prop key="return">helperDone</prop>
+            <prop key="editScaffoldingCellConfirm">helperDone</prop>
+            <prop key="selectEvaluators">selectCellEvaluators</prop>
+            <prop key="createGuidance">createGuidance</prop>
+            -->
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>cellBean</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellFormBean</value></property>
+      <property name="formView"><value>viewCell</value></property>
+   </bean>
+
    <bean id="cellFormPickerController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.CellFormPickerController">

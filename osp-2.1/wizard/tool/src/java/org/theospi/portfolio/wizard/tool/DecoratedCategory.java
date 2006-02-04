@@ -267,4 +267,9 @@ public class DecoratedCategory extends DecoratedCategoryChild {
       getParent().setMoveCategoryChild(null);
       return null;
    }
+
+   public boolean getHasChildren() {
+      return getBase().getChildPages().size() > 0 ||
+            getBase().getChildCategories().size() > 0;
+   }
 }

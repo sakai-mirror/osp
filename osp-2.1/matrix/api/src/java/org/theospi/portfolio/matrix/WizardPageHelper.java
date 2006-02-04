@@ -35,4 +35,8 @@ public interface WizardPageHelper {
 
    public final static String CANCELED = "org.theospi.portfolio.matrix.WizardPageHelper.canceled";
 
+   public final static String SEQUENTIAL_WIZARD_CURRENT_STEP = "org.theospi.portfolio.matrix.WizardPageHelper.step";
+
+   public final static String SEQUENTIAL_WIZARD_PAGES = "org.theospi.portfolio.matrix.WizardPageHelper.pages";
+
 }

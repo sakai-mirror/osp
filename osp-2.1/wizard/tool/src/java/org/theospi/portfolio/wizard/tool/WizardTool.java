@@ -123,7 +123,6 @@ public class WizardTool extends BuilderTool {
       new BuilderScreen(EDIT_PROPERTIES_PAGE)
       };
 
-
    public WizardTool() {
       setScreens(screens);
    }
@@ -169,6 +168,7 @@ public class WizardTool extends BuilderTool {
       } catch (IdUnusedException e) {
          throw new OspException(e);
       }
+
       return message;
    }
 
@@ -184,24 +184,24 @@ public class WizardTool extends BuilderTool {
          setCurrent(new DecoratedWizard(this, wizard));
          current.setRunningWizard(new DecoratedCompletedWizard(this, current,
                getWizardManager().getCompletedWizard(wizard, userId)));
-         
+
          session.removeAttribute("WIZARD_USER_ID");
          session.removeAttribute("CURRENT_WIZARD_ID");
-         
+
       }
       Wizard wizard = current.getBase();
-      
+
       if (session.getAttribute(GuidanceManager.CURRENT_GUIDANCE) != null) {
          Guidance guidance = (Guidance)session.getAttribute(GuidanceManager.CURRENT_GUIDANCE);
          wizard.setGuidanceId(guidance.getId());
-         
+
          session.removeAttribute(GuidanceManager.CURRENT_GUIDANCE);
          setExpandedGuidanceSection("true");
       }
       if (wizard.getGuidanceId() != null && wizard.getGuidance() == null) {
          wizard.setGuidance(getGuidanceManager().getGuidance(wizard.getGuidanceId()));
       }
-      
+
       if (wizard.getExposedPageId() != null && !wizard.getExposedPageId().equals("") &&
             (wizard.getExposeAsTool() == null || wizard.getExposeAsTool().booleanValue())) {
          wizard.setExposeAsTool(new Boolean(true));
@@ -217,16 +217,16 @@ public class WizardTool extends BuilderTool {
    public Reference decorateReference(String reference) {
       return getWizardManager().decorateReference(getCurrent().getBase(), reference);
    }
-   
+
    public List getWizards() {
       Placement placement = ToolManager.getCurrentPlacement();
       String currentSiteId = placement.getContext();
       List returned = new ArrayList();
-      
-      String user = currentUserId!=null ? 
+
+      String user = currentUserId!=null ?
             currentUserId : SessionManager.getCurrentSessionUserId();
       setCurrentUserId(user);
-      
+
       List wizards = getWizardManager().listAllWizards(user, currentSiteId);
 
       DecoratedWizard lastWizard = null;
@@ -248,13 +248,13 @@ public class WizardTool extends BuilderTool {
 
       return returned;
    }
-   
+
    public String processActionPublish(Wizard wizard) {
       getWizardManager().publishWizard(wizard);
       current = null;
       return LIST_PAGE;
    }
-   
+
    public String processActionEdit(Wizard wizard) {
       wizard = getWizardManager().getWizard(wizard.getId());
       setCurrent(new DecoratedWizard(this, wizard));
@@ -266,18 +266,18 @@ public class WizardTool extends BuilderTool {
       current = null;
       return LIST_PAGE;
    }
-   
+
    public String processActionCancel() {
       setCurrent(null);
       return LIST_PAGE;
    }
-   
+
    public String processActionChangeUser() {
-      
-      
+
+
       return LIST_PAGE;
    }
-   
+
    protected Id cleanBlankId(String id) {
       if (id.equals("")) return null;
       return getIdManager().getId(id);
@@ -309,20 +309,20 @@ public class WizardTool extends BuilderTool {
       deletedItems.clear();
       Wizard wizard = getCurrent().getBase();
       wizard.setEvalWorkflows(getWorkflowManager().createEvalWorkflows(wizard));
-      
+
       getWizardManager().saveWizard(wizard);
    }
-   
+
    public String processActionNew() {
       Wizard newWizard = getWizardManager().createNew();
 
       newWizard.setSequence(getNextWizard());
-      
+
       setCurrent(new DecoratedWizard(this, newWizard));
 
       return startBuilder();
    }
-   
+
    public String processActionRemoveGuidance() {
       //Placement placement = ToolManager.getCurrentPlacement();
       //String currentSite = placement.getContext();
@@ -333,7 +333,7 @@ public class WizardTool extends BuilderTool {
 
       return getCurrentScreen().getNavigationKey();
    }
-   
+
    public void processActionGuidanceHelper() {
       showGuidance("tool");
    }
@@ -367,24 +367,24 @@ public class WizardTool extends BuilderTool {
          throw new RuntimeException("Failed to redirect to helper", e);
       }
    }
-   
+
    public void processActionEvaluate() {
       processActionReviewHelper(Review.EVALUATION_TYPE);
    }
-   
+
    public void processActionReview() {
       processActionReviewHelper(Review.REVIEW_TYPE);
    }
-   
+
    protected void processActionReviewHelper(int type) {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
 
       //CWM use a constant for the below values
       session.setAttribute("process_type_key", CompletedWizard.PROCESS_TYPE_KEY);
-      session.setAttribute(CompletedWizard.PROCESS_TYPE_KEY, 
+      session.setAttribute(CompletedWizard.PROCESS_TYPE_KEY,
             current.getRunningWizard().getBase().getId().getValue());
-      session.setAttribute(ReviewHelper.REVIEW_TYPE_KEY, 
+      session.setAttribute(ReviewHelper.REVIEW_TYPE_KEY,
             Integer.toString(type));
 
       try {
@@ -400,39 +400,39 @@ public class WizardTool extends BuilderTool {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       //Tool tool = ToolManager.getCurrentTool();
       ToolSession session = SessionManager.getCurrentToolSession();
-      
-      //Placement placement = ToolManager.getCurrentPlacement();  
-      //String currentSite = placement.getContext();  
+
+      //Placement placement = ToolManager.getCurrentPlacement();
+      //String currentSite = placement.getContext();
       Wizard wizard = getCurrent().getBase();
 
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, 
-            WizardFunctionConstants.EVALUATE_WIZARD);  
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER, 
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION,
+            WizardFunctionConstants.EVALUATE_WIZARD);
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER,
             wizard.getId().getValue());
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS, 
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS,
             getMessageFromBundle("audience_instructions"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE, 
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE,
             getMessageFromBundle("audience_global_title"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE, 
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE,
             getMessageFromBundle("audience_individual_title"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE, 
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE,
             getMessageFromBundle("audience_group_title"));
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, "false");
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, 
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE,
             null);
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE, 
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE,
             getMessageFromBundle("audience_selected_title"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS, 
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS,
             getMessageFromBundle("audience_filter_instructions"));
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, "false");
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "true");
-      
+
       //Guidance guidance = wizard.getGuidance();
       //if (guidance == null) {
-      //   guidance = getGuidanceManager().createNew(wizard.getName() + " Guidance", currentSite, null, "", ""); 
+      //   guidance = getGuidanceManager().createNew(wizard.getName() + " Guidance", currentSite, null, "", "");
       //}
-      
-      //session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);  
+
+      //session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
 
       try {
          context.redirect("osp.audience.helper/tool");
@@ -483,12 +483,12 @@ public class WizardTool extends BuilderTool {
          throw new OspException(e);
       }
    }
-   
+
    public String importWizard()
    {
 	   return IMPORT_PAGE;
    }
-   
+
    public String processPickImportFiles()
    {
 	      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();

@@ -1,13 +1,17 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
 
 <link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" src="/osp-jsf-resource/xheader/xheader.js"></script>
 
 <form name="form" method="POST"
-	<c:if test="${helperPage == 'true'}">
+	<c:if test="${sequential == 'true'}">
+      action="<osp:url value="sequentialWizardPage.osp"/>"
+   </c:if>
+	<c:if test="${helperPage == 'true' && !sequential == 'true'}">
       action="<osp:url value="wizardPage.osp"/>"
    </c:if>
 	<c:if test="${helperPage != 'true'}">
@@ -156,7 +160,6 @@
     	<input type="hidden" name="page_id" value="<c:out value="${cell.wizardPage.id}"/>"/>
     	<input type="submit" name="matrix" value="<osp:message key="matrix" bundle="${msgs}" />"/>
     </p>
-</form>
 <hr/>
 
 <c:if test="${cell.status != 'READY' or readOnlyMatrix == 'true'}">
@@ -181,3 +184,18 @@
    <c:set value="${evaluations}" var="objectList" />
    <%@ include file="review_eval_table.jspf" %>
 </div>
+
+
+<c:if test="${sequential == 'true'}">
+<div class="act">
+    <c:if test="${currentStep != 0}">
+        <input type="submit" name="_back" value="<fmt:message key="button_back"/>"/>
+    </c:if>
+    <c:if test="${currentStep < (totalSteps - 1)}">
+        <input type="submit" name="_next" value="<fmt:message key="button_continue"/>"/>
+    </c:if>
+    <input type="submit" name="matrix" value="<fmt:message key="button_save"/>"/>
+</div>
+</c:if>
+
+</form>
