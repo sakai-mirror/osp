@@ -37,6 +37,9 @@
             <value>org/theospi/portfolio/review/model/Review.hbm.xml</value>
          </list>
       </property>
+      <property name="sortOrder">
+         <value>1</value>
+      </property>
    </bean>
 
    <bean id="explicitAuthz" class="org.theospi.portfolio.security.impl.sakai.WorksiteAwareAuthorizationFacade" >

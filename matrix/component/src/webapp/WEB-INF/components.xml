@@ -11,6 +11,9 @@
             <value>org/theospi/portfolio/workflow/model/Workflow.hbm.xml</value>
          </list>
 		</property>
+      <property name="sortOrder">
+         <value>2</value>
+      </property>
    </bean>
 
    <bean id="matrixAuthorizer" class="org.theospi.portfolio.matrix.MatrixAuthorizer">
