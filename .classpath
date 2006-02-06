@@ -34,9 +34,21 @@
 	<classpathentry kind="src" path="presentation/tool/src/java"/>
 	<classpathentry kind="src" path="presentation/tool/src/webapp"/>
 	<classpathentry kind="src" path="presentation/tool-lib/src/java"/>
-	<classpathentry kind="src" path="reports/reports-api/src/java"/>
-	<classpathentry kind="src" path="reports/reports-app/src/java"/>
-	<classpathentry kind="src" path="reports/reports-comp-shared/src/java"/>
+	<classpathentry kind="src" path="reports/api/src/java"/>
+	<classpathentry kind="src" path="reports/api-impl/src/java"/>
+	<classpathentry kind="src" path="reports/components/src/webapp"/>
+	<classpathentry kind="src" path="reports/tool/src/bundle"/>
+	<classpathentry kind="src" path="reports/tool/src/java"/>
+	<classpathentry kind="src" path="reports/tool/src/webapp"/>
+	<classpathentry kind="src" path="warehouse/api/src/java"/>
+	<classpathentry kind="src" path="warehouse/api-impl/src/java"/>
+	<classpathentry kind="src" path="warehouse/components/src/webapp"/>
+	<classpathentry kind="src" path="wizard/api/src/java"/>
+	<classpathentry kind="src" path="wizard/api-impl/src/java"/>
+	<classpathentry kind="src" path="wizard/component/src/webapp"/>
+	<classpathentry kind="src" path="wizard/tool/src/bundle"/>
+	<classpathentry kind="src" path="wizard/tool/src/java"/>
+	<classpathentry kind="src" path="wizard/tool/src/webapp"/>
 	<classpathentry sourcepath="JRE_SRC" kind="var" path="JRE_LIB"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.8.jar"/>
@@ -57,7 +69,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jstl/jars/jstl-1.1.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jta/jars/jta-1.0.1b.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/osp/jars/osp-common-impl-2.0.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/portlet-api/jars/portlet-api-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.3.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/velocity/jars/velocity-1.4-dev.jar"/>
