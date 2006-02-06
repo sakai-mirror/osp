@@ -28,6 +28,7 @@ import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.SessionManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.exception.IdUnusedException;
@@ -108,6 +109,10 @@ public class AddLayoutController extends AbstractPresentationController
                logger.error("", e);
             }            
          }
+         
+         session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
+               ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.layoutFile"));
+       
          
          return new ModelAndView("pickLayoutFiles");
       }
