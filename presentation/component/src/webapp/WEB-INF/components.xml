@@ -428,4 +428,21 @@
       </property>
    </bean>
    
+   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.layoutFile"
+      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+      <property name="viewAll"><value>true</value></property>
+      <property name="mimeTypes">
+         <list>
+            <value>text/xml</value>
+            <value>application/xml</value>
+            <value>application/xhtml+xml</value>
+         </list>
+      </property>
+      <property name="acceptedExtensions">
+         <list>
+            <value>xhtml</value>
+         </list>
+      </property>
+   </bean>
+   
 </beans>
