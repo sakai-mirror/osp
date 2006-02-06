@@ -86,14 +86,19 @@ public class AddLayoutController extends AbstractPresentationController
             PREVIEW_IMAGE.equals(layout.getFilePickerAction())) {
          session.put(LAYOUT_SESSION_TAG, layout);
          //session.put(FilePickerHelper.FILE_PICKER_FROM_TEXT, request.get("filePickerFrom"));
+         String filter = "";
          
          List files = new ArrayList();
          String id = "";
-         if (XHTML_FILE.equals(layout.getFilePickerAction()) && layout.getXhtmlFileId() != null) {
-            id = getContentHosting().resolveUuid(layout.getXhtmlFileId().getValue());
+         if (XHTML_FILE.equals(layout.getFilePickerAction())) {
+            filter = "org.sakaiproject.service.legacy.content.ContentResourceFilter.layoutFile";
+            if (layout.getXhtmlFileId() != null)
+               id = getContentHosting().resolveUuid(layout.getXhtmlFileId().getValue());
          }
-         else if (XHTML_FILE.equals(layout.getFilePickerAction()) && layout.getXhtmlFileId() != null) {
-            id = getContentHosting().resolveUuid(layout.getXhtmlFileId().getValue());
+         else if (PREVIEW_IMAGE.equals(layout.getFilePickerAction())) {
+            filter = "org.sakaiproject.service.legacy.content.ContentResourceFilter.layoutImageFile";
+            if (layout.getPreviewImageId() != null)
+               id = getContentHosting().resolveUuid(layout.getPreviewImageId().getValue());
          }
          if (id != null && !id.equals("")) {
             Reference ref;
@@ -110,8 +115,9 @@ public class AddLayoutController extends AbstractPresentationController
             }            
          }
          
-         session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
-               ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.layoutFile"));
+         if (!filter.equals(""))
+            session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER, 
+                  ComponentManager.get(filter));
        
          
          return new ModelAndView("pickLayoutFiles");
