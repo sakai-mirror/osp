@@ -20,7 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.tool;
 
-import org.theospi.portfolio.wizard.model.CompletedWizardCategory;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.matrix.WizardPageHelper;
@@ -91,7 +90,9 @@ public class DecoratedCompletedPage {
       WizardPage page = getParent().getMatrixManager().getWizardPage(getBase().getWizardPage().getId());
       session.setAttribute(WizardPageHelper.WIZARD_PAGE, page);
       String redirectAddress = "osp.wizard.page.helper/wizardPage.osp";
-      session.setAttribute("readOnlyMatrix", "true");
+      
+      if (!parent.getCurrentUserId().equalsIgnoreCase(SessionManager.getCurrentSessionUserId()))
+         session.setAttribute("readOnlyMatrix", "true");
 
       if (Wizard.WIZARD_TYPE_SEQUENTIAL.equals(
             getBase().getCategory().getWizard().getWizard().getType())) {
