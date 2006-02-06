@@ -445,4 +445,14 @@
       </property>
    </bean>
    
+   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.layoutImageFile"
+      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+      <property name="viewAll"><value>true</value></property>
+      <property name="mimeTypes">
+         <list>
+            <value>image</value>
+         </list>
+      </property>
+   </bean>
+   
 </beans>
