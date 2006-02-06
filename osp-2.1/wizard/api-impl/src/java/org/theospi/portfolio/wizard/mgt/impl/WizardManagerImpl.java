@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,10 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.DataConversionException;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.api.kernel.tool.Placement;
+import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.exception.InconsistentException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.exception.ServerOverloadException;
@@ -69,15 +73,22 @@ import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.security.impl.sakai.AuthnManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.sakaiproject.service.legacy.content.ContentCollection;
+import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.content.ContentResource;
+import org.sakaiproject.service.legacy.content.ContentResourceEdit;
 import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.security.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.theospi.portfolio.guidance.model.*;
@@ -116,10 +127,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
    private WorkflowManager workflowManager;
    private ContentHostingService contentHosting;
    
-   private Map  exportForms = new HashMap();
-   /** key: uuid   value: ContentResource  */
-   private Map  exportFiles = new HashMap();
-   private List exportGuidanceIds = new ArrayList();
+   
 
    protected void init() throws Exception {
       /*
@@ -548,7 +556,9 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
       return bean;
    }
    
-   
+   private static final String IMPORT_CREATE_DATE_KEY = "createDate";
+   private static final String IMPORT_EVALUATORS_KEY = "evaluators";
+   private static final String IMPORT_STYLES_KEY = "style";
    private Wizard readWizardFromZip(ZipInputStream zis, String worksiteId) throws IOException
    {
 	   ZipEntry currentEntry = zis.getNextEntry();
@@ -556,23 +566,191 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
        if(currentEntry == null)
     	   return null;
 	   
-	   Wizard wizard = new Wizard(null, getAuthManager().getAgent(), 
+       Map		importData = new HashMap();
+	   Wizard	wizard = new Wizard(null, getAuthManager().getAgent(), // TODO: parameterize toolid
 			   						worksiteId, PortalService.getCurrentToolId());
+      String tempDirName = getIdManager().createId().getValue();
 	   
 	   //	set values not coming from the zip
 	   wizard.setCreated(new Date(System.currentTimeMillis()));
 	   wizard.setModified(wizard.getCreated());
-	   
-	   //	read the wizard
-	   readWizardXML(wizard, zis, wizard.getCreated());
-	   
-	   //	TODO: link together 
+
+      importData.put(IMPORT_CREATE_DATE_KEY, wizard.getCreated());
+	   importData.put(IMPORT_EVALUATORS_KEY, new HashMap()); // key: userid  value: isRole
+      importData.put(IMPORT_STYLES_KEY, new HashMap());
+      
+      Map formsMap = new Hashtable();
+      Map guidanceMap = null;
+      Map resourceMap = new Hashtable();
+	   try {
+   	   //	read the wizard
+   	   readWizardXML(wizard, zis, importData);
+   
+         ContentCollectionEdit fileParent = getFileDir(tempDirName);
+         
+         currentEntry = zis.getNextEntry();
+         while(currentEntry != null) {
+            if(!currentEntry.isDirectory()) {
+               if(currentEntry.getName().startsWith("forms/")) {
+                  processMatrixForm(currentEntry, zis, formsMap,
+                        getIdManager().getId(worksiteId));
+               } else if(currentEntry.getName().startsWith("guidance/")) {
+                  guidanceMap = processMatrixGuidance(fileParent, worksiteId, zis);
+               } else {
+                  importAttachmentRef(fileParent, currentEntry, worksiteId, zis, resourceMap);
+               }
+            }
+            zis.closeEntry();
+            currentEntry = zis.getNextEntry();
+         }
+         
+         replaceIds(wizard, guidanceMap, formsMap);
+
+         // set the styles
+         Map stylesMap = (Map)importData.get(IMPORT_STYLES_KEY);
+   	   List stylesList = new ArrayList();
+         for(Iterator i = stylesMap.keySet().iterator(); i.hasNext(); ) {
+            String styleId = (String)i.next();
+/*
+            Reference baseRef = getEntityManager().newReference(
+                  (String)resourceMap.get(styleId));
+            Reference fullRef = decorateReference(wizard, baseRef.getReference());
+            WizardStyleItem styleItem = new WizardStyleItem(wizard, baseRef, fullRef);
+            
+            stylesList.add(styleItem);*/
+         }
+   	   wizard.setWizardStyleItems(stylesList);
+         
+         // save the wizard
+         wizard = saveWizard(wizard);
+
+         // set the wizard evaluators
+         Map wizardEvaluators = (Map)importData.get(IMPORT_EVALUATORS_KEY);         
+         for(Iterator i = wizardEvaluators.keySet().iterator(); i.hasNext(); ) {
+            String userId = (String)i.next();
+            Agent agent = agentManager.getAgent(userId);
+            
+            List agentRoles = agent.getWorksiteRoles(worksiteId);
+            if(agentRoles.size() > 0)
+               authorizationFacade.createAuthorization(agent,
+                  WizardFunctionConstants.EVALUATE_WIZARD, wizard.getId());
+         }
+         
+         //set the authorization for the pages
+         setAuthnCat(wizard.getRootCategory(), worksiteId);
+         
+      } catch(Exception e) {
+         throw new RuntimeException(e);
+      }
+      finally {
+         try {
+            zis.closeEntry();
+         }
+         catch (IOException e) {
+            logger.error("", e);
+         }
+      }
 	   return wizard;
    }
    
-   private boolean readWizardXML(Wizard wizard, InputStream inStream, Date createdDate)
+   private void setAuthnCat(WizardCategory cat, String worksite) {
+
+      List pages = cat.getChildPages();
+      for(Iterator i = pages.iterator(); i.hasNext(); ) {
+         WizardPageSequence sequence = (WizardPageSequence)i.next();
+         WizardPageDefinition pageDef = sequence.getWizardPageDefinition();
+         
+         for(Iterator ii = pageDef.getEvaluators().iterator(); ii.hasNext(); ) {
+            String strId = (String)ii.next();
+
+            if (strId.startsWith("/site/")) {
+               // it's a role
+               String[] agentValues = strId.split("/");
+               
+               strId = strId.replaceAll(agentValues[2], worksite);
+            }
+            Agent agent = agentManager.getAgent(idManager.getId(strId));
+         
+            if(agent != null)
+               authorizationFacade.createAuthorization(agent,
+                  MatrixFunctionConstants.EVALUATE_MATRIX, pageDef.getId());
+         }
+      }
+   }
+
+   protected ContentCollection getUserCollection() throws TypeException, IdUnusedException, PermissionException {
+      User user = UserDirectoryService.getCurrentUser();
+      String userId = user.getId();
+      String wsId = SiteService.getUserSiteId(userId);
+      String wsCollectionId = getContentHosting().getSiteCollection(wsId);
+      ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
+      return collection;
+   }
+
+   protected Map processMatrixGuidance(ContentCollection parent, String siteId,
+                                       ZipInputStream zis) throws IOException {
+      return getGuidanceManager().importGuidanceList(parent, siteId, zis);
+   }
+
+
+   protected ContentCollectionEdit getFileDir(String origName) throws InconsistentException,
+         PermissionException, IdUsedException, IdInvalidException, IdUnusedException, TypeException {
+      ContentCollection collection = getUserCollection();
+      String childId = collection.getId() + origName;
+      return getContentHosting().addCollection(childId);
+   }
+
+   protected void processMatrixForm(ZipEntry currentEntry, ZipInputStream zis, Map formMap, Id worksite)
+         throws IOException {
+      File file = new File(currentEntry.getName());
+      String fileName = file.getName();
+      String oldId = fileName.substring(0, fileName.indexOf(".form"));
+
+      StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager().importSad(
+         worksite, zis, true, true);
+
+      formMap.put(oldId, bean.getId().getValue());
+   }
+
+   protected void importAttachmentRef(ContentCollection fileParent, ZipEntry currentEntry, String siteId,
+                                      ZipInputStream zis, Map resourceMap) {
+      File file = new File(currentEntry.getName());
+
+      MimeType mimeType = new MimeType(file.getParentFile().getParentFile().getParent(),
+         file.getParentFile().getParentFile().getName());
+
+      String contentType = mimeType.getValue();
+
+      String oldId = file.getParentFile().getName();
+
+      try {
+         ByteArrayOutputStream bos = new ByteArrayOutputStream();
+         int c = zis.read();
+
+         while (c != -1) {
+            bos.write(c);
+            c = zis.read();
+         }
+
+         String fileId = ((fileParent!=null)?fileParent.getId():"") + file.getName();
+         ContentResourceEdit resource = getContentHosting().addResource(fileId);
+         ResourcePropertiesEdit resourceProperties = resource.getPropertiesEdit();
+         resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, file.getName());
+         resource.setContent(bos.toByteArray());
+         resource.setContentType(contentType);
+         getContentHosting().commitResource(resource); 
+         resourceMap.put(oldId, resource.getReference()); 
+      }
+      catch (Exception exp) {
+         throw new RuntimeException(exp);
+      }
+   }
+   
+   private boolean readWizardXML(Wizard wizard, InputStream inStream, Map importData)
    {
 		SAXBuilder builder = new SAXBuilder();
+		Map evaluatorsMap = (Map)importData.get(IMPORT_EVALUATORS_KEY);
+		Map stylesMap = (Map)importData.get(IMPORT_STYLES_KEY);
 
 		try {
 		   byte []bytes = readStreamToBytes(inStream);
@@ -593,30 +771,45 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 			   
 			   String userId = evaluator.getTextTrim();
 			   boolean isRole = evaluator.getAttribute("isRole").getBooleanValue();
+			   
+			   evaluatorsMap.put(userId, new Boolean(isRole));
 		   }
 		   
 		   //	read the evaluation, review, reflection
 		   Element workflow = topNode.getChild("workflow");
 
-		   workflow.getChildTextTrim("evaluationDevice");
-		   workflow.getChildTextTrim("evaluationDeviceType");
-		   workflow.getChildTextTrim("reflectionDevice");
-		   workflow.getChildTextTrim("reflectionDeviceType");
-		   workflow.getChildTextTrim("reviewDevice");
-		   workflow.getChildTextTrim("reviewDeviceType");
+		   String wfType, wfId;
 		   
+		   wfType = workflow.getChildTextTrim("evaluationDeviceType");
+		   wfId = workflow.getChildTextTrim("evaluationDevice");
+		   wizard.setEvaluationDeviceType(wfType);
+		   wizard.setEvaluationDevice(idManager.getId(wfId));
+		   
+		   wfType = workflow.getChildTextTrim("reflectionDeviceType");
+		   wfId = workflow.getChildTextTrim("reflectionDevice");
+		   wizard.setReflectionDeviceType(wfType);
+		   wizard.setReflectionDevice(idManager.getId(wfId));
+		   
+		   wfType = workflow.getChildTextTrim("reviewDeviceType");
+		   wfId = workflow.getChildTextTrim("reviewDevice");
+		   wizard.setReviewDeviceType(wfType);
+		   wizard.setReviewDevice(idManager.getId(wfId));
+			   
 		   //	read the wizard guidance to the list
 		   String guidanceIdStr = topNode.getChildTextTrim("guidance");
+		   wizard.setGuidanceId(idManager.getId(guidanceIdStr));
 		   
 		   //	read the categories/pages
-		   readCategoriesAndPages(wizard.getRootCategory(), topNode.getChild("category"), createdDate);
+		   readCategoriesAndPages(wizard.getRootCategory(), topNode.getChild("category"), importData);
 		   
-		    //	put the styles into the xml
+		    //	pull the styles from the xml
+         //    WizardStyleItem only works with Resources not IDs
 		   List styles = topNode.getChild("styles").getChildren("style");
 		   for(Iterator i = styles.iterator(); i.hasNext(); ) {
 			   Element style = (Element)i.next();
 			   
 			   String styleId = style.getTextTrim();
+			   stylesMap.put(styleId, null);
 		   }
 		} catch(Exception jdome) {
 	         throw new OspException(jdome);
@@ -624,11 +817,11 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 		return true;
    }
    
-   private void readCategoriesAndPages(WizardCategory category, Element categoryNode, Date createdDate)
+   private void readCategoriesAndPages(WizardCategory category, Element categoryNode, Map importData)
    			throws DataConversionException
    {
-	   category.setCreated(createdDate);
-	   category.setModified(createdDate);
+	   category.setCreated((Date)importData.get(IMPORT_CREATE_DATE_KEY));
+	   category.setModified((Date)importData.get(IMPORT_CREATE_DATE_KEY));
 	   
 	   category.setTitle(categoryNode.getChildTextTrim("title"));
 	   category.setDescription(categoryNode.getChildTextTrim("description"));
@@ -647,34 +840,62 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 
 		   Element pageDefNode = pageSequenceNode.getChild("pageDef");
 		   WizardPageDefinition wizardPageDefinition = new WizardPageDefinition();
+         
 		   
 		   wizardPageDefinition.setTitle(pageDefNode.getChildTextTrim("title"));
 		   wizardPageDefinition.setDescription(pageDefNode.getChildTextTrim("description"));
 		   wizardPageDefinition.setInitialStatus(pageDefNode.getChildTextTrim("initialStatus"));
 		   
-		   pageDefNode.getChildTextTrim("evaluationDevice");
-		   pageDefNode.getChildTextTrim("evaluationDeviceType");
-		   pageDefNode.getChildTextTrim("reflectionDevice");
-		   pageDefNode.getChildTextTrim("reflectionDeviceType");
-		   pageDefNode.getChildTextTrim("reviewDevice");
-		   pageDefNode.getChildTextTrim("reviewDeviceType");
+         // read the page workflow
+		   String wfType, wfId;
 		   
-		   pageDefNode.getChildTextTrim("guidance");
+		   wfType = pageDefNode.getChildTextTrim("evaluationDeviceType");
+		   wfId = pageDefNode.getChildTextTrim("evaluationDevice");
+		   wizardPageDefinition.setEvaluationDeviceType(wfType);
+		   wizardPageDefinition.setEvaluationDevice(idManager.getId(wfId));
+		   
+		   wfType = pageDefNode.getChildTextTrim("reflectionDeviceType");
+		   wfId = pageDefNode.getChildTextTrim("reflectionDevice");
+		   wizardPageDefinition.setReflectionDeviceType(wfType);
+		   wizardPageDefinition.setReflectionDevice(idManager.getId(wfId));
+		   
+		   wfType = pageDefNode.getChildTextTrim("reviewDeviceType");
+		   wfId = pageDefNode.getChildTextTrim("reviewDevice");
+		   wizardPageDefinition.setReviewDeviceType(wfType);
+		   wizardPageDefinition.setReviewDevice(idManager.getId(wfId));
+		   
+         // read the page guidance
+         String guidanceIdStr = pageDefNode.getChildTextTrim("guidance");
+         wizardPageDefinition.setGuidanceId(idManager.getId(guidanceIdStr));
 
-		   List forms = categoryNode.getChild("additionalForms").getChildren("form");
-		   for(Iterator ii = forms.iterator(); ii.hasNext(); ) {
-			   Element form = (Element)ii.next();
-			   
-			   String formId = form.getTextTrim();
-		   }
+         // read the into about additional forms
+         if(pageDefNode.getChild("additionalForms") != null) {
+   		   List forms = pageDefNode.getChild("additionalForms").getChildren("form");
+            List formsList = new ArrayList();
+   		   for(Iterator ii = forms.iterator(); ii.hasNext(); ) {
+   			   Element form = (Element)ii.next();
+   			   
+   			   String formId = form.getTextTrim();
+               formsList.add(formId);
+   		   }
+            wizardPageDefinition.setAdditionalForms(formsList);
+         }
 
-		   List evaluators = categoryNode.getChild("evaluators").getChildren("evaluator");
-		   for(Iterator ii = evaluators.iterator(); ii.hasNext(); ) {
-			   Element evaluator = (Element)ii.next();
-			   
-			   String formId = evaluator.getTextTrim();
-			   boolean isRole = evaluator.getAttribute("isRole").getBooleanValue();
-		   }
+         // read the evaluators of the page, they are external to the wizard, store
+         if(pageDefNode.getChild("evaluators") != null) {
+   		   List evaluators = pageDefNode.getChild("evaluators").getChildren("evaluator");
+            List evaluatorsList = new ArrayList();
+   		   for(Iterator ii = evaluators.iterator(); ii.hasNext(); ) {
+   			   Element evaluator = (Element)ii.next();
+   			   
+   			   String evaluatorId = evaluator.getTextTrim();
+               boolean isRole = false;
+               if(evaluator.getAttribute("isRole") != null)
+                  isRole = evaluator.getAttribute("isRole").getBooleanValue();
+               evaluatorsList.add(evaluatorId);
+   		   }
+            wizardPageDefinition.setEvaluators(evaluatorsList);
+         }
 		   
 		   pageSequence.setWizardPageDefinition(wizardPageDefinition);
 		   pages.add(pageSequence);
@@ -684,13 +905,72 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 	   
 	   List categoryNodes = categoryNode.getChild("childCategories").getChildren("category");
 	   List categories = new ArrayList();
-	   for(Iterator i = pageSequences.iterator(); i.hasNext(); ) {
+	   for(Iterator i = categoryNodes.iterator(); i.hasNext(); ) {
 		   Element pageSequenceNode = (Element)i.next();
 		   WizardCategory childCategory = new WizardCategory();
-		   readCategoriesAndPages(childCategory, pageSequenceNode, createdDate);
+         childCategory.setParentCategory(category);
+		   readCategoriesAndPages(childCategory, pageSequenceNode, importData);
 		   categories.add(childCategory);
 	   }
 	   category.setChildCategories(categories);
+   }
+   
+   
+   protected void replaceIds(Wizard wizard, Map guidanceMap, Map formsMap)
+   {
+      replaceCatIds(wizard.getRootCategory(), guidanceMap, formsMap);
+
+      if(wizard.getEvaluationDevice() != null && wizard.getEvaluationDevice().getValue() != null)
+         wizard.setEvaluationDevice(idManager.getId(
+            (String)formsMap.get(wizard.getEvaluationDevice().getValue())  ));
+      
+      if(wizard.getReflectionDevice() != null && wizard.getReflectionDevice().getValue() != null)
+         wizard.setReflectionDevice(idManager.getId(
+            (String)formsMap.get(wizard.getReflectionDevice().getValue())  ));
+      
+      if(wizard.getReviewDevice() != null && wizard.getReviewDevice().getValue() != null)
+         wizard.setReviewDevice(idManager.getId(
+            (String)formsMap.get(wizard.getReviewDevice().getValue())  ));
+      
+      if(wizard.getGuidanceId() != null && wizard.getGuidanceId().getValue() != null)
+      wizard.setGuidanceId(idManager.getId(
+            wizard.getGuidanceId().getValue()));
+   }
+   protected void replaceCatIds(WizardCategory cat, Map guidanceMap, Map formsMap)
+   {
+      for(Iterator i = cat.getChildPages().iterator(); i.hasNext(); ) {
+         WizardPageSequence sequence = (WizardPageSequence)i.next();
+         WizardPageDefinition definition = (WizardPageDefinition)sequence.getWizardPageDefinition();
+         
+         if(definition.getEvaluationDevice() != null && definition.getEvaluationDevice().getValue() != null)
+            definition.setEvaluationDevice(idManager.getId(
+               (String)formsMap.get(definition.getEvaluationDevice().getValue())  ));
+         
+         if(definition.getReflectionDevice() != null && definition.getReflectionDevice().getValue() != null)
+            definition.setReflectionDevice(idManager.getId(
+               (String)formsMap.get(definition.getReflectionDevice().getValue())  ));
+         
+         if(definition.getReviewDevice() != null && definition.getReviewDevice().getValue() != null)
+            definition.setReviewDevice(idManager.getId(
+               (String)formsMap.get(definition.getReviewDevice().getValue())  ));
+         
+         List newAddForms = new ArrayList();
+         for(Iterator ii = definition.getAdditionalForms().iterator(); ii.hasNext(); ) {
+            String addForm = (String)ii.next();
+            if(addForm != null)
+               newAddForms.add(formsMap.get(addForm));
+         }
+         definition.setAdditionalForms(newAddForms);
+         
+         if(definition.getGuidanceId() != null && definition.getGuidanceId().getValue() != null)
+         definition.setGuidanceId(idManager.getId(
+               definition.getGuidanceId().getValue()));
+      }
+      for(Iterator i = cat.getChildCategories().iterator(); i.hasNext(); ) {
+         WizardCategory childCat = (WizardCategory)i.next();
+         
+         replaceCatIds(childCat, guidanceMap, formsMap);
+      }
    }
    
 
@@ -718,16 +998,24 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 	   zos.flush();
    }
    
+   /**
+    * Puts the wizard definition xml into the zip, then places all the forms
+    * into the stream, then 
+    * @param wizardId String the wizard to export
+    * @param zos ZipOutputStream the place to export the wizard too
+    * @throws IOException
+    * @throws ServerOverloadException
+    */
    public void putWizardIntoZip(String wizardId, ZipOutputStream zos) 
    						throws IOException, ServerOverloadException
    {
-	   //	make 100% sure that these are empty
-	   exportForms.clear();
-	   exportFiles.clear();
-	   exportGuidanceIds.clear();
+	   
+	   Map  exportForms = new HashMap(); /* key: form id   value: not needed */
+	   Map  exportFiles = new HashMap(); /* key: uuid   value: ContentResource  */
+	   List exportGuidanceIds = new ArrayList(); /* List of guidance id */
 	   
 	   Wizard	wiz = getWizard(wizardId);
-	   Document document = new Document(wizardToXML(wiz));
+	   Document document = new Document(wizardToXML(wiz, exportForms, exportFiles, exportGuidanceIds));
 	   ZipEntry newfileEntry = null;
 	   
 
@@ -747,7 +1035,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 		   }
 	   }
 	   
-	   //	put the forms into the zip
+	   //	put the resources into the zip
 	   for(Iterator i = exportFiles.keySet().iterator(); i.hasNext(); ) {
 		   String id = (String)i.next();
 		   
@@ -759,6 +1047,8 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 				       );
 		   }
 	   }
+      
+      // put the guidance into the stream
 	   newfileEntry = new ZipEntry("guidance/guidanceList");
 	   zos.putNextEntry(newfileEntry);
 	   getGuidanceManager().packageGuidanceForExport(exportGuidanceIds, zos);
@@ -778,7 +1068,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 	   fileName.substring(fileName.lastIndexOf('\\')+1);
    }
    
-   private Element wizardToXML(Wizard wiz)
+   private Element wizardToXML(Wizard wiz, Map exportForms, Map exportFiles, List exportGuidanceIds)
    {
 	    Element rootNode = new Element("ospiWizard");
 	    
@@ -821,7 +1111,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 		
 		
 		//	put the evaluation, review, reflection
-	    rootNode.addContent(putWorkflowObjectToXml(wiz));
+	    rootNode.addContent(putWorkflowObjectToXml(wiz, exportForms));
 
 	    
 	    //	add the wizard guidance to the list
@@ -833,7 +1123,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 	    
 	    
 	    //	put the categories/pages into the xml
-	    rootNode.addContent(putCategoryToXml(wiz.getRootCategory()));
+	    rootNode.addContent(putCategoryToXml(wiz.getRootCategory(), exportForms, exportGuidanceIds));
 	    
 	    
 	    //	put the styles into the xml
@@ -867,7 +1157,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
    }
    
    
-   private Element putCategoryToXml(WizardCategory cat)
+   private Element putCategoryToXml(WizardCategory cat, Map exportForms, List exportGuidanceIds)
    {
 	   Element categoryNode = new Element("category");
 	   
@@ -893,21 +1183,22 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 	   Element pagesNode = new Element("pages");
 	   for(Iterator i = cat.getChildPages().iterator(); i.hasNext(); ) {
 		  WizardPageSequence pageSequence = (WizardPageSequence)i.next();
-		  pagesNode.addContent(putPageSequenceToXml(pageSequence));
+		  pagesNode.addContent(putPageSequenceToXml(pageSequence, exportForms, exportGuidanceIds));
 	   }
 	   categoryNode.addContent(pagesNode);
 	   
 	   Element childCategoriesNode = new Element("childCategories");
 	   for(Iterator i = cat.getChildCategories().iterator(); i.hasNext(); ) {
 		   WizardCategory childCat = (WizardCategory)i.next();
-		   childCategoriesNode.addContent(putCategoryToXml(childCat));
+		   childCategoriesNode.addContent(putCategoryToXml(childCat, exportForms, exportGuidanceIds));
 	   }
 	   categoryNode.addContent(childCategoriesNode);
 	   
 	   return categoryNode;
    }
    
-   private Element putPageSequenceToXml(WizardPageSequence pageSequence)
+   private Element putPageSequenceToXml(WizardPageSequence pageSequence,
+		   							Map exportForms, List exportGuidanceIds)
    {
 	   Element pageSequenceNode = new Element("pageSequence");
 	   
@@ -922,19 +1213,21 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 	   attrNode.addContent(new CDATA(pageSequence.getSequence() + ""));
 	   pageSequenceNode.addContent(attrNode);
 	   
-	   pageSequenceNode.addContent(putPageDefinitionToXml(pageSequence.getWizardPageDefinition()));
+	   pageSequenceNode.addContent(putPageDefinitionToXml(
+			   pageSequence.getWizardPageDefinition(), exportForms, exportGuidanceIds));
 	   
 	   return pageSequenceNode;
    }
    
-   private Element putPageDefinitionToXml(WizardPageDefinition pageDef)
+   private Element putPageDefinitionToXml(WizardPageDefinition pageDef, 
+		   				Map exportForms, List exportGuidanceIds)
    {
 	   Element pageDefNode = new Element("pageDef");
 	   
 	   if(pageDef == null)
 		   return pageDefNode;
 
-	   pageDefNode.addContent(putWorkflowObjectToXml(pageDef));
+	   pageDefNode.addContent(putWorkflowObjectToXml(pageDef, exportForms));
 	   
 	   Element attrNode = new Element("title");
 	   attrNode.addContent(new CDATA(pageDef.getTitle()));
@@ -969,11 +1262,12 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 	   
 
 	   Element		evaluatorsNode = new Element("evaluators");
-	   Collection	evaluators = getWizardPageDefEvaluators(pageDef.getId(), false);
+	   Collection	evaluators = getWizardPageDefEvaluators(pageDef.getId(), true);
 	   for(Iterator i = evaluators.iterator(); i.hasNext(); ) {
-		   Id id = (Id)i.next();
-		   attrNode = new Element("evaluator");
-		   attrNode.addContent(new CDATA(id.getValue()));
+         Agent agent = (Agent) i.next();
+         attrNode = new Element("evaluator");
+         attrNode.setAttribute("isRole", Boolean.toString(agent.isRole()));
+         attrNode.addContent(new CDATA(agent.getId().getValue()));
 		   evaluatorsNode.addContent(attrNode);
 	   }
 	   pageDefNode.addContent(evaluatorsNode);
@@ -997,10 +1291,10 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 	   }
    
    
-   protected Collection getWizardEvaluators(Id wizardPageDefId, boolean useAgentId) {
+   protected Collection getWizardEvaluators(Id wizardId, boolean useAgentId) {
 	      Collection evaluators = new HashSet();
 	      Collection viewerAuthzs = authorizationFacade.getAuthorizations(null,
-	    		  WizardFunctionConstants.EVALUATE_WIZARD, wizardPageDefId);
+	    		  WizardFunctionConstants.EVALUATE_WIZARD, wizardId);
 	      for (Iterator i = viewerAuthzs.iterator(); i.hasNext();) {
 	         Authorization evaluator = (Authorization) i.next();
 	         if (useAgentId)
@@ -1016,7 +1310,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
     * @param objWorkflow
     * @return Element 
     */
-   private Element putWorkflowObjectToXml(ObjectWithWorkflow objWorkflow)
+   private Element putWorkflowObjectToXml(ObjectWithWorkflow objWorkflow, Map exportForms)
    {
 	   Element workflowObjNode = new Element("workflow");
 
