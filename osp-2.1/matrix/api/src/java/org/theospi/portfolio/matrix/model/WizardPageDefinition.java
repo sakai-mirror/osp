@@ -94,12 +94,15 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    }
 
    /**
+    * This is the transient property.
     * @return Returns the guidanceId.
     */
    public Id getGuidanceId() {
       return guidanceId;
    }
    /**
+    * This is the transient property.  This will not save to the database.
+    * Use setGuidance to save the guidance to the database.
     * @param guidanceId The guidanceId to set.
     */
    public void setGuidanceId(Id guidanceId) {
@@ -131,6 +134,7 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
       this.deleteGuidanceId = deleteGuidanceId;
    }
    /**
+    * List of Strings of the form Ids
     * @return Returns the additionalForms.
     */
    public List getAdditionalForms() {

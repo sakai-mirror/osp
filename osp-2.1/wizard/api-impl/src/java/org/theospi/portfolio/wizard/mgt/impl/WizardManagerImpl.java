@@ -632,10 +632,15 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
          Map wizardEvaluators = (Map)importData.get(IMPORT_EVALUATORS_KEY);         
          for(Iterator i = wizardEvaluators.keySet().iterator(); i.hasNext(); ) {
             String userId = (String)i.next();
-            Agent agent = agentManager.getAgent(userId);
-            
-            List agentRoles = agent.getWorksiteRoles(worksiteId);
-            if(agentRoles.size() > 0)
+
+            if (userId.startsWith("/site/")) {
+               // it's a role
+               String[] agentValues = userId.split("/");
+               
+               userId = userId.replaceAll(agentValues[2], worksiteId);
+            }
+            Agent agent = agentManager.getAgent(idManager.getId(userId));
+            if(agent != null)
                authorizationFacade.createAuthorization(agent,
                   WizardFunctionConstants.EVALUATE_WIZARD, wizard.getId());
          }
@@ -853,19 +858,20 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 		   
          // read the page workflow
 		   String wfType, wfId;
+         Element workflow = pageDefNode.getChild("workflow");
 		   
-		   wfType = pageDefNode.getChildTextTrim("evaluationDeviceType");
-		   wfId = pageDefNode.getChildTextTrim("evaluationDevice");
+		   wfType = workflow.getChildTextTrim("evaluationDeviceType");
+		   wfId = workflow.getChildTextTrim("evaluationDevice");
 		   wizardPageDefinition.setEvaluationDeviceType(wfType);
 		   wizardPageDefinition.setEvaluationDevice(idManager.getId(wfId));
 		   
-		   wfType = pageDefNode.getChildTextTrim("reflectionDeviceType");
-		   wfId = pageDefNode.getChildTextTrim("reflectionDevice");
+		   wfType = workflow.getChildTextTrim("reflectionDeviceType");
+		   wfId = workflow.getChildTextTrim("reflectionDevice");
 		   wizardPageDefinition.setReflectionDeviceType(wfType);
 		   wizardPageDefinition.setReflectionDevice(idManager.getId(wfId));
 		   
-		   wfType = pageDefNode.getChildTextTrim("reviewDeviceType");
-		   wfId = pageDefNode.getChildTextTrim("reviewDevice");
+		   wfType = workflow.getChildTextTrim("reviewDeviceType");
+		   wfId = workflow.getChildTextTrim("reviewDevice");
 		   wizardPageDefinition.setReviewDeviceType(wfType);
 		   wizardPageDefinition.setReviewDevice(idManager.getId(wfId));
 		   
@@ -967,9 +973,12 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
          }
          definition.setAdditionalForms(newAddForms);
          
-         if(definition.getGuidanceId() != null && definition.getGuidanceId().getValue() != null)
-         definition.setGuidanceId(idManager.getId(
-               definition.getGuidanceId().getValue()));
+         if(definition.getGuidanceId() != null && definition.getGuidanceId().getValue() != null) {
+            definition.setGuidanceId(idManager.getId(
+                  definition.getGuidanceId().getValue()));
+
+            definition.setGuidance(getGuidanceManager().getGuidance(definition.getGuidanceId()));
+         }
       }
       for(Iterator i = cat.getChildCategories().iterator(); i.hasNext(); ) {
          WizardCategory childCat = (WizardCategory)i.next();
@@ -1259,10 +1268,12 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 	   }
 	   pageDefNode.addContent(additionalFormsNode);
 	   
-	   exportGuidanceIds.add(pageDef.getGuidance().getId().getValue());
+      if(pageDef.getGuidance() != null && pageDef.getGuidance().getId() != null)
+         exportGuidanceIds.add(pageDef.getGuidance().getId().getValue());
 	    
 	   attrNode = new Element("guidance");
-	   attrNode.addContent(new CDATA(pageDef.getGuidance().getId().getValue()));
+      if(pageDef.getGuidance() != null && pageDef.getGuidance().getId() != null)
+         attrNode.addContent(new CDATA(pageDef.getGuidance().getId().getValue()));
 	   pageDefNode.addContent(attrNode);
 	   
 
@@ -1320,30 +1331,36 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 	   Element workflowObjNode = new Element("workflow");
 
 	   Element attrNode = new Element("evaluationDevice");
-	   attrNode.addContent(new CDATA(objWorkflow.getEvaluationDevice().getValue()));
+      if(objWorkflow.getEvaluationDevice() != null)
+         attrNode.addContent(new CDATA(objWorkflow.getEvaluationDevice().getValue()));
 	   workflowObjNode.addContent(attrNode);
 
-	   exportForms.put(objWorkflow.getEvaluationDevice().getValue(), new Integer(0));
+      if(objWorkflow.getEvaluationDevice() != null)
+         exportForms.put(objWorkflow.getEvaluationDevice().getValue(), new Integer(0));
 	   
 	   attrNode = new Element("evaluationDeviceType");
 	   attrNode.addContent(new CDATA(objWorkflow.getEvaluationDeviceType()));
 	   workflowObjNode.addContent(attrNode);
 	   
 	   attrNode = new Element("reflectionDevice");
-	   attrNode.addContent(new CDATA(objWorkflow.getReflectionDevice().getValue()));
+      if(objWorkflow.getReflectionDevice() != null)
+         attrNode.addContent(new CDATA(objWorkflow.getReflectionDevice().getValue()));
 	   workflowObjNode.addContent(attrNode);
 
-	   exportForms.put(objWorkflow.getReflectionDevice().getValue(), new Integer(0));
+      if(objWorkflow.getReflectionDevice() != null)
+         exportForms.put(objWorkflow.getReflectionDevice().getValue(), new Integer(0));
 	   
 	   attrNode = new Element("reflectionDeviceType");
 	   attrNode.addContent(new CDATA(objWorkflow.getReflectionDeviceType()));
 	   workflowObjNode.addContent(attrNode);
 	   
 	   attrNode = new Element("reviewDevice");
-	   attrNode.addContent(new CDATA(objWorkflow.getReviewDevice().getValue()));
+      if(objWorkflow.getReviewDevice() != null)
+         attrNode.addContent(new CDATA(objWorkflow.getReviewDevice().getValue()));
 	   workflowObjNode.addContent(attrNode);
-	   
-	   exportForms.put(objWorkflow.getReviewDevice().getValue(), new Integer(0));
+
+      if(objWorkflow.getReviewDevice() != null)
+         exportForms.put(objWorkflow.getReviewDevice().getValue(), new Integer(0));
 	   
 	   attrNode = new Element("reviewDeviceType");
 	   attrNode.addContent(new CDATA(objWorkflow.getReviewDeviceType()));
