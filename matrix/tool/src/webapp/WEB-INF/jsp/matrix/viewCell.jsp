@@ -31,6 +31,7 @@
 		<c:if test="${can.create}">
          <a name="linkManageCellStatus" id="linkManageCellStatus" href="<osp:url value="manageCellStatus.osp">
             <osp:param name="page_id" value="${cell.wizardPage.id}"/>
+            <osp:param name="readOnlyMatrix" value="${readOnlyMatrix}" />
             </osp:url>"><osp:message key="manage_cell_status" bundle="${msgs}" /></a>
       </c:if>
       <c:if test="${matrixCan.review && cell.scaffoldingCell.reviewDevice != null}">
@@ -115,7 +116,12 @@
                         <osp:param name="page_id" value="${cell.wizardPage.id}" />
                         <osp:param name="attachFormAction" value="${cellFormDef.id}" />
                         </osp:url>">
-                     Manage Forms</a>
+                     Choose Forms</a> | 
+         <a href="<osp:url value="cellFormPicker.osp">
+                        <osp:param name="page_id" value="${cell.wizardPage.id}" />
+                        <osp:param name="createFormAction" value="${cellFormDef.id}" />
+                        </osp:url>">
+                     Create Form</a>
 </c:if>
 </h4>
       <c:set var="nodes" value="${cellForms}"/>

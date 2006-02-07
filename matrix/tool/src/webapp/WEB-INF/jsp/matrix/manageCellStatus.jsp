@@ -17,11 +17,11 @@
    <fieldset>
       <legend class="radio">Change Status to <c:out value="${newStatus}" />: </legend>
       <div class="checkbox indnt1">
-         <input type="radio" id="changeUserOnly" name="changeUserOnly" value="true"
+         <input type="radio" id="changeUserOnly" name="changeUserOnly" value="true" />
          <label for="changeUserOnly">For this user only</label>
       </div>
       <div class="checkbox indnt1">
-         <input type="radio" id="changeAll" name="changeAll" value="true"
+         <input type="radio" id="changeAll" name="changeAll" value="true" />
          <label for="changeAll">For all matrix users</label>
       </div>
    </fieldset>

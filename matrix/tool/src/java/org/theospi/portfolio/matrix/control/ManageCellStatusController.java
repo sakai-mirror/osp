@@ -27,7 +27,7 @@ import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
+import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.service.legacy.content.LockManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,7 +36,7 @@ import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Attachment;
 import org.theospi.portfolio.matrix.model.Cell;
 
-public class ManageCellStatusController implements FormController {
+public class ManageCellStatusController implements Controller {
 
    private MatrixManager matrixManager = null;
    private IdManager idManager = null;
@@ -55,6 +55,7 @@ public class ManageCellStatusController implements FormController {
       Cell cell = getMatrixManager().getCellFromPage(id);
       String newStatus = getNewCellStatus(cell);
       model.put("newStatus", newStatus);
+      model.put("readOnlyMatrix", (String)request.get("readOnlyMatrix"));
       
       String cancel = (String)request.get("cancel");
       String next = (String)request.get("continue");
@@ -108,18 +109,6 @@ public class ManageCellStatusController implements FormController {
       status = MatrixFunctionConstants.READY_STATUS;
       return status;
    }
-   
-   public Map referenceData(Map request, Object command, Errors errors) {
-      Id id = idManager.getId((String)request.get("page_id"));
-      
-      Map model = new HashMap();
-      model.put("page_id", id);
-      Cell cell = getMatrixManager().getCellFromPage(id);
-      
-      model.put("newStatus", getNewCellStatus(cell));
-      return model;
-   }
-
 
    public IdManager getIdManager() {
       return idManager;
