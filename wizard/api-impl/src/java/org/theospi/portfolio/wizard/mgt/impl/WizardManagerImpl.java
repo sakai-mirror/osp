@@ -554,9 +554,6 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
       ZipInputStream zis = new ZipInputStream(in);
 	
       Wizard bean = readWizardFromZip(zis, worksiteId.getValue());
-      if (bean != null) {
-         saveWizard(bean);
-      }
       return bean;
    }
    
@@ -1063,10 +1060,12 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 	   }
       
       // put the guidance into the stream
-	   newfileEntry = new ZipEntry("guidance/guidanceList");
-	   zos.putNextEntry(newfileEntry);
-	   getGuidanceManager().packageGuidanceForExport(exportGuidanceIds, zos);
-	   zos.closeEntry();
+      if(exportGuidanceIds.size() > 0) {
+   	   newfileEntry = new ZipEntry("guidance/guidanceList");
+   	   zos.putNextEntry(newfileEntry);
+   	   getGuidanceManager().packageGuidanceForExport(exportGuidanceIds, zos);
+   	   zos.closeEntry();
+      }
 	   
 	   
 	   exportForms.clear();
@@ -1129,10 +1128,12 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 
 	    
 	    //	add the wizard guidance to the list
-	    exportGuidanceIds.add(wiz.getGuidanceId().getValue());
+       if(wiz.getGuidanceId() != null)
+          exportGuidanceIds.add(wiz.getGuidanceId().getValue());
 	    
 	    attrNode = new Element("guidance");
-	    attrNode.addContent(new CDATA(wiz.getGuidanceId().getValue()));
+       if(wiz.getGuidanceId() != null)
+          attrNode.addContent(new CDATA(wiz.getGuidanceId().getValue()));
 	    rootNode.addContent(attrNode);
 	    
 	    
@@ -1380,7 +1381,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 		}
 	
 		ZipEntry newfileEntry = new ZipEntry(entryName);
-	
+		
 		zos.putNextEntry(newfileEntry);
 	
 		BufferedReader origin = new BufferedReader(in, data.length);
