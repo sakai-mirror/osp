@@ -209,6 +209,10 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
       }
       
       if (wizard.isNewObject()) {
+         // for some reason the save throws a null pointer exception
+         //    if the id isn't set, so generate a new one if need be
+         if(wizard.getId() == null)
+            wizard.setId(getIdManager().createId());
          wizard.setCreated(now);
          wizard.getRootCategory().setCreated(now);
          wizard.getRootCategory().setModified(now);
@@ -834,6 +838,7 @@ public class WizardManagerImpl extends HibernateDaoSupport implements WizardMana
 		   Element pageSequenceNode = (Element)i.next();
 		   WizardPageSequence pageSequence = new WizardPageSequence();
 		   
+         pageSequence.setCategory(category);
 		   pageSequence.setTitle(pageSequenceNode.getChildTextTrim("title"));
 		   pageSequence.setSequence(Integer.parseInt(
 				   pageSequenceNode.getChildTextTrim("sequence")));
