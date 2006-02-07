@@ -40,6 +40,7 @@ import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
+import org.sakaiproject.service.legacy.filepicker.ResourceEditingHelper;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
@@ -113,12 +114,18 @@ public class CellFormPickerController implements FormController, LoadObjectContr
          
          session.remove(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
          session.remove(FilePickerHelper.FILE_PICKER_CANCEL);
+         session.remove(ResourceEditingHelper.CREATE_TYPE);
+         
+         session.remove(ResourceEditingHelper.CREATE_PARENT);
+         session.remove(ResourceEditingHelper.CREATE_SUB_TYPE);
+         session.remove(ResourceEditingHelper.ATTACHMENT_ID);
       }
       return null;
    }
    
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String attachFormAction = (String) request.get("attachFormAction");
+      String createFormAction = (String) request.get("createFormAction");
       String pageId = (String) request.get("page_id");
       if (pageId == null) {
          pageId = (String)session.get("page_id");
@@ -160,6 +167,25 @@ public class CellFormPickerController implements FormController, LoadObjectContr
          session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
          return new ModelAndView("formPicker");
          
+      }
+      else if (createFormAction != null) {
+         session.put(ResourceEditingHelper.CREATE_TYPE,
+               ResourceEditingHelper.CREATE_TYPE_FORM);
+         session.put("page_id", pageId);
+         
+         
+         if (request.get("current_form_id") == null) {
+//          CWM fix the parent path
+            session.put(ResourceEditingHelper.CREATE_PARENT, "/user/" + 
+                  getSessionManager().getCurrentSessionUserId() + "/");
+            session.put(ResourceEditingHelper.CREATE_SUB_TYPE, createFormAction);
+            
+         } else {
+            session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_form_id"));
+         }
+         
+         
+         return new ModelAndView("formCreator");
       }
       session.remove(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER);
       return new ModelAndView("page", "page_id", pageId);

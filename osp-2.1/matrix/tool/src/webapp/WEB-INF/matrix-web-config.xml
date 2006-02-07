@@ -81,7 +81,7 @@
             <prop key="cancel">matrixRedirect</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="guidance">viewGuidance</prop>
-            <prop key="review">createReview</prop>
+            <prop key="review">formCreator</prop>
             <prop key="formPicker">formPicker</prop>
          </props>
       </property>
@@ -115,7 +115,7 @@
             <prop key="cancel">helperDone</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="guidance">viewGuidance</prop>
-            <prop key="review">createReview</prop>
+            <prop key="review">formCreator</prop>
             <prop key="formPicker">formPicker</prop>
             <!--
             <prop key="success">wizardPageDefinitionRedirect</prop>
@@ -157,7 +157,7 @@
             <prop key="cancel">helperDone</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="guidance">viewGuidance</prop>
-            <prop key="review">createReview</prop>
+            <prop key="review">formCreator</prop>
             <prop key="formPicker">formPicker</prop>
             <!--
             <prop key="success">wizardPageDefinitionRedirect</prop>
@@ -199,6 +199,7 @@
          <props>
             <prop key="page">wizardPageRedirect</prop>
             <prop key="formPicker">formPicker</prop>
+            <prop key="formCreator">formCreator</prop>
          </props>
       </property>
       <property name="customTypedEditors">
@@ -247,7 +248,7 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">createReview</prop>
+            <prop key="success">formCreator</prop>
             <prop key="return">helperDone</prop>
             <prop key="postProcessor">postProcessorWorkflow</prop>
          </props>
