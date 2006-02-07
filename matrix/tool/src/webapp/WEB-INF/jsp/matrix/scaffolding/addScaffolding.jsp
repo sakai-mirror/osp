@@ -252,6 +252,8 @@
             <input type="radio" id="<c:out value="${token}" />" name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
                <c:if test="${status.value == loopCount.index}"> checked="checked" </c:if> />
             <label for="<c:out value="${token}" />"><osp:message key="${token}_progression_label" bundle="${msgs}" />
+               <osp:message key="${token}_progression_icon" bundle="${msgs}" var="icon" />
+               <c:if test="${not empty icon}" ><img src="<osp:url value="${icon}"/>" /></c:if>
                <osp:message key="${token}_progression_desc" bundle="${msgs}" />
             </label>
          </div>
