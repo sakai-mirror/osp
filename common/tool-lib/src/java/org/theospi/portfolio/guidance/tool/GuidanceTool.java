@@ -288,6 +288,26 @@ public class GuidanceTool extends HelperToolBase {
       return null;
    }
 
+   public String processTestResourceViewHelper() {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.removeAttribute(ResourceEditingHelper.CREATE_TYPE);
+      session.removeAttribute(ResourceEditingHelper.CREATE_SUB_TYPE);
+      session.removeAttribute(ResourceEditingHelper.CREATE_PARENT);
+      session.setAttribute(ResourceEditingHelper.CREATE_TYPE,
+         ResourceEditingHelper.CREATE_TYPE_FORM);
+      session.setAttribute(ResourceEditingHelper.ATTACHMENT_ID, getFormId());
+
+      try {
+         context.redirect("sakai.metaobj.formView.helper/formView.osp");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+
+      return null;
+   }
+
    public String getFormTypeId() {
       return formTypeId;
    }
