@@ -18,7 +18,7 @@
 * limitations under the License.
 *
 **********************************************************************************/
-package org.theospi.portfolio.matrix;
+package org.theospi.portfolio.shared.model.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,19 +26,17 @@ import org.jdom.Element;
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
-import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
-//import org.theospi.portfolio.repository.RepositoryManager;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.theospi.portfolio.shared.model.OspException;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
-import org.springframework.core.io.Resource;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -59,7 +57,7 @@ import java.util.Iterator;
 public class GenericXmlRenderer implements PresentableObjectHome {
    protected final Log logger = LogFactory.getLog(getClass());
    private ArtifactFinder artifactFinder;
-   private Resource objectStructure;
+   private String objectStructure;
    private String rootName;
    private String supportedType;
    private String artifactType;
@@ -67,7 +65,8 @@ public class GenericXmlRenderer implements PresentableObjectHome {
    protected Element getObjectStructureRoot(){
       SAXBuilder builder = new SAXBuilder();
       try {
-         Document doc = builder.build(getObjectStructure().getInputStream());
+         InputStream is = getClass().getResourceAsStream(getObjectStructure());
+         Document doc = builder.build(is);
          return doc.getRootElement();
       } catch (Exception e) {
          throw new SchemaInvalidException(e);
@@ -75,14 +74,14 @@ public class GenericXmlRenderer implements PresentableObjectHome {
    }
 
    protected Element getXml(Object object) {
-      Element matrixElement = new Element(getRootName());
+      Element rootElement = new Element(getRootName());
       try {
-         addObjectNodeInfo(matrixElement, object, getObjectStructureRoot());
+         addObjectNodeInfo(rootElement, object, getObjectStructureRoot());
       } catch (IntrospectionException e) {
          logger.error("",e);
       }
 
-      return matrixElement;
+      return rootElement;
    }
 
    protected boolean isTraversableType(PropertyDescriptor descriptor, Element structure) {
@@ -206,10 +205,13 @@ public class GenericXmlRenderer implements PresentableObjectHome {
          Object newObject = readMethod.invoke(object, (Object[]) null);
          parentNode.addContent(newListElement);
          Collection items = (Collection) newObject;
+         int index=0;
          for (Iterator i= items.iterator(); i.hasNext();){
             Element newElement = new Element(getCollectionItemName(prop.getName()));
+            newElement.setAttribute("index", String.valueOf(index));
             newListElement.addContent(newElement);
             addObjectNodeInfo(newElement, i.next(), structure.getChild(prop.getName()));
+            index++;
          }
       } catch (IllegalAccessException e) {
          logger.error("could not get attribute", e);
@@ -269,7 +271,7 @@ public class GenericXmlRenderer implements PresentableObjectHome {
       this.artifactFinder = artifactFinder;
    }
 
-   public Resource getObjectStructure() {
+   public String getObjectStructure() {
       return objectStructure;
    }
 
@@ -281,7 +283,7 @@ public class GenericXmlRenderer implements PresentableObjectHome {
       this.rootName = rootName;
    }
 
-   public void setObjectStructure(Resource objectStructure) {
+   public void setObjectStructure(String objectStructure) {
       this.objectStructure = objectStructure;
    }
 

@@ -20,6 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.model;
 
+import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
+import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
@@ -34,7 +36,7 @@ import java.util.Collection;
  * Time: 3:16:08 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CompletedWizard extends IdentifiableObject {
+public class CompletedWizard extends IdentifiableObject implements Artifact {
 
    private Wizard wizard;
    private CompletedWizardCategory rootCategory;
@@ -42,6 +44,7 @@ public class CompletedWizard extends IdentifiableObject {
    private Date created;
    private Date lastVisited;
    private String status;
+   private ReadableObjectHome home;
 
    public final static String TYPE = "wizard_type";
    public final static String PROCESS_TYPE_KEY = "completed_wizard_id";
@@ -105,6 +108,19 @@ public class CompletedWizard extends IdentifiableObject {
 
    public void setStatus(String status) {
       this.status = status;
+   }
+
+   public ReadableObjectHome getHome() {
+      return home;
+   }
+
+   public void setHome(ReadableObjectHome home) {
+      this.home = home;
+      
+   }
+
+   public String getDisplayName() {
+      return wizard.getName();
    }
 
 }
