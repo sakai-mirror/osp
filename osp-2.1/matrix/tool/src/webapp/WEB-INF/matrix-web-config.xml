@@ -200,6 +200,7 @@
             <prop key="page">wizardPageRedirect</prop>
             <prop key="formPicker">formPicker</prop>
             <prop key="formCreator">formCreator</prop>
+            <prop key="formViewer">formViewer</prop>
          </props>
       </property>
       <property name="customTypedEditors">

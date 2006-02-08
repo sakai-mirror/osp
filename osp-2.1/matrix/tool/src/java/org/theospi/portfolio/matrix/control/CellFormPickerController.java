@@ -126,6 +126,7 @@ public class CellFormPickerController implements FormController, LoadObjectContr
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String attachFormAction = (String) request.get("attachFormAction");
       String createFormAction = (String) request.get("createFormAction");
+      String viewFormAction = (String) request.get("viewFormAction");
       String pageId = (String) request.get("page_id");
       if (pageId == null) {
          pageId = (String)session.get("page_id");
@@ -169,26 +170,32 @@ public class CellFormPickerController implements FormController, LoadObjectContr
          
       }
       else if (createFormAction != null) {
-         session.put(ResourceEditingHelper.CREATE_TYPE,
-               ResourceEditingHelper.CREATE_TYPE_FORM);
-         session.put("page_id", pageId);
-         
-         
-         if (request.get("current_form_id") == null) {
-//          CWM fix the parent path
-            session.put(ResourceEditingHelper.CREATE_PARENT, "/user/" + 
-                  getSessionManager().getCurrentSessionUserId() + "/");
-            session.put(ResourceEditingHelper.CREATE_SUB_TYPE, createFormAction);
-            
-         } else {
-            session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_form_id"));
-         }
-         
-         
+         setupSessionInfo(request, session, pageId, createFormAction);         
          return new ModelAndView("formCreator");
+      }
+      else if (viewFormAction != null) {
+         setupSessionInfo(request, session, pageId, viewFormAction);
+         return new ModelAndView("formViewer");
       }
       session.remove(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER);
       return new ModelAndView("page", "page_id", pageId);
+   }
+   
+   protected void setupSessionInfo(Map request, Map session, String pageId, String formId) {
+      session.put(ResourceEditingHelper.CREATE_TYPE,
+            ResourceEditingHelper.CREATE_TYPE_FORM);
+      session.put("page_id", pageId);
+      
+      
+      if (request.get("current_form_id") == null) {
+//       CWM fix the parent path
+         session.put(ResourceEditingHelper.CREATE_PARENT, "/user/" + 
+               getSessionManager().getCurrentSessionUserId() + "/");
+         session.put(ResourceEditingHelper.CREATE_SUB_TYPE, formId);
+         
+      } else {
+         session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_form_id"));
+      }
    }
 
    /**
