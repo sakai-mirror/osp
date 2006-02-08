@@ -81,9 +81,11 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       }
       
       //owner can do anything
+      /*
       if (wizard.getOwner().equals(agent)){
          return new Boolean(true);
       }
+      */
       Id toolId = getIdManager().getId(wizard.getToolId());
       return new Boolean(facade.isAuthorized(function,toolId));
    }

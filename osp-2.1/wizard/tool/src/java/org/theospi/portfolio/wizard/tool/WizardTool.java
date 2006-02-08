@@ -685,6 +685,12 @@ public class WizardTool extends BuilderTool {
                   SessionManager.getCurrentSessionUserId());
    }
    
+   public boolean getCanExport(Wizard wizard) {
+      return getAuthzManager().isAuthorized(WizardFunctionConstants.EXPORT_WIZARD, 
+            wizard.getId()) && wizard.getOwner().getId().getValue().equalsIgnoreCase(
+                  SessionManager.getCurrentSessionUserId());
+   }
+   
    protected Collection getFormsForSelect(String type) {
       Placement placement = ToolManager.getCurrentPlacement();
       String currentSiteId = placement.getContext();
