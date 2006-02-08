@@ -67,11 +67,13 @@
             <h:outputText value="#{msgs.edit}"/>
          </h:commandLink>
          </f:subview>
-         <f:subview id="deleteLink" rendered="#{wizardItem.canDelete}">
+         <f:subview id="exportLink" rendered="#{wizardItem.canExport}">
          <h:outputText value=" | " />
          <h:outputLink value="#{wizardItem.currentExportLink}">
              <h:outputText value="#{msgs.export}"/>
          </h:outputLink>
+         </f:subview>
+         <f:subview id="deleteLink" rendered="#{wizardItem.canDelete}">
          <h:outputText value=" | " />
          <h:commandLink action="#{wizardItem.processActionDelete}">
             <h:outputText value="#{msgs.delete}" />

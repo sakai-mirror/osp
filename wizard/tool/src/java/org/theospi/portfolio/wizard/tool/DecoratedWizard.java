@@ -89,6 +89,10 @@ public class DecoratedWizard {
    public boolean getCanEdit() {
       return parent.getCanEdit(base);
    }
+   
+   public boolean getCanExport() {
+      return parent.getCanExport(base);
+   }
 
    public List getWizardStyleItems() {
       ToolSession session = SessionManager.getCurrentToolSession();
