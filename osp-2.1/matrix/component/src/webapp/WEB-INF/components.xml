@@ -242,11 +242,11 @@
       </property>
    </bean>
 
-   <bean id="matrixXmlRenderer" class="org.theospi.portfolio.matrix.GenericXmlRenderer">
+   <bean id="matrixXmlRenderer" class="org.theospi.portfolio.shared.model.impl.GenericXmlRenderer">
       <property name="artifactFinder">
          <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactMatrix" />
       </property>
-      <property name="objectStructure"><value>classpath:matrix-structure.xml</value></property>
+      <property name="objectStructure"><value>/org/theospi/portfolio/matrix/matrix-structure.xml</value></property>
       <property name="supportedType"><value>org.theospi.portfolio.matrix.model.Matrix</value></property>
       <property name="rootName"><value>matrix</value></property>      
    </bean>

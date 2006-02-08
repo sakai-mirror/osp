@@ -125,7 +125,57 @@
          </list>
       </property>
    </bean>
+   
+   <bean id="wizardXmlRenderer" class="org.theospi.portfolio.shared.model.impl.GenericXmlRenderer">
+      <property name="artifactFinder">
+         <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactWizard" />
+      </property>
+      <property name="objectStructure"><value>/org/theospi/portfolio/wizard/wizard-structure.xml</value></property>
+      <property name="supportedType"><value>org.theospi.portfolio.wizard.model.CompletedWizard</value></property>
+      <property name="rootName"><value>completedWizard</value></property>      
+   </bean>
+   
+   <bean id="org.theospi.portfolio.shared.mgt.AdditionalXmlHome.completedWizard"
+      class="org.theospi.portfolio.shared.mgt.AdditionalXmlHome"
+      init-method="init" singleton="true">
+      <property name="xmlHomeFactory"><ref bean="xmlHomeFactory"/></property>
+      <property name="additionalHomes">
+      <map>
+         <entry key="completedWizard"><ref bean="org.theospi.portfolio.wizard.mgt.WizardManager"/></entry>
+      </map>
+      </property>
+   </bean>
+   
+   <bean id="org.theospi.portfolio.shared.mgt.AdditionalFinder.completedWizard"
+      class="org.theospi.portfolio.shared.mgt.AdditionalFinder"
+      init-method="init" singleton="true">
+      <property name="artifactFinderManager"><ref bean="artifactFinderManager"/></property>
+      <property name="additionalFinders">
+      <map>
+         <entry key="completedWizard"><ref bean="org.theospi.portfolio.wizard.mgt.WizardManager"/></entry>
+      </map>
+      </property>
+   </bean>
 
+
+   <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactWizard"
+      parent="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifact"
+      class="org.theospi.portfolio.shared.mgt.ContentWrappedArtifactFinder" />
+
+   <bean id="org.sakaiproject.metaobj.shared.ArtifactFinderManager.completedWizard"
+      class="org.theospi.portfolio.shared.mgt.WrappedArtifactFinderManager">
+      <property name="base">
+         <ref bean="artifactFinderManager"/>
+      </property>
+      <property name="substitutions">
+         <map>
+            <entry key="fileArtifact">
+               <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactWizard" />
+            </entry>
+         </map>
+      </property>
+   </bean>
+   
    <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospWizard"
       class="org.theospi.portfolio.wizard.impl.WizardHttpAccess">
       <property name="idManager">
@@ -178,6 +228,7 @@
       <property name="contentHosting">
          <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
       </property>
+      <property name="xmlRenderer"><ref bean="wizardXmlRenderer"/></property>
    </bean>
 
    <bean id="org.theospi.portfolio.wizard.mgt.WizardManager"
