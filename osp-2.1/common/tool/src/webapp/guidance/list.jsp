@@ -33,6 +33,8 @@
    <h:inputText value="#{guidance.formId}" />
    <h:commandButton value="test resource edit" action="#{guidance.processTestResourceEditHelper}" />
 
+   <h:commandButton value="test resource view" action="#{guidance.processTestResourceViewHelper}" />
+
    <sakai:flat_list value="#{guidance.sampleGuidances}" var="sampleGuidance">
       <h:column>
          <f:facet name="header">
