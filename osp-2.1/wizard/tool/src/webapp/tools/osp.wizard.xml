@@ -9,10 +9,10 @@
       
       <keyword name="wizard" />
        <keyword name="help"/>
-<!-- 
-       <configuration name="theospi.resetUrl"
-            value="/listWizard.osp" />
-       -->
+
+      <configuration name="theospi.toolListenerId"
+           value="org.theospi.portfolio.security.mgt.ToolPermissionManager.wizard" />
+
 	</tool>
 
 </registration>

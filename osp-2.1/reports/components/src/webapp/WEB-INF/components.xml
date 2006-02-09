@@ -107,6 +107,50 @@
    <bean id="org.theospi.portfolio.reports.model.ResultsPostProcessor.csv"
       class="org.theospi.portfolio.reports.model.impl.CsvResultPostProcessor" />
 
+   <bean id="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_CREATE"
+      class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+   <bean id="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_RUN"
+      class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+   <bean id="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_VIEW"
+      class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+
+   <bean id="org.theospi.portfolio.security.model.SakaiDefaultPermsManager.reports"
+      parent="org.theospi.portfolio.security.model.SakaiDefaultPermsManager.base"
+      singleton="true" init-method="init">
+      <property name="prefix">
+         <bean id="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_PREFIX"
+            class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+      </property>
+      <property name="functions">
+         <list>
+            <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_CREATE"/>
+            <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_RUN"/>
+            <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_VIEW"/>
+         </list>
+      </property>
+      <property name="defaultPermissions">
+         <map>
+            <entry key="!site.template">
+               <map>
+                  <entry key="maintain">
+                     <list>
+                        <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_CREATE"/>
+                        <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_RUN"/>
+                        <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_VIEW"/>
+                     </list>
+                  </entry>
+                  <entry key="access">
+                     <list>
+                        <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_RUN"/>
+                        <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_VIEW"/>
+                     </list>
+                  </entry>
+               </map>
+            </entry>
+         </map>
+      </property>
+   </bean>
+
 </beans
 
 >
