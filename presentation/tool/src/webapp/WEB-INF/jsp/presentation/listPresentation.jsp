@@ -27,7 +27,9 @@
 
     <c:if test="${isMaintainer}">
         <a href="<osp:url value="osp.permissions.helper/editPermissions">
-                <osp:param name="message" value="Set permissions for ${tool.title} in worksite '${worksite.title}'"/>
+                <osp:param name="message"><fmt:message key="message_permissionsEdit">
+	          <fmt:param><c:out value="${tool.title}"/></fmt:param>
+		  <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message></osp:param>
                 <osp:param name="name" value="presentation"/>
                 <osp:param name="qualifier" value="${tool.id}"/>
                 <osp:param name="returnView" value="listPresentationRedirect"/>
@@ -100,11 +102,11 @@
                    <osp:param name="session.org.theospi.portfolio.security.audiencePublic"
                         value="${presentation.isPublic}"/>
                    <osp:param name="session.org.theospi.portfolio.security.audiencePublicTitle">
-                        Publish to the Internet</osp:param>
+                        <fmt:message key="instructions_publishToInternet"/></osp:param>
                    <osp:param name="session.org.theospi.portfolio.security.audienceSelectedTitle">
                         <fmt:message key="instructions_selectedAudience"/></osp:param>
                    <osp:param name="session.org.theospi.portfolio.security.audienceFilterInstructions">
-                        Select filter criteria to narrow user list</osp:param>
+                        <fmt:message key="instructions_selectFilterUserList"/></osp:param>
                    <osp:param name="session.org.theospi.portfolio.security.audienceGuestEmail"
                         value="true"/>
                    <osp:param name="session.org.theospi.portfolio.security.audienceWorksiteLimited"
