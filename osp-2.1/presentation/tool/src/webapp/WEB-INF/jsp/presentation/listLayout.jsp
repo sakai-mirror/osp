@@ -18,7 +18,10 @@
        </c:if>
        <c:if test="${isMaintainer}">
           <a href="<osp:url value="osp.permissions.helper/editPermissions">
-                <osp:param name="message" value="Set permissions for ${tool.title} in worksite '${worksite.title}'"/>
+                <osp:param name="message"><fmt:message key="message_permissionsEdit">
+	              <fmt:param><c:out value="${tool.title}"/></fmt:param>
+		          <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message>
+		        </osp:param>
                 <osp:param name="name" value="presentationLayout"/>
                 <osp:param name="qualifier" value="${tool.id}"/>
                 <osp:param name="returnView" value="listLayoutRedirect"/>
