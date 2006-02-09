@@ -405,16 +405,6 @@
           <param>255</param>
         </column>
         <column>
-          <name>documentRoot</name>
-          <type>VARCHAR</type>
-          <param>255</param>
-        </column>
-        <column>
-          <name>privacyXsdId</name>
-          <type>VARCHAR</type>
-          <param>255</param>
-        </column>
-        <column>
           <name>worksiteId</name>
           <type>VARCHAR</type>
           <param>255</param>
@@ -432,7 +422,36 @@
           <name>publishedDate</name>
           <type>TIMESTAMP</type>
         </column>
-
+        <column>
+          <name>columnLabel</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>rowLabel</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>readyColor</name>
+          <type>VARCHAR</type>
+          <param>7</param>
+        </column>
+        <column>
+          <name>pendingColor</name>
+          <type>VARCHAR</type>
+          <param>7</param>
+        </column>
+        <column>
+          <name>completedColor</name>
+          <type>VARCHAR</type>
+          <param>7</param>
+        </column>
+        <column>
+          <name>lockedColor</name>
+          <type>VARCHAR</type>
+          <param>7</param>
+        </column>
      </columns>
      <not-null>id</not-null>
      <not-null>ownerId</not-null>

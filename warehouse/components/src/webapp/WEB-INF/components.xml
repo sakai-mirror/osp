@@ -1086,13 +1086,7 @@
            </bean>
            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>description</value></property>
-           </bean>           
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>documentRoot</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
-              <property name="propertyName"><value>privacyXsdId</value></property>
-           </bean> 
            <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
               <property name="propertyName"><value>worksiteId</value></property>
            </bean>
@@ -1127,17 +1121,17 @@
      </property>
      <property name="insertStmt">
         <value>insert into DW_SCAFFOLDING
-                                    (id, ownerId, title, description, documentRoot, privacyXsdId, worksiteId,
+                                    (id, ownerId, title, description, worksiteId,
                                      published, publishedBy, publishedDate, columnLabel, rowLabel, readyColor, 
                                      pendingColor, completedColor, lockedColor)
-                                    values (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)
+                                    values (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
         <value>delete from DW_SCAFFOLDING</value>
      </property>
     <property name="complexFields" >
-         <list>
+         <list> <!--  
             <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
                 <property name="propertyAccess">
                   <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
@@ -1147,7 +1141,7 @@
                <property name="task">
                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.cell" />
                </property> 
-            </bean> 
+            </bean> -->
          </list>
       </property>           
    </bean> 
@@ -1364,13 +1358,13 @@
            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.owner" />   
            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
-              <property name="propertyName"><value>MatrixTool</value></property>
-           </bean>            
+              <property name="propertyName"><value>matrixTool</value></property>
+           </bean>
         </list>
      </property>
      <property name="insertStmt">
         <value>insert into DW_MATRIX
-                                    (id, owner, matricTool_id)
+                                    (id, owner, matrixTool_id)
                                     values (?, ?, ?)
         </value>
      </property>
@@ -1378,7 +1372,7 @@
         <value>delete from DW_MATRIX</value>
      </property>
      <property name="complexFields" >
-         <list>
+         <list> <!-- 
             <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
                <property name="propertyAccess">               
                   <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
@@ -1388,7 +1382,7 @@
                <property name="task">
                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.cell"/>
                </property>
-            </bean>            
+            </bean> -->
          </list>
       </property>
    </bean>
@@ -1401,8 +1395,8 @@
            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
            
            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
-              <property name="propertyName"><value>scaffolding_id</value></property>
-           </bean>          
+              <property name="propertyName"><value>scaffolding</value></property>
+           </bean>
         </list>
      </property>
      <property name="insertStmt">
@@ -1673,10 +1667,10 @@
    -->
 
    <!-- TODO: make this Task -->
-   <!-- 
+   
    <bean
        id="org.theospi.portfolio.warehouse.intf.WarehouseTask.wizard"
-       class="org.theospi.portfolio.warehouse.osp.presentation.PresentationTemplateWarehouseTask"
+       class="org.theospi.portfolio.warehouse.osp.wizard.WizardWarehouseTask"
        init-method="init" singleton="true">
        <property name="dataSource">
            <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
@@ -1684,14 +1678,17 @@
        <property name="dataWarehouseManager">
            <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
        </property>
-       <property name="presentationManager">
-           <ref bean="presentationManager" />
+       <property name="tableDdlResource">
+           <value>/org/theospi/portfolio/warehouse/osp/wizard.xml</value>
+       </property>
+       <property name="wizardManager">
+           <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" />
        </property>
        <property name="task">
            <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard" />
        </property>
    </bean>
-   -->
+   
    
    <!-- TODO: make this Task -->
    <!--  <bean
@@ -1755,7 +1752,7 @@
 
    <bean
        id="org.theospi.portfolio.warehouse.intf.WarehouseTask.scaffolding"
-       class="org.theospi.portfolio.warehouse.osp.matrix.ScaffoldinglWarehouseTask"
+       class="org.theospi.portfolio.warehouse.osp.matrix.ScaffoldingWarehouseTask"
        init-method="init" singleton="true">
        <property name="dataSource">
            <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
@@ -1782,6 +1779,9 @@
        <property name="dataWarehouseManager">
            <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
        </property>
+       <property name="tableDdlResource">
+           <value>/org/theospi/portfolio/warehouse/osp/matrix.xml</value>
+       </property>
        <property name="matrixManager">
            <ref bean="matrixManager" />
        </property>
@@ -1801,8 +1801,11 @@
        <property name="dataWarehouseManager">
            <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
        </property>
+       <property name="tableDdlResource">
+           <value>/org/theospi/portfolio/warehouse/osp/common.xml</value>
+       </property>
        <property name="guidanceManager">
-           <ref bean="guidanceManager" />
+           <ref bean="org.theospi.portfolio.guidance.mgt.GuidanceManager" />
        </property>
        <property name="task">
            <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.guidance" />

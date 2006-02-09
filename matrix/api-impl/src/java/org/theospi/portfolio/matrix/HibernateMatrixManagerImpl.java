@@ -465,6 +465,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public MatrixTool getMatrixTool(Id matrixToolId) {
       return (MatrixTool) this.getHibernateTemplate().get(MatrixTool.class, matrixToolId);
    }
+   public List getMatrixTools() {
+
+     return getHibernateTemplate().find(
+            "from MatrixTool");
+
+   }
 
    public Scaffolding getScaffolding(Id scaffoldingId) {
       return (Scaffolding) this.getHibernateTemplate().get(Scaffolding.class, scaffoldingId);
