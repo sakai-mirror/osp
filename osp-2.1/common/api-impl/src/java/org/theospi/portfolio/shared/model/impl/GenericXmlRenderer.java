@@ -210,7 +210,14 @@ public class GenericXmlRenderer implements PresentableObjectHome {
             Element newElement = new Element(getCollectionItemName(prop.getName()));
             newElement.setAttribute("index", String.valueOf(index));
             newListElement.addContent(newElement);
-            addObjectNodeInfo(newElement, i.next(), structure.getChild(prop.getName()));
+            
+            Element elementStructure = structure.getChild(prop.getName());
+            if (elementStructure == null && structure.getAttributeValue("isNested") != null && 
+                  structure.getAttributeValue("isNested").equals("true"))
+            {
+               elementStructure = structure.getParentElement().getChild(prop.getName());
+            }
+            addObjectNodeInfo(newElement, i.next(), elementStructure);
             index++;
          }
       } catch (IllegalAccessException e) {
@@ -241,8 +248,13 @@ public class GenericXmlRenderer implements PresentableObjectHome {
 
    protected boolean isCollection(PropertyDescriptor prop, Element structure) {
       Element elementStructure = structure.getChild(prop.getName());
+      if (elementStructure == null && structure.getAttributeValue("isNested") != null && 
+            structure.getAttributeValue("isNested").equals("true"))
+      {
+         elementStructure = structure.getParentElement().getChild(prop.getName());
+      }
       String typeAttribute = elementStructure.getAttributeValue("type");
-      if (typeAttribute != null && typeAttribute.equals("collection")){
+      if (typeAttribute != null && typeAttribute.equals("collection") ){
          return true;
       }
       return false;

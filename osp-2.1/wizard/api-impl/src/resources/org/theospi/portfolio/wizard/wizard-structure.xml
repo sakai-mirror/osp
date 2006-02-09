@@ -7,6 +7,10 @@ matrix/api-impl/src/resources/org/theospi/portfolio/matrix/matrix-structure.xml 
 
  valid values for type attribute are: collection, artifact, object
  if not specified object is assumed
+ 
+ Use isNested="true" when you have nested objects
+ So, if childCategories can contain other childCategories, just put an isNested
+   so you don't have to keep embedding them
  -->
 <completedWizard class="org.theospi.portfolio.wizard.model.CompletedWizard">
    <rootCategory class="org.theospi.portfolio.wizard.model.CompletedWizardCategory">
@@ -30,7 +34,9 @@ matrix/api-impl/src/resources/org/theospi/portfolio/matrix/matrix-structure.xml 
             </pageDefinition>
          </wizardPage>
       </childPages>
-      <childCategories type="collection" class="org.theospi.portfolio.wizard.model.CompletedWizardCategory">
+      <childCategories type="collection" class="org.theospi.portfolio.wizard.model.CompletedWizardCategory" isNested="true">
+         <category class="org.theospi.portfolio.wizard.model.WizardCategory">
+         </category>
       </childCategories>
    </rootCategory>
    <owner class="org.sakaiproject.metaobj.shared.model.Agent"></owner>
