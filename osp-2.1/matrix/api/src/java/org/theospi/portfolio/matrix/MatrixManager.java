@@ -85,8 +85,9 @@ public interface MatrixManager extends WorkflowEnabledManager {
    void clearSession();
 
    Matrix getMatrix(Id matrixId);
-   
+
    MatrixTool getMatrixTool(Id matrixToolId);
+   public List getMatrixTools();
 
    Scaffolding getScaffolding(Id scaffoldingId);
    
@@ -143,6 +144,7 @@ public interface MatrixManager extends WorkflowEnabledManager {
    public List getScaffolding();
 
    public List getMatrices(Id scaffoldingId);
+   public List getMatrices(Id matrixToolId, Id agentId);
 
    WizardPage getWizardPage(Id pageId);
 

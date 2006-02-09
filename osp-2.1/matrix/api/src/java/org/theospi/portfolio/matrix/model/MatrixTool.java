@@ -21,6 +21,7 @@
 package org.theospi.portfolio.matrix.model;
 
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -28,7 +29,7 @@ import java.util.Set;
 /**
  * @author rpembry
  */
-public class MatrixTool {
+public class MatrixTool extends IdentifiableObject {
 
    private Id id;
    private Scaffolding scaffolding;
@@ -69,14 +70,14 @@ public class MatrixTool {
    }
 
    /**
-    * @return Returns the scaffoldId.
+    * @return Returns the scaffold class.
     */
    public Scaffolding getScaffolding() {
       return scaffolding;
    }
 
    /**
-    * @param scaffoldId The scaffoldId to set.
+    * @param scaffoldId The scaffold instance to set.
     */
    public void setScaffolding(Scaffolding scaffolding) {
       this.scaffolding = scaffolding;

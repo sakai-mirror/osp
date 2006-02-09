@@ -41,6 +41,13 @@ import java.util.Set;
  * III. Integration & Application of Knowledge
  * IV. Values & Ethics
  *
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>documentRoot</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+              <property name="propertyName"><value>privacyXsdId</value></property>
+           </bean> 
+          
  * @author apple
  */
 public class Scaffolding extends IdentifiableObject implements Serializable {
