@@ -269,4 +269,15 @@
       </property>
   </bean>
 
+   <bean name="org.theospi.portfolio.security.model.SakaiDefaultPermsManager.base"
+      class="org.theospi.portfolio.security.model.SakaiDefaultPermsManager" abstract="true">
+      <property name="functionManager">
+         <ref bean="org.sakaiproject.api.kernel.function.FunctionManager" />
+      </property>
+      <property name="authzGroupService">
+         <ref bean="org.sakaiproject.service.legacy.authzGroup.AuthzGroupService" />
+      </property>
+   </bean>
+
+
 </beans>
