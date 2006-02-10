@@ -1,7 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
 <link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" src="/osp-jsf-resource/xheader/xheader.js"></script>
@@ -10,16 +11,17 @@
   
     
 	 <div class="navIntraTool">
-       <a href="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].submit();"><osp:message key="select_evaluators" bundle="${msgs}" /></a>
+       <a href="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].submit();"><osp:message key="select_evaluators" /></a>
 	 </div>
 
-    <h3>Edit Cell Settings</h3>
+    <h3><fmt:message key="title_editCell"/></h3>
 
 	<div class="instruction"> 
-          Cell Settings (required fields are noted with an <span class="reqStarInline">*</span>)
+          <fmt:message key="instructions_cellSettings"/>
+          <fmt:message key="instructions_requiredFields"/> 
           <br/><br/>
 	      <c:if test="${scaffoldingCell.scaffolding.published}">
-			  Scaffolding has been published and only allows limited editing.
+			  <fmt:message key="instructions_hasBeenPublished"/>
 		      <c:set var="localDisabledText" value="disabled=\"disabled\""/>
 	      </c:if>
 	      
@@ -48,7 +50,7 @@
              <div class="validation"><c:out value="${status.errorMessage}"/></div>
           </c:if>
 		  <p class="shorttext indnt2">
-				<span class="reqStar">*</span><label>Title</label>
+				<span class="reqStar">*</span><label><fmt:message key="label_cellTitle"/></label>
 				<input type="text" name="<c:out value="${status.expression}"/>"
 					   value="<c:out value="${status.displayValue}"/>"/>
 		    </p>
@@ -59,18 +61,18 @@
              <div class="validation"><c:out value="${status.errorMessage}"/></div>
           </c:if>
 		  <p class="shorttext indnt2">
-				<label>Description</label>
+				<label><fmt:message key="label_cellDescription"/></label>
 				<input type="text" name="<c:out value="${status.expression}"/>"
 					   value="<c:out value="${status.displayValue}"/>"/>
 		    </p>
         </spring:bind>
 
-      <h4><osp:message key="guidance_header" bundle="${msgs}" /></h4>
+      <h4><osp:message key="guidance_header"/></h4>
       <c:if test="${empty scaffoldingCell.guidance}">
          <a href="javascript:document.forms[0].dest.value='createGuidance';
                         document.forms[0].submitAction.value='forward';
                         document.forms[0].submit();">
-         <osp:message key="create_guidance" bundle="${msgs}" /></a>
+         <osp:message key="create_guidance"/></a>
       </c:if>
       <c:if test="${not empty scaffoldingCell.guidance}">
       <c:out value="${scaffoldingCell.guidance.description}" />
@@ -79,19 +81,19 @@
                document.forms[0].submitAction.value='forward';
                document.forms[0].params.value='id=<c:out value="${scaffoldingCell.guidance.id}"/>';
                document.forms[0].submit();">
-                 <osp:message key="edit" bundle="${msgs}" />
+                 <osp:message key="edit"/>
                  </a> | 
              <a href="javascript:document.forms[0].dest.value='deleteGuidance';
                document.forms[0].submitAction.value='forward';
                document.forms[0].params.value='id=<c:out value="${scaffoldingCell.guidance.id}"/>';
                document.forms[0].submit();">
-                 <osp:message key="delete" bundle="${msgs}" />
+                 <osp:message key="delete"/>
                  </a>
          </div>
       </c:if>
       
     
-		<h4><osp:message key="cell_settings_header" bundle="${msgs}" /></h4>
+		<h4><osp:message key="cell_settings_header" /></h4>
       
         <spring:bind path="scaffoldingCell.initialStatus">  
             <c:if test="${status.error}">
@@ -99,7 +101,7 @@
             </c:if>
 		    <p class="shorttext">
     			<span class="reqStar">*</span>
-    			<label>Initial Status</label>		
+    			<label><fmt:message key="label_initialStatus"/></label>		
     				<select name="<c:out value="${status.expression}"/>" >
     					<option value="READY" <c:if test="${status.value=='READY'}"> selected</c:if>>Ready</option>
     					<option value="LOCKED" <c:if test="${status.value=='LOCKED'}"> selected</c:if>>Locked</option>
@@ -107,10 +109,10 @@
 		    </p>
         </spring:bind>
         
-      <h4>Additional Forms</h4>
+      <h4><fmt:message key="title_additionalForms"/></h4>
 
       <p class="shorttext">
-         <label>Select Form</label>    
+         <label><fmt:message key="label_selectForm"/></label>    
          <select name="selectAdditionalFormId" >
             <option value="" selected>None</option>
             <c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
@@ -119,7 +121,7 @@
             </c:forEach>
          </select>
          <span class="act">
-            <input type="submit" name="addForm" value="Add" class="active" onclick="javascript:document.forms[0].validate.value='false';" />
+            <input type="submit" name="addForm" value="<fmt:message key="button_add"/>" class="active" onclick="javascript:document.forms[0].validate.value='false';" />
          </span>
       </p>
       
@@ -129,7 +131,7 @@
              <a href="javascript:document.forms[0].submitAction.value='removeFormDef';
                document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
                document.forms[0].submit();">
-                 <osp:message key="remove" bundle="${msgs}" />
+                 <osp:message key="remove"/>
                  </a>
          </div>
       
@@ -145,7 +147,7 @@
                 <div class="validation"><c:out value="${status.errorMessage}"/></div>
             </c:if>
           <p class="shorttext">
-            <label>Select Reflection Device</label>    
+            <label><fmt:message key="label_selectReflectionDevice"/></label>    
                <select name="<c:out value="${status.expression}"/>" <c:out value="${localDisabledText}"/>>
                      <option onclick="document.forms[0].reflectionDeviceType.value='';" value="">None</option>
                   <c:forEach var="refDev" items="${reflectionDevices}" varStatus="loopCount">
@@ -165,7 +167,7 @@
              <div class="validation"><c:out value="${status.errorMessage}"/></div>
          </c:if>
        <p class="shorttext">
-         <label>Select Review Device</label>    
+         <label><fmt:message key="label_selectReviewDevice"/></label>    
             <select name="<c:out value="${status.expression}"/>" <c:out value="${localDisabledText}"/>>
                      <option onclick="document.forms[0].reviewDeviceType.value='';" value="">None</option>
                   <c:forEach var="reviewDev" items="${reviewDevices}" varStatus="loopCount">
@@ -185,7 +187,7 @@
              <div class="validation"><c:out value="${status.errorMessage}"/></div>
          </c:if>
        <p class="shorttext">
-         <label>Select Evaluation Device</label>    
+         <label><fmt:message key="label_selectEvaluationDevice"/></label>    
             <select name="<c:out value="${status.expression}"/>" <c:out value="${localDisabledText}"/>>
                      <option onclick="document.forms[0].evaluationDeviceType.value='';" value="">None</option>
                   <c:forEach var="evalDev" items="${evaluationDevices}" varStatus="loopCount">
@@ -198,7 +200,7 @@
 		
    <h4 style="cursor:pointer" onclick="javascript:showHideDiv('evaluatorsDiv','/osp-jsf-resource')">
       <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgevaluatorsDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
-      Evaluators</h4>
+      <fmt:message key="label_Evaluators"/></h4>
    <div id="evaluatorsDiv">  
       <c:forEach var="eval" items="${evaluators}">
          <div class="indnt1"><c:out value="${eval}" /></div>
@@ -210,14 +212,14 @@
 	</spring:bind>
 
 	<div class="act">
-		<input type="submit" name="saveAction" value="<osp:message key="save" bundle="${msgs}" />" class="active" onclick="javascript:document.forms[0].validate.value='true';" />
+		<input type="submit" name="saveAction" value="<osp:message key="save"/>" class="active" onclick="javascript:document.forms[0].validate.value='true';" />
 
       <c:if test="${empty helperPage}">
-         <input type="button" name="action" value="<osp:message key="cancel" bundle="${msgs}" />"
+         <input type="button" name="action" value="<osp:message key="cancel"/>"
             onclick="window.document.location='<osp:url value="viewScaffolding.osp?scaffolding_id=${scaffoldingCell.scaffolding.id}"/>'"/>
       </c:if>
       <c:if test="${not empty helperPage}">
-   		<input type="submit" name="action" value="<osp:message key="cancel" bundle="${msgs}" />" class="active"
+   		<input type="submit" name="action" value="<osp:message key="cancel"/>" class="active"
             onclick="javascript:document.forms[0].validate.value='false';document.forms[0].canceling.value='true'" />
          <input type="hidden" name="canceling" value="" />
       </c:if>
