@@ -142,8 +142,18 @@
       </c:if>
       <c:if test="${not empty reflections}">
          <c:set var="canReflect" value="true"/>
+         <c:if test="${cell.status != 'READY' or readOnlyMatrix == 'true'}">
+            <a href="<osp:url value="cellFormPicker.osp">
+                     <osp:param name="page_id" value="${cell.wizardPage.id}" />
+                     <osp:param name="viewFormAction" value="${cell.wizardPage.pageDefinition.reflectionDevice.value}" />
+                     <osp:param name="current_form_id" value="${reflections[0].reviewContentNode.resource.id}" />
+                     </osp:url>">
+                  <c:out value="${reflections[0].reviewContentNode.displayName}" />
+               </a>               
+            
+         </c:if>
+         <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
          <c:out value="${reflections[0].reviewContentNode.displayName}" />
-         <c:if test="${readOnlyMatrix != 'true'}">
          <a href="<osp:url value="reviewHelper.osp">
                <osp:param name="page_id" value="${cell.wizardPage.id}" />
                <osp:param name="org_theospi_portfolio_review_type" value="0" />

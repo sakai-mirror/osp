@@ -82,6 +82,8 @@ public class WizardPageForm {
       if (other == this) return true;
       if (other == null || !(other instanceof WizardPageForm)) return false;
       //TODO need better equals method
+      if (this.getId() == null && ((WizardPageForm) other).getId() != null) return false;
+      if (this.getId() != null && ((WizardPageForm) other).getId() == null) return false;
       return (this.getId().equals(((WizardPageForm) other).getId()));
 
    }

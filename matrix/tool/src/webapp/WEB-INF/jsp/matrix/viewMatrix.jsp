@@ -4,7 +4,7 @@
 <SCRIPT LANGUAGE="JavaScript">
 
 function hrefViewCell(pageId) {
-  window.location="<osp:url value="viewCell.osp?page_id="/>"+pageId+"&readOnlyMatrix=<c:out value="${readOnlyMatrix}"/>";
+  window.location="<osp:url value="viewCell.osp?page_id="/>"+pageId;
 }
 
 

@@ -57,6 +57,10 @@ public class CellFormPickerController implements FormController, LoadObjectContr
    private MatrixManager matrixManager;
    private IdManager idManager = null;
    
+   public static final String WHICH_HELPER_KEY = "filepicker.helper.key";
+   public static final String HELPER_CREATOR = "filepicker.helper.creator";
+   public static final String HELPER_PICKER = "filepicker.helper.picker";
+   
    public Map referenceData(Map request, Object command, Errors errors) {
       
 
@@ -88,7 +92,6 @@ public class CellFormPickerController implements FormController, LoadObjectContr
    public Object fillBackingObject(Object incomingModel, Map request,
          Map session, Map application) throws Exception {
       
-      //ToolSession session = getSessionManager().getCurrentToolSession();
       String pageId = (String) request.get("page_id");
       if (pageId == null) {
          pageId = (String)session.get("page_id");
@@ -99,7 +102,9 @@ public class CellFormPickerController implements FormController, LoadObjectContr
             session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
          // here is where we setup the id
          List refs = (List)session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-         page.getPageForms().clear();
+         if (session.get(WHICH_HELPER_KEY).equals(HELPER_PICKER))
+            page.getPageForms().clear();
+         
          for (Iterator iter = refs.iterator(); iter.hasNext();) {
             Reference ref = (Reference) iter.next();
             Id id = getMatrixManager().getNode(ref).getId();
@@ -166,11 +171,13 @@ public class CellFormPickerController implements FormController, LoadObjectContr
          session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER, crf);
          session.put("page_id", pageId);
          session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
+         session.put(WHICH_HELPER_KEY, HELPER_PICKER);
          return new ModelAndView("formPicker");
          
       }
       else if (createFormAction != null) {
-         setupSessionInfo(request, session, pageId, createFormAction);         
+         setupSessionInfo(request, session, pageId, createFormAction);
+         session.put(WHICH_HELPER_KEY, HELPER_CREATOR);
          return new ModelAndView("formCreator");
       }
       else if (viewFormAction != null) {
