@@ -67,6 +67,14 @@
                         rendered="#{freeForm.currentPage.layoutSelected}"
                         />
                   </h:panelGroup>
+                  
+                  <h:outputLabel for="styleFile" id="styleLabel" value="#{msgs.page_style}" />
+                  <h:panelGroup>
+                     <h:outputText id="styleFile" value="#{freeForm.currentPage.styleName}"/>
+                     <h:commandLink action="#{freeForm.currentPage.processActionSelectStyle}">
+                        <h:outputText value="#{msgs.select_style}"/>
+                     </h:commandLink>
+                  </h:panelGroup>
 
                   <h:outputLabel for="advancedNavigation" id="advancedNavigationLabel" value="#{msgs.advanced_navigation}" />
                   <h:panelGroup>

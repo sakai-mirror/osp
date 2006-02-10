@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<registration>
+
+   <tool id="osp.style" title="Style"
+      description="OSP Style Helper Tool">
+
+      <category name="sakai.helper" />
+      
+      <configuration name="theospi.toolListenerId"
+            value="org.theospi.portfolio.security.mgt.ToolPermissionManager.style" /> 
+            
+   </tool>
+
+</registration>

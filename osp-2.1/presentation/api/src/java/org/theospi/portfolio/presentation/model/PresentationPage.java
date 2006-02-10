@@ -36,8 +36,7 @@ public class PresentationPage extends IdentifiableObject implements Serializable
    private String keywords;
    private Presentation presentation;
    private PresentationLayout layout;
-   //private Style style;
-   private String style;
+   private Style style;
    private int sequence;
    private Set regions = new HashSet();
    private Date created;
@@ -74,19 +73,12 @@ public class PresentationPage extends IdentifiableObject implements Serializable
       this.sequence = sequence;
    }
 
-//   public Style getStyle() {
-//      return style;
-//   }
-//   public void setStyle(Style style) {
-//      this.style = style;
-//   }
-   
-   public String getStyle() {
+   public Style getStyle() {
       return style;
    }
-   public void setStyle(String style) {
+   public void setStyle(Style style) {
       this.style = style;
-   }
+   }   
    
    public Presentation getPresentation() {
       return presentation;
