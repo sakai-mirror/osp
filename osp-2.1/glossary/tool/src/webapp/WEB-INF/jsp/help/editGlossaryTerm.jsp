@@ -1,28 +1,28 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.glossary.bundle.Messages"/>
+
     <h3>
-        <c:if test="${not empty entry.id}">Edit</c:if>
-        <c:if test="${empty entry.id}">Add</c:if>
-         Glossary Term
+        <c:if test="${not empty entry.id}"><fmt:message key="action_edit"/></c:if>
+        <c:if test="${empty entry.id}"><fmt:message key="action_new"/></c:if>
+         <fmt:message key="title_glossary"/>
     </h3>
    
 
     <p class="instructions">
-        Glossary Term
-            (required fields are noted with an 
-            <span class="reqStarInline">*</span>)
+        <fmt:message key="instructions_addGlossaryTerm"/>
     </p>
     <spring:hasBindErrors name="entry">
-        <div class="validation">There were problems in your last submission.  
-            Please see below for details</div>
+        <div class="validation"><fmt:message key="error_add"/></div>
     </spring:hasBindErrors>
 
 
 <form method="post" action="<c:out value="${action}"/>" > 
     <osp:form/>
     
-    <h4>Glossary Term</h4>
+    <h4><fmt:message key="title_glossaryTerm"/></h4>
     
     <spring:bind path="entry.term">
         <c:if test="${status.error}"> 
@@ -31,7 +31,7 @@
         <p class="shorttext indnt2">
             <span class="reqStar">*</span>
             <label>
-                Term
+                <fmt:message key="label_Term"/>
             </label>
             <input type="text" name="term" 
                    value="<c:out value="${status.value}"/>" 
@@ -47,7 +47,7 @@
         <p class="longtext indnt2">
             <span class="reqStar">*</span>
             <label class="block">
-                Short Description
+                <fmt:message key="label_shortDesc"/>
             </label>
             <br />
             <c:set var="item" value="${status.value}"/>
@@ -64,7 +64,7 @@
         <p class="longtext indnt2">
             <span class="reqStar">*</span>
             <label class="block">
-                Long Description
+                <fmt:message key="label_longDesc"/>
             </label>
             <c:set var="item" value="${status.value}"/>
             <table><tr>

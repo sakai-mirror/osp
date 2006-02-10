@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename="messages" var="msgs" />
 
 <form  method="POST">

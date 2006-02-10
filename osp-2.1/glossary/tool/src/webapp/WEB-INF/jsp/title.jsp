@@ -13,7 +13,7 @@
        rel="stylesheet"
        media="all" />
  <meta http-equiv="Content-Style-Type" content="text/css" />
- <title>Sakai</title>
+ <title><fmt:message key="title_title"/></title>
  <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js">
  </script>
 </head>
