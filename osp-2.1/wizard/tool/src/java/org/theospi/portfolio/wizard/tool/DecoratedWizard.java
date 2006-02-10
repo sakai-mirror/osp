@@ -202,7 +202,7 @@ public class DecoratedWizard {
       
       getParent().setCurrent(this);
       setRunningWizard(new DecoratedCompletedWizard(getParent(), this,
-         parent.getWizardManager().getCompletedWizard(getBase())));
+         parent.getWizardManager().getCompletedWizard(getBase(), getParent().getCurrentUserId())));
 
       //return "runWizard";
       

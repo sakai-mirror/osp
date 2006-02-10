@@ -15,7 +15,18 @@
 
             <tr>
                <td>
-                  <a href='<c:out value="${node.externalUri}"/>' target="_blank" ><c:out value="${node.name}"/></a>
+                  <c:if test="${node.mimeType == 'application/x-osp'}">
+                     <a href="<osp:url value="cellFormPicker.osp">
+                     <osp:param name="page_id" value="${cell.wizardPage.id}" />
+                     <osp:param name="viewFormAction" value="${cellFormDef.id}" />
+                     <osp:param name="current_form_id" value="${node.resource.id}" />
+                     </osp:url>">
+                  <c:out value="${node.name}" />
+               </a>               
+                  </c:if>
+                  <c:if test="${node.mimeType != 'application/x-osp'}">
+                     <a href='<c:out value="${node.externalUri}"/>' target="_blank" ><c:out value="${node.name}"/></a>
+                  </c:if>
                   <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
                       <div class="itemAction">
                           <a href="<osp:url value="cellFormPicker.osp">

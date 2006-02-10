@@ -26,6 +26,7 @@ import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
@@ -74,7 +75,22 @@ public class CellController implements FormController, LoadObjectController {
       
       model.put("currentUser", SessionManager.getCurrentSessionUserId());
       model.put("CURRENT_GUIDANCE_ID_KEY", "session." + GuidanceManager.CURRENT_GUIDANCE_ID);
+      
+      Boolean readOnly = new Boolean(false);
+      
+      if (cell.getCell().getMatrix() != null) {
+         Agent owner = cell.getCell().getMatrix().getOwner();
+         readOnly = isReadOnly(owner);
+      }
+      model.put("readOnlyMatrix", readOnly);
+      
       return model;
+   }
+   
+   protected Boolean isReadOnly(Agent owner) {
+      if (owner != null && !owner.equals(getAuthManager().getAgent()))
+         return new Boolean(true);
+      return new Boolean(false);
    }
    
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {

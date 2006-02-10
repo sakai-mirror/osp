@@ -93,6 +93,7 @@ public class DecoratedCompletedPage {
       
       if (!parent.getCurrentUserId().equalsIgnoreCase(SessionManager.getCurrentSessionUserId()))
          session.setAttribute("readOnlyMatrix", "true");
+      session.setAttribute("wizardowner", parent.getCurrent().getRunningWizard().getBase().getOwner());
 
       if (Wizard.WIZARD_TYPE_SEQUENTIAL.equals(
             getBase().getCategory().getWizard().getWizard().getType())) {
