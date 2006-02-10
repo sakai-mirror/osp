@@ -2,16 +2,17 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ include file="/js/colorPicker/picker.inc" %>
 
-<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
 <form method="POST">
     <c:if test="${!scaffolding.published}" >
 	   <div class="navIntraTool">
 			<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-				Add Column...
+				<fmt:message key="action_addColumn"/>
 			</a>
 			<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
-				Add Row...
+				<fmt:message key="action_addRow"/>
 			</a>
 	   </div>
     </c:if>
@@ -28,25 +29,24 @@
     <input type="hidden" name="displayText" value="" />
     <input type="hidden" name="validate" value="false" />
     
-      <h3>Scaffolding</h3>
+      <h3><fmt:message key="title_scaffolding"/></h3>
       
 	  <div class="instruction">
-	      
-		  Scaffolding (required fields are noted with an <span class="reqStarInline">*</span>)
+		  <fmt:message key="instructions_scaffolding"/> 
+		  <fmt:message key="instructions_requiredFields"/>
       </div>
       
 	  <c:if test="${scaffolding.published}">
-		  Scaffolding has been published and allows limited editing.
+		  <fmt:message key="instructions_scaffoldingPublisched"/>
 		  <c:set var="disabledText" value="disabled=\"disabled\""/>
 	  </c:if>
       
       <spring:hasBindErrors name="entry">
-          <div class="validation">There were problems in your last submission.  
-            Please see below for details</div>
+          <div class="validation"><fmt:message key="error_problemWithSubmission"/></div>
       </spring:hasBindErrors>
   
 
-		<h4>General Scaffolding Information</h4>
+		<h4><fmt:message key="title_generalScaffoldInfo"/></h4>
         
         
         <spring:bind path="scaffolding.title">
@@ -54,7 +54,7 @@
                 <div class="validation"><c:out value="${status.errorMessage}"/></div>
             </c:if>
     		<p class="shorttext">
-    			<span class="reqStar">*</span><label>Title</label>
+    			<span class="reqStar">*</span><label><fmt:message key="label_title"/></label>
 				<input type="text" name="<c:out value="${status.expression}"/>" 
                 	   value="<c:out value="${status.value}"/>" 
 					   size="25" maxlength="25" <c:out value="${disabledText}"/>>
@@ -62,7 +62,7 @@
         </spring:bind>
 		
 		<p class="longtext">
-			<label class="block">Description</label>
+			<label class="block"><fmt:message key="label_description"/></label>
 			<spring:bind path="scaffolding.description">
                 <table><tr>
 				<td><textarea name="<c:out value="${status.expression}"/>" id="descriptionTextArea" rows="5" cols="80" 
@@ -75,10 +75,10 @@
         <br />
       
       
-		<h4>Columns  &nbsp;&nbsp;&nbsp;
+		<h4><fmt:message key="title_columns"/>
          <c:if test="${!scaffolding.published}" >
          <a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-            Add Column...
+            <fmt:message key="action_addColumn"/>
          </a>
          </c:if>
       </h4>
@@ -87,7 +87,7 @@
                 <div class="validation"><c:out value="${status.errorMessage}"/></div>
             </c:if>
          <div class="shorttext">
-            <label>Column Label</label>
+            <label><fmt:message key="label_columnLabel"/></label>
             <input type="text" name="<c:out value="${status.expression}"/>" 
                      value="<c:out value="${status.value}"/>" 
                   size="25" maxlength="25">
@@ -102,7 +102,7 @@
     		<table class="listHier" cellspacing="0" border="0">
     			<thead>
     				<tr>
-    					<th scope="col">Name</th>
+    					<th scope="col"><fmt:message key="table_header_name"/></th>
     				</tr>
     			</thead>
     			<tbody>
@@ -120,32 +120,32 @@
                 	      document.forms[0].params.value='index=<c:out value="${itemLoopStatus.index}"/>';
                         document.forms[0].onsubmit();
                 	      document.forms[0].submit();">
-                		     Edit
+                		     <fmt:message key="table_action_edit"/>
                 	   </a>
     				<c:if test="${!scaffolding.published}" >
                          | <a href="javascript:document.forms[0].dest.value='removeLevCrit';
                 	      document.forms[0].finalDest.value='deleteLevel';
-                	      document.forms[0].label.value='Column';
+                	      document.forms[0].label.value='';
                 	      document.forms[0].displayText.value='<c:out value="${level.description}"/>';
                 	      document.forms[0].submitAction.value='forward';
                 	      document.forms[0].params.value='level_id=<c:out value="${level.id}"/>:index=<c:out value="${itemLoopStatus.index}"/>';
                         document.forms[0].onsubmit();
                 	      document.forms[0].submit();">
-                		     Remove
+                		     <fmt:message key="table_action_remove"/>
                 	   </a>
                          | <a href="javascript:document.forms[0].dest.value='moveLevel';
                 	      document.forms[0].submitAction.value='forward';
                 	      document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index-1}"/>';
                         document.forms[0].onsubmit();
                 	      document.forms[0].submit();">
-                		     Up
+                		     <fmt:message key="table_action_up"/>
                 	   </a>
                          | <a href="javascript:document.forms[0].dest.value='moveLevel';
                 	      document.forms[0].submitAction.value='forward';
                 	      document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index+1}"/>';
                         document.forms[0].onsubmit();
                 	      document.forms[0].submit();">
-                		     Down
+                		     <fmt:message key="table_action_down"/>
                 	   </a>
     								     </c:if>
     								 </div>
@@ -161,10 +161,10 @@
       
 		<br />
 		
-		<h4>Rows  &nbsp;&nbsp;&nbsp;
+		<h4><fmt:message key="title_rows"/>
          <c:if test="${!scaffolding.published}" >
          <a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
-            Add Row...
+            <fmt:message key="action_addRow"/>
          </a>
          </c:if>
       </h4>
@@ -173,7 +173,7 @@
                 <div class="validation"><c:out value="${status.errorMessage}"/></div>
             </c:if>
             <div class="shorttext">
-            <label>Row Label</label>
+            <label><fmt:message key="label_rowLabel"/></label>
             <input type="text" name="<c:out value="${status.expression}"/>" 
                      value="<c:out value="${status.value}"/>" 
                   size="25" maxlength="25">
@@ -187,7 +187,7 @@
     		<table class="listHier" cellspacing="0">
     			<thead>
     				<tr>
-    					<th scope="col">Name</th>
+    					<th scope="col"><fmt:message key="table_header_name"/></th>
     				</tr>
     			</thead>
     			<tbody>
@@ -203,7 +203,7 @@
                       document.forms[0].params.value='index=<c:out value="${itemLoopStatus.index}"/>:path=';
                       document.forms[0].onsubmit();
                       document.forms[0].submit();">
-                          Edit
+                          <fmt:message key="table_action_edit"/>
                       </a>
 
 											<c:if test="${!scaffolding.published}" >
@@ -215,21 +215,21 @@
                       document.forms[0].params.value='criterion_id=<c:out value="${criterion.id}"/>:index=<c:out value="${itemLoopStatus.index}"/>';
                       document.forms[0].onsubmit();
                       document.forms[0].submit();">
-                          Remove
+                          <fmt:message key="table_action_remove"/>
                       </a>
                       | <a href="javascript:document.forms[0].dest.value='moveCriterion';
                       document.forms[0].submitAction.value='forward';
                       document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index-1}"/>';
                       document.forms[0].onsubmit();
                       document.forms[0].submit();">
-                          Up
+                          <fmt:message key="table_action_up"/>
                       </a>
                       | <a href="javascript:document.forms[0].dest.value='moveCriterion';
                       document.forms[0].submitAction.value='forward';
                       document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index+1}"/>';
                       document.forms[0].onsubmit();
                       document.forms[0].submit();">
-                          Down
+                          <fmt:message key="table_action_down"/>
                       </a>
 											</c:if>
 										</div>
@@ -243,25 +243,25 @@
         </spring:bind>
 		
       <spring:bind path="scaffolding.workflowOption">
-      <h4><osp:message key="matrix_progression" bundle="${msgs}" /></h4>
+      <h4><osp:message key="matrix_progression"/></h4>
       <fieldset>
-         <legend class="radio"><osp:message key="matrix_progression_text" bundle="${msgs}" /></legend>
+         <legend class="radio"><osp:message key="matrix_progression_text"/></legend>
          <c:forTokens var="token" items="none,horizontal,vertical,open,manual"
                     delims="," varStatus="loopCount">
             <div class="checkbox indnt1">
             <input type="radio" id="<c:out value="${token}" />" name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
                <c:if test="${status.value == loopCount.index}"> checked="checked" </c:if> />
-            <label for="<c:out value="${token}" />"><osp:message key="${token}_progression_label" bundle="${msgs}" />
-               <osp:message key="${token}_progression_icon" bundle="${msgs}" var="icon" />
+            <label for="<c:out value="${token}" />"><osp:message key="${token}_progression_label"  />
+               <osp:message key="${token}_progression_icon"  var="icon" />
                <c:if test="${not empty icon}" ><img src="<osp:url value="${icon}"/>" /></c:if>
-               <osp:message key="${token}_progression_desc" bundle="${msgs}" />
+               <osp:message key="${token}_progression_desc"  />
             </label>
          </div>
          </c:forTokens>
       </fieldset>
       </spring:bind>
       
-      <h4>Matrix Status Colors</h4>
+      <h4><fmt:message key="title_matrixStatusColors"/></h4>
       <c:forTokens var="token" items="scaffolding.readyColor,scaffolding.pendingColor,scaffolding.completedColor,scaffolding.lockedColor"
                     delims=",">
         <spring:bind path="${token}">
@@ -269,7 +269,7 @@
                    <div class="validation"><c:out value="${status.errorMessage}"/></div>
                </c:if>
             <p class="shorttext">
-               <span class="reqStar">*</span><label><osp:message key="${status.expression}_label" bundle="${msgs}" /></label>
+               <span class="reqStar">*</span><label><osp:message key="${status.expression}_label"  /></label>
                <input type="text" disabled="disabled" value="" size="2" 
                         name="<c:out value="${status.expression}"/>_sample"
                         style="background-color: <c:out value="${status.value}"/>" />
@@ -296,14 +296,12 @@
 		
 		<div class="act">
 			     <input type="submit" name="generateAction" class="active" 
-                        value="<osp:message key="generate_matrix" bundle="${msgs}" />" 
+                        value="<osp:message key="button_generateMatrix"  />" 
   				        onclick="javascript:document.forms[0].validate.value='true';"/>
-			<input type="submit" name="cancelAction" value="<osp:message key="cancel" bundle="${msgs}" />"/>
+			<input type="submit" name="cancelAction" value="<osp:message key="button_cancel"/>"/>
 		</div>
       
     <script type="text/javascript" src="/library/htmlarea/sakai-htmlarea.js"></script>
     <script type="text/javascript" defer="1">chef_setupformattedtextarea('descriptionTextArea');</script>
     
 </form>
-
-  

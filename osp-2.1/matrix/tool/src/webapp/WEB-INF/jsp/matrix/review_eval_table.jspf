@@ -1,9 +1,9 @@
 <table class="listHier" cellspacing="0" >
    <thead>
       <tr>
-         <th scope="col">Title</th>
-         <th scope="col">Created By</th>
-         <th scope="col">Creation Date</th>
+        <th scope="col"><fmt:message key="table_header_title"/></th>
+        <th scope="col"><fmt:message key="table_header_createdBy"/></th>
+        <th scope="col"><fmt:message key="table_header_creationDate"/></th>
       </tr>
    </thead>
    <tbody>

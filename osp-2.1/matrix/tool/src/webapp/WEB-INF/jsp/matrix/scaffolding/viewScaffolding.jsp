@@ -1,12 +1,15 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ include file="../matrixStyle.jspf" %>
+
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
+
 <SCRIPT LANGUAGE="JavaScript">
 
 function hrefViewCell(cellId) {
   window.location="<osp:url value="editScaffoldingCell.osp?scaffoldingCell_id="/>"+cellId;
 }
-
 
 </SCRIPT>
 
@@ -16,21 +19,21 @@ function hrefViewCell(cellId) {
 	<c:if test="${can.create}">
 		<div class="navIntraTool">
 			<c:if test="${can.create}">
-				<a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>">Edit...</a>
+				<a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_edit"/></a>
 			</c:if>
 			<c:if test="${!matrixContents.scaffolding.published && can.publish}">
-				<a href="<osp:url value="publishScaffoldingConfirmation.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>">Publish</a>
+				<a href="<osp:url value="publishScaffoldingConfirmation.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_publish"/></a>
 			</c:if>
 		</div>
 	</c:if>
 
-	<h3>Matrix Scaffolding</h3>
+	<h3><fmt:message key="title_matrixScaffolding"/></h3>
   
 	<c:if test="${empty matrixContents.columnLabels}">
-		<p class="instruction">Click Edit to setup scaffolding</p>
+		<p class="instruction"><fmt:message key="instructions_clickEdittosetup"/></p>
 	</c:if>
 	<c:if test="${not empty matrixContents.columnLabels}">
-		<p class="instruction">Click on a cell to edit its settings.</p>
+		<p class="instruction"><fmt:message key="instructions_clickOnaCelltoEdit"/></p>
 <!--
   <table width="800" border="0" height="33" bgcolor="#FFFFB8">
     <tr bgcolor="#FFFFB8"> 
@@ -39,7 +42,7 @@ function hrefViewCell(cellId) {
       </td>
       <td height="36" align="left">
         <font face="Verdana, Arial, Helvetica, sans-serif" size="2">
-           Click on a cell to edit its settings.
+           <fmt:message key="instructions_clickOnaCelltoEdit"/>
         </font>
       </td>
     </tr>

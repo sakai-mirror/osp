@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
+<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
 <link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" src="/osp-jsf-resource/xheader/xheader.js"></script>
@@ -32,7 +32,7 @@
          <a name="linkManageCellStatus" id="linkManageCellStatus" href="<osp:url value="manageCellStatus.osp">
             <osp:param name="page_id" value="${cell.wizardPage.id}"/>
             <osp:param name="readOnlyMatrix" value="${readOnlyMatrix}" />
-            </osp:url>"><osp:message key="manage_cell_status" bundle="${msgs}" /></a>
+            </osp:url>"><osp:message key="manage_cell_status"/></a>
       </c:if>
       <c:if test="${matrixCan.review && cell.scaffoldingCell.reviewDevice != null}">
          <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
@@ -40,19 +40,19 @@
             <osp:param name="org_theospi_portfolio_review_type" value="2" />
             <osp:param name="process_type_key" value="page_id" />
             </osp:url>">
-                  <osp:message key="review" bundle="${msgs}" /></a>
+                  <osp:message key="review"/></a>
       </c:if> 
       <c:if test="${(matrixCan.evaluate || wizardCan.evaluate) && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING'}">
          <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                <osp:param name="page_id" value="${cell.wizardPage.id}" />
             <osp:param name="org_theospi_portfolio_review_type" value="1" />
             <osp:param name="process_type_key" value="page_id" />
-            </osp:url>"><osp:message key="evaluate" bundle="${msgs}" /></a>
+            </osp:url>"><osp:message key="evaluate"/></a>
       </c:if>
 	</div>
 
 
-    <h3><osp:message key="view_cell" bundle="${msgs}" /></h3>
+    <h3><osp:message key="view_cell"/></h3>
     
 	<osp-h:glossary link="true" hover="true">
 		<table class="itemSummary">
@@ -63,14 +63,14 @@
 
 	<c:if test="${cell.status != 'READY'}">
 		<div class="validation">
-			<fmt:message key="status_warning" bundle="${msgs}">
+			<fmt:message key="status_warning">
             <fmt:param value="${cell.status}"/>
          </fmt:message>
 		</div>
 	</c:if>
    
    <c:if test="${not empty cell.scaffoldingCell.guidance}">
-      <h4><osp:message key="guidance_header" bundle="${msgs}" /></h4>
+      <h4><osp:message key="guidance_header"/></h4>
       <c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}" varStatus="loopStatus">
          <c:if test="${guidanceItem.type == 'instruction'}">
          <p class="longtext">
@@ -89,19 +89,19 @@
       <a href="<osp:url value="osp.guidance.helper/view">
          <osp:param name="session.page_id" value="${cell.wizardPage.id}"/>
          <osp:param name="${CURRENT_GUIDANCE_ID_KEY}" value="${cell.scaffoldingCell.guidance.id}"/>
-      </osp:url>" title="<osp:message key="guidance_link_title" bundle="${msgs}" />">
-         <osp:message key="guidance_link_text" bundle="${msgs}" /></a>
+      </osp:url>" title="<osp:message key="guidance_link_title"/>">
+         <osp:message key="guidance_link_text"/></a>
    </c:if>
 
-    <h4>Cell Items
+    <h4><fmt:message key="title_cellItems"/>
       <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
       <a name="linkNew" id="linkNew" href="<osp:url value="attachToCell.osp">
          <osp:param name="page_id" value="${cell.wizardPage.id}"/>
-         </osp:url>">Manage Cell Items...</a>
+         </osp:url>"><fmt:message key="action_manageItems"/></a>
       </c:if>
     </h4>
 
-	<p class="instruction">Items currently associated with cell:</p>
+	<p class="instruction"><fmt:message key="instructions_currently_associated"/></p>
    <c:set var="nodes" value="${cellBean.nodes}"/>
    <c:set var="allowedNodeType" value=""/>
    <%@ include file="cellContent.jspf" %>
@@ -116,12 +116,12 @@
                         <osp:param name="page_id" value="${cell.wizardPage.id}" />
                         <osp:param name="attachFormAction" value="${cellFormDef.id}" />
                         </osp:url>">
-                     Choose Forms</a> | 
+                     <fmt:message key="action_chooseForms"/></a> | 
          <a href="<osp:url value="cellFormPicker.osp">
                         <osp:param name="page_id" value="${cell.wizardPage.id}" />
                         <osp:param name="createFormAction" value="${cellFormDef.id}" />
                         </osp:url>">
-                     Create Form</a>
+                     <fmt:message key="action_createForm"/></a>
 </c:if>
 </h4>
       <c:set var="nodes" value="${cellForms}"/>
@@ -130,7 +130,7 @@
       </c:forEach>
    
    <c:if test="${cell.scaffoldingCell.reflectionDevice != null}">   
-      <h4><osp:message key="reflection_section_header" bundle="${msgs}" /></h4>
+      <h4><osp:message key="reflection_section_header"/></h4>
       
       <c:if test="${empty reflections}">
          <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
@@ -138,7 +138,7 @@
                <osp:param name="org_theospi_portfolio_review_type" value="0" />
                <osp:param name="process_type_key" value="page_id" />
                </osp:url>">
-                     <osp:message key="reflection_create" bundle="${msgs}" /></a>
+                     <osp:message key="reflection_create"/></a>
       </c:if>
       <c:if test="${not empty reflections}">
          <c:set var="canReflect" value="true"/>
@@ -160,7 +160,7 @@
                <osp:param name="current_review_id" value="${reflections[0].reviewContentNode.resource.id}" />
                <osp:param name="process_type_key" value="page_id" />
                </osp:url>">
-                     <osp:message key="reflection_edit" bundle="${msgs}" /></a>
+                     <osp:message key="reflection_edit"/></a>
          </c:if>
       </c:if>
    </c:if>
@@ -170,11 +170,11 @@
     	<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
     		<c:if test="${canReflect == 'true'}">
     		
-    			<input type="submit" name="submit" class="active" value="<osp:message key="submit" bundle="${msgs}" />"/>
+    			<input type="submit" name="submit" class="active" value="<osp:message key="button_submit"/>"/>
     		</c:if>
     	</c:if>
     	<input type="hidden" name="page_id" value="<c:out value="${cell.wizardPage.id}"/>"/>
-    	<input type="submit" name="matrix" value="<osp:message key="matrix" bundle="${msgs}" />"/>
+    	<input type="submit" name="matrix" value="<osp:message key="matrix"/>"/>
     </p>
 <hr/>
 
@@ -188,14 +188,14 @@
 
 <h4 style="cursor:pointer" onclick="javascript:showHideDiv('reviewDiv','/osp-jsf-resource')">
 <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgreviewDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
-<osp:message key="reviews_section_header" bundle="${msgs}" /></h4>
+<osp:message key="reviews_section_header"/></h4>
 <div id="reviewDiv">
    <c:set value="${reviews}" var="objectList" />
    <%@ include file="review_eval_table.jspf" %>
 </div>
 <h4 style="cursor:pointer" onclick="javascript:showHideDiv('evalDiv','/osp-jsf-resource')">
 <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgevalDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
-<osp:message key="evals_section_header" bundle="${msgs}" /></h4>
+<osp:message key="evals_section_header"/></h4>
 <div id="evalDiv">
    <c:set value="${evaluations}" var="objectList" />
    <%@ include file="review_eval_table.jspf" %>

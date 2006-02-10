@@ -1,6 +1,10 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ include file="matrixStyle.jspf" %>
+
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
+
 <SCRIPT LANGUAGE="JavaScript">
 
 function hrefViewCell(pageId) {
@@ -15,33 +19,36 @@ function hrefViewCell(pageId) {
 
     <div class="navIntraTool">
         <c:if test="${can.create}">
-            <a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>">Create/Edit</a>
+            <a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_createEdit"/></a>
             
             <c:if test="${empty matrixContents.scaffolding}">
-                <a href="<osp:url value="importScaffolding.osp"/>" title="Import..." >
-                   Import...
+                <a href="<osp:url value="importScaffolding.osp"/>" title="<fmt:message key="action_import_title"/>" >
+                   <fmt:message key="action_import"/>
                 </a>
             </c:if>	   
         </c:if> 
         <c:if test="${isMaintainer}">
             <c:if test="${not empty matrixContents.scaffolding && can.create}">
                 <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=matrixManager&scaffoldingId=<c:out value="${matrixContents.scaffolding.id.value}"/>/<c:out value="${matrixContents.scaffolding.title}" />.zip">
-                   Export...
+                   <fmt:message key="action_export"/>
                 </a>
             </c:if>
-            <a href="<osp:url value="osp.permissions.helper/editPermissions">
-               <osp:param name="message" value="Set permissions for ${tool.title} in worksite '${worksite.title}'"/>
+             <a href="<osp:url value="osp.permissions.helper/editPermissions">
+               <osp:param name="message"><fmt:message key="action_message_setPermission">
+	             <fmt:param><c:out value="${tool.title}"/></fmt:param>
+		         <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message>
+		       </osp:param>
                <osp:param name="name" value="scaffolding"/>
                <osp:param name="qualifier" value="${tool.id}"/>
                <osp:param name="returnView" value="matrixRedirect"/>
                </osp:url>"
-               title="Permissions..." >
-         	Permissions...
+               title="<fmt:message key="action_permissions_title"/>" >
+         	<fmt:message key="action_permissions"/>
              </a>
          </c:if>
     </div>
 
-    <h3>Matrix Manager</h3>
+    <h3><fmt:message key="title_matrixManager"/></h3>
     
     <c:if test="${can.create}">
       <c:if test="${not empty matrixContents.scaffolding.description}">
@@ -50,15 +57,15 @@ function hrefViewCell(pageId) {
          </p>
       </c:if>
       <p class="instruction">
-        	Click Create/Edit to set up Matrix
+        	<fmt:message key="instructions_create"/>
         </p>
     </c:if>
     <c:if test="${(empty matrixContents.columnLabels && !can.create) || !matrixContents.scaffolding.published}">
     	<p class="instruction">
         	<br/>
-        	Matrix has not been fully setup
+        	<fmt:message key="instructions_notFullySetup"/>
         	<br/>
-        	Contact Worksite administrator
+        	<fmt:message key="instructions_contactAdmin"/>
         </p>
     </c:if>
     
@@ -75,16 +82,20 @@ function hrefViewCell(pageId) {
                           </option>
                       </c:forEach>
                     </select>
-                    <INPUT type="submit" value="Go"/>
+                    <INPUT type="submit" value="<fmt:message key="button_go"/>"/>
                 </div>
             </form>
-            Viewing the <c:if test="${readOnlyMatrix}"><strong>READ ONLY</strong></c:if> matrix of <c:out value="${matrixOwner.displayName}" />
+            <c:set var="readOnly_label"><fmt:message key="matrix_readOnly"/></c:set> 
+	        <fmt:message key="matrix_viewing">
+	          <fmt:param><c:if test="${readOnlyMatrix}"><strong><c:out value="${readOnly_label}"/></strong></c:if></fmt:param>
+              <fmt:param><c:out value="${matrixOwner.displayName}" /></fmt:param>
+	        </fmt:message>
         </c:if>
     
     </c:if>
     <c:if test="${not empty matrixContents.columnLabels && matrixContents.scaffolding.published}">
         <p class="instruction">
-           Click on a cell to view/edit
+           <fmt:message key="instructions_clickOnaCellToEdit"/>
         </p>
     
         <c:set var="columnHeading" value="${matrixContents.columnLabels}" />

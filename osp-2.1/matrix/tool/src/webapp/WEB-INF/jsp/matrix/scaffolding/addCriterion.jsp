@@ -2,14 +2,15 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ include file="/js/colorPicker/picker.inc" %>
 
-<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 	
 	
-	<h3>Editing Scaffolding Row</h3>
+	<h3><fmt:message key="title_edit_ScaffRow"/></h3>
 	
 	<div class="instructions">
-		Scaffolding Row
-		(required fields are noted with an <span class="reqStarInline">*</span>)
+		<fmt:message key="instructions_scaffRow"/>
+		<fmt:message key="instructions_requiredFields"/>
 	</div>
 	
 <form method="POST">
@@ -18,21 +19,21 @@
 	<input type="hidden" name="dest" value="" />
 	<input type="hidden" name="validate" value="false" />
 	
-	<h4>Scaffolding Row</h4>
+	<h4><fmt:message key="title_scaffRow"/></h4>
 	
     <spring:bind path="criterion.description">
         <c:if test="${status.error}">
            <div class="validation"><c:out value="${status.errorMessage}"/></div>
         </c:if>
     	<p class="shorttext indnt2">
-            <span class="reqStar">*</span><label>Name</label>
+            <span class="reqStar">*</span><label><fmt:message key="label_rowName"/></label>
     		<input type="text" name="<c:out value="${status.expression}"/>" 
     				value="<c:out value="${status.displayValue}"/>"/>
     	</p>
     </spring:bind>
 	<p class="shorttext indnt2">
 		<spring:bind path="criterion.color">
-			<label>Background Color</label>   
+			<label><fmt:message key="label_bgColor"/></label>   
 		
 			<input type="Text" name="<c:out value="${status.expression}"/>" 
 					value="<c:out value="${status.displayValue}"/>"/>
@@ -47,7 +48,7 @@
 	</p>
               <p class="shorttext indnt2">
       <spring:bind path="criterion.textColor">
-         <label>Font Color</label>   
+         <label><fmt:message key="label_fontColor"/></label>   
       
          <input type="Text" name="<c:out value="${status.expression}"/>" 
                value="<c:out value="${status.displayValue}"/>"/>
@@ -62,8 +63,8 @@
    </p>
 	
 	<div class="act">
-		<input type="submit" name="updateAction" class="active" value="<osp:message key="update" bundle="${msgs}" />"/>
-		<input type="button" name="action" value="<osp:message key="cancel" bundle="${msgs}" />" onclick="javascript:doCancel()"/>
+		<input type="submit" name="updateAction" class="active" value="<osp:message key="button_update"/>"/>
+		<input type="button" name="action" value="<osp:message key="button_cancel"/>" onclick="javascript:doCancel()"/>
 	</div>
 
 </form>

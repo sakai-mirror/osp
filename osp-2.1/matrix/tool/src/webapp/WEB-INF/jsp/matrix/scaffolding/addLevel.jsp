@@ -2,34 +2,35 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ include file="/js/colorPicker/picker.inc" %>
 
-<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
-	<h3>Editing Scaffolding Column</h3>
+	<h3><fmt:message key="title_edit_ScaffColumn"/></h3>
 	
 	
 	<div class="instruction">
-		Scaffolding Column
-		(required fields are noted with an <span class="reqStarInline">*</span>)
+		<fmt:message key="instructions_scaffColumn"/>
+		<fmt:message key="instructions_requiredFields"/>
 	</div>
 	
 	<form method="POST">
 		<osp:form/> 
         
-		<h4>Scaffolding Column</h4>
+		<h4><fmt:message key="title_scaffColumn"/></h4>
 		
         <spring:bind path="level.description">
           <c:if test="${status.error}">
              <div class="validation"><c:out value="${status.errorMessage}"/></div>
           </c:if>
 		  <p class="shorttext indnt2">
-				<span class="reqStar">*</span><label>Name</label> 
+				<span class="reqStar">*</span><label><fmt:message key="label_columnName"/></label> 
 				<input type="text" name="<c:out value="${status.expression}"/>" 
 					   value="<c:out value="${status.displayValue}"/>"/>
 		    </p>
         </spring:bind>
         <p class="shorttext indnt2">
       <spring:bind path="level.color">
-         <label>Background Color</label>   
+         <label><fmt:message key="label_bgColor"/></label>   
       
          <input type="Text" name="<c:out value="${status.expression}"/>" 
                value="<c:out value="${status.displayValue}"/>"/>
@@ -44,7 +45,7 @@
    </p>
            <p class="shorttext indnt2">
       <spring:bind path="level.textColor">
-         <label>Font Color</label>   
+         <label><fmt:message key="label_fontColor"/></label>   
       
          <input type="Text" name="<c:out value="${status.expression}"/>" 
                value="<c:out value="${status.displayValue}"/>"/>
@@ -63,8 +64,8 @@
 				<input type="hidden" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.displayValue}"/>"/>
 				<span class="error_message"><c:out value="${status.errorMessage}"/></span>
 			</spring:bind>
-			<input type="submit" name="updateAction" class="active" value="<osp:message key="update" bundle="${msgs}" />"/>
-			<input type="button" name="action" value="<osp:message key="cancel" bundle="${msgs}" />" onclick="javascript:doCancel()"/>
+			<input type="submit" name="updateAction" class="active" value="<osp:message key="button_update" />"/>
+			<input type="button" name="action" value="<osp:message key="button_cancel" />" onclick="javascript:doCancel()"/>
 		</div>
 		
 	</form>

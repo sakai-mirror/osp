@@ -1,9 +1,10 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
-    <h3><osp:message key="submit_cell_confirmation" bundle="${msgs}" /></h3>
+    <h3><osp:message key="submit_cell_confirmation"/></h3>
     
    <osp-h:glossary link="true" hover="true">
       <table class="itemSummary">
@@ -12,10 +13,9 @@
       </table>
    </osp-h:glossary>
    
-      <p class="instruction">Submitting
-        your cell will lock it and you will not be able to edit your materials.
+      <p class="instruction"><fmt:message key="instructions_paragraph1"/>
       </p>
-      <p class="instruction">Are you sure you want to submit?
+      <p class="instruction"><fmt:message key="instructions_paragraph2"/>
       </p>
       <br />
 
@@ -23,7 +23,7 @@
 
    <p class="act">
       <input type="hidden" name="page_id" value="<c:out value="${page_id}" />">
-      <input type="submit" name="submit" value="<osp:message key="submit_cell" bundle="${msgs}" />" class="active">
-      <input type="submit" name="cancel" value="<osp:message key="cancel" bundle="${msgs}" />">
+      <input type="submit" name="submit" value="<osp:message key="button_submitCell"/>" class="active">
+      <input type="submit" name="cancel" value="<osp:message key="button_cancel"/>">
    </p>
 </form>
