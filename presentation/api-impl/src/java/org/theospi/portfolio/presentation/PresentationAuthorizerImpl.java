@@ -29,6 +29,7 @@ import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
+import org.theospi.portfolio.presentation.model.Style;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -88,6 +89,16 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
          return new Boolean(facade.isAuthorized(agent,function,toolId));
       } else if (function.equals(PresentationFunctionConstants.DELETE_LAYOUT)) {
          return isLayoutAuth(facade, id, agent, function);
+      } else if (function.equals(PresentationFunctionConstants.CREATE_STYLE)) {
+         return new Boolean(facade.isAuthorized(agent,function,id));
+      } else if (function.equals(PresentationFunctionConstants.EDIT_STYLE)) {
+         return isStyleAuth(facade, id, agent, function);
+      } else if (function.equals(PresentationFunctionConstants.PUBLISH_STYLE)) {
+         Style style = getPresentationManager().getStyle(id);
+         Id toolId = getIdManager().getId(style.getToolId());
+         return new Boolean(facade.isAuthorized(agent,function,toolId));
+      } else if (function.equals(PresentationFunctionConstants.DELETE_STYLE)) {
+         return isStyleAuth(facade, id, agent, function);
       } else {
          return null;
       }
@@ -128,6 +139,16 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
       return new Boolean(facade.isAuthorized(function,toolId));
    }
 
+   protected Boolean isStyleAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function){
+      Style style = getPresentationManager().getStyle(qualifier);
+      //owner can do anything
+      if (style.getOwner().equals(agent)){
+         return new Boolean(true);
+      }
+      Id toolId = getIdManager().getId(style.getToolId());
+      return new Boolean(facade.isAuthorized(function,toolId));
+   }
+   
    protected Boolean isPresentationCommentAuth(AuthorizationFacade facade, Agent agent, Id id) {
       Presentation pres = getPresentationManager().getLightweightPresentation(id);
 

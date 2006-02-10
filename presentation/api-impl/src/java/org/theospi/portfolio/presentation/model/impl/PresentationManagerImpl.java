@@ -36,6 +36,7 @@ import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.entity.EntityProducer;
+import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.User;
@@ -148,16 +149,17 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    /**
     * remove all the locks associated with this template
     */
-   protected void clearLocks(PresentationTemplate template){
-      getLockManager().removeAllLocks(template.getId().getValue());
+   protected void clearLocks(Id id) {
+      getLockManager().removeAllLocks(id.getValue());
    }
-
+   
+   
    /**
     * locks all the files associated with this template.
     * @param template
     */
    protected void lockTemplateFiles(PresentationTemplate template){
-      clearLocks(template);
+      clearLocks(template.getId());
       for (Iterator i = template.getFiles().iterator();i.hasNext();){
          TemplateFileRef fileRef = (TemplateFileRef) i.next();
          //getLockManager().addLock(fileRef.getFile().getId(), template.getId(), "saving a presentation template");
@@ -341,7 +343,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public void deletePresentationTemplate(final Id id) {
       PresentationTemplate template = getPresentationTemplate(id);
       getAuthzManager().checkPermission(PresentationFunctionConstants.DELETE_TEMPLATE, template.getId());
-      clearLocks(template);
+      clearLocks(template.getId());
 
       // first delete all presentations that use this template
       // this will delete all authorization as well
@@ -1961,6 +1963,66 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       returned.addAll(findGlobalLayouts());
       return returned;
    }
+   
+   public Style storeStyle(Style style) {
+      return storeStyle(style, true);
+   }
+   
+   public Style storeStyle (Style style, boolean checkAuthz) {
+      style.setModified(new Date(System.currentTimeMillis()));
+
+      boolean newStyle = (style.getId() == null);
+
+      if (newStyle) {
+         style.setCreated(new Date(System.currentTimeMillis()));
+
+         if (checkAuthz) {
+            getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_STYLE,
+               getIdManager().getId(style.getToolId()));
+         }
+      } else {
+         if (checkAuthz) {
+            getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_STYLE,
+                  style.getId());
+         }
+      }
+      getHibernateTemplate().saveOrUpdateCopy(style);
+      lockStyleFiles(style);
+
+      return style;
+   }
+   
+   public Style getStyle(Id styleId) {
+      return (Style) getHibernateTemplate().load(Style.class, styleId);
+   }
+   
+   public Collection findPublishedStyles(String currentWorksiteId) {
+      String query = "from Style s where s.globalState = ? or (s.siteId = ? and (s.owner = ? or s.siteState = ? )) ";
+      Object[] params = new Object[]{new Integer(Style.STATE_PUBLISHED),
+                                     currentWorksiteId,
+                                     getAuthnManager().getAgent().getId().getValue(),
+                                     new Integer(Style.STATE_PUBLISHED)};
+      return getHibernateTemplate().find(query, params);
+   }
+   
+   public Collection findPublishedStyles() {
+      // only for the appropriate worksites
+      String query = "from Style s where s.owner = ? or s.globalState = ? or (s.siteState = ?  s.and siteId in (";
+
+      List sites = getWorksiteManager().getUserSites();
+      for (Iterator i=sites.iterator();i.hasNext();) {
+         Site site = (Site)i.next();
+         query += "'" + site.getId() + "'";
+         query += ",";
+      }
+
+      query += "''))";
+
+      Object[] params = new Object[]{getAuthnManager().getAgent().getId().getValue(),
+                                     new Integer(Style.STATE_PUBLISHED),
+                                     new Integer(Style.STATE_PUBLISHED)};
+      return getHibernateTemplate().find(query, params);
+   }
 
    public Collection findPublishedLayouts(String siteId) {
       return getHibernateTemplate().find(
@@ -1968,6 +2030,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             new Object[]{new Boolean(true), getAuthnManager().getAgent().getId().getValue(), siteId});
    }
 
+   public Collection findStylesByOwner(Agent owner, String siteId) {
+      return getHibernateTemplate().find("from Style where owner_id=? and site_id=? Order by name",
+            new Object[]{owner.getId().getValue(), siteId});
+   }
+   
    public Collection findLayoutsByOwner(Agent owner, String siteId) {
       return getHibernateTemplate().find("from PresentationLayout where owner_id=? and site_id=? Order by name",
             new Object[]{owner.getId().getValue(), siteId});
@@ -2008,7 +2075,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
    
    protected void lockLayoutFiles(PresentationLayout layout){
-      clearLocks(layout);
+      clearLocks(layout.getId());
       getLockManager().lockObject(layout.getXhtmlFileId().getValue(), 
            layout.getId().getValue(), "saving a presentation layout", true);
       
@@ -2018,8 +2085,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
    }
    
-   protected void clearLocks(PresentationLayout layout){
-      getLockManager().removeAllLocks(layout.getId().getValue());
+   protected void lockStyleFiles(Style style){
+      clearLocks(style.getId());
+      getLockManager().lockObject(style.getStyleFile().getValue(), 
+            style.getId().getValue(), "saving a style", true);
+      
    }
    
    public PresentationLayout getPresentationLayout(Id id) {
@@ -2035,7 +2105,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public void deletePresentationLayout(final Id id) {
       PresentationLayout layout = getPresentationLayout(id);
       getAuthzManager().checkPermission(PresentationFunctionConstants.DELETE_LAYOUT, layout.getId());
-      clearLocks(layout);
+      clearLocks(layout.getId());
       
       //TODO handle things that are using this layout
       // first delete all presentations that use this template

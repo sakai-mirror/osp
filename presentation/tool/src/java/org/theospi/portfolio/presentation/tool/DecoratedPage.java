@@ -20,15 +20,22 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.tool;
 
+import org.theospi.portfolio.presentation.StyleHelper;
 import org.theospi.portfolio.presentation.model.PresentationPage;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
+import org.theospi.portfolio.presentation.model.Style;
 import org.theospi.portfolio.shared.model.Node;
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,6 +65,18 @@ public class DecoratedPage implements Comparable {
       else if (getParent().getLayouts().size() > 0) {
          setSelectedLayout(getParent().getFirstLayout());
       }
+   }
+   
+   public String getStyleName() {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      if (session.getAttribute(StyleHelper.CURRENT_STYLE) != null) {
+         Style style = (Style)session.getAttribute(StyleHelper.CURRENT_STYLE);
+         base.setStyle(style);
+         session.removeAttribute(StyleHelper.CURRENT_STYLE);
+      }
+      if (base.getStyle() != null)
+         return base.getStyle().getName();
+      return "";
    }
 
    public PresentationPage getBase() {
@@ -113,6 +132,22 @@ public class DecoratedPage implements Comparable {
       getParent().deletePage(this);
       getParent().reorderPages();
       return "main";
+   }
+   
+   public String processActionSelectStyle() {      
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      
+      session.setAttribute(StyleHelper.STYLE_SELECTABLE, "true");
+
+      
+      try {
+         context.redirect("osp.style.helper/listStyle");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+      return null;
    }
 
    public boolean isSelected() {

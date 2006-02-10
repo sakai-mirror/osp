@@ -54,7 +54,7 @@
             <value>addTemplate2</value>
             <value>addTemplate3</value>
             <value>addTemplate4</value>
-            <value>pickOutlineXslRedirect</value>
+            <value>filePickerRedirect</value>
          </list>
       </property>
       <property name="customTypedEditors">
@@ -710,7 +710,7 @@
       <property name="screenMappings">
          <props>
             <prop key="success">listTemplateRedirect</prop>
-            <prop key="pickImport">pickImportRedirect</prop>
+            <prop key="pickImport">filePickerRedirect</prop>
          </props>
       </property>
       <property name="customTypedEditors">
@@ -777,7 +777,7 @@
       <property name="screenMappings">
          <props>
             <prop key="success">listLayoutRedirect</prop>
-            <prop key="pickLayoutFiles">pickLayoutFilesRedirect</prop>
+            <prop key="pickLayoutFiles">filePickerRedirect</prop>
          </props>
       </property>
       <property name="customTypedEditors">
@@ -847,6 +847,92 @@
    <bean id="org.theospi.jsf.intf.XmlTagFactory.freeFormPresentation"
       class="org.theospi.portfolio.presentation.render.PresentationTagFactory"
       singleton="true" init-method="init">
+   </bean>
+   
+   <bean id="listStyleController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.presentation.control.ListStyleController">
+            <property name="presentationManager"><ref bean="presentationManager"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="agentManager"><ref bean="agentManager"/></property>
+            <property name="homeFactory"><ref bean="homeFactory" /></property>
+            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="worksiteManager">
+               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+            </property>
+            <property name="listScrollIndexer">
+               <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
+            </property>
+         </bean>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">listStyle</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>styles</value></property>
+      <property name="commandClass"><value>java.util.ArrayList</value></property>
+   </bean>
+   
+   <bean id="addStyleController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.presentation.control.AddStyleController">
+            <property name="presentationManager"><ref bean="presentationManager" /></property>
+            <property name="authManager"><ref bean="authManager" /></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="entityManager">
+               <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+            </property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+            </property>
+            <property name="contentHosting">
+               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+            </property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">listStyleRedirect</prop>
+            <prop key="pickStyleFiles">filePickerRedirect</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="validator"><ref bean="presentationValidator"/></property>
+      <property name="commandName"><value>style</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.presentation.model.Style</value></property>
+      <property name="formView"><value>addStyle</value></property>
+   </bean>
+   
+   <bean id="selectStyleController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.presentation.control.SelectStyleController">
+            <property name="presentationManager"><ref bean="presentationManager" /></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">helperDone</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>style</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.presentation.model.Style</value></property>
    </bean>
 
 </beans>

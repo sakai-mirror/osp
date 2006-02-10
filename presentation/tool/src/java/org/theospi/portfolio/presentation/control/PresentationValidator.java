@@ -26,6 +26,7 @@ import org.theospi.portfolio.presentation.model.PresentationItem;
 import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
+import org.theospi.portfolio.presentation.model.Style;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
 import org.sakaiproject.metaobj.utils.TypedMap;
 import org.theospi.utils.mvc.impl.ValidatorBase;
@@ -52,6 +53,7 @@ public class PresentationValidator extends ValidatorBase {
       if (PresentationItem.class.isAssignableFrom(clazz)) return true;
       if (TemplateFileRef.class.isAssignableFrom(clazz)) return true;
       if (PresentationLayout.class.isAssignableFrom(clazz)) return true;
+      if (Style.class.isAssignableFrom(clazz)) return true;
       return false;
    }
 
@@ -70,6 +72,7 @@ public class PresentationValidator extends ValidatorBase {
       if (obj instanceof Presentation) validatePresentation(obj, errors);
       if (obj instanceof TemplateFileRef) validateTemplateFileRef((TemplateFileRef)obj, errors);
       if (obj instanceof PresentationLayout) validateLayout((PresentationLayout)obj, errors);
+      if (obj instanceof Style) validateStyle((Style)obj, errors);
    }
 
    protected void validateTemplateFileRef(TemplateFileRef templateFileRef, Errors errors) {
@@ -221,6 +224,19 @@ public class PresentationValidator extends ValidatorBase {
                layout.getXhtmlFileId().getValue() == null || 
                layout.getXhtmlFileId().getValue().length() == 0) {
             errors.rejectValue("xhtmlFileId", "error.required", "XHTML file is required");
+         }
+      }
+   }
+   
+   protected void validateStyle(Style style, Errors errors) {
+      if (style.isValidate()) {
+         if (style.getName() == null || style.getName().length() == 0) {
+            errors.rejectValue("name", "error.required", "name is required");
+         }
+         if (style.getStyleFile() == null || 
+               style.getStyleFile().getValue() == null || 
+               style.getStyleFile().getValue().length() == 0) {
+            errors.rejectValue("styleFile", "error.required", "Style file is required");
          }
       }
    }
