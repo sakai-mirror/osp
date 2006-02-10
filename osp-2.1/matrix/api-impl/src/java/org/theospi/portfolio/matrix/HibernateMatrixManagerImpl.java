@@ -571,26 +571,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return this.getHibernateTemplate().find("from Attachment attachment where attachment.cell=?", cellId.getValue());
    }
 
-   public List getCellArtifactsByCriterion(Id cellId, Id criterionId,
-                                           String type, String primaryMimeType, String subMimeType) {
-      Object[] params = new Object[]{cellId.getValue(),
-                                     criterionId.getValue(), type, primaryMimeType, subMimeType};
-      return this.getHibernateTemplate().find("from AttachmentCriterion ac, NodeMetadata webdav " +
-            "where ac.attachment.artifactId = webdav.id " +
-            "and ac.attachment.cell.id=? " +
-            "and ac.criterion.id=? " +
-            "and webdav.typeId=? " +
-            "and webdav.primaryMimeType like ? " +
-            "and webdav.subMimeType like ? ", params);
-   }
-   
    public Attachment getAttachment(Id attachmentId) {
       return (Attachment) this.getHibernateTemplate().load(Attachment.class, attachmentId);
-   }
-
-   public List getArtifactAssociationCriteria(Id cellId, Id nodeId) {
-      Object[] params = new Object[]{cellId.getValue(), nodeId.getValue()};
-      return this.getHibernateTemplate().find("select ac.criterion from AttachmentCriterion ac where ac.attachment.cell=? and ac.attachment.artifactId=?", params);
    }
    
    public Set getPageForms(WizardPage page) {

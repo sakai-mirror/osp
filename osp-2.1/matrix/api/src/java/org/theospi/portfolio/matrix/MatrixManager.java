@@ -97,8 +97,6 @@ public interface MatrixManager extends WorkflowEnabledManager {
    ScaffoldingCell getScaffoldingCell(Id id);
    String getScaffoldingCellsStatus(Id id);
 
-   List getArtifactAssociationCriteria(Id cellId, Id nodeId);
-
    Set getPageContents(WizardPage page);
    Set getPageForms(WizardPage page);
    List getPageArtifacts(WizardPage page);
