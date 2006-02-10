@@ -89,10 +89,6 @@
         <many-to-one name="wizardPage" column="page_id" not-null="true"
             class="WizardPage" cascade="none" />
         		
-        <set name="attachmentCriteria" lazy="true" inverse="true" cascade="all">
-            <key column="attachment_id" />
-            <one-to-many class="AttachmentCriterion" />
-        </set>
     </class>
     
    <class name="WizardPageForm" table="osp_wiz_page_form" lazy="true">
@@ -106,19 +102,6 @@
         <many-to-one name="wizardPage" column="page_id" not-null="true"
             class="WizardPage" cascade="none" />
         <property name="formType" length="36" type="string" />
-
-    </class>
-
-    <class name="AttachmentCriterion" table="osp_cell_attachment_criterion" lazy="true" >
-       <cache usage="nonstrict-read-write"/>
-        <id name="id" length="36"
-            type="org.sakaiproject.metaobj.shared.IdType" column="id">
-            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
-        </id>
-        <many-to-one name="criterion" column="criterion_id"
-            class="Criterion" cascade="none" />
-        <many-to-one name="attachment" column="attachment_id" not-null="true"
-            class="Attachment" cascade="none" />
 
     </class>
 
