@@ -85,6 +85,21 @@
 
    </managed-bean>
 
+   <managed-bean>
+      <description>ListTool</description>
+      <managed-bean-name>ListTool</managed-bean-name>
+      <managed-bean-class>org.theospi.portfolio.list.tool.ListTool</managed-bean-class>
+      <managed-bean-scope>request</managed-bean-scope>
+
+      <!-- a service dependency property - for the ToolService -->
+      <managed-property>
+         <description>Service Dependency: ToolServiceName</description>
+         <property-name>listService</property-name>
+         <value>#{Components["org.theospi.portfolio.list.intf.ListService"]}</value>
+      </managed-property>
+
+   </managed-bean>
+
    <navigation-rule>
      <from-view-id>/audience/tool.jsp</from-view-id>
       <navigation-case>
@@ -115,6 +130,23 @@
       <navigation-case>
          <from-outcome>tool</from-outcome>
          <to-view-id>/guidance/tool.jsp</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/list/main.jsp</from-view-id>
+      <navigation-case>
+         <from-outcome>options</from-outcome>
+         <to-view-id>/list/options.jsp</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
+   <navigation-rule>
+     <from-view-id>/list/options.jsp</from-view-id>
+      <navigation-case>
+         <from-outcome>main</from-outcome>
+         <to-view-id>/list/main.jsp</to-view-id>
          <redirect/>
       </navigation-case>
    </navigation-rule>
