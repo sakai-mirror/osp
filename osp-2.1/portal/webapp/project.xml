@@ -25,11 +25,17 @@
 			<type>plugin</type>
 		</dependency>
 
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-component</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-component</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>osp</groupId>
+       <artifactId>osp-portal-api</artifactId>
+       <version>${osp.version}</version>
+     </dependency>
 
     <!--dependency>
       <groupId>sakaiproject</groupId>
