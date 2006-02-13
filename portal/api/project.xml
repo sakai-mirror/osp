@@ -32,6 +32,12 @@
 			<type>plugin</type>
 		</dependency>
 
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-legacy-service</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
      <!--
     <dependency>
       <groupId>sakaiproject</groupId>
