@@ -25,6 +25,7 @@ import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.ActiveTool;
+import org.sakaiproject.api.kernel.tool.ToolException;
 import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
 import org.sakaiproject.util.web.Web;
 
@@ -207,9 +208,14 @@ public class HelperAwareJsfTool extends JsfTool {
 */
     String context = req.getContextPath() + req.getServletPath() + Web.makePath(parts, 1, 2);
     String toolPath = Web.makePath(parts, 2, parts.length);
-    helperTool.help(req, res, context, toolPath);
+     try {
+        helperTool.help(req, res, context, toolPath);
+     }
+     catch (ToolException e) {
+        throw new RuntimeException(e);
+     }
 
-    return true; // was handled as helper call
+     return true; // was handled as helper call
   }
 
   protected String computeDefaultTarget(boolean lastVisited)
