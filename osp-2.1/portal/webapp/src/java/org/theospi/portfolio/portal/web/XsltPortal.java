@@ -26,6 +26,7 @@ import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.util.java.ResourceLoader;
+import org.sakaiproject.util.web.Web;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.site.Site;
@@ -49,10 +50,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.dom.DOMSource;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.InputStream;
 import java.util.*;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -123,6 +128,13 @@ public class XsltPortal extends CharonPortal {
 
    protected void outputDocument(HttpServletRequest req, HttpServletResponse res,
                                  Session session, Document doc) throws IOException {
+
+      res.setContentType("text/html; charset=UTF-8");
+      res.addDateHeader("Expires", System.currentTimeMillis() - (1000L * 60L * 60L * 24L * 365L));
+      res.addDateHeader("Last-Modified", System.currentTimeMillis());
+      res.addHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0");
+      res.addHeader("Pragma", "no-cache");
+
       PrintWriter out = res.getWriter();
 
       try {
@@ -142,9 +154,30 @@ public class XsltPortal extends CharonPortal {
    protected void doSite(HttpServletRequest req, HttpServletResponse res, Session session,
                          String siteId, String pageId, String toolContextPath) throws IOException {
       siteId = checkVisitSite(siteId, session, req, res);
+
       if (siteId == null) {
          return;
       }
+
+      Site site = getPortalManager().getSite(siteId);
+
+      if (pageId == null)
+      {
+         List pages = site.getOrderedPages();
+         if (!pages.isEmpty())
+         {
+            SitePage page = (SitePage) site.getPages().get(0);
+            pageId = page.getId();
+         }
+      }
+
+      if (pageId == null)
+      {
+         doError(req, res, session, ERROR_SITE);
+         return;
+      }
+
+
       Document doc = createPortalDocument(null, siteId, null, pageId);
       outputDocument(req, res, session, doc);
    }
@@ -188,18 +221,26 @@ public class XsltPortal extends CharonPortal {
 
       Map siteTypesMap = getPortalManager().getSitesByType();
       Site site = null;
+      SitePage page = null;
 
       if (siteId != null) {
          site = getPortalManager().getSite(siteId);
+      }
+
+      if (pageId != null) {
+         page = getPortalManager().getSitePage(pageId);
       }
 
       if (siteTypeKey == null) {
          siteTypeKey = site.getType();
       }
 
+      root.appendChild(createTitleXml(doc, site, page));
+
       SiteType siteType = findType(siteTypesMap, siteTypeKey);
       List skins = getSkins(siteType, site);
       root.appendChild(createSkinsXml(doc, skins));
+      root.appendChild(createConfixXml(doc, skins));
       root.appendChild(createSiteTypesXml(doc, siteTypesMap, siteTypeKey, siteId));
 
       if (siteId != null) {
@@ -207,13 +248,108 @@ public class XsltPortal extends CharonPortal {
          root.appendChild(createPageCategoriesXml(doc, pageCateogries, siteId, toolCategoryKey, pageId));
       }
 
-/*
-
-   public List getToolsForPage(String pageId);
-
-*/
-
       return doc;
+   }
+
+   protected Element createTitleXml(Document doc, Site site, SitePage page) {
+      Element titleElement = doc.createElement("pageTitle");
+      String title = ServerConfigurationService.getString("ui.service");
+
+      if (site != null) {
+         title += ":" + site.getTitle();
+      }
+
+      if (page != null) {
+         title += ":" + page.getTitle();
+      }
+      safeAppendTextNode(doc, titleElement, title, true);
+
+      return titleElement;
+   }
+
+   protected Element createConfixXml(Document doc, List skins) {
+      Element config = doc.createElement("config");
+
+      String skinRepo = ServerConfigurationService.getString("skin.repo");
+      if (skins.size() > 0) {
+         skinRepo += "/" + skins.get(skins.size() - 1);
+      }
+      else {
+         skinRepo += "/" + ServerConfigurationService.getString("skin.default");
+      }
+
+      Element logo = doc.createElement("logo");
+      safeAppendTextNode(doc, logo, skinRepo + "/images/logo_inst.gif", true);
+      Element banner = doc.createElement("banner");
+      safeAppendTextNode(doc, banner, skinRepo + "/images/banner_inst.gif", true);
+      Element logout = doc.createElement("logout");
+      safeAppendTextNode(doc, logout, getContext() + "/logout", true);
+
+      String copyright = ServerConfigurationService.getString("bottom.copyrighttext");
+      String service = ServerConfigurationService.getString("ui.service", "Sakai");
+      String serviceVersion = ServerConfigurationService.getString("version.service", "?");
+      String sakaiVersion = ServerConfigurationService.getString("version.sakai", "?");
+      String server = ServerConfigurationService.getServerId();
+      String[] bottomNav = ServerConfigurationService.getStrings("bottomnav");
+      String[] poweredByUrl = ServerConfigurationService.getStrings("powered.url");
+      String[] poweredByImage = ServerConfigurationService.getStrings("powered.img");
+      String[] poweredByAltText = ServerConfigurationService.getStrings("powered.alt");
+
+      config.appendChild(logo);
+      config.appendChild(banner);
+      config.appendChild(logout);
+
+      appendTextElementNode(doc, "copyright", copyright, config);
+      appendTextElementNode(doc, "service", service, config);
+      appendTextElementNode(doc, "serviceVersion", serviceVersion, config);
+      appendTextElementNode(doc, "sakaiVersion", sakaiVersion, config);
+      appendTextElementNode(doc, "server", server, config);
+      appendTextElementNodes(doc, bottomNav, config, "bottomNavs", "bottomNav");
+
+      if ((poweredByUrl != null) && (poweredByImage != null) && (poweredByAltText != null)
+            && (poweredByUrl.length == poweredByImage.length) && (poweredByUrl.length == poweredByAltText.length)) {
+         for (int i = 0; i < poweredByUrl.length; i++) {
+            config.appendChild(createPoweredByXml(doc, poweredByAltText[i], poweredByImage[i], poweredByUrl[i]));
+         }
+      }
+      else {
+         config.appendChild(createPoweredByXml(doc, "Powered by Sakai",
+            "/library/image/sakai_powered.gif", "http://sakaiproject.org"));
+      }
+
+
+      appendTextElementNodes(doc, poweredByUrl, config, "poweredByUrls", "poweredByUrl");
+      appendTextElementNodes(doc, poweredByImage, config, "poweredByImages", "poweredByImage");
+      appendTextElementNodes(doc, poweredByAltText, config, "poweredByAltTexts", "poweredByAltText");
+
+      return config;
+   }
+
+   protected Element createPoweredByXml(Document doc, String text, String image, String url) {
+      Element poweredBy = doc.createElement("poweredBy");
+
+      appendTextElementNode(doc, "text", text, poweredBy);
+      appendTextElementNode(doc, "image", image, poweredBy);
+      appendTextElementNode(doc, "url", url, poweredBy);
+
+      return poweredBy;
+   }
+
+   protected void appendTextElementNodes(Document doc, String[] strings, Element parent,
+                                         String topNodeName, String nodeName) {
+      Element topNode = doc.createElement(topNodeName);
+
+      for (int i=0;i<strings.length;i++) {
+         appendTextElementNode(doc, nodeName, strings[i], topNode);
+      }
+
+      parent.appendChild(topNode);
+   }
+
+   protected void appendTextElementNode(Document doc, String name, String text, Element parent) {
+      Element element = doc.createElement(name);
+      safeAppendTextNode(doc, element, text, true);
+      parent.appendChild(element);
    }
 
    protected Element createPageCategoriesXml(Document doc, Map pages, String siteId, String toolCategoryKey, String pageId) {
@@ -276,7 +412,7 @@ public class XsltPortal extends CharonPortal {
       for (int i=0;i<2;i++) {
          Element column = doc.createElement("column");
          column.setAttribute("index", new Integer(i).toString());
-         column.appendChild(createColumnToolsXml(doc, page.getTools(i), pageId));
+         column.appendChild(createColumnToolsXml(doc, page.getTools(i), page));
          columns.appendChild(column);
       }
 
@@ -287,19 +423,29 @@ public class XsltPortal extends CharonPortal {
       return pageElement;
    }
 
-   protected Element createColumnToolsXml(Document doc, List tools, String pageId) {
+   protected Element createColumnToolsXml(Document doc, List tools, SitePage page) {
       Element toolsElement = doc.createElement("tools");
 
       for (Iterator i=tools.iterator();i.hasNext();) {
          Placement placement = (Placement) i.next();
-         toolsElement.appendChild(createToolXml(doc, placement, pageId));
+         toolsElement.appendChild(createToolXml(doc, placement, page));
       }
 
       return toolsElement;
    }
 
-   protected Element createToolXml(Document doc, Placement placement, String pageId) {
+   protected Element createToolXml(Document doc, Placement placement, SitePage page) {
       Element toolElement = doc.createElement("tool");
+
+      Element title = doc.createElement("title");
+      safeAppendTextNode(doc, title, page.getTitle(), true);
+
+      Element escapedId = doc.createElement("escapedId");
+      String id = Web.escapeJavascript("i" + placement.getId());
+
+      id = id.substring(1);
+
+      safeAppendTextNode(doc, escapedId, id, true);
 
       //portal/tool/ad222467-e186-4cca-80e9-d12a9d6db392?panel=Main
       Element toolUrl = doc.createElement("url");
@@ -309,6 +455,8 @@ public class XsltPortal extends CharonPortal {
       Element toolTitleUrl = doc.createElement("titleUrl");
       safeAppendTextNode(doc, toolTitleUrl, getContext() + "/title/" + placement.getId(), true);
 
+      toolElement.appendChild(title);
+      toolElement.appendChild(escapedId);
       toolElement.appendChild(toolUrl);
       toolElement.appendChild(toolTitleUrl);
 
@@ -493,10 +641,22 @@ public class XsltPortal extends CharonPortal {
       setPortalManager((PortalManager) ComponentManager.get(PortalManager.class));
       try {
          setDocumentBuilder(DocumentBuilderFactory.newInstance().newDocumentBuilder());
-         // todo get real template as transformer
-         //setTemplate(TransformerFactory.newInstance().newTransformer());
+         String transformPath = config.getInitParameter("transform");
+         InputStream stream = config.getServletContext().getResourceAsStream(
+               transformPath);
+         URL url = config.getServletContext().getResource(transformPath);
+         String urlPath = url.toString();
+         String systemId = urlPath.substring(0, urlPath.lastIndexOf('/') + 1);
+         setTemplates(TransformerFactory.newInstance().newTemplates(
+               new StreamSource(stream, systemId)));
       }
       catch (ParserConfigurationException e) {
+         throw new ServletException(e);
+      }
+      catch (TransformerConfigurationException e) {
+         throw new ServletException(e);
+      }
+      catch (MalformedURLException e) {
          throw new ServletException(e);
       }
    }
@@ -523,7 +683,7 @@ public class XsltPortal extends CharonPortal {
 
    public Transformer getTransformer() {
       try {
-         return TransformerFactory.newInstance().newTransformer();
+         return getTemplates().newTransformer();
       }
       catch (TransformerConfigurationException e) {
          throw new RuntimeException(e);
