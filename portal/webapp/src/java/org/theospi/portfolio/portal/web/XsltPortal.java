@@ -25,6 +25,7 @@ import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.tool.Placement;
+import org.sakaiproject.api.kernel.tool.ToolException;
 import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.util.web.Web;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
@@ -113,7 +114,7 @@ public class XsltPortal extends CharonPortal {
    }
 
    protected void doCategory(HttpServletRequest req, HttpServletResponse res, Session session,
-                             String siteId, String categoryKey, String toolId) throws IOException {
+                             String siteId, String categoryKey, String toolId) throws IOException, ToolException {
       siteId = checkVisitSite(siteId, session, req, res);
       if (siteId == null) {
          return;
@@ -146,13 +147,8 @@ public class XsltPortal extends CharonPortal {
       }
    }
 
-   protected void doGallery(HttpServletRequest req, HttpServletResponse res, Session session,
-                            String siteId, String pageId, String toolContextPath) throws IOException {
-      super.doGallery(req, res, session, siteId, pageId, toolContextPath);
-   }
-
    protected void doSite(HttpServletRequest req, HttpServletResponse res, Session session,
-                         String siteId, String pageId, String toolContextPath) throws IOException {
+                         String siteId, String pageId, String toolContextPath) throws IOException, ToolException {
       siteId = checkVisitSite(siteId, session, req, res);
 
       if (siteId == null) {
@@ -183,7 +179,7 @@ public class XsltPortal extends CharonPortal {
    }
 
    protected void doWorksite(HttpServletRequest req, HttpServletResponse res, Session session,
-                             String siteId, String pageId, String toolContextPath) throws IOException {
+                             String siteId, String pageId, String toolContextPath) throws IOException, ToolException {
       siteId = checkVisitSite(siteId, session, req, res);
       if (siteId == null) {
          return;
@@ -193,7 +189,7 @@ public class XsltPortal extends CharonPortal {
    }
 
    protected void doPage(HttpServletRequest req, HttpServletResponse res, Session session,
-                         String pageId, String toolContextPath) throws IOException {
+                         String pageId, String toolContextPath) throws IOException, ToolException {
       SitePage page = getPortalManager().getSitePage(pageId);
       if (page == null) {
          doError(req, res, session, ERROR_WORKSITE);
@@ -594,7 +590,7 @@ public class XsltPortal extends CharonPortal {
    }
 
    protected String checkVisitSite(String siteId, Session session,
-                                    HttpServletRequest req, HttpServletResponse res) throws IOException {
+                                    HttpServletRequest req, HttpServletResponse res) throws IOException, ToolException {
       // default site if not set
       if (siteId == null)
       {
