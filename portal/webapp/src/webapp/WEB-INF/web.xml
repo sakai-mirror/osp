@@ -37,6 +37,10 @@
         <servlet-name>osp.portal.xslt</servlet-name>
         <servlet-class>org.theospi.portfolio.portal.web.XsltPortal</servlet-class>
         <load-on-startup>1</load-on-startup>
+       <init-param>
+          <param-name>transform</param-name>
+          <param-value>/WEB-INF/transform/osp-portal.xsl</param-value>
+       </init-param>
     </servlet>
 
     <servlet-mapping>

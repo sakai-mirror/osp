@@ -37,14 +37,14 @@
        <version>${osp.version}</version>
      </dependency>
 
-    <!--dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>portal</artifactId>
-      <version>${sakai.version}</version>
-       <properties>
-          <war.bundle>true</war.bundle>
-       </properties>
-    </dependency-->
+      <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-portals</artifactId>
+         <version>${sakai.version}</version>
+         <properties>
+            <war.bundle>true</war.bundle>
+         </properties>
+      </dependency>
 
      <dependency>
         <groupId>sakaiproject</groupId>
