@@ -658,6 +658,16 @@ public class WizardTool extends BuilderTool {
       return users;
    }
    
+   public boolean getCanCreate() {
+      return getAuthzManager().isAuthorized(WizardFunctionConstants.CREATE_WIZARD, 
+            getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
+   }
+   
+   public boolean getCanView() {
+      return getAuthzManager().isAuthorized(WizardFunctionConstants.VIEW_WIZARD, 
+            getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
+   }
+   
    public boolean getCanReview() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
             current.getBase().getId());

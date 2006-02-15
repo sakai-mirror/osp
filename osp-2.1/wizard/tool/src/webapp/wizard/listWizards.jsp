@@ -16,7 +16,7 @@
 <sakai:view>
 <h:form>
    <sakai:tool_bar>
-      <sakai:tool_bar_item
+      <sakai:tool_bar_item rendered="#{wizard.canCreate && wizard.canView}"
       action="#{wizard.processActionNew}"
       value="#{msgs.new_wizard}" />
 
@@ -24,7 +24,7 @@
           action="#{wizard.processPermissions}"
           value="#{msgs.permissions_link}" />
           
-      <sakai:tool_bar_item 
+      <sakai:tool_bar_item rendered="#{wizard.canCreate && wizard.canView}"
           action="#{wizard.importWizard}"
           value="#{msgs.import}" />
 
@@ -58,32 +58,34 @@
          <f:facet name="header">
             <h:outputText value="#{msgs.actions_column_header}" />
          </f:facet>
-         <h:commandLink action="#{wizardItem.processActionRunWizard}">
-            <h:outputText value="#{msgs.run_wizard}"/>
-         </h:commandLink>
-         <f:subview id="editLink" rendered="#{wizardItem.canEdit}">
-         <h:outputText value=" | " />
-         <h:commandLink action="#{wizardItem.processActionEdit}">
-            <h:outputText value="#{msgs.edit}"/>
-         </h:commandLink>
-         </f:subview>
-         <f:subview id="exportLink" rendered="#{wizardItem.canExport}">
-         <h:outputText value=" | " />
-         <h:outputLink value="#{wizardItem.currentExportLink}">
-             <h:outputText value="#{msgs.export}"/>
-         </h:outputLink>
-         </f:subview>
-         <f:subview id="deleteLink" rendered="#{wizardItem.canDelete}">
-         <h:outputText value=" | " />
-         <h:commandLink action="#{wizardItem.processActionDelete}">
-            <h:outputText value="#{msgs.delete}" />
-         </h:commandLink>
-         </f:subview>
-         <f:subview id="publishLink" rendered="#{wizardItem.canPublish}">
-         <h:outputText value=" | " />
-            <h:commandLink action="#{wizardItem.processActionPublish}">
-            <h:outputText value="#{msgs.publish}" />
-         </h:commandLink>
+         <f:subview id="viewPerms" rendered="#{wizard.canView}">
+            <h:commandLink action="#{wizardItem.processActionRunWizard}">
+               <h:outputText value="#{msgs.run_wizard}"/>
+            </h:commandLink>
+            <f:subview id="editLink" rendered="#{wizardItem.canEdit}">
+               <h:outputText value=" | " />
+               <h:commandLink action="#{wizardItem.processActionEdit}">
+                  <h:outputText value="#{msgs.edit}"/>
+               </h:commandLink>
+            </f:subview>
+            <f:subview id="exportLink" rendered="#{wizardItem.canExport}">
+               <h:outputText value=" | " />
+               <h:outputLink value="#{wizardItem.currentExportLink}">
+                   <h:outputText value="#{msgs.export}"/>
+               </h:outputLink>
+            </f:subview>
+            <f:subview id="deleteLink" rendered="#{wizardItem.canDelete}">
+               <h:outputText value=" | " />
+               <h:commandLink action="#{wizardItem.processActionDelete}">
+                  <h:outputText value="#{msgs.delete}" />
+               </h:commandLink>
+            </f:subview>
+            <f:subview id="publishLink" rendered="#{wizardItem.canPublish}">
+               <h:outputText value=" | " />
+                  <h:commandLink action="#{wizardItem.processActionPublish}">
+                  <h:outputText value="#{msgs.publish}" />
+               </h:commandLink>
+            </f:subview>
          </f:subview>
       </h:column>
       <h:column>
