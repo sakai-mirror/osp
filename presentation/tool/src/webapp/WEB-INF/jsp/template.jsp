@@ -21,7 +21,7 @@
     <title><%= (String)request.getAttribute("_title")%></title>
     <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js">
     </script>
-    <script language="JavaScript" src="/osp-common-tool/js/eport.js"/>"></script>
+    <script language="JavaScript" src="/osp-common-tool/js/eport.js"></script>
   <%
       String panelId = request.getParameter("panel");
       if (panelId == null) {

@@ -43,12 +43,4 @@ public class PresentationFunctionConstants {
    public final static String PUBLISH_LAYOUT = LAYOUT_PREFIX + "publish";
    public final static String CREATE_LAYOUT = LAYOUT_PREFIX + "create";
    
-   public final static String STYLE_PREFIX = "osp.style.";
-   public final static String DELETE_STYLE = STYLE_PREFIX + "delete";
-   public final static String EDIT_STYLE = STYLE_PREFIX + "edit";
-   public final static String COPY_STYLE = STYLE_PREFIX + "copy";
-   public final static String PUBLISH_STYLE = STYLE_PREFIX + "publish";
-   public final static String GLOBAL_PUBLISH_STYLE = STYLE_PREFIX + "globalPublish";
-   public final static String CREATE_STYLE = STYLE_PREFIX + "create";
-   
 }

@@ -3,7 +3,7 @@
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
    xmlns:xhtml="http://www.w3.org/1999/xhtml"
    xmlns:osp="http://www.osportfolio.org/OspML">
-
+   
 <xsl:variable name="layoutFile" select="/ospiPresentation/layout/artifact/fileArtifact/uri" />
 <xsl:variable name="page" select="document($layoutFile)"/>
 <xsl:variable name="presContent" select="/"/>
@@ -153,7 +153,26 @@
 </div>
       </xsl:if>
    </xsl:template>
+   
 
+   <xsl:template name="apply-pageStyle">
+      <xsl:if test="$presContent//ospiPresentation/pageStyle">
+         <link rel="stylesheet" type="text/css" media="all">
+            <xsl:attribute name="href">
+               <xsl:value-of select="$presContent/ospiPresentation/pageStyle/artifact/fileArtifact/uri"/>
+            </xsl:attribute>
+         </link>
+      </xsl:if>
+   </xsl:template>   
+   
+
+   <!-- head tag -->
+   <xsl:template match="xhtml:head">
+      <xsl:copy>
+         <xsl:call-template name="apply-pageStyle" />
+      </xsl:copy>
+   </xsl:template>   
+   
    <!-- body tag -->
    <xsl:template match="xhtml:body">
       <xsl:param name="currentSeqNo" />

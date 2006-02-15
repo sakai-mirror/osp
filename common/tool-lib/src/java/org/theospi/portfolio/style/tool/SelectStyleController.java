@@ -19,7 +19,7 @@
 *
 **********************************************************************************/
 
-package org.theospi.portfolio.presentation.control;
+package org.theospi.portfolio.style.tool;
 
 import java.util.Map;
 
@@ -27,10 +27,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.presentation.StyleHelper;
-import org.theospi.portfolio.presentation.model.Style;
+import org.theospi.portfolio.style.StyleHelper;
+import org.theospi.portfolio.style.model.Style;
 
-public class SelectStyleController extends AbstractPresentationController {
+public class SelectStyleController extends AbstractStyleController {
    
    protected final Log logger = LogFactory.getLog(getClass());
    
@@ -38,9 +38,16 @@ public class SelectStyleController extends AbstractPresentationController {
                                      Map application, Errors errors) {
 
       String styleId = (String)request.get("style_id");
+      String selectAction = (String)request.get("selectAction");
       
-      Style style = getPresentationManager().getStyle(getIdManager().getId(styleId));
-      session.put(StyleHelper.CURRENT_STYLE, style);
+      if (selectAction.equals("on")) {
+         Style style = getStyleManager().getStyle(getIdManager().getId(styleId));
+         session.put(StyleHelper.CURRENT_STYLE, style);
+      }
+      else {
+         session.remove(StyleHelper.CURRENT_STYLE);
+         session.put(StyleHelper.UNSELECTED_STYLE, "true");
+      }
 
       return new ModelAndView("success");
    }

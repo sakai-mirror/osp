@@ -28,9 +28,9 @@ import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.model.PresentationLog;
 import org.theospi.portfolio.presentation.model.PresentationPage;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
-import org.theospi.portfolio.presentation.model.Style;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
 import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.security.model.CleanupableService;
 import org.jdom.Document;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -236,9 +236,4 @@ public interface PresentationManager extends CleanupableService {
 
    public Presentation getPresentation(Id id, String secretExportKey);
    
-   public Style storeStyle(Style style);
-   public Style getStyle(Id styleId);
-   public Collection findPublishedStyles(String currentWorksiteId);
-   public Collection findPublishedStyles();
-   public Collection findStylesByOwner(Agent owner, String siteId);
 }

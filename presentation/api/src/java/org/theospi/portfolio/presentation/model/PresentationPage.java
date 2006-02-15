@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.theospi.portfolio.style.model.Style;
 
 public class PresentationPage extends IdentifiableObject implements Serializable, Comparable {
    

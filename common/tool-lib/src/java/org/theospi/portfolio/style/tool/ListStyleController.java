@@ -18,14 +18,14 @@
 * limitations under the License.
 *
 **********************************************************************************/
-package org.theospi.portfolio.presentation.control;
+package org.theospi.portfolio.style.tool;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.presentation.StyleHelper;
-import org.theospi.portfolio.presentation.model.Style;
+import org.theospi.portfolio.style.StyleHelper;
+import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
@@ -33,7 +33,7 @@ import org.sakaiproject.service.framework.portal.cover.PortalService;
 
 import java.util.*;
 
-public class ListStyleController extends AbstractPresentationController {
+public class ListStyleController extends AbstractStyleController {
 
    protected final Log logger = LogFactory.getLog(getClass());
    private ListScrollIndexer listScrollIndexer;
@@ -43,14 +43,20 @@ public class ListStyleController extends AbstractPresentationController {
 
       Hashtable model = new Hashtable();
       Agent agent = getAuthManager().getAgent();
-      List styles = new ArrayList(
-         getPresentationManager().findPublishedStyles(PortalService.getCurrentSiteId()));
+      List styles = new ArrayList();
+      if (!getStyleManager().isGlobal())
+         styles.addAll(getStyleManager().findPublishedStyles(PortalService.getCurrentSiteId()));
+      else
+         styles.addAll(getStyleManager().findGlobalStyles(agent));
       model.put("styleCount", String.valueOf(styles.size()));
 
-      if (request.get("newPresentationStyleId") != null) {
-         request.put(ListScroll.ENSURE_VISIBLE_TAG, "" + getPresentationIndex(styles,
-            (String)request.get("newPresentationStyleId")));
+      if (request.get("newStyleId") != null) {
+         request.put(ListScroll.ENSURE_VISIBLE_TAG, "" + getStyleIndex(styles,
+            (String)request.get("newStyleId")));
       }
+      
+      if (session.get(StyleHelper.CURRENT_STYLE_ID) != null)
+         model.put("selectedStyle", session.get(StyleHelper.CURRENT_STYLE_ID));
 
       styles = getListScrollIndexer().indexList(request, model, styles);
       model.put("styles", styles);
@@ -60,13 +66,16 @@ public class ListStyleController extends AbstractPresentationController {
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", getWorksiteManager().getTool(PortalService.getCurrentToolId()));
       model.put("isMaintainer", isMaintainer());
+      model.put("isGlobal", new Boolean(getStyleManager().isGlobal()));
       
       String selectable = (String)session.get(StyleHelper.STYLE_SELECTABLE);
-      model.put("selectableStyle", selectable);
+      if (selectable != null)
+         model.put("selectableStyle", selectable);
+      
       return new ModelAndView("success", model);
    }
 
-   protected int getPresentationIndex(List styles, String styleId) {
+   protected int getStyleIndex(List styles, String styleId) {
       if (styleId == null) {
          return 0;
       }

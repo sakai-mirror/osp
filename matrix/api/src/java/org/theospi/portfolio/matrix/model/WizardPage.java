@@ -22,6 +22,7 @@ package org.theospi.portfolio.matrix.model;
 
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.theospi.portfolio.style.model.Style;
 
 import java.util.Date;
 import java.util.Set;
@@ -41,6 +42,7 @@ public class WizardPage extends IdentifiableObject {
    private WizardPageDefinition pageDefinition;
    private Set pageForms = new HashSet();
    private Date modified;
+   private Style style;
    
    public final static String TYPE = "wizard_page_type";
    public final static String PROCESS_TYPE_KEY = "page_id";
@@ -129,6 +131,14 @@ public class WizardPage extends IdentifiableObject {
     */
    public void setModified(Date modified) {
       this.modified = modified;
+   }
+
+   public Style getStyle() {
+      return style;
+   }
+
+   public void setStyle(Style style) {
+      this.style = style;
    }
 
 }

@@ -29,9 +29,6 @@
             <entry key="presentation">
                <ref bean="org.theospi.portfolio.security.mgt.ToolPermissionManager.presentation"/>
             </entry>
-            <entry key="style">
-               <ref bean="org.theospi.portfolio.security.mgt.ToolPermissionManager.style"/>
-            </entry>
          </map>
       </property>
    </bean>
@@ -190,6 +187,16 @@
             </bean>
          </list>
       </property>
+      <property name="globalSites">
+         <list>
+            <value>~admin</value>
+            <value>!admin</value>
+         </list>
+      </property>
+      <property name="globalSiteTypes">
+         <list>
+         </list>
+      </property>
    </bean>
 
    <bean id="presentationAuthz" class="org.theospi.portfolio.presentation.PresentationAuthorizerImpl">
@@ -298,38 +305,6 @@
                   <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.PUBLISH_LAYOUT</value>
                </property>
             </bean>
-            
-            <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.CREATE_STYLE"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.CREATE_STYLE</value>
-               </property>
-            </bean>
-            <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.DELETE_STYLE"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.DELETE_STYLE</value>
-               </property>
-            </bean>
-            <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.EDIT_STYLE"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.EDIT_STYLE</value>
-               </property>
-            </bean>
-            <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.PUBLISH_STYLE"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.PUBLISH_STYLE</value>
-               </property>
-            </bean>
-            <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.GLOBAL_PUBLISH_STYLE"
-               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
-               <property name="staticField">
-                  <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.GLOBAL_PUBLISH_STYLE</value>
-               </property>
-            </bean>
-            
          </list>
       </property>
    </bean>
@@ -463,45 +438,6 @@
       </property>
    </bean>
    
-   <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.style"
-      class="org.theospi.portfolio.security.model.SimpleToolPermissionManager"
-       singleton="true">
-
-      <property name="idManager"><ref bean="idManager"/></property>
-      <property name="permissionManager">
-         <ref bean="org.theospi.portfolio.security.mgt.PermissionManager" />
-      </property>
-      <property name="agentManager"><ref bean="agentManager" /></property>
-      <property name="permissionEditName"><value>style</value></property>
-      <property name="defaultPermissions">
-         <map>
-            <entry key="maintain">
-               <list>
-                  <value>osp.style.globalPublish</value>
-                  <value>osp.style.publish</value>
-                  <value>osp.style.delete</value>
-                  <value>osp.style.create</value>
-                  <value>osp.style.edit</value>
-               </list>
-            </entry>
-            <entry key="access">
-               <list>
-                  <value>osp.style.create</value>
-               </list>
-            </entry>
-         </map>
-      </property>
-      <property name="functions">
-         <list>
-            <value>osp.style.globalPublish</value>
-            <value>osp.style.publish</value>
-            <value>osp.style.delete</value>
-            <value>osp.style.create</value>
-            <value>osp.style.edit</value>
-         </list>
-      </property>
-   </bean>
-   
    <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.layoutFile"
       parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
       <property name="viewAll"><value>true</value></property>
@@ -525,21 +461,6 @@
       <property name="mimeTypes">
          <list>
             <value>image</value>
-         </list>
-      </property>
-   </bean>
-   
-   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.styleFile"
-      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
-      <property name="viewAll"><value>true</value></property>
-      <property name="mimeTypes">
-         <list>
-            <value>text/css</value>
-         </list>
-      </property>
-      <property name="acceptedExtensions">
-         <list>
-            <value>css</value>
          </list>
       </property>
    </bean>

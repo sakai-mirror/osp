@@ -64,7 +64,7 @@ public class PermissionsController extends AbstractFormController implements For
 
    public ModelAndView processCancel(Map request, Map session, Map application,
                                      Object command, Errors errors) throws Exception {
-      return new ModelAndView("permissionsDone");
+      return new ModelAndView("helperDone");
    }
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
@@ -76,7 +76,7 @@ public class PermissionsController extends AbstractFormController implements For
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       PermissionsEdit edit = (PermissionsEdit)requestModel;
       getPermissionManager().updatePermissions(edit);
-      return new ModelAndView("permissionsDone");
+      return new ModelAndView("helperDone");
    }
 
    public PermissionManager getPermissionManager() {

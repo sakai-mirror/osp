@@ -75,14 +75,6 @@
        <dispatcher>FORWARD</dispatcher>
        <dispatcher>INCLUDE</dispatcher>
    </filter-mapping>
-   
-   <filter-mapping>
-       <filter-name>sakai.request</filter-name>
-       <servlet-name>osp.style</servlet-name>
-       <dispatcher>REQUEST</dispatcher>
-       <dispatcher>FORWARD</dispatcher>
-       <dispatcher>INCLUDE</dispatcher>
-   </filter-mapping>
 
    <servlet>
        <servlet-name>Faces Servlet</servlet-name>
@@ -153,25 +145,6 @@
            <param-value>tool</param-value>
        </init-param>
         <init-param>
-           <param-name>default.last.view</param-name>
-           <param-value>true</param-value>
-       </init-param>
-  </servlet>
-  
-   <servlet>
-     <servlet-name>osp.style</servlet-name>
-     <servlet-class>org.sakaiproject.spring.util.SpringTool</servlet-class>
-       <init-param>
-           <param-name>path</param-name>
-           <param-value></param-value>
-       </init-param>
-     <load-on-startup>2</load-on-startup>
-
-       <init-param>
-           <param-name>default</param-name>
-           <param-value>listStyle</param-value>
-       </init-param>
-       <init-param>
            <param-name>default.last.view</param-name>
            <param-value>true</param-value>
        </init-param>

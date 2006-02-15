@@ -3,11 +3,12 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
+<fmt:setBundle basename="org.theospi.portfolio.common.messages" />
 
-<!-- GUID=<c:out value="${newPresentationStyleId}"/> -->
+<!-- GUID=<c:out value="${newStyleId}"/> -->
 
-<osp-c:authZMap prefix="osp.style." var="can" />
+<osp-c:authZMap prefix="osp.style." useSite="true" var="can" />
+
 
 <c:if test="${can.create || isMaintainer}">
     <div class="navIntraTool">
@@ -23,7 +24,7 @@
                 <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message>
               </osp:param>
                 <osp:param name="name" value="style"/>
-                <osp:param name="qualifier" value="${tool.id}"/>
+                <osp:param name="qualifier" value="${worksite.id}"/>
                 <osp:param name="returnView" value="listStyleRedirect"/>
                 </osp:url>"
                 title="<fmt:message key="action_permissions_title"/>" >
@@ -36,13 +37,14 @@
 
 
 <osp:url var="listUrl" value="listStyle.osp"/>
-<osp:listScroll listUrl="${listUrl}" className="chefToolBarWrap" />
+<osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
 
-<h3><fmt:message key="title_presentationStyleManager"/></h3>
+<h3><fmt:message key="title_styleManager"/></h3>
 
 <table class="listHier" cellspacing="0" >
    <thead>
       <tr>
+         <th scope="col"></th>
          <th scope="col"><fmt:message key="table_header_name"/></th>
          <th scope="col"><fmt:message key="table_header_description"/></th>
          <th scope="col"><fmt:message key="table_header_owner"/></th>
@@ -54,6 +56,11 @@
   <c:forEach var="style" items="${styles}">
     <osp-c:authZMap prefix="osp.style." qualifier="${style.id}" var="isAuthorizedTo" />
     <TR>
+      <td>&nbsp;
+         <c:if test="${selectedStyle == style.id}">
+            <img src="<osp:url value="/img/arrowhere.gif"/>" title="Selected Style" />
+         </c:if>
+      </td>
       <TD nowrap>
          <c:out value="${style.name}" />
          <div class="itemAction">
@@ -66,17 +73,26 @@
                    href="<osp:url value="deleteStyle.osp"/>&style_id=<c:out value="${style.id.value}" />"><fmt:message key="table_action_delete"/></a>
              </c:if>
     
-             <c:if test="${isAuthorizedTo.publish && style.siteState == 0}">
-             | <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />"><fmt:message key="table_action_publish"/></a>
+             <c:if test="${isAuthorizedTo.publish && style.siteState == 0 && !isGlobal}">
+             | <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=site"><fmt:message key="table_action_publish"/></a>
              </c:if>
              
-             <c:if test="${isAuthorizedTo.golbalPublish && style.globalState == 0}">
-             | <a href="<osp:url value="globalPublishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />"><fmt:message key="table_action_global_publish"/></a>
+             <c:if test="${isAuthorizedTo.globalPublish && (style.globalState == 0 || style.globalState == 1) && isGlobal}">
+             | <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=global"><fmt:message key="table_action_global_publish"/></a>
              </c:if>
              
-             <c:if test="${selectableStyle == 'true'}">
-             | <a href="<osp:url value="selectStyle.osp"/>&style_id=<c:out value="${style.id.value}" />"><fmt:message key="table_action_select"/></a>
+             <c:if test="${isAuthorizedTo.suggestGlobalPublish && style.globalState == 0 && style.siteState == 2 && !isGlobal}">
+             | <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=suggestGlobal"><fmt:message key="table_action_suggest_global_publish"/></a>
              </c:if>
+             
+             <c:if test="${selectableStyle == 'true' and selectedStyle != style.id.value}">
+             | <a href="<osp:url value="selectStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&selectAction=on"><fmt:message key="table_action_select"/></a>
+             </c:if>
+             
+             <c:if test="${selectableStyle == 'true' and selectedStyle == style.id.value}">
+             | <a href="<osp:url value="selectStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&selectAction=off"><fmt:message key="table_action_unselect"/></a>
+             </c:if>
+             
          </div>
       </TD>
       <TD><c:out value="${style.description}" /></TD>
