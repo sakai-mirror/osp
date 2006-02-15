@@ -20,6 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.model;
 
+import java.util.Map;
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -30,9 +33,10 @@ package org.theospi.portfolio.portal.model;
 public class SiteType implements Comparable {
 
    private String key;
-   private String description;
    private String skin;
    private int order;
+   private List toolCategories;
+   public static final SiteType OTHER = new SiteType("other", Integer.MAX_VALUE);
    public static final SiteType MY_WORKSPACE = new SiteType("myWorkspace", 0);
    public static final SiteType GATEWAY = new SiteType("gateway", 0);
 
@@ -50,14 +54,6 @@ public class SiteType implements Comparable {
 
    public void setKey(String key) {
       this.key = key;
-   }
-
-   public String getDescription() {
-      return description;
-   }
-
-   public void setDescription(String description) {
-      this.description = description;
    }
 
    public int getOrder() {
@@ -80,6 +76,14 @@ public class SiteType implements Comparable {
       Integer order = new Integer(getOrder());
       Integer other = new Integer(((SiteType)o).getOrder());
       return order.compareTo(other);
+   }
+
+   public List getToolCategories() {
+      return toolCategories;
+   }
+
+   public void setToolCategories(List toolCategories) {
+      this.toolCategories = toolCategories;
    }
 
 }

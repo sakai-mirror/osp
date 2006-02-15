@@ -20,6 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.model;
 
+import java.util.List;
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -27,15 +29,15 @@ package org.theospi.portfolio.portal.model;
  * Time: 8:24:08 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ToolCategory implements Comparable {
+public class ToolCategory implements Comparable, Cloneable {
 
    public static final String UNCATEGORIZED_KEY = "org.theospi.portfolio.portal.model.ToolCategory.uncategorized";
 
    public static final ToolCategory UNCATEGORIZED = new ToolCategory(UNCATEGORIZED_KEY);
 
    private String key;
-   private String description;
    private int order;
+   private List toolIds;
 
    public ToolCategory() {
    }
@@ -52,14 +54,6 @@ public class ToolCategory implements Comparable {
       this.key = key;
    }
 
-   public String getDescription() {
-      return description;
-   }
-
-   public void setDescription(String description) {
-      this.description = description;
-   }
-
    public int getOrder() {
       return order;
    }
@@ -72,6 +66,18 @@ public class ToolCategory implements Comparable {
       Integer order = new Integer(getOrder());
       Integer other = new Integer(((ToolCategory)o).getOrder());
       return order.compareTo(other);
+   }
+
+   public List getToolIds() {
+      return toolIds;
+   }
+
+   public void setToolIds(List toolIds) {
+      this.toolIds = toolIds;
+   }
+
+   public Object clone() throws CloneNotSupportedException {
+      return super.clone();
    }
 
 }

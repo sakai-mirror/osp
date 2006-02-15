@@ -32,6 +32,12 @@
     </dependency>
 
      <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-tool</artifactId>
+        <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-common-api</artifactId>
        <version>${osp.version}</version>
