@@ -5,6 +5,9 @@
 	xmlns:osp="http://www.osportfolio.org/OspML"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+   <xsl:variable name="config" select="/portal/config" />
+   <xsl:variable name="externalized" select="/portal/externalized" />
+
 	<xsl:template match="portal">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 
@@ -24,10 +27,24 @@
       <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
    </head>
 <body class="portalBody">
-<a href="#tocontent"  class="skip" title="jump to content" accesskey="c">jump to content</a>
-<a href="#toolmenu"  class="skip" title="jump to tools list" accesskey="l">jump to tools list</a>
-
-<a href="#sitetabs" class="skip" title="jump to worksite list" accesskey="w">jump to worksite list</a>
+<a href="#tocontent"  class="skip" accesskey="c">
+   <xsl:attribute name="title">
+      <xsl:value-of select="$externalized/entry[@key='sit.jumpcontent']"/>
+   </xsl:attribute>
+   <xsl:value-of select="$externalized/entry[@key='sit.jumpcontent']"/>
+</a>
+<a href="#toolmenu"  class="skip" accesskey="l">
+   <xsl:attribute name="title">
+      <xsl:value-of select="$externalized/entry[@key='sit.jumptools']"/>
+   </xsl:attribute>
+   <xsl:value-of select="$externalized/entry[@key='sit.jumptools']"/>
+</a>
+<a href="#sitetabs" class="skip" title="jump to worksite list" accesskey="w">
+   <xsl:attribute name="title">
+      <xsl:value-of select="$externalized/entry[@key='sit.jumpworksite']"/>
+   </xsl:attribute>
+   <xsl:value-of select="$externalized/entry[@key='sit.jumpworksite']"/>
+</a>
 
   <xsl:call-template name="site_tabs" />
 
@@ -60,9 +77,8 @@
    <xsl:template name="site_tabs">
       <!-- site tabs here -->
       <div class="siteNavBlock">
-      <table class="mast-head" cellpadding="0" cellspacing="0" border="0" width="100%">
+      <table class="mast-head" height="50" cellpadding="0" cellspacing="0" border="0" width="100%">
          <tr>
-
             <td class="left">
                <img title="Logo" alt="Logo">
                   <xsl:attribute name="src">
@@ -78,22 +94,47 @@
                </img>
             </td>
             <td class="mast-head-r right">
-               <a target="_parent" title="Logout">
-                  <xsl:attribute name="href">
-                     <xsl:value-of select="config/logout"/>
-                  </xsl:attribute>
-                  Logout
-               </a>
+               <xsl:choose>
+              <xsl:when test="currentUser">
+                 <a target="_parent">
+                    <xsl:attribute name="href">
+                       <xsl:value-of select="config/logout"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="title">
+                       <xsl:value-of select="$externalized/entry[@key='sit.log']"/>
+                    </xsl:attribute>
+                    <xsl:value-of select="$externalized/entry[@key='sit.log']"/>
+                 </a>
+              </xsl:when>
+              <xsl:otherwise>
+<form method="post" action="/osp-portal/xlogin" enctype="application/x-www-form-urlencoded" target="_parent">
+   <xsl:value-of select="$externalized/entry[@key='log.userid']"/>
+   <input name="eid" id="eid" type="text" style ="width: 10em" />
 
+   <xsl:value-of select="$externalized/entry[@key='log.pass']"/>
+   <input name="pw" type="password" style ="width: 10em" />
+   <input name="submit" type="submit" id="submit">
+      <xsl:attribute name="value">
+         <xsl:value-of select="$externalized/entry[@key='log.login']"/>
+      </xsl:attribute>
+   </input>
+<br/>
+</form>
+              </xsl:otherwise>
+               </xsl:choose>
             </td>
          </tr>
       </table>
+      <xsl:choose>
+         <xsl:when test="currentUser">
       <div class="tabHolder project">
          <table border="0" cellspacing="0" cellpadding="0">
             <tr>
                <td class="tabCell">
                   <a id="sitetabs" class="skip" name="sitetabs"></a>
-                  <h1 class="skip">Worksites begin here</h1>
+                  <h1 class="skip">
+                     <xsl:value-of select="$externalized/entry[@key='sit.worksiteshead']"/>
+                  </h1>
 
                   <ul id="tabNavigation">
 
@@ -102,27 +143,23 @@
                            <xsl:with-param name="extra" select="'false'" />
                         </xsl:apply-templates>
                      </xsl:for-each>
-
                      <li style="display:none;border-width:0" class="fixTabsIE"><a href="javascript:void(0);">#x20;</a></li>
-
                   </ul>
-               </td>
-               <td class="selectCell"><span class="skip">Press alt + up and down arrows to scroll through menu </span>
-                  <select>
-                     <xsl:attribute name="onSelect">
-onchange="if (this.options[this.selectedIndex].value != '') { parent.location = this.options[this.selectedIndex].value; } else { this.selectedIndex = 0; }"
-                     </xsl:attribute>
-                     <option value="" selected="selected">- more -</option>
-                     <xsl:for-each select="siteTypes">
-                        <xsl:apply-templates select="@*|node()" >
-                           <xsl:with-param name="extra" select="'true'" />
-                        </xsl:apply-templates>
-                     </xsl:for-each>
-                  </select>
                </td>
             </tr>
          </table>
       <div class="divColor" id="tabBottom"><br /></div></div>
+         </xsl:when>
+         <xsl:otherwise>
+            <table border="0" cellspacing="0" cellpadding="0">
+               <tr>
+                  <td>
+                     <div class="divColor" id="tabBottom"><br /></div>
+                  </td>
+               </tr>
+            </table>
+         </xsl:otherwise>
+      </xsl:choose>
             </div>
 
    </xsl:template>
@@ -146,6 +183,25 @@ onchange="if (this.options[this.selectedIndex].value != '') { parent.location = 
       </xsl:if>
    </xsl:template>
 
+   <xsl:template match="page[@layout='1' and @selected='true']">
+      <xsl:param name="content"/>
+      <xsl:if test="$content='true'">
+         <xsl:call-template name="page-content-columns">
+            <xsl:with-param name="page" select="."/>
+         </xsl:call-template>
+      </xsl:if>
+      <xsl:if test="$content='false'">
+         <li>
+            <a accesskey="1" class="selected" href="#">
+               <xsl:attribute name="accesskey">
+                  <xsl:value-of select="@order"/>
+               </xsl:attribute>
+               <xsl:value-of select="title"/>
+            </a>
+         </li>
+      </xsl:if>
+   </xsl:template>
+
    <xsl:template match="page">
       <xsl:param name="content"/>
       <xsl:if test="$content='true'">
@@ -154,9 +210,18 @@ onchange="if (this.options[this.selectedIndex].value != '') { parent.location = 
       <xsl:if test="$content='false'">
          <li>
             <a>
-               <xsl:attribute name="href">
-                  <xsl:value-of select="url"/>
-               </xsl:attribute>
+               <xsl:if test="@popUp='false'">
+                  <xsl:attribute name="href">
+                     <xsl:value-of select="url"/>
+                  </xsl:attribute>
+               </xsl:if>
+               <xsl:if test="@popUp='true'">
+                  <xsl:attribute name="href">#</xsl:attribute>
+                  <xsl:attribute name="onclick">
+                     window.open('<xsl:value-of select="popUrl"/>','<xsl:value-of select="title"/>',
+                        'resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')
+                  </xsl:attribute>
+               </xsl:if>
                <xsl:attribute name="accesskey">
                   <xsl:value-of select="@order" />
                </xsl:attribute>
@@ -168,12 +233,54 @@ onchange="if (this.options[this.selectedIndex].value != '') { parent.location = 
 
    <xsl:template name="page-content">
       <xsl:param name="page"/>
-      <h1 class="skip">Content begins here</h1>
+      <h1 class="skip">
+         <xsl:value-of select="$externalized/entry[@key='sit.contentshead']"/>
+      </h1>
       <a id="tocontent" class="skip" name="tocontent"></a>
 <div id="content">
 <div>
 
    <xsl:for-each select="$page/columns/column[@index='0']/tools/tool">
+      <xsl:for-each select="$page/columns/column[@index='0']/tools/tool">
+         <xsl:call-template name="tool">
+            <xsl:with-param name="tool" select="."/>
+         </xsl:call-template>
+      </xsl:for-each>
+   </xsl:for-each>
+
+</div>
+      </div>
+   </xsl:template>
+
+   <xsl:template name="page-content-columns">
+      <xsl:param name="page"/>
+      <h1 class="skip">
+         <xsl:value-of select="$externalized/entry[@key='sit.contentshead']"/>
+      </h1>
+      <a id="tocontent" class="skip" name="tocontent"></a>
+      <div id="content">
+      <div>
+         <div style="width:49%;float:left;margin:0;">
+         <xsl:for-each select="$page/columns/column[@index='0']/tools/tool">
+            <xsl:call-template name="tool">
+               <xsl:with-param name="tool" select="."/>
+            </xsl:call-template>
+         </xsl:for-each>
+         </div>
+         <div style="width:50%;float:right">
+         <xsl:for-each select="$page/columns/column[@index='1']/tools/tool">
+            <xsl:call-template name="tool">
+               <xsl:with-param name="tool" select="."/>
+            </xsl:call-template>
+         </xsl:for-each>
+         </div>
+      </div>
+      </div>
+   </xsl:template>
+
+   <xsl:template name="tool">
+      <xsl:param name="tool"/>
+
 <div class="portletTitleWrap">
 <iframe
 	class ="portletTitleIframe"
@@ -184,12 +291,12 @@ onchange="if (this.options[this.selectedIndex].value != '') { parent.location = 
 	marginheight="0"
 	scrolling="no">
    <xsl:attribute name="title">
-      <xsl:value-of select="title" />
+      <xsl:value-of select="$tool/title" />
    </xsl:attribute>
-   <xsl:attribute name="name">Title<xsl:value-of select="escapedId" /></xsl:attribute>
-   <xsl:attribute name="id">Title<xsl:value-of select="escapedId" /></xsl:attribute>
+   <xsl:attribute name="name">Title<xsl:value-of select="$tool/escapedId" /></xsl:attribute>
+   <xsl:attribute name="id">Title<xsl:value-of select="$tool/escapedId" /></xsl:attribute>
    <xsl:attribute name="src">
-      <xsl:value-of select="titleUrl" />
+      <xsl:value-of select="$tool/titleUrl" />
    </xsl:attribute>
    your browser doesn't support iframes
 </iframe>
@@ -204,29 +311,33 @@ onchange="if (this.options[this.selectedIndex].value != '') { parent.location = 
 	marginheight="0"
 	scrolling="auto">
    <xsl:attribute name="title">
-      <xsl:value-of select="title" />
+      <xsl:value-of select="$tool/title" />
    </xsl:attribute>
-   <xsl:attribute name="name">Main<xsl:value-of select="escapedId" /></xsl:attribute>
-   <xsl:attribute name="id">Main<xsl:value-of select="escapedId" /></xsl:attribute>
+   <xsl:attribute name="name">Main<xsl:value-of select="$tool/escapedId" /></xsl:attribute>
+   <xsl:attribute name="id">Main<xsl:value-of select="$tool/escapedId" /></xsl:attribute>
    <xsl:attribute name="src">
-      <xsl:value-of select="url" />
+      <xsl:value-of select="$tool/url" />
    </xsl:attribute>
    your browser doesn't support iframes
 </iframe>
 </div>
-   </xsl:for-each>
-
-</div>
-      </div>
    </xsl:template>
 
    <xsl:template name="site_tools">
 <div class="divColor" id="sidebar">
 	<div id="divLogo">
-<p id="siteType">project</p>
+      <a name="logo"/> 
+      <xsl:if test="categories/category[@selected='true']/siteTypes/siteType[@selected='true']/sites/site[@selected='true' and @published='false']">
+         <p id="siteStatus">unpublished site</p>
+      </xsl:if>
+      <xsl:if test="categories/category[@selected='true']/siteTypes/siteType[@selected='true']/key = 'project'">
+         <p id="siteType">project</p>
+      </xsl:if>
 	</div>
 	<a id="toolmenu" class="skip" name="toolmenu"></a>
-	<h1 class="skip">Tools begin here</h1>
+	<h1 class="skip">
+      <xsl:value-of select="$externalized/entry[@key='sit.toolshead']"/>
+	</h1>
 
 	<div id="leftnavlozenge">
 		<ul>
@@ -239,10 +350,15 @@ onchange="if (this.options[this.selectedIndex].value != '') { parent.location = 
 
 			<li>
 				<a  accesskey="h" href="javascript:;"
-               onclick="window.open('http://localhost:8080/portal/help/main','Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')" onkeypress="window.open('http://localhost:8080/portal/help/main','Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')">Help</a>
+               onclick="window.open('http://localhost:8080/portal/help/main','Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')"
+               onkeypress="window.open('http://localhost:8080/portal/help/main','Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')">Help</a>
 			</li>
 		</ul>
 	</div>
+
+   <xsl:if test="$config/presence[@include='true']">
+      <xsl:call-template name="presence" />
+   </xsl:if>
 
 </div>
    </xsl:template>
@@ -259,7 +375,9 @@ onchange="if (this.options[this.selectedIndex].value != '') { parent.location = 
 	</div>
 
 	<div id="footerInfo">
-      <span class="skip">Opens in a new window</span>
+      <span class="skip">
+         <xsl:value-of select="$externalized/entry[@key='site.newwindow']"/>
+      </span>
       <xsl:for-each select="config/poweredBy">
          <a href="http://sakaiproject.org" target="_blank">
             <img border="0" src="/library/image/sakai_powered.gif" alt="Powered by Sakai" />
@@ -327,6 +445,22 @@ onchange="if (this.options[this.selectedIndex].value != '') { parent.location = 
       </xsl:if>
    </xsl:template>
 
+   <xsl:template name="presence">
+      <div class="sideBarText"  id="pres_title">
+         <xsl:value-of select="$externalized/entry[@key='sit.presencetitle']"/>
+      </div>
+      <iframe
+         name="presence"
+         id="presence"
+         title="Users Present in Site"
+         frameborder="0"
+         marginwidth="0"
+         marginheight="0"
+         scrolling="auto">
+         <xsl:attribute name="src">
+            <xsl:value-of select="$config/presence"/>
+         </xsl:attribute>
+         Your browser doesn't support frames
+      </iframe>
+   </xsl:template>
 </xsl:stylesheet>
-
-
