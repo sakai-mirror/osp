@@ -8,6 +8,7 @@
             
         <category name="course" />
         <category name="project" />
+       <category name="portfolio" />
 
         <configuration name="help.id" value="arch" />
     </tool> 

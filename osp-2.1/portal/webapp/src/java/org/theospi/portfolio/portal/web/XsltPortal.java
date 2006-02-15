@@ -25,6 +25,7 @@ import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.ToolException;
+import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.portal.charon.CharonPortal;
@@ -74,20 +75,6 @@ public class XsltPortal extends CharonPortal {
    private PortalManager portalManager;
    private DocumentBuilder documentBuilder;
    private Templates templates;
-
-   private static final String[] MESSAGE_KEYS = {
-      "sit.jumpcontent",
-      "sit.jumptools",
-      "sit.jumpworksite",
-      "sit.log",
-      "log.userid",
-      "log.pass",
-      "log.login",
-      "sit.worksiteshead",
-      "sit.contentshead",
-      "sit.toolshead",
-      "site.newwindow",
-      "sit.presencetitle"};
 
    /** messages. */
    private static ResourceLoader rb = new ResourceLoader("org/theospi/portfolio/portal/messages");
@@ -224,6 +211,11 @@ public class XsltPortal extends CharonPortal {
       outputDocument(req, res, session, doc);
    }
 
+   protected void postLogin(HttpServletRequest req, HttpServletResponse res, Session session, String loginPath) throws ToolException {
+      session.setAttribute(Tool.HELPER_DONE_URL, Web.returnUrl(req, null));
+      super.postLogin(req, res, session, loginPath);
+   }
+
    protected Document createPortalDocument(String siteTypeKey, String siteId, String toolCategoryKey, String pageId) {
       Document doc = getDocumentBuilder().newDocument();
 
@@ -273,13 +265,6 @@ public class XsltPortal extends CharonPortal {
 
    protected Element createExternalizedXml(Document doc) {
       Element externalized = doc.createElement("externalized");
-
-      // todo change for iterator
-      /*
-      for (int i=0;i<MESSAGE_KEYS.length;i++) {
-         externalized.appendChild(createExternalizedEntryXml(doc, MESSAGE_KEYS[i], rbsitenav.get(MESSAGE_KEYS[i])));
-      }
-      */
 
       for (Iterator i=rb.entrySet().iterator();i.hasNext();) {
          Map.Entry entry = (Map.Entry) i.next();
@@ -398,6 +383,10 @@ public class XsltPortal extends CharonPortal {
    protected void appendTextElementNodes(Document doc, String[] strings, Element parent,
                                          String topNodeName, String nodeName) {
       Element topNode = doc.createElement(topNodeName);
+
+      if (strings == null) {
+         return;
+      }
 
       for (int i=0;i<strings.length;i++) {
          appendTextElementNode(doc, nodeName, strings[i], topNode);
