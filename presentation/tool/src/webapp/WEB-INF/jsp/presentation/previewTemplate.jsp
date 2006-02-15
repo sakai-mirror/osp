@@ -4,7 +4,7 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
 
-<h3><fmt:message key="title_preview"><param><c:out value="${template.name}"/></param></fmt:message></h3>
+<h3><fmt:message key="title_preview"><fmt:param><c:out value="${template.name}"/></fmt:param></fmt:message></h3>
 
 <div style="padding-left:15px">
     <h4>Template Description</h4>

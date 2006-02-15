@@ -10,7 +10,7 @@
     <osp:form/>
 
     <h4><fmt:message key="instructions_notifyViewersChangesToX">
-           <param><c:out value="${presentation.name}"/></param>
+           <fmt:param><c:out value="${presentation.name}"/></fmt:param>
         </fmt:message>
     </h4>
     <p class="instruction"><fmt:message key="instructions_pickUsersFromList"/></p>
