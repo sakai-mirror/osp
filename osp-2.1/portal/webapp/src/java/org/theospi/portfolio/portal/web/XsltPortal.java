@@ -20,45 +20,47 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.web;
 
-import org.sakaiproject.portal.charon.CharonPortal;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.ToolException;
-import org.sakaiproject.util.java.ResourceLoader;
-import org.sakaiproject.util.web.Web;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.portal.charon.CharonPortal;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.service.legacy.preference.Preferences;
+import org.sakaiproject.service.legacy.preference.cover.PreferencesService;
+import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.SitePage;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.util.java.ResourceLoader;
+import org.sakaiproject.util.web.Web;
 import org.theospi.portfolio.portal.intf.PortalManager;
 import org.theospi.portfolio.portal.model.SiteType;
 import org.theospi.portfolio.portal.model.ToolCategory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.servlet.ServletConfig;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.dom.DOMSource;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.InputStream;
-import java.util.*;
-import java.net.URL;
+import java.io.PrintWriter;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -73,8 +75,26 @@ public class XsltPortal extends CharonPortal {
    private DocumentBuilder documentBuilder;
    private Templates templates;
 
+   private static final String[] MESSAGE_KEYS = {
+      "sit.jumpcontent",
+      "sit.jumptools",
+      "sit.jumpworksite",
+      "sit.log",
+      "log.userid",
+      "log.pass",
+      "log.login",
+      "sit.worksiteshead",
+      "sit.contentshead",
+      "sit.toolshead",
+      "site.newwindow",
+      "sit.presencetitle"};
+
    /** messages. */
    private static ResourceLoader rb = new ResourceLoader("org/theospi/portfolio/portal/messages");
+
+   /** base messages. */
+   private static ResourceLoader rbsitenav = new ResourceLoader("sitenav");
+
    private static final String TOOL_CATEGORY = "category";
    private static final String SITE_TYPE = "site_type";
 
@@ -211,8 +231,10 @@ public class XsltPortal extends CharonPortal {
       doc.appendChild(root);
 
       User currentUser = getPortalManager().getCurrentUser();
-      if (currentUser != null) {
+      boolean loggedIn = false;
+      if (currentUser != null && currentUser.getId().length() > 0) {
          root.appendChild(createUserXml(doc, currentUser));
+         loggedIn = true;
       }
 
       Map siteTypesMap = getPortalManager().getSitesByType();
@@ -236,7 +258,7 @@ public class XsltPortal extends CharonPortal {
       SiteType siteType = findType(siteTypesMap, siteTypeKey);
       List skins = getSkins(siteType, site);
       root.appendChild(createSkinsXml(doc, skins));
-      root.appendChild(createConfixXml(doc, skins));
+      root.appendChild(createConfixXml(doc, skins, site, loggedIn));
       root.appendChild(createSiteTypesXml(doc, siteTypesMap, siteTypeKey, siteId));
 
       if (siteId != null) {
@@ -244,7 +266,41 @@ public class XsltPortal extends CharonPortal {
          root.appendChild(createPageCategoriesXml(doc, pageCateogries, siteId, toolCategoryKey, pageId));
       }
 
+      root.appendChild(createExternalizedXml(doc));
+
       return doc;
+   }
+
+   protected Element createExternalizedXml(Document doc) {
+      Element externalized = doc.createElement("externalized");
+
+      // todo change for iterator
+      /*
+      for (int i=0;i<MESSAGE_KEYS.length;i++) {
+         externalized.appendChild(createExternalizedEntryXml(doc, MESSAGE_KEYS[i], rbsitenav.get(MESSAGE_KEYS[i])));
+      }
+      */
+
+      for (Iterator i=rb.entrySet().iterator();i.hasNext();) {
+         Map.Entry entry = (Map.Entry) i.next();
+         externalized.appendChild(createExternalizedEntryXml(doc, entry.getKey(), entry.getValue()));
+      }
+
+      for (Iterator i=rbsitenav.entrySet().iterator();i.hasNext();) {
+         Map.Entry entry = (Map.Entry) i.next();
+         externalized.appendChild(createExternalizedEntryXml(doc, entry.getKey(), entry.getValue()));
+      }
+
+      return externalized;
+   }
+
+   protected Element createExternalizedEntryXml(Document doc, Object key, Object value) {
+      Element entry = doc.createElement("entry");
+      entry.setAttribute("key", (String) key);
+
+      appendTextElementNode(doc, "value", (String) value, entry);
+
+      return entry;
    }
 
    protected Element createTitleXml(Document doc, Site site, SitePage page) {
@@ -263,8 +319,11 @@ public class XsltPortal extends CharonPortal {
       return titleElement;
    }
 
-   protected Element createConfixXml(Document doc, List skins) {
+   protected Element createConfixXml(Document doc, List skins, Site site, boolean loggedIn) {
       Element config = doc.createElement("config");
+
+      String presenceUrl = getContext() + "/presence/" + site.getId();
+      boolean showPresence = ServerConfigurationService.getBoolean("display.users.present", true);
 
       String skinRepo = ServerConfigurationService.getString("skin.repo");
       if (skins.size() > 0) {
@@ -273,6 +332,10 @@ public class XsltPortal extends CharonPortal {
       else {
          skinRepo += "/" + ServerConfigurationService.getString("skin.default");
       }
+
+      Element presence = doc.createElement("presence");
+      safeAppendTextNode(doc, presence, presenceUrl, true);
+      presence.setAttribute("include", new Boolean(showPresence && loggedIn).toString());
 
       Element logo = doc.createElement("logo");
       safeAppendTextNode(doc, logo, skinRepo + "/images/logo_inst.gif", true);
@@ -291,10 +354,12 @@ public class XsltPortal extends CharonPortal {
       String[] poweredByImage = ServerConfigurationService.getStrings("powered.img");
       String[] poweredByAltText = ServerConfigurationService.getStrings("powered.alt");
 
+      config.appendChild(presence);
       config.appendChild(logo);
       config.appendChild(banner);
       config.appendChild(logout);
 
+      appendTextElementNode(doc, "presenceUrl", presenceUrl, config);
       appendTextElementNode(doc, "copyright", copyright, config);
       appendTextElementNode(doc, "service", service, config);
       appendTextElementNode(doc, "serviceVersion", serviceVersion, config);
@@ -312,7 +377,6 @@ public class XsltPortal extends CharonPortal {
          config.appendChild(createPoweredByXml(doc, "Powered by Sakai",
             "/library/image/sakai_powered.gif", "http://sakaiproject.org"));
       }
-
 
       appendTextElementNodes(doc, poweredByUrl, config, "poweredByUrls", "poweredByUrl");
       appendTextElementNodes(doc, poweredByImage, config, "poweredByImages", "poweredByImage");
@@ -397,11 +461,15 @@ public class XsltPortal extends CharonPortal {
       boolean pageSelected = page.getId().equals(pageId);
       pageElement.setAttribute("selected", new Boolean(pageSelected).toString());
       pageElement.setAttribute("layout", new Integer(page.getLayout()).toString());
+      pageElement.setAttribute("popUp", new Boolean(page.isPopUp()).toString());
       Element pageName = doc.createElement("title");
       safeAppendTextNode(doc, pageName, page.getTitle(), true);
       // portal/site/9607661f-f3aa-4938-8005-c3ffaa228c6c/page/0307f10c-225b-4db8-803e-b12f24e38544
       Element pageUrl = doc.createElement("url");
       safeAppendTextNode(doc, pageUrl, getContext() + "/site/" + siteId + "/page/" + page.getId(), true);
+
+      Element popPageUrl = doc.createElement("popUrl");
+      safeAppendTextNode(doc, popPageUrl, getContext() + "/page/" + page.getId(), true);
 
       Element columns = doc.createElement("columns");
 
@@ -509,21 +577,77 @@ public class XsltPortal extends CharonPortal {
       }
    }
 
-   protected Element createSitesListXml(Document doc, List sites, String siteId) {
+   protected Element createSitesListXml(Document doc, List mySites, String siteId) {
+      Session session = SessionManager.getCurrentSession();
+
+      int prefTabs = 4;
+      List prefExclude = new Vector();
+      List prefOrder = new Vector();
+      if (session.getUserId() != null)
+      {
+         Preferences prefs = PreferencesService.getPreferences(session.getUserId());
+         ResourceProperties props = prefs.getProperties("sakai.portal.sitenav");
+         try
+         {
+            prefTabs = (int) props.getLongProperty("tabs");
+         }
+         catch (Exception any)
+         {
+         }
+
+         List l = props.getPropertyList("exclude");
+         if (l != null)
+         {
+            prefExclude = l;
+         }
+
+         l = props.getPropertyList("order");
+         if (l != null)
+         {
+            prefOrder = l;
+         }
+      }
+
+      int tabsToDisplay = prefTabs;
+
+      mySites.removeAll(prefExclude);
+      // re-order mySites to have order first, the rest later
+      List ordered = new Vector();
+      for (Iterator i = prefOrder.iterator(); i.hasNext();)
+      {
+         String id = (String) i.next();
+
+         // find this site in the mySites list
+         int pos = indexOf(id, mySites);
+         if (pos != -1)
+         {
+            // move it from mySites to order
+            Site s = (Site) mySites.get(pos);
+            ordered.add(s);
+            mySites.remove(pos);
+         }
+      }
+
+      // pick up the rest of the mySites
+      ordered.addAll(mySites);
+      mySites = ordered;
+
       Element sitesElement = doc.createElement("sites");
       int order = 0;
-      for (Iterator i=sites.iterator();i.hasNext();) {
+      for (Iterator i=mySites.iterator();i.hasNext();) {
          Site site= (Site) i.next();
          boolean selected = site.getId().equals(siteId);
-         sitesElement.appendChild(createSiteXml(doc, site, selected, order));
+         sitesElement.appendChild(createSiteXml(doc, site, selected, order, false));
          order++;
       }
       return sitesElement;
    }
 
-   protected Element createSiteXml(Document doc, Site site, boolean selected, int order) {
+   protected Element createSiteXml(Document doc, Site site, boolean selected, int order, boolean extra) {
       Element siteElement = doc.createElement("site");
       siteElement.setAttribute("selected", new Boolean(selected).toString());
+      siteElement.setAttribute("extra", new Boolean(extra).toString());
+      siteElement.setAttribute("published", new Boolean(site.isPublished()).toString());
       siteElement.setAttribute("order", new Integer(order).toString());
 
       Element siteUrl = doc.createElement("url");
@@ -585,7 +709,12 @@ public class XsltPortal extends CharonPortal {
 
    protected Element createUserXml(Document doc, User current) {
       Element user = doc.createElement("currentUser");
-      // todo fill in details
+
+      appendTextElementNode(doc, "id", current.getId(), user);
+      appendTextElementNode(doc, "first", current.getFirstName(), user);
+      appendTextElementNode(doc, "last", current.getLastName(), user);
+      appendTextElementNode(doc, "email", current.getEmail(), user);
+
       return user;
    }
 
