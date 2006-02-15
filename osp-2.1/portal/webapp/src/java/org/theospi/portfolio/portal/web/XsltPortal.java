@@ -207,7 +207,7 @@ public class XsltPortal extends CharonPortal {
       if (siteId == null) {
          return;
       }
-      Document doc = createPortalDocument(null, siteId, getPortalManager().getPageCategory(pageId), pageId);
+      Document doc = createPortalDocument(null, siteId, getPortalManager().getPageCategory(siteId, pageId), pageId);
       outputDocument(req, res, session, doc);
    }
 
@@ -420,15 +420,12 @@ public class XsltPortal extends CharonPortal {
       categoryElement.setAttribute("order", new Integer(category.getOrder()).toString());
       Element categoryKeyElement = doc.createElement("key");
       safeAppendTextNode(doc, categoryKeyElement, category.getKey(), false);
-      Element categoryDescriptionElement = doc.createElement("description");
-      safeAppendTextNode(doc, categoryDescriptionElement, category.getDescription(), true);
       Element categoryUrlElement = doc.createElement("url");
       // Resolve the site_type of the form /portal/category/<siteId>/<categoryKey>/<optionalToolId>
       safeAppendTextNode(doc, categoryUrlElement,
             getContext() + "/" + TOOL_CATEGORY + "/" + siteId + "/" + category.getKey(), true);
 
       categoryElement.appendChild(categoryKeyElement);
-      categoryElement.appendChild(categoryDescriptionElement);
       categoryElement.appendChild(categoryUrlElement);
 
       Element pagesElement = doc.createElement("pages");
@@ -553,9 +550,6 @@ public class XsltPortal extends CharonPortal {
       safeAppendTextNode(doc, siteTypeUrl, getContext() + "/" + SITE_TYPE + "/" + type.getKey(), true);
       siteTypeElement.appendChild(siteTypeUrl);
 
-      Element siteTypeDescription = doc.createElement("description");
-      safeAppendTextNode(doc, siteTypeDescription, type.getDescription(), true);
-      siteTypeElement.appendChild(siteTypeDescription);
       siteTypeElement.appendChild(createSitesListXml(doc, sites, siteId));
       return siteTypeElement;
    }

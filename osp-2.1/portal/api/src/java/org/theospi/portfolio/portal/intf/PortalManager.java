@@ -52,6 +52,6 @@ public interface PortalManager {
 
    public SitePage getSitePage(String pageId);
 
-   public String getPageCategory(String pageId);
+   public String getPageCategory(String siteId, String pageId);
 
 }

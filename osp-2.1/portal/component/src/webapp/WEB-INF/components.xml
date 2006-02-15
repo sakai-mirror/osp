@@ -12,6 +12,80 @@
       <property name="siteService">
          <ref bean="org.sakaiproject.service.legacy.site.SiteService"/>
       </property>
+
+      <property name="siteTypes">
+         <map>
+            <entry key="portfolio">
+               <ref bean="org.theospi.portfolio.portal.model.SiteType.portfolio"/>
+            </entry>
+            <entry key="portfolio">
+               <ref bean="org.theospi.portfolio.portal.model.SiteType.project"/>
+            </entry>
+            <!--entry key="project">
+               <ref bean="org.theospi.portfolio.portal.model.SiteType.project"/>
+            </entry>
+            <entry key="course">
+               <ref bean="org.theospi.portfolio.portal.model.SiteType.course"/>
+            </entry-->
+         </map>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.portal.model.SiteType.portfolio"
+      class="org.theospi.portfolio.portal.model.SiteType" >
+      <!-- title will come from a messages.properties so that i18n can be supported -->
+      <property name="key">
+         <value>portfolio</value>
+      </property>
+      <property name="order">
+         <value>0</value>
+      </property>
+      <property name="toolCategories">
+         <list>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.collectReflect"/>
+            <!--ref bean="org.theospi.portfolio.portal.model.ToolCategory.designPublish"/>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.guide"/>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.reviewEvaluate"/>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.analyzeReport"/-->
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.portal.model.SiteType.project"
+      class="org.theospi.portfolio.portal.model.SiteType" >
+      <!-- title will come from a messages.properties so that i18n can be supported -->
+      <property name="key">
+         <value>portfolio</value>
+      </property>
+      <property name="order">
+         <value>0</value>
+      </property>
+      <property name="toolCategories">
+         <list>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.collectReflect"/>
+            <!--ref bean="org.theospi.portfolio.portal.model.ToolCategory.designPublish"/>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.guide"/>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.reviewEvaluate"/>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.analyzeReport"/-->
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.portal.model.ToolCategory.collectReflect"
+      class="org.theospi.portfolio.portal.model.ToolCategory">
+      <property name="key">
+         <value>collectReflect</value>
+      </property>
+      <property name="order">
+         <value>0</value>
+      </property>
+      <property name="toolIds">
+         <list>
+            <value>sakai.resources</value>
+            <value>osp.wizard</value>
+            <value>osp.matrix</value>
+         </list>
+      </property>
    </bean>
 
 </beans>
