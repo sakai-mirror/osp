@@ -326,11 +326,11 @@
    <xsl:template name="site_tools">
 <div class="divColor" id="sidebar">
 	<div id="divLogo">
-      <a name="logo"/> 
-      <xsl:if test="categories/category[@selected='true']/siteTypes/siteType[@selected='true']/sites/site[@selected='true' and @published='false']">
+      <a name="logo"/>
+      <xsl:if test="siteTypes/siteType[@selected='true']/sites/site[@selected='true' and @published='false']">
          <p id="siteStatus">unpublished site</p>
       </xsl:if>
-      <xsl:if test="categories/category[@selected='true']/siteTypes/siteType[@selected='true']/key = 'project'">
+      <xsl:if test="siteTypes/siteType[@selected='true']/key = 'project'">
          <p id="siteType">project</p>
       </xsl:if>
 	</div>

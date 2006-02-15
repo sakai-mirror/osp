@@ -6,6 +6,7 @@
 
        <category name="sakai.main" />
       <category name="project" />
+      <category name="portfolio" />
 
        <keyword name="matrix" />
        <keyword name="evaluate" />

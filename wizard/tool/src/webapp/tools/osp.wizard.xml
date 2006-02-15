@@ -6,7 +6,8 @@
 
        <category name="sakai.main" />
       <category name="project" />
-      
+      <category name="portfolio" />
+
       <keyword name="wizard" />
        <keyword name="help"/>
 
