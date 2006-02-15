@@ -148,7 +148,7 @@
       <property name="keywords" column="keywords" type="string" not-null="false" />
       <many-to-one name="presentation" column="presentation_id" not-null="true" class="Presentation"/>
       <many-to-one name="layout" column="layout_id" not-null="true" class="PresentationLayout"/>
-      <many-to-one name="style" column="style_id" not-null="false" class="Style"/>
+      <many-to-one name="style" column="style_id" not-null="false" class="org.theospi.portfolio.style.model.Style"/>
       <property name="sequence" type="int" column="seq_num" not-null="false"/>
       <property name="advancedNavigation" column="advanced_navigation" type="boolean" />
       <set name="regions" lazy="false" inverse="true" cascade="all-delete-orphan">
@@ -197,20 +197,5 @@
       <property name="key" column="property_key" type="string" not-null="true"/>
       <property name="value" column="property_value" type="string" not-null="false"/>
    </class>
-   
-   <class name="Style" table="osp_style">
-      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
-      </id>
-      <property name="name" type="string" column="name" not-null="false"/>
-      <property name="description" type="string" column="description" not-null="false"/>
-      <property name="siteState" type="int" not-null="true"/>
-      <property name="globalState" type="int" not-null="true"/>
-      <property name="owner" type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" column="owner_id" not-null="true"/>
-      <property name="styleFile" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="style_file_id"/>
-      <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="true"/>
-      <property name="created" type="java.util.Date" update="false" not-null="true"/>
-      <property name="modified" type="java.util.Date" update="true" not-null="true"/>
-   </class> 
    
 </hibernate-mapping>

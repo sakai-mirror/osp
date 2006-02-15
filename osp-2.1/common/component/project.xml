@@ -27,6 +27,12 @@
 
     <dependency>
       <groupId>osp</groupId>
+      <artifactId>osp-common-api</artifactId>
+      <version>${osp.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>osp</groupId>
       <artifactId>osp-common-impl</artifactId>
       <version>${osp.version}</version>
       <properties>

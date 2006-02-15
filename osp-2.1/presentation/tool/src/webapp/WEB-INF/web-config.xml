@@ -123,11 +123,6 @@
                <prop key="/deleteLayout.osp">deleteLayoutController</prop>
                <prop key="/publishLayout.osp">publishLayoutController</prop>
                
-               <!-- presentation style -->
-               <prop key="/listStyle.osp">listStyleController</prop>
-               <prop key="/addStyle.osp">addStyleController</prop>
-               <prop key="/editStyle.osp">addStyleController</prop>
-               <prop key="/selectStyle.osp">selectStyleController</prop>
             </props>
         </property>
     </bean>

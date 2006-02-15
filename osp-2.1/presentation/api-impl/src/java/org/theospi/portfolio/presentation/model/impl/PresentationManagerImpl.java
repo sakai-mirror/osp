@@ -29,13 +29,10 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.CDATA;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
-import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
-import org.sakaiproject.service.legacy.entity.EntityProducer;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
@@ -71,6 +68,7 @@ import org.theospi.portfolio.shared.model.*;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.mgt.ContentEntityUtil;
 import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
+import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.metaobj.shared.mgt.*;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.*;
@@ -104,6 +102,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private Map secretExportKeys = new Hashtable();
    private String tempPresDownloadDir;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
+   private List globalSites;
+   private List globalSiteTypes;
 
    private static final String TEMPLATE_ID_TAG = "templateId";
    private static final String PRESENTATION_ID_TAG = "presentationId";
@@ -921,6 +921,21 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             logger.error("",e);
          }
       }  */
+   }
+   
+   public boolean isGlobal() {
+      String siteId = getWorksiteManager().getCurrentWorksiteId().getValue();
+
+      if (getGlobalSites().contains(siteId)) {
+         return true;
+      }
+
+      Site site = getWorksiteManager().getSite(siteId);
+      if (site.getType() != null && getGlobalSiteTypes().contains(site.getType())) {
+         return true;
+      }
+
+      return false;
    }
 
 
@@ -1964,65 +1979,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return returned;
    }
    
-   public Style storeStyle(Style style) {
-      return storeStyle(style, true);
-   }
    
-   public Style storeStyle (Style style, boolean checkAuthz) {
-      style.setModified(new Date(System.currentTimeMillis()));
-
-      boolean newStyle = (style.getId() == null);
-
-      if (newStyle) {
-         style.setCreated(new Date(System.currentTimeMillis()));
-
-         if (checkAuthz) {
-            getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_STYLE,
-               getIdManager().getId(style.getToolId()));
-         }
-      } else {
-         if (checkAuthz) {
-            getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_STYLE,
-                  style.getId());
-         }
-      }
-      getHibernateTemplate().saveOrUpdateCopy(style);
-      lockStyleFiles(style);
-
-      return style;
-   }
-   
-   public Style getStyle(Id styleId) {
-      return (Style) getHibernateTemplate().load(Style.class, styleId);
-   }
-   
-   public Collection findPublishedStyles(String currentWorksiteId) {
-      String query = "from Style s where s.globalState = ? or (s.siteId = ? and (s.owner = ? or s.siteState = ? )) ";
-      Object[] params = new Object[]{new Integer(Style.STATE_PUBLISHED),
-                                     currentWorksiteId,
-                                     getAuthnManager().getAgent().getId().getValue(),
-                                     new Integer(Style.STATE_PUBLISHED)};
-      return getHibernateTemplate().find(query, params);
-   }
-   
-   public Collection findPublishedStyles() {
-      // only for the appropriate worksites
-      String query = "from Style s where s.owner = ? or s.globalState = ? or (s.siteState = ?  s.and siteId in (";
-
-      List sites = getWorksiteManager().getUserSites();
-      for (Iterator i=sites.iterator();i.hasNext();) {
-         Site site = (Site)i.next();
-         query += "'" + site.getId() + "'";
-         query += ",";
-      }
-
-      query += "''))";
-
-      Object[] params = new Object[]{getAuthnManager().getAgent().getId().getValue(),
-                                     new Integer(Style.STATE_PUBLISHED),
-                                     new Integer(Style.STATE_PUBLISHED)};
-      return getHibernateTemplate().find(query, params);
-   }
 
    public Collection findPublishedLayouts(String siteId) {
       return getHibernateTemplate().find(
@@ -2030,10 +1987,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             new Object[]{new Boolean(true), getAuthnManager().getAgent().getId().getValue(), siteId});
    }
 
-   public Collection findStylesByOwner(Agent owner, String siteId) {
-      return getHibernateTemplate().find("from Style where owner_id=? and site_id=? Order by name",
-            new Object[]{owner.getId().getValue(), siteId});
-   }
+   
    
    public Collection findLayoutsByOwner(Agent owner, String siteId) {
       return getHibernateTemplate().find("from PresentationLayout where owner_id=? and site_id=? Order by name",
@@ -2168,6 +2122,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    protected Document getPresentationLayoutAsXml(Id pageId) {
 
       Element root = new Element("ospiPresentation");
+      Element pageStyleElement = new Element("pageStyle");
       Element layoutElement = new Element("layout");
       Element regionsElement = new Element("regions");
       
@@ -2178,6 +2133,15 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       PresentableObjectHome home = (PresentableObjectHome) art.getHome();
       layoutElement.addContent(home.getArtifactAsXml(art));
+      
+      
+      if (page.getStyle() != null && page.getStyle().getStyleFile() != null) {
+         Id cssFileId = page.getStyle().getStyleFile();
+         Artifact cssArt = getPresentationItem("fileArtifact", cssFileId, page.getPresentation());
+         PresentableObjectHome cssHome = (PresentableObjectHome) cssArt.getHome();
+         pageStyleElement.addContent(cssHome.getArtifactAsXml(cssArt));
+         root.addContent(pageStyleElement);
+      }
       
       for (Iterator regions = page.getRegions().iterator(); regions.hasNext();) {
          PresentationPageRegion region = (PresentationPageRegion) regions.next();
@@ -2553,5 +2517,21 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public void setStructuredArtifactDefinitionManager(StructuredArtifactDefinitionManager structuredArtifactDefinitionManager) {
       this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
+   }
+
+   public List getGlobalSites() {
+      return globalSites;
+   }
+
+   public void setGlobalSites(List globalSites) {
+      this.globalSites = globalSites;
+   }
+
+   public List getGlobalSiteTypes() {
+      return globalSiteTypes;
+   }
+
+   public void setGlobalSiteTypes(List globalSiteTypes) {
+      this.globalSiteTypes = globalSiteTypes;
    }
 }

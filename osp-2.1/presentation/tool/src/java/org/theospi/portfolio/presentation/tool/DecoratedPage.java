@@ -20,11 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.tool;
 
-import org.theospi.portfolio.presentation.StyleHelper;
 import org.theospi.portfolio.presentation.model.PresentationPage;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
-import org.theospi.portfolio.presentation.model.Style;
 import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.style.StyleHelper;
+import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -72,8 +72,13 @@ public class DecoratedPage implements Comparable {
       if (session.getAttribute(StyleHelper.CURRENT_STYLE) != null) {
          Style style = (Style)session.getAttribute(StyleHelper.CURRENT_STYLE);
          base.setStyle(style);
-         session.removeAttribute(StyleHelper.CURRENT_STYLE);
       }
+      else if (session.getAttribute(StyleHelper.UNSELECTED_STYLE) != null) {
+         base.setStyle(null);
+         session.removeAttribute(StyleHelper.UNSELECTED_STYLE);
+         return "";
+      }
+      
       if (base.getStyle() != null)
          return base.getStyle().getName();
       return "";
@@ -137,9 +142,11 @@ public class DecoratedPage implements Comparable {
    public String processActionSelectStyle() {      
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
+      session.removeAttribute(StyleHelper.CURRENT_STYLE);
       
       session.setAttribute(StyleHelper.STYLE_SELECTABLE, "true");
-
+      if (base.getStyle() != null)
+         session.setAttribute(StyleHelper.CURRENT_STYLE_ID, base.getStyle().getId().getValue());
       
       try {
          context.redirect("osp.style.helper/listStyle");

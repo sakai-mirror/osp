@@ -19,7 +19,7 @@
 *
 **********************************************************************************/
 
-package org.theospi.portfolio.presentation;
+package org.theospi.portfolio.style;
 
 public interface StyleHelper {
 
@@ -31,5 +31,8 @@ public interface StyleHelper {
    
    public static final String CURRENT_STYLE_ID =
       "org.theospi.portfolio.style.currentStyleId";
+   
+   public static final String UNSELECTED_STYLE = 
+      "org.theospi.portfolio.style.unselected";
    
 }

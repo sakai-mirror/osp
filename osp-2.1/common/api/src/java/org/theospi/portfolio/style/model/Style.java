@@ -19,7 +19,7 @@
 *
 **********************************************************************************/
 
-package org.theospi.portfolio.presentation.model;
+package org.theospi.portfolio.style.model;
 
 import java.util.Date;
 
@@ -36,7 +36,6 @@ public class Style extends IdentifiableObject {
    private Date created = new Date();
    private Date modified = new Date();
    private String siteId;
-   private String toolId;
    
    transient private String styleFileName;
    transient private String filePickerAction;
@@ -109,12 +108,6 @@ public class Style extends IdentifiableObject {
    }
    public void setSiteId(String siteId) {
       this.siteId = siteId;
-   }
-   public String getToolId() {
-      return toolId;
-   }
-   public void setToolId(String toolId) {
-      this.toolId = toolId;
    }
    public int getSiteState() {
       return siteState;

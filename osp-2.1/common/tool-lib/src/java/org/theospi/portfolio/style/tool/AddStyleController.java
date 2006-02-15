@@ -18,7 +18,7 @@
 * limitations under the License.
 *
 **********************************************************************************/
-package org.theospi.portfolio.presentation.control;
+package org.theospi.portfolio.style.tool;
 
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
@@ -27,7 +27,6 @@ import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.presentation.model.Style;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.SessionManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
@@ -36,19 +35,20 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 
 import java.util.*;
 
-public class AddStyleController extends AbstractPresentationController 
+public class AddStyleController extends AbstractStyleController 
       implements CustomCommandController, FormController, LoadObjectController {
    
-   public static final String STYLE_FILE = "osp.presentation.style.styleFile";
+   public static final String STYLE_FILE = "osp.style.styleFile";
   
    protected static final String STYLE_SESSION_TAG =
-      "osp.presentation.AddStyleController.style";
+      "osp.style.AddStyleController.style";
 
    private SessionManager sessionManager;
    private ContentHostingService contentHosting;
@@ -58,12 +58,11 @@ public class AddStyleController extends AbstractPresentationController
       Style style;
       if (request.get("style_id") != null && !request.get("style_id").equals("")) {
          Id id = getIdManager().getId((String)request.get("style_id"));
-         style = getPresentationManager().getStyle(id);
+         style = getStyleManager().getStyle(id);
       }
       else {
          style = new Style();
          style.setOwner(getAuthManager().getAgent());
-         style.setToolId(PortalService.getCurrentToolId());
          style.setSiteId(PortalService.getCurrentSiteId());
       }
       return style;
@@ -126,14 +125,18 @@ public class AddStyleController extends AbstractPresentationController
          action = ((String[])actionObj)[0];
       }
 */
-      if (request.get("save") != null)
+      if (request.get("save") != null) {
+         if (!getStyleManager().isGlobal()){
+            style.setSiteId(getWorksiteManager().getCurrentWorksiteId().getValue());
+         }
          save(style, errors);
+      }
 
       return new ModelAndView("success");
    }
    
    protected void save(Style style, Errors errors) {
-        getPresentationManager().storeStyle(style);
+        getStyleManager().storeStyle(style);
    }
 
    public Map referenceData(Map request, Object command, Errors errors) {
@@ -152,7 +155,7 @@ public class AddStyleController extends AbstractPresentationController
          
          if (refs.size() == 1) {
             Reference ref = (Reference)refs.get(0);
-            Node node = getPresentationManager().getNode(ref);
+            Node node = getStyleManager().getNode(ref);
             nodeId = node.getId();
             nodeName = node.getDisplayName();
          }
@@ -164,7 +167,7 @@ public class AddStyleController extends AbstractPresentationController
       }
       
       if (style.getStyleFile() != null) {
-         Node styleFile = getPresentationManager().getNode(style.getStyleFile());
+         Node styleFile = getStyleManager().getNode(style.getStyleFile());
          model.put("styleFileName", styleFile.getDisplayName());
       }
       
