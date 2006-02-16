@@ -135,10 +135,6 @@
                <property name="order"><value>1</value></property>
                <property name="authorizer"><ref bean="worksiteAuthz"/></property>
             </bean>
-            <bean class="org.theospi.portfolio.security.app.OrderedAuthorizer">
-               <property name="order"><value>5</value></property>
-               <property name="authorizer"><ref bean="styleAuthz"/></property>
-            </bean>
          </list>
       </property>
    </bean>
@@ -329,6 +325,20 @@
          <props>
             <prop key="*">PROPAGATION_REQUIRED</prop>
          </props>
+      </property>
+   </bean>
+   
+   <bean id="org.theospi.portfolio.security.app.AdditionalAppAuthorizers.style"
+      class="org.theospi.portfolio.security.app.AdditionalAppAuthorizers"
+      init-method="init" singleton="true">
+      <property name="authzManager"><ref bean="authzManager"/></property>
+      <property name="additionalAppAuthorizers">
+         <list>
+            <bean class="org.theospi.portfolio.security.app.OrderedAuthorizer">
+               <property name="order"><value>5</value></property>
+               <property name="authorizer"><ref bean="styleAuthz"/></property>
+            </bean>
+         </list>
       </property>
    </bean>
    
