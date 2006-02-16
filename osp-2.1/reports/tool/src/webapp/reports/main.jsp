@@ -4,6 +4,7 @@
 <%@ taglib uri="http://www.theospi.org" prefix="osp" %>
 <% response.setContentType("text/html; charset=UTF-8"); %>
 <f:view>
+    <fmt:setLocale value="${locale}" />
     <f:loadBundle basename="org.theospi.portfolio.reports.bundle.Messages" var="msgs" />
     <sakai:view title="#{msgs.title_main}">
             <h:form>
