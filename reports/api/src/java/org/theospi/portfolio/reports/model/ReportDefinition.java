@@ -42,7 +42,7 @@ public class ReportDefinition
 	private String title;
 
 	/** the sql query for the report definition */
-	private String query;
+	private List query;
 
 	/** the keyword for the report definition */
 	private String keywords;
@@ -152,7 +152,7 @@ public class ReportDefinition
 	 * the getter for the query property
 	 * @return String the query
 	 */
-	public String getQuery()
+	public List getQuery()
 	{
 		return query;
 	}
@@ -163,9 +163,9 @@ public class ReportDefinition
 	 * and by hibernate.
 	 * @param query String
 	 */
-	public void setQuery(String query)
+	public void setQuery(List query)
 	{
-		this.query = query.trim();
+		this.query = query;
 	}
 	
 	

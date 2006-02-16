@@ -580,7 +580,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			
 			connection = getWarehouseConnection();
 			stmt = connection
-					.prepareStatement(replaceSystemValues(rd.getQuery()));
+					.prepareStatement(replaceSystemValues((String)rd.getQuery().get(0)));
 			
 			//	get the query from the Definition and replace the values
 			//	no should be able to put in a system parameter into a report parameter and have it work
@@ -848,7 +848,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			StreamResult resultstream = new StreamResult(sourceOut);
 
 			transformer.transform(new JDOMSource(rootElement), resultstream);
-
+			
 			return sourceOut.toString();
 
 		} catch (Exception e) {
