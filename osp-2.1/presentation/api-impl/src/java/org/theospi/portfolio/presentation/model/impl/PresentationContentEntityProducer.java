@@ -26,6 +26,7 @@ import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.service.legacy.entity.Entity;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -46,6 +47,6 @@ public class PresentationContentEntityProducer extends OspEntityProducerBase {
    }
 
    public void init() {
-      getEntityManager().registerEntityProducer(this);
+      getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + PRODUCER_NAME);
    }
 }

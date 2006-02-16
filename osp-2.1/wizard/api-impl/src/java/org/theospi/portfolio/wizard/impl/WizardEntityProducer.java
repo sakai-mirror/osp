@@ -38,7 +38,7 @@ public class WizardEntityProducer extends OspEntityProducerBase {
    }
 
    public void init() {
-      getEntityManager().registerEntityProducer(this);
+      getEntityManager().registerEntityProducer(this, WIZARD_PRODUCER);
    }
 
 }

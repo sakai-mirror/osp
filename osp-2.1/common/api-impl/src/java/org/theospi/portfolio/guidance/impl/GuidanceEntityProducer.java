@@ -21,6 +21,7 @@
 package org.theospi.portfolio.guidance.impl;
 
 import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
+import org.sakaiproject.service.legacy.entity.Entity;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,7 +39,7 @@ public class GuidanceEntityProducer extends OspEntityProducerBase {
    }
 
    public void init() {
-      getEntityManager().registerEntityProducer(this);
+      getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + GUIDANCE_PRODUCER);
    }
 
 }

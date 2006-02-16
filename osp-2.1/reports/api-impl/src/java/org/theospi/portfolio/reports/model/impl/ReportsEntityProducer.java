@@ -21,6 +21,7 @@
 package org.theospi.portfolio.reports.model.impl;
 
 import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
+import org.sakaiproject.service.legacy.entity.Entity;
 
 /**
  * This class is a singleton from components.xml.
@@ -45,7 +46,7 @@ public class ReportsEntityProducer extends OspEntityProducerBase {
    }
 
    public void init() {
-      getEntityManager().registerEntityProducer(this);
+      getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + REPORTS_PRODUCER);
    }
 
 }
