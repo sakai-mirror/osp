@@ -32,6 +32,7 @@ import org.sakaiproject.api.kernel.tool.Placement;
 import org.theospi.portfolio.portal.intf.PortalManager;
 import org.theospi.portfolio.portal.model.SiteType;
 import org.theospi.portfolio.portal.model.ToolCategory;
+import org.theospi.portfolio.portal.model.SitePageWrapper;
 
 import java.util.*;
 
@@ -122,7 +123,20 @@ public class PortalManagerImpl implements PortalManager {
          Site site = getSiteService().getSite(siteId);
 
          List pages = site.getPages();
-         return categorizePages(pages, (SiteType) getSiteTypes().get(site.getType()));
+         Map categories = categorizePages(pages, (SiteType) getSiteTypes().get(site.getType()));
+
+         List categoryList = new ArrayList(categories.keySet());
+
+         Collections.sort(categoryList);
+
+         int index = 0;
+         for (Iterator i=categoryList.iterator();i.hasNext();) {
+            ToolCategory category = (ToolCategory) i.next();
+            category.setOrder(index);
+            index++;
+         }
+
+         return categories;
       }
       catch (IdUnusedException e) {
          throw new RuntimeException(e);
@@ -151,7 +165,7 @@ public class PortalManagerImpl implements PortalManager {
             pages = new ArrayList();
             pageMap.put(categories[i], pages);
          }
-         pages.add(page);
+         pages.add(new SitePageWrapper(page, index));
       }
    }
 
@@ -214,7 +228,7 @@ public class PortalManagerImpl implements PortalManager {
    public String getPageCategory(String siteId, String pageId) {
       Site site = getSite(siteId);
       SitePage page = site.getPage(siteId);
-      SiteType siteType = (SiteType) getSiteTypes().get(site.getType());
+      SiteType siteType = (SiteType) getSiteTypes().get(decorateSiteType(site));
 
       ToolCategory[] categories = findCategories(page, siteType, 0);
 
@@ -223,6 +237,19 @@ public class PortalManagerImpl implements PortalManager {
       }
 
       return categories[0].getKey();
+   }
+
+   public String decorateSiteType(String siteTypeKey) {
+      return "org.theospi.portfolio.portal." + siteTypeKey;
+   }
+
+   public String decorateSiteType(Site site) {
+      if (getSiteService().isUserSite(site.getId())){
+         return SiteType.MY_WORKSPACE.getKey();
+      }
+      else {
+         return decorateSiteType(site.getType());
+      }
    }
 
    public UserDirectoryService getUserDirectoryService() {

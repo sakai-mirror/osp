@@ -42,6 +42,7 @@ import org.sakaiproject.util.web.Web;
 import org.theospi.portfolio.portal.intf.PortalManager;
 import org.theospi.portfolio.portal.model.SiteType;
 import org.theospi.portfolio.portal.model.ToolCategory;
+import org.theospi.portfolio.portal.model.SitePageWrapper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -109,11 +110,11 @@ public class XsltPortal extends CharonPortal {
          // Resolve the site_type of the form /portal/category/<siteId>/<categoryKey>/<optionalToolId>
          String siteId = parts[2];
          String categoryKey = parts[3];
-         String toolId = null;
+         String pageId = null;
          if (parts.length > 4) {
-            toolId = parts[4];
+            pageId = parts[4];
          }
-         doCategory(req, res, session, siteId, categoryKey, toolId);
+         doCategory(req, res, session, siteId, categoryKey, pageId);
       }
       else {
          super.doGet(req, res);
@@ -121,15 +122,21 @@ public class XsltPortal extends CharonPortal {
    }
 
    protected void doCategory(HttpServletRequest req, HttpServletResponse res, Session session,
-                             String siteId, String categoryKey, String toolId) throws IOException, ToolException {
+                             String siteId, String categoryKey, String pageId) throws IOException, ToolException {
       siteId = checkVisitSite(siteId, session, req, res);
       if (siteId == null) {
          return;
       }
+      Document doc = createPortalDocument(null, siteId, categoryKey, pageId);
+      outputDocument(req, res, session, doc);
    }
 
    protected void doSiteType(HttpServletRequest req, HttpServletResponse res, Session session,
-                             String siteTypeKey) throws IOException  {
+                             String siteTypeKey) throws IOException, ToolException  {
+      if (session.getUserId() == null) {
+         doLogin(req, res, session, req.getPathInfo(), false);
+         return;
+      }
       Document doc = createPortalDocument(siteTypeKey, null, null, null);
       outputDocument(req, res, session, doc);
    }
@@ -242,12 +249,13 @@ public class XsltPortal extends CharonPortal {
       }
 
       if (siteTypeKey == null) {
-         siteTypeKey = site.getType();
+         siteTypeKey = getPortalManager().decorateSiteType(site);
       }
+
+      SiteType siteType = findSiteType(siteTypesMap, siteTypeKey);
 
       root.appendChild(createTitleXml(doc, site, page));
 
-      SiteType siteType = findType(siteTypesMap, siteTypeKey);
       List skins = getSkins(siteType, site);
       root.appendChild(createSkinsXml(doc, skins));
       root.appendChild(createConfixXml(doc, skins, site, loggedIn));
@@ -261,6 +269,17 @@ public class XsltPortal extends CharonPortal {
       root.appendChild(createExternalizedXml(doc));
 
       return doc;
+   }
+
+   protected SiteType findSiteType(Map siteTypesMap, String siteTypeKey) {
+      for (Iterator i=siteTypesMap.keySet().iterator();i.hasNext();) {
+         SiteType siteType = (SiteType) i.next();
+         if (siteType.getKey().equals(siteTypeKey)) {
+            return siteType;
+         }
+      }
+
+      return null;
    }
 
    protected Element createExternalizedXml(Document doc) {
@@ -307,9 +326,6 @@ public class XsltPortal extends CharonPortal {
    protected Element createConfixXml(Document doc, List skins, Site site, boolean loggedIn) {
       Element config = doc.createElement("config");
 
-      String presenceUrl = getContext() + "/presence/" + site.getId();
-      boolean showPresence = ServerConfigurationService.getBoolean("display.users.present", true);
-
       String skinRepo = ServerConfigurationService.getString("skin.repo");
       if (skins.size() > 0) {
          skinRepo += "/" + skins.get(skins.size() - 1);
@@ -318,9 +334,14 @@ public class XsltPortal extends CharonPortal {
          skinRepo += "/" + ServerConfigurationService.getString("skin.default");
       }
 
-      Element presence = doc.createElement("presence");
-      safeAppendTextNode(doc, presence, presenceUrl, true);
-      presence.setAttribute("include", new Boolean(showPresence && loggedIn).toString());
+      if (site != null) {
+         String presenceUrl = getContext() + "/presence/" + site.getId();
+         boolean showPresence = ServerConfigurationService.getBoolean("display.users.present", true);
+         Element presence = doc.createElement("presence");
+         safeAppendTextNode(doc, presence, presenceUrl, true);
+         presence.setAttribute("include", new Boolean(showPresence && loggedIn).toString());
+         config.appendChild(presence);
+      }
 
       Element logo = doc.createElement("logo");
       safeAppendTextNode(doc, logo, skinRepo + "/images/logo_inst.gif", true);
@@ -339,12 +360,10 @@ public class XsltPortal extends CharonPortal {
       String[] poweredByImage = ServerConfigurationService.getStrings("powered.img");
       String[] poweredByAltText = ServerConfigurationService.getStrings("powered.alt");
 
-      config.appendChild(presence);
       config.appendChild(logo);
       config.appendChild(banner);
       config.appendChild(logout);
 
-      appendTextElementNode(doc, "presenceUrl", presenceUrl, config);
       appendTextElementNode(doc, "copyright", copyright, config);
       appendTextElementNode(doc, "service", service, config);
       appendTextElementNode(doc, "serviceVersion", serviceVersion, config);
@@ -415,7 +434,7 @@ public class XsltPortal extends CharonPortal {
    protected Element createCategoryXml(Document doc, ToolCategory category, List categoryPageList,
                                        String siteId, String categoryKey, String pageId) {
       Element categoryElement = doc.createElement("category");
-      boolean selected = category.getKey().equals(categoryPageList);
+      boolean selected = category.getKey().equals(categoryKey);
       categoryElement.setAttribute("selected", new Boolean(selected).toString());
       categoryElement.setAttribute("order", new Integer(category.getOrder()).toString());
       Element categoryKeyElement = doc.createElement("key");
@@ -430,11 +449,9 @@ public class XsltPortal extends CharonPortal {
 
       Element pagesElement = doc.createElement("pages");
 
-      int index = 0;
-
       for (Iterator i=categoryPageList.iterator();i.hasNext();) {
-         SitePage page = (SitePage) i.next();
-         pagesElement.appendChild(createPageXml(doc, index, siteId, page, pageId));
+         SitePageWrapper page = (SitePageWrapper) i.next();
+         pagesElement.appendChild(createPageXml(doc, page.getOrder(), siteId, page.getPage(), pageId));
       }
 
       categoryElement.appendChild(pagesElement);
@@ -513,16 +530,6 @@ public class XsltPortal extends CharonPortal {
       return toolElement;
    }
 
-   protected SiteType findType(Map siteTypesMap, String siteTypeKey) {
-      for (Iterator i=siteTypesMap.keySet().iterator();i.hasNext();) {
-         SiteType type = (SiteType) i.next();
-         if (type.equals(siteTypeKey)) {
-            return type;
-         }
-      }
-      return null;
-   }
-
    protected Element createSiteTypesXml(Document doc, Map siteTypesMap, String siteTypeKey, String siteId) {
       Element siteTypes = doc.createElement("siteTypes");
       List types = new ArrayList(siteTypesMap.keySet());
@@ -541,6 +548,7 @@ public class XsltPortal extends CharonPortal {
       Element siteTypeElement = doc.createElement("siteType");
       siteTypeElement.setAttribute("selected", new Boolean(selected).toString());
       siteTypeElement.setAttribute("order", new Integer(type.getOrder()).toString());
+      siteTypeElement.setAttribute("userSite", new Boolean(type == SiteType.MY_WORKSPACE).toString());
       Element siteTypeKey = doc.createElement("key");
       safeAppendTextNode(doc, siteTypeKey, type.getKey(), false);
       siteTypeElement.appendChild(siteTypeKey);
@@ -619,7 +627,7 @@ public class XsltPortal extends CharonPortal {
       int order = 0;
       for (Iterator i=mySites.iterator();i.hasNext();) {
          Site site= (Site) i.next();
-         boolean selected = site.getId().equals(siteId);
+         boolean selected = siteId != null?site.getId().equals(siteId):false;
          sitesElement.appendChild(createSiteXml(doc, site, selected, order, false));
          order++;
       }
