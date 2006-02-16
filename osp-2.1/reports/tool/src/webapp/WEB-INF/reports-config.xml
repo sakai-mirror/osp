@@ -15,6 +15,7 @@
         </property>
         <property name="reports">
             <list>
+                <ref bean="matrixCellCompletionStatus" />
                 <ref bean="report1" />
                 <ref bean="report2" />
                 <ref bean="report3" />
