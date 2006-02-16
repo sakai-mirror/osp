@@ -173,6 +173,7 @@
                 <war.bundle>true</war.bundle>
             </properties>        
         </dependency>
+
         <dependency>
             <groupId>sakaiproject</groupId>
             <artifactId>sakai-util-text</artifactId>
@@ -182,6 +183,7 @@
                 <war.bundle>true</war.bundle>
             </properties>--> 
         </dependency> 
+
         <dependency>
             <groupId>sakaiproject</groupId>
             <artifactId>sakai-util-web</artifactId>
