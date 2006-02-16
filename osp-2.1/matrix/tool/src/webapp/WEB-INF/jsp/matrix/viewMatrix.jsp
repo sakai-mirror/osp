@@ -16,38 +16,6 @@ function hrefViewCell(pageId) {
 <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" />
 <osp-c:authZMap prefix="osp.matrix." var="matrixCan" />
 
-
-    <div class="navIntraTool">
-        <c:if test="${can.create}">
-            <a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_createEdit"/></a>
-            
-            <c:if test="${empty matrixContents.scaffolding}">
-                <a href="<osp:url value="importScaffolding.osp"/>" title="<fmt:message key="action_import_title"/>" >
-                   <fmt:message key="action_import"/>
-                </a>
-            </c:if>	   
-        </c:if> 
-        <c:if test="${isMaintainer}">
-            <c:if test="${not empty matrixContents.scaffolding && can.create}">
-                <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=matrixManager&scaffoldingId=<c:out value="${matrixContents.scaffolding.id.value}"/>/<c:out value="${matrixContents.scaffolding.title}" />.zip">
-                   <fmt:message key="action_export"/>
-                </a>
-            </c:if>
-             <a href="<osp:url value="osp.permissions.helper/editPermissions">
-               <osp:param name="message"><fmt:message key="action_message_setPermission">
-	             <fmt:param><c:out value="${tool.title}"/></fmt:param>
-		         <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message>
-		       </osp:param>
-               <osp:param name="name" value="scaffolding"/>
-               <osp:param name="qualifier" value="${tool.id}"/>
-               <osp:param name="returnView" value="matrixRedirect"/>
-               </osp:url>"
-               title="<fmt:message key="action_permissions_title"/>" >
-         	<fmt:message key="action_permissions"/>
-             </a>
-         </c:if>
-    </div>
-
     <h3><fmt:message key="title_matrixManager"/></h3>
     
     <c:if test="${can.create}">
@@ -56,19 +24,7 @@ function hrefViewCell(pageId) {
             <c:out value="${matrixContents.scaffolding.description}" escapeXml="false" />
          </p>
       </c:if>
-      <p class="instruction">
-        	<fmt:message key="instructions_create"/>
-        </p>
-    </c:if>
-    <c:if test="${(empty matrixContents.columnLabels && !can.create) || !matrixContents.scaffolding.published}">
-    	<p class="instruction">
-        	<br/>
-        	<fmt:message key="instructions_notFullySetup"/>
-        	<br/>
-        	<fmt:message key="instructions_contactAdmin"/>
-        </p>
-    </c:if>
-    
+    </c:if>    
 
     <c:if test="${(not empty matrixContents.scaffolding) && matrixContents.scaffolding.published}">
         <c:if test="${matrixCan.review && not empty members}">
@@ -82,6 +38,7 @@ function hrefViewCell(pageId) {
                           </option>
                       </c:forEach>
                     </select>
+                    <input type="hidden" name="scaffolding_id" value="<c:out value="${matrixContents.scaffolding.id.value}" />" />
                     <INPUT type="submit" value="<fmt:message key="button_go"/>"/>
                 </div>
             </form>

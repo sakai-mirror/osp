@@ -36,7 +36,7 @@ public class Matrix implements Artifact {
 
    private Id id;
    private Agent owner;
-   private MatrixTool matrixTool;
+   private Scaffolding scaffolding;
    private Set cells = new HashSet();
    private ReadableObjectHome home;
 
@@ -69,19 +69,6 @@ public class Matrix implements Artifact {
       this.id = id;
    }
 
-   /**
-    * @return Returns the scaffoldId.
-    */
-   public MatrixTool getMatrixTool() {
-      return matrixTool;
-   }
-
-   /**
-    * @param scaffoldId The scaffoldId to set.
-    */
-   public void setMatrixTool(MatrixTool matrixTool) {
-      this.matrixTool = matrixTool;
-   }
 
    public void add(Cell cell) {
       this.getCells().add(cell);
@@ -139,6 +126,14 @@ public class Matrix implements Artifact {
  * @see org.theospi.portfolio.shared.model.Artifact#getDisplayName()
  */
    public String getDisplayName() {
-      return matrixTool.getScaffolding().getTitle();
+      return scaffolding.getTitle();
+   }
+
+   public Scaffolding getScaffolding() {
+      return scaffolding;
+   }
+
+   public void setScaffolding(Scaffolding scaffolding) {
+      this.scaffolding = scaffolding;
    }
 }

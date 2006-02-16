@@ -152,7 +152,10 @@ public class CellController implements FormController, LoadObjectController {
          return new ModelAndView("confirm", map); 
       }
       if (matrixAction != null) {
-         return new ModelAndView("cancel");
+         String scaffId = "";
+         if (cell.getMatrix() != null)
+            scaffId = cell.getMatrix().getScaffolding().getId().getValue();
+         return new ModelAndView("cancel", "scaffolding_id", scaffId);
       }      
 
       return new ModelAndView("success", "cellBean", cellBean);

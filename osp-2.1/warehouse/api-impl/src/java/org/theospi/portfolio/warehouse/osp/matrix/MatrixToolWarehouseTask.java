@@ -21,7 +21,6 @@
 package org.theospi.portfolio.warehouse.osp.matrix;
 
 import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.matrix.model.MatrixTool;
 import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
 import java.util.Collection;
@@ -35,24 +34,24 @@ class MatrixToolWarehouseTask extends BaseWarehouseTask {
    private MatrixManager matrixManager;
    
    protected Collection getItems() {
-      Collection matrices = matrixManager.getMatrixTools();
-      
-      for(Iterator i = matrices.iterator(); i.hasNext(); ) {
-         MatrixTool tool = (MatrixTool)i.next();
-         
-         tool.getId();
-         tool.setMatrix(new HashSet(matrixManager.getMatrices(tool.getId(), null)));
-         Collection mats = tool.getMatrix();
-         
-         for(Iterator ii = mats.iterator(); ii.hasNext(); ) {
-            Matrix mat = (Matrix)ii.next();
-            
-            mat.getId();
-            mat.setMatrixTool(tool);
-         }
-      }
-      
-      return matrices;
+//      Collection matrices = matrixManager.getMatrixTools();
+//      
+//      for(Iterator i = matrices.iterator(); i.hasNext(); ) {
+//         MatrixTool tool = (MatrixTool)i.next();
+//         
+//         tool.getId();
+//         tool.setMatrix(new HashSet(matrixManager.getMatrices(tool.getId(), null)));
+//         Collection mats = tool.getMatrix();
+//         
+//         for(Iterator ii = mats.iterator(); ii.hasNext(); ) {
+//            Matrix mat = (Matrix)ii.next();
+//            
+//            mat.getId();
+//            mat.setMatrixTool(tool);
+//         }
+//      }
+//      
+      return null;
    }
 
    public MatrixManager getMatrixManager() {

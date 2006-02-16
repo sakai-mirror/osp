@@ -74,7 +74,7 @@
       <servlet-class>org.sakaiproject.spring.util.SpringTool</servlet-class>
       <init-param>
             <param-name>default</param-name>
-            <param-value>viewMatrix</param-value>
+            <param-value>listScaffolding</param-value>
         </init-param>
       <init-param>
           <param-name>path</param-name>
@@ -155,6 +155,25 @@
           <param-name>default.last.view</param-name>
           <param-value>true</param-value>
       </init-param>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>osp.exposedmatrix</servlet-name>
+      <servlet-class>org.sakaiproject.spring.util.SpringTool</servlet-class>
+        <init-param>
+            <param-name>path</param-name>
+            <param-value></param-value>
+        </init-param>
+      <load-on-startup>2</load-on-startup>
+
+        <init-param>
+            <param-name>default</param-name>
+            <param-value>viewMatrix</param-value>
+        </init-param>
+         <init-param>
+            <param-name>default.last.view</param-name>
+            <param-value>true</param-value>
+        </init-param>
    </servlet>
 
    <listener>

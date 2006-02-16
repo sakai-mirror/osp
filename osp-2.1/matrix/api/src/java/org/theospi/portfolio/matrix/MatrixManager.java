@@ -40,8 +40,9 @@ import java.util.Set;
  */
 public interface MatrixManager extends WorkflowEnabledManager {
 
+   public static final String EXPOSED_WIZARD_KEY = "osp.exposedmatrix.scaffolding.id";
    
-   Matrix getMatrix(Id matrixToolId, Id agentId);
+   Matrix getMatrix(Id scaffoldingId, Id agentId);
    List getCellsByScaffoldingCell(Id scaffoldingCellId);
 
    Cell getCell(Matrix matrix, Criterion rootCriterion, Level level);
@@ -56,8 +57,6 @@ public interface MatrixManager extends WorkflowEnabledManager {
    Cell getCellFromPage(Id pageId);
 
    List getCells(Matrix matrix);
-   
-   Id storeMatrixTool(MatrixTool matrixTool);
 
    Id storeCell(Cell cell);
 
@@ -70,10 +69,8 @@ public interface MatrixManager extends WorkflowEnabledManager {
    void publishScaffolding(Id scaffoldingId);
 
    void store(final Object obj);
-
-   MatrixTool createMatrixTool(String toolId, Scaffolding scaffolding);
    
-   Matrix createMatrix(Agent owner, MatrixTool matrixTool);
+   Matrix createMatrix(Agent owner, Scaffolding scaffolding);
 
    Attachment getAttachment(Id attachmentId);
    
@@ -86,10 +83,9 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    Matrix getMatrix(Id matrixId);
 
-   MatrixTool getMatrixTool(Id matrixToolId);
-   public List getMatrixTools();
-
    Scaffolding getScaffolding(Id scaffoldingId);
+   List findScaffolding(String siteId, String toolId, String userId);
+   public List findScaffolding(String siteId, String toolId);
    
    ScaffoldingCell getNextScaffoldingCell(ScaffoldingCell scaffoldingCell, 
          int progressionOption);
@@ -140,9 +136,9 @@ public interface MatrixManager extends WorkflowEnabledManager {
    Scaffolding createDefaultScaffolding();
 
    public List getScaffolding();
-
+   
    public List getMatrices(Id scaffoldingId);
-   public List getMatrices(Id matrixToolId, Id agentId);
+   public List getMatrices(Id scaffoldingId, Id agentId);
 
    WizardPage getWizardPage(Id pageId);
 

@@ -30,6 +30,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.api.kernel.session.SessionManager;
@@ -75,20 +76,23 @@ public class AddScaffoldingController extends BaseScaffoldingController
       String cancelAction = (String)request.get("cancelAction");
       
       Id worksiteId = worksiteManager.getCurrentWorksiteId();
+      Id toolId = getIdManager().getId(PortalService.getCurrentToolId());
       Map model = new HashMap();
       
       EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
             EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
       Scaffolding scaffolding = sessionBean.getScaffolding();
       scaffolding.setWorksiteId(worksiteId);
-      scaffolding.setOwnerId(authManager.getAgent().getId());
+      
+      scaffolding.setToolId(toolId);
+      scaffolding.setOwner(authManager.getAgent());
       
       if (generateAction != null) {
          if (scaffolding.isPublished()) {                              
             return new ModelAndView("editScaffoldingConfirm");             
          }           
          
-         saveMatrixTool(scaffolding);
+         saveScaffolding(scaffolding);
          session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
          session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
          model.put("scaffolding_id", scaffolding.getId());

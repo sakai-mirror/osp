@@ -57,12 +57,15 @@ import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.legacy.content.*;
 import org.sakaiproject.service.legacy.entity.*;
+import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.service.legacy.security.SecurityService;
+import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.exception.*;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.hibernate.HibernateCallback;
@@ -77,8 +80,8 @@ import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
 import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
 import org.theospi.portfolio.shared.mgt.ContentEntityUtil;
-import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
+import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
 import org.theospi.portfolio.workflow.model.WorkflowItem;
@@ -119,17 +122,24 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public List getScaffolding() {
       return getHibernateTemplate().find("from Scaffolding");
    }
+   
+   public List findScaffolding(String siteId, String toolId, String userId) {
+      if (userId == null)
+         userId = "%";
+      
+      Object[] params = new Object[]{siteId, toolId, userId, new Boolean(true)};
+      return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
+            "and s.toolId=? and (s.owner=? or s.published=?)", 
+            params);
+   }
+   
+   public List findScaffolding(String siteId, String toolId) {
+      return findScaffolding(siteId, toolId, null);
+   }
 
    public List getMatrices(Id scaffoldingId) {
-      List matrices = new ArrayList();
-
-      List tools = getHibernateTemplate().find(
-            "from MatrixTool tool where tool.scaffolding_id = ?", new Object[]{scaffoldingId.getValue()});
-
-      for (Iterator i=tools.iterator();i.hasNext();) {
-         MatrixTool tool = (MatrixTool)i.next();
-         matrices.addAll(tool.getMatrix());
-      }
+      List matrices = getHibernateTemplate().find(
+            "from Matrix matrix where matrix.scaffolding_id = ?", new Object[]{scaffoldingId.getValue()});
 
       return matrices;
    }
@@ -139,31 +149,31 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return list;
    }
    
-   public List getMatrices(Id matrixToolId, Id agentId) {
-      String toolId;
+   public List getMatrices(Id scaffoldingId, Id agentId) {
+      String scaffId;
       String ownerId;
 
-      if (matrixToolId == null)
-         toolId = "%";
+      if (scaffoldingId == null)
+         scaffId = "%";
       else
-         toolId = matrixToolId.getValue();
+         scaffId = scaffoldingId.getValue();
 
       if (agentId == null)
          ownerId = "%";
       else
          ownerId = agentId.getValue();
 
-      Object[] params = new Object[]{toolId, ownerId};
+      Object[] params = new Object[]{scaffId, ownerId};
       //TODO move this into a callback
       getHibernateTemplate().setCacheQueries(true);
 
-      List list = getHibernateTemplate().find("from Matrix matrix where matrix.matrixTool like ? and matrix.owner like ?", params);
+      List list = getHibernateTemplate().find("from Matrix matrix where matrix.scaffolding like ? and matrix.owner like ?", params);
 
       return list;
    }
 
-   public Matrix getMatrix(Id matrixToolId, Id agentId) {
-      List list = getMatrices(matrixToolId, agentId);
+   public Matrix getMatrix(Id scaffoldingId, Id agentId) {
+      List list = getMatrices(scaffoldingId, agentId);
 
       if (list.size() > 0)
          return (Matrix) list.get(0);
@@ -192,7 +202,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public void unlockNextCell(Cell cell) {
       Matrix matrix = cell.getMatrix();
-      List levels = matrix.getMatrixTool().getScaffolding().getLevels();
+      List levels = matrix.getScaffolding().getLevels();
       int i = levels.indexOf(cell.getScaffoldingCell().getLevel());
       if (i < levels.size() - 1) {
          Level nextLevel = (Level) levels.get(i + 1);
@@ -286,11 +296,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       return null;
    }
-
-   public Id storeMatrixTool(MatrixTool matrixTool) {
-      this.store(matrixTool);
-      return matrixTool.getId();
-   }
    
    public Id storeCell(Cell cell) {
       this.getHibernateTemplate().saveOrUpdate(cell);
@@ -325,19 +330,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       this.getHibernateTemplate().saveOrUpdateCopy(obj);
    }
 
-   public MatrixTool createMatrixTool(String toolId, Scaffolding scaffolding) {
-      MatrixTool matrixTool = new MatrixTool(idManager.getId(toolId), 
-            scaffolding);
-
-      this.getHibernateTemplate().save(matrixTool);
-      return matrixTool;
-   }
-
-   public Matrix createMatrix(Agent owner, MatrixTool matrixTool) {
+   public Matrix createMatrix(Agent owner, Scaffolding scaffolding) {
       Matrix matrix = new Matrix();
       matrix.setOwner(owner);
-      matrix.setMatrixTool(matrixTool);
-      Scaffolding scaffolding = matrixTool.getScaffolding();
+      matrix.setScaffolding(scaffolding);
+      //Scaffolding scaffolding = matrixTool.getScaffolding();
 
       List levels = scaffolding.getLevels();
       List criteria = scaffolding.getCriteria();
@@ -462,16 +459,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return (Matrix) this.getHibernateTemplate().load(Matrix.class, matrixId);
    }
    
-   public MatrixTool getMatrixTool(Id matrixToolId) {
-      return (MatrixTool) this.getHibernateTemplate().get(MatrixTool.class, matrixToolId);
-   }
-   public List getMatrixTools() {
-
-     return getHibernateTemplate().find(
-            "from MatrixTool");
-
-   }
-
    public Scaffolding getScaffolding(Id scaffoldingId) {
       return (Scaffolding) this.getHibernateTemplate().get(Scaffolding.class, scaffoldingId);
       //return getScaffolding(scaffoldingId, false);
@@ -1147,7 +1134,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
          storeScaffolding(scaffolding);
          
-         scaffolding.setOwnerId(getAuthnManager().getAgent().getId());
+         scaffolding.setOwner(getAuthnManager().getAgent());
          scaffolding.setWorksiteId(getIdManager().getId(currentPlacement.getSiteId()));
 
          if (gotFile) {
@@ -1164,7 +1151,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          createEvaluatorAuthzForImport(scaffolding);
          
          itWorked = true;
-         createMatrixTool(currentPlacement.getId(), scaffolding);
          return scaffolding;
       }
       catch (Exception exp) {
@@ -1536,21 +1522,22 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
          ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-         MatrixTool orig = getMatrixTool(getIdManager().getId(fromTool.getId()));
-
-         if (orig == null) {
+         List scaffolding = this.findScaffolding(fromTool.getSiteId(), fromTool.getId());
+         if (scaffolding == null) {
             return;
          }
          
-         Scaffolding scaffolding = orig.getScaffolding();
-         Id id = scaffolding.getId();
-         String title = scaffolding.getTitle();
-
-         getHibernateTemplate().evict(scaffolding);
-
-         packageScffoldingForExport(id, bos);
-         ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-         uploadScaffolding(title, toTool.getId(), bis);
+         for (Iterator iter = scaffolding.iterator(); iter.hasNext();) {
+            Scaffolding scaffold = (Scaffolding)iter.next();
+            Id id = scaffold.getId();
+            String title = scaffold.getTitle();
+   
+            getHibernateTemplate().evict(scaffold);
+   
+            packageScffoldingForExport(id, bos);
+            ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+            uploadScaffolding(title, toTool.getId(), bis);
+         }
       } catch (IOException e) {
          logger.error("", e);
          throw new OspException(e);
