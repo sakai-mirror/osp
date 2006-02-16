@@ -7,6 +7,10 @@
 <link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" src="/osp-jsf-resource/xheader/xheader.js"></script>
 
+<c:if test="${not empty styleUrl}" >
+   <link href="<c:out value="${styleUrl}"/>" type="text/css" rel="stylesheet" media="all" />
+</c:if>
+
 <form name="form" method="POST"
 	<c:if test="${sequential == 'true'}">
       action="<osp:url value="sequentialWizardPage.osp"/>"
@@ -68,6 +72,27 @@
          </fmt:message>
 		</div>
 	</c:if>
+   
+   <h4 style="cursor:pointer" onclick="javascript:showHideDiv('styleDiv','/osp-jsf-resource')">
+   <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgstyleDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
+   <osp:message key="style_section_header"/></h4>
+   <div id="styleDiv">
+      <c:if test="${empty styleUrl}">
+         <a href="<osp:url value="styleRedirector.osp">
+            <osp:param name="stylePickerAction" value="true" />
+            <osp:param name="page_id" value="${cell.wizardPage.id}" />
+         </osp:url>"><osp:message key="select_style"/></a>
+      </c:if>
+      <c:if test="${not empty styleUrl}">
+         <c:set value="${cell.wizardPage.style}" var="style" />
+         <c:out value="${style.name}" />
+         <a href="<osp:url value="styleRedirector.osp" >
+            <osp:param name="stylePickerAction" value="true" />
+            <osp:param name="currentStyleId" value="${style.id}" />
+            <osp:param name="page_id" value="${cell.wizardPage.id}" />
+         </osp:url>"><osp:message key="change_style"/></a>
+      </c:if>
+   </div>
    
    <c:if test="${not empty cell.scaffoldingCell.guidance}">
       <h4><osp:message key="guidance_header"/></h4>
@@ -185,22 +210,24 @@
 	</script>
 </c:if>
 
-
-<h4 style="cursor:pointer" onclick="javascript:showHideDiv('reviewDiv','/osp-jsf-resource')">
-<img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgreviewDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
-<osp:message key="reviews_section_header"/></h4>
-<div id="reviewDiv">
-   <c:set value="${reviews}" var="objectList" />
-   <%@ include file="review_eval_table.jspf" %>
-</div>
-<h4 style="cursor:pointer" onclick="javascript:showHideDiv('evalDiv','/osp-jsf-resource')">
-<img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgevalDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
-<osp:message key="evals_section_header"/></h4>
-<div id="evalDiv">
-   <c:set value="${evaluations}" var="objectList" />
-   <%@ include file="review_eval_table.jspf" %>
-</div>
-
+<c:if test="${not empty reviews}">
+   <h4 style="cursor:pointer" onclick="javascript:showHideDiv('reviewDiv','/osp-jsf-resource')">
+   <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgreviewDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
+   <osp:message key="reviews_section_header"/></h4>
+   <div id="reviewDiv">
+      <c:set value="${reviews}" var="objectList" />
+      <%@ include file="review_eval_table.jspf" %>
+   </div>
+</c:if>
+<c:if test="${not empty evaluations}">
+   <h4 style="cursor:pointer" onclick="javascript:showHideDiv('evalDiv','/osp-jsf-resource')">
+   <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgevalDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
+   <osp:message key="evals_section_header"/></h4>
+   <div id="evalDiv">
+      <c:set value="${evaluations}" var="objectList" />
+      <%@ include file="review_eval_table.jspf" %>
+   </div>
+</c:if>
 
 <c:if test="${sequential == 'true'}">
 <div class="act">

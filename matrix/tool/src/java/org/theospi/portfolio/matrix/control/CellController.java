@@ -39,6 +39,8 @@ import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
+import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.style.model.Style;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,6 +85,13 @@ public class CellController implements FormController, LoadObjectController {
          readOnly = isReadOnly(owner);
       }
       model.put("readOnlyMatrix", readOnly);
+      
+      Style style = cell.getCell().getWizardPage().getStyle();
+      if (style != null) {
+         Id fileId = style.getStyleFile();
+         Node node = getMatrixManager().getNode(fileId);
+         model.put("styleUrl", node.getExternalUri());
+      }
       
       return model;
    }
