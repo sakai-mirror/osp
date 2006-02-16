@@ -18,7 +18,7 @@
             <entry key="portfolio">
                <ref bean="org.theospi.portfolio.portal.model.SiteType.portfolio"/>
             </entry>
-            <entry key="portfolio">
+            <entry key="project">
                <ref bean="org.theospi.portfolio.portal.model.SiteType.project"/>
             </entry>
             <!--entry key="project">
@@ -35,10 +35,10 @@
       class="org.theospi.portfolio.portal.model.SiteType" >
       <!-- title will come from a messages.properties so that i18n can be supported -->
       <property name="key">
-         <value>portfolio</value>
+         <value>org.theospi.portfolio.portal.portfolio</value>
       </property>
       <property name="order">
-         <value>0</value>
+         <value>1</value>
       </property>
       <property name="toolCategories">
          <list>
@@ -55,10 +55,10 @@
       class="org.theospi.portfolio.portal.model.SiteType" >
       <!-- title will come from a messages.properties so that i18n can be supported -->
       <property name="key">
-         <value>portfolio</value>
+         <value>org.theospi.portfolio.portal.project</value>
       </property>
       <property name="order">
-         <value>0</value>
+         <value>2</value>
       </property>
       <property name="toolCategories">
          <list>
@@ -74,10 +74,11 @@
    <bean id="org.theospi.portfolio.portal.model.ToolCategory.collectReflect"
       class="org.theospi.portfolio.portal.model.ToolCategory">
       <property name="key">
-         <value>collectReflect</value>
+         <value>org.theospi.portfolio.portal.model.collectReflect</value>
       </property>
       <property name="order">
-         <value>0</value>
+         <!-- skip a spot for home -->
+         <value>1</value>
       </property>
       <property name="toolIds">
          <list>

@@ -20,38 +20,31 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.model;
 
-import java.util.List;
+import org.sakaiproject.service.legacy.site.SitePage;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Feb 11, 2006
- * Time: 8:24:08 AM
+ * Date: Feb 15, 2006
+ * Time: 8:53:50 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ToolCategory implements Comparable, Cloneable {
+public class SitePageWrapper {
 
-   public static final String UNCATEGORIZED_KEY = "org.theospi.portfolio.portal.model.ToolCategory.uncategorized";
-
-   public static final ToolCategory UNCATEGORIZED = new ToolCategory(UNCATEGORIZED_KEY);
-
-   private String key;
+   private SitePage page;
    private int order;
-   private List toolIds;
 
-   public ToolCategory() {
+   public SitePageWrapper(SitePage page, int order) {
+      this.page = page;
+      this.order = order;
    }
 
-   protected ToolCategory(String key) {
-      this.key = key;
+   public SitePage getPage() {
+      return page;
    }
 
-   public String getKey() {
-      return key;
-   }
-
-   public void setKey(String key) {
-      this.key = key;
+   public void setPage(SitePage page) {
+      this.page = page;
    }
 
    public int getOrder() {
@@ -61,26 +54,4 @@ public class ToolCategory implements Comparable, Cloneable {
    public void setOrder(int order) {
       this.order = order;
    }
-
-   public int compareTo(Object o) {
-      Integer order = new Integer(getOrder());
-      Integer other = new Integer(((ToolCategory)o).getOrder());
-      if (other.equals(order) && !getKey().equals(((ToolCategory)o).getKey())) {
-         return getKey().equals(UNCATEGORIZED_KEY)?1:-1;
-      }
-      return order.compareTo(other);
-   }
-
-   public List getToolIds() {
-      return toolIds;
-   }
-
-   public void setToolIds(List toolIds) {
-      this.toolIds = toolIds;
-   }
-
-   public Object clone() throws CloneNotSupportedException {
-      return super.clone();
-   }
-
 }

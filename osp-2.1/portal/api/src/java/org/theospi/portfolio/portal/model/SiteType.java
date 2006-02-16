@@ -36,9 +36,9 @@ public class SiteType implements Comparable {
    private String skin;
    private int order;
    private List toolCategories;
-   public static final SiteType OTHER = new SiteType("other", Integer.MAX_VALUE);
-   public static final SiteType MY_WORKSPACE = new SiteType("myWorkspace", 0);
-   public static final SiteType GATEWAY = new SiteType("gateway", 0);
+   public static final SiteType OTHER = new SiteType("org.theospi.portfolio.portal.other", Integer.MAX_VALUE);
+   public static final SiteType MY_WORKSPACE = new SiteType("org.theospi.portfolio.portal.myWorkspace", 0);
+   public static final SiteType GATEWAY = new SiteType("org.theospi.portfolio.portal.gateway", 0);
 
    public SiteType() {
    }

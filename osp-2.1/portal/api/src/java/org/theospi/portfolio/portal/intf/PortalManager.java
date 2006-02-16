@@ -25,6 +25,7 @@ import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.user.User;
+import org.theospi.portfolio.portal.model.SiteType;
 
 import java.util.List;
 import java.util.Map;
@@ -54,4 +55,5 @@ public interface PortalManager {
 
    public String getPageCategory(String siteId, String pageId);
 
+   public String decorateSiteType(Site site);
 }
