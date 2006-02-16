@@ -83,6 +83,14 @@ public class ContentEntityWrapper implements ContentResource {
       return base.toXml(doc, stack);
    }
 
+   public String getUrl(String rootProperty) {
+      return base.getUrl(rootProperty);
+   }
+
+   public String getReference(String rootProperty) {
+      return base.getUrl(rootProperty);
+   }
+
    public ContentResource getBase() {
       return base;
    }
