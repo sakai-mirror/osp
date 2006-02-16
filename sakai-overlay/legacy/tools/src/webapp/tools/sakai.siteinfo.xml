@@ -21,7 +21,8 @@
 		<configuration name="site_mode" value="siteinfo" type="final" />
 
 		<category name="course" />
-		<category name="project" />
+      <category name="project" />
+      <category name="portfolio" />
 
 	</tool>
 
