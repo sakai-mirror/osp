@@ -57,7 +57,7 @@ implements Controller, FormController {
          viewName = "cancel";
       }
       else if (next != null) {
-         saveMatrixTool(scaffolding);
+         saveScaffolding(scaffolding);
       }
       
       session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);

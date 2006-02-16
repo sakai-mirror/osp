@@ -21,9 +21,6 @@ function hrefViewCell(cellId) {
 			<c:if test="${can.create}">
 				<a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_edit"/></a>
 			</c:if>
-			<c:if test="${!matrixContents.scaffolding.published && can.publish}">
-				<a href="<osp:url value="publishScaffoldingConfirmation.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_publish"/></a>
-			</c:if>
 		</div>
 	</c:if>
 

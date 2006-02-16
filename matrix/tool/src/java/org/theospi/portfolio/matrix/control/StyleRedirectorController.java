@@ -70,7 +70,7 @@ public class StyleRedirectorController implements FormController, LoadObjectCont
       String pageId = (String) request.get("page_id");
       if (pageId == null) {
          pageId = (String) session.get("page_id");
-         session.remove("page_id");
+         //session.remove("page_id");
       }
       WizardPage page = getMatrixManager().getWizardPage(getIdManager().getId(pageId));
       if (session.get(StyleHelper.CURRENT_STYLE) != null) {

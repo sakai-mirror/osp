@@ -89,6 +89,7 @@
        </property>
        <property name="mappings">
            <props>
+              <prop key="/listScaffolding.osp">listScaffoldingController</prop>
               <prop key="/viewMatrix.osp">viewMatrixController</prop>
               <prop key="/viewCell.osp">cellController</prop>
               <prop key="/selectCellArtifacts.osp">cellArtifactController</prop>
@@ -98,6 +99,7 @@
               <prop key="/attachToCell.osp">attachCellController</prop>
               <prop key="/manageCellStatus.osp">manageCellStatusController</prop>
               <prop key="/cellFormPicker.osp">cellFormPickerController</prop>
+              <prop key="/styleRedirector.osp">styleRedirectorController</prop>
 
               <!--  Scaffolding -->
               <prop key="/importScaffolding.osp">importScaffoldingController</prop>
@@ -121,6 +123,7 @@
             <prop key="/editScaffoldingCellConfirm.osp">editScaffoldingCellConfirmController</prop>
             <prop key="/reviewHelper.osp">reviewHelperController</prop>
             <prop key="/reviewPostProcessor.osp">reviewPostProcessor</prop>
+            <prop key="/exposedScaffolding.osp">exposedScaffoldingController</prop>
 
               <!--  Reviewer Stuff -->
               <prop key="/listReviewerItems.osp">listReviewerItemsController</prop>

@@ -93,7 +93,7 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       // does this user have access to any of the above cells
       for (Iterator i = cells.iterator(); i.hasNext();) {
          Cell cell = (Cell) i.next();
-         Id toolId = cell.getMatrix().getMatrixTool().getId();
+         Id toolId = cell.getMatrix().getScaffolding().getToolId();
          if (getExplicitAuthz().isAuthorized(agent, 
                   MatrixFunctionConstants.REVIEW_MATRIX, toolId) || 
                getExplicitAuthz().isAuthorized(agent, 

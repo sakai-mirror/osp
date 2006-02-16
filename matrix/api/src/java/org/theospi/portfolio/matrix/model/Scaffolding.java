@@ -55,7 +55,7 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    private List levels = new ArrayList();
    private List criteria = new ArrayList();
    private Set scaffoldingCells = new HashSet();
-   private Id ownerId;
+   private Agent owner;
    private String title;
    private String columnLabel;
    private String rowLabel;
@@ -66,15 +66,19 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    
    private String description;
    private Id worksiteId;
+   private Id toolId;
    
    private boolean published = false;
    private Agent publishedBy;
    private Date publishedDate;
    
+   private String exposedPageId;
+   private transient Boolean exposeAsTool = null;
+   
    transient private boolean validate;
-   transient private String xsdName;
    
    private int workflowOption;
+   private Set matrix = new HashSet();
    
    public static final int NO_PROGRESSION = 0;
    public static final int HORIZONTAL_PROGRESSION = 1;
@@ -133,15 +137,15 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    /**
     * @return Returns the owner.
     */
-   public Id getOwnerId() {
-      return ownerId;
+   public Agent getOwner() {
+      return owner;
    }
 
    /**
     * @param owner The owner to set.
     */
-   public void setOwnerId(Id ownerId) {
-      this.ownerId = ownerId;
+   public void setOwner(Agent owner) {
+      this.owner = owner;
    }
 
    /**
@@ -236,32 +240,7 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
       this.worksiteId = worksiteId;
    }
 
-   /*
-    * 
-    *  This commented method was replaced with a the lighter weight method below it
-    * 
-   public void setXsdNode(Node xsdNode) {
-      this.xsdName = xsdNode.getDisplayName();
-   }
-   */
 
-   public void setXsdNodeName(String name) {
-       this.xsdName = name;
-    }
-
-   
-   /**
-    * @return Returns the xsdName.
-    */
-   public String getXsdName() {
-      return xsdName;
-   }
-   /**
-    * @param xsdName The xsdName to set.
-    */
-   public void setXsdName(String xsdName) {
-      this.xsdName = xsdName;
-   }
    /**
     * @return Returns the validate.
     */
@@ -353,5 +332,42 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
     */
    public void setWorkflowOption(int workflowOption) {
       this.workflowOption = workflowOption;
+   }
+
+   public Set getMatrix() {
+      return matrix;
+   }
+
+   public void setMatrix(Set matrix) {
+      this.matrix = matrix;
+   }
+   
+   public void add(Matrix matrix) {
+      this.getMatrix().add(matrix);
+      matrix.setScaffolding(this);
+   }
+
+   public Id getToolId() {
+      return toolId;
+   }
+
+   public void setToolId(Id toolId) {
+      this.toolId = toolId;
+   }
+
+   public Boolean getExposeAsTool() {
+      return exposeAsTool;
+   }
+
+   public void setExposeAsTool(Boolean exposeAsTool) {
+      this.exposeAsTool = exposeAsTool;
+   }
+
+   public String getExposedPageId() {
+      return exposedPageId;
+   }
+
+   public void setExposedPageId(String exposedPageId) {
+      this.exposedPageId = exposedPageId;
    }
 }

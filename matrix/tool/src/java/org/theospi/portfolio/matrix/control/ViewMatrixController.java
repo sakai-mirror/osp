@@ -22,24 +22,19 @@ package org.theospi.portfolio.matrix.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.FunctionConstants;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.service.legacy.authzGroup.Member;
-import org.sakaiproject.service.legacy.security.cover.SecurityService;
 import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.springframework.validation.Errors;
@@ -49,10 +44,8 @@ import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Criterion;
 import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.Matrix;
-import org.theospi.portfolio.matrix.model.MatrixTool;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
-import org.theospi.portfolio.security.AuthorizationFacade;
 
 
 import java.util.ArrayList;
@@ -65,52 +58,50 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ViewMatrixController implements FormController, LoadObjectController {
+public class ViewMatrixController extends AbstractMatrixController implements FormController, LoadObjectController {
 
    protected final Log logger = LogFactory.getLog(getClass());
-   private MatrixManager matrixManager;
-   private AuthenticationManager authManager = null;
-   private IdManager idManager = null;
-   private AuthorizationFacade authzManager = null;
-   private WorksiteManager worksiteManager = null;
-   private AgentManager agentManager = null;
+   
    private ToolManager toolManager;
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
 
       MatrixGridBean grid = (MatrixGridBean)incomingModel;
-      Scaffolding scaffolding = null;
+      String strScaffoldingId = (String)request.get("scaffolding_id");
+      
+      
+      if (strScaffoldingId == null) {
+         Placement placement = getToolManager().getCurrentPlacement();
+         strScaffoldingId = placement.getPlacementConfig().getProperty(
+               MatrixManager.EXPOSED_WIZARD_KEY);
+      }
+      
+      Id scaffoldingId = getIdManager().getId(strScaffoldingId);
+      Scaffolding scaffolding = getMatrixManager().getScaffolding(scaffoldingId);
 
       Agent currentAgent = getAuthManager().getAgent();
       boolean createAuthz = false;
-
+      
       String user = (String)request.get("view_user");
       if (user != null) {
-          currentAgent = getAgentManager().getAgent(idManager.getId(user));
+          currentAgent = getAgentManager().getAgent(getIdManager().getId(user));
           createAuthz = true;
       }
 
-      Id toolId = idManager.getId(PortalService.getCurrentToolId());
-
-      Matrix matrix = new Matrix();
-      matrix = matrixManager.getMatrix(toolId, currentAgent.getId());
+      Matrix matrix = getMatrixManager().getMatrix(scaffoldingId, currentAgent.getId());
       if (matrix == null) {
-         MatrixTool matrixTool = matrixManager.getMatrixTool(toolId);
-         if (matrixTool == null) {
-            return incomingModel;
-         }
          if (currentAgent != null && !currentAgent.equals("")) {
             //Don't create a matrix unless the scaffolding has been published
-            if (matrixTool.getScaffolding().isPublished()) {
-               matrix = matrixManager.createMatrix(currentAgent, matrixTool);
+            if (scaffolding.isPublished()) {
+               matrix = getMatrixManager().createMatrix(currentAgent, scaffolding);
             }
             else {
-               grid.setScaffolding(matrixTool.getScaffolding());
+               grid.setScaffolding(scaffolding);
                return incomingModel;
             }
          }
       }
-      scaffolding = matrix.getMatrixTool().getScaffolding();
+      scaffolding = matrix.getScaffolding();
       if (createAuthz) {
          getAuthzManager().createAuthorization(getAuthManager().getAgent(), 
                  FunctionConstants.READ_MATRIX, matrix.getId());
@@ -136,13 +127,13 @@ public class ViewMatrixController implements FormController, LoadObjectControlle
             if (cell == null) {
                cell = new Cell();
                cell.setMatrix(matrix);
-               ScaffoldingCell scaffoldingCell = matrixManager.getScaffoldingCell(criterion, level);
+               ScaffoldingCell scaffoldingCell = getMatrixManager().getScaffoldingCell(criterion, level);
                cell.setScaffoldingCell(scaffoldingCell);
                cell.setStatus(scaffoldingCell.getInitialStatus());
-               matrixManager.storeCell(cell);
+               getMatrixManager().storeCell(cell);
             }
-            List nodeList = new ArrayList(matrixManager.getPageContents(cell.getWizardPage()));
-            nodeList.addAll(matrixManager.getPageForms(cell.getWizardPage()));
+            List nodeList = new ArrayList(getMatrixManager().getPageContents(cell.getWizardPage()));
+            nodeList.addAll(getMatrixManager().getPageForms(cell.getWizardPage()));
             cellBean.setCell(cell);
             cellBean.setNodes(nodeList);
             row.add(cellBean);
@@ -217,11 +208,6 @@ public class ViewMatrixController implements FormController, LoadObjectControlle
       return users;
    }
    
-   private Boolean isMaintainer(){
-      return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
-            getIdManager().getId(PortalService.getCurrentSiteId())));
-   }
-   
    private Cell getCell(Collection cells, Criterion criterion, Level level) {
       for (Iterator iter=cells.iterator(); iter.hasNext();) {
          Cell cell = (Cell) iter.next();
@@ -240,84 +226,7 @@ public class ViewMatrixController implements FormController, LoadObjectControlle
       return new ModelAndView("success", model);
    }
 
-   /**
-    * @return
-    */
-   public AuthenticationManager getAuthManager() {
-      return authManager;
-   }
-
-   /**
-    * @param manager
-    */
-   public void setAuthManager(AuthenticationManager manager) {
-      authManager = manager;
-   }
-
-   /**
-    * @return
-    */
-   public IdManager getIdManager() {
-      return idManager;
-   }
-
-   /**
-    * @param manager
-    */
-   public void setIdManager(IdManager manager) {
-      idManager = manager;
-   }
-
-   /**
-    * @return
-    */
-   public AuthorizationFacade getAuthzManager() {
-      return authzManager;
-   }
-
-   /**
-    * @param facade
-    */
-   public void setAuthzManager(AuthorizationFacade facade) {
-      authzManager = facade;
-   }
-
-   /**
-    * @return Returns the matrixManager.
-    */
-   public MatrixManager getMatrixManager() {
-      return matrixManager;
-   }
-   /**
-    * @param matrixManager The matrixManager to set.
-    */
-   public void setMatrixManager(MatrixManager matrixManager) {
-      this.matrixManager = matrixManager;
-   }
-   /**
-    * @return Returns the worksiteManager.
-    */
-   public WorksiteManager getWorksiteManager() {
-      return worksiteManager;
-   }
-   /**
-    * @param worksiteManager The worksiteManager to set.
-    */
-   public void setWorksiteManager(WorksiteManager worksiteManager) {
-      this.worksiteManager = worksiteManager;
-   }
-   /**
-    * @return Returns the agentManager.
-    */
-   public AgentManager getAgentManager() {
-      return agentManager;
-   }
-   /**
-    * @param agentManager The agentManager to set.
-    */
-   public void setAgentManager(AgentManager agentManager) {
-      this.agentManager = agentManager;
-   }
+   
 
    public ToolManager getToolManager() {
       return toolManager;

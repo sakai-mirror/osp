@@ -24,7 +24,6 @@ package org.theospi.portfolio.matrix.control;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
@@ -82,13 +81,8 @@ public class BaseScaffoldingController {
       }
    }
 
-   protected void saveMatrixTool(Scaffolding scaffolding) {
+   protected void saveScaffolding(Scaffolding scaffolding) {
       getMatrixManager().storeScaffolding(scaffolding);
-      
-      String toolId = PortalService.getCurrentToolId();
-      if (getMatrixManager().getMatrixTool(getIdManager().getId(toolId)) == null) {
-         getMatrixManager().createMatrixTool(toolId, scaffolding);
-      }
    }
 
    public AuthorizationFacade getAuthzManager() {
