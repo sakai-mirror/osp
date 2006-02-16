@@ -2489,6 +2489,23 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
 
       try {
+         String id = SYSTEM_COLLECTION_ID + name;
+         getContentHosting().removeResource(id);
+      }
+      catch (TypeException e) {
+         // ignore, must be new
+      }
+      catch (IdUnusedException e) {
+         // ignore, must be new
+      }
+      catch (PermissionException e) {
+         // ignore, must be new
+      }
+      catch (InUseException e) {
+         // ignore, must be new
+      }
+
+      try {
          resource = getContentHosting().addResource(name, SYSTEM_COLLECTION_ID, 0, type,
                      bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
       }
