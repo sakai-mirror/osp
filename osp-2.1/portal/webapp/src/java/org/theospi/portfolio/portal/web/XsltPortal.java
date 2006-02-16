@@ -22,10 +22,13 @@ package org.theospi.portfolio.portal.web;
 
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.Session;
+import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.ToolException;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.ActiveTool;
+import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.portal.charon.CharonPortal;
@@ -85,6 +88,33 @@ public class XsltPortal extends CharonPortal {
 
    private static final String TOOL_CATEGORY = "category";
    private static final String SITE_TYPE = "site_type";
+   private static final String SITE_TYPE_HELPER = "site_type_helper";
+
+   protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+      // get the Sakai session
+      Session session = SessionManager.getCurrentSession();
+
+      // recognize what to do from the path
+      String option = req.getPathInfo();
+
+      // get the parts (the first will be "")
+      String[] parts = option.split("/");
+
+      if (parts.length < 2) {
+         super.doPost(req, res);
+         return;
+      }
+
+      if (parts[1].equals(SITE_TYPE_HELPER)) {
+         // Resolve the site_type of the form /portal/site_type_helper/project
+         String siteTypeKey = parts[2];
+         doSiteTypeHelper(req, res, session, siteTypeKey, parts.length == 4);
+      }
+      else {
+         super.doPost(req, res);
+      }
+   }
+
 
    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
       // get the Sakai session
@@ -106,6 +136,11 @@ public class XsltPortal extends CharonPortal {
          String siteTypeKey = parts[2];
          doSiteType(req, res, session, siteTypeKey);
       }
+      else if (parts[1].equals(SITE_TYPE_HELPER)) {
+         // Resolve the site_type of the form /portal/site_type_helper/project
+         String siteTypeKey = parts[2];
+         doSiteTypeHelper(req, res, session, siteTypeKey, parts.length == 4);
+      }
       else if (parts[1].equals(TOOL_CATEGORY)) {
          // Resolve the site_type of the form /portal/category/<siteId>/<categoryKey>/<optionalToolId>
          String siteId = parts[2];
@@ -119,6 +154,38 @@ public class XsltPortal extends CharonPortal {
       else {
          super.doGet(req, res);
       }
+   }
+
+   protected void doSiteTypeHelper(HttpServletRequest req, HttpServletResponse res,
+                                   Session session, String siteTypeKey, boolean returning) throws ToolException {
+      if (session.getUserId() == null) {
+         doLogin(req, res, session, req.getPathInfo(), false);
+         return;
+      }
+
+      SiteType siteType = getPortalManager().getSiteType(siteTypeKey);
+
+      ToolSession toolSession = session.getToolSession(Web.escapeJavascript(siteTypeKey));
+
+      if (!returning) {
+         toolSession.setAttribute(PortalManager.SITE_TYPE, siteTypeKey);
+      }
+
+      // put the session in the request attribute
+      req.setAttribute(Tool.TOOL_SESSION, toolSession);
+
+      // set as the current tool session
+      SessionManager.setCurrentToolSession(toolSession);
+
+      // put the placement id in the request attribute
+      String placementId = Web.escapeJavascript(siteTypeKey);
+      req.setAttribute(Tool.PLACEMENT_ID, placementId);
+
+      ActiveTool helperTool = ActiveToolManager.getActiveTool("osp.site.type");
+      Placement placement = new org.sakaiproject.util.Placement(placementId, helperTool, null, null, null);
+
+      String context = req.getPathInfo();
+      forwardTool(helperTool, req, res, placement, siteType.getSkin(), getContext() + "/" + context, "/siteType");
    }
 
    protected void doCategory(HttpServletRequest req, HttpServletResponse res, Session session,
@@ -553,10 +620,19 @@ public class XsltPortal extends CharonPortal {
       safeAppendTextNode(doc, siteTypeKey, type.getKey(), false);
       siteTypeElement.appendChild(siteTypeKey);
 
+      Element siteTypeEscapedKey = doc.createElement("escapedKey");
+      safeAppendTextNode(doc, siteTypeEscapedKey, Web.escapeJavascript(type.getKey()), false);
+      siteTypeElement.appendChild(siteTypeEscapedKey);
+
       Element siteTypeUrl = doc.createElement("url");
       // /portal/site_type/<key>
       safeAppendTextNode(doc, siteTypeUrl, getContext() + "/" + SITE_TYPE + "/" + type.getKey(), true);
       siteTypeElement.appendChild(siteTypeUrl);
+
+      Element siteTypeHelperUrl = doc.createElement("helperUrl");
+      // /portal/site_type_helper/<key>
+      safeAppendTextNode(doc, siteTypeHelperUrl, getContext() + "/" + SITE_TYPE_HELPER + "/" + type.getKey(), true);
+      siteTypeElement.appendChild(siteTypeHelperUrl);
 
       siteTypeElement.appendChild(createSitesListXml(doc, sites, siteId));
       return siteTypeElement;

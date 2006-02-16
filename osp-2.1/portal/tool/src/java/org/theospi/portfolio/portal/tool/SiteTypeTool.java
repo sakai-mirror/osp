@@ -18,47 +18,50 @@
 * limitations under the License.
 *
 **********************************************************************************/
-package org.theospi.portfolio.portal.intf;
+package org.theospi.portfolio.portal.tool;
 
-import org.sakaiproject.javax.PagingPosition;
+import org.theospi.portfolio.shared.tool.HelperToolBase;
+import org.theospi.portfolio.shared.tool.PagingList;
+import org.theospi.portfolio.portal.intf.PortalManager;
 import org.sakaiproject.service.legacy.site.SiteService;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.user.User;
-import org.theospi.portfolio.portal.model.SiteType;
 
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Feb 11, 2006
- * Time: 8:05:11 AM
+ * Date: Feb 16, 2006
+ * Time: 10:01:00 AM
  * To change this template use File | Settings | File Templates.
  */
-public interface PortalManager {
+public class SiteTypeTool extends HelperToolBase {
 
-   public static final String SITE_TYPE = "org.theospi.portfolio.portal.siteType";
-   public static final String TOOL_CATEGORY = "org.theospi.portfolio.portal.siteType";
+   private PortalManager portalManager;
 
-   public User getCurrentUser();
+   private PagingList sites = null;
 
-   public Map getSitesByType();
+   public PagingList getSites() {
+      String siteType = (String) getAttribute(PortalManager.SITE_TYPE);
+      if (siteType != null) {
+         List sitesBase = getPortalManager().getSitesForType(siteType, SiteService.SortType.TITLE_ASC, null);
+         setSites(new PagingList(sitesBase));
+         removeAttribute(PortalManager.SITE_TYPE);
+      }
 
-   public List getSitesForType(String type, SiteService.SortType sort, PagingPosition page);
+      return sites;
+   }
 
-   public Map getPagesByCategory(String siteId);
+   public void setSites(PagingList sites) {
+      this.sites = sites;
+   }
 
-   public List getToolsForPage(String pageId);
+   public PortalManager getPortalManager() {
+      return portalManager;
+   }
 
-   public Site getSite(String siteId);
+   public void setPortalManager(PortalManager portalManager) {
+      this.portalManager = portalManager;
+   }
 
-   public SitePage getSitePage(String pageId);
-
-   public String getPageCategory(String siteId, String pageId);
-
-   public String decorateSiteType(Site site);
-
-   public SiteType getSiteType(String siteTypeKey);
 }

@@ -57,12 +57,21 @@
 
 <xsl:call-template name="site_tools" />
 
-<xsl:for-each select="categories/category" >
-   <xsl:sort select="@order" data-type="number" />
-   <xsl:apply-templates select=".">
-      <xsl:with-param name="content" select="'true'"/>
-   </xsl:apply-templates>
-</xsl:for-each>
+   <xsl:choose>
+      <xsl:when test="siteTypes/siteType[@selected='true']/sites/site[@selected='true']">
+         <xsl:for-each select="categories/category" >
+            <xsl:sort select="@order" data-type="number" />
+            <xsl:apply-templates select=".">
+               <xsl:with-param name="content" select="'true'"/>
+            </xsl:apply-templates>
+         </xsl:for-each>
+      </xsl:when>
+      <xsl:otherwise>
+         <xsl:call-template name="portal_tool">
+            <xsl:with-param name="base" select="siteTypes/siteType[@selected='true']"/>
+         </xsl:call-template>
+      </xsl:otherwise>
+   </xsl:choose>
 
 <div>
 <xsl:call-template name="footer"/>
@@ -70,6 +79,44 @@
 </div>
 </body></html>
 	</xsl:template>
+
+   <!--
+   ===============name portal_tool========================
+   setup an iframe with the currently selected helper tool
+   param: base - the node to get key and helperUrl from
+   =======================================================
+   -->
+   <xsl:template name="portal_tool">
+      <xsl:param name="base"/>
+      <xsl:variable name="key" select="$base/key"/>
+      <h1 class="skip">
+         <xsl:value-of select="$externalized/entry[@key='sit.contentshead']"/>
+      </h1>
+      <a id="tocontent" class="skip" name="tocontent"></a>
+      <div id="content">
+      <div>
+<div class="portletMainWrap">
+<iframe
+class ="portletMainIframe"
+height="50"
+width="100%"
+frameborder="0"
+marginwidth="0"
+marginheight="0"
+scrolling="auto">
+<xsl:attribute name="title">
+   <xsl:value-of select="$externalized/entry[@key=$key]" />
+</xsl:attribute>
+<xsl:attribute name="name">Main<xsl:value-of select="$base/escapedKey" /></xsl:attribute>
+<xsl:attribute name="id">Main<xsl:value-of select="$base/escapedKey" /></xsl:attribute>
+<xsl:attribute name="src"><xsl:value-of select="$base/helperUrl" /></xsl:attribute>
+your browser doesn't support iframes
+</iframe>
+</div>
+      </div>
+   </div>
+   </xsl:template>
+
 
    <!--
    =========match category that isn't categorized=====================
@@ -108,6 +155,24 @@
                <xsl:value-of select="$externalized/entry[@key=$key]"/>
             </a>
          </li>
+      </xsl:if>
+      <xsl:if test="$content='true'">
+         <xsl:choose>
+         <xsl:when test="pages/page[@selected='true']">
+            <xsl:for-each select="pages/page" >
+               <xsl:sort select="@order" data-type="number"/>
+               <xsl:apply-templates select=".">
+                  <xsl:with-param name="content" select="$content"/>
+               </xsl:apply-templates>
+            </xsl:for-each>
+         </xsl:when>
+            <xsl:otherwise>
+               <!-- make the site type iframe here -->
+               <xsl:call-template name="portal_tool">
+                  <xsl:with-param name="base" select="."/>
+               </xsl:call-template>
+            </xsl:otherwise>
+         </xsl:choose>
       </xsl:if>
    </xsl:template>
 
@@ -218,14 +283,7 @@
             </tr>
             <tr>
                <td>
-                  <table><tr>
-                     <xsl:for-each select="siteTypes/siteType[@selected='true']/sites/site">
-                        <xsl:sort select="@order" data-type="number"/>
-                           <xsl:apply-templates select="." >
-                              <xsl:with-param name="extra" select="'false'" />
-                           </xsl:apply-templates>
-                     </xsl:for-each>
-                  </tr></table>
+                  <!-- breadcrumbs -->
                </td>
             </tr>
          </table>
@@ -530,7 +588,10 @@
       <xsl:param name="extra"/>
       <xsl:variable name="key" select="key"/>
       <li class="selectedTab">
-         <a href="#">
+         <a>
+            <xsl:attribute name="href">
+               <xsl:value-of select="sites/site/url"/>
+            </xsl:attribute>
             <xsl:attribute name="title">
                <xsl:value-of select="$externalized/entry[@key=$key]"/>
             </xsl:attribute>
@@ -589,7 +650,7 @@
    param:extra - if this is running during the "more" list
    =====================================================================
    -->
-   <xsl:template match="site[@extra='true']">
+   <!--xsl:template match="site[@extra='true']">
       <xsl:param name="extra"/>
       <xsl:if test="$extra='true'">
          <option>
@@ -602,7 +663,7 @@
             <xsl:value-of select="title"/>
          </option>
       </xsl:if>
-   </xsl:template>
+   </xsl:template-->
 
    <!--
    ===============match site that has been selected===============
@@ -610,7 +671,7 @@
    param:extra - if this is running during the "more" list
    ===================================================================
    -->
-   <xsl:template match="site[@selected='true']">
+   <!--xsl:template match="site[@selected='true']">
       <xsl:param name="extra"/>
       <xsl:if test="$extra='false'">
          <td>
@@ -619,7 +680,7 @@
             </a>
          </td>
       </xsl:if>
-   </xsl:template>
+   </xsl:template-->
 
    <!--
    ===============match site (default case)===============
@@ -627,7 +688,7 @@
    param:extra - if this is running during the "more" list
    ============================================================
    -->
-   <xsl:template match="site">
+   <!--xsl:template match="site">
       <xsl:param name="extra"/>
       <xsl:if test="$extra='false'">
          <td>
@@ -642,7 +703,7 @@
             </a>
          </td>
       </xsl:if>
-   </xsl:template>
+   </xsl:template-->
 
    <!--
    ======-name presence===========================

@@ -49,6 +49,7 @@ public class PortalManagerImpl implements PortalManager {
    private SiteService siteService;
 
    private Map siteTypes;
+   private static final String TYPE_PREFIX = "org.theospi.portfolio.portal.";
 
    public User getCurrentUser() {
       return getUserDirectoryService().getCurrentUser();
@@ -114,8 +115,13 @@ public class PortalManagerImpl implements PortalManager {
    }
 
    public List getSitesForType(String type, SiteService.SortType sort, PagingPosition page) {
-      return getSiteService().getSites(SiteService.SelectionType.ACCESS, type, null,
+      String baseType = extractType(type);
+      return getSiteService().getSites(SiteService.SelectionType.ACCESS, baseType, null,
 				null, sort, page);
+   }
+
+   protected String extractType(String type) {
+      return type.substring(TYPE_PREFIX.length());
    }
 
    public Map getPagesByCategory(String siteId) {
@@ -240,7 +246,7 @@ public class PortalManagerImpl implements PortalManager {
    }
 
    public String decorateSiteType(String siteTypeKey) {
-      return "org.theospi.portfolio.portal." + siteTypeKey;
+      return TYPE_PREFIX + siteTypeKey;
    }
 
    public String decorateSiteType(Site site) {
@@ -250,6 +256,16 @@ public class PortalManagerImpl implements PortalManager {
       else {
          return decorateSiteType(site.getType());
       }
+   }
+
+   public SiteType getSiteType(String siteTypeKey) {
+      for (Iterator i=getSiteTypes().values().iterator();i.hasNext();) {
+         SiteType siteType = (SiteType) i.next();
+         if (siteType.getKey().equals(siteTypeKey)) {
+            return siteType;
+         }
+      }
+      return null;
    }
 
    public UserDirectoryService getUserDirectoryService() {
