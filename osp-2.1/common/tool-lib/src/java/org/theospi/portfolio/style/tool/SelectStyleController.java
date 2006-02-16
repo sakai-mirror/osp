@@ -40,11 +40,11 @@ public class SelectStyleController extends AbstractStyleController {
       String styleId = (String)request.get("style_id");
       String selectAction = (String)request.get("selectAction");
       
-      if (selectAction.equals("on")) {
+      if (selectAction != null && selectAction.equals("on")) {
          Style style = getStyleManager().getStyle(getIdManager().getId(styleId));
          session.put(StyleHelper.CURRENT_STYLE, style);
       }
-      else {
+      else if (selectAction != null && selectAction.equals("off")){
          session.remove(StyleHelper.CURRENT_STYLE);
          session.put(StyleHelper.UNSELECTED_STYLE, "true");
       }
