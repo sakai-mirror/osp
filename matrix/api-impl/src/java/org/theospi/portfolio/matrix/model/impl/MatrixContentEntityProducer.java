@@ -21,6 +21,7 @@
 package org.theospi.portfolio.matrix.model.impl;
 
 import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
+import org.sakaiproject.service.legacy.entity.Entity;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,6 +38,6 @@ public class MatrixContentEntityProducer extends OspEntityProducerBase {
    }
 
    public void init() {
-      getEntityManager().registerEntityProducer(this);
+      getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + MATRIX_PRODUCER);
    }
 }
