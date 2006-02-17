@@ -7,107 +7,60 @@
     <div>
     <h5>Matrix Cell Completion Status</h5>
     
-    Matrix: <xsl:value-of select="//parameters/parameter[@name='matrixId']/." />
+    Matrix: <xsl:value-of select="//parameters/parameter[@name='title']/." />
     
     <div class="instruction">This data is only up to the date of the last data warehouse synchronization.</div>
     
     <h5>Users</h5>
-    <table width="100%">
+    <table width="100%" class="lines">
 
+       <tr class="exclude">
+          <td></td>
+          <td>Ready</td>
+          <td>Pending</td>
+          <td>Complete</td>
+          <td>Locked</td>
+       </tr>
        
        <xsl:for-each select="//datarow">
           <xsl:sort select="element[@name='userId']/." />
           <xsl:if test="not(preceding-sibling::datarow[element[@colName='userId'] = 
                         current()/element[@colName='userId']])">
              <xsl:variable name = "varUserName" select = "element[@colName='userId']" />
-             <tr><td width="100%">
+             <tr>
+                <td>
+                    <xsl:value-of select="$varUserName"/>
+                </td>
+                <xsl:if test="count(//datarow[element[@colName='userId'] = $varUserName]) &gt; 1">
+                <td>
+                   <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName and element[@colName='status'] = 'READY'])"/>
+                    / <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName])"/>
+                </td>
+                <td>
+                   <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName and element[@colName='status'] = 'PENDING'])"/>
+                    / <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName])"/>
+                </td>
+                <td>
+                   <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName and element[@colName='status'] = 'COMPLETE'])"/>
+                    / <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName])"/>
+                </td>
+                <td>
+                   <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName and element[@colName='status'] = 'LOCKED'])"/>
+                    / <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName])"/>
+                </td>
+                </xsl:if>a
+                <xsl:if test="count(//datarow[element[@colName='userId'] = $varUserName]) &lt;= 1">
+                   <td colspan="4" align="center">
+                      Not Started
+                   </td>
+                </xsl:if>
 
-
-
-                <table width="100%" class="lines">
-                   <tr class="exclude">
-                      <td>
-                         <xsl:value-of select="$varUserName"/>
-                      </td>
-
-                      <xsl:for-each select="//datarow[element[@colName='criterion_sequence'] = 0]">
-                         <xsl:sort data-type="number" select="element[@name='level_sequence']" />
-                         <xsl:if test="not(preceding-sibling::datarow[element[@colName='level_sequence'] = 
-                        current()/element[@colName='level_sequence']])">
-                            <td>
-                               <xsl:value-of select="element[@colName='level_description']"/>
-                            </td>
-                         </xsl:if>
-                      </xsl:for-each>
-                   </tr>
-
-
-
-                   <xsl:for-each select="//datarow[element[@colName='userId'] = $varUserName]">
-                      <xsl:sort data-type="number" select="element[@name='criterion_sequence']" />
-
-                      <xsl:variable name = "varUserCriterion" select = "element[@colName='criterion_sequence']" />
-                     
-                      <xsl:if test="not(preceding-sibling::datarow[position() = 1]/element[@colName='criterion_sequence'] = $varUserCriterion)">
-                         <tr>
-                            <td>
-                               <xsl:value-of select="element[@colName='criterion_description']"/>
-                            </td>
-
-
-
-
-
-
-                   <xsl:for-each select="//datarow[element[@colName='userId'] = $varUserName and
-                        element[@colName='criterion_sequence'] = current()/element[@colName='criterion_sequence']]">
-                      <xsl:sort data-type="number" select="element[@name='level_sequence']/." />
-                         <td>
-
-                <xsl:value-of select="element[@colName='status']"/>
-
-
-                         </td>
-                   </xsl:for-each>
-
-
-
-
-                         </tr>
-                      </xsl:if>
-                   </xsl:for-each>
-
-                </table>
-                <p /><p />
-
-             </td></tr>
+              </tr>
            </xsl:if>
        </xsl:for-each>
     </table>
 
-<!--
-    
-    <table>
-    <tr>
-    <xsl:for-each select="//column">
-        <th>  
-            <xsl:value-of select="@title"/>
-              
-        </th>
-    </xsl:for-each>
-    </tr>
-    
-    <xsl:for-each select="//datarow">
-        <tr>
-            <xsl:for-each select="element">
-                <td>
-                    <xsl:value-of select="."/>
-                </td>
-            </xsl:for-each>
-        </tr>
-    </xsl:for-each>
-    </table>
--->
+
     </div>
 </xsl:template>
 </xsl:stylesheet>

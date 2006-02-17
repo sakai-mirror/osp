@@ -33,6 +33,8 @@ public abstract class AbstractLabel extends IdentifiableObject implements Serial
    String description;
    String color;
    String textColor = "#000000";
+   private int sequenceNumber = 0;
+   private Scaffolding scaffolding;
 
 
    /**
@@ -77,6 +79,38 @@ public abstract class AbstractLabel extends IdentifiableObject implements Serial
 
    public void setTextColor(String textColor) {
       this.textColor = textColor;
+   }
+   
+   /**
+    * This property is unused except for in the data warehouse.
+    * it does NOT contain the sequence number of label.  To access that property
+    * it is implicit in the list containing this instance.
+    * @return int
+    */
+   public int getSequenceNumber() {
+      return sequenceNumber;
+   }
+   /**
+    * Only the datawarehouse is using this right now
+    * @param sequenceNumber int
+    */
+   public void setSequenceNumber(int sequenceNumber) {
+      this.sequenceNumber = sequenceNumber;
+   }
+   
+   /**
+    * This property is unused except for in the data warehouse.
+    * @return int
+    */
+   public Scaffolding getScaffolding() {
+      return scaffolding;
+   }
+   /**
+    * Only the datawarehouse is using this right now
+    * @param sequenceNumber int
+    */
+   public void setScaffolding(Scaffolding scaffolding) {
+      this.scaffolding = scaffolding;
    }
 
    public String toString() {

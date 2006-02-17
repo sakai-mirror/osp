@@ -83,6 +83,8 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    Matrix getMatrix(Id matrixId);
 
+   public List getMatricesForWarehousing();
+
    Scaffolding getScaffolding(Id scaffoldingId);
    List findScaffolding(String siteId, String toolId, String userId);
    public List findScaffolding(String siteId, String toolId);
@@ -136,7 +138,8 @@ public interface MatrixManager extends WorkflowEnabledManager {
    Scaffolding createDefaultScaffolding();
 
    public List getScaffolding();
-   
+   public List getScaffoldingForWarehousing();
+
    public List getMatrices(Id scaffoldingId);
    public List getMatrices(Id scaffoldingId, Id agentId);
 
