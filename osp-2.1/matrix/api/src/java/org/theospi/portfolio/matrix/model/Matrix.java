@@ -25,6 +25,7 @@ import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +33,7 @@ import java.util.Set;
 /**
  * @author rpembry
  */
-public class Matrix implements Artifact {
+public class Matrix extends IdentifiableObject implements Artifact {
 
    private Id id;
    private Agent owner;

@@ -137,6 +137,41 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return findScaffolding(siteId, toolId, null);
    }
 
+   public List getScaffoldingForWarehousing() {
+      List scaffolding = getHibernateTemplate().find("from Scaffolding");
+      
+      for(Iterator i = scaffolding.iterator(); i.hasNext(); ) {
+         Scaffolding scaff = (Scaffolding)i.next();
+         Set cells = scaff.getScaffoldingCells();
+         
+         for(Iterator ii = cells.iterator(); ii.hasNext(); ) {
+            ScaffoldingCell cell = (ScaffoldingCell)ii.next();
+            
+            cell.getId();
+         }
+         List levels = scaff.getLevels();
+         int n = 0;
+         for(Iterator ii = levels.iterator(); ii.hasNext(); ) {
+            Level level = (Level)ii.next();
+            
+            level.setSequenceNumber(n++);
+            level.setScaffolding(scaff);
+         }
+         
+         List criteria = scaff.getCriteria();
+         criteria.size();
+         n = 0;
+         for(Iterator ii = criteria.iterator(); ii.hasNext(); ) {
+            Criterion criterion = (Criterion)ii.next();
+            
+            criterion.setSequenceNumber(n++);
+            criterion.setScaffolding(scaff);
+         }
+      }
+      
+      return scaffolding;
+   }
+
    public List getMatrices(Id scaffoldingId) {
       List matrices = getHibernateTemplate().find(
             "from Matrix matrix where matrix.scaffolding_id = ?", new Object[]{scaffoldingId.getValue()});
@@ -459,6 +494,28 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return (Matrix) this.getHibernateTemplate().load(Matrix.class, matrixId);
    }
    
+   public List getMatricesForWarehousing() {
+      
+      List matrices = getMatrices(null, null);
+
+        
+        for(Iterator ii = matrices.iterator(); ii.hasNext(); ) {
+           Matrix mat = (Matrix)ii.next();
+           
+           mat.getId();
+           //mat.setMatrixTool(tool);
+           
+           mat.getCells().size();
+           
+           for(Iterator iii= mat.getCells().iterator(); iii.hasNext(); ) {
+              Cell cell = (Cell)iii.next();
+           }
+           
+           getHibernateTemplate().evict(mat);
+        }
+      return matrices;
+   }
+
    public Scaffolding getScaffolding(Id scaffoldingId) {
       return (Scaffolding) this.getHibernateTemplate().get(Scaffolding.class, scaffoldingId);
       //return getScaffolding(scaffoldingId, false);

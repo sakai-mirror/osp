@@ -29,11 +29,14 @@ import java.util.Iterator;
 import java.util.HashSet;
 
 
-class MatrixToolWarehouseTask extends BaseWarehouseTask {
+class MatrixWarehouseTask extends BaseWarehouseTask {
 
    private MatrixManager matrixManager;
    
    protected Collection getItems() {
+      Collection matrices = matrixManager.getMatricesForWarehousing();
+      return matrices;
+      
 //      Collection matrices = matrixManager.getMatrixTools();
 //      
 //      for(Iterator i = matrices.iterator(); i.hasNext(); ) {
@@ -51,7 +54,6 @@ class MatrixToolWarehouseTask extends BaseWarehouseTask {
 //         }
 //      }
 //      
-      return null;
    }
 
    public MatrixManager getMatrixManager() {

@@ -8,7 +8,8 @@
 <!-- $Revision: 1.19 $ -->
 
 <tables>
-
+   
+   
    <table>
      <name>DW_MATRIX</name>
      <desc>Matrix Datawarehouse table</desc>
@@ -24,21 +25,53 @@
           <param>255</param>
         </column>
         <column>
-          <name>matrixTool_id</name>
+          <name>scaffolding_id</name>
           <type>VARCHAR</type>
           <param>36</param>
         </column>
      </columns>
      <not-null>id</not-null>
-     <not-null>matrixTool_id</not-null>
+     <not-null>scaffolding_id</not-null>
      <not-null>owner</not-null>
      <primary-key>id</primary-key>
    </table>
 
 
-
    <table>
      <name>DW_MATRIX_CELL</name>
+     <desc>Matrix Cell Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>matrix_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>wizard_page_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>scaffolding_cell_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>matrix_id</not-null>
+     <not-null>wizard_page_id</not-null>
+     <not-null>scaffolding_cell_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+
+   <table>
+     <name>DW_WIZARD_PAGE</name>
      <desc>Matrix Cell Datawarehouse table</desc>
      <columns>
         <column>
@@ -52,25 +85,40 @@
           <param>255</param>
         </column>
         <column>
-          <name>matrix_id</name>
+          <name>wizard_page_def_id</name>
           <type>VARCHAR</type>
           <param>36</param>
         </column>
         <column>
-          <name>reflection_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>scaffolding_cell_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
+          <name>modified</name>
+          <type>TIMESTAMP</type>
         </column>
      </columns>
      <not-null>id</not-null>
-     <not-null>matrix_id</not-null>
+     <not-null>wizard_page_def_id</not-null>
      <primary-key>id</primary-key>
    </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
    <table>
@@ -108,26 +156,6 @@
      </columns>
      <not-null>id</not-null>
      <not-null>type</not-null>
-     <primary-key>id</primary-key>
-   </table>
-
-   <table>
-     <name>DW_MATRIX_TOOL</name>
-     <desc>Matrix Tool Datawarehouse table</desc>
-     <columns>
-        <column>
-          <name>id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>scaffolding_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-     </columns>
-     <not-null>id</not-null>
-     <not-null>scaffolding_id</not-null>
      <primary-key>id</primary-key>
    </table>
 
@@ -330,230 +358,6 @@
      <primary-key>id</primary-key>
    </table>
 
-   <table>
-     <name>DW_RUBRIC</name>
-     <desc>Rubric Datawarehouse table</desc>
-     <columns>
-        <column>
-          <name>id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>criterion_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>level_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>quantity</name>
-          <type>INTEGER</type>
-        </column>
-        <column>
-          <name>type</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>primaryType</name>
-          <type>VARCHAR</type>
-          <param>255</param>
-        </column>
-        <column>
-          <name>subType</name>
-          <type>VARCHAR</type>
-          <param>255</param>
-        </column>
-        <column>
-          <name>scaffolding_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-
-     </columns>
-     <not-null>id</not-null>
-     <not-null>scaffolding_id</not-null>
-     <primary-key>id</primary-key>
-   </table>
-
-   <table>
-     <name>DW_SCAFFOLDING</name>
-     <desc>Scaffolding Datawarehouse table</desc>
-     <columns>
-        <column>
-          <name>id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>ownerId</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>title</name>
-          <type>VARCHAR</type>
-          <param>255</param>
-        </column>
-        <column>
-          <name>description</name>
-          <type>VARCHAR</type>
-          <param>255</param>
-        </column>
-        <column>
-          <name>worksiteId</name>
-          <type>VARCHAR</type>
-          <param>255</param>
-        </column>
-        <column>
-          <name>published</name>
-          <type>TINYINT</type>
-        </column>
-        <column>
-          <name>publishedBy</name>
-          <type>VARCHAR</type>
-          <param>255</param>
-        </column>
-        <column>
-          <name>publishedDate</name>
-          <type>TIMESTAMP</type>
-        </column>
-        <column>
-          <name>columnLabel</name>
-          <type>VARCHAR</type>
-          <param>255</param>
-        </column>
-        <column>
-          <name>rowLabel</name>
-          <type>VARCHAR</type>
-          <param>255</param>
-        </column>
-        <column>
-          <name>readyColor</name>
-          <type>VARCHAR</type>
-          <param>7</param>
-        </column>
-        <column>
-          <name>pendingColor</name>
-          <type>VARCHAR</type>
-          <param>7</param>
-        </column>
-        <column>
-          <name>completedColor</name>
-          <type>VARCHAR</type>
-          <param>7</param>
-        </column>
-        <column>
-          <name>lockedColor</name>
-          <type>VARCHAR</type>
-          <param>7</param>
-        </column>
-     </columns>
-     <not-null>id</not-null>
-     <not-null>ownerId</not-null>
-     <primary-key>id</primary-key>
-   </table>
-
-   <table>
-     <name>DW_SCAFFOLDING_CELL</name>
-     <desc>Scaffolding cell Datawarehouse table</desc>
-     <columns>
-        <column>
-          <name>id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>rootcriterion_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>level_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>scaffolding_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-      <!--
-        <column>
-          <name>expectationHeader</name>
-          <type>TEXT</type>
-        </column>
-        -->
-        <column>
-          <name>initialStatus</name>
-          <type>VARCHAR</type>
-          <param>255</param>
-        </column>
-        <column>
-          <name>gradableReflection</name>
-          <type>TINYINT</type>
-        </column>
-     </columns>
-     <not-null>id</not-null>
-     <not-null>scaffolding_id</not-null>
-     <primary-key>id</primary-key>
-   </table>
-
-   <table>
-     <name>DW_SCAFFOLDING_CRITERION</name>
-     <desc>Scaffolding Criterion Datawarehouse table</desc>
-     <columns>
-        <column>
-          <name>parent_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>elt</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>seq_num</name>
-          <type>INTEGER</type>
-        </column>
-     </columns>
-     <not-null>parent_id</not-null>
-     <not-null>elt</not-null>
-     <not-null>seq_num</not-null>
-     <primary-key>parent_id</primary-key>
-     <primary-key>seq_num</primary-key>
-   </table>
-
-   <table>
-     <name>DW_SCAFFOLDING_LEVELS</name>
-     <desc>Scaffolding Levels Datawarehouse table</desc>
-     <columns>
-        <column>
-          <name>scaffolding_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>elt</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>seq_num</name>
-          <type>INTEGER</type>
-        </column>
-     </columns>
-     <not-null>scaffolding_id</not-null>
-     <not-null>elt</not-null>
-     <not-null>seq_num</not-null>
-     <primary-key>scaffolding_id</primary-key>
-     <primary-key>seq_num</primary-key>
-   </table>
 
    <table>
      <name>DW_STRUCTURED_ARTIFACT_DEF</name>
@@ -629,31 +433,6 @@
      <primary-key>id</primary-key>
    </table>
 
-   <table>
-     <name>DW_SUBCRITERIA</name>
-     <desc>Subcriteria Datawarehouse table</desc>
-     <columns>
-        <column>
-          <name>parent_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>elt</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>seq_num</name>
-          <type>INTEGER</type>
-        </column>
-     </columns>
-     <not-null>parent_id</not-null>
-     <not-null>elt</not-null>
-     <not-null>seq_num</not-null>
-     <primary-key>parent_id</primary-key>
-     <primary-key>seq_num</primary-key>
-   </table>
 
    <index>
      <index-name>FK4440ED2786D518</index-name>
@@ -686,7 +465,7 @@
    <index>
     <index-name>FK5A17205459517621</index-name>
     <table-name>DW_MATRIX</table-name>
-    <column>matrixTool_id</column>
+    <column>scaffolding_id</column>
    </index>
 
    <index>
@@ -702,11 +481,11 @@
     <index>
     <index-name>FK8C1D366DFE6D91AF</index-name>
     <table-name>DW_MATRIX_CELL</table-name>
-    <column>reflection_id</column>
+    <column>wizard_page_id</column>
    </index>
 
    <index>
-    <index-name>FK8C2516A3C604760E</index-name>
+    <index-name>FK8C2516A3C604760F</index-name>
     <table-name>DW_MATRIX_TOOL</table-name>
     <column>scaffolding_id</column>
    </index>
@@ -732,56 +511,6 @@
      <index-name>FKF1E8DD1A2786D518</index-name>
      <table-name>DW_REVIEWER_ITEM</table-name>
      <column>cell_id</column>
-   </index>
-
-
-   <index>
-     <index-name>FK184EAE6880F1F7B6</index-name>
-     <table-name>DW_SCAFFOLDING_CELL</table-name>
-     <column>level_id</column>
-   </index>
-   <index>
-     <index-name>FK184EAE68C604760E</index-name>
-     <table-name>DW_SCAFFOLDING_CELL</table-name>
-     <column>scaffolding_id</column>
-   </index>
-   <index>
-     <index-name>FK184EAE685827115B</index-name>
-     <table-name>DW_SCAFFOLDING_CELL</table-name>
-     <column>rootcriterion_id</column>
-   </index>
-
-   <index>
-     <index-name>FK86341165188AD</index-name>
-     <table-name>DW_SCAFFOLDING_CRITERION</table-name>
-     <column>elt</column>
-   </index>
-   <index>
-     <index-name>FK863411657B66B0D0</index-name>
-     <table-name>DW_SCAFFOLDING_CRITERION</table-name>
-     <column>parent_id</column>
-   </index>
-
-   <index>
-     <index-name>FK4EBCD0F5C604760E</index-name>
-     <table-name>DW_SCAFFOLDING_LEVELS</table-name>
-     <column>scaffolding_id</column>
-   </index>
-   <index>
-     <index-name>FK4EBCD0F5188AD</index-name>
-     <table-name>DW_SCAFFOLDING_LEVELS</table-name>
-     <column>elt</column>
-   </index>
-
-   <index>
-     <index-name>FK5FDD38EC7B66B0D0</index-name>
-     <table-name>DW_SUBCRITERIA</table-name>
-     <column>parent_id</column>
-   </index>
-   <index>
-     <index-name>FK5FDD38EC188AD</index-name>
-     <table-name>DW_SUBCRITERIA</table-name>
-     <column>elt</column>
    </index>
 
 </tables>

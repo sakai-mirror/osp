@@ -32,7 +32,14 @@ import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 public class IdentifiableObjectPropertyAccess extends BeanPropertyAccess {
 
    public Object getPropertyValue(Object source) throws Exception {
-      IdentifiableObject object = (IdentifiableObject) super.getPropertyValue(source);
+      Object obj = super.getPropertyValue(source);
+      IdentifiableObject object = null;
+      try {
+         object = (IdentifiableObject)obj;
+      } catch(ClassCastException cce) {
+         throw new Exception("Class " + obj.getClass().getName() + 
+               " is not derived from IdentifiableObject", cce);
+      }
       if (object != null) {
          return object.getId().getValue();
       }

@@ -32,6 +32,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import java.util.ArrayList;
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -69,7 +71,11 @@ public class BaseChildWarehouseTask implements ChildWarehouseTask {
          }
       }
       catch (SQLException e) {
-         throw new JobExecutionException(e);
+         throw new JobExecutionException(new Exception("query: " + getInsertStmt(), e));
+      } catch (NullPointerException e) {
+            throw new JobExecutionException(new Exception(
+                  "The BaseChildWarehouseTask.execute method parameter items is null. query identifier: " +
+                  getInsertStmt(), e));
       }
       finally {
          try {
@@ -120,9 +126,22 @@ public class BaseChildWarehouseTask implements ChildWarehouseTask {
          if (getComplexFields() != null) {
             for (Iterator i=getComplexFields().iterator();i.hasNext();) {
                ChildFieldWrapper wrapper = (ChildFieldWrapper)i.next();
-
-               wrapper.getTask().execute(item,
-                     (Collection)wrapper.getPropertyAccess().getPropertyValue(item), ps.getConnection());
+               
+               Object property = wrapper.getPropertyAccess().getPropertyValue(item);
+               Collection items = null;
+               
+               //If the complex field isn't a Collection then
+               // build a collection out of the single class 
+               // instance in the complex field
+               if(property instanceof Collection) {
+                  items = (Collection)property;
+               } else {
+                  items = new ArrayList();
+                  items.add(property);
+               }
+               
+               // item becomes the new parent, items is the complex field (Collection)
+               wrapper.getTask().execute(item, items, ps.getConnection());
             }
          }
       }
