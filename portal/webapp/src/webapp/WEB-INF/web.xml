@@ -25,13 +25,13 @@
         </init-param>
     </filter>
 
-    <filter-mapping>
-        <filter-name>sakai.request</filter-name>
-        <servlet-name>osp.portal.xslt</servlet-name>
-        <dispatcher>REQUEST</dispatcher>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>INCLUDE</dispatcher>
-    </filter-mapping>
+   <filter-mapping>
+       <filter-name>sakai.request</filter-name>
+       <servlet-name>osp.portal.xslt</servlet-name>
+       <dispatcher>REQUEST</dispatcher>
+       <dispatcher>FORWARD</dispatcher>
+       <dispatcher>INCLUDE</dispatcher>
+   </filter-mapping>
 
     <servlet>
         <servlet-name>osp.portal.xslt</servlet-name>

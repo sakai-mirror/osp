@@ -21,11 +21,12 @@
 package org.theospi.portfolio.portal.intf;
 
 import org.sakaiproject.javax.PagingPosition;
-import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
+import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.service.legacy.user.User;
 import org.theospi.portfolio.portal.model.SiteType;
+import org.theospi.portfolio.portal.model.ToolCategory;
 
 import java.util.List;
 import java.util.Map;
@@ -39,8 +40,10 @@ import java.util.Map;
  */
 public interface PortalManager {
 
+   public static final String CONTEXT = "org.theospi.portfolio.portal.context";
    public static final String SITE_TYPE = "org.theospi.portfolio.portal.siteType";
-   public static final String TOOL_CATEGORY = "org.theospi.portfolio.portal.siteType";
+   public static final String SITE_ID = "org.theospi.portfolio.portal.siteId";
+   public static final String TOOL_CATEGORY = "org.theospi.portfolio.portal.toolCategory";
 
    public User getCurrentUser();
 
@@ -61,4 +64,13 @@ public interface PortalManager {
    public String decorateSiteType(Site site);
 
    public SiteType getSiteType(String siteTypeKey);
+
+   public ToolCategory getToolCategory(String siteType, String toolCategoryKey);
+
+   public boolean isAvailable(String toolId, String siteId);
+
+   public SitePage getPage(String toolId, String siteId);
+
+   public boolean isUserInRole(String roleId, String siteId);
+
 }

@@ -35,6 +35,8 @@ public class SiteType implements Comparable {
    private String key;
    private String skin;
    private int order;
+   private int firstCategory = 0;
+   private int lastCategory = 0;
    private List toolCategories;
    public static final SiteType OTHER = new SiteType("org.theospi.portfolio.portal.other", Integer.MAX_VALUE);
    public static final SiteType MY_WORKSPACE = new SiteType("org.theospi.portfolio.portal.myWorkspace", 0);
@@ -84,6 +86,22 @@ public class SiteType implements Comparable {
 
    public void setToolCategories(List toolCategories) {
       this.toolCategories = toolCategories;
+   }
+
+   public int getFirstCategory() {
+      return firstCategory;
+   }
+
+   public void setFirstCategory(int firstCategory) {
+      this.firstCategory = firstCategory;
+   }
+
+   public int getLastCategory() {
+      return lastCategory;
+   }
+
+   public void setLastCategory(int lastCategory) {
+      this.lastCategory = lastCategory;
    }
 
 }

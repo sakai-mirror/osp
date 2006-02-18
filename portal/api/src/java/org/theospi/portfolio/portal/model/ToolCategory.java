@@ -37,6 +37,7 @@ public class ToolCategory implements Comparable, Cloneable {
 
    private String key;
    private int order;
+   private String homePagePath;
    private List toolIds;
 
    public ToolCategory() {
@@ -81,6 +82,14 @@ public class ToolCategory implements Comparable, Cloneable {
 
    public Object clone() throws CloneNotSupportedException {
       return super.clone();
+   }
+
+   public String getHomePagePath() {
+      return homePagePath;
+   }
+
+   public void setHomePagePath(String homePagePath) {
+      this.homePagePath = homePagePath;
    }
 
 }

@@ -6,6 +6,13 @@
    <display-name>osp-portal-tool</display-name>
     <description>OSP Portal Tools</description>
 
+   <context-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>
+         /web-context.properties
+      </param-value>
+   </context-param>
+
     <filter>
         <filter-name>sakai.request</filter-name>
         <filter-class>org.sakaiproject.util.RequestFilter</filter-class>
@@ -18,6 +25,14 @@
    <filter-mapping>
        <filter-name>sakai.request</filter-name>
        <servlet-name>osp.site.type</servlet-name>
+       <dispatcher>REQUEST</dispatcher>
+       <dispatcher>FORWARD</dispatcher>
+       <dispatcher>INCLUDE</dispatcher>
+   </filter-mapping>
+
+   <filter-mapping>
+       <filter-name>sakai.request</filter-name>
+       <servlet-name>osp.tool.category</servlet-name>
        <dispatcher>REQUEST</dispatcher>
        <dispatcher>FORWARD</dispatcher>
        <dispatcher>INCLUDE</dispatcher>
@@ -63,9 +78,32 @@
        </init-param>
   </servlet>
 
+   <servlet>
+     <servlet-name>osp.tool.category</servlet-name>
+     <servlet-class>org.theospi.portfolio.shared.control.servlet.HelperAwareJsfTool</servlet-class>
+       <init-param>
+           <param-name>path</param-name>
+           <param-value>/portal</param-value>
+       </init-param>
+     <load-on-startup>2</load-on-startup>
+
+       <init-param>
+           <param-name>default</param-name>
+           <param-value>toolCategory</param-value>
+       </init-param>
+        <init-param>
+           <param-name>default.last.view</param-name>
+           <param-value>true</param-value>
+       </init-param>
+  </servlet>
+
     <listener>
         <listener-class>org.sakaiproject.util.ToolListener</listener-class>
     </listener>
+
+   <listener>
+      <listener-class>org.sakaiproject.metaobj.utils.ioc.web.WebContextLoaderListener</listener-class>
+   </listener>
 
    <servlet-mapping>
       <servlet-name>Faces Servlet</servlet-name>
