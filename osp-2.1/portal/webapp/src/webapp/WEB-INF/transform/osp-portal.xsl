@@ -51,14 +51,16 @@
    <xsl:value-of select="$externalized/entry[@key='sit.jumpworksite']"/>
 </a>
 
-  <xsl:call-template name="site_tabs" />
+   <xsl:call-template name="site_tabs" />
+
+   <xsl:call-template name="breadcrumbs" />
 
 <div id="container" class="project">
 
 <xsl:call-template name="site_tools" />
 
    <xsl:choose>
-      <xsl:when test="siteTypes/siteType[@selected='true']/sites/site[@selected='true']">
+      <xsl:when test="siteTypes/siteType/sites/site[@selected='true']">
          <xsl:for-each select="categories/category" >
             <xsl:sort select="@order" data-type="number" />
             <xsl:apply-templates select=".">
@@ -728,4 +730,73 @@ your browser doesn't support iframes
          Your browser doesn't support frames
       </iframe>
    </xsl:template>
+
+   <!--
+   =================name breadcrumbs==============
+   breadcumb processing
+   ===============================================
+   -->
+   <xsl:template name="breadcrumbs">
+      <xsl:variable name="siteTypeKey" select="siteTypes/siteType[@selected='true']/key"/>
+      <xsl:variable name="toolCategoryKey" select="categories/category[@selected='true']/key"/>
+      <div>
+      <table>
+         <tr><td></td></tr>
+         <tr>
+            <td width="160"></td>
+            <xsl:if test="siteTypes/siteType[@selected='true']">
+               <xsl:if test="siteTypes/siteType[@selected='true' and key!='org.theospi.portfolio.portal.myWorkspace']">
+                  <xsl:call-template name="breadcrumb_entry">
+                     <xsl:with-param name="node" select="siteTypes/siteType[@selected='true']"/>
+                     <xsl:with-param name="title" select="$externalized/entry[@key=$siteTypeKey]"/>
+                  </xsl:call-template>
+               </xsl:if>
+               <xsl:if test="siteTypes/siteType/sites/site[@selected='true']">
+                  <xsl:call-template name="breadcrumb_entry">
+                     <xsl:with-param name="node" select="siteTypes/siteType/sites/site[@selected='true']"/>
+                     <xsl:with-param name="title" select="siteTypes/siteType/sites/site[@selected='true']/title"/>
+                  </xsl:call-template>
+                  <xsl:if test="categories/category[@selected='true']">
+                     <xsl:if test="categories/category[key!='org.theospi.portfolio.portal.model.ToolCategory.uncategorized']">
+                        <xsl:call-template name="breadcrumb_entry">
+                           <xsl:with-param name="node" select="categories/category[@selected='true']"/>
+                           <xsl:with-param name="title" select="$externalized/entry[@key=$toolCategoryKey]"/>
+                        </xsl:call-template>
+                     </xsl:if>
+                  </xsl:if>
+                  <xsl:if test="categories/category/pages/page[@selected='true']">
+                     <xsl:call-template name="breadcrumb_entry">
+                        <xsl:with-param name="node" select="categories/category/pages/page[@selected='true']"/>
+                        <xsl:with-param name="title" select="categories/category/pages/page[@selected='true']/title"/>
+                     </xsl:call-template>
+                  </xsl:if>
+               </xsl:if>
+            </xsl:if>
+         </tr>
+         <tr><td></td></tr>
+      </table>
+      </div>
+   </xsl:template>
+
+   <!--
+   =================name breadcrumb_entry==============
+   breadcumb processing
+   ===============================================
+   -->
+   <xsl:template name="breadcrumb_entry">
+      <xsl:param name="node"/>
+      <xsl:param name="title"/>
+      <td>
+         <a>
+            <xsl:attribute name="href">
+               <xsl:value-of select="$node/url"/>
+            </xsl:attribute>
+            <xsl:attribute name="title">
+               <xsl:value-of select="$title"/>
+            </xsl:attribute>
+            <xsl:value-of select="$title"/>
+         </a>
+      </td>
+   </xsl:template>
+
 </xsl:stylesheet>

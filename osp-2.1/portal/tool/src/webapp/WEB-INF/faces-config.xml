@@ -9,6 +9,15 @@
 <faces-config>
    <!-- Example custom JSF component used only in this tool -->
 
+   <component>
+      <component-type>org.theospi.portfolio.portal.component.ToolCategoryComponent</component-type>
+       <component-class>org.theospi.portfolio.portal.component.ToolCategoryComponent</component-class>
+   </component>
+
+   <component>
+      <component-type>org.theospi.portfolio.portal.component.ToolComponent</component-type>
+       <component-class>org.theospi.portfolio.portal.component.ToolComponent</component-class>
+   </component>
 
    <application>
      <message-bundle>org.theospi.portfolio.portal.messages</message-bundle>
@@ -29,6 +38,26 @@
          <description>Service Dependency: portalManager</description>
          <property-name>portalManager</property-name>
          <value>#{Components["org.theospi.portfolio.portal.intf.PortalManager"]}</value>
+      </managed-property>
+
+   </managed-bean>
+
+   <managed-bean>
+      <description>ToolCategoryTool</description>
+      <managed-bean-name>toolCategory</managed-bean-name>
+      <managed-bean-class>org.theospi.portfolio.portal.tool.ToolCategoryTool</managed-bean-class>
+      <managed-bean-scope>session</managed-bean-scope>
+
+      <managed-property>
+         <description>Service Dependency: portalManager</description>
+         <property-name>portalManager</property-name>
+         <value>#{Components["org.theospi.portfolio.portal.intf.PortalManager"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: tag factory</description>
+         <property-name>factory</property-name>
+         <value>#{Components["org.theospi.jsf.intf.XmlTagFactory.toolCategory"]}</value>
       </managed-property>
 
    </managed-bean>

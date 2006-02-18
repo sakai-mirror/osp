@@ -23,11 +23,14 @@ package org.theospi.portfolio.portal.impl;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.framework.portal.PortalService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.SiteService;
+import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
+import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.theospi.portfolio.portal.intf.PortalManager;
 import org.theospi.portfolio.portal.model.SiteType;
@@ -47,6 +50,7 @@ public class PortalManagerImpl implements PortalManager {
 
    private UserDirectoryService userDirectoryService;
    private SiteService siteService;
+   private PortalService portalService;
 
    private Map siteTypes;
    private static final String TYPE_PREFIX = "org.theospi.portfolio.portal.";
@@ -129,7 +133,23 @@ public class PortalManagerImpl implements PortalManager {
          Site site = getSiteService().getSite(siteId);
 
          List pages = site.getPages();
-         Map categories = categorizePages(pages, (SiteType) getSiteTypes().get(site.getType()));
+         List toolOrder = new ArrayList(ServerConfigurationService.getToolOrder(site.getType()));
+
+         SiteType siteType = (SiteType) getSiteTypes().get(site.getType());
+
+         if (toolOrder == null) {
+            toolOrder = new ArrayList();
+         }
+
+         if (siteType != null) {
+            while (siteType.getFirstCategory() > toolOrder.size()) {
+               toolOrder.add(new Integer(0));
+            }
+
+            toolOrder.addAll(siteType.getFirstCategory(), siteType.getToolCategories());
+         }
+
+         Map categories = categorizePages(pages, siteType, toolOrder);
 
          List categoryList = new ArrayList(categories.keySet());
 
@@ -149,17 +169,31 @@ public class PortalManagerImpl implements PortalManager {
       }
    }
 
-   protected Map categorizePages(List pages, SiteType type) {
+   protected Map categorizePages(List pages, SiteType type, List toolOrder) {
       Map pageMap = new Hashtable();
 
       int index = 0;
       for (Iterator i=pages.iterator();i.hasNext();) {
          SitePage page = (SitePage) i.next();
-         categorizePage(page, pageMap, type, index);
+         categorizePage(page, pageMap, type, findIndex(page, toolOrder, index));
          index++;
       }
 
       return pageMap;
+   }
+
+   protected int findIndex(SitePage page, List toolOrder, int defaultValue) {
+      List tools = page.getTools();
+
+      if (tools.size() == 1) {
+         ToolConfiguration toolConfig = (ToolConfiguration) tools.get(0);
+         String toolId = toolConfig.getTool().getId();
+         if (toolOrder.contains(toolId)) {
+            return toolOrder.indexOf(toolId);
+         }
+      }
+
+      return defaultValue;
    }
 
    protected void categorizePage(SitePage page, Map pageMap, SiteType siteType, int index) {
@@ -183,6 +217,8 @@ public class PortalManagerImpl implements PortalManager {
       }
 
       Placement tool = (Placement) tools.get(0);
+      // todo check access
+
       String toolId = tool.getTool().getId();
       List toolCategories = new ArrayList();
       if (siteType != null && siteType.getToolCategories() != null) {
@@ -268,6 +304,43 @@ public class PortalManagerImpl implements PortalManager {
       return null;
    }
 
+   public ToolCategory getToolCategory(String siteTypeKey, String toolCategoryKey) {
+      SiteType siteType = getSiteType(siteTypeKey);
+      for (Iterator i = siteType.getToolCategories().iterator();i.hasNext();) {
+         ToolCategory toolCategory = (ToolCategory) i.next();
+         if (toolCategory.getKey().equals(toolCategoryKey)) {
+            return toolCategory;
+         }
+      }
+      return null;
+   }
+
+   public boolean isAvailable(String toolId, String siteId) {
+      Site site = getSite(siteId);
+
+      ToolConfiguration tool = site.getToolForCommonId(toolId);
+
+      // todo check permissions
+      return tool != null;
+   }
+
+   public SitePage getPage(String toolId, String siteId) {
+      Site site = getSite(siteId);
+      ToolConfiguration tool = site.getToolForCommonId(toolId);
+
+      if (tool == null) {
+         return null;
+      }
+
+      return getSitePage(tool.getPageId());
+   }
+
+   public boolean isUserInRole(String roleId, String siteId) {
+      Site site = getSite(siteId);
+      Role role = site.getUserRole(getCurrentUser().getId());
+      return role.getId().equals(roleId);
+   }
+
    public UserDirectoryService getUserDirectoryService() {
       return userDirectoryService;
    }
@@ -290,5 +363,13 @@ public class PortalManagerImpl implements PortalManager {
 
    public void setSiteTypes(Map siteTypes) {
       this.siteTypes = siteTypes;
+   }
+
+   public PortalService getPortalService() {
+      return portalService;
+   }
+
+   public void setPortalService(PortalService portalService) {
+      this.portalService = portalService;
    }
 }

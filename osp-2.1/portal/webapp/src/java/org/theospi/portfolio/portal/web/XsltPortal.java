@@ -87,6 +87,7 @@ public class XsltPortal extends CharonPortal {
    private static ResourceLoader rbsitenav = new ResourceLoader("sitenav");
 
    private static final String TOOL_CATEGORY = "category";
+   private static final String TOOL_CATEGORY_HELPER = "category_helper";
    private static final String SITE_TYPE = "site_type";
    private static final String SITE_TYPE_HELPER = "site_type_helper";
 
@@ -151,9 +152,52 @@ public class XsltPortal extends CharonPortal {
          }
          doCategory(req, res, session, siteId, categoryKey, pageId);
       }
+      else if (parts[1].equals(TOOL_CATEGORY_HELPER)) {
+         // Resolve the site_type of the form /portal/category_helper/<siteId>/<categoryKey>
+         String siteId = parts[2];
+         String categoryKey = parts[3];
+         doCategoryHelper(req, res, session, siteId, categoryKey, parts.length > 4);
+      }
       else {
          super.doGet(req, res);
       }
+   }
+
+   protected void doCategoryHelper(HttpServletRequest req, HttpServletResponse res, Session session,
+                                   String siteId, String categoryKey, boolean returning) throws ToolException {
+      if (session.getUserId() == null) {
+         doLogin(req, res, session, req.getPathInfo(), false);
+         return;
+      }
+
+      Site site = getPortalManager().getSite(siteId);
+      String siteTypeKey = getPortalManager().decorateSiteType(site);
+      SiteType siteType = getPortalManager().getSiteType(siteTypeKey);
+
+      ToolSession toolSession = session.getToolSession(Web.escapeJavascript(categoryKey));
+
+      if (!returning) {
+         toolSession.setAttribute(PortalManager.SITE_TYPE, siteTypeKey);
+         toolSession.setAttribute(PortalManager.SITE_ID, siteId);
+         toolSession.setAttribute(PortalManager.TOOL_CATEGORY, categoryKey);
+         toolSession.setAttribute(PortalManager.CONTEXT, getContext());
+      }
+
+      // put the session in the request attribute
+      req.setAttribute(Tool.TOOL_SESSION, toolSession);
+
+      // set as the current tool session
+      SessionManager.setCurrentToolSession(toolSession);
+
+      // put the placement id in the request attribute
+      String placementId = Web.escapeJavascript(categoryKey);
+      req.setAttribute(Tool.PLACEMENT_ID, placementId);
+
+      ActiveTool helperTool = ActiveToolManager.getActiveTool("osp.tool.category");
+      Placement placement = new org.sakaiproject.util.Placement(placementId, helperTool, null, null, null);
+
+      String context = req.getPathInfo();
+      forwardTool(helperTool, req, res, placement, siteType.getSkin(), getContext() + "/" + context, "/toolCategory");
    }
 
    protected void doSiteTypeHelper(HttpServletRequest req, HttpServletResponse res,
@@ -506,26 +550,35 @@ public class XsltPortal extends CharonPortal {
       categoryElement.setAttribute("order", new Integer(category.getOrder()).toString());
       Element categoryKeyElement = doc.createElement("key");
       safeAppendTextNode(doc, categoryKeyElement, category.getKey(), false);
+      Element categoryEscapedKeyElement = doc.createElement("escapedKey");
+      safeAppendTextNode(doc, categoryEscapedKeyElement, Web.escapeJavascript(category.getKey()), false);
       Element categoryUrlElement = doc.createElement("url");
       // Resolve the site_type of the form /portal/category/<siteId>/<categoryKey>/<optionalToolId>
       safeAppendTextNode(doc, categoryUrlElement,
             getContext() + "/" + TOOL_CATEGORY + "/" + siteId + "/" + category.getKey(), true);
+      Element categoryHelperUrlElement = doc.createElement("helperUrl");
+      // Resolve the site_type of the form /portal/category_helper/<siteId>/<categoryKey>/<optionalToolId>
+      safeAppendTextNode(doc, categoryHelperUrlElement,
+            getContext() + "/" + TOOL_CATEGORY_HELPER + "/" + siteId + "/" + category.getKey(), true);
 
       categoryElement.appendChild(categoryKeyElement);
+      categoryElement.appendChild(categoryEscapedKeyElement);
       categoryElement.appendChild(categoryUrlElement);
+      categoryElement.appendChild(categoryHelperUrlElement);
 
       Element pagesElement = doc.createElement("pages");
 
       for (Iterator i=categoryPageList.iterator();i.hasNext();) {
          SitePageWrapper page = (SitePageWrapper) i.next();
-         pagesElement.appendChild(createPageXml(doc, page.getOrder(), siteId, page.getPage(), pageId));
+         pagesElement.appendChild(createPageXml(doc, page.getOrder(), siteId, page.getPage(), category.getKey(), pageId));
       }
 
       categoryElement.appendChild(pagesElement);
       return categoryElement;
    }
 
-   protected Element createPageXml(Document doc, int index, String siteId, SitePage page, String pageId) {
+   protected Element createPageXml(Document doc, int index, String siteId, SitePage page,
+                                   String parentCategoryKey, String pageId) {
       Element pageElement = doc.createElement("page");
       pageElement.setAttribute("order", new Integer(index).toString());
       boolean pageSelected = page.getId().equals(pageId);
@@ -535,8 +588,15 @@ public class XsltPortal extends CharonPortal {
       Element pageName = doc.createElement("title");
       safeAppendTextNode(doc, pageName, page.getTitle(), true);
       // portal/site/9607661f-f3aa-4938-8005-c3ffaa228c6c/page/0307f10c-225b-4db8-803e-b12f24e38544
+
       Element pageUrl = doc.createElement("url");
-      safeAppendTextNode(doc, pageUrl, getContext() + "/site/" + siteId + "/page/" + page.getId(), true);
+      if (parentCategoryKey != null && !parentCategoryKey.equals(ToolCategory.UNCATEGORIZED_KEY)) {
+         safeAppendTextNode(doc, pageUrl, getContext() + "/category/" +
+               siteId + "/"  + parentCategoryKey + "/" + page.getId(), true);
+      }
+      else {
+         safeAppendTextNode(doc, pageUrl, getContext() + "/site/" + siteId + "/page/" + page.getId(), true);
+      }
 
       Element popPageUrl = doc.createElement("popUrl");
       safeAppendTextNode(doc, popPageUrl, getContext() + "/page/" + page.getId(), true);
