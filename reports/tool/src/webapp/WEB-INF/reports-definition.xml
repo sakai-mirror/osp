@@ -571,14 +571,14 @@
            <list><!-- if(?, dw_site_users.user_id, 'rand')  -->
               <value><![CDATA[
                     select dw_scaffolding.title, dw_scaffolding.readyColor, dw_scaffolding.pendingColor, dw_scaffolding.lockedColor, dw_scaffolding.completedColor,
-                        dw_site_users.user_id `userId`, dw_matrix.owner `matrix_userId`, `status`, 
+                        if(?, 'true', 'false') `random`, dw_site_users.user_id `userId`, dw_matrix.owner `matrix_userId`, `status`, 
                         dw_scaffolding_criteria.sequenceNumber `criterion_sequence`,
                             dw_scaffolding_criteria.description `criterion_description`,
                         dw_scaffolding_levels.sequenceNumber `level_sequence`,
                             dw_scaffolding_levels.description `level_description`, dw_scaffolding_cell.rootcriterion_id
                     FROM dw_scaffolding 
-                    JOIN dw_site_users ON dw_scaffolding.worksiteId = dw_site_users.site_id
-                    LEFT JOIN dw_matrix ON dw_site_users.user_id = dw_matrix.owner
+                    JOIN dw_site_users ON dw_scaffolding.worksiteId = dw_site_users.site_id -- get the users for the site
+                    LEFT JOIN dw_matrix ON dw_site_users.user_id = dw_matrix.owner AND dw_matrix.scaffolding_id = dw_scaffolding.id
                     LEFT JOIN dw_matrix_cell ON dw_matrix.id = dw_matrix_cell.matrix_id
                     LEFT JOIN dw_wizard_page ON dw_matrix_cell.wizard_page_id = dw_wizard_page.id
                     LEFT JOIN dw_scaffolding_cell ON dw_matrix_cell.scaffolding_cell_id = dw_scaffolding_cell.id
@@ -614,15 +614,15 @@
         </property>
 
         <property name="reportDefinitionParams">
-            <list><!-- 
+            <list>
                 <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>Anonymizer Users</value></property>
                     <property name="paramName"><value>anonymize</value></property>
                     <property name="description"><value>Shall the users not be known?</value></property>
                     <property name="type"><value>string</value></property>
                     <property name="valueType"><value>set</value></property>
-                    <property name="value"><value>[(0; Show User IDs), (1, Hide User IDs)]</value></property>
-                </bean> -->
+                    <property name="value"><value>[(0; Show User IDs), (1; Hide User IDs)]</value></property>
+                </bean>
                 <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>Choose a Matrix</value></property>
                     <property name="paramName"><value>matrixId</value></property>

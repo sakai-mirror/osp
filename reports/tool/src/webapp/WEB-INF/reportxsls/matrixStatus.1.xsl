@@ -27,7 +27,12 @@
                 <table width="100%" class="lines">
                    <tr class="exclude">
                       <td>
+                         <xsl:if test="element[@colName='random'] = 'true'" >
+                           Anonymous User
+                         </xsl:if>
+                         <xsl:if test="element[@colName='random'] != 'true'" >
                          <xsl:value-of select="$varUserName"/>
+                         </xsl:if>
                       </td>
 
                       <xsl:for-each select="//datarow[element[@colName='criterion_sequence'] = 0]">
