@@ -32,6 +32,7 @@ import org.theospi.portfolio.wizard.model.CompletedWizard;
 public interface WizardManager extends WorkflowEnabledManager {
 
 	   public static final String WIZARD_PARAM_ID = "wizardId";
+      public static final String EXPOSED_WIZARD_KEY = "osp.exposedwizard.wizard.id";
 	
    public Wizard createNew();
 

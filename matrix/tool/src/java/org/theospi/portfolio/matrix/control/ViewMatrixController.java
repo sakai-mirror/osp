@@ -73,7 +73,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       if (strScaffoldingId == null) {
          Placement placement = getToolManager().getCurrentPlacement();
          strScaffoldingId = placement.getPlacementConfig().getProperty(
-               MatrixManager.EXPOSED_WIZARD_KEY);
+               MatrixManager.EXPOSED_MATRIX_KEY);
       }
       
       Id scaffoldingId = getIdManager().getId(strScaffoldingId);
