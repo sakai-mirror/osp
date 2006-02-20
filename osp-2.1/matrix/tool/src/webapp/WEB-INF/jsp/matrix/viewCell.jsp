@@ -60,8 +60,8 @@
     
 	<osp-h:glossary link="true" hover="true">
 		<table class="itemSummary">
-			<tr><th><c:out value="${cell.scaffoldingCell.scaffolding.columnLabel}"/>: </th><td><c:out value="${cell.scaffoldingCell.level.description}"/></td></tr>
-			<tr><th><c:out value="${cell.scaffoldingCell.scaffolding.rowLabel}"/>: </th><td><c:out value="${cell.scaffoldingCell.rootCriterion.description}"/></td></tr>
+         <tr><th><osp:message key="label_cellTitle"/>: </th><td><c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}"/></td></tr>         
+         <tr><th><osp:message key="label_cellDescription"/>: </th><td><c:out value="${cell.scaffoldingCell.wizardPageDefinition.description}" escapeXml="false"/></td></tr>         
 		</table>
 	</osp-h:glossary>
 
@@ -118,19 +118,22 @@
          <osp:message key="guidance_link_text"/></a>
    </c:if>
 
-    <h4><fmt:message key="title_cellItems"/>
+   
+   <h4 style="cursor:pointer" onclick="javascript:showHideDiv('cellItemDiv','/osp-jsf-resource')">
+   <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgcellItemDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
+   <osp:message key="title_cellItems"/>
       <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
       <a name="linkNew" id="linkNew" href="<osp:url value="attachToCell.osp">
          <osp:param name="page_id" value="${cell.wizardPage.id}"/>
          </osp:url>"><fmt:message key="action_manageItems"/></a>
       </c:if>
-    </h4>
-
+   </h4>
+   <div id="cellItemDiv">
 	<p class="instruction"><fmt:message key="instructions_currently_associated"/></p>
    <c:set var="nodes" value="${cellBean.nodes}"/>
    <c:set var="allowedNodeType" value=""/>
    <%@ include file="cellContent.jspf" %>
-	
+	</div>
 
 	<br/>
    

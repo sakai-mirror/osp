@@ -52,20 +52,23 @@
 		  <p class="shorttext indnt2">
 				<span class="reqStar">*</span><label><fmt:message key="label_cellTitle"/></label>
 				<input type="text" name="<c:out value="${status.expression}"/>"
-					   value="<c:out value="${status.displayValue}"/>"/>
+					   value="<c:out value="${status.displayValue}"/>" size="40"/>
 		    </p>
         </spring:bind>
+        
+        <p class="longtext indnt2">
+            <label class="block"><fmt:message key="label_cellDescription"/></label>
+            <spring:bind path="scaffoldingCell.wizardPageDefinition.description">
+                     <table><tr>
+               <td><textarea name="<c:out value="${status.expression}"/>" id="descriptionTextArea" rows="5" cols="80">
+                  <c:out value="${status.value}"/></textarea></td>
+                     </tr></table>
+               <c:if test="${status.error}">
+               <div class="validation"><c:out value="${status.errorMessage}"/></div>
+               </c:if>
+            </spring:bind>
+      </p>
 
-        <spring:bind path="scaffoldingCell.wizardPageDefinition.description">
-          <c:if test="${status.error}">
-             <div class="validation"><c:out value="${status.errorMessage}"/></div>
-          </c:if>
-		  <p class="shorttext indnt2">
-				<label><fmt:message key="label_cellDescription"/></label>
-				<input type="text" name="<c:out value="${status.expression}"/>"
-					   value="<c:out value="${status.displayValue}"/>"/>
-		    </p>
-        </spring:bind>
 
       <h4><osp:message key="guidance_header"/></h4>
       <c:if test="${empty scaffoldingCell.guidance}">
@@ -225,4 +228,8 @@
       </c:if>
 
 	</div>
+   
+   <script type="text/javascript" src="/library/htmlarea/sakai-htmlarea.js"></script>
+    <script type="text/javascript" defer="1">chef_setupformattedtextarea('descriptionTextArea');</script>
+    
 </form>
