@@ -114,6 +114,7 @@
               <prop key="/moveCriterion.osp">moveCriterionController</prop>
               <prop key="/viewScaffolding.osp">viewScaffoldingController</prop>
               <prop key="/editScaffoldingCell.osp">editScaffoldingCellController</prop>
+              <prop key="/deleteScaffolding.osp">deleteScaffoldingController</prop>
 
               <prop key="/removeLevCrit.osp">removeLevCritConfirmationController</prop>
               <prop key="/removeExpectation.osp">removeExpectationConfirmationController</prop> 

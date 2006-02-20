@@ -42,6 +42,9 @@
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.PUBLISH_SCAFFOLDING"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.DELETE_SCAFFOLDING"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
          </list>
       </property>
    </bean>

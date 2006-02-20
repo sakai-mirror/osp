@@ -23,17 +23,9 @@ package org.theospi.portfolio.matrix.control;
 
 import java.util.Map;
 
-import org.sakaiproject.api.kernel.tool.cover.ToolManager;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
@@ -43,58 +35,6 @@ public class ExposedScaffoldingController implements FormController {
    
    private MatrixManager matrixManager;
    private IdManager idManager = null;
-   
-   
-   private void removeTool(Scaffolding scaffolding) {
-      String siteId = scaffolding.getWorksiteId().getValue();
-      try {
-         Site siteEdit = SiteService.getSite(siteId);
-
-         SitePage page = siteEdit.getPage(scaffolding.getExposedPageId());
-         siteEdit.removePage(page);
-         SiteService.save(siteEdit);
-         scaffolding.setExposedPageId(null);
-      } catch (IdUnusedException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      } catch (PermissionException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-   }
-
-   private void addTool(Scaffolding scaffolding) {
-      //TODO add logging errors back
-      String siteId = scaffolding.getWorksiteId().getValue();
-      try {
-         Site siteEdit = SiteService.getSite(siteId);
-
-
-         SitePage page = siteEdit.addPage();
-
-         page.setTitle(scaffolding.getTitle());
-         page.setLayout(SitePage.LAYOUT_SINGLE_COL);
-
-         ToolConfiguration tool = page.addTool();
-         tool.setTool(ToolManager.getTool("osp.exposedmatrix"));
-         tool.setTitle(scaffolding.getTitle());
-         tool.setLayoutHints("0,0");
-         tool.getPlacementConfig().setProperty(MatrixManager.EXPOSED_MATRIX_KEY, scaffolding.getId().getValue());
-
-         //LOG.info(this+": SiteService.commitEdit():" +siteId);
-
-         SiteService.save(siteEdit);
-         scaffolding.setExposedPageId(page.getId());
-
-
-      } catch (IdUnusedException e) {
-//       TODO Auto-generated catch block
-         e.printStackTrace();
-      } catch (PermissionException e) {
-//       TODO Auto-generated catch block
-         e.printStackTrace();
-      }
-   }
 
    public Map referenceData(Map request, Object command, Errors errors) {
       // TODO Auto-generated method stub
@@ -107,11 +47,11 @@ public class ExposedScaffoldingController implements FormController {
       Scaffolding scaffolding = getMatrixManager().getScaffolding(scaffoldingId);
       if (expose.equals("true") &&
             scaffolding.getExposedPageId() == null) {
-         addTool(scaffolding);
+         getMatrixManager().exposeMatrixTool(scaffolding);
       }
       else if (expose.equals("false") &&
             scaffolding.getExposedPageId() != null) {
-         removeTool(scaffolding);
+         getMatrixManager().removeExposedMatrixTool(scaffolding);
       }
       getMatrixManager().storeScaffolding(scaffolding);
       return new ModelAndView("success");

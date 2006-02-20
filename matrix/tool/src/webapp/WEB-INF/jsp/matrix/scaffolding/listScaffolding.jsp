@@ -43,7 +43,7 @@
 <osp:url var="listUrl" value="listScaffolding.osp"/>
 <osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
 
-<h3><fmt:message key="title_scaffoldingManager"/></h3>
+<h3><fmt:message key="title_matrixManager"/></h3>
 
 <table class="listHier" cellspacing="0" >
    <thead>
@@ -80,26 +80,26 @@
              
              <c:if test="${can.create}">
               | <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=matrixManager&scaffoldingId=<c:out value="${scaffold.id.value}"/>/<c:out value="${scaffold.title}" />.zip">
-                   <fmt:message key="action_export"/>
+                   <fmt:message key="table_action_export"/>
                 </a>
             </c:if>
             
             <c:if test="${isMaintainer && empty scaffold.exposedPageId}">
               | <a href="<osp:url value="exposedScaffolding.osp"/>&expose=true&scaffolding_id=<c:out value="${scaffold.id.value}"/>">
-                   <fmt:message key="action_expose"/>
+                   <fmt:message key="table_action_expose"/>
                 </a>
             </c:if>
             
             <c:if test="${isMaintainer && not empty scaffold.exposedPageId}">
               | <a href="<osp:url value="exposedScaffolding.osp"/>&expose=false&scaffolding_id=<c:out value="${scaffold.id.value}"/>">
-                   <fmt:message key="action_unexpose"/>
+                   <fmt:message key="table_action_unexpose"/>
                 </a>
             </c:if>
             
              
          </div>
       </TD>
-      <TD><c:out value="${scaffold.description}" /></TD>
+      <TD><c:out value="${scaffold.description}" escapeXml="false"/></TD>
       <TD><c:out value="${scaffold.owner.displayName}" /></TD>
       <td><c:out value="${scaffold.published}" /></TD>
     </TR>

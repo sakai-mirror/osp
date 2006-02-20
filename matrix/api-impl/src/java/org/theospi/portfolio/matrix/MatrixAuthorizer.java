@@ -29,6 +29,7 @@ import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.app.ApplicationAuthorizer;
 import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.Scaffolding;
 
 
 
@@ -62,9 +63,11 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
             MatrixFunctionConstants.REVIEW_MATRIX.equals(function)) {
          return new Boolean(facade.isAuthorized(function,id));
       }
-      //else if (MatrixFunctionConstants.REVIEW_MATRIX.equals(function)) {
-      //   if (!agent.getId().equals(getMatrixManager().getMatrix(id).getOwner().getId())) return new Boolean(false);
-      //}
+      else if (MatrixFunctionConstants.DELETE_SCAFFOLDING.equals(function)) {
+         Scaffolding scaffolding = getMatrixManager().getScaffolding(id);
+         if (!scaffolding.isPublished() && scaffolding.getOwner().equals(agent))
+            return new Boolean(true);
+      }
       else if (ContentHostingService.EVENT_RESOURCE_READ.equals(function)) {
          return isFileAuth(facade, agent, id);
       }

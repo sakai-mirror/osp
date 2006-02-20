@@ -16,13 +16,12 @@ function hrefViewCell(cellId) {
 <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" />
 
 
-	<c:if test="${can.create}">
 		<div class="navIntraTool">
 			<c:if test="${can.create}">
 				<a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_edit"/></a>
 			</c:if>
+         <a href="<osp:url value="listScaffolding.osp"/>"><fmt:message key="action_list"/></a>
 		</div>
-	</c:if>
 
 	<h3><fmt:message key="title_matrixScaffolding"/></h3>
   
