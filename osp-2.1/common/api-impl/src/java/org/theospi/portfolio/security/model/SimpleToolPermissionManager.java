@@ -94,11 +94,13 @@ public class SimpleToolPermissionManager implements ToolEventListener, ToolPermi
    protected void processFunctions(List permissions, String roleName, List functions, String worksiteId) {
       Agent agent = getAgentManager().getWorksiteRole(roleName, worksiteId);
 
-      for (Iterator i=functions.iterator();i.hasNext();) {
-         Permission permission = new Permission();
-         permission.setAgent(agent);
-         permission.setFunction((String)i.next());
-         permissions.add(permission);
+      if (agent != null) {
+         for (Iterator i=functions.iterator();i.hasNext();) {
+            Permission permission = new Permission();
+            permission.setAgent(agent);
+            permission.setFunction((String)i.next());
+            permissions.add(permission);
+         }
       }
    }
 
