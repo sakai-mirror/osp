@@ -79,7 +79,7 @@ public class ExposedScaffoldingController implements FormController {
          tool.setTool(ToolManager.getTool("osp.exposedmatrix"));
          tool.setTitle(scaffolding.getTitle());
          tool.setLayoutHints("0,0");
-         tool.getPlacementConfig().setProperty(MatrixManager.EXPOSED_WIZARD_KEY, scaffolding.getId().getValue());
+         tool.getPlacementConfig().setProperty(MatrixManager.EXPOSED_MATRIX_KEY, scaffolding.getId().getValue());
 
          //LOG.info(this+": SiteService.commitEdit():" +siteId);
 

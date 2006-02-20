@@ -112,6 +112,7 @@ import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
 import org.theospi.portfolio.workflow.model.WorkflowItem;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
+import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Attachment;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Matrix;
@@ -270,6 +271,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          tool.setTool(ToolManager.getTool("osp.exposedwizard"));
          tool.setTitle(wizard.getName());
          tool.setLayoutHints("0,0");
+         tool.getPlacementConfig().setProperty(WizardManager.EXPOSED_WIZARD_KEY, wizard.getId().getValue());
 
          //LOG.info(this+": SiteService.commitEdit():" +siteId);
 

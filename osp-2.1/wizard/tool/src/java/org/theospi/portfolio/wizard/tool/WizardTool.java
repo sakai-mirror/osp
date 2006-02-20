@@ -179,14 +179,24 @@ public class WizardTool extends BuilderTool {
       {
          //This should have come from the eval tool...
          String id = (String)session.getAttribute("CURRENT_WIZARD_ID");
-         String userId = (String)session.getAttribute("WIZARD_USER_ID");
+         String userId = "";
+         if (id != null) {
+            userId = (String)session.getAttribute("WIZARD_USER_ID");   
+            session.removeAttribute("WIZARD_USER_ID");
+            session.removeAttribute("CURRENT_WIZARD_ID");
+         }
+         else {
+            Placement placement = ToolManager.getCurrentPlacement();
+
+            id = placement.getPlacementConfig().getProperty(
+                  WizardManager.EXPOSED_WIZARD_KEY);
+            userId = SessionManager.getCurrentSessionUserId();
+            this.setCurrentUserId(userId);
+         }
          Wizard wizard = getWizardManager().getWizard(id);
          setCurrent(new DecoratedWizard(this, wizard));
          current.setRunningWizard(new DecoratedCompletedWizard(this, current,
                getWizardManager().getCompletedWizard(wizard, userId)));
-
-         session.removeAttribute("WIZARD_USER_ID");
-         session.removeAttribute("CURRENT_WIZARD_ID");
 
       }
       Wizard wizard = current.getBase();

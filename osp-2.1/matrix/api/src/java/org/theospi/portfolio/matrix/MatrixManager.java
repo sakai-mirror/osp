@@ -40,7 +40,7 @@ import java.util.Set;
  */
 public interface MatrixManager extends WorkflowEnabledManager {
 
-   public static final String EXPOSED_WIZARD_KEY = "osp.exposedmatrix.scaffolding.id";
+   public static final String EXPOSED_MATRIX_KEY = "osp.exposedmatrix.scaffolding.id";
    
    Matrix getMatrix(Id scaffoldingId, Id agentId);
    List getCellsByScaffoldingCell(Id scaffoldingCellId);
