@@ -32,6 +32,7 @@ import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
@@ -237,8 +238,10 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          ResourceBundle.getBundle("org.theospi.portfolio.matrix.messages");
 
       List evalList = new ArrayList();
+      Id id = wpd.getId() == null ? wpd.getNewId() : wpd.getId();
+      
       List evaluators = getAuthzManager().getAuthorizations(null, 
-            MatrixFunctionConstants.EVALUATE_MATRIX, wpd.getId());
+            MatrixFunctionConstants.EVALUATE_MATRIX, id);
       
       for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
          Authorization az = (Authorization) iter.next();
