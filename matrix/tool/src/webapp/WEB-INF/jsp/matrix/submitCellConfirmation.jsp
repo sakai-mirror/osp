@@ -8,8 +8,8 @@
     
    <osp-h:glossary link="true" hover="true">
       <table class="itemSummary">
-         <tr><th><c:out value="${cell.scaffoldingCell.scaffolding.columnLabel}"/>: </th><td><c:out value="${cell.scaffoldingCell.level.description}"/></td></tr>
-         <tr><th><c:out value="${cell.scaffoldingCell.scaffolding.rowLabel}"/>: </th><td><c:out value="${cell.scaffoldingCell.rootCriterion.description}"/></td></tr>
+         <tr><th><osp:message key="label_cellTitle"/>: </th><td><c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}"/></td></tr>         
+         <tr><th><osp:message key="label_cellDescription"/>: </th><td><c:out value="${cell.scaffoldingCell.wizardPageDefinition.description}" escapeXml="false"/></td></tr>         
       </table>
    </osp-h:glossary>
    
