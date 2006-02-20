@@ -58,7 +58,7 @@ import java.sql.ResultSet;
 public class LoadArtifactResultProcessor extends BaseResultProcessor {
 
    private IdManager idManager;
-   private String columnNamePattern = ".*_artifact";
+   private String columnNamePattern = ".*_artifact$";
    private DataSource dataSource;
    private ArtifactFinderManager artifactFinderManager;
    private SecurityService securityService;
@@ -89,6 +89,47 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
       return setResult(result, rootDoc);
    }
 
+   protected void processRow(Element dataRow, Map artifactsToLoad) {
+      List columns = dataRow.getChildren("element");
+
+      for (Iterator i=columns.iterator();i.hasNext();) {
+         Element data = (Element) i.next();
+         if (isArtifactColumn(data) && !isColumnNull(data)) {
+            Id artifactId = getIdManager().getId(getColumnData(data));
+            String type = getColumnType(data, dataRow);
+            ArtifactHolder holder =
+                  (ArtifactHolder) artifactsToLoad.get(artifactId.getValue());
+            if (holder == null) {
+               holder = new ArtifactHolder();
+               holder.artifactId = artifactId;
+               holder.artifactType = type;
+               artifactsToLoad.put(artifactId.getValue(), holder);
+            }
+            holder.reportElements.add(data);
+         }
+      }
+   }
+
+   protected void loadArtifactTypes(Map artifactsToLoad) {
+      String artifactIds = "";
+      boolean foundOne = false;
+
+      for (Iterator i=artifactsToLoad.values().iterator();i.hasNext();) {
+         ArtifactHolder holder = (ArtifactHolder) i.next();
+         if (holder.artifactType == null) {
+            if (foundOne) {
+               artifactIds += ",";
+            }
+            foundOne = true;
+            artifactIds += "'" + holder.artifactId.getValue() + "'";
+         }
+      }
+
+      if (foundOne) {
+         loadArtifactTypes(artifactIds, artifactsToLoad);
+      }
+   }
+
    protected void loadArtifact(ReportResult results, ArtifactHolder holder) {
       ArtifactFinder finder = getArtifactFinderManager().getArtifactFinderByType(holder.artifactType);
 
@@ -116,26 +157,12 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
       }
    }
 
-   protected void loadArtifactTypes(Map artifactsToLoad) {
-      String artifactIds = "";
-      boolean foundOne = false;
-
-      for (Iterator i=artifactsToLoad.values().iterator();i.hasNext();) {
-         ArtifactHolder holder = (ArtifactHolder) i.next();
-         if (holder.artifactType == null) {
-            if (foundOne) {
-               artifactIds += ",";
-            }
-            foundOne = true;
-            artifactIds += "'" + holder.artifactId.getValue() + "'";
-         }
-      }
-
-      if (foundOne) {
-         loadArtifactTypes(artifactIds, artifactsToLoad);
-      }
-   }
-
+   /**
+    * TODO: This query can only handle so many Ids in a list.
+    * Oracle can only do 1000.  it should be limited to maybe 100 at a time!
+    * @param artifactIds
+    * @param artifactsToLoad
+    */
    protected void loadArtifactTypes(String artifactIds, Map artifactsToLoad) {
       Connection conn = null;
 
@@ -162,27 +189,6 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
          }
          catch (SQLException e) {
             // con't do nothing here... let the last error go through
-         }
-      }
-   }
-
-   protected void processRow(Element dataRow, Map artifactsToLoad) {
-      List columns = dataRow.getChildren("element");
-
-      for (Iterator i=columns.iterator();i.hasNext();) {
-         Element data = (Element) i.next();
-         if (isArtifactColumn(data) && !isColumnNull(data)) {
-            Id artifactId = getIdManager().getId(getColumnData(data));
-            String type = getColumnType(data, dataRow);
-            ArtifactHolder holder =
-                  (ArtifactHolder) artifactsToLoad.get(artifactId.getValue());
-            if (holder == null) {
-               holder = new ArtifactHolder();
-               holder.artifactId = artifactId;
-               holder.artifactType = type;
-               artifactsToLoad.put(artifactId.getValue(), holder);
-            }
-            holder.reportElements.add(data);
          }
       }
    }
