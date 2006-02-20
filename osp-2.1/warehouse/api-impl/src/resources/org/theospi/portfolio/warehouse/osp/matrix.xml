@@ -485,12 +485,6 @@
    </index>
 
    <index>
-    <index-name>FK8C2516A3C604760F</index-name>
-    <table-name>DW_MATRIX_TOOL</table-name>
-    <column>scaffolding_id</column>
-   </index>
-
-   <index>
      <index-name>FK612CF33E2786D518</index-name>
      <table-name>DW_REFLECTION</table-name>
      <column>cell_id</column>
