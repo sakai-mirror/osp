@@ -122,6 +122,10 @@ public interface MatrixManager extends WorkflowEnabledManager {
     */
    void deleteMatrix(Id matrixId);
    
+   void deleteScaffolding(Id scaffoldingId);
+   public void exposeMatrixTool(Scaffolding scaffolding);
+   public void removeExposedMatrixTool(Scaffolding scaffolding);
+   
    void packageScffoldingForExport(Id scaffoldingId, OutputStream os) throws IOException;
    Scaffolding uploadScaffolding(String scaffoldingFileName, String toolId, 
          InputStream zipFileStream) throws IOException;

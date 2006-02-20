@@ -829,15 +829,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public void deleteMatrix(Id matrixId) {
       this.getHibernateTemplate().delete(getMatrix(matrixId));
    }
-   
-   private boolean cellHasOpenReview(Id cellId) {
-      //Check for an existing "open" review (one that hasn't been completed yet)
-      Object[] params = new Object[]{MatrixFunctionConstants.COMPLETE_STATUS, 
-            cellId.getValue()};
-      List result = this.getHibernateTemplate().find("from ReviewerItem items " +
-            "where items.status <> ? and items.cell.id=?", params);
-      
-      return (result.size() > 0);
+
+   public void deleteScaffolding(Id scaffoldingId) {
+      this.getHibernateTemplate().delete(getScaffolding(scaffoldingId));
    }
    
    public Cell submitCellForEvaluation(Cell cell) {
@@ -1396,6 +1390,57 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          //scaffoldingCell.setScaffolding(scaffolding);
       }   
       scaffolding.setScaffoldingCells(sCells);
+   }
+   
+   public void removeExposedMatrixTool(Scaffolding scaffolding) {
+      String siteId = scaffolding.getWorksiteId().getValue();
+      try {
+         Site siteEdit = SiteService.getSite(siteId);
+
+         SitePage page = siteEdit.getPage(scaffolding.getExposedPageId());
+         siteEdit.removePage(page);
+         SiteService.save(siteEdit);
+         scaffolding.setExposedPageId(null);
+      } catch (IdUnusedException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } catch (PermissionException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+   }
+   
+   public void exposeMatrixTool(Scaffolding scaffolding) {
+      //TODO add logging errors back
+      String siteId = scaffolding.getWorksiteId().getValue();
+      try {
+         Site siteEdit = SiteService.getSite(siteId);
+
+
+         SitePage page = siteEdit.addPage();
+
+         page.setTitle(scaffolding.getTitle());
+         page.setLayout(SitePage.LAYOUT_SINGLE_COL);
+
+         ToolConfiguration tool = page.addTool();
+         tool.setTool(ToolManager.getTool("osp.exposedmatrix"));
+         tool.setTitle(scaffolding.getTitle());
+         tool.setLayoutHints("0,0");
+         tool.getPlacementConfig().setProperty(MatrixManager.EXPOSED_MATRIX_KEY, scaffolding.getId().getValue());
+
+         //LOG.info(this+": SiteService.commitEdit():" +siteId);
+
+         SiteService.save(siteEdit);
+         scaffolding.setExposedPageId(page.getId());
+
+
+      } catch (IdUnusedException e) {
+//       TODO Auto-generated catch block
+         e.printStackTrace();
+      } catch (PermissionException e) {
+//       TODO Auto-generated catch block
+         e.printStackTrace();
+      }
    }
 
    private boolean findInAuthz(Id qualifier, Agent agent, List authzs) {
