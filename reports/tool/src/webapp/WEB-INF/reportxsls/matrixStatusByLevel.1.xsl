@@ -5,7 +5,7 @@
     
 <xsl:template match="/">
     <div>
-    <h5>Matrix Cell Status</h5>
+    <h5>Matrix Cell Completion Status</h5>
     
     Matrix: <xsl:value-of select="//datarow[1]/element[@name='title']/." />
     
@@ -17,9 +17,9 @@
        
        <xsl:for-each select="//datarow">
           <xsl:sort select="element[@name='userId']/." />
-          <xsl:if test="not(preceding-sibling::datarow[element[@colName='userId'] = 
-                        current()/element[@colName='userId']])">
-             <xsl:variable name = "varUserName" select = "element[@colName='userId']" />
+          <xsl:if test="not(preceding-sibling::datarow[element[@colName='level_sequence'] = 
+                        current()/element[@colName='level_sequence']])">
+             <xsl:variable name = "varLevel" select = "element[@colName='level_sequence']" />
              <tr><td width="100%">
 
 
@@ -27,12 +27,7 @@
                 <table width="100%" class="lines">
                    <tr class="exclude">
                       <td>
-                         <xsl:if test="element[@colName='random'] = 'true'" >
-                           Anonymous User
-                         </xsl:if>
-                         <xsl:if test="element[@colName='random'] != 'true'" >
-                         <xsl:value-of select="$varUserName"/>
-                         </xsl:if>
+                         <xsl:value-of select="$varLevel"/>
                       </td>
 
                       <xsl:for-each select="//datarow[element[@colName='criterion_sequence'] = 0]">

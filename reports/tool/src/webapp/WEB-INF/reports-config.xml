@@ -17,11 +17,12 @@
             <list>
                 <ref bean="matrixCellCompletionStatusByUser" />
                 <ref bean="matrixStatusByUser" />
-                <ref bean="report1" />
-                <ref bean="report2" />
-                <ref bean="report3" />
-                <ref bean="report4" />
-                <ref bean="report5" />
+                <ref bean="matrixStatusByLevel" />
+               <!--  <ref bean="testreport1" />
+                <ref bean="testreport2" />
+                <ref bean="testreport3" />
+                <ref bean="testreport4" />
+                <ref bean="testreport5" /> -->
             </list>
         </property>
     </bean>
