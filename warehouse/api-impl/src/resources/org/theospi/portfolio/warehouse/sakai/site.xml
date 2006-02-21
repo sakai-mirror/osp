@@ -50,7 +50,6 @@
         <column>
           <name>permission</name>
           <type>INTEGER</type>
-          <param>99</param>
         </column>
      </columns>
      <not-null>user_id</not-null>
