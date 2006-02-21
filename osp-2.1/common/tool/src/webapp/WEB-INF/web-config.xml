@@ -91,7 +91,7 @@
                <prop key="/editStyle.osp">addStyleController</prop>
                <prop key="/selectStyle.osp">selectStyleController</prop>
                <prop key="/publishStyle.osp">publishStyleController</prop>
-               
+               <prop key="/deleteStyle.osp">deleteStyleController</prop>
             </props>
         </property>
     </bean>

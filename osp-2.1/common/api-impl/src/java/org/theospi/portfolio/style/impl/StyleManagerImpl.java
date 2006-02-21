@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sf.hibernate.Hibernate;
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Session;
 
@@ -44,6 +45,7 @@ import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.content.LockManager;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.site.Site;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.hibernate.HibernateCallback;
 import org.springframework.orm.hibernate.HibernateObjectRetrievalFailureException;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
@@ -210,6 +212,37 @@ public class StyleManagerImpl extends HibernateDaoSupport
       String nodeId = getContentHosting().getUuid(ref.getId());
 
       return getNode(getIdManager().getId(nodeId));
+   }
+   
+   public void deleteStyle(final Id styleId) throws DataIntegrityViolationException {
+      Style style = getStyle(styleId);
+      getAuthzManager().checkPermission(StyleFunctionConstants.DELETE_STYLE, style.getId());
+      getLockManager().removeAllLocks(styleId.getValue());
+      //getHibernateTemplate().
+      
+      //TODO handle things that are using this layout
+      // first delete all presentations that use this template
+      // this will delete all authorization as well
+      //Collection presentations = getHibernateTemplate().find("from Presentation where template_id=?", id.getValue(), Hibernate.STRING);
+      //for (Iterator i = presentations.iterator(); i.hasNext();) {
+      //   Presentation presentation = (Presentation) i.next();
+      //   deletePresentation(presentation.getId(), false);
+      //}
+
+      HibernateCallback callback = new HibernateCallback() {
+
+         public Object doInHibernate(Session session) throws HibernateException, SQLException {
+            session.delete("from Style s where s.id=?", styleId.getValue(), Hibernate.STRING);
+            return null;
+         }
+
+      };
+      //try {
+         getHibernateTemplate().execute(callback);
+      //}
+      //catch (DataIntegrityViolationException e) {
+         
+      //}
    }
 
    public AuthenticationManager getAuthnManager() {

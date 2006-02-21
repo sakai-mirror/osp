@@ -41,6 +41,10 @@
 
 <h3><fmt:message key="title_styleManager"/></h3>
 
+<c:if test="${not empty styleError}">
+   <div class="validation"><fmt:message key="${styleError}"/></div>
+</c:if>
+
 <table class="listHier" cellspacing="0" >
    <thead>
       <tr>

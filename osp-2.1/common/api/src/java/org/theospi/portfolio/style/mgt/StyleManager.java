@@ -26,6 +26,7 @@ import java.util.Collection;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.legacy.entity.Reference;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.style.model.Style;
 
@@ -36,6 +37,7 @@ public interface StyleManager {
    
    public Style storeStyle(Style style);
    public Style getStyle(Id styleId);
+   public void deleteStyle(final Id styleId) throws DataIntegrityViolationException;
    public Style getLightWeightStyle(final Id styleId);
    public Collection findPublishedStyles(String currentWorksiteId);
    public Collection findPublishedStyles();
