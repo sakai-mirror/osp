@@ -26,6 +26,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.style.StyleHelper;
 import org.theospi.portfolio.style.model.Style;
+import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
@@ -87,6 +88,10 @@ public class ListStyleController extends AbstractStyleController {
          }
       }
       return 0;
+   }
+   
+   protected void checkPermission(String function) throws AuthorizationFailedException{
+      getAuthzManager().checkPermission(function, getIdManager().getId(PortalService.getCurrentSiteId()));
    }
 
    public ListScrollIndexer getListScrollIndexer() {

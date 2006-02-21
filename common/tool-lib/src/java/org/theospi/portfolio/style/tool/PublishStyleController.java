@@ -26,11 +26,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.style.StyleFunctionConstants;
 import org.theospi.portfolio.style.model.Style;
-import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
 
 import java.util.Map;
 
@@ -72,10 +70,6 @@ public class PublishStyleController extends ListStyleController implements LoadO
       }
    }
    
-   protected void checkPermission(String function) throws AuthorizationFailedException{
-      getAuthzManager().checkPermission(function, getIdManager().getId(PortalService.getCurrentSiteId()));
-   }
-
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       //Style style = (Style) incomingModel;
       Id styleId = getIdManager().getId((String)request.get("style_id"));
