@@ -20,12 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.model.impl;
 
-import org.theospi.portfolio.shared.mgt.OspHttpAccess;
-import org.theospi.portfolio.shared.mgt.ReferenceParser;
+import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.exception.PermissionException;
@@ -33,6 +34,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.CopyrightException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 import org.sakaiproject.metaobj.shared.model.Id;
 
 /**
@@ -42,7 +44,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
  * Time: 5:30:11 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MatrixHttpAccess extends OspHttpAccess {
+public class MatrixHttpAccess extends OspHttpAccessBase {
 
    private IdManager idManager;
    private MatrixManager matrixManager;

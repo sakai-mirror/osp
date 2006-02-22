@@ -20,8 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.impl;
 
-import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
+import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,7 +31,7 @@ import org.sakaiproject.service.legacy.entity.Entity;
  * Time: 6:03:02 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GuidanceEntityProducer extends OspEntityProducerBase {
+public class GuidanceEntityProducer extends EntityProducerBase {
 
    public static final String GUIDANCE_PRODUCER = "ospGuidance";
 

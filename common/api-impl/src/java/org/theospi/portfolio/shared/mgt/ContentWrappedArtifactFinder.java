@@ -21,6 +21,8 @@
 package org.theospi.portfolio.shared.mgt;
 
 import org.sakaiproject.metaobj.shared.mgt.impl.FileArtifactFinder;
+import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
+import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;

@@ -29,6 +29,7 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
@@ -41,7 +42,7 @@ import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.shared.mgt.ContentEntityUtil;
+import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.theospi.portfolio.shared.model.Node;
 
 public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewManager {

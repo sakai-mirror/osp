@@ -798,20 +798,27 @@ public class XsltPortal extends CharonPortal {
       int index = 0;
 
       String skinRepo = ServerConfigurationService.getString("skin.repo");
+
+      Element skin = doc.createElement("skin");
+      skin.setAttribute("order", index + "");
+      safeAppendTextNode(doc, skin, getContext() + "/library/css/osp-portal.css", true);
+      skinsElement.appendChild(skin);
+      index++;
+
       for (Iterator i=skins.iterator();i.hasNext();) {
          String skinUrl = (String) i.next();
          skinUrl = skinRepo + "/" + skinUrl + "/portal.css";
-         Element skin = doc.createElement("skin");
+         skin = doc.createElement("skin");
          skin.setAttribute("order", index + "");
          safeAppendTextNode(doc, skin, skinUrl, true);
          skinsElement.appendChild(skin);
          index++;
       }
 
-      if (index == 0) {
+      if (index == 1) {
          String skinUrl = ServerConfigurationService.getString("skin.default");
          skinUrl = skinRepo + "/" + skinUrl + "/portal.css";
-         Element skin = doc.createElement("skin");
+         skin = doc.createElement("skin");
          skin.setAttribute("order", index + "");
          safeAppendTextNode(doc, skin, skinUrl, true);
          skinsElement.appendChild(skin);

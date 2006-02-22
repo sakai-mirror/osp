@@ -31,6 +31,7 @@ import java.io.Serializable;
 
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
 
 /**
  * Created by IntelliJ IDEA.

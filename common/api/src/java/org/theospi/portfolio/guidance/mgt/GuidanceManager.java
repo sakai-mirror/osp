@@ -21,7 +21,7 @@
 package org.theospi.portfolio.guidance.mgt;
 
 import org.theospi.portfolio.guidance.model.Guidance;
-import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
+import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.content.ContentCollection;
