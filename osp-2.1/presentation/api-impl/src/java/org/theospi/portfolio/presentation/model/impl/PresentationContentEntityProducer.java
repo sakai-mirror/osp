@@ -20,7 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model.impl;
 
-import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
+import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AuthorizationFailedException;
@@ -39,7 +39,7 @@ import org.sakaiproject.exception.PermissionException;
  * Time: 6:48:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PresentationContentEntityProducer extends OspEntityProducerBase {
+public class PresentationContentEntityProducer extends EntityProducerBase {
    protected static final String PRODUCER_NAME = "ospPresentation";
 
    public String getLabel() {

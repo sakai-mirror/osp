@@ -20,8 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.model.impl;
 
-import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
+import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,7 +31,7 @@ import org.sakaiproject.service.legacy.entity.Entity;
  * Time: 5:27:48 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MatrixContentEntityProducer extends OspEntityProducerBase {
+public class MatrixContentEntityProducer extends EntityProducerBase {
    public static final String MATRIX_PRODUCER = "ospMatrix";
 
    public String getLabel() {

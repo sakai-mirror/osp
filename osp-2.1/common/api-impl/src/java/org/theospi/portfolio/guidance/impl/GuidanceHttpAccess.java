@@ -20,15 +20,17 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.impl;
 
-import org.theospi.portfolio.shared.mgt.OspHttpAccess;
-import org.theospi.portfolio.shared.mgt.ReferenceParser;
+import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
+import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.CopyrightException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,7 +39,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
  * Time: 6:05:46 PM
  * To change this template use File | Settings | File Templates.
  */
-public class GuidanceHttpAccess extends OspHttpAccess {
+public class GuidanceHttpAccess extends OspHttpAccessBase {
 
    private IdManager idManager;
    private GuidanceManager guidanceManager;

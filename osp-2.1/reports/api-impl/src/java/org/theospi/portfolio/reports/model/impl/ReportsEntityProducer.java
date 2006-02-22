@@ -20,8 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model.impl;
 
-import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
+import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 
 /**
  * This class is a singleton from components.xml.
@@ -37,7 +38,7 @@ import org.sakaiproject.service.legacy.entity.Entity;
  * Time: 12:01:24 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ReportsEntityProducer extends OspEntityProducerBase {
+public class ReportsEntityProducer extends EntityProducerBase {
 
    public static final String REPORTS_PRODUCER = "ospReports";
 

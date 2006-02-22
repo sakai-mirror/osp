@@ -20,12 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.model;
 
+import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.entity.Reference;
-import org.theospi.portfolio.shared.mgt.ContentEntityWrapper;
-import org.theospi.portfolio.shared.mgt.ReferenceHolder;
 
 /**
  * Created by IntelliJ IDEA.

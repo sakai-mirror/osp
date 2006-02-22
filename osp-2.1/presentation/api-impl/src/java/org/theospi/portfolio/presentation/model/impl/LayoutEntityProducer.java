@@ -20,7 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model.impl;
 
-import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
+import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.sakaiproject.service.legacy.entity.Entity;
 
 /**
@@ -30,7 +30,7 @@ import org.sakaiproject.service.legacy.entity.Entity;
  * Time: 4:53:43 PM
  * To change this template use File | Settings | File Templates.
  */
-public class LayoutEntityProducer extends OspEntityProducerBase {
+public class LayoutEntityProducer extends EntityProducerBase {
    protected static final String PRODUCER_NAME = "ospPresentationLayout";
 
    public String getLabel() {

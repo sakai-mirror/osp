@@ -20,7 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.impl;
 
-import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
+import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
+import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,7 +30,7 @@ import org.theospi.portfolio.shared.mgt.OspEntityProducerBase;
  * Time: 6:03:02 PM
  * To change this template use File | Settings | File Templates.
  */
-public class WizardEntityProducer extends OspEntityProducerBase {
+public class WizardEntityProducer extends EntityProducerBase {
            
    public static final String WIZARD_PRODUCER = "ospWizard";
 

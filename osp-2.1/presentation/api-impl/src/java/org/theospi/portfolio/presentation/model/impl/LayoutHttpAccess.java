@@ -20,11 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model.impl;
 
-import org.theospi.portfolio.shared.mgt.OspHttpAccess;
-import org.theospi.portfolio.shared.mgt.ReferenceParser;
+import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.security.AuthorizationFailedException;
+import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.exception.PermissionException;
@@ -32,6 +33,8 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.CopyrightException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
+import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -40,7 +43,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
  * Time: 4:54:50 PM
  * To change this template use File | Settings | File Templates.
  */
-public class LayoutHttpAccess extends OspHttpAccess {
+public class LayoutHttpAccess extends OspHttpAccessBase {
 
    private PresentationManager presentationManager;
    private IdManager idManager;

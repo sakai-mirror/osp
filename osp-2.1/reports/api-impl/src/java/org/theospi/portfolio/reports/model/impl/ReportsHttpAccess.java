@@ -20,12 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model.impl;
 
-import org.theospi.portfolio.shared.mgt.OspHttpAccess;
-import org.theospi.portfolio.shared.mgt.ReferenceParser;
+import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
+import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
 import org.theospi.portfolio.reports.model.ReportsManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
+import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.security.SecurityService;
 import org.sakaiproject.exception.PermissionException;
@@ -41,7 +44,7 @@ import org.sakaiproject.exception.CopyrightException;
  * Time: 12:03:18 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ReportsHttpAccess extends OspHttpAccess {
+public class ReportsHttpAccess extends OspHttpAccessBase {
 
    private ReportsManager reportsManager;
 

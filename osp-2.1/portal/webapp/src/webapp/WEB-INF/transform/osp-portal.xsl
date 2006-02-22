@@ -283,11 +283,6 @@ your browser doesn't support iframes
                   </ul>
                </td>
             </tr>
-            <tr>
-               <td>
-                  <!-- breadcrumbs -->
-               </td>
-            </tr>
          </table>
       <div class="divColor" id="tabBottom"><br /></div></div>
          </xsl:when>
@@ -739,11 +734,12 @@ your browser doesn't support iframes
    <xsl:template name="breadcrumbs">
       <xsl:variable name="siteTypeKey" select="siteTypes/siteType[@selected='true']/key"/>
       <xsl:variable name="toolCategoryKey" select="categories/category[@selected='true']/key"/>
-      <div>
-      <table>
-         <tr><td></td></tr>
-         <tr>
-            <td width="160"></td>
+
+<div class="breadcrumbHolder workspace">
+   <table border="0">
+      <tr><td>
+         <ul id="breadcrumbNavigation">
+            <!--Active link/breadcrum li gets the class selectedCrumb-->
             <xsl:if test="siteTypes/siteType[@selected='true']">
                <xsl:if test="siteTypes/siteType[@selected='true' and key!='org.theospi.portfolio.portal.myWorkspace']">
                   <xsl:call-template name="breadcrumb_entry">
@@ -768,14 +764,15 @@ your browser doesn't support iframes
                      <xsl:call-template name="breadcrumb_entry">
                         <xsl:with-param name="node" select="categories/category/pages/page[@selected='true']"/>
                         <xsl:with-param name="title" select="categories/category/pages/page[@selected='true']/title"/>
+                        <xsl:with-param name="last" select="'true'"/> 
                      </xsl:call-template>
                   </xsl:if>
                </xsl:if>
             </xsl:if>
-         </tr>
-         <tr><td></td></tr>
-      </table>
-      </div>
+         </ul>
+      </td></tr>
+   </table>
+</div>
    </xsl:template>
 
    <!--
@@ -786,16 +783,25 @@ your browser doesn't support iframes
    <xsl:template name="breadcrumb_entry">
       <xsl:param name="node"/>
       <xsl:param name="title"/>
+      <xsl:param name="last"/>
       <td>
-         <a>
-            <xsl:attribute name="href">
-               <xsl:value-of select="$node/url"/>
-            </xsl:attribute>
-            <xsl:attribute name="title">
+         <li>
+            <xsl:if test="$last = 'true'">
+               <xsl:attribute name="class">selectedCrumb</xsl:attribute>
+            </xsl:if>
+            <a>
+               <xsl:attribute name="href">
+                  <xsl:value-of select="$node/url"/>
+               </xsl:attribute>
+               <xsl:attribute name="title">
+                  <xsl:value-of select="$title"/>
+               </xsl:attribute>
                <xsl:value-of select="$title"/>
-            </xsl:attribute>
-            <xsl:value-of select="$title"/>
-         </a>
+            </a>
+            <xsl:if test="$last != 'true'">
+               &gt;
+            </xsl:if>
+         </li>
       </td>
    </xsl:template>
 
