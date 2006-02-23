@@ -20,13 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.Errors;
 
@@ -97,5 +96,13 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
 
    public ModelAndView processCancel(Map request, Map session, Map application, Object command, Errors errors) throws Exception {
       return new ModelAndView("return", WizardPageHelper.CANCELED, "true");
+   }
+   
+   protected String getGuidanceViewPermission() {
+      return WizardFunctionConstants.VIEW_WIZARDPAGE_GUIDANCE;
+   }
+   
+   protected String getGuidanceEditPermission() {
+      return WizardFunctionConstants.EDIT_WIZARDPAGE_GUIDANCE;
    }
 }

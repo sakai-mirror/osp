@@ -16,6 +16,12 @@ function hrefViewCell(pageId) {
 <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" />
 <osp-c:authZMap prefix="osp.matrix." var="matrixCan" />
 
+   <c:if test="${isExposedPage != true}">
+   <div class="navIntraTool">
+      <a href="<osp:url value="listScaffolding.osp"/>"><fmt:message key="action_list"/></a>
+   </div>
+   </c:if>
+
     <h3><fmt:message key="title_matrixManager"/></h3>
     
     <c:if test="${can.create}">

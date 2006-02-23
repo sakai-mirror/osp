@@ -28,6 +28,7 @@ import org.sakaiproject.service.legacy.entity.Reference;
 import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
 
 public interface WizardManager extends WorkflowEnabledManager {
 
@@ -64,4 +65,7 @@ public interface WizardManager extends WorkflowEnabledManager {
    public CompletedWizard saveWizard(CompletedWizard wizard);
 
    public boolean importResource(Id worksite, String reference);
+   
+   public WizardPageSequence getWizardPageSeqByDef(Id id);
+   public List getCompletedWizardPagesByPageDef(Id id);
 }

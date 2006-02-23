@@ -23,11 +23,14 @@ package org.theospi.portfolio.wizard;
 import org.theospi.portfolio.security.app.ApplicationAuthorizer;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
+import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class WizardAuthorizerImpl implements ApplicationAuthorizer{
@@ -68,7 +71,36 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
          return isWizardAuthForReview(facade, agent, id);
       } else if (WizardFunctionConstants.EVALUATE_WIZARD.equals(function)) {
          return isWizardAuthForEval(facade, agent, id);
-      } else {
+      } 
+      else if (function.equals(WizardFunctionConstants.EDIT_WIZARDPAGE_GUIDANCE)) {
+         //ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(id);
+         WizardPageSequence wps = wizardManager.getWizardPageSeqByDef(id);
+         Agent owner = wps.getCategory().getWizard().getOwner();
+         
+         return new Boolean(agent.equals(owner));
+      } else if (function.equals(WizardFunctionConstants.VIEW_WIZARDPAGE_GUIDANCE)) {
+         //If I can eval, review, or own it
+         List pages = wizardManager.getCompletedWizardPagesByPageDef(id);
+
+         for (Iterator iter=pages.iterator(); iter.hasNext();) {
+            CompletedWizardPage cwp = (CompletedWizardPage)iter.next();
+            Boolean returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.EVALUATE_WIZARD, cwp.getId()));
+            if (returned == null || !returned.booleanValue()) {
+               returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.REVIEW_WIZARD, cwp.getId()));
+            }
+            if (returned == null || !returned.booleanValue()) {
+               returned = Boolean.valueOf(cwp.getCategory().getWizard().getOwner().equals(agent));
+            }
+            if (returned == null || !returned.booleanValue()) {
+               returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.VIEW_WIZARD,id));
+            }
+            if (returned.booleanValue())
+               return returned;
+         }
+         return null;
+      } 
+      
+      else {
          return null;
       }
    }

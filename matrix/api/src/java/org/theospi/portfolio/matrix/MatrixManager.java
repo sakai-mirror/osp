@@ -93,6 +93,7 @@ public interface MatrixManager extends WorkflowEnabledManager {
          int progressionOption);
    ScaffoldingCell getScaffoldingCell(Criterion criterion, Level level);
    ScaffoldingCell getScaffoldingCell(Id id);
+   ScaffoldingCell getScaffoldingCellByWizardPageDef(Id id);
    String getScaffoldingCellsStatus(Id id);
 
    Set getPageContents(WizardPage page);

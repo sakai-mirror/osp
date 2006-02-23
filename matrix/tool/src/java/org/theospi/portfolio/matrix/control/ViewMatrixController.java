@@ -169,13 +169,18 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       
       MatrixGridBean grid = (MatrixGridBean) command;      
       Agent owner = grid.getMatrixOwner();
-      Boolean readOnly = new Boolean(false);
+      Boolean readOnly = Boolean.valueOf(false);
 
       if (owner != null && !owner.equals(getAuthManager().getAgent()))
-         readOnly = new Boolean(true);
+         readOnly = Boolean.valueOf(true);
       
       model.put("matrixOwner", owner);      
       model.put("readOnlyMatrix", readOnly);
+      
+      if (PortalService.getCurrentSitePageId().equals(
+            grid.getScaffolding().getExposedPageId())) {
+         model.put("isExposedPage", Boolean.valueOf(true));
+      }
       
       return model;
    }

@@ -122,6 +122,12 @@
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.EXPORT_WIZARD"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.VIEW_WIZARDPAGE_GUIDANCE"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.EDIT_WIZARDPAGE_GUIDANCE"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
          </list>
       </property>
    </bean>

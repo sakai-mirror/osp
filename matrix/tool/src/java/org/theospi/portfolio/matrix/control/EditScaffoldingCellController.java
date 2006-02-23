@@ -156,13 +156,21 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       }
       return new ModelAndView("success");
    }
-
+   
    protected void prepareModelWithScaffoldingId(Map model, ScaffoldingCell scaffoldingCell) {
       model.put("scaffolding_id", scaffoldingCell.getScaffolding().getId());
    }
 
    protected boolean isPublished(ScaffoldingCell scaffoldingCell) {
       return scaffoldingCell.getScaffolding().isPublished();
+   }
+   
+   protected String getGuidanceViewPermission() {
+      return MatrixFunctionConstants.VIEW_SCAFFOLDING_GUIDANCE;
+   }
+   
+   protected String getGuidanceEditPermission() {
+      return MatrixFunctionConstants.EDIT_SCAFFOLDING_GUIDANCE;
    }
 
    private Map doForwardAction(String forwardView, Map request, Map session,
@@ -186,7 +194,9 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
             String title = "Guidance for Cell";
             //CWM fix guidance stuff
             guidance = getGuidanceManager().createNew(title, currentSite, 
-                  null, "", MatrixFunctionConstants.CREATE_SCAFFOLDING); 
+                  scaffoldingCell.getWizardPageDefinition().getId(), 
+                  getGuidanceViewPermission(), 
+                  getGuidanceEditPermission()); 
          }
          
          session.put(GuidanceManager.CURRENT_GUIDANCE, guidance);
@@ -196,7 +206,6 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          scaffoldingCell.setGuidance(null);
          session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
          model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
-         forwardView = "success";
       }
       else if (!forwardView.equals("selectEvaluators")) {
          model.put("label", request.get("label"));             

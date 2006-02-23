@@ -29,7 +29,9 @@ import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.app.ApplicationAuthorizer;
 import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 
 
 
@@ -47,6 +49,7 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
    
    private MatrixManager matrixManager;
    private AuthorizationFacade explicitAuthz;
+
    protected final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
       .getLog(getClass());
    protected List functions;
@@ -73,6 +76,34 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       }
       else if (function.equals(MatrixFunctionConstants.CREATE_SCAFFOLDING)) {
          return new Boolean(facade.isAuthorized(agent,function,id));
+      }
+      else if (function.equals(MatrixFunctionConstants.VIEW_SCAFFOLDING_GUIDANCE)) {
+         //If I can eval, review, or own it
+         ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(id);
+         //sCell.getWizardPageDefinition().get
+         for (Iterator iter=sCell.getCells().iterator(); iter.hasNext();) {
+            Cell cell = (Cell)iter.next();
+            Boolean returned = Boolean.valueOf(facade.isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, cell.getId()));
+            if (returned == null || !returned.booleanValue()) {
+               returned = Boolean.valueOf(facade.isAuthorized(agent, MatrixFunctionConstants.REVIEW_MATRIX, cell.getId()));
+            }
+            if (returned == null || !returned.booleanValue()) {
+               Matrix matrix = cell.getMatrix();
+               if (matrix != null) {
+                  returned = Boolean.valueOf(matrix.getOwner().equals(agent));
+               }
+            }
+            if (returned.booleanValue())
+               return returned;
+         }
+      }
+      else if (function.equals(MatrixFunctionConstants.EDIT_SCAFFOLDING_GUIDANCE)) {
+         ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(id);
+         Agent owner = null;
+         if (sCell != null) {
+            owner = sCell.getScaffolding().getOwner();
+         }
+         return new Boolean(agent.equals(owner));
       }
       
       return null;  //don't care

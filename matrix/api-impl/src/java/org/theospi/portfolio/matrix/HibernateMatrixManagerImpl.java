@@ -575,6 +575,20 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return scaffoldingCell;
    }
    
+   public ScaffoldingCell getScaffoldingCellByWizardPageDef(Id id) {
+      ScaffoldingCell scaffoldingCell = null;
+      Object[] params = new Object[]{id.getValue()};
+      
+      List list = this.getHibernateTemplate().find("from " +
+            "ScaffoldingCell scaffoldingCell where scaffoldingCell.wizardPageDefinition=?", 
+            params);
+      if (list.size() == 1) {
+         scaffoldingCell = (ScaffoldingCell) list.get(0);
+      }
+         
+      return scaffoldingCell;
+   }
+   
    protected Collection getScaffoldingCellEvaluators(Id wizardPageDefId, boolean useAgentId) {
       Collection evaluators = new HashSet();
       Collection viewerAuthzs = getAuthzManager().getAuthorizations(null,

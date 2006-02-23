@@ -55,3 +55,15 @@ function getTheElement(thisid){
     }
   }
 }
+
+//Stop any additional events.
+// Used on a nested element where the parent element has an event you want to stop
+function stopEvents(e)
+{
+   if (!e) var e = event;
+   
+   e.cancelBubble = true;
+   if (e.stopPropagation) {
+      e.stopPropagation();
+   }  
+}

@@ -73,7 +73,7 @@
 		</div>
 	</c:if>
    
-   <h4 style="cursor:pointer" onclick="javascript:showHideDiv('styleDiv','/osp-jsf-resource')">
+   <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('styleDiv','/osp-jsf-resource')">
    <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgstyleDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
    <osp:message key="style_section_header"/></h4>
    <div id="styleDiv">
@@ -95,7 +95,10 @@
    </div>
    
    <c:if test="${not empty cell.scaffoldingCell.guidance}">
-      <h4><osp:message key="guidance_header"/></h4>
+      <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('guidanceDiv','/osp-jsf-resource')">
+   <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgguidanceDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
+   <osp:message key="guidance_header"/></h4>
+   <div id="guidanceDiv">
       <c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}" varStatus="loopStatus">
          <c:if test="${guidanceItem.type == 'instruction'}">
          <p class="longtext">
@@ -116,16 +119,17 @@
          <osp:param name="${CURRENT_GUIDANCE_ID_KEY}" value="${cell.scaffoldingCell.guidance.id}"/>
       </osp:url>" title="<osp:message key="guidance_link_title"/>">
          <osp:message key="guidance_link_text"/></a>
+      </div>
    </c:if>
 
    
-   <h4 style="cursor:pointer" onclick="javascript:showHideDiv('cellItemDiv','/osp-jsf-resource')">
+   <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('cellItemDiv','/osp-jsf-resource')">
    <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgcellItemDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
    <osp:message key="title_cellItems"/>
       <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
       <a name="linkNew" id="linkNew" href="<osp:url value="attachToCell.osp">
          <osp:param name="page_id" value="${cell.wizardPage.id}"/>
-         </osp:url>"><fmt:message key="action_manageItems"/></a>
+         </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="action_manageItems"/></a>
       </c:if>
    </h4>
    <div id="cellItemDiv">
@@ -137,28 +141,35 @@
 
 	<br/>
    
-   <c:forEach var="cellFormDef" items="${cellFormDefs}">
-         <h4><c:out value="${cellFormDef.name}" />
+   <c:forEach var="cellFormDef" items="${cellFormDefs}" varStatus="loopStatus">
+         <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('form<c:out value="${loopStatus.index}" />Div','/osp-jsf-resource')">
+   <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgform<c:out value="${loopStatus.index}" />Div" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
+   <c:out value="${cellFormDef.name}" />
          <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
          <a href="<osp:url value="cellFormPicker.osp">
                         <osp:param name="page_id" value="${cell.wizardPage.id}" />
                         <osp:param name="attachFormAction" value="${cellFormDef.id}" />
-                        </osp:url>">
+                        </osp:url>" onclick="javascript:stopEvents(event)">
                      <fmt:message key="action_chooseForms"/></a> | 
          <a href="<osp:url value="cellFormPicker.osp">
                         <osp:param name="page_id" value="${cell.wizardPage.id}" />
                         <osp:param name="createFormAction" value="${cellFormDef.id}" />
-                        </osp:url>">
+                        </osp:url>" onclick="javascript:stopEvents(event)">
                      <fmt:message key="action_createForm"/></a>
 </c:if>
 </h4>
+      <div id="form<c:out value="${loopStatus.index}" />Div">
       <c:set var="nodes" value="${cellForms}"/>
       <c:set var="allowedNodeType" value="${cellFormDef.id}"/>
       <%@ include file="cellContent.jspf" %>
-      </c:forEach>
+      </div>
+   </c:forEach>
    
    <c:if test="${cell.scaffoldingCell.reflectionDevice != null}">   
-      <h4><osp:message key="reflection_section_header"/></h4>
+      <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('reflectionDiv','/osp-jsf-resource')">
+   <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgreflectionDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
+   <osp:message key="reflection_section_header"/></h4>
+   <div id="reflectionDiv">
       
       <c:if test="${empty reflections}">
          <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
@@ -192,6 +203,7 @@
          </c:if>
       </c:if>
    </c:if>
+   </div>
    
 	<!-- if status is ready -->
     <p class="act">
@@ -214,7 +226,7 @@
 </c:if>
 
 <c:if test="${not empty reviews}">
-   <h4 style="cursor:pointer" onclick="javascript:showHideDiv('reviewDiv','/osp-jsf-resource')">
+   <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('reviewDiv','/osp-jsf-resource')">
    <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgreviewDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
    <osp:message key="reviews_section_header"/></h4>
    <div id="reviewDiv">
@@ -223,7 +235,7 @@
    </div>
 </c:if>
 <c:if test="${not empty evaluations}">
-   <h4 style="cursor:pointer" onclick="javascript:showHideDiv('evalDiv','/osp-jsf-resource')">
+   <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('evalDiv','/osp-jsf-resource')">
    <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgevalDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
    <osp:message key="evals_section_header"/></h4>
    <div id="evalDiv">
