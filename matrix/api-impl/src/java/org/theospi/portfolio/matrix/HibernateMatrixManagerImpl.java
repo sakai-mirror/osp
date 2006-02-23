@@ -144,11 +144,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          Scaffolding scaff = (Scaffolding)i.next();
          Set cells = scaff.getScaffoldingCells();
          
+         //Load the evaluators for the cells as well.
          for(Iterator ii = cells.iterator(); ii.hasNext(); ) {
             ScaffoldingCell cell = (ScaffoldingCell)ii.next();
             
-            cell.getId();
+            cell.setEvaluators(getScaffoldingCellEvaluators(cell.getWizardPageDefinition().getId(), true));
          }
+         
          List levels = scaff.getLevels();
          int n = 0;
          for(Iterator ii = levels.iterator(); ii.hasNext(); ) {
