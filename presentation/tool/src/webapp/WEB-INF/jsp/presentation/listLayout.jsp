@@ -36,7 +36,7 @@
 
 
 <osp:url var="listUrl" value="listLayout.osp"/>
-<osp:listScroll listUrl="${listUrl}" className="chefToolBarWrap" />
+<osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
 
 <h3><fmt:message key="title_presentationLayoutManager"/></h3>
 
