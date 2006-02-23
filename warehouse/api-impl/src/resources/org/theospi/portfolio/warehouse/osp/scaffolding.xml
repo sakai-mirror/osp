@@ -202,8 +202,31 @@
      <primary-key>id</primary-key>
    </table>
 
+   <table>
+     <name>DW_SCAFFOLDING_CELL_EVALUATORS</name>
+     <desc>Scaffolding Cell Evaluators Data warehouse table</desc>
+     <columns>
+        <column>
+          <name>scaffolding_cell_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+     </columns>
+     <not-null>scaffolding_cell_id</not-null>
+   </table>
 
 
+
+   <index>
+     <index-name>FK184EAE6880F1F7B4</index-name>
+     <table-name>DW_SCAFFOLDING_CELL_EVALUATORS</table-name>
+     <column>scaffolding_cell_id</column>
+   </index>
    <index>
      <index-name>FK184EAE6880F1F7B6</index-name>
      <table-name>DW_SCAFFOLDING_CELL</table-name>
