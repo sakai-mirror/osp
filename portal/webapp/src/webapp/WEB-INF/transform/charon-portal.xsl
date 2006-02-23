@@ -5,6 +5,9 @@
 	xmlns:osp="http://www.osportfolio.org/OspML"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+   <xsl:output method="html" version="4.0"
+      encoding="utf-8" indent="yes"/>
+
    <xsl:variable name="config" select="/portal/config" />
    <xsl:variable name="externalized" select="/portal/externalized" />
 
