@@ -112,6 +112,7 @@
                        <list>
                           <value>criterion_sequence</value>
                           <value>level_sequence</value>
+                          <value>userId</value>
                        </list>
                     </property>
               </bean>

@@ -7,7 +7,7 @@
     <div>
     <h5>Matrix Cell Completion Status</h5>
     
-    Matrix: <xsl:value-of select="//parameters/parameter[@name='title']/." />
+    Matrix: <xsl:value-of select="//datarow[1]/element['title']/." />
     
     <div class="instruction">This data is only up to the date of the last data warehouse synchronization.</div>
     
@@ -22,41 +22,39 @@
           <td>Locked</td>
        </tr>
        
-       <xsl:for-each select="//datarow">
-          <xsl:sort select="element[@name='userId']/." />
-          <xsl:if test="not(preceding-sibling::datarow[element[@colName='userId'] = 
-                        current()/element[@colName='userId']])">
-             <xsl:variable name = "varUserName" select = "element[@colName='userId']" />
-             <tr>
+       <xsl:for-each select="//group[@by = 'userId']/datarow">
+          <xsl:sort select="element[@colName='userId']" />
+          
+          <xsl:variable name = "varUserName" select = "element[@colName='userId']" />
+          <tr>
                 <td>
                     <xsl:value-of select="$varUserName"/>
                 </td>
-                <xsl:if test="count(//datarow[element[@colName='userId'] = $varUserName]) &gt; 1">
+                <xsl:if test="count(//data/datarow[element[@colName='userId'] = $varUserName]) &gt; 1">
                 <td>
-                   <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName and element[@colName='status'] = 'READY'])"/>
-                    / <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName])"/>
+                   <xsl:value-of select="count(//data/datarow[element[@colName='userId'] = $varUserName and element[@colName='status'] = 'READY'])"/>
+                    / <xsl:value-of select="count(//data/datarow[element[@colName='userId'] = $varUserName])"/>
                 </td>
                 <td>
-                   <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName and element[@colName='status'] = 'PENDING'])"/>
-                    / <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName])"/>
+                   <xsl:value-of select="count(//data/datarow[element[@colName='userId'] = $varUserName and element[@colName='status'] = 'PENDING'])"/>
+                    / <xsl:value-of select="count(//data/datarow[element[@colName='userId'] = $varUserName])"/>
                 </td>
                 <td>
-                   <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName and element[@colName='status'] = 'COMPLETE'])"/>
-                    / <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName])"/>
+                   <xsl:value-of select="count(//data/datarow[element[@colName='userId'] = $varUserName and element[@colName='status'] = 'COMPLETE'])"/>
+                    / <xsl:value-of select="count(//data/datarow[element[@colName='userId'] = $varUserName])"/>
                 </td>
                 <td>
-                   <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName and element[@colName='status'] = 'LOCKED'])"/>
-                    / <xsl:value-of select="count(//datarow[element[@colName='userId'] = $varUserName])"/>
+                   <xsl:value-of select="count(//data/datarow[element[@colName='userId'] = $varUserName and element[@colName='status'] = 'LOCKED'])"/>
+                    / <xsl:value-of select="count(//data/datarow[element[@colName='userId'] = $varUserName])"/>
                 </td>
-                </xsl:if>a
-                <xsl:if test="count(//datarow[element[@colName='userId'] = $varUserName]) &lt;= 1">
+                </xsl:if>
+                <xsl:if test="count(//data/datarow[element[@colName='userId'] = $varUserName]) &lt;= 1">
                    <td colspan="4" align="center">
                       Not Started
                    </td>
                 </xsl:if>
 
-              </tr>
-           </xsl:if>
+           </tr>
        </xsl:for-each>
     </table>
 
