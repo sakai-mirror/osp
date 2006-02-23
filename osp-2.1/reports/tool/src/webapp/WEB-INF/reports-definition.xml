@@ -596,6 +596,7 @@
         </property>
         <property name="resultProcessors">
            <list>
+              <ref bean="org.theospi.portfolio.reports.model.ResultsPostProcessor.rowcolumn" />
            </list>
         </property>
         <property name="keywords">
@@ -686,6 +687,7 @@
         </property>
         <property name="resultProcessors">
            <list>
+              <ref bean="org.theospi.portfolio.reports.model.ResultsPostProcessor.rowcolumn" />
            </list>
         </property>
         <property name="keywords">
@@ -732,6 +734,17 @@
                     <property name="xslLink"><value>WEB-INF/reportxsls/matrixStatusByLevel.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                     <property name="title"><value>Cell Completion Status</value></property>
+                </bean>
+                <bean id="reportXsl_ms.csv" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="title"><value>CSV</value></property>
+                    <property name="xslLink"><value>WEB-INF/reportxsls/defaultExport.xsl</value></property>
+                    <property name="isExport"><value>true</value></property>
+                    <property name="extension"><value>csv</value></property>
+                    <property name="target"><value>_self</value></property>
+                    <property name="contentType"><value>application/x-csv</value></property>
+                    <property name="resultsPostProcessor">
+                        <ref bean="org.theospi.portfolio.reports.model.ResultsPostProcessor.csv"/>
+                    </property>
                 </bean>
             </list>
         </property>

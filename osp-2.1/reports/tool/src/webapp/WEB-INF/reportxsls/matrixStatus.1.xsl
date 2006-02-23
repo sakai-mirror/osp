@@ -15,10 +15,9 @@
     <table width="100%">
 
        
-       <xsl:for-each select="//datarow">
-          <xsl:sort select="element[@name='userId']/." />
-          <xsl:if test="not(preceding-sibling::datarow[element[@colName='userId'] = 
-                        current()/element[@colName='userId']])">
+       <xsl:for-each select="//group[@by = 'userId']/datarow">
+          <xsl:sort select="element[@colName='userId']/." />
+
              <xsl:variable name = "varUserName" select = "element[@colName='userId']" />
              <tr><td width="100%">
 
@@ -28,32 +27,28 @@
                    <tr class="exclude">
                       <td>
                          <xsl:if test="element[@colName='random'] = 'true'" >
-                           Anonymous User
+                            Anonymous User
                          </xsl:if>
                          <xsl:if test="element[@colName='random'] != 'true'" >
-                         <xsl:value-of select="$varUserName"/>
+                            <xsl:value-of select="$varUserName"/>
                          </xsl:if>
                       </td>
 
-                      <xsl:for-each select="//datarow[element[@colName='criterion_sequence'] = 0]">
-                         <xsl:sort data-type="number" select="element[@name='level_sequence']" />
-                         <xsl:if test="not(preceding-sibling::datarow[element[@colName='level_sequence'] = 
-                        current()/element[@colName='level_sequence']])">
-                            <td>
-                               <xsl:value-of select="element[@colName='level_description']"/>
-                            </td>
-                         </xsl:if>
+                      <xsl:for-each select="//group[@by = 'level_sequence']/datarow[element[@colName='level_description'] != '']">
+                         <xsl:sort data-type="number" select="element[@colName='level_sequence']" />
+                         <td>
+                            <xsl:value-of select="element[@colName='level_description']"/>
+                         </td>
                       </xsl:for-each>
                    </tr>
 
 
 
-                   <xsl:for-each select="//datarow[element[@colName='userId'] = $varUserName]">
+                   <xsl:for-each select="//group[@by = 'criterion_sequence']/datarow">
                       <xsl:sort data-type="number" select="element[@name='criterion_sequence']" />
 
                       <xsl:variable name = "varUserCriterion" select = "element[@colName='criterion_sequence']" />
                      
-                      <xsl:if test="not(preceding-sibling::datarow[position() = 1]/element[@colName='criterion_sequence'] = $varUserCriterion)">
                          <tr>
                             <td>
                                <xsl:value-of select="element[@colName='criterion_description']"/>
@@ -64,9 +59,9 @@
 
 
 
-                   <xsl:for-each select="//datarow[element[@colName='userId'] = $varUserName and
+                   <xsl:for-each select="//data/datarow[element[@colName='userId'] = $varUserName and
                         element[@colName='criterion_sequence'] = current()/element[@colName='criterion_sequence']]">
-                      <xsl:sort data-type="number" select="element[@name='level_sequence']/." />
+                      <xsl:sort data-type="number" select="element[@colName='level_sequence']/." />
             <td>
                    <!--      <xsl:if test="element[@colName='status']/. = 'READY'"><xsl:value-of select="'&lt;td '"/><xsl:value-of select="element[@name='readyColor']/."/><xsl:value-of select="'&gt;'"/></xsl:if>
 <xsl:if test="element[@colName='status']/. = 'PENDING'"><xsl:value-of select="'&lt;td '"/><xsl:value-of select="element[@name='pendingColor']/."/><xsl:value-of select="'&gt;'"/></xsl:if>
@@ -83,14 +78,13 @@
 
 
                          </tr>
-                      </xsl:if>
                    </xsl:for-each>
 
                 </table>
                 <p /><p />
 
              </td></tr>
-           </xsl:if>
+
        </xsl:for-each>
     </table>
 
@@ -106,7 +100,7 @@
     </xsl:for-each>
     </tr>
     
-    <xsl:for-each select="//datarow">
+    <xsl:for-each select="//data/datarow">
         <tr>
             <xsl:for-each select="element">
                 <td>
@@ -115,8 +109,8 @@
             </xsl:for-each>
         </tr>
     </xsl:for-each>
-    </table>
--->
+    </table> -->
+
     </div>
 </xsl:template>
 </xsl:stylesheet>
