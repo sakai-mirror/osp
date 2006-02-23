@@ -4,12 +4,14 @@
 	background:#F0F0F0;
 	white-space:nowrap;
 	list-style:none inside none;
-	font-size:.6em;
 	height:auto;
 /*	margin:0 0 -2px 3px;*/
 	margin:0;
 	padding:4px 0;
 	width:100%}
+.breadcrumbNavigation{
+	font-size:.6em;}
+
 /*hacks for moz and saf*/
 html>body #breadcrumbNavigation{margin:0 0 -1px 3px;}
 \head+body #breadcrumbNavigation{margin:0 0 -1px 3px;}
@@ -40,3 +42,5 @@ html>body #breadcrumbNavigation a,html>body #breadcrumbNavigation a:link,html>bo
 /*the hover for the breadcreumbs*/
 #breadcrumbNavigation a:hover{color:#000000;
 	}
+
+

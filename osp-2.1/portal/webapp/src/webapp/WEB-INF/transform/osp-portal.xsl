@@ -5,6 +5,9 @@
 	xmlns:osp="http://www.osportfolio.org/OspML"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+   <xsl:output method="html" version="4.0"
+      encoding="utf-8" indent="yes"/>
+
    <xsl:variable name="config" select="/portal/config" />
    <xsl:variable name="externalized" select="/portal/externalized" />
 
@@ -29,7 +32,9 @@
 
     <meta http-equiv="Content-Style-Type" content="text/css" />
       <title><xsl:value-of select="pageTitle" /></title>
-      <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js"></script>
+      <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js">
+         <xsl:value-of select="' '"/>
+      </script>
    </head>
 <body class="portalBody">
 <a href="#tocontent"  class="skip" accesskey="c">
@@ -745,6 +750,7 @@ your browser doesn't support iframes
                   <xsl:call-template name="breadcrumb_entry">
                      <xsl:with-param name="node" select="siteTypes/siteType[@selected='true']"/>
                      <xsl:with-param name="title" select="$externalized/entry[@key=$siteTypeKey]"/>
+                     <xsl:with-param name="last" select="count(siteTypes/siteType/sites/site[@selected='true']) = 0"/>
                   </xsl:call-template>
                </xsl:if>
                <xsl:if test="siteTypes/siteType/sites/site[@selected='true']">
@@ -757,6 +763,7 @@ your browser doesn't support iframes
                         <xsl:call-template name="breadcrumb_entry">
                            <xsl:with-param name="node" select="categories/category[@selected='true']"/>
                            <xsl:with-param name="title" select="$externalized/entry[@key=$toolCategoryKey]"/>
+                           <xsl:with-param name="last" select="count(categories/category/pages/page[@selected='true']) = 0"/>
                         </xsl:call-template>
                      </xsl:if>
                   </xsl:if>
@@ -764,7 +771,7 @@ your browser doesn't support iframes
                      <xsl:call-template name="breadcrumb_entry">
                         <xsl:with-param name="node" select="categories/category/pages/page[@selected='true']"/>
                         <xsl:with-param name="title" select="categories/category/pages/page[@selected='true']/title"/>
-                        <xsl:with-param name="last" select="'true'"/> 
+                        <xsl:with-param name="last" select="'true'"/>
                      </xsl:call-template>
                   </xsl:if>
                </xsl:if>
@@ -784,11 +791,11 @@ your browser doesn't support iframes
       <xsl:param name="node"/>
       <xsl:param name="title"/>
       <xsl:param name="last"/>
-      <td>
-         <li>
-            <xsl:if test="$last = 'true'">
-               <xsl:attribute name="class">selectedCrumb</xsl:attribute>
-            </xsl:if>
+      <li>
+         <xsl:if test="$last = 'true'">
+            <xsl:attribute name="class">selectedCrumb</xsl:attribute>
+         </xsl:if>
+         <span class="breadcrumbNavigation">
             <a>
                <xsl:attribute name="href">
                   <xsl:value-of select="$node/url"/>
@@ -801,8 +808,8 @@ your browser doesn't support iframes
             <xsl:if test="$last != 'true'">
                &gt;
             </xsl:if>
-         </li>
-      </td>
+         </span>
+      </li>
    </xsl:template>
 
 </xsl:stylesheet>
