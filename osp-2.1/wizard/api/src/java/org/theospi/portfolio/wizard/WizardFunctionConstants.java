@@ -40,5 +40,8 @@ public interface WizardFunctionConstants {
    public static final String VIEW_WIZARD = WIZARD_PREFIX + "view";
    public static final String COPY_WIZARD = WIZARD_PREFIX + "copy";
    public static final String EXPORT_WIZARD = WIZARD_PREFIX + "export";
+   
+   public static final String VIEW_WIZARDPAGE_GUIDANCE = WIZARD_PREFIX + "viewWizPageGuidance";
+   public static final String EDIT_WIZARDPAGE_GUIDANCE = WIZARD_PREFIX + "editWizPageGuidance";
 }
 

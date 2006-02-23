@@ -88,6 +88,7 @@ public class ReviewHelperController implements Controller {
          
          Placement placement = ToolManager.getCurrentPlacement();
          String currentSite = placement.getContext();
+         //cwm add security stuff for review
          Review review = getReviewManager().createNew( 
                "New Review", currentSite, getIdManager().getId(strId), "", "");
          review.setDeviceId(formType);

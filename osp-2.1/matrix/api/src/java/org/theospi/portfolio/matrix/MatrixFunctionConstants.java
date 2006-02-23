@@ -35,15 +35,16 @@ public interface MatrixFunctionConstants {
 
    public final static String SCAFFOLDING_PREFIX = "osp.matrix.scaffolding.";
    public final static String CREATE_SCAFFOLDING = SCAFFOLDING_PREFIX + "create";
+   public final static String EDIT_SCAFFOLDING = SCAFFOLDING_PREFIX + "edit";
    //public static final String VIEW_MATRIX_USERS = SCAFFOLDING_PREFIX + "viewUsers";
    public final static String PUBLISH_SCAFFOLDING = SCAFFOLDING_PREFIX + "publish";
    public final static String DELETE_SCAFFOLDING = SCAFFOLDING_PREFIX + "delete";
-   
-
+   public static final String VIEW_SCAFFOLDING_GUIDANCE = SCAFFOLDING_PREFIX + "viewScaffGuidance";
+   public static final String EDIT_SCAFFOLDING_GUIDANCE = SCAFFOLDING_PREFIX + "editScaffGuidance";
+      
    public final static String MATRIX_PREFIX = "osp.matrix.";
    public static final String REVIEW_MATRIX = MATRIX_PREFIX + "review";
    public static final String EVALUATE_MATRIX = MATRIX_PREFIX + "evaluate";
-   public static final String UNLOCK_EVAL_MATRIX = MATRIX_PREFIX + "unlockEval";
    public static final String VIEW_OWNER_MATRIX = MATRIX_PREFIX + "viewOwner";
-   //public static final String VIEW_MATRIX = MATRIX_PREFIX + "viewMatrix";
+   
 }

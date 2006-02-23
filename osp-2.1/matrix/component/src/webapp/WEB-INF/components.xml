@@ -30,13 +30,16 @@
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EVALUATE_MATRIX"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
-            <!-- bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_MATRIX"
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.VIEW_SCAFFOLDING_GUIDANCE"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
-            </bean-->
+            </bean>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EDIT_SCAFFOLDING_GUIDANCE"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.CREATE_SCAFFOLDING"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
-            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.UNLOCK_EVAL_MATRIX"
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EDIT_SCAFFOLDING"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.PUBLISH_SCAFFOLDING"
@@ -328,21 +331,18 @@
             <entry key="maintain">
                <list>
                   <value>osp.matrix.evaluate</value>
-                  <value>osp.matrix.unlockEval</value>
                   <value>osp.matrix.viewOwner</value>
                </list>
             </entry>
             <entry key="instructor">
                <list>
                   <value>osp.matrix.evaluate</value>
-                  <value>osp.matrix.unlockEval</value>
                   <value>osp.matrix.viewOwner</value>
                </list>
             </entry>
             <entry key="project owner">
                <list>
                   <value>osp.matrix.evaluate</value>
-                  <value>osp.matrix.unlockEval</value>
                   <value>osp.matrix.viewOwner</value>
                </list>
             </entry>
@@ -355,7 +355,6 @@
       <property name="functions">
          <list>
             <value>osp.matrix.evaluate</value>
-            <value>osp.matrix.unlockEval</value>
             <value>osp.matrix.viewOwner</value>
          </list>
       </property>

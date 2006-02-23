@@ -1318,6 +1318,20 @@ public class WizardManagerImpl extends HibernateDaoSupport
          }
          return evaluators;
       }
+   
+   public WizardPageSequence getWizardPageSeqByDef(Id id) {
+      Object[] params = new Object[]{id.getValue()};
+      List seqs = getHibernateTemplate().find("from WizardPageSequence w where w.wizardPageDefinition=?", params);
+      if (seqs.size() > 0)
+         return (WizardPageSequence)seqs.get(0);
+      
+      return null;
+   }
+   
+   public List getCompletedWizardPagesByPageDef(Id id) {
+      Object[] params = new Object[]{id.getValue()};
+      return getHibernateTemplate().find("from CompletedWizardPage w where w.wizardPageDefinition.wizardPageDefinition=?", params);
+   }
 
 
    protected Collection getWizardEvaluators(Id wizardId, boolean useAgentId) {

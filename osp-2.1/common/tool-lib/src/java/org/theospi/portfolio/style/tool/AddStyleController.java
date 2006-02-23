@@ -111,20 +111,13 @@ public class AddStyleController extends AbstractStyleController
          if (!filter.equals(""))
             session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER, 
                   ComponentManager.get(filter));
+         
+         session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
        
          
          return new ModelAndView("pickStyleFiles");
       }
-/*
-      String action = "";
-      Object actionObj = request.get("action");
-      if (actionObj instanceof String) {
-         action = (String)actionObj;
-      }
-      else if (actionObj instanceof String[]) {
-         action = ((String[])actionObj)[0];
-      }
-*/
+
       if (request.get("save") != null) {
          if (!getStyleManager().isGlobal()){
             style.setSiteId(getWorksiteManager().getCurrentWorksiteId().getValue());

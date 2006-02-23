@@ -365,7 +365,9 @@ public class WizardTool extends BuilderTool {
 
       Guidance guidance = wizard.getGuidance();
       if (guidance == null) {
-         guidance = getGuidanceManager().createNew(wizard.getName() + " Guidance", currentSite, null, "", "");
+         guidance = getGuidanceManager().createNew(wizard.getName() + " Guidance", 
+               currentSite, wizard.getId(), WizardFunctionConstants.VIEW_WIZARD, 
+               WizardFunctionConstants.EDIT_WIZARD);
       }
 
       session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
