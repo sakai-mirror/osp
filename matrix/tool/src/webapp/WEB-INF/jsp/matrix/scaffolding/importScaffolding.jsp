@@ -30,7 +30,7 @@
 
 	<div class="act">
 		<input class="active" type="submit" value="<osp:message key="button_importScaffolding"  />"> 
-      <input type="button" value="<osp:message key="button_cancel"/>" onclick="window.document.location='<osp:url value="viewMatrix.osp"/>'">
+      <input type="button" value="<osp:message key="button_cancel"/>" onclick="window.document.location='<osp:url value="listScaffolding.osp"/>'">
 	</div>
 
 </form>
