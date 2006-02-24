@@ -7,6 +7,9 @@
     <div>
     <h5>Matrix Cell Completion Status</h5>
     
+    Run on: <xsl:value-of select="//runDate" />
+    <br />
+    
     Matrix: <xsl:value-of select="//datarow[1]/element['title']/." />
     
     <div class="instruction">This data is only up to the date of the last data warehouse synchronization.</div>
