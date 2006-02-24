@@ -66,7 +66,7 @@
              </c:if>
              
              <c:if test="${scaffold.owner == osp_agent}">
-              | <a href="<osp:url value="addScaffolding.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_edit"/></a>
+              | <a href="<osp:url value="viewScaffolding.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_edit"/></a>
              </c:if>
     
              <c:if test="${scaffold.owner == osp_agent && scaffold.published == false}">
