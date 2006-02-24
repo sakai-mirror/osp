@@ -24,6 +24,12 @@ function hrefViewCell(cellId) {
 		</div>
 
 	<h3><fmt:message key="title_matrixScaffolding"/></h3>
+   
+   <c:if test="${not empty matrixContents.scaffolding.description}">
+      <p class="instruction">
+         <c:out value="${matrixContents.scaffolding.description}" escapeXml="false" />
+      </p>
+   </c:if>
   
 	<c:if test="${empty matrixContents.columnLabels}">
 		<p class="instruction"><fmt:message key="instructions_clickEdittosetup"/></p>

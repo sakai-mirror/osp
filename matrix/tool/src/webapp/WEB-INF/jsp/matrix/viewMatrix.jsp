@@ -22,15 +22,13 @@ function hrefViewCell(pageId) {
    </div>
    </c:if>
 
-    <h3><fmt:message key="title_matrixManager"/></h3>
+   <h3><fmt:message key="title_matrixManager"/></h3>
     
-    <c:if test="${can.create}">
-      <c:if test="${not empty matrixContents.scaffolding.description}">
-       	<p class="instruction">
-            <c:out value="${matrixContents.scaffolding.description}" escapeXml="false" />
-         </p>
-      </c:if>
-    </c:if>    
+   <c:if test="${not empty matrixContents.scaffolding.description}">
+      <p class="instruction">
+         <c:out value="${matrixContents.scaffolding.description}" escapeXml="false" />
+      </p>
+   </c:if>
 
     <c:if test="${(not empty matrixContents.scaffolding) && matrixContents.scaffolding.published}">
         <c:if test="${matrixCan.review && not empty members}">
