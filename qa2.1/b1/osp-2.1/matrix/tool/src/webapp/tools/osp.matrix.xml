@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool id="osp.matrix" title="Matrix" description="OSP Matrix Tool">
+
+       <category name="sakai.main" />
+      <category name="project" />
+      <category name="portfolio" />
+
+       <keyword name="matrix" />
+       <keyword name="review" />
+       <keyword name="reviewer" />
+       <keyword name="reflect" />
+       <keyword name="reflection" />
+
+       <configuration name="theospi.resetUrl"
+            value="/member/viewMatrix.osp" />
+       <configuration name="theospi.toolListenerId"
+            value="org.theospi.portfolio.security.mgt.ToolPermissionManager.scaffolding" /> 
+            
+	</tool>
+
+</registration>

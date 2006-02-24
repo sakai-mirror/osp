@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-lazy-init="false">
+
+   <bean id="org.theospi.portfolio.portal.intf.PortalManager"
+      class="org.theospi.portfolio.portal.impl.PortalManagerImpl"
+      singleton="true">
+      <property name="userDirectoryService">
+         <ref bean="org.sakaiproject.service.legacy.user.UserDirectoryService"/>
+      </property>
+      <property name="siteService">
+         <ref bean="org.sakaiproject.service.legacy.site.SiteService"/>
+      </property>
+      <property name="portalService">
+         <ref bean="org.sakaiproject.service.framework.portal.PortalService"/>
+      </property>
+      <property name="siteTypes">
+         <map>
+            <entry key="portfolio">
+               <ref bean="org.theospi.portfolio.portal.model.SiteType.portfolio"/>
+            </entry>
+            <entry key="project">
+               <ref bean="org.theospi.portfolio.portal.model.SiteType.project"/>
+            </entry>
+            <entry key="course">
+               <ref bean="org.theospi.portfolio.portal.model.SiteType.course"/>
+            </entry>
+         </map>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.portal.model.SiteType.portfolio"
+      class="org.theospi.portfolio.portal.model.SiteType" >
+      <!-- title will come from a messages.properties so that i18n can be supported -->
+      <property name="key">
+         <value>org.theospi.portfolio.portal.portfolio</value>
+      </property>
+      <property name="order">
+         <value>1</value>
+      </property>
+      <property name="firstCategory">
+         <value>1</value>
+      </property>
+      <property name="lastCategory">
+         <value>5</value>
+      </property>
+      <property name="toolCategories">
+         <list>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.collectReflect"/>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.designPublish"/>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.guide"/>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.reviewEvaluate"/>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.analyzeReport"/>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.portal.model.SiteType.project"
+      class="org.theospi.portfolio.portal.model.SiteType" >
+      <!-- title will come from a messages.properties so that i18n can be supported -->
+      <property name="key">
+         <value>org.theospi.portfolio.portal.project</value>
+      </property>
+      <property name="order">
+         <value>2</value>
+      </property>
+      <property name="toolCategories">
+         <list>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.portal.model.SiteType.course"
+      class="org.theospi.portfolio.portal.model.SiteType" >
+      <!-- title will come from a messages.properties so that i18n can be supported -->
+      <property name="key">
+         <value>org.theospi.portfolio.portal.course</value>
+      </property>
+      <property name="order">
+         <value>3</value>
+      </property>
+      <property name="toolCategories">
+         <list>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.portal.model.ToolCategory.collectReflect"
+      class="org.theospi.portfolio.portal.model.ToolCategory">
+      <property name="key">
+         <value>org.theospi.portfolio.portal.model.collectReflect</value>
+      </property>
+      <property name="order">
+         <!-- skip a spot for home -->
+         <value>1</value>
+      </property>
+      <property name="homePagePath">
+         <value>/WEB-INF/category/collectReflect.xhtml</value>
+      </property>
+      <property name="toolIds">
+         <list>
+            <value>sakai.resources</value>
+            <value>osp.wizard</value>
+            <value>osp.matrix</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.portal.model.ToolCategory.designPublish"
+      class="org.theospi.portfolio.portal.model.ToolCategory">
+      <property name="key">
+         <value>org.theospi.portfolio.portal.model.designPublish</value>
+      </property>
+      <property name="order">
+         <!-- skip a spot for home -->
+         <value>2</value>
+      </property>
+      <property name="homePagePath">
+         <value>/WEB-INF/category/designPublish.xhtml</value>
+      </property>
+      <property name="toolIds">
+         <list>
+            <value>osp.presentation</value>
+            <value>osp.style</value>
+            <value>osp.presLayout</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.portal.model.ToolCategory.guide"
+      class="org.theospi.portfolio.portal.model.ToolCategory">
+      <property name="key">
+         <value>org.theospi.portfolio.portal.model.guide</value>
+      </property>
+      <property name="order">
+         <!-- skip a spot for home -->
+         <value>3</value>
+      </property>
+      <property name="homePagePath">
+         <value>/WEB-INF/category/guide.xhtml</value>
+      </property>
+      <property name="toolIds">
+         <list>
+            <value>osp.presTemplate</value>
+            <value>osp.wizard</value>
+            <value>osp.glossary</value>
+            <value>sakai.metaobj</value>
+            <value>osp.style</value>
+            <value>osp.presLayout</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.portal.model.ToolCategory.reviewEvaluate"
+      class="org.theospi.portfolio.portal.model.ToolCategory">
+      <property name="key">
+         <value>org.theospi.portfolio.portal.model.reviewEvaluate</value>
+      </property>
+      <property name="order">
+         <!-- skip a spot for home -->
+         <value>4</value>
+      </property>
+      <property name="homePagePath">
+         <value>/WEB-INF/category/reviewEvaluate.xhtml</value>
+      </property>
+      <property name="toolIds">
+         <list>
+            <value>osp.presentation</value>
+            <value>osp.wizard</value>
+            <value>osp.evaluation</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.portal.model.ToolCategory.analyzeReport"
+      class="org.theospi.portfolio.portal.model.ToolCategory">
+      <property name="key">
+         <value>org.theospi.portfolio.portal.model.analyzeReport</value>
+      </property>
+      <property name="order">
+         <!-- skip a spot for home -->
+         <value>5</value>
+      </property>
+      <property name="homePagePath">
+         <value>/WEB-INF/category/analyzeReport.xhtml</value>
+      </property>
+      <property name="toolIds">
+         <list>
+            <value>osp.reports</value>
+         </list>
+      </property>
+   </bean>
+
+</beans>

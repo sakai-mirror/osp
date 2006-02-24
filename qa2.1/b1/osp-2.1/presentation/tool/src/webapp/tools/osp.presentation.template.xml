@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool id="osp.presTemplate" title="Presentation Template" description="OSP Presentation Template Tool">
+
+       <category name="sakai.main" />
+      <category name="project" />
+      <category name="portfolio" />
+
+       <keyword name="presentation" />
+       <keyword name="template" />
+       <keyword name="help"/>
+
+       <configuration name="theospi.resetUrl"
+            value="/member/listTemplate.osp" />
+       <configuration name="theospi.toolListenerId"
+            value="org.theospi.portfolio.security.mgt.ToolPermissionManager.presentationTemplate" /> 
+
+	</tool>
+
+</registration>

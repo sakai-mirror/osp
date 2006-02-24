@@ -1,0 +1,30 @@
+<table class="listHier" cellspacing="0" >
+   <thead>
+      <tr>
+        <th scope="col"><fmt:message key="table_header_title"/></th>
+        <th scope="col"><fmt:message key="table_header_createdBy"/></th>
+        <th scope="col"><fmt:message key="table_header_creationDate"/></th>
+      </tr>
+   </thead>
+   <tbody>
+      <c:forEach var="object" items="${objectList}" varStatus="loopStatus">
+         <tr>
+            <td>
+               <a href="<osp:url value="cellFormPicker.osp">
+                     <osp:param name="page_id" value="${cell.wizardPage.id}" />
+                     <osp:param name="viewFormAction" value="${cellFormDef.id}" />
+                     <osp:param name="current_form_id" value="${object.reviewContentNode.resource.id}" />
+                     </osp:url>">
+                  <c:out value="${object.reviewContentNode.displayName}" />
+               </a>               
+            </td>
+            <td>
+               <c:out value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
+            </td>
+            <td>
+               <fmt:formatDate value="${object.reviewContentNode.technicalMetadata.creation}" pattern="MM-dd-yyyy" />
+            </td>
+         </tr>
+      </c:forEach>
+   </tbody>
+</table>

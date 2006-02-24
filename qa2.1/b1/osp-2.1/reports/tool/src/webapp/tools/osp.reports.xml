@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<registration>
+    <tool
+            id="osp.reports"
+            title="OSP Reports 2.1"
+            description="For running reports on portfolios.">
+            
+        <category name="course" />
+        <category name="project" />
+       <category name="portfolio" />
+
+        <configuration name="help.id" value="arch" />
+    </tool> 
+</registration>
