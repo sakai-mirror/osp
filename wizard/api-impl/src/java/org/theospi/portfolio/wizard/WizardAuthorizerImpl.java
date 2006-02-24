@@ -81,10 +81,11 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       } else if (function.equals(WizardFunctionConstants.VIEW_WIZARDPAGE_GUIDANCE)) {
          //If I can eval, review, or own it
          List pages = wizardManager.getCompletedWizardPagesByPageDef(id);
+         Boolean returned = null;
 
          for (Iterator iter=pages.iterator(); iter.hasNext();) {
             CompletedWizardPage cwp = (CompletedWizardPage)iter.next();
-            Boolean returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.EVALUATE_WIZARD, cwp.getId()));
+            returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.EVALUATE_WIZARD, cwp.getId()));
             if (returned == null || !returned.booleanValue()) {
                returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.REVIEW_WIZARD, cwp.getId()));
             }
@@ -97,6 +98,13 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
             if (returned.booleanValue())
                return returned;
          }
+        
+         WizardPageSequence wps = getWizardManager().getWizardPageSeqByDef(id);
+         
+         returned = Boolean.valueOf(wps.getCategory().getWizard().getOwner().equals(agent));
+         if (returned.booleanValue())
+            return returned;
+         
          return null;
       } 
       
