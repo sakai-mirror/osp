@@ -202,8 +202,8 @@
                      <osp:message key="reflection_edit"/></a>
          </c:if>
       </c:if>
-   </c:if>
    </div>
+   </c:if>
    
 	<!-- if status is ready -->
     <p class="act">
@@ -217,13 +217,6 @@
     	<input type="submit" name="matrix" value="<osp:message key="matrix"/>"/>
     </p>
 <hr/>
-
-<c:if test="${cell.status != 'READY' or readOnlyMatrix == 'true'}">
-	<script language="javascript">
-		disableLink("linkNew");
-	<!-- //TODO figure out how better way to disable Reflection and New-->
-	</script>
-</c:if>
 
 <c:if test="${not empty reviews}">
    <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('reviewDiv','/osp-jsf-resource')">
