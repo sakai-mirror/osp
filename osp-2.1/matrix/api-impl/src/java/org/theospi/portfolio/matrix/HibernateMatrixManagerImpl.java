@@ -1196,13 +1196,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          scaffolding.setPublished(false);
          scaffolding.setPublishedBy(null);
          scaffolding.setPublishedDate(null);
-
-         resetIds(scaffolding, guidanceMap, formsMap);
-
-         storeScaffolding(scaffolding);
-         
          scaffolding.setOwner(getAuthnManager().getAgent());
          scaffolding.setWorksiteId(getIdManager().getId(currentPlacement.getSiteId()));
+         
+         resetIds(scaffolding, guidanceMap, formsMap);
+
+         storeScaffolding(scaffolding);         
 
          if (gotFile) {
             fileParent.getPropertiesEdit().addProperty(
