@@ -106,6 +106,7 @@
 
    <bean id="org.theospi.portfolio.reports.model.ResultsPostProcessor.csv"
       class="org.theospi.portfolio.reports.model.impl.CsvResultPostProcessor" />
+      
               <bean id="org.theospi.portfolio.reports.model.ResultsPostProcessor.rowcolumn"
                  class="org.theospi.portfolio.reports.model.impl.GroupingResultProcessor">
                     <property name="grouping">
@@ -113,6 +114,17 @@
                           <value>criterion_sequence</value>
                           <value>level_sequence</value>
                           <value>userId</value>
+                       </list>
+                    </property>
+              </bean>
+              <bean id="org.theospi.portfolio.reports.model.ResultsPostProcessor.rowcolumneval"
+                 class="org.theospi.portfolio.reports.model.impl.GroupingResultProcessor">
+                    <property name="grouping">
+                       <list>
+                          <value>criterion_sequence</value>
+                          <value>level_sequence</value>
+                          <value>userId</value>
+                          <value>evaluators</value>
                        </list>
                     </property>
               </bean>

@@ -7,23 +7,24 @@
     <div>
     <h5>Matrix Cell Status</h5>
     
+    Run on: <xsl:value-of select="//runDate" />
+    <br />
+    
     Matrix: <xsl:value-of select="//datarow[1]/element[@name='title']/." />
     
     <div class="instruction">This data is only up to the date of the last data warehouse synchronization.</div>
     
     <h5>Users</h5>
-    <table width="100%">
 
        
+       <table width="100%" class="lines">
        <xsl:for-each select="//group[@by = 'userId']/datarow">
           <xsl:sort select="element[@colName='userId']/." />
 
              <xsl:variable name = "varUserName" select = "element[@colName='userId']" />
-             <tr><td width="100%">
 
 
 
-                <table width="100%" class="lines">
                    <tr class="exclude">
                       <td>
                          <xsl:if test="element[@colName='random'] = 'true'" >
@@ -44,8 +45,8 @@
 
 
 
-                   <xsl:for-each select="//group[@by = 'criterion_sequence']/datarow">
-                      <xsl:sort data-type="number" select="element[@name='criterion_sequence']" />
+                   <xsl:for-each select="//group[@by = 'criterion_sequence']/datarow[element[@colName='criterion_sequence'] != '']">
+                      <xsl:sort data-type="number" select="element[@colName='criterion_sequence']" />
 
                       <xsl:variable name = "varUserCriterion" select = "element[@colName='criterion_sequence']" />
                      
@@ -59,31 +60,37 @@
 
 
 
-                   <xsl:for-each select="//data/datarow[element[@colName='userId'] = $varUserName and
-                        element[@colName='criterion_sequence'] = current()/element[@colName='criterion_sequence']]">
-                      <xsl:sort data-type="number" select="element[@colName='level_sequence']/." />
-            <td>
-                   <!--      <xsl:if test="element[@colName='status']/. = 'READY'"><xsl:value-of select="'&lt;td '"/><xsl:value-of select="element[@name='readyColor']/."/><xsl:value-of select="'&gt;'"/></xsl:if>
-<xsl:if test="element[@colName='status']/. = 'PENDING'"><xsl:value-of select="'&lt;td '"/><xsl:value-of select="element[@name='pendingColor']/."/><xsl:value-of select="'&gt;'"/></xsl:if>
-<xsl:if test="element[@colName='status']/. = 'LOCKED'"><xsl:value-of select="'&lt;td '"/><xsl:value-of select="element[@name='lockedColor']/."/><xsl:value-of select="'&gt;'"/></xsl:if>
-<xsl:if test="element[@colName='status']/. = 'COMPLETE'"><xsl:value-of select="'&lt;td '"/><xsl:value-of select="element[@name='completedColor']/."/><xsl:value-of select="'&gt;'"/></xsl:if>
--->
-                <xsl:value-of select="element[@colName='status']"/>
-
-
-                         </td>
-                   </xsl:for-each>
+                            <xsl:for-each select="//data/datarow[
+                                element[@colName='userId'] = $varUserName and
+                                element[@colName='criterion_sequence'] = $varUserCriterion and
+                                not(preceding-sibling::datarow[1]/element[@colName='level_sequence'] =
+                                element[@colName='level_sequence'])
+                              ]">
+                              <xsl:sort data-type="number" select="element[@colName='level_sequence']/." />
+                                   <td>
+                                  <xsl:value-of select="element[@colName='status']"/> <BR />
+                                  <xsl:if test="starts-with(element[@colName='evaluators'],'/site')" >
+                                     <b><xsl:value-of select="substring-after(substring-after(element[@colName='evaluators'],'/site/'), '/')" /></b> (Role)<br />
+                                  </xsl:if>
+                                  <xsl:if test="not (starts-with(element[@colName='evaluators'],'/site'))" >
+                                     <b><xsl:value-of select="element[@colName='evaluators']" /></b><br />
+                                  </xsl:if>
+                                  </td>
+                               
+                            </xsl:for-each>
 
 
 
 
                          </tr>
+                         
                    </xsl:for-each>
 
-                </table>
-                <p /><p />
-
-             </td></tr>
+                         <xsl:if test="position() != last()" >
+                            <tr class="exclude">
+                               <td colspan="*"> <xsl:text disable-output-escaping="yes">&amp;nbsp;</xsl:text> </td>
+                            </tr>
+                         </xsl:if>
 
        </xsl:for-each>
     </table>
