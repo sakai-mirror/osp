@@ -64,11 +64,14 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
    private SecurityService securityService;
    private ReportsManager reportsManager;
 
+   /**
+    * Post Processor method
+    */
    public ReportResult process(ReportResult result) {
       Document rootDoc = getResults(result);
       Map artifactsToLoad = new Hashtable();
 
-      List data = rootDoc.getRootElement().getChildren("datarow");
+      List data = rootDoc.getRootElement().getChild("data").getChildren("datarow");
 
       for (Iterator i=data.iterator();i.hasNext();) {
          Element dataRow = (Element)i.next();
@@ -89,6 +92,12 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
       return setResult(result, rootDoc);
    }
 
+   /**
+    * find the artifact columns, stores them into a map (artifactsToLoad)
+    * also puts the column into a list so as the artifact is loaded into it.
+    * @param dataRow
+    * @param artifactsToLoad
+    */
    protected void processRow(Element dataRow, Map artifactsToLoad) {
       List columns = dataRow.getChildren("element");
 
@@ -110,6 +119,14 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
       }
    }
 
+   /**
+    * Generates a list of artifact Ids that will go into a sql query
+    * Then if one is found, loads the artifact types
+    * 
+    * TODO:  limit each set of artifact Ids to 100 and loop through that way
+    * ERROR: the list of artifact Ids can only be 1000 elements in size, restriction of Oracle
+    * @param artifactsToLoad
+    */
    protected void loadArtifactTypes(Map artifactsToLoad) {
       String artifactIds = "";
       boolean foundOne = false;
@@ -154,6 +171,9 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
          Element element = (Element) i.next();
          element.removeContent();
          element.addContent(xml);
+         
+         // each element can only have one parent
+         xml = (Element)xml.clone();
       }
    }
 
