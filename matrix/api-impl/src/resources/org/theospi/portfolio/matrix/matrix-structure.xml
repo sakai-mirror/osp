@@ -10,14 +10,12 @@ wizard/api-impl/src/resources/org/theospi/portfolio/wizard/wizard-structure.xml 
  
  -->
 <matrix class="org.theospi.portfolio.matrix.model.Matrix">
-   <matrixTool class="org.theospi.portfolio.matrix.model.MatrixTool">
-      <scaffolding class="org.theospi.portfolio.matrix.model.Scaffolding">
-         <levels type="collection" class="org.theospi.portfolio.matrix.model.Level">
-         </levels>
-         <criteria type="collection" class="org.theospi.portfolio.matrix.model.Criteria">
-         </criteria>
-      </scaffolding>
-   </matrixTool>
+   <scaffolding class="org.theospi.portfolio.matrix.model.Scaffolding">
+      <levels type="collection" class="org.theospi.portfolio.matrix.model.Level">
+      </levels>
+      <criteria type="collection" class="org.theospi.portfolio.matrix.model.Criteria">
+      </criteria>
+   </scaffolding>
    <cells type="collection" class="org.theospi.portfolio.matrix.model.Cell">
       <scaffoldingCell class="org.theospi.portfolio.matrix.model.ScaffoldingCell">
          <rootCriterion class="org.theospi.portfolio.matrix.model.Criterion"/>
