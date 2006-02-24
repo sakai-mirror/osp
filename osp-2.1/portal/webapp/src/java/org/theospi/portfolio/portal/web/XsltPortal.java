@@ -321,23 +321,6 @@ public class XsltPortal extends CharonPortal {
 
       Site site = getPortalManager().getSite(siteId);
 
-      if (pageId == null)
-      {
-         List pages = site.getOrderedPages();
-         if (!pages.isEmpty())
-         {
-            SitePage page = (SitePage) site.getPages().get(0);
-            pageId = page.getId();
-         }
-      }
-
-      if (pageId == null)
-      {
-         doError(req, res, session, ERROR_SITE);
-         return;
-      }
-
-
       Document doc = createPortalDocument(null, siteId, null, pageId);
       outputDocument(req, res, session, doc);
    }
@@ -413,6 +396,19 @@ public class XsltPortal extends CharonPortal {
 
       if (siteId != null) {
          Map pageCateogries = getPortalManager().getPagesByCategory(siteId);
+
+         if (pageId == null && toolCategoryKey == null) {
+            // need to pick first page or category
+            ToolCategory category = findFirstCategory(pageCateogries);
+            if (category.getKey().equals(ToolCategory.UNCATEGORIZED_KEY)) {
+               List pages = (List) pageCateogries.get(category);
+               pageId = findFirstPage(pages);
+            }
+            else {
+               toolCategoryKey = category.getKey();
+            }
+         }
+
          root.appendChild(createPageCategoriesXml(doc, pageCateogries, siteId, toolCategoryKey, pageId));
       }
 
@@ -424,6 +420,30 @@ public class XsltPortal extends CharonPortal {
       root.appendChild(createExternalizedXml(doc));
 
       return doc;
+   }
+
+   protected String findFirstPage(List pages) {
+      SitePageWrapper first = null;
+      for (Iterator i=pages.iterator();i.hasNext();) {
+         SitePageWrapper wrapper = (SitePageWrapper) i.next();
+         if (first == null || first.getOrder() > wrapper.getOrder()) {
+            first = wrapper;
+         }
+      }
+      return first.getPage().getId();
+   }
+
+   protected ToolCategory findFirstCategory(Map pageCateogries) {
+      ToolCategory first = null;
+
+      for (Iterator i=pageCateogries.keySet().iterator();i.hasNext();) {
+         ToolCategory category = (ToolCategory) i.next();
+         if (first == null || first.getOrder() > category.getOrder()) {
+            first = category;
+         }
+      }
+
+      return first;
    }
 
    protected SiteType findSiteType(Map siteTypesMap, String siteTypeKey) {
