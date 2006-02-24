@@ -13,7 +13,7 @@
 <c:if test="${can.create || isMaintainer}">
    <div class="navIntraTool">
         <c:if test="${can.create}">
-            <a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_createEdit"/></a>
+            <a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_create"/></a>
             
             <c:if test="${empty matrixContents.scaffolding}">
                 <a href="<osp:url value="importScaffolding.osp"/>" title="<fmt:message key="action_import_title"/>" >
