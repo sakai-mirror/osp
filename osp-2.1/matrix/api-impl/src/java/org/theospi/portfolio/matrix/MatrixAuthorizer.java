@@ -81,9 +81,10 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
          //If I can eval, review, or own it
          ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(id);
          //sCell.getWizardPageDefinition().get
+         Boolean returned = null;
          for (Iterator iter=sCell.getCells().iterator(); iter.hasNext();) {
             Cell cell = (Cell)iter.next();
-            Boolean returned = Boolean.valueOf(facade.isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, cell.getId()));
+            returned = Boolean.valueOf(facade.isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, cell.getId()));
             if (returned == null || !returned.booleanValue()) {
                returned = Boolean.valueOf(facade.isAuthorized(agent, MatrixFunctionConstants.REVIEW_MATRIX, cell.getId()));
             }
@@ -96,6 +97,9 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
             if (returned.booleanValue())
                return returned;
          }
+         returned = Boolean.valueOf(sCell.getScaffolding().getOwner().equals(agent));
+         if (returned.booleanValue())
+            return returned;
       }
       else if (function.equals(MatrixFunctionConstants.EDIT_SCAFFOLDING_GUIDANCE)) {
          ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(id);
