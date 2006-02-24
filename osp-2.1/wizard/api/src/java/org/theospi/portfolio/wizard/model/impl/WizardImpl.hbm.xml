@@ -4,8 +4,9 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
 <hibernate-mapping package="org.theospi.portfolio.wizard.model">
   
-   <subclass name="Wizard" extends="org.theospi.portfolio.shared.model.ObjectWithWorkflow" 
-         discriminator-value="W">
+   <joined-subclass name="Wizard" extends="org.theospi.portfolio.shared.model.ObjectWithWorkflow" 
+         table="osp_wizard">
+      <key column="id"/>
       <property name="owner" column="owner_id" not-null="true"
          type="org.sakaiproject.metaobj.shared.mgt.AgentUserType"/>
       <property name="name" type="string" column="name" not-null="false"/>
@@ -30,7 +31,7 @@
          class="org.theospi.portfolio.wizard.model.WizardCategory" column="root_category"
          cascade="all" unique="true" />
       <property name="sequence" type="int" column="seq_num" not-null="false"/>
-   </subclass>
+   </joined-subclass>
    
    <class name="WizardStyleItem" table="osp_wizard_style_item" lazy="true">
       <cache usage="nonstrict-read-write"/>

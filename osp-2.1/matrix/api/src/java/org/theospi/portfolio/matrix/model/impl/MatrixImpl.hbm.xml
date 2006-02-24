@@ -173,16 +173,13 @@
           cascade="all" unique="true" />
     </class>
     
-    <class name="org.theospi.portfolio.shared.model.ObjectWithWorkflow" table="osp_workflow_parent" discriminator-value="?">
+    <class name="org.theospi.portfolio.shared.model.ObjectWithWorkflow" 
+         table="osp_workflow_parent">
       <cache usage="nonstrict-read-write"/>
         <id name="id" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" column="id">
             <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
         </id>
-
-        <discriminator type="character">
-         <column name="type" length="1" index="IDX_WORKFLOW_PARENT"/>
-        </discriminator>
 
         <property name="reflectionDevice" column="reflection_device_id" length="36"
             type="org.sakaiproject.metaobj.shared.IdType"/>
@@ -200,8 +197,9 @@
          
     </class>
  
-   <subclass name="WizardPageDefinition" discriminator-value="D" 
+   <joined-subclass name="WizardPageDefinition" table="osp_wizard_definition"
          extends="org.theospi.portfolio.shared.model.ObjectWithWorkflow">
+      <key column="id"/>
       <property name="initialStatus" type="java.lang.String" />
       <set name="pages" cascade="all-delete-orphan" inverse="true"
             lazy="true">
@@ -229,6 +227,6 @@
       
        
        
-   </subclass>
+   </joined-subclass>
 
 </hibernate-mapping>
