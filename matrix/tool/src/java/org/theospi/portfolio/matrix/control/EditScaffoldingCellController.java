@@ -172,6 +172,10 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    protected String getGuidanceEditPermission() {
       return MatrixFunctionConstants.EDIT_SCAFFOLDING_GUIDANCE;
    }
+   
+   protected String getGuidanceTitle() {
+      return "Guidance for Cell";
+   }
 
    private Map doForwardAction(String forwardView, Map request, Map session,
          ScaffoldingCell scaffoldingCell) {
@@ -191,8 +195,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          
          Guidance guidance = scaffoldingCell.getGuidance();
          if (guidance == null) {
-            String title = "Guidance for Cell";
-            //CWM fix guidance stuff
+            String title = getGuidanceTitle();
             guidance = getGuidanceManager().createNew(title, currentSite, 
                   scaffoldingCell.getWizardPageDefinition().getId(), 
                   getGuidanceViewPermission(), 

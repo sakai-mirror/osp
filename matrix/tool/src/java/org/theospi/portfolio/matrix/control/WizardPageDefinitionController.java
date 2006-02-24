@@ -105,4 +105,8 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
    protected String getGuidanceEditPermission() {
       return WizardFunctionConstants.EDIT_WIZARDPAGE_GUIDANCE;
    }
+   
+   protected String getGuidanceTitle() {
+      return "Guidance for Wizard Page";
+   }
 }
