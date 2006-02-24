@@ -118,6 +118,8 @@ public class AddLayoutController extends AbstractPresentationController
          if (!filter.equals(""))
             session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER, 
                   ComponentManager.get(filter));
+         
+         session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
        
          
          return new ModelAndView("pickLayoutFiles");

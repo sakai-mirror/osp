@@ -36,6 +36,7 @@ import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.SessionManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -290,20 +291,27 @@ public class AddTemplateController extends AbstractWizardFormController {
                session.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
             }
             break;
-         case PICKER_PAGE :            
+         case PICKER_PAGE :       
             session.setAttribute(TEMPLATE_PICKER, request.getParameter("pickerField"));
             session.setAttribute("SessionPresentationTemplate", template);
             session.setAttribute(STARTING_PAGE, request.getParameter("returnPage"));
             
             List files = new ArrayList();
+            String filter = "";
             
             String pickField = (String)request.getParameter("pickerField");
             String id = "";
-            if (pickField.equals(TEMPLATE_RENDERER) && template.getRenderer() != null) {
-               id = getContentHosting().resolveUuid(template.getRenderer().getValue());
+            if (pickField.equals(TEMPLATE_RENDERER)) {
+               filter = "org.sakaiproject.service.legacy.content.ContentResourceFilter.xslFile";
+               if (template.getRenderer() != null) {
+                  id = getContentHosting().resolveUuid(template.getRenderer().getValue());
+               }
             }
-            else if (pickField.equals(TEMPLATE_PROPERTYFILE) && template.getPropertyPage() != null) {
-               id = getContentHosting().resolveUuid(template.getPropertyPage().getValue());
+            else if (pickField.equals(TEMPLATE_PROPERTYFILE)) {
+               filter = "org.sakaiproject.service.legacy.content.ContentResourceFilter.metaobjFile";
+               if (template.getPropertyPage() != null) {
+                  id = getContentHosting().resolveUuid(template.getPropertyPage().getValue());
+               }
             }
             else if (pickField.equals(TEMPLATE_SUPPORTFILE) && template.getFileRef() != null && template.getFileRef().getFileId() != null) {
                id = getContentHosting().resolveUuid(template.getFileRef().getFileId());
@@ -313,6 +321,12 @@ public class AddTemplateController extends AbstractWizardFormController {
                files.add(ref);              
                session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
             }
+            
+            if (!filter.equals(""))
+               session.setAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER, 
+                     ComponentManager.get(filter));
+            
+            session.setAttribute(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
             
             break;
       }
