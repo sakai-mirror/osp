@@ -93,7 +93,7 @@ public class DecoratedGuidanceItem {
       return tool.processActionManageAttachments(base.getType());
    }
 
-   public List getAttchmentLinks() {
+   public List getAttachmentLinks() {
       List attachments = getAttachments();
       List returned = new ArrayList();
 
