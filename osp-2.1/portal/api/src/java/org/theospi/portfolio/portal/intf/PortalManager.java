@@ -73,4 +73,6 @@ public interface PortalManager {
 
    public boolean isUserInRole(String roleId, String siteId);
 
+   public List getRoles(String siteId);
+
 }

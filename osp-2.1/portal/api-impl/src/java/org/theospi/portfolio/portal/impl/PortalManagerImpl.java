@@ -341,6 +341,13 @@ public class PortalManagerImpl implements PortalManager {
       return role.getId().equals(roleId);
    }
 
+   public List getRoles(String siteId) {
+      Site site = getSite(siteId);
+      List roles = new ArrayList();
+      roles.add(site.getUserRole(getCurrentUser().getId()));
+      return roles;
+   }
+
    public UserDirectoryService getUserDirectoryService() {
       return userDirectoryService;
    }

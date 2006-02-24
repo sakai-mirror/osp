@@ -40,6 +40,7 @@ import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.util.web.Web;
 import org.theospi.portfolio.portal.intf.PortalManager;
@@ -79,6 +80,8 @@ public class XsltPortal extends CharonPortal {
    private PortalManager portalManager;
    private DocumentBuilder documentBuilder;
    private Templates templates;
+   private Templates toolCategoryTemplates;
+   private URIResolver servletResolver;
 
    /** messages. */
    private static ResourceLoader rb = new ResourceLoader("org/theospi/portfolio/portal/messages");
@@ -164,7 +167,7 @@ public class XsltPortal extends CharonPortal {
    }
 
    protected void doCategoryHelper(HttpServletRequest req, HttpServletResponse res, Session session,
-                                   String siteId, String categoryKey, boolean returning) throws ToolException {
+                                   String siteId, String categoryKey, boolean returning) throws ToolException, IOException {
       if (session.getUserId() == null) {
          doLogin(req, res, session, req.getPathInfo(), false);
          return;
@@ -174,6 +177,21 @@ public class XsltPortal extends CharonPortal {
       String siteTypeKey = getPortalManager().decorateSiteType(site);
       SiteType siteType = getPortalManager().getSiteType(siteTypeKey);
 
+      Document doc = getDocumentBuilder().newDocument();
+      Element root = doc.createElement("toolCategory");
+      ToolCategory category = getPortalManager().getToolCategory(siteType.getKey(), categoryKey);
+
+      Map categoryPageMap = getPortalManager().getPagesByCategory(siteId);
+      List categoryPages = (List) categoryPageMap.get(category);
+      root.appendChild(createCategoryXml(doc, category, categoryPages, siteId, categoryKey, null));
+
+      Element rolesElement = createRolesXml(doc, siteId);
+      root.appendChild(rolesElement);
+
+      doc.appendChild(root);
+      outputDocument(req, res, session, doc, getToolCategoryTransformer());
+
+      /*
       ToolSession toolSession = session.getToolSession(Web.escapeJavascript(categoryKey));
 
       if (!returning) {
@@ -198,6 +216,21 @@ public class XsltPortal extends CharonPortal {
 
       String context = req.getPathInfo();
       forwardTool(helperTool, req, res, placement, siteType.getSkin(), getContext() + "/" + context, "/toolCategory");
+      */
+   }
+
+   protected Element createRolesXml(Document doc, String siteId) {
+      Element rolesElement = doc.createElement("roles");
+      List roles = getPortalManager().getRoles(siteId);
+      for (Iterator i=roles.iterator();i.hasNext();) {
+         Role role = (Role) i.next();
+         if (role != null) {
+            Element roleElement = doc.createElement("role");
+            roleElement.setAttribute("id", role.getId());
+            rolesElement.appendChild(roleElement);
+         }
+      }
+      return rolesElement;
    }
 
    protected void doSiteTypeHelper(HttpServletRequest req, HttpServletResponse res,
@@ -254,6 +287,12 @@ public class XsltPortal extends CharonPortal {
 
    protected void outputDocument(HttpServletRequest req, HttpServletResponse res,
                                  Session session, Document doc) throws IOException {
+      outputDocument(req, res, session, doc, getTransformer());
+   }
+
+
+   protected void outputDocument(HttpServletRequest req, HttpServletResponse res,
+                                    Session session, Document doc, Transformer transformer) throws IOException {
 
       res.setContentType("text/html; charset=UTF-8");
       res.addDateHeader("Expires", System.currentTimeMillis() - (1000L * 60L * 60L * 24L * 365L));
@@ -265,7 +304,7 @@ public class XsltPortal extends CharonPortal {
 
       try {
          StreamResult outputTarget = new StreamResult(out);
-         getTransformer().transform(new DOMSource(doc), outputTarget);
+         transformer.transform(new DOMSource(doc), outputTarget);
       }
       catch (TransformerException e) {
          throw new RuntimeException(e);
@@ -375,6 +414,11 @@ public class XsltPortal extends CharonPortal {
       if (siteId != null) {
          Map pageCateogries = getPortalManager().getPagesByCategory(siteId);
          root.appendChild(createPageCategoriesXml(doc, pageCateogries, siteId, toolCategoryKey, pageId));
+      }
+
+      if (siteId != null) {
+         Element rolesElement = createRolesXml(doc, siteId);
+         root.appendChild(rolesElement);
       }
 
       root.appendChild(createExternalizedXml(doc));
@@ -565,6 +609,7 @@ public class XsltPortal extends CharonPortal {
       categoryElement.appendChild(categoryEscapedKeyElement);
       categoryElement.appendChild(categoryUrlElement);
       categoryElement.appendChild(categoryHelperUrlElement);
+      appendTextElementNode(doc, "layoutFile", category.getHomePagePath(), categoryElement);
 
       Element pagesElement = doc.createElement("pages");
 
@@ -585,6 +630,7 @@ public class XsltPortal extends CharonPortal {
       pageElement.setAttribute("selected", new Boolean(pageSelected).toString());
       pageElement.setAttribute("layout", new Integer(page.getLayout()).toString());
       pageElement.setAttribute("popUp", new Boolean(page.isPopUp()).toString());
+      pageElement.setAttribute("toolId", getFirstToolId(page));
       Element pageName = doc.createElement("title");
       safeAppendTextNode(doc, pageName, page.getTitle(), true);
       // portal/site/9607661f-f3aa-4938-8005-c3ffaa228c6c/page/0307f10c-225b-4db8-803e-b12f24e38544
@@ -615,6 +661,17 @@ public class XsltPortal extends CharonPortal {
       pageElement.appendChild(columns);
 
       return pageElement;
+   }
+
+   protected String getFirstToolId(SitePage page) {
+      List tools = page.getTools();
+
+      if (tools.size() > 0) {
+         Placement placement = (Placement) tools.get(0);
+         return placement.getTool().getId();
+      }
+
+      return "";
    }
 
    protected Element createColumnToolsXml(Document doc, List tools, SitePage page) {
@@ -807,24 +864,53 @@ public class XsltPortal extends CharonPortal {
 
       for (Iterator i=skins.iterator();i.hasNext();) {
          String skinUrl = (String) i.next();
-         skinUrl = skinRepo + "/" + skinUrl + "/portal.css";
-         skin = doc.createElement("skin");
-         skin.setAttribute("order", index + "");
-         safeAppendTextNode(doc, skin, skinUrl, true);
-         skinsElement.appendChild(skin);
-         index++;
+         index = appendSkin(skinRepo, skinUrl, doc, index, skinsElement, "/portal.css");
       }
 
       if (index == 1) {
          String skinUrl = ServerConfigurationService.getString("skin.default");
-         skinUrl = skinRepo + "/" + skinUrl + "/portal.css";
-         skin = doc.createElement("skin");
-         skin.setAttribute("order", index + "");
-         safeAppendTextNode(doc, skin, skinUrl, true);
-         skinsElement.appendChild(skin);
+         index = appendSkin(skinRepo, skinUrl, doc, index, skinsElement, "/portal.css");
       }
 
       return skinsElement;
+   }
+
+   protected Element createToolSkinsXml(Document doc, List skins) {
+      Element skinsElement = doc.createElement("toolSkins");
+      int index = 0;
+
+      String skinRepo = ServerConfigurationService.getString("skin.repo");
+
+      Element skin = doc.createElement("skin");
+      skin = doc.createElement("skin");
+      skin.setAttribute("order", index + "");
+      safeAppendTextNode(doc, skin, getContext() + "/library/skin/tool_base.css", true);
+      skinsElement.appendChild(skin);
+      index++;
+
+      for (Iterator i=skins.iterator();i.hasNext();) {
+         String skinUrl = (String) i.next();
+         index = appendSkin(skinRepo, skinUrl, doc, index, skinsElement, "/tool.css");
+      }
+
+      if (index == 2) {
+         String skinUrl = ServerConfigurationService.getString("skin.default");
+         index = appendSkin(skinRepo, skinUrl, doc, index, skinsElement, "/tool.css");
+      }
+
+      return skinsElement;
+   }
+
+   protected int appendSkin(String skinRepo, String skinUrl,
+                            Document doc, int index, Element skinsElement, String cssFile) {
+      Element skin;
+      String skinPortalUrl = skinRepo + "/" + skinUrl + cssFile;
+      skin = doc.createElement("skin");
+      skin.setAttribute("order", index + "");
+      safeAppendTextNode(doc, skin, skinPortalUrl, true);
+      skinsElement.appendChild(skin);
+      index++;
+      return index;
    }
 
    protected List getSkins(SiteType siteType, Site site) {
@@ -901,13 +987,13 @@ public class XsltPortal extends CharonPortal {
       try {
          setDocumentBuilder(DocumentBuilderFactory.newInstance().newDocumentBuilder());
          String transformPath = config.getInitParameter("transform");
-         InputStream stream = config.getServletContext().getResourceAsStream(
-               transformPath);
-         URL url = config.getServletContext().getResource(transformPath);
-         String urlPath = url.toString();
-         String systemId = urlPath.substring(0, urlPath.lastIndexOf('/') + 1);
-         setTemplates(TransformerFactory.newInstance().newTemplates(
-               new StreamSource(stream, systemId)));
+         Templates templates = createTemplate(config, transformPath);
+         setTemplates(templates);
+
+         String transformToolCategoryPath = config.getInitParameter("transformToolCategory");
+         Templates templatesToolCategory = createTemplate(config, transformToolCategoryPath);
+         setServletResolver(new ServletResourceUriResolver(config.getServletContext()));
+         setToolCategoryTemplates(templatesToolCategory);
       }
       catch (ParserConfigurationException e) {
          throw new ServletException(e);
@@ -918,6 +1004,17 @@ public class XsltPortal extends CharonPortal {
       catch (MalformedURLException e) {
          throw new ServletException(e);
       }
+   }
+
+   private Templates createTemplate(ServletConfig config, String transformPath) throws MalformedURLException, TransformerConfigurationException {
+      InputStream stream = config.getServletContext().getResourceAsStream(
+            transformPath);
+      URL url = config.getServletContext().getResource(transformPath);
+      String urlPath = url.toString();
+      String systemId = urlPath.substring(0, urlPath.lastIndexOf('/') + 1);
+      Templates templates = TransformerFactory.newInstance().newTemplates(
+                     new StreamSource(stream, systemId));
+      return templates;
    }
 
    public PortalManager getPortalManager() {
@@ -940,9 +1037,22 @@ public class XsltPortal extends CharonPortal {
       this.documentBuilder = documentBuilder;
    }
 
+   protected Transformer getToolCategoryTransformer() {
+      try {
+         Transformer trans = getToolCategoryTemplates().newTransformer();
+         trans.setURIResolver(getServletResolver());
+         return trans;
+      }
+      catch (TransformerConfigurationException e) {
+         throw new RuntimeException(e);
+      }
+   }
+
    public Transformer getTransformer() {
       try {
-         return getTemplates().newTransformer();
+         Transformer trans = getTemplates().newTransformer();
+         trans.setURIResolver(getServletResolver());
+         return trans;
       }
       catch (TransformerConfigurationException e) {
          throw new RuntimeException(e);
@@ -955,6 +1065,22 @@ public class XsltPortal extends CharonPortal {
 
    public void setTemplates(Templates templates) {
       this.templates = templates;
+   }
+
+   public Templates getToolCategoryTemplates() {
+      return toolCategoryTemplates;
+   }
+
+   public void setToolCategoryTemplates(Templates toolCategoryTemplates) {
+      this.toolCategoryTemplates = toolCategoryTemplates;
+   }
+
+   public URIResolver getServletResolver() {
+      return servletResolver;
+   }
+
+   public void setServletResolver(URIResolver servletResolver) {
+      this.servletResolver = servletResolver;
    }
 
 }

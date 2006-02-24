@@ -11,6 +11,8 @@
    <xsl:variable name="config" select="/portal/config" />
    <xsl:variable name="externalized" select="/portal/externalized" />
 
+   <xsl:variable name="roles" select="/portal/roles"/>
+
    <!--
    ============match /portal===============
    main template processing
@@ -174,9 +176,12 @@ your browser doesn't support iframes
             </xsl:for-each>
          </xsl:when>
             <xsl:otherwise>
-               <!-- make the site type iframe here -->
-               <xsl:call-template name="portal_tool">
+               <!-- make the tool category here -->
+               <!--xsl:call-template name="portal_tool">
                   <xsl:with-param name="base" select="."/>
+               </xsl:call-template-->
+               <xsl:call-template name="tool_category">
+                  <xsl:with-param name="category" select="."/>
                </xsl:call-template>
             </xsl:otherwise>
          </xsl:choose>
@@ -810,6 +815,90 @@ your browser doesn't support iframes
             </xsl:if>
          </span>
       </li>
+   </xsl:template>
+
+   <!--
+   ====================================================
+   -->
+   <xsl:template name="tool_category">
+      <xsl:param name="category"/>
+      <xsl:variable name="layoutFile" select="$category/layoutFile"/>
+      <xsl:variable name="layout" select="document($layoutFile)"/>
+
+      <h1 class="skip">
+         <xsl:value-of select="$externalized/entry[@key='sit.contentshead']"/>
+      </h1>
+      <a id="tocontent" class="skip" name="tocontent"></a>
+      <div id="content">
+      <div>
+<div class="portletMainWrap">
+<div class="portletBody">
+      <xsl:apply-templates select="$layout/*">
+         <xsl:with-param name="category" select="$category" />
+      </xsl:apply-templates>
+</div>
+</div>
+      </div>
+      </div>
+   </xsl:template>
+
+   <xsl:template match="osp:tool">
+      <xsl:param name="category" />
+      <xsl:variable name="currentToolId" select="@id" />
+      <xsl:if test="$category/pages/page[@toolId=$currentToolId]">
+         <xsl:apply-templates select="@*|node()" >
+            <xsl:with-param name="currentTool" select="$category/pages/page[@toolId=$currentToolId]" />
+            <xsl:with-param name="category" select="$category" />
+         </xsl:apply-templates>
+      </xsl:if>
+   </xsl:template>
+
+   <xsl:template match="osp:toolLink">
+      <xsl:param name="category" />
+      <xsl:param name="currentTool" />
+      <a target="_parent">
+         <xsl:attribute name="href">
+            <xsl:value-of select="$currentTool/url"/>
+         </xsl:attribute>
+         <xsl:apply-templates select="@*|node()" >
+            <xsl:with-param name="currentTool" select="$currentTool" />
+            <xsl:with-param name="category" select="$category" />
+         </xsl:apply-templates>
+      </a>
+   </xsl:template>
+
+   <xsl:template match="osp:site_role">
+      <xsl:param name="category" />
+      <xsl:param name="currentTool" />
+      <xsl:variable name="roleId" select="@role"/>
+      <xsl:comment>
+         got a role section:
+         <xsl:value-of select="$roleId"/>
+      </xsl:comment>
+      <xsl:if test="$roles/role[@id=$roleId]">
+         <xsl:comment>
+            matched a role:
+            <xsl:value-of select="$roleId"/>
+         </xsl:comment>
+         <xsl:apply-templates select="@*|node()" >
+            <xsl:with-param name="currentTool" select="$currentTool" />
+            <xsl:with-param name="category" select="$category" />
+         </xsl:apply-templates>
+      </xsl:if>
+   </xsl:template>
+
+   <!-- Identity transformation -->
+   <xsl:template match="@*|*">
+      <xsl:param name="currentTool" />
+      <xsl:param name="category" />
+      <xsl:if test="count($category) > 0">
+         <xsl:copy>
+            <xsl:apply-templates select="@*|node()" >
+               <xsl:with-param name="currentTool" select="$currentTool" />
+               <xsl:with-param name="category" select="$category" />
+            </xsl:apply-templates>
+         </xsl:copy>
+      </xsl:if>
    </xsl:template>
 
 </xsl:stylesheet>
