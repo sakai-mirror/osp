@@ -42,6 +42,10 @@
           <param-value>/WEB-INF/transform/osp-portal.xsl</param-value>
           <!--param-value>/WEB-INF/transform/passthrough.xsl</param-value-->
        </init-param>
+       <init-param>
+          <param-name>transformToolCategory</param-name>
+          <param-value>/WEB-INF/transform/toolCategory.xsl</param-value>
+       </init-param>
     </servlet>
 
     <servlet-mapping>
