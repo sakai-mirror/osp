@@ -197,7 +197,7 @@
          
     </class>
  
-   <joined-subclass name="WizardPageDefinition" table="osp_wizard_definition"
+   <joined-subclass name="WizardPageDefinition" table="osp_wizard_page_def"
          extends="org.theospi.portfolio.shared.model.ObjectWithWorkflow">
       <key column="id"/>
       <property name="initialStatus" type="java.lang.String" />
