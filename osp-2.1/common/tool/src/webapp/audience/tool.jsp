@@ -77,7 +77,7 @@
                  </sakai:button_bar>
                        <h:outputText value="" />
                        <h:outputText value="" />
-							<ospx:splitarea direction="horizontal" width="75%">
+							<ospx:splitarea rendered="#{audience.emailCapable}" direction="horizontal" width="75%">
 								<ospx:splitsection size="25%" valign="bottom">
 	                  <h:outputLabel value="#{msgs.email_label}" for="emails" />
 								</ospx:splitsection>
