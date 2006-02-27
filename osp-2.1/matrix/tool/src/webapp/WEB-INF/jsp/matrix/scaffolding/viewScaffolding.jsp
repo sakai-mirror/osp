@@ -27,7 +27,9 @@ function hrefViewCell(cellId) {
    
    <c:if test="${not empty matrixContents.scaffolding.description}">
       <p class="instruction">
-         <c:out value="${matrixContents.scaffolding.description}" escapeXml="false" />
+         <osp-h:glossary link="true" hover="true">
+            <c:out value="${matrixContents.scaffolding.description}" escapeXml="false" />
+         </osp-h:glossary>
       </p>
    </c:if>
   
@@ -56,23 +58,29 @@ function hrefViewCell(cellId) {
 		<table cellspacing="0" width="800">
 			<tr>
 				<th class="matrix-row-heading" width="400">
-					<c:out value="${matrixContents.scaffolding.title}"/>
+               <osp-h:glossary link="true" hover="true">
+   					<c:out value="${matrixContents.scaffolding.title}"/>
+               </osp-h:glossary>
 				</th>
 				<c:forEach var="head" items="${columnHeading}">
 					<th class="matrix-column-heading" width="200" 
                   bgcolor="<c:out value="${head.color}"/>">
-                  <font color="<c:out value="${head.textColor}"/>">
-						   <c:out value="${head.description}"/>
-                  </font>
+                  <osp-h:glossary link="true" hover="true">
+                     <font color="<c:out value="${head.textColor}"/>">
+   						   <c:out value="${head.description}"/>
+                     </font>
+                  </osp-h:glossary>
 					</th>
 				</c:forEach>
 			</tr>   
 			<c:forEach var="rowLabel" items="${matrixContents.rowLabels}" varStatus="loopStatus" >
 				<tr>
 					<th class="matrix-row-heading" bgcolor="<c:out value="${rowLabel.color}"/>" >
-                  <font color="<c:out value="${rowLabel.textColor}"/>">
-                     <c:out value="${rowLabel.description}"/>
-                  </font>
+                  <osp-h:glossary link="true" hover="true">
+                     <font color="<c:out value="${rowLabel.textColor}"/>">
+                        <c:out value="${rowLabel.description}"/>
+                     </font>
+                  </osp-h:glossary>
 					</th>
 	    
 					<c:forEach var="cell" items="${matrixContents.matrixContents[loopStatus.index]}">

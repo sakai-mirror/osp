@@ -34,6 +34,16 @@
       <property name="agentManager">
          <ref bean="agentManager" />
       </property>
+      <property name="globalSites">
+         <list>
+            <value>~admin</value>
+            <value>!admin</value>
+         </list>
+      </property>
+      <property name="globalSiteTypes">
+         <list>
+         </list>
+      </property>
    </bean>
 
    <bean id="glossaryTarget" class="org.theospi.portfolio.help.model.DbGlossary"

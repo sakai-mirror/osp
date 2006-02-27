@@ -65,8 +65,8 @@
 			<label class="block"><fmt:message key="label_description"/></label>
 			<spring:bind path="scaffolding.description">
                 <table><tr>
-				<td><textarea name="<c:out value="${status.expression}"/>" id="descriptionTextArea" rows="5" cols="80" 
-						  <c:out value="${disabledText}"/>><c:out value="${status.value}"/></textarea></td>
+				<td><textarea name="<c:out value="${status.expression}"/>" id="descriptionTextArea" rows="5" cols="80">
+               <c:out value="${status.value}"/></textarea></td>
                 </tr></table>
 				<font color="red"><c:out value="${status.errorMessage}"/></font>
 			</spring:bind>
