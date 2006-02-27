@@ -888,35 +888,9 @@
         <property name="query">
            <list>
               <value><![CDATA[
-                    select dw_scaffolding.title, dw_scaffolding.readyColor, dw_scaffolding.pendingColor, dw_scaffolding.lockedColor, dw_scaffolding.completedColor,
-                        if(?, 'true', 'false') `random`, dw_site_users.user_id `userId`, dw_matrix.owner `matrix_userId`, `status`, 
-                        dw_scaffolding_criteria.sequenceNumber `criterion_sequence`,
-                            dw_scaffolding_criteria.description `criterion_description`,
-                        dw_scaffolding_levels.sequenceNumber `level_sequence`,
-                            dw_scaffolding_levels.description `level_description`, dw_scaffolding_cell.rootcriterion_id,
-                                dw_scaffolding_cell_evaluators.id `evaluators`, dw_wizard_page_review.review_content_id `evaluation_artifact`
-                    FROM dw_scaffolding 
-                    JOIN dw_site_users ON dw_scaffolding.worksiteId = dw_site_users.site_id 
-                    LEFT JOIN dw_matrix ON dw_site_users.user_id = dw_matrix.owner AND dw_matrix.scaffolding_id = dw_scaffolding.id
-                    LEFT JOIN dw_matrix_cell ON dw_matrix.id = dw_matrix_cell.matrix_id
-                    LEFT JOIN dw_wizard_page ON dw_matrix_cell.wizard_page_id = dw_wizard_page.id
-                    LEFT JOIN dw_scaffolding_cell ON dw_matrix_cell.scaffolding_cell_id = dw_scaffolding_cell.id
-                    LEFT JOIN dw_scaffolding_criteria ON dw_scaffolding_cell.rootcriterion_id = dw_scaffolding_criteria.id
-                    LEFT JOIN dw_scaffolding_levels ON dw_scaffolding_cell.level_id = dw_scaffolding_levels.id
-                    LEFT JOIN dw_scaffolding_cell_evaluators ON 
-                                dw_scaffolding_cell_evaluators.scaffolding_cell_id = dw_scaffolding_cell.id
-                    LEFT JOIN dw_wizard_page_review ON dw_wizard_page_review.parent_id=dw_wizard_page.id AND 
-                                                    dw_wizard_page_review.review_type = 1      // reflection=0, eval=1, review=2
-                    // by this point we have all the cells' evaluations for each evaluator for each cell for each user
-                    //  and we want to link the evaluators' evaluation
-                    LEFT JOIN dw_resource ON dw_wizard_page_review.review_content_id=dw_resource.id AND 
-                                                    dw_resource.created_by=dw_scaffolding_cell_evaluators.id
-                                where dw_scaffolding.id=?
-                
-                    ORDER BY `evaluators`, `userId`, `criterion_sequence`, `level_sequence`
                     
                     select dw_scaffolding.title, dw_scaffolding.readyColor, dw_scaffolding.pendingColor, dw_scaffolding.lockedColor, dw_scaffolding.completedColor,
-                        if(0, 'true', 'false') `random`, dw_site_users.user_id `userId`, dw_matrix.owner `matrix_userId`, `status`, 
+                        if(?, 'true', 'false') `random`, dw_site_users.user_id `userId`, dw_matrix.owner `matrix_userId`, `status`, 
                         dw_scaffolding_criteria.sequenceNumber `criterion_sequence`,
                             dw_scaffolding_criteria.description `criterion_description`,
                         dw_scaffolding_levels.sequenceNumber `level_sequence`,
@@ -940,9 +914,10 @@
                     
                     LEFT JOIN dw_scaffolding_cell_evaluators ON 
                                 dw_scaffolding_cell_evaluators.scaffolding_cell_id = dw_scaffolding_cell.id
-                    where dw_scaffolding.id="85F628536653692A62D197B8DD5E5DDE"
+                    where dw_scaffolding.id=?
                 
                     ORDER BY `userId`, `criterion_sequence`, `level_sequence`, `evaluators`, `created_by`
+                    
                     ]]>
               </value>
            </list>
@@ -957,7 +932,7 @@
         </property>
         <property name="description">
             <value>
-                Matrix, student, criteria, level, status, one of reviewers defined for cell
+                This report lists out each Reviewer.  Then for each reviewer
             </value>
         </property>
         <property name="type">
@@ -965,7 +940,7 @@
         </property>
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>WEB-INF/reportxsls/matrixStatusByLevel.1.xsl</value></property>
+                    <property name="xslLink"><value>WEB-INF/reportxsls/matrixStatusByReviewer.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>
@@ -993,7 +968,7 @@
         <property name="xsls">
             <list>
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>WEB-INF/reportxsls/matrixStatusByLevel.1.xsl</value></property>
+                    <property name="xslLink"><value>WEB-INF/reportxsls/matrixStatusByReviewer.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                     <property name="title"><value>Cell Completion Status</value></property>
                 </bean>
