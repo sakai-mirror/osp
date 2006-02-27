@@ -54,10 +54,8 @@
 </div>
 
 <osp:url var="listUrl" value="glossaryList.osp" />
-
-<div class="rightNav">
 <osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
-</div>
+
 <h3><fmt:message key="title_glossaryManager"/></h3>
 <table class="listHier" cellspacing="0">
     <thead>

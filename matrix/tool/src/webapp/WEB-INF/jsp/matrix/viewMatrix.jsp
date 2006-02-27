@@ -26,7 +26,9 @@ function hrefViewCell(pageId) {
     
    <c:if test="${not empty matrixContents.scaffolding.description}">
       <p class="instruction">
-         <c:out value="${matrixContents.scaffolding.description}" escapeXml="false" />
+         <osp-h:glossary link="true" hover="true">
+            <c:out value="${matrixContents.scaffolding.description}" escapeXml="false" />
+         </osp-h:glossary>
       </p>
    </c:if>
 

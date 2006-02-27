@@ -38,8 +38,7 @@ import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.framework.portal.PortalService;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -74,7 +73,6 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
-import java.util.Properties;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
@@ -146,6 +144,8 @@ public class HelpManagerImpl extends HibernateDaoSupport
    private ToolManager toolManager;
    private ContentHostingService contentHosting;
    private AgentManager agentManager;
+   private List globalSites;
+   private List globalSiteTypes;
 
    public GlossaryEntry searchGlossary(String keyword) {
       return getGlossary().find(keyword, portalService.getCurrentSiteId());
@@ -264,21 +264,18 @@ public class HelpManagerImpl extends HibernateDaoSupport
 	   }
 
    public boolean isGlobal() {
-      Placement placement = toolManager.getCurrentPlacement();
-      Properties placementProps = placement.getPlacementConfig();
+      String siteId = getWorksiteManager().getCurrentWorksiteId().getValue();
 
-      String isGlobal = null;
-
-      if (placementProps != null) {
-         isGlobal = placementProps.getProperty(TOOL_GLOBAL_GLOSSARY);
+      if (getGlobalSites().contains(siteId)) {
+         return true;
       }
 
-      if (isGlobal == null) {
-         return false;
+      Site site = getWorksiteManager().getSite(siteId);
+      if (site.getType() != null && getGlobalSiteTypes().contains(site.getType())) {
+         return true;
       }
-      else {
-         return (isGlobal.equals("true"));
-      }
+
+      return false;
    }
    
    protected boolean entryExists(GlossaryEntry entry){
@@ -571,6 +568,22 @@ public class HelpManagerImpl extends HibernateDaoSupport
 
    public void setToolManager(ToolManager toolManager) {
       this.toolManager = toolManager;
+   }
+
+   public List getGlobalSites() {
+      return globalSites;
+   }
+
+   public void setGlobalSites(List globalSites) {
+      this.globalSites = globalSites;
+   }
+
+   public List getGlobalSiteTypes() {
+      return globalSiteTypes;
+   }
+
+   public void setGlobalSiteTypes(List globalSiteTypes) {
+      this.globalSiteTypes = globalSiteTypes;
    }
 
 }
