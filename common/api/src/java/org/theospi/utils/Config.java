@@ -24,7 +24,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Properties;
 
-/** testing check in
+/** 
  * Created by IntelliJ IDEA.
  * User: John Ellis
  * Date: May 19, 2004
