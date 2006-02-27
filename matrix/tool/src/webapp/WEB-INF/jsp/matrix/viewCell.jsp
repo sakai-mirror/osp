@@ -73,26 +73,28 @@
 		</div>
 	</c:if>
    
-   <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('styleDiv','/osp-jsf-resource')">
-   <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgstyleDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
-   <osp:message key="style_section_header"/></h4>
-   <div id="styleDiv">
-      <c:if test="${empty styleUrl}">
-         <a href="<osp:url value="styleRedirector.osp">
-            <osp:param name="stylePickerAction" value="true" />
-            <osp:param name="page_id" value="${cell.wizardPage.id}" />
-         </osp:url>"><osp:message key="select_style"/></a>
-      </c:if>
-      <c:if test="${not empty styleUrl}">
-         <c:set value="${cell.wizardPage.style}" var="style" />
-         <c:out value="${style.name}" />
-         <a href="<osp:url value="styleRedirector.osp" >
-            <osp:param name="stylePickerAction" value="true" />
-            <osp:param name="currentStyleId" value="${style.id}" />
-            <osp:param name="page_id" value="${cell.wizardPage.id}" />
-         </osp:url>"><osp:message key="change_style"/></a>
-      </c:if>
-   </div>
+   <c:if test="${readOnlyMatrix != 'true'}">
+      <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('styleDiv','/osp-jsf-resource')">
+      <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgstyleDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
+      <osp:message key="style_section_header"/></h4>
+      <div id="styleDiv">
+         <c:if test="${empty styleUrl}">
+            <a href="<osp:url value="styleRedirector.osp">
+               <osp:param name="stylePickerAction" value="true" />
+               <osp:param name="page_id" value="${cell.wizardPage.id}" />
+            </osp:url>"><osp:message key="select_style"/></a>
+         </c:if>
+         <c:if test="${not empty styleUrl}">
+            <c:set value="${cell.wizardPage.style}" var="style" />
+            <c:out value="${style.name}" />
+            <a href="<osp:url value="styleRedirector.osp" >
+               <osp:param name="stylePickerAction" value="true" />
+               <osp:param name="currentStyleId" value="${style.id}" />
+               <osp:param name="page_id" value="${cell.wizardPage.id}" />
+            </osp:url>"><osp:message key="change_style"/></a>
+         </c:if>
+      </div>
+   </c:if>
    
    <c:if test="${not empty cell.scaffoldingCell.guidance}">
       <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('guidanceDiv','/osp-jsf-resource')">
