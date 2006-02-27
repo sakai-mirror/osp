@@ -273,19 +273,28 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    }
    
    protected void setAudienceSelectionVariables(Map session, WizardPageDefinition wpd) {
+      ResourceBundle myResources = 
+         ResourceBundle.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
+      
       session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION, MatrixFunctionConstants.EVALUATE_MATRIX);
       
       String id = wpd.getId()!=null ? wpd.getId().getValue() : wpd.getNewId().getValue();
       
       session.put(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
-      session.put(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS, "Add evaluators to your cell");
-      session.put(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE, "Evaluators to Publish to");
-      session.put(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE, "Publish to an Individual");
-      session.put(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE, "Publish to a Group");
+      session.put(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS, 
+            myResources.getString("eval_audience_instructions"));
+      session.put(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE, 
+            myResources.getString("eval_audience_global_title"));
+      session.put(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE, 
+            myResources.getString("eval_audience_individual_title"));
+      session.put(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE, 
+            myResources.getString("eval_audience_group_title"));
       session.put(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, "false");
       session.put(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, null);
-      session.put(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE, "Selected Evaluators");
-      session.put(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS, "Select filter criteria to narrow user list");
+      session.put(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE, 
+            myResources.getString("eval_audience_selected_title"));
+      session.put(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS, 
+            myResources.getString("eval_audience_filter_instructions"));
       session.put(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, "false");
       session.put(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "true");
    }
