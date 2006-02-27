@@ -173,6 +173,10 @@ public class AudienceTool extends HelperToolBase {
    public boolean isPublicCapable() {
       return getAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE) != null;
    }
+   
+   public boolean isEmailCapable() {
+      return getAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL) != null;
+   }
 
    public boolean isPublicAudience() {
       if (getAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG) != null) {

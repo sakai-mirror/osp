@@ -296,7 +296,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
             myResources.getString("eval_audience_selected_title"));
       session.put(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS, 
             myResources.getString("eval_audience_filter_instructions"));
-      session.put(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, "false");
+      session.put(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, null);
       session.put(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "true");
    }
    
