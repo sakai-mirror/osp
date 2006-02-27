@@ -18,8 +18,8 @@
                  <ref bean="matrixCellCompletionStatusByUser" />
                 <ref bean="matrixStatusByUser" />
                 <ref bean="matrixStatusByOwner" />
-                <ref bean="matrixStatusByLevel" />
-                <ref bean="matrixScoreByReviewer" />
+                <!--  <ref bean="matrixStatusByLevel" />
+                <ref bean="matrixScoreByReviewer" /> -->
                <!--   <ref bean="testreport1" />
                 <ref bean="testreport2" />
                 <ref bean="testreport3" />
