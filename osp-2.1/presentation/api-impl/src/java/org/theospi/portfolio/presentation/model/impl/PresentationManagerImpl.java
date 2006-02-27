@@ -152,8 +152,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    protected void clearLocks(Id id) {
       getLockManager().removeAllLocks(id.getValue());
    }
-   
-   
+
+
    /**
     * locks all the files associated with this template.
     * @param template
@@ -163,15 +163,15 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       for (Iterator i = template.getFiles().iterator();i.hasNext();){
          TemplateFileRef fileRef = (TemplateFileRef) i.next();
          //getLockManager().addLock(fileRef.getFile().getId(), template.getId(), "saving a presentation template");
-         getLockManager().lockObject(fileRef.getFileId(), 
+         getLockManager().lockObject(fileRef.getFileId(),
         		 template.getId().getValue(), "saving a presentation template", true);
       }
       //getLockManager().addLock(template.getRenderer(), template.getId(), "saving a presentation template");
-      getLockManager().lockObject(template.getRenderer().getValue(), 
+      getLockManager().lockObject(template.getRenderer().getValue(),
     		  template.getId().getValue(), "saving a presentation template", true);
-      
+
       if (template.getPropertyPage() != null) {
-         getLockManager().lockObject(template.getPropertyPage().getValue(), 
+         getLockManager().lockObject(template.getPropertyPage().getValue(),
               template.getId().getValue(), "saving a presentation template", true);
       }
    }
@@ -237,7 +237,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       };
 
       try {
-         Presentation presentation = (Presentation) getHibernateTemplate().execute(callback);  
+         Presentation presentation = (Presentation) getHibernateTemplate().execute(callback);
 
          return presentation;
       } catch (HibernateObjectRetrievalFailureException e) {
@@ -628,10 +628,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          Id presId = ((Authorization) i.next()).getQualifier();
          Presentation pres = getLightweightPresentation(presId);
 
-        if (!returned.contains(pres) && !pres.isExpired()) {
+        if (!returned.contains(pres) && !pres.isExpired() && (pres.getOwner() != null)) {
                 getHibernateTemplate().evict(pres);
                 returned.add(pres);
          }
+         else{
+            getHibernateTemplate().evict(pres);
+        }
       }
 
       return returned;
@@ -658,9 +661,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       for (Iterator i=authzPres.iterator();i.hasNext();) {
          Presentation pres = (Presentation)i.next();
 
-         if (!returned.contains(pres) && !pres.isExpired()) {
+         if (!returned.contains(pres) && !pres.isExpired() && (pres.getOwner() != null)) {
             pres.setAuthz(new PresentationAuthzMap(viewer, pres));
             returned.add(pres);
+         }
+          else{
+             getHibernateTemplate().evict(pres);
          }
       }
 
