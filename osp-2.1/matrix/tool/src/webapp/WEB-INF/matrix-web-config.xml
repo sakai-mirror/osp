@@ -602,6 +602,9 @@
             <property name="workflowManager">
                <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
             </property>
+            <property name="guidanceManager">
+               <ref bean="org.theospi.portfolio.guidance.mgt.GuidanceManager" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">

@@ -205,7 +205,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
          session.put(GuidanceManager.CURRENT_GUIDANCE, guidance);
       }
       else if (forwardView.equals("deleteGuidance")) {
-         scaffoldingCell.setDeleteGuidanceId(scaffoldingCell.getGuidanceId());
+         scaffoldingCell.setDeleteGuidanceId(scaffoldingCell.getGuidance().getId());
          scaffoldingCell.setGuidance(null);
          session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
          model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
