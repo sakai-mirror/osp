@@ -81,7 +81,8 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       model.put("additionalFormDevices", getAdditionalFormDevices());
       model.put("selectedAdditionalFormDevices", getSelectedAdditionalFormDevices(sCell));
       model.put("evaluators", getEvaluators(sCell.getWizardPageDefinition()));
-      
+      model.put("pageTitleKey", "title_editCell");
+      model.put("pageInstructionsKey", "instructions_cellSettings");
       
       return model;
    }
