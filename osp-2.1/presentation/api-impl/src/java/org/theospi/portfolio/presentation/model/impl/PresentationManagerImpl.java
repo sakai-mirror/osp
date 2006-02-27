@@ -237,12 +237,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       };
 
       try {
-         Presentation presentation = (Presentation) getHibernateTemplate().execute(callback);
-
-         if (!presentation.getIsPublic() &&
-             !presentation.getOwner().equals(getAuthnManager().getAgent())) {
-            getAuthzManager().checkPermission(PresentationFunctionConstants.VIEW_PRESENTATION, presentation.getId());
-         }
+         Presentation presentation = (Presentation) getHibernateTemplate().execute(callback);  
 
          return presentation;
       } catch (HibernateObjectRetrievalFailureException e) {
@@ -633,9 +628,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          Id presId = ((Authorization) i.next()).getQualifier();
          Presentation pres = getLightweightPresentation(presId);
 
-         if (!returned.contains(pres) && !pres.isExpired()) {
-            getHibernateTemplate().evict(pres);
-            returned.add(pres);
+        if (!returned.contains(pres) && !pres.isExpired()) {
+                getHibernateTemplate().evict(pres);
+                returned.add(pres);
          }
       }
 
