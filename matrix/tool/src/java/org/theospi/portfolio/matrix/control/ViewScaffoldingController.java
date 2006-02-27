@@ -88,17 +88,20 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
          for (Iterator levelsIterator = levels.iterator(); levelsIterator.hasNext();) {
             level = (Level) levelsIterator.next();
             ScaffoldingCell scaffoldingCell = getScaffoldingCell(cells, criterion, level);
+            String status = MatrixFunctionConstants.READY_STATUS;
+            if ((scaffolding.getWorkflowOption() == Scaffolding.HORIZONTAL_PROGRESSION && !firstColumn) ||
+                  (scaffolding.getWorkflowOption() == Scaffolding.VERTICAL_PROGRESSION && !firstRow) ||
+                  (scaffolding.getWorkflowOption() == Scaffolding.MANUAL_PROGRESSION)) {
+               status = MatrixFunctionConstants.LOCKED_STATUS;
+            }
             if (scaffoldingCell == null) {
-               String status = MatrixFunctionConstants.READY_STATUS;
-               if ((scaffolding.getWorkflowOption() == Scaffolding.HORIZONTAL_PROGRESSION && !firstColumn) ||
-                     (scaffolding.getWorkflowOption() == Scaffolding.VERTICAL_PROGRESSION && !firstRow) ||
-                     (scaffolding.getWorkflowOption() == Scaffolding.MANUAL_PROGRESSION)) {
-                  status = MatrixFunctionConstants.LOCKED_STATUS;
-               }
-               
                scaffoldingCell = new ScaffoldingCell(criterion, level, status, scaffolding);
                scaffoldingCell.getWizardPageDefinition().setSiteId(scaffolding.getWorksiteId().getValue());
                scaffoldingCell.getWizardPageDefinition().setTitle(getDefaultTitle(scaffolding, criterion, level));
+               getMatrixManager().storeScaffoldingCell(scaffoldingCell);
+            }
+            else {
+               scaffoldingCell.setInitialStatus(status);
                getMatrixManager().storeScaffoldingCell(scaffoldingCell);
             }
             row.add(scaffoldingCell);
