@@ -177,7 +177,7 @@
 
 
 
-                            <td>
+                            <td valign="top">
                             <xsl:for-each select="//data/datarow[
                                 element[@colName='userId'] = $varUserName and
                                 element[@colName='criterion_sequence'] = $varUserCriterion
@@ -185,10 +185,13 @@
                               <xsl:sort data-type="number" select="element[@colName='level_sequence']/." />
                                   <xsl:if test="not(preceding-sibling::datarow[1]/element[@colName='level_sequence'] =
                                             element[@colName='level_sequence']) and position() != 1" >
-                     <xsl:value-of disable-output-escaping = "yes" select = "string('&lt;/td&gt;&lt;td&gt;')" />
+                     <xsl:value-of disable-output-escaping = "yes" select = "string('&lt;/td&gt;&lt;td valign=top&gt;')" />
+                                     <xsl:value-of select="element[@colName='status']"/><BR />
+                                  </xsl:if>
+                                  <xsl:if test="position() = 1" >
+                                     <xsl:value-of select="element[@colName='status']"/><BR />
                                   </xsl:if>
                      
-                                     
                  <xsl:apply-templates select="element[@colName='evaluation_artifact']/artifact"  />
 
                             </xsl:for-each>
