@@ -39,8 +39,11 @@
 								</ospx:splitsection>
 								<ospx:splitsection size="25%" valign="top">
                   <h:panelGrid columns="1">
-                     <h:commandButton action="#{audience.processActionAddGroup}"
-                        value="#{msgs.add_all}"/>
+                     <sakai:button_bar>
+                        <sakai:button_bar_item id="add_group_button" 
+                           action="#{audience.processActionAddGroup}"
+                           value="#{msgs.add_all}"/>
+                     </sakai:button_bar>
                   </h:panelGrid>
 								</ospx:splitsection>
 							</ospx:splitarea>
@@ -61,12 +64,17 @@
                   	<h:inputText value="#{audience.searchUsers}" id="userId" size="70" />
 								</ospx:splitsection>
 								<ospx:splitsection size="24%" valign="bottom">
-	                  <h:commandButton action="#{audience.processActionAddUser}"
-	                     value="#{msgs.add_members}"/>
+	                       <sakai:button_bar>
+                            <sakai:button_bar_item id="add_user_button" 
+                                action="#{audience.processActionAddUser}"
+	                             value="#{msgs.add_members}"/>
+                           </sakai:button_bar>
 								</ospx:splitsection>
 							</ospx:splitarea>
-              <h:commandButton action="browse"
+              <sakai:button_bar>
+                  <sakai:button_bar_item id="browse_button" action="browse"
                  value="#{msgs.browse_members}"/>
+                 </sakai:button_bar>
                        <h:outputText value="" />
                        <h:outputText value="" />
 							<ospx:splitarea direction="horizontal" width="75%">
@@ -78,8 +86,11 @@
 	                	<h:inputText value="#{audience.searchEmails}" id="emails" size="70" />
 								</ospx:splitsection>
 								<ospx:splitsection size="24%" valign="bottom">
-	                  <h:commandButton action="#{audience.processActionAddEmail}"
-	                     value="#{msgs.add_members}"/>
+	                       <sakai:button_bar>
+                           <sakai:button_bar_item id="add_email_button" 
+                              action="#{audience.processActionAddEmail}"
+      	                     value="#{msgs.add_members}"/>
+                        </sakai:button_bar>
 									</ospx:splitsection>
 							</ospx:splitarea>
             </ospx:xheaderdrawer>
@@ -100,11 +111,12 @@
       </ospx:splitsection>
    </ospx:splitarea>
 
-   <h:commandButton action="#{audience.processActionCancel}"
-      value="#{msgs.cancel_audience}"/>
-   <h:commandButton action="#{audience.processActionSave}"
+<sakai:button_bar>
+   <sakai:button_bar_item id="save_button" action="#{audience.processActionSave}"
       value="#{msgs.save_audience}"/>
-
+   <sakai:button_bar_item id="cancel_button" action="#{audience.processActionCancel}"
+      value="#{msgs.cancel_audience}"/>
+</sakai:button_bar>
 </h:form>
 
 </sakai:view>
