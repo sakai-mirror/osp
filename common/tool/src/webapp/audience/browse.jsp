@@ -45,18 +45,25 @@
                       </h:panelGrid>
                    </ospx:splitsection>
                    <ospx:splitsection valign="center">
-                      <h:commandButton actionListener="#{audience.processActionApplyFilter}"
-                         value="#{msgs.apply_filter}"/>
-                      <h:commandButton actionListener="#{audience.processActionClearFilter}"
-                         value="#{msgs.clear_filter}"/>
+                      <sakai:button_bar>
+                        <sakai:button_bar_item id="apply_filter_button"  
+                           action="#{audience.processActionApplyFilter}"
+                           value="#{msgs.apply_filter}"/>
+                        <sakai:button_bar_item id="clear_filter_button" 
+                           action="#{audience.processActionClearFilter}"
+                           value="#{msgs.clear_filter}"/>
+                      </sakai:button_bar>
                    </ospx:splitsection>
                 </ospx:splitarea>
              </ospx:xheaderdrawer>
          </ospx:xheader>
          <ospx:splitarea direction="horizontal" width="100%">
             <ospx:splitsection size="50%" valign="bottom">
-               <h:commandButton actionListener="#{audience.processActionAddBrowseSelected}"
-                  value="#{msgs.add_selected}"/>
+               <sakai:button_bar>
+                  <sakai:button_bar_item id="add_selected_button"  
+                     action="#{audience.processActionAddBrowseSelected}"
+                     value="#{msgs.add_selected}"/>
+                </sakai:button_bar>
             </ospx:splitsection>
             <ospx:splitsection size="50%" valign="top" align="right">
                <sakai:pager id="pager"
@@ -89,8 +96,10 @@
             </h:column>
           </sakai:flat_list>
 
-          <h:commandButton action="main"
-             value="#{msgs.back_audience}"/>
+          <sakai:button_bar>
+             <sakai:button_bar_item id="back_button"  action="main"
+               value="#{msgs.back_audience}"/>
+           </sakai:button_bar>
 
       </ospx:splitsection>
       <ospx:splitsection size="25%" valign="top" cssclass="selectedListBox">

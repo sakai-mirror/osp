@@ -34,13 +34,11 @@ import org.sakaiproject.service.legacy.authzGroup.Member;
 import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.Group;
-import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import java.util.*;
 
 /**
@@ -280,7 +278,7 @@ public class AudienceTool extends HelperToolBase {
       this.selectedRoles = selectedRoles;
    }
 
-   public void processActionRemove(ActionEvent event) {
+   public void processActionRemove() {
       for (Iterator i=getSelectedMembers().iterator();i.hasNext();) {
          DecoratedMember member = (DecoratedMember)i.next();
          if (member.isSelected()) {
@@ -427,13 +425,13 @@ public class AudienceTool extends HelperToolBase {
       }
    }
 
-   public void processActionClearFilter(ActionEvent event) {
+   public void processActionClearFilter() {
       selectedGroupsFilter.clear();
       selectedRolesFilter.clear();
-      processActionApplyFilter(event);
+      processActionApplyFilter();
    }
 
-   public void processActionApplyFilter(ActionEvent event) {
+   public void processActionApplyFilter() {
       Set members = getGroupMembers();
       List siteUsers = new ArrayList();
       MemberFilter filter = new MemberFilter(this);
@@ -504,7 +502,7 @@ public class AudienceTool extends HelperToolBase {
 
    public PagingList getBrowseUsers() {
       if (browseUsers == null) {
-         processActionApplyFilter(null);
+         processActionApplyFilter();
       }
       return browseUsers;
    }
@@ -513,7 +511,7 @@ public class AudienceTool extends HelperToolBase {
       this.browseUsers = browseUsers;
    }
 
-   public void processActionAddBrowseSelected(ActionEvent event) {
+   public void processActionAddBrowseSelected() {
       for (Iterator i=getBrowseUsers().getWholeList().iterator();i.hasNext();) {
          DecoratedMember member = (DecoratedMember)i.next();
          if (member.isSelected()) {
