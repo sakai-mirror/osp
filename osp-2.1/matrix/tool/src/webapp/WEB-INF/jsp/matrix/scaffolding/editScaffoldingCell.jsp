@@ -14,10 +14,10 @@
        <a href="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].submit();"><osp:message key="select_evaluators" /></a>
 	 </div>
 
-    <h3><fmt:message key="title_editCell"/></h3>
+    <h3><fmt:message key="${pageTitleKey}" /></h3>
 
 	<div class="instruction"> 
-          <fmt:message key="instructions_cellSettings"/>
+          <fmt:message key="${pageInstructionsKey}"/>
           <fmt:message key="instructions_requiredFields"/> 
           <br/><br/>
 	      <c:if test="${scaffoldingCell.scaffolding.published}">

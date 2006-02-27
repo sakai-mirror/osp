@@ -47,6 +47,8 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = super.referenceData(request, command, errors);
       model.put("helperPage", "true");
+      model.put("pageTitleKey", "title_editWizardPage");
+      model.put("pageInstructionsKey", "instructions_wizardPageSettings");
       return model;
    }
 
