@@ -175,6 +175,7 @@ public class ReviewHelperController implements Controller {
          session.put(ResourceEditingHelper.CREATE_PARENT, "/user/" + 
                SessionManager.getCurrentSessionUserId() + "/");
          session.put(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
+         session.remove(ResourceEditingHelper.ATTACHMENT_ID);
          
       } else {
          session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_review_id"));
