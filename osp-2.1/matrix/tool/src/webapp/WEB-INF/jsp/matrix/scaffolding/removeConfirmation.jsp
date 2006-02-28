@@ -4,18 +4,22 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
-<h3>Remove <c:out value="${label}"/></h3>
+<h3>
+   <fmt:message key="title_remove">
+      <fmt:param value="${label}"/>
+   </fmt:message>
+</h3>
    
 <div class="validation">
-  <fmt:message key="tekst_AreYouSureRemove">
-    <fmt:param><c:out value="${label}"/></fmt:param>
-    <fmt:param><c:out value="${displayText}"/></fmt:param>
-  </fmt:message>
+   <fmt:message key="text_AreYouSureRemove">
+      <fmt:param value="${label}"/>
+      <fmt:param value="${displayText}"/>
+   </fmt:message>
 </div>
 
 <form method="POST">
-	<div class="act">
-		<input name="continue" type="submit" value="<osp:message key="button_continue" bundle="${msgs}" />"/>
-      <input name="cancel" type="submit" value="<osp:message key="button_cancel" bundle="${msgs}" />"/>
-	</div>
+   <div class="act">
+      <input name="continue" type="submit" value="<fmt:message key="button_continue" />"/>
+      <input name="cancel" type="submit" value="<fmt:message key="button_cancel" />"/>
+   </div>
 </form>

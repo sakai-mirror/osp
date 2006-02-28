@@ -32,7 +32,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
 
-public class RemoveLevCritConfirmationController implements /*FormController,*/ CustomCommandController {
+public class RemoveLevCritConfirmationController implements CustomCommandController {
 
    protected final Log logger = LogFactory.getLog(getClass());
    private IdManager idManager = null;
@@ -40,13 +40,6 @@ public class RemoveLevCritConfirmationController implements /*FormController,*/ 
    public Object formBackingObject(Map request, Map session, Map application) {
       return new HashMap();
    }
-   
-//   public Map referenceData(Map request, Object command, Errors errors) {
-//      Map model = new HashMap();
-//      model.put("label", request.get("label"));
-//      model.put("displayText", request.get("displayText"));
-//      return model;
-//   }
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String viewName = "success";
@@ -74,9 +67,6 @@ public class RemoveLevCritConfirmationController implements /*FormController,*/ 
             }
          }
       }
-
-      //model.put("label", request.get("label"));
-      //model.put("displayText", request.get("displayText"));
 
       return new ModelAndView(viewName, model);
    }

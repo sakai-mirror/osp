@@ -125,7 +125,7 @@
     				<c:if test="${!scaffolding.published}" >
                          | <a href="javascript:document.forms[0].dest.value='removeLevCrit';
                 	      document.forms[0].finalDest.value='deleteLevel';
-                	      document.forms[0].label.value='';
+                	      document.forms[0].label.value=document.forms[0].columnLabel.value;
                 	      document.forms[0].displayText.value='<c:out value="${level.description}"/>';
                 	      document.forms[0].submitAction.value='forward';
                 	      document.forms[0].params.value='level_id=<c:out value="${level.id}"/>:index=<c:out value="${itemLoopStatus.index}"/>';
@@ -209,7 +209,7 @@
 											<c:if test="${!scaffolding.published}" >
                       | <a href="javascript:document.forms[0].dest.value='removeLevCrit';
                       document.forms[0].finalDest.value='deleteCriterion';
-                      document.forms[0].label.value='Row';
+                      document.forms[0].label.value=document.forms[0].rowLabel.value;
                       document.forms[0].displayText.value='<c:out value="${criterion.description}"/>';
                       document.forms[0].submitAction.value='forward';
                       document.forms[0].params.value='criterion_id=<c:out value="${criterion.id}"/>:index=<c:out value="${itemLoopStatus.index}"/>';
