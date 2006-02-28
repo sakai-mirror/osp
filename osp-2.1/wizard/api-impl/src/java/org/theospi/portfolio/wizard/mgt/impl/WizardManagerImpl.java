@@ -617,6 +617,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
             currentEntry = zis.getNextEntry();
          }
 
+         // the wizard needs to be saved so it has an id
+         // the id is needed because guidance needs the security qualifier
+         //wizard = saveWizard(wizard);
+         wizard.setId(getIdManager().createId());
+         
          replaceIds(wizard, guidanceMap, formsMap);
 
          // set the styles
@@ -952,9 +957,16 @@ public class WizardManagerImpl extends HibernateDaoSupport
          wizard.setReviewDevice(idManager.getId(
             (String)formsMap.get(wizard.getReviewDevice().getValue())  ));
 
-      if(wizard.getGuidanceId() != null && wizard.getGuidanceId().getValue() != null)
-      wizard.setGuidanceId(idManager.getId(
-            wizard.getGuidanceId().getValue()));
+      if(wizard.getGuidanceId() != null && wizard.getGuidanceId().getValue() != null &&
+            wizard.getGuidanceId().getValue().length() > 0) {
+         Guidance wizardGuidance = (Guidance)guidanceMap.get( wizard.getGuidanceId().getValue());
+         if(wizardGuidance == null)
+            throw new NullPointerException("Guidance for Wizard was not found");
+         
+         wizardGuidance.setSecurityQualifier(wizard.getId());
+         getGuidanceManager().saveGuidance(wizardGuidance);
+         wizard.setGuidanceId( wizardGuidance.getId() );
+      }
    }
    protected void replaceCatIds(WizardCategory cat, Map guidanceMap, Map formsMap)
    {
@@ -982,11 +994,18 @@ public class WizardManagerImpl extends HibernateDaoSupport
          }
          definition.setAdditionalForms(newAddForms);
 
-         if(definition.getGuidanceId() != null && definition.getGuidanceId().getValue() != null) {
-            definition.setGuidanceId(idManager.getId(
-                  definition.getGuidanceId().getValue()));
+         if(definition.getGuidanceId() != null && definition.getGuidanceId().getValue() != null && 
+               definition.getGuidanceId().getValue().length() > 0) {
+            Guidance pageDefGuidance = (Guidance)guidanceMap.get( definition.getGuidanceId().getValue() );
+            
+            if(pageDefGuidance == null)
+               throw new NullPointerException("Guidance for Wizard Page was not found");
+            
+            pageDefGuidance.setSecurityQualifier(definition.getId());
+            getGuidanceManager().saveGuidance(pageDefGuidance);
+            definition.setGuidanceId( pageDefGuidance.getId() );
 
-            definition.setGuidance(getGuidanceManager().getGuidance(definition.getGuidanceId()));
+            definition.setGuidance(pageDefGuidance);
          }
       }
       for(Iterator i = cat.getChildCategories().iterator(); i.hasNext(); ) {
