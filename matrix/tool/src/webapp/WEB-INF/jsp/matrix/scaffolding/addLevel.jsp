@@ -31,9 +31,13 @@
         <p class="shorttext indnt2">
       <spring:bind path="level.color">
          <label><fmt:message key="label_bgColor"/></label>   
-      
+         <input type="text" disabled="disabled" value="" size="2" 
+                        name="<c:out value="${status.expression}"/>_sample"
+                        style="background-color: <c:out value="${status.value}"/>" />   
+                        
          <input type="Text" name="<c:out value="${status.expression}"/>" 
-               value="<c:out value="${status.displayValue}"/>"/>
+               value="<c:out value="${status.displayValue}"/>"
+               onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value"/>
          <span class="error_message"><c:out value="${status.errorMessage}"/></span>
          <!--
             Put icon by the input control.
@@ -45,10 +49,14 @@
    </p>
            <p class="shorttext indnt2">
       <spring:bind path="level.textColor">
-         <label><fmt:message key="label_fontColor"/></label>   
+         <label><fmt:message key="label_fontColor"/></label>
+         <input type="text" disabled="disabled" value="" size="2" 
+                        name="<c:out value="${status.expression}"/>_sample"
+                        style="background-color: <c:out value="${status.value}"/>" />   
       
          <input type="Text" name="<c:out value="${status.expression}"/>" 
-               value="<c:out value="${status.displayValue}"/>"/>
+               value="<c:out value="${status.displayValue}"/>"
+               onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value"/>
          <span class="error_message"><c:out value="${status.errorMessage}"/></span>
          <!--
             Put icon by the input control.
