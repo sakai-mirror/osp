@@ -36,6 +36,9 @@ import org.sakaiproject.service.legacy.security.SecurityService;
 import org.sakaiproject.service.legacy.content.*;
 import org.sakaiproject.service.legacy.entity.*;
 import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.IdUnusedException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.CDATA;
@@ -56,6 +59,8 @@ import java.io.*;
  */
 public class GuidanceManagerImpl extends HibernateDaoSupport implements GuidanceManager {
 
+   protected final Log logger = LogFactory.getLog(getClass());
+   
    private AuthorizationFacade authorizationFacade;
    private SecurityService securityService;
    private EntityManager entityManager;
@@ -273,6 +278,16 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
       parentNode.addContent(attrNode);
    }
 
+   /**
+    * This function is up to spec but incomplete.  The guidance security qualifier
+    * needs to be set on these objects so they can be retrieved.
+    * 
+    * @param parent the parent resource folder where attachments go
+    * @param siteId the site which will recieve the imported "stuff"
+    * @param in  The Input stream representing the output stream of the export
+    * @return Map contains a map with keys being of type String as old Ids and the 
+    * values as being the Guidance object
+    */
    public Map importGuidanceList(ContentCollection parent, String siteId, InputStream in) throws IOException {
       Map guidanceMap = new Hashtable();
       ZipInputStream zis = new ZipInputStream(in);
@@ -357,16 +372,24 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
             bos.write(c);
             c = zis.read();
          }
-
+         
          String fileId = fileParent.getId() + file.getName();
-         ContentResourceEdit resource = getContentHostingService().addResource(fileId);
-         ResourcePropertiesEdit resourceProperties = resource.getPropertiesEdit();
-         resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, file.getName());
-         resource.setContent(bos.toByteArray());
-         resource.setContentType(contentType);
-         getContentHostingService().commitResource(resource);
-
-         attachmentMap.put(oldId, resource.getReference());
+         ContentResource rez = null;
+         try {
+            rez = getContentHostingService().getResource(fileId);
+         } catch(IdUnusedException iduue) {
+            logger.info(iduue);
+         }
+         if(rez == null) {
+            ContentResourceEdit resource = getContentHostingService().addResource(fileId);
+            ResourcePropertiesEdit resourceProperties = resource.getPropertiesEdit();
+            resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, file.getName());
+            resource.setContent(bos.toByteArray());
+            resource.setContentType(contentType);
+            getContentHostingService().commitResource(resource);
+            rez = resource;
+         }
+         attachmentMap.put(oldId, rez.getReference());
       }
       catch (Exception exp) {
          throw new RuntimeException(exp);
