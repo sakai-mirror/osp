@@ -182,6 +182,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          public Object doInHibernate(Session session) throws HibernateException {
             PresentationTemplate template = (PresentationTemplate) session.load(PresentationTemplate.class, id);
             template.getItems().size(); //force load
+            if (template.getOwner() == null){
+                reassignOwner(template);
+            }
+
             for (Iterator i = template.getItemDefinitions().iterator(); i.hasNext();) {
                PresentationItemDefinition itemDef = (PresentationItemDefinition) i.next();
 //               if (itemDef.getHasMimeTypes()) {
@@ -196,6 +200,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       try {
          PresentationTemplate template = (PresentationTemplate) getHibernateTemplate().execute(callback);
+         if (template.getOwner() == null){
+                reassignOwner(template);
+         }
          if (template.getPropertyPage() != null) {
             String propPage = getContentHosting().resolveUuid(template.getPropertyPage().getValue());
             getSecurityService().pushAdvisor(
@@ -209,6 +216,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
    }
 
+    public void reassignOwner(PresentationTemplate templateId)
+   {
+          templateId.setOwner(getAgentManager().getAgent("admin"));
+   }
    public Presentation getPresentation(final Id id, String secretExportKey) {
       Presentation pres = (Presentation)secretExportKeys.get(secretExportKey);
       if (pres == null || !id.equals(pres.getId())) {
@@ -649,7 +660,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       for (Iterator i=returned.iterator();i.hasNext();) {
          Presentation pres = (Presentation)i.next();
-         pres.setAuthz(new PresentationAuthzMap(viewer, pres));            
+         pres.setAuthz(new PresentationAuthzMap(viewer, pres));
       }
 
       String query = "from Presentation where tool_id=? and id in (" +
@@ -923,7 +934,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
       }  */
    }
-   
+
    public boolean isGlobal() {
       String siteId = getWorksiteManager().getCurrentWorksiteId().getValue();
 
