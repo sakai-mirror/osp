@@ -596,6 +596,8 @@ public class WizardManagerImpl extends HibernateDaoSupport
       Map guidanceMap = null;
       Map resourceMap = new Hashtable();
       try {
+         boolean gotFile = false;
+         
          // read the wizard
          readWizardXML(wizard, zis, importData);
 
@@ -609,14 +611,24 @@ public class WizardManagerImpl extends HibernateDaoSupport
                         getIdManager().getId(worksiteId));
                } else if(currentEntry.getName().startsWith("guidance/")) {
                   guidanceMap = processMatrixGuidance(fileParent, worksiteId, zis);
+                  gotFile = true;
                } else {
                   importAttachmentRef(fileParent, currentEntry, worksiteId, zis, resourceMap);
+                  gotFile = true;
                }
             }
             zis.closeEntry();
             currentEntry = zis.getNextEntry();
          }
 
+         if (gotFile) {
+            fileParent.getPropertiesEdit().addProperty(
+                  ResourceProperties.PROP_DISPLAY_NAME, wizard.getName());
+            getContentHosting().commitCollection(fileParent);
+         }
+         else {
+            getContentHosting().cancelCollection(fileParent);
+         }
          // the wizard needs to be saved so it has an id
          // the id is needed because guidance needs the security qualifier
          //wizard = saveWizard(wizard);
@@ -629,6 +641,8 @@ public class WizardManagerImpl extends HibernateDaoSupport
          List stylesList = new ArrayList();
          for(Iterator i = stylesMap.keySet().iterator(); i.hasNext(); ) {
             String styleId = (String)i.next();
+            
+            styleId.length();
 /*
             Reference baseRef = getEntityManager().newReference(
                   (String)resourceMap.get(styleId));
@@ -1014,6 +1028,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
          replaceCatIds(childCat, guidanceMap, formsMap);
       }
    }
+   
+   
+   
+   
+   
 
 
    public void packageForDownload(Map params, OutputStream out) throws IOException {
