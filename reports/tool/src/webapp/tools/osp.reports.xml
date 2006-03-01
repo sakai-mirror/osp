@@ -3,8 +3,8 @@
 <registration>
     <tool
             id="osp.reports"
-            title="OSP Reports 2.1"
-            description="For running reports on portfolios.">
+            title="Reports"
+            description="OSP Reports">
             
         <category name="course" />
         <category name="project" />
