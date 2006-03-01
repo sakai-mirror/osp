@@ -2,7 +2,7 @@
 
 <registration>
 
-	<tool id="osp.evaluation" title="Evaluation" description="OSP Evaluation Tool">
+	<tool id="osp.evaluation" title="Evaluations" description="OSP Evaluations">
 
        <category name="sakai.main" />
       <category name="project" />
