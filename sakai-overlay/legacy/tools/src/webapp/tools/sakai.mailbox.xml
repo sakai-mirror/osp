@@ -12,6 +12,8 @@
 
 		<category name="course" />
 		<category name="project" />
+      <category name="portfolio" />
+      <category name="portfolioAdmin" />
 
 	</tool>
 
