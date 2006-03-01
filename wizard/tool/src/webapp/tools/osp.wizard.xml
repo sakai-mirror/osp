@@ -2,7 +2,7 @@
 
 <registration>
 
-	<tool id="osp.wizard" title="OSP Wizard" description="OSP Wizard Tool">
+	<tool id="osp.wizard" title="Wizards" description="OSP Wizards Tool">
 
        <category name="sakai.main" />
       <category name="project" />
