@@ -641,15 +641,19 @@ public class WizardManagerImpl extends HibernateDaoSupport
          List stylesList = new ArrayList();
          for(Iterator i = stylesMap.keySet().iterator(); i.hasNext(); ) {
             String styleId = (String)i.next();
+
+            //String[] fileValues = styleId.split("/");
+
+            //styleId = styleId.replaceAll(fileValues[2], worksiteId);
             
-            styleId.length();
-/*
+            //styleId.length();
+
             Reference baseRef = getEntityManager().newReference(
                   (String)resourceMap.get(styleId));
             Reference fullRef = decorateReference(wizard, baseRef.getReference());
             WizardStyleItem styleItem = new WizardStyleItem(wizard, baseRef, fullRef);
 
-            stylesList.add(styleItem);*/
+            stylesList.add(styleItem);
          }
          wizard.setWizardStyleItems(stylesList);
 
@@ -1196,12 +1200,12 @@ public class WizardManagerImpl extends HibernateDaoSupport
        for(Iterator i = wiz.getWizardStyleItems().iterator(); i.hasNext(); ) {
            WizardStyleItem style = (WizardStyleItem)i.next();
            String          resId = style.getBaseReference().getBase().getId();
+           String nodeId = getContentHosting().getUuid(resId);
 
           Element       styleNode = new Element("style");
-          styleNode.addContent(new CDATA(resId));
+          styleNode.addContent(new CDATA(nodeId));
           attrNode.addContent(styleNode);
 
-         String nodeId = getContentHosting().getUuid(resId);
          String id = getContentHosting().resolveUuid(nodeId);
           ContentResource resource = null;
             try {
