@@ -2,7 +2,7 @@
 
 <registration>
 
-	<tool id="osp.presentation" title="Presentation" description="OSP Presentation Tool">
+	<tool id="osp.presentation" title="Portfolios" description="OSP Portfolios">
 
        <category name="sakai.main" />
       <category name="project" />
