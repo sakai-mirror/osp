@@ -27,6 +27,7 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
 import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
 import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.theospi.portfolio.security.DefaultRealmManager;
 
 import java.util.Iterator;
 import java.util.List;
@@ -46,6 +47,7 @@ public class SakaiDefaultPermsManager {
    private FunctionManager functionManager;
    private AuthzGroupService authzGroupService;
    private String prefix;
+   private List realmManagers;
 
    public void init() {
       // need to register functions... set defaults on the ones that are not there
@@ -55,15 +57,18 @@ public class SakaiDefaultPermsManager {
       try {
          sakaiSession.setUserId("admin");
          sakaiSession.setUserEid("admin");
-         List currentFunctions = getFunctionManager().getRegisteredFunctions(getPrefix());
 
-         for (Iterator i=getFunctions().iterator();i.hasNext();) {
-            String function = (String) i.next();
-            if (currentFunctions.contains(function)) {
-               i.remove();
-            }
-            else {
-               getFunctionManager().registerFunction(function);
+         if (getPrefix() != null) {
+            List currentFunctions = getFunctionManager().getRegisteredFunctions(getPrefix());
+
+            for (Iterator i=getFunctions().iterator();i.hasNext();) {
+               String function = (String) i.next();
+               if (currentFunctions.contains(function)) {
+                  i.remove();
+               }
+               else {
+                  getFunctionManager().registerFunction(function);
+               }
             }
          }
 
@@ -82,10 +87,11 @@ public class SakaiDefaultPermsManager {
    protected void processRealm(String realm, Map defaultPerms) {
       try {
          AuthzGroup group = getAuthzGroupService().getAuthzGroup(realm);
+         boolean isNew = isRealmNew(group);
          for (Iterator i=defaultPerms.entrySet().iterator();i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
             Role role = group.getRole((String) entry.getKey());
-            setupRole(role, (List)entry.getValue());
+            setupRole(role, (List)entry.getValue(), isNew);
          }
          getAuthzGroupService().save(group);
       }
@@ -97,10 +103,21 @@ public class SakaiDefaultPermsManager {
       }
    }
 
-   protected void setupRole(Role role, List functions) {
+   protected boolean isRealmNew(AuthzGroup group) {
+      for (Iterator i=getRealmManagers().iterator();i.hasNext();) {
+         DefaultRealmManager manager = (DefaultRealmManager) i.next();
+         if (manager.getNewRealmName().equals(group.getId())) {
+            return manager.isNewlyCreated();
+         }
+      }
+
+      return false;
+   }
+
+   protected void setupRole(Role role, List functions, boolean isNew) {
       for (Iterator i=functions.iterator();i.hasNext();) {
          String func = (String) i.next();
-         if (getFunctions().contains(func)) {
+         if (isNew || getFunctions().contains(func)) {
             role.allowFunction(func);
          }
       }
@@ -144,5 +161,13 @@ public class SakaiDefaultPermsManager {
 
    public void setAuthzGroupService(AuthzGroupService authzGroupService) {
       this.authzGroupService = authzGroupService;
+   }
+
+   public List getRealmManagers() {
+      return realmManagers;
+   }
+
+   public void setRealmManagers(List realmManagers) {
+      this.realmManagers = realmManagers;
    }
 }

@@ -24,15 +24,28 @@ import net.sf.hibernate.Hibernate;
 import net.sf.hibernate.HibernateException;
 import net.sf.hibernate.Query;
 import net.sf.hibernate.Session;
-
+import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.CDATA;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.exception.*;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.sakaiproject.metaobj.shared.ArtifactFinder;
+import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
+import org.sakaiproject.metaobj.shared.DownloadableManager;
+import org.sakaiproject.metaobj.shared.mgt.*;
+import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.metaobj.shared.model.*;
+import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
+import org.sakaiproject.service.legacy.content.*;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.notification.cover.NotificationService;
+import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
+import org.sakaiproject.service.legacy.security.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
@@ -46,35 +59,16 @@ import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.export.PresentationExport;
 import org.theospi.portfolio.presentation.model.*;
-import org.sakaiproject.exception.*;
-import org.sakaiproject.metaobj.shared.*;
-import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.shared.intf.EntityContextFinder;
-import org.sakaiproject.service.legacy.content.ContentCollection;
-import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.content.ContentResourceEdit;
-import org.sakaiproject.service.legacy.content.LockManager;
-import org.sakaiproject.service.legacy.security.SecurityService;
-import org.sakaiproject.service.legacy.notification.cover.NotificationService;
-import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
-import org.theospi.portfolio.shared.model.*;
+import org.theospi.portfolio.shared.intf.EntityContextFinder;
+import org.theospi.portfolio.shared.model.ItemDefinitionMimeType;
+import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
-import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
-import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
 import org.theospi.portfolio.style.model.Style;
-import org.sakaiproject.metaobj.shared.mgt.*;
-import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
-import org.sakaiproject.metaobj.shared.model.*;
-import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.theospi.utils.zip.UncloseableZipInputStream;
 
 import java.io.*;
@@ -104,6 +98,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private List globalSites;
    private List globalSiteTypes;
+   private List initializedServices;
 
    private static final String TEMPLATE_ID_TAG = "templateId";
    private static final String PRESENTATION_ID_TAG = "presentationId";
@@ -2563,4 +2558,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public void setGlobalSiteTypes(List globalSiteTypes) {
       this.globalSiteTypes = globalSiteTypes;
    }
+
+   public List getInitializedServices() {
+      return initializedServices;
+   }
+
+   public void setInitializedServices(List initializedServices) {
+      this.initializedServices = initializedServices;
+   }
+
 }

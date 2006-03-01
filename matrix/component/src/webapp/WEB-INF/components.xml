@@ -277,32 +277,18 @@
       <property name="permissionEditName"><value>scaffolding</value></property>
       <property name="defaultPermissions">
          <map>
-            <entry key="maintain">
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.maintain"/></key>
                <list>
                   <value>osp.matrix.review</value>
                   <value>osp.matrix.scaffolding.create</value>
                   <value>osp.matrix.scaffolding.publish</value>
-                  <value>osp.matrix.evaluate</value>
                </list>
             </entry>
-            <entry key="instructor">
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.review"/></key>
                <list>
                   <value>osp.matrix.review</value>
-                  <value>osp.matrix.scaffolding.create</value>
-                  <value>osp.matrix.scaffolding.publish</value>
-                  <value>osp.matrix.evaluate</value>
-               </list>
-            </entry>
-            <entry key="access">
-               <list>
-               </list>
-            </entry>
-            <entry key="project owner">
-               <list>
-                  <value>osp.matrix.review</value>
-                  <value>osp.matrix.scaffolding.create</value>
-                  <value>osp.matrix.scaffolding.publish</value>
-                  <value>osp.matrix.evaluate</value>
                </list>
             </entry>
          </map>
@@ -328,26 +314,18 @@
       <property name="permissionEditName"><value>review</value></property>
       <property name="defaultPermissions">
          <map>
-            <entry key="maintain">
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.maintain"/></key>
                <list>
                   <value>osp.matrix.evaluate</value>
                   <value>osp.matrix.viewOwner</value>
                </list>
             </entry>
-            <entry key="instructor">
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.evaluate"/></key>
                <list>
                   <value>osp.matrix.evaluate</value>
                   <value>osp.matrix.viewOwner</value>
-               </list>
-            </entry>
-            <entry key="project owner">
-               <list>
-                  <value>osp.matrix.evaluate</value>
-                  <value>osp.matrix.viewOwner</value>
-               </list>
-            </entry>
-            <entry key="access">
-               <list>
                </list>
             </entry>
          </map>
