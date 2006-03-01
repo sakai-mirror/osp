@@ -2,7 +2,7 @@
 
 <registration>
 
-	<tool id="osp.presTemplate" title="Presentation Template" description="OSP Presentation Template Tool">
+	<tool id="osp.presTemplate" title="Portfolio Templates" description="OSP Portfolio Templates">
 
        <category name="sakai.main" />
       <category name="project" />
