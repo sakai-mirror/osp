@@ -2,7 +2,7 @@
 
 <registration>
 
-	<tool id="osp.matrix" title="Matrix" description="OSP Matrix Tool">
+	<tool id="osp.matrix" title="Matrices" description="OSP Matrices Tool">
 
        <category name="sakai.main" />
       <category name="project" />
