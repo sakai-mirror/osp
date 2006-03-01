@@ -29,8 +29,8 @@ public class QualifiedSimpleToolPermissionManager extends SimpleToolPermissionMa
 
    private Id qualifier;
 
-   protected PermissionsEdit setupPermissions(String worksiteId, Id qualifier) {
-      return super.setupPermissions(worksiteId, this.qualifier);
+   protected PermissionsEdit setupPermissions(String worksiteId, Id qualifier, String siteType) {
+      return super.setupPermissions(worksiteId, this.qualifier, siteType);
    }
 
    public String getQualifier() {

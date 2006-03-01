@@ -157,6 +157,12 @@
          <ref bean="structuredArtifactDefinitionManager"/>
       </property>
       <property name="tempPresDownloadDir"><value>${sakai.home}/tempPresDownloadDir/</value></property>
+      <property name="initializedServices">
+         <list>
+            <ref bean="org.sakaiproject.service.legacy.authzGroup.AuthzGroupService"/>
+            <ref bean="org.theospi.portfolio.security.model.BeanLoadCollector.common" />
+         </list>
+      </property>
       <property name="definedLayouts">
          <list>
             <bean class="org.theospi.portfolio.presentation.model.impl.PresentationLayoutWrapper">
@@ -337,14 +343,36 @@
       <property name="permissionEditName"><value>presentation</value></property>
       <property name="defaultPermissions">
          <map>
-            <entry key="maintain">
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.maintain"/></key>
                <list>
                   <value>osp.presentation.create</value>
+                  <value>osp.presentation.edit</value>
+                  <value>osp.presentation.delete</value>
+                  <value>osp.presentation.copy</value>
+                  <value>osp.presentation.comment</value>
                </list>
             </entry>
-            <entry key="access">
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.access"/></key>
                <list>
                   <value>osp.presentation.create</value>
+                  <value>osp.presentation.copy</value>
+                  <value>osp.presentation.comment</value>
+               </list>
+            </entry>
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.review"/></key>
+               <list>
+                  <value>osp.presentation.copy</value>
+                  <value>osp.presentation.comment</value>
+               </list>
+            </entry>
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.evaluate"/></key>
+               <list>
+                  <value>osp.presentation.copy</value>
+                  <value>osp.presentation.comment</value>
                </list>
             </entry>
          </map>
@@ -370,20 +398,14 @@
       <property name="permissionEditName"><value>presentationTemplate</value></property>
       <property name="defaultPermissions">
          <map>
-            <entry key="maintain">
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.maintain"/></key>
                <list>
                   <value>osp.presentation.template.copy</value>
                   <value>osp.presentation.template.publish</value>
                   <value>osp.presentation.template.delete</value>
                   <value>osp.presentation.template.create</value>
                   <value>osp.presentation.template.edit</value>
-                  <value>osp.presentation.template.export</value>
-               </list>
-            </entry>
-            <entry key="access">
-               <list>
-                  <value>osp.presentation.template.create</value>
-                  <value>osp.presentation.template.copy</value>
                   <value>osp.presentation.template.export</value>
                </list>
             </entry>
@@ -413,7 +435,8 @@
       <property name="permissionEditName"><value>presentationLayout</value></property>
       <property name="defaultPermissions">
          <map>
-            <entry key="maintain">
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.maintain"/></key>
                <list>
                   <value>osp.presentation.layout.publish</value>
                   <value>osp.presentation.layout.delete</value>
@@ -421,7 +444,8 @@
                   <value>osp.presentation.layout.edit</value>
                </list>
             </entry>
-            <entry key="access">
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.access"/></key>
                <list>
                   <value>osp.presentation.layout.create</value>
                </list>

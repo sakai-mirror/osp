@@ -97,23 +97,8 @@
       <property name="permissionEditName"><value>glossary</value></property>
       <property name="defaultPermissions">
          <map>
-            <entry key="maintain">
-               <list>
-                  <value>osp.help.glossary.delete</value>
-                  <value>osp.help.glossary.add</value>
-                  <value>osp.help.glossary.edit</value>
-                  <value>osp.help.glossary.export</value>
-               </list>
-            </entry>
-            <entry key="instructor">
-               <list>
-                  <value>osp.help.glossary.delete</value>
-                  <value>osp.help.glossary.add</value>
-                  <value>osp.help.glossary.edit</value>
-                  <value>osp.help.glossary.export</value>
-               </list>
-            </entry>
-            <entry key="project owner">
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.maintain"/></key>
                <list>
                   <value>osp.help.glossary.delete</value>
                   <value>osp.help.glossary.add</value>
@@ -144,23 +129,8 @@
       <property name="permissionEditName"><value>glossary</value></property>
       <property name="defaultPermissions">
          <map>
-            <entry key="maintain">
-               <list>
-                  <value>osp.help.glossary.delete</value>
-                  <value>osp.help.glossary.add</value>
-                  <value>osp.help.glossary.edit</value>
-                  <value>osp.help.glossary.export</value>
-               </list>
-            </entry>
-            <entry key="instructor">
-               <list>
-                  <value>osp.help.glossary.delete</value>
-                  <value>osp.help.glossary.add</value>
-                  <value>osp.help.glossary.edit</value>
-                  <value>osp.help.glossary.export</value>
-               </list>
-            </entry>
-            <entry key="project owner">
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.maintain"/></key>
                <list>
                   <value>osp.help.glossary.delete</value>
                   <value>osp.help.glossary.add</value>

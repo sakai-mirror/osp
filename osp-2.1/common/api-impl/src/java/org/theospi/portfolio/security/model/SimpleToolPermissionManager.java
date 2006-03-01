@@ -26,21 +26,20 @@ import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.theospi.portfolio.security.mgt.PermissionManager;
 import org.theospi.portfolio.security.mgt.ToolPermissionManager;
 import org.theospi.portfolio.worksite.intf.ToolEventListener;
 import org.theospi.portfolio.worksite.model.SiteTool;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SimpleToolPermissionManager implements ToolEventListener, ToolPermissionManager {
    protected final transient Log logger = LogFactory.getLog(getClass());
 
    private Map defaultPermissions;
+   private Map siteTypePermissions;
    private AgentManager agentManager;
    private PermissionManager permissionManager;
    private String permissionEditName;
@@ -57,10 +56,11 @@ public class SimpleToolPermissionManager implements ToolEventListener, ToolPermi
       PermissionsEdit edit = new PermissionsEdit();
       edit.setQualifier(toolId);
       edit.setName(getPermissionEditName());
-      edit.setSiteId(toolConfig.getContainingPage().getContainingSite().getId());
+      Site containingSite = toolConfig.getContainingPage().getContainingSite();
+      edit.setSiteId(containingSite.getId());
       getPermissionManager().fillPermissions(edit);
       if (edit.getPermissions() == null || edit.getPermissions().size() == 0){
-         createDefaultPermissions(edit.getSiteId(), toolId);
+         createDefaultPermissions(edit.getSiteId(), toolId, containingSite.getType());
       }
    }
 
@@ -68,19 +68,20 @@ public class SimpleToolPermissionManager implements ToolEventListener, ToolPermi
       // todo remove all authz
    }
 
-   protected void createDefaultPermissions(String worksiteId, Id qualifier) {
-      PermissionsEdit edit = setupPermissions(worksiteId, qualifier);
+   protected void createDefaultPermissions(String worksiteId, Id qualifier, String siteType) {
+      PermissionsEdit edit = setupPermissions(worksiteId, qualifier, siteType);
       edit.setName(getPermissionEditName());
       getPermissionManager().updatePermissions(edit);
    }
 
-   protected PermissionsEdit setupPermissions(String worksiteId, Id qualifier) {
+   protected PermissionsEdit setupPermissions(String worksiteId, Id qualifier, String siteType) {
 
       List permissions = new ArrayList();
       PermissionsEdit edit = new PermissionsEdit();
       edit.setQualifier(qualifier);
       edit.setSiteId(worksiteId);
-      for (Iterator i=getDefaultPermissions().entrySet().iterator();i.hasNext();) {
+      Map permissionsMap = getSiteTypePermissionsMap(siteType);
+      for (Iterator i=permissionsMap.entrySet().iterator();i.hasNext();) {
          Map.Entry entry = (Map.Entry)i.next();
          String agentName = (String)entry.getKey();
          List functions = (List)entry.getValue();
@@ -89,6 +90,31 @@ public class SimpleToolPermissionManager implements ToolEventListener, ToolPermi
 
       edit.setPermissions(permissions);
       return edit;
+   }
+
+   protected Map getSiteTypePermissionsMap(String siteType) {
+      if (getSiteTypePermissions() != null) {
+         Map map = (Map) getSiteTypePermissions().get(siteType);
+         if (map != null) {
+            return map;
+         }
+      }
+
+      Map perms = getDefaultPermissions();
+      Map returned = new Hashtable();
+
+      for (Iterator i=perms.entrySet().iterator();i.hasNext();) {
+         Map.Entry entry = (Map.Entry) i.next();
+         CrossRealmRoleWrapper roleWrapper = (CrossRealmRoleWrapper) entry.getKey();
+         if (roleWrapper.getSiteTypeRoles().get(siteType) != null) {
+            List roles = (List) roleWrapper.getSiteTypeRoles().get(siteType);
+            for (Iterator j=roles.iterator();j.hasNext();) {
+               returned.put(j.next(), entry.getValue());
+            }
+         }
+      }
+
+      return returned;
    }
 
    protected void processFunctions(List permissions, String roleName, List functions, String worksiteId) {
@@ -161,6 +187,14 @@ public class SimpleToolPermissionManager implements ToolEventListener, ToolPermi
 
    public void setFunctions(List functions) {
       this.functions = functions;
+   }
+
+   public Map getSiteTypePermissions() {
+      return siteTypePermissions;
+   }
+
+   public void setSiteTypePermissions(Map siteTypePermissions) {
+      this.siteTypePermissions = siteTypePermissions;
    }
 
 }
