@@ -100,17 +100,28 @@ public class DecoratedReport implements DecoratedAbstractResult {
 			
 		return invalidTitle;
 	}
-	
-	
-	/**
-	 * this function loads the full report result and the report
-	 * sets these in the tool
-	 * @return String which page to go to next
-	 */
-	public String processSelectReportResult()
-	{
-		return reportsTool.processSelectLiveReport(this);
-	}
+   
+   
+   /**
+    * this function loads the full report result and the report
+    * sets these in the tool
+    * @return String which page to go to next
+    */
+   public String processSelectReportResult()
+   {
+      return reportsTool.processSelectLiveReport(this);
+   }
+   
+   
+   /**
+    * this function deletes the full report result and the report
+    * sets these in the tool
+    * @return String which page to go to next
+    */
+   public String processDelete()
+   {
+      return reportsTool.processDeleteLiveReport(this);
+   }
 
 	public String getResultType()
 	{

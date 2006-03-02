@@ -53,6 +53,9 @@ public interface ReportsManager extends DownloadableManager
    public void checkReportAccess(String id, String ref);
 
    public void setCurrentResult(ReportResult result);
+   
+   public void deleteReportResult(ReportResult result);
+   public void deleteReport(Report report, boolean deactivate);
 
    public Map getAuthorizationsMap();
 

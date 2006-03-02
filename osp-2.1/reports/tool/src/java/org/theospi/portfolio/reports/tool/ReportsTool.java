@@ -453,6 +453,30 @@ public class ReportsTool extends ToolBase {
 		
 		return ReportsTool.reportResultsPage;
 	}
+   
+   /**
+    * When deleting a report result, delete the report result...
+    * then if the report is not live, then delete the report as well
+    * @param reportResult
+    * @return String the next page
+    */
+   public String processDeleteReportResult(DecoratedReportResult reportResult)
+   {
+      reportsManager.deleteReportResult(reportResult.getReportResult());
+      
+      return "";
+   }
+   
+   /**
+    * 
+    * @param report
+    * @return String the next page
+    */
+   public String processDeleteLiveReport(DecoratedReport report)
+   {
+      reportsManager.deleteReport(report.getReport(), true);
+      return "";
+   }
 
    public Map getUserCan() {
       if (userCan == null) {
