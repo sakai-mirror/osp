@@ -12,7 +12,7 @@
 <br />
 <form>
 <p class="act">
-<input type="button" name="Close" value="<fmt:message key="button.close">"
+<input type="button" name="Close" value='<fmt:message key="button.close"/>'
     onclick="window.close()">
 </p>
 </form>
