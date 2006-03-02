@@ -117,6 +117,11 @@
       <to-view-id>/reports/createReport.jsp</to-view-id>
     </navigation-case>
     <navigation-case>
+      <from-outcome>processCreateReportParams</from-outcome>
+      <to-view-id>/reports/createReportParams.jsp</to-view-id>
+      <redirect/>
+    </navigation-case>
+    <navigation-case>
       <from-outcome>showReportResults</from-outcome>
       <to-view-id>/reports/reviewResults.jsp</to-view-id>
       <redirect/>

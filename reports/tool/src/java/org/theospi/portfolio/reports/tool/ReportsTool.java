@@ -477,6 +477,19 @@ public class ReportsTool extends ToolBase {
       reportsManager.deleteReport(report.getReport(), true);
       return "";
    }
+   
+   /**
+    * 
+    * @param report
+    * @return String the next page
+    */
+   public String processEditLiveReport(DecoratedReport report)
+   {
+      getReportsManager().checkEditAccess();
+      
+      setWorkingReport(report);
+      return createReportParamsPage;
+   }
 
    public Map getUserCan() {
       if (userCan == null) {

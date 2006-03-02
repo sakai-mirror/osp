@@ -51,6 +51,7 @@ public interface ReportsManager extends DownloadableManager
 
    public String getReportResultKey(ReportResult result, String ref);
    public void checkReportAccess(String id, String ref);
+   public void checkEditAccess();
 
    public void setCurrentResult(ReportResult result);
    
