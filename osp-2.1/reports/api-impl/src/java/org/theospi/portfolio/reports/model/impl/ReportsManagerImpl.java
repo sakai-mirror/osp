@@ -1058,6 +1058,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
       return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
             getIdManager().getId(PortalService.getCurrentSiteId()))).booleanValue();
    }
+   
+   public void checkEditAccess()
+   {
+      checkPermission(ReportFunctions.REPORT_FUNCTION_EDIT);
+   }
 
 }
 

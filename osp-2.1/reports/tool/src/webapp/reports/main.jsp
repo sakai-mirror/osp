@@ -65,7 +65,7 @@
                            <h:outputText value="#{' &nbsp; | &nbsp; '}" escape="false"
                                     rendered="#{result.isLive && ReportsTool.userCan.runReport && 
                                                 result.isLive && ReportsTool.userCan.editReport}"/>
-                           <h:commandLink action="#{result.processSelectReportResult}"
+                           <h:commandLink action="#{result.processEditReport}"
                                     rendered="#{result.isLive && ReportsTool.userCan.editReport}">
                               <h:outputText value="#{msgs.edit_report}" />
                            </h:commandLink>

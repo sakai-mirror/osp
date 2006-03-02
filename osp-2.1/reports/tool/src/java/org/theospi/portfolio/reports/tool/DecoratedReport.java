@@ -122,6 +122,17 @@ public class DecoratedReport implements DecoratedAbstractResult {
    {
       return reportsTool.processDeleteLiveReport(this);
    }
+   
+   
+   /**
+    * this function loads the full report result and the report
+    * sets these in the tool, it then puts the user on an edit page
+    * @return String which page to go to next
+    */
+   public String processEditReport()
+   {
+      return reportsTool.processEditLiveReport(this);
+   }
 
 	public String getResultType()
 	{
