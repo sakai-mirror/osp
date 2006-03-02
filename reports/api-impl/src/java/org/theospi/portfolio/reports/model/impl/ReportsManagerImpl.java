@@ -148,7 +148,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	/**
 	 * Returns the ReportDefinitions.  The list returned is filtered
 	 * for the worksite type against the report types
-	 * @return List
+	 * @return List of ReportDefinitions
 	 */
 	public List getReportDefinitions()
 	{
@@ -247,7 +247,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		}
 
 		if (runReports) {
-			List liveReports = getHibernateTemplate().find("from Report r WHERE r.userId=? AND r.isLive=1", s.getUserId(), Hibernate.STRING);
+			List liveReports = getHibernateTemplate().find("from Report r WHERE r.userId=? AND r.isLive=1 AND r.display=1", s.getUserId(), Hibernate.STRING);
 
 			Iterator iter = liveReports.iterator();
 			while(iter.hasNext()) {
@@ -943,6 +943,62 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
         
         //	the user can't save reports that have already been saved
         report.setIsSaved(true);
+    }
+	
+    
+    
+    public void deleteReportResult(ReportResult result)
+    {
+
+       checkPermission(ReportFunctions.REPORT_FUNCTION_DELETE);
+       
+       getHibernateTemplate().delete(result);
+       
+       deleteReport(result.getReport(), false);
+    }
+   
+    
+    /**
+     * if we are deleting a report that is not live, then delete the results associated with it
+     * because they become invalid.  If a report is live, then we need to check how many results
+     * are linked to the report.  If there are no results then we can delete it, otherwise we need to
+     * just disable the report from showing in the interface given the parameter option.  
+     * aka, if a report is live and has results associated, the parameter decides if we should deactivate 
+     * the report.
+     * 
+     * @param report Report
+     */
+    public void deleteReport(Report report, boolean deactivate)
+    {
+       boolean deleteAction = false, deactivateAction = false;
+
+       checkPermission(ReportFunctions.REPORT_FUNCTION_DELETE);
+       
+       report = (Report)getHibernateTemplate().get(
+                  Report.class, 
+                  report.getReportId()
+            );
+       
+       List results = getHibernateTemplate().find("from ReportResult rr WHERE rr.report=?", 
+                report.getReportId().getValue(), Hibernate.STRING);
+       
+       if(report.getIsLive()) {
+          if(results.size() == 0)
+             deleteAction = true;
+          else if(deactivate)
+             deactivateAction = true;
+       } else {
+          deleteAction = true;
+       }
+       
+       if(deleteAction) {
+          getHibernateTemplate().delete(report);
+       }
+       
+       if(deactivateAction) {
+          report.setDisplay(false);
+          getHibernateTemplate().saveOrUpdate(report);
+       }
     }
 
    public String getSecretKey() {

@@ -135,6 +135,10 @@
       class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
    <bean id="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_VIEW"
       class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+   <bean id="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_EDIT"
+      class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+   <bean id="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_DELETE"
+      class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
 
    <bean id="org.theospi.portfolio.security.model.SakaiDefaultPermsManager.reports"
       parent="org.theospi.portfolio.security.model.SakaiDefaultPermsManager.base"
@@ -148,6 +152,8 @@
             <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_CREATE"/>
             <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_RUN"/>
             <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_VIEW"/>
+            <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_EDIT"/>
+            <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_DELETE"/>
          </list>
       </property>
       <property name="defaultPermissions">
@@ -159,6 +165,8 @@
                         <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_CREATE"/>
                         <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_RUN"/>
                         <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_VIEW"/>
+                        <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_EDIT"/>
+                        <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_DELETE"/>
                      </list>
                   </entry>
                </map>

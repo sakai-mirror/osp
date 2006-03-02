@@ -188,6 +188,17 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 	{
 		return reportsTool.processSelectReportResult(this);
 	}
+   
+   
+   /**
+    * this function deletes the full report result and the report
+    * sets these in the tool
+    * @return String which page to go to next
+    */
+   public String processDelete()
+   {
+      return reportsTool.processDeleteReportResult(this);
+   }
 	
 	
 	/**

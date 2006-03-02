@@ -29,7 +29,10 @@ package org.theospi.portfolio.reports.model;
  */
 public interface ReportFunctions {
    public static final String REPORT_FUNCTION_PREFIX = "osp.reports.";
+   
    public static final String REPORT_FUNCTION_CREATE = REPORT_FUNCTION_PREFIX + "createReport";
    public static final String REPORT_FUNCTION_RUN = REPORT_FUNCTION_PREFIX + "runReport";
    public static final String REPORT_FUNCTION_VIEW = REPORT_FUNCTION_PREFIX + "viewReport";
+   public static final String REPORT_FUNCTION_EDIT = REPORT_FUNCTION_PREFIX + "editReport";
+   public static final String REPORT_FUNCTION_DELETE = REPORT_FUNCTION_PREFIX + "deleteReport";
 }

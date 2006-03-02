@@ -22,7 +22,7 @@ package org.theospi.portfolio.reports.tool;
 
 import java.util.Date;
 
-interface DecoratedAbstractResult
+public interface DecoratedAbstractResult
 {
 	public static final String REPORT = "report";
 	public static final String RESULT = "result";
@@ -31,4 +31,6 @@ interface DecoratedAbstractResult
 	public String getTitle();
 	public Date getCreationDate();
 	public boolean getIsLive();
+   public String processSelectReportResult();
+   public String processDelete();
 }

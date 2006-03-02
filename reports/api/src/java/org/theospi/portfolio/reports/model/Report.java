@@ -80,6 +80,9 @@ public class Report
 	
 	/** when the report is live it matters if the report is saved or not */
 	private boolean isSaved = false;
+   
+   /** when the report is active can show up in the list of live reports */
+   private boolean display = true;
 
 	/**
 	 * the getter for the reportId property
@@ -377,7 +380,7 @@ public class Report
 	
 	/**
 	 * the getter for the isSaved property
-	 * @return String the isSaved
+	 * @return boolean the isSaved
 	 */
 	public boolean getIsSaved()
 	{
@@ -388,10 +391,30 @@ public class Report
 	/**
 	 * the setter for the isSaved property.  This is set by the bean 
 	 * and by hibernate.
-	 * @param isSaved List
+	 * @param isSaved boolean
 	 */
 	public void setIsSaved(boolean isSaved)
 	{
 		this.isSaved = isSaved;
 	}
+   
+   
+   /**
+    * the getter for the active property
+    * @return String the active
+    */
+   public boolean getDisplay()
+   {
+      return display;
+   }
+   
+    
+   /**
+    * the setter for the active property.  This is set by hibernate.
+    * @param active boolean
+    */
+   public void setDisplay(boolean display)
+   {
+      this.display = display;
+   }
 }
