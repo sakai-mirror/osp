@@ -43,6 +43,9 @@
            type="org.sakaiproject.metaobj.shared.IdType" column="id">
            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
        </id>
+       
+       <property name="owner" not-null="true"
+            type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" />
 
        <property name="status" type="java.lang.String" />
        <set name="attachments" cascade="all-delete-orphan"
@@ -208,12 +211,13 @@
       </set>
 
       <property name="title" type="string" column="name" not-null="false"/>
-      <property name="description" type="string" column="description" not-null="false"/>
+      <property name="description" type="text" column="description" not-null="false"/>
       
       <!-- property name="guidanceId" column="guidance_id" not-null="false" length="36"
            type="org.sakaiproject.metaobj.shared.IdType"/-->
 
       <property name="siteId" type="string" column="site_id" />
+      <property name="toolId" type="string" column="tool_id" />
 
       <many-to-one name="guidance" column="guidance_id" not-null="false"
         class="org.theospi.portfolio.guidance.model.Guidance"/>

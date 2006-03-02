@@ -33,16 +33,13 @@ public interface ReviewManager {
    public final static String CURRENT_REVIEW_ID = "org.theospi.portfolio.review.currentReviewId";
    public final static String CANCEL_REVIEW = "org.theospi.portfolio.review.cancelReview";
 
-   public Review createNew(String description, String siteId, 
-         Id securityQualifier, String securityViewFunction, String securityEditFunction);
+   public Review createNew(String description, String siteId);
 
    public Review getReview(Id reviewId);
 
    public Review saveReview(Review review);
 
    public void deleteReview(Review review);
-
-   public Reference decorateReference(Review review, String reference);
 
    public List listReviews(String siteId);
 
@@ -51,5 +48,6 @@ public interface ReviewManager {
    public Node getNode(Reference ref);
    
    public List getReviewsByParent(String parentId);
-   public List getReviewsByParentAndType(String parentId, int type);
+   public List getReviewsByParent(String parentId, String siteId, String producer);
+   public List getReviewsByParentAndType(String parentId, int type, String siteId, String producer);
 }

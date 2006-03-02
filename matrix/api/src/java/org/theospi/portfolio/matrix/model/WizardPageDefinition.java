@@ -46,6 +46,7 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    transient private Id deleteGuidanceId;
    
    private String siteId;
+   private String toolId;
 
    private List additionalForms = new ArrayList();
 
@@ -169,6 +170,12 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
 
    public void setSiteId(String siteId) {
       this.siteId = siteId;
+   }
+   public String getToolId() {
+      return toolId;
+   }
+   public void setToolId(String toolId) {
+      this.toolId = toolId;
    }
 
 }

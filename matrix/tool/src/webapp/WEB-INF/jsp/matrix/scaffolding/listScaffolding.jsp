@@ -78,7 +78,7 @@
              | <a href="<osp:url value="publishScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="action_publish"/></a>
              </c:if>
              
-             <c:if test="${can.create}">
+             <c:if test="${can.export}">
               | <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=matrixManager&scaffoldingId=<c:out value="${scaffold.id.value}"/>/<c:out value="${scaffold.title}" />.zip">
                    <fmt:message key="table_action_export"/>
                 </a>

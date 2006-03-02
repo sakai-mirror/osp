@@ -45,6 +45,8 @@ public interface WizardManager extends WorkflowEnabledManager {
    
    public Reference decorateReference(Wizard wizard, String reference);
    
+   public String getWizardEntityProducer();
+   
    public List listAllWizards(String owner, String siteId);
    public List listWizardsByType(String owner, String siteId, String type);
    public List findWizardsByOwner(String ownerId, String siteId);
@@ -68,4 +70,7 @@ public interface WizardManager extends WorkflowEnabledManager {
    
    public WizardPageSequence getWizardPageSeqByDef(Id id);
    public List getCompletedWizardPagesByPageDef(Id id);
+   public CompletedWizard getCompletedWizardByPage(Id pageId);
+   
+   public void checkWizardAccess(Id id);
 }

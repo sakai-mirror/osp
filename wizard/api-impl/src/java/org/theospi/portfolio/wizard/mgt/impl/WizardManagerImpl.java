@@ -28,7 +28,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.InputStreamReader;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.io.Reader;
@@ -63,7 +62,6 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
-import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.mgt.*;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -73,7 +71,6 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.model.Type;
-import org.sakaiproject.metaobj.security.impl.sakai.AuthnManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
@@ -94,6 +91,8 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.theospi.portfolio.guidance.model.*;
+import org.theospi.portfolio.review.mgt.ReviewManager;
+import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
@@ -108,10 +107,6 @@ import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
 import org.theospi.portfolio.workflow.model.WorkflowItem;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
-import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.matrix.model.Attachment;
-import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import net.sf.hibernate.HibernateException;
@@ -132,7 +127,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    private WorkflowManager workflowManager;
    private ContentHostingService contentHosting;
    private PresentableObjectHome xmlRenderer;
-
+   private ReviewManager reviewManager;
 
    protected void init() throws Exception {
       /*
@@ -293,6 +288,10 @@ public class WizardManagerImpl extends HibernateDaoSupport
       wizard.setModified(new Date(System.currentTimeMillis()));
       this.saveWizard(wizard);
    }
+   
+   public String getWizardEntityProducer() {
+      return WizardEntityProducer.WIZARD_PRODUCER;
+   }
 
    public Reference decorateReference(Wizard wizard, String reference) {
       String fullRef = ContentEntityUtil.getInstance().buildRef(WizardEntityProducer.WIZARD_PRODUCER,
@@ -367,6 +366,19 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
       return getUsersWizard(wizard, agent);
    }
+   
+   public CompletedWizard getCompletedWizardByPage(Id pageId) {
+      CompletedWizard cw = null;
+      Object[] params = new Object[]{pageId.getValue()};
+      List list = getHibernateTemplate().find("select w.category.wizard from CompletedWizardPage w " +
+            "where w.wizardPage.id=?", params);
+      
+      if (list.size() == 1) {
+         cw = (CompletedWizard) list.get(0);
+      }
+      
+      return cw;      
+   }
 
    public CompletedWizard saveWizard(CompletedWizard wizard) {
       getHibernateTemplate().saveOrUpdate(wizard);
@@ -413,7 +425,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          }
       }
    }
-
+   
    private void processStatusChangeWorkflow(String status, CompletedWizard actionWizard) {
       actionWizard.setStatus(status);
    }
@@ -433,6 +445,33 @@ public class WizardManagerImpl extends HibernateDaoSupport
    private void processNotificationWorkflow(WorkflowItem wi) {
       // TODO implement
 
+   }
+   
+   public void checkWizardAccess(Id id) {
+      CompletedWizard cw = getCompletedWizard(id);
+      
+      boolean canEval = getAuthorizationFacade().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
+            cw.getWizard().getId());
+      boolean canReview = getAuthorizationFacade().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
+            getIdManager().getId(cw.getWizard().getToolId()));
+      
+      boolean owns = cw.getOwner().getId().equals(getAuthManager().getAgent().getId());
+      
+      if (canEval || owns) {
+         //can I look at reviews/evals/reflections? - own or eval
+         getReviewManager().getReviewsByParentAndType(
+               id.getValue(), Review.EVALUATION_TYPE,
+               cw.getWizard().getSiteId(),
+               WizardEntityProducer.WIZARD_PRODUCER);
+      }
+      
+      if (canReview || owns) {
+         //can I look at reviews/evals/reflections? - own or review
+         getReviewManager().getReviewsByParentAndType(
+               id.getValue(), Review.REVIEW_TYPE,
+               cw.getWizard().getSiteId(),
+               WizardEntityProducer.WIZARD_PRODUCER);         
+      }
    }
 
    public AuthorizationFacade getAuthorizationFacade() {
@@ -1613,5 +1652,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
    public Class getInterface() {
       // TODO Auto-generated method stub
       return null;
+   }
+   
+   public ReviewManager getReviewManager() {
+      return reviewManager;
+   }
+
+   public void setReviewManager(ReviewManager reviewManager) {
+      this.reviewManager = reviewManager;
    }
 }

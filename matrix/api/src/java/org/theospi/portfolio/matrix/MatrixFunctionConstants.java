@@ -39,6 +39,7 @@ public interface MatrixFunctionConstants {
    //public static final String VIEW_MATRIX_USERS = SCAFFOLDING_PREFIX + "viewUsers";
    public final static String PUBLISH_SCAFFOLDING = SCAFFOLDING_PREFIX + "publish";
    public final static String DELETE_SCAFFOLDING = SCAFFOLDING_PREFIX + "delete";
+   public final static String EXPORT_SCAFFOLDING = SCAFFOLDING_PREFIX + "export";
    public static final String VIEW_SCAFFOLDING_GUIDANCE = SCAFFOLDING_PREFIX + "viewScaffGuidance";
    public static final String EDIT_SCAFFOLDING_GUIDANCE = SCAFFOLDING_PREFIX + "editScaffGuidance";
       

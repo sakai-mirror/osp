@@ -39,18 +39,10 @@ public class Review extends IdentifiableObject {
    
    private boolean newObject = false;
    
-   private Id securityQualifier;
-   private String securityViewFunction;
-   private String securityEditFunction;
-   
    public Review() {}
    
-   public Review(Id id, String description, String siteId, Id securityQualifier,
-         String securityViewFunction, String securityEditFunction) {
+   public Review(Id id, String description, String siteId) {
       this.siteId = siteId;
-      this.securityQualifier = securityQualifier;
-      this.securityViewFunction = securityViewFunction;
-      this.securityEditFunction = securityEditFunction;
       setId(id);
       newObject = true;
 
@@ -93,43 +85,6 @@ public class Review extends IdentifiableObject {
    public void setNewObject(boolean newObject) {
       this.newObject = newObject;
    }
-   /**
-    * @return Returns the securityEditFunction.
-    */
-   public String getSecurityEditFunction() {
-      return securityEditFunction;
-   }
-   /**
-    * @param securityEditFunction The securityEditFunction to set.
-    */
-   public void setSecurityEditFunction(String securityEditFunction) {
-      this.securityEditFunction = securityEditFunction;
-   }
-   /**
-    * @return Returns the securityQualifier.
-    */
-   public Id getSecurityQualifier() {
-      return securityQualifier;
-   }
-   /**
-    * @param securityQualifier The securityQualifier to set.
-    */
-   public void setSecurityQualifier(Id securityQualifier) {
-      this.securityQualifier = securityQualifier;
-   }
-   /**
-    * @return Returns the securityViewFunction.
-    */
-   public String getSecurityViewFunction() {
-      return securityViewFunction;
-   }
-   /**
-    * @param securityViewFunction The securityViewFunction to set.
-    */
-   public void setSecurityViewFunction(String securityViewFunction) {
-      this.securityViewFunction = securityViewFunction;
-   }
-
 
    /**
     * @return Returns the siteId.

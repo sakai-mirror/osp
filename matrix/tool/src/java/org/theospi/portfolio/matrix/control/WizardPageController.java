@@ -47,10 +47,11 @@ public class WizardPageController extends CellController {
     */
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = super.referenceData(request, command, errors);
-      //ToolSession session = SessionManager.getCurrentToolSession();
+      
       Agent owner = (Agent)request.get("wizardowner");
       model.put("readOnlyMatrix", super.isReadOnly(owner));
       //session.removeAttribute("readOnlyMatrix");
+      model.put("pageTitleKey", "view_wizardPage");
       model.put("helperPage", "true");
       return model;
    }

@@ -20,7 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.impl;
 
-import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
+
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
@@ -30,8 +30,6 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.CopyrightException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
-import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,7 +46,9 @@ public class WizardHttpAccess extends OspHttpAccessBase {
    protected void checkSource(Reference ref, ReferenceParser parser)
       throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
       // should setup access rights, etc.
-      getWizardManager().getWizard(getIdManager().getId(parser.getId()));
+      
+      getWizardManager().checkWizardAccess(getIdManager().getId(parser.getId()));
+      
    }
 
    public IdManager getIdManager() {

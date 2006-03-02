@@ -33,7 +33,7 @@ function hrefViewCell(pageId) {
    </c:if>
 
     <c:if test="${(not empty matrixContents.scaffolding) && matrixContents.scaffolding.published}">
-        <c:if test="${matrixCan.review && not empty members}">
+        <c:if test="${(matrixCan.evaluate || matrixCan.review) && not empty members}">
             <form method="GET" action="<osp:url value="viewMatrix.osp"/>">
                 <osp:form/>
                 <div class="act">

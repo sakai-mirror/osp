@@ -38,7 +38,7 @@
             <osp:param name="readOnlyMatrix" value="${readOnlyMatrix}" />
             </osp:url>"><osp:message key="manage_cell_status"/></a>
       </c:if>
-      <c:if test="${matrixCan.review && cell.scaffoldingCell.reviewDevice != null}">
+      <c:if test="${(matrixCan.review || wizardCan.review) && cell.scaffoldingCell.reviewDevice != null}">
          <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                <osp:param name="page_id" value="${cell.wizardPage.id}" />
             <osp:param name="org_theospi_portfolio_review_type" value="2" />
@@ -56,7 +56,7 @@
 	</div>
 
 
-    <h3><osp:message key="view_cell"/></h3>
+    <h3><osp:message key="${pageTitleKey}"/></h3>
     
 	<osp-h:glossary link="true" hover="true">
 		<table class="itemSummary">
@@ -73,6 +73,7 @@
 		</div>
 	</c:if>
    
+   <!-- ************* Style Area Start ************* -->
    <c:if test="${readOnlyMatrix != 'true'}">
       <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('styleDiv','/osp-jsf-resource')">
       <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgstyleDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
@@ -95,7 +96,9 @@
          </c:if>
       </div>
    </c:if>
+   <!-- ************* Style Area End ************* -->
    
+   <!-- ************* Guidance Area Start ************* -->   
    <c:if test="${not empty cell.scaffoldingCell.guidance}">
       <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('guidanceDiv','/osp-jsf-resource')">
    <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgguidanceDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
@@ -123,8 +126,9 @@
          <osp:message key="guidance_link_text"/></a>
       </div>
    </c:if>
-
+   <!-- ************* Guidance Area End ************* -->
    
+   <!-- ************* Artifact Area Start ************* -->
    <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('cellItemDiv','/osp-jsf-resource')">
    <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgcellItemDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
    <osp:message key="title_cellItems"/>
@@ -140,9 +144,10 @@
    <c:set var="allowedNodeType" value=""/>
    <%@ include file="cellContent.jspf" %>
 	</div>
-
+   <!-- ************* Artifact Area End ************* -->
 	<br/>
    
+   <!-- ************* Form Area Start ************* -->
    <c:forEach var="cellFormDef" items="${cellFormDefs}" varStatus="loopStatus">
          <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('form<c:out value="${loopStatus.index}" />Div','/osp-jsf-resource')">
    <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgform<c:out value="${loopStatus.index}" />Div" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
@@ -167,6 +172,9 @@
       </div>
    </c:forEach>
    
+   <!-- ************* Form Area End ************* -->
+   
+   <!-- ************* Reflection Area Start ************* -->
    <c:if test="${cell.scaffoldingCell.reflectionDevice != null}">   
       <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('reflectionDiv','/osp-jsf-resource')">
    <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgreflectionDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
@@ -184,14 +192,7 @@
       <c:if test="${not empty reflections}">
          <c:set var="canReflect" value="true"/>
          <c:if test="${cell.status != 'READY' or readOnlyMatrix == 'true'}">
-            <a href="<osp:url value="cellFormPicker.osp">
-                     <osp:param name="page_id" value="${cell.wizardPage.id}" />
-                     <osp:param name="viewFormAction" value="${cell.wizardPage.pageDefinition.reflectionDevice.value}" />
-                     <osp:param name="current_form_id" value="${reflections[0].reviewContentNode.resource.id}" />
-                     </osp:url>">
-                  <c:out value="${reflections[0].reviewContentNode.displayName}" />
-               </a>               
-            
+            <a href='<c:out value="${reflections[0].reviewContentNode.externalUri}"/>' target="_blank" ><c:out value="${reflections[0].reviewContentNode.displayName}"/></a>            
          </c:if>
          <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
          <c:out value="${reflections[0].reviewContentNode.displayName}" />
@@ -206,6 +207,7 @@
       </c:if>
    </div>
    </c:if>
+   <!-- ************* Reflection Area End ************* -->
    
 	<!-- if status is ready -->
     <p class="act">
@@ -220,6 +222,7 @@
     </p>
 <hr/>
 
+<!-- ************* Review Area Start ************* -->
 <c:if test="${not empty reviews}">
    <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('reviewDiv','/osp-jsf-resource')">
    <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgreviewDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
@@ -229,6 +232,8 @@
       <%@ include file="review_eval_table.jspf" %>
    </div>
 </c:if>
+<!-- ************* Review Area End ************* -->
+<!-- ************* Evaluation Area Start ************* -->
 <c:if test="${not empty evaluations}">
    <h4 class="xheader" style="cursor:pointer" onclick="javascript:showHideDiv('evalDiv','/osp-jsf-resource')">
    <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgevalDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
@@ -238,6 +243,7 @@
       <%@ include file="review_eval_table.jspf" %>
    </div>
 </c:if>
+<!-- ************* Evaluation Area End ************* -->
 
 <c:if test="${sequential == 'true'}">
 <div class="act">

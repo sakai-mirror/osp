@@ -70,20 +70,6 @@
       </managed-property>
 
    </managed-bean>
-   
-   <managed-bean>
-      <description>ReviewTool</description>
-      <managed-bean-name>review</managed-bean-name>
-      <managed-bean-class>org.theospi.portfolio.review.tool.ReviewTool</managed-bean-class>
-      <managed-bean-scope>session</managed-bean-scope>
-
-      <managed-property>
-         <description>Service Dependency: reviewManager</description>
-         <property-name>reviewManager</property-name>
-         <value>#{Components["org.theospi.portfolio.review.mgt.ReviewManager"]}</value>
-      </managed-property>
-
-   </managed-bean>
 
    <managed-bean>
       <description>ListTool</description>

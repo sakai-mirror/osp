@@ -40,6 +40,7 @@ import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
+import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
@@ -90,7 +91,7 @@ public class ReviewHelperController implements Controller {
          String currentSite = placement.getContext();
          //cwm add security stuff for review
          Review review = getReviewManager().createNew( 
-               "New Review", currentSite, getIdManager().getId(strId), "", "");
+               "New Review", currentSite);
          review.setDeviceId(formType);
          review.setParent(strId);
          String strType = (String)session.get(ReviewHelper.REVIEW_TYPE);
@@ -110,7 +111,10 @@ public class ReviewHelperController implements Controller {
             List refs = (List)session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
             if (refs.size() == 1) {
                Reference ref = (Reference)refs.get(0);
-               review.setReviewContent(getMatrixManager().getNode(ref).getId());
+//               ref.getReference()
+               Node node = getMatrixManager().getNode(ref);
+               review.setReviewContentNode(node);
+               review.setReviewContent(node.getId());
                getReviewManager().saveReview(review);
             }
             else {
@@ -186,7 +190,40 @@ public class ReviewHelperController implements Controller {
       return new ModelAndView("success");
       
    }
+/*   
+   protected void createPermissions(Review review, String type) {
+      Node node = review.getReviewContentNode();
+      Agent reviewOwner = node.getTechnicalMetadata().getOwner();
+      Agent owner = getObjectOwner(getIdManager().getId(review.getParent()), type);
+      if (!reviewOwner.getId().equals(owner.getId())) {
+         //authz for owner
+         //getAuthzManager().createAuthorization(owner, 
+         //      ContentHostingService.EVENT_RESOURCE_READ, node.getId());
+      }
+      else {
+         //Authz for reviewer/eval
+      }
+   }
    
+   protected Agent getObjectOwner(Id id, String type) {
+      
+      if (type.equals(WizardPage.PROCESS_TYPE_KEY)) {
+         //WizardPage page = matrixManager.getWizardPage(id);
+         Matrix matrix = getMatrixManager().getMatrixByPage(id);
+         if (matrix != null) {
+            return matrix.getOwner();
+         }
+         else {
+            CompletedWizard cw = getWizardManager().getCompletedWizardByPage(id);
+            return cw.getOwner();
+         }
+      }
+      else {
+         CompletedWizard cw = wizardManager.getCompletedWizard(id);
+         return cw.getOwner();
+      }
+   }
+ */  
    /**
     * @return Returns the idManager.
     */

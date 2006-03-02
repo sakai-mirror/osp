@@ -21,7 +21,6 @@
 package org.theospi.portfolio.wizard.impl;
 
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
-import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 
 /**
  * Created by IntelliJ IDEA.

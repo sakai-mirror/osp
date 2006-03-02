@@ -147,7 +147,10 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
 
    protected Boolean isWizardAuthForReview(AuthorizationFacade facade, Agent agent, Id wizardId) {
       Wizard wizard = getWizardManager().getWizard(wizardId);
-      Id toolId = getIdManager().getId(wizard.getToolId());
+      Id toolId = wizardId;
+      if (wizard != null)
+         toolId = getIdManager().getId(wizard.getToolId());
+      
       return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.REVIEW_WIZARD, toolId));
    }
    
@@ -156,33 +159,7 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       //Id toolId = getIdManager().getId(wizard.getToolId());
       return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.EVALUATE_WIZARD, id));
    }
-   
-/*
-   protected Boolean isFileAuth(AuthorizationFacade facade, Agent agent, Id id) {
-      // check if this id is attached to any pres
 
-      if (id == null) return null;
-
-      Collection presItems = getWizardManager().getPresentationItems(id);
-      presItems.addAll(getWizardManager().getPresentationsBasedOnTemplateFileRef(id));
-
-      if (presItems.size() == 0) {
-         return null;
-      }
-
-      // does this user have access to any of the above pres
-      for (Iterator i = presItems.iterator(); i.hasNext();) {
-         Wizard wizard = (Wizard) i.next();
-
-         Boolean returned = isWizardViewAuth(wizard, facade, agent, wizard.getId(), true);
-         if (returned != null && returned.booleanValue()) {
-            return returned;
-         }
-      }
-
-      return null;
-   }
-*/
    public WizardManager getWizardManager() {
       return wizardManager;
    }

@@ -37,6 +37,7 @@ import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.shared.model.Node;
@@ -62,13 +63,18 @@ public class CellController implements FormController, LoadObjectController {
       CellFormBean cell = (CellFormBean) command;
       Map model = new HashMap();
       String pageId = cell.getCell().getWizardPage().getId().getValue();
-
+      String siteId = 
+         cell.getCell().getWizardPage().getPageDefinition().getSiteId();
+      
        model.put("reviews", getReviewManager().getReviewsByParentAndType(
-             pageId, Review.REVIEW_TYPE));
+             pageId, Review.REVIEW_TYPE, siteId,
+             getEntityProducer()));
       model.put("evaluations", getReviewManager().getReviewsByParentAndType(
-             pageId, Review.EVALUATION_TYPE));
+             pageId, Review.EVALUATION_TYPE, siteId,
+             getEntityProducer()));
       model.put("reflections", getReviewManager().getReviewsByParentAndType(
-            pageId, Review.REFLECTION_TYPE));
+            pageId, Review.REFLECTION_TYPE, siteId,
+            getEntityProducer()));
       
       model.put("cellFormDefs", processAdditionalForms(
             cell.getCell().getScaffoldingCell().getAdditionalForms()));
@@ -93,7 +99,13 @@ public class CellController implements FormController, LoadObjectController {
          model.put("styleUrl", node.getExternalUri());
       }
       
+      model.put("pageTitleKey", "view_cell");
+      
       return model;
+   }
+   
+   protected String getEntityProducer() {
+      return MatrixContentEntityProducer.MATRIX_PRODUCER;
    }
    
    protected Boolean isReadOnly(Agent owner) {

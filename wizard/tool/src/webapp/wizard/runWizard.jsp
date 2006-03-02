@@ -105,13 +105,15 @@
                <f:facet name="header">
                   <h:outputText value="#{msgs.wizard_eval_name}" />
                </f:facet>
-               <h:outputText value="#{review.reviewContentNode.displayName}" />
+               <h:outputLink value="#{review.reviewContentNode.externalUri}" target="_blank">
+                  <h:outputText value="#{review.reviewContentNode.displayName}" />
+               </h:outputLink>               
             </h:column>
             <h:column>
                <f:facet name="header">
                   <h:outputText value="#{msgs.wizard_eval_owner}" />
                </f:facet>
-               <h:outputText value="#{reviewreviewContentNode.technicalMetadata.owner.displayName}" />
+               <h:outputText value="#{review.reviewContentNode.technicalMetadata.owner.displayName}" />
             </h:column>
             <h:column>
                <f:facet name="header">
@@ -132,7 +134,9 @@
                <f:facet name="header">
                   <h:outputText value="#{msgs.wizard_eval_name}" />
                </f:facet>
-               <h:outputText value="#{eval.reviewContentNode.displayName}" />
+               <h:outputLink value="#{eval.reviewContentNode.externalUri}" target="_blank">
+                  <h:outputText value="#{eval.reviewContentNode.displayName}" />
+               </h:outputLink>
             </h:column>
             <h:column>
                <f:facet name="header">

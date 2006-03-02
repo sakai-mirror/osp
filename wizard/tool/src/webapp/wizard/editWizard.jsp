@@ -48,7 +48,7 @@
       </h:panelGroup>
       <h:outputLabel for="type" id="typeLabel" value="#{msgs.wizard_type}" />
       <h:panelGroup>
-         <h:selectOneRadio value="#{wizard.current.base.type}" >
+         <h:selectOneRadio id="type" value="#{wizard.current.base.type}" >
             <f:selectItems value="#{wizard.wizardTypes}" />
          </h:selectOneRadio>
       </h:panelGroup>
