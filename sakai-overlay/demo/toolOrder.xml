@@ -12,6 +12,15 @@
 		<tool id = "sakai.schedule" />
 		<tool id = "sakai.announcements" selected = "true" />
 		<tool id = "sakai.resources" />
+      <tool id = "osp.wizard" />
+      <tool id = "osp.matrix" />
+      <tool id = "osp.presentation" />
+      <tool id = "osp.presentation.template" />
+      <tool id = "osp.presentation.layout" />
+      <tool id = "osp.glossary" />
+      <tool id = "sakai.metaobj" />
+      <tool id = "osp.evaluation" />
+      <tool id = "osp.report" />
 		<tool id = "sakai.discussion" />
 		<tool id = "sakai.assignment" />
 		<tool id = "sakai.assignment.grades" />
@@ -36,6 +45,15 @@
 		<tool id = "sakai.schedule" />
 		<tool id = "sakai.announcements" />
 		<tool id = "sakai.resources" />
+      <tool id = "osp.wizard" />
+      <tool id = "osp.matrix" />
+      <tool id = "osp.presentation" />
+      <tool id = "osp.presentation.template" />
+      <tool id = "osp.presentation.layout" />
+      <tool id = "osp.glossary" />
+      <tool id = "sakai.metaobj" />
+      <tool id = "osp.evaluation" />
+      <tool id = "osp.report" />
 		<tool id = "sakai.discussion" />
 		<tool id = "sakai.assignment" />
 		<tool id = "sakai.assignment.grades" />
@@ -51,28 +69,70 @@
 
 	</category>
 
-	<category name="portfolio">
+   <category name="portfolio">
 
-		<tool id = "sakai.synoptic.chat" />
-		<tool id = "sakai.synoptic.discussion" />
-		<tool id = "sakai.synoptic.announcement" />
-		<tool id = "sakai.syllabus" />
-		<tool id = "sakai.schedule" />
-		<tool id = "sakai.announcements" />
-		<tool id = "sakai.resources" />
-		<tool id = "sakai.discussion" />
-		<tool id = "sakai.assignment" />
-		<tool id = "sakai.assignment.grades" />
-		<tool id = "sakai.samigo" />
-		<tool id = "sakai.gradebook.tool" />
-		<tool id = "sakai.dropbox" />
-		<tool id = "sakai.chat" />
-		<tool id = "sakai.mailbox" />
-		<tool id = "sakai.news" />
-		<tool id = "sakai.iframe" />
-		<tool id = "sakai.siteinfo" required = "true" />
-		<tool id = "sakai.contact.support" />
+      <tool id = "sakai.synoptic.chat" />
+      <tool id = "sakai.synoptic.discussion" />
+      <tool id = "sakai.synoptic.announcement" />
+      <tool id = "sakai.syllabus" />
+      <tool id = "sakai.schedule" />
+      <tool id = "sakai.announcements" />
+      <tool id = "sakai.resources" />
+      <tool id = "osp.wizard" />
+      <tool id = "osp.matrix" />
+      <tool id = "osp.presentation" />
+      <tool id = "osp.presentation.template" />
+      <tool id = "osp.presentation.layout" />
+      <tool id = "osp.glossary" />
+      <tool id = "sakai.metaobj" />
+      <tool id = "osp.evaluation" />
+      <tool id = "osp.report" />
+      <tool id = "sakai.discussion" />
+      <tool id = "sakai.assignment" />
+      <tool id = "sakai.assignment.grades" />
+      <tool id = "sakai.samigo" />
+      <tool id = "sakai.gradebook.tool" />
+      <tool id = "sakai.dropbox" />
+      <tool id = "sakai.chat" />
+      <tool id = "sakai.mailbox" />
+      <tool id = "sakai.news" />
+      <tool id = "sakai.iframe" />
+      <tool id = "sakai.siteinfo" required = "true" />
+      <tool id = "sakai.contact.support" />
 
-	</category>
+   </category>
+
+   <category name="portfolioAdmin">
+
+      <tool id = "sakai.synoptic.chat" />
+      <tool id = "sakai.synoptic.discussion" />
+      <tool id = "sakai.synoptic.announcement" />
+      <tool id = "sakai.syllabus" />
+      <tool id = "sakai.schedule" />
+      <tool id = "sakai.announcements" />
+      <tool id = "sakai.resources" />
+      <tool id = "osp.wizard" />
+      <tool id = "osp.matrix" />
+      <tool id = "osp.presentation" />
+      <tool id = "osp.presentation.template" />
+      <tool id = "osp.presentation.layout" />
+      <tool id = "osp.glossary" />
+      <tool id = "sakai.metaobj" />
+      <tool id = "osp.evaluation" />
+      <tool id = "osp.report" />
+      <tool id = "sakai.discussion" />
+      <tool id = "sakai.assignment" />
+      <tool id = "sakai.assignment.grades" />
+      <tool id = "sakai.samigo" />
+      <tool id = "sakai.gradebook.tool" />
+      <tool id = "sakai.dropbox" />
+      <tool id = "sakai.chat" />
+      <tool id = "sakai.mailbox" />
+      <tool id = "sakai.news" />
+      <tool id = "sakai.iframe" />
+      <tool id = "sakai.siteinfo" required = "true" />
+      <tool id = "sakai.contact.support" />
+
+   </category>
 
 </toolOrder>
