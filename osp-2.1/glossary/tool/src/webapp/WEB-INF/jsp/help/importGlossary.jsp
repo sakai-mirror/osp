@@ -11,6 +11,8 @@
     
     <h3><osp:message key="osp.help.glossary.importTitle" bundle="${msgs}" /></h3>
     
+    <div class="instruction"><osp:message key="osp.help.glossary.importInstructions" bundle="${msgs}" /></div>
+
     
     <spring:bind path="uploadGlossary.uploadedGlossary">
         <c:if test="${status.error}">
