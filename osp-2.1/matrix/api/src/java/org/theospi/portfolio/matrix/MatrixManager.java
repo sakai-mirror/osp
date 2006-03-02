@@ -98,8 +98,9 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    Set getPageContents(WizardPage page);
    Set getPageForms(WizardPage page);
-   List getPageArtifacts(WizardPage page);
+   //List getPageArtifacts(WizardPage page);
    List getCellsByArtifact(Id artifactId);
+   List getCellsByForm(Id artifactId);
 
    Cell submitCellForEvaluation(Cell cell);
 
@@ -149,5 +150,7 @@ public interface MatrixManager extends WorkflowEnabledManager {
    public List getMatrices(Id scaffoldingId, Id agentId);
 
    WizardPage getWizardPage(Id pageId);
+   
+   Matrix getMatrixByPage(Id pageId);
 
 }

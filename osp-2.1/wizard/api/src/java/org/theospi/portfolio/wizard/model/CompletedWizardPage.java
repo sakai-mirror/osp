@@ -50,6 +50,7 @@ public class CompletedWizardPage extends IdentifiableObject {
       setCreated(new Date());
       setSequence(wizardPageDefinition.getSequence());
       setWizardPage(new WizardPage());
+      getWizardPage().setOwner(category.getWizard().getOwner());
       getWizardPage().setPageDefinition(wizardPageDefinition.getWizardPageDefinition());
       getWizardPage().setStatus(wizardPageDefinition.getWizardPageDefinition().getInitialStatus());
    }

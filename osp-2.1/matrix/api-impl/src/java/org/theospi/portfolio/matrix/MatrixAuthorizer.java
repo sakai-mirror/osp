@@ -77,6 +77,9 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       else if (function.equals(MatrixFunctionConstants.CREATE_SCAFFOLDING)) {
          return new Boolean(facade.isAuthorized(agent,function,id));
       }
+      else if (function.equals(MatrixFunctionConstants.EXPORT_SCAFFOLDING)) {
+         return new Boolean(facade.isAuthorized(agent,function,id));
+      }
       else if (function.equals(MatrixFunctionConstants.VIEW_SCAFFOLDING_GUIDANCE)) {
          //If I can eval, review, or own it
          ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(id);

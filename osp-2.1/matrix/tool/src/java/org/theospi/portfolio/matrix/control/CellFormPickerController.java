@@ -41,11 +41,13 @@ import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.sakaiproject.service.legacy.filepicker.ResourceEditingHelper;
+import org.sakaiproject.service.legacy.security.SecurityService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.WizardPageForm;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.shared.tool.BaseFormResourceFilter;
 
 public class CellFormPickerController implements FormController, LoadObjectController {
@@ -56,6 +58,7 @@ public class CellFormPickerController implements FormController, LoadObjectContr
    private SessionManager sessionManager;
    private MatrixManager matrixManager;
    private IdManager idManager = null;
+   private SecurityService securityService = null;
    
    public static final String WHICH_HELPER_KEY = "filepicker.helper.key";
    public static final String HELPER_CREATOR = "filepicker.helper.creator";
@@ -182,6 +185,9 @@ public class CellFormPickerController implements FormController, LoadObjectContr
       }
       else if (viewFormAction != null) {
          setupSessionInfo(request, session, pageId, viewFormAction);
+         getSecurityService().pushAdvisor(new AllowMapSecurityAdvisor(
+               ContentHostingService.EVENT_RESOURCE_READ,
+               (String)request.get("current_form_id")));
          return new ModelAndView("formViewer");
       }
       session.remove(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER);
@@ -273,6 +279,14 @@ public class CellFormPickerController implements FormController, LoadObjectContr
     */
    public void setSessionManager(SessionManager sessionManager) {
       this.sessionManager = sessionManager;
+   }
+
+   public SecurityService getSecurityService() {
+      return securityService;
+   }
+
+   public void setSecurityService(SecurityService securityService) {
+      this.securityService = securityService;
    }
 
 }

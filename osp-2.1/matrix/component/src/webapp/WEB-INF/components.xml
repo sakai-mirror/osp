@@ -39,6 +39,9 @@
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.CREATE_SCAFFOLDING"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EXPORT_SCAFFOLDING"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EDIT_SCAFFOLDING"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
@@ -137,6 +140,9 @@
       </property>
       <property name="structuredArtifactDefinitionManager">
          <ref bean="structuredArtifactDefinitionManager"/>
+      </property>
+      <property name="reviewManager">
+         <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
       </property>
    </bean>
 
@@ -283,6 +289,7 @@
                   <value>osp.matrix.review</value>
                   <value>osp.matrix.scaffolding.create</value>
                   <value>osp.matrix.scaffolding.publish</value>
+                  <value>osp.matrix.scaffolding.export</value>
                </list>
             </entry>
             <entry>
@@ -297,6 +304,7 @@
          <list>
             <value>osp.matrix.scaffolding.create</value>
             <value>osp.matrix.scaffolding.publish</value>
+            <value>osp.matrix.scaffolding.export</value>
             <value>osp.matrix.review</value>
             <value>osp.matrix.evaluate</value>
          </list>

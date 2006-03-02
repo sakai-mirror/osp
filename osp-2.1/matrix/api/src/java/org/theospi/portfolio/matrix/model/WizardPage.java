@@ -20,6 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.model;
 
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.style.model.Style;
@@ -43,6 +44,7 @@ public class WizardPage extends IdentifiableObject {
    private Set pageForms = new HashSet();
    private Date modified;
    private Style style;
+   private Agent owner;
    
    public final static String TYPE = "wizard_page_type";
    public final static String PROCESS_TYPE_KEY = "page_id";
@@ -139,6 +141,14 @@ public class WizardPage extends IdentifiableObject {
 
    public void setStyle(Style style) {
       this.style = style;
+   }
+
+   public Agent getOwner() {
+      return owner;
+   }
+
+   public void setOwner(Agent owner) {
+      this.owner = owner;
    }
 
 }

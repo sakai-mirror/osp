@@ -92,13 +92,17 @@ public class DecoratedCompletedWizard {
    public List getEvaluations() {
       return getParent().getReviewManager().getReviewsByParentAndType(
             getBase().getId().getValue(), 
-            Review.EVALUATION_TYPE);
+            Review.EVALUATION_TYPE, 
+            getBase().getWizard().getSiteId(),
+            getParent().getWizardManager().getWizardEntityProducer());
    }
    
    public List getReviews() {
       return getParent().getReviewManager().getReviewsByParentAndType(
             getBase().getId().getValue(), 
-            Review.REVIEW_TYPE);
+            Review.REVIEW_TYPE, 
+            getBase().getWizard().getSiteId(),
+            getParent().getWizardManager().getWizardEntityProducer());
    }
 
 }

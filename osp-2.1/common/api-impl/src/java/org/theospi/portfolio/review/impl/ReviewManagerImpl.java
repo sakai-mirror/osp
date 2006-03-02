@@ -20,7 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.review.impl;
 
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,6 +27,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -42,7 +42,6 @@ import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.AuthorizationFacade;
-import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.theospi.portfolio.shared.model.Node;
 
 public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewManager {
@@ -54,10 +53,9 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
    private ContentHostingService contentHosting = null;
    private AgentManager agentManager = null;
    
-   public Review createNew(String description, String siteId, 
-         Id securityQualifier, String securityViewFunction, String securityEditFunction) {
+   public Review createNew(String description, String siteId) {
       Review review = new Review(getIdManager().createId(), description, 
-            siteId, securityQualifier, securityViewFunction, securityEditFunction);
+            siteId);
 
       return review;
    }
@@ -69,11 +67,6 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
          return null;
       }
 
-      if (review.getSecurityQualifier() != null) {
-         getAuthorizationFacade().checkPermission(review.getSecurityViewFunction(),
-               review.getSecurityQualifier());
-      }
-
       return review;
    }
    
@@ -82,12 +75,21 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
       return getHibernateTemplate().find("from Review r where r.parent=? ", params);
    }
    
-   public List getReviewsByParentAndType(String parentId, int type) {
+   public List getReviewsByParent(String parentId, String siteId, String producer) {
+      Object[] params = new Object[]{parentId};
+      return getReviewsByParent("from Review r where r.parent=? ", params, parentId, siteId, producer);
+   }
+   
+   public List getReviewsByParentAndType(String parentId, int type, String siteId, String producer) {
       Object[] params = new Object[]{parentId, new Integer(type)};
-      List reviews = getHibernateTemplate().find("from Review r where r.parent=? and r.type=? ", params);
+      return getReviewsByParent("from Review r where r.parent=? and r.type=? ", params, parentId, siteId, producer);
+   }
+   
+   protected List getReviewsByParent(String sql, Object[] params, String parentId, String siteId, String producer) {
+      List reviews = getHibernateTemplate().find(sql, params);
       for (Iterator i = reviews.iterator(); i.hasNext();) {
          Review review = (Review) i.next();
-         Node node = getNode(review.getReviewContent());
+         Node node = getNode(review.getReviewContent(), parentId, siteId, producer);
          review.setReviewContentNode(node);
       }
       
@@ -112,13 +114,6 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
       getHibernateTemplate().delete(review);
    }
 
-   public Reference decorateReference(Review review, String reference) {
-      String fullRef = ContentEntityUtil.getInstance().buildRef(ReviewEntityProducer.REVIEW_PRODUCER,
-            review.getSiteId(), review.getId().getValue(), reference);
-
-         return getEntityManager().newReference(fullRef);
-   }
-
    public List listReviews(String siteId) {
       return getHibernateTemplate().find("from Review where site_id=? ",
             siteId);
@@ -126,6 +121,18 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
 
    public Review getReview(String id) {
       return getReview(getIdManager().getId(id));
+   }
+   
+   protected Node getNode(Id artifactId, String parentId, String siteId, String producer) {
+      Node node = getNode(artifactId);
+      
+      if (node == null) {
+         return null;
+      }
+      ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
+            buildRef(siteId, parentId, node.getResource(), producer));
+
+      return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner());
    }
    
    protected Node getNode(Id artifactId) {
@@ -157,6 +164,29 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
          logger.error("", e);
          throw new RuntimeException(e);
       }
+   }
+   
+ /*  
+   public Node getNode2(Reference ref, String parentId, String siteId) {
+      String nodeId = getContentHosting().getUuid(ref.getId());
+
+      Node node = getNode(getIdManager().getId(nodeId), siteId);
+      
+      if (node == null) {
+         return null;
+      }
+      ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
+            buildRef(siteId, parentId, node.getResource()));
+
+      return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner());
+      
+      
+   }
+   */
+   protected String buildRef(String siteId, String contextId, ContentResource resource, 
+         String producer) {
+      return ContentEntityUtil.getInstance().buildRef(
+         producer, siteId, contextId, resource.getReference());
    }
    
    public Node getNode(Reference ref) {

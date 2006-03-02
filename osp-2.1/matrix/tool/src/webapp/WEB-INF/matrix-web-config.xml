@@ -274,6 +274,9 @@
             <property name="sessionManager">
                <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
             </property>
+            <property name="securityService">
+               <ref bean="org.sakaiproject.service.legacy.security.SecurityService" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">

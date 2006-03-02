@@ -97,6 +97,7 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
             if (scaffoldingCell == null) {
                scaffoldingCell = new ScaffoldingCell(criterion, level, status, scaffolding);
                scaffoldingCell.getWizardPageDefinition().setSiteId(scaffolding.getWorksiteId().getValue());
+               scaffoldingCell.getWizardPageDefinition().setToolId(scaffolding.getToolId().getValue());
                scaffoldingCell.getWizardPageDefinition().setTitle(getDefaultTitle(scaffolding, criterion, level));
                getMatrixManager().storeScaffoldingCell(scaffoldingCell);
             }

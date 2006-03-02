@@ -190,30 +190,6 @@
          </props>
       </property>
    </bean>
-   
-   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospReview"
-      class="org.theospi.portfolio.review.impl.ReviewHttpAccess">
-      <property name="idManager">
-         <ref bean="idManager"/>
-      </property>
-      <property name="reviewManager">
-         <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
-      </property>
-      <property name="authzManager"><ref bean="authzManager"/></property>
-   </bean>
-
-   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospReview"
-      class="org.theospi.portfolio.review.impl.ReviewEntityProducer"
-      init-method="init"
-      destroy-method="destroy"
-      singleton="true">
-      <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
-      </property>
-      <property name="httpAccess">
-         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.ospReview" />
-      </property>
-   </bean>
 
    <bean id="org.theospi.portfolio.review.mgt.ReviewManager.target"
       class="org.theospi.portfolio.review.impl.ReviewManagerImpl">

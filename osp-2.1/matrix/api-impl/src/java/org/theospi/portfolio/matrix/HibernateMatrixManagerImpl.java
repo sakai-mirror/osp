@@ -72,6 +72,8 @@ import org.springframework.orm.hibernate.HibernateCallback;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.theospi.portfolio.matrix.model.*;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
+import org.theospi.portfolio.review.mgt.ReviewManager;
+import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
@@ -81,7 +83,6 @@ import org.theospi.portfolio.shared.intf.EntityContextFinder;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
-import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
 import org.theospi.portfolio.workflow.model.WorkflowItem;
@@ -110,6 +111,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private WorkflowManager workflowManager;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private GuidanceManager guidanceManager;
+   private ReviewManager reviewManager;
 
    private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    private EntityContextFinder contentFinder = null;
@@ -386,6 +388,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             level = (Level) levelsIterator.next();
 
             Cell cell = new Cell();
+            cell.getWizardPage().setOwner(owner);
             ScaffoldingCell sCell = getScaffoldingCell(criterion, level);
             cell.setScaffoldingCell(sCell);
             if (sCell != null) {
@@ -490,6 +493,19 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       getHibernateTemplate().execute(callback);
 
+   }
+   
+   public Matrix getMatrixByPage(Id pageId) {
+      Matrix matrix = null;
+      Object[] params = new Object[]{pageId.getValue()};
+      
+      List list = this.getHibernateTemplate().find("select cell.matrix from " +
+            "Cell cell where cell.wizardPage=? ", params);
+      if (list.size() == 1) {
+         matrix = (Matrix) list.get(0);
+      }
+         
+      return matrix;
    }
 
    public Matrix getMatrix(Id matrixId) {
@@ -733,7 +749,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       return getNode(getIdManager().getId(nodeId));
    }
-   
+   /*
    public List getPageArtifacts(WizardPage page)
    {
       List nodeList = new ArrayList();
@@ -753,7 +769,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       } 
       return nodeList;
    }
-
+*/
    public List getCellsByArtifact(Id artifactId) {
       //return this.getHibernateTemplate().find("select distinct attachment.cell from Attachment attachment where attachment.artifactId=?", artifactId.getValue());
       //this.getHibernateTemplate().find
@@ -766,7 +782,30 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          Criteria att = c.createCriteria("attachments");
          att.add(Expression.eq("artifactId", artifactId));
          
-         return c.list();
+         return new ArrayList(c.list());
+      } catch (DataAccessResourceFailureException e) {
+         logger.error("", e);
+      } catch (HibernateException e) {
+         logger.error("", e);
+      } catch (IllegalStateException e) {
+         logger.error("", e);
+      }
+      return new ArrayList();
+   }
+
+   public List getCellsByForm(Id formId) {
+      //return this.getHibernateTemplate().find("select distinct attachment.cell from Attachment attachment where attachment.artifactId=?", artifactId.getValue());
+      //this.getHibernateTemplate().find
+      Criteria c = null;
+      try {
+         c = this.getSession().createCriteria(Cell.class);
+         c.setFetchMode("scaffoldingCell", FetchMode.EAGER);
+         c.setFetchMode("scaffoldingCell.scaffolding", FetchMode.EAGER);
+         //c.add(Expression.eq("artifactId", artifactId));
+         Criteria att = c.createCriteria("pageForms");
+         att.add(Expression.eq("artifactId", formId));
+         
+         return new ArrayList(c.list());
       } catch (DataAccessResourceFailureException e) {
          logger.error("", e);
       } catch (HibernateException e) {
@@ -1250,11 +1289,54 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
 
    public void checkPageAccess(String id) {
-      WizardPage page = getWizardPage(getIdManager().getId(id));
+      Id pageId = getIdManager().getId(id);
+      WizardPage page = getWizardPage(pageId);
       // todo need to figure out matrix or wizard authz stuff here
 
       // this should set the security advisor for the attached artifacts.
-      getPageArtifacts(page);
+      //getPageArtifacts(page);
+      boolean canEval = getAuthzManager().isAuthorized(MatrixFunctionConstants.EVALUATE_MATRIX, 
+            page.getPageDefinition().getId());
+      boolean canReview = getAuthzManager().isAuthorized(MatrixFunctionConstants.REVIEW_MATRIX, 
+            getIdManager().getId(page.getPageDefinition().getToolId()));
+      
+      if (!canReview) {
+         canReview = getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
+            getIdManager().getId(page.getPageDefinition().getToolId()));
+      }
+      
+      
+      boolean owns = page.getOwner().getId().equals(getAuthnManager().getAgent().getId());
+      
+      if (canEval || canReview || owns) {
+         //can I look at files? - own, review or eval
+         getPageContents(page);
+         
+         //can I look at forms? - own, review or eval
+         getPageForms(page);
+         
+         //can I look at reviews/evals/reflections? - own, review or eval
+         getReviewManager().getReviewsByParentAndType(
+               id, Review.REFLECTION_TYPE,
+               page.getPageDefinition().getSiteId(),
+               MatrixContentEntityProducer.MATRIX_PRODUCER);
+      }
+      
+      if (canEval || owns) {
+         //can I look at reviews/evals/reflections? - own or eval
+         getReviewManager().getReviewsByParentAndType(
+               id, Review.EVALUATION_TYPE,
+               page.getPageDefinition().getSiteId(),
+               MatrixContentEntityProducer.MATRIX_PRODUCER);
+      }
+      
+      if (canReview || owns) {
+         //can I look at reviews/evals/reflections? - own or review
+         getReviewManager().getReviewsByParentAndType(
+               id, Review.REVIEW_TYPE,
+               page.getPageDefinition().getSiteId(),
+               MatrixContentEntityProducer.MATRIX_PRODUCER);         
+      }
    }
 
    private void createEvaluatorAuthzForImport(Scaffolding scaffolding) {
@@ -1695,10 +1777,10 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public void setContentFinder(EntityContextFinder contentFinder) {
       this.contentFinder = contentFinder;
    }
-
+   
    protected String buildRef(String siteId, String contextId, ContentResource resource) {
       return ContentEntityUtil.getInstance().buildRef(
-         MatrixContentEntityProducer.MATRIX_PRODUCER, siteId, contextId, resource.getReference());
+            MatrixContentEntityProducer.MATRIX_PRODUCER, siteId, contextId, resource.getReference());
    }
 
    public DefaultScaffoldingBean getDefaultScaffoldingBean() {
@@ -1816,5 +1898,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public void setGuidanceManager(GuidanceManager guidanceManager) {
       this.guidanceManager = guidanceManager;
+   }
+
+   public ReviewManager getReviewManager() {
+      return reviewManager;
+   }
+
+   public void setReviewManager(ReviewManager reviewManager) {
+      this.reviewManager = reviewManager;
    }
 }
