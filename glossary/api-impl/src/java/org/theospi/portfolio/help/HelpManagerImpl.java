@@ -57,6 +57,7 @@ import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.utils.zip.UncloseableZipInputStream;
 import org.theospi.portfolio.help.model.GlossaryDescription;
+import org.theospi.portfolio.help.model.UnsupportedFileTypeException;
 
 import java.io.BufferedReader;
 import java.io.BufferedOutputStream;
@@ -429,7 +430,8 @@ public class HelpManagerImpl extends HibernateDaoSupport
 	 * @param resourceId an String
 	 * @param replaceExisting boolean
 	 */
-	public void importTermsResource(Id worksiteId, String resourceId, boolean replaceExisting) throws IOException
+	public void importTermsResource(Id worksiteId, String resourceId, boolean replaceExisting) 
+         throws IOException, UnsupportedFileTypeException
 	{
 		Node node = getNode(idManager.getId(resourceId));
 		if(node.getMimeType().equals(new MimeType("text/xml")) || 
@@ -441,16 +443,21 @@ public class HelpManagerImpl extends HibernateDaoSupport
 			ZipInputStream zis = new UncloseableZipInputStream(node.getInputStream());
 
 		    ZipEntry currentEntry = zis.getNextEntry();
-		    
+		    boolean found = false;
 		    while(currentEntry != null) {
-		    	if(currentEntry.getName().endsWith("xml")) {
-					importTermsStream(worksiteId, zis, replaceExisting);
-		    	}
-	            zis.closeEntry();
-	            currentEntry = zis.getNextEntry();
+		    	 if(currentEntry.getName().endsWith("xml")) {
+					 importTermsStream(worksiteId, zis, replaceExisting);
+                found = true;
+		    	 }
+	          zis.closeEntry();
+	          currentEntry = zis.getNextEntry();
 		    }
+          
+          if(!found)
+            throw new UnsupportedFileTypeException("No glossary xml files were found");
+          
 		} else {
-			throw new OspException("Unsupported file type");
+			throw new UnsupportedFileTypeException("Unsupported file type");
 		}
 	}
 	
@@ -464,6 +471,7 @@ public class HelpManagerImpl extends HibernateDaoSupport
 	 * @param replaceExisting boolean
 	 */
 	public void importTermsStream(Id worksiteId, InputStream inStream, boolean replaceExisting)
+            throws UnsupportedFileTypeException
 	{
 
 		SAXBuilder builder = new SAXBuilder();
@@ -488,9 +496,11 @@ public class HelpManagerImpl extends HibernateDaoSupport
 				   }
 			   }
 		   }
-		   
-		} catch(Exception jdome) {
-	         logger.error(jdome);
+
+      } catch(UnsupportedFileTypeException ufte) {
+         throw ufte;
+      } catch(Exception jdome) {
+         logger.error(jdome);
 		}
 	}
 	
@@ -500,11 +510,15 @@ public class HelpManagerImpl extends HibernateDaoSupport
 	 * @param document XML Dom Document
 	 * @return List of GlossaryEntry
 	 */
-	public List extractEntries(Document document)
+	public List extractEntries(Document document) throws UnsupportedFileTypeException
 	{
 		Element topNode = document.getRootElement();
 
 		List ospiTerms = topNode.getChildren("ospiTerm");
+      
+      if(ospiTerms.size() == 0)
+         throw new UnsupportedFileTypeException("No glossary term node found");
+      
 		List entries = new ArrayList();
 
 		for (Iterator iter = ospiTerms.iterator(); iter.hasNext();) {

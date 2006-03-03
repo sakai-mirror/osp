@@ -65,6 +65,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.portfolio.help.model.GlossaryUploadForm;
+import org.theospi.portfolio.help.model.UnsupportedFileTypeException;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.utils.mvc.impl.servlet.AbstractFormController;
@@ -91,13 +92,18 @@ public class GlossaryImportController extends HelpController implements Validato
 
 	   GlossaryUploadForm templateForm = (GlossaryUploadForm)requestModel;
       if(templateForm == null)
-    	  return new ModelAndView("success");
+    	   return new ModelAndView("success");
+      
+      //  if we are picking the file to import
       if (templateForm.getSubmitAction() != null && templateForm.getSubmitAction().equals("pickImport")) {
+         
+         // if there are files selected already, then put them into the session
          if (templateForm.getUploadedGlossary() != null && templateForm.getUploadedGlossary().length() > 0) {
             Reference ref;
             List files = new ArrayList();
             String ids[] = templateForm.getUploadedGlossary().split(",");
-            //for(Iterator iter = templateForm.getUploadedGlossary().iterator(); iter.hasNext();) {
+            
+            // get a list of references of the selected files
             for(int i = 0; i < ids.length; i++) {
 	            try {
 		                String id = ids[i];
@@ -115,28 +121,41 @@ public class GlossaryImportController extends HelpController implements Validato
             }
             session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
          }
+         session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
          return new ModelAndView("pickImport");
-      }
-      else {
-    	 if(templateForm.getUploadedGlossary().length() > 0) {
+         
+      } else {
+         
+         //  if there are files, then we want to import them
+    	   if(templateForm.getUploadedGlossary().length() > 0) {
 	         String ids[] = templateForm.getUploadedGlossary().split(",");
 	         for(int i = 0; i < ids.length; i++) {
 		        try {
-	                String id = ids[i];
-	                
-		        	getHelpManager().importTermsResource(id, templateForm.getReplaceExistingTerms());
+	              String id = ids[i];
+	              
+		        	  getHelpManager().importTermsResource(id, templateForm.getReplaceExistingTerms());
+                 session.put(TRANSFER_CONTROLLER_SESSION_MESSAGE, 
+                                      TRANSFER_MESSAGE_IMPORT_SUCCESS);
+              } catch (UnsupportedFileTypeException e) {
+                 logger.error("Failed uploading glossary terms", e);
+                 session.put(TRANSFER_CONTROLLER_SESSION_MESSAGE, 
+                                      TRANSFER_MESSAGE_IMPORT_BAD_FILE);
 		        } catch (InvalidUploadException e) {
-		           logger.warn("Failed uploading template", e);
-		           errors.rejectValue(e.getFieldName(), e.getMessage(), e.getMessage());
-		           return null;
+		           logger.error("Failed uploading glossary terms", e);
+		           //errors.rejectValue(e.getFieldName(), e.getMessage(), e.getMessage());
+                 session.put(TRANSFER_CONTROLLER_SESSION_MESSAGE, 
+                                      TRANSFER_MESSAGE_IMPORT_FAILED);
 		        } catch (Exception e) {
-		           logger.error("Failed importing template", e);
-		           throw new OspException(e);
+		           logger.error("Failed importing glossary terms", e);
+                 session.put(TRANSFER_CONTROLLER_SESSION_MESSAGE, 
+                                      TRANSFER_MESSAGE_IMPORT_FAILED);
 		        }
 	         }
-    	 }
+    	   }
+        session.remove(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+        session.remove(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS);
          Map model = new Hashtable();
-    	 return new ModelAndView("success", model);
+    	   return new ModelAndView("success", model);
       }
    }
 

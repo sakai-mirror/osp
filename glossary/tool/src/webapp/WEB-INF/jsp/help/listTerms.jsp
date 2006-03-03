@@ -53,10 +53,23 @@
     </c:if>
 </div>
 
+
+
 <osp:url var="listUrl" value="glossaryList.osp" />
 <osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
 
 <h3><fmt:message key="title_glossaryManager"/></h3>
+
+<c:if test="${import_success}">
+   <div style="color:#008800"><fmt:message key="import_msg_success"/></div>
+</c:if>
+<c:if test="${import_unrecognized_file}">
+   <div style="color:#880000"><fmt:message key="import_msg_bad_file"/></div>
+</c:if>
+<c:if test="${import_failed}">
+   <div style="color:#880000"><fmt:message key="import_msg_failed"/></div>
+</c:if>
+
 <table class="listHier" cellspacing="0">
     <thead>
         <tr>
@@ -76,7 +89,7 @@
                             <c:if test="${can.edit}">
                                 <a href="<osp:url value="editGlossaryTerm.osp"/>&id=<c:out value="${term.id}" />"><fmt:message key="table_action_edit"/></a>
                             </c:if>
-                            <c:if test="${can.edit || can.delete}">
+                            <c:if test="${can.edit && can.delete}">
                                 |
                             </c:if>
                             <c:if test="${can.delete}">

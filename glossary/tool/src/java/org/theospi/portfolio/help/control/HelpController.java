@@ -40,6 +40,11 @@ public class HelpController implements Controller {
    private IdManager idManager;
    private List toolInit;
 
+   public static final String TRANSFER_CONTROLLER_SESSION_MESSAGE = "transferMessage";
+   public static final String TRANSFER_MESSAGE_IMPORT_SUCCESS = "msgImportSuccess";
+   public static final String TRANSFER_MESSAGE_IMPORT_BAD_FILE = "msgImportBadFile";
+   public static final String TRANSFER_MESSAGE_IMPORT_FAILED = "msgImportFailed";
+   
    protected final Log logger = LogFactory.getLog(getClass());
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {

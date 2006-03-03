@@ -62,6 +62,17 @@ public class GlossaryListController extends HelpController {
       terms = getListScrollIndexer().indexList(request, model, terms);
 
       model.put("glossary", terms);
+      
+      String msg = (String)session.get(TRANSFER_CONTROLLER_SESSION_MESSAGE);
+      if(msg != null) {
+         if(msg.equals(TRANSFER_MESSAGE_IMPORT_SUCCESS))
+            model.put("import_success", "true");
+         if(msg.equals(TRANSFER_MESSAGE_IMPORT_BAD_FILE))
+            model.put("import_unrecognized_file", "true");
+         if(msg.equals(TRANSFER_MESSAGE_IMPORT_FAILED))
+            model.put("import_failed", "true");
+         session.remove(TRANSFER_CONTROLLER_SESSION_MESSAGE);
+      }
 
       return new ModelAndView("success", model);
    }
