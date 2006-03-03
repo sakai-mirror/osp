@@ -455,6 +455,8 @@
                <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.access"/></key>
                <list>
                   <value>osp.presentation.layout.create</value>
+                  <value>osp.presentation.layout.delete</value>
+                  <value>osp.presentation.layout.edit</value>
                </list>
             </entry>
          </map>
