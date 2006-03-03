@@ -260,6 +260,7 @@
       </property>
       <property name="globalSiteTypes">
          <list>
+            <value>portfolioAdmin</value>
          </list>
       </property>
    </bean>
