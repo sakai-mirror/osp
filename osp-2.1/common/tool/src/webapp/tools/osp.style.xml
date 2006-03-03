@@ -2,10 +2,15 @@
 
 <registration>
 
-   <tool id="osp.style" title="Style"
+   <tool id="osp.style" title="Styles"
       description="OSP Style Helper Tool">
 
       <category name="sakai.helper" />
+      <category name="sakai.main" />
+      <category name="project" />
+      <category name="portfolio" />
+      <category name="course" />
+      <category name="portfolioAdmin" />
       
       <configuration name="theospi.toolListenerId"
             value="org.theospi.portfolio.security.mgt.ToolPermissionManager.style" /> 

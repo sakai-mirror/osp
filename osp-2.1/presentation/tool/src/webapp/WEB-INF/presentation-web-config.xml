@@ -843,6 +843,27 @@
       <property name="commandName"><value>layout</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.presentation.model.PresentationLayout</value></property>
    </bean>
+   
+   <bean id="selectLayoutController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.presentation.control.SelectLayoutController">
+            <property name="presentationManager"><ref bean="presentationManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">helperDone</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>layout</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.presentation.model.PresentationLayout</value></property>
+   </bean>
 
    <bean id="org.theospi.jsf.intf.XmlTagFactory.freeFormPresentation"
       class="org.theospi.portfolio.presentation.render.PresentationTagFactory"

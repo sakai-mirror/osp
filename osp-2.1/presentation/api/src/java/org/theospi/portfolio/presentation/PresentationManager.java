@@ -30,7 +30,6 @@ import org.theospi.portfolio.presentation.model.PresentationPage;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
 import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.security.model.CleanupableService;
 import org.jdom.Document;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -235,5 +234,7 @@ public interface PresentationManager extends CleanupableService {
    public Collection getAllPresentationTemplates();
 
    public Presentation getPresentation(Id id, String secretExportKey);
+   
+   public boolean isGlobal();
    
 }

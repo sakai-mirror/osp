@@ -127,36 +127,38 @@ public class StyleManagerImpl extends HibernateDaoSupport
       }
    }
    
-   public Collection findPublishedStyles(String currentWorksiteId) {
-      String query = "from Style s where s.globalState = ? or (s.siteId = ? and (s.owner = ? or s.siteState = ? )) ";
-      Object[] params = new Object[]{new Integer(Style.STATE_PUBLISHED),
-                                     currentWorksiteId,
-                                     getAuthnManager().getAgent().getId().getValue(),
-                                     new Integer(Style.STATE_PUBLISHED)};
+   public Collection findSiteStyles(String currentWorksiteId) {
+      String query = "from Style s where s.siteId = ? and s.owner = ? ";
+      Object[] params = new Object[]{currentWorksiteId,
+                                     getAuthnManager().getAgent().getId().getValue()};
       return getHibernateTemplate().find(query, params);
    }
    
-   public Collection findPublishedStyles() {
-      // only for the appropriate worksites
-      String query = "from Style s where s.owner = ? or s.globalState = ? or (s.siteState = ?  s.and siteId in (";
-
-      List sites = getWorksiteManager().getUserSites();
-      for (Iterator i=sites.iterator();i.hasNext();) {
-         Site site = (Site)i.next();
-         query += "'" + site.getId() + "'";
+   public Collection findPublishedStyles(String currentWorksiteId) {
+      String query = "from Style s where s.globalState = ? or (s.siteId = ? and s.owner = ? ) ";
+      Object[] params = new Object[]{new Integer(Style.STATE_PUBLISHED),
+                                     currentWorksiteId,
+                                     getAuthnManager().getAgent().getId().getValue()};
+      return getHibernateTemplate().find(query, params);
+   }
+   
+   protected String buildGlobalSiteList() {
+      String query = "(";
+      
+      for (Iterator i=getGlobalSites().iterator();i.hasNext();) {
+         String site = (String)i.next();
+         query += "'" + site + "'";
          query += ",";
       }
-
-      query += "''))";
-
-      Object[] params = new Object[]{getAuthnManager().getAgent().getId().getValue(),
-                                     new Integer(Style.STATE_PUBLISHED),
-                                     new Integer(Style.STATE_PUBLISHED)};
-      return getHibernateTemplate().find(query, params);
+      
+      query += "'')";
+      
+      return query;
    }
    
    public Collection findGlobalStyles(Agent agent) {
-      String query = "from Style s where ((s.siteId is null and (s.globalState = ? or s.owner = ?)) or s.globalState = 1)";
+      String query = "from Style s where ((s.siteId in " + buildGlobalSiteList() + 
+            " and (s.globalState = ? or s.owner = ?)) or s.globalState = 1)";
       Object[] params = new Object[]{new Integer(Style.STATE_PUBLISHED),
                                      agent.getId().getValue()};
       return getHibernateTemplate().find(query, params);

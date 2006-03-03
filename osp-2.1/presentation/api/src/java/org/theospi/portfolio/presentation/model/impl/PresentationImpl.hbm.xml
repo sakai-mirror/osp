@@ -129,7 +129,7 @@
       </id>
       <property name="name" type="string" column="name" not-null="true"/>
       <property name="description" type="string" column="description" not-null="false"/>
-      <property name="published" type="boolean" column="published" not-null="false"/>
+      <property name="globalState" type="int" not-null="true"/>
       <property name="owner" type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" column="owner_id" not-null="true"/>
       <property name="created" type="java.util.Date" update="false" not-null="true"/>
       <property name="modified" type="java.util.Date" update="true" not-null="true"/>

@@ -122,6 +122,7 @@
                <prop key="/editLayout.osp">addLayoutController</prop>
                <prop key="/deleteLayout.osp">deleteLayoutController</prop>
                <prop key="/publishLayout.osp">publishLayoutController</prop>
+               <prop key="/selectLayout.osp">selectLayoutController</prop>
                
             </props>
         </property>

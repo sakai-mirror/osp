@@ -36,8 +36,14 @@ public class PresentationLayout extends IdentifiableObject implements Serializab
    private Id xhtmlFileId;
    private Id previewImageId;
    private String toolId;
-   private String siteId;
-   private boolean published = false;
+   private String siteId;   
+   
+   /**
+    * should be one of the following states
+    *
+    * unpublished -> waiting for approval-> active
+    */
+   private int globalState;
    
    transient private String xhtmlFileName;
    transient private String previewImageName;
@@ -47,6 +53,10 @@ public class PresentationLayout extends IdentifiableObject implements Serializab
    transient private String filePickerAction;
 
    static final long serialVersionUID = -6220810277272518156l;
+   
+   public static final int STATE_UNPUBLISHED = 0;
+   public static final int STATE_WAITING_APPROVAL = 1;
+   public static final int STATE_PUBLISHED = 2;
 
 
    public String getName() {
@@ -87,14 +97,6 @@ public class PresentationLayout extends IdentifiableObject implements Serializab
 
    public void setOwner(Agent owner) {
       this.owner = owner;
-   }
-
-   public boolean isPublished() {
-      return published;
-   }
-
-   public void setPublished(boolean published) {
-      this.published = published;
    }
 
    public boolean isValidate() {
@@ -159,5 +161,13 @@ public class PresentationLayout extends IdentifiableObject implements Serializab
 
    public void setFilePickerAction(String filePickerAction) {
       this.filePickerAction = filePickerAction;
+   }
+
+   public int getGlobalState() {
+      return globalState;
+   }
+
+   public void setGlobalState(int globalState) {
+      this.globalState = globalState;
    }
 }

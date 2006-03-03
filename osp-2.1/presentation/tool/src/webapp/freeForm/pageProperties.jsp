@@ -26,7 +26,9 @@
           <ospx:splitarea direction="horizontal" width="100%">
              <ospx:splitsection size="80%" valign="top">
                <sakai:panel_edit>
-                  <h:outputLabel for="title" id="titleLabel" value="#{msgs.page_title}" />
+                  <ospx:formLabel valueRequired="true">
+                     <h:outputLabel for="title" id="titleLabel" value="#{msgs.page_title}" />
+                  </ospx:formLabel>
                   <h:panelGroup>
                      <h:inputText id="title" value="#{freeForm.currentPage.base.title}" required="true">
                         <f:validateLength minimum="1" maximum="255" />
@@ -48,8 +50,10 @@
                      </h:inputTextarea>
                      <h:message for="keywords" styleClass="validationEmbedded" />
                   </h:panelGroup>
-
-                  <h:outputLabel for="layout" id="layoutLabel" value="#{msgs.page_layout}" />
+             
+                  <ospx:formLabel valueRequired="true">
+                     <h:outputLabel for="layoutFile" id="layoutLabel" value="#{msgs.page_layout}" />
+                  </ospx:formLabel>
                   <h:panelGroup>
                      <f:subview id="originalLayout" rendered="#{freeForm.currentPage.hasLayout}">
                         <sakai:doc_properties>
@@ -57,11 +61,13 @@
                            <h:outputText id="layout" value="#{freeForm.currentPage.base.layout.name}"/>
                         </sakai:doc_properties>
                      </f:subview>
-                     <h:selectOneMenu id="layout" value="#{freeForm.currentPage.selectedLayoutId}"
-                        onchange="this.form.submit();" required="true">
-                        <f:selectItems value="#{freeForm.layouts}" />
-                     </h:selectOneMenu>
-                     <h:message for="layout" styleClass="validationEmbedded" />
+                     <h:inputText id="layoutFile" value="#{freeForm.currentPage.layoutName}" 
+                           readonly="true" />
+
+                     <h:commandLink action="#{freeForm.currentPage.processActionSelectLayout}" immediate="true">
+                        <h:outputText value="#{msgs.select_layout}"/>
+                     </h:commandLink>
+                     <h:message for="layoutFileHidden" styleClass="validationEmbedded" />
                      <h:graphicImage height="125" width="100"
                         value="#{freeForm.currentPage.selectedLayout.previewImage.externalUri}"
                         rendered="#{freeForm.currentPage.layoutSelected}"
@@ -70,8 +76,9 @@
                   
                   <h:outputLabel for="styleFile" id="styleLabel" value="#{msgs.page_style}" />
                   <h:panelGroup>
-                     <h:outputText id="styleFile" value="#{freeForm.currentPage.styleName}"/>
-                     <h:commandLink action="#{freeForm.currentPage.processActionSelectStyle}">
+                     <h:inputText id="styleFile" value="#{freeForm.currentPage.styleName}" 
+                           readonly="true" required="false" />
+                     <h:commandLink action="#{freeForm.currentPage.processActionSelectStyle}" immediate="true">
                         <h:outputText value="#{msgs.select_style}"/>
                      </h:commandLink>
                   </h:panelGroup>

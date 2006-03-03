@@ -311,6 +311,12 @@
                   <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.PUBLISH_LAYOUT</value>
                </property>
             </bean>
+            <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.SUGGEST_PUBLISH_LAYOUT"
+               class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
+               <property name="staticField">
+                  <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.SUGGEST_PUBLISH_LAYOUT</value>
+               </property>
+            </bean>
          </list>
       </property>
    </bean>
@@ -442,6 +448,7 @@
                   <value>osp.presentation.layout.delete</value>
                   <value>osp.presentation.layout.create</value>
                   <value>osp.presentation.layout.edit</value>
+                  <value>osp.presentation.layout.suggestPublish</value>
                </list>
             </entry>
             <entry>
@@ -458,6 +465,7 @@
             <value>osp.presentation.layout.delete</value>
             <value>osp.presentation.layout.create</value>
             <value>osp.presentation.layout.edit</value>
+            <value>osp.presentation.layout.suggestPublish</value>
          </list>
       </property>
    </bean>

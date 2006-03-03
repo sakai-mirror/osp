@@ -10,7 +10,6 @@
       </id>
       <property name="name" type="string" column="name" not-null="false"/>
       <property name="description" type="string" column="description" not-null="false"/>
-      <property name="siteState" type="int" not-null="true"/>
       <property name="globalState" type="int" not-null="true"/>
       <property name="owner" type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" column="owner_id" not-null="true"/>
       <property name="styleFile" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="style_file_id"/>
