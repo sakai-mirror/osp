@@ -325,6 +325,8 @@ public class AddTemplateController extends AbstractWizardFormController {
             if (!filter.equals(""))
                session.setAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER, 
                      ComponentManager.get(filter));
+            else
+               session.removeAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER);
             
             session.setAttribute(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
             
