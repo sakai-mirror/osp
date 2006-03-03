@@ -87,7 +87,7 @@
     </c:if>
     <p class="shorttext">
         <span class="reqStar">*</span>
-        <label for="<c:out value="${status.expression}"/>"><fmt:message key="label_type"/></label>
+        <label for="<c:out value="${status.expression}"/>"><fmt:message key="label_title"/></label>
         <input type="text"
             name="<c:out value="${status.expression}"/>"
             value="<c:out value="${status.value}"/>">
