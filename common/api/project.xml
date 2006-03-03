@@ -26,6 +26,27 @@
 			<type>plugin</type>
 		</dependency>
 
+     <dependency>
+        <groupId>quartz</groupId>
+        <artifactId>quartz</artifactId>
+        <version>1.5.1</version>
+        <properties>
+           <deploy.target>shared</deploy.target>>
+        </properties>
+     </dependency>
+
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-scheduler-api</artifactId>
+        <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-session</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-component</artifactId>
