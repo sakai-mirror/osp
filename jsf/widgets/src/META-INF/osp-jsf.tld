@@ -46,7 +46,7 @@
     <attribute>
       <name>rendered</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <description><![CDATA[
       
         Flag indicating whether or not this component should be rendered
@@ -115,7 +115,7 @@
      <attribute>
        <name>rendered</name>
        <required>false</required>
-       <rtexprvalue>false</rtexprvalue>
+       <rtexprvalue>true</rtexprvalue>
        <description><![CDATA[
 
          Flag indicating whether or not this component should be rendered
@@ -201,7 +201,7 @@
     <attribute>
       <name>rendered</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <description><![CDATA[
       
         Flag indicating whether or not this component should be rendered
@@ -237,10 +237,17 @@
        These default to 0px thus expanding the scroll area to the containing element.
        If height or width are set, then the respective axis right or bottom 
           will be ignored.
+          
+       <br><br>
+       if the scrollXStyle and scrollYStyle are left blank, then the div gets an overflow:auto
+       if one is present with values of either "scroll" or "auto" then the other gets "hidden"
+       if both are present then those values are used
        
        <br><br>
        <span class="tag">&lt;ospx:scrollableArea</span> 
          <span="param">id</span> = <span class="value">"theDivID</span>
+         <span="param">scrollXStyle</span> = <span class="value">"visible/scroll/hidden/auto"</span>
+         <span="param">scrollYStyle</span> = <span class="value">"visible/scroll/hidden/auto"</span>
          <span="param">width</span> = <span class="value">"200px"</span>
          <span="param">height</span> = <span class="value">"95%"</span>
          <span="param">cssclass</span> = <span class="value">"cssClass"</span>
@@ -260,6 +267,28 @@
          
       ]]></description>
     </attribute>
+    
+    <attribute>
+      <name>scrollXStyle</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[
+      
+         values = {"visible", "scroll", "hidden", "auto"}
+         
+      ]]></description>
+    </attribute>
+    
+    <attribute>
+      <name>scrollYStyle</name>
+      <required>false</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description><![CDATA[
+      
+         values = {"visible", "scroll", "hidden", "auto"}
+         
+      ]]></description>
+    </attribute>
 
     <attribute>
       <name>width</name>
@@ -267,7 +296,7 @@
       <rtexprvalue>false</rtexprvalue>
       <description><![CDATA[
       
-         The width of the scroll area.  This should be in "px" or percentage.
+         The width of the scroll area.  This should be in "px" or percentage "%".
          
       ]]></description>
     </attribute>
@@ -278,7 +307,7 @@
       <rtexprvalue>false</rtexprvalue>
       <description><![CDATA[
       
-         The height of the scroll area, required.  This should be in "px" or percentage.
+         The height of the scroll area, required.  This should be in "px" or percentage "%".
          
       ]]></description>
     </attribute>
@@ -297,7 +326,7 @@
     <attribute>
       <name>rendered</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <description><![CDATA[
       
         Flag indicating whether or not this component should be rendered
@@ -389,7 +418,7 @@
     <attribute>
       <name>rendered</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <description><![CDATA[
       
         Flag indicating whether or not this component should be rendered
@@ -493,7 +522,7 @@
     <attribute>
       <name>rendered</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <description><![CDATA[
       
         Flag indicating whether or not this component should be rendered
@@ -570,7 +599,7 @@
     <attribute>
       <name>rendered</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <description><![CDATA[
       
         Flag indicating whether or not this component should be rendered
@@ -672,7 +701,7 @@
     <attribute>
       <name>rendered</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <description><![CDATA[
       
         Flag indicating whether or not this component should be rendered
@@ -713,7 +742,7 @@
     <attribute>
       <name>rendered</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <description><![CDATA[
       
         Flag indicating whether or not this component should be rendered
@@ -819,7 +848,7 @@
     <attribute>
       <name>rendered</name>
       <required>false</required>
-      <rtexprvalue>false</rtexprvalue>
+      <rtexprvalue>true</rtexprvalue>
       <description><![CDATA[
       
         Flag indicating whether or not this component should be rendered
@@ -879,7 +908,7 @@
       <attribute>
          <name>rendered</name>
          <required>false</required>
-         <rtexprvalue>false</rtexprvalue>
+         <rtexprvalue>true</rtexprvalue>
          <description><![CDATA[
          
            Flag indicating whether or not this component should be rendered
@@ -955,7 +984,7 @@
       <attribute>
         <name>rendered</name>
         <required>false</required>
-        <rtexprvalue>false</rtexprvalue>
+        <rtexprvalue>true</rtexprvalue>
         <description><![CDATA[
 
           Flag indicating whether or not this component should be rendered

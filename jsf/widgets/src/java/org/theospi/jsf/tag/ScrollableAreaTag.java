@@ -29,8 +29,10 @@ import org.sakaiproject.jsf.util.TagUtil;
 public class ScrollableAreaTag extends UIComponentTag
 {
 	private String cssClass = null;
-	private String height = null;
-	private String width = null;
+   private String height = null;
+   private String width = null;
+   private String scrollXStyle = null;
+   private String scrollYStyle = null;
 
 	public String getComponentType()
 	{
@@ -43,8 +45,10 @@ public class ScrollableAreaTag extends UIComponentTag
 	}
 
 	public String getCssclass()		{	return cssClass;		}
-	public String getHeight()		{	return height;		}
-	public String getWidth()		{	return width;		}
+   public String getHeight()     {  return height;    }
+   public String getWidth()      {  return width;     }
+   public String getScrollXStyle()     {  return scrollXStyle;    }
+   public String getScrollYStyle()      {  return scrollYStyle;     }
 
 	/**
 	 * 
@@ -54,13 +58,17 @@ public class ScrollableAreaTag extends UIComponentTag
 	{
 		super.setProperties(component);
 		TagUtil.setString(component, "cssclass", cssClass);
-		TagUtil.setString(component, "height", height);
-		TagUtil.setString(component, "width", width);
+      TagUtil.setString(component, "height", height);
+      TagUtil.setString(component, "width", width);
+      TagUtil.setString(component, "scrollXStyle", scrollXStyle);
+      TagUtil.setString(component, "scrollYStyle", scrollYStyle);
 	}
 
 	public void setCssclass(String string)		{	cssClass = string;		}
-	public void setHeight(String string)		{	height = string;	}
-	public void setWidth(String string)			{	width = string;		}
+   public void setHeight(String string)      {  height = string;  }
+   public void setWidth(String string)       {  width = string;      }
+   public void setScrollXStyle(String string){  scrollXStyle = string;  }
+   public void setScrollYStyle(String string){  scrollYStyle = string;      }
 }
 
 

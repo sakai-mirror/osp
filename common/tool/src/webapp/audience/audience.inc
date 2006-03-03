@@ -6,7 +6,7 @@
          value="#{msgs.remove_member}"/>
    </sakai:button_bar>
 </h:panelGrid>
-<ospx:scrollablearea id="selectedMembers" width="100%" height="100%">
+<ospx:scrollablearea id="selectedMembers" scrollYStyle="auto" width="100%" height="100%">
    <sakai:flat_list value="#{audience.selectedMembers}" var="member">
       <h:column>
          <h:selectBooleanCheckbox id="memberSelect" value="#{member.selected}" />
