@@ -45,10 +45,17 @@ public class ListStyleController extends AbstractStyleController {
       Hashtable model = new Hashtable();
       Agent agent = getAuthManager().getAgent();
       List styles = new ArrayList();
-      if (!getStyleManager().isGlobal())
+      
+      String selectable = (String)session.get(StyleHelper.STYLE_SELECTABLE);
+      if (selectable != null) {
+         model.put("selectableStyle", selectable);
          styles.addAll(getStyleManager().findPublishedStyles(PortalService.getCurrentSiteId()));
+      }
+      else if (!getStyleManager().isGlobal())
+         styles.addAll(getStyleManager().findSiteStyles(PortalService.getCurrentSiteId()));
       else
          styles.addAll(getStyleManager().findGlobalStyles(agent));
+      
       model.put("styleCount", String.valueOf(styles.size()));
 
       if (request.get("newStyleId") != null) {
@@ -68,10 +75,6 @@ public class ListStyleController extends AbstractStyleController {
       model.put("tool", getWorksiteManager().getTool(PortalService.getCurrentToolId()));
       model.put("isMaintainer", isMaintainer());
       model.put("isGlobal", new Boolean(getStyleManager().isGlobal()));
-      
-      String selectable = (String)session.get(StyleHelper.STYLE_SELECTABLE);
-      if (selectable != null)
-         model.put("selectableStyle", selectable);
       
       return new ModelAndView("success", model);
    }

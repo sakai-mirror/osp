@@ -42,5 +42,6 @@ public class PresentationFunctionConstants {
    public final static String COPY_LAYOUT = LAYOUT_PREFIX + "copy";
    public final static String PUBLISH_LAYOUT = LAYOUT_PREFIX + "publish";
    public final static String CREATE_LAYOUT = LAYOUT_PREFIX + "create";
+   public final static String SUGGEST_PUBLISH_LAYOUT = LAYOUT_PREFIX + "suggestPublish";
    
 }

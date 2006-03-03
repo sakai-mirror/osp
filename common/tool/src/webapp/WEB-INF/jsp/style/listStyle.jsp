@@ -17,7 +17,7 @@
           <fmt:message key="action_new"/>
           </a>
        </c:if>
-       <c:if test="${isMaintainer}">
+       <c:if test="${isMaintainer && selectableStyle != 'true'}">
           <a href="<osp:url value="osp.permissions.helper/editPermissions">
                 <osp:param name="message"><fmt:message key="message_permissionsEdit">
                  <fmt:param><c:out value="${tool.title}"/></fmt:param>
@@ -52,7 +52,6 @@
          <th scope="col"><fmt:message key="table_header_name"/></th>
          <th scope="col"><fmt:message key="table_header_description"/></th>
          <th scope="col"><fmt:message key="table_header_owner"/></th>
-         <th scope="col"><fmt:message key="table_header_published"/></th>
          <th scope="col"><fmt:message key="table_header_global_published"/></th>
       </tr>
    </thead>
@@ -77,15 +76,11 @@
                    href="<osp:url value="deleteStyle.osp"/>&style_id=<c:out value="${style.id.value}" />"><fmt:message key="table_action_delete"/></a>
              </c:if>
     
-             <c:if test="${isAuthorizedTo.publish && style.siteState == 0 && !isGlobal}">
-             | <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=site"><fmt:message key="table_action_publish"/></a>
-             </c:if>
-             
              <c:if test="${isAuthorizedTo.globalPublish && (style.globalState == 0 || style.globalState == 1) && isGlobal}">
              | <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=global"><fmt:message key="table_action_global_publish"/></a>
              </c:if>
              
-             <c:if test="${isAuthorizedTo.suggestGlobalPublish && style.globalState == 0 && style.siteState == 2 && !isGlobal}">
+             <c:if test="${selectableStyle != 'true' && isAuthorizedTo.suggestGlobalPublish && style.globalState == 0 && !isGlobal}">
              | <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=suggestGlobal"><fmt:message key="table_action_suggest_global_publish"/></a>
              </c:if>
              
@@ -101,7 +96,6 @@
       </TD>
       <TD><c:out value="${style.description}" /></TD>
       <TD><c:out value="${style.owner.displayName}" /></TD>
-      <td><c:out value="${style.siteState}" /></TD>
       <td><c:out value="${style.globalState}" /></TD>
     </TR>
 

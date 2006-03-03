@@ -44,13 +44,7 @@ public class Style extends IdentifiableObject {
    public static final int STATE_UNPUBLISHED = 0;
    public static final int STATE_WAITING_APPROVAL = 1;
    public static final int STATE_PUBLISHED = 2;
-   
-   /**
-    * should be one of the following states
-    *
-    * unpublished -> active
-    */
-   private int siteState;
+
 
    /**
     * should be one of the following states
@@ -108,12 +102,6 @@ public class Style extends IdentifiableObject {
    }
    public void setSiteId(String siteId) {
       this.siteId = siteId;
-   }
-   public int getSiteState() {
-      return siteState;
-   }
-   public void setSiteState(int siteState) {
-      this.siteState = siteState;
    }
    public String getStyleFileName() {
       return styleFileName;

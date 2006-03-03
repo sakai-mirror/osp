@@ -46,10 +46,6 @@ public class PublishStyleController extends ListStyleController implements LoadO
          style.setSiteId(null);
          doSave(style, StyleFunctionConstants.GLOBAL_PUBLISH_STYLE, errors);
       }
-      else if (publishTo.equals("site")){
-         style.setSiteState(Style.STATE_PUBLISHED);
-         doSave(style, StyleFunctionConstants.PUBLISH_STYLE, errors);
-      }
       else {
          style.setGlobalState(Style.STATE_WAITING_APPROVAL);
          doSave(style, StyleFunctionConstants.SUGGEST_GLOBAL_PUBLISH_STYLE, errors);

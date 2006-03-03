@@ -20,6 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.tool;
 
+import org.theospi.portfolio.presentation.PresentationLayoutHelper;
 import org.theospi.portfolio.presentation.model.PresentationPage;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.shared.model.Node;
@@ -51,6 +52,7 @@ public class DecoratedPage implements Comparable {
    private RegionMap regionMap;
    private boolean selected;
    private DecoratedLayout selectedLayout = null;
+   private String layoutName;
 
    public DecoratedPage(PresentationPage base, FreeFormTool parent) {
       this.base = base;
@@ -62,9 +64,9 @@ public class DecoratedPage implements Comparable {
       if (base.getLayout() != null) {
          setSelectedLayout(new DecoratedLayout(parent, base.getLayout()));
       }
-      else if (getParent().getLayouts().size() > 0) {
-         setSelectedLayout(getParent().getFirstLayout());
-      }
+      //else if (getParent().getLayouts().size() > 0) {
+      //   setSelectedLayout(getParent().getFirstLayout());
+      //}
    }
    
    public String getStyleName() {
@@ -82,6 +84,33 @@ public class DecoratedPage implements Comparable {
       if (base.getStyle() != null)
          return base.getStyle().getName();
       return "";
+   }
+   
+   public String getLayoutName() {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      if (session.getAttribute(PresentationLayoutHelper.CURRENT_LAYOUT) != null) {
+         PresentationLayout layout = (PresentationLayout)session.getAttribute(PresentationLayoutHelper.CURRENT_LAYOUT);
+         //base.setLayout(layout);
+         setSelectedLayout(new DecoratedLayout(getParent(), layout));
+         session.removeAttribute(PresentationLayoutHelper.CURRENT_LAYOUT);
+      }
+      else if (session.getAttribute(PresentationLayoutHelper.UNSELECTED_LAYOUT) != null) {
+         //base.setLayout(null);
+         setSelectedLayout(new DecoratedLayout(getParent(), null));
+         session.removeAttribute(PresentationLayoutHelper.UNSELECTED_LAYOUT);
+         setSelectedLayoutId(null);
+         return null;
+      }
+      
+      if (getSelectedLayout() != null && getSelectedLayout().getBase() != null)
+         return getSelectedLayout().getBase().getName();
+      //return layoutName;
+      setSelectedLayoutId(null);
+      return null;
+   }
+   
+   public void setLayoutName(String name) {
+      this.layoutName = name;
    }
 
    public PresentationPage getBase() {
@@ -143,6 +172,7 @@ public class DecoratedPage implements Comparable {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
       session.removeAttribute(StyleHelper.CURRENT_STYLE);
+      session.removeAttribute(StyleHelper.CURRENT_STYLE_ID);
       
       session.setAttribute(StyleHelper.STYLE_SELECTABLE, "true");
       if (base.getStyle() != null)
@@ -150,6 +180,25 @@ public class DecoratedPage implements Comparable {
       
       try {
          context.redirect("osp.style.helper/listStyle");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+      return null;
+   }
+   
+   public String processActionSelectLayout() {      
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.removeAttribute(PresentationLayoutHelper.CURRENT_LAYOUT);
+      session.removeAttribute(PresentationLayoutHelper.CURRENT_LAYOUT_ID);
+      
+      session.setAttribute(PresentationLayoutHelper.LAYOUT_SELECTABLE, "true");
+      if (getSelectedLayout() != null && getSelectedLayout().getBase() != null)
+         session.setAttribute(PresentationLayoutHelper.CURRENT_LAYOUT_ID, getSelectedLayout().getBase().getId().getValue());
+      
+      try {
+         context.redirect("osp.presLayout.helper/listLayout");
       }
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
@@ -173,21 +222,26 @@ public class DecoratedPage implements Comparable {
       this.selectedLayout = selectedLayout;
    }
 
+   /**
+    * Sets the layout to null as well
+    * @param layoutId
+    */
    public void setSelectedLayoutId(String layoutId) {
+      
       Id id = getParent().getIdManager().getId(layoutId);
       PresentationLayout layout = getParent().getPresentationManager().getPresentationLayout(id);
       setSelectedLayout(new DecoratedLayout(getParent(), layout));
    }
 
    public String getSelectedLayoutId() {
-      if (getSelectedLayout() != null) {
+      if (getSelectedLayout() != null && getSelectedLayout().getBase() != null) {
          return getSelectedLayout().getBase().getId().getValue();
       }
       return null;
    }
 
    public boolean islayoutSelected() {
-      return getSelectedLayout() != null;
+      return (getSelectedLayout() != null && getSelectedLayout().getBase() != null);
    }
 
    public int compareTo(Object o) {

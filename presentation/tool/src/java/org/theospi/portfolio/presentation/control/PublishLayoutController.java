@@ -37,8 +37,17 @@ public class PublishLayoutController extends AbstractPresentationController {
       if (request.get("layout_id") != null && !request.get("layout_id").equals("")) {
          Id id = getIdManager().getId((String)request.get("layout_id"));
          PresentationLayout layout = getPresentationManager().getPresentationLayout(id);
-         getAuthzManager().checkPermission(PresentationFunctionConstants.PUBLISH_LAYOUT, layout.getId());
-         layout.setPublished(true);
+         
+         String suggest = (String)request.get("suggest");
+         if (suggest == null) {
+            getAuthzManager().checkPermission(PresentationFunctionConstants.PUBLISH_LAYOUT, layout.getId());
+            layout.setGlobalState(PresentationLayout.STATE_PUBLISHED);
+         }
+         else {
+            getAuthzManager().checkPermission(PresentationFunctionConstants.SUGGEST_PUBLISH_LAYOUT, layout.getId());
+            layout.setGlobalState(PresentationLayout.STATE_WAITING_APPROVAL);
+         }
+            
          getPresentationManager().storeLayout(layout);
          request.put("newPresentationLayoutId", layout.getId().getValue());
       }

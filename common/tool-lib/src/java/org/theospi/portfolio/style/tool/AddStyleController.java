@@ -119,9 +119,7 @@ public class AddStyleController extends AbstractStyleController
       }
 
       if (request.get("save") != null) {
-         if (!getStyleManager().isGlobal()){
-            style.setSiteId(getWorksiteManager().getCurrentWorksiteId().getValue());
-         }
+         style.setSiteId(PortalService.getCurrentSiteId());
          save(style, errors);
       }
 

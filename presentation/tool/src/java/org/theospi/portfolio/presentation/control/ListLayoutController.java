@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.presentation.PresentationLayoutHelper;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
@@ -42,9 +43,17 @@ public class ListLayoutController extends AbstractPresentationController {
 
       Hashtable model = new Hashtable();
       Agent agent = getAuthManager().getAgent();
+      String selectable = (String)session.get(PresentationLayoutHelper.LAYOUT_SELECTABLE);
+      
       List layouts = new ArrayList(
          getPresentationManager().findLayoutsByOwner(agent, PortalService.getCurrentSiteId()));
       layouts.addAll(getPresentationManager().findPublishedLayouts(PortalService.getCurrentSiteId()));
+      
+      if (selectable != null) {
+         model.put("selectableLayout", selectable);
+         layouts.addAll(getPresentationManager().findGlobalLayouts());
+      }
+      
       model.put("layoutCount", String.valueOf(layouts.size()));
 
       if (request.get("newPresentationLayoutId") != null) {
@@ -60,6 +69,12 @@ public class ListLayoutController extends AbstractPresentationController {
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", getWorksiteManager().getTool(PortalService.getCurrentToolId()));
       model.put("isMaintainer", isMaintainer());
+      
+      if (session.get(PresentationLayoutHelper.CURRENT_LAYOUT_ID) != null)
+         model.put("selectedLayout", session.get(PresentationLayoutHelper.CURRENT_LAYOUT_ID));
+      
+      model.put("isGlobal", new Boolean(getPresentationManager().isGlobal()));
+      
       return new ModelAndView("success", model);
    }
 

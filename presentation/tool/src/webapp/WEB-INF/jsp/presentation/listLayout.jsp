@@ -7,7 +7,7 @@
 
 <!-- GUID=<c:out value="${newPresentationLayoutId}"/> -->
 
-<osp-c:authZMap prefix="osp.presentation.layout." var="can" />
+<osp-c:authZMap prefix="osp.presentation.layout." useSite="true" var="can" />
 
 <c:if test="${can.create || isMaintainer}">
     <div class="navIntraTool">
@@ -16,14 +16,14 @@
           <fmt:message key="action_new"/>
           </a>
        </c:if>
-       <c:if test="${isMaintainer}">
+       <c:if test="${isMaintainer && selectableLayout != 'true'}">
           <a href="<osp:url value="osp.permissions.helper/editPermissions">
                 <osp:param name="message"><fmt:message key="message_permissionsEdit">
 	              <fmt:param><c:out value="${tool.title}"/></fmt:param>
 		          <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message>
 		        </osp:param>
                 <osp:param name="name" value="presentationLayout"/>
-                <osp:param name="qualifier" value="${tool.id}"/>
+                <osp:param name="qualifier" value="${worksite.id}"/>
                 <osp:param name="returnView" value="listLayoutRedirect"/>
                 </osp:url>"
                 title="<fmt:message key="action_permissions_title"/>" >
@@ -43,6 +43,7 @@
 <table class="listHier" cellspacing="0" >
    <thead>
       <tr>
+         <th scope="col"></th>
          <th scope="col"><fmt:message key="table_header_name"/></th>
          <th scope="col"><fmt:message key="table_header_description"/></th>
          <th scope="col"><fmt:message key="table_header_owner"/></th>
@@ -53,6 +54,11 @@
   <c:forEach var="layout" items="${layouts}">
     <osp-c:authZMap prefix="osp.presentation.layout." qualifier="${layout.id}" var="isAuthorizedTo" />
     <TR>
+      <td>&nbsp;
+         <c:if test="${selectedLayout == layout.id}">
+            <img src="<osp:url value="/img/arrowhere.gif"/>" title="<fmt:message key="table_image_title" />" />
+         </c:if>
+      </td>
       <TD nowrap>
          <c:out value="${layout.name}" />
          <div class="itemAction">
@@ -65,14 +71,26 @@
                    href="<osp:url value="deleteLayout.osp"/>&layout_id=<c:out value="${layout.id.value}" />"><fmt:message key="table_action_delete"/></a>
              </c:if>
     
-             <c:if test="${isAuthorizedTo.publish && layout.published == false}">
+             <c:if test="${isAuthorizedTo.publish && layout.globalState == 0 && isGlobal}">
              | <a href="<osp:url value="publishLayout.osp"/>&layout_id=<c:out value="${layout.id.value}" />"><fmt:message key="table_action_publish"/></a>
+             </c:if>
+             
+             <c:if test="${isAuthorizedTo.suggesetPublish && layout.globalState == 0 && selectableLayout != 'true'}">
+             | <a href="<osp:url value="publishLayout.osp"/>&layout_id=<c:out value="${layout.id.value}" />&suggest=true"><fmt:message key="table_action_suggeset_publish"/></a>
+             </c:if>
+             
+             <c:if test="${selectableLayout == 'true' and selectedLayout != layout.id.value}">
+             | <a href="<osp:url value="selectLayout.osp"/>&layout_id=<c:out value="${layout.id.value}" />&selectAction=on"><fmt:message key="table_action_select"/></a>
+             </c:if>
+             
+             <c:if test="${selectableLayout == 'true' and selectedLayout == layout.id.value}">
+             | <a href="<osp:url value="selectLayout.osp"/>&layout_id=<c:out value="${layout.id.value}" />&selectAction=off"><fmt:message key="table_action_unselect"/></a>
              </c:if>
          </div>
       </TD>
       <TD><c:out value="${layout.description}" /></TD>
       <TD><c:out value="${layout.owner.displayName}" /></TD>
-      <td><c:out value="${layout.published}" /></TD>
+      <td><c:out value="${layout.globalState}" /></TD>
     </TR>
 
   </c:forEach>

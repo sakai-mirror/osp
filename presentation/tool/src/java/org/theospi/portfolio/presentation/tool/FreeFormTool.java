@@ -282,7 +282,7 @@ public class FreeFormTool extends HelperToolBase {
       }
       return returned;
    }
-
+/*
    public List getLayouts() {
       if (layouts == null) {
          layouts = new ArrayList();
@@ -295,7 +295,7 @@ public class FreeFormTool extends HelperToolBase {
 
       return layouts;
    }
-
+*/
    public void setLayouts(List layouts) {
       this.layouts = layouts;
    }

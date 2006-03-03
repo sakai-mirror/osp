@@ -945,7 +945,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return false;
    }
 
-
    public AgentManager getAgentManager() {
       return agentManager;
    }
@@ -1989,9 +1988,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    
 
    public Collection findPublishedLayouts(String siteId) {
+      /*
       return getHibernateTemplate().find(
-            "from PresentationLayout where published=? and owner_id!=? and site_id=? Order by name",
-            new Object[]{new Boolean(true), getAuthnManager().getAgent().getId().getValue(), siteId});
+            "from PresentationLayout where globalState=? and owner_id!=? and site_id=? Order by name",
+            new Object[]{new Integer(PresentationLayout.STATE_PUBLISHED), 
+                  getAuthnManager().getAgent().getId().getValue(), siteId});
+      */
+      return new ArrayList();
    }
 
    
@@ -2003,8 +2006,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public Collection findGlobalLayouts() {
       return getHibernateTemplate().find(
-         "from PresentationLayout where published=? and site_id is null Order by name",
-         new Object[]{new Boolean(true)});
+         "from PresentationLayout where globalState=? Order by name",
+         new Object[]{new Integer(PresentationLayout.STATE_PUBLISHED)});
    }
 
    public PresentationLayout storeLayout (PresentationLayout layout) {
@@ -2362,7 +2365,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       layout.setModified(new Date());
       layout.setName(wrapper.getName());
       layout.setDescription(wrapper.getDescription());
-      layout.setPublished(true);
+      layout.setGlobalState(PresentationLayout.STATE_PUBLISHED);
       layout.setSiteId(null);
       layout.setToolId(null);
       layout.setOwner(getAgentManager().getAgent("admin"));

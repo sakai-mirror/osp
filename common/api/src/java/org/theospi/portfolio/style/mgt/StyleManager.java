@@ -39,8 +39,10 @@ public interface StyleManager {
    public Style getStyle(Id styleId);
    public void deleteStyle(final Id styleId) throws DataIntegrityViolationException;
    public Style getLightWeightStyle(final Id styleId);
+   
+   public Collection findSiteStyles(String currentWorksiteId);
    public Collection findPublishedStyles(String currentWorksiteId);
-   public Collection findPublishedStyles();
+
    public Collection findStylesByOwner(Agent owner, String siteId);
    public Collection findGlobalStyles(Agent agent);
    
