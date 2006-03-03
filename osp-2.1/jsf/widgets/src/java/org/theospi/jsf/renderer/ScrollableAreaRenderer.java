@@ -49,6 +49,11 @@ import org.theospi.jsf.util.TagUtil;
  */
 public class ScrollableAreaRenderer extends Renderer
 {
+   public static final String SCROLL_VISIBLE = "visible";
+   public static final String SCROLL_SCROLL = "scroll";
+   public static final String SCROLL_HIDDEN = "hidden";
+   public static final String SCROLL_AUTO = "auto";
+   
 	public boolean supportsComponentType(UIComponent component)
 	{
 		return (component instanceof UIOutput);
@@ -67,30 +72,50 @@ public class ScrollableAreaRenderer extends Renderer
 		ResponseWriter writer = context.getResponseWriter();
 		
 		
-		writer.write("<div ");
 
-		String cssClass = (String) RendererUtil.getAttribute(context, component, "cssclass");
+		String cssclass = (String) RendererUtil.getAttribute(context, component, "cssclass");
 		String id = (String) RendererUtil.getAttribute(context, component, "id");
-		String width = (String) RendererUtil.getAttribute(context, component, "width");
-		String height = (String) RendererUtil.getAttribute(context, component, "height");
+      String width = (String) RendererUtil.getAttribute(context, component, "width");
+      String height = (String) RendererUtil.getAttribute(context, component, "height");
+      String scrollXStyle = (String) RendererUtil.getAttribute(context, component, "scrollXStyle");
+      String scrollYStyle = (String) RendererUtil.getAttribute(context, component, "scrollYStyle");
 
-		TagUtil.writeAttr(writer, "class", cssClass);
-		TagUtil.writeAttr(writer, "id", id);
-		
-		//	set the div tag to have scroll bars when the innerHTML is larger than the div size
-		writer.write("style=\"overflow:auto;");
-		
+      
+      writer.startElement("div", component);
+
+      if(cssclass != null)
+         writer.writeAttribute("class", cssclass, "class");
+      
+      if(id != null)
+         writer.writeAttribute("id", id, "id");
+      
+      String style = "";
+      
+      if(scrollXStyle == null && scrollYStyle == null) {
+		   //	set the div tag to have scroll bars when the innerHTML is larger than the div size
+         style += "overflow:auto;";
+      } else if(scrollYStyle == null) {
+         if(scrollXStyle.equals(SCROLL_SCROLL) || scrollXStyle.equals(SCROLL_AUTO))
+            scrollYStyle = SCROLL_HIDDEN;
+      } else if(scrollXStyle == null) {
+         if(scrollYStyle.equals(SCROLL_SCROLL) || scrollYStyle.equals(SCROLL_AUTO))
+            scrollXStyle = SCROLL_HIDDEN;
+      }
+      if(scrollXStyle != null)
+         style += "overflow-x:" + scrollXStyle + ";";
+
+      if(scrollYStyle != null)
+         style += "overflow-y:" + scrollYStyle + ";";
+      
 		if(width != null) {
-			writer.write("width:");
-			writer.write(width);
-			writer.write(";");
+         style += "width:" + width + ";";
 		}
 		if(height != null) {
-			writer.write("height:");
-			writer.write(height);
-			writer.write(";");
+         style += "height:" + height + ";";
 		}
-		writer.write("\">");
+      
+      if(style.length() > 0)
+         writer.writeAttribute("style", style, "style");
 	}
 
 	/**
@@ -103,7 +128,7 @@ public class ScrollableAreaRenderer extends Renderer
 	{
 		ResponseWriter writer = context.getResponseWriter();
 
-		writer.write("</div>");
+      writer.endElement("div");
 	}
 }
 
