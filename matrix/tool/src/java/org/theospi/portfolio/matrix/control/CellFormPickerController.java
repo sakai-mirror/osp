@@ -105,7 +105,8 @@ public class CellFormPickerController implements FormController, LoadObjectContr
             session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
          // here is where we setup the id
          List refs = (List)session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-         if (session.get(WHICH_HELPER_KEY).equals(HELPER_PICKER))
+         //if (session.get(WHICH_HELPER_KEY).equals(HELPER_PICKER))
+         if (HELPER_PICKER.equals((String)session.get(WHICH_HELPER_KEY)))
             page.getPageForms().clear();
          
          for (Iterator iter = refs.iterator(); iter.hasNext();) {
@@ -205,7 +206,7 @@ public class CellFormPickerController implements FormController, LoadObjectContr
          session.put(ResourceEditingHelper.CREATE_PARENT, "/user/" + 
                getSessionManager().getCurrentSessionUserId() + "/");
          session.put(ResourceEditingHelper.CREATE_SUB_TYPE, formId);
-         
+         session.remove(ResourceEditingHelper.ATTACHMENT_ID);
       } else {
          session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_form_id"));
       }
