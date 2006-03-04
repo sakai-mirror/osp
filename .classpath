@@ -80,5 +80,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/javamail/jars/mail-1.3.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/jsf"/>
 	<classpathentry kind="var" path="MAVEN_REPO/websphinx/jars/websphinx-0.5.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/scheduler"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
