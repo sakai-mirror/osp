@@ -62,7 +62,7 @@ public class PluginOptionJob implements Job {
          PluginOptionJob.class.toString(), PluginOptionJob.class);
       detail.getJobDataMap().put(PLUGIN, pluginId);
       detail.getJobDataMap().put(INTERVAL, millis + "");
-      manager.getScheduler().scheduleJob(detail, new SimpleTrigger(pluginId + ".trigger." + System.currentTimeMillis(),
+      manager.getScheduler().scheduleJob(detail, new SimpleTrigger(pluginId + ".tr." + System.currentTimeMillis(),
          PluginOptionJob.class.toString(), new Date(System.currentTimeMillis() + millis)));
    }
 }
