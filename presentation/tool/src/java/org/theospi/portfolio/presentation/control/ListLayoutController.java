@@ -22,16 +22,19 @@ package org.theospi.portfolio.presentation.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
+import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.PresentationLayoutHelper;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
-import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 public class ListLayoutController extends AbstractPresentationController {
 
@@ -41,6 +44,7 @@ public class ListLayoutController extends AbstractPresentationController {
    public ModelAndView handleRequest(Object requestModel, Map request, Map session,
                                      Map application, Errors errors) {
 
+      boolean global = getPresentationManager().isGlobal();
       Hashtable model = new Hashtable();
       Agent agent = getAuthManager().getAgent();
       String selectable = (String)session.get(PresentationLayoutHelper.LAYOUT_SELECTABLE);
@@ -51,6 +55,9 @@ public class ListLayoutController extends AbstractPresentationController {
       
       if (selectable != null) {
          model.put("selectableLayout", selectable);
+         layouts.addAll(getPresentationManager().findGlobalLayouts());
+      }
+      else if (global) {
          layouts.addAll(getPresentationManager().findGlobalLayouts());
       }
       
@@ -72,8 +79,8 @@ public class ListLayoutController extends AbstractPresentationController {
       
       if (session.get(PresentationLayoutHelper.CURRENT_LAYOUT_ID) != null)
          model.put("selectedLayout", session.get(PresentationLayoutHelper.CURRENT_LAYOUT_ID));
-      
-      model.put("isGlobal", new Boolean(getPresentationManager().isGlobal()));
+
+      model.put("isGlobal", new Boolean(global));
       
       return new ModelAndView("success", model);
    }
