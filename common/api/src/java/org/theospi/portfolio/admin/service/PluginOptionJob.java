@@ -1,15 +1,15 @@
 package org.theospi.portfolio.admin.service;
 
 import org.quartz.*;
+import org.sakaiproject.api.app.scheduler.SchedulerManager;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin;
 import org.theospi.portfolio.admin.model.IntegrationOption;
-import org.sakaiproject.api.app.scheduler.SchedulerManager;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -58,11 +58,19 @@ public class PluginOptionJob implements Job {
    }
 
    public static void schedule(SchedulerManager manager, String pluginId, long millis) throws SchedulerException {
-      JobDetail detail = new JobDetail(pluginId + "." + System.currentTimeMillis(),
-         PluginOptionJob.class.toString(), PluginOptionJob.class);
+      JobDetail detail = new JobDetail(truncateTriggerName(pluginId + "." + System.currentTimeMillis()),
+         truncateTriggerName(PluginOptionJob.class.toString()), PluginOptionJob.class);
       detail.getJobDataMap().put(PLUGIN, pluginId);
       detail.getJobDataMap().put(INTERVAL, millis + "");
-      manager.getScheduler().scheduleJob(detail, new SimpleTrigger(pluginId + ".trigger." + System.currentTimeMillis(),
+      manager.getScheduler().scheduleJob(detail, new SimpleTrigger(
+         truncateTriggerName(pluginId + ".trigger." + System.currentTimeMillis()),
          PluginOptionJob.class.toString(), new Date(System.currentTimeMillis() + millis)));
+   }
+
+   protected static String truncateTriggerName(String s) {
+      if (s.length() > 80) {
+         return s.substring(s.length() - 80);
+      }
+      return s;
    }
 }
