@@ -27,6 +27,7 @@ import net.sf.hibernate.Session;
 import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
@@ -54,6 +55,7 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.springframework.orm.hibernate.HibernateCallback;
 import org.springframework.orm.hibernate.HibernateObjectRetrievalFailureException;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.theospi.portfolio.admin.service.SiteOption;
 import org.theospi.portfolio.presentation.CommentSortBy;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.PresentationManager;
@@ -2485,11 +2487,21 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
       resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
       resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
-
+      
+      String folder = "/group/PortfolioAdmin" + SYSTEM_COLLECTION_ID;
+      
       try {
-         ContentCollectionEdit collection = getContentHosting().addCollection(SYSTEM_COLLECTION_ID);
+         //TODO use the bean org.theospi.portfolio.admin.model.IntegrationOption.siteOption 
+         // in common/components to get the name and id for this site.
+         
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection("/group/PortfolioAdmin");
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "Portfolio Admin");
+         getContentHosting().commitCollection(groupCollection);
+                  
+         ContentCollectionEdit collection = getContentHosting().addCollection(folder);
          collection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "system");
          getContentHosting().commitCollection(collection);
+         
       }
       catch (IdUsedException e) {
          // ignore... it is already there.
@@ -2499,7 +2511,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
 
       try {
-         String id = SYSTEM_COLLECTION_ID + name;
+         String id = folder + name;
          getContentHosting().removeResource(id);
       }
       catch (TypeException e) {
@@ -2516,7 +2528,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
 
       try {
-         resource = getContentHosting().addResource(name, SYSTEM_COLLECTION_ID, 0, type,
+         resource = getContentHosting().addResource(name, folder, 0, type,
                      bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
       }
       catch (Exception e) {
