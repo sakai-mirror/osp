@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+<hibernate-mapping package="org.theospi.portfolio.list.model">
+   <class name="ListConfig" table="osp_list_config">
+      <id name="id" length="32" type="org.sakaiproject.metaobj.shared.IdType" column="id">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <property name="owner" column="owner_id" not-null="true"
+         type="org.sakaiproject.metaobj.shared.mgt.AgentUserType"/>
+      <property name="toolId" length="32" type="org.sakaiproject.metaobj.shared.IdType" column="tool_id"/>
+      <property name="title" type="string" column="title" not-null="false"/>
+      <property name="height" type="java.lang.Integer" not-null="false"/>
+      <property name="rows" column="numRows" type="java.lang.Integer" not-null="false"/>
+      <property name="selectedColumns" column="selected_columns" not-null="true"
+         type="org.theospi.portfolio.list.model.ColumnsType"/>
+   </class>
+
+</hibernate-mapping>

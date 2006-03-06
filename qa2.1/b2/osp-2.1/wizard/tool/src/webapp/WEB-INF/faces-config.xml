@@ -1,0 +1,260 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE faces-config PUBLIC
+  "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+  "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
+
+<!-- =========== FACES CONFIGURATION FILE ================================== -->
+
+<faces-config>
+   <!-- Example custom JSF component used only in this tool -->
+
+   <application>
+     <message-bundle>org.theospi.portfolio.wizard.messages</message-bundle>
+     <locale-config>
+       <default-locale>en</default-locale>
+     </locale-config>
+   </application>
+
+   <!-- =================== Tool Beans ============== -->
+
+
+   <managed-bean>
+
+      <description>WizardTool</description>
+      <managed-bean-name>wizard</managed-bean-name>
+      <managed-bean-class>org.theospi.portfolio.wizard.tool.WizardTool</managed-bean-class>
+      <managed-bean-scope>session</managed-bean-scope>
+
+      <managed-property>
+         <description>Service Dependency: wizardManager</description>
+         <property-name>wizardManager</property-name>
+         <value>#{Components["org.theospi.portfolio.wizard.mgt.WizardManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: guidanceManager</description>
+         <property-name>guidanceManager</property-name>
+         <value>#{Components["org.theospi.portfolio.guidance.mgt.GuidanceManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: idManager</description>
+         <property-name>idManager</property-name>
+         <value>#{Components["idManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: matrixManager</description>
+         <property-name>matrixManager</property-name>
+         <value>#{Components["matrixManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: authzManager</description>
+         <property-name>authzManager</property-name>
+         <value>#{Components["authzManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: workflowManager</description>
+         <property-name>workflowManager</property-name>
+         <value>#{Components["org.theospi.portfolio.workflow.mgt.WorkflowManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: reviewManager</description>
+         <property-name>reviewManager</property-name>
+         <value>#{Components["org.theospi.portfolio.review.mgt.ReviewManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: contentHosting</description>
+         <property-name>contentHosting</property-name>
+         <value>#{Components["org.sakaiproject.service.legacy.content.ContentHostingService"]}</value>
+      </managed-property>
+   </managed-bean>
+   <!-- 
+   <managed-bean>
+      <description>AudienceTool</description>
+      <managed-bean-name>audience</managed-bean-name>
+      <managed-bean-class>org.theospi.portfolio.security.tool.AudienceTool</managed-bean-class>
+      <managed-bean-scope>session</managed-bean-scope>
+
+      <managed-property>
+         <description>Service Dependency: idManager</description>
+         <property-name>idManager</property-name>
+         <value>#{Components["idManager"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: authzManager</description>
+         <property-name>authzManager</property-name>
+         <value>#{Components["authzManager"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: agentManager</description>
+         <property-name>agentManager</property-name>
+         <value>#{Components["agentManager"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: siteService</description>
+         <property-name>siteService</property-name>
+         <value>#{Components["org.sakaiproject.service.legacy.site.SiteService"]}</value>
+      </managed-property>
+
+      <managed-property>
+         <description>Service Dependency: toolManager</description>
+         <property-name>toolManager</property-name>
+         <value>#{Components["org.sakaiproject.api.kernel.tool.ToolManager"]}</value>
+      </managed-property>
+
+   </managed-bean>
+-->
+
+  <navigation-rule>
+    <from-view-id>/wizard/listWizards.jsp</from-view-id>
+     <navigation-case>
+       <from-outcome>editWizard</from-outcome>
+       <to-view-id>/wizard/editWizard.jsp</to-view-id>
+       <redirect/>
+     </navigation-case>
+     <navigation-case>
+       <from-outcome>runWizard</from-outcome>
+       <to-view-id>/wizard/runWizard.jsp</to-view-id>
+       <redirect/>
+     </navigation-case>
+     <navigation-case>
+       <from-outcome>importWizard</from-outcome>
+       <to-view-id>/wizard/importWizard.jsp</to-view-id>
+       <redirect/>
+     </navigation-case>
+  </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/wizard/editWizard.jsp</from-view-id>
+      <navigation-case>
+        <from-outcome>editWizardPages</from-outcome>
+        <to-view-id>/wizard/editWizardPages.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>listWizards</from-outcome>
+        <to-view-id>/wizard/listWizards.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/wizard/editWizardPages.jsp</from-view-id>
+      <navigation-case>
+        <from-outcome>editWizard</from-outcome>
+        <to-view-id>/wizard/editWizard.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>editWizardCategory</from-outcome>
+        <to-view-id>/wizard/editWizardCategory.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>editWizardSupport</from-outcome>
+        <to-view-id>/wizard/editWizardSupport.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>listWizards</from-outcome>
+        <to-view-id>/wizard/listWizards.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/wizard/editWizardSupport.jsp</from-view-id>
+      <navigation-case>
+        <from-outcome>editWizardPages</from-outcome>
+        <to-view-id>/wizard/editWizardPages.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>editWizardDesign</from-outcome>
+        <to-view-id>/wizard/editWizardDesign.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>listWizards</from-outcome>
+        <to-view-id>/wizard/listWizards.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/wizard/editWizardDesign.jsp</from-view-id>
+      <navigation-case>
+        <from-outcome>editWizardSupport</from-outcome>
+        <to-view-id>/wizard/editWizardSupport.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>editWizardProperties</from-outcome>
+        <to-view-id>/wizard/editWizardProperties.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>listWizards</from-outcome>
+        <to-view-id>/wizard/listWizards.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/wizard/editWizardProperties.jsp</from-view-id>
+      <navigation-case>
+        <from-outcome>editWizardSupport</from-outcome>
+        <to-view-id>/wizard/editWizardSupport.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>listWizards</from-outcome>
+        <to-view-id>/wizard/listWizards.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/wizard/editWizardCategory.jsp</from-view-id>
+      <navigation-case>
+        <from-outcome>editWizardPages</from-outcome>
+        <to-view-id>/wizard/editWizardPages.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/wizard/runWizard.jsp</from-view-id>
+      <navigation-case>
+        <from-outcome>main</from-outcome>
+        <to-view-id>/wizard/listWizards.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>confirmSubmit</from-outcome>
+        <to-view-id>/wizard/confirmSubmit.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/wizard/confirmSubmit.jsp</from-view-id>
+      <navigation-case>
+        <from-outcome>runWizard</from-outcome>
+        <to-view-id>/wizard/runWizard.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/wizard/importWizard.jsp</from-view-id>
+      <navigation-case>
+        <from-outcome>listWizards</from-outcome>
+        <to-view-id>/wizard/listWizards.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+</faces-config>

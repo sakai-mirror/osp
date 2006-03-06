@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool id="osp.review" title="Review" description="OSP Review Helper Tool">
+
+       <category name="sakai.helper" />
+
+	</tool>
+
+</registration>
