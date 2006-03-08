@@ -188,7 +188,7 @@
           <param>255</param>
         </column>
         <column>
-          <name>name</name>
+          <name>title</name>
           <type>VARCHAR</type>
           <param>255</param>
         </column>
@@ -215,6 +215,29 @@
      </columns>
      <not-null>id</not-null>
      <primary-key>id</primary-key>
+   </table>
+
+   <table>
+     <name>DW_WIZARD_PAGE_DEF_ADD_FORMS</name>
+     <desc>Wizard Page Definition Additional Form Data warehouse table</desc>
+     <columns>
+        <column>
+          <name>wizard_page_def_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>form_def_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>seq_num</name>
+          <type>INTEGER</type>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <primary-key>wizard_page_def_id, form_def_id</primary-key>
    </table>
 
    <table>

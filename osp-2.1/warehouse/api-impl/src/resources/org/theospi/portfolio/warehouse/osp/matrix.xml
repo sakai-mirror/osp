@@ -162,6 +162,61 @@
    </index>
 
 
+   <table>
+     <name>DW_WIZARD_PAGE_ATTACHMENTS</name>
+     <desc>Wizard Page Attachments Data warehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>artifact_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>wizard_page_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>wizard_page_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+
+   <table>
+     <name>DW_WIZARD_PAGE_FORMS</name>
+     <desc>Wizard Page Forms Data warehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>artifact_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>wizard_page_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>form_type</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>wizard_page_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
 
 
 

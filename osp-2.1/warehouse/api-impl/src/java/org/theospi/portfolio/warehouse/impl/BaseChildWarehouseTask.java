@@ -23,6 +23,7 @@ package org.theospi.portfolio.warehouse.impl;
 import org.theospi.portfolio.warehouse.intf.ChildWarehouseTask;
 import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 import org.theospi.portfolio.warehouse.intf.ParentPropertyAccess;
+import org.theospi.portfolio.warehouse.intf.ItemIndexInParentPropertyAccess;
 import org.quartz.JobExecutionException;
 
 import java.util.Collection;
@@ -62,7 +63,7 @@ public class BaseChildWarehouseTask implements ChildWarehouseTask {
          int current = 0;
          ps = connection.prepareStatement(getInsertStmt());
          for (Iterator i=items.iterator();i.hasNext();) {
-            processItem(parent, i.next(), ps);
+            processItem(parent, i.next(), ps, current);
             ps.addBatch();
             current++;
             if (current > batchSize) {
@@ -116,7 +117,7 @@ public class BaseChildWarehouseTask implements ChildWarehouseTask {
       }
    }
 
-   protected void processItem(Object parent, Object item, PreparedStatement ps)
+   protected void processItem(Object parent, Object item, PreparedStatement ps, int itemIndex)
          throws JobExecutionException {
 
       try {
@@ -130,6 +131,8 @@ public class BaseChildWarehouseTask implements ChildWarehouseTask {
             else if (o instanceof ParentPropertyAccess) {
                ParentPropertyAccess pa = (ParentPropertyAccess)o;
                ps.setObject(index, pa.getPropertyValue(parent, item));
+            } else if (o instanceof ItemIndexInParentPropertyAccess){
+               ps.setInt(index, itemIndex);
             }
             index++;
          }
