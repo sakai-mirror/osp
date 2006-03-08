@@ -50,6 +50,7 @@ public class WizardPage extends IdentifiableObject {
    public final static String PROCESS_TYPE_KEY = "page_id";
 
    /**
+    * Set of class Attachment
     * @return Returns Set of Attachments
     */
    public Set getAttachments() {
@@ -57,7 +58,7 @@ public class WizardPage extends IdentifiableObject {
    }
 
    /**
-    * @param attachments A Set of Attachments to set.
+    * @param attachments A Set of class Attachment.
     */
    public void setAttachments(Set attachments) {
       this.attachments = attachments;
@@ -108,14 +109,14 @@ public class WizardPage extends IdentifiableObject {
    }
 
    /**
-    * @return Returns the pageForms.
+    * @return Returns the Set of class WizardPageForm.
     */
    public Set getPageForms() {
       return pageForms;
    }
 
    /**
-    * @param pageForms The pageForms to set.
+    * @param pageForms A set of class WizardPageForm.
     */
    public void setPageForms(Set pageForms) {
       this.pageForms = pageForms;

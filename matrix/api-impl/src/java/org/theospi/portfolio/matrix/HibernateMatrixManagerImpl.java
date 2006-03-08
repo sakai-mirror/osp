@@ -527,6 +527,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
            
            for(Iterator iii= mat.getCells().iterator(); iii.hasNext(); ) {
               Cell cell = (Cell)iii.next();
+
+              cell.getWizardPage().getPageForms().size();
+              cell.getWizardPage().getAttachments().size();
            }
            
            getHibernateTemplate().evict(mat);

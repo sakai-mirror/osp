@@ -156,7 +156,6 @@
               <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                  <property name="propertyName"><value>qualifier</value></property>
               </bean>
-              <!-- todo: Fields active and system are of boolean type. please check -->
               <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                  <property name="propertyName"><value>active</value></property>
               </bean>
@@ -249,7 +248,6 @@
          <list>
 	      <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
 
-	      <!-- todo fields:baseReference and fullReference are Of EntityReferenceUserType -->
 	      <bean class="org.theospi.portfolio.warehouse.impl.ReferenceHolderPropertyAccess">
 	          <property name="propertyName"><value>baseReference</value></property>
 	      </bean>
@@ -428,6 +426,28 @@
    </bean>
    
    
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.page.definition.additional.forms"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
+            <bean class="org.theospi.portfolio.warehouse.impl.SelfPropertyAccess" />
+            <bean class="org.theospi.portfolio.warehouse.intf.ItemIndexInParentPropertyAccess" />
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into DW_WIZARD_PAGE_DEF_ADD_FORMS
+                    (wizard_page_def_id, form_def_id, seq_num)
+                        values (?, ?, ?)
+                      
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from DW_WIZARD_PAGE_DEF_ADD_FORMS</value>
+      </property>
+   </bean>
+   
+   
    <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.page.definition"
         class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
       <property name="fields">
@@ -456,13 +476,27 @@
       </property>
       <property name="insertStmt">
          <value>insert into DW_WIZARD_PAGE_DEF
-                    (id, initialStatus, name, description, site_id, tool_id, guidance_id)
+                    (id, initialStatus, title, description, site_id, tool_id, guidance_id)
                         values (?, ?, ?, ?, ?, ?, ?)
                       
          </value>
       </property>
       <property name="clearStmt">
          <value>delete from DW_WIZARD_PAGE_DEF</value>
+      </property>
+      <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">               
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>additionalForms</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.page.definition.additional.forms"/>
+                  </property>
+            </bean>
+         </list>
       </property>
    </bean>
    
@@ -1646,10 +1680,56 @@
      <property name="clearStmt">
         <value>delete from DW_WIZARD_PAGE_REVIEW</value>
      </property>
-     <property name="complexFields" >
-          <list>
-          </list>
-       </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.attachments"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+              <property name="propertyName"><value>artifactId</value></property>
+           </bean>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
+           
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into DW_WIZARD_PAGE_ATTACHMENTS
+                                    (id, artifact_id, wizard_page_id) 
+                                    values (?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from DW_WIZARD_PAGE_ATTACHMENTS</value>
+     </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.forms"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+              <property name="propertyName"><value>artifactId</value></property>
+           </bean>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>formType</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into DW_WIZARD_PAGE_FORMS
+                                    (id, artifact_id, wizard_page_id, form_type) 
+                                    values (?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from DW_WIZARD_PAGE_FORMS</value>
+     </property>
    </bean>
    
    
@@ -1680,7 +1760,7 @@
         <value>delete from DW_WIZARD_PAGE</value>
      </property>
      <property name="complexFields" >
-         <list> 
+         <list> <!-- TODO: wizard page attachments, and wizard page form -->
             <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
                <property name="propertyAccess">               
                   <bean class="org.theospi.portfolio.warehouse.osp.matrix.WizardPageReviewPropertyAccess">
@@ -1691,6 +1771,26 @@
                </property>
                <property name="task">
                    <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.review"/>
+               </property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">        
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>attachments</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.attachments"/>
+               </property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">   
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>pageForms</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.forms"/>
                </property>
             </bean>
          </list>
@@ -1755,7 +1855,6 @@
      <property name="fields">
         <list>
            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-           <!--  todo: not sure about type, indent, required-->
            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>type</value></property>
            </bean>
@@ -1882,7 +1981,6 @@
            <list>
               <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
               
-              <!-- todo fields:baseReference and fullReference are Of EntityReferenceUserType -->
               <bean class="org.theospi.portfolio.warehouse.impl.ReferenceHolderPropertyAccess">
                  <property name="propertyName"><value>baseReference</value></property>
               </bean>
@@ -1940,8 +2038,7 @@
            <value>delete from DW_GUIDANCE_ITEM</value>
         </property>
         <property name="complexFields" >
-            <list>
-            <!--  todo :please check for complex fields. -->        
+            <list>       
                <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
                   <property name="propertyAccess">               
                      <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
@@ -2185,8 +2282,6 @@
         - list of users and names and such
         - 
    -->
-
-   <!-- TODO: make this Task -->
    
    <bean
        id="org.theospi.portfolio.warehouse.intf.WarehouseTask.wizard"
