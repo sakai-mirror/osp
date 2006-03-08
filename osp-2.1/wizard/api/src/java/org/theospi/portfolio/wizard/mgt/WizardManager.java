@@ -46,6 +46,13 @@ public interface WizardManager extends WorkflowEnabledManager {
    public Reference decorateReference(Wizard wizard, String reference);
    
    public String getWizardEntityProducer();
+
+   
+   /**
+    * Pulls all wizards, deeping loading all parts of each Wizard
+    * @return List of Wizard
+    */
+   public List getWizardsForWarehousing();
    
    public List listAllWizards(String owner, String siteId);
    public List listWizardsByType(String owner, String siteId, String type);
@@ -60,6 +67,7 @@ public interface WizardManager extends WorkflowEnabledManager {
 
    public void deleteObjects(List deletedItems);
 
+   public List getCompletedWizardsByWizardId(String wizardId);
    public CompletedWizard getCompletedWizard(Id completedWizardId);
    public CompletedWizard getCompletedWizard(Wizard wizard);
    public CompletedWizard getCompletedWizard(Wizard wizard, String userId);

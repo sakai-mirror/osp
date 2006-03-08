@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL: https://source.sakaiproject.org/svn/trunk/osp/osp-2.1/warehouse/api-impl/src/java/org/theospi/portfolio/warehouse/sakai/resource/DateResourcePropertyAccess.java $
+* $Id: DateResourcePropertyAccess.java 5557 2006-01-26 06:02:52Z john.ellis@rsmart.com $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -18,41 +18,35 @@
 * limitations under the License.
 *
 **********************************************************************************/
-package org.theospi.portfolio.warehouse.impl;
+package org.theospi.portfolio.warehouse.osp.wizard;
 
+import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.warehouse.intf.PropertyAccess;
-import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
- * Date: Nov 30, 2005
- * Time: 5:48:56 PM
+ * Date: Dec 19, 2005
+ * Time: 11:12:52 PM
  * To change this template use File | Settings | File Templates.
  */
-public class EntityPropertyAccess implements PropertyAccess {
+public class CompletedWizardsPropertyAccess implements PropertyAccess {
 
-   private String propertyName;
-
-   public Object getPropertyValue(Object source)
-      throws Exception {
-      Entity entity = null;
-      
-      try {
-         entity = (Entity)source;
-      } catch(ClassCastException e) {
-         throw new Exception("The source could not be cast into an Entity for property \"" + propertyName +  "\"", e);
-      }
-
-      return entity.getProperties().getProperty(getPropertyName());
+   private WizardManager wizardManager;
+   
+   public Object getPropertyValue(Object source) throws Exception {
+      IdentifiableObject identifiableObj = (IdentifiableObject)source;
+      return wizardManager.getCompletedWizardsByWizardId(identifiableObj.getId().getValue());
    }
-
-   public String getPropertyName() {
-      return propertyName;
+   
+   public WizardManager getWizardManager()
+   {
+      return wizardManager;
    }
-
-   public void setPropertyName(String propertyName) {
-      this.propertyName = propertyName;
+   
+   public void setWizardManager(WizardManager wizardManager)
+   {
+      this.wizardManager = wizardManager;
    }
-
 }

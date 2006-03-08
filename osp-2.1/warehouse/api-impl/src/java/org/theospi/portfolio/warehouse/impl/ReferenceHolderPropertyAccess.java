@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL: https://source.sakaiproject.org/svn/trunk/osp/osp-2.1/warehouse/api-impl/src/java/org/theospi/portfolio/warehouse/impl/EntityPropertyAccess.java $
+* $Id: EntityPropertyAccess.java 5557 2006-01-26 06:02:52Z john.ellis@rsmart.com $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,25 +20,25 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.impl;
 
-import org.theospi.portfolio.warehouse.intf.PropertyAccess;
-
-import java.lang.reflect.Method;
-import java.beans.PropertyDescriptor;
 import java.beans.BeanInfo;
-import java.beans.Introspector;
 import java.beans.IntrospectionException;
-import java.util.Iterator;
-import java.util.Map;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.Hashtable;
+import java.util.Map;
+
+import org.theospi.portfolio.warehouse.intf.PropertyAccess;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
 
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
  * Date: Nov 30, 2005
- * Time: 5:34:24 PM
+ * Time: 5:48:56 PM
  * To change this template use File | Settings | File Templates.
  */
-public class BeanPropertyAccess implements PropertyAccess {
+public class ReferenceHolderPropertyAccess implements PropertyAccess {
 
    private Map gettorMap = new Hashtable();
    private String propertyName;
@@ -48,7 +48,17 @@ public class BeanPropertyAccess implements PropertyAccess {
       if(objectMethodGetProperty == null)
          throw new NullPointerException(source.getClass().getName() + 
                " has no get for property \"" + propertyName + "\"");
-      return objectMethodGetProperty.invoke(source, new Object[]{});
+      Object value = objectMethodGetProperty.invoke(source, new Object[]{});
+
+      ReferenceHolder refHolder = null;
+      
+      try {
+         refHolder = (ReferenceHolder)value;
+      } catch(ClassCastException e) {
+         throw new Exception("The source could not be cast into an ReferenceHolder for property \"" + propertyName +  "\"", e);
+      }
+      
+      return refHolder.getBase().getId();
    }
 
    public String getPropertyName() {

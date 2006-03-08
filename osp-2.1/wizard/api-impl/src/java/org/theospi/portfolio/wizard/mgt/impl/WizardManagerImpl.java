@@ -305,6 +305,33 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return getHibernateTemplate().find("from Wizard w where " +
             "(w.owner=? or w.published=?) and w.siteId=? and w.type=? order by seq_num", params);
    }
+   
+   /**
+    * Pulls all wizards, deeping loading all parts of each Wizard
+    * @return List of Wizard
+    */
+   public List getWizardsForWarehousing()
+   {
+      List wizards = getHibernateTemplate().find("from Wizard w");
+      
+      for(Iterator i = wizards.iterator(); i.hasNext(); ) {
+         Wizard w = (Wizard)i.next();
+         
+         w.getWizardStyleItems().size();
+      }
+      
+      return wizards;
+   }
+   
+   /**
+    * @return List of CompletedWizard
+    */
+   public List getCompletedWizardsByWizardId(String wizardId)
+   {
+      List completedWizards = getHibernateTemplate().find(" from CompletedWizard where wizard_id=?",
+            new Object[]{wizardId});
+      return completedWizards;
+   }
 
    public List listAllWizards(String owner, String siteId) {
       Object[] params = new Object[]{owner, new Boolean(true), siteId};
