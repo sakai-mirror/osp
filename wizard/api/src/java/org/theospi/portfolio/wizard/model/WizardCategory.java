@@ -98,10 +98,16 @@ public class WizardCategory extends IdentifiableObject {
       this.modified = modified;
    }
 
+   /**
+    * @return List of WizardCategory
+    */
    public List getChildCategories() {
       return childCategories;
    }
 
+   /**
+    * @param childCategories List of WizardCategory
+    */
    public void setChildCategories(List childCategories) {
       this.childCategories = childCategories;
    }

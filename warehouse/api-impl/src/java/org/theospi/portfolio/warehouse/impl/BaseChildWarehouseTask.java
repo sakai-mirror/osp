@@ -48,11 +48,16 @@ public class BaseChildWarehouseTask implements ChildWarehouseTask {
    private String clearStmt;
    private List complexFields;
    private int batchSize = 100;
-
+   private boolean isPrepared = false;
+   
+   /**
+    * This is run after prepare
+    */
    public void execute(Object parent, Collection items, Connection connection)
          throws JobExecutionException {
       PreparedStatement ps = null;
 
+      isPrepared = false;
       try {
          int current = 0;
          ps = connection.prepareStatement(getInsertStmt());
@@ -88,9 +93,16 @@ public class BaseChildWarehouseTask implements ChildWarehouseTask {
 
    }
 
+   /**
+    * This method is run before execute.  It ensures that the prepare functionality is only executed once
+    * @param Connection clears the database.
+    */
    public void prepare(Connection connection) {
       try {
+         if(isPrepared) return;
+         
          connection.createStatement().execute(getClearStmt());
+         isPrepared = true;
 
          if (getComplexFields() != null) {
             for (Iterator i=getComplexFields().iterator();i.hasNext();) {

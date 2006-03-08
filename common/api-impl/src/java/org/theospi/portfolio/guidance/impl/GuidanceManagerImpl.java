@@ -460,6 +460,22 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
       return new AttachmentImportWrapper(element.getChildText("ref"),
             element.getChildText("url"));
    }
+   
+   
+   /**
+    * Pulls all Guidance
+    * @return List of Guidance
+    */
+   public List getGuidanceForWarehousing()
+   {
+      List guidance = getHibernateTemplate().find("from Guidance");
+      
+      for(Iterator i = guidance.iterator(); i.hasNext(); ) {
+         Guidance w = (Guidance)i.next();
+      }
+      
+      return guidance;
+   }
 
    public AuthorizationFacade getAuthorizationFacade() {
       return authorizationFacade;

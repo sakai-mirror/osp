@@ -75,6 +75,15 @@
           <type>VARCHAR</type>
           <param>36</param>
         </column>
+        <column>
+          <name>root_category</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>seq_num</name>
+          <type>INTEGER</type>
+        </column>
      </columns>
      <not-null>id</not-null>
      <not-null>owner_id</not-null>
@@ -84,6 +93,256 @@
      <not-null>tool_id</not-null>
      <primary-key>id</primary-key>
    </table>
+
+   <table>
+     <name>DW_WIZARD_CATEGORY</name>
+     <desc>Wizard Category Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>title</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>description</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>keywords</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>created</name>
+          <type>TIMESTAMP</type>
+        </column>
+        <column>
+          <name>modified</name>
+          <type>TIMESTAMP</type>
+        </column>
+        <column>
+          <name>wizard_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>parent_category_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>seq_num</name>
+          <type>INTEGER</type>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+   <table>
+     <name>DW_WIZARD_PAGE_SEQUENCE</name>
+     <desc>Wizard Page Sequence Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>category_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>wiz_page_def_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>seq_num</name>
+          <type>INTEGER</type>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+   <table>
+     <name>DW_WIZARD_PAGE_DEF</name>
+     <desc>Wizard Page Definition Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>initialStatus</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>name</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column> <!-- TODO: TEXT isn't supported? -->
+          <name>description</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>site_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>tool_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>guidance_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+   <table>
+     <name>DW_WIZARD_COMPLETED</name>
+     <desc>Wizard Completed Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>owner_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>created</name>
+          <type>TIMESTAMP</type>
+        </column>
+        <column>
+          <name>lastVisited</name>
+          <type>TIMESTAMP</type>
+        </column>
+        <column>
+          <name>status</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>wizard_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>root_category</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>wizard_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+   <table>
+     <name>DW_WIZARD_COMPLETED_CATEGORY</name>
+     <desc>Wizard Completed Category Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>completed_wizard_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>category_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>parent_category_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>expanded</name>
+          <type>INTEGER</type>
+        </column>
+        <column>
+          <name>seq_num</name>
+          <type>INTEGER</type>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>category_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+
+   <table>
+     <name>DW_WIZARD_COMPLETED_PAGE</name>
+     <desc>Wizard Completed Page Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>completed_category_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>wizard_page_def_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>wizard_page_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>seq_num</name>
+          <type>INTEGER</type>
+        </column>
+        <column>
+          <name>created</name>
+          <type>TIMESTAMP</type>
+        </column>
+        <column>
+          <name>lastVisited</name>
+          <type>TIMESTAMP</type>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>wizard_page_def_id</not-null>
+     <not-null>wizard_page_id</not-null>
+     <not-null>completed_category_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
 
    <table>
      <name>DW_WIZARD_STYLE_ITEM</name>

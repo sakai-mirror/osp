@@ -31,7 +31,7 @@ class WizardWarehouseTask extends BaseWarehouseTask {
    private WizardManager wizardManager;
    
    protected Collection getItems() {
-      return new ArrayList();
+      return wizardManager.getWizardsForWarehousing();
    }
 
    public WizardManager getWizardManager() {

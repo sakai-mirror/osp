@@ -30,7 +30,7 @@ class GuidanceWarehouseTask extends BaseWarehouseTask {
    private GuidanceManager guidanceManager;
    
    protected Collection getItems() {
-      return new ArrayList();
+      return guidanceManager.getGuidanceForWarehousing();
    }
 
    public GuidanceManager getGuidanceManager() {
