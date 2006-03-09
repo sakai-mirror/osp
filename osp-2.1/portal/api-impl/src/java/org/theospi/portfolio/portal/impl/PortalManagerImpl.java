@@ -20,22 +20,24 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.impl;
 
+import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.javax.PagingPosition;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.framework.portal.PortalService;
+import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.user.User;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
-import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.api.kernel.tool.Placement;
 import org.theospi.portfolio.portal.intf.PortalManager;
+import org.theospi.portfolio.portal.model.SitePageWrapper;
 import org.theospi.portfolio.portal.model.SiteType;
 import org.theospi.portfolio.portal.model.ToolCategory;
-import org.theospi.portfolio.portal.model.SitePageWrapper;
+import org.theospi.portfolio.portal.model.ToolType;
 
 import java.util.*;
 
@@ -51,6 +53,9 @@ public class PortalManagerImpl implements PortalManager {
    private UserDirectoryService userDirectoryService;
    private SiteService siteService;
    private PortalService portalService;
+   private IdManager idManager;
+   private org.sakaiproject.metaobj.security.AuthorizationFacade sakaiAuthzManager;
+   private org.theospi.portfolio.security.AuthorizationFacade ospAuthzManager;
 
    private Map siteTypes;
    private static final String TYPE_PREFIX = "org.theospi.portfolio.portal.";
@@ -149,6 +154,9 @@ public class PortalManagerImpl implements PortalManager {
             toolOrder.addAll(siteType.getFirstCategory(), siteType.getToolCategories());
          }
 
+         getOspAuthzManager().pushAuthzGroups(siteId);
+         getSakaiAuthzManager().pushAuthzGroups(siteId);
+
          Map categories = categorizePages(pages, siteType, toolOrder);
 
          List categoryList = new ArrayList(categories.keySet());
@@ -217,27 +225,68 @@ public class PortalManagerImpl implements PortalManager {
       }
 
       Placement tool = (Placement) tools.get(0);
-      // todo check access
+
+      boolean foundCategory = false;
 
       String toolId = tool.getTool().getId();
       List toolCategories = new ArrayList();
       if (siteType != null && siteType.getToolCategories() != null) {
          for (Iterator i=siteType.getToolCategories().iterator();i.hasNext();){
             ToolCategory category = (ToolCategory) i.next();
-            if (category.getToolIds().contains(toolId)) {
-               toolCategories.add(category);
+            if (category.getTools().containsKey(toolId)) {
+               foundCategory = true;
+               Object key = category.getTools().get(toolId);
+               if (key instanceof String) {
+                  // no functions or authz to check here...
+                  toolCategories.add(category);
+               }
+               else if (hasAccess(page, tool, (ToolType)category.getTools().get(toolId))) {
+                  toolCategories.add(category);
+               }
             }
          }
       }
 
-      if (toolCategories.size() == 0) {
+      if (toolCategories.size() == 0 && !foundCategory) {
          return createUncategorized(index);
       }
 
       return (ToolCategory[]) toolCategories.toArray(new ToolCategory[toolCategories.size()]);
    }
 
-   private ToolCategory[] createUncategorized(int index) {
+   protected boolean hasAccess(SitePage page, Placement tool, ToolType toolType) {
+
+      if (toolType.getFunctions() == null || toolType.getFunctions().size() == 0) {
+         // nothin to check
+         return true;
+      }
+
+      for (Iterator i=toolType.getFunctions().iterator();i.hasNext();) {
+         if (toolType.getQualifierType().equals(ToolType.SAKAI_QUALIFIER)) {
+            if (getSakaiAuthzManager().isAuthorized((String)i.next(), null)) {
+               return true;
+            }
+         }
+         else {
+            String qualifier = null;
+            if (toolType.getQualifierType().equals(ToolType.PLACEMENT_QUALIFIER)) {
+               qualifier = tool.getId();
+            }
+            else if (toolType.getQualifierType().equals(ToolType.SITE_QUALIFIER)) {
+               qualifier = page.getSiteId();
+            }
+            else {
+               throw new RuntimeException("invalid tool type qualifier");
+            }
+
+            return getOspAuthzManager().isAuthorized((String)i.next(), getIdManager().getId(qualifier));
+         }
+      }
+
+      return false;
+   }
+
+   protected ToolCategory[] createUncategorized(int index) {
       try {
          ToolCategory category = (ToolCategory) ToolCategory.UNCATEGORIZED.clone();
          category.setOrder(index);
@@ -379,4 +428,29 @@ public class PortalManagerImpl implements PortalManager {
    public void setPortalService(PortalService portalService) {
       this.portalService = portalService;
    }
+
+   public org.sakaiproject.metaobj.security.AuthorizationFacade getSakaiAuthzManager() {
+      return sakaiAuthzManager;
+   }
+
+   public void setSakaiAuthzManager(org.sakaiproject.metaobj.security.AuthorizationFacade sakaiAuthzManager) {
+      this.sakaiAuthzManager = sakaiAuthzManager;
+   }
+
+   public org.theospi.portfolio.security.AuthorizationFacade getOspAuthzManager() {
+      return ospAuthzManager;
+   }
+
+   public void setOspAuthzManager(org.theospi.portfolio.security.AuthorizationFacade ospAuthzManager) {
+      this.ospAuthzManager = ospAuthzManager;
+   }
+
+   public IdManager getIdManager() {
+      return idManager;
+   }
+
+   public void setIdManager(IdManager idManager) {
+      this.idManager = idManager;
+   }
+
 }

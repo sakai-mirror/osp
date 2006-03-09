@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard;
 
-import org.theospi.portfolio.security.app.ApplicationAuthorizer;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.security.app.ApplicationAuthorizer;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
 
 import java.util.Iterator;
 import java.util.List;
@@ -132,6 +132,10 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
 
    protected Boolean isWizardViewAuth(AuthorizationFacade facade, Agent agent, Id id, boolean allowAnonymous) {
       Wizard wizard = getWizardManager().getWizard(id);
+
+      if (wizard == null) {
+         return null;
+      }
 
       return isWizardViewAuth(wizard, facade, agent, id, allowAnonymous);
    }
