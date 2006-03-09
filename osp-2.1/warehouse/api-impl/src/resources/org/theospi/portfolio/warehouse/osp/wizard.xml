@@ -397,6 +397,52 @@
      <primary-key>id</primary-key>
    </table>
 
+
+   <table>
+     <name>DW_WORKFLOW_PARENT</name>
+     <desc>Workflow Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>reflection_device_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>reflection_device_type</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>evaluation_device_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>evaluation_device_type</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>review_device_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>review_device_type</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>wizard_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
    <table>
      <name>DW_WIZARD_SUPPORT_ITEM</name>
      <desc>Wizard Support Item Datawarehouse table</desc>
