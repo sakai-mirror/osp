@@ -20,7 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.model;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,7 +38,7 @@ public class ToolCategory implements Comparable, Cloneable {
    private String key;
    private int order;
    private String homePagePath;
-   private List toolIds;
+   private Map tools;
 
    public ToolCategory() {
    }
@@ -72,12 +72,12 @@ public class ToolCategory implements Comparable, Cloneable {
       return order.compareTo(other);
    }
 
-   public List getToolIds() {
-      return toolIds;
+   public Map getTools() {
+      return tools;
    }
 
-   public void setToolIds(List toolIds) {
-      this.toolIds = toolIds;
+   public void setTools(Map tools) {
+      this.tools = tools;
    }
 
    public Object clone() throws CloneNotSupportedException {
