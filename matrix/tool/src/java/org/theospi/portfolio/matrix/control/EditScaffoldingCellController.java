@@ -83,6 +83,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       model.put("evaluators", getEvaluators(sCell.getWizardPageDefinition()));
       model.put("pageTitleKey", "title_editCell");
       model.put("pageInstructionsKey", "instructions_cellSettings");
+      model.put("styleReturnView", getStyleReturnView());
       
       return model;
    }
@@ -176,6 +177,10 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    
    protected String getGuidanceTitle() {
       return "Guidance for Cell";
+   }
+   
+   protected String getStyleReturnView() {
+      return "cell";
    }
 
    private Map doForwardAction(String forwardView, Map request, Map session,

@@ -21,10 +21,16 @@
 
 package org.theospi.portfolio.style.mgt;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.theospi.portfolio.shared.model.Node;
@@ -47,4 +53,7 @@ public interface StyleManager {
    public Collection findGlobalStyles(Agent agent);
    
    public boolean isGlobal();
+   
+   public void packageStyleForExport(Set styleIds, OutputStream os) throws IOException;
+   public Map importStyleList(ContentCollection parent, String siteId, InputStream in) throws IOException;
 }

@@ -63,7 +63,7 @@
            <one-to-many class="WizardPageForm" />
        </set>
        <property name="modified" type="java.util.Date" update="true" not-null="false"/>
-       <many-to-one name="style" column="style_id" not-null="false" class="org.theospi.portfolio.style.model.Style"/>
+       
    </class>
 
 	<class name="Attachment" table="osp_wiz_page_attachment" lazy="true">
@@ -157,6 +157,7 @@
             <one-to-many class="Matrix" />
         </set>
         <property name="exposedPageId" type="string" length="36" column="exposed_page_id" not-null="false"/>
+        <many-to-one name="style" column="style_id" not-null="false" class="org.theospi.portfolio.style.model.Style"/>
     </class>
 
     <class name="ScaffoldingCell" table="osp_scaffolding_cell" lazy="true" >
@@ -229,7 +230,7 @@
            <element column="form_def_id" type="string"/>
        </list>
       
-       
+      <many-to-one name="style" column="style_id" not-null="false" class="org.theospi.portfolio.style.model.Style"/> 
        
    </joined-subclass>
 

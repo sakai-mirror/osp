@@ -144,6 +144,9 @@
       <property name="reviewManager">
          <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
       </property>
+      <property name="styleManager">
+         <ref bean="org.theospi.portfolio.style.mgt.StyleManager"/>
+      </property>
    </bean>
 
    <bean id="defaultScaffoldingBean" class="org.theospi.portfolio.matrix.DefaultScaffoldingBean">
@@ -361,6 +364,22 @@
                <ref bean="org.theospi.portfolio.security.mgt.ToolPermissionManager.review"/>
             </entry>
          </map>
+      </property>
+   </bean>
+   
+   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.scaffoldingImportFile"
+      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+      <property name="viewAll"><value>true</value></property>
+      <property name="mimeTypes">
+         <list>
+            <value>application/zip</value>
+            <value>application/x-zip-compressed</value>
+         </list>
+      </property>
+      <property name="acceptedExtensions">
+         <list>
+            <value>zip</value>
+         </list>
       </property>
    </bean>
 

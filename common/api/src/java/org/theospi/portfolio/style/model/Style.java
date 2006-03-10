@@ -40,6 +40,7 @@ public class Style extends IdentifiableObject {
    transient private String styleFileName;
    transient private String filePickerAction;
    transient private boolean validate = true;
+   transient private String nodeRef;
    
    public static final int STATE_UNPUBLISHED = 0;
    public static final int STATE_WAITING_APPROVAL = 1;
@@ -120,6 +121,12 @@ public class Style extends IdentifiableObject {
    }
    public void setValidate(boolean validate) {
       this.validate = validate;
+   }
+   public String getNodeRef() {
+      return nodeRef;
+   }
+   public void setNodeRef(String nodeRef) {
+      this.nodeRef = nodeRef;
    }
 
 }

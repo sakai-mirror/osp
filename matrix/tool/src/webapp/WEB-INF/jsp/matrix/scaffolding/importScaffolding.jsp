@@ -6,6 +6,7 @@
 
 <form  method="POST">
 	<osp:form/>
+   <input name="formAction" type="hidden" value="import" />
 
 	<h3><fmt:message key="title_importScaffolding"/></h3>
 		
@@ -17,9 +18,8 @@
             <label><fmt:message key="label_importFile"/></label>
 			<input type="text" id="name" disabled="true" value="<c:out value="${uploadForm.scaffoldingFileName}"/>"/>
 			<input type="hidden" name="uploadedScaffolding" id="uploadedScaffolding" value="<c:out value="${status.value}"/>" />
-			<a href="<osp:url value="sakai.filepicker.helper/tool?panel=Main&session.sakaiproject.filepicker.attachLinks=true">
-			</osp:url>"
-				title="<fmt:message key="action_chooseFile_title"/>" >
+         <a href="javascript:document.forms[0].formAction.value='filePicker';document.forms[0].submit();"
+            title="<fmt:message key="action_chooseFile_title"/>" >
 				<fmt:message key="action_chooseFile"/>
 			</a>
 		</p>

@@ -71,6 +71,31 @@
 				<font color="red"><c:out value="${status.errorMessage}"/></font>
 			</spring:bind>
 		</p>
+      
+      <!-- ************* Style Area Start ************* -->
+         <p class="shorttext">
+            <label><fmt:message key="style_section_header"/></label>    
+
+      
+         <c:if test="${empty scaffolding.style}">
+            <input name="styleName" value="<c:out value="" />" />
+            <a href="javascript:document.forms[0].dest.value='scaffoldingStylePickerAction';
+            document.forms[0].submitAction.value='forward';
+            document.forms[0].params.value='stylePickerAction=true:scaffolding_id=<c:out value="${scaffolding.id}" />';
+            document.forms[0].submit();">
+            <osp:message key="select_style" /></a>
+         </c:if>
+         <c:if test="${not empty scaffolding.style}">
+            <c:set value="${scaffolding.style}" var="style" />
+            <input name="styleName" value="<c:out value="${style.name}" />" />
+            <a href="javascript:document.forms[0].dest.value='scaffoldingStylePickerAction';
+            document.forms[0].submitAction.value='forward';
+            document.forms[0].params.value='stylePickerAction=true:currentStyleId=<c:out value="${style.id}"/>:scaffolding_id=<c:out value="${scaffolding.id}" />';
+            document.forms[0].submit();">
+            <osp:message key="change_style" /></a>
+         </c:if>
+         </p>
+   <!-- ************* Style Area End ************* -->
      
         <br />
       

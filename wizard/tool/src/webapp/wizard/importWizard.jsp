@@ -33,10 +33,10 @@
    </sakai:panel_edit>
    
    <sakai:button_bar>
-       <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard}" 
-          action="#{wizard.processActionCancel}" />
        <sakai:button_bar_item id="import" value="#{msgs.import_wizard_button}"
           action="#{wizard.processImportWizards}" />
+       <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard}" 
+          action="#{wizard.processActionCancel}" />
    </sakai:button_bar>
 </h:form>
 </sakai:view>

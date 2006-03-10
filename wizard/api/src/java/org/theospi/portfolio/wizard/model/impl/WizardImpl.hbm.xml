@@ -21,28 +21,13 @@
 
       <property name="published" type="boolean" column="published" not-null="false"/>
       <property name="type" type="string" column="wizard_type" not-null="false"/>
-      <bag name="wizardStyleItems" cascade="all-delete-orphan"
-            inverse="true" lazy="true">
-            <key column="wizard_id" />
-            <one-to-many class="org.theospi.portfolio.wizard.model.WizardStyleItem" />
-        </bag>
+      <many-to-one name="style" column="style_id" not-null="false" class="org.theospi.portfolio.style.model.Style"/>
       <property name="exposedPageId" type="string" length="36" column="exposed_page_id" not-null="false"/>
       <many-to-one name="rootCategory"
          class="org.theospi.portfolio.wizard.model.WizardCategory" column="root_category"
          cascade="all" unique="true" />
       <property name="sequence" type="int" column="seq_num" not-null="false"/>
    </joined-subclass>
-   
-   <class name="WizardStyleItem" table="osp_wizard_style_item" lazy="true">
-      <cache usage="nonstrict-read-write"/>
-      <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
-      </id>
-      <property name="baseReference" type="org.theospi.portfolio.shared.mgt.EntityReferenceUserType" />
-      <property name="fullReference" type="org.theospi.portfolio.shared.mgt.EntityReferenceUserType" />
-      <many-to-one name="wizard" column="wizard_id"
-            not-null="true" class="Wizard" cascade="none" />
-   </class>
 
    <class name="WizardPageSequence" table="osp_wizard_page_sequence">
       <cache usage="nonstrict-read-write"/>

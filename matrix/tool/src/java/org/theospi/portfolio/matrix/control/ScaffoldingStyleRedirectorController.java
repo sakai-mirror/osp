@@ -28,22 +28,22 @@ import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.matrix.model.ScaffoldingCell;
-import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.style.StyleHelper;
 import org.theospi.portfolio.style.model.Style;
 
-public class StyleRedirectorController implements LoadObjectController {
+public class ScaffoldingStyleRedirectorController implements LoadObjectController {
 
    private MatrixManager matrixManager;
    private IdManager idManager = null;
 
+
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String stylePickerAction = (String) request.get("stylePickerAction");
-      String pageId = (String) session.get("pageDef_id");
-      if (pageId == null) {
-         pageId = (String) request.get("pageDef_id");
-         session.put("pageDef_id", pageId);
+      String scaffoldingId = (String) session.get("scaffolding_id");
+      if (scaffoldingId == null) {
+         scaffoldingId = (String) request.get("scaffolding_id");
+         session.put("scaffolding_id", scaffoldingId);
       }      
       
       if (stylePickerAction != null) {
@@ -54,36 +54,32 @@ public class StyleRedirectorController implements LoadObjectController {
             session.remove(StyleHelper.CURRENT_STYLE_ID);
          
          session.put(StyleHelper.STYLE_SELECTABLE, "true");
-         session.put("styleReturnView", request.get("styleReturnView"));
          
          return new ModelAndView("styleRedirector");
       }
 
       session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
-      String retView = (String)session.get("styleReturnView");
-      session.remove("styleReturnView");
-      return new ModelAndView(retView);
+
+      return new ModelAndView("scaffolding");
    }
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
-      String pageId = (String) request.get("pageDef_id");
-      if (pageId == null) {
-         pageId = (String) session.get("pageDef_id");
+      String scaffoldingId = (String) request.get("scaffolding_id");
+      if (scaffoldingId == null) {
+         scaffoldingId = (String) session.get("scaffolding_id");
          //session.remove("page_id");
       }
       
       EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
             EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
-      ScaffoldingCell scaffoldingCell = sessionBean.getScaffoldingCell();
-      WizardPageDefinition pageDef = scaffoldingCell.getWizardPageDefinition();
+      Scaffolding scaffolding = sessionBean.getScaffolding();
       
       if (session.get(StyleHelper.CURRENT_STYLE) != null) {
          Style style = (Style)session.get(StyleHelper.CURRENT_STYLE);
-         pageDef.setStyle(style);
-         session.remove(StyleHelper.CURRENT_STYLE);
+         scaffolding.setStyle(style);
       }
       else if (session.get(StyleHelper.UNSELECTED_STYLE) != null) {
-         pageDef.setStyle(null);
+         scaffolding.setStyle(null);
          session.remove(StyleHelper.UNSELECTED_STYLE);
       }
       

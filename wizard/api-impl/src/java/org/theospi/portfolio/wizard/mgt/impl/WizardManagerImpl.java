@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
@@ -97,8 +98,11 @@ import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
+import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
+import org.theospi.portfolio.style.mgt.StyleManager;
+import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.impl.WizardEntityProducer;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.*;
@@ -128,6 +132,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    private ContentHostingService contentHosting;
    private PresentableObjectHome xmlRenderer;
    private ReviewManager reviewManager;
+   private StyleManager styleManager;
 
    protected void init() throws Exception {
       /*
@@ -163,11 +168,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
       // setup access to the files
       List refs = new ArrayList();
-
-      for (Iterator i=wizard.getWizardStyleItems().iterator();i.hasNext();) {
-         WizardStyleItem item = (WizardStyleItem)i.next();
-         refs.add(item.getBaseReference().getBase().getReference());
-      }
+      
+      if (wizard.getStyle() != null) {
+         Node node = getNode(wizard.getStyle().getStyleFile());
+         refs.add(node.getResource().getReference());
+      }         
 
       WizardCategory rootCategory = (WizardCategory)wizard.getRootCategory();
       loadCategory(rootCategory, refs);
@@ -176,6 +181,32 @@ public class WizardManagerImpl extends HibernateDaoSupport
          refs));
 
       return wizard;
+   }
+   
+   public Node getNode(Id artifactId) {
+      String id = getContentHosting().resolveUuid(artifactId.getValue());
+      if (id == null) {
+         return null;
+      }
+
+      try {
+         ContentResource resource = getContentHosting().getResource(id);
+         String ownerId = resource.getProperties().getProperty(resource.getProperties().getNamePropCreator());
+         Agent owner = getAgentManager().getAgent(getIdManager().getId(ownerId));
+         return new Node(artifactId, resource, owner);
+      }
+      catch (PermissionException e) {
+         logger.error("", e);
+         throw new RuntimeException(e);
+      }
+      catch (IdUnusedException e) {
+         logger.error("", e);
+         throw new RuntimeException(e);
+      }
+      catch (TypeException e) {
+         logger.error("", e);
+         throw new RuntimeException(e);
+      }
    }
 
    protected void loadCategory(WizardCategory category, List refs) {
@@ -627,6 +658,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       }
       return false;
    }
+   
    private Wizard importWizard(Id worksiteId, InputStream in) throws IOException
    {
       ZipInputStream zis = new ZipInputStream(in);
@@ -637,7 +669,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    private static final String IMPORT_CREATE_DATE_KEY = "createDate";
    private static final String IMPORT_EVALUATORS_KEY = "evaluators";
-   private static final String IMPORT_STYLES_KEY = "style";
+   //private static final String IMPORT_STYLES_KEY = "style";
    private Wizard readWizardFromZip(ZipInputStream zis, String worksiteId) throws IOException
    {
       ZipEntry currentEntry = zis.getNextEntry();
@@ -656,10 +688,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
       importData.put(IMPORT_CREATE_DATE_KEY, wizard.getCreated());
       importData.put(IMPORT_EVALUATORS_KEY, new HashMap()); // key: userid  value: isRole
-      importData.put(IMPORT_STYLES_KEY, new HashMap());
+      //importData.put(IMPORT_STYLES_KEY, new HashMap());
 
       Map formsMap = new Hashtable();
       Map guidanceMap = null;
+      Map styleMap = null;
       Map resourceMap = new Hashtable();
       try {
          boolean gotFile = false;
@@ -677,6 +710,9 @@ public class WizardManagerImpl extends HibernateDaoSupport
                         getIdManager().getId(worksiteId));
                } else if(currentEntry.getName().startsWith("guidance/")) {
                   guidanceMap = processMatrixGuidance(fileParent, worksiteId, zis);
+                  gotFile = true;
+               } else if(currentEntry.getName().startsWith("style/")) {
+                  styleMap = processMatrixStyle(fileParent, worksiteId, zis);
                   gotFile = true;
                } else {
                   importAttachmentRef(fileParent, currentEntry, worksiteId, zis, resourceMap);
@@ -700,28 +736,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          //wizard = saveWizard(wizard);
          wizard.setId(getIdManager().createId());
          
-         replaceIds(wizard, guidanceMap, formsMap);
-
-         // set the styles
-         Map stylesMap = (Map)importData.get(IMPORT_STYLES_KEY);
-         List stylesList = new ArrayList();
-         for(Iterator i = stylesMap.keySet().iterator(); i.hasNext(); ) {
-            String styleId = (String)i.next();
-
-            //String[] fileValues = styleId.split("/");
-
-            //styleId = styleId.replaceAll(fileValues[2], worksiteId);
-            
-            //styleId.length();
-
-            Reference baseRef = getEntityManager().newReference(
-                  (String)resourceMap.get(styleId));
-            Reference fullRef = decorateReference(wizard, baseRef.getReference());
-            WizardStyleItem styleItem = new WizardStyleItem(wizard, baseRef, fullRef);
-
-            stylesList.add(styleItem);
-         }
-         wizard.setWizardStyleItems(stylesList);
+         replaceIds(wizard, guidanceMap, formsMap, styleMap);
 
          // save the wizard
          wizard = saveWizard(wizard);
@@ -799,7 +814,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return getGuidanceManager().importGuidanceList(parent, siteId, zis);
    }
 
-
+   protected Map processMatrixStyle(ContentCollection parent, String siteId,
+         ZipInputStream zis) throws IOException {
+      return getStyleManager().importStyleList(parent, siteId, zis);
+   }
+   
    protected ContentCollectionEdit getFileDir(String origName) throws InconsistentException,
          PermissionException, IdUsedException, IdInvalidException, IdUnusedException, TypeException {
       ContentCollection collection = getUserCollection();
@@ -857,7 +876,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    {
       SAXBuilder builder = new SAXBuilder();
       Map evaluatorsMap = (Map)importData.get(IMPORT_EVALUATORS_KEY);
-      Map stylesMap = (Map)importData.get(IMPORT_STYLES_KEY);
+      //Map stylesMap = (Map)importData.get(IMPORT_STYLES_KEY);
 
       try {
          byte []bytes = readStreamToBytes(inStream);
@@ -911,13 +930,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
           //   pull the styles from the xml
          //    WizardStyleItem only works with Resources not IDs
-         List styles = topNode.getChild("styles").getChildren("style");
-         for(Iterator i = styles.iterator(); i.hasNext(); ) {
-            Element style = (Element)i.next();
-
-            String styleId = style.getTextTrim();
-            stylesMap.put(styleId, null);
-         }
+         
+         String styleIdStr = topNode.getChildTextTrim("style");
+         wizard.setStyleId(getIdManager().getId(styleIdStr));
+         //stylesMap.put(styleId, null);
+         
       } catch(Exception jdome) {
             throw new OspException(jdome);
       }
@@ -976,6 +993,10 @@ public class WizardManagerImpl extends HibernateDaoSupport
          // read the page guidance
          String guidanceIdStr = pageDefNode.getChildTextTrim("guidance");
          wizardPageDefinition.setGuidanceId(idManager.getId(guidanceIdStr));
+         
+         // read the page style
+         String styleIdStr = pageDefNode.getChildTextTrim("style");
+         wizardPageDefinition.setStyleId(getIdManager().getId(styleIdStr));
 
          // read the into about additional forms
          if(pageDefNode.getChild("additionalForms") != null) {
@@ -1025,9 +1046,9 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
 
-   protected void replaceIds(Wizard wizard, Map guidanceMap, Map formsMap)
+   protected void replaceIds(Wizard wizard, Map guidanceMap, Map formsMap, Map styleMap)
    {
-      replaceCatIds(wizard.getRootCategory(), guidanceMap, formsMap);
+      replaceCatIds(wizard.getRootCategory(), guidanceMap, formsMap, styleMap);
 
       if(wizard.getEvaluationDevice() != null && wizard.getEvaluationDevice().getValue() != null)
          wizard.setEvaluationDevice(idManager.getId(
@@ -1051,8 +1072,16 @@ public class WizardManagerImpl extends HibernateDaoSupport
          getGuidanceManager().saveGuidance(wizardGuidance);
          wizard.setGuidanceId( wizardGuidance.getId() );
       }
+      if (wizard.getStyleId() != null && wizard.getStyleId().getValue() != null && 
+            wizard.getStyleId().getValue().length() > 0) {
+         Style wizardStyle = (Style)styleMap.get( wizard.getStyleId().getValue());
+         if(wizardStyle == null)
+            throw new NullPointerException("Style for Wizard was not found");
+         getStyleManager().storeStyle(wizardStyle);
+         wizard.setStyle(wizardStyle);
+      }
    }
-   protected void replaceCatIds(WizardCategory cat, Map guidanceMap, Map formsMap)
+   protected void replaceCatIds(WizardCategory cat, Map guidanceMap, Map formsMap, Map styleMap)
    {
       for(Iterator i = cat.getChildPages().iterator(); i.hasNext(); ) {
          WizardPageSequence sequence = (WizardPageSequence)i.next();
@@ -1091,11 +1120,22 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
             definition.setGuidance(pageDefGuidance);
          }
+         
+         if(definition.getStyleId() != null && definition.getStyleId().getValue() != null && 
+               definition.getStyleId().getValue().length() > 0) {
+            Style pageDefStyle= (Style)styleMap.get( definition.getStyleId().getValue() );
+            
+            if(pageDefStyle== null)
+               throw new NullPointerException("Style for Wizard Page was not found");
+            
+            getStyleManager().storeStyle(pageDefStyle);
+            definition.setStyle(pageDefStyle);
+         }
       }
       for(Iterator i = cat.getChildCategories().iterator(); i.hasNext(); ) {
          WizardCategory childCat = (WizardCategory)i.next();
 
-         replaceCatIds(childCat, guidanceMap, formsMap);
+         replaceCatIds(childCat, guidanceMap, formsMap, styleMap);
       }
    }
    
@@ -1144,9 +1184,10 @@ public class WizardManagerImpl extends HibernateDaoSupport
       Map  exportForms = new HashMap(); /* key: form id   value: not needed */
       Map  exportFiles = new HashMap(); /* key: uuid   value: ContentResource  */
       List exportGuidanceIds = new ArrayList(); /* List of guidance id */
+      Set exportStyleIds = new HashSet(); /* Set of style id */
 
       Wizard   wiz = getWizard(wizardId);
-      Document document = new Document(wizardToXML(wiz, exportForms, exportFiles, exportGuidanceIds));
+      Document document = new Document(wizardToXML(wiz, exportForms, exportFiles, exportGuidanceIds, exportStyleIds));
       ZipEntry newfileEntry = null;
 
 
@@ -1186,11 +1227,19 @@ public class WizardManagerImpl extends HibernateDaoSupport
          getGuidanceManager().packageGuidanceForExport(exportGuidanceIds, zos);
          zos.closeEntry();
       }
-
+      //CWM add style here
+      // put the guidance into the stream
+      if(exportStyleIds.size() > 0) {
+         newfileEntry = new ZipEntry("style/styleList");
+         zos.putNextEntry(newfileEntry);
+         getStyleManager().packageStyleForExport(exportStyleIds, zos);
+         zos.closeEntry();
+      }
 
       exportForms.clear();
       exportFiles.clear();
       exportGuidanceIds.clear();
+      exportStyleIds.clear();
    }
 
    private String exportPathFromResource(ContentResource resource, String id)
@@ -1201,7 +1250,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       fileName.substring(fileName.lastIndexOf('\\')+1);
    }
 
-   private Element wizardToXML(Wizard wiz, Map exportForms, Map exportFiles, List exportGuidanceIds)
+   private Element wizardToXML(Wizard wiz, Map exportForms, Map exportFiles, List exportGuidanceIds, Set exportStyleIds)
    {
        Element rootNode = new Element("ospiWizard");
 
@@ -1248,34 +1297,43 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
 
        //   add the wizard guidance to the list
-       if(wiz.getGuidanceId() != null)
-          exportGuidanceIds.add(wiz.getGuidanceId().getValue());
-
        attrNode = new Element("guidance");
-       if(wiz.getGuidanceId() != null)
+       if(wiz.getGuidanceId() != null) {
+          exportGuidanceIds.add(wiz.getGuidanceId().getValue());
           attrNode.addContent(new CDATA(wiz.getGuidanceId().getValue()));
+       }
        rootNode.addContent(attrNode);
 
 
        //   put the categories/pages into the xml
-       rootNode.addContent(putCategoryToXml(wiz.getRootCategory(), exportForms, exportGuidanceIds));
+       rootNode.addContent(putCategoryToXml(wiz.getRootCategory(), exportForms, exportGuidanceIds, exportStyleIds));
 
 
+       //  add the wizard style to the list
+       attrNode = new Element("style");
+       if (wiz.getStyle() != null) {
+          exportStyleIds.add(wiz.getStyle().getId().getValue());
+          attrNode.addContent(new CDATA(wiz.getStyle().getId().getValue()));
+       }
+       rootNode.addContent(attrNode);
+       
+       /*
        //   put the styles into the xml
-       attrNode = new Element("styles");
-       for(Iterator i = wiz.getWizardStyleItems().iterator(); i.hasNext(); ) {
-           WizardStyleItem style = (WizardStyleItem)i.next();
-           String          resId = style.getBaseReference().getBase().getId();
-           String nodeId = getContentHosting().getUuid(resId);
+       
+       //for(Iterator i = wiz.getStyle().iterator(); i.hasNext(); ) {
+           Style style = wiz.getStyle();
+           String          resId = style.getStyleFile().getValue();
+           String nodeId = getContentHosting().resolveUuid(resId);
 
-          Element       styleNode = new Element("style");
-          styleNode.addContent(new CDATA(nodeId));
-          attrNode.addContent(styleNode);
+          //Element       styleNode = new Element("style");
+           //attrNode.addContent(new CDATA(nodeId));
+           attrNode.addContent(new CDATA(style.getId().getValue()));
+          //attrNode.addContent(styleNode);
 
-         String id = getContentHosting().resolveUuid(nodeId);
+         //String id = getContentHosting().resolveUuid(nodeId);
           ContentResource resource = null;
             try {
-               resource = getContentHosting().getResource(id);
+               resource = getContentHosting().getResource(nodeId);
             } catch(PermissionException pe) {
               logger.warn("Failed loading content: no permission to view file", pe);
             } catch(TypeException pe) {
@@ -1285,14 +1343,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
           }
 
           exportFiles.put(nodeId, resource);
-       }
+       //}
        rootNode.addContent(attrNode);
-
+*/
        return rootNode;
    }
 
 
-   private Element putCategoryToXml(WizardCategory cat, Map exportForms, List exportGuidanceIds)
+   private Element putCategoryToXml(WizardCategory cat, Map exportForms, List exportGuidanceIds, Set exportStyleIds)
    {
       Element categoryNode = new Element("category");
 
@@ -1318,14 +1376,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
       Element pagesNode = new Element("pages");
       for(Iterator i = cat.getChildPages().iterator(); i.hasNext(); ) {
         WizardPageSequence pageSequence = (WizardPageSequence)i.next();
-        pagesNode.addContent(putPageSequenceToXml(pageSequence, exportForms, exportGuidanceIds));
+        pagesNode.addContent(putPageSequenceToXml(pageSequence, exportForms, exportGuidanceIds, exportStyleIds));
       }
       categoryNode.addContent(pagesNode);
 
       Element childCategoriesNode = new Element("childCategories");
       for(Iterator i = cat.getChildCategories().iterator(); i.hasNext(); ) {
          WizardCategory childCat = (WizardCategory)i.next();
-         childCategoriesNode.addContent(putCategoryToXml(childCat, exportForms, exportGuidanceIds));
+         childCategoriesNode.addContent(putCategoryToXml(childCat, exportForms, exportGuidanceIds, exportStyleIds));
       }
       categoryNode.addContent(childCategoriesNode);
 
@@ -1333,7 +1391,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    private Element putPageSequenceToXml(WizardPageSequence pageSequence,
-                              Map exportForms, List exportGuidanceIds)
+                              Map exportForms, List exportGuidanceIds, Set exportStyleIds)
    {
       Element pageSequenceNode = new Element("pageSequence");
 
@@ -1349,13 +1407,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
       pageSequenceNode.addContent(attrNode);
 
       pageSequenceNode.addContent(putPageDefinitionToXml(
-            pageSequence.getWizardPageDefinition(), exportForms, exportGuidanceIds));
+            pageSequence.getWizardPageDefinition(), exportForms, exportGuidanceIds, exportStyleIds));
 
       return pageSequenceNode;
    }
 
    private Element putPageDefinitionToXml(WizardPageDefinition pageDef,
-                     Map exportForms, List exportGuidanceIds)
+                     Map exportForms, List exportGuidanceIds, Set exportStyleIds)
    {
       Element pageDefNode = new Element("pageDef");
 
@@ -1389,14 +1447,19 @@ public class WizardManagerImpl extends HibernateDaoSupport
       }
       pageDefNode.addContent(additionalFormsNode);
 
-      if(pageDef.getGuidance() != null && pageDef.getGuidance().getId() != null)
-         exportGuidanceIds.add(pageDef.getGuidance().getId().getValue());
-
       attrNode = new Element("guidance");
-      if(pageDef.getGuidance() != null && pageDef.getGuidance().getId() != null)
+      if(pageDef.getGuidance() != null && pageDef.getGuidance().getId() != null) {
+         exportGuidanceIds.add(pageDef.getGuidance().getId().getValue());
          attrNode.addContent(new CDATA(pageDef.getGuidance().getId().getValue()));
+      }
       pageDefNode.addContent(attrNode);
 
+      attrNode = new Element("style");
+      if (pageDef.getStyle() != null && pageDef.getStyle().getId() != null) {
+         exportStyleIds.add(pageDef.getStyle().getId().getValue());
+         attrNode.addContent(new CDATA(pageDef.getStyle().getId().getValue()));
+      }
+      pageDefNode.addContent(attrNode);
 
       Element     evaluatorsNode = new Element("evaluators");
       Collection  evaluators = getWizardPageDefEvaluators(pageDef.getId(), true);
@@ -1687,5 +1750,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public void setReviewManager(ReviewManager reviewManager) {
       this.reviewManager = reviewManager;
+   }
+
+   public StyleManager getStyleManager() {
+      return styleManager;
+   }
+
+   public void setStyleManager(StyleManager styleManager) {
+      this.styleManager = styleManager;
    }
 }

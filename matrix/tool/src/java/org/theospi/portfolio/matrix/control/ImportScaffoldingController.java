@@ -28,6 +28,7 @@ import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.SessionManager;
 import org.sakaiproject.api.kernel.tool.ToolManager;
@@ -77,7 +78,19 @@ public class ImportScaffoldingController implements Controller, FormController {
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session,
          Map application, Errors errors) {
-
+      
+      String formAction = (String)request.get("formAction");
+      if (formAction.equals("filePicker")) {
+         
+         session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER, 
+               ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.scaffoldingImportFile"));
+         session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
+         return new ModelAndView("filePicker");
+      }
+      
+      session.remove(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER);
+      session.remove(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS);
+      
       ScaffoldingUploadForm scaffoldingForm = (ScaffoldingUploadForm)requestModel;
 
       if (scaffoldingForm.getUploadedScaffolding() == null) {
