@@ -345,12 +345,6 @@ public class WizardManagerImpl extends HibernateDaoSupport
    {
       List wizards = getHibernateTemplate().find("from Wizard w");
       
-      for(Iterator i = wizards.iterator(); i.hasNext(); ) {
-         Wizard w = (Wizard)i.next();
-         
-         w.getWizardStyleItems().size();
-      }
-      
       return wizards;
    }
    
