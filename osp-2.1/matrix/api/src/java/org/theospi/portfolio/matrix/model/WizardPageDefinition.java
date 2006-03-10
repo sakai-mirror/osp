@@ -23,6 +23,7 @@ package org.theospi.portfolio.matrix.model;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
+import org.theospi.portfolio.style.model.Style;
 
 import java.util.*;
 
@@ -47,6 +48,9 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    
    private String siteId;
    private String toolId;
+   private Style style;
+   
+   transient private Id styleId;
 
    private List additionalForms = new ArrayList();
 
@@ -176,6 +180,18 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    }
    public void setToolId(String toolId) {
       this.toolId = toolId;
+   }
+   public Style getStyle() {
+      return style;
+   }
+   public void setStyle(Style style) {
+      this.style = style;
+   }
+   public Id getStyleId() {
+      return styleId;
+   }
+   public void setStyleId(Id styleId) {
+      this.styleId = styleId;
    }
 
 }

@@ -28,6 +28,9 @@ import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.theospi.portfolio.style.model.Style;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
+import org.theospi.portfolio.wizard.model.CompletedWizard;
 
 import java.util.Map;
 import java.util.List;
@@ -41,6 +44,8 @@ import java.util.ArrayList;
  * To change this template use File | Settings | File Templates.
  */
 public class WizardPageController extends CellController {
+   
+   private WizardManager wizardManager;
 
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.FormController#referenceData(java.util.Map, java.lang.Object, org.springframework.validation.Errors)
@@ -54,6 +59,12 @@ public class WizardPageController extends CellController {
       model.put("pageTitleKey", "view_wizardPage");
       model.put("helperPage", "true");
       return model;
+   }
+   
+   protected Style getDefaultStyle(Id pageId) {
+      //Get the wizard default style
+      CompletedWizard cw = getWizardManager().getCompletedWizardByPage(pageId);
+      return cw.getWizard().getStyle();
    }
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
@@ -104,6 +115,14 @@ public class WizardPageController extends CellController {
 
       cell.setScaffoldingCell(cellDef);
       return cell;
+   }
+
+   public WizardManager getWizardManager() {
+      return wizardManager;
+   }
+
+   public void setWizardManager(WizardManager wizardManager) {
+      this.wizardManager = wizardManager;
    }
 
 }

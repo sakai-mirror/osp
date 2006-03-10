@@ -22,17 +22,15 @@ package org.theospi.portfolio.wizard.tool;
 
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
+import org.theospi.portfolio.style.StyleHelper;
+import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.model.Wizard;
-import org.theospi.portfolio.wizard.model.WizardStyleItem;
 import org.theospi.portfolio.guidance.model.GuidanceItem;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.io.IOException;
-import java.util.List;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -93,25 +91,6 @@ public class DecoratedWizard {
    public boolean getCanExport() {
       return parent.getCanExport(base);
    }
-
-   public List getWizardStyleItems() {
-      ToolSession session = SessionManager.getCurrentToolSession();
-      if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
-         session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
-
-         List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-         base.getWizardStyleItems().clear();
-         for(int i=0; i<refs.size(); i++) {
-            Reference ref = (Reference) refs.get(i);
-            Reference fullRef = parent.decorateReference(ref.getReference());
-            WizardStyleItem wsItem = new WizardStyleItem(base, ref, fullRef);
-            base.getWizardStyleItems().add(wsItem);
-         }
-         session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-      }
-
-      return base.getWizardStyleItems();
-   }
    
    public String getCurrentExportLink() {
 
@@ -136,6 +115,45 @@ public class DecoratedWizard {
    
    public String processActionPublish() {
       return parent.processActionPublish(base);
+   }
+   
+   public String getStyleName() {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      if (session.getAttribute(StyleHelper.CURRENT_STYLE) != null) {
+         Style style = (Style)session.getAttribute(StyleHelper.CURRENT_STYLE);
+         base.setStyle(style);
+      }
+      else if (session.getAttribute(StyleHelper.UNSELECTED_STYLE) != null) {
+         base.setStyle(null);
+         session.removeAttribute(StyleHelper.UNSELECTED_STYLE);
+         return "";
+      }
+      
+      if (base.getStyle() != null)
+         return base.getStyle().getName();
+      return "";
+   }
+   
+   public String processActionSelectStyle() {      
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.removeAttribute(StyleHelper.CURRENT_STYLE);
+      session.removeAttribute(StyleHelper.CURRENT_STYLE_ID);
+      
+      session.setAttribute(StyleHelper.STYLE_SELECTABLE, "true");
+      
+      Wizard wizard = getBase();
+      
+      if (wizard.getStyle() != null)
+         session.setAttribute(StyleHelper.CURRENT_STYLE_ID, wizard.getStyle().getId().getValue());
+      
+      try {
+         context.redirect("osp.style.helper/listStyle");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+      return null;
    }
 
    public WizardTool getParent() {
@@ -198,7 +216,7 @@ public class DecoratedWizard {
 
    public String processActionRunWizard() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      ToolSession session = SessionManager.getCurrentToolSession();
+      //ToolSession session = SessionManager.getCurrentToolSession();
       
       getParent().setCurrent(this);
       setRunningWizard(new DecoratedCompletedWizard(getParent(), this,

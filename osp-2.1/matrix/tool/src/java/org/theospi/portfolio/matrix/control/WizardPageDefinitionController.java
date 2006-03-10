@@ -112,4 +112,8 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
    protected String getGuidanceTitle() {
       return "Guidance for Wizard Page";
    }
+   
+   protected String getStyleReturnView() {
+      return "page";
+   }
 }

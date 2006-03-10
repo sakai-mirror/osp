@@ -243,6 +243,9 @@
       <property name="reviewManager">
          <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
       </property>
+      <property name="styleManager">
+         <ref bean="org.theospi.portfolio.style.mgt.StyleManager"/>
+      </property>
    </bean>
 
    <bean id="org.theospi.portfolio.wizard.mgt.WizardManager"

@@ -80,6 +80,8 @@ import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
+import org.theospi.portfolio.style.mgt.StyleManager;
+import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
@@ -112,6 +114,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private GuidanceManager guidanceManager;
    private ReviewManager reviewManager;
+   private StyleManager styleManager;
 
    private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    private EntityContextFinder contentFinder = null;
@@ -993,16 +996,25 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    
    public void packageScffoldingForExport(Id scaffoldingId, OutputStream os) throws IOException {
       Scaffolding oldScaffolding = this.getScaffoldingForExport(scaffoldingId); //, true);
+      
 
       CheckedOutputStream checksum = new CheckedOutputStream(os, new Adler32());
       ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(checksum));
-
-      //cwm - add other files/forms
 
       List levels = oldScaffolding.getLevels();
       List criteria = oldScaffolding.getCriteria();
       Set scaffoldingCells = oldScaffolding.getScaffoldingCells();
       List guidanceIds = new ArrayList();
+      Set styleIds = new HashSet();
+      
+      levels.size();
+      criteria.size();
+      scaffoldingCells.size();
+      removeFromSession(oldScaffolding);
+      
+      if (oldScaffolding.getStyle() != null) {
+         styleIds.add(oldScaffolding.getStyle().getId().getValue());
+      }
 
       for (Iterator iter = scaffoldingCells.iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
@@ -1026,15 +1038,23 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          if (sCell.getGuidance() != null) {
             guidanceIds.add(sCell.getGuidance().getId().getValue());
          }
+         if (sCell.getWizardPageDefinition().getStyle() != null) {
+            styleIds.add(sCell.getWizardPageDefinition().getStyle().getId().getValue());
+         }
       }
 
       if (guidanceIds.size() > 0) {
          exportGuidance(zos, guidanceIds);
       }
+      
+      if (styleIds.size() > 0) {
+         exportStyle(zos, styleIds);
+      }
 
       oldScaffolding.setLevels(new ArrayList(levels));
       oldScaffolding.setCriteria(new ArrayList(criteria));
       oldScaffolding.setScaffoldingCells(new HashSet(scaffoldingCells));
+      oldScaffolding.setMatrix(new HashSet());
 
       removeFromSession(oldScaffolding);
 
@@ -1064,10 +1084,18 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    protected void exportGuidance(ZipOutputStream zos, List guidanceIds)
          throws IOException {
-
       ZipEntry newfileEntry = new ZipEntry("guidance/guidanceList");
       zos.putNextEntry(newfileEntry);
       getGuidanceManager().packageGuidanceForExport(guidanceIds, zos);
+      zos.closeEntry();
+   }
+   
+   protected void exportStyle(ZipOutputStream zos, Set styleIds)
+         throws IOException {
+
+      ZipEntry newfileEntry = new ZipEntry("style/styleList");
+      zos.putNextEntry(newfileEntry);
+      getStyleManager().packageStyleForExport(styleIds, zos);
       zos.closeEntry();
    }
 
@@ -1204,6 +1232,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       Map formsMap = new Hashtable();
       Map guidanceMap = null;
+      Map styleMap = null;
 
       try {
          ContentCollectionEdit fileParent = getFileDir(tempDirName);
@@ -1228,6 +1257,10 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
                   gotFile = true;
                   guidanceMap = processMatrixGuidance(fileParent, currentPlacement.getSiteId(), zis);
                }
+               else if (currentEntry.getName().equals("style/styleList")) {
+                  gotFile = true;
+                  styleMap = processMatrixStyle(fileParent, currentPlacement.getSiteId(), zis);
+               }
             }
 
             zis.closeEntry();
@@ -1241,7 +1274,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          scaffolding.setOwner(getAuthnManager().getAgent());
          scaffolding.setWorksiteId(getIdManager().getId(currentPlacement.getSiteId()));
          
-         resetIds(scaffolding, guidanceMap, formsMap);
+         resetIds(scaffolding, guidanceMap, formsMap, styleMap);
 
          storeScaffolding(scaffolding);         
 
@@ -1278,6 +1311,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
                                        ZipInputStream zis) throws IOException {
       return getGuidanceManager().importGuidanceList(parent, siteId, zis);
    }
+   
+   protected Map processMatrixStyle(ContentCollection parent, String siteId,
+         ZipInputStream zis) throws IOException {
+      return getStyleManager().importStyleList(parent, siteId, zis);
+}
 
    protected void processMatrixForm(ZipEntry currentEntry, ZipInputStream zis, Map formMap, Id worksite)
          throws IOException {
@@ -1424,10 +1462,20 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       fileMap.put(oldId, newId);
    }
 
-   protected void resetIds(Scaffolding scaffolding, Map guidanceMap, Map formsMap) {
+   protected void resetIds(Scaffolding scaffolding, Map guidanceMap, Map formsMap, Map styleMap) {
+      
+      if (scaffolding.getStyle() != null) {
+         if (styleMap != null) {
+            scaffolding.setStyle((Style) styleMap.get(scaffolding.getStyle().getId().getValue()));
+         }
+         else {
+            scaffolding.getStyle().setId(null);
+         }
+      }      
+      
       substituteCriteria(scaffolding);
       substituteLevels(scaffolding);
-      substituteScaffoldingCells(scaffolding, guidanceMap, formsMap);
+      substituteScaffoldingCells(scaffolding, guidanceMap, formsMap, styleMap);
    }
 
    protected void substituteCriteria(Scaffolding scaffolding) {
@@ -1451,7 +1499,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       scaffolding.setLevels(newLevels);
    }
    
-   protected void substituteScaffoldingCells(Scaffolding scaffolding, Map guidanceMap, Map formsMap) {
+   protected void substituteScaffoldingCells(Scaffolding scaffolding, Map guidanceMap, Map formsMap, Map styleMap) {
       Set sCells = new HashSet(); 
       for (Iterator iter=scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell scaffoldingCell = (ScaffoldingCell) iter.next();
@@ -1465,6 +1513,15 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             }
             else {
                wpd.getGuidance().setId(null);
+            }
+         }
+         
+         if (wpd.getStyle() != null) {
+            if (styleMap != null) {
+               wpd.setStyle((Style) styleMap.get(wpd.getStyle().getId().getValue()));
+            }
+            else {
+               wpd.getStyle().setId(null);
             }
          }
 
@@ -1909,5 +1966,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public void setReviewManager(ReviewManager reviewManager) {
       this.reviewManager = reviewManager;
+   }
+
+   public StyleManager getStyleManager() {
+      return styleManager;
+   }
+
+   public void setStyleManager(StyleManager styleManager) {
+      this.styleManager = styleManager;
    }
 }

@@ -37,6 +37,8 @@ import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
@@ -92,16 +94,31 @@ public class CellController implements FormController, LoadObjectController {
       }
       model.put("readOnlyMatrix", readOnly);
       
-      Style style = cell.getCell().getWizardPage().getStyle();
+      Style style = cell.getCell().getWizardPage().getPageDefinition().getStyle();
+      
       if (style != null) {
          Id fileId = style.getStyleFile();
          Node node = getMatrixManager().getNode(fileId);
          model.put("styleUrl", node.getExternalUri());
       }
       
+      Style defaultStyle = getDefaultStyle(getIdManager().getId(pageId));
+      if (defaultStyle != null) {
+         Id fileId = defaultStyle.getStyleFile();
+         Node node = getMatrixManager().getNode(fileId);
+         model.put("defaultStyleUrl", node.getExternalUri());
+      }
+      
       model.put("pageTitleKey", "view_cell");
       
       return model;
+   }
+   
+   protected Style getDefaultStyle(Id pageId) {
+      //Get the scaffolding default style
+      WizardPage wp = getMatrixManager().getWizardPage(pageId);
+      ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(wp.getPageDefinition().getId());
+      return sCell.getScaffolding().getStyle();
    }
    
    protected String getEntityProducer() {

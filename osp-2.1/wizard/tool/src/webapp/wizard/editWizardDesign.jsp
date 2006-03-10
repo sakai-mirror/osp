@@ -31,18 +31,14 @@
       <ospx:xheadertitle id="styleTitle" value="#{msgs.style_title}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
          <sakai:instruction_message value="#{msgs.style_instruction_message}" />
-            <sakai:flat_list value="#{wizard.current.wizardStyleItems}" var="style">
-               <h:column>
-                  <f:facet name="header">
-                     <h:commandButton action="#{wizard.processActionManageStyle}"
-                        value="#{msgs.manage_style}"/>
-                  </f:facet>
-                  <h:outputLink title="#{style.displayName}"
-                     value="#{style.fullReference.base.url}" target="_new">
-                     <h:outputText value="#{style.displayName}"/>
-                  </h:outputLink>
-               </h:column>
-            </sakai:flat_list>
+            <h:outputLabel for="styleFile" id="styleLabel" value="#{msgs.wizard_style}" />
+            <h:panelGroup>
+               <h:inputText id="styleFile" value="#{wizard.current.styleName}" 
+                     readonly="true" required="false" />
+               <h:commandLink action="#{wizard.current.processActionSelectStyle}" immediate="true">
+                  <h:outputText value="#{msgs.select_style}"/>
+               </h:commandLink>
+            </h:panelGroup>
       </ospx:xheaderdrawer>
    </ospx:xheader>   
    

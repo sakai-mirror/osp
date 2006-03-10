@@ -68,8 +68,47 @@
                </c:if>
             </spring:bind>
       </p>
+      
+      <spring:bind path="scaffoldingCell.initialStatus">  
+            <c:if test="${status.error}">
+                <div class="validation"><c:out value="${status.errorMessage}"/></div>
+            </c:if>
+          <p class="shorttext">
+            <span class="reqStar">*</span>
+            <label><fmt:message key="label_initialStatus"/></label>     
+               <select name="<c:out value="${status.expression}"/>" >
+                  <option value="READY" <c:if test="${status.value=='READY'}"> selected</c:if>>Ready</option>
+                  <option value="LOCKED" <c:if test="${status.value=='LOCKED'}"> selected</c:if>>Locked</option>
+               </select>
+          </p>
+      </spring:bind>
+      
+     <!-- ************* Style Area Start ************* -->
+         <p class="shorttext">
+            <label><fmt:message key="style_section_header"/></label>    
 
+      
+         <c:if test="${empty scaffoldingCell.wizardPageDefinition.style}">
+            <input name="styleName" value="<c:out value="" />" />
+            <a href="javascript:document.forms[0].dest.value='stylePickerAction';
+            document.forms[0].submitAction.value='forward';
+            document.forms[0].params.value='stylePickerAction=true:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:styleReturnView=<c:out value="${styleReturnView}" />';
+            document.forms[0].submit();">
+            <osp:message key="select_style" /></a>
+         </c:if>
+         <c:if test="${not empty scaffoldingCell.wizardPageDefinition.style}">
+            <c:set value="${scaffoldingCell.wizardPageDefinition.style}" var="style" />
+            <input name="styleName" value="<c:out value="${style.name}" />" />
+            <a href="javascript:document.forms[0].dest.value='stylePickerAction';
+            document.forms[0].submitAction.value='forward';
+            document.forms[0].params.value='stylePickerAction=true:currentStyleId=<c:out value="${style.id}"/>:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:styleReturnView=<c:out value="${styleReturnView}" />';
+            document.forms[0].submit();">
+            <osp:message key="change_style" /></a>
+         </c:if>
+         </p>
+   <!-- ************* Style Area End ************* -->
 
+   <!-- ************* Guidance and reflection Area Start ************* -->        
       <h4><osp:message key="guidance_header"/></h4>
       <c:if test="${empty scaffoldingCell.guidance}">
          <a href="javascript:document.forms[0].dest.value='createGuidance';
@@ -95,57 +134,12 @@
          </div>
       </c:if>
       
-    
-		<h4><osp:message key="cell_settings_header" /></h4>
-      
-        <spring:bind path="scaffoldingCell.initialStatus">  
-            <c:if test="${status.error}">
-                <div class="validation"><c:out value="${status.errorMessage}"/></div>
-            </c:if>
-		    <p class="shorttext">
-    			<span class="reqStar">*</span>
-    			<label><fmt:message key="label_initialStatus"/></label>		
-    				<select name="<c:out value="${status.expression}"/>" >
-    					<option value="READY" <c:if test="${status.value=='READY'}"> selected</c:if>>Ready</option>
-    					<option value="LOCKED" <c:if test="${status.value=='LOCKED'}"> selected</c:if>>Locked</option>
-    				</select>
-		    </p>
-        </spring:bind>
-        
-      <h4><fmt:message key="title_additionalForms"/></h4>
-
-      <p class="shorttext">
-         <label><fmt:message key="label_selectForm"/></label>    
-         <select name="selectAdditionalFormId" >
-            <option value="" selected>None</option>
-            <c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
-               <option value="<c:out value="${addtlForm.id}"/>">
-                  <c:out value="${addtlForm.name}"/></option>
-            </c:forEach>
-         </select>
-         <span class="act">
-            <input type="submit" name="addForm" value="<fmt:message key="button_add"/>" class="active" onclick="javascript:document.forms[0].validate.value='false';" />
-         </span>
-      </p>
-      
-      <c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
-      <c:out value="${chosenForm.name}" />
-         <div class="itemAction">
-             <a href="javascript:document.forms[0].submitAction.value='removeFormDef';
-               document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
-               document.forms[0].submit();">
-                 <osp:message key="remove"/>
-                 </a>
-         </div>
-      
-      </c:forEach>
-        
-		<spring:bind path="scaffoldingCell.reflectionDeviceType">  
+            <spring:bind path="scaffoldingCell.reflectionDeviceType">  
             <input type="hidden" name="<c:out value="${status.expression}"/>"
                value="<c:out value="${status.value}"/>" />
         </spring:bind>
         
-		<spring:bind path="scaffoldingCell.reflectionDevice">  
+      <spring:bind path="scaffoldingCell.reflectionDevice">  
             <c:if test="${status.error}">
                 <div class="validation"><c:out value="${status.errorMessage}"/></div>
             </c:if>
@@ -160,8 +154,16 @@
                </select>
           </p>
         </spring:bind>
-        
-         <spring:bind path="scaffoldingCell.reviewDeviceType">  
+   <!-- ************* Guidance and reflection Area End ************* -->        
+   
+      <!-- ************* Review and Evaluation Area Start ************* -->            
+		
+   <h4 style="cursor:pointer" onclick="javascript:showHideDiv('evaluatorsDiv','/osp-jsf-resource')">
+      <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgevaluatorsDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
+      <fmt:message key="label_Evaluators"/></h4>
+   <div id="evaluatorsDiv">  
+   
+   <spring:bind path="scaffoldingCell.reviewDeviceType">  
             <input type="hidden" name="<c:out value="${status.expression}"/>"
                value="<c:out value="${status.value}"/>" />
         </spring:bind>   
@@ -200,15 +202,47 @@
                </select>
        </p>
      </spring:bind>
-		
-   <h4 style="cursor:pointer" onclick="javascript:showHideDiv('evaluatorsDiv','/osp-jsf-resource')">
-      <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgevaluatorsDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
-      <fmt:message key="label_Evaluators"/></h4>
-   <div id="evaluatorsDiv">  
+   
+   
       <c:forEach var="eval" items="${evaluators}">
          <div class="indnt1"><c:out value="${eval}" /></div>
       </c:forEach>
    </div>
+   
+      <!-- ************* Review and Evaluation Area End ************* -->
+      
+   <!-- ************* Additional Forms Area Start ************* -->   
+        
+      <h4><fmt:message key="title_additionalForms"/></h4>
+
+      <p class="shorttext">
+         <label><fmt:message key="label_selectForm"/></label>    
+         <select name="selectAdditionalFormId" >
+            <option value="" selected>None</option>
+            <c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
+               <option value="<c:out value="${addtlForm.id}"/>">
+                  <c:out value="${addtlForm.name}"/></option>
+            </c:forEach>
+         </select>
+         <span class="act">
+            <input type="submit" name="addForm" value="<fmt:message key="button_add"/>" class="active" onclick="javascript:document.forms[0].validate.value='false';" />
+         </span>
+      </p>
+      
+      <c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
+      <c:out value="${chosenForm.name}" />
+         <div class="itemAction">
+             <a href="javascript:document.forms[0].submitAction.value='removeFormDef';
+               document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
+               document.forms[0].submit();">
+                 <osp:message key="remove"/>
+                 </a>
+         </div>
+      
+      </c:forEach>
+        
+      <!-- ************* Additional Forms Area End ************* -->   
+      
 	<spring:bind path="scaffoldingCell.id">
 		<input type="hidden" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.displayValue}"/>"/>
 		<span class="error_message"><c:out value="${status.errorMessage}"/></span>

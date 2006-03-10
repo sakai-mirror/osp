@@ -23,6 +23,7 @@ package org.theospi.portfolio.matrix.model;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.theospi.portfolio.style.model.Style;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -63,6 +64,8 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    private String pendingColor;
    private String completedColor;
    private String lockedColor;
+   
+   private Style style;
    
    private String description;
    private Id worksiteId;
@@ -369,5 +372,13 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
 
    public void setExposedPageId(String exposedPageId) {
       this.exposedPageId = exposedPageId;
+   }
+
+   public Style getStyle() {
+      return style;
+   }
+
+   public void setStyle(Style style) {
+      this.style = style;
    }
 }

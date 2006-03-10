@@ -50,7 +50,6 @@ import org.sakaiproject.service.legacy.content.ContentResource;
 import org.sakaiproject.service.legacy.authzGroup.Member;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.sakaiproject.service.legacy.resource.cover.EntityManager;
 import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
@@ -70,11 +69,11 @@ import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.wizard.model.Wizard;
-import org.theospi.portfolio.wizard.model.WizardStyleItem;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.shared.tool.BuilderTool;
 import org.theospi.portfolio.shared.tool.BuilderScreen;
 import org.theospi.portfolio.shared.model.OspException;
+import org.theospi.portfolio.style.StyleHelper;
 import org.theospi.portfolio.matrix.MatrixManager;
 
 public class WizardTool extends BuilderTool {
@@ -517,7 +516,7 @@ public class WizardTool extends BuilderTool {
 	      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS, importFiles);
 	      session.setAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
 	            ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.wizardImportFile"));
-
+         
 	      try {
 	         context.redirect("sakai.filepicker.helper/tool");
 	      }
@@ -563,6 +562,11 @@ public class WizardTool extends BuilderTool {
 			importFiles = refs;
 			session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
 		}
+      else if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null
+            && session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) == null) {
+         importFiles.clear();
+         importFilesString = "";
+      }
 
 		return importFilesString;
    }
@@ -593,38 +597,27 @@ public class WizardTool extends BuilderTool {
 	   return LIST_PAGE;
    }
    
-
-   public String processActionManageStyle() {
-	      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-	      ToolSession session = SessionManager.getCurrentToolSession();
-	      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, new Boolean(true).toString());
-	      //session.setAttribute(GuidanceTool.ATTACHMENT_TYPE, type);
-	      
-	      //getCurrent().getBase().getStyle()
-	      
-	      Wizard wizard = getCurrent().getBase();
-
-	      //WizardStyleItem wsItem = wizard.getWizardStyleItem();
-	      
-	      List wsItems = wizard.getWizardStyleItems();
-	      List wsItemRefs = EntityManager.newReferenceList();
-
-	      for (Iterator i=wsItems.iterator();i.hasNext();) {
-	         WizardStyleItem wsItem = (WizardStyleItem)i.next();
-	         wsItemRefs.add(wsItem.getBaseReference().getBase());
-	      }
-
-	      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS, wsItemRefs);
-	      session.setAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
-	            ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.wizardStyleFile"));
-
-	      try {
-	         context.redirect("sakai.filepicker.helper/tool");
-	      }
-	      catch (IOException e) {
-	         throw new RuntimeException("Failed to redirect to helper", e);
-	      }
-	      return null;
+   
+   public String processActionSelectStyle() {      
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.removeAttribute(StyleHelper.CURRENT_STYLE);
+      session.removeAttribute(StyleHelper.CURRENT_STYLE_ID);
+      
+      session.setAttribute(StyleHelper.STYLE_SELECTABLE, "true");
+      
+      Wizard wizard = getCurrent().getBase();
+      
+      if (wizard.getStyle() != null)
+         session.setAttribute(StyleHelper.CURRENT_STYLE_ID, wizard.getStyle().getId().getValue());
+      
+      try {
+         context.redirect("osp.style.helper/listStyle");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+      return null;
    }
    
    public List getUserListForSelect() {

@@ -20,14 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
+import org.theospi.portfolio.style.model.Style;
 
 /**
  * The super class has the evaluation, reflection and review
@@ -49,7 +48,7 @@ public class Wizard extends ObjectWithWorkflow {
    //private Set supportItems = new HashSet();
    private boolean published = false;
    private String type = WIZARD_TYPE_SEQUENTIAL;
-   private List wizardStyleItems = new ArrayList();
+   //private List wizardStyleItems = new ArrayList();
    private String exposedPageId;
    private transient Boolean exposeAsTool = null;
    
@@ -57,6 +56,8 @@ public class Wizard extends ObjectWithWorkflow {
    private String toolId;
    private WizardCategory rootCategory;
    private int sequence = 0;
+   private Style style;
+   private transient Id styleId;
 
    private transient Guidance guidance;
    
@@ -137,22 +138,6 @@ public class Wizard extends ObjectWithWorkflow {
    public void setGuidance(Guidance guidance) {
       this.guidance = guidance;
    }
-/*
-   public Set getSupportItems() {
-      return supportItems;
-   }
-
-   public void setSupportItems(Set supportingObjects) {
-      this.supportItems = supportingObjects;
-   }
-*/
-   public List getWizardStyleItems() {
-      return wizardStyleItems;
-   }
-
-   public void setWizardStyleItems(List wizardStyleItems) {
-      this.wizardStyleItems = wizardStyleItems;
-   }
 
    public Id getGuidanceId() {
       return guidanceId;
@@ -208,5 +193,21 @@ public class Wizard extends ObjectWithWorkflow {
 
    public void setSequence(int sequence) {
       this.sequence = sequence;
+   }
+
+   public Style getStyle() {
+      return style;
+   }
+
+   public void setStyle(Style style) {
+      this.style = style;
+   }
+
+   public Id getStyleId() {
+      return styleId;
+   }
+
+   public void setStyleId(Id styleId) {
+      this.styleId = styleId;
    }
 }
