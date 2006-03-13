@@ -49,14 +49,14 @@
           <c:if test="${status.error}">
              <div class="validation"><c:out value="${status.errorMessage}"/></div>
           </c:if>
-		  <p class="shorttext indnt2">
+		  <p class="shorttext">
 				<span class="reqStar">*</span><label><fmt:message key="label_cellTitle"/></label>
 				<input type="text" name="<c:out value="${status.expression}"/>"
 					   value="<c:out value="${status.displayValue}"/>" size="40"/>
 		    </p>
         </spring:bind>
         
-        <p class="longtext indnt2">
+        <p class="longtext">
             <label class="block"><fmt:message key="label_cellDescription"/></label>
             <spring:bind path="scaffoldingCell.wizardPageDefinition.description">
                      <table><tr>
@@ -156,11 +156,9 @@
         </spring:bind>
    <!-- ************* Guidance and reflection Area End ************* -->        
    
-      <!-- ************* Review and Evaluation Area Start ************* -->            
+   <!-- ************* Review and Evaluation Area Start ************* -->            
 		
-   <h4 style="cursor:pointer" onclick="javascript:showHideDiv('evaluatorsDiv','/osp-jsf-resource')">
-      <img style="position:relative; float:left; margin-right:10px; left:3px; top:2px;" id="imgevaluatorsDiv" src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" />
-      <fmt:message key="label_Evaluators"/></h4>
+   <h4><fmt:message key="header_Evaluators"/></h4>
    <div id="evaluatorsDiv">  
    
    <spring:bind path="scaffoldingCell.reviewDeviceType">  
@@ -203,10 +201,13 @@
        </p>
      </spring:bind>
    
-   
+
+    <p class="longtext">
+      <label><fmt:message key="label_evaluators"/></label>
       <c:forEach var="eval" items="${evaluators}">
-         <div class="indnt1"><c:out value="${eval}" /></div>
+         <div class="indnt4"><c:out value="${eval}" /></div>
       </c:forEach>
+      </p>
    </div>
    
       <!-- ************* Review and Evaluation Area End ************* -->
