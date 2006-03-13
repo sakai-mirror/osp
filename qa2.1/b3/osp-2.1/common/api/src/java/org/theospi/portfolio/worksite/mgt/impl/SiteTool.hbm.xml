@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 2.0//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-2.0.dtd">
+<hibernate-mapping
+   package="org.theospi.portfolio.worksite.model">
+
+   <class name="SiteTool" table="osp_site_tool">
+      <id name="id" length="40" type="org.sakaiproject.metaobj.shared.IdType">
+         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+      </id>
+      <property name="siteId" length="36" column="site_id" not-null="false"/>
+      <property name="toolId" length="36" column="tool_id" not-null="false"/>
+      <property name="listenerId" column="listener_id" not-null="false"/>                  
+   </class>
+
+</hibernate-mapping>
