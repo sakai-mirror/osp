@@ -2026,7 +2026,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
          if (checkAuthz) {
             getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_LAYOUT,
-               getIdManager().getId(layout.getToolId()));
+               getIdManager().getId(layout.getSiteId()));
          }
       } else {
          if (checkAuthz) {
