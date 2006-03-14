@@ -71,6 +71,8 @@ public class GlossaryListController extends HelpController {
             model.put("import_unrecognized_file", "true");
          if(msg.equals(TRANSFER_MESSAGE_IMPORT_FAILED))
             model.put("import_failed", "true");
+         if(msg.equals(TRANSFER_MESSAGE_IMPORT_BAD_PARSE))
+            model.put("import_bad_parse", "true");
          session.remove(TRANSFER_CONTROLLER_SESSION_MESSAGE);
       }
 

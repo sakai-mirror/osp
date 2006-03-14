@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.CDATA;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
@@ -416,7 +417,7 @@ public class HelpManagerImpl extends HibernateDaoSupport
 	 * @param resourceId an String
 	 * @param replaceExisting boolean
 	 */
-	public void importTermsResource(String resourceId, boolean replaceExisting) throws IOException
+	public void importTermsResource(String resourceId, boolean replaceExisting) throws IOException, JDOMException
 	{
 		importTermsResource(getWorksiteManager().getCurrentWorksiteId(), resourceId, replaceExisting);
 	}
@@ -431,7 +432,7 @@ public class HelpManagerImpl extends HibernateDaoSupport
 	 * @param replaceExisting boolean
 	 */
 	public void importTermsResource(Id worksiteId, String resourceId, boolean replaceExisting) 
-         throws IOException, UnsupportedFileTypeException
+         throws IOException, UnsupportedFileTypeException, JDOMException
 	{
 		Node node = getNode(idManager.getId(resourceId));
 		if(node.getMimeType().equals(new MimeType("text/xml")) || 
@@ -471,7 +472,7 @@ public class HelpManagerImpl extends HibernateDaoSupport
 	 * @param replaceExisting boolean
 	 */
 	public void importTermsStream(Id worksiteId, InputStream inStream, boolean replaceExisting)
-            throws UnsupportedFileTypeException
+            throws UnsupportedFileTypeException, JDOMException, IOException
 	{
 
 		SAXBuilder builder = new SAXBuilder();
@@ -499,8 +500,9 @@ public class HelpManagerImpl extends HibernateDaoSupport
 
       } catch(UnsupportedFileTypeException ufte) {
          throw ufte;
-      } catch(Exception jdome) {
+      } catch(JDOMException jdome) {
          logger.error(jdome);
+         throw jdome;
 		}
 	}
 	
