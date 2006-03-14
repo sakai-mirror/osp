@@ -62,15 +62,15 @@ function hrefViewCell(pageId) {
         </p>
     
         <c:set var="columnHeading" value="${matrixContents.columnLabels}" />
-        <table cellspacing="0" width="800">
+        <table cellspacing="0" width="100%">
             <tr>
-                <th class="matrix-row-heading" width="400">
+                <th class="matrix-row-heading" width="10%">
                     <osp-h:glossary link="true" hover="true">
                        <c:out value="${matrixContents.scaffolding.title}"/>
                     </osp-h:glossary>
                 </th>
                 <c:forEach var="head" items="${columnHeading}">
-                    <th class="matrix-column-heading" width="200" 
+                    <th class="matrix-column-heading" width="10%" 
                         bgcolor="<c:out value="${head.color}"/>">
                         <osp-h:glossary link="true" hover="true">
                         	<font color="<c:out value="${head.textColor}"/>">
