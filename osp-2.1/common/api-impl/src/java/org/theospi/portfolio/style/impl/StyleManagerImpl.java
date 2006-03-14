@@ -74,6 +74,8 @@ import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.SiteService.SelectionType;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.hibernate.HibernateCallback;
 import org.springframework.orm.hibernate.HibernateObjectRetrievalFailureException;
@@ -176,8 +178,16 @@ public class StyleManagerImpl extends HibernateDaoSupport
       
       for (Iterator i=getGlobalSites().iterator();i.hasNext();) {
          String site = (String)i.next();
-         query += "'" + site + "'";
-         query += ",";
+         query += "'" + site + "',";
+      }
+      
+      for (Iterator j = getGlobalSiteTypes().iterator(); j.hasNext();) {
+         String type = (String)j.next();
+         List sites = SiteService.getSites(SelectionType.ANY, type, null, null, null, null);
+         for (Iterator k = sites.iterator(); k.hasNext();) {
+            Site theSite = (Site) k.next();
+            query += "'" + theSite.getId() + "',";
+         }
       }
       
       query += "'')";
