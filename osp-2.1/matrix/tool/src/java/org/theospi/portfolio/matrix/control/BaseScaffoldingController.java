@@ -22,9 +22,14 @@
 package org.theospi.portfolio.matrix.control;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.model.Criterion;
+import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.sakaiproject.service.legacy.content.LockManager;
@@ -80,9 +85,77 @@ public class BaseScaffoldingController {
          sCell.getCells().size();
       }
    }
+   
+   protected boolean isDirtyProgression(Scaffolding scaffolding) {
+      int newProgression = scaffolding.getWorkflowOption();
+      Scaffolding origScaff = matrixManager.getScaffolding(scaffolding.getId());
+      int origProgression = origScaff.getWorkflowOption();
+      
+      return (newProgression != origProgression);
+   }
 
    protected void saveScaffolding(Scaffolding scaffolding) {
+      boolean isDirty = isDirtyProgression(scaffolding);
       getMatrixManager().storeScaffolding(scaffolding);
+      //regen the cells
+      regenerateCells(scaffolding, isDirty);
+   }
+   
+   protected void regenerateCells(Scaffolding scaffolding, boolean dirtyProgression) {
+      List levels = scaffolding.getLevels();
+      List criteria = scaffolding.getCriteria();
+      Criterion criterion = new Criterion();
+      Level level = new Level();
+      Set cells = scaffolding.getScaffoldingCells();
+      boolean firstRow = true;
+      boolean firstColumn = true;
+      
+      for (Iterator criteriaIterator = criteria.iterator(); criteriaIterator.hasNext();) {
+         criterion = (Criterion) criteriaIterator.next();
+         for (Iterator levelsIterator = levels.iterator(); levelsIterator.hasNext();) {
+            level = (Level) levelsIterator.next();
+            ScaffoldingCell scaffoldingCell = getScaffoldingCell(cells, criterion, level);
+            String status = MatrixFunctionConstants.READY_STATUS;
+            if ((scaffolding.getWorkflowOption() == Scaffolding.HORIZONTAL_PROGRESSION && !firstColumn) ||
+                  (scaffolding.getWorkflowOption() == Scaffolding.VERTICAL_PROGRESSION && !firstRow) ||
+                  (scaffolding.getWorkflowOption() == Scaffolding.MANUAL_PROGRESSION)) {
+               status = MatrixFunctionConstants.LOCKED_STATUS;
+            }
+            if (scaffoldingCell == null) {
+               scaffoldingCell = new ScaffoldingCell(criterion, level, status, scaffolding);
+               scaffoldingCell.getWizardPageDefinition().setSiteId(scaffolding.getWorksiteId().getValue());
+               scaffoldingCell.getWizardPageDefinition().setToolId(scaffolding.getToolId().getValue());
+               scaffoldingCell.getWizardPageDefinition().setTitle(getDefaultTitle(scaffolding, criterion, level));
+               getMatrixManager().storeScaffoldingCell(scaffoldingCell);
+            }
+            else if (dirtyProgression){
+               scaffoldingCell.setInitialStatus(status);
+               getMatrixManager().storeScaffoldingCell(scaffoldingCell);
+            }
+            firstColumn = false;
+         }
+         firstRow = false;
+         //Need to reset firstColumn when moving to the next row
+         firstColumn = true;
+      }
+   }
+   
+   private ScaffoldingCell getScaffoldingCell(Set cells, Criterion criterion, Level level) {
+      for (Iterator iter=cells.iterator(); iter.hasNext();) {
+         ScaffoldingCell scaffoldingCell = (ScaffoldingCell) iter.next();
+         if (scaffoldingCell.getRootCriterion().getId().getValue().equals(criterion.getId().getValue()) && 
+               scaffoldingCell.getLevel().getId().getValue().equals(level.getId().getValue())) {
+            return scaffoldingCell;
+         }
+      }
+      return null;
+   }
+   
+   protected String getDefaultTitle(Scaffolding scaffolding, Criterion criterion, Level level) {
+      String title = scaffolding.getRowLabel() + ": " + criterion.getDescription() + "; " +
+            scaffolding.getColumnLabel() + ": " + level.getDescription();
+      
+      return title;
    }
 
    public AuthorizationFacade getAuthzManager() {
