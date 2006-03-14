@@ -22,10 +22,10 @@ package org.theospi.portfolio.security.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.sakaiproject.metaobj.utils.mvc.impl.servlet.AbstractFormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.security.mgt.PermissionManager;
@@ -46,7 +46,7 @@ public class PermissionsController extends AbstractFormController implements For
     * @param request
     * @param command
     * @param errors
-    * @return
+    * @return Map
     */
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = new Hashtable();
