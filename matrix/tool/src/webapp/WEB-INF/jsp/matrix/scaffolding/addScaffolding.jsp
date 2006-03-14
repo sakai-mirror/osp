@@ -82,6 +82,7 @@
             <a href="javascript:document.forms[0].dest.value='scaffoldingStylePickerAction';
             document.forms[0].submitAction.value='forward';
             document.forms[0].params.value='stylePickerAction=true:scaffolding_id=<c:out value="${scaffolding.id}" />';
+            document.forms[0].onsubmit();
             document.forms[0].submit();">
             <osp:message key="select_style" /></a>
          </c:if>
@@ -91,6 +92,7 @@
             <a href="javascript:document.forms[0].dest.value='scaffoldingStylePickerAction';
             document.forms[0].submitAction.value='forward';
             document.forms[0].params.value='stylePickerAction=true:currentStyleId=<c:out value="${style.id}"/>:scaffolding_id=<c:out value="${scaffolding.id}" />';
+            document.forms[0].onsubmit();
             document.forms[0].submit();">
             <osp:message key="change_style" /></a>
          </c:if>

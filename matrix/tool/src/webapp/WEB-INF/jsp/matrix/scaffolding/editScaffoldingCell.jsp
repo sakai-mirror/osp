@@ -11,7 +11,7 @@
   
     
 	 <div class="navIntraTool">
-       <a href="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].submit();"><osp:message key="select_evaluators" /></a>
+       <a href="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();"><osp:message key="select_evaluators" /></a>
 	 </div>
 
     <h3><fmt:message key="${pageTitleKey}" /></h3>
@@ -93,6 +93,7 @@
             <a href="javascript:document.forms[0].dest.value='stylePickerAction';
             document.forms[0].submitAction.value='forward';
             document.forms[0].params.value='stylePickerAction=true:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:styleReturnView=<c:out value="${styleReturnView}" />';
+            document.forms[0].onsubmit();
             document.forms[0].submit();">
             <osp:message key="select_style" /></a>
          </c:if>
@@ -102,6 +103,7 @@
             <a href="javascript:document.forms[0].dest.value='stylePickerAction';
             document.forms[0].submitAction.value='forward';
             document.forms[0].params.value='stylePickerAction=true:currentStyleId=<c:out value="${style.id}"/>:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:styleReturnView=<c:out value="${styleReturnView}" />';
+            document.forms[0].onsubmit();
             document.forms[0].submit();">
             <osp:message key="change_style" /></a>
          </c:if>
@@ -113,6 +115,7 @@
       <c:if test="${empty scaffoldingCell.guidance}">
          <a href="javascript:document.forms[0].dest.value='createGuidance';
                         document.forms[0].submitAction.value='forward';
+                        document.forms[0].onsubmit();
                         document.forms[0].submit();">
          <osp:message key="create_guidance"/></a>
       </c:if>
@@ -122,12 +125,14 @@
              <a href="javascript:document.forms[0].dest.value='createGuidance';
                document.forms[0].submitAction.value='forward';
                document.forms[0].params.value='id=<c:out value="${scaffoldingCell.guidance.id}"/>';
+               document.forms[0].onsubmit();
                document.forms[0].submit();">
                  <osp:message key="edit"/>
                  </a> | 
              <a href="javascript:document.forms[0].dest.value='deleteGuidance';
                document.forms[0].submitAction.value='forward';
                document.forms[0].params.value='id=<c:out value="${scaffoldingCell.guidance.id}"/>';
+               document.forms[0].onsubmit();
                document.forms[0].submit();">
                  <osp:message key="delete"/>
                  </a>
@@ -235,6 +240,7 @@
          <div class="itemAction">
              <a href="javascript:document.forms[0].submitAction.value='removeFormDef';
                document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
+               document.forms[0].onsubmit();
                document.forms[0].submit();">
                  <osp:message key="remove"/>
                  </a>
