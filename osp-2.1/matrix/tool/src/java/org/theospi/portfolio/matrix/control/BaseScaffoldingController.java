@@ -88,6 +88,9 @@ public class BaseScaffoldingController {
    
    protected boolean isDirtyProgression(Scaffolding scaffolding) {
       int newProgression = scaffolding.getWorkflowOption();
+      if (scaffolding.getId() == null)
+         return true;
+      
       Scaffolding origScaff = matrixManager.getScaffolding(scaffolding.getId());
       int origProgression = origScaff.getWorkflowOption();
       
