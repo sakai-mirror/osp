@@ -22,23 +22,21 @@ package org.theospi.portfolio.security.mgt.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.theospi.portfolio.security.mgt.PermissionManager;
-import org.theospi.portfolio.security.mgt.ToolPermissionManager;
-import org.theospi.portfolio.security.model.PermissionsEdit;
-import org.theospi.portfolio.security.model.Permission;
-import org.theospi.portfolio.security.Authorization;
-import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.shared.model.OspException;
-//import org.sakaiproject.service.legacy.realm.Realm;
-import org.sakaiproject.service.legacy.authzGroup.Role;
-//import org.sakaiproject.service.legacy.realm.cover.RealmService;
-import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
-import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.OspRole;
+import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
+import org.sakaiproject.service.legacy.site.Site;
+import org.theospi.portfolio.security.Authorization;
+import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.security.mgt.PermissionManager;
+import org.theospi.portfolio.security.mgt.ToolPermissionManager;
+import org.theospi.portfolio.security.model.Permission;
+import org.theospi.portfolio.security.model.PermissionsEdit;
+import org.theospi.portfolio.shared.model.OspException;
 
 import java.util.*;
 
@@ -92,6 +90,8 @@ public class PermissionManagerImpl implements PermissionManager {
     	 Set roles = AuthzGroupService.getInstance().getAuthzGroup("/site/" +
     	            edit.getSiteId()).getRoles();
 
+         List functions = getAppFunctions(edit);
+
          for (Iterator i=roles.iterator();i.hasNext();) {
             Role role = (Role)i.next();
             Agent currentRole = getAgentManager().getWorksiteRole(role.getId(), edit.getSiteId());
@@ -99,8 +99,11 @@ public class PermissionManagerImpl implements PermissionManager {
 
             for (Iterator j=authzs.iterator();j.hasNext();) {
                Authorization authz = (Authorization)j.next();
-               edit.getPermissions().add(
-                  new Permission(currentRole, authz.getFunction(), readOnly));
+
+               if (functions.contains(authz.getFunction())) {
+                  edit.getPermissions().add(
+                     new Permission(currentRole, authz.getFunction(), readOnly));
+               }
             }
          }
       } catch (IdUnusedException e) {
