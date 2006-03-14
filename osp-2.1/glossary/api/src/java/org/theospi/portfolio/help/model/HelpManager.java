@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Set;
 
+import org.jdom.JDOMException;
+
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.shared.model.Node;
 
@@ -70,8 +72,8 @@ public interface HelpManager {
    
    public Node getNode(Id artifactId);
    
-   public void importTermsResource(String resourceId, boolean replaceExisting) throws IOException;
+   public void importTermsResource(String resourceId, boolean replaceExisting) throws IOException, JDOMException;
 	
-   public void importTermsResource(Id worksiteId, String resourceId, boolean replaceExisting) throws IOException;
+   public void importTermsResource(Id worksiteId, String resourceId, boolean replaceExisting) throws IOException, JDOMException;
 }
 

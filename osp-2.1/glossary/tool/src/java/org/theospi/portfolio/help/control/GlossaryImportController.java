@@ -43,6 +43,7 @@
  */
 package org.theospi.portfolio.help.control;
 
+import org.jdom.input.JDOMParseException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
@@ -140,11 +141,16 @@ public class GlossaryImportController extends HelpController implements Validato
                  logger.error("Failed uploading glossary terms", e);
                  session.put(TRANSFER_CONTROLLER_SESSION_MESSAGE, 
                                       TRANSFER_MESSAGE_IMPORT_BAD_FILE);
-		        } catch (InvalidUploadException e) {
-		           logger.error("Failed uploading glossary terms", e);
-		           //errors.rejectValue(e.getFieldName(), e.getMessage(), e.getMessage());
+              } catch (InvalidUploadException e) {
+                 logger.error("Failed uploading glossary terms", e);
+                 //errors.rejectValue(e.getFieldName(), e.getMessage(), e.getMessage());
                  session.put(TRANSFER_CONTROLLER_SESSION_MESSAGE, 
                                       TRANSFER_MESSAGE_IMPORT_FAILED);
+              } catch (JDOMParseException e) {
+                 logger.error("Failed uploading glossary terms: Couldn't parse the file", e);
+                 //errors.rejectValue(e.getFieldName(), e.getMessage(), e.getMessage());
+                 session.put(TRANSFER_CONTROLLER_SESSION_MESSAGE, 
+                                      TRANSFER_MESSAGE_IMPORT_BAD_PARSE);
 		        } catch (Exception e) {
 		           logger.error("Failed importing glossary terms", e);
                  session.put(TRANSFER_CONTROLLER_SESSION_MESSAGE, 

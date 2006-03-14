@@ -69,6 +69,9 @@
 <c:if test="${import_failed}">
    <div style="color:#880000"><fmt:message key="import_msg_failed"/></div>
 </c:if>
+<c:if test="${import_bad_parse}">
+   <div style="color:#880000"><fmt:message key="import_msg_bad_file_parse"/></div>
+</c:if>
 
 <table class="listHier" cellspacing="0">
     <thead>

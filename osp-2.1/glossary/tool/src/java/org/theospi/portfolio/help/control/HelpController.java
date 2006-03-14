@@ -44,6 +44,7 @@ public class HelpController implements Controller {
    public static final String TRANSFER_MESSAGE_IMPORT_SUCCESS = "msgImportSuccess";
    public static final String TRANSFER_MESSAGE_IMPORT_BAD_FILE = "msgImportBadFile";
    public static final String TRANSFER_MESSAGE_IMPORT_FAILED = "msgImportFailed";
+   public static final String TRANSFER_MESSAGE_IMPORT_BAD_PARSE = "msgImportBadParse";
    
    protected final Log logger = LogFactory.getLog(getClass());
 
