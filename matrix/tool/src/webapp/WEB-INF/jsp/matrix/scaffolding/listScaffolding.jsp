@@ -62,11 +62,11 @@
          <c:out value="${scaffold.title}" />
          <div class="itemAction">
              <c:if test="${scaffold.published == true}">
-               <a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_view"/></a>
+               <a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_view"/></a> |
              </c:if>
              
              <c:if test="${scaffold.owner == osp_agent}">
-              | <a href="<osp:url value="viewScaffolding.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_edit"/></a>
+                <a href="<osp:url value="viewScaffolding.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_edit"/></a>
              </c:if>
     
              <c:if test="${scaffold.owner == osp_agent && scaffold.published == false}">
