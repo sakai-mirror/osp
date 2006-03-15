@@ -84,5 +84,6 @@
     
 <c:set var="suppress_previous" value="true" />
 <c:set var="suppress_submit" value="true" />
+<c:set var="suppress_save" value="true" />
 <%@ include file="/WEB-INF/jsp/presentation/wizardFooter.inc"%>
 </form>
