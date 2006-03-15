@@ -47,13 +47,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.theospi.portfolio.list.intf.ListService;
 import org.theospi.portfolio.list.model.ListConfig;
+import org.theospi.portfolio.list.intf.ListItemUtils;
+import org.theospi.portfolio.list.intf.DecoratedListItem;
 import org.theospi.portfolio.shared.tool.ToolBase;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class ListTool extends ToolBase {
+public class ListTool extends ToolBase implements ListItemUtils {
    protected final transient Log logger = LogFactory.getLog(getClass());
 
    private ListService listService;
@@ -66,14 +68,23 @@ public class ListTool extends ToolBase {
       logger.debug("ListTool()");
    }
 
-   public List getEntries() {
+    public String formatMessage(String key, Object[] args) {
+        return getMessageFromBundle(key, args);
+    }
+
+    public List getEntries() {
       List entries = getListService().getList();
       List returned = new ArrayList();
 
       int count = 0;
       for (Iterator i=entries.iterator();i.hasNext();) {
-         returned.add(new DecoratedEntry(i.next(), getListService(), this));
-         count++;
+          Object listItem = i.next();
+          if (listItem instanceof DecoratedListItem)
+          {
+               ((DecoratedListItem)listItem).setListItemUtils(this);
+          }
+          returned.add(new DecoratedEntry(listItem, getListService(), this));
+           count++;
          if (getCurrentConfig().getRows() > 0 &&
             count == getCurrentConfig().getRows()) {
             return returned;
