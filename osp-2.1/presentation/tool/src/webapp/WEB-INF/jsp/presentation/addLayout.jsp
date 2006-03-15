@@ -12,9 +12,14 @@
     <spring:bind path="layout.id">
         <input type="hidden" name="layout_id" value="<c:out value="${status.value}"/>" />
     </spring:bind>
-
-
-    <h3><fmt:message key="title_addLayout"/></h3>
+<c:choose>
+    <c:when test="${empty layout.id}">
+        <h3><fmt:message key="title_addLayout"/></h3>
+    </c:when>
+    <c:otherwise>
+        <h3><fmt:message key="title_editLayout"/></h3>
+    </c:otherwise>
+</c:choose>
     <p class="instruction">
         <fmt:message key="instructions_addLayout"/>
         <fmt:message key="instructions_requiredFields"/>
@@ -75,8 +80,18 @@
 
     
    <div class="act">
-      <input type="submit" name="save" class="active" value="<fmt:message key="button_submit"/>" 
+
+       <c:choose>
+    <c:when test="${empty layout.id}">
+        <input type="submit" name="save" class="active" value="<fmt:message key="button_submit"/>"
             onclick="javascript:document.forms[0].validate.value='true';"/>
+    </c:when>
+    <c:otherwise>
+        <input type="submit" name="save" class="active" value="<fmt:message key="button_saveEdit"/>"
+            onclick="javascript:document.forms[0].validate.value='true';"/>
+    </c:otherwise>
+</c:choose>
+
       <input type="button" name="cancel" value="<fmt:message key="button_cancel"/>"
             onclick="window.document.location='<osp:url value="listLayout.osp"/>'" />
    </div>
