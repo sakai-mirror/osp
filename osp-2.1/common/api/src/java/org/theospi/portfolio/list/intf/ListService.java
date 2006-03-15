@@ -62,4 +62,6 @@ public interface ListService {
    public void saveOptions(ListConfig currentConfig);
 
    public boolean isNewWindow(Object entry);
+
+   public void register(String id, ListGenerator listGenerator); 
 }

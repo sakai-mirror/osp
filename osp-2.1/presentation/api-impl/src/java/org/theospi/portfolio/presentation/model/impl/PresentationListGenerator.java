@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL: https://source.sakaiproject.org/svn/trunk/osp/osp-2.1/presentation/tool/src/java/org/theospi/portfolio/presentation/model/impl/PresentationListGenerator.java $
+* $Id: PresentationListGenerator.java 5557 2006-01-26 06:02:52Z john.ellis@rsmart.com $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -22,22 +22,17 @@ package org.theospi.portfolio.presentation.model.impl;
 
 import org.theospi.portfolio.list.intf.ActionableListGenerator;
 import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
+import org.theospi.portfolio.list.impl.BaseListGenerator;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
-import org.sakaiproject.metaobj.shared.control.servlet.SakaiComponentDispatchServlet;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.service.framework.session.SessionState;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
 
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
-public class PresentationListGenerator implements ActionableListGenerator, CustomLinkListGenerator {
+public class PresentationListGenerator extends BaseListGenerator implements ActionableListGenerator, CustomLinkListGenerator {
    private PresentationManager presentationManager;
    private static final String TOOL_ID_PARAM = "toolId";
    private static final String PRESENTATION_ID_PARAM = "presentationId";
@@ -47,6 +42,9 @@ public class PresentationListGenerator implements ActionableListGenerator, Custo
    private List defaultColumns;
    private AuthenticationManager authnManager;
 
+   public void init(){
+       super.init();
+   }
    public WorksiteManager getWorksiteManager() {
       return worksiteManager;
    }
@@ -86,39 +84,28 @@ public class PresentationListGenerator implements ActionableListGenerator, Custo
    public void setDefaultColumns(List defaultColumns) {
       this.defaultColumns = defaultColumns;
    }
-
    public List getObjects() {
-      return new ArrayList(getPresentationManager().findPresentationsByViewer(getAuthnManager().getAgent()));
-   }
 
-   public Map getToolParams(Object entry) {
-      Map params = new HashMap();
-      Presentation presentation = (Presentation) entry;
-      params.put(PRESENTATION_ID_PARAM, presentation.getId());
-      params.put(TOOL_ID_PARAM, presentation.getToolConfiguration().getId());
-      return params;
-   }
+      List presentations = new ArrayList();
+      List tempPresentationList = new ArrayList(getPresentationManager().findPresentationsByViewer(getAuthnManager().getAgent()));
+      {
+        if (tempPresentationList.size() > 0)
+        {
+          Iterator iter = tempPresentationList.iterator();
 
-   public ToolConfiguration getToolInfo(Map request) {
-      String toolId = (String) request.get(TOOL_ID_PARAM);
-      if (toolId != null && toolId.length() > 0 ){
-         return getWorksiteManager().getTool(toolId);
+          while (iter.hasNext())
+          {
+            presentations.add(new DecoratedPresentation((Presentation) iter.next(), worksiteManager));
+          }
+        }
       }
-      return null;
+      return presentations;
+
+      // return new ArrayList(getPresentationManager().findPresentationsByViewer(getAuthnManager().getAgent()));
    }
 
    public boolean isNewWindow(Object entry) {
-      return !internalWindow((Presentation)entry);
-   }
-
-   public void setToolState(String toolId, Map request) {
-      SessionState sessionState = UsageSessionService.getSessionState(toolId);
-      sessionState.setAttribute(SakaiComponentDispatchServlet.TOOL_STATE_VIEW_KEY,
-            "viewPresentation.osp");
-      Map requestParams = new HashMap();
-      requestParams.put("id", request.get(PRESENTATION_ID_PARAM));
-      sessionState.setAttribute(SakaiComponentDispatchServlet.TOOL_STATE_VIEW_REQUEST_PARAMS_KEY,
-            requestParams);
+      return !internalWindow((DecoratedPresentation)entry);
    }
 
    /**
@@ -129,14 +116,14 @@ public class PresentationListGenerator implements ActionableListGenerator, Custo
     * @return link to use or null to use normal redirect link
     */
    public String getCustomLink(Object entry) {
-      Presentation pres = (Presentation)entry;
+      DecoratedPresentation pres = (DecoratedPresentation)entry;
       if (!internalWindow(pres)) {
          return pres.getExternalUri();
       }
       return null;
    }
 
-   protected boolean internalWindow(Presentation pres) {
+   protected boolean internalWindow(DecoratedPresentation pres) {
       PresentationTemplate template = pres.getTemplate();
 
       if (!template.isIncludeHeaderAndFooter()) {
@@ -147,4 +134,19 @@ public class PresentationListGenerator implements ActionableListGenerator, Custo
 
       return manager.isUserInSite(pres.getTemplate().getSiteId());
    }
+      public Map getToolParams(Object entry) {
+      Map params = new HashMap();
+      Presentation presentation = (Presentation) entry;
+      params.put(PRESENTATION_ID_PARAM, presentation.getId());
+      params.put(TOOL_ID_PARAM, presentation.getToolConfiguration().getId());
+      return params;
+        }
+
+    public ToolConfiguration getToolInfo(Map request) {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void setToolState(String toolId, Map request) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

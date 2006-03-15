@@ -292,7 +292,7 @@
                <property name="staticField">
                   <value>org.theospi.portfolio.presentation.PresentationFunctionConstants.COPY_LAYOUT</value>
                </property>
-            </bean> 
+            </bean>
             -->
             <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.DELETE_LAYOUT"
                class="org.sakaiproject.metaobj.utils.ioc.FieldRetrievingFactoryBean">
@@ -515,6 +515,39 @@
       <property name="acceptedExtensions">
          <list>
             <value>xsl</value>
+         </list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.list.intf.ListGenerator.portfolios"
+      class="org.theospi.portfolio.presentation.model.impl.PresentationListGenerator" init-method="init">
+      <property name="presentationManager">
+         <ref bean="presentationManager"/>
+      </property>
+      <property name="listGeneratorId"><value>portfolios</value></property>
+      <property name="authnManager"><ref bean="authManager"/></property>
+      <property name="listGenerator"><ref bean="org.theospi.portfolio.list.intf.ListGenerator.portfolios"/></property>
+      <property name="worksiteManager">
+         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+      </property>
+      <property name="listService"><ref bean="org.theospi.portfolio.list.intf.ListService"/></property>
+      <property name="columns">
+         <list>
+            <value>name</value>
+            <value>description</value>
+            <value>owner.displayName</value>
+            <value>siteName</value>
+             <value>modified</value>
+
+         </list>
+      </property>
+      <property name="defaultColumns">
+         <list>
+            <value>name</value>
+            <value>description</value>
+            <value>owner.displayName</value>
+            <value>siteName</value>
+             <value>modified</value>
          </list>
       </property>
    </bean>
