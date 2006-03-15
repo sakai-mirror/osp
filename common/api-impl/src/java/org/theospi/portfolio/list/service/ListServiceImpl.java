@@ -174,6 +174,10 @@ public class ListServiceImpl  extends HibernateDaoSupport implements ListService
          return null;
       }
    }
+   public void register(String id, ListGenerator listGenerator)
+   {
+       listGenerators.put(id, listGenerator);
+   }
 
    public Map getListGenerators() {
       return listGenerators;

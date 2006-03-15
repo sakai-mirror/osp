@@ -21,7 +21,8 @@
 package org.theospi.portfolio.list.impl;
 
 import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.theospi.portfolio.list.intf.ListService;
+import org.theospi.portfolio.list.intf.ListGenerator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,22 +32,37 @@ import org.sakaiproject.service.framework.config.cover.ServerConfigurationServic
  * To change this template use File | Settings | File Templates.
  */
 public abstract class BaseListGenerator implements CustomLinkListGenerator {
+   private String listGeneratorId;
+   private ListService listService;
+   private ListGenerator listGenerator;
 
-   protected abstract String getSiteId(Object entity);
 
-   protected abstract String getPageId(Object entity);
-
-   public String getCustomLink(Object entry) {
-      // http://nightly2.sakaiproject.org:8084/portal/site/804a576b-6d03-474f-008c-74bd96a80676
-      // http://iter-odd.rsmart.com:8081/portal/site/f66ba891-fdb8-44bf-0063-04b663b88c23/page/77a3d5ad-7a1a-4aa8-80ba-0fa2504a3b36
-      String siteId = getSiteId(entry);
-      String pageId = getPageId(entry);
-
-      String link = "/site/" + siteId;
-      if (pageId != null) {
-         link = link + "/page/" + pageId;
-      }
-      return ServerConfigurationService.getPortalUrl() + link;
+   public void init()
+   {
+       listService.register(listGeneratorId, listGenerator);  
    }
 
+    public String getListGeneratorId() {
+        return listGeneratorId;
+    }
+
+    public void setListGeneratorId(String listGeneratorId) {
+        this.listGeneratorId = listGeneratorId;
+    }
+
+    public ListService getListService() {
+        return listService;
+    }
+
+    public void setListService(ListService listService) {
+        this.listService = listService;
+    }
+
+    public ListGenerator getListGenerator() {
+        return listGenerator;
+    }
+
+    public void setListGenerator(ListGenerator listGenerator) {
+        this.listGenerator = listGenerator;
+    }
 }

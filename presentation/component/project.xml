@@ -36,6 +36,15 @@
 
      <dependency>
        <groupId>osp</groupId>
+       <artifactId>osp-common-tool-lib</artifactId>
+       <version>${osp.version}</version>
+       <properties>
+             <war.bundle>true</war.bundle>
+          </properties>
+     </dependency>
+
+     <dependency>
+       <groupId>osp</groupId>
        <artifactId>osp-presentation-impl</artifactId>
        <version>${osp.version}</version>
        <properties>

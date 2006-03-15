@@ -46,7 +46,7 @@ package org.theospi.portfolio.worksite.mgt.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.theospi.portfolio.list.intf.ListGenerator;
-import org.theospi.portfolio.list.impl.BaseListGenerator;
+import org.theospi.portfolio.list.impl.WorksiteBaseGenerator;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
@@ -54,16 +54,17 @@ import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 
 import java.util.*;
 
-public class WorksiteListGenerator extends BaseListGenerator implements ListGenerator {
+public class WorksiteListGenerator extends WorksiteBaseGenerator implements ListGenerator {
    protected final transient Log logger = LogFactory.getLog(getClass());
 
    private static final String SITE_ID_PARAM = "selectedSiteId";
 
    private WorksiteManager worksiteManager;
-   private static final String WORKSITE_TOOL_ID = "";
    private List columns;
    private List defaultColumns;
-
+   public void init(){
+       super.init();
+   }
    /**
     * @return array of coluimn names (should be bean names)
     */
