@@ -368,7 +368,7 @@
 
 
    <table>
-     <name>DW_WIZARD_STYLE_ITEM</name>
+     <name>DW_WIZARD_STYLE</name>
      <desc>Wizard Style Item Datawarehouse table</desc>
      <columns>
         <column>
@@ -377,23 +377,45 @@
           <param>36</param>
         </column>
         <column>
-          <name>baseReference</name>
+          <name>name</name>
           <type>VARCHAR</type>
           <param>255</param>
         </column>
         <column>
-          <name>fullReference</name>
+          <name>description</name>
           <type>VARCHAR</type>
           <param>255</param>
         </column>
         <column>
-          <name>wizard_id</name>
+          <name>globalState</name>
+          <type>INTEGER</type>
+        </column>
+        <column>
+          <name>owner</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>styleFile</name>
           <type>VARCHAR</type>
           <param>36</param>
         </column>
+        <column>
+          <name>siteId</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>created</name>
+          <type>TIMESTAMP</type>
+        </column>
+        <column>
+          <name>modified</name>
+          <type>TIMESTAMP</type>
+        </column>
      </columns>
      <not-null>id</not-null>
-     <not-null>wizard_id</not-null>
+     <not-null>owner</not-null>
      <primary-key>id</primary-key>
    </table>
 
@@ -481,16 +503,5 @@
      <primary-key>id</primary-key>
    </table>
 
-   <index>
-     <index-name>FK5D0879C268DEB06F</index-name>
-     <table-name>DW_WIZARD_STYLE_ITEM</table-name>
-     <column>wizard_id</column>
-   </index>
-
-   <index>
-     <index-name>FK99B4062468DEB06F</index-name>
-     <table-name>DW_WIZARD_SUPPORT_ITEM</table-name>
-     <column>wizard_id</column>
-   </index>
 
 </tables>

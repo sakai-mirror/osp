@@ -152,7 +152,8 @@ public class BaseChildWarehouseTask implements ChildWarehouseTask {
                   items = (Collection)property;
                } else {
                   items = new ArrayList();
-                  items.add(property);
+                  if(property != null)
+                     items.add(property);
                }
                
                // item becomes the new parent, items is the complex field (Collection)
