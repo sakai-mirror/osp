@@ -54,11 +54,11 @@ import org.sakaiproject.api.kernel.tool.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.exception.UnsupportedFileTypeException;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.utils.zip.UncloseableZipInputStream;
 import org.theospi.portfolio.help.model.GlossaryDescription;
-import org.theospi.portfolio.help.model.UnsupportedFileTypeException;
 
 import java.io.BufferedReader;
 import java.io.BufferedOutputStream;
@@ -417,7 +417,7 @@ public class HelpManagerImpl extends HibernateDaoSupport
 	 * @param resourceId an String
 	 * @param replaceExisting boolean
 	 */
-	public void importTermsResource(String resourceId, boolean replaceExisting) throws IOException, JDOMException
+	public void importTermsResource(String resourceId, boolean replaceExisting) throws IOException, UnsupportedFileTypeException, JDOMException
 	{
 		importTermsResource(getWorksiteManager().getCurrentWorksiteId(), resourceId, replaceExisting);
 	}

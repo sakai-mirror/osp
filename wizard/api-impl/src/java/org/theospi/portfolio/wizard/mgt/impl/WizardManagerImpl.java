@@ -829,8 +829,9 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
       StructuredArtifactDefinitionBean bean;
       try {
+         //we want the bean even if it exists already
          bean = getStructuredArtifactDefinitionManager().importSad(
-               worksite, zis, true, true);
+               worksite, zis, true, true, false);
       } catch(ImportException ie) {
          throw new RuntimeException("the structured artifact failed to import", ie);
       }
