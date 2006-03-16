@@ -62,6 +62,7 @@ import org.sakaiproject.exception.InconsistentException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.ImportException;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.mgt.*;
@@ -826,8 +827,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
       String fileName = file.getName();
       String oldId = fileName.substring(0, fileName.indexOf(".form"));
 
-      StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager().importSad(
-         worksite, zis, true, true);
+      StructuredArtifactDefinitionBean bean;
+      try {
+         bean = getStructuredArtifactDefinitionManager().importSad(
+               worksite, zis, true, true);
+      } catch(ImportException ie) {
+         throw new RuntimeException("the structured artifact failed to import", ie);
+      }
 
       formMap.put(oldId, bean.getId().getValue());
    }
