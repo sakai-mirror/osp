@@ -60,7 +60,6 @@
 <br /><br />
 
 <c:set var="suppress_submit" value="true" />
-<c:set var="updateSeq" value="true" />
 <%@ include file="/WEB-INF/jsp/presentation/wizardFooter.inc" %>
 
 </form>
