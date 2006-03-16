@@ -44,6 +44,9 @@ public class BeanPropertyAccess implements PropertyAccess {
    private String propertyName;
 
    public Object getPropertyValue(Object source) throws Exception {
+      if(source == null)
+         throw new NullPointerException("The source object is null, getting" + 
+               " property \"" + propertyName + "\"");
       Method objectMethodGetProperty = getPropertyGettor(source);
       if(objectMethodGetProperty == null)
          throw new NullPointerException(source.getClass().getName() + 
