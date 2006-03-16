@@ -57,8 +57,13 @@
 
 <osp:url var="listUrl" value="glossaryList.osp" />
 <osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
+<c:if test="${!global}">
+    <h3><fmt:message key="title_glossaryManager"/></h3>
+</c:if>
+<c:if test="${global}">
+    <h3><fmt:message key="title_glossaryManagerGlobal"/></h3>
+</c:if>
 
-<h3><fmt:message key="title_glossaryManager"/></h3>
 
 <c:if test="${import_success}">
    <div style="color:#008800"><fmt:message key="import_msg_success"/></div>

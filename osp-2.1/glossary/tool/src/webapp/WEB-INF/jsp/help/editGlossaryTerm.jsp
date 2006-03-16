@@ -5,9 +5,8 @@
 <fmt:setBundle basename = "org.theospi.portfolio.glossary.bundle.Messages"/>
 
     <h3>
-        <c:if test="${not empty entry.id}"><fmt:message key="action_edit"/></c:if>
-        <c:if test="${empty entry.id}"><fmt:message key="action_new"/></c:if>
-         <fmt:message key="title_glossary"/>
+        <c:if test="${not empty entry.id}"><fmt:message key="title_editGlossaryTerm"/></c:if>
+        <c:if test="${empty entry.id}"><fmt:message key="title_addGlossaryTerm"/></c:if>
     </h3>
    
 
@@ -21,8 +20,6 @@
 
 <form method="post" action="<c:out value="${action}"/>" > 
     <osp:form/>
-    
-    <h4><fmt:message key="title_glossaryTerm"/></h4>
     
     <spring:bind path="entry.term">
         <c:if test="${status.error}"> 
@@ -80,8 +77,14 @@
     <script type="text/javascript" defer="1">chef_setupformattedtextarea('longDescription');</script>
     
     <div class="act">
-        <input type="submit" name="submitButton" class="active" value="Save"/>
-        <input type="button" value="Cancel" onclick="window.document.location='<osp:url value="glossaryList.osp"/>'">
+        <c:if test="${not empty entry.id}">
+            <input type="submit" name="submitButton" class="active" value="<fmt:message key="button_submitEdit"/>" />
+        </c:if>
+        <c:if test="${empty entry.id}">
+            <input type="submit" name="submitButton" class="active" value="<fmt:message key="button_submitAdd"/>" />
+        </c:if>
+
+        <input type="button" value="<fmt:message key="button_cancel"/>" onclick="window.document.location='<osp:url value="glossaryList.osp"/>'">
     </div>
 
 </form>
