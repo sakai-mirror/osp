@@ -1292,8 +1292,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       String fileName = file.getName();
       String oldId = fileName.substring(0, fileName.indexOf(".form"));
 
-      StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager().importSad(
-         worksite, zis, true, true);
+      StructuredArtifactDefinitionBean bean;
+      try {
+         bean = getStructuredArtifactDefinitionManager().importSad(
+               worksite, zis, true, true);
+      } catch(ImportException ie) {
+         throw new RuntimeException("the structured artifact failed to import", ie);
+      }
 
       formMap.put(oldId, bean.getId().getValue());
    }
