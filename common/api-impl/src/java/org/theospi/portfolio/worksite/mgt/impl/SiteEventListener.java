@@ -31,6 +31,8 @@ import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.service.framework.component.ComponentManager;
+import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.worksite.intf.ToolEventListener;
@@ -45,6 +47,8 @@ public class SiteEventListener extends HibernateDaoSupport implements Observer {
    public final static String LISTENER_PROPERTY_TAG = "theospi.toolListenerId";
    private ComponentManager componentManager;
    private EntityManager entityManager;
+   
+   private List siteHelperTools = new ArrayList();
 
    /**
     * This method is called whenever the observed object is changed. An
@@ -118,10 +122,38 @@ public class SiteEventListener extends HibernateDaoSupport implements Observer {
 
    protected void processSite(Site site) {
       List pages = site.getPages();
+      
+      for (Iterator i=getSiteHelperTools().iterator(); i.hasNext();) {
+         String toolId = (String)i.next();
+         Tool toolPlacement = ToolManager.getTool(toolId);
+         String listenerId = 
+            toolPlacement.getRegisteredConfig().getProperty(LISTENER_PROPERTY_TAG);
+         if (listenerId != null) {
+            storeHelperTool(site.getId(), toolId, listenerId);
+            ToolEventListener listener = (ToolEventListener) componentManager.get(listenerId);
 
+            if (listener != null) {
+               listener.helperSiteChanged(site);
+            }
+         }
+      }  
+      
       for (Iterator i=pages.iterator();i.hasNext();) {
          processPage((SitePage)i.next());
       }
+   }
+   
+   protected void storeHelperTool(String siteId, String toolId, String listenerId) {
+      SiteTool tool = new SiteTool();
+      tool.setSiteId(siteId);
+      tool.setToolId(toolId);
+      if (getSiteTool(tool.getSiteId(), tool.getToolId()).size() > 0) {
+         return;
+      }
+
+      tool.setListenerId(listenerId);
+
+      getHibernateTemplate().saveOrUpdate(tool);
    }
 
    protected void processPage(SitePage sitePage) {
@@ -185,5 +217,13 @@ public class SiteEventListener extends HibernateDaoSupport implements Observer {
 
    public void setEntityManager(EntityManager entityManager) {
       this.entityManager = entityManager;
+   }
+
+   public List getSiteHelperTools() {
+      return siteHelperTools;
+   }
+
+   public void setSiteHelperTools(List siteHelperTools) {
+      this.siteHelperTools = siteHelperTools;
    }
 }

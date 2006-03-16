@@ -63,6 +63,23 @@ public class SimpleToolPermissionManager implements ToolEventListener, ToolPermi
          createDefaultPermissions(edit.getSiteId(), toolId, containingSite.getType());
       }
    }
+   
+   /**
+    * sets up the default perms for a helper tool.  Uses the site id as the qualifier.
+    * Assumes that if no perms exist for the tool, the perms should be set to the defaults.
+    * @param site
+    */
+   public void helperSiteChanged(Site site) {
+      Id siteId = getIdManager().getId(site.getId());
+      PermissionsEdit edit = new PermissionsEdit();
+      edit.setQualifier(siteId);
+      edit.setName(getPermissionEditName());
+      edit.setSiteId(site.getId());
+      getPermissionManager().fillPermissions(edit);
+      if (edit.getPermissions() == null || edit.getPermissions().size() == 0){
+         createDefaultPermissions(edit.getSiteId(), siteId, site.getType());
+      }
+   }
 
    public void toolRemoved(SiteTool siteTool) {
       // todo remove all authz

@@ -20,6 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.worksite.intf;
 
+import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 import org.theospi.portfolio.worksite.model.SiteTool;
 
@@ -28,5 +29,7 @@ public interface ToolEventListener {
    public void toolSiteChanged(ToolConfiguration toolConfig);
 
    public void toolRemoved(SiteTool siteTool);
+   
+   public void helperSiteChanged(Site site);
 
 }
