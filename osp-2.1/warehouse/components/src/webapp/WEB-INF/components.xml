@@ -523,6 +523,16 @@
                      <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.page.definition.additional.forms"/>
                   </property>
             </bean>
+               <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>style</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.style"/>
+                  </property>
+               </bean>
          </list>
       </property>
    </bean>
