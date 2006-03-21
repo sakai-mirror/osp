@@ -38,7 +38,7 @@
             </value>
         </property>
         <property name="type"><!-- some acceptable values: admin,course,project,cig  -->
-            <value>admin,project,course,cig</value>
+            <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
 
         <property name="reportDefinitionParams">
@@ -212,7 +212,7 @@
             </value>
         </property>
         <property name="type">
-            <value>admin,project,course</value>
+            <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
@@ -290,7 +290,7 @@
                 </bean>
         </property>
         <property name="type">
-            <value>admin,project,course,cig</value>
+            <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
 
         <property name="reportDefinitionParams">
@@ -352,7 +352,7 @@
                 </bean>
         </property>
         <property name="type">
-            <value>admin,project,course,cig</value>
+            <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
 
         <property name="reportDefinitionParams">
@@ -438,7 +438,7 @@
             </value>
         </property>
         <property name="type">
-            <value>admin,project,course,cig</value>
+            <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
@@ -539,7 +539,7 @@
             </value>
         </property>
         <property name="type">
-            <value>admin,project,course,cig</value>
+            <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
@@ -625,7 +625,7 @@
             </value>
         </property>
         <property name="type">
-            <value>admin,project,course,cig</value>
+            <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
@@ -740,7 +740,7 @@
             </value>
         </property>
         <property name="type">
-            <value>admin,project,course,cig</value>
+            <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
@@ -832,7 +832,7 @@
             </value>
         </property>
         <property name="type">
-            <value>admin,project,course,cig</value>
+            <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
@@ -936,7 +936,7 @@
             </value>
         </property>
         <property name="type">
-            <value>admin,project,course,cig</value>
+            <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
