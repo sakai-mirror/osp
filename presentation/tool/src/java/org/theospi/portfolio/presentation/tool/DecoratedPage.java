@@ -64,9 +64,6 @@ public class DecoratedPage implements Comparable {
       if (base.getLayout() != null) {
          setSelectedLayout(new DecoratedLayout(parent, base.getLayout()));
       }
-      //else if (getParent().getLayouts().size() > 0) {
-      //   setSelectedLayout(getParent().getFirstLayout());
-      //}
    }
    
    public String getStyleName() {

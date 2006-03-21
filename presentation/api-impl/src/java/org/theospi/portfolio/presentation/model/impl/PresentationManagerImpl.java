@@ -1660,6 +1660,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                readableFiles.add(getContentHosting().getReference(previewImageId));
             }
          }
+         if (page.getStyle() != null && page.getStyle().getStyleFile() != null) {
+            String styleFileId = getContentHosting().resolveUuid(page.getStyle().getStyleFile().getValue());
+            readableFiles.add(getContentHosting().getReference(styleFileId));
+         }
+         
          for (Iterator regions = page.getRegions().iterator(); regions.hasNext();) {
             PresentationPageRegion region = (PresentationPageRegion) regions.next();
             for (Iterator items = region.getItems().iterator(); items.hasNext();) {
@@ -1983,17 +1988,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public void setSecurityService(SecurityService securityService) {
       this.securityService = securityService;
    }
-
-   public List getLayouts() {
-      List returned = new ArrayList();
-      String currentSiteId = PortalService.getCurrentSiteId();
-      returned.addAll(findLayoutsByOwner(getAuthnManager().getAgent(), currentSiteId));
-      returned.addAll(findPublishedLayouts(currentSiteId));
-      returned.addAll(findGlobalLayouts());
-      return returned;
-   }
-   
-   
 
    public Collection findPublishedLayouts(String siteId) {
       /*

@@ -88,8 +88,8 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
          return new Boolean(facade.isAuthorized(agent,function,toolId));
       } else if (function.equals(PresentationFunctionConstants.SUGGEST_PUBLISH_LAYOUT)) {
          PresentationLayout layout = getPresentationManager().getPresentationLayout(id);
-         Id toolId = getIdManager().getId(layout.getToolId());
-         return new Boolean(facade.isAuthorized(agent,function,toolId));
+         Id siteId = getIdManager().getId(layout.getSiteId());
+         return new Boolean(facade.isAuthorized(agent,function,siteId));
       } else if (function.equals(PresentationFunctionConstants.DELETE_LAYOUT)) {
          return isLayoutAuth(facade, id, agent, function);
       } else {

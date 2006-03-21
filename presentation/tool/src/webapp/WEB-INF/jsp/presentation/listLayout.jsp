@@ -75,7 +75,7 @@
              | <a href="<osp:url value="publishLayout.osp"/>&layout_id=<c:out value="${layout.id.value}" />"><fmt:message key="table_action_publish"/></a>
              </c:if>
              
-             <c:if test="${isAuthorizedTo.suggesetPublish && layout.globalState == 0 && selectableLayout != 'true'}">
+             <c:if test="${isAuthorizedTo.suggestPublish && layout.globalState == 0 && selectableLayout != 'true'}">
              | <a href="<osp:url value="publishLayout.osp"/>&layout_id=<c:out value="${layout.id.value}" />&suggest=true"><fmt:message key="table_action_suggeset_publish"/></a>
              </c:if>
              
