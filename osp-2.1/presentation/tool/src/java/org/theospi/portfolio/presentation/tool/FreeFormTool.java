@@ -56,7 +56,6 @@ public class FreeFormTool extends HelperToolBase {
 
    private Presentation presentation = null;
 
-   private DecoratedLayout firstLayout;
    private DecoratedPage currentPage = null;
    private List pageList;
    private List attachableItems = null;
@@ -282,20 +281,7 @@ public class FreeFormTool extends HelperToolBase {
       }
       return returned;
    }
-/*
-   public List getLayouts() {
-      if (layouts == null) {
-         layouts = new ArrayList();
-         List baseLayouts = getPresentationManager().getLayouts();
-         for (Iterator i=baseLayouts.iterator();i.hasNext();) {
-            PresentationLayout layout = (PresentationLayout) i.next();
-            layouts.add(createSelect(layout.getId().getValue(), layout.getName()));
-         }
-      }
 
-      return layouts;
-   }
-*/
    public void setLayouts(List layouts) {
       this.layouts = layouts;
    }
@@ -352,20 +338,6 @@ public class FreeFormTool extends HelperToolBase {
       getPresentation().getPages().remove(page.getBase());
       pageList = null;
       attachableItems = null; // make sure list gets re-created in order
-   }
-
-   public DecoratedLayout getFirstLayout() {
-      if (firstLayout == null) {
-         List layouts = getPresentationManager().getLayouts();
-         if (layouts.size() > 0) {
-            firstLayout = new DecoratedLayout(this, (PresentationLayout) layouts.get(0));
-         }
-      }
-      return firstLayout;
-   }
-
-   public void setFirstLayout(DecoratedLayout firstLayout) {
-      this.firstLayout = firstLayout;
    }
 
    public String processChangeCurrentPage() {
