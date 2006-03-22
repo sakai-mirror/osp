@@ -13,10 +13,17 @@
         <input type="hidden" name="style_id" value="<c:out value="${status.value}"/>" />
     </spring:bind>
 
-
-    <h3><fmt:message key="title_addStyle"/></h3>
-    <p class="instruction">
+    <c:if test="${empty style.id}">
+        <h3><fmt:message key="title_addStyle"/></h3>
+        <p class="instruction">
         <fmt:message key="instructions_addStyle"/>
+    </c:if>
+    <c:if test="${not empty style.id}">
+        <h3><fmt:message key="title_editStyle"/></h3>
+        <p class="instruction">
+        <fmt:message key="instructions_editStyle"/>
+    </c:if>
+
         <fmt:message key="instructions_requiredFields"/>
     </p>
     
@@ -63,7 +70,14 @@
 
     
    <div class="act">
-      <input type="submit" name="save" class="active" value="<fmt:message key="button_submit"/>" 
+
+      <input type="submit" name="save" class="active"
+      <c:if test="${empty style.id}">
+             value="<fmt:message key="button_submit"/>"
+      </c:if>
+      <c:if test="${not empty style.id}">
+             value="<fmt:message key="button_submitEdit"/>"
+      </c:if>
             onclick="javascript:document.forms[0].validate.value='true';"/>
       <input type="button" name="cancel" value="<fmt:message key="button_cancel"/>"
             onclick="window.document.location='<osp:url value="listStyle.osp"/>'" />
