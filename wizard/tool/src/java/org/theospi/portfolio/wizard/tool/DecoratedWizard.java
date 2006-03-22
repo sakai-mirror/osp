@@ -48,6 +48,7 @@ public class DecoratedWizard {
    private DecoratedCategory rootCategory = null;
    private DecoratedWizard next;
    private DecoratedWizard prev;
+   private boolean newWizard = false;
 
    private DecoratedCompletedWizard runningWizard;
 
@@ -56,7 +57,12 @@ public class DecoratedWizard {
       this.parent = tool;
       rootCategory = new DecoratedCategory(base.getRootCategory(), tool);
    }
-
+   public DecoratedWizard(WizardTool tool, Wizard base, boolean newWizard) {
+       this.newWizard = newWizard;
+       this.base = base;
+       this.parent = tool;
+       rootCategory = new DecoratedCategory(base.getRootCategory(), tool);
+   }
    public Wizard getBase() {
       return base;
    }
@@ -248,4 +254,12 @@ public class DecoratedWizard {
    public boolean isGuidanceAvailable() {
       return getBase().getGuidance() != null;
    }
+
+    public boolean isNewWizard() {
+        return newWizard;
+    }
+
+    public void setNewWizard(boolean newWizard) {
+        this.newWizard = newWizard;
+    }
 }
