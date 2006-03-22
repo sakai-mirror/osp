@@ -36,6 +36,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
@@ -265,8 +266,9 @@ public class WizardTool extends BuilderTool {
    }
 
    public String processActionEdit(Wizard wizard) {
+      Session session = SessionManager.getCurrentSession();
       wizard = getWizardManager().getWizard(wizard.getId());
-      setCurrent(new DecoratedWizard(this, wizard));
+      setCurrent(new DecoratedWizard(this, wizard, false));
       return startBuilder();
    }
 
@@ -323,11 +325,12 @@ public class WizardTool extends BuilderTool {
    }
 
    public String processActionNew() {
+      Session session = SessionManager.getCurrentSession();
       Wizard newWizard = getWizardManager().createNew();
-
       newWizard.setSequence(getNextWizard());
 
-      setCurrent(new DecoratedWizard(this, newWizard));
+      setCurrent(new DecoratedWizard(this, newWizard, true));
+      session.setAttribute("newWizard", "true");
 
       return startBuilder();
    }

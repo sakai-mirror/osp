@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 <%@ taglib uri="http://www.theospi.org/jsf/osp" prefix="ospx" %>
+<%@ include file="/WEB-INF/jsp/include.jsp" %>
 
 <%
       response.setContentType("text/html; charset=UTF-8");
@@ -29,7 +30,9 @@
          value="#{msgs.new_root_wizard_category}" />
    </sakai:tool_bar>
 
-   <sakai:view_title value="#{msgs.edit_wizard}"/>
+   <sakai:view_title value="#{msgs.edit_wizard}" rendered='#{!wizard.current.newWizard}'/>
+   <sakai:view_title value="#{msgs.add_wizard}"  rendered='#{wizard.current.newWizard}'/>
+   
    <f:subview id="instructionsHier" rendered="#{wizard.current.base.type ==
                'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.moving}">
       <sakai:instruction_message value="#{msgs.wizard_pages_instructions_hier}" />

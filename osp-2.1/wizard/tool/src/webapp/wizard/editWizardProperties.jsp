@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 <%@ taglib uri="http://www.theospi.org/jsf/osp" prefix="ospx" %>
+<%@ include file="/WEB-INF/jsp/include.jsp" %>
 
 <%
       response.setContentType("text/html; charset=UTF-8");
@@ -19,8 +20,10 @@
 
 <h:form>
 
-   <sakai:view_title value="#{msgs.edit_wizard}"/>
-   <sakai:instruction_message value="Guidance Test Tool" />
+  <sakai:view_title value="#{msgs.edit_wizard}" rendered='#{!wizard.current.newWizard}'/>
+   <sakai:view_title value="#{msgs.add_wizard}"  rendered='#{wizard.current.newWizard}'/>
+
+   <sakai:instruction_message value="#{msgs.wizard_instruction_message}" />
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />

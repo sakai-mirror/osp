@@ -31,7 +31,7 @@
    </sakai:tool_bar>
 
    <sakai:view_title value="#{msgs.wizard_title}"/>
-   <sakai:instruction_message value="Wizard Tool" />
+   <sakai:instruction_message value="#{msgs.wizard_instruction_message}" />
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />
