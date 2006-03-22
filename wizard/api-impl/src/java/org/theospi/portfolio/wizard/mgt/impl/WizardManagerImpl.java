@@ -65,6 +65,7 @@ import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.ImportException;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
+import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.mgt.*;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Artifact;
@@ -98,6 +99,7 @@ import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
@@ -1139,7 +1141,8 @@ public class WizardManagerImpl extends HibernateDaoSupport
          replaceCatIds(childCat, guidanceMap, formsMap, styleMap);
       }
    }
-   
+
+
    
    
    
@@ -1195,6 +1198,9 @@ public class WizardManagerImpl extends HibernateDaoSupport
       storeFileInZip(zos, new java.io.StringReader(
                (new XMLOutputter()).outputString(document)), "wizardDefinition.xml");
 
+      // Allow access to the various files for export
+      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+      
       // put the forms into the zip
       for(Iterator i = exportForms.keySet().iterator(); i.hasNext(); ) {
          String id = (String)i.next();
@@ -1203,7 +1209,8 @@ public class WizardManagerImpl extends HibernateDaoSupport
             newfileEntry = new ZipEntry("forms/" + id + ".form");
 
             zos.putNextEntry(newfileEntry);
-            structuredArtifactDefinitionManager.packageFormForExport(id, zos);
+            // Put the file into the zip entry without permissions
+            structuredArtifactDefinitionManager.packageFormForExport(id, zos, false);
             zos.closeEntry();
          }
       }
@@ -1222,14 +1229,15 @@ public class WizardManagerImpl extends HibernateDaoSupport
       }
 
       // put the guidance into the stream
+      //  Guidance doesn't have permissions but the attached files could
       if(exportGuidanceIds.size() > 0) {
          newfileEntry = new ZipEntry("guidance/guidanceList");
          zos.putNextEntry(newfileEntry);
          getGuidanceManager().packageGuidanceForExport(exportGuidanceIds, zos);
          zos.closeEntry();
       }
-      //CWM add style here
       // put the guidance into the stream
+      // Style doesn't have permissions but attached files could
       if(exportStyleIds.size() > 0) {
          newfileEntry = new ZipEntry("style/styleList");
          zos.putNextEntry(newfileEntry);
