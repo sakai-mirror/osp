@@ -83,6 +83,11 @@ public class DecoratedPage implements Comparable {
       return "";
    }
    
+   public boolean isRenderLayoutName() {
+      getLayoutName();
+      return true;
+   }
+   
    public String getLayoutName() {
       ToolSession session = SessionManager.getCurrentToolSession();
       if (session.getAttribute(PresentationLayoutHelper.CURRENT_LAYOUT) != null) {
