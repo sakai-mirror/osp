@@ -263,8 +263,8 @@
             onclick="window.document.location='<osp:url value="viewScaffolding.osp?scaffolding_id=${scaffoldingCell.scaffolding.id}"/>'"/>
       </c:if>
       <c:if test="${not empty helperPage}">
-   		<input type="submit" name="action" value="<osp:message key="cancel"/>" class="active"
-            onclick="javascript:document.forms[0].validate.value='false';document.forms[0].canceling.value='true'" />
+   		<input type="button" name="action" value="<osp:message key="cancel"/>" class="active"
+            onclick="javascript:doCancel()" />
          <input type="hidden" name="canceling" value="" />
       </c:if>
 
@@ -274,3 +274,10 @@
     <script type="text/javascript" defer="1">chef_setupformattedtextarea('descriptionTextArea');</script>
     
 </form>
+
+   <form name="cancelForm" method="POST">
+      <osp:form/>
+
+      <input type="hidden" name="validate" value="false" />
+      <input type="hidden" name="canceling" value="true" />
+   </form>
