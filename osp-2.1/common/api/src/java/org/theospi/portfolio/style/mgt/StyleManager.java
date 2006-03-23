@@ -56,4 +56,7 @@ public interface StyleManager {
    
    public void packageStyleForExport(Set styleIds, OutputStream os) throws IOException;
    public Map importStyleList(ContentCollection parent, String siteId, InputStream in) throws IOException;
+   
+   /** This function returns all styles */
+   public Collection getStylesForWarehouse();
 }

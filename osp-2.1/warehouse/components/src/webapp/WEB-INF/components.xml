@@ -242,58 +242,6 @@
    </bean>
    
    
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.style"
-        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
-      <property name="fields">
-         <list>
-	        <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-	        
-            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-               <property name="propertyName"><value>name</value></property>
-            </bean>
-            
-            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-               <property name="propertyName"><value>description</value></property>
-            </bean>
-            
-            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-               <property name="propertyName"><value>globalState</value></property>
-            </bean>
-            
-            <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
-               <property name="propertyName"><value>styleFile</value></property>
-            </bean>
-            
-            <bean class="org.theospi.portfolio.warehouse.impl.AgentPropertyAccess">
-               <property name="propertyName"><value>owner</value></property>
-            </bean>
-            
-            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-               <property name="propertyName"><value>created</value></property>
-            </bean>
-            
-            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-               <property name="propertyName"><value>modified</value></property>
-            </bean>
-            
-            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-               <property name="propertyName"><value>siteId</value></property>
-            </bean>
-
-         </list>
-      </property>
-   	  <property name="insertStmt">
-   	     <value>insert into DW_WIZARD_STYLE
-					(id, name, description, globalState, styleFile, owner, created, modified, siteId)
-						values (?, ?, ?, ?, ?, ?, ?, ?, ?)
-   	     </value>
-   	  </property>
-   	  <property name="clearStmt">
-   	     <value>delete from DW_WIZARD_STYLE</value>
-   	  </property> 
-   </bean>
-   
-   
    <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.completed.page"
         class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
       <property name="fields">
@@ -522,7 +470,7 @@
                   <property name="task">
                      <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.page.definition.additional.forms"/>
                   </property>
-            </bean>
+            </bean> <!--
                <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
                   <property name="propertyAccess">
                      <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
@@ -532,7 +480,7 @@
                   <property name="task">
                      <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.style"/>
                   </property>
-               </bean>
+               </bean> -->
          </list>
       </property>
    </bean>
@@ -780,7 +728,7 @@
                   <property name="task">
                      <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.completed"/>
                   </property>
-               </bean>
+               </bean>  <!--
                <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
                   <property name="propertyAccess">
                      <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
@@ -790,7 +738,7 @@
                   <property name="task">
                      <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.style"/>
                   </property>
-               </bean>
+               </bean> -->
             </list>
          </property>
    </bean>
@@ -2360,6 +2308,71 @@
    
    
    
+   <!--  **************************************************************************
+   ********************************************************************************
+        style Child Task
+   -->
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.style"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+	        <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+	        
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>name</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>description</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>globalState</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+               <property name="propertyName"><value>styleFile</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.AgentPropertyAccess">
+               <property name="propertyName"><value>owner</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>created</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>modified</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>siteId</value></property>
+            </bean>
+
+         </list>
+      </property>
+   	  <property name="insertStmt">
+   	     <value>insert into DW_WIZARD_STYLE
+					(id, name, description, globalState, styleFile, owner, created, modified, siteId)
+						values (?, ?, ?, ?, ?, ?, ?, ?, ?)
+   	     </value>
+   	  </property>
+   	  <property name="clearStmt">
+   	     <value>delete from DW_WIZARD_STYLE</value>
+   	  </property> 
+   </bean>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    
    
    <!--  **************************************************************************
@@ -2556,6 +2569,25 @@
        </property>
        <property name="task">
            <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.worksite" />
+       </property>
+   </bean>
+
+
+   <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.style"
+       class="org.theospi.portfolio.warehouse.osp.style.StyleWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="styleManager">
+          <ref bean="org.theospi.portfolio.style.mgt.StyleManager" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.style" />
        </property>
    </bean>
 
