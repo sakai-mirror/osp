@@ -1,0 +1,11 @@
+   <h:commandButton action="#{freeForm.processActionBack}"
+      actionListener="#{freeForm.currentPage.pagePropertiesSaved}"
+      value="#{msgs.back}"/>
+   <h:commandButton action="#{freeForm.processActionContinue}"
+      actionListener="#{freeForm.currentPage.pagePropertiesSaved}"
+      value="#{msgs.continue}"/>
+   <h:commandButton action="#{freeForm.processActionSave}"
+      actionListener="#{freeForm.currentPage.pagePropertiesSaved}"
+      value="#{msgs.save}"/>
+   <h:commandButton action="#{freeForm.processActionCancel}"
+      value="#{msgs.cancel}" immediate="true"/>

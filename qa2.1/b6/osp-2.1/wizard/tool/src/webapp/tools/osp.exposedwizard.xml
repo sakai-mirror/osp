@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool id="osp.exposedwizard" title="Exposed OSP Wizard" description="Exposed OSP Wizard Tool">
+      
+      <keyword name="wizard" />
+       <keyword name="help"/>
+<!-- 
+       <configuration name="theospi.resetUrl"
+            value="/listWizard.osp" />
+       -->
+	</tool>
+
+</registration>
