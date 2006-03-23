@@ -286,6 +286,11 @@ public class StyleManagerImpl extends HibernateDaoSupport
       //}
    }
    
+   public Collection getStylesForWarehouse()
+   {
+      return getHibernateTemplate().find("from Style s");
+   }
+   
    public void packageStyleForExport(Set styleIds, OutputStream os) throws IOException {
       CheckedOutputStream checksum = new CheckedOutputStream(os,
             new Adler32());
