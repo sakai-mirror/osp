@@ -22,6 +22,7 @@ package org.theospi.portfolio.matrix.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -31,6 +32,8 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
+import org.sakaiproject.service.legacy.filepicker.ResourceEditingHelper;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
@@ -40,6 +43,7 @@ import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
+import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.shared.model.Node;
@@ -59,6 +63,8 @@ public class CellController implements FormController, LoadObjectController {
    private IdManager idManager = null;
    private ReviewManager reviewManager;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
+   
+   public static final String WHICH_HELPER_KEY = "filepicker.helper.key";
 
 
    public Map referenceData(Map request, Object command, Errors errors) {
@@ -111,6 +117,7 @@ public class CellController implements FormController, LoadObjectController {
       
       model.put("pageTitleKey", "view_cell");
       
+      clearSession(SessionManager.getCurrentToolSession());
       return model;
    }
    
@@ -148,6 +155,7 @@ public class CellController implements FormController, LoadObjectController {
       List nodeList = new ArrayList(matrixManager.getPageContents(cell.getWizardPage()));
       cellBean.setNodes(nodeList);
       
+      clearSession(SessionManager.getCurrentToolSession());
       return cellBean;
    }
 
@@ -201,6 +209,23 @@ public class CellController implements FormController, LoadObjectController {
          retList.add(new ScaffoldingCellSupportDeviceBean(strFormDefId, bean.getDescription(), strFormDefId));
       }
       return retList;
+   }
+
+   protected void clearSession(ToolSession session) {
+      session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+      session.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
+      session.removeAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER);
+      
+      session.removeAttribute(ResourceEditingHelper.CREATE_TYPE);      
+      session.removeAttribute(ResourceEditingHelper.CREATE_PARENT);
+      session.removeAttribute(ResourceEditingHelper.CREATE_SUB_TYPE);
+      session.removeAttribute(ResourceEditingHelper.ATTACHMENT_ID);
+      
+      session.removeAttribute(ReviewHelper.REVIEW_TYPE);
+      session.removeAttribute(ReviewHelper.REVIEW_TYPE_KEY);
+      
+      session.removeAttribute(WHICH_HELPER_KEY);
+      
    }
    
    /**
