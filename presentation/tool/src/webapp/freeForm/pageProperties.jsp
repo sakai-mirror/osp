@@ -61,13 +61,19 @@
                            <h:outputText id="layout" value="#{freeForm.currentPage.base.layout.name}"/>
                         </sakai:doc_properties>
                      </f:subview>
+                     <h:message for="layoutFileHidden" styleClass="validationEmbedded" />
                      <h:inputText id="layoutFile" value="#{freeForm.currentPage.layoutName}" 
-                           readonly="true" />
+                           readonly="true" rendered="#{freeForm.currentPage.renderLayoutName}"/>
+                           
+                     <h:inputHidden id="layoutFileHidden" value="" 
+                           required="true" rendered="#{freeForm.currentPage.selectedLayout.base == null}" />
+                     <h:inputHidden id="layoutFileHidden" value="#{freeForm.currentPage.selectedLayout}" 
+                           required="true" rendered="#{freeForm.currentPage.selectedLayout.base != null}" />
 
                      <h:commandLink action="#{freeForm.currentPage.processActionSelectLayout}" immediate="true">
                         <h:outputText value="#{msgs.select_layout}"/>
                      </h:commandLink>
-                     <h:message for="layoutFileHidden" styleClass="validationEmbedded" />
+                     
                      <h:graphicImage height="125" width="100"
                         value="#{freeForm.currentPage.selectedLayout.previewImage.externalUri}"
                         rendered="#{freeForm.currentPage.layoutSelected}"
