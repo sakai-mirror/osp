@@ -50,17 +50,14 @@ import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.shared.tool.BaseFormResourceFilter;
 
-public class CellFormPickerController implements FormController, LoadObjectController {
+public class CellFormPickerController extends CellController implements FormController, LoadObjectController {
 
    protected final Log logger = LogFactory.getLog(getClass());
    private ContentHostingService contentHosting;
    private EntityManager entityManager;
    private SessionManager sessionManager;
-   private MatrixManager matrixManager;
-   private IdManager idManager = null;
    private SecurityService securityService = null;
    
-   public static final String WHICH_HELPER_KEY = "filepicker.helper.key";
    public static final String HELPER_CREATOR = "filepicker.helper.creator";
    public static final String HELPER_PICKER = "filepicker.helper.picker";
    
@@ -128,6 +125,7 @@ public class CellFormPickerController implements FormController, LoadObjectContr
          session.remove(ResourceEditingHelper.CREATE_PARENT);
          session.remove(ResourceEditingHelper.CREATE_SUB_TYPE);
          session.remove(ResourceEditingHelper.ATTACHMENT_ID);
+         session.remove(WHICH_HELPER_KEY);
       }
       return null;
    }
@@ -154,7 +152,7 @@ public class CellFormPickerController implements FormController, LoadObjectContr
          String id = "";
          for (Iterator iter = page.getPageForms().iterator(); iter.hasNext();) {
             WizardPageForm wpf = (WizardPageForm) iter.next();
-            if (wpf.getFormType().equals(attachFormAction)) {
+            if (attachFormAction.equals(wpf.getFormType())) {
                id = getContentHosting().resolveUuid(wpf.getArtifactId().getValue());
                Reference ref;
                try {
@@ -238,34 +236,6 @@ public class CellFormPickerController implements FormController, LoadObjectContr
     */
    public void setEntityManager(EntityManager entityManager) {
       this.entityManager = entityManager;
-   }
-
-   /**
-    * @return Returns the matrixManager.
-    */
-   public MatrixManager getMatrixManager() {
-      return matrixManager;
-   }
-
-   /**
-    * @param matrixManager The matrixManager to set.
-    */
-   public void setMatrixManager(MatrixManager matrixManager) {
-      this.matrixManager = matrixManager;
-   }
-
-   /**
-    * @return Returns the idManager.
-    */
-   public IdManager getIdManager() {
-      return idManager;
-   }
-
-   /**
-    * @param idManager The idManager to set.
-    */
-   public void setIdManager(IdManager idManager) {
-      this.idManager = idManager;
    }
 
    /**
