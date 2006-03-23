@@ -120,33 +120,43 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
    }
 
    /**
-    * Generates a list of artifact Ids that will go into a sql query
-    * Then if one is found, loads the artifact types
+    * This loads the artifact type into the Map of ArtifactHolders if the type
+    * does not exist.  This method packs a bunch of artifact Ids together before
+    * going out and getting their associated types.  Where there are 100 types to
+    * be pulled, it loads the types.  It does this so as to not have the list of ids
+    * be larger than what the database can handle.  Some limit the size of a IN (...)
+    * to 1000 elements.  Others may have smaller or larger limits.
     * 
-    * TODO:  limit each set of artifact Ids to 100 and loop through that way
     * ERROR: the list of artifact Ids can only be 1000 elements in size, restriction of Oracle
     * @param artifactsToLoad
     */
    protected void loadArtifactTypes(Map artifactsToLoad) {
       String artifactIds = "";
-      boolean foundOne = false;
+      int numFound = 0;
 
       for (Iterator i=artifactsToLoad.values().iterator();i.hasNext();) {
          ArtifactHolder holder = (ArtifactHolder) i.next();
          if (holder.artifactType == null) {
-            if (foundOne) {
+            if (numFound != 0) {
                artifactIds += ",";
             }
-            foundOne = true;
+            numFound++;
             artifactIds += "'" + holder.artifactId.getValue() + "'";
+            
+            if(numFound >= 100) {
+               loadArtifactTypes(artifactIds, artifactsToLoad);
+               numFound = 0;
+               artifactIds = "";
+            }
          }
       }
 
-      if (foundOne) {
+      if (numFound > 0) {
          loadArtifactTypes(artifactIds, artifactsToLoad);
       }
    }
 
+   
    protected void loadArtifact(ReportResult results, ArtifactHolder holder) {
       ArtifactFinder finder = getArtifactFinderManager().getArtifactFinderByType(holder.artifactType);
 
@@ -178,10 +188,10 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
    }
 
    /**
-    * TODO: This query can only handle so many Ids in a list.
+    * The calling function has the responsibility of limiting the string of artifactIds to less than 1000
     * Oracle can only do 1000.  it should be limited to maybe 100 at a time!
-    * @param artifactIds
-    * @param artifactsToLoad
+    * @param artifactIds  String
+    * @param artifactsToLoad Map
     */
    protected void loadArtifactTypes(String artifactIds, Map artifactsToLoad) {
       Connection conn = null;

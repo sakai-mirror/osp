@@ -250,7 +250,7 @@
     </bean>
     
     
-    <bean id="testreport3"
+    <bean id="artifactTest"
         class="org.theospi.portfolio.reports.model.ReportDefinition">
 
         <property name="idString">
