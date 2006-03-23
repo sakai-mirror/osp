@@ -15,7 +15,7 @@ in the page that is including this one:
             <c:forEach var="role" items="${roles}">
                 <option  <c:if test="${filterSelect==role.id.value}">selected</c:if> value="<c:out value="${role.id.value}"/>">
                     <fmt:message key="optionControls_allWithRole">
-                        <param><c:out value="${role.displayName}"/></param>
+                        <fmt:param><c:out value="${role.displayName}"/></fmt:param>
                     </fmt:message>
                 </option>
             </c:forEach>
