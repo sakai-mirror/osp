@@ -96,3 +96,10 @@
   </c:forEach>
     </tbody>
   </table>
+  
+     <div class="act">
+      <c:if test="${selectableLayout == 'true'}">
+         <input type="button" name="goBack" class="active" value="<fmt:message key="button_goback"/>"
+            onclick="window.document.location='<osp:url value="selectLayout.osp"/>'"/>
+      </c:if>
+   </div>
