@@ -1,0 +1,627 @@
+<?xml version="1.0"?>
+
+<!--
+  File from uPortal2.0 by JASIG. Modified and adapted to OSPI by <a
+  href="felipeen@udel.edu">Luis F.C. Mendes</a> - University of
+  Delaware
+-->
+<!-- $Revision: 1.19 $ -->
+
+<tables>
+   
+   
+   <table>
+     <name>DW_MATRIX</name>
+     <desc>Matrix Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>owner</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>scaffolding_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>scaffolding_id</not-null>
+     <not-null>owner</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+
+   <table>
+     <name>DW_MATRIX_CELL</name>
+     <desc>Matrix Cell Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>matrix_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>wizard_page_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>scaffolding_cell_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>matrix_id</not-null>
+     <not-null>wizard_page_id</not-null>
+     <not-null>scaffolding_cell_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+
+   <table>
+     <name>DW_WIZARD_PAGE</name>
+     <desc>Matrix Cell Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>status</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>wizard_page_def_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>modified</name>
+          <type>TIMESTAMP</type>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>wizard_page_def_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+
+   <table>
+     <name>DW_WIZARD_PAGE_REVIEW</name>
+     <desc>The reviews (Review, Evaluation, Reflection)</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>review_content_id</name> <!-- the filled out form -->
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>site_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>parent_id</name> <!-- this links back to the Wizard Page Id -->
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>review_device_id</name> <!-- the form being filled out -->
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>review_type</name> <!-- the form being filled out -->
+          <type>INTEGER</type>
+        </column>
+        <column>
+          <name>securityQualifier</name> <!-- the form being filled out -->
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>securityViewFunction</name> <!-- the form being filled out -->
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>securityEditFunction</name> <!-- the form being filled out -->
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>parent_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+
+   <index>
+     <index-name>FK4240ED2786D510</index-name>
+     <table-name>DW_WIZARD_PAGE_REVIEW</table-name>
+     <column>parent_id</column>
+   </index>
+
+
+   <table>
+     <name>DW_WIZARD_PAGE_ATTACHMENTS</name>
+     <desc>Wizard Page Attachments Data warehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>artifact_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>wizard_page_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>wizard_page_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+
+   <table>
+     <name>DW_WIZARD_PAGE_FORMS</name>
+     <desc>Wizard Page Forms Data warehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>artifact_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>wizard_page_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>form_type</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>wizard_page_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   <table>
+     <name>DW_MATRIX_LABEL</name>
+     <desc>Matrix Label Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>type</name>
+          <type>CHAR</type>
+          <param>1</param>
+        </column>
+        <column>
+          <name>description</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>indent</name>
+          <type>INTEGER</type>
+        </column>
+        <column>
+          <name>color</name>
+          <type>VARCHAR</type>
+          <param>7</param>
+        </column>
+        <column>
+          <name>required</name>
+          <type>TINYINT</type>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>type</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+   <table>
+    <name>DW_CELL_ATTACHMENT</name>
+    <desc>Cell Attachment Datawarehouse table</desc>
+    <columns>
+       <column>
+         <name>id</name>
+         <type>VARCHAR</type>
+         <param>36</param>
+       </column>
+       <column>
+         <name>artifactId</name>
+         <type>VARCHAR</type>
+         <param>36</param>
+       </column>
+       <column>
+         <name>cell_id</name>
+         <type>VARCHAR</type>
+         <param>36</param>
+       </column>
+       <!--
+       <column>
+         <name>privacyResponse</name>
+         <type>TEXT</type>
+       </column>
+        -->
+    </columns>
+    <not-null>id</not-null>
+    <not-null>cell_id</not-null>
+    <primary-key>id</primary-key>
+  </table>
+
+  <table>
+    <name>DW_CELL_ATTACHMENT_CRITERION</name>
+    <desc>Cell Attachment Criteria Datawarehouse table</desc>
+    <columns>
+       <column>
+         <name>id</name>
+         <type>VARCHAR</type>
+         <param>36</param>
+       </column>
+       <column>
+         <name>criterion_id</name>
+         <type>VARCHAR</type>
+         <param>36</param>
+       </column>
+       <column>
+         <name>attachment_id</name>
+         <type>VARCHAR</type>
+         <param>36</param>
+       </column>
+    </columns>
+    <not-null>id</not-null>
+    <not-null>attachment_id</not-null>
+    <primary-key>id</primary-key>
+  </table>
+
+  <table>
+    <name>DW_EXPECTATION</name>
+    <desc>Expectation Datawarehouse table</desc>
+    <columns>
+      <column>
+        <name>scaffolding_cell_id</name>
+        <type>VARCHAR</type>
+        <param>36</param>
+      </column>
+      <column>
+        <name>elt</name>
+        <type>VARCHAR</type>
+        <param>36</param>
+      </column>
+      <column>
+        <name>seq_num</name>
+        <type>INTEGER</type>
+      </column>
+    </columns>
+    <not-null>scaffolding_cell_id</not-null>
+    <not-null>elt</not-null>
+    <not-null>seq_num</not-null>
+    <primary-key>scaffolding_cell_id</primary-key>
+    <primary-key>seq_num</primary-key>
+  </table>
+
+   <table>
+     <name>DW_REFLECTION</name>
+     <desc>Reflection Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <!--
+        <column>
+          <name>growthStatement</name>
+          <type>TEXT</type>
+        </column>
+         -->
+        <column>
+          <name>cell_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>cell_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+   <table>
+     <name>DW_REFLECTION_ITEM</name>
+     <desc>Reflection Item Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>reflection_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>expectation_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <!--
+        <column>
+          <name>connectText</name>
+          <type>TEXT</type>
+        </column>
+
+        <column>
+          <name>evidence</name>
+          <type>TEXT</type>
+        </column>
+        -->
+        <column>
+          <name>seq_num</name>
+          <type>INTEGER</type>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>reflection_id</not-null>
+      <primary-key>id</primary-key>
+   </table>
+
+   <table>
+     <name>DW_REVIEWER_ITEM</name>
+     <desc>Reviewer Item Datawarehouse table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>status</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>created</name>
+          <type>TIMESTAMP</type>
+        </column>
+        <column>
+          <name>modified</name>
+          <type>TIMESTAMP</type>
+        </column>
+        <column>
+          <name>reviewer_id</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <!--
+        <column>
+          <name>comments</name>
+          <type>TEXT</type>
+        </column>
+        -->
+        <column>
+          <name>grade</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>cell_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+
+     </columns>
+     <not-null>id</not-null>
+     <not-null>created</not-null>
+     <not-null>cell_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+
+   <table>
+     <name>DW_STRUCTURED_ARTIFACT_DEF</name>
+     <desc>Structured Artifact Definition table</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>description</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>documentRoot</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>owner</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>created</name>
+          <type>TIMESTAMP</type>
+        </column>
+        <column>
+          <name>modified</name>
+          <type>TIMESTAMP</type>
+        </column>
+        <column>
+          <name>systemOnly</name>
+          <type>TINYINT</type>
+        </column>
+        <column>
+          <name>externalType</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+         <column>
+          <name>siteId</name>
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>siteState</name>
+          <type>INTEGER</type>
+        </column>
+         <column>
+          <name>globalState</name>
+          <type>INTEGER</type>
+        </column>
+       <!--
+        <column>
+          <name>instruction</name>
+          <type>TEXT</type>
+        </column>
+        -->
+     </columns>
+     <not-null>id</not-null>
+     <not-null>documentRoot</not-null>
+     <not-null>owner</not-null>
+     <not-null>created</not-null>
+     <not-null>modified</not-null>
+     <not-null>systemOnly</not-null>
+     <not-null>externalType</not-null>
+     <not-null>siteState</not-null>
+     <not-null>globalState</not-null>
+     <not-null>schemaData</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+
+   <index>
+     <index-name>FK4440ED2786D518</index-name>
+     <table-name>DW_CELL_ATTACHMENT</table-name>
+     <column>cell_id</column>
+   </index>
+
+   <index>
+     <index-name>FK3DD0C5CFEC85D379</index-name>
+     <table-name>DW_CELL_ATTACHMENT_CRITERION</table-name>
+     <column>criterion_id</column>
+   </index>
+   <index>
+     <index-name>FK3DD0C5CFA62F61B7</index-name>
+     <table-name>DW_CELL_ATTACHMENT_CRITERION</table-name>
+     <column>attachment_id</column>
+   </index>
+
+   <index>
+     <index-name>FKFBFAF989188AD</index-name>
+     <table-name>DW_EXPECTATION</table-name>
+     <column>elt</column>
+   </index>
+   <index>
+     <index-name>FKFBFAF9899AAD0C05</index-name>
+     <table-name>DW_EXPECTATION</table-name>
+     <column>scaffolding_cell_id</column>
+   </index>
+
+   <index>
+    <index-name>FK5A17205459517621</index-name>
+    <table-name>DW_MATRIX</table-name>
+    <column>scaffolding_id</column>
+   </index>
+
+   <index>
+    <index-name>FK8C1D366D9AAD0C05</index-name>
+    <table-name>DW_MATRIX_CELL</table-name>
+    <column>scaffolding_cell_id</column>
+   </index>
+   <index>
+    <index-name>FK8C1D366D3E503659</index-name>
+    <table-name>DW_MATRIX_CELL</table-name>
+    <column>matrix_id</column>
+   </index>
+    <index>
+    <index-name>FK8C1D366DFE6D91AF</index-name>
+    <table-name>DW_MATRIX_CELL</table-name>
+    <column>wizard_page_id</column>
+   </index>
+
+   <index>
+     <index-name>FK612CF33E2786D518</index-name>
+     <table-name>DW_REFLECTION</table-name>
+     <column>cell_id</column>
+   </index>
+
+   <index>
+     <index-name>FK932B9774FE6D91AF</index-name>
+     <table-name>DW_REFLECTION_ITEM</table-name>
+     <column>reflection_id</column>
+   </index>
+   <index>
+     <index-name>FK932B9774BB68D9FE</index-name>
+     <table-name>DW_REFLECTION_ITEM</table-name>
+     <column>expectation_id</column>
+   </index>
+
+   <index>
+     <index-name>FKF1E8DD1A2786D518</index-name>
+     <table-name>DW_REVIEWER_ITEM</table-name>
+     <column>cell_id</column>
+   </index>
+
+</tables>
