@@ -45,16 +45,17 @@ package org.theospi.portfolio.admin.service;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin;
 import org.theospi.portfolio.admin.intf.SakaiIntegrationService;
-import org.theospi.portfolio.admin.model.IntegrationOption;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.app.scheduler.SchedulerManager;
+import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
+import org.sakaiproject.service.legacy.content.ContentHostingService;
+import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.quartz.SchedulerException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Iterator;
 
 public class SakaiIntegrationServiceImpl implements SakaiIntegrationService {
@@ -64,6 +65,8 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService {
    private List dependantBeans;
    private long pollingInterval;
    private SchedulerManager schedulerManager;
+   private ContentHostingService contentHostingService;
+   private List initUsers = new ArrayList();
 
    public void init() {
       // go through each integration plugin and execute it...
@@ -78,11 +81,29 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService {
             String plugin = (String) i.next();
             PluginOptionJob.schedule(getSchedulerManager(), plugin, getPollingInterval());
          }
+         createUserResourceDir();
       } catch (SchedulerException e) {
          logger.error("", e);
       } finally {
          sakaiSession.setUserEid(userId);
          sakaiSession.setUserId(userId);
+      }
+   }
+   
+   protected void createUserResourceDir() {
+      for (Iterator iter = getInitUsers().iterator(); iter.hasNext();) {
+         String userId = (String)iter.next();
+         try {
+            ContentCollectionEdit userCollection = getContentHostingService().addCollection("/user/" + userId);
+            userCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, userId);
+            getContentHostingService().commitCollection(userCollection);
+         } 
+         catch (IdUsedException e) {
+            // ignore... it is already there.
+         }
+         catch (Exception e) {
+            throw new RuntimeException(e);
+         }
       }
    }
 
@@ -116,5 +137,21 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService {
 
    public void setSchedulerManager(SchedulerManager schedulerManager) {
       this.schedulerManager = schedulerManager;
+   }
+
+   public ContentHostingService getContentHostingService() {
+      return contentHostingService;
+   }
+
+   public void setContentHostingService(ContentHostingService contentHostingService) {
+      this.contentHostingService = contentHostingService;
+   }
+
+   public List getInitUsers() {
+      return initUsers;
+   }
+
+   public void setInitUsers(List initUsers) {
+      this.initUsers = initUsers;
    }
 }

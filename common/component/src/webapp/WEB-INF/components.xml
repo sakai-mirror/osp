@@ -1534,6 +1534,11 @@
             <value>org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin.pages</value>
          </list>
       </property>
+      <property name="initUsers">
+      	<list>
+      		<value>admin</value>
+      	</list>
+      </property>
       <property name="pollingInterval"><value>5000</value></property>
       <property name="schedulerManager">
          <ref bean="org.sakaiproject.api.app.scheduler.SchedulerManager"/>
@@ -1542,6 +1547,9 @@
          <list>
             <ref bean="org.theospi.portfolio.security.model.SakaiDefaultPermsManager.sakaiTools" />
          </list>
+      </property>
+      <property name="contentHostingService">
+         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
       </property>
    </bean>
    <!-- above: setup user and program admin site -->
