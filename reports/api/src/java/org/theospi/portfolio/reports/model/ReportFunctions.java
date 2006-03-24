@@ -21,7 +21,13 @@
 package org.theospi.portfolio.reports.model;
 
 /**
- * Created by IntelliJ IDEA.
+ *   These are the permissions for reporting.  Reporting uses the sakai permission manager
+ *   and not the osp permission manager.  Meta object uses the sakai permission manager as well.
+ *   The labels on the page are drawn from the function string minus the prefix.
+ *   
+ *   Apparently, when labelling a permission with more than one word, then a period is used as 
+ *   the spacer.
+ *
  * User: John Ellis
  * Date: Jan 7, 2006
  * Time: 12:43:30 AM
@@ -30,9 +36,9 @@ package org.theospi.portfolio.reports.model;
 public interface ReportFunctions {
    public static final String REPORT_FUNCTION_PREFIX = "osp.reports.";
    
-   public static final String REPORT_FUNCTION_CREATE = REPORT_FUNCTION_PREFIX + "createReport";
-   public static final String REPORT_FUNCTION_RUN = REPORT_FUNCTION_PREFIX + "runReport";
-   public static final String REPORT_FUNCTION_VIEW = REPORT_FUNCTION_PREFIX + "viewReport";
-   public static final String REPORT_FUNCTION_EDIT = REPORT_FUNCTION_PREFIX + "editReport";
-   public static final String REPORT_FUNCTION_DELETE = REPORT_FUNCTION_PREFIX + "deleteReport";
+   public static final String REPORT_FUNCTION_CREATE = REPORT_FUNCTION_PREFIX + "Create";
+   public static final String REPORT_FUNCTION_RUN = REPORT_FUNCTION_PREFIX + "Run";
+   public static final String REPORT_FUNCTION_VIEW = REPORT_FUNCTION_PREFIX + "View";
+   public static final String REPORT_FUNCTION_EDIT = REPORT_FUNCTION_PREFIX + "Edit";
+   public static final String REPORT_FUNCTION_DELETE = REPORT_FUNCTION_PREFIX + "Delete";
 }
