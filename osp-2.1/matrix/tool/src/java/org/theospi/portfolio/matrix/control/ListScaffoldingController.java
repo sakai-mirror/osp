@@ -47,6 +47,9 @@ public class ListScaffoldingController extends AbstractMatrixController {
 
       List scaffolding = new ArrayList(getMatrixManager().findScaffolding(
             worksiteId, currentToolId, currentAgent.getId().getValue()));
+      
+      // When selecting a matrix the user should start with a fresh user
+      session.remove(ViewMatrixController.VIEW_USER);
 
       model.put("scaffolding",
          getListScrollIndexer().indexList(request, model, scaffolding));

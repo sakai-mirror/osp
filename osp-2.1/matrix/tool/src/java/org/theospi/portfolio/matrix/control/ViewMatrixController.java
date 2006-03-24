@@ -62,13 +62,14 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 
    protected final Log logger = LogFactory.getLog(getClass());
    
+   public static final String VIEW_USER = "view_user";
+   
    private ToolManager toolManager;
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
 
       MatrixGridBean grid = (MatrixGridBean)incomingModel;
       String strScaffoldingId = (String)request.get("scaffolding_id");
-      
       
       if (strScaffoldingId == null) {
          Placement placement = getToolManager().getCurrentPlacement();
@@ -81,11 +82,15 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 
       Agent currentAgent = getAuthManager().getAgent();
       boolean createAuthz = false;
-      
-      String user = (String)request.get("view_user");
-      if (user != null) {
-          currentAgent = getAgentManager().getAgent(getIdManager().getId(user));
-          createAuthz = true;
+
+      String userRequest = (String)request.get(VIEW_USER);
+      String userSession = (String)session.get(VIEW_USER);
+      if (userRequest != null) {
+         currentAgent = getAgentManager().getAgent(getIdManager().getId(userRequest));
+         createAuthz = true;
+      } else if(userSession != null) {
+         currentAgent = getAgentManager().getAgent(getIdManager().getId(userSession));
+         // The authorize was already created by this point
       }
 
       Matrix matrix = getMatrixManager().getMatrix(scaffoldingId, currentAgent.getId());
@@ -105,7 +110,8 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       if (createAuthz) {
          getAuthzManager().createAuthorization(getAuthManager().getAgent(), 
                  FunctionConstants.READ_MATRIX, matrix.getId());
-     }
+      }
+      session.put(VIEW_USER, userRequest);
 
       List levels = scaffolding.getLevels();
       List criteria = scaffolding.getCriteria();
