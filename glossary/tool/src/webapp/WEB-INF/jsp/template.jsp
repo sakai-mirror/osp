@@ -8,7 +8,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" type="text/css" media="all" href="<c:url value="/css/eport.css"/>" />
+    <link rel="stylesheet" type="text/css" media="all" href="/osp-common-tool/css/eport.css" />
     <link href="<c:out value="${sakai_skin_base}"/>"
           type="text/css"
           rel="stylesheet"
@@ -21,7 +21,7 @@
     <title><%= (String)request.getAttribute("_title")%></title>
     <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js">
     </script>
-    <script language="JavaScript" src="<c:url value="/js/eport.js"/>"></script>
+    <script language="JavaScript" src="/osp-common-tool/js/eport.js"></script>
   <%
       String panelId = request.getParameter("panel");
       if (panelId == null) {
