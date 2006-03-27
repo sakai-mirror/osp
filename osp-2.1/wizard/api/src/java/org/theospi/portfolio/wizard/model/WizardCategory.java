@@ -57,6 +57,14 @@ public class WizardCategory extends IdentifiableObject {
       setCreated(new Date());
       setModified(new Date());
    }
+   
+   public boolean equals(Object in) {
+      boolean equ = super.equals(in);
+      if (this.getId() == null && in != null && ((IdentifiableObject) in).getId() == null) {
+         return false;
+      }
+      return equ;
+   }
 
    public String getTitle() {
       return title;
