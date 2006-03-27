@@ -484,7 +484,7 @@ public class AddPresentationController extends AbstractWizardFormController {
       model.put("presentations", getListScrollIndexer().indexList(request, model, presentations));
       model.put("osp_agent", getAuthManager().getAgent());
 
-      return new ModelAndView("listPresentation", model);
+      return new ModelAndView("listPresentationRedirect", model);
 
    }
 
@@ -522,7 +522,7 @@ public class AddPresentationController extends AbstractWizardFormController {
       model.put("presentations", getListScrollIndexer().indexList(request, model, presentations));
       model.put("osp_agent", getAuthManager().getAgent());
       
-      return new ModelAndView("listPresentation", model);
+      return new ModelAndView("listPresentationRedirect", model);
    }
 
    /**
