@@ -1,5 +1,5 @@
 UNKNOWN {
-   FONT-SIZE: 0.8em; COLOR: #FF0000; FONT-FAMILY: Verdana; BACKGROUND-COLOR: #ffffff; margin-width: 0 px; margin-height: 0 px; top-margin: 0 px; left-margin: 0 px; right-margin: 0 px
+   FONT-SIZE: 0.8em; COLOR: #FF0000; FONT-FAMILY: Verdana; BACKGROUND-COLOR: #ffffff; margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px;
 }
 
 /*-------------------- Comments Setup --------------------------------*/
@@ -28,7 +28,7 @@ div.ospComments {
 .ospComments h4 a:hover   {color:#51698D; text-decoration: underline;}
 .ospComments h5 {}
 .ospComments p {margin-left: 30px;}
-.ospComments .pipe {color:#51698D;};
+.ospComments .pipe {color:#51698D;}
 .ospComments table tr td {
 	background-color: #FFFFFF;
 	margin: 0px;
@@ -38,8 +38,8 @@ div.ospComments {
 
 div.ospEmbedded {
    border:1px solid #AAAAAA;
-   padding-left: 2 px;
-   padding-left: 2 px;
+   padding-left: 2px;
+   padding-left: 2px;
 }
 
 
@@ -97,7 +97,7 @@ TABLE.quota {
       .alternating .underline td { border-bottom: 1px dotted gray; }
       .alternating .red { color: red; }
       .alternating .gray { color: gray; }
-      .alternating .button {font-size: smaller; margin-bottom: 2px; width: 80;}
+      .alternating .button {font-size: smaller; margin-bottom: 2px; width: 80px;}
 
 show {
    visibility: visible;
