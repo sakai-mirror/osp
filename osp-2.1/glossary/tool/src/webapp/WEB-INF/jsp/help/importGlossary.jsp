@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <fmt:setLocale value="${locale}"/>
-<fmt:setBundle basename="messages" var="msgs" />
+<fmt:setBundle basename="org.theospi.portfolio.glossary.bundle.Messages" var="msgs" />
 
 <form  method="POST">
     <osp:form/>
