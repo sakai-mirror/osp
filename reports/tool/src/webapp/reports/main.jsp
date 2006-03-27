@@ -19,7 +19,7 @@
                 <sakai:view_title value="#{msgs.title_main}" indent="1" />
 
                 <h:dataTable var="report" styleClass="listHier"
-                    value="#{ReportsTool.reports}" rendered="#{ReportsTool.userCan.createReport}">
+                    value="#{ReportsTool.reports}" rendered="#{ReportsTool.userCan.create}">
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Title" />
@@ -35,10 +35,10 @@
                 <h:outputText value="<br/><br/>#{msgs.report_results}" escape="false"/>
                 <h:dataTable var="result" styleClass="listHier"
                     value="#{ReportsTool.results}"
-                        rendered="#{ReportsTool.userCan.runReport ||
-                                    ReportsTool.userCan.viewReport ||
-                                    ReportsTool.userCan.editReport ||
-                                    ReportsTool.userCan.deleteReport}">
+                        rendered="#{ReportsTool.userCan.run ||
+                                    ReportsTool.userCan.view ||
+                                    ReportsTool.userCan.edit ||
+                                    ReportsTool.userCan.delete}">
                     <h:column>
                         <f:facet name="header">
                             <h:outputText value="Title" />
@@ -53,30 +53,30 @@
                            <div class="itemAction">
                         </f:verbatim>
                            <h:commandLink action="#{result.processSelectReportResult}"
-                                    rendered="#{!result.isLive && ReportsTool.userCan.viewReport}">
+                                    rendered="#{!result.isLive && ReportsTool.userCan.view}">
                               <h:outputText value="#{msgs.view_report}" />
                            </h:commandLink>
                            
                            <h:commandLink action="#{result.processSelectReportResult}"
-                                    rendered="#{result.isLive && ReportsTool.userCan.runReport}">
+                                    rendered="#{result.isLive && ReportsTool.userCan.run}">
                               <h:outputText value="#{msgs.run_report}" />
                            </h:commandLink>
                            
                            <h:outputText value="#{' &nbsp; | &nbsp; '}" escape="false"
-                                    rendered="#{result.isLive && ReportsTool.userCan.runReport && 
-                                                result.isLive && ReportsTool.userCan.editReport}"/>
+                                    rendered="#{result.isLive && ReportsTool.userCan.run && 
+                                                result.isLive && ReportsTool.userCan.edit}"/>
                            <h:commandLink action="#{result.processEditReport}"
-                                    rendered="#{result.isLive && ReportsTool.userCan.editReport}">
+                                    rendered="#{result.isLive && ReportsTool.userCan.edit}">
                               <h:outputText value="#{msgs.edit_report}" />
                            </h:commandLink>
                            
                            <h:outputText value="#{' &nbsp; | &nbsp; '}"  escape="false"
-                                    rendered="#{ReportsTool.userCan.deleteReport && 
-                                                ((!result.isLive && ReportsTool.userCan.viewReport) ||
-                                                (result.isLive && ReportsTool.userCan.runReport) || 
-                                                (result.isLive && ReportsTool.userCan.editReport))}"/>
+                                    rendered="#{ReportsTool.userCan.delete && 
+                                                ((!result.isLive && ReportsTool.userCan.view) ||
+                                                (result.isLive && ReportsTool.userCan.run) || 
+                                                (result.isLive && ReportsTool.userCan.edit))}"/>
                            <h:commandLink action="#{result.processDelete}"
-                                    rendered="#{ReportsTool.userCan.deleteReport}">
+                                    rendered="#{ReportsTool.userCan.delete}">
                               <h:outputText value="#{msgs.delete_report}" />
                            </h:commandLink>
                         <f:verbatim escape="false">
