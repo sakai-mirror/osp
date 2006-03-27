@@ -153,7 +153,7 @@ public class DecoratedCategory extends DecoratedCategoryChild {
 
    public String processActionSave() {
       List parentCategories = getParentCategory().getBase().getChildCategories();
-
+      
       if (!parentCategories.contains(getBase())) {
          parentCategories.add(getBase());
          getBase().setParentCategory(getParentCategory().getBase());
@@ -161,6 +161,11 @@ public class DecoratedCategory extends DecoratedCategoryChild {
 
       getParentCategory().resequenceCategories();
 
+      return "editWizardPages";
+   }
+
+   public String processActionCancel() {
+      getParent().setCurrentCategory(null);
       return "editWizardPages";
    }
 
