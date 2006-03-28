@@ -656,11 +656,18 @@ public class WizardTool extends BuilderTool {
          Collections.sort(new ArrayList(members));
          
          for (Iterator memb = members.iterator(); memb.hasNext();) {
-            Member member = (Member) memb.next();
-            User user = UserDirectoryService.getUser(member.getUserId());
-            users.add(createSelect(user.getId(), user.getSortName()));
+            try {
+               Member member = (Member) memb.next();
+               User user = UserDirectoryService.getUser(member.getUserId());
+               users.add(createSelect(user.getId(), user.getSortName()));
+            }
+            catch (IdUnusedException e) {
+               //TODO replace with a message bundle
+               logger.warn("User " + e.getId() + " cannot be found");
+            }
          }
-      } catch (IdUnusedException e) {
+      }
+      catch (IdUnusedException e) {
          throw new OspException(e);
       }
       return users;
@@ -692,21 +699,24 @@ public class WizardTool extends BuilderTool {
    }
    
    public boolean getCanDelete(Wizard wizard) {
+      if (wizard.getOwner() == null) return false;
       return getAuthzManager().isAuthorized(WizardFunctionConstants.DELETE_WIZARD, 
-            wizard.getId()) && wizard.getOwner().getId().getValue().equalsIgnoreCase(
-                  SessionManager.getCurrentSessionUserId());
+            wizard.getId()) && SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
+                  wizard.getOwner().getId().getValue());
    }
    
    public boolean getCanEdit(Wizard wizard) {
+      if (wizard.getOwner() == null) return false;
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EDIT_WIZARD, 
-            wizard.getId()) && wizard.getOwner().getId().getValue().equalsIgnoreCase(
-                  SessionManager.getCurrentSessionUserId());
+            wizard.getId()) && SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
+                  wizard.getOwner().getId().getValue());
    }
    
    public boolean getCanExport(Wizard wizard) {
+      if (wizard.getOwner() == null) return false;
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EXPORT_WIZARD, 
-            wizard.getId()) && wizard.getOwner().getId().getValue().equalsIgnoreCase(
-                  SessionManager.getCurrentSessionUserId());
+            wizard.getId()) && SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
+                  wizard.getOwner().getId().getValue());
    }
    
    protected Collection getFormsForSelect(String type) {
