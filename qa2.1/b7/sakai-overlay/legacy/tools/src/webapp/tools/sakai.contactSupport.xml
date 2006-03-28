@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="sakai.contactSupport"
+			title="Help"
+			description="For sending comments or questions to support staff.">
+		
+		<!--
+			<category name="course" />
+			<category name="project" />
+		-->
+
+	</tool>
+
+</registration>
