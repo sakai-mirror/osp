@@ -41,7 +41,8 @@ public class IdentifiableObjectPropertyAccess extends BeanPropertyAccess {
                " is not derived from IdentifiableObject", cce);
       }
       if (object != null) {
-         return object.getId().getValue();
+         if(object.getId() != null)
+            return object.getId().getValue();
       }
       return null;
    }

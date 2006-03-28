@@ -11,7 +11,7 @@
    
    
    <table>
-     <name>DW_MATRIX</name>
+     <name>dw_matrix</name>
      <desc>Matrix Datawarehouse table</desc>
      <columns>
         <column>
@@ -38,7 +38,7 @@
 
 
    <table>
-     <name>DW_MATRIX_CELL</name>
+     <name>dw_matrix_cell</name>
      <desc>Matrix Cell Datawarehouse table</desc>
      <columns>
         <column>
@@ -71,7 +71,7 @@
 
 
    <table>
-     <name>DW_WIZARD_PAGE</name>
+     <name>dw_wizard_page</name>
      <desc>Matrix Cell Datawarehouse table</desc>
      <columns>
         <column>
@@ -101,7 +101,7 @@
 
 
    <table>
-     <name>DW_WIZARD_PAGE_REVIEW</name>
+     <name>dw_wizard_page_review</name>
      <desc>The reviews (Review, Evaluation, Reflection)</desc>
      <columns>
         <column>
@@ -157,13 +157,13 @@
 
    <index>
      <index-name>FK4240ED2786D510</index-name>
-     <table-name>DW_WIZARD_PAGE_REVIEW</table-name>
+     <table-name>dw_wizard_page_review</table-name>
      <column>parent_id</column>
    </index>
 
 
    <table>
-     <name>DW_WIZARD_PAGE_ATTACHMENTS</name>
+     <name>dw_wizard_page_attachments</name>
      <desc>Wizard Page Attachments Data warehouse table</desc>
      <columns>
         <column>
@@ -189,7 +189,7 @@
 
 
    <table>
-     <name>DW_WIZARD_PAGE_FORMS</name>
+     <name>dw_wizard_page_forms</name>
      <desc>Wizard Page Forms Data warehouse table</desc>
      <columns>
         <column>
@@ -239,7 +239,7 @@
 
 
    <table>
-     <name>DW_MATRIX_LABEL</name>
+     <name>dw_matrix_label</name>
      <desc>Matrix Label Datawarehouse table</desc>
      <columns>
         <column>
@@ -277,7 +277,7 @@
    </table>
 
    <table>
-    <name>DW_CELL_ATTACHMENT</name>
+    <name>dw_cell_attachment</name>
     <desc>Cell Attachment Datawarehouse table</desc>
     <columns>
        <column>
@@ -308,7 +308,7 @@
   </table>
 
   <table>
-    <name>DW_CELL_ATTACHMENT_CRITERION</name>
+    <name>dw_cell_attachment_criterion</name>
     <desc>Cell Attachment Criteria Datawarehouse table</desc>
     <columns>
        <column>
@@ -333,7 +333,7 @@
   </table>
 
   <table>
-    <name>DW_EXPECTATION</name>
+    <name>dw_expectation</name>
     <desc>Expectation Datawarehouse table</desc>
     <columns>
       <column>
@@ -359,7 +359,7 @@
   </table>
 
    <table>
-     <name>DW_REFLECTION</name>
+     <name>dw_reflection</name>
      <desc>Reflection Datawarehouse table</desc>
      <columns>
         <column>
@@ -385,7 +385,7 @@
    </table>
 
    <table>
-     <name>DW_REFLECTION_ITEM</name>
+     <name>dw_reflection_item</name>
      <desc>Reflection Item Datawarehouse table</desc>
      <columns>
         <column>
@@ -425,7 +425,7 @@
    </table>
 
    <table>
-     <name>DW_REVIEWER_ITEM</name>
+     <name>dw_reviewer_item</name>
      <desc>Reviewer Item Datawarehouse table</desc>
      <columns>
         <column>
@@ -477,7 +477,7 @@
 
 
    <table>
-     <name>DW_STRUCTURED_ARTIFACT_DEF</name>
+     <name>dw_structured_artifact_def</name>
      <desc>Structured Artifact Definition table</desc>
      <columns>
         <column>
@@ -553,74 +553,74 @@
 
    <index>
      <index-name>FK4440ED2786D518</index-name>
-     <table-name>DW_CELL_ATTACHMENT</table-name>
+     <table-name>dw_cell_attachment</table-name>
      <column>cell_id</column>
    </index>
 
    <index>
      <index-name>FK3DD0C5CFEC85D379</index-name>
-     <table-name>DW_CELL_ATTACHMENT_CRITERION</table-name>
+     <table-name>dw_cell_attachment_criterion</table-name>
      <column>criterion_id</column>
    </index>
    <index>
      <index-name>FK3DD0C5CFA62F61B7</index-name>
-     <table-name>DW_CELL_ATTACHMENT_CRITERION</table-name>
+     <table-name>dw_cell_attachment_criterion</table-name>
      <column>attachment_id</column>
    </index>
 
    <index>
      <index-name>FKFBFAF989188AD</index-name>
-     <table-name>DW_EXPECTATION</table-name>
+     <table-name>dw_expectation</table-name>
      <column>elt</column>
    </index>
    <index>
      <index-name>FKFBFAF9899AAD0C05</index-name>
-     <table-name>DW_EXPECTATION</table-name>
+     <table-name>dw_expectation</table-name>
      <column>scaffolding_cell_id</column>
    </index>
 
    <index>
     <index-name>FK5A17205459517621</index-name>
-    <table-name>DW_MATRIX</table-name>
+    <table-name>dw_matrix</table-name>
     <column>scaffolding_id</column>
    </index>
 
    <index>
     <index-name>FK8C1D366D9AAD0C05</index-name>
-    <table-name>DW_MATRIX_CELL</table-name>
+    <table-name>dw_matrix_cell</table-name>
     <column>scaffolding_cell_id</column>
    </index>
    <index>
     <index-name>FK8C1D366D3E503659</index-name>
-    <table-name>DW_MATRIX_CELL</table-name>
+    <table-name>dw_matrix_cell</table-name>
     <column>matrix_id</column>
    </index>
     <index>
     <index-name>FK8C1D366DFE6D91AF</index-name>
-    <table-name>DW_MATRIX_CELL</table-name>
+    <table-name>dw_matrix_cell</table-name>
     <column>wizard_page_id</column>
    </index>
 
    <index>
      <index-name>FK612CF33E2786D518</index-name>
-     <table-name>DW_REFLECTION</table-name>
+     <table-name>dw_reflection</table-name>
      <column>cell_id</column>
    </index>
 
    <index>
      <index-name>FK932B9774FE6D91AF</index-name>
-     <table-name>DW_REFLECTION_ITEM</table-name>
+     <table-name>dw_reflection_item</table-name>
      <column>reflection_id</column>
    </index>
    <index>
      <index-name>FK932B9774BB68D9FE</index-name>
-     <table-name>DW_REFLECTION_ITEM</table-name>
+     <table-name>dw_reflection_item</table-name>
      <column>expectation_id</column>
    </index>
 
    <index>
      <index-name>FKF1E8DD1A2786D518</index-name>
-     <table-name>DW_REVIEWER_ITEM</table-name>
+     <table-name>dw_reviewer_item</table-name>
      <column>cell_id</column>
    </index>
 

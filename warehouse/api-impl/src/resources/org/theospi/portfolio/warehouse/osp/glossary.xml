@@ -10,7 +10,7 @@
 <tables>
 
    <table>
-   <name>DW_HELP_GLOSSARY</name>
+   <name>dw_help_glossary</name>
    <desc>Help Glossary Datawarehouse table
         This contains the terms for the glossary, worksite, and short description
    </desc>
@@ -45,7 +45,7 @@
     <!-- This table did not show up after build and run -->
 
  <table>
-   <name>DW_HELP_GLOSSARY_DESC</name>
+   <name>dw_help_glossary_desc</name>
    <desc>Help Glossary Description Datawarehouse table
         This is for the long description
    </desc>

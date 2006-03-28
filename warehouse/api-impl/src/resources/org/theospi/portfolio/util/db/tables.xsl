@@ -21,7 +21,7 @@ DROP TABLE <xsl:value-of select="name"/><xsl:text>
 
 <xsl:template match="table" mode="create">
 <statement type="create">
-CREATE TABLE <xsl:value-of select="name"/>
+CREATE TABLE <xsl:value-of select="translate(name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>
 (
 <xsl:apply-templates select="columns/column"/>
 <xsl:apply-templates select="primary-key"/>
@@ -50,14 +50,14 @@ CREATE TABLE <xsl:value-of select="name"/>
 
 <xsl:template match="alter">
   <statement type="alter">
-ALTER TABLE <xsl:value-of select="table-name"/> ADD FOREIGN KEY (<xsl:value-of select="fo-key"/>) REFERENCES <xsl:value-of select="reference"/> (<xsl:value-of select="ref-key"/>)
+ALTER TABLE <xsl:value-of select="translate(table-name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/> ADD FOREIGN KEY (<xsl:value-of select="fo-key"/>) REFERENCES <xsl:value-of select="reference"/> (<xsl:value-of select="ref-key"/>)
   </statement>
   <xsl:text></xsl:text>
 </xsl:template>
 
 <xsl:template match="index">
 <statement type="index">
-CREATE INDEX <xsl:value-of select="index-name"/> ON <xsl:value-of select="table-name"/> (<xsl:value-of select="column"/>)
+CREATE INDEX <xsl:value-of select="index-name"/> ON <xsl:value-of select="translate(table-name, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/> (<xsl:value-of select="column"/>)
  </statement>
  <xsl:text></xsl:text>
 </xsl:template>

@@ -72,11 +72,11 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_TEMPLATE_FILE_REF (id, file_id, file_type_id, usage_desc, template_id) 
+         <value>insert into dw_template_file_ref (id, file_id, file_type_id, usage_desc, template_id) 
          					 values (?, ?, ?, ?, ?)</value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_TEMPLATE_FILE_REF</value>
+         <value>delete from dw_template_file_ref</value>
       </property>
    </bean>   
 
@@ -128,7 +128,7 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_STRUCTURED_ARTIFACT_DEF
+        <value>insert into dw_structured_artifact_def
         							(id, description, documentRoot, owner, created, modified, systemOnly, externalType,
         							 siteId, siteState, globalState, schemaData, instruction)
         						
@@ -136,7 +136,7 @@
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_STRUCTURED_ARTIFACT_DEF</value>
+        <value>delete from dw_structured_artifact_def</value>
      </property>
    </bean>
    
@@ -174,14 +174,14 @@
            </list>
         </property>
         <property name="insertStmt">
-           <value>insert into DW_REPOSITORY_LOCK
+           <value>insert into dw_repository_lock
                             (id, asset_id, qualifier_id, is_active, is_system, reason, 
                             date_added, date_removed)
                                             values (?, ?, ?, ?, ?, ?, ?, ?)
            </value>
         </property>
         <property name="clearStmt">
-           <value>delete from DW_REPOSITORY_LOCK</value>
+           <value>delete from dw_repository_lock</value>
         </property> 
    </bean> 
    
@@ -231,13 +231,13 @@
          </list>
       </property>
       <property name="insertStmt">
-           <value>insert into DW_WIZARD_SUPPORT_ITEM
+           <value>insert into dw_wizard_support_item
                     (id, wizard_id, item_id, generic_type, content_type)
                         values (?, ?, ?, ?,?)
            </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_WIZARD_SUPPORT_ITEM</value>
+         <value>delete from dw_wizard_support_item</value>
       </property> 
    </bean>
    
@@ -268,14 +268,14 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_WIZARD_COMPLETED_PAGE
+         <value>insert into dw_wizard_completed_page
                     (id, completed_category_id, wizard_page_def_id, wizard_page_id, seq_num, created, lastVisited)
                         values (?, ?, ?, ?, ?, ?, ?)
                       
          </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_WIZARD_COMPLETED_PAGE</value>
+         <value>delete from dw_wizard_completed_page</value>
       </property>
    </bean>
    
@@ -304,14 +304,14 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_WIZARD_COMPLETED_CATEGORY
+         <value>insert into dw_wizard_completed_category
                     (id, completed_wizard_id, category_id, parent_category_id, expanded, seq_num)
                         values (?, ?, ?, ?, ?, ?)
                       
          </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_WIZARD_COMPLETED_CATEGORY</value>
+         <value>delete from dw_wizard_completed_category</value>
       </property>
       <property name="complexFields" >
          <list>
@@ -367,14 +367,14 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_WIZARD_COMPLETED
+         <value>insert into dw_wizard_completed
                     (id, owner_id, created, lastVisited, status, wizard_id, root_category)
                         values (?, ?, ?, ?, ?, ?, ?)
                       
          </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_WIZARD_COMPLETED</value>
+         <value>delete from dw_wizard_completed</value>
       </property>
       <property name="complexFields" >
          <list>
@@ -403,14 +403,14 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_WIZARD_PAGE_DEF_ADD_FORMS
+         <value>insert into dw_wizard_page_def_add_forms
                     (wizard_page_def_id, form_def_id, seq_num)
                         values (?, ?, ?)
                       
          </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_WIZARD_PAGE_DEF_ADD_FORMS</value>
+         <value>delete from dw_wizard_page_def_add_forms</value>
       </property>
    </bean>
    
@@ -442,14 +442,14 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_WIZARD_PAGE_DEF
+         <value>insert into dw_wizard_page_def
                     (id, initialStatus, title, description, site_id, tool_id, guidance_id)
                         values (?, ?, ?, ?, ?, ?, ?)
                       
          </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_WIZARD_PAGE_DEF</value>
+         <value>delete from dw_wizard_page_def</value>
       </property>
       <property name="complexFields" >
          <list>
@@ -502,14 +502,14 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_WIZARD_PAGE_SEQUENCE
+         <value>insert into dw_wizard_page_sequence
                     (id, category_id, wiz_page_def_id, seq_num)
                         values (?, ?, ?, ?)
                       
          </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_WIZARD_PAGE_SEQUENCE</value>
+         <value>delete from dw_wizard_page_sequence</value>
       </property>
       <property name="complexFields" >
          <list>
@@ -561,7 +561,7 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_WIZARD_CATEGORY
+         <value>insert into dw_wizard_category
                     (id, title, description, keywords, created, modified, wizard_id, 
                      parent_category_id, seq_num)
                         values (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -569,7 +569,7 @@
          </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_WIZARD_CATEGORY</value>
+         <value>delete from dw_wizard_category</value>
       </property>
       <property name="complexFields" >
          <list>
@@ -624,7 +624,7 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_WORKFLOW_PARENT
+         <value>insert into dw_workflow_parent
                     (id, reflection_device_id, reflection_device_type, 
                      evaluation_device_id, evaluation_device_type,
                      review_device_id, review_device_type)
@@ -633,7 +633,7 @@
          </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_WORKFLOW_PARENT</value>
+         <value>delete from dw_workflow_parent</value>
       </property>
    </bean>
    
@@ -687,7 +687,7 @@
             </list>
         </property>
         <property name="insertStmt">
-           <value>insert into DW_WIZARD
+           <value>insert into dw_wizard
                             (id, owner_id, name, description, keywords, created, modified,
                             site_id, tool_id, guidance_id, published, wizard_type, exposed_page_id,
                             root_category, seq_num)
@@ -695,7 +695,7 @@
            </value>
         </property>
         <property name="clearStmt">
-           <value>delete from DW_WIZARD</value>
+           <value>delete from dw_wizard</value>
         </property>     
         <property name="complexFields" >
             <list>
@@ -779,12 +779,12 @@
         </list>
     </property>
     <property name="insertStmt">
-       <value>insert into DW_HELP_GLOSSARY  (id, worksite_id, term, description)
+       <value>insert into dw_help_glossary  (id, worksite_id, term, description)
                    values (?, ?, ?, ?)
       </value>
     </property>
     <property name="clearStmt">
-       <value>delete from DW_HELP_GLOSSARY</value>
+       <value>delete from dw_help_glossary</value>
     </property>
    </bean>
    
@@ -820,10 +820,10 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_PRES_ITEMDEF_MIMETYPE (item_def_id, primaryMimeType, secondaryMimeType) values (?, ?, ?)</value>
+         <value>insert into dw_pres_itemdef_mimetype (item_def_id, primaryMimeType, secondaryMimeType) values (?, ?, ?)</value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_PRES_ITEMDEF_MIMETYPE</value>
+         <value>delete from dw_pres_itemdef_mimetype</value>
       </property>
    </bean>
    
@@ -860,14 +860,14 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_PRESENTATION_ITEM_DEF
+         <value>insert into dw_presentation_item_def
                                     (id, name, title, description, allowMultiple, type, external_type,
                                      sequence_no, template_id)
                                      values (?, ?, ?, ?, ?, ?, ?, ?, ?)
          </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_PRESENTATION_ITEM_DEF</value>
+         <value>delete from dw_presentation_item_def</value>
       </property>
        <property name="complexFields" >
           <list>
@@ -931,7 +931,7 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_PRESENTATION_TEMPLATE
+        <value>insert into dw_presentation_template
                                     (id, name,  description, includeHeaderAndFooter, includeComments, published,
                                      owner_id, renderer,
                                      propertyPage, documentRoot, created, modified,
@@ -940,7 +940,7 @@
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_PRESENTATION_TEMPLATE</value>
+        <value>delete from dw_presentation_template</value>
      </property>
       <property name="complexFields" >
          <list>
@@ -988,10 +988,10 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_PRESENTATION_ITEM (presentation_id, artifact_id, item_definition_id) values (?, ?, ?)</value>
+         <value>insert into dw_presentation_item (presentation_id, artifact_id, item_definition_id) values (?, ?, ?)</value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_PRESENTATION_ITEM</value>
+         <value>delete from dw_presentation_item</value>
       </property>
    </bean>
    
@@ -1019,12 +1019,12 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_PRESENTATION_COMMENT (id, title, creator_id, presentation_id, visibility, created)
+         <value>insert into dw_presentation_comment (id, title, creator_id, presentation_id, visibility, created)
                                              values (?, ?, ?, ?, ?, ?)
          </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_PRESENTATION_COMMENT</value>
+         <value>delete from dw_presentation_comment</value>
       </property>
    </bean>
    
@@ -1046,13 +1046,13 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_PRESENTATION_LOG
+        <value>insert into dw_presentation_log
                                     (id, viewer_id, presentation_id, view_date)
                                     values (?, ?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_PRESENTATION_LOG</value>
+        <value>delete from dw_presentation_log</value>
      </property>
    </bean>
    
@@ -1071,11 +1071,11 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_PRESENTATION_PAGE_REGION (id, presentation_page_id, region_id) values (?, ?, ?)
+        <value>insert into dw_presentation_page_region (id, presentation_page_id, region_id) values (?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_PRESENTATION_PAGE_REGION</value>
+        <value>delete from dw_presentation_page_region</value>
      </property>
    </bean>
     
@@ -1097,13 +1097,13 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_PRESENTATION_ITEM_PROPERTY
+         <value>insert into dw_presentation_item_property
                                     (id, presentation_page_item_id, property_key, property_value)
                                      values (?, ?, ?, ?)
          </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_PRESENTATION_ITEM_PROPERTY</value>
+         <value>delete from dw_presentation_item_property</value>
       </property>
    </bean>
    <!--
@@ -1124,13 +1124,13 @@
           </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_PRESENTATION_ITEM_PROPERTY
+         <value>insert into dw_presentation_item_property
                                 (id, presentation_page_item_id, property_key, propert_value)
                                        values (?, ?, ?, ?)
          </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_PRESENTATION_ITEM_PROPERTY</value>
+         <value>delete from dw_presentation_item_property</value>
     </property>
    </bean>
    -->
@@ -1147,12 +1147,12 @@
           </list>
        </property>
        <property name="insertStmt">
-          <value>insert into DW_HELP_GLOSSARY_DESC  (id, entry_id )
+          <value>insert into dw_help_glossary_desc  (id, entry_id )
                    values (?, ? )
          </value>
        </property>
        <property name="clearStmt">
-          <value>delete from DW_HELP_GLOSSARY_DESC</value>
+          <value>delete from dw_help_glossary_desc</value>
        </property>
    </bean>
    
@@ -1186,13 +1186,13 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_PRESENTATION_PAGE
+        <value>insert into dw_presentation_page
                                     (id, title, presentation_id, layout_id, style_id, seq_num, created, modified)
                                     values (?, ?, ?, ?, ?, ?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_PRESENTATION_PAGE</value>
+        <value>delete from dw_presentation_page</value>
      </property>
    </bean>
 
@@ -1218,11 +1218,8 @@
             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                <property name="propertyName"><value>modified</value></property>
             </bean>
-            <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
-               <property name="propertyName"><value>xhtmlFileId</value></property>
-            </bean>
-            <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
-               <property name="propertyName"><value>previewImageId</value></property>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>fileRef</value></property>
             </bean>
             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                <property name="propertyName"><value>toolId</value></property>
@@ -1233,14 +1230,14 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_PRESENTATION_LAYOUT
+         <value>insert into dw_presentation_layout
                                     (id, name,  description, published, owner_id, created, modified,
-                                    xhtml_file_id, preview_image_id, tool_id, site_id)
-                                     values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                    fileRef, tool_id, site_id)
+                                     values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
          </value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_PRESENTATION_LAYOUT</value>
+         <value>delete from dw_presentation_layout</value>
       </property>
    </bean>
    
@@ -1281,20 +1278,20 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_PRESENTATION
+         <value>insert into dw_presentation
                   (id, owner_id, template_id, name, description, isDefault,
                   isPublic, expiresOn, created, modified, tool_id)
                values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)</value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_PRESENTATION</value>
+         <value>delete from dw_presentation</value>
       </property>
       <property name="complexFields" >
          <list>
             <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
                <property name="propertyAccess">
                   <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-                     <property name="propertyName"><value>items</value></property>
+                     <property name="propertyName"><value>pages</value></property>
                   </bean>
                </property>
                <property name="task">
@@ -1304,7 +1301,7 @@
             <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
                <property name="propertyAccess">
                   <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-                     <property name="propertyName"><value>items</value></property>
+                     <property name="propertyName"><value>template</value></property>
                   </bean>
                </property>
                <property name="task">
@@ -1379,12 +1376,12 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_SCAFFOLDING_CELL_EVALUATORS
+        <value>insert into dw_scaffolding_cell_evaluators
                             (scaffolding_cell_id, id)  values (?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_SCAFFOLDING_CELL_EVALUATORS</value>
+        <value>delete from dw_scaffolding_cell_evaluators</value>
      </property>
    </bean>  
    
@@ -1411,14 +1408,14 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_SCAFFOLDING_LEVELS
+        <value>insert into dw_scaffolding_levels
                             (id, scaffolding_id, sequenceNumber, 
                             description, color, textColor)  values 
                             (?, ?, ?, ?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_SCAFFOLDING_LEVELS</value>
+        <value>delete from dw_scaffolding_levels</value>
      </property>
    </bean>  
    
@@ -1447,14 +1444,14 @@
          </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_SCAFFOLDING_CRITERIA
+        <value>insert into dw_scaffolding_criteria
                             (id, scaffolding_id, sequenceNumber, 
                             description, color, textColor)  values 
                             (?, ?, ?, ?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_SCAFFOLDING_CRITERIA</value>
+        <value>delete from dw_scaffolding_criteria</value>
      </property>
    </bean>
    
@@ -1479,13 +1476,13 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_SCAFFOLDING_CELL
+        <value>insert into dw_scaffolding_cell
                             (id, rootcriterion_id, level_id, scaffolding_id, wizardPageDef_id)
                                             values (?, ?, ?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_SCAFFOLDING_CELL</value>
+        <value>delete from dw_scaffolding_cell</value>
      </property>     
      <property name="complexFields" >
          <list>
@@ -1561,7 +1558,7 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_SCAFFOLDING
+        <value>insert into dw_scaffolding
                                     (id, ownerId, title, description, worksiteId,
                                      published, publishedBy, publishedDate, columnLabel, rowLabel, readyColor, 
                                      pendingColor, completedColor, lockedColor)
@@ -1569,7 +1566,7 @@
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_SCAFFOLDING</value>
+        <value>delete from dw_scaffolding</value>
      </property>
     <property name="complexFields" >
          <list> 
@@ -1640,12 +1637,12 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_CELL_ATTACHMENT_CRITERION
+        <value>insert into dw_cell_attachment_criterion
                                     (id, criterion_id, attachment_id) values (?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_CELL_ATTACHMENT_CRITERION</value>
+        <value>delete from dw_cell_attachment_criterion</value>
      </property>
    </bean>
    
@@ -1668,12 +1665,12 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_CELL_ATTACHMENT
+        <value>insert into dw_cell_attachment
                                     (id, artifactId, cell_id, privacyResponse) values (?, ?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_CELL_ATTACHMENT</value>
+        <value>delete from dw_cell_attachment</value>
      </property>
      <property name="complexFields" >
           <list>
@@ -1705,13 +1702,13 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_WIZARD_PAGE_REVIEW
+        <value>insert into dw_wizard_page_review
                                     (id, review_content_id, site_id, parent_id, review_device_id, review_type) 
                                     values (?, ?, ?, ?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_WIZARD_PAGE_REVIEW</value>
+        <value>delete from dw_wizard_page_review</value>
      </property>
    </bean>
    
@@ -1729,13 +1726,13 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_WIZARD_PAGE_ATTACHMENTS
+        <value>insert into dw_wizard_page_attachments
                                     (id, artifact_id, wizard_page_id) 
                                     values (?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_WIZARD_PAGE_ATTACHMENTS</value>
+        <value>delete from dw_wizard_page_attachments</value>
      </property>
    </bean>
    
@@ -1755,13 +1752,13 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_WIZARD_PAGE_FORMS
+        <value>insert into dw_wizard_page_forms
                                     (id, artifact_id, wizard_page_id, form_type) 
                                     values (?, ?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_WIZARD_PAGE_FORMS</value>
+        <value>delete from dw_wizard_page_forms</value>
      </property>
    </bean>
    
@@ -1783,14 +1780,14 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_WIZARD_PAGE
+        <value>insert into dw_wizard_page
                                     (id, status, wizard_page_def_id, modified)
                                 
                                     values (?, ?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_WIZARD_PAGE</value>
+        <value>delete from dw_wizard_page</value>
      </property>
      <property name="complexFields" >
          <list> <!-- TODO: wizard page attachments, and wizard page form -->
@@ -1848,13 +1845,13 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_MATRIX_CELL
+        <value>insert into dw_matrix_cell
                                     (id, matrix_id, wizard_page_id, scaffolding_cell_id)
                                                                         values (?, ?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_MATRIX_CELL</value>
+        <value>delete from dw_matrix_cell</value>
      </property>
      <property name="complexFields" >
          <list> 
@@ -1906,13 +1903,13 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_MATRIX_LABEL
+        <value>insert into dw_matrix_label
                                     (id, type, description, indent, color, required)
                                                                         values (?, ?, ?, ?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_MATRIX_LABEL</value>
+        <value>delete from dw_matrix_label</value>
      </property>
      
    </bean>
@@ -1930,13 +1927,13 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_MATRIX
+        <value>insert into dw_matrix
                                     (id, owner, scaffolding_id)
                                     values (?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_MATRIX</value>
+        <value>delete from dw_matrix</value>
      </property>
      <property name="complexFields" >
          <list>
@@ -1967,12 +1964,12 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_MATRIX_TOOL
+        <value>insert into dw_matrix_tool
                                     (id, scaffolding_id) values (?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_MATRIX_TOOL</value>
+        <value>delete from dw_matrix_tool</value>
      </property>
      <property name="complexFields" >
          <list>
@@ -2030,13 +2027,13 @@
             </list>
         </property>
         <property name="insertStmt">
-           <value>insert into DW_GUIDANCE_ITEM_FILE
+           <value>insert into dw_guidance_item_file
                             (id, baseReference, fullReference, item_id)
                                             values (?, ?, ?, ?)
            </value>
         </property>
         <property name="clearStmt">
-           <value>delete from DW_GUIDANCE_ITEM_FILE</value>
+           <value>delete from dw_guidance_item_file</value>
         </property> 
    </bean>
     
@@ -2062,13 +2059,13 @@
             </list>
         </property>
         <property name="insertStmt">
-           <value>insert into DW_GUIDANCE_ITEM
+           <value>insert into dw_guidance_item
                             (id, type <!-- , text -->, guidance_id)
                                             values (?, ? <!--, ?-->, ?)
            </value>
         </property>
         <property name="clearStmt">
-           <value>delete from DW_GUIDANCE_ITEM</value>
+           <value>delete from dw_guidance_item</value>
         </property>
         <property name="complexFields" >
             <list>       
@@ -2110,14 +2107,14 @@
             </list>
         </property>
         <property name="insertStmt">
-           <value>insert into DW_GUIDANCE
+           <value>insert into dw_guidance
                             (id, description, site_id, securityQualifier, securityViewFunction,
                                      securityEditFunction)
                                             values (?, ?, ?, ?, ?, ?)
            </value>
         </property>
         <property name="clearStmt">
-           <value>delete from DW_GUIDANCE</value>
+           <value>delete from dw_guidance</value>
         </property>
         <property name="complexFields" >
             <list>
@@ -2199,14 +2196,14 @@
          </list>
       </property>
       <property name="insertStmt">
-         <value>insert into DW_RESOURCE
+         <value>insert into dw_resource
                   (id, uri, resource_type, sub_type, primary_mime_type, sub_mime_type, parent_collection,
                   created_by, modified_by, description, copyright_choice, copyright, content_length,
                   created, modified, display_name)
                values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)</value>
       </property>
       <property name="clearStmt">
-         <value>delete from DW_RESOURCE</value>
+         <value>delete from dw_resource</value>
       </property>
    </bean>
    
@@ -2245,13 +2242,13 @@
         </list>
      </property>
      <property name="insertStmt">
-        <value>insert into DW_SITE_USERS
+        <value>insert into dw_site_users
                                     (site_id, user_id)
                                     values (?, ?)
         </value>
      </property>
      <property name="clearStmt">
-        <value>delete from DW_SITE_USERS</value>
+        <value>delete from dw_site_users</value>
      </property>
      <property name="complexFields" >
          <list>
@@ -2275,13 +2272,13 @@
             </list>
         </property>
         <property name="insertStmt">
-           <value>insert into DW_SITES
+           <value>insert into dw_sites
                             (id, type, title)
                                             values (?, ?, ?)
            </value>
         </property>
         <property name="clearStmt">
-           <value>delete from DW_SITES</value>
+           <value>delete from dw_sites</value>
         </property>
         <property name="complexFields" >
             <list> 
@@ -2354,13 +2351,13 @@
          </list>
       </property>
    	  <property name="insertStmt">
-   	     <value>insert into DW_WIZARD_STYLE
+   	     <value>insert into dw_wizard_style
 					(id, name, description, globalState, styleFile, owner, created, modified, siteId)
 						values (?, ?, ?, ?, ?, ?, ?, ?, ?)
    	     </value>
    	  </property>
    	  <property name="clearStmt">
-   	     <value>delete from DW_WIZARD_STYLE</value>
+   	     <value>delete from dw_wizard_style</value>
    	  </property> 
    </bean>
    

@@ -10,7 +10,7 @@
 <tables>
 
   <table>
-    <name>DW_REPOSITORY_LOCK</name>
+    <name>dw_repository_lock</name>
     <desc>Repository lock Datawarehouse table</desc>
     <columns>
        <column>
@@ -55,7 +55,7 @@
   </table>
 
    <table>
-      <name>DW_RESOURCE</name>
+      <name>dw_resource</name>
       <desc>Sakai content_resource table</desc>
       <columns>
          <column>
@@ -143,7 +143,7 @@
    </table>
 
    <table>
-      <name>DW_RESOURCE_COLLECTION</name>
+      <name>dw_resource_collection</name>
       <columns>
          <column>
             <name>ID</name>
@@ -185,13 +185,13 @@
 
    <index>
      <index-name>FK_RESORUCE_PARENT</index-name>
-     <table-name>DW_RESOURCE</table-name>
+     <table-name>dw_resource</table-name>
      <column>PARENT_COLLECTION</column>
    </index>
 
    <index>
      <index-name>FK_COLLECTION_PARENT</index-name>
-     <table-name>DW_RESOURCE_COLLECTION</table-name>
+     <table-name>dw_resource_collection</table-name>
      <column>PARENT_COLLECTION</column>
    </index>   
 

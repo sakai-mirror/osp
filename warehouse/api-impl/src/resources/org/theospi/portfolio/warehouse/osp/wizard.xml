@@ -10,7 +10,7 @@
 <tables>
 
    <table>
-     <name>DW_WIZARD</name>
+     <name>dw_wizard</name>
      <desc>Wizard Datawarehouse table</desc>
      <columns>
         <column>
@@ -95,7 +95,7 @@
    </table>
 
    <table>
-     <name>DW_WIZARD_CATEGORY</name>
+     <name>dw_wizard_category</name>
      <desc>Wizard Category Datawarehouse table</desc>
      <columns>
         <column>
@@ -146,7 +146,7 @@
    </table>
 
    <table>
-     <name>DW_WIZARD_PAGE_SEQUENCE</name>
+     <name>dw_wizard_page_sequence</name>
      <desc>Wizard Page Sequence Datawarehouse table</desc>
      <columns>
         <column>
@@ -174,7 +174,7 @@
    </table>
 
    <table>
-     <name>DW_WIZARD_PAGE_DEF</name>
+     <name>dw_wizard_page_def</name>
      <desc>Wizard Page Definition Datawarehouse table</desc>
      <columns>
         <column>
@@ -218,7 +218,7 @@
    </table>
 
    <table>
-     <name>DW_WIZARD_PAGE_DEF_ADD_FORMS</name>
+     <name>dw_wizard_page_def_add_forms</name>
      <desc>Wizard Page Definition Additional Form Data warehouse table</desc>
      <columns>
         <column>
@@ -241,7 +241,7 @@
    </table>
 
    <table>
-     <name>DW_WIZARD_COMPLETED</name>
+     <name>dw_wizard_completed</name>
      <desc>Wizard Completed Datawarehouse table</desc>
      <columns>
         <column>
@@ -284,7 +284,7 @@
    </table>
 
    <table>
-     <name>DW_WIZARD_COMPLETED_CATEGORY</name>
+     <name>dw_wizard_completed_category</name>
      <desc>Wizard Completed Category Datawarehouse table</desc>
      <columns>
         <column>
@@ -323,7 +323,7 @@
 
 
    <table>
-     <name>DW_WIZARD_COMPLETED_PAGE</name>
+     <name>dw_wizard_completed_page</name>
      <desc>Wizard Completed Page Datawarehouse table</desc>
      <columns>
         <column>
@@ -368,7 +368,7 @@
 
 
    <table>
-     <name>DW_WIZARD_STYLE</name>
+     <name>dw_wizard_style</name>
      <desc>Wizard Style Item Datawarehouse table</desc>
      <columns>
         <column>
@@ -421,7 +421,7 @@
 
 
    <table>
-     <name>DW_WORKFLOW_PARENT</name>
+     <name>dw_workflow_parent</name>
      <desc>Workflow Datawarehouse table</desc>
      <columns>
         <column>
@@ -466,7 +466,7 @@
    </table>
 
    <table>
-     <name>DW_WIZARD_SUPPORT_ITEM</name>
+     <name>dw_wizard_support_item</name>
      <desc>Wizard Support Item Datawarehouse table</desc>
      <columns>
         <column>

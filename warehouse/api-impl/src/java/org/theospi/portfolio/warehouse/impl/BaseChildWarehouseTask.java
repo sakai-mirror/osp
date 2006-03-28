@@ -162,7 +162,7 @@ public class BaseChildWarehouseTask implements ChildWarehouseTask {
          }
       }
       catch (Exception e) {
-         throw new JobExecutionException(e);
+         throw new JobExecutionException("error trying to prepare '" + insertStmt + "'", e, false);
       }
    }
 

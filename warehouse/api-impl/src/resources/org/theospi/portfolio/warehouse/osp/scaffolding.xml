@@ -11,7 +11,7 @@
 
 
    <table>
-     <name>DW_SCAFFOLDING</name>
+     <name>dw_scaffolding</name>
      <desc>Scaffolding Datawarehouse table</desc>
      <columns>
         <column>
@@ -89,7 +89,7 @@
    </table>
 
    <table>
-     <name>DW_SCAFFOLDING_CELL</name>
+     <name>dw_scaffolding_cell</name>
      <desc>Scaffolding cell Datawarehouse table</desc>
      <columns>
         <column>
@@ -125,7 +125,7 @@
    </table>
 
    <table>
-     <name>DW_SCAFFOLDING_CRITERIA</name>
+     <name>dw_scaffolding_criteria</name>
      <desc>Scaffolding Criterion Datawarehouse table</desc>
      <columns>
         <column>
@@ -164,7 +164,7 @@
    </table>
 
    <table>
-     <name>DW_SCAFFOLDING_LEVELS</name>
+     <name>dw_scaffolding_levels</name>
      <desc>Scaffolding Levels Datawarehouse table</desc>
      <columns>
         <column>
@@ -203,7 +203,7 @@
    </table>
 
    <table>
-     <name>DW_SCAFFOLDING_CELL_EVALUATORS</name>
+     <name>dw_scaffolding_cell_evaluators</name>
      <desc>Scaffolding Cell Evaluators Data warehouse table</desc>
      <columns>
         <column>
@@ -224,28 +224,28 @@
 
    <index>
      <index-name>FK184EAE6880F1F7B4</index-name>
-     <table-name>DW_SCAFFOLDING_CELL_EVALUATORS</table-name>
+     <table-name>dw_scaffolding_cell_evaluators</table-name>
      <column>scaffolding_cell_id</column>
    </index>
    <index>
      <index-name>FK184EAE6880F1F7B6</index-name>
-     <table-name>DW_SCAFFOLDING_CELL</table-name>
+     <table-name>dw_scaffolding_cell</table-name>
      <column>level_id</column>
    </index>
    <index>
      <index-name>FK184EAE68C604760E</index-name>
-     <table-name>DW_SCAFFOLDING_CELL</table-name>
+     <table-name>dw_scaffolding_cell</table-name>
      <column>scaffolding_id</column>
    </index>
    <index>
      <index-name>FK184EAE685827115B</index-name>
-     <table-name>DW_SCAFFOLDING_CELL</table-name>
+     <table-name>dw_scaffolding_cell</table-name>
      <column>rootcriterion_id</column>
    </index>
 
    <index>
      <index-name>FK4EBCD0F5C604760E</index-name>
-     <table-name>DW_SCAFFOLDING_LEVELS</table-name>
+     <table-name>dw_scaffolding_levels</table-name>
      <column>scaffolding_id</column>
    </index>
 
