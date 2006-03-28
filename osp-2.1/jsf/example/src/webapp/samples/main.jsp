@@ -2,6 +2,7 @@
 <sakai:view title="Tag Usage Demos">
 <h:form>
 <h:commandLink action="main"><h:outputText value="Back to examples index" /></h:commandLink>
+<h:commandButton actionListener="#{testBean.processUpgrade}" />
 
 <h2>Tag Usage demonstration.</h2>
 <h:panelGrid columns="3" border="0">

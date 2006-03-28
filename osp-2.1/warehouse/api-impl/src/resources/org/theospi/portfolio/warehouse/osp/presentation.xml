@@ -10,7 +10,7 @@
 <tables>
 
    <table>
-    <name>DW_PRES_ITEMDEF_MIMETYPE</name>
+    <name>dw_pres_itemdef_mimetype</name>
     <desc>Presentation Item Definition Mimetype Datawarehouse table</desc>
     <columns>
        <column>
@@ -33,7 +33,7 @@
    </table>
 
 <table>
-    <name>DW_PRESENTATION</name>
+    <name>dw_presentation</name>
     <desc>Presentation Datawarehouse table</desc>
     <columns>
        <column>
@@ -102,7 +102,7 @@
   </table>
 
   <table>
-    <name>DW_PRESENTATION_COMMENT</name>
+    <name>dw_presentation_comment</name>
     <desc>Presentation COmment Datawarehouse table</desc>
     <columns>
        <column>
@@ -150,7 +150,7 @@
   </table>
 
   <table>
-    <name>DW_PRESENTATION_ITEM</name>
+    <name>dw_presentation_item</name>
     <desc>Presentation Item Datawarehouse table</desc>
     <columns>
        <column>
@@ -174,7 +174,7 @@
   </table>
 
    <table>
-    <name>DW_PRESENTATION_ITEM_DEF</name>
+    <name>dw_presentation_item_def</name>
     <desc>Presentation Item Definition Datawarehouse table</desc>
     <columns>
        <column>
@@ -227,7 +227,7 @@
   </table>
 
   <table>
-    <name>DW_PRESENTATION_ITEM_PROPERTY</name>
+    <name>dw_presentation_item_property</name>
     <desc>Presentation Item Property Datawarehouse table</desc>
     <columns>
        <column>
@@ -258,7 +258,7 @@
   </table>
 
   <table>
-    <name>DW_PRESENTATION_LAYOUT</name>
+    <name>dw_presentation_layout</name>
     <desc>Presentation Layout Datawarehouse table</desc>
     <columns>
        <column>
@@ -294,12 +294,7 @@
          <type>TIMESTAMP</type>
        </column>
        <column>
-         <name>xhtml_file_id</name>
-         <type>VARCHAR</type>
-         <param>36</param>
-       </column>
-       <column>
-         <name>preview_image_id</name>
+         <name>fileRef</name>
          <type>VARCHAR</type>
          <param>36</param>
        </column>
@@ -325,7 +320,7 @@
   </table>
 
   <table>
-    <name>DW_PRESENTATION_LOG</name>
+    <name>dw_presentation_log</name>
     <desc>Presentation Log Datawarehouse table</desc>
     <columns>
     	<column>
@@ -355,7 +350,7 @@
   </table>
 
   <table>
-    <name>DW_PRESENTATION_PAGE</name>
+    <name>dw_presentation_page</name>
     <desc>Presentation Page Datawarehouse table</desc>
     <columns>
     	<column>
@@ -406,7 +401,7 @@
   </table>
 
   <table>
-    <name>DW_PRESENTATION_PAGE_ITEM</name>
+    <name>dw_presentation_page_item</name>
     <desc>Presentation Page Item Datawarehouse table</desc>
     <columns>
     	<column>
@@ -440,7 +435,7 @@
   </table>
 
   <table>
-    <name>DW_PRESENTATION_PAGE_REGION</name>
+    <name>dw_presentation_page_region</name>
     <desc>Presentation Page Region Datawarehouse table</desc>
     <columns>
     	<column>
@@ -467,7 +462,7 @@
 
 
   <table>
-    <name>DW_SCAFFOLDING_CRITERIA</name>
+    <name>dw_scaffolding_criteria</name>
     <desc>scaffolding Datawarehouse table</desc>
     <columns>
        <column>
@@ -502,7 +497,7 @@
   </table>
   
   <table>
-    <name>DW_PRESENTATION_TEMPLATE</name>
+    <name>dw_presentation_template</name>
     <desc>Presentation Template Datawarehouse table</desc>
     <columns>
        <column>
@@ -587,7 +582,7 @@
   </table>
 
   <table>
-    <name>DW_TEMPLATE_FILE_REF</name>
+    <name>dw_template_file_ref</name>
     <desc>Template File Reference Datawarehouse table</desc>
     <columns>
        <column>
@@ -625,77 +620,77 @@
 
   <index>
 	<index-name>FK9EA59837CEC82A41</index-name>
-	<table-name>DW_PRES_ITEMDEF_MIMETYPE</table-name>
+	<table-name>dw_pres_itemdef_mimetype</table-name>
 	<column>item_def_id</column>
   </index>
 
   <index>
     <index-name>FKA9028D6D697A9B00</index-name>
-    <table-name>DW_PRESENTATION</table-name>
+    <table-name>dw_presentation</table-name>
     <column>template_id</column>
   </index>
 
   <index>
     <index-name>FK1E7E658D662DE460</index-name>
-    <table-name>DW_PRESENTATION_COMMENT</table-name>
+    <table-name>dw_presentation_comment</table-name>
     <column>presentation_id</column>
   </index>
 
   <index>
     <index-name>FK2FA02A5FB2AC75B</index-name>
-    <table-name>DW_PRESENTATION_ITEM</table-name>
+    <table-name>dw_presentation_item</table-name>
     <column>item_definition_id</column>
   </index>
    <index>
     <index-name>FK2FA02A5662DE460</index-name>
-    <table-name>DW_PRESENTATION_ITEM</table-name>
+    <table-name>dw_presentation_item</table-name>
     <column>presentation_id</column>
   </index>
 
   <index>
     <index-name>FK1B6ADB6B697A9B00</index-name>
-    <table-name>DW_PRESENTATION_ITEM_DEF</table-name>
+    <table-name>dw_presentation_item_def</table-name>
     <column>template_id</column>
   </index>
 
   <index>
     <index-name>FK86B136F2150091C</index-name>
-    <table-name>DW_PRESENTATION_ITEM_PROPERTY</table-name>
+    <table-name>dw_presentation_item_property</table-name>
     <column>presentation_page_item_id</column>
   </index>
 
   <index>
     <index-name>FK2120E172662DE460</index-name>
-    <table-name>DW_PRESENTATION_LOG</table-name>
+    <table-name>dw_presentation_log</table-name>
     <column>presentation_id</column>
   </index>
 
   <index>
     <index-name>FK2FCEA21662DE460</index-name>
-    <table-name>DW_PRESENTATION_PAGE</table-name>
+    <table-name>dw_presentation_page</table-name>
     <column>presentation_id</column>
   </index>
   <index>
     <index-name>FK2FCEA21AE13AE50</index-name>
-    <table-name>DW_PRESENTATION_PAGE</table-name>
+    <table-name>dw_presentation_page</table-name>
     <column>layout_id</column>
   </index>
 
   <index>
     <index-name>FK64176719185445B</index-name>
-    <table-name>DW_PRESENTATION_PAGE_ITEM</table-name>
+    <table-name>dw_presentation_page_item</table-name>
     <column>presentation_page_region_id</column>
   </index>
 
   <index>
     <index-name>FK8A46C2D295B9BCA6</index-name>
-    <table-name>DW_PRESENTATION_PAGE_REGION</table-name>
+    <table-name>dw_presentation_page_region</table-name>
     <column>presentation_page_id</column>
   </index>
 
   <index>
     <index-name>FK4B70FB02697A9B00</index-name>
-    <table-name>DW_TEMPLATE_FILE_REF</table-name>
+    <table-name>dw_template_file_ref</table-name>
     <column>template_id</column>
   </index>
 

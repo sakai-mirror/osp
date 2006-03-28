@@ -10,7 +10,7 @@
 <tables>
 
    <table>
-       <name>DW_GUIDANCE</name>
+       <name>dw_guidance</name>
        <desc>Guidance Datawarehouse table</desc>
        <columns>
           <column>
@@ -54,7 +54,7 @@
    <!-- This table did not show up after build and run -->
 
    <table>
-       <name>DW_GUIDANCE_ITEM</name>
+       <name>dw_guidance_item</name>
        <desc>Guidance Item Datawarehouse table</desc>
        <columns>
           <column>
@@ -85,7 +85,7 @@
      </table>
 
      <table>
-       <name>DW_GUIDANCE_ITEM_FILE</name>
+       <name>dw_guidance_item_file</name>
        <desc>Guidance Item File Datawarehouse table</desc>
        <columns>
           <column>
@@ -116,13 +116,13 @@
 
    <index>
      <index-name>FK605DDBA7BE2FA762</index-name>
-    <table-name>DW_GUIDANCE_ITEM</table-name>
+    <table-name>dw_guidance_item</table-name>
     <column>guidance_id</column>
    </index>
 
    <index>
      <index-name>FK297703147E22B9C7</index-name>
-     <table-name>DW_GUIDANCE_ITEM_FILE</table-name>
+     <table-name>dw_guidance_item_file</table-name>
      <column>item_id</column>
    </index>
 

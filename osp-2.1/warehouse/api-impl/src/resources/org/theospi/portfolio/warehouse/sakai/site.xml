@@ -10,7 +10,7 @@
 <tables>
 
    <table>
-     <name>DW_SITES</name>
+     <name>dw_sites</name>
      <desc>contains all the worksites that are in the system</desc>
      <columns>
         <column>
@@ -34,7 +34,7 @@
    </table>
    
    <table>
-     <name>DW_SITE_USERS</name>
+     <name>dw_site_users</name>
      <desc>contains all the users of the worksites in the system</desc>
      <columns>
         <column>
@@ -60,7 +60,7 @@
 
    <index>
      <index-name>FK4440EC9296D518</index-name>
-     <table-name>DW_SITES</table-name>
+     <table-name>dw_sites</table-name>
      <column>id</column>
    </index>
 

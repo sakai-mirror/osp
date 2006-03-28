@@ -20,6 +20,46 @@
 	</properties>
 
 	<dependencies>
+	
+<!-- start repository dependencies -->
+
+  		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai</artifactId>
+			<version>${sakai.plugin.version}</version>
+			<type>plugin</type>
+		</dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-component</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-function</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-thread_local</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-legacy-service</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-legacy-component</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+<!-- end repository dependencies -->
 
 		<dependency>
 			<groupId>servletapi</groupId>

@@ -75,6 +75,8 @@ import javax.xml.transform.stream.StreamSource;
  * <p>An xsl transformation is used to produce the DROP TABLE and CREATE TABLE
  * SQL statements. These statements can be altered by modifying tables.xsl</p>
  *
+ * <p> all table names should have lower case names</p>
+ *
  * <p>Generic data types (as defined in java.sql.Types) which may be specified
  * in tables.xml include:
  * <code>BIT, TINYINT, SMALLINT, INTEGER, BIGINT, FLOAT, REAL, DOUBLE,
@@ -844,7 +846,7 @@ public class DbLoader {
                 insideName = false;
 
                 if (!insideColumn) // table name
-                    table.setName(charBuff.toString());
+                    table.setName(charBuff.toString().toLowerCase());
                 else // column name
                     column.setName(charBuff.toString());
             } else if (qName.equals("row")) {
