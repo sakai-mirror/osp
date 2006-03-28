@@ -19,10 +19,10 @@
 
    <%@include file="steps.jspf"%>
 
-   <sakai:view_title value="#{msgs.edit_wizard}" rendered='#{!wizard.current.newWizard}'/>
-   <sakai:view_title value="#{msgs.add_wizard}"  rendered='#{wizard.current.newWizard}'/>
+   <sakai:view_title value="#{msgs.edit_wizard_category}" rendered='#{wizard.currentCategory.base.id != null}'/>
+   <sakai:view_title value="#{msgs.add_wizard_category}"  rendered='#{wizard.currentCategory.base.id == null}'/>
 
-   <sakai:instruction_message value="#{msgs.wizard_instructions}" />
+   <sakai:instruction_message value="#{msgs.wizard_category_instructions}" />
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />
