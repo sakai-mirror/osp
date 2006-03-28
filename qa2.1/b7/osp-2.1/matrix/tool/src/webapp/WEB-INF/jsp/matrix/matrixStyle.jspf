@@ -1,0 +1,8 @@
+<style>
+
+   TD.matrix-COMPLETE{ background-color: <c:out value="${matrixContents.scaffolding.completedColor}" />;}
+   TD.matrix-PENDING{ background-color: <c:out value="${matrixContents.scaffolding.pendingColor}" />;}
+   TD.matrix-READY{ background-color: <c:out value="${matrixContents.scaffolding.readyColor}" />;}
+   TD.matrix-LOCKED{ background-color: <c:out value="${matrixContents.scaffolding.lockedColor}" />;}
+
+</style>

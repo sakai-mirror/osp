@@ -1,0 +1,2618 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-lazy-init="false">
+
+   <!-- The "slow" connection pool for streaming downloads from db -->
+   <bean id="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource"
+     parent="javax.sql.BaseDataSource">
+   </bean>
+
+   <bean id="org.theospi.portfolio.warehouse.intf.DataWarehouseManager"
+      class="org.theospi.portfolio.warehouse.impl.DataWarehouseManagerImpl"
+      singleton="true">
+      <property name="tasks">
+         <list>
+         </list>
+      </property>
+      <property name="securityService">
+         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+      </property>
+   </bean>
+
+   <!-- commonly used fields -->
+   <bean id="org.theospi.portfolio.warehouse.intf.PropertyAccess.id"
+      class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+      <property name="propertyName"><value>id</value></property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId"
+      class="org.theospi.portfolio.warehouse.impl.BaseParentPropertyAccess">
+      <property name="base">
+         <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.warehouse.intf.PropertyAccess.owner"
+      class="org.theospi.portfolio.warehouse.impl.AgentPropertyAccess">
+      <property name="propertyName"><value>owner</value></property>
+   </bean>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <!-- start other stuff -->
+
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.template.file.ref"
+      class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>fileId</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>fileType</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+	       <property name="propertyName"><value>usage</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+	        <property name="propertyName"><value>presentationTemplate</value></property>
+            </bean>
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_template_file_ref (id, file_id, file_type_id, usage_desc, template_id) 
+         					 values (?, ?, ?, ?, ?)</value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_template_file_ref</value>
+      </property>
+   </bean>   
+
+   
+   <!--  Matrix Tool Stuff Starts here -->
+   
+   
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.structured.artifact.def"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>description</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>documentRoot</value></property>
+           </bean>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.owner" />
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>created</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>modified</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>systemOnly</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>externalType</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>siteId</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>siteState</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>globalState</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>schema</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>instruction</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_structured_artifact_def
+        							(id, description, documentRoot, owner, created, modified, systemOnly, externalType,
+        							 siteId, siteState, globalState, schemaData, instruction)
+        						
+        							values (?, ?, ?, ?, ?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_structured_artifact_def</value>
+     </property>
+   </bean>
+   
+   <!-- -->
+   
+   <!-- Repository lock stuff starts here -->
+
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.repository.lock"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+        <property name="fields">
+           <list>
+              <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />              
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>assest</value></property>
+              </bean>
+              
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>qualifier</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>active</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>system</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>reason</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>dateAdded</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>dateRemoved</value></property>
+              </bean>
+           </list>
+        </property>
+        <property name="insertStmt">
+           <value>insert into dw_repository_lock
+                            (id, asset_id, qualifier_id, is_active, is_system, reason, 
+                            date_added, date_removed)
+                                            values (?, ?, ?, ?, ?, ?, ?, ?)
+           </value>
+        </property>
+        <property name="clearStmt">
+           <value>delete from dw_repository_lock</value>
+        </property> 
+   </bean> 
+   
+   <!-- end other stuff -->
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <!--  **************************************************************************
+   ********************************************************************************
+        Wizard Child Tasks
+   -->
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.support.item"
+           class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+              <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+              <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+                  <property name="propertyName"><value>wizard</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+                  <property name="propertyName"><value>item</value></property>
+              </bean>
+       
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                  <property name="propertyName"><value>genericType</value></property>
+              </bean>
+                    
+       
+             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>contentType</value></property>
+             </bean>
+   
+         </list>
+      </property>
+      <property name="insertStmt">
+           <value>insert into dw_wizard_support_item
+                    (id, wizard_id, item_id, generic_type, content_type)
+                        values (?, ?, ?, ?,?)
+           </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_wizard_support_item</value>
+      </property> 
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.completed.page"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>category</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>wizardPageDefinition</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>wizardPage</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>sequence</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>created</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>lastVisited</value></property>
+            </bean>
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_wizard_completed_page
+                    (id, completed_category_id, wizard_page_def_id, wizard_page_id, seq_num, created, lastVisited)
+                        values (?, ?, ?, ?, ?, ?, ?)
+                      
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_wizard_completed_page</value>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.completed.category"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>wizard</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>category</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>parentCategory</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>expanded</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>sequence</value></property>
+            </bean>
+
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_wizard_completed_category
+                    (id, completed_wizard_id, category_id, parent_category_id, expanded, seq_num)
+                        values (?, ?, ?, ?, ?, ?)
+                      
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_wizard_completed_category</value>
+      </property>
+      <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">               
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>childCategories</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.completed.category"/>
+                  </property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">               
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>childPages</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.completed.page"/>
+                  </property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+   
+   
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.completed"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <bean class="org.theospi.portfolio.warehouse.impl.AgentPropertyAccess">
+               <property name="propertyName"><value>owner</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>created</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>lastVisited</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>status</value></property>
+            </bean>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>rootCategory</value></property>
+            </bean>
+
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_wizard_completed
+                    (id, owner_id, created, lastVisited, status, wizard_id, root_category)
+                        values (?, ?, ?, ?, ?, ?, ?)
+                      
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_wizard_completed</value>
+      </property>
+      <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">               
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>rootCategory</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.completed.category"/>
+                  </property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.page.definition.additional.forms"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
+            <bean class="org.theospi.portfolio.warehouse.impl.SelfPropertyAccess" />
+            <bean class="org.theospi.portfolio.warehouse.intf.ItemIndexInParentPropertyAccess" />
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_wizard_page_def_add_forms
+                    (wizard_page_def_id, form_def_id, seq_num)
+                        values (?, ?, ?)
+                      
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_wizard_page_def_add_forms</value>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.page.definition"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>initialStatus</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>title</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>description</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>siteId</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>toolId</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>guidance</value></property>
+            </bean>
+
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_wizard_page_def
+                    (id, initialStatus, title, description, site_id, tool_id, guidance_id)
+                        values (?, ?, ?, ?, ?, ?, ?)
+                      
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_wizard_page_def</value>
+      </property>
+      <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.impl.SelfPropertyAccess" />
+               </property>
+               <property name="task">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.workflow"/>
+               </property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">               
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>additionalForms</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.page.definition.additional.forms"/>
+                  </property>
+            </bean> <!--
+               <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>style</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.style"/>
+                  </property>
+               </bean> -->
+         </list>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.page.sequence"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>wizardPageDefinition</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>sequence</value></property>
+            </bean>
+
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_wizard_page_sequence
+                    (id, category_id, wiz_page_def_id, seq_num)
+                        values (?, ?, ?, ?)
+                      
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_wizard_page_sequence</value>
+      </property>
+      <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">               
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>wizardPageDefinition</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.page.definition"/>
+                  </property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.category"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>title</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>description</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>keywords</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>created</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>modified</value></property>
+            </bean>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
+
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>parentCategory</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>sequence</value></property>
+            </bean>
+
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_wizard_category
+                    (id, title, description, keywords, created, modified, wizard_id, 
+                     parent_category_id, seq_num)
+                        values (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                      
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_wizard_category</value>
+      </property>
+      <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">               
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>childPages</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.page.sequence"/>
+                  </property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">               
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>childCategories</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.category"/>
+                  </property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.workflow"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+               <property name="propertyName"><value>reflectionDevice</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>reflectionDeviceType</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+               <property name="propertyName"><value>evaluationDevice</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>evaluationDeviceType</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+               <property name="propertyName"><value>reviewDevice</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>reviewDeviceType</value></property>
+            </bean>
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_workflow_parent
+                    (id, reflection_device_id, reflection_device_type, 
+                     evaluation_device_id, evaluation_device_type,
+                     review_device_id, review_device_type)
+                        values (?, ?, ?,  ?, ?,  ?, ?)
+                      
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_workflow_parent</value>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+        <property name="fields">
+           <list>
+              <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+              <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.owner" />
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>name</value></property>
+              </bean>
+              
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>description</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>keywords</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>created</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>modified</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>siteId</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>toolId</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+              <property name="propertyName"><value>guidanceId</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>published</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>type</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>exposedPageId</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>rootCategory</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>sequence</value></property>
+              </bean>
+            </list>
+        </property>
+        <property name="insertStmt">
+           <value>insert into dw_wizard
+                            (id, owner_id, name, description, keywords, created, modified,
+                            site_id, tool_id, guidance_id, published, wizard_type, exposed_page_id,
+                            root_category, seq_num)
+                          values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+           </value>
+        </property>
+        <property name="clearStmt">
+           <value>delete from dw_wizard</value>
+        </property>     
+        <property name="complexFields" >
+            <list>
+               <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">
+                     <bean class="org.theospi.portfolio.warehouse.impl.SelfPropertyAccess" />
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.workflow"/>
+                  </property>
+               </bean>
+               <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>rootCategory</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.category"/>
+                  </property>
+               </bean>
+               <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">
+                     <bean class="org.theospi.portfolio.warehouse.osp.wizard.CompletedWizardsPropertyAccess">
+                        <property name="wizardManager">
+                           <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" />
+                        </property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.completed"/>
+                  </property>
+               </bean>  <!--
+               <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>style</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.style"/>
+                  </property>
+               </bean> -->
+            </list>
+         </property>
+   </bean>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <!--  **************************************************************************
+   ********************************************************************************
+        Help Glossary Child Tasks
+   -->
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.help.glossary"
+   class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+    <property name="fields">
+       <list>
+          <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+          <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+        <property name="propertyName"><value>worksiteId</value></property>
+          </bean>
+          <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+        <property name="propertyName"><value>term</value></property>
+          </bean>
+          <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+         <property name="propertyName"><value>description</value></property>
+          </bean>
+        </list>
+    </property>
+    <property name="insertStmt">
+       <value>insert into dw_help_glossary  (id, worksite_id, term, description)
+                   values (?, ?, ?, ?)
+      </value>
+    </property>
+    <property name="clearStmt">
+       <value>delete from dw_help_glossary</value>
+    </property>
+   </bean>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <!--  **************************************************************************
+   ********************************************************************************
+        Presentation Template Child Tasks
+   -->
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.template.item.def.mimetype"
+      class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>primary</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>secondary</value></property>
+            </bean>
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_pres_itemdef_mimetype (item_def_id, primaryMimeType, secondaryMimeType) values (?, ?, ?)</value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_pres_itemdef_mimetype</value>
+      </property>
+   </bean>
+   
+   
+    <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.template.item.def"
+      class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>name</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>title</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>description</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>allowMultiple</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>type</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>externalType</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>sequence</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>presentationTemplate</value></property>
+            </bean>
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_presentation_item_def
+                                    (id, name, title, description, allowMultiple, type, external_type,
+                                     sequence_no, template_id)
+                                     values (?, ?, ?, ?, ?, ?, ?, ?, ?)
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_presentation_item_def</value>
+      </property>
+       <property name="complexFields" >
+          <list>
+             <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+                <property name="propertyAccess">
+                   <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                      <property name="propertyName"><value>mimeTypes</value></property>
+                   </bean>
+                </property>
+                <property name="task">
+                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.template.item.def.mimetype"/>
+                </property>
+             </bean>
+          </list>
+       </property>
+   </bean>
+   
+
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.template"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>name</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>description</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>includeHeaderAndFooter</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>includeComments</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>published</value></property>
+           </bean>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.owner" />
+           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+              <property name="propertyName"><value>renderer</value></property>
+           </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+              <property name="propertyName"><value>propertyPage</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>documentRoot</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>created</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>modified</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>toolId</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>siteId</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_presentation_template
+                                    (id, name,  description, includeHeaderAndFooter, includeComments, published,
+                                     owner_id, renderer,
+                                     propertyPage, documentRoot, created, modified,
+                                     tool_id, site_id)
+                                    values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_presentation_template</value>
+     </property>
+      <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+               <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>items</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.template.item.def"/>
+               </property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <!--  **************************************************************************
+   ********************************************************************************
+        Presentation Child Tasks
+   -->
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.item"
+      class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
+            <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+               <property name="propertyName"><value>artifactId</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>definition</value></property>
+            </bean>
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_presentation_item (presentation_id, artifact_id, item_definition_id) values (?, ?, ?)</value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_presentation_item</value>
+      </property>
+   </bean>
+   
+
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.comment"
+      class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>title</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.AgentPropertyAccess">
+               <property name="propertyName"><value>creator</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>presentation</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>visibility</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>created</value></property>
+            </bean>
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_presentation_comment (id, title, creator_id, presentation_id, visibility, created)
+                                             values (?, ?, ?, ?, ?, ?)
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_presentation_comment</value>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.log"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.AgentPropertyAccess">
+              <property name="propertyName"><value>viewer</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>presentation</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>viewDate</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_presentation_log
+                                    (id, viewer_id, presentation_id, view_date)
+                                    values (?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_presentation_log</value>
+     </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.page.region"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+             <property name="propertyName"><value>page</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>regionId</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_presentation_page_region (id, presentation_page_id, region_id) values (?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_presentation_page_region</value>
+     </property>
+   </bean>
+    
+
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.page.item.property"
+      class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>item</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>key</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>value</value></property>
+            </bean>
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_presentation_item_property
+                                    (id, presentation_page_item_id, property_key, property_value)
+                                     values (?, ?, ?, ?)
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_presentation_item_property</value>
+      </property>
+   </bean>
+   <!--
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.page.item.property"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>item</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>key</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>value</value></property>
+            </bean>
+          </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_presentation_item_property
+                                (id, presentation_page_item_id, property_key, propert_value)
+                                       values (?, ?, ?, ?)
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_presentation_item_property</value>
+    </property>
+   </bean>
+   -->
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.page.item"
+      class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+       <property name="fields">
+          <list>
+             <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+            <property name="propertyName"><value>entryId</value></property>
+             </bean>
+          </list>
+       </property>
+       <property name="insertStmt">
+          <value>insert into dw_help_glossary_desc  (id, entry_id )
+                   values (?, ? )
+         </value>
+       </property>
+       <property name="clearStmt">
+          <value>delete from dw_help_glossary_desc</value>
+       </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.page"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>title</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+             <property name="propertyName"><value>presentation</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+             <property name="propertyName"><value>layout</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>style</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>sequence</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>created</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>modified</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_presentation_page
+                                    (id, title, presentation_id, layout_id, style_id, seq_num, created, modified)
+                                    values (?, ?, ?, ?, ?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_presentation_page</value>
+     </property>
+   </bean>
+
+
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.layout"
+      class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>name</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>description</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>published</value></property>
+            </bean>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.owner" />
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>created</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>modified</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>fileRef</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>toolId</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>siteId</value></property>
+            </bean>
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_presentation_layout
+                                    (id, name,  description, published, owner_id, created, modified,
+                                    fileRef, tool_id, site_id)
+                                     values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         </value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_presentation_layout</value>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation"
+      class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.owner" />
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>template</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>name</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>description</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>isDefault</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>isPublic</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>expiresOn</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>created</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>modified</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>toolId</value></property>
+            </bean>
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_presentation
+                  (id, owner_id, template_id, name, description, isDefault,
+                  isPublic, expiresOn, created, modified, tool_id)
+               values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)</value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_presentation</value>
+      </property>
+      <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+               <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>pages</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.page"/>
+               </property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+               <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>template</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.layout"/>
+               </property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+               <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>items</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.item"/>
+               </property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+               <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.osp.presentation.PresentationCommentsPropertyAccess">
+                     <property name="presentationManager">
+                        <ref bean="presentationManager" />
+                     </property>
+                  </bean>
+               </property>
+               <property name="task">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.comment"/>
+               </property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+               <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.osp.presentation.PresentationLogPropertyAccess">
+                     <property name="presentationManager">
+                        <ref bean="presentationManager" />
+                     </property>
+                  </bean>
+               </property>
+               <property name="task">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.log"/>
+               </property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <!--  **************************************************************************
+   ********************************************************************************
+        Scaffolding Child Tasks
+   -->
+
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.cell.evaluators"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_scaffolding_cell_evaluators
+                            (scaffolding_cell_id, id)  values (?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_scaffolding_cell_evaluators</value>
+     </property>
+   </bean>  
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.levels"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>scaffolding</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>sequenceNumber</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>description</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>color</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>textColor</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_scaffolding_levels
+                            (id, scaffolding_id, sequenceNumber, 
+                            description, color, textColor)  values 
+                            (?, ?, ?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_scaffolding_levels</value>
+     </property>
+   </bean>  
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.critria"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+         <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>scaffolding</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>sequenceNumber</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>description</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>color</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>textColor</value></property>
+           </bean>
+           
+         </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_scaffolding_criteria
+                            (id, scaffolding_id, sequenceNumber, 
+                            description, color, textColor)  values 
+                            (?, ?, ?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_scaffolding_criteria</value>
+     </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.cell"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>rootCriterion</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>level</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>scaffolding</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>wizardPageDefinition</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_scaffolding_cell
+                            (id, rootcriterion_id, level_id, scaffolding_id, wizardPageDef_id)
+                                            values (?, ?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_scaffolding_cell</value>
+     </property>     
+     <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+                <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>evaluators</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                    <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.cell.evaluators" />
+               </property> 
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">               
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>wizardPageDefinition</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.page.definition"/>
+               </property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.AgentPropertyAccess">
+              <property name="propertyName"><value>owner</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>title</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>description</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+              <property name="propertyName"><value>worksiteId</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>published</value></property>
+           </bean> 
+           <bean class="org.theospi.portfolio.warehouse.impl.AgentPropertyAccess">
+              <property name="propertyName"><value>publishedBy</value></property>
+           </bean>            
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>publishedDate</value></property>
+           </bean>                   
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>columnLabel</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>rowLabel</value></property>
+           </bean>             
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>readyColor</value></property>
+           </bean>            
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>pendingColor</value></property>
+           </bean> 
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>completedColor</value></property>
+           </bean> 
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>lockedColor</value></property>
+           </bean>          
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_scaffolding
+                                    (id, ownerId, title, description, worksiteId,
+                                     published, publishedBy, publishedDate, columnLabel, rowLabel, readyColor, 
+                                     pendingColor, completedColor, lockedColor)
+                                    values (?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_scaffolding</value>
+     </property>
+    <property name="complexFields" >
+         <list> 
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+                <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>scaffoldingCells</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                    <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.cell" />
+               </property> 
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">               
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>levels</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.levels"/>
+               </property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">               
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>criteria</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.critria"/>
+               </property>
+            </bean>
+         </list>
+      </property>           
+   </bean> 
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <!--  **************************************************************************
+   ********************************************************************************
+        Matrix Child Tasks
+   -->
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.cell.attachment.criterion"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+                                
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>criterion</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>attachment</value></property>
+           </bean>           
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_cell_attachment_criterion
+                                    (id, criterion_id, attachment_id) values (?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_cell_attachment_criterion</value>
+     </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.cell.attachment"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+              <property name="propertyName"><value>artifactId</value></property>
+           </bean>   
+                     
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>cell</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>privacyResponse</value></property>
+           </bean>           
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_cell_attachment
+                                    (id, artifactId, cell_id, privacyResponse) values (?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_cell_attachment</value>
+     </property>
+     <property name="complexFields" >
+          <list>
+          </list>
+       </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.review"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+              <property name="propertyName"><value>reviewContent</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>siteId</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>parent</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>deviceId</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>type</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_wizard_page_review
+                                    (id, review_content_id, site_id, parent_id, review_device_id, review_type) 
+                                    values (?, ?, ?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_wizard_page_review</value>
+     </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.attachments"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+              <property name="propertyName"><value>artifactId</value></property>
+           </bean>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
+           
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_wizard_page_attachments
+                                    (id, artifact_id, wizard_page_id) 
+                                    values (?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_wizard_page_attachments</value>
+     </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.forms"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+              <property name="propertyName"><value>artifactId</value></property>
+           </bean>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>formType</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_wizard_page_forms
+                                    (id, artifact_id, wizard_page_id, form_type) 
+                                    values (?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_wizard_page_forms</value>
+     </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>status</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>pageDefinition</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>modified</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_wizard_page
+                                    (id, status, wizard_page_def_id, modified)
+                                
+                                    values (?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_wizard_page</value>
+     </property>
+     <property name="complexFields" >
+         <list> <!-- TODO: wizard page attachments, and wizard page form -->
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">               
+                  <bean class="org.theospi.portfolio.warehouse.osp.matrix.WizardPageReviewPropertyAccess">
+                     <property name="reviewManager">
+                        <ref bean="org.theospi.portfolio.review.mgt.ReviewManager" />
+                     </property>
+                  </bean>
+               </property>
+               <property name="task">
+                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.review"/>
+               </property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">        
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>attachments</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.attachments"/>
+               </property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">   
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>pageForms</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.forms"/>
+               </property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.cell"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>matrix</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>wizardPage</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>scaffoldingCell</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_matrix_cell
+                                    (id, matrix_id, wizard_page_id, scaffolding_cell_id)
+                                                                        values (?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_matrix_cell</value>
+     </property>
+     <property name="complexFields" >
+         <list> 
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>wizardPage</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage"/>
+               </property>
+            </bean>    <!-- 
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">               
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>reviewerItems</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.reviewer.item"/>
+               </property>
+            </bean> -->
+         </list>
+      </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.label"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>type</value></property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>description</value></property>
+           </bean>            
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>indent</value></property>
+           </bean>            
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>color</value></property>
+           </bean> 
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>required</value></property>
+           </bean>            
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_matrix_label
+                                    (id, type, description, indent, color, required)
+                                                                        values (?, ?, ?, ?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_matrix_label</value>
+     </property>
+     
+   </bean>
+
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.owner" />   
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>scaffolding</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_matrix
+                                    (id, owner, scaffolding_id)
+                                    values (?, ?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_matrix</value>
+     </property>
+     <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">               
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>cells</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                 <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.cell"/>
+               </property>
+            </bean>
+         </list>
+      </property>
+   </bean>
+   
+   
+    <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.tool"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           
+           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <property name="propertyName"><value>scaffolding</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_matrix_tool
+                                    (id, scaffolding_id) values (?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_matrix_tool</value>
+     </property>
+     <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">               
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>matrix</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix"/>
+               </property>
+            </bean>                     
+         </list>
+      </property>
+   </bean>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <!--  **************************************************************************
+   ********************************************************************************
+        Guidance Child Tasks
+   -->
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.guidance.item.file"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+        <property name="fields">
+           <list>
+              <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+              
+              <bean class="org.theospi.portfolio.warehouse.impl.ReferenceHolderPropertyAccess">
+                 <property name="propertyName"><value>baseReference</value></property>
+              </bean>
+              
+              <bean class="org.theospi.portfolio.warehouse.impl.ReferenceHolderPropertyAccess">
+                 <property name="propertyName"><value>fullReference</value></property>
+              </bean>
+              
+                         
+              <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+                 <property name="propertyName"><value>item</value></property>
+              </bean>
+               
+            </list>
+        </property>
+        <property name="insertStmt">
+           <value>insert into dw_guidance_item_file
+                            (id, baseReference, fullReference, item_id)
+                                            values (?, ?, ?, ?)
+           </value>
+        </property>
+        <property name="clearStmt">
+           <value>delete from dw_guidance_item_file</value>
+        </property> 
+   </bean>
+    
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.guidance.item"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+        <property name="fields">
+           <list>
+              <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>type</value></property>
+              </bean>
+              <!-- field:text goes here , its of type TEXT
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>siteId</value></property>
+              </bean>
+              -->
+                         
+              <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+                 <property name="propertyName"><value>guidance</value></property>
+              </bean>
+               
+            </list>
+        </property>
+        <property name="insertStmt">
+           <value>insert into dw_guidance_item
+                            (id, type <!-- , text -->, guidance_id)
+                                            values (?, ? <!--, ?-->, ?)
+           </value>
+        </property>
+        <property name="clearStmt">
+           <value>delete from dw_guidance_item</value>
+        </property>
+        <property name="complexFields" >
+            <list>       
+               <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">               
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>attachments</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.guidance.item.file"/>
+                  </property>
+               </bean>                  
+            </list>
+         </property>
+   </bean>
+   
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.guidance"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+        <property name="fields">
+           <list>
+              <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>description</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>siteId</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+                 <property name="propertyName"><value>securityQualifier</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>securityViewFunction</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>securityEditFunction</value></property>
+              </bean>
+            </list>
+        </property>
+        <property name="insertStmt">
+           <value>insert into dw_guidance
+                            (id, description, site_id, securityQualifier, securityViewFunction,
+                                     securityEditFunction)
+                                            values (?, ?, ?, ?, ?, ?)
+           </value>
+        </property>
+        <property name="clearStmt">
+           <value>delete from dw_guidance</value>
+        </property>
+        <property name="complexFields" >
+            <list>
+               <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+                  <property name="propertyAccess">               
+                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                        <property name="propertyName"><value>items</value></property>
+                     </bean>
+                  </property>
+                  <property name="task">
+                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.guidance.item"/>
+                  </property>
+               </bean>
+            </list>
+         </property>
+   </bean>
+   
+
+
+
+
+
+
+
+
+
+
+
+
+   <!--  **************************************************************************
+   ********************************************************************************
+        Content Resource Child Task
+   -->
+
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.contentResources"
+      class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.ResourceUuidPropertyAccess"/>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>id</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.ResourceTypePropertyAccess"/>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.ResourceTypePropertyAccess">
+               <property name="subType"><value>true</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.MimeTypePropertyAccess"/>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.MimeTypePropertyAccess">
+               <property name="subType"><value>true</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.ResourceParentPropertyAccess"/>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.StringResourcePropertyAccess">
+               <property name="propertyName"><value>namePropCreator</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.StringResourcePropertyAccess">
+               <property name="propertyName"><value>namePropModifiedBy</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.StringResourcePropertyAccess">
+               <property name="propertyName"><value>namePropDescription</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.StringResourcePropertyAccess">
+               <property name="propertyName"><value>namePropCopyrightChoice</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.StringResourcePropertyAccess">
+               <property name="propertyName"><value>namePropCopyright</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>contentLength</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.DateResourcePropertyAccess">
+               <property name="propertyName"><value>namePropCreationDate</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.DateResourcePropertyAccess">
+               <property name="propertyName"><value>namePropModifiedDate</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.sakai.resource.StringResourcePropertyAccess">
+               <property name="propertyName"><value>namePropDisplayName</value></property>
+            </bean>
+         </list>
+      </property>
+      <property name="insertStmt">
+         <value>insert into dw_resource
+                  (id, uri, resource_type, sub_type, primary_mime_type, sub_mime_type, parent_collection,
+                  created_by, modified_by, description, copyright_choice, copyright, content_length,
+                  created, modified, display_name)
+               values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)</value>
+      </property>
+      <property name="clearStmt">
+         <value>delete from dw_resource</value>
+      </property>
+   </bean>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <!--  **************************************************************************
+   ********************************************************************************
+        worksite Child Task
+   -->
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.worksite.membership"
+     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+     <property name="fields">
+        <list>
+           <bean class="org.theospi.portfolio.warehouse.impl.BaseParentPropertyAccess">
+              <property name="base">
+                 <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                    <property name="propertyName"><value>id</value></property>
+                 </bean>
+              </property>
+           </bean>
+           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <property name="propertyName"><value>userId</value></property>
+           </bean>
+        </list>
+     </property>
+     <property name="insertStmt">
+        <value>insert into dw_site_users
+                                    (site_id, user_id)
+                                    values (?, ?)
+        </value>
+     </property>
+     <property name="clearStmt">
+        <value>delete from dw_site_users</value>
+     </property>
+     <property name="complexFields" >
+         <list>
+         </list>
+      </property>
+   </bean>
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.worksite"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+        <property name="fields">
+           <list>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>id</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>type</value></property>
+              </bean>
+              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                 <property name="propertyName"><value>title</value></property>
+              </bean>
+            </list>
+        </property>
+        <property name="insertStmt">
+           <value>insert into dw_sites
+                            (id, type, title)
+                                            values (?, ?, ?)
+           </value>
+        </property>
+        <property name="clearStmt">
+           <value>delete from dw_sites</value>
+        </property>
+        <property name="complexFields" >
+            <list> 
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <property name="propertyAccess">               
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>members</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                 <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.worksite.membership"/>
+               </property>
+            </bean>
+            </list>
+         </property>
+   </bean>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <!--  **************************************************************************
+   ********************************************************************************
+        style Child Task
+   -->
+   
+   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.style"
+        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+      <property name="fields">
+         <list>
+	        <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+	        
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>name</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>description</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>globalState</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+               <property name="propertyName"><value>styleFile</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.AgentPropertyAccess">
+               <property name="propertyName"><value>owner</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>created</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>modified</value></property>
+            </bean>
+            
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>siteId</value></property>
+            </bean>
+
+         </list>
+      </property>
+   	  <property name="insertStmt">
+   	     <value>insert into dw_wizard_style
+					(id, name, description, globalState, styleFile, owner, created, modified, siteId)
+						values (?, ?, ?, ?, ?, ?, ?, ?, ?)
+   	     </value>
+   	  </property>
+   	  <property name="clearStmt">
+   	     <value>delete from dw_wizard_style</value>
+   	  </property> 
+   </bean>
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   <!--  **************************************************************************
+   ********************************************************************************
+        - list of users and names and such
+        - 
+   -->
+   
+   <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.wizard"
+       class="org.theospi.portfolio.warehouse.osp.wizard.WizardWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="tableDdlResource">
+           <value>/org/theospi/portfolio/warehouse/osp/wizard.xml</value>
+       </property>
+       <property name="wizardManager">
+           <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard" />
+       </property>
+   </bean>
+   
+   
+   <!-- TODO: make this Task -->
+   <!--  <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.help.glossary"
+       class="org.theospi.portfolio.warehouse.osp.presentation.PresentationTemplateWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="presentationManager">
+           <ref bean="presentationManager" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.help.glossary" />
+       </property>
+   </bean> -->
+
+   <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.presentationTemplate"
+       class="org.theospi.portfolio.warehouse.osp.presentation.PresentationTemplateWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="presentationManager">
+           <ref bean="presentationManager" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.template" />
+       </property>
+   </bean>
+
+
+   <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.presentation"
+       class="org.theospi.portfolio.warehouse.osp.presentation.PresentationWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="tableDdlResource">
+           <value>/org/theospi/portfolio/warehouse/osp/presentation.xml</value>
+       </property>
+       <property name="presentationManager">
+           <ref bean="presentationManager" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation" />
+       </property>
+   </bean>
+
+
+   <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.scaffolding"
+       class="org.theospi.portfolio.warehouse.osp.matrix.ScaffoldingWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="tableDdlResource">
+           <value>/org/theospi/portfolio/warehouse/osp/scaffolding.xml</value>
+       </property>
+       <property name="matrixManager">
+           <ref bean="matrixManager" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding" />
+       </property>
+   </bean>
+
+
+   <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.matrix"
+       class="org.theospi.portfolio.warehouse.osp.matrix.MatrixWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="tableDdlResource">
+           <value>/org/theospi/portfolio/warehouse/osp/matrix.xml</value>
+       </property>
+       <property name="matrixManager">
+           <ref bean="matrixManager" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix"/>
+       </property>
+   </bean>
+
+
+   <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.guidance"
+       class="org.theospi.portfolio.warehouse.osp.presentation.GuidanceWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="tableDdlResource">
+           <value>/org/theospi/portfolio/warehouse/osp/common.xml</value>
+       </property>
+       <property name="guidanceManager">
+           <ref bean="org.theospi.portfolio.guidance.mgt.GuidanceManager" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.guidance" />
+       </property>
+   </bean>
+
+
+   <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.contentResources"
+       class="org.theospi.portfolio.warehouse.sakai.resource.ContentResourceWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="tableDdlResource">
+           <value>/org/theospi/portfolio/warehouse/sakai/resource.xml</value>
+       </property>
+       <property name="contentHostingService">
+           <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.contentResources" />
+       </property>
+   </bean>
+
+
+   <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.worksite"
+       class="org.theospi.portfolio.warehouse.sakai.site.WorksiteWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="tableDdlResource">
+           <value>/org/theospi/portfolio/warehouse/sakai/site.xml</value>
+       </property>
+       <property name="siteService">
+          <ref bean="org.sakaiproject.service.legacy.site.SiteService" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.worksite" />
+       </property>
+   </bean>
+
+
+   <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.style"
+       class="org.theospi.portfolio.warehouse.osp.style.StyleWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="styleManager">
+          <ref bean="org.theospi.portfolio.style.mgt.StyleManager" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.style" />
+       </property>
+   </bean>
+
+
+
+
+   
+   <!-- /content resource stuff -->
+
+   <bean id="org.sakaiproject.api.app.scheduler.JobBeanWrapper.ospDataWarehouse"
+      class="org.sakaiproject.component.app.scheduler.jobs.SpringJobBeanWrapper"
+      singleton="true" init-method="init">
+      <property name="beanId">
+         <value>org.theospi.portfolio.warehouse.intf.DataWarehouseManager</value>
+      </property>
+      <property name="jobName">
+         <value>Data Warehouse Update</value>
+      </property>
+      <property name="schedulerManager">
+         <ref bean="org.sakaiproject.api.app.scheduler.SchedulerManager" />
+      </property>
+   </bean>
+
+
+
+
+
+
+
+
+</beans>
