@@ -70,6 +70,8 @@ public class DecoratedCategory extends DecoratedCategoryChild {
    }
 
    public String processActionNewPage() {
+      if(getBase().getWizard().isPublished())
+         return null;
       WizardPageSequence wizardPage =
             new WizardPageSequence(new WizardPageDefinition());
       wizardPage.getWizardPageDefinition().setSiteId(getParent().getWorksite().getId());
@@ -179,6 +181,8 @@ public class DecoratedCategory extends DecoratedCategoryChild {
    }
 
    public String processActionDelete() {
+      if(getBase().getWizard().isPublished())
+         return null;
       DecoratedCategory parentCategory = getParentCategory();
       parentCategory.getBase().getChildCategories().remove(getBase());
       parentCategory.resequenceCategories();
@@ -221,6 +225,8 @@ public class DecoratedCategory extends DecoratedCategoryChild {
    }
 
    public String processActionNewCategory() {
+      if(getBase().getWizard().isPublished())
+         return null;
       WizardCategory wizardCategory = new WizardCategory(getBase().getWizard());
       getParent().setCurrentCategory(
             new DecoratedCategory(this, wizardCategory, getParent(), getIndent() + 1));
@@ -248,6 +254,8 @@ public class DecoratedCategory extends DecoratedCategoryChild {
    }
 
    public String processActionMoveTo() {
+      if(getBase().getWizard().isPublished())
+         return null;
       DecoratedCategoryChild child = getParent().getMoveCategoryChild();
       child.setMoveTarget(false);
       if (child instanceof DecoratedCategory) {

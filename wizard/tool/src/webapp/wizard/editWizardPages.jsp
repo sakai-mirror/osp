@@ -97,23 +97,23 @@
          <h:commandLink action="#{item.processActionEdit}" rendered="#{!wizard.moving}">
             <h:outputText value="#{msgs.editProperties}" />
          </h:commandLink>
-         <h:outputText value=" | "  rendered="#{!wizard.moving}"/>
-         <h:commandLink action="#{item.processActionDelete}" rendered="#{!wizard.moving}">
+         <h:outputText value=" | "  rendered="#{!wizard.moving && !wizard.current.base.published}"/>
+         <h:commandLink action="#{item.processActionDelete}" rendered="#{!wizard.moving && !wizard.current.base.published}">
             <h:outputText value="#{msgs.delete}" />
          </h:commandLink>
 
-         <h:outputText value=" | " rendered="#{item.category && !wizard.moving}"/>
-         <h:commandLink action="#{item.processActionNewCategory}" rendered="#{item.category && !wizard.moving}">
+         <h:outputText value=" | " rendered="#{item.category && !wizard.moving && !wizard.current.base.published}"/>
+         <h:commandLink action="#{item.processActionNewCategory}" rendered="#{item.category && !wizard.moving && !wizard.current.base.published}">
             <h:outputText value="#{msgs.new_category}" />
          </h:commandLink>
-         <h:outputText value=" | "  rendered="#{item.category && !wizard.moving}"/>
-         <h:commandLink action="#{item.processActionNewPage}" rendered="#{item.category && !wizard.moving}">
+         <h:outputText value=" | "  rendered="#{item.category && !wizard.moving && !wizard.current.base.published}"/>
+         <h:commandLink action="#{item.processActionNewPage}" rendered="#{item.category && !wizard.moving && !wizard.current.base.published}">
             <h:outputText value="#{msgs.new_page}" />
          </h:commandLink>
 
-         <h:outputText value=" | " rendered="#{!wizard.moving &&
+         <h:outputText value=" | " rendered="#{!wizard.moving && !wizard.current.base.published &&
                wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
-         <h:commandLink action="#{item.processActionMove}" rendered="#{!wizard.moving &&
+         <h:commandLink action="#{item.processActionMove}" rendered="#{!wizard.moving && !wizard.current.base.published &&
                wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
             <h:outputText value="#{msgs.move_category}" rendered="#{item.category}"/>
             <h:outputText value="#{msgs.move_page}" rendered="#{!item.category}"/>
@@ -125,7 +125,7 @@
          </h:commandLink>
 
       </h:column>
-      <h:column rendered="#{!wizard.moving}">
+      <h:column rendered="#{!wizard.moving && !wizard.current.base.published}">
          <f:facet name="header">
             <h:outputText value="#{msgs.re_order}" />
          </f:facet>

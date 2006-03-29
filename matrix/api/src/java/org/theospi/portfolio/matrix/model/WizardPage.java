@@ -80,13 +80,29 @@ public class WizardPage extends IdentifiableObject {
    /* (non-Javadoc)
     * @see java.lang.Object#equals(java.lang.Object)
     */
-   public boolean equals(Object other) {
-      if (other == this) return true;
-      if (other == null || !(other instanceof WizardPage)) return false;
-      //TODO need better equals method
-      if (this.getId() == null) return false;
-      return (this.getId().equals(((WizardPage) other).getId()));
-
+   public boolean equals(Object in) {
+      if (this == in) {
+         return true;
+      }
+      if (in == null && this == null) {
+         return true;
+      }
+      if (in == null && this != null) {
+         return false;
+      }
+      if (this == null && in != null) {
+         return false;
+      }
+      if (!this.getClass().isAssignableFrom(in.getClass())) {
+         return false;
+      }
+      if (this.getId() == null && ((IdentifiableObject) in).getId() == null) {
+         return false;
+      }
+      if (this.getId() == null || ((IdentifiableObject) in).getId() == null) {
+         return false;
+      }
+      return this.getId().equals(((IdentifiableObject) in).getId());
    }
 
    /* (non-Javadoc)

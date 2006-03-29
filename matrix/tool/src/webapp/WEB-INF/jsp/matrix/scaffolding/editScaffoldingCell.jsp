@@ -24,6 +24,10 @@
 			  <fmt:message key="instructions_hasBeenPublished"/>
 		      <c:set var="localDisabledText" value="disabled=\"disabled\""/>
 	      </c:if>
+	      <c:if test="${wizardPublished}">
+			  <fmt:message key="instructions_wizardHasBeenPublished"/>
+		      <c:set var="localDisabledText" value="disabled=\"disabled\""/>
+	      </c:if>
 	      
 	</div>
 
@@ -221,6 +225,7 @@
         
       <h4><fmt:message key="title_additionalForms"/></h4>
 
+      <c:if test="${empty localDisabledText}">
       <p class="shorttext">
          <label><fmt:message key="label_selectForm"/></label>    
          <select name="selectAdditionalFormId" >
@@ -234,9 +239,11 @@
             <input type="submit" name="addForm" value="<fmt:message key="button_add"/>" class="active" onclick="javascript:document.forms[0].validate.value='false';" />
          </span>
       </p>
+      </c:if>
       
       <c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
       <c:out value="${chosenForm.name}" />
+         <c:if test="${empty localDisabledText}">
          <div class="itemAction">
              <a href="javascript:document.forms[0].submitAction.value='removeFormDef';
                document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
@@ -245,6 +252,7 @@
                  <osp:message key="remove"/>
                  </a>
          </div>
+         </c:if>
       
       </c:forEach>
         
