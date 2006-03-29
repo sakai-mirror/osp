@@ -253,7 +253,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    
    protected List getEvaluators(WizardPageDefinition wpd) {
       ResourceBundle myResources = 
-         ResourceBundle.getBundle("org.theospi.portfolio.matrix.messages");
+         ResourceBundle.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
 
       List evalList = new ArrayList();
       Id id = wpd.getId() == null ? wpd.getNewId() : wpd.getId();
