@@ -37,6 +37,31 @@ public class WizardPageSequence extends IdentifiableObject {
    private WizardCategory category;
    private String title = null;
 
+   public boolean equals(Object in) {
+      if (this == in) {
+         return true;
+      }
+      if (in == null && this == null) {
+         return true;
+      }
+      if (in == null && this != null) {
+         return false;
+      }
+      if (this == null && in != null) {
+         return false;
+      }
+      if (!this.getClass().isAssignableFrom(in.getClass())) {
+         return false;
+      }
+      if (this.getId() == null && ((IdentifiableObject) in).getId() == null) {
+         return false;
+      }
+      if (this.getId() == null || ((IdentifiableObject) in).getId() == null) {
+         return false;
+      }
+      return this.getId().equals(((IdentifiableObject) in).getId());
+   }
+   
    public WizardPageSequence() {
 
    }

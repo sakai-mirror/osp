@@ -44,6 +44,7 @@ import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
@@ -73,8 +74,20 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
     */
    public Map referenceData(Map request, Object command, Errors errors) {
       ScaffoldingCell sCell = (ScaffoldingCell) command;
-      Map model = new HashMap();
       
+      boolean wizardPublished = false;
+      
+      if(sCell.getWizardPageDefinition() != null && wizardManager != null)
+         if(sCell.getWizardPageDefinition().getId() != null) {
+            WizardPageSequence wps = wizardManager.getWizardPageSeqByDef(sCell.getWizardPageDefinition().getId());
+            if(wps.getCategory() != null)
+               if(wps.getCategory().getWizard() != null)
+                  wizardPublished = wps.getCategory().getWizard().isPublished();
+         }
+      
+      Map model = new HashMap();
+
+      model.put("wizardPublished", new Boolean(wizardPublished));
       model.put("reflectionDevices", getReflectionDevices());
       model.put("evaluationDevices", getEvaluationDevices());
       model.put("reviewDevices", getReviewDevices());
