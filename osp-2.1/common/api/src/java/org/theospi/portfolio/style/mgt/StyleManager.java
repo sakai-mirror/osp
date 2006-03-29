@@ -42,6 +42,7 @@ public interface StyleManager {
    public Node getNode(Reference ref);
    
    public Style storeStyle(Style style);
+   public Style storeStyle(Style style, boolean checkAuthz);
    public Style getStyle(Id styleId);
    public void deleteStyle(final Id styleId) throws DataIntegrityViolationException;
    public Style getLightWeightStyle(final Id styleId);
