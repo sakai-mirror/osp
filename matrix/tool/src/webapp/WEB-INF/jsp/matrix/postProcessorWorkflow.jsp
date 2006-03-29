@@ -1,7 +1,8 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<fmt:setBundle basename="org.theospi.portfolio.matrix.messages" var="msgs" />
+<fmt:setLocale value="${locale}"/>
+<fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages" var="msgs" />
 
 <form method="POST" action="<osp:url value="reviewPostProcessor.osp"/>">
    <osp:form/>
