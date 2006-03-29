@@ -210,8 +210,12 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
          }
          
          for (Iterator memb = members.iterator(); memb.hasNext();) {
-            Member member = (Member) memb.next();
-            users.add(UserDirectoryService.getUser(member.getUserId()));
+            try {
+               Member member = (Member) memb.next();
+               users.add(UserDirectoryService.getUser(member.getUserId()));
+            } catch (IdUnusedException e) {
+               logger.error("Unable to find user: " + e.getId(), e);
+            }            
          }
       } catch (IdUnusedException e) {
          logger.error("", e);

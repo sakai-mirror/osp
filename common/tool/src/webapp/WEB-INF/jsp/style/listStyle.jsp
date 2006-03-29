@@ -75,8 +75,10 @@
              | <a onclick="return confirmDeletion();"
                    href="<osp:url value="deleteStyle.osp"/>&style_id=<c:out value="${style.id.value}" />"><fmt:message key="table_action_delete"/></a>
              </c:if>
-    
-             <c:if test="${isAuthorizedTo.globalPublish && (style.globalState == 0 || style.globalState == 1) && isGlobal}">
+         
+             <!-- Used the regular can.globalPublish instead of the isAuthorizedTo 
+               because the style may have come from a different site -->
+             <c:if test="${can.globalPublish && (style.globalState == 0 || style.globalState == 1) && isGlobal}">
              | <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=global"><fmt:message key="table_action_global_publish"/></a>
              </c:if>
              

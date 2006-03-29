@@ -29,6 +29,7 @@ import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class PublishStyleController extends ListStyleController implements LoadO
       String publishTo = (String)request.get("publishTo");
       if (publishTo.equals("global")) {
          style.setGlobalState(Style.STATE_PUBLISHED);
-         style.setSiteId(null);
+         style.setSiteId(PortalService.getCurrentSiteId());
          doSave(style, StyleFunctionConstants.GLOBAL_PUBLISH_STYLE, errors);
       }
       else {
@@ -59,7 +60,8 @@ public class PublishStyleController extends ListStyleController implements LoadO
    protected void doSave(Style style, String function, Errors errors) {
       checkPermission(function);
       try{
-         getStyleManager().storeStyle(style);
+         //Don't need to check authz for saving as we should already have perms via the publish
+         getStyleManager().storeStyle(style, false);
       } catch (PersistenceException e){
          errors.rejectValue(e.getField(), e.getErrorCode(), e.getErrorInfo(),
                e.getDefaultMessage());
@@ -69,6 +71,7 @@ public class PublishStyleController extends ListStyleController implements LoadO
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       //Style style = (Style) incomingModel;
       Id styleId = getIdManager().getId((String)request.get("style_id"));
+      /*
       String publishTo = (String)request.get("publishTo");
       String function = "";
       if (publishTo.equals("global")) {
@@ -81,6 +84,7 @@ public class PublishStyleController extends ListStyleController implements LoadO
          function = StyleFunctionConstants.SUGGEST_GLOBAL_PUBLISH_STYLE;
       }
       getAuthzManager().checkPermission(function, styleId);
+      */
       return getStyleManager().getStyle(styleId);
    }
 }

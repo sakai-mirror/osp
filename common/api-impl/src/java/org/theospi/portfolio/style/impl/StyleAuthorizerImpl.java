@@ -63,7 +63,7 @@ public class StyleAuthorizerImpl implements ApplicationAuthorizer {
          return new Boolean(facade.isAuthorized(function,qualifier));
       }
       //owner can do anything
-      if (style.getOwner().equals(agent)){
+      if (agent.equals(style.getOwner())){
          return new Boolean(true);
       }
       Id siteId = getIdManager().getId(style.getSiteId());
