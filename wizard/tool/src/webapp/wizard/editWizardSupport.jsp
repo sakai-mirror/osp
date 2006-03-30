@@ -62,23 +62,23 @@
       <ospx:xheaderdrawer initiallyexpanded="false" cssclass="drawerBorder">
          <h:outputLabel for="commentItems" id="commentLabel" value="#{msgs.comment_item}" />
          <h:selectOneMenu id="commentItems"
-            immediate="true"
+            immediate="true" disabled="#{wizard.current.base.published}"
             value="#{wizard.commentItem}">
             <f:selectItem itemLabel="#{msgs.choose_comment_item}" itemValue=""/>
             <f:selectItem itemLabel="#{msgs.choose_form}" itemValue="1"/>
             <f:selectItems value="#{wizard.commentFormsForSelect}"/>
-            <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue="2"/>
-            <f:selectItems value="#{wizard.commentWizardsForSelect}"/>
+          <% /*  <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue="2"/>
+            <f:selectItems value="#{wizard.commentWizardsForSelect}"/> */ %>
          </h:selectOneMenu>
          <h:outputLabel for="reflectionItems" id="reflectionLabel" value="#{msgs.reflection_item}" />
          <h:selectOneMenu id="reflectionItems"
-            immediate="true"
+            immediate="true" disabled="#{wizard.current.base.published}"
             value="#{wizard.reflectionItem}">
             <f:selectItem itemLabel="#{msgs.choose_reflection_item}" itemValue=""/>
             <f:selectItem itemLabel="#{msgs.choose_form}" itemValue="1"/>
             <f:selectItems value="#{wizard.reflectionFormsForSelect}"/>
-            <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue="2"/>
-            <f:selectItems value="#{wizard.reflectionWizardsForSelect}"/>
+         <% /*   <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue="2"/>
+            <f:selectItems value="#{wizard.reflectionWizardsForSelect}"/> */ %>
          </h:selectOneMenu>
       </ospx:xheaderdrawer>
    </ospx:xheader>
@@ -88,13 +88,13 @@
       <ospx:xheaderdrawer initiallyexpanded="false" cssclass="drawerBorder">
          <h:outputLabel for="evaluationItems" id="evaluationLabel" value="#{msgs.evaluation_item}" />
          <h:selectOneMenu id="evaluationItems"
-            immediate="true"
+            immediate="true" disabled="#{wizard.current.base.published}"
             value="#{wizard.evaluationItem}">
             <f:selectItem itemLabel="#{msgs.choose_evaluation_item}" itemValue=""/>
             <f:selectItem itemLabel="#{msgs.choose_form}" itemValue=""/>
             <f:selectItems value="#{wizard.evaluationFormsForSelect}"/>
-            <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue=""/>
-            <f:selectItems value="#{wizard.evaluationWizardsForSelect}"/>
+          <% /* <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue=""/>
+            <f:selectItems value="#{wizard.evaluationWizardsForSelect}"/> */ %>
          </h:selectOneMenu>
       </ospx:xheaderdrawer>
    </ospx:xheader>

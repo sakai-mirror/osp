@@ -112,7 +112,16 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
          return null;
       }
    }
-   protected Boolean isWizardAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function){
+   
+   /**
+    * This method checks for permission "function" of wizard "qualifier" with the given Agent.
+    * @param facade AuthorizationFacade
+    * @param qualifier Id
+    * @param agent Agent
+    * @param function String
+    * @return Boolean
+    */
+   protected Boolean isWizardAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function) {
       Wizard wizard = getWizardManager().getWizard(qualifier);
 
       if (wizard == null) {
@@ -130,6 +139,14 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       return new Boolean(facade.isAuthorized(function,toolId));
    }
 
+   /**
+    * THis handles the authority for the view permission on a wizard
+    * @param facade
+    * @param agent
+    * @param id
+    * @param allowAnonymous
+    * @return
+    */
    protected Boolean isWizardViewAuth(AuthorizationFacade facade, Agent agent, Id id, boolean allowAnonymous) {
       Wizard wizard = getWizardManager().getWizard(id);
 
@@ -140,13 +157,32 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       return isWizardViewAuth(wizard, facade, agent, id, allowAnonymous);
    }
 
+   /**
+    * Checks an agents ability to view the given wizard.  It also check the wizard's
+    * tool for permission to access the wizard as view is a tool wide permission.  
+    * Anonymous is not recognized in this function yet
+    * @param wizard        Wizard
+    * @param facade        AuthorizationFacade
+    * @param agent         Agent
+    * @param id            Id
+    * @param allowAnonymous boolean
+    * @return Boolean
+    */
    protected Boolean isWizardViewAuth(Wizard wizard, AuthorizationFacade facade,
                                             Agent agent, Id id, boolean allowAnonymous) {
+      boolean isAuthorized = false;
       if (wizard != null && wizard.getOwner().equals(agent)) {
-         return new Boolean(true);
+         isAuthorized = true;
       } else {
-         return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.VIEW_WIZARD, id));
+         isAuthorized = facade.isAuthorized(agent, WizardFunctionConstants.VIEW_WIZARD, id);
+         
+         if(!isAuthorized) {
+            Id toolId = getIdManager().getId(wizard.getToolId());
+            isAuthorized = facade.isAuthorized(WizardFunctionConstants.VIEW_WIZARD, toolId);
+            
+         }
       }
+      return new Boolean(isAuthorized);
    }
 
    protected Boolean isWizardAuthForReview(AuthorizationFacade facade, Agent agent, Id wizardId) {
