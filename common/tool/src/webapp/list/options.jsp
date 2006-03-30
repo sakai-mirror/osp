@@ -11,7 +11,7 @@
 		response.addHeader("Pragma", "no-cache");
 %>
 
-<f:loadBundle basename="org.theospi.portfolio.common.messages" var="msgs"/>
+<f:loadBundle basename="org.theospi.portfolio.common.bundle.Messages" var="msgs"/>
 
 <f:view>
 <sakai:view_container title="#{msgs.title_options}">
