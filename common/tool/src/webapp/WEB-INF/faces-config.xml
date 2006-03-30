@@ -11,7 +11,7 @@
 
 
    <application>
-     <message-bundle>org.theospi.portfolio.common.messages</message-bundle>
+     <message-bundle>org.theospi.portfolio.common.bundle.Messages</message-bundle>
      <locale-config>
        <default-locale>en</default-locale>
      </locale-config>
