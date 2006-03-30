@@ -12,7 +12,7 @@
 %>
 
 <f:view>
-<f:loadBundle basename="org.theospi.portfolio.common.messages" var="msgs"/>
+<f:loadBundle basename="org.theospi.portfolio.common.bundle.Messages" var="msgs"/>
 
 <sakai:view>
    <sakai:view_title value="#{audience.globalTitle}"/>
