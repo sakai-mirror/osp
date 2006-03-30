@@ -25,7 +25,7 @@
    </component>
 
    <application>
-     <message-bundle>org.theospi.portfolio.presentation.messages</message-bundle>
+     <message-bundle>org.theospi.portfolio.presentation.bundle.Messages</message-bundle>
      <locale-config>
        <default-locale>en</default-locale>
      </locale-config>
