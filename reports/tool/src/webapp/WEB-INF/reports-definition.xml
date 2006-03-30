@@ -513,7 +513,7 @@
                             dw_scaffolding_levels.description `level_description`, dw_scaffolding_cell.rootcriterion_id
                     FROM dw_scaffolding 
                     JOIN dw_site_users ON dw_scaffolding.worksiteId = dw_site_users.site_id
-                    LEFT JOIN dw_matrix ON dw_site_users.user_id = dw_matrix.owner
+                    LEFT JOIN dw_matrix ON dw_site_users.user_id = dw_matrix.owner AND dw_matrix.scaffolding_id=dw_scaffolding.id
                     LEFT JOIN dw_matrix_cell ON dw_matrix.id = dw_matrix_cell.matrix_id
                     LEFT JOIN dw_wizard_page ON dw_matrix_cell.wizard_page_id = dw_wizard_page.id
                     LEFT JOIN dw_scaffolding_cell ON dw_matrix_cell.scaffolding_cell_id = dw_scaffolding_cell.id
