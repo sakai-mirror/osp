@@ -26,6 +26,7 @@ import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.Errors;
 
@@ -46,6 +47,20 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
     */
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = super.referenceData(request, command, errors);
+      
+      ScaffoldingCell sCell = (ScaffoldingCell) command;
+      
+      boolean wizardPublished = false;
+      
+      if(sCell.getWizardPageDefinition() != null && getWizardManager() != null)
+         if(sCell.getWizardPageDefinition().getId() != null) {
+            WizardPageSequence wps = getWizardManager().getWizardPageSeqByDef(sCell.getWizardPageDefinition().getId());
+            if(wps.getCategory() != null)
+               if(wps.getCategory().getWizard() != null)
+                  wizardPublished = wps.getCategory().getWizard().isPublished();
+         }
+      
+      model.put("wizardPublished", new Boolean(wizardPublished));
       model.put("helperPage", "true");
       model.put("pageTitleKey", "title_editWizardPage");
       model.put("pageInstructionsKey", "instructions_wizardPageSettings");
