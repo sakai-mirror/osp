@@ -383,7 +383,8 @@ public class WizardTool extends BuilderTool {
    }
 
    public void processActionEvaluate() {
-      processActionReviewHelper(Review.EVALUATION_TYPE);
+      if(getCanEvaluate())
+         processActionReviewHelper(Review.EVALUATION_TYPE);
    }
 
    public void processActionReview() {

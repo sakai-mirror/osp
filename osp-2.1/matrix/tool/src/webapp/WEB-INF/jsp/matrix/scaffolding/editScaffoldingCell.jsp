@@ -216,6 +216,10 @@
       <c:forEach var="eval" items="${evaluators}">
          <div class="indnt4"><c:out value="${eval}" /></div>
       </c:forEach>
+      <c:if test="${empty evaluators}">
+         <div class="indnt4"><fmt:message key="no_evaluators"/></div>
+      </c:if>
+      
       </p>
    </div>
    
@@ -223,7 +227,9 @@
       
    <!-- ************* Additional Forms Area Start ************* -->   
         
-      <h4><fmt:message key="title_additionalForms"/></h4>
+      <c:if test="${not empty selectedAdditionalFormDevices or empty localDisabledText}">
+         <h4><fmt:message key="title_additionalForms"/></h4>
+      </c:if>
 
       <c:if test="${empty localDisabledText}">
       <p class="shorttext">
