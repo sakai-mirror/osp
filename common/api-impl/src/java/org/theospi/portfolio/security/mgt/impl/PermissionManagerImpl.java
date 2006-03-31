@@ -107,8 +107,11 @@ public class PermissionManagerImpl implements PermissionManager {
             }
          }
       } catch (IdUnusedException e) {
-         logger.error("", e);
-         throw new OspException(e);
+         //This should be an okay exception to swallow.  If we can't find the realm, just skip it.
+         // This came up when using the sites tool to create a site.  Since there wasn't 
+         //   a realm yet, couldn't set permissions
+         logger.warn("Cannot find realm corresponding to site: " + e.getId() + ".  Skipping it for setting permissions.", e);
+         //throw new OspException(e);
       }
 
       return edit;
