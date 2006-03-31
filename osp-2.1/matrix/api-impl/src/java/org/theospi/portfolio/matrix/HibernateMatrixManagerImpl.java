@@ -1010,6 +1010,15 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       levels.size();
       criteria.size();
       scaffoldingCells.size();
+      for (Iterator iter = scaffoldingCells.iterator(); iter.hasNext();) {
+         ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
+         Collection evalWorkflows = sCell.getWizardPageDefinition().getEvalWorkflows();
+         for (Iterator iter2 = evalWorkflows.iterator(); iter2.hasNext();) {
+            Workflow wf = (Workflow)iter2.next();
+            Collection items = wf.getItems();
+            wf.setItems(new HashSet(items));
+         }
+      }
       removeFromSession(oldScaffolding);
       
       if (oldScaffolding.getStyle() != null) {
@@ -1161,7 +1170,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       zos.putNextEntry(newfileEntry);
 
-      getStructuredArtifactDefinitionManager().packageFormForExport(formId, zos);
+      getStructuredArtifactDefinitionManager().packageFormForExport(formId, zos, false);
 
       zos.closeEntry();
    }
