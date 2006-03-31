@@ -103,7 +103,7 @@ public class XHeaderTitleRenderer extends Renderer
          drawer.setDivId(divId);
 			writer.write("<span onclick=\"showHideDiv('" + divId + "', '" + RESOURCE_PATH + "');" +
 		              request.getAttribute("sakai.html.body.onload") +
-               " refeshChildren" + drawer.getDivId().hashCode() + "(); "
+               " refreshChildren" + Math.abs(drawer.getDivId().hashCode()) + "(); "
                +"\">");
 				
          writer.startElement("img", component);

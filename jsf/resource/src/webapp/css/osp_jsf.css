@@ -4,7 +4,7 @@
      color:#FFFFFF;
      font-size: 17px;
      vertical-align: middle;
-     height:23;
+     height: 23px;
  }
  .xhItalics {
      background-color:#808080;
@@ -15,7 +15,6 @@
  .xhSmallFont {
      background-color:#808080;
      color:#FFFFFF;
-     font-size: 17px;
      font-size: 14px;
  }
  .theUnderArea {
@@ -28,16 +27,16 @@
 /* Styles for the wizardSteps */    
    td.previous_state {color: #B7BBC2;}
    div.previous_state {color: #000000; background-image: url("/osp-jsf-resource/wizardSteps/images/wizard_circle_g.png");
-      background-repeat: no-repeat; background-position: center; text-align: center; height: 20;}
+      background-repeat: no-repeat; background-position: center; text-align: center; height: 20px;}
    td.current_state {color: #000000;}
    div.current_state {color: #FFFFFF; background-image: url("/osp-jsf-resource/wizardSteps/images/wizard_circle_b.png");
-      background-repeat: no-repeat; background-position: center; text-align: center; height: 20;}
+      background-repeat: no-repeat; background-position: center; text-align: center; height: 20px;}
    td.next_state {color: #000000;}
    div.next_state {color: #000000; background-image: url("/osp-jsf-resource/wizardSteps/images/wizard_circle_w.png");
-      background-repeat: no-repeat; background-position: center; text-align: center; height: 20;}
+      background-repeat: no-repeat; background-position: center; text-align: center; height: 20px;}
    td.disabled_state {color: #FF0000;}
    div.disabled_state {color: #000000; background-image: url("/osp-jsf-resource/wizardSteps/images/wizard_circle_r.png");
-      background-repeat: no-repeat; background-position: center; text-align: center; height: 20;}
+      background-repeat: no-repeat; background-position: center; text-align: center; height: 20px;}
 
  .osp_tab {
     border-color: #808080;
