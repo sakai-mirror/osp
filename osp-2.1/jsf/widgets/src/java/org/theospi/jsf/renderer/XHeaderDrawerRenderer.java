@@ -86,7 +86,7 @@ public class XHeaderDrawerRenderer extends Renderer
 
       writer.write("</div>");
       writer.write("<script type=\"text/javascript\">\n");
-      writer.write("function refeshChildren" + component.getDivId().hashCode() + "() {");
+      writer.write("function refreshChildren" + Math.abs(component.getDivId().hashCode()) + "() {");
 
       for (Iterator i=component.getInitScripts().iterator();i.hasNext();) {
          writer.write(i.next().toString());
