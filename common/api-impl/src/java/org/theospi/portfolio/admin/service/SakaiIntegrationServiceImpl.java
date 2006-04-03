@@ -76,10 +76,10 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService {
       try {
          sakaiSession.setUserId("admin");
          sakaiSession.setUserEid("admin");
-
-         for (Iterator i=getIntegrationPlugins().iterator();i.hasNext();) {
+         int index=0;
+         for (Iterator i=getIntegrationPlugins().iterator();i.hasNext(); ++index) {
             String plugin = (String) i.next();
-            PluginOptionJob.schedule(getSchedulerManager(), plugin, getPollingInterval());
+            PluginOptionJob.schedule(getSchedulerManager(), plugin, getPollingInterval() + index * 10000);
          }
          createUserResourceDir();
       } catch (SchedulerException e) {
