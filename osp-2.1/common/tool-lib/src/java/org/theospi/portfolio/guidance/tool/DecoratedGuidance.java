@@ -21,7 +21,6 @@
 package org.theospi.portfolio.guidance.tool;
 
 import org.theospi.portfolio.guidance.model.Guidance;
-import org.theospi.portfolio.guidance.model.GuidanceItem;
 
 /**
  * Created by IntelliJ IDEA.
@@ -67,6 +66,18 @@ public class DecoratedGuidance {
       return tool.processActionEdit(base);
    }
 
+   public String processActionEditInstruction() {
+      return tool.processActionEditInstruction(base);
+   }
+   
+   public String processActionEditExample() {
+      return tool.processActionEditExample(base);
+   }
+   
+   public String processActionEditRationale() {
+      return tool.processActionEditRationale(base);
+   }
+   
    public String processActionView() {
       return tool.processActionView(base);
    }

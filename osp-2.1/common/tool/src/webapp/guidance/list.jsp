@@ -19,6 +19,15 @@
       <sakai:tool_bar_item
       action="#{guidance.processActionNew}"
       value="New Sample" />
+      <sakai:tool_bar_item
+      action="#{guidance.processActionNewInstruction}"
+      value="New Sample Instruction" />
+      <sakai:tool_bar_item
+      action="#{guidance.processActionNewExample}"
+      value="New Sample Example" />
+      <sakai:tool_bar_item
+      action="#{guidance.processActionNewRationale}"
+      value="New Sample Rationale" />
    </sakai:tool_bar>
 
    <sakai:view_title value="#{msgs.guidance_title}"/>
@@ -49,6 +58,18 @@
          <h:outputText value=" | " />
          <h:commandLink action="#{sampleGuidance.processActionEdit}">
             <h:outputText value="edit"/>
+         </h:commandLink>
+         <h:outputText value=" | " />
+         <h:commandLink action="#{sampleGuidance.processActionEditInstruction}">
+            <h:outputText value="edit instruction"/>
+         </h:commandLink>
+         <h:outputText value=" | " />
+         <h:commandLink action="#{sampleGuidance.processActionEditExample}">
+            <h:outputText value="edit example"/>
+         </h:commandLink>
+         <h:outputText value=" | " />
+         <h:commandLink action="#{sampleGuidance.processActionEditRationale}">
+            <h:outputText value="edit rationale"/>
          </h:commandLink>
          <h:outputText value=" | " />
          <h:commandLink action="#{sampleGuidance.processActionDelete}">
