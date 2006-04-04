@@ -16,7 +16,7 @@
             <tr>
                <td>
                   <a href='<c:out value="${node.externalUri}"/>' target="_blank" ><c:out value="${node.name}"/></a>
-                  <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+                  <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true' and node.fileType == allowedNodeType}">
                       <div class="itemAction">
                           <a href="<osp:url value="cellFormPicker.osp">
                               <osp:param name="page_id" value="${cell.wizardPage.id}" />
