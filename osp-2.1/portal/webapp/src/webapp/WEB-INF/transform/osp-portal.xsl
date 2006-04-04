@@ -536,9 +536,14 @@ your browser doesn't support iframes
 </xsl:for-each>
 
 			<li>
-				<a  accesskey="h" href="javascript:;"
-               onclick="window.open('http://localhost:8080/portal/help/main','Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')"
-               onkeypress="window.open('http://localhost:8080/portal/help/main','Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')">Help</a>
+				<a  accesskey="h" href="javascript:;">
+               <xsl:attribute name="onclick">
+                  window.open('<xsl:value-of select="config/helpUrl"/>','Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')
+               </xsl:attribute>
+               <xsl:attribute name="onkeypress">
+                  window.open('<xsl:value-of select="config/helpUrl"/>','Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')
+               </xsl:attribute>
+               Help</a>
 			</li>
 		</ul>
 	</div>
