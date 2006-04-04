@@ -39,6 +39,7 @@ public class Node {
    private String externalUri;
    private String fileType;
    private ContentResource resource;
+   private boolean hasCopyright = false;
 
    public Node(Id id, ContentResource resource, Agent owner) {
       this.resource = resource;
@@ -46,6 +47,11 @@ public class Node {
       name = resource.getProperties().getProperty(
             resource.getProperties().getNamePropDisplayName());
       displayName = name;
+      
+      //check for copyright
+      hasCopyright = Boolean.getBoolean(resource.getProperties().getProperty(
+            resource.getProperties().getNamePropCopyrightAlert()));
+      
       externalUri = resource.getUrl();
       mimeType = new MimeType(resource.getContentType());
       String propName = resource.getProperties().getNamePropStructObjType();
@@ -164,6 +170,14 @@ public class Node {
 
    public void setFileType(String fileType) {
       this.fileType = fileType;
+   }
+
+   public boolean isHasCopyright() {
+      return hasCopyright;
+   }
+
+   public void setHasCopyright(boolean hasCopyright) {
+      this.hasCopyright = hasCopyright;
    }
 
 }

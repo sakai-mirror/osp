@@ -20,6 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.tool;
 
+import org.theospi.portfolio.guidance.mgt.GuidanceHelper;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.guidance.model.GuidanceItem;
@@ -28,7 +29,6 @@ import org.theospi.portfolio.shared.tool.HelperToolBase;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
-import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
 import org.sakaiproject.service.legacy.filepicker.ResourceEditingHelper;
@@ -38,9 +38,11 @@ import org.sakaiproject.service.legacy.entity.Reference;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -119,7 +121,8 @@ public class GuidanceTool extends HelperToolBase {
       ToolSession session = SessionManager.getCurrentToolSession();
 
       session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, getCurrent().getBase());
-
+      cleanup(session);
+      
       return returnToCaller();
    }
 
@@ -127,8 +130,15 @@ public class GuidanceTool extends HelperToolBase {
       ToolSession session = SessionManager.getCurrentToolSession();
       session.removeAttribute(GuidanceManager.CURRENT_GUIDANCE);
       session.removeAttribute(GuidanceManager.CURRENT_GUIDANCE_ID);
+      cleanup(session);
       current = null;
       return returnToCaller();
+   }
+   
+   protected void cleanup(ToolSession toolSession) {
+      toolSession.removeAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG);
+      toolSession.removeAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG);
+      toolSession.removeAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG);
    }
 
    public Reference decorateReference(String reference) {
@@ -165,6 +175,36 @@ public class GuidanceTool extends HelperToolBase {
       }
       return returned;
    }
+   
+   public boolean isInstructionsRendered() {
+      boolean showInstructions = true; 
+      if (getAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG) != null) {
+         showInstructions =
+            "true".equalsIgnoreCase((String)getAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG));
+         removeAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG);
+      }
+      return showInstructions;
+   }
+   
+   public boolean isExamplesRendered() {
+      boolean showExamples = true; 
+      if (getAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG) != null) {
+         showExamples =
+            "true".equalsIgnoreCase((String)getAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG));
+         removeAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG);
+      }
+      return showExamples;
+   }
+   
+   public boolean isRationaleRendered() {
+      boolean showRationale = true; 
+      if (getAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG) != null) {
+         showRationale =
+            "true".equalsIgnoreCase((String)getAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG));
+         removeAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG);
+      }
+      return showRationale;
+   }
 
    /**
     * sample
@@ -173,7 +213,43 @@ public class GuidanceTool extends HelperToolBase {
     */
    public String processActionEdit(Guidance guidance) {
       guidance = getGuidanceManager().getGuidance(guidance.getId());
-      invokeTool(guidance);
+      invokeTool(guidance, new HashMap());
+      return null;
+   }
+   
+   public String processActionEditInstruction(Guidance guidance) {
+      guidance = getGuidanceManager().getGuidance(guidance.getId());
+
+      Map typeFlags = new HashMap();
+      
+      typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "true");
+      typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "false");
+      typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "false");
+      invokeTool(guidance, typeFlags);
+      return null;
+   }
+   
+   public String processActionEditExample(Guidance guidance) {
+      guidance = getGuidanceManager().getGuidance(guidance.getId());
+
+      Map typeFlags = new HashMap();
+      
+      typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "false");
+      typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "false");
+      typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "true");
+      invokeTool(guidance, typeFlags);
+      return null;
+   }
+   
+   public String processActionEditRationale(Guidance guidance) {
+      guidance = getGuidanceManager().getGuidance(guidance.getId());
+
+      Map typeFlags = new HashMap();
+      
+      typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "false");
+      typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "true");
+      typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "false");
+      invokeTool(guidance, typeFlags);
       return null;
    }
 
@@ -208,7 +284,52 @@ public class GuidanceTool extends HelperToolBase {
       String currentSite = placement.getContext();
       Guidance newGuidance = getGuidanceManager().createNew("Sample Guidance", currentSite, null, "", "");
 
-      invokeTool(newGuidance);
+      invokeTool(newGuidance, new HashMap());
+
+      return null;
+   }
+   
+   public String processActionNewInstruction() {
+      Placement placement = ToolManager.getCurrentPlacement();
+      String currentSite = placement.getContext();
+      Guidance newGuidance = getGuidanceManager().createNew("Sample Guidance", currentSite, null, "", "");
+
+      Map typeFlags = new HashMap();
+      
+      typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "true");
+      typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "false");
+      typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "false");
+      invokeTool(newGuidance, typeFlags);
+
+      return null;
+   }
+   
+   public String processActionNewExample() {
+      Placement placement = ToolManager.getCurrentPlacement();
+      String currentSite = placement.getContext();
+      Guidance newGuidance = getGuidanceManager().createNew("Sample Guidance", currentSite, null, "", "");
+
+      Map typeFlags = new HashMap();
+      
+      typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "true");
+      typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "false");
+      typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "false");
+      invokeTool(newGuidance, typeFlags);
+
+      return null;
+   }
+   
+   public String processActionNewRationale() {
+      Placement placement = ToolManager.getCurrentPlacement();
+      String currentSite = placement.getContext();
+      Guidance newGuidance = getGuidanceManager().createNew("Sample Guidance", currentSite, null, "", "");
+
+      Map typeFlags = new HashMap();
+      
+      typeFlags.put(GuidanceHelper.SHOW_RATIONALE_FLAG, "true");
+      typeFlags.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, "false");
+      typeFlags.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, "false");
+      invokeTool(newGuidance, typeFlags);
 
       return null;
    }
@@ -217,11 +338,16 @@ public class GuidanceTool extends HelperToolBase {
     * sample
     * @param guidance
     */
-   protected void invokeTool(Guidance guidance) {
+   protected void invokeTool(Guidance guidance, Map typeFlags) {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
 
       session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
+      
+      for (Iterator iter = typeFlags.keySet().iterator(); iter.hasNext();) {
+         String key = (String) iter.next();
+         session.setAttribute(key, typeFlags.get(key));
+      }
 
       try {
          context.redirect("osp.guidance.helper/tool");
