@@ -71,6 +71,13 @@ public class DecoratedWizard {
       this.base = base;
    }
    
+   public String getConcatDescription() {
+      String s = getBase().getDescription();
+      if(s.length() > 100)
+         s = s.substring(0, 100) + "...";
+      return s;
+   }
+   
    public boolean getExposeAsTool() {
       if (base.getExposeAsTool() == null)
          return false;
