@@ -90,8 +90,9 @@
 
             <TR>
                 <TD>
-                    <a href="<osp:url value="/glossary.osp" />&id=<c:out value="${term.id}" />"
-                        target="osp.glossary"><c:out value="${term.term}" /></a>
+                    <osp-h:glossary link="true" hover="false">
+                        <c:out value="${term.term}" />
+                    </osp-h:glossary>
                     <c:if test="${can.edit || can.delete}">
                         <div class="itemAction">
                             <c:if test="${can.edit}">
