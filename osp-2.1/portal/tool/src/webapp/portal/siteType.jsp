@@ -16,11 +16,13 @@
 <sakai:view>
 <h:form>
 
+<sakai:view_title value="#{msgs.siteType_page_title}" />
+
 <sakai:pager id="pager"
     totalItems="#{siteType.sites.totalItems}"
     firstItem="#{siteType.sites.firstItem}"
     pageSize="#{siteType.sites.pageSize}"
-    textStatus="#{msgs.site_types_pager_status}" />
+    textItem="#{msgs.site_types_item}" />
 
    <sakai:flat_list value="#{siteType.sites.subList}" var="site">
       <h:column>
