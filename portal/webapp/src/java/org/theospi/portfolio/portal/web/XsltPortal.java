@@ -530,6 +530,7 @@ public class XsltPortal extends CharonPortal {
       String serviceVersion = ServerConfigurationService.getString("version.service", "?");
       String sakaiVersion = ServerConfigurationService.getString("version.sakai", "?");
       String server = ServerConfigurationService.getServerId();
+      String helpUrl = ServerConfigurationService.getHelpUrl(null);
       String[] bottomNav = ServerConfigurationService.getStrings("bottomnav");
       String[] poweredByUrl = ServerConfigurationService.getStrings("powered.url");
       String[] poweredByImage = ServerConfigurationService.getStrings("powered.img");
@@ -544,6 +545,7 @@ public class XsltPortal extends CharonPortal {
       appendTextElementNode(doc, "serviceVersion", serviceVersion, config);
       appendTextElementNode(doc, "sakaiVersion", sakaiVersion, config);
       appendTextElementNode(doc, "server", server, config);
+      appendTextElementNode(doc, "helpUrl", helpUrl, config);
       appendTextElementNodes(doc, bottomNav, config, "bottomNavs", "bottomNav");
 
       if ((poweredByUrl != null) && (poweredByImage != null) && (poweredByAltText != null)
