@@ -53,40 +53,43 @@
             <h:outputText value="#{msgs.wizards}" />
          </f:facet>
          <h:outputText value="#{wizardItem.base.name}"/>
+         <f:subview id="viewPermss" rendered="#{wizard.canView}">
+			<f:verbatim><div class="itemAction"></f:verbatim>
+	           <h:commandLink action="#{wizardItem.processActionRunWizard}">
+	              <h:outputText value="#{msgs.run_wizard}"/>
+	           </h:commandLink>
+	           <f:subview id="editLink" rendered="#{wizardItem.canEdit}">
+	              <h:outputText value=" | " />
+	              <h:commandLink action="#{wizardItem.processActionEdit}">
+	                 <h:outputText value="#{msgs.edit}"/>
+	              </h:commandLink>
+	           </f:subview>
+	           <f:subview id="exportLink" rendered="#{wizardItem.canExport}">
+	              <h:outputText value=" | " />
+	              <h:outputLink value="#{wizardItem.currentExportLink}">
+	                  <h:outputText value="#{msgs.export}"/>
+	              </h:outputLink>
+	           </f:subview>
+	           <f:subview id="deleteLink" rendered="#{wizardItem.canDelete}">
+	              <h:outputText value=" | " />
+	              <h:commandLink action="#{wizardItem.processActionDelete}">
+	                 <h:outputText value="#{msgs.delete}" />
+	              </h:commandLink>
+	           </f:subview>
+	           <f:subview id="publishLink" rendered="#{wizardItem.canPublish}">
+	              <h:outputText value=" | " />
+	                 <h:commandLink action="#{wizardItem.processActionPublish}">
+	                 <h:outputText value="#{msgs.publish}" />
+	              </h:commandLink>
+	           </f:subview>
+			<f:verbatim></div></f:verbatim>
+         </f:subview>
       </h:column>
       <h:column>
          <f:facet name="header">
-            <h:outputText value="#{msgs.actions_column_header}" />
+            <h:outputText value="#{msgs.wizard_description}" />
          </f:facet>
-         <f:subview id="viewPerms" rendered="#{wizard.canView}">
-            <h:commandLink action="#{wizardItem.processActionRunWizard}">
-               <h:outputText value="#{msgs.run_wizard}"/>
-            </h:commandLink>
-            <f:subview id="editLink" rendered="#{wizardItem.canEdit}">
-               <h:outputText value=" | " />
-               <h:commandLink action="#{wizardItem.processActionEdit}">
-                  <h:outputText value="#{msgs.edit}"/>
-               </h:commandLink>
-            </f:subview>
-            <f:subview id="exportLink" rendered="#{wizardItem.canExport}">
-               <h:outputText value=" | " />
-               <h:outputLink value="#{wizardItem.currentExportLink}">
-                   <h:outputText value="#{msgs.export}"/>
-               </h:outputLink>
-            </f:subview>
-            <f:subview id="deleteLink" rendered="#{wizardItem.canDelete}">
-               <h:outputText value=" | " />
-               <h:commandLink action="#{wizardItem.processActionDelete}">
-                  <h:outputText value="#{msgs.delete}" />
-               </h:commandLink>
-            </f:subview>
-            <f:subview id="publishLink" rendered="#{wizardItem.canPublish}">
-               <h:outputText value=" | " />
-                  <h:commandLink action="#{wizardItem.processActionPublish}">
-                  <h:outputText value="#{msgs.publish}" />
-               </h:commandLink>
-            </f:subview>
-         </f:subview>
+         <h:outputText value="#{wizardItem.concatDescription}"/>
       </h:column>
       <h:column>
          <f:facet name="header">
@@ -95,6 +98,9 @@
          <h:commandLink action="#{wizardItem.moveUp}" rendered="#{!wizardItem.first}">
             <h:graphicImage value="/img/arrowUp.gif" />
          </h:commandLink>
+	     <f:subview id="publishLink" rendered="#{wizardItem.first}">
+	        <h:outputText value="&nbsp;&nbsp;&nbsp;&nbsp;" escape="false" />
+	     </f:subview>
          <h:commandLink action="#{wizardItem.moveDown}" rendered="#{!wizardItem.last}">
             <h:graphicImage value="/img/arrowDown.gif" />
          </h:commandLink>
