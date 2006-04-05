@@ -27,6 +27,8 @@ import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.guidance.model.GuidanceItem;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
+import org.theospi.portfolio.guidance.model.Guidance;
+import org.theospi.portfolio.guidance.model.GuidanceItem;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -34,6 +36,9 @@ import java.io.IOException;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -245,6 +250,24 @@ public class DecoratedWizard {
       }
       return null;
    }
+   
+   public String processActionEditInstructions()
+   {
+      parent.processActionGuidanceHelper(getBase(), 1);
+      return null;
+   }
+   
+   public String processActionEditRationale()
+   {
+      parent.processActionGuidanceHelper(getBase(), 2);
+      return null;
+   }
+   
+   public String processActionEditExamples()
+   {
+      parent.processActionGuidanceHelper(getBase(), 4);
+      return null;
+   }
 
    public DecoratedCompletedWizard getRunningWizard() {
       return runningWizard;
@@ -261,10 +284,83 @@ public class DecoratedWizard {
    public boolean isGuidanceAvailable() {
       return getBase().getGuidance() != null;
    }
+   
+   protected String limitString(String s, int max)
+   {
+      if(s == null)
+         return "";
+      if(s.length() > max)
+         s = s.substring(0,max) + "...";
+      return s;
+   }
 
-    public boolean isNewWizard() {
-        return newWizard;
-    }
+   public String getGuidanceInstructions() {
+      Guidance guidance = getBase().getGuidance();
+      if(guidance == null)
+           return null;
+      GuidanceItem item = guidance.getInstruction();
+      if(item == null)
+         return null;
+      return limitString(item.getText(), 100);
+   }
+
+   public List getGuidanceInstructionsAttachments() {
+      Guidance guidance = getBase().getGuidance();
+      if(guidance == null)
+         return new ArrayList();
+      GuidanceItem item = guidance.getInstruction();
+      if(item == null)
+         return new ArrayList();
+      return item.getAttachments();
+   }
+
+   public String getGuidanceRationale() {
+      Guidance guidance = getBase().getGuidance();
+      if(guidance == null)
+           return "";
+      GuidanceItem item = guidance.getRationale();
+      if(item == null)
+         return "";
+      return limitString(item.getText(), 100);
+   }
+
+   public List getGuidanceRationaleAttachments() {
+      Guidance guidance = getBase().getGuidance();
+      if(guidance == null)
+           return new ArrayList();
+      GuidanceItem item = guidance.getRationale();
+      if(item == null)
+         return new ArrayList();
+      return item.getAttachments();
+   }
+
+   public String getGuidanceExamples() {
+      Guidance guidance = getBase().getGuidance();
+      if(guidance == null)
+           return "";
+      GuidanceItem item = guidance.getExample();
+      if(item == null)
+         return "";
+      return limitString(item.getText(), 100);
+   }
+
+   public List getGuidanceExamplesAttachments() {
+      Guidance guidance = getBase().getGuidance();
+      if(guidance == null)
+           return new ArrayList();
+      GuidanceItem item = guidance.getExample();
+      if(item == null)
+         return new ArrayList();
+      return item.getAttachments();
+   }
+
+   public List getEvaluators() {
+       return parent.getEvaluators(getBase());
+   }
+
+   public boolean isNewWizard() {
+       return newWizard;
+   }
 
     public void setNewWizard(boolean newWizard) {
         this.newWizard = newWizard;

@@ -179,8 +179,11 @@ public class GuidanceTool extends HelperToolBase {
    public boolean isInstructionsRendered() {
       boolean showInstructions = true; 
       if (getAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG) != null) {
-         showInstructions =
-            "true".equalsIgnoreCase((String)getAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG));
+         if(getAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG) instanceof Boolean)
+            showInstructions = ((Boolean)getAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG)).booleanValue();
+         else
+            showInstructions =
+               "true".equalsIgnoreCase((String)getAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG));
          removeAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG);
       }
       return showInstructions;
@@ -189,8 +192,11 @@ public class GuidanceTool extends HelperToolBase {
    public boolean isExamplesRendered() {
       boolean showExamples = true; 
       if (getAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG) != null) {
-         showExamples =
-            "true".equalsIgnoreCase((String)getAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG));
+         if(getAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG) instanceof Boolean)
+            showExamples = ((Boolean)getAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG)).booleanValue();
+         else
+            showExamples =
+               "true".equalsIgnoreCase((String)getAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG));
          removeAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG);
       }
       return showExamples;
@@ -199,8 +205,11 @@ public class GuidanceTool extends HelperToolBase {
    public boolean isRationaleRendered() {
       boolean showRationale = true; 
       if (getAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG) != null) {
-         showRationale =
-            "true".equalsIgnoreCase((String)getAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG));
+         if(getAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG) instanceof Boolean)
+            showRationale = ((Boolean)getAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG)).booleanValue();
+         else
+            showRationale =
+               "true".equalsIgnoreCase((String)getAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG));
          removeAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG);
       }
       return showRationale;
