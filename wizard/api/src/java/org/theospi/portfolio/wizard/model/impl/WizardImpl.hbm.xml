@@ -10,8 +10,8 @@
       <property name="owner" column="owner_id" not-null="true"
          type="org.sakaiproject.metaobj.shared.mgt.AgentUserType"/>
       <property name="name" type="string" column="name" not-null="false"/>
-      <property name="description" type="string" column="description" not-null="false"/>
-      <property name="keywords" type="string" column="keywords" not-null="false"/>
+      <property name="description" type="string" column="description" length="1024" not-null="false"/>
+      <property name="keywords" type="string" column="keywords" length="1024" not-null="false"/>
       <property name="created" type="java.util.Date" update="false" not-null="true"/>
       <property name="modified" type="java.util.Date" update="true" not-null="true"/>
       <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="true"/>

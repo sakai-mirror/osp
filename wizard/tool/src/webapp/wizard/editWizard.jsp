@@ -30,30 +30,36 @@
 
       <h:outputLabel for="name" id="nameLabel" value="#{msgs.wizard_name}" />
       <h:panelGroup>
-         <h:inputText id="name" value="#{wizard.current.base.name}" required="true">
+         <h:inputText id="name" value="#{wizard.current.base.name}" required="true" size="30">
             <f:validateLength minimum="1" maximum="255" />
          </h:inputText>
          <h:message for="name" styleClass="validationEmbedded" />
       </h:panelGroup>
       <h:outputLabel for="description" id="descriptionLabel" value="#{msgs.wizard_description}" />
       <h:panelGroup>
-         <h:inputTextarea id="description" value="#{wizard.current.base.description}">
-            <f:validateLength minimum="1" maximum="255" />
+         <h:inputTextarea id="description" value="#{wizard.current.base.description}" cols="60" rows="6">
+            <f:validateLength minimum="1" maximum="1024" />
          </h:inputTextarea>
          <h:message for="description" styleClass="validationEmbedded" />
       </h:panelGroup>
       <h:outputLabel for="keywords" id="keywordsLabel" value="#{msgs.wizard_keywords}" />
       <h:panelGroup>
-         <h:inputTextarea id="keywords" value="#{wizard.current.base.keywords}">
-            <f:validateLength minimum="1" maximum="255" />
+         <h:inputTextarea id="keywords" value="#{wizard.current.base.keywords}" cols="60" rows="6">
+            <f:validateLength minimum="1" maximum="1024" />
          </h:inputTextarea>
          <h:message for="keywords" styleClass="validationEmbedded" />
       </h:panelGroup>
-      <h:outputLabel for="type" id="typeLabel" value="#{msgs.wizard_type}" />
+      <h:outputLabel for="styleFile" id="styleLabel" value="#{msgs.wizard_style}" />
       <h:panelGroup>
-         <h:selectOneRadio id="type" value="#{wizard.current.base.type}" disabled="#{wizard.current.base.published}">
-            <f:selectItems value="#{wizard.wizardTypes}"/>
-         </h:selectOneRadio>
+         <h:inputText id="styleFile" value="#{wizard.current.styleName}" 
+               readonly="true" disabled="true" required="false" />
+         <h:commandLink action="#{wizard.current.processActionSelectStyle}" immediate="true">
+            <h:outputText value="#{msgs.select_style}"/>
+         </h:commandLink>
+      </h:panelGroup>
+      <h:panelGroup>
+	   <h:selectBooleanCheckbox id="asTool" value="#{wizard.current.exposeAsTool}" />
+	   <h:outputLabel value="#{msgs.expose_as_tool}" for="asTool" />
       </h:panelGroup>
    </sakai:panel_edit>
 

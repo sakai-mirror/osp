@@ -86,6 +86,27 @@ public class GuidanceItemAttachment extends IdentifiableObject {
       return resource.getProperties().getProperty(displayNameProp);
    }
 
+	/**
+    * This function gets the content length of the resource.
+    *  It also formats it into kilobytes, megabytes and gigabytes
+	 *@returns String
+    */
+   public String getContentLength() {
+      ContentResource resource = (ContentResource)baseReference.getBase().getEntity();
+
+      String displayNameProp = resource.getProperties().getNamePropContentLength();
+      String size = resource.getProperties().getProperty(displayNameProp);
+      
+      int length = Integer.parseInt(size);
+      
+      if(length < 1024*100) return (length/1024) + "." + ((length * 10 / 1024) % 10 ) + " KB";
+      else if(length < 1024*1024) return (length/1024) + " KB";
+      else if(length < 1024*1024*100) return (length/(1024*1024)) + "." + ((length * 10 / (1024*1024)) % 10 ) + " MB";
+      else if(length < 1024*1024*1024) return (length/(1024*1024)) + " MB";
+      else if(length < 1024*1024*1024*100) return (length/(1024*1024*1024)) + "." + ((length * 10 / (1024*1024*1024)) % 10 ) + " GB";
+      else return (length/(1024*1024*1024)) + " GB";
+   }
+
    public boolean equals(Object o) {
       if (this == o) {
          return true;

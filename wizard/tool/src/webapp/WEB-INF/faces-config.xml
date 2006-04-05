@@ -115,6 +115,11 @@
        <redirect/>
      </navigation-case>
      <navigation-case>
+       <from-outcome>editWizardType</from-outcome>
+       <to-view-id>/wizard/editWizardType.jsp</to-view-id>
+       <redirect/>
+     </navigation-case>
+     <navigation-case>
        <from-outcome>runWizard</from-outcome>
        <to-view-id>/wizard/runWizard.jsp</to-view-id>
        <redirect/>
@@ -127,10 +132,34 @@
   </navigation-rule>
 
    <navigation-rule>
+     <from-view-id>/wizard/editWizardType.jsp</from-view-id>
+      <navigation-case>
+        <from-outcome>editWizard</from-outcome>
+        <to-view-id>/wizard/editWizard.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>listWizards</from-outcome>
+        <to-view-id>/wizard/listWizards.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
      <from-view-id>/wizard/editWizard.jsp</from-view-id>
       <navigation-case>
         <from-outcome>editWizardPages</from-outcome>
         <to-view-id>/wizard/editWizardPages.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>editWizardSupport</from-outcome>
+        <to-view-id>/wizard/editWizardSupport.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>editWizardType</from-outcome>
+        <to-view-id>/wizard/editWizardType.jsp</to-view-id>
         <redirect/>
       </navigation-case>
       <navigation-case>
@@ -174,6 +203,11 @@
       <navigation-case>
         <from-outcome>editWizardDesign</from-outcome>
         <to-view-id>/wizard/editWizardDesign.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>editWizardProperties</from-outcome>
+        <to-view-id>/wizard/editWizardProperties.jsp</to-view-id>
         <redirect/>
       </navigation-case>
       <navigation-case>

@@ -1,5 +1,6 @@
 <ospx:wizardSteps currentStep="#{wizard.currentScreen.stepString}">
    <ospx:wizardStep label="#{msgs.wizard_step_begin}" />
+   <ospx:wizardStep label="#{msgs.wizard_step_properties}" />
    <ospx:wizardStep label="#{msgs.wizard_step_select}" />
    <ospx:wizardStep label="#{msgs.wizard_step_support}" />
    <ospx:wizardStep label="#{msgs.wizard_step_design}" />

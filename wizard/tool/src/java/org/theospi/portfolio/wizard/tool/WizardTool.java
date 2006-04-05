@@ -21,12 +21,14 @@
 package org.theospi.portfolio.wizard.tool;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.faces.context.ExternalContext;
@@ -42,6 +44,7 @@ import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
@@ -60,11 +63,13 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
+import org.theospi.portfolio.guidance.mgt.GuidanceHelper;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
+import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
@@ -75,7 +80,9 @@ import org.theospi.portfolio.shared.tool.BuilderTool;
 import org.theospi.portfolio.shared.tool.BuilderScreen;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.style.StyleHelper;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 
 public class WizardTool extends BuilderTool {
 
@@ -109,6 +116,7 @@ public class WizardTool extends BuilderTool {
    
    public final static String LIST_PAGE = "listWizards";
    public final static String EDIT_PAGE = "editWizard";
+   public final static String EDIT_PAGE_TYPE = "editWizardType";
    public final static String EDIT_PAGES_PAGE = "editWizardPages";
    public final static String EDIT_SUPPORT_PAGE = "editWizardSupport";
    public final static String EDIT_DESIGN_PAGE = "editWizardDesign";
@@ -116,11 +124,12 @@ public class WizardTool extends BuilderTool {
    public final static String IMPORT_PAGE = "importWizard";
 
    private BuilderScreen[] screens = {
+      new BuilderScreen(EDIT_PAGE_TYPE),
       new BuilderScreen(EDIT_PAGE),
-      new BuilderScreen(EDIT_PAGES_PAGE),
       new BuilderScreen(EDIT_SUPPORT_PAGE),
-      new BuilderScreen(EDIT_DESIGN_PAGE),
-      new BuilderScreen(EDIT_PROPERTIES_PAGE)
+      new BuilderScreen(EDIT_PAGES_PAGE),
+     // new BuilderScreen(EDIT_DESIGN_PAGE),
+     // new BuilderScreen(EDIT_PROPERTIES_PAGE)
       };
 
    public WizardTool() {
@@ -346,15 +355,18 @@ public class WizardTool extends BuilderTool {
       return getCurrentScreen().getNavigationKey();
    }
 
+   public void processActionGuidanceHelper(Wizard w, int types) {
+      showGuidance(w, "tool", (types & 1) != 0, (types & 2) != 0, (types & 4) != 0);
+   }
    public void processActionGuidanceHelper() {
-      showGuidance("tool");
+      processActionGuidanceHelper(getCurrent().getBase(), 7);
    }
 
    public void processActionViewGuidance() {
-      showGuidance("view");
+      showGuidance(getCurrent().getBase(), "view", true, true, true);
    }
 
-   protected void showGuidance(String view) {
+   protected void showGuidance(Wizard wizard, String view, boolean instructions, boolean rationale, boolean examples) {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       //Tool tool = ToolManager.getCurrentTool();
       ToolSession session = SessionManager.getCurrentToolSession();
@@ -363,7 +375,7 @@ public class WizardTool extends BuilderTool {
       String currentSite = placement.getContext();
       //session.setAttribute(tool.getId() + Tool.HELPER_DONE_URL, "");
       //session.setAttribute(WizardManager.CURRENT_WIZARD_ID, getCurrent().getBase().getId());
-      Wizard wizard = getCurrent().getBase();
+      //Wizard wizard = getCurrent().getBase();
 
       Guidance guidance = wizard.getGuidance();
       if (guidance == null) {
@@ -372,6 +384,10 @@ public class WizardTool extends BuilderTool {
                WizardFunctionConstants.EDIT_WIZARD);
       }
 
+      session.setAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG, new Boolean(instructions));
+      session.setAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG, new Boolean(rationale));
+      session.setAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG, new Boolean(examples));
+      
       session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
 
       try {
@@ -599,6 +615,38 @@ public class WizardTool extends BuilderTool {
 	   }
 	   
 	   return LIST_PAGE;
+   }
+   
+   /**
+    * This gets the list of evluators for the wizard
+    * @param Wizard
+    * @returns List
+    */
+   protected List getEvaluators(Wizard wizard) {
+      ResourceBundle myResources = 
+         ResourceBundle.getBundle("org.theospi.portfolio.wizard.messages");
+
+      List evalList = new ArrayList();
+      Id id = wizard.getId() == null ? wizard.getNewId() : wizard.getId();
+      
+      List evaluators = getAuthzManager().getAuthorizations(null, 
+            WizardFunctionConstants.EVALUATE_WIZARD, id);
+      
+      for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
+         Authorization az = (Authorization) iter.next();
+         Agent agent = az.getAgent();
+         String userId = az.getAgent().getId().getValue();
+         if (agent.isRole()) {
+            evalList.add(MessageFormat.format(myResources.getString("decorated_role_format"), 
+                  new Object[]{agent.getDisplayName()}));
+         }
+         else {
+            evalList.add(MessageFormat.format(myResources.getString("decorated_user_format"),
+                  new Object[]{agent.getDisplayName(), userId}));
+         }
+      }
+      
+      return evalList;
    }
    
    
@@ -835,9 +883,11 @@ public class WizardTool extends BuilderTool {
       if (wizardTypes == null) {
          wizardTypes = new ArrayList();
          wizardTypes.add(createSelect(Wizard.WIZARD_TYPE_SEQUENTIAL,
-               getMessageFromBundle(Wizard.WIZARD_TYPE_SEQUENTIAL)));
+               getMessageFromBundle(Wizard.WIZARD_TYPE_SEQUENTIAL) + 
+               getMessageFromBundle(Wizard.WIZARD_TYPE_SEQUENTIAL+"_additional")));
          wizardTypes.add(createSelect(Wizard.WIZARD_TYPE_HIERARCHICAL,
-               getMessageFromBundle(Wizard.WIZARD_TYPE_HIERARCHICAL)));
+               getMessageFromBundle(Wizard.WIZARD_TYPE_HIERARCHICAL)+
+               getMessageFromBundle(Wizard.WIZARD_TYPE_HIERARCHICAL+"_additional")));
       }
       return wizardTypes;
    }
