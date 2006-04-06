@@ -12,7 +12,7 @@
 %>
 
 <f:view>
-<f:loadBundle basename="org.theospi.portfolio.wizard.messages" var="msgs"/>
+<f:loadBundle basename="org.theospi.portfolio.wizard.bundle.Messages" var="msgs"/>
 <sakai:view>
 <h:form>
 
