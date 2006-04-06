@@ -191,6 +191,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
       if (id == null) {
          return null;
       }
+      
+      //This needs to be here so that the getResource(id) down in the try{} doesn't bark
+      getSecurityService().pushAdvisor(
+            new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
+                  getContentHosting().getReference(id)));
 
       try {
          ContentResource resource = getContentHosting().getResource(id);
