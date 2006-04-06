@@ -47,7 +47,7 @@ import java.util.ArrayList;
  * Time: 4:52:55 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DecoratedWizard {
+public class DecoratedWizard implements DecoratedListInterface {
    private Wizard base;
    private WizardTool parent;
    private DecoratedCategory rootCategory = null;
@@ -364,5 +364,29 @@ public class DecoratedWizard {
 
     public void setNewWizard(boolean newWizard) {
         this.newWizard = newWizard;
+    }
+    
+    public DecoratedCategory getCategory()
+    {
+       return null;
+    }
+
+    public String getIndentString() {
+       return "";
+    }
+
+    public String getTitle() {
+       return getBase().getName();
+    }
+
+    public boolean isMoveTarget() {
+       return false;
+    }
+
+    public boolean getHasChildren() {
+       return false;
+    }
+    public boolean isWizard() {
+       return true;
     }
 }
