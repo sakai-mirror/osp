@@ -10,7 +10,7 @@
    <!-- Example custom JSF component used only in this tool -->
 
    <application>
-     <message-bundle>org.theospi.portfolio.wizard.messages</message-bundle>
+     <message-bundle>org.theospi.portfolio.wizard.bundle.Messages</message-bundle>
      <locale-config>
        <default-locale>en</default-locale>
      </locale-config>
