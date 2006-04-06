@@ -154,7 +154,10 @@ your browser doesn't support iframes
       <xsl:if test="$content != 'true'">
          <xsl:variable name="key" select="key"/>
          <li>
-            <a accesskey="1" class="selected" href="#">
+            <a accesskey="1" class="selected">
+               <xsl:attribute name="href">
+                  <xsl:value-of select="url"/>
+               </xsl:attribute>            
                <xsl:attribute name="accesskey">
                   <xsl:value-of select="@order"/>
                </xsl:attribute>
