@@ -624,7 +624,7 @@ public class WizardTool extends BuilderTool {
     */
    protected List getEvaluators(Wizard wizard) {
       ResourceBundle myResources = 
-         ResourceBundle.getBundle("org.theospi.portfolio.wizard.messages");
+         ResourceBundle.getBundle("org.theospi.portfolio.wizard.bundle.Messages");
 
       List evalList = new ArrayList();
       Id id = wizard.getId() == null ? wizard.getNewId() : wizard.getId();
