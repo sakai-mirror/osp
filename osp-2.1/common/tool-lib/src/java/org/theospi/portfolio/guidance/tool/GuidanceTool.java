@@ -56,6 +56,10 @@ public class GuidanceTool extends HelperToolBase {
    private DecoratedGuidance current = null;
    private String formTypeId = null;
    private String formId = null;
+   
+   private boolean showExamples = true;
+   private boolean showInstructions = true;
+   private boolean showRationale = true;
 
    private GuidanceManager guidanceManager;
    public static final String ATTACHMENT_TYPE = "org.theospi.portfolio.guidance.attachmentType";
@@ -177,7 +181,7 @@ public class GuidanceTool extends HelperToolBase {
    }
    
    public boolean isInstructionsRendered() {
-      boolean showInstructions = true; 
+      //boolean showInstructions = true; 
       if (getAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG) != null) {
          if(getAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG) instanceof Boolean)
             showInstructions = ((Boolean)getAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG)).booleanValue();
@@ -190,7 +194,7 @@ public class GuidanceTool extends HelperToolBase {
    }
    
    public boolean isExamplesRendered() {
-      boolean showExamples = true; 
+      //boolean showExamples = true; 
       if (getAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG) != null) {
          if(getAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG) instanceof Boolean)
             showExamples = ((Boolean)getAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG)).booleanValue();
@@ -203,7 +207,7 @@ public class GuidanceTool extends HelperToolBase {
    }
    
    public boolean isRationaleRendered() {
-      boolean showRationale = true; 
+      //boolean showRationale = true; 
       if (getAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG) != null) {
          if(getAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG) instanceof Boolean)
             showRationale = ((Boolean)getAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG)).booleanValue();
