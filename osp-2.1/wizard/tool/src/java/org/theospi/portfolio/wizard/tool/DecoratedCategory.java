@@ -126,6 +126,8 @@ public class DecoratedCategory extends DecoratedCategoryChild {
 
    protected List addCategoriesPages(List categoryPages) {
       if (getParent().getCurrent().getBase().getType().equals(Wizard.WIZARD_TYPE_HIERARCHICAL)) {
+         if(parentCategory == null)
+            categoryPages.add(getParent().getCurrent());
          for (Iterator i=getBase().getChildCategories().iterator();i.hasNext();) {
             WizardCategory category = (WizardCategory) i.next();
             DecoratedCategory decoratedCategory = new DecoratedCategory(this, category, getParent(), getIndent()+1);
@@ -284,5 +286,12 @@ public class DecoratedCategory extends DecoratedCategoryChild {
    public boolean getHasChildren() {
       return getBase().getChildPages().size() > 0 ||
             getBase().getChildCategories().size() > 0;
+   }
+   public DecoratedCategory getCategory()
+   {
+      return null;
+   }
+   public boolean isWizard() {
+      return false;
    }
 }

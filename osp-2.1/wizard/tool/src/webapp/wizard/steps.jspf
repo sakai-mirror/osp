@@ -3,6 +3,6 @@
    <ospx:wizardStep label="#{msgs.wizard_step_properties}" />
    <ospx:wizardStep label="#{msgs.wizard_step_select}" />
    <ospx:wizardStep label="#{msgs.wizard_step_support}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_design}" />
-   <ospx:wizardStep label="#{msgs.wizard_step_properties}" />
+  <%-- <ospx:wizardStep label="#{msgs.wizard_step_design}" />
+   <ospx:wizardStep label="#{msgs.wizard_step_properties}" /> --%>
 </ospx:wizardSteps>

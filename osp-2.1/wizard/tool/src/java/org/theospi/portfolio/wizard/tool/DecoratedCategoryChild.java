@@ -27,7 +27,7 @@ package org.theospi.portfolio.wizard.tool;
  * Time: 4:18:11 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class DecoratedCategoryChild {
+public abstract class DecoratedCategoryChild implements DecoratedListInterface {
 
    private static final String INDENT_CHAR = "&nbsp;&nbsp;&nbsp;";
 

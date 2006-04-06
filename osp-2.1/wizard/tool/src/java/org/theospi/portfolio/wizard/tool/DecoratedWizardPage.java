@@ -97,6 +97,9 @@ public class DecoratedWizardPage extends DecoratedCategoryChild {
    public boolean isLast() {
       return getBase().getSequence() >= getBase().getCategory().getChildPages().size() - 1;
    }
+   public boolean isWizard() {
+      return false;
+   }
    public DecoratedCategory getCategory() {
       return category;
    }
@@ -134,5 +137,9 @@ public class DecoratedWizardPage extends DecoratedCategoryChild {
       }
 
       return null;
+   }
+
+   public boolean getHasChildren() {
+      return false;
    }
 }
