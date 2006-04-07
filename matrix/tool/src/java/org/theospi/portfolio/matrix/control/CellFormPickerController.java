@@ -29,10 +29,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.session.SessionManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
@@ -44,7 +40,6 @@ import org.sakaiproject.service.legacy.filepicker.ResourceEditingHelper;
 import org.sakaiproject.service.legacy.security.SecurityService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.WizardPageForm;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
@@ -154,17 +149,8 @@ public class CellFormPickerController extends CellController implements FormCont
             WizardPageForm wpf = (WizardPageForm) iter.next();
             if (attachFormAction.equals(wpf.getFormType())) {
                id = getContentHosting().resolveUuid(wpf.getArtifactId().getValue());
-               Reference ref;
-               try {
-                  ref = getEntityManager().newReference(getContentHosting().getResource(id).getReference());
-                  files.add(ref);        
-               } catch (PermissionException e) {
-                  logger.error("", e);
-               } catch (IdUnusedException e) {
-                  logger.error("", e);
-               } catch (TypeException e) {
-                  logger.error("", e);               
-               }
+               Reference ref = getEntityManager().newReference(getContentHosting().getReference(id));
+               files.add(ref);        
             }
          }
          BaseFormResourceFilter crf = new BaseFormResourceFilter();
