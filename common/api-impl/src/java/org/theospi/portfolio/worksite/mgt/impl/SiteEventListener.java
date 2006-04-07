@@ -126,14 +126,16 @@ public class SiteEventListener extends HibernateDaoSupport implements Observer {
       for (Iterator i=getSiteHelperTools().iterator(); i.hasNext();) {
          String toolId = (String)i.next();
          Tool toolPlacement = ToolManager.getTool(toolId);
-         String listenerId = 
-            toolPlacement.getRegisteredConfig().getProperty(LISTENER_PROPERTY_TAG);
-         if (listenerId != null) {
-            storeHelperTool(site.getId(), toolId, listenerId);
-            ToolEventListener listener = (ToolEventListener) componentManager.get(listenerId);
-
-            if (listener != null) {
-               listener.helperSiteChanged(site);
+         if (toolPlacement != null) {
+            String listenerId = 
+               toolPlacement.getRegisteredConfig().getProperty(LISTENER_PROPERTY_TAG);
+            if (listenerId != null) {
+               storeHelperTool(site.getId(), toolId, listenerId);
+               ToolEventListener listener = (ToolEventListener) componentManager.get(listenerId);
+   
+               if (listener != null) {
+                  listener.helperSiteChanged(site);
+               }
             }
          }
       }  
