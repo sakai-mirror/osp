@@ -47,7 +47,7 @@
    
    <%@include file="showWizardOwnerMessage.jspf"%>
    
-   <sakai:flat_list value="#{wizard.wizards}" var="wizardItem">
+   <h:dataTable  value="#{wizard.wizards}" var="wizardItem" styleClass="lines listHier" headerClass="exclude">
       <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.wizards}" />
@@ -105,7 +105,7 @@
             <h:graphicImage value="/img/arrowDown.gif" />
          </h:commandLink>
       </h:column>
-   </sakai:flat_list>
+   </h:dataTable>
    
 </h:form>
 </sakai:view>
