@@ -196,6 +196,11 @@
    <navigation-rule>
      <from-view-id>/wizard/editWizardSupport.jsp</from-view-id>
       <navigation-case>
+        <from-outcome>editWizard</from-outcome>
+        <to-view-id>/wizard/editWizard.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
         <from-outcome>editWizardPages</from-outcome>
         <to-view-id>/wizard/editWizardPages.jsp</to-view-id>
         <redirect/>

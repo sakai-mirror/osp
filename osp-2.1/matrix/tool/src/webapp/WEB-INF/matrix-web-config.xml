@@ -208,6 +208,9 @@
             <prop key="editScaffoldingCellConfirm">helperDone</prop>
             <prop key="selectEvaluators">selectCellEvaluators</prop>
             <prop key="createGuidance">createGuidance</prop>
+            <prop key="editInstructions">editInstructions</prop>
+            <prop key="editRationale">editRationale</prop>
+            <prop key="editExamples">editExamples</prop>
             -->
          </props>
       </property>
@@ -253,6 +256,9 @@
             <prop key="editScaffoldingCellConfirm">helperDone</prop>
             <prop key="selectEvaluators">selectCellEvaluators</prop>
             <prop key="createGuidance">createGuidance</prop>
+            <prop key="editInstructions">editInstructions</prop>
+            <prop key="editRationale">editRationale</prop>
+            <prop key="editExamples">editExamples</prop>
             -->
          </props>
       </property>
@@ -692,6 +698,9 @@
             <prop key="editScaffoldingCellConfirm">helperDone</prop>
             <prop key="selectEvaluators">selectCellEvaluators</prop>
             <prop key="createGuidance">createGuidance</prop>
+            <prop key="editInstructions">editInstructions</prop>
+            <prop key="editRationale">editRationale</prop>
+            <prop key="editExamples">editExamples</prop>
          </props>
       </property>
       <property name="validator"><ref bean="matrixValidator"/></property>
@@ -733,6 +742,9 @@
             <prop key="selectEvaluators">selectCellEvaluators</prop>
             <prop key="createGuidance">createGuidance</prop>
             <prop key="deleteGuidance">editScaffoldingCellRedirect</prop>
+            <prop key="editInstructions">editInstructions</prop>
+            <prop key="editRationale">editRationale</prop>
+            <prop key="editExamples">editExamples</prop>
          </props>
       </property>
       <property name="validator"><ref bean="matrixValidator"/></property>
