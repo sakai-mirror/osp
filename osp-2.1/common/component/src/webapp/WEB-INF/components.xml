@@ -1411,7 +1411,7 @@
          <value>sakai.iframe.site</value>
       </property>
       <property name="title">
-         <value>Worksite Home</value>
+         <value>Worksite Information</value>
       </property>
       <property name="layoutHints">
          <value>0,0</value>
