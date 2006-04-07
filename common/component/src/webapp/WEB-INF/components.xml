@@ -1275,7 +1275,7 @@
          <value>sakai.resources</value>
       </property>
       <property name="title">
-         <value>Worksite Home</value>
+         <value>Resources</value>
       </property>
       <property name="layoutHints">
          <value>0,0</value>
@@ -1292,7 +1292,7 @@
          <value>sakai.mailbox</value>
       </property>
       <property name="title">
-         <value>Worksite Home</value>
+         <value>Email Archive</value>
       </property>
       <property name="layoutHints">
          <value>0,0</value>
@@ -1309,7 +1309,7 @@
          <value>osp.presentation</value>
       </property>
       <property name="title">
-         <value>Worksite Home</value>
+         <value>Portfolios</value>
       </property>
       <property name="layoutHints">
          <value>0,0</value>
@@ -1326,7 +1326,7 @@
          <value>osp.presTemplate</value>
       </property>
       <property name="title">
-         <value>Worksite Home</value>
+         <value>Portfolio Templates</value>
       </property>
       <property name="layoutHints">
          <value>0,0</value>
@@ -1343,7 +1343,7 @@
          <value>osp.presLayout</value>
       </property>
       <property name="title">
-         <value>Worksite Home</value>
+         <value>Portfolio Layouts</value>
       </property>
       <property name="layoutHints">
          <value>0,0</value>
@@ -1360,7 +1360,7 @@
          <value>osp.style</value>
       </property>
       <property name="title">
-         <value>Worksite Home</value>
+         <value>Styles</value>
       </property>
       <property name="layoutHints">
          <value>0,0</value>
@@ -1377,7 +1377,7 @@
          <value>sakai.metaobj</value>
       </property>
       <property name="title">
-         <value>Worksite Home</value>
+         <value>Forms</value>
       </property>
       <property name="layoutHints">
          <value>0,0</value>
@@ -1394,7 +1394,7 @@
          <value>osp.reports</value>
       </property>
       <property name="title">
-         <value>Worksite Home</value>
+         <value>Reports</value>
       </property>
       <property name="layoutHints">
          <value>0,0</value>
