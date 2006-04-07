@@ -40,6 +40,7 @@ import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
+import org.theospi.portfolio.guidance.mgt.GuidanceHelper;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
@@ -194,7 +195,23 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       prepareModelWithScaffoldingId(model, scaffoldingCell);
       model.put("scaffoldingCell_id", scaffoldingCell.getId());
       
-      if (forwardView.equals("createGuidance")) {
+      if (forwardView.equals("createGuidance") ||
+            forwardView.equals("editInstructions") ||
+            forwardView.equals("editRationale") ||
+            forwardView.equals("editExamples")) {
+         Boolean bTrue = new Boolean(true);
+         Boolean bFalse = new Boolean(false);
+         session.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, bFalse);
+         session.put(GuidanceHelper.SHOW_RATIONALE_FLAG, bFalse);
+         session.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, bFalse);
+      
+         if(forwardView.equals("editInstructions") || forwardView.equals("createGuidance"))
+            session.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, bTrue);
+         if(forwardView.equals("editRationale") || forwardView.equals("createGuidance"))
+            session.put(GuidanceHelper.SHOW_RATIONALE_FLAG, bTrue);
+         if(forwardView.equals("editExamples") || forwardView.equals("createGuidance"))
+            session.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, bTrue);
+         
          Placement placement = ToolManager.getCurrentPlacement();  
          String currentSite = placement.getContext();  
          session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");

@@ -61,6 +61,13 @@ public class GuidanceItem extends IdentifiableObject {
       return text;
    }
 
+   public String getLimitedText() {
+      String t = text;
+      if(t != null && t.length() > 100)
+         t = t.substring(0, 100) + "...";
+      return t;
+   }
+
    public void setText(String text) {
       this.text = text;
    }

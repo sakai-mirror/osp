@@ -171,6 +171,9 @@
                		<h:outputText value="#{evaluator}" />
                </h:column>
             </sakai:flat_list>
+            <f:subview id="moveFooter" rendered="#{empty wizard.current.evaluators}">
+               		<h:outputText value="#{msgs.no_evaluators}" />
+            </f:subview>
          <sakai:button_bar>
  	        <sakai:button_bar_item id="selectEvaluators" value="#{msgs.select_reviewers}"
      	 	   action="#{wizard.processActionAudienceHelper}" />
