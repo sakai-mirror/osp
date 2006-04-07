@@ -52,7 +52,7 @@
    </sakai:tool_bar>
    </f:subview>
 
-   <sakai:flat_list value="#{wizard.current.rootCategory.categoryPageList}" var="item">
+   <h:dataTable value="#{wizard.current.rootCategory.categoryPageList}" var="item" styleClass="lines listHier" headerClass="exclude">
       <h:column rendered="#{wizard.moving}">
          <f:facet name="header">
             <h:outputText value="" />
@@ -222,7 +222,7 @@
             <h:graphicImage value="/img/arrowDown.gif" />
          </h:commandLink>
       </h:column>
-   </sakai:flat_list>
+   </h:dataTable>
    <f:subview id="buttonBar" rendered="#{!wizard.moving}">
       <%@include file="builderButtons.jspf"%>
    </f:subview>
