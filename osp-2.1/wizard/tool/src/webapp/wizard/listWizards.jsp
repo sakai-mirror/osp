@@ -55,13 +55,13 @@
          <h:outputText value="#{wizardItem.base.name}"/>
          <f:subview id="viewPermss" rendered="#{wizard.canView}">
 			<f:verbatim><div class="itemAction"></f:verbatim>
-	           <f:subview id="runLink" rendered="#{wizardItem.base.published}">
+	           <f:subview id="runLink" rendered="#{wizardItem.base.published || wizardItem.owner}">
 	              <h:commandLink action="#{wizardItem.processActionRunWizard}">
 	                  <h:outputText value="#{msgs.run_wizard}"/>
 	              </h:commandLink>
 	           </f:subview>
 	           <f:subview id="editLink" rendered="#{wizardItem.canEdit}">
-	              <h:outputText value=" | "  rendered="#{wizardItem.base.published}" />
+	              <h:outputText value=" | "  rendered="#{wizardItem.base.published || wizardItem.owner}" />
 	              <h:commandLink action="#{wizardItem.processActionEdit}">
 	                 <h:outputText value="#{msgs.edit}"/>
 	              </h:commandLink>

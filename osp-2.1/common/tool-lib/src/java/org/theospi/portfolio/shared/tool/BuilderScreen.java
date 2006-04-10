@@ -96,6 +96,12 @@ public class BuilderScreen {
       return next.getNavigationKey();
    }
 
+   public String processActionNext() {
+      BuilderScreen next = getNext();
+      getTool().setCurrentScreen(next);
+      return next.getNavigationKey();
+   }
+
    public String processActionSaveBack() {
       BuilderScreen prev = processActionSave(false);
       getTool().setCurrentScreen(prev);

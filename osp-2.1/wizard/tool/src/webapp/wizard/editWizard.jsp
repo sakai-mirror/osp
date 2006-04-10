@@ -27,8 +27,10 @@
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />
    <sakai:panel_edit>
-
-      <h:outputLabel for="name" id="nameLabel" value="#{msgs.wizard_name}" />
+      <h:panelGroup>
+         <h:outputText value="*" style="color: red"/>
+         <h:outputLabel for="name" id="nameLabel" value="#{msgs.wizard_name}" />
+      </h:panelGroup>
       <h:panelGroup>
          <h:inputText id="name" value="#{wizard.current.base.name}" required="true" size="30">
             <f:validateLength minimum="1" maximum="255" />

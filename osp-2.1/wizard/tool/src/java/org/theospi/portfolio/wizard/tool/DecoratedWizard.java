@@ -231,6 +231,13 @@ public class DecoratedWizard implements DecoratedListInterface {
    public void setPrev(DecoratedWizard prev) {
       this.prev = prev;
    }
+   
+   public boolean isOwner() {
+      String userId = SessionManager.getCurrentSessionUserId();
+      if(userId != null)
+         return userId.equals(getBase().getOwner().getId().getValue());
+      return false;
+   }
 
    public String processActionRunWizard() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
