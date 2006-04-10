@@ -22,6 +22,7 @@
 package org.theospi.jsf.renderer;
 
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.Iterator;
 
 import javax.faces.component.UIComponent;
@@ -39,14 +40,15 @@ import org.theospi.jsf.util.TagUtil;
 public class WizardStepsRenderer extends Renderer
 {
    private static final String RESOURCE_PATH;
-   private static final String CURSOR;
    private static final String CSS_LOC;
+   private static final String STEP_MSG;
 
    static {
      ConfigurationResource cr = new ConfigurationResource();
      RESOURCE_PATH = "/" + cr.get("resources");
-     CURSOR = cr.get("picker_style");
      CSS_LOC = RESOURCE_PATH + "/" + cr.get("cssFile");
+     STEP_MSG = cr.get("wizard_step_message");
+     
    }
    
 	public boolean supportsComponentType(UIComponent component)
@@ -65,7 +67,8 @@ public class WizardStepsRenderer extends Renderer
 	{
 		ResponseWriter writer = context.getResponseWriter();
       TagUtil.writeExternalCSSDependencies(context, writer, "osp.jsf.css", CSS_LOC);
-		writer.write("<table><tr>");
+            
+		writer.write("<div class=\"xheader\">");
 	}
 
 	/**
@@ -77,7 +80,7 @@ public class WizardStepsRenderer extends Renderer
 	public void encodeEnd(FacesContext context, UIComponent component) throws IOException
 	{
 		ResponseWriter writer = context.getResponseWriter();
-		writer.write("</tr></table>");
+		writer.write("</div>");
 	}
 
 	/**
@@ -88,7 +91,33 @@ public class WizardStepsRenderer extends Renderer
 	 */
    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
       Iterator iter = component.getChildren().iterator();
-      int i=1;
+      String currentStep = (String) RendererUtil.getAttribute(context, component, "currentStep");
+      int totalSteps = countSteps(component);
+      int i=0;
+      while (iter.hasNext())
+      {
+        UIComponent step = (UIComponent) iter.next();
+        if (!(step instanceof WizardStepComponent) || !step.isRendered() || !currentStep.equals(String.valueOf(i)))
+        {
+           i++;
+          continue;
+        }
+
+        String label = (String) RendererUtil.getAttribute(context, step, "label");
+        ResponseWriter writer = context.getResponseWriter();
+
+        String stepText = MessageFormat.format(STEP_MSG, 
+              new Object[]{String.valueOf(Integer.parseInt(currentStep)+1), 
+                 String.valueOf(totalSteps), label});
+        
+        writer.write(stepText);
+        break;
+      }      
+   }
+   
+   protected int countSteps(UIComponent component) {
+      Iterator iter = component.getChildren().iterator();
+      int i=0;
       while (iter.hasNext())
       {
         UIComponent step = (UIComponent) iter.next();
@@ -96,11 +125,10 @@ public class WizardStepsRenderer extends Renderer
         {
           continue;
         }
-
-        RendererUtil.setAttribute(context, step, "stepNumber", String.valueOf(i));
-        RendererUtil.encodeRecursive(context, step);
+        
         i++;
-      }      
+      } 
+      return i;
    }
 
 	/**
