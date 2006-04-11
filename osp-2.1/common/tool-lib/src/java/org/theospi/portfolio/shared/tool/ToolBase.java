@@ -23,9 +23,12 @@ package org.theospi.portfolio.shared.tool;
 import javax.faces.model.SelectItem;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import java.util.ResourceBundle;
+//import java.util.ResourceBundle;
 import java.util.Locale;
 import java.text.MessageFormat;
+
+import org.sakaiproject.util.java.ResourceLoader;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,7 +38,8 @@ import java.text.MessageFormat;
  * To change this template use File | Settings | File Templates.
  */
 public class ToolBase {
-   private ResourceBundle toolBundle;
+   //private ResourceBundle toolBundle;
+   private ResourceLoader toolBundle;
 
    public Object createSelect(Object id, String description) {
       SelectItem item = new SelectItem(id, description);
@@ -52,15 +56,16 @@ public class ToolBase {
 
    public String getMessageFromBundle(String key) {
       if (toolBundle == null) {
-         Locale requestLocale = FacesContext.getCurrentInstance().getExternalContext().getRequestLocale();
          String bundle = FacesContext.getCurrentInstance().getApplication().getMessageBundle();
+         toolBundle = new ResourceLoader(bundle);
+      /*   Locale requestLocale = FacesContext.getCurrentInstance().getExternalContext().getRequestLocale();
          if (requestLocale != null) {
             toolBundle = ResourceBundle.getBundle(
                   bundle, requestLocale);
          }
          else {
             toolBundle = ResourceBundle.getBundle(bundle);
-         }
+         }*/
       }
       return toolBundle.getString(key);
    }

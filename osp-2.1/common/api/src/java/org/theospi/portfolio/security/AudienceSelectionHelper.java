@@ -56,6 +56,7 @@ public interface AudienceSelectionHelper {
    public static final String AUDIENCE_SELECTED_TITLE =
          "org.theospi.portfolio.security.audienceSelectedTitle";
 
+   /** Tells the audience helper if the user can find users by email  */
    public static final String AUDIENCE_GUEST_EMAIL =
          "org.theospi.portfolio.security.audienceGuestEmail";
 

@@ -4,8 +4,6 @@
 <%@ taglib uri="http://www.theospi.org" prefix="osp" %>
 <% response.setContentType("text/html; charset=UTF-8"); %>
 <f:view>
-    <fmt:setLocale value="${locale}" />
-    <f:loadBundle basename="org.theospi.portfolio.reports.bundle.Messages" var="msgs" />
     <sakai:view title="#{msgs.title_main}">
             <h:form>
                 <sakai:tool_bar>
@@ -22,7 +20,7 @@
                     value="#{ReportsTool.reports}" rendered="#{ReportsTool.userCan.create}">
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Title" />
+                            <h:outputText value="#{msgs.title}" />
                         </f:facet>
 
                         <h:commandLink
@@ -41,7 +39,7 @@
                                     ReportsTool.userCan.delete}">
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Title" />
+                            <h:outputText value="#{msgs.title}" />
                         </f:facet>
 
                             <h:outputText value="#{result.title}" />
@@ -85,7 +83,7 @@
                     </h:column>
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="Creation Date" />
+                            <h:outputText value="#{msgs.creation_date}" />
                         </f:facet>
                         <h:outputText value="#{result.creationDate}" />
                     </h:column>
