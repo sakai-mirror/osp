@@ -22,8 +22,7 @@ package org.theospi.portfolio.presentation.model;
 
 import org.sakaiproject.metaobj.shared.model.*;
 import org.theospi.portfolio.shared.model.DateBean;
-import org.theospi.utils.Config;
-import org.sakaiproject.service.framework.component.cover.ComponentManager;
+import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
 
@@ -50,6 +49,9 @@ public class Presentation extends IdentifiableObject {
    private List pages;
    private String siteId;
    private boolean newObject = false;
+   private boolean advancedNavigation = false;
+   private Style style;
+   private String styleName;
 
    public final static String FREEFORM_TYPE = "osp.presentation.type.freeForm";
    public final static String TEMPLATE_TYPE = "osp.presentation.type.template";
@@ -243,4 +245,29 @@ public class Presentation extends IdentifiableObject {
    public void setNewObject(boolean newObject) {
       this.newObject = newObject;
    }
+
+    public boolean isAdvancedNavigation() {
+        return advancedNavigation;
+    }
+
+    public void setAdvancedNavigation(boolean advancedNavigation) {
+        this.advancedNavigation = advancedNavigation;
+    }
+
+    public Style getStyle() {
+        return style;
+    }
+
+    public void setStyle(Style style) {
+        this.style = style;
+    }
+
+    public String getStyleName() {
+        if (getStyle() != null){
+            return getStyle().getName();
+        }
+        return null;
+    }
+
+
 }

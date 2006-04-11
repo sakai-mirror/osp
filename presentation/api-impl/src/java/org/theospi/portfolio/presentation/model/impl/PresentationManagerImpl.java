@@ -1660,8 +1660,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                readableFiles.add(getContentHosting().getReference(previewImageId));
             }
          }
-         if (page.getStyle() != null && page.getStyle().getStyleFile() != null) {
-            String styleFileId = getContentHosting().resolveUuid(page.getStyle().getStyleFile().getValue());
+         Style pageStyle = page.getStyle() != null ? page.getStyle() : page.getPresentation().getStyle();
+         if (pageStyle != null && pageStyle.getStyleFile() != null) {
+            String styleFileId = getContentHosting().resolveUuid(pageStyle.getStyleFile().getValue());
             readableFiles.add(getContentHosting().getReference(styleFileId));
          }
          
@@ -2147,8 +2148,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       layoutElement.addContent(home.getArtifactAsXml(art));
       
       
-      if (page.getStyle() != null && page.getStyle().getStyleFile() != null) {
-         Id cssFileId = page.getStyle().getStyleFile();
+         Style pageStyle = page.getStyle() != null ? page.getStyle() : page.getPresentation().getStyle();
+         if (pageStyle != null && pageStyle.getStyleFile() != null) {
+         Id cssFileId = pageStyle.getStyleFile();
          Artifact cssArt = getPresentationItem("fileArtifact", cssFileId, page.getPresentation());
          PresentableObjectHome cssHome = (PresentableObjectHome) cssArt.getHome();
          pageStyleElement.addContent(cssHome.getArtifactAsXml(cssArt));
@@ -2266,7 +2268,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       Element previousPage = new Element("previousPage");
       Element nextPage = new Element("nextPage");
 
-      if (!page.isAdvancedNavigation()) {
+      boolean isAdvancedNavigation = page.getPresentation().isAdvancedNavigation();
+
+       if (!isAdvancedNavigation) {
          List pages = getPresentationPagesByPresentation(page.getPresentation().getId());
          PresentationPage lastNavPage = null;
          PresentationPage nextNavPage = null;
@@ -2277,10 +2281,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             if (iterPage.getSequence() == currentPage) {
                foundCurrent = true;
             }
-            else if (!iterPage.isAdvancedNavigation() && !foundCurrent) {
+            else if (!isAdvancedNavigation && !foundCurrent) {
                lastNavPage = iterPage;
             }
-            else if (!iterPage.isAdvancedNavigation()) {
+            else if (!isAdvancedNavigation) {
                nextNavPage = iterPage;
                break;
             }

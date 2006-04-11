@@ -25,6 +25,7 @@ import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.*;
+import org.theospi.portfolio.style.StyleHelper;
 import org.theospi.jsf.intf.XmlTagFactory;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -62,6 +63,8 @@ public class FreeFormTool extends HelperToolBase {
    private List listableItems = null;
    private List layouts = null;
    private String nextPageId = null;
+   private int stepString = 1;
+   private int pageCount;
 
    public String processActionBack() {
       if (!validPages()) {
@@ -135,7 +138,7 @@ public class FreeFormTool extends HelperToolBase {
    }
 
    public DecoratedPage getCurrentPage() {
-      return currentPage;
+       return currentPage;
    }
 
    public void setCurrentPage(DecoratedPage currentPage) {
@@ -301,7 +304,6 @@ public class FreeFormTool extends HelperToolBase {
       page.setId(getIdManager().createId());
       page.setPresentation(getPresentation());
       page.setRegions(new HashSet());
-      page.setAdvancedNavigation(false); // this is the default
       presentation.getPages().add(page);
       reorderPages();
       DecoratedPage decoratedPage = new DecoratedPage(page, this);
@@ -351,5 +353,32 @@ public class FreeFormTool extends HelperToolBase {
       }
       return "arrange";
    }
+ public String processActionSelectStyle() {
+
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.removeAttribute(StyleHelper.CURRENT_STYLE);
+      session.removeAttribute(StyleHelper.CURRENT_STYLE_ID);
+
+      session.setAttribute(StyleHelper.STYLE_SELECTABLE, "true");
+      if (presentation.getStyle() != null)
+         session.setAttribute(StyleHelper.CURRENT_STYLE_ID, presentation.getStyle().getId().getValue());
+
+      try {
+         context.redirect("osp.style.helper/listStyle");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+      return null;
+   }
+
+    public int getStepString() {
+        return stepString;
+    }
+
+    public int getPageCount () {
+        return getPageList().size();
+    }
 
 }

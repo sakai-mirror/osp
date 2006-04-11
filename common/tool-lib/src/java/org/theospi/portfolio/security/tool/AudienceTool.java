@@ -145,7 +145,12 @@ public class AudienceTool extends HelperToolBase {
    public String getInstructions() {
       return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS);
    }
-
+   public String getPublicInstructions() {
+       return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_PUBLIC_INSTRUCTIONS);
+   }
+   public String getPublicURL() {
+       return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_PUBLIC_URL);
+   }
    public String getFilterTitle() {
       return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS);
    }
@@ -173,7 +178,7 @@ public class AudienceTool extends HelperToolBase {
    public boolean isPublicCapable() {
       return getAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE) != null;
    }
-   
+
    public boolean isEmailCapable() {
       return getAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL) != null;
    }

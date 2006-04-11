@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.service.framework.config.ServerConfigurationService;
 
 import java.util.*;
 
@@ -34,6 +35,7 @@ public class ListPresentationController extends AbstractPresentationController {
 
    protected final Log logger = LogFactory.getLog(getClass());
    private ListScrollIndexer listScrollIndexer;
+   private ServerConfigurationService serverConfigurationService;
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Hashtable model = new Hashtable();
@@ -47,6 +49,8 @@ public class ListPresentationController extends AbstractPresentationController {
       model.put("presentations",
          getListScrollIndexer().indexList(request, model, presentations));
 
+      String baseUrl = getServerConfigurationService().getServerUrl();
+      model.put("baseUrl", baseUrl);
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", getWorksiteManager().getTool(currentToolId));
       model.put("isMaintainer", isMaintainer());
@@ -60,6 +64,14 @@ public class ListPresentationController extends AbstractPresentationController {
 
    public void setListScrollIndexer(ListScrollIndexer listScrollIndexer) {
       this.listScrollIndexer = listScrollIndexer;
+   }
+    public ServerConfigurationService getServerConfigurationService() {
+      return serverConfigurationService;
+   }
+
+   public void setServerConfigurationService(
+         ServerConfigurationService serverConfigurationService) {
+      this.serverConfigurationService = serverConfigurationService;
    }
 
 }

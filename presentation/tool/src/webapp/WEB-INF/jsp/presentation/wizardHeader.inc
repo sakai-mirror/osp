@@ -7,7 +7,35 @@
          <span name="next" onclick="javascript:document.forms[0].elements['<c:out value="${targetNext}"/>'].click()" style="cursor:pointer" title="Next">&gt;&gt;</span>
       </c:if>
 </div>-->
+<c:if test="${not empty step}">
+<p class="step">
 
+<c:if test="${step eq 1}" >
+<fmt:message key="paging_steps">
+          <fmt:param><fmt:message key="step_1"/></fmt:param>
+          <fmt:param><fmt:message key="step_3"/></fmt:param>
+</fmt:message>
+        : <fmt:message key="step_begin"/>
+</c:if>
+<c:if test="${step eq 2}" >
+<fmt:message key="paging_steps">
+          <fmt:param><fmt:message key="step_2"/></fmt:param>
+          <fmt:param><fmt:message key="step_3"/></fmt:param>
+</fmt:message>
+        : <fmt:message key="step_design"/>
+</c:if>
+<c:if test="${step eq 3}" >
+<fmt:message key="paging_steps">
+          <fmt:param><fmt:message key="step_3"/></fmt:param>
+          <fmt:param><fmt:message key="step_3"/></fmt:param>
+
+ </fmt:message>
+        : <fmt:message key="step_publish"/>
+</c:if>
+
+</p>
+</c:if>
+<c:if test="${empty step}">
 <p class="step">
         <fmt:message key="paging_steps">
           <fmt:param value="${currentPage}"/>
@@ -15,3 +43,4 @@
         </fmt:message>
 
 </p>
+</c:if>

@@ -248,6 +248,7 @@
       </property>
       <property name="pages">
          <list>
+            <value>addPresentation</value>
             <value>addPresentation1</value>
             <value>addPresentationProperty</value>
             <value>addPresentation2</value>
@@ -272,6 +273,9 @@
             <property name="listScrollIndexer">
                <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
             </property>
+             <property name="serverConfigurationService">
+                <ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/>
+          </property>
             <property name="worksiteManager">
                <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
             </property>
