@@ -101,6 +101,12 @@
     </dependency>
     
      <dependency>
+       <groupId>osp</groupId>
+       <artifactId>osp-common-common</artifactId>
+       <version>${pom.currentVersion}</version>
+     </dependency>
+
+     <dependency>
        <groupId>sakaiproject</groupId>
        <artifactId>sakai-util-i18n</artifactId>
        <version>${sakai.version}</version>

@@ -46,19 +46,23 @@ package org.theospi.portfolio.admin.service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.theospi.portfolio.admin.intf.SakaiIntegrationService;
+import org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin;
+import org.theospi.portfolio.admin.startup.ServerListener;
+import org.theospi.portfolio.admin.startup.ServerListeningService;
+import org.theospi.portfolio.admin.model.IntegrationOption;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.app.scheduler.SchedulerManager;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
 import org.sakaiproject.service.legacy.content.ContentHostingService;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
-import org.quartz.SchedulerException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Iterator;
 
-public class SakaiIntegrationServiceImpl implements SakaiIntegrationService {
+public class SakaiIntegrationServiceImpl implements SakaiIntegrationService, ServerListener {
    protected final transient Log logger = LogFactory.getLog(getClass());
 
    private List integrationPlugins;
@@ -68,6 +72,36 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService {
    private ContentHostingService contentHostingService;
    private List initUsers = new ArrayList();
 
+   public void triggerEvent(String event) {
+      if (event.equals(ServerListeningService.SERVER_STARTUP_COMPLETE)) {
+         org.sakaiproject.api.kernel.session.Session sakaiSession = SessionManager.getCurrentSession();
+         String userId = sakaiSession.getUserId();
+
+         try {
+            sakaiSession.setUserId("admin");
+            sakaiSession.setUserEid("admin");
+
+            for (Iterator i=getIntegrationPlugins().iterator();i.hasNext();) {
+               String pluginId = (String) i.next();
+               SakaiIntegrationPlugin plugin = (SakaiIntegrationPlugin) ComponentManager.get(pluginId);
+               executePlugin(plugin);
+            }
+         } finally {
+            sakaiSession.setUserEid(userId);
+            sakaiSession.setUserId(userId);
+         }
+
+      }
+   }
+
+   protected void executePlugin(SakaiIntegrationPlugin plugin) {
+      for (Iterator i=plugin.getPotentialIntegrations().iterator();i.hasNext();) {
+         if (!plugin.executeOption((IntegrationOption) i.next())) {
+            break;
+         }
+      }
+   }
+
    public void init() {
       // go through each integration plugin and execute it...
       org.sakaiproject.api.kernel.session.Session sakaiSession = SessionManager.getCurrentSession();
@@ -76,20 +110,14 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService {
       try {
          sakaiSession.setUserId("admin");
          sakaiSession.setUserEid("admin");
-         int index=0;
-         for (Iterator i=getIntegrationPlugins().iterator();i.hasNext(); ++index) {
-            String plugin = (String) i.next();
-            PluginOptionJob.schedule(getSchedulerManager(), plugin, getPollingInterval() + index * 10000);
-         }
+         ServerListeningService.getInstance().addListener(this);
          createUserResourceDir();
-      } catch (SchedulerException e) {
-         logger.error("", e);
       } finally {
          sakaiSession.setUserEid(userId);
          sakaiSession.setUserId(userId);
       }
    }
-   
+
    protected void createUserResourceDir() {
       for (Iterator iter = getInitUsers().iterator(); iter.hasNext();) {
          String userId = (String)iter.next();
@@ -97,7 +125,7 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService {
             ContentCollectionEdit userCollection = getContentHostingService().addCollection("/user/" + userId);
             userCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, userId);
             getContentHostingService().commitCollection(userCollection);
-         } 
+         }
          catch (IdUsedException e) {
             // ignore... it is already there.
          }
