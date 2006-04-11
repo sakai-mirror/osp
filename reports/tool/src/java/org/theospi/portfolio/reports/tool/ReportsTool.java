@@ -358,30 +358,34 @@ public class ReportsTool extends ToolBase {
 	}
 	
 	/**
-	 * We want to use an action to forward to the helper.  This is because we
-	 * need to clear out the cached permissions
+	 * We want to use an action to forward to the helper.  We don't want
+    * to forward to the permission helper in the jsp beause we need to 
+    * clear out the cached permissions
 	 * @return String unused
 	 */
 	public String processPermissions()
 	{
-		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-	    ToolSession session = SessionManager.getCurrentToolSession();
+	   ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+	   ToolSession session = SessionManager.getCurrentToolSession();
 	    
-	    userCan = null;
-	    
-	    try {
-	        context.redirect("sakai.permissions.helper.helper/tool?" + 
-	        		"session.sakaiproject.permissions.description=" + 
-	        			getPermissionsMessage() + 
-	        		"&session.sakaiproject.permissions.siteRef=" + 
-	        			getWorksite().getReference() + 
-	        		"&session.sakaiproject.permissions.prefix=" + 
-	        			getReportFunctionPrefix());
-	    }
-	    catch (IOException e) {
+	   userCan = null;
+
+       
+	   try {
+          String url = "sakai.permissions.helper.helper/tool?" + 
+            "session.sakaiproject.permissions.description=" + 
+               getPermissionsMessage() + 
+            "&session.sakaiproject.permissions.siteRef=" + 
+               getWorksite().getReference() + 
+            "&session.sakaiproject.permissions.prefix=" + 
+               getReportFunctionPrefix();
+           
+	        context.redirect(url);
+	   }
+	   catch (IOException e) {
 	        throw new RuntimeException("Failed to redirect to helper", e);
-	    }
-	    return null;
+	   }
+	   return null;
 	}
 
 	/**

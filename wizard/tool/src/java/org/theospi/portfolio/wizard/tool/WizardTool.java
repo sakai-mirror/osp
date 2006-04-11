@@ -455,7 +455,8 @@ public class WizardTool extends BuilderTool {
             getMessageFromBundle("audience_selected_title"));
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS,
             getMessageFromBundle("audience_filter_instructions"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, null);
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, "true");
+      
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "true");
 
       //Guidance guidance = wizard.getGuidance();

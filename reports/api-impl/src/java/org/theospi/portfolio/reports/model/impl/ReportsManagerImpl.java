@@ -33,6 +33,7 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.transform.JDOMResult;
 import org.jdom.transform.JDOMSource;
 import org.sakaiproject.api.kernel.component.ComponentManager;
+import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -40,6 +41,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.security.model.AuthZMap;
+import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.framework.portal.cover.PortalService;
@@ -118,11 +120,17 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
    	/**
    	 * Called on after the startup of the singleton.  This sets the global
-   	 * list of functions which will will have permission managed by sakai
+   	 * list of functions which will have permission managed by sakai
    	 * @throws Exception
    	 */
     protected void init() throws Exception
     {
+       // register functions
+       FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_CREATE);
+       FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_RUN);
+       FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_VIEW);
+       FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_EDIT);
+       FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_DELETE);
     }
    
    

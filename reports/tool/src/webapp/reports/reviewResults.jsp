@@ -4,7 +4,6 @@
 <% response.setContentType("text/html; charset=UTF-8"); %>
 <f:view>
     <fmt:setLocale value="${locale}" />
-    <f:loadBundle basename="org.theospi.portfolio.reports.bundle.Messages" var="msgs" />
     <sakai:view title="#{msgs.title_report_results}">
             <h:form>
                 <sakai:tool_bar>

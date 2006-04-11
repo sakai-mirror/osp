@@ -9,6 +9,7 @@
     <message-bundle>org.theospi.portfolio.reports.bundle.Messages</message-bundle>
     <locale-config>
       <default-locale>en</default-locale>
+      <supported-locale>nl</supported-locale>
       <!-- 
       <supported-locale>de</supported-locale>
       <supported-locale>fr</supported-locale>
@@ -187,7 +188,21 @@
       <redirect/>
     </navigation-case>
   </navigation-rule>
+   
   
+	<managed-bean>
+		<description>
+			Dynamic Resource Bundle Loader
+		</description>
+		<managed-bean-name>msgs</managed-bean-name>
+		<managed-bean-class>org.sakaiproject.util.java.ResourceLoader</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+		<managed-property>
+			<description>Bundle baseName</description>
+			<property-name>baseName</property-name>
+			<value>org.theospi.portfolio.reports.bundle.Messages</value>
+		</managed-property>
+	</managed-bean>
   
 
 </faces-config>
