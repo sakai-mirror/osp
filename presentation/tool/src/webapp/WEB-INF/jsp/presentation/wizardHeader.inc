@@ -8,39 +8,40 @@
       </c:if>
 </div>-->
 <c:if test="${not empty step}">
-<p class="step">
+<link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
+<div class="xheader">
 
 <c:if test="${step eq 1}" >
 <fmt:message key="paging_steps">
           <fmt:param><fmt:message key="step_1"/></fmt:param>
-          <fmt:param><fmt:message key="step_3"/></fmt:param>
-</fmt:message>
-        : <fmt:message key="step_begin"/>
+          <fmt:param><fmt:message key="step_3"/></fmt:param>:
+</fmt:message>:
+        <fmt:message key="step_begin"/>
 </c:if>
 <c:if test="${step eq 2}" >
 <fmt:message key="paging_steps">
           <fmt:param><fmt:message key="step_2"/></fmt:param>
           <fmt:param><fmt:message key="step_3"/></fmt:param>
-</fmt:message>
-        : <fmt:message key="step_design"/>
+</fmt:message>:
+         <fmt:message key="step_design"/>
 </c:if>
 <c:if test="${step eq 3}" >
 <fmt:message key="paging_steps">
           <fmt:param><fmt:message key="step_3"/></fmt:param>
           <fmt:param><fmt:message key="step_3"/></fmt:param>
 
- </fmt:message>
-        : <fmt:message key="step_publish"/>
+ </fmt:message>:
+         <fmt:message key="step_publish"/>
 </c:if>
 
-</p>
+</div>
 </c:if>
 <c:if test="${empty step}">
-<p class="step">
+<div class="step">
         <fmt:message key="paging_steps">
           <fmt:param value="${currentPage}"/>
           <fmt:param value="${totalPages}"/>
         </fmt:message>
 
-</p>
+</div>
 </c:if>

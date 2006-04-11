@@ -53,7 +53,6 @@
 <c:set var="begin_state" value="current_state"/>
 <c:set var="design_state" value="next_state"/>
 <c:set var="publish_state" value="next_state"/>
-<c:set var="targetNext" value="_target2" />
 <c:set var="step" value="2" />
 
 <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc"%>
