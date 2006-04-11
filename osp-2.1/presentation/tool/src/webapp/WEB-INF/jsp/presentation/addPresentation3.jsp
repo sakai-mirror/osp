@@ -10,6 +10,10 @@
 
 <c:set var="targetPrevious" value="_target3" />
 <c:set var="targetNext" value="_finish_notify" />
+<c:set var="begin_state" value="previous_state"/>
+<c:set var="design_state" value="previous_state"/>
+<c:set var="publish_state" value="current_state"/>
+<c:set var="targetNext" value="_target2"/>
 <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc"%>
 
 
@@ -18,7 +22,7 @@
     <osp:form />
 
     <div class="instruction">
-        <fmt:message key="instructions_addPresentation3"/>
+        <fmt:message key="publish_instructions"/>
     </div>
 
     <h4><fmt:message key="addPresentation3_worksiteUsers"/></h4>
@@ -93,7 +97,6 @@
                         name="<c:out value="${status.expression}"/>"
                         value="false"
                         <c:if test="${status.value == false}">checked</c:if> />
-                    <label for="publicNo"><fmt:message key="label_no"/></label>
                 </div>
             </fieldset>
                      

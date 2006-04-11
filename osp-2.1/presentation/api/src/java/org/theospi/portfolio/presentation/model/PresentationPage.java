@@ -42,7 +42,6 @@ public class PresentationPage extends IdentifiableObject implements Serializable
    private Set regions = new HashSet();
    private Date created;
    private Date modified;
-   private boolean advancedNavigation;
    private boolean newObject;
 
    public Id getId() {
@@ -112,14 +111,6 @@ public class PresentationPage extends IdentifiableObject implements Serializable
 
    public void setNewObject(boolean newObject) {
       this.newObject = newObject;
-   }
-
-   public boolean isAdvancedNavigation() {
-      return advancedNavigation;
-   }
-
-   public void setAdvancedNavigation(boolean advancedNavigation) {
-      this.advancedNavigation = advancedNavigation;
    }
 
    public String getDescription() {

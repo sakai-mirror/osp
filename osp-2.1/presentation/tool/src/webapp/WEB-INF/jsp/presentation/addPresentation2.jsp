@@ -48,8 +48,14 @@
 
 <h3><fmt:message key="title_addPresentation2"/></h3>
 
-<c:set var="targetPrevious" value="_target1" />
-<c:set var="targetNext" value="_target3" />
+<c:set var="targetPrevious" value="_target2" />
+<c:set var="targetNext" value="_target4"/>
+<c:set var="begin_state" value="current_state"/>
+<c:set var="design_state" value="next_state"/>
+<c:set var="publish_state" value="next_state"/>
+<c:set var="targetNext" value="_target2" />
+<c:set var="step" value="2" />
+
 <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc"%>
 
 <form method="POST" name="wizardform" action="addPresentation.osp"

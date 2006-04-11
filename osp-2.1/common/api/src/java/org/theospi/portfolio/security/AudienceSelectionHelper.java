@@ -38,6 +38,12 @@ public interface AudienceSelectionHelper {
    public static final String AUDIENCE_INSTRUCTIONS =
          "org.theospi.portfolio.security.audienceInstructions";
 
+   public static final String AUDIENCE_PUBLIC_INSTRUCTIONS =
+         "org.theospi.portfolio.security.audiencePublicInstructions";
+
+    public static final String AUDIENCE_PUBLIC_URL =
+         "org.theospi.portfolio.security.audiencePublicURL";  
+
    public static final String AUDIENCE_GLOBAL_TITLE =
          "org.theospi.portfolio.security.audienceGlobalTitle";
 

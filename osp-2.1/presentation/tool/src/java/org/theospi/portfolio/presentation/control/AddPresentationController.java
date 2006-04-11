@@ -54,10 +54,12 @@ import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 import org.theospi.portfolio.presentation.model.*;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.shared.model.Node;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -65,12 +67,13 @@ public class AddPresentationController extends AbstractWizardFormController {
    public static final String PARAM_FINISH_AND_NOTIFY = "_finish_notify";
    public static final String PARAM_RESET_FORM = "resetForm";
 
-   final public static int INITIAL_PAGE = 0;
-   final public static int PROPERTY_PAGE = 1;
-   final public static int PRESENTATION_ITEMS = 2;
-   final public static int PRESETATION_FREE_FORM_PAGES = 3;
-   final public static int PRESENTATION_AUTHORIZATIONS = 4;
-   final public static int PRESENTATION_NOTIFICATIONS = 5;
+   final public static int ADD_PAGE = 0;
+   final public static int INITIAL_PAGE = 1;
+   final public static int PROPERTY_PAGE = 2;
+   final public static int PRESENTATION_ITEMS = 3;
+   final public static int PRESETATION_FREE_FORM_PAGES = 4;
+   final public static int PRESENTATION_AUTHORIZATIONS = 5;
+   final public static int PRESENTATION_NOTIFICATIONS = 6;
 
    private IdManager idManager;
    private List customTypedEditors = new ArrayList();
@@ -84,18 +87,20 @@ public class AddPresentationController extends AbstractWizardFormController {
    private WorksiteManager worksiteManager;
    private ListScrollIndexer listScrollIndexer;
    private ServerConfigurationService serverConfigurationService;
-
+   private int initialPage = 0;
    public Object formBackingObject(HttpServletRequest request) throws Exception {
       Presentation presentation = new Presentation();
       presentation.setTemplate(new PresentationTemplate());
 
       // this is an edit, load model
       if (request.getParameter("id") != null) {
+         setInitialPage(1);
          Id id = getIdManager().getId(request.getParameter("id"));
          presentation = getPresentationManager().getPresentation(id);
          getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
             presentation.getId());
       } else {
+         setInitialPage(0);
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
             getIdManager().getId(PortalService.getCurrentToolId()));
          presentation.setId(getIdManager().createId());
@@ -116,7 +121,7 @@ public class AddPresentationController extends AbstractWizardFormController {
    protected String getFormSessionAttributeName() {
       return getCommandName();
    }
-      
+
    protected void onBindAndValidate(HttpServletRequest request, Object command, BindException errors, int page)
          throws Exception {
       Presentation presentation = (Presentation) command;
@@ -172,14 +177,17 @@ public class AddPresentationController extends AbstractWizardFormController {
       Map model = new HashMap();
       Presentation presentation = (Presentation) request.getSession().getAttribute(getCommandName());
 
+      if (presentation.getName() != null && page == 0)
+      {
+          page++;
+      }
       String baseUrl = this.getServerConfigurationService().getServerUrl();
       model.put("baseUrl", baseUrl);
-
       model.put("currentPage", getCurrentPageNumber(presentation, page));
       model.put("totalPages", getTotalPages(presentation,  page));
       model.put("allowGuests", Config.getInstance().getProperties().getProperty("allowGuests"));
 
-      if (page == INITIAL_PAGE) {
+      if (page == ADD_PAGE) {
          Agent agent = getAuthManager().getAgent();
          model.put("templates", getPresentationManager().findTemplatesByOwner(agent, PortalService.getCurrentSiteId()));
          model.put("publishedTemplates", getPresentationManager().findPublishedTemplates(PortalService.getCurrentSiteId()));
@@ -244,7 +252,9 @@ public class AddPresentationController extends AbstractWizardFormController {
          return model;
       }
       if (page == PRESENTATION_AUTHORIZATIONS) {
-         Agent viewer = new AgentImpl();
+
+
+               Agent viewer = new AgentImpl();
 
          model.put("viewer", new AgentImpl());
          model.put(BindException.ERROR_KEY_PREFIX + "viewer", new BindException(viewer,"viewer"));
@@ -260,31 +270,34 @@ public class AddPresentationController extends AbstractWizardFormController {
          model.put("roles", getAgentManager().getWorksiteRoles(siteId));
       }
       return model;
-   }
+       //setAudienceSelectionVariables(request.getSession(), presentation);
+ }
 
    protected Integer getTotalPages(Presentation presentation, int page) {
       if (presentation.getTemplate().getPropertyPage() == null) {
-         return new Integer(3);
+         return new Integer(4);
       }
       else {
-         return new Integer(4);
+         return new Integer(5);
       }
    }
 
    protected Integer getCurrentPageNumber(Presentation presentation, int page) {
       boolean hasProperties = getTotalPages(presentation, page).intValue() == 4;
-
-      if (page == INITIAL_PAGE) {
-         return new Integer(1);
+      if (page == ADD_PAGE) {
+          return new Integer(1);
       }
-      else if (page == PROPERTY_PAGE) {
+      else if (page == INITIAL_PAGE) {
          return new Integer(2);
       }
+      else if (page == PROPERTY_PAGE) {
+         return new Integer(3);
+      }
       else if (page == PRESENTATION_ITEMS || page == PRESETATION_FREE_FORM_PAGES) {
-         return new Integer(hasProperties?3:2);
+         return new Integer(hasProperties?4:3);
       }
       else if (page == PRESENTATION_AUTHORIZATIONS) {
-         return new Integer(hasProperties?4:3);
+         return new Integer(hasProperties?5:4);
       }
       else {
          return new Integer(0);
@@ -521,9 +534,40 @@ public class AddPresentationController extends AbstractWizardFormController {
 
       model.put("presentations", getListScrollIndexer().indexList(request, model, presentations));
       model.put("osp_agent", getAuthManager().getAgent());
-      
+
       return new ModelAndView("listPresentationRedirect", model);
    }
+    protected void setAudienceSelectionVariables(HttpSession session, Presentation pres) {
+      String baseUrl = this.getServerConfigurationService().getServerUrl();
+      ResourceBundle myResources =
+         ResourceBundle.getBundle("org.theospi.portfolio.presentation.bundle.Messages");
+
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, "osp.presentation.view");
+
+      String id = pres.getId()!=null ? pres.getId().getValue() : pres.getNewId().getValue();
+
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS,
+            myResources.getString("instructions_addViewersToPresentation"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE,
+            myResources.getString("instructions_audiencesToPublishTo"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE,
+            myResources.getString("instructions_publishToIndividual"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE,
+            myResources.getString("title_addPortfolio"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, pres.getIsPublic() ? "true" : "false");
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, myResources.getString("instructions_publishToInternet"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE,
+            myResources.getString("instructions_selectedAudience"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS,
+            myResources.getString("instructions_selectFilterUserList"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, "true");
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "true");
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_INSTRUCTIONS,
+              myResources.getString("publish_message"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_URL, baseUrl + "/osp-presentation-tool/viewPresentation.osp?id=" + pres.getId().getValue());
+   }
+
 
    /**
     *
@@ -622,5 +666,12 @@ public class AddPresentationController extends AbstractWizardFormController {
          ServerConfigurationService serverConfigurationService) {
       this.serverConfigurationService = serverConfigurationService;
    }
+
+    protected int getInitialPage(HttpServletRequest request) {
+        return initialPage;
+    }
+    private void setInitialPage(int page){
+        initialPage = page;
+    }
 }
 

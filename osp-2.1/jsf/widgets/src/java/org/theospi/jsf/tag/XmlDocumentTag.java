@@ -35,7 +35,6 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -108,8 +107,10 @@ public class XmlDocumentTag extends UIComponentTag {
    }
 
    protected UIComponent findComponent(FacesContext context) throws JspException {
-      XmlDocumentComponent docComponent = (XmlDocumentComponent) super.findComponent(context);
-
+       XmlDocumentComponent docComponent = (XmlDocumentComponent) super.findComponent(context);
+      if (docComponent.getXmlFile() == null){
+        return docComponent;
+      }
       if (docComponent.getXmlRootComponent() != null && docComponent.getOldXmlFileId() != null) {
          String lastId = docComponent.getOldXmlFileId();
          String newId = docComponent.getXmlFileId();

@@ -53,6 +53,8 @@ public class DecoratedPage implements Comparable {
    private boolean selected;
    private DecoratedLayout selectedLayout = null;
    private String layoutName;
+   private String lastModified;
+   private String expandedInformationSection = "true";
 
    public DecoratedPage(PresentationPage base, FreeFormTool parent) {
       this.base = base;
@@ -124,9 +126,13 @@ public class DecoratedPage implements Comparable {
    }
 
    public InputStream getXmlFile() {
-      Node node = getParent().getPresentationManager().getNode(
+      InputStream  inputStream = null;
+      if (getBase() != null && getBase().getLayout() != null){
+       Node node = getParent().getPresentationManager().getNode(
             getBase().getLayout().getXhtmlFileId(), getBase().getLayout());
-      return node.getInputStream();
+      inputStream = node.getInputStream();
+      }
+      return inputStream;
    }
 
    public String getXmlFileId() {
@@ -285,4 +291,22 @@ public class DecoratedPage implements Comparable {
    public boolean isLast() {
       return getBase().getSequence() >= getParent().getPresentation().getPages().size() - 1;
    }
+
+    public String getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(String lastModified) {
+        this.lastModified = lastModified;
+    }
+
+
+     public String getExpandedInformationSection() {
+       if (this.getBase().getTitle() == null || this.getBase().getTitle().equals("")){
+           return "true";
+       }
+         return "false";
+    }
+
+
 }
