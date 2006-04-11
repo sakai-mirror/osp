@@ -28,7 +28,6 @@
      <message-bundle>org.theospi.portfolio.presentation.bundle.Messages</message-bundle>
      <locale-config>
        <default-locale>en</default-locale>
-      <supported-locale>nl</supported-locale>
      </locale-config>
    </application>
 
