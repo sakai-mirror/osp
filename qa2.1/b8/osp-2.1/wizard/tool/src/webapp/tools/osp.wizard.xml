@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool id="osp.wizard" title="Wizards" description="OSP Wizards Tool">
+
+       <category name="sakai.main" />
+      <category name="project" />
+      <category name="portfolio" />
+      <category name="course" />
+
+      <keyword name="wizard" />
+       <keyword name="help"/>
+
+      <configuration name="theospi.toolListenerId"
+           value="org.theospi.portfolio.security.mgt.ToolPermissionManager.wizard" />
+
+	</tool>
+
+</registration>
