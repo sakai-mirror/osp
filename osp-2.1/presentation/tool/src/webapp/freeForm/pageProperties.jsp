@@ -15,13 +15,14 @@
 
 <sakai:view>
 <h:form>
-
-<sakai:view_title value=""/>
+<sakai:view_title value="#{msgs.title_addPresentation1}" rendered="#{freeForm.presentation.newObject}"/>
+<sakai:view_title value="#{msgs.title_editPresentation1}" rendered="#{!freeForm.presentation.newObject}"/>
+<%@include file="steps.jspf"%>
+<sakai:view_title value="#{msgs.add_page}"/>
 <sakai:instruction_message value=""/>
 <sakai:messages/>
 <ospx:xheader>
 <ospx:xheadertitle id="styleTitle" value="#{msgs.page_information_title}"/>
-
 <ospx:xheaderdrawer initiallyexpanded="#{freeForm.currentPage.expandedInformationSection}" cssclass="drawerBorder">
     <ospx:splitarea direction="horizontal" width="100%">
         <ospx:splitsection size="75%" valign="top">

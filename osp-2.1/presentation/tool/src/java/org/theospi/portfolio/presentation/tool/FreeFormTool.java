@@ -63,7 +63,7 @@ public class FreeFormTool extends HelperToolBase {
    private List listableItems = null;
    private List layouts = null;
    private String nextPageId = null;
-   private int stepString = 1;
+   private int step = 1;
    private int pageCount;
 
    public String processActionBack() {
@@ -372,9 +372,11 @@ public class FreeFormTool extends HelperToolBase {
       }
       return null;
    }
-
-    public int getStepString() {
-        return stepString;
+    public int getStep(){
+        return step;
+    }
+    public String getStepString() {
+        return "" + (step);
     }
 
     public int getPageCount () {
