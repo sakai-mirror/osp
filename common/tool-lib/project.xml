@@ -18,12 +18,12 @@
 
   <dependencies>
   
-  		<dependency>
-			<groupId>sakaiproject</groupId>
-			<artifactId>sakai</artifactId>
-			<version>${sakai.plugin.version}</version>
-			<type>plugin</type>
-		</dependency>
+      <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai</artifactId>
+         <version>${sakai.plugin.version}</version>
+         <type>plugin</type>
+      </dependency>
 
     <dependency>
       <groupId>sakaiproject</groupId>
@@ -31,11 +31,44 @@
       <version>${sakai.version}</version>
     </dependency>
 
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-legacy-service</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-session</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
     <dependency>
       <groupId>sakaiproject</groupId>
-      <artifactId>sakai-legacy-service</artifactId>
+      <artifactId>sakai-tool</artifactId>
       <version>${sakai.version}</version>
     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-metaobj-api</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+      <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-metaobj-tool-lib</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-metaobj-impl</artifactId>
+       <version>${sakai.version}</version>
+        <properties>
+              <war.bundle>true</war.bundle>
+           </properties>
+     </dependency>
     
     <dependency>
       <groupId>sakaiproject</groupId>
@@ -44,12 +77,6 @@
       <properties>
 			<war.bundle>true</war.bundle>
 		</properties>
-    </dependency>
-    
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-tool</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
 
      <dependency>
@@ -64,24 +91,6 @@
         <version>${sakai.version}</version>
      </dependency>
 
-     <dependency>
-        <groupId>sakaiproject</groupId>
-        <artifactId>sakai-metaobj-api</artifactId>
-        <version>${sakai.version}</version>
-      </dependency>
-
-     <dependency>
-        <groupId>sakaiproject</groupId>
-        <artifactId>sakai-metaobj-tool-lib</artifactId>
-        <version>${sakai.version}</version>
-      </dependency>
-
-	<dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-session</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-
 	<dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-util-web</artifactId>
@@ -92,16 +101,26 @@
     </dependency>
 
      <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-util-i18n</artifactId>
+       <version>${sakai.version}</version>
+       <properties>
+         <war.bundle>true</war.bundle>
+       </properties>
+     </dependency>
+
+
+     <dependency>
         <groupId>osp</groupId>
         <artifactId>osp-common-api</artifactId>
         <version>${osp.version}</version>
       </dependency>
 
-    <dependency>
-      <groupId>aopalliance</groupId>
-      <artifactId>aopalliance</artifactId>
-      <version>1.0</version>
-    </dependency>
+     <dependency>
+       <groupId>aopalliance</groupId>
+       <artifactId>aopalliance</artifactId>
+       <version>1.0</version>
+     </dependency>
 
     <dependency>
       <groupId>tomcat</groupId>
@@ -167,9 +186,6 @@
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>1.6</version>
-      <properties>
-			<war.bundle>true</war.bundle>
-		</properties>
     </dependency>
     
     <dependency>
@@ -275,15 +291,6 @@
         <properties>
            <war.bundle>true</war.bundle>
         </properties>
-     </dependency>
-
-     <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-util-i18n</artifactId>
-       <version>${sakai.version}</version>
-       <properties>
-         <war.bundle>true</war.bundle>
-       </properties>
      </dependency>
 
   </dependencies>
