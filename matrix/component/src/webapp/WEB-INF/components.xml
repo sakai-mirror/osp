@@ -321,6 +321,12 @@
                   <value>osp.matrix.scaffolding.use</value>
                </list>
             </entry>
+            <entry>
+               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.evaluate"/></key>
+               <list>
+                  <value>osp.matrix.evaluate</value>
+               </list>
+            </entry>
          </map>
       </property>
       <property name="functions">
