@@ -33,6 +33,17 @@
       </property>
    </bean>
    
+   <bean id="org.theospi.portfolio.style.mgt.AdditionalStyleConsumer.presentation"
+      class="org.theospi.portfolio.style.mgt.AdditionalStyleConsumer"
+      init-method="init" singleton="true">
+      <property name="styleManager"><ref bean="org.theospi.portfolio.style.mgt.StyleManager"/></property>
+      <property name="additionalConsumers">
+         <list>
+            <ref bean="presentationManager" />
+         </list>
+      </property>
+   </bean>
+   
    <bean id="presentationManager"
       class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
       singleton="true">
