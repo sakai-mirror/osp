@@ -83,6 +83,7 @@ import org.sakaiproject.service.legacy.entity.EntityManager;
 import org.sakaiproject.service.legacy.entity.Reference;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
+import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.service.legacy.security.SecurityService;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
@@ -119,7 +120,8 @@ import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import net.sf.hibernate.HibernateException;
 
 public class WizardManagerImpl extends HibernateDaoSupport
-      implements WizardManager, DownloadableManager, ReadableObjectHome, ArtifactFinder, PresentableObjectHome, StyleConsumer {
+      implements WizardManager, DownloadableManager, ReadableObjectHome, ArtifactFinder, 
+            PresentableObjectHome, StyleConsumer, DuplicatableToolService {
 
    static final private String   DOWNLOAD_WIZARD_ID_PARAM = "wizardId";
 
@@ -382,6 +384,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return getHibernateTemplate().find("from Wizard w where w.published=? and w.siteId=? order by seq_num", params);
    }
 
+   public List findPublishedWizards(String siteId, String toolId) {
+      Object[] params = new Object[]{new Boolean(true), siteId, toolId};
+      return getHibernateTemplate().find("from Wizard w where w.published=? and w.siteId=? and w.toolId=? order by seq_num", params);
+   }
+   
    public Wizard getWizard(String id) {
       return getWizard(getIdManager().getId(id));
    }
@@ -1786,5 +1793,32 @@ public class WizardManagerImpl extends HibernateDaoSupport
          return true;
       
       return false;
+   }
+
+   public void importResources(ToolConfiguration fromTool, ToolConfiguration toTool, List resourceIds) {
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      
+      try {
+   
+         List wizards = this.findPublishedWizards(fromTool.getSiteId(), fromTool.getId());
+         if (wizards == null) {
+            return;
+         }
+         
+         for (Iterator iter = wizards.iterator(); iter.hasNext();) {
+            Wizard wizard = (Wizard)iter.next();
+            Id id = wizard.getId();
+   
+            getHibernateTemplate().evict(wizard);
+   
+            packageWizardForExport(id.getValue(), bos);
+            ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
+            importWizard(getIdManager().getId(toTool.getId()), bis);
+         }
+      }
+      catch (IOException e) {
+         logger.error("", e);
+         throw new OspException(e);
+      }
    }
 }
