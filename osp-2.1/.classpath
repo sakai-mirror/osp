@@ -2,12 +2,15 @@
 <classpath>
 	<classpathentry kind="src" path="common/api/src/java"/>
 	<classpathentry kind="src" path="common/api-impl/src/java"/>
+	<classpathentry kind="src" path="common/common/src/java"/>
 	<classpathentry kind="src" path="common/component/src/webapp"/>
 	<classpathentry kind="src" path="common/component-shared/src/java"/>
+	<classpathentry kind="src" path="common/server/src/java"/>
 	<classpathentry kind="src" path="common/tool/src/bundle"/>
 	<classpathentry kind="src" path="common/tool/src/java"/>
 	<classpathentry kind="src" path="common/tool/src/webapp"/>
 	<classpathentry kind="src" path="common/tool-lib/src/java"/>
+	<classpathentry kind="src" path="common/tool-lib/src/META-INF"/>
 	<classpathentry kind="src" path="glossary/api/src/java"/>
 	<classpathentry kind="src" path="glossary/api-impl/src/java"/>
 	<classpathentry kind="src" path="glossary/component/src/webapp"/>
@@ -16,10 +19,12 @@
 	<classpathentry kind="src" path="glossary/tool/src/webapp"/>
 	<classpathentry kind="src" path="glossary/tool-lib/src/java"/>
 	<classpathentry kind="src" path="glossary/tool-lib/src/META-INF"/>
+	<classpathentry kind="src" path="jsf/example/src/bundle"/>
 	<classpathentry kind="src" path="jsf/example/src/java"/>
 	<classpathentry kind="src" path="jsf/example/src/webapp"/>
 	<classpathentry kind="src" path="jsf/resource/src/webapp"/>
 	<classpathentry kind="src" path="jsf/widgets/src/java"/>
+	<classpathentry kind="src" path="jsf/widgets/src/META-INF"/>
 	<classpathentry kind="src" path="matrix/api/src/java"/>
 	<classpathentry kind="src" path="matrix/api-impl/src/bundle"/>
 	<classpathentry kind="src" path="matrix/api-impl/src/java"/>
@@ -27,6 +32,15 @@
 	<classpathentry kind="src" path="matrix/tool/src/bundle"/>
 	<classpathentry kind="src" path="matrix/tool/src/java"/>
 	<classpathentry kind="src" path="matrix/tool/src/webapp"/>
+	<classpathentry kind="src" path="portal/api/src/java"/>
+	<classpathentry kind="src" path="portal/api-impl/src/java"/>
+	<classpathentry kind="src" path="portal/component/src/webapp"/>
+	<classpathentry kind="src" path="portal/tool/src/bundle"/>
+	<classpathentry kind="src" path="portal/tool/src/java"/>
+	<classpathentry kind="src" path="portal/tool/src/webapp"/>
+	<classpathentry kind="src" path="portal/webapp/src/bundle"/>
+	<classpathentry kind="src" path="portal/webapp/src/java"/>
+	<classpathentry kind="src" path="portal/webapp/src/webapp"/>
 	<classpathentry kind="src" path="presentation/api/src/java"/>
 	<classpathentry kind="src" path="presentation/api-impl/src/java"/>
 	<classpathentry kind="src" path="presentation/component/src/webapp"/>
@@ -44,6 +58,7 @@
 	<classpathentry kind="src" path="warehouse/api-impl/src/java"/>
 	<classpathentry kind="src" path="warehouse/components/src/webapp"/>
 	<classpathentry kind="src" path="wizard/api/src/java"/>
+	<classpathentry kind="src" path="wizard/api-impl/src/bundle"/>
 	<classpathentry kind="src" path="wizard/api-impl/src/java"/>
 	<classpathentry kind="src" path="wizard/component/src/webapp"/>
 	<classpathentry kind="src" path="wizard/tool/src/bundle"/>
