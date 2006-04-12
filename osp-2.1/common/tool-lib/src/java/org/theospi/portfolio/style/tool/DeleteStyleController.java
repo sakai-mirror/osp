@@ -23,7 +23,6 @@ package org.theospi.portfolio.style.tool;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.style.StyleFunctionConstants;
@@ -45,11 +44,8 @@ public class DeleteStyleController extends ListStyleController {
       Id id = getIdManager().getId((String)request.get("style_id"));
       getAuthzManager().checkPermission(StyleFunctionConstants.DELETE_STYLE, id);
       Map model = new HashMap();
-      try {
-         getStyleManager().deleteStyle(id);
-      }
-      catch (DataIntegrityViolationException e) {
-         logger.warn("Failed to delete Style");
+      if (!getStyleManager().deleteStyle(id)) {
+         //logger.warn("Failed to delete Style");
          model.put("styleError", "cant_delete_style");
       }
       return new ModelAndView("success", model);

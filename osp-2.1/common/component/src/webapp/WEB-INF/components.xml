@@ -263,6 +263,10 @@
             <value>portfolioAdmin</value>
          </list>
       </property>
+      <property name="consumers">
+         <list>
+         </list>
+      </property>
    </bean>
 
    <bean id="org.theospi.portfolio.style.mgt.StyleManager"

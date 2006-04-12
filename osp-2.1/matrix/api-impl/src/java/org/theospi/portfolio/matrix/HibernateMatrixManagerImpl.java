@@ -80,6 +80,7 @@ import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
+import org.theospi.portfolio.style.StyleConsumer;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
@@ -97,7 +98,7 @@ import org.theospi.utils.zip.UncloseableZipInputStream;
  */
 public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    implements MatrixManager, ReadableObjectHome, ArtifactFinder, DownloadableManager,
-   PresentableObjectHome, DuplicatableToolService {
+   PresentableObjectHome, DuplicatableToolService, StyleConsumer {
 
    private IdManager idManager;
    private AuthenticationManager authnManager = null;
@@ -555,6 +556,20 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       }      
 
       return scaffolding;
+   }
+   
+   protected List getScaffoldingByStyle(Id styleId) {
+      Object[] params = new Object[]{styleId.getValue()};
+      return getHibernateTemplate().find("from Scaffolding s where s.style.id=? " , 
+               params);
+      
+   }
+   
+   protected List getWizardPageDefByStyle(Id styleId) {
+      Object[] params = new Object[]{styleId.getValue()};
+      return getHibernateTemplate().find("from WizardPageDefinition wpd where wpd.style.id=? " , 
+               params);
+      
    }
    
    public ScaffoldingCell getScaffoldingCell(Criterion criterion, Level level) {
@@ -1623,6 +1638,22 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          if (!authz.getAgent().equals(agent) && authz.getQualifier().equals(qualifier))
             return true;
       }
+      return false;
+   }
+   
+   
+
+   public boolean checkStyleConsumption(Id styleId) {
+      //Check Scaffolding and WizardPageDef
+      List scaffolding = getScaffoldingByStyle(styleId);
+      if (scaffolding != null && !scaffolding.isEmpty() && scaffolding.size() > 0)
+         return true;
+      
+      //Also check for WizardPageDef
+      List wizPageDefs = this.getWizardPageDefByStyle(styleId);
+      if (wizPageDefs != null && !wizPageDefs.isEmpty() && wizPageDefs.size() > 0)
+         return true;
+      
       return false;
    }
 

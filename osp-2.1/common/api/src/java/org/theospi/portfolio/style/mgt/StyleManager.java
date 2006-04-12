@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +33,6 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.legacy.content.ContentCollection;
 import org.sakaiproject.service.legacy.entity.Reference;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.style.model.Style;
 
@@ -44,7 +44,7 @@ public interface StyleManager {
    public Style storeStyle(Style style);
    public Style storeStyle(Style style, boolean checkAuthz);
    public Style getStyle(Id styleId);
-   public void deleteStyle(final Id styleId) throws DataIntegrityViolationException;
+   public boolean deleteStyle(final Id styleId);
    public Style getLightWeightStyle(final Id styleId);
    
    public Collection findSiteStyles(String currentWorksiteId);
@@ -60,4 +60,6 @@ public interface StyleManager {
    
    /** This function returns all styles */
    public Collection getStylesForWarehouse();
+   
+   public List getConsumers();
 }

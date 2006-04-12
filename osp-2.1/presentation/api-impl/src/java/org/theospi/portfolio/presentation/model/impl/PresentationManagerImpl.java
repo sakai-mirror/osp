@@ -27,7 +27,6 @@ import net.sf.hibernate.Session;
 import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
@@ -55,7 +54,6 @@ import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
 import org.springframework.orm.hibernate.HibernateCallback;
 import org.springframework.orm.hibernate.HibernateObjectRetrievalFailureException;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
-import org.theospi.portfolio.admin.service.SiteOption;
 import org.theospi.portfolio.presentation.CommentSortBy;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.PresentationManager;
@@ -70,6 +68,7 @@ import org.theospi.portfolio.shared.intf.EntityContextFinder;
 import org.theospi.portfolio.shared.model.ItemDefinitionMimeType;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
+import org.theospi.portfolio.style.StyleConsumer;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.utils.zip.UncloseableZipInputStream;
 
@@ -81,7 +80,7 @@ import java.util.*;
 import java.util.zip.*;
 
 public class PresentationManagerImpl extends HibernateDaoSupport
-   implements PresentationManager, DuplicatableToolService, DownloadableManager {
+   implements PresentationManager, DuplicatableToolService, DownloadableManager, StyleConsumer {
 
    private List definedLayouts;
    private AgentManager agentManager;
@@ -2584,6 +2583,30 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public void setInitializedServices(List initializedServices) {
       this.initializedServices = initializedServices;
+   }
+
+   protected List getPresentationPagesByStyle(Id styleId) {
+      Object[] params = new Object[]{styleId.getValue()};
+      return getHibernateTemplate().find("from PresentationPage pp where pp.style.id=? " , 
+               params);
+   }
+   
+   protected List getPresentationsByStyle(Id styleId) {
+      Object[] params = new Object[]{styleId.getValue()};
+      return getHibernateTemplate().find("from Presentation p where p.style.id=? " , 
+               params);
+   }
+   
+   public boolean checkStyleConsumption(Id styleId) {
+      List pages = getPresentationPagesByStyle(styleId);
+      if (pages != null && !pages.isEmpty() && pages.size() > 0)
+         return true;
+      
+      List presentations = getPresentationsByStyle(styleId);
+      if (presentations != null && !presentations.isEmpty() && presentations.size() > 0)
+         return true;
+      
+      return false;
    }
 
 }

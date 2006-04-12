@@ -65,7 +65,6 @@ import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.ImportException;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
-import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.mgt.*;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Artifact;
@@ -104,6 +103,7 @@ import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
+import org.theospi.portfolio.style.StyleConsumer;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.impl.WizardEntityProducer;
@@ -119,7 +119,7 @@ import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import net.sf.hibernate.HibernateException;
 
 public class WizardManagerImpl extends HibernateDaoSupport
-      implements WizardManager, DownloadableManager, ReadableObjectHome, ArtifactFinder, PresentableObjectHome {
+      implements WizardManager, DownloadableManager, ReadableObjectHome, ArtifactFinder, PresentableObjectHome, StyleConsumer {
 
    static final private String   DOWNLOAD_WIZARD_ID_PARAM = "wizardId";
 
@@ -1772,5 +1772,19 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public void setStyleManager(StyleManager styleManager) {
       this.styleManager = styleManager;
+   }
+   
+   protected List getWizardsByStyle(Id styleId) {
+      Object[] params = new Object[]{styleId.getValue()};
+      return getHibernateTemplate().find("from Wizard w where w.style.id=? " , 
+               params);
+   }
+
+   public boolean checkStyleConsumption(Id styleId) {
+      List wizards = getWizardsByStyle(styleId);
+      if (wizards != null && !wizards.isEmpty() && wizards.size() > 0)
+         return true;
+      
+      return false;
    }
 }

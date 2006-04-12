@@ -76,12 +76,12 @@ import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SiteService.SelectionType;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.hibernate.HibernateCallback;
 import org.springframework.orm.hibernate.HibernateObjectRetrievalFailureException;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.style.StyleConsumer;
 import org.theospi.portfolio.style.StyleFunctionConstants;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.style.model.Style;
@@ -98,6 +98,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
    private AgentManager agentManager;
    private List globalSites;
    private List globalSiteTypes;
+   private List consumers;
    
    
    public Style storeStyle(Style style) {
@@ -255,35 +256,47 @@ public class StyleManagerImpl extends HibernateDaoSupport
       return getNode(getIdManager().getId(nodeId));
    }
    
-   public void deleteStyle(final Id styleId) throws DataIntegrityViolationException {
+   public boolean deleteStyle(final Id styleId) {
       Style style = getStyle(styleId);
       getAuthzManager().checkPermission(StyleFunctionConstants.DELETE_STYLE, style.getId());
-      getLockManager().removeAllLocks(styleId.getValue());
-      //getHibernateTemplate().
       
-      //TODO handle things that are using this layout
-      // first delete all presentations that use this template
-      // this will delete all authorization as well
-      //Collection presentations = getHibernateTemplate().find("from Presentation where template_id=?", id.getValue(), Hibernate.STRING);
-      //for (Iterator i = presentations.iterator(); i.hasNext();) {
-      //   Presentation presentation = (Presentation) i.next();
-      //   deletePresentation(presentation.getId(), false);
-      //}
-
-      HibernateCallback callback = new HibernateCallback() {
-
-         public Object doInHibernate(Session session) throws HibernateException, SQLException {
-            session.delete("from Style s where s.id=?", styleId.getValue(), Hibernate.STRING);
-            return null;
-         }
-
-      };
-      //try {
-         getHibernateTemplate().execute(callback);
-      //}
-      //catch (DataIntegrityViolationException e) {
+      // handle things that are using this style
+      if (!checkStyleConsumption(styleId)) {
+      
+         getLockManager().removeAllLocks(styleId.getValue());
          
-      //}
+         HibernateCallback callback = new HibernateCallback() {
+   
+            public Object doInHibernate(Session session) throws HibernateException, SQLException {
+               session.delete("from Style s where s.id=?", styleId.getValue(), Hibernate.STRING);
+               return null;
+            }
+         };
+      
+         getHibernateTemplate().execute(callback);
+      }
+      else {
+         return false;
+      }
+      // If we get here, I think it was deleted
+      return true;
+   }
+   
+   protected boolean checkStyleConsumption(Id styleId) {
+      for (Iterator i = getConsumers().iterator(); i.hasNext();) {
+         StyleConsumer sc = (StyleConsumer) i.next();
+         if (sc.checkStyleConsumption(styleId))
+            return true;
+      }
+      return false;
+   }
+   
+   public List getConsumers() {
+      return this.consumers;
+   }
+   
+   public void setConsumers(List consumers) {
+      this.consumers = consumers;
    }
    
    public Collection getStylesForWarehouse()
