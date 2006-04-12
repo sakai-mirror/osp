@@ -4,7 +4,7 @@
 <div class ="portletBody">
 
 <div class="instruction">
-   <c:out value="${message}"/>
+   <c:out value="${message}" escapeXml="false" />
 </div>
 
 <form method="post">
