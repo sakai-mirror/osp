@@ -64,7 +64,7 @@
             </sakai:flat_list>
             <h:panelGrid columns="3" cellspacing="1">
                 <h:outputLabel for="styleFile" id="styleLabel" value="#{msgs.page_style}"/>
-                <h:inputText id="styleFile" value="#{freeForm.presentation.styleName}"
+                <h:inputText id="styleFile" value="#{freeForm.styleName}"
                              readonly="true" required="false"/>
                 <h:commandLink action="#{freeForm.processActionSelectStyle}" immediate="true">
                     <h:outputText value="#{msgs.select_style}"/>
