@@ -26,6 +26,7 @@ import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.*;
 import org.theospi.portfolio.style.StyleHelper;
+import org.theospi.portfolio.style.model.Style;
 import org.theospi.jsf.intf.XmlTagFactory;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
@@ -381,6 +382,24 @@ public class FreeFormTool extends HelperToolBase {
 
     public int getPageCount () {
         return getPageList().size();
+    }
+    
+    
+    public String getStyleName() {
+       ToolSession session = SessionManager.getCurrentToolSession();
+       if (session.getAttribute(StyleHelper.CURRENT_STYLE) != null) {
+          Style style = (Style)session.getAttribute(StyleHelper.CURRENT_STYLE);
+          presentation.setStyle(style);
+       }
+       else if (session.getAttribute(StyleHelper.UNSELECTED_STYLE) != null) {
+          presentation.setStyle(null);
+          session.removeAttribute(StyleHelper.UNSELECTED_STYLE);
+          return "";
+       }
+       
+       if (presentation.getStyle() != null)
+          return presentation.getStyle().getName();
+       return "";
     }
 
 }
