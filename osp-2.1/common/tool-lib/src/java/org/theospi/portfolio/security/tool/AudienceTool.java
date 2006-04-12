@@ -29,6 +29,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
 import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.authzGroup.Member;
 import org.sakaiproject.service.legacy.site.SiteService;
@@ -40,6 +41,7 @@ import org.sakaiproject.exception.IdUnusedException;
 
 import javax.faces.context.FacesContext;
 import java.util.*;
+import java.util.regex.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -340,19 +342,34 @@ public class AudienceTool extends HelperToolBase {
    public void setAgentManager(AgentManager agentManager) {
       this.agentManager = agentManager;
    }
+   
+   
+   
+   protected Agent createGuest(String item) {
+      AgentImpl viewer = new AgentImpl();
+      viewer.setDisplayName(item);
+      viewer.setRole(Agent.ROLE_GUEST);
+      viewer.setId(getIdManager().getId(viewer.getDisplayName()));
+      return viewer;
+   }
 
    /**
     *
     * @param displayName - for a guest user, this is the email address
-    * @return
+    * @return boolean, was found with with param limited to worksite
     */
    protected boolean findByEmailOrDisplayName(String displayName, boolean includeEmail, boolean worksiteLimited) {
       List retVal = new ArrayList();
 
       List guestUsers = null;
+      boolean isEmail = false;
 
       if (includeEmail) {
          guestUsers = getAgentManager().findByProperty("email", displayName);
+         
+         Pattern p = Pattern.compile("^[a-zA-Z][\\w\\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\\w\\.-]*[a-zA-Z0-9]\\.[a-zA-Z][a-zA-Z\\.]*[a-zA-Z]$");
+         Matcher m = p.matcher(displayName);
+         isEmail = m.matches();
       }
 
       if (guestUsers == null || guestUsers.size() == 0) {
@@ -361,6 +378,10 @@ public class AudienceTool extends HelperToolBase {
 
       if (guestUsers != null) {
          retVal.addAll(guestUsers);
+      } else if(isEmail && includeEmail) {
+         //Create a guest account for the user
+         addAgent(createGuest(displayName), "user_exists");
+         return true;
       }
 
       boolean found = false;
