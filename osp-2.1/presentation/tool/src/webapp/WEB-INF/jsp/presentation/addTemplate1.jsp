@@ -6,14 +6,13 @@
 
 <c:set var="targetNext" value="_target1" />
 
-
+    <c:if test="${empty template.name}">
     <h3><fmt:message key="title_addTemplate1"/></h3>
-    
+    </c:if>
+    <c:if test="${not empty template.name}">
+    <h3><fmt:message key="title_editTemplate1"/></h3>
+    </c:if>
     <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc"%>
-    
-    <p class="instruction"> 
-      <fmt:message key="instructions_template_new1"/>
-    </p>
     
     
 <form method="POST" action="addTemplate.osp"><osp:form />
