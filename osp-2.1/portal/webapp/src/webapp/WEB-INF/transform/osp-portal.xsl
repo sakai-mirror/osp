@@ -5,8 +5,8 @@
 	xmlns:osp="http://www.osportfolio.org/OspML"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-   <xsl:output method="html" version="4.0"
-      encoding="utf-8" indent="yes"/>
+   <xsl:output method="html" version="4.01"  
+      encoding="utf-8" indent="yes" doctype-public="http://www.w3.org/TR/html4/loose.dtd"/>
 
    <xsl:variable name="config" select="/portal/config" />
    <xsl:variable name="externalized" select="/portal/externalized" />
