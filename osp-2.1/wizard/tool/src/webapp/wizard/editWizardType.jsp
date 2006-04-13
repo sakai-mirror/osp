@@ -16,8 +16,6 @@
 <sakai:view>
 <h:form styleClass="portletBody">
 
-   <%@include file="steps.jspf"%>
-
    <sakai:view_title value="#{msgs.edit_wizard}" rendered='#{!wizard.current.newWizard}'/>
    <sakai:view_title value="#{msgs.add_wizard}"  rendered='#{wizard.current.newWizard}'/>
     
@@ -33,7 +31,12 @@
       </h:panelGroup>
    </sakai:panel_edit>
 
-   <%@include file="builderButtons.jspf"%>
+   <sakai:button_bar>
+	   <sakai:button_bar_item id="submitNext" value="#{msgs.save_continue_wizard}"
+	      action="#{wizard.processActionNewSteps}" />
+	   <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard}" action="#{wizard.processActionCancel}"
+	      immediate="true" />
+   </sakai:button_bar>
 
 </h:form>
 </sakai:view>

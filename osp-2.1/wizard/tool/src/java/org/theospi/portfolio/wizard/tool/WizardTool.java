@@ -124,7 +124,7 @@ public class WizardTool extends BuilderTool {
    public final static String IMPORT_PAGE = "importWizard";
 
    private BuilderScreen[] screens = {
-      new BuilderScreen(EDIT_PAGE_TYPE),
+     // new BuilderScreen(EDIT_PAGE_TYPE),
       new BuilderScreen(EDIT_PAGE),
       new BuilderScreen(EDIT_SUPPORT_PAGE),
       new BuilderScreen(EDIT_PAGES_PAGE),
@@ -341,6 +341,10 @@ public class WizardTool extends BuilderTool {
       setCurrent(new DecoratedWizard(this, newWizard, true));
       session.setAttribute("newWizard", "true");
 
+      return EDIT_PAGE_TYPE;
+   }
+
+   public String processActionNewSteps() {
       return startBuilder();
    }
 
@@ -467,7 +471,7 @@ public class WizardTool extends BuilderTool {
       //session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
 
       try {
-         context.redirect("osp.audience.helper/tool");
+         context.redirect("osp.audience.helper/tool.jsf?panel=Main");
       }
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);

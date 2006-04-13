@@ -1,9 +1,6 @@
 <sakai:button_bar>
-   <sakai:button_bar_item id="submitNext" value="#{msgs.save_continue_wizard}"
-      rendered="#{wizard.currentScreen.first}"
-      action="#{wizard.currentScreen.processActionNext}" />
    <sakai:button_bar_item id="submitSaveNext" value="#{msgs.save_continue_wizard}"
-      rendered="#{!wizard.currentScreen.last and !wizard.currentScreen.first}"
+      rendered="#{!wizard.currentScreen.last}"
       action="#{wizard.currentScreen.processActionSaveNext}" />
     <sakai:button_bar_item id="submitFinished" value="#{msgs.save_finish_wizard}"
       action="#{wizard.processActionSaveFinished}" rendered="#{!wizard.currentScreen.first}" />
