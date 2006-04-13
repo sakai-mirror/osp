@@ -10,16 +10,28 @@
       response.addHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0");
       response.addHeader("Pragma", "no-cache");
 %>
-
 <f:view>
 <sakai:view>
 
-   <%@include file="steps.jspf"%>
+<f:verbatim escape="false">
+   <style>
+   .chefLabel { width:150px;}
+   </style>
+</f:verbatim>
 
 <h:form>
 
-   <sakai:view_title value="#{msgs.edit_wizard}" rendered='#{!wizard.current.newWizard}'/>
-   <sakai:view_title value="#{msgs.add_wizard}"  rendered='#{wizard.current.newWizard}'/>
+   <sakai:view_title value="#{msgs.add_wizard} #{msgs.org_theospi_portfolio_wizard_model_Wizard_hierarchical}" rendered="#{wizard.current.base.type ==
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && wizard.current.newWizard}"/>
+   <sakai:view_title value="#{msgs.edit_wizard} #{msgs.org_theospi_portfolio_wizard_model_Wizard_hierarchical}" rendered="#{wizard.current.base.type ==
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.current.newWizard}"/>
+   <sakai:view_title value="#{msgs.add_wizard} #{msgs.org_theospi_portfolio_wizard_model_Wizard_sequential}"  rendered="#{wizard.current.base.type !=
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && wizard.current.newWizard}"/>
+   <sakai:view_title value="#{msgs.edit_wizard} #{msgs.org_theospi_portfolio_wizard_model_Wizard_sequential}"  rendered="#{wizard.current.base.type !=
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.current.newWizard}"/>
+    
+               
+   <%@include file="steps.jspf"%>
 
    <sakai:instruction_message value="#{msgs.wizard_instruction_message}" />
    <sakai:messages />
@@ -106,32 +118,34 @@
          
    <sakai:instruction_message value="#{msgs.com_ref_instruction}" />
 
+   <sakai:group_box>
    <sakai:panel_edit>
-      <h:outputLabel for="reflectionItems" id="reflectionLabel" value="#{msgs.reflection_item}" />
-      <h:panelGroup>
-         <h:selectOneMenu id="reflectionItems"
-            immediate="true" disabled="#{wizard.current.base.published}"
-            value="#{wizard.reflectionItem}">
-            <f:selectItem itemLabel="#{msgs.choose_reflection_item}" itemValue=""/>
-            <f:selectItem itemLabel="#{msgs.choose_form}" itemValue="1"/>
-            <f:selectItems value="#{wizard.reflectionFormsForSelect}"/>
-         <% /*   <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue="2"/>
-            <f:selectItems value="#{wizard.reflectionWizardsForSelect}"/> */ %>
-         </h:selectOneMenu>
-      </h:panelGroup>
-      <h:outputLabel for="commentItems" id="commentLabel" value="#{msgs.comment_item}" />
-      <h:panelGroup>
-         <h:selectOneMenu id="commentItems"
-            immediate="true" disabled="#{wizard.current.base.published}"
-            value="#{wizard.commentItem}">
-            <f:selectItem itemLabel="#{msgs.choose_comment_item}" itemValue=""/>
-            <f:selectItem itemLabel="#{msgs.choose_form}" itemValue="1"/>
-            <f:selectItems value="#{wizard.commentFormsForSelect}"/>
-          <% /*  <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue="2"/>
-            <f:selectItems value="#{wizard.commentWizardsForSelect}"/> */ %>
-         </h:selectOneMenu>
-      </h:panelGroup>
+	      <h:outputLabel for="reflectionItems" id="reflectionLabel" value="#{msgs.reflection_item}" />
+	      <h:panelGroup>
+	         <h:selectOneMenu id="reflectionItems"
+	            immediate="true" disabled="#{wizard.current.base.published}"
+	            value="#{wizard.reflectionItem}">
+	            <f:selectItem itemLabel="#{msgs.choose_reflection_item}" itemValue=""/>
+	           <%-- <f:selectItem itemLabel="#{msgs.choose_form}" itemValue="1"/> --%>
+	            <f:selectItems value="#{wizard.reflectionFormsForSelect}"/>
+	         <% /*   <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue="2"/>
+	            <f:selectItems value="#{wizard.reflectionWizardsForSelect}"/> */ %>
+	         </h:selectOneMenu>
+	      </h:panelGroup>
+	      <h:outputLabel for="commentItems" id="commentLabel" value="#{msgs.comment_item}" />
+	      <h:panelGroup>
+	         <h:selectOneMenu id="commentItems"
+	            immediate="true" disabled="#{wizard.current.base.published}"
+	            value="#{wizard.commentItem}">
+	            <f:selectItem itemLabel="#{msgs.choose_comment_item}" itemValue=""/>
+	          <%--  <f:selectItem itemLabel="#{msgs.choose_form}" itemValue="1"/> --%>
+	            <f:selectItems value="#{wizard.commentFormsForSelect}"/>
+	          <% /*  <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue="2"/>
+	            <f:selectItems value="#{wizard.commentWizardsForSelect}"/> */ %>
+	         </h:selectOneMenu>
+	      </h:panelGroup>
    </sakai:panel_edit>
+   </sakai:group_box>
    <h:outputText value="<br><br>" escape="false" />
    
    
@@ -141,20 +155,22 @@
       </ospx:xheadertitle>
    </ospx:xheader>
    <sakai:instruction_message value="#{msgs.eval_instruction}" />
-   <sakai:panel_edit>
-      <h:outputLabel for="evaluationItems" id="evaluationLabel" value="#{msgs.evaluation_item}" />
-      <h:panelGroup>
-         <h:selectOneMenu id="evaluationItems"
-            immediate="true" disabled="#{wizard.current.base.published}"
-            value="#{wizard.evaluationItem}">
-            <f:selectItem itemLabel="#{msgs.choose_evaluation_item}" itemValue=""/>
-            <f:selectItem itemLabel="#{msgs.choose_form}" itemValue=""/>
-            <f:selectItems value="#{wizard.evaluationFormsForSelect}"/>
-          <% /* <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue=""/>
-            <f:selectItems value="#{wizard.evaluationWizardsForSelect}"/> */ %>
-         </h:selectOneMenu>
-      </h:panelGroup>
-   </sakai:panel_edit>
+   <sakai:group_box>
+	   <sakai:panel_edit>
+	      <h:outputLabel for="evaluationItems" id="evaluationLabel" value="#{msgs.evaluation_item}" />
+	      <h:panelGroup>
+	         <h:selectOneMenu id="evaluationItems"
+	            immediate="true" disabled="#{wizard.current.base.published}"
+	            value="#{wizard.evaluationItem}">
+	            <f:selectItem itemLabel="#{msgs.choose_evaluation_item}" itemValue=""/>
+	          <%--  <f:selectItem itemLabel="#{msgs.choose_form}" itemValue="1"/> --%>
+	            <f:selectItems value="#{wizard.evaluationFormsForSelect}"/>
+	          <%-- <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue=""/>
+	            <f:selectItems value="#{wizard.evaluationWizardsForSelect}"/>  --%>
+	         </h:selectOneMenu>
+	      </h:panelGroup>
+	   </sakai:panel_edit>
+   </sakai:group_box>
    <h:outputText value="<br><br>" escape="false" />
    
    <ospx:xheader>

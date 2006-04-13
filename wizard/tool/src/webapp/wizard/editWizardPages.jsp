@@ -16,11 +16,16 @@
 <sakai:view>
 <h:form styleClass="portletBody">
 
+   <sakai:view_title value="#{msgs.add_wizard} #{msgs.org_theospi_portfolio_wizard_model_Wizard_hierarchical}" rendered="#{wizard.current.base.type ==
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && wizard.current.newWizard}"/>
+   <sakai:view_title value="#{msgs.edit_wizard} #{msgs.org_theospi_portfolio_wizard_model_Wizard_hierarchical}" rendered="#{wizard.current.base.type ==
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.current.newWizard}"/>
+   <sakai:view_title value="#{msgs.add_wizard} #{msgs.org_theospi_portfolio_wizard_model_Wizard_sequential}"  rendered="#{wizard.current.base.type !=
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && wizard.current.newWizard}"/>
+   <sakai:view_title value="#{msgs.edit_wizard} #{msgs.org_theospi_portfolio_wizard_model_Wizard_sequential}"  rendered="#{wizard.current.base.type !=
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.current.newWizard}"/>
+    
    <%@include file="steps.jspf"%>
-
-
-   <sakai:view_title value="#{msgs.edit_wizard}" rendered='#{!wizard.current.newWizard}'/>
-   <sakai:view_title value="#{msgs.add_wizard}"  rendered='#{wizard.current.newWizard}'/>
    
    <f:subview id="instructionsHier" rendered="#{wizard.current.base.type ==
                'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.moving}">
@@ -209,7 +214,10 @@
       
       <h:column rendered="#{!wizard.moving && !wizard.current.base.published}">
          <f:facet name="header">
-            <h:outputText value="#{msgs.re_order}" />
+            <h:outputText value="#{msgs.re_order_hier}" 
+            		rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}" />
+            <h:outputText value="#{msgs.re_order_seq}" 
+            		rendered="#{wizard.current.base.type != 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}" />
          </f:facet>
          <h:commandLink action="#{item.moveUp}" rendered="#{!item.first}">
             <h:graphicImage value="/img/arrowUp.gif" />
