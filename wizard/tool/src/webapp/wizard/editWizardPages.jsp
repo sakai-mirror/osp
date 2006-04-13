@@ -14,7 +14,7 @@
 
 <f:view>
 <sakai:view>
-<h:form styleClass="portletBody">
+<h:form>
 
    <sakai:view_title value="#{msgs.add_wizard} #{msgs.org_theospi_portfolio_wizard_model_Wizard_hierarchical}" rendered="#{wizard.current.base.type ==
                'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && wizard.current.newWizard}"/>
@@ -173,7 +173,7 @@
 	         </h:commandLink>
 		 </f:subview>
 		 
-         <f:subview id="columnWizardActions" rendered="#{item.wizard}">
+         <f:subview id="columnWizardActions" rendered="#{item.wizard && !wizard.current.base.published}">
 		      <h:commandLink
 		         action="#{wizard.current.rootCategory.processActionNewPage}"
 		         value="#{msgs.new_root_wizard_page}" />
@@ -214,11 +214,15 @@
       
       <h:column rendered="#{!wizard.moving && !wizard.current.base.published}">
          <f:facet name="header">
-            <h:outputText value="#{msgs.re_order_hier}" 
+            <f:subview id="rearrangeTitle">
+               <h:outputText value="#{msgs.re_order_hier}" 
             		rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}" />
-            <h:outputText value="#{msgs.re_order_seq}" 
+               <h:outputText value="#{msgs.re_order_seq}" 
             		rendered="#{wizard.current.base.type != 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}" />
+            </f:subview>
          </f:facet>
+         
+	     <h:outputText value="" escape="false" />
          <h:commandLink action="#{item.moveUp}" rendered="#{!item.first}">
             <h:graphicImage value="/img/arrowUp.gif" />
          </h:commandLink>
