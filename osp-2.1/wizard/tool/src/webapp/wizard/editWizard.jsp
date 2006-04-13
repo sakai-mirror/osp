@@ -14,7 +14,7 @@
 
 <f:view>
 <sakai:view>
-<h:form styleClass="portletBody">
+<h:form>
 
 
    <sakai:view_title value="#{msgs.add_wizard} #{msgs.org_theospi_portfolio_wizard_model_Wizard_hierarchical}" rendered="#{wizard.current.base.type ==
