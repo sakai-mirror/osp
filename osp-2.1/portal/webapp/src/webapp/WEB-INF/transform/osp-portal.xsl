@@ -599,7 +599,7 @@ your browser doesn't support iframes
    param:extra - if this is running during the "more" list
    ============================================================
    -->
-   <xsl:template match="siteType[@selected='true']">
+   <xsl:template match="siteType[@userSite='true' and @selected='true']">
       <xsl:param name="extra"/>
       <xsl:variable name="key" select="key"/>
       <li class="selectedTab">
@@ -628,6 +628,28 @@ your browser doesn't support iframes
          <a target="_parent">
             <xsl:attribute name="href">
                <xsl:value-of select="sites/site/url"/>
+            </xsl:attribute>
+            <xsl:attribute name="title">
+               <xsl:value-of select="$externalized/entry[@key=$key]"/>
+            </xsl:attribute>
+            <xsl:value-of select="$externalized/entry[@key=$key]"/>
+         </a>
+      </li>
+   </xsl:template>
+   
+   <!--
+   ===============match siteType selected===============
+   process the siteType element
+   param:extra - if this is running during the "more" list
+   ============================================================
+   -->
+   <xsl:template match="siteType[@userSite='false' and @selected='true']">
+      <xsl:param name="extra"/>
+      <xsl:variable name="key" select="key"/>
+      <li class="selectedTab">
+         <a>
+            <xsl:attribute name="href">
+               <xsl:value-of select="url"/>
             </xsl:attribute>
             <xsl:attribute name="title">
                <xsl:value-of select="$externalized/entry[@key=$key]"/>
