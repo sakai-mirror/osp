@@ -60,20 +60,25 @@ public class NotifyViewersController extends AbstractPresentationController impl
       NotificationForm form = (NotificationForm) requestModel;
       Agent agent = getAuthManager().getAgent();
       Presentation presentation = getPresentationManager().getPresentation(form.getPresentationId());
-
+      String url = null;
       if (request.containsKey(PARAM_CANCEL)) {
          return setupPresentationList(new Hashtable(), request, presentation);
       }
 
          Map model = new HashMap();
-         model.put("owner", agent);
+         model.put("owner", agent.getDisplayName());
          model.put("message", form.getMessage());
          model.put("presentation", presentation);
-         
+         model.put("osp_agent", agent);
          User user = UserDirectoryService.getCurrentUser();
          
-         String url = getServerConfigurationService().getServerUrl() +
-            "/osp-presentation-tool/viewPresentation.osp?id=" + presentation.getId().getValue();
+         if (presentation.getIsPublic()) {
+            url= getOspConfig().getProperties().getProperty("baseUrl") +
+               "/anonymous/viewPresentation.osp" + "?pid=" +  PortalService.getCurrentToolId() + "&id=" + presentation.getId().getValue();
+         } else {
+             url=  getOspConfig().getProperties().getProperty("baseUrl") +
+               "/guest/viewPresentation.osp" + "?pid=" +  PortalService.getCurrentToolId() + "&id=" + presentation.getId().getValue();
+         }
          
          String message = form.getMessage() + 
             "\n" + "****************************************************************" +
