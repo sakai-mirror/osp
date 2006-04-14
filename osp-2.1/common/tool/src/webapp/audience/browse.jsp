@@ -12,6 +12,7 @@
 %>
 
 <f:view>
+<f:loadBundle basename="org.theospi.portfolio.common.bundle.Messages" var="msgs"/>
 
 <sakai:view>
    <sakai:view_title value="#{audience.globalTitle}"/>
@@ -61,7 +62,7 @@
                <sakai:button_bar>
                   <sakai:button_bar_item id="add_selected_button"  
                      action="#{audience.processActionAddBrowseSelected}"
-                     value="#{msgs.add_selected}"/>
+                     value="#{msgs.add_members}"/>
                 </sakai:button_bar>
             </ospx:splitsection>
             <ospx:splitsection size="50%" valign="top" align="right">
@@ -97,7 +98,7 @@
 
           <sakai:button_bar>
              <sakai:button_bar_item id="back_button"  action="main"
-               value="#{msgs.back_audience}"/>
+               value="#{msgs.return_audience}"/>
            </sakai:button_bar>
 
       </ospx:splitsection>

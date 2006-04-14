@@ -29,6 +29,7 @@ package org.theospi.portfolio.security;
  */
 public interface AudienceSelectionHelper {
 
+
    public static final String AUDIENCE_FUNCTION =
          "org.theospi.portfolio.security.audienceFunction";
 
@@ -42,7 +43,7 @@ public interface AudienceSelectionHelper {
          "org.theospi.portfolio.security.audiencePublicInstructions";
 
     public static final String AUDIENCE_PUBLIC_URL =
-         "org.theospi.portfolio.security.audiencePublicURL";  
+         "org.theospi.portfolio.security.audiencePublicURL";
 
    public static final String AUDIENCE_GLOBAL_TITLE =
          "org.theospi.portfolio.security.audienceGlobalTitle";
@@ -72,4 +73,21 @@ public interface AudienceSelectionHelper {
    public static final String AUDIENCE_FILTER_INSTRUCTIONS =
          "org.theospi.portfolio.security.audienceFilterInstructions";
 
+   public static final String AUDIENCE_PORTFOLIO_WIZARD =
+         "org.theospi.portfolio.security.audiencePortfolioWizard";
+
+    public static final String AUDIENCE_CANCEL_TARGET =
+         "org.theospi.portfolio.security.audienceCancelTarget";
+
+    public static final String AUDIENCE_SAVE_TARGET =
+         "org.theospi.portfolio.security.audienceSaveTarget";
+
+    public static final String AUDIENCE_SAVE_NOTIFY_TARGET =
+         "org.theospi.portfolio.security.audienceSaveNotifyTarget";
+
+    public static final String AUDIENCE_BACK_TARGET =
+         "org.theospi.portfolio.security.audienceBackTarget";
+
+    public static final String AUDIENCE_PRESENTATION_MANAGER =
+         "org.theospi.portfolio.security.PresentationManager";   
 }

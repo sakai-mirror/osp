@@ -55,10 +55,19 @@ public class HelperToolBase extends ToolBase {
    protected String returnToCaller() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       Tool tool = ToolManager.getCurrentTool();
-      String url = (String) SessionManager.getCurrentToolSession().getAttribute(
+      ToolSession session = SessionManager.getCurrentToolSession();
+       String url = (String) session.getAttribute(
             tool.getId() + Tool.HELPER_DONE_URL);
-      SessionManager.getCurrentToolSession().removeAttribute(tool.getId() + Tool.HELPER_DONE_URL);
-      try {
+      String param =  (String) session.getAttribute("target");
+      if (param != null){
+          url = url.concat("?"+ param);
+      }
+      session.removeAttribute("target");
+      session.removeAttribute(tool.getId() + Tool.HELPER_DONE_URL);
+
+
+       try {
+
          context.redirect(url);
       }
       catch (IOException e) {
