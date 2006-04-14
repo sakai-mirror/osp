@@ -1,0 +1,10 @@
+   <h:commandButton action="#{freeForm.processActionContinue}"
+      value="#{msgs.continue}"/>
+   <h:commandButton action="#{freeForm.processActionBack}"
+      value="#{msgs.back}"/>  
+   <h:commandButton action="#{freeForm.processActionNewPage}"
+      value="#{msgs.add_page}"/>
+   <h:commandButton action="#{freeForm.processActionSave}"
+      value="#{msgs.save}"/>
+   <h:commandButton action="#{freeForm.processActionCancel}"
+      value="#{msgs.cancel}"/>

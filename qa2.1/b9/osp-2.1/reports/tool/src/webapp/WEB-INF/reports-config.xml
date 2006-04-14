@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+    <!-- 
+           This bean sets up the reports into the Manager.  The reports being added 
+        are the pre-defined report definitions
+    -->
+    <bean id="configReportsManager"
+        class="org.theospi.portfolio.reports.tool.mgt.ConfigReports"
+        init-method="init" lazy-init="false" singleton="true">
+        <property name="reportsManager">
+            <ref bean="org.theospi.portfolio.reports.model.ReportsManager" />
+        </property>
+        <property name="reports">
+            <list>
+                 <ref bean="matrixCellCompletionStatusByUser" />
+                <ref bean="matrixStatusByUser" />
+                <ref bean="matrixStatusByOwner" />
+                <!--  <ref bean="matrixStatusByLevel" />
+                <ref bean="matrixScoreByReviewer" /> -->
+               <!--   <ref bean="testreport1" />
+                <ref bean="testreport2" />
+                <ref bean="artifactTest" />
+                <ref bean="testreport4" />
+                <ref bean="testreport5" /> -->
+            </list>
+        </property>
+    </bean>
+
+</beans>
