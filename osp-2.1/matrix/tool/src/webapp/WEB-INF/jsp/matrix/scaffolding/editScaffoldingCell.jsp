@@ -122,7 +122,7 @@
       <p class="shorttext">
          <label><fmt:message key="label_selectForm"/></label>    
          <select name="selectAdditionalFormId" >
-            <option value="" selected><fmt:message key="none_add_form_progression_label" /></option>
+            <option value="" selected><fmt:message key="select_form_text" /></option>
             <c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
                <option value="<c:out value="${addtlForm.id}"/>">
                   <c:out value="${addtlForm.name}"/></option>
@@ -260,9 +260,9 @@
           <p class="shorttext">
             <label><fmt:message key="label_selectReflectionDevice"/></label>    
                <select name="<c:out value="${status.expression}"/>" <c:out value="${localDisabledText}"/>>
-                     <option onclick="document.forms[0].reflectionDeviceType.value='';" value=""><fmt:message key="none_progression_label" /></option>
+                     <option onclick="document.forms[0].reflectionDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
                   <c:forEach var="refDev" items="${reflectionDevices}" varStatus="loopCount">
-                     <option onclick="document.forms[0].reflectionDeviceType.value='<c:out value="${refDev.type}"/>');" 
+                     <option onclick="document.forms[0].reflectionDeviceType.value='<c:out value="${refDev.type}"/>';" 
                         value="<c:out value="${refDev.id}"/>" <c:if test="${status.value==refDev.id}"> selected</c:if>><c:out value="${refDev.name}"/></option>
                   </c:forEach>
                </select>
@@ -279,7 +279,7 @@
        <p class="shorttext">
          <label><fmt:message key="label_selectReviewDevice"/></label>    
             <select name="<c:out value="${status.expression}"/>" <c:out value="${localDisabledText}"/>>
-                     <option onclick="document.forms[0].reviewDeviceType.value='';" value=""><fmt:message key="none_progression_label" /></option>
+                     <option onclick="document.forms[0].reviewDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
                   <c:forEach var="reviewDev" items="${reviewDevices}" varStatus="loopCount">
                      <option onclick="document.forms[0].reviewDeviceType.value='<c:out value="${reviewDev.type}"/>';" 
                         value="<c:out value="${reviewDev.id}"/>" <c:if test="${status.value==reviewDev.id}"> selected</c:if>><c:out value="${reviewDev.name}"/></option>
@@ -307,7 +307,7 @@
        <p class="shorttext">
          <label><fmt:message key="label_selectEvaluationDevice"/></label>    
             <select name="<c:out value="${status.expression}"/>" <c:out value="${localDisabledText}"/>>
-                     <option onclick="document.forms[0].evaluationDeviceType.value='';" value=""><fmt:message key="none_progression_label" /></option>
+                     <option onclick="document.forms[0].evaluationDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
                   <c:forEach var="evalDev" items="${evaluationDevices}" varStatus="loopCount">
                      <option onclick="document.forms[0].evaluationDeviceType.value='<c:out value="${evalDev.type}"/>';" 
                         value="<c:out value="${evalDev.id}"/>" <c:if test="${status.value==evalDev.id}"> selected</c:if>><c:out value="${evalDev.name}"/></option>
