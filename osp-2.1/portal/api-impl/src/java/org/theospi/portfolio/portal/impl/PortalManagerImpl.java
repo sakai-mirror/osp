@@ -67,11 +67,9 @@ public class PortalManagerImpl implements PortalManager {
    public Map getSitesByType() {
       Map typeMap = new Hashtable();
 
-      int index = 0;
       User currentUser = getCurrentUser();
       if (currentUser != null && currentUser.getId().length() > 0) {
          addMyWorkspace(typeMap);
-         index++;
       }
       else {
          return createGatewayMap(typeMap);
@@ -83,17 +81,40 @@ public class PortalManagerImpl implements PortalManager {
          String type = (String) i.next();
          List sites = getSiteService().getSites(SiteService.SelectionType.ACCESS, type, null,
 				null, SiteService.SortType.TITLE_ASC, null);
+         SiteType siteType = (SiteType) getSiteTypes().get(type);
+
+         if (siteType == null) {
+            siteType = SiteType.OTHER;
+         }
+
+         addSpecialSites(siteType.getSpecialSites(), sites);
+
          if (sites.size() > 0) {
-            SiteType siteType = (SiteType) getSiteTypes().get(type);
-            if (siteType == null) {
-               siteType = SiteType.OTHER;
-            }
             typeMap.put(siteType, sites);
          }
-         index++;
       }
 
       return typeMap;
+   }
+
+   protected void addSpecialSites(List specialSites, List sites) {
+
+      if (specialSites == null) {
+         return;
+      }
+
+      for (Iterator i=specialSites.iterator();i.hasNext();) {
+         Site site = null;
+         try {
+            site = getSiteService().getSite((String) i.next());
+         } catch (IdUnusedException e) {
+            throw new RuntimeException(e);
+         }
+         if (site != null && site.getRole(getCurrentUser().getId()) != null) {
+            sites.add(site);
+         }
+      }
+      Collections.sort(sites, new SiteTitleComparator());
    }
 
    protected Map createGatewayMap(Map typeMap) {
@@ -125,8 +146,13 @@ public class PortalManagerImpl implements PortalManager {
 
    public List getSitesForType(String type, SiteService.SortType sort, PagingPosition page) {
       String baseType = extractType(type);
-      return getSiteService().getSites(SiteService.SelectionType.ACCESS, baseType, null,
+      List sites = getSiteService().getSites(SiteService.SelectionType.ACCESS, baseType, null,
 				null, sort, page);
+
+      SiteType siteType = (SiteType) getSiteTypes().get(baseType);
+      addSpecialSites(siteType.getSpecialSites(), sites);
+
+      return sites;
    }
 
    protected String extractType(String type) {
@@ -338,9 +364,24 @@ public class PortalManagerImpl implements PortalManager {
       if (getSiteService().isUserSite(site.getId())){
          return SiteType.MY_WORKSPACE.getKey();
       }
-      else {
-         return decorateSiteType(site.getType());
+      else if (site.getType() != null) {
+         String siteType = decorateSiteType(site.getType());
+
+         return siteType;
       }
+      else {
+         return findSpecialSiteType(site);
+      }
+   }
+
+   protected String findSpecialSiteType(Site site) {
+      for (Iterator i=getSiteTypes().values().iterator();i.hasNext();) {
+         SiteType type = (SiteType) i.next();
+         if (type.getSpecialSites() != null && type.getSpecialSites().contains(site.getId())) {
+            return type.getKey();
+         }
+      }
+      return null;
    }
 
    public SiteType getSiteType(String siteTypeKey) {

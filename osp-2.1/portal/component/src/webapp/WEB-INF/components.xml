@@ -66,6 +66,11 @@
             <ref bean="org.theospi.portfolio.portal.model.ToolCategory.analyzeReport"/>
          </list>
       </property>
+      <property name="specialSites">
+         <list>
+            <value>!admin</value>
+         </list>
+      </property>
    </bean>
 
    <bean id="org.theospi.portfolio.portal.model.SiteType.portfolio"
