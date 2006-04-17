@@ -38,6 +38,7 @@ public class SiteType implements Comparable {
    private int firstCategory = 0;
    private int lastCategory = 0;
    private List toolCategories;
+   private List specialSites;
    public static final SiteType OTHER = new SiteType("org.theospi.portfolio.portal.other", Integer.MAX_VALUE);
    public static final SiteType MY_WORKSPACE = new SiteType("org.theospi.portfolio.portal.myWorkspace", 0);
    public static final SiteType GATEWAY = new SiteType("org.theospi.portfolio.portal.gateway", 0);
@@ -102,6 +103,14 @@ public class SiteType implements Comparable {
 
    public void setLastCategory(int lastCategory) {
       this.lastCategory = lastCategory;
+   }
+
+   public List getSpecialSites() {
+      return specialSites;
+   }
+
+   public void setSpecialSites(List specialSites) {
+      this.specialSites = specialSites;
    }
 
 }
