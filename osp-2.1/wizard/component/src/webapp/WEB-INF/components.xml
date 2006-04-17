@@ -81,7 +81,6 @@
             <value>osp.wizard.review</value>
             <value>osp.wizard.evaluate</value>
             <value>osp.wizard.view</value>
-            <value>osp.wizard.copy</value>
             <value>osp.wizard.export</value>
          </list>
       </property>
