@@ -174,7 +174,7 @@
          </c:if>
          <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
          <c:out value="${reflections[0].reviewContentNode.displayName}" />
-         <a href="<osp:url value="reviewHelper.osp">
+         <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                <osp:param name="page_id" value="${cell.wizardPage.id}" />
                <osp:param name="org_theospi_portfolio_review_type" value="0" />
                <osp:param name="current_review_id" value="${reflections[0].reviewContentNode.resource.id}" />
