@@ -413,11 +413,9 @@ your browser doesn't support iframes
 <div>
 
    <xsl:for-each select="$page/columns/column[@index='0']/tools/tool">
-      <xsl:for-each select="$page/columns/column[@index='0']/tools/tool">
-         <xsl:call-template name="tool">
-            <xsl:with-param name="tool" select="."/>
-         </xsl:call-template>
-      </xsl:for-each>
+      <xsl:call-template name="tool">
+         <xsl:with-param name="tool" select="."/>
+      </xsl:call-template>
    </xsl:for-each>
 
 </div>
