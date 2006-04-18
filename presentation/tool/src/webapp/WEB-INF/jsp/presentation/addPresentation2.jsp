@@ -94,24 +94,9 @@
                                         value="${loopCounter.index}" />
                                 </c:set>
     
-                                <c:set var="previewFrame">artifactMetadata<c:out
-                                        value="${loopCounter.index}" />
-                                </c:set>
-                                <c:set var="previewButton">previewButton<c:out
-                                        value="${loopCounter.index}" />
-                                </c:set>
-                                <c:set var="closeButton">metadataArea<c:out
-                                        value="${loopCounter.index}" />
-                                </c:set>
                                 <c:set var="selectBox">
                                     <c:out value="${list1}" />
                                 </c:set>
-                                <c:set var="nothingSelectedMessage"><fmt:message key="addPresentation2_selectItemFirst"/></c:set>
-                                <c:set var="previewUrl">"<osp:url
-                                        value="/viewNode.osp" />&panelId=<c:out
-                                        value="${previewFrame}" />&type=<c:out
-                                        value="${itemDefinition.type}" />&viewOnly=true&nodeId=" + getNodeId("<c:out
-                                        value="${selectBox}" />")</c:set>
     
                                 <tr class="underline">
                                     <td class="underline" width="40%"
@@ -130,8 +115,7 @@
                                         
                                         <select multiple="true"
                                         size="10"
-                                        onchange='closeFrame("<c:out value="${previewFrame}"/>", "<c:out value="${previewButton}"/>","<c:out value="${closeButton}"/>")'
-                                        onDblClick='move("<c:out value="${list1}"/>","<c:out value="${list2}"/>",false);closeFrame("<c:out value="${previewFrame}"/>", "<c:out value="${previewButton}"/>","<c:out value="${closeButton}"/>")'
+                                        onDblClick='move("<c:out value="${list1}"/>","<c:out value="${list2}"/>",false);'
                                         id="<c:out value="${list1}"/>"
                                         name="<c:out value="${list1}"/>"
                                         style="width:175">
@@ -179,7 +163,7 @@
                       <select
                             multiple="true"
                             size="10"
-                            onDblClick='move("<c:out value="${list2}"/>","<c:out value="${list1}"/>",false);closeFrame("<c:out value="${previewFrame}"/>", "<c:out value="${previewButton}"/>","<c:out value="${closeButton}"/>")'
+                            onDblClick='move("<c:out value="${list2}"/>","<c:out value="${list1}"/>",false);'
                             id="<c:out value="${list2}"/>"
                             name="<c:out value="${status.expression}"/>"
                             style="width:175">
@@ -199,15 +183,8 @@
     
                 </c:when>
                 <c:otherwise>
-                <c:set var="previewFrame">artifactMetadata<c:out value="${loopCounter.index}"/></c:set>
-                <c:set var="previewButton">previewButton<c:out value="${loopCounter.index}"/></c:set>
-                <c:set var="closeButton">metadataArea<c:out value="${loopCounter.index}"/></c:set>
                 <c:set var="selectBox"><c:out value="${status.expression}"/><c:out value="${loopCounter.index}"/></c:set>
-                <c:set var="nothingSelectedMessage"><fmt:message key="addPresentation2_selectItemFirst"/></c:set>
-                <c:set var="previewUrl">"<osp:url value="/viewNode.osp"/>&
-                                        panelId=<c:out value="${previewFrame}"/>
-                                        &type=<c:out value="${itemDefinition.type}"/>
-                                        &viewOnly=true&nodeId=" + getNodeId("<c:out value="${selectBox}"/>")</c:set>
+                
                                 <tr class="underline">
                                     <td class="underline" valign="top">
                                     <h3><c:out
@@ -217,8 +194,7 @@
                                         value="${itemDefinition.description}" /></td>
                                     <td align="right" valign="top"><fmt:message key="label_availableItems"/> <select
                                         id="<c:out value="${selectBox}"/>"
-                                        name="<c:out value="${status.expression}"/>"
-                                        onchange='closeFrame("<c:out value="${previewFrame}"/>", "<c:out value="${previewButton}"/>","<c:out value="${closeButton}"/>")'>
+                                        name="<c:out value="${status.expression}"/>">
                                         <option value=""><fmt:message key="addPresentation2_selectItem"/>
                                            </option>
                                         <option value="">- - - - - - - - - -
@@ -238,26 +214,6 @@
                                             </option>
                                         </c:forEach>
                                     </select></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">
-                                    <div style="visibility:visible"
-                                        id="<c:out value="${previewButton}"/>">
-                                    <a href="#"
-                                        onclick='return showFrame("<c:out value="${selectBox}"/>","<c:out value="${previewFrame}"/>", "<c:out value="${previewButton}"/>","<c:out value="${closeButton}"/>",<c:out escapeXml="false" value="${previewUrl}"/>,"<c:out value="${nothingSelectedMessage}"/>")'><fmt:message key="addPresentation2_previewSelectedItem"/>
-                                        </a></div>
-                                    <div style="visibility:hidden"
-                                        id="<c:out value="${closeButton}"/>">
-                                    <a href="#"
-                                        onclick='return closeFrame("<c:out value="${previewFrame}"/>", "<c:out value="${previewButton}"/>","<c:out value="${closeButton}"/>")'><fmt:message key="addPresentation_closePreview"/>
-                                        </a> <iframe
-                                        name="<c:out value="${previewFrame}"/>"
-                                        id="<c:out value="${previewFrame}"/>"
-                                        height="0" width="650"
-                                        frameborder="0" marginwidth="0"
-                                        marginheight="0" scrolling="yes"> </iframe>
-                                    </div>
-                                    </td>
                                 </tr>
     
                                 </c:otherwise>
