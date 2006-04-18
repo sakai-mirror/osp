@@ -1,0 +1,9 @@
+
+   <h:commandButton action="main"
+      actionListener="#{freeForm.currentPage.pagePropertiesSaved}"
+      value="#{msgs.save_changes}" rendered="#{freeForm.currentPage.base.title != null}"/>
+   <h:commandButton action="main"
+      actionListener="#{freeForm.currentPage.pagePropertiesSaved}"
+      value="#{msgs.add_page}" rendered="#{freeForm.currentPage.base.title == null}"/>
+   <h:commandButton action="#{freeForm.processActionCancel}"
+      value="#{msgs.cancel}" immediate="true"/>
