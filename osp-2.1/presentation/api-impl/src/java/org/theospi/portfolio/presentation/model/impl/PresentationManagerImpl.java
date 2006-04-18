@@ -1131,7 +1131,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       zos.putNextEntry(newfileEntry);
 
-      getStructuredArtifactDefinitionManager().packageFormForExport(home.getType().getId().getValue(), zos);
+      getStructuredArtifactDefinitionManager().packageFormForExport(home.getType().getId().getValue(), zos, false);
 
       zos.closeEntry();
    }
