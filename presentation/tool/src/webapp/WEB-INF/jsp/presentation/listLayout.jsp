@@ -90,7 +90,7 @@
       </TD>
       <TD><c:out value="${layout.description}" /></TD>
       <TD><c:out value="${layout.owner.displayName}" /></TD>
-      <td><c:out value="${layout.globalState}" /></TD>
+      <TD><fmt:message key="layout_published_status${layout.globalState}"/></TD>
     </TR>
 
   </c:forEach>

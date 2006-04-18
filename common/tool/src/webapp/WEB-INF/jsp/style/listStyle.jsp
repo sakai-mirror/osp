@@ -98,7 +98,7 @@
       </TD>
       <TD><c:out value="${style.description}" /></TD>
       <TD><c:out value="${style.owner.displayName}" /></TD>
-      <td><c:out value="${style.globalState}" /></TD>
+      <TD><fmt:message key="style_published_status${style.globalState}"/></TD>
     </TR>
 
   </c:forEach>
