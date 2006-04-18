@@ -119,7 +119,8 @@ public interface PresentationManager extends CleanupableService {
 
    public Collection findPublishedLayouts(String siteId);
    public Collection findLayoutsByOwner(Agent owner, String siteId);
-   public Collection findGlobalLayouts();
+   public Collection findMyGlobalLayouts();
+   public Collection findAllGlobalLayouts();
 
    public PresentationLayout storeLayout(PresentationLayout layout);
    

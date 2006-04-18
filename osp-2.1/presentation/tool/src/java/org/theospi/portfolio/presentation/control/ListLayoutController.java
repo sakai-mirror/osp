@@ -55,10 +55,10 @@ public class ListLayoutController extends AbstractPresentationController {
       
       if (selectable != null) {
          model.put("selectableLayout", selectable);
-         layouts.addAll(getPresentationManager().findGlobalLayouts());
+         layouts.addAll(getPresentationManager().findMyGlobalLayouts());
       }
       else if (global) {
-         layouts.addAll(getPresentationManager().findGlobalLayouts());
+         layouts.addAll(getPresentationManager().findAllGlobalLayouts());
       }
       
       model.put("layoutCount", String.valueOf(layouts.size()));
