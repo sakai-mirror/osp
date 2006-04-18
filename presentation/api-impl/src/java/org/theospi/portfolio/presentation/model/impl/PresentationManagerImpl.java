@@ -2006,12 +2006,18 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             new Object[]{owner.getId().getValue(), siteId});
    }
 
-   public Collection findGlobalLayouts() {
+   public Collection findMyGlobalLayouts() {
       return getHibernateTemplate().find(
          "from PresentationLayout where globalState=? Order by name",
          new Object[]{new Integer(PresentationLayout.STATE_PUBLISHED)});
    }
 
+   public Collection findAllGlobalLayouts() {
+      return getHibernateTemplate().find(
+         "from PresentationLayout where globalState=? or globalState=? Order by name",
+         new Object[]{new Integer(PresentationLayout.STATE_PUBLISHED), new Integer(PresentationLayout.STATE_WAITING_APPROVAL)});
+   }
+   
    public PresentationLayout storeLayout (PresentationLayout layout) {
       return storeLayout(layout, true);
    }

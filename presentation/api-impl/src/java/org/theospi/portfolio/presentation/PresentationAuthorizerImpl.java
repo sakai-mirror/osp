@@ -83,9 +83,7 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
       } else if (function.equals(PresentationFunctionConstants.EDIT_LAYOUT)) {
          return isLayoutAuth(facade, id, agent, function);
       } else if (function.equals(PresentationFunctionConstants.PUBLISH_LAYOUT)) {
-         PresentationLayout layout = getPresentationManager().getPresentationLayout(id);
-         Id toolId = getIdManager().getId(layout.getToolId());
-         return new Boolean(facade.isAuthorized(agent,function,toolId));
+         return this.canPublishLayout(facade, id, agent, function);
       } else if (function.equals(PresentationFunctionConstants.SUGGEST_PUBLISH_LAYOUT)) {
          PresentationLayout layout = getPresentationManager().getPresentationLayout(id);
          Id siteId = getIdManager().getId(layout.getSiteId());
@@ -132,7 +130,15 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
       return new Boolean(facade.isAuthorized(function,toolId));
    }
 
-   
+   protected Boolean canPublishLayout(AuthorizationFacade facade, Id qualifier, Agent agent, String function) {
+      PresentationLayout layout = getPresentationManager().getPresentationLayout(qualifier);
+      if (layout == null) {
+         return new Boolean(facade.isAuthorized(function,qualifier));
+      }
+
+      Id siteId = getIdManager().getId(layout.getSiteId());
+      return new Boolean(facade.isAuthorized(function,siteId));  
+   }
    
    protected Boolean isPresentationCommentAuth(AuthorizationFacade facade, Agent agent, Id id) {
       Presentation pres = getPresentationManager().getLightweightPresentation(id);
