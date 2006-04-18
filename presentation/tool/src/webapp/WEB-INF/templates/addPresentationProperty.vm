@@ -145,8 +145,9 @@
 
 #end
 
-<c:set var="targetPrevious" value="_target0"/>
-<c:set var="targetNext" value="_target2"/>
+<c:set var="targetPrevious" value="_target1"/>
+<c:set var="targetNext" value="_target3"/>
+<c:set var="step" value="2"/>
 <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc" %>
 <form method="POST" name="wizardform" action="addPresentation.osp" onsubmit="return true;">
 <osp:form/>
