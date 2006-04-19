@@ -59,12 +59,18 @@
     <osp-c:authZMap prefix="osp.matrix.scaffolding." qualifier="${scaffold.id}" var="isAuthorizedTo" />
     <TR>
       <TD nowrap>
+         <c:if test="${scaffold.published == true && (scaffold.owner == osp_agent || can.use || can.review || can.evaluate)}">
+            <a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />">
+         </c:if>
          <c:out value="${scaffold.title}" />
+         <c:if test="${scaffold.published == true && (scaffold.owner == osp_agent || can.use || can.review || can.evaluate)}">
+            </a>
+         </c:if>
          <c:set var="hasFirstAction" value="false" />
          <div class="itemAction">
-             <c:if test="${scaffold.published == true && (scaffold.owner == osp_agent || can.use || can.review || can.evaluate)}">
-               <a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_view"/></a>
-               <c:set var="hasFirstAction" value="true" />
+             <c:if test="${can.publish && scaffold.owner == osp_agent && scaffold.published == false}">
+                <c:set var="hasFirstAction" value="true" />
+                <a href="<osp:url value="publishScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="action_publish"/></a>
              </c:if>
              
              <c:if test="${scaffold.owner == osp_agent}">
@@ -72,7 +78,7 @@
                  <c:set var="hasFirstAction" value="true" />
                 <a href="<osp:url value="viewScaffolding.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_edit"/></a>
              </c:if>
-    
+             
              <c:if test="${scaffold.owner == osp_agent && scaffold.published == false}">
                 <c:if test="${hasFirstAction}" > | </c:if>
                 <c:set var="hasFirstAction" value="true" />
@@ -80,12 +86,6 @@
                    href="<osp:url value="deleteScaffolding.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_delete"/></a>
              </c:if>
     
-             <c:if test="${can.publish && scaffold.owner == osp_agent && scaffold.published == false}">
-                <c:if test="${hasFirstAction}" > | </c:if>
-                <c:set var="hasFirstAction" value="true" />
-                <a href="<osp:url value="publishScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="action_publish"/></a>
-             </c:if>
-             
              <c:if test="${can.export}">
                 <c:if test="${hasFirstAction}" > | </c:if>
                 <c:set var="hasFirstAction" value="true" />
