@@ -20,28 +20,33 @@
  **********************************************************************************/
 package org.theospi.portfolio.security.tool;
 
-import org.theospi.portfolio.shared.tool.HelperToolBase;
-import org.theospi.portfolio.shared.tool.PagingList;
-import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.security.Authorization;
-import org.theospi.portfolio.security.AudienceSelectionHelper;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.AgentManager;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.authzGroup.Member;
-import org.sakaiproject.service.legacy.site.SiteService;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.Group;
-import org.sakaiproject.api.kernel.tool.Placement;
-import org.sakaiproject.api.kernel.tool.ToolManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.api.kernel.tool.Placement;
+import org.sakaiproject.api.kernel.tool.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.service.legacy.authzGroup.Member;
+import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.service.legacy.site.Group;
+import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.service.legacy.site.SiteService;
+import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.framework.email.cover.EmailService;
+import org.theospi.portfolio.security.AudienceSelectionHelper;
+import org.theospi.portfolio.security.Authorization;
+import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.shared.model.AgentImplOsp;
+import org.theospi.portfolio.shared.tool.HelperToolBase;
+import org.theospi.portfolio.shared.tool.PagingList;
 
 import javax.faces.context.FacesContext;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
@@ -71,7 +76,7 @@ public class AudienceTool extends HelperToolBase {
     private String stepString = "3";
     private String function;
     private Id qualifier;
-
+    private static final Pattern emailPattern = Pattern.compile(".*@.*");
     private boolean publicAudience = false;
 
     public List getSelectedMembers() {
@@ -355,12 +360,16 @@ public class AudienceTool extends HelperToolBase {
 
     public String processActionAddEmail() {
         boolean worksiteLimited = isWorksiteLimited();
+
         if (!findByEmailOrDisplayName(getSearchEmails(), true, worksiteLimited)) {
             if (worksiteLimited) {
                 FacesContext.getCurrentInstance().addMessage(null,
                         getFacesMessageFromBundle("worksite_user_not_found", (new Object[]{getSearchUsers()})));
             }
-        } else {
+
+
+        }
+           else {
             setSearchEmails("");
         }
         return "tool";
@@ -386,14 +395,21 @@ public class AudienceTool extends HelperToolBase {
 
     /**
      * @param displayName - for a guest user, this is the email address
-     * @return
-     */
+     * @  */
     protected boolean findByEmailOrDisplayName(String displayName, boolean includeEmail, boolean worksiteLimited) {
         List retVal = new ArrayList();
         List guestUsers = null;
-
+        AgentImplOsp viewer = new AgentImplOsp();
         if (includeEmail) {
             guestUsers = getAgentManager().findByProperty("email", displayName);
+            if (!worksiteLimited && guestUsers == null){
+                viewer.setDisplayName(displayName);
+                viewer.setRole(Agent.ROLE_GUEST);
+                viewer.setId(getIdManager().getId(viewer.getDisplayName()));
+                guestUsers = new ArrayList();
+                guestUsers.add(viewer);
+            }
+
         }
 
         if (guestUsers == null || guestUsers.size() == 0) {
@@ -404,8 +420,6 @@ public class AudienceTool extends HelperToolBase {
             retVal.addAll(guestUsers);
         }
 
-
-
         boolean found = false;
 
         for (Iterator i = retVal.iterator(); i.hasNext();) {
@@ -414,6 +428,12 @@ public class AudienceTool extends HelperToolBase {
             if (worksiteLimited) {
                 if (!checkWorksiteMember(agent)) {
                     return false;
+                }
+            }
+            if (agent instanceof AgentImplOsp){
+                agent = createGuestUser(agent);
+                if (agent != null){
+                    notifyNewUserEmail(agent);
                 }
             }
             addAgent(agent, "user_exists");
@@ -607,5 +627,63 @@ public class AudienceTool extends HelperToolBase {
         return stepString;
     }
 
+  /*   protected boolean validateEmail(String displayName) {
 
+      if (!emailPattern.matcher(displayName).matches()) {
+         //errors.rejectValue("displayName", "Invalid email address",
+         //      new Object[0], "Invalid email address");
+         return false;
+      }
+
+      try {
+         InternetAddress.parse(displayName, true);
+      }
+      catch (AddressException e) {
+         //errors.rejectValue("displayName", "Invalid email address",
+         //      new Object[0], "Invalid email address");
+         return false;
+      }
+
+      return true;
+   }   */
+    protected Agent createGuestUser(Agent viewer){
+      AgentImplOsp guest = (AgentImplOsp) viewer;
+      guest.setRole(Agent.ROLE_GUEST);
+      return getAgentManager().createAgent(guest);
+   }
+
+   private void notifyNewUserEmail(Agent guest)
+	{
+    	String from = ServerConfigurationService.getString("setup.request", null);
+		if (from == null)
+		{
+
+			from = "postmaster@".concat(ServerConfigurationService.getServerName());
+		}
+		String productionSiteName = ServerConfigurationService.getString("ui.service", "");
+		String productionSiteUrl = ServerConfigurationService.getPortalUrl();
+
+		String to = guest.getDisplayName();
+		String headerTo = to;
+		String replyTo = to;
+		String message_subject = getMessageFromBundle("email.guestusernoti", new Object[]{productionSiteName});
+		String content = "";
+
+		if (from != null && to !=null)
+		{
+			StringBuffer buf = new StringBuffer();
+			buf.setLength(0);
+
+			// email body
+			buf.append(to + ":\n\n");
+            AgentImplOsp impl = (AgentImplOsp) guest;
+			buf.append(getMessageFromBundle("email.addedto", new Object[]{productionSiteName, productionSiteUrl}) + "\n\n");
+			buf.append(getMessageFromBundle("email.simpleby", new Object[]{UserDirectoryService.getCurrentUser().getDisplayName()}) + "\n\n");
+            buf.append(getMessageFromBundle("email.userid", new Object[]{to}) + "\n\n");
+            buf.append(getMessageFromBundle("email.password", new Object[]{impl.getPassword()}) + "\n\n");
+
+			content = buf.toString();
+			EmailService.send(from, to, message_subject, content, headerTo, replyTo, null);
+		}
+    }
 }

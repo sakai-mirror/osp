@@ -55,7 +55,7 @@
       <managed-property>
          <description>Service Dependency: agentManager</description>
          <property-name>agentManager</property-name>
-         <value>#{Components["agentManager"]}</value>
+         <value>#{Components["org.sakaiproject.metaobj.shared.mgt.AgentManager.osp"]}</value>
       </managed-property>
 
       <managed-property>

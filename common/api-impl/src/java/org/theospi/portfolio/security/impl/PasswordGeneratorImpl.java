@@ -20,11 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.impl;
 
-import org.theospi.portfolio.security.PasswordGenerator;
+
+import org.sakaiproject.metaobj.security.PasswordGenerator;
 
 import java.util.Random;
 
-public class PasswordGeneratorImpl implements PasswordGenerator{
+public class PasswordGeneratorImpl implements PasswordGenerator {
    private int length;
    public String generate() {
       return generate(getLength());

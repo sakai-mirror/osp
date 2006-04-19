@@ -21,6 +21,7 @@
         <input align="absmiddle"
              type="checkbox"
              name="<c:out value="${status.expression}"/>"
+           <c:out value="${viewer.role}"/>
            <c:choose>
            <c:when test="${viewer.role == 'ROLE_GUEST'}">
              value="<c:out value="${viewer.displayName}"/>"
