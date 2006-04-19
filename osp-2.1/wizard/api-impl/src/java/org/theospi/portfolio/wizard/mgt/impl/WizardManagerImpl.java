@@ -279,16 +279,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
          SiteService.save(siteEdit);
          wizard.setExposedPageId(null);
       } catch (IdUnusedException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         logger.error("", e);
       } catch (PermissionException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         logger.error("", e);
       }
    }
 
    private void addTool(Wizard wizard) {
-      //TODO add logging errors back
       String siteId = wizard.getSiteId();
       try {
          Site siteEdit = SiteService.getSite(siteId);
@@ -312,18 +309,29 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
 
       } catch (IdUnusedException e) {
-//       TODO Auto-generated catch block
-         e.printStackTrace();
+         logger.error("", e);
       } catch (PermissionException e) {
-//       TODO Auto-generated catch block
-         e.printStackTrace();
+         logger.error("", e);
       }
    }
 
    public void deleteWizard(Wizard wizard) {
-      getHibernateTemplate().delete(wizard);
+      //This shouldn't be necessary since a user can't fill it out if it hasn't been 
+      //published and you can't delete if it has been published
+      //But I'm leaving it here just in case...don't want foreign key errors when deleting
+      Wizard wiz = this.getWizard(wizard.getId());
+      List completedWizards = getCompletedWizards(wiz);
+      for (Iterator i = completedWizards.iterator(); i.hasNext();) {
+         CompletedWizard cw = (CompletedWizard)i.next();
+         deleteCompletedWizard(cw);
+      }
+      getHibernateTemplate().delete(wiz);
    }
-
+   
+   protected void deleteCompletedWizard(CompletedWizard cw) {
+      getHibernateTemplate().delete(cw);
+   }
+   
    public void publishWizard(Wizard wizard) {
       wizard.setPublished(true);
       wizard.setModified(new Date(System.currentTimeMillis()));
@@ -409,6 +417,12 @@ public class WizardManagerImpl extends HibernateDaoSupport
          }
       }
 
+   }
+   
+   protected List getCompletedWizards(Wizard wizard) {
+      List completedWizards = getHibernateTemplate().find(" from CompletedWizard cw where cw.wizard.id=?",
+            new Object[]{wizard.getId().getValue()});
+      return completedWizards;
    }
 
    protected List getCompletedWizards(String owner) {
@@ -575,9 +589,6 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {
       return structuredArtifactDefinitionManager;
-      //TODO - Fix this soon!
-      //return (StructuredArtifactDefinitionManager)
-      //   ComponentManager.getInstance().get("structuredArtifactDefinitionManager");
    }
 
    public void setStructuredArtifactDefinitionManager(StructuredArtifactDefinitionManager structuredArtifactDefinitionManager) {

@@ -122,6 +122,7 @@ public class WizardTool extends BuilderTool {
    public final static String EDIT_DESIGN_PAGE = "editWizardDesign";
    public final static String EDIT_PROPERTIES_PAGE = "editWizardProperties";
    public final static String IMPORT_PAGE = "importWizard";
+   public final static String CONFIRM_DELETE_PAGE = "confirmDeleteWizard";
 
    private BuilderScreen[] screens = {
      // new BuilderScreen(EDIT_PAGE_TYPE),
@@ -287,6 +288,11 @@ public class WizardTool extends BuilderTool {
       return LIST_PAGE;
    }
 
+   public String processActionConfirmDelete(Wizard wizard) {
+      setCurrent(new DecoratedWizard(this, wizard, false));
+      return CONFIRM_DELETE_PAGE;
+   }
+   
    public String processActionCancel() {
       setCurrent(null);
       return LIST_PAGE;
@@ -756,7 +762,7 @@ public class WizardTool extends BuilderTool {
       if (wizard.getOwner() == null) return false;
       return getAuthzManager().isAuthorized(WizardFunctionConstants.DELETE_WIZARD, 
             wizard.getId()) && SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
-                  wizard.getOwner().getId().getValue());
+                  wizard.getOwner().getId().getValue()) && !wizard.isPublished();
    }
    
    public boolean getCanEdit(Wizard wizard) {

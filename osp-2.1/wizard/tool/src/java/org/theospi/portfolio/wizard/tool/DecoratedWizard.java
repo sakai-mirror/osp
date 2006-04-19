@@ -130,6 +130,10 @@ public class DecoratedWizard implements DecoratedListInterface {
    public String processActionDelete() {
       return parent.processActionDelete(base);
    }
+
+   public String processActionConfirmDelete() {
+      return parent.processActionConfirmDelete(base);
+   }
    
    public String processActionPublish() {
       return parent.processActionPublish(base);
@@ -395,5 +399,10 @@ public class DecoratedWizard implements DecoratedListInterface {
     }
     public boolean isWizard() {
        return true;
+    }
+    
+    public String getDeleteMessage() {
+       return getParent().getMessageFromBundle("delete_wizard_message", new Object[]{
+             base.getName()});
     }
 }
