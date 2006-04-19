@@ -63,7 +63,20 @@
          <c:out value="${layout.name}" />
          <c:set var="hasFirstAction" value="false" />
          <div class="itemAction">
+             <c:if test="${can.publish && (layout.globalState == 0 || layout.globalState == 1) && isGlobal}">
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url value="publishLayout.osp"/>&layout_id=<c:out value="${layout.id.value}" />"><fmt:message key="table_action_publish"/></a>
+             </c:if>
+             
+             <c:if test="${isAuthorizedTo.suggestPublish && layout.globalState == 0 && selectableLayout != 'true' && !isGlobal}">
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url value="publishLayout.osp"/>&layout_id=<c:out value="${layout.id.value}" />&suggest=true"><fmt:message key="table_action_suggeset_publish"/></a>
+             </c:if>
+             
              <c:if test="${isAuthorizedTo.edit}">
+               <c:if test="${hasFirstAction}" > | </c:if>
                <a href="<osp:url value="editLayout.osp"/>&layout_id=<c:out value="${layout.id.value}" />"><fmt:message key="table_action_edit"/></a>
                <c:set var="hasFirstAction" value="true" />
              </c:if>
@@ -73,18 +86,6 @@
                  <c:set var="hasFirstAction" value="true" />
                  <a onclick="return confirmDeletion();"
                    href="<osp:url value="deleteLayout.osp"/>&layout_id=<c:out value="${layout.id.value}" />"><fmt:message key="table_action_delete"/></a>
-             </c:if>
-  
-             <c:if test="${can.publish && (layout.globalState == 0 || layout.globalState == 1) && isGlobal}">
-                 <c:if test="${hasFirstAction}" > | </c:if>
-                 <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="publishLayout.osp"/>&layout_id=<c:out value="${layout.id.value}" />"><fmt:message key="table_action_publish"/></a>
-             </c:if>
-             
-             <c:if test="${isAuthorizedTo.suggestPublish && layout.globalState == 0 && selectableLayout != 'true'}">
-                 <c:if test="${hasFirstAction}" > | </c:if>
-                 <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="publishLayout.osp"/>&layout_id=<c:out value="${layout.id.value}" />&suggest=true"><fmt:message key="table_action_suggeset_publish"/></a>
              </c:if>
              
              <c:if test="${selectableLayout == 'true' and selectedLayout != layout.id.value and (layout.globalState == 2 or layout.owner == osp_agent)}">
