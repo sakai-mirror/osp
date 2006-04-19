@@ -101,7 +101,7 @@
                    <osp:param name="session.org.theospi.portfolio.security.audienceGuestEmail"
                         value="true"/>
                    <osp:param name="session.org.theospi.portfolio.security.audienceWorksiteLimited"
-                        value="true"/>
+                        value="false"/>
                    <osp:param name="session.org.theospi.portfolio.security.audiencePublicInstructions">
                         <fmt:message key="publish_message"/></osp:param>
                    <osp:param name="session.org.theospi.portfolio.security.audiencePublicURL" value="${url}"/>

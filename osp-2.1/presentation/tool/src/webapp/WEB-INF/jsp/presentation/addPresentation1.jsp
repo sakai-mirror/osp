@@ -8,13 +8,13 @@
 
 <c:if test="${empty presentation.name}">
     <c:set var="targetPrevious" value="_target0" />
-    <c:set var="suppress_previous" value="false" />
     <c:set var="suppress_save" value="true"/>
 </c:if>
 <c:if test="${not empty presentation.name}">
-    <c:set var="suppress_previous" value="true" />
     <c:set var="suppress_save" value="false" />
 </c:if>
+
+<c:set var="suppress_previous" value="true" />
 <c:set var="begin_state" value="current_state"/>
 <c:set var="design_state" value="next_state"/>
 <c:set var="publish_state" value="next_state"/>

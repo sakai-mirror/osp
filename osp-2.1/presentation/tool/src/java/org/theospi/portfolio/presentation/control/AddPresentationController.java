@@ -261,7 +261,7 @@ public class AddPresentationController extends AbstractWizardFormController {
    }
 
    protected Integer getCurrentPageNumber(Presentation presentation, int page) {
-      boolean hasProperties = getTotalPages(presentation, page).intValue() == 5;
+      boolean hasProperties = getTotalPages(presentation, page).intValue() == 4;
       if (page == ADD_PAGE) {
           return new Integer(1);
       }
