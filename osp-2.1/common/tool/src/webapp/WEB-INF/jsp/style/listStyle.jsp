@@ -52,7 +52,7 @@
          <th scope="col"><fmt:message key="table_header_name"/></th>
          <th scope="col"><fmt:message key="table_header_description"/></th>
          <th scope="col"><fmt:message key="table_header_owner"/></th>
-         <th scope="col"><fmt:message key="table_header_global_published"/></th>
+         <th scope="col"><fmt:message key="table_header_published"/></th>
       </tr>
    </thead>
    <tbody>
@@ -68,7 +68,22 @@
          <c:out value="${style.name}" />
          <c:set var="hasFirstAction" value="false" />
          <div class="itemAction">
+             <!-- Used the regular can.globalPublish instead of the isAuthorizedTo 
+               because the style may have come from a different site -->
+             <c:if test="${can.globalPublish && (style.globalState == 0 || style.globalState == 1) && isGlobal}">
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=global"><fmt:message key="table_action_publish"/></a>
+             </c:if>
+             
+             <c:if test="${selectableStyle != 'true' && isAuthorizedTo.suggestGlobalPublish && style.globalState == 0 && !isGlobal}">
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=suggestGlobal"><fmt:message key="table_action_suggest_global_publish"/></a>
+             </c:if>
+             
              <c:if test="${isAuthorizedTo.edit}">
+               <c:if test="${hasFirstAction}" > | </c:if>
                <a href="<osp:url value="editStyle.osp"/>&style_id=<c:out value="${style.id.value}" />"><fmt:message key="table_action_edit"/></a>
                <c:set var="hasFirstAction" value="true" />
              </c:if>
@@ -78,20 +93,6 @@
                  <c:set var="hasFirstAction" value="true" />
                  <a onclick="return confirmDeletion();"
                    href="<osp:url value="deleteStyle.osp"/>&style_id=<c:out value="${style.id.value}" />"><fmt:message key="table_action_delete"/></a>
-             </c:if>
-         
-             <!-- Used the regular can.globalPublish instead of the isAuthorizedTo 
-               because the style may have come from a different site -->
-             <c:if test="${can.globalPublish && (style.globalState == 0 || style.globalState == 1) && isGlobal}">
-                 <c:if test="${hasFirstAction}" > | </c:if>
-                 <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=global"><fmt:message key="table_action_global_publish"/></a>
-             </c:if>
-             
-             <c:if test="${selectableStyle != 'true' && isAuthorizedTo.suggestGlobalPublish && style.globalState == 0 && !isGlobal}">
-                 <c:if test="${hasFirstAction}" > | </c:if>
-                 <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=suggestGlobal"><fmt:message key="table_action_suggest_global_publish"/></a>
              </c:if>
              
              <c:if test="${selectableStyle == 'true' and selectedStyle != style.id.value}">
