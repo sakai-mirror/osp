@@ -881,6 +881,25 @@ your browser doesn't support iframes
       </xsl:if>
    </xsl:template>
 
+   <xsl:template match="osp:toolIterator">
+      <xsl:param name="category" />
+      <xsl:param name="currentTool" />
+      <xsl:variable name="currentToolId" select="$currentTool/@toolId"/>
+      <xsl:variable name="iteratorNode" select="."/>
+      <xsl:for-each select="$category/pages/page[@toolId=$currentToolId]">
+         <xsl:apply-templates select="$iteratorNode/*">
+            <xsl:with-param name="currentTool" select="." />
+            <xsl:with-param name="category" select="$category" />
+         </xsl:apply-templates>
+      </xsl:for-each>
+   </xsl:template>
+
+   <xsl:template match="osp:toolTitle">
+      <xsl:param name="category" />
+      <xsl:param name="currentTool" />
+      <xsl:value-of select="$currentTool/title" />
+   </xsl:template>
+
    <xsl:template match="osp:toolLink">
       <xsl:param name="category" />
       <xsl:param name="currentTool" />
