@@ -66,31 +66,18 @@
       <TD nowrap>
       <c:out value="${presentation.name}" />
          <div class="itemAction">
+         <c:set var="hasFirstAction" value="false" />
              <a <c:if test="${presentation.template.includeHeaderAndFooter == false}">target="_new"</c:if>
                 href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_view"/></a>
+             <c:set var="hasFirstAction" value="true" />
     
-             <c:if test="${isAuthorizedTo.edit || can.edit}">
-                 <input name="_page" type="hidden" value="1">
-               | <a href="<osp:url value="addPresentation.osp"/>&target=_target1&resetForm=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_edit"/></a>
-             </c:if>
-    
-             <c:if test="${isAuthorizedTo.delete || can.delete}">
-
-               | <a onclick="return confirmDeletion();" href="<osp:url value="deletePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_delete"/></a>
-             </c:if>
-    
-              <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
-               | <a href="<osp:url value="PresentationStats.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_viewStats"/></a>
-             </c:if>
-
-              <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
-
-               | <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&presentationId=<c:out value="${presentation.id.value}"/>/<c:out value="${presentation.name}" />.zip"><fmt:message key="table_action_download"/></a>
-
-                <c:set var="url">
+             
+             <c:set var="url">
                  <c:out value="${baseUrl}"/>/osp-presentation-tool/viewPresentation.osp?id=<c:out value="${presentation.id.value}"/>
                 </c:set>
-               | <a href="<osp:url value="osp.audience.helper/tool.jsf?panel=Main">
+                  <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url value="osp.audience.helper/tool.jsf?panel=Main">
                    <osp:param name="session.org.theospi.portfolio.security.audienceFunction"
                         value="osp.presentation.view"/>
                    <osp:param name="session.org.theospi.portfolio.security.audienceQualifier"
@@ -118,8 +105,35 @@
                    <osp:param name="session.org.theospi.portfolio.security.audiencePublicInstructions">
                         <fmt:message key="publish_message"/></osp:param>
                    <osp:param name="session.org.theospi.portfolio.security.audiencePublicURL" value="${url}"/>
-                   </osp:url>"title="<fmt:message key='action_selectAudience_title'/>" ><fmt:message key="action_selectAudience"/>
-                 </a>
+                   </osp:url>"title="<fmt:message key='action_publish'/>" ><fmt:message key="action_publish"/></a>
+             
+             <c:if test="${isAuthorizedTo.edit || can.edit}">
+                 <input name="_page" type="hidden" value="1">
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url value="addPresentation.osp"/>&target=_target1&resetForm=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_edit"/></a>
+             </c:if>
+    
+             <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url value="PresentationStats.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_viewStats"/></a>
+             </c:if>
+
+              <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
+
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&presentationId=<c:out value="${presentation.id.value}"/>/<c:out value="${presentation.name}" />.zip"><fmt:message key="table_action_download"/></a>
+
+
+             </c:if>
+             
+             <c:if test="${isAuthorizedTo.delete || can.delete}">
+
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a onclick="return confirmDeletion();" href="<osp:url value="deletePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_delete"/></a>
              </c:if>
          </div>
 

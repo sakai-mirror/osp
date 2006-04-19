@@ -60,7 +60,9 @@
     <TR>
       <TD nowrap>
          <c:if test="${scaffold.published == true && (scaffold.owner == osp_agent || can.use || can.review || can.evaluate)}">
-            <a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />">
+            <a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />" title="<fmt:message key="scaffolding_link_title">
+               <fmt:param><c:out value="${scaffold.title}"/></fmt:param>
+               </fmt:message>">
          </c:if>
          <c:out value="${scaffold.title}" />
          <c:if test="${scaffold.published == true && (scaffold.owner == osp_agent || can.use || can.review || can.evaluate)}">
