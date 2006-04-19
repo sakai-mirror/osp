@@ -113,7 +113,7 @@
       </TD>
       <TD><c:out value="${scaffold.description}" escapeXml="false"/></TD>
       <TD><c:out value="${scaffold.owner.displayName}" /></TD>
-      <td><c:out value="${scaffold.published}" /></TD>
+      <td><fmt:message key="scaffolding_published_${scaffold.published}"/></TD>
     </TR>
 
   </c:forEach>
