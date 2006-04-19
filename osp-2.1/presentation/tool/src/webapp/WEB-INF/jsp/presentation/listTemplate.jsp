@@ -57,24 +57,37 @@
       <TD nowrap>
          <c:out value="${template.name}" />
          <div class="itemAction">
-             <c:if test="${isAuthorizedTo.copy}">
-             <a href="<osp:url value="copyTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_copy"/></a>
+         <c:set var="hasFirstAction" value="false" />
+         
+             <c:if test="${isAuthorizedTo.publish && template.published == false}">
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url value="publishTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_publish"/></a>
              </c:if>
-    
+             
              <c:if test="${isAuthorizedTo.edit}">
-             | <a href="<osp:url value="editTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_edit"/></a>
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url value="editTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_edit"/></a>
              </c:if>
     
              <c:if test="${isAuthorizedTo.delete}">
-             | <a onclick="return confirmDeletion();"
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a onclick="return confirmDeletion();"
                    href="<osp:url value="deleteTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_delete"/></a>
              </c:if>
     
-             <c:if test="${isAuthorizedTo.publish && template.published == false}">
-             | <a href="<osp:url value="publishTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_publish"/></a>
+             <c:if test="${isAuthorizedTo.copy}">
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url value="copyTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_copy"/></a>
              </c:if>
+             
              <c:if test="${isAuthorizedTo.export}">
-             | <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&templateId=<c:out value="${template.id.value}"/>/<c:out value="${template.name}" />.zip"><fmt:message key="table_action_export"/></a>
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&templateId=<c:out value="${template.id.value}"/>/<c:out value="${template.name}" />.zip"><fmt:message key="table_action_export"/></a>
              </c:if>
          </div>
       </TD>
