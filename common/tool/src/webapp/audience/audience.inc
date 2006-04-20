@@ -3,7 +3,7 @@
    <sakai:button_bar>
       <sakai:button_bar_item id="remove_user_button" 
          action="#{audience.processActionRemove}"
-         value="#{msgs.remove_member}"/>
+         value="#{common_msgs.remove_member}"/>
    </sakai:button_bar>
 </h:panelGrid>
 <ospx:scrollablearea id="selectedMembers" width="100%" height="100%">

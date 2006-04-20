@@ -29,10 +29,10 @@
                 <ospx:splitarea direction="vertical" height="85%">
                    <ospx:splitsection valign="top">
                       <h:panelGrid columns="4">
-                         <h:outputLabel value="#{msgs.filter_roles}  " for="filterRoles" />
+                         <h:outputLabel value="#{common_msgs.filter_roles}  " for="filterRoles" />
                          <h:outputText value=""/>
                          <h:outputText value=""/>
-                         <h:outputLabel value="#{msgs.filter_groups}  " for="filterGroups" rendered="#{audience.hasGroups}" />
+                         <h:outputLabel value="#{common_msgs.filter_groups}  " for="filterGroups" rendered="#{audience.hasGroups}" />
                          <h:selectManyListbox size="4" value="#{audience.selectedRolesFilter}" id="filterRoles">
                             <f:selectItems value="#{audience.roles}" />
                          </h:selectManyListbox>
@@ -48,10 +48,10 @@
                       <sakai:button_bar>
                         <sakai:button_bar_item id="apply_filter_button"  
                            action="#{audience.processActionApplyFilter}"
-                           value="#{msgs.apply_filter}"/>
+                           value="#{common_msgs.apply_filter}"/>
                         <sakai:button_bar_item id="clear_filter_button" 
                            action="#{audience.processActionClearFilter}"
-                           value="#{msgs.clear_filter}"/>
+                           value="#{common_msgs.clear_filter}"/>
                       </sakai:button_bar>
                    </ospx:splitsection>
                 </ospx:splitarea>
@@ -62,7 +62,7 @@
                <sakai:button_bar>
                   <sakai:button_bar_item id="add_selected_button"  
                      action="#{audience.processActionAddBrowseSelected}"
-                     value="#{msgs.add_members}"/>
+                     value="#{common_msgs.add_members}"/>
                 </sakai:button_bar>
             </ospx:splitsection>
             <ospx:splitsection size="50%" valign="top" align="right">
@@ -70,27 +70,27 @@
                    totalItems="#{audience.browseUsers.totalItems}"
                    firstItem="#{audience.browseUsers.firstItem}"
                    pageSize="#{audience.browseUsers.pageSize}"
-                   textStatus="#{msgs.browse_user_pager_status}" />
+                   textStatus="#{common_msgs.browse_user_pager_status}" />
             </ospx:splitsection>
           </ospx:splitarea>
           <sakai:flat_list value="#{audience.browseUsers.subList}" var="member">
 
             <h:column>
                <f:facet name="header">
-                  <h:outputText value="#{msgs.user_column_header}" />
+                  <h:outputText value="#{common_msgs.user_column_header}" />
                </f:facet>
                <h:selectBooleanCheckbox id="memberSelect" value="#{member.selected}" />
                <h:outputLabel value="#{member.base.id.value}" for="memberSelect" />
             </h:column>
             <h:column>
                <f:facet name="header">
-                  <h:outputText value="#{msgs.name_column_header}" />
+                  <h:outputText value="#{common_msgs.name_column_header}" />
                </f:facet>
                <h:outputText value="#{member.base.displayName}" />
             </h:column>
             <h:column>
                <f:facet name="header">
-                  <h:outputText value="#{msgs.role_column_header}" />
+                  <h:outputText value="#{common_msgs.role_column_header}" />
                </f:facet>
                <h:outputText value="#{member.role.displayName}" />
             </h:column>
@@ -98,7 +98,7 @@
 
           <sakai:button_bar>
              <sakai:button_bar_item id="back_button"  action="main"
-               value="#{msgs.return_audience}"/>
+               value="#{common_msgs.return_audience}"/>
            </sakai:button_bar>
 
       </ospx:splitsection>

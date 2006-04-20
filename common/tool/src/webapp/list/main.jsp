@@ -14,13 +14,13 @@
 
 
 <f:view>
-<sakai:view_container title="#{msgs.title_list}">
+<sakai:view_container title="#{common_msgs.title_list}">
 <h:form>
 
 	<sakai:tool_bar>	
 		<sakai:tool_bar_item
 			action="#{ListTool.processActionOptions}"
-			value="#{msgs.bar_options}" />
+			value="#{common_msgs.bar_options}" />
 	</sakai:tool_bar>
 
 	<sakai:view_content>
