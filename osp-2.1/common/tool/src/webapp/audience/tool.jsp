@@ -33,7 +33,7 @@
                     <!-- worksite group drawer -->
                     <ospx:splitarea direction="horizontal" width="100%">
                         <ospx:splitsection size="25%" valign="top">
-                            <h:outputLabel value="#{msgs.label_roles}:" for="siteRoles"/>
+                            <h:outputLabel value="#{common_msgs.label_roles}:" for="siteRoles"/>
                         </ospx:splitsection>
                         <ospx:splitsection size="50%" valign="top">
                             <ospx:scrollablearea width="400px" height="100px">
@@ -48,7 +48,7 @@
                                 <sakai:button_bar>
                                     <sakai:button_bar_item id="add_group_button"
                                                            action="#{audience.processActionAddGroup}"
-                                                           value="#{msgs.add_all}"/>
+                                                           value="#{common_msgs.add_all}"/>
                                 </sakai:button_bar>
                             </h:panelGrid>
                         </ospx:splitsection>
@@ -62,7 +62,7 @@
                     <ospx:splitarea direction="horizontal" width="75%">
                         <ospx:splitsection size="25%" valign="top">
 
-                                <h:outputLabel value="#{msgs.user_id_label}:" for="userId"/>
+                                <h:outputLabel value="#{common_msgs.user_id_label}:" for="userId"/>
 
                         </ospx:splitsection>
                         <ospx:splitsection size="25%" valign="top">
@@ -70,13 +70,13 @@
                         </ospx:splitsection>
                         <ospx:splitsection size="25%" valign="top">
 
-                            <h:commandLink id="browse_button" action="browse" value="#{msgs.browse_members}"/>
+                            <h:commandLink id="browse_button" action="browse" value="#{common_msgs.browse_members}"/>
                         </ospx:splitsection>
                         <ospx:splitsection size="25%" valign="top">
                               <sakai:button_bar>
                                 <sakai:button_bar_item id="add_user_button"
                                                        action="#{audience.processActionAddUser}"
-                                                       value="#{msgs.add_members}"/>
+                                                       value="#{common_msgs.add_members}"/>
                             </sakai:button_bar>
 
                         </ospx:splitsection>
@@ -85,11 +85,11 @@
 
                     <ospx:splitarea rendered="#{audience.emailCapable}" direction="horizontal" width="75%">
                         <ospx:splitsection size="25%" valign="top">
-                            <h:outputLabel value="#{msgs.email_label}:" for="emails"/>
+                            <h:outputLabel value="#{common_msgs.email_label}:" for="emails"/>
                         </ospx:splitsection>
                         <ospx:splitsection size="25%" valign="top">
                             <h:inputText value="#{audience.searchEmails}" id="emails" size="70"/>
-                            <sakai:instruction_message value="#{msgs.email_instructions}"/>
+                            <sakai:instruction_message value="#{common_msgs.email_instructions}"/>
                         </ospx:splitsection>
                         <ospx:splitsection size="25%" valign="top">
 
@@ -98,7 +98,7 @@
                             <sakai:button_bar>
                                 <sakai:button_bar_item id="add_email_button"
                                                        action="#{audience.processActionAddEmail}"
-                                                       value="#{msgs.add_members}"/>
+                                                       value="#{common_msgs.add_members}"/>
                             </sakai:button_bar>
                         </ospx:splitsection>
                     </ospx:splitarea>
@@ -109,7 +109,7 @@
                 <ospx:xheaderdrawer initiallyexpanded="true"
                                     cssclass="drawerBorder">
                     <h:selectBooleanCheckbox id="isPublic" value="#{audience.publicAudience}"/>
-                    <h:outputLabel value="#{msgs.public_label}:  " for="isPublic"/>
+                    <h:outputLabel value="#{common_msgs.public_label}:  " for="isPublic"/>
                     <h:outputLink id="publicURL" value="#{audience.publicURL}">
                         <h:outputText id="publicURLtext" value="#{audience.publicURL}"/>
                     </h:outputLink>
@@ -125,13 +125,13 @@
 
     <sakai:button_bar>
         <sakai:button_bar_item id="save_button" action="#{audience.processActionSave}"
-                               value="#{msgs.save_audience}"/>
+                               value="#{common_msgs.save_audience}"/>
         <sakai:button_bar_item id="saveNotify_button" action="#{audience.processActionSaveNotify}"
-                               value="#{msgs.save_notify_audience}" rendered="#{audience.portfolioWizard}"/>
+                               value="#{common_msgs.save_notify_audience}" rendered="#{audience.portfolioWizard}"/>
         <sakai:button_bar_item id="back_button" action="#{audience.processActionBack}" rendered="#{audience.portfolioWizard}"
-                               value="#{msgs.back_audience}"/>
+                               value="#{common_msgs.back_audience}"/>
         <sakai:button_bar_item id="_target1" action="#{audience.processActionCancel}"
-                               value="#{msgs.cancel_audience}"/>
+                               value="#{common_msgs.cancel_audience}"/>
     </sakai:button_bar>
 </h:form>
 

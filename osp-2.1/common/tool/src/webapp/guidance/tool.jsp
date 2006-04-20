@@ -14,18 +14,18 @@
 <f:view>
 
 <sakai:view>
-   <sakai:view_title value="#{msgs.guidance_title}"/>
+   <sakai:view_title value="#{common_msgs.guidance_title}"/>
    <sakai:instruction_message value="#{guidance.guidanceInstructions}" />
    <sakai:messages />
 
 <h:form>
   <ospx:xheader rendered="#{guidance.instructionsRendered}">
-      <ospx:xheadertitle id="instructionTitleAdd" value="#{msgs.instruction_title_add}" rendered="#{guidance.current.instruction.base.text == ''}" />
-      <ospx:xheadertitle id="instructionTitleEdit" value="#{msgs.instruction_title_edit}" rendered="#{guidance.current.instruction.base.text != ''}" />
+      <ospx:xheadertitle id="instructionTitleAdd" value="#{common_msgs.instruction_title_add}" rendered="#{guidance.current.instruction.base.text == ''}" />
+      <ospx:xheadertitle id="instructionTitleEdit" value="#{common_msgs.instruction_title_edit}" rendered="#{guidance.current.instruction.base.text != ''}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
           <ospx:splitarea direction="vertical" width="100%">
              <ospx:splitsection valign="top">
-               <sakai:instruction_message value="#{msgs.instruction_message}" />
+               <sakai:instruction_message value="#{common_msgs.instruction_message}" />
                <sakai:inputRichText value="#{guidance.current.instruction.base.text}"
                   attachedFiles="#{guidance.current.instruction.attachmentLinks}"
                   rows="15" cols="60" buttonSet="large" showXPath="false" />
@@ -35,7 +35,7 @@
                <sakai:flat_list value="#{guidance.current.instruction.attachments}" var="material">
                   <h:column>
                      <f:facet name="header">
-                        <h:outputText value="#{msgs.item_header}"/>
+                        <h:outputText value="#{common_msgs.item_header}"/>
                      </f:facet>
                      <h:outputLink title="#{material.displayName}"
                         value="#{material.fullReference.base.url}" target="_new">
@@ -44,23 +44,23 @@
                      <f:facet name="footer">
                         <sakai:button_bar rendered="true">
                            <sakai:button_bar_item id="manageInstructionItems" action="#{guidance.current.instruction.processActionManageAttachments}"
-                           value="#{msgs.manage_instruction}" />
+                           value="#{common_msgs.manage_instruction}" />
                         </sakai:button_bar>
                      </f:facet>
                   </h:column>
                </sakai:flat_list>
                </f:subview>
                <f:subview id="instrNoItems" rendered="#{empty guidance.current.instruction.attachments}">
-               <sakai:flat_list value="#{msgs.no_items}" var="material">
+               <sakai:flat_list value="#{common_msgs.no_items}" var="material">
                   <h:column>
                      <f:facet name="header">
-                        <h:outputText value="#{msgs.item_header}"/>
+                        <h:outputText value="#{common_msgs.item_header}"/>
                      </f:facet>
                      <h:outputText value="#{material}" />
                      <f:facet name="footer">
                         <sakai:button_bar rendered="true">
                            <sakai:button_bar_item id="manageInstructionItems" action="#{guidance.current.instruction.processActionManageAttachments}"
-                           value="#{msgs.manage_instruction}" />
+                           value="#{common_msgs.manage_instruction}" />
                         </sakai:button_bar>
                      </f:facet>
                   </h:column>
@@ -72,12 +72,12 @@
   </ospx:xheader>
 <h:outputText id="description_spacer" value="<br>" escape="false" />
   <ospx:xheader rendered="#{guidance.examplesRendered}">
-      <ospx:xheadertitle id="exampleTitleAdd" value="#{msgs.example_title_add}" rendered="#{guidance.current.example.base.text == ''}" />
-      <ospx:xheadertitle id="exampleTitleEdit" value="#{msgs.example_title_edit}" rendered="#{guidance.current.example.base.text != ''}" />
+      <ospx:xheadertitle id="exampleTitleAdd" value="#{common_msgs.example_title_add}" rendered="#{guidance.current.example.base.text == ''}" />
+      <ospx:xheadertitle id="exampleTitleEdit" value="#{common_msgs.example_title_edit}" rendered="#{guidance.current.example.base.text != ''}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
           <ospx:splitarea direction="vertical" width="100%">
              <ospx:splitsection valign="top">
-               <sakai:instruction_message value="#{msgs.example_message}" />
+               <sakai:instruction_message value="#{common_msgs.example_message}" />
                <sakai:inputRichText value="#{guidance.current.example.base.text}"
                   attachedFiles="#{guidance.current.example.attachmentLinks}"
                   rows="15" cols="60" buttonSet="large" showXPath="false" />
@@ -87,7 +87,7 @@
                <sakai:flat_list value="#{guidance.current.example.attachments}" var="material">
                   <h:column>
                      <f:facet name="header">
-                        <h:outputText value="#{msgs.item_header}"/>
+                        <h:outputText value="#{common_msgs.item_header}"/>
                      </f:facet>
                      <h:outputLink title="#{material.displayName}"
                         value="#{material.fullReference.base.url}" target="_new">
@@ -96,23 +96,23 @@
                      <f:facet name="footer">
                         <sakai:button_bar rendered="true">
                            <sakai:button_bar_item id="manageExampleItems" action="#{guidance.current.example.processActionManageAttachments}"
-                           value="#{msgs.manage_instruction}" />
+                           value="#{common_msgs.manage_instruction}" />
                         </sakai:button_bar>
                      </f:facet>
                   </h:column>
                </sakai:flat_list>
                </f:subview>
                <f:subview id="exampleNoItems" rendered="#{empty guidance.current.example.attachments}">
-               <sakai:flat_list value="#{msgs.no_items}" var="material">
+               <sakai:flat_list value="#{common_msgs.no_items}" var="material">
                   <h:column>
                      <f:facet name="header">
-                        <h:outputText value="#{msgs.item_header}"/>
+                        <h:outputText value="#{common_msgs.item_header}"/>
                      </f:facet>
                      <h:outputText value="#{material}" />
                      <f:facet name="footer">
                         <sakai:button_bar rendered="true">
                            <sakai:button_bar_item id="manageExampleItems" action="#{guidance.current.example.processActionManageAttachments}"
-                           value="#{msgs.manage_instruction}" />
+                           value="#{common_msgs.manage_instruction}" />
                         </sakai:button_bar>
                      </f:facet>
                   </h:column>
@@ -124,12 +124,12 @@
   </ospx:xheader>
 <h:outputText id="description_spacer" value="<br>" escape="false" />
   <ospx:xheader rendered="#{guidance.rationaleRendered}">
-      <ospx:xheadertitle id="rationaleTitleAdd" value="#{msgs.rationale_title_add}" rendered="#{guidance.current.rationale.base.text == ''}" />
-      <ospx:xheadertitle id="rationaleTitleEdit" value="#{msgs.rationale_title_edit}" rendered="#{guidance.current.rationale.base.text != ''}" />
+      <ospx:xheadertitle id="rationaleTitleAdd" value="#{common_msgs.rationale_title_add}" rendered="#{guidance.current.rationale.base.text == ''}" />
+      <ospx:xheadertitle id="rationaleTitleEdit" value="#{common_msgs.rationale_title_edit}" rendered="#{guidance.current.rationale.base.text != ''}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
           <ospx:splitarea direction="vertical" width="100%">
              <ospx:splitsection valign="top">
-               <sakai:instruction_message value="#{msgs.rationale_message}" />
+               <sakai:instruction_message value="#{common_msgs.rationale_message}" />
                <sakai:inputRichText value="#{guidance.current.rationale.base.text}"
                   attachedFiles="#{guidance.current.rationale.attachmentLinks}"
                   rows="15" cols="60" buttonSet="large" showXPath="false" />
@@ -140,7 +140,7 @@
                <sakai:flat_list value="#{guidance.current.rationale.attachments}" var="material">
                   <h:column>
                      <f:facet name="header">
-                        <h:outputText value="#{msgs.item_header}"/>
+                        <h:outputText value="#{common_msgs.item_header}"/>
                      </f:facet>
                      <h:outputLink title="#{material.displayName}"
                         value="#{material.fullReference.base.url}" target="_new">
@@ -149,23 +149,23 @@
                      <f:facet name="footer">
                         <sakai:button_bar rendered="true">
                            <sakai:button_bar_item id="manageRationaleItems" action="#{guidance.current.rationale.processActionManageAttachments}"
-                           value="#{msgs.manage_instruction}" />
+                           value="#{common_msgs.manage_instruction}" />
                         </sakai:button_bar>
                      </f:facet>
                   </h:column>
                </sakai:flat_list>
                </f:subview>
                <f:subview id="rationaleNoItems" rendered="#{empty guidance.current.rationale.attachments}">
-               <sakai:flat_list value="#{msgs.no_items}" var="material">
+               <sakai:flat_list value="#{common_msgs.no_items}" var="material">
                   <h:column>
                      <f:facet name="header">
-                        <h:outputText value="#{msgs.item_header}"/>
+                        <h:outputText value="#{common_msgs.item_header}"/>
                      </f:facet>
                      <h:outputText value="#{material}" />
                      <f:facet name="footer">
                         <sakai:button_bar rendered="true">
                            <sakai:button_bar_item id="manageRationaleItems" action="#{guidance.current.rationale.processActionManageAttachments}"
-                           value="#{msgs.manage_instruction}" />
+                           value="#{common_msgs.manage_instruction}" />
                         </sakai:button_bar>
                      </f:facet>
                   </h:column>
@@ -176,8 +176,8 @@
   </ospx:xheader>
 
    <sakai:button_bar>
-      <sakai:button_bar_item id="submit" value="#{msgs.save_guidance}" action="#{guidance.processActionSave}" />
-      <sakai:button_bar_item id="cancel" value="#{msgs.cancel_guidance}" action="#{guidance.processActionCancel}" />
+      <sakai:button_bar_item id="submit" value="#{common_msgs.save_guidance}" action="#{guidance.processActionSave}" />
+      <sakai:button_bar_item id="cancel" value="#{common_msgs.cancel_guidance}" action="#{guidance.processActionCancel}" />
    </sakai:button_bar>
 
 </h:form>

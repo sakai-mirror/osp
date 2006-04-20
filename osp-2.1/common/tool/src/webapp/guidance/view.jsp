@@ -14,11 +14,11 @@
 <f:view>
 
 <sakai:view>
-   <sakai:view_title value="#{msgs.guidance_title}"/>
+   <sakai:view_title value="#{common_msgs.guidance_title}"/>
    <sakai:messages />
 
 <h:form>
-    <sakai:panel_titled title="#{msgs.instruction_title}" >
+    <sakai:panel_titled title="#{common_msgs.instruction_title}" >
        <ospx:splitarea direction="horizontal" width="100%">
           <ospx:splitsection size="475" valign="top">
             <h:outputText value="#{guidance.current.instruction.base.text}" escape="false" />
@@ -27,7 +27,7 @@
             <sakai:flat_list value="#{guidance.current.instruction.attachments}" var="material">
                <h:column>
                   <f:facet name="header">
-                     <h:outputText value="#{msgs.attachments}"/>
+                     <h:outputText value="#{common_msgs.attachments}"/>
                   </f:facet>
                   <h:outputLink title="#{material.displayName}"
                      value="#{material.fullReference.base.url}" target="_new">
@@ -38,7 +38,7 @@
           </ospx:splitsection>
       </ospx:splitarea>
     </sakai:panel_titled>
-    <sakai:panel_titled title="#{msgs.example_title}" >
+    <sakai:panel_titled title="#{common_msgs.example_title}" >
        <ospx:splitarea direction="horizontal" width="100%">
           <ospx:splitsection size="475" valign="top">
             <h:outputText value="#{guidance.current.example.base.text}" escape="false" />
@@ -47,7 +47,7 @@
             <sakai:flat_list value="#{guidance.current.example.attachments}" var="material">
                <h:column>
                   <f:facet name="header">
-                     <h:outputText value="#{msgs.attachments}"/>
+                     <h:outputText value="#{common_msgs.attachments}"/>
                   </f:facet>
                   <h:outputLink title="#{material.displayName}"
                      value="#{material.fullReference.base.url}" target="_new">
@@ -58,7 +58,7 @@
           </ospx:splitsection>
       </ospx:splitarea>
     </sakai:panel_titled>
-    <sakai:panel_titled title="#{msgs.rationale_title}" >
+    <sakai:panel_titled title="#{common_msgs.rationale_title}" >
        <ospx:splitarea direction="horizontal" width="100%">
           <ospx:splitsection size="475" valign="top">
             <h:outputText value="#{guidance.current.rationale.base.text}" escape="false" />
@@ -67,7 +67,7 @@
             <sakai:flat_list value="#{guidance.current.rationale.attachments}" var="material">
                <h:column>
                   <f:facet name="header">
-                     <h:outputText value="#{msgs.attachments}"/>
+                     <h:outputText value="#{common_msgs.attachments}"/>
                   </f:facet>
                   <h:outputLink title="#{material.displayName}"
                      value="#{material.fullReference.base.url}" target="_new">
@@ -79,7 +79,7 @@
       </ospx:splitarea>
     </sakai:panel_titled>
 
-	<h:commandButton id="cancel" value="#{msgs.back_guidance}" action="#{guidance.processActionCancel}" />
+	<h:commandButton id="cancel" value="#{common_msgs.back_guidance}" action="#{guidance.processActionCancel}" />
 
 </h:form>
 </sakai:view>

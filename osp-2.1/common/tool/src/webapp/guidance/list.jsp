@@ -29,7 +29,7 @@
       value="New Sample Rationale" />
    </sakai:tool_bar>
 
-   <sakai:view_title value="#{msgs.guidance_title}"/>
+   <sakai:view_title value="#{common_msgs.guidance_title}"/>
    <sakai:instruction_message value="Guidance Test Tool" />
    <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{guidance.lastSavedId}" />
