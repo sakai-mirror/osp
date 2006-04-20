@@ -21,13 +21,13 @@
         <input align="absmiddle"
              type="checkbox"
              name="<c:out value="${status.expression}"/>"
-           <c:out value="${viewer.role}"/>
+
            <c:choose>
-           <c:when test="${viewer.role == 'ROLE_GUEST'}">
+           <c:when test="${viewer.sakaiUser.type == 'guest'}">
              value="<c:out value="${viewer.displayName}"/>"
            </c:when>
            <c:otherwise>
-             value="<c:out value="${viewer.profile.email}"/>"
+             value="<c:out value="${viewer.sakaiUser.email}"/>"
            </c:otherwise>
            </c:choose>
            >
