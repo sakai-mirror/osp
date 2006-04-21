@@ -24,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.model.OspException;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.portfolio.help.model.HelpManager;
 
@@ -262,7 +263,8 @@ public class GlossaryTag extends BodyTagSupport {
 
    protected String getMarkup(String originalTerm, GlossaryEntry entry) {
       StringBuffer markup = new StringBuffer();
-      String linkName = getHelpManager().getGlossary().getUrl() + "?id=" + entry.getId();
+      String url = ServerConfigurationService.getServerUrl();
+      String linkName = url + getHelpManager().getGlossary().getUrl() + "?id=" + entry.getId();
 
       markup.append("<a href=\"#\" onclick=\"openNewWindow('" + linkName + "');return false;\"");
 
