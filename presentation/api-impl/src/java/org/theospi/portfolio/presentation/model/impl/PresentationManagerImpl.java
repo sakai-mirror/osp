@@ -397,6 +397,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
             deleteComments(session, presentation);
             deleteLogs(session, presentation);
+            deletePresentationPages(session, presentation);
             session.delete(presentation);
             return null;
          }
@@ -413,6 +414,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    protected void deleteComments(Session session, Presentation presentation) throws HibernateException {
       session.delete("from PresentationComment where presentation_id=?",
          presentation.getId().getValue(), Hibernate.STRING);
+   }
+   
+   protected void deletePresentationPages(Session session, Presentation presentation) throws HibernateException {
+      session.delete("from PresentationPage where presentation_id=?",
+            presentation.getId().getValue(), Hibernate.STRING);
    }
 
    public PresentationItemDefinition getPresentationItemDefinition(final Id id) {
