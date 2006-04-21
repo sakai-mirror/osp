@@ -24,7 +24,6 @@ import org.sakaiproject.metaobj.shared.model.*;
 import org.theospi.portfolio.shared.model.DateBean;
 import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
 
 import java.util.*;
 
@@ -57,11 +56,6 @@ public class Presentation extends IdentifiableObject {
    public final static String TEMPLATE_TYPE = "osp.presentation.type.template";
    public static final Id FREEFORM_TEMPLATE_ID = new IdImpl("freeFormTemplate", null);
 
-
-   public ToolConfiguration getToolConfiguration() {
-      // todo 8/10
-      return null;
-   }
 
    public String getToolId() {
       return toolId;
