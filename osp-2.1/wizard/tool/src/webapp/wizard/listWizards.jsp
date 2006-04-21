@@ -91,7 +91,7 @@
          </f:facet>
          <h:outputText value="#{wizardItem.concatDescription}"/>
       </h:column>
-      <h:column>
+    <%--  <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.re_order}" />
          </f:facet>
@@ -104,7 +104,25 @@
          <h:commandLink action="#{wizardItem.moveDown}" rendered="#{!wizardItem.last}">
             <h:graphicImage value="/img/arrowDown.gif" />
          </h:commandLink>
+      </h:column>  --%>
+      <h:column>
+         <f:facet name="header">
+            <h:outputText value="#{msgs.published}" />
+         </f:facet>
+         <h:outputText value="#{wizardItem.base.published}"/>
       </h:column>
+      <h:column>
+         <f:facet name="header">
+            <h:outputText value="#{msgs.wizard_type}" />
+         </f:facet>
+         <f:subview id="hiertype" rendered="#{wizardItem.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
+            <h:outputText value="#{msgs.org_theospi_portfolio_wizard_model_Wizard_hierarchical}"/>
+         </f:subview>
+         <f:subview id="seqtype" rendered="#{wizardItem.base.type == 'org.theospi.portfolio.wizard.model.Wizard.sequential'}">
+            <h:outputText value="#{msgs.org_theospi_portfolio_wizard_model_Wizard_sequential}"/>
+         </f:subview>
+      </h:column>
+      
    </h:dataTable>
    
 </h:form>

@@ -52,10 +52,10 @@
    </sakai:panel_edit>
 
    <sakai:button_bar>
-      <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard_category}"
-         action="#{wizard.currentCategory.processActionCancel}" immediate="true" />
       <sakai:button_bar_item id="submit" value="#{msgs.save_wizard_category}"
          action="#{wizard.currentCategory.processActionSave}" />
+      <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard_category}"
+         action="#{wizard.currentCategory.processActionCancel}" immediate="true" />
    </sakai:button_bar>
 </h:form>
 </sakai:view>
