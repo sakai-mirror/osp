@@ -76,6 +76,10 @@ public class DecoratedWizard implements DecoratedListInterface {
       this.base = base;
    }
    
+   public String getDescription() {
+      return getConcatDescription();
+   }
+   
    public String getConcatDescription() {
       String s = getBase().getDescription();
       if(s.length() > 100)
@@ -254,7 +258,7 @@ public class DecoratedWizard implements DecoratedListInterface {
       //return "runWizard";
       
       try {
-         context.redirect("osp.wizard.run.helper/runWizard");
+         context.redirect("osp.wizard.run.helper/runWizardGuidance");
       }
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
@@ -289,7 +293,21 @@ public class DecoratedWizard implements DecoratedListInterface {
    }
 
    public GuidanceItem getInstruction() {
+      if(getBase().getGuidance() == null)
+            return null;
       return getBase().getGuidance().getInstruction();
+   }
+
+   public GuidanceItem getExample() {
+      if(getBase().getGuidance() == null)
+         return null;
+      return getBase().getGuidance().getExample();
+   }
+
+   public GuidanceItem getRationale() {
+      if(getBase().getGuidance() == null)
+         return null;
+      return getBase().getGuidance().getRationale();
    }
 
    public boolean isGuidanceAvailable() {
