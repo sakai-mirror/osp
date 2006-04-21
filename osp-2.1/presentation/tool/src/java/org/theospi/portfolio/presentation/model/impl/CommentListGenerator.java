@@ -104,7 +104,7 @@ public class CommentListGenerator implements ActionableListGenerator, CustomLink
       PresentationComment comment = (PresentationComment) entry;
       params.put(COMMENT_ID_PARAM, comment.getId());
       params.put(PRESENTATION_ID_PARAM, comment.getPresentationId());
-      params.put(TOOL_ID_PARAM, comment.getPresentation().getToolConfiguration().getId());
+      params.put(TOOL_ID_PARAM, comment.getPresentation().getToolId());
       return params;
    }
 

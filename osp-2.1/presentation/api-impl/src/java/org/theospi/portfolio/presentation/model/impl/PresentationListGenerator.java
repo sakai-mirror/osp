@@ -138,7 +138,7 @@ public class PresentationListGenerator extends BaseListGenerator implements Acti
       Map params = new HashMap();
       Presentation presentation = (Presentation) entry;
       params.put(PRESENTATION_ID_PARAM, presentation.getId());
-      params.put(TOOL_ID_PARAM, presentation.getToolConfiguration().getId());
+      params.put(TOOL_ID_PARAM, presentation.getToolId());
       return params;
         }
 

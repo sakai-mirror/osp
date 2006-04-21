@@ -71,7 +71,7 @@
                 href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_view"/></a>
              <c:set var="hasFirstAction" value="true" />
     
-             
+             <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
              <c:set var="url">
                  <c:out value="${baseUrl}"/>/osp-presentation-tool/viewPresentation.osp?id=<c:out value="${presentation.id.value}"/>
                 </c:set>
@@ -106,8 +106,8 @@
                         <fmt:message key="publish_message"/></osp:param>
                    <osp:param name="session.org.theospi.portfolio.security.audiencePublicURL" value="${url}"/>
                    </osp:url>"title="<fmt:message key='action_publish'/>" ><fmt:message key="action_publish"/></a>
-             
-             <c:if test="${isAuthorizedTo.edit || can.edit}">
+             </c:if>
+             <c:if test="${isAuthorizedTo.edit}">
                  <input name="_page" type="hidden" value="1">
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
@@ -129,7 +129,7 @@
 
              </c:if>
              
-             <c:if test="${isAuthorizedTo.delete || can.delete}">
+             <c:if test="${isAuthorizedTo.delete}">
 
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />

@@ -106,7 +106,7 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
       if (presentation.getOwner().equals(agent)){
          return new Boolean(true);
       }
-      Id toolId = getIdManager().getId(presentation.getToolConfiguration().getId());
+      Id toolId = getIdManager().getId(presentation.getToolId());
       return new Boolean(facade.isAuthorized(function,toolId));
    }
 
@@ -152,7 +152,7 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
       } else if (pres.getOwner().equals(agent)) {
          return new Boolean(true);
       } else {
-         Id toolId = getIdManager().getId(pres.getToolConfiguration().getId());
+         Id toolId = getIdManager().getId(pres.getToolId());
          return new Boolean(facade.isAuthorized(agent, PresentationFunctionConstants.COMMENT_PRESENTATION, toolId));
       }
    }
