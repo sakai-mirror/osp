@@ -53,7 +53,7 @@
          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
       </property>
       <property name="idManager"><ref bean="idManager"/></property>
-      <property name="url"><value>${serverUrl}/osp-glossary-tool/glossary.osp</value></property>
+      <property name="url"><value>/osp-glossary-tool/glossary.osp</value></property>
    </bean>
 
    <bean id="helpManager"
