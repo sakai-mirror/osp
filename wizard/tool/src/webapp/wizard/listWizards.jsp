@@ -35,15 +35,15 @@
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />
    
-   
-   <h:selectOneMenu id="users" immediate="true" value="#{wizard.currentUserId}">
-      <f:selectItems value="#{wizard.userListForSelect}"/>
-   </h:selectOneMenu>
-   <sakai:button_bar>
-      <sakai:button_bar_item id="go" value="#{msgs.go}"
-         action="#{wizard.processActionChangeUser}" />
-   </sakai:button_bar>
-   
+   <f:subview id="viewUsers" rendered="#{wizard.canEvaluateTool || wizard.canReviewTool}">
+      <h:selectOneMenu id="users" immediate="true" value="#{wizard.currentUserId}">
+         <f:selectItems value="#{wizard.userListForSelect}"/>
+      </h:selectOneMenu>
+      <sakai:button_bar>
+         <sakai:button_bar_item id="go" value="#{msgs.go}"
+            action="#{wizard.processActionChangeUser}" />
+      </sakai:button_bar>
+   </f:subview>
    <%@include file="showWizardOwnerMessage.jspf"%>
    
    <h:dataTable  value="#{wizard.wizards}" var="wizardItem" styleClass="lines listHier" headerClass="exclude">
@@ -107,9 +107,10 @@
       </h:column>  --%>
       <h:column>
          <f:facet name="header">
-            <h:outputText value="#{msgs.published}" />
+            <h:outputText value="#{msgs.published_title}" />
          </f:facet>
-         <h:outputText value="#{wizardItem.base.published}"/>
+         <h:outputText value="#{msgs.published}" rendered="#{wizardItem.base.published}"/>
+         <h:outputText value="#{msgs.unpublished}" rendered="#{!wizardItem.base.published}"/>
       </h:column>
       <h:column>
          <f:facet name="header">

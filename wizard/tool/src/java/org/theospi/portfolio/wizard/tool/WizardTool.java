@@ -74,19 +74,17 @@ import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
+import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.shared.tool.BuilderTool;
 import org.theospi.portfolio.shared.tool.BuilderScreen;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.style.StyleHelper;
-import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
-import org.theospi.portfolio.matrix.model.WizardPageDefinition;
-import org.theospi.portfolio.wizard.model.WizardPageSequence;
-import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 
 public class WizardTool extends BuilderTool {
 
@@ -173,6 +171,9 @@ public class WizardTool extends BuilderTool {
       String message = "";
       String readOnly = "";
       try {
+         if (currentUserId == null) 
+            setCurrentUserId(SessionManager.getCurrentSessionUserId());
+            
          if (!currentUserId.equalsIgnoreCase(SessionManager.getCurrentSessionUserId())) {
             readOnly = getMessageFromBundle("read_only");
          }
@@ -284,7 +285,6 @@ public class WizardTool extends BuilderTool {
    }
 
    public String processActionEdit(Wizard wizard) {
-      Session session = SessionManager.getCurrentSession();
       wizard = getWizardManager().getWizard(wizard.getId());
       setCurrent(new DecoratedWizard(this, wizard, false));
       return startBuilder();
@@ -836,6 +836,16 @@ public class WizardTool extends BuilderTool {
    public boolean getCanReview() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
             current.getBase().getId());
+   }
+
+   public boolean getCanReviewTool() {
+      return getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
+            getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
+   }
+   
+   public boolean getCanEvaluateTool() {
+      return getAuthzManager().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
+            getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
    }
    
    public boolean getCanEvaluate() {
