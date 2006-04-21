@@ -64,6 +64,13 @@ public class DecoratedWizardPage extends DecoratedCategoryChild {
       return getBase().getWizardPageDefinition().getTitle();
    }
 
+   public String getDescription() {
+      String desc = getBase().getWizardPageDefinition().getDescription();
+      if(desc.length() > 100)
+         return desc.substring(0, 100) + "...";
+      return desc;
+   }
+
    public boolean isSelected() {
       return selected;
    }
@@ -110,6 +117,10 @@ public class DecoratedWizardPage extends DecoratedCategoryChild {
 
    public String processActionEdit() {
       return processActionEdit(false);
+   }
+
+   public String processExecPage() {
+      return getParent().processExecPage(base);
    }
 
    public String processActionDelete() {

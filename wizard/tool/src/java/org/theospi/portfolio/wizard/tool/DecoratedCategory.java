@@ -69,6 +69,13 @@ public class DecoratedCategory extends DecoratedCategoryChild {
       this.base = base;
    }
 
+   public String getDescription() {
+      String desc = base.getDescription();
+      if(desc.length() > 100)
+         return desc.substring(0, 100) + "...";
+      return desc;
+   }
+
    public String processActionNewPage() {
       if(getBase().getWizard().isPublished())
          return null;

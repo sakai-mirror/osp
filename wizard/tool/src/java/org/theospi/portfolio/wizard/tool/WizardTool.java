@@ -82,7 +82,11 @@ import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.style.StyleHelper;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
+import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 
 public class WizardTool extends BuilderTool {
 
@@ -203,7 +207,11 @@ public class WizardTool extends BuilderTool {
             userId = SessionManager.getCurrentSessionUserId();
             this.setCurrentUserId(userId);
          }
+         if(id == null)
+            return null;
          Wizard wizard = getWizardManager().getWizard(id);
+         if(wizard == null)
+            return null;
          setCurrent(new DecoratedWizard(this, wizard));
          current.setRunningWizard(new DecoratedCompletedWizard(this, current,
                getWizardManager().getCompletedWizard(wizard, userId)));
@@ -406,6 +414,88 @@ public class WizardTool extends BuilderTool {
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
       }
+   }
+
+   public String processExecPage(WizardPageSequence pageSeq) {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      
+      WizardPage page = null;
+      
+      List cpages = getWizardManager().getCompletedWizardPagesByPageDef(pageSeq.getWizardPageDefinition().getId());
+      String currentUser = getCurrentUserId();
+      for(Iterator i = cpages.iterator(); i.hasNext();) {
+         CompletedWizardPage wizpage = (CompletedWizardPage)i.next();
+         
+         WizardPage wpage = getMatrixManager().getWizardPage(wizpage.getWizardPage().getId());
+         if(currentUser.equalsIgnoreCase(wpage.getOwner().getId().getValue())) {
+            page = wpage;
+            break;
+         }
+      }
+      if(page == null)
+         throw new NullPointerException("Failed to find the requested page");
+      
+      session.setAttribute(WizardPageHelper.WIZARD_PAGE, page);
+      String redirectAddress = "osp.wizard.page.helper/wizardPage.osp";
+      
+      if (!getCurrentUserId().equalsIgnoreCase(SessionManager.getCurrentSessionUserId()))
+         session.setAttribute("readOnlyMatrix", "true");
+      session.setAttribute("wizardowner", getCurrent().getRunningWizard().getBase().getOwner());
+
+      if (Wizard.WIZARD_TYPE_SEQUENTIAL.equals(
+            getCurrent().getBase().getType())) {
+         redirectAddress = "osp.wizard.page.helper/sequentialWizardPage.osp";
+      }
+
+      try {
+         context.redirect(redirectAddress);
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+
+      return null;
+   }
+
+   public String processExecPages() {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      
+      CompletedWizard cwiz = current.getRunningWizard().getBase();
+      
+      ArrayList pages = new ArrayList();
+      
+      for(Iterator i = cwiz.getRootCategory().getChildPages().iterator(); i.hasNext();) {
+         CompletedWizardPage wizpage = (CompletedWizardPage)i.next();
+         
+         WizardPage page = getMatrixManager().getWizardPage(wizpage.getWizardPage().getId());
+         pages.add(page);
+      }
+      
+      session.setAttribute(WizardPageHelper.WIZARD_PAGE, pages);
+      String redirectAddress = "osp.wizard.page.helper/wizardPage.osp";
+      
+      if (!getCurrentUserId().equalsIgnoreCase(SessionManager.getCurrentSessionUserId()))
+         session.setAttribute("readOnlyMatrix", "true");
+      session.setAttribute("wizardowner", getCurrent().getRunningWizard().getBase().getOwner());
+
+      if (Wizard.WIZARD_TYPE_SEQUENTIAL.equals(
+            getCurrent().getBase().getType())) {
+         session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES, pages);
+         session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP,
+               new Integer(1));
+         redirectAddress = "osp.wizard.page.helper/sequentialWizardPage.osp";
+      }
+
+      try {
+         context.redirect(redirectAddress);
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+
+      return null;
    }
 
    public void processActionEvaluate() {
