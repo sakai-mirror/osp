@@ -108,6 +108,9 @@ public class FreeFormTool extends HelperToolBase {
    }
 
    public String processActionCancelPage() {
+       if (getCurrentPage().getBase().isNewObject()) {
+            deletePage(getCurrentPage());
+       }
        cancelBoundValues();
        return "main";
    }

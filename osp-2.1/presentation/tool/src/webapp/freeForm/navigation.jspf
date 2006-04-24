@@ -1,8 +1,10 @@
-   <h:commandButton action="#{freeForm.processActionContinue}"
+ <sakai:button_bar>
+  <sakai:button_bar_item action="#{freeForm.processActionContinue}"
       value="#{msgs.continue}"/>
-   <h:commandButton action="#{freeForm.processActionBack}"
-      value="#{msgs.back}"/>      
-   <h:commandButton action="#{freeForm.processActionSave}"
+   <sakai:button_bar_item action="#{freeForm.processActionBack}"
+      value="#{msgs.back}"/>
+   <sakai:button_bar_item action="#{freeForm.processActionSave}"
       value="#{msgs.save}"/>
-   <h:commandButton action="#{freeForm.processActionCancel}"
+   <sakai:button_bar_item action="#{freeForm.processActionCancel}"
       value="#{msgs.cancel}"/>
+ </sakai:button_bar>
