@@ -30,9 +30,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.awt.event.ActionEvent;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.component.UIInput;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -303,6 +307,7 @@ public class WizardTool extends BuilderTool {
    
    public String processActionCancel() {
       setCurrent(null);
+      cancelBoundValues();
       return LIST_PAGE;
    }
 
