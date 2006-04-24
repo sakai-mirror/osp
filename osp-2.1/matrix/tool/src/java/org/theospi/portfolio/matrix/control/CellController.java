@@ -206,7 +206,9 @@ public class CellController implements FormController, LoadObjectController {
             getStructuredArtifactDefinitionManager().loadHome(strFormDefId);
          bean.getDescription();
          //cwm use a different bean below, as the name has implications
-         retList.add(new ScaffoldingCellSupportDeviceBean(strFormDefId, bean.getDescription(), strFormDefId));
+         retList.add(new ScaffoldingCellSupportDeviceBean(
+                  strFormDefId, bean.getDescription(), strFormDefId, 
+                  bean.getOwner().getName(), bean.getModified()));
       }
       return retList;
    }

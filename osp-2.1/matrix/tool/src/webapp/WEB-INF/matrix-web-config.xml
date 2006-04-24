@@ -198,6 +198,7 @@
             <prop key="success">wizardPageRedirect</prop>
             <prop key="cancel">helperDone</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
+            <prop key="confirmWizard">submitWizardConfirmationRedirect</prop>
             <prop key="guidance">viewGuidance</prop>
             <prop key="review">formCreator</prop>
             <prop key="formPicker">formPicker</prop>
@@ -246,6 +247,7 @@
             <prop key="success">wizardPageRedirect</prop>
             <prop key="cancel">helperDone</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
+            <prop key="confirmWizard">submitWizardConfirmationRedirect</prop>
             <prop key="guidance">viewGuidance</prop>
             <prop key="review">formCreator</prop>
             <prop key="formPicker">formPicker</prop>
@@ -306,6 +308,50 @@
       </property>
       <property name="commandName"><value>cellBean</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellFormBean</value></property>
+   </bean>
+
+   <bean id="formDeleteController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.FormDeleteController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">wizardPageRedirect</prop>
+            <prop key="continue">wizardPageRedirect</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>model</value></property>
+      <property name="commandClass"><value>java.util.Map</value></property>
+   </bean>
+
+   <bean id="resourceDeleteController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.ResourceDeleteController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">wizardPageRedirect</prop>
+            <prop key="continue">wizardPageRedirect</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>model</value></property>
+      <property name="commandClass"><value>java.util.Map</value></property>
    </bean>
 
    <bean id="submitCellConfirmationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">

@@ -65,7 +65,7 @@
 
         <init-param>
             <param-name>default</param-name>
-            <param-value>runWizard</param-value>
+            <param-value>runWizardGuidance</param-value>
         </init-param>
          <init-param>
             <param-name>default.last.view</param-name>
@@ -84,7 +84,7 @@
       <servlet-class>org.theospi.portfolio.shared.control.servlet.HelperAwareJsfTool</servlet-class>
       <init-param>
             <param-name>default</param-name>
-            <param-value>runWizard</param-value>
+            <param-value>runWizardGuidance</param-value>
         </init-param>
         <init-param>
             <param-name>path</param-name>

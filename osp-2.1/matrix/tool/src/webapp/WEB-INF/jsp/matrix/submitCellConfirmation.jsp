@@ -5,20 +5,20 @@
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
     <h3><osp:message key="submit_cell_confirmation"/></h3>
-    
-   <osp-h:glossary link="true" hover="true">
-      <table class="itemSummary">
-         <tr><th><osp:message key="label_cellTitle"/>: </th><td><c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}"/></td></tr>         
-         <tr><th><osp:message key="label_cellDescription"/>: </th><td><c:out value="${cell.scaffoldingCell.wizardPageDefinition.description}" escapeXml="false"/></td></tr>         
-      </table>
-   </osp-h:glossary>
    
-      <p class="instruction"><fmt:message key="instructions_paragraph1"/>
-      </p>
-      <p class="instruction"><fmt:message key="instructions_paragraph2"/>
-      </p>
+      <span class="chefAlert"><fmt:message key="instructions_paragraph1"/></span>
       <br />
 
+	<table class="listHier">
+	   <tr>
+	      <th><fmt:message key="table_header_title"/></th>
+          <th><fmt:message key="label_description"/></th>
+       </tr>
+       <tr>
+          <td><c:out value="${page.pageDefinition.title}"/></td>
+          <td><c:out value="${page.pageDefinition.description}" escapeXml="false"/></td>
+       </tr>
+    </table>
 <form>
 
    <p class="act">

@@ -44,8 +44,10 @@ import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.api.kernel.tool.ActiveTool;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -492,6 +494,11 @@ public class WizardTool extends BuilderTool {
                new Integer(1));
          redirectAddress = "osp.wizard.page.helper/sequentialWizardPage.osp";
       }
+
+      session.setAttribute("submitWizard", "confirmSubmit");
+      List otherViews = new ArrayList();
+      otherViews.add("submitWizard");
+      session.setAttribute("submitWizardFrom", otherViews);
 
       try {
          context.redirect(redirectAddress);

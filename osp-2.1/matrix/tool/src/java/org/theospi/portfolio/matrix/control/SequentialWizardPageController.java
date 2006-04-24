@@ -29,7 +29,8 @@ import java.util.Map;
 import java.util.List;
 
 /**
- * Created by IntelliJ IDEA.
+ * The steps are referenced from 1 to n.  this way we can render the step number to the interface correctly
+ * 
  * User: John Ellis
  * Date: Feb 3, 2006
  * Time: 1:51:18 PM
@@ -61,7 +62,9 @@ public class SequentialWizardPageController extends WizardPageController {
       if (steps != null) {
          int currentStep = getCurrentStep(session);
          request.put(TOTAL_STEPS, new Integer(steps.size()));
-         WizardPage page = (WizardPage) steps.get(currentStep);
+         if(currentStep == 0)
+            currentStep = 1;
+         WizardPage page = (WizardPage) steps.get(currentStep - 1);
 
          request.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, new Integer(currentStep));
 

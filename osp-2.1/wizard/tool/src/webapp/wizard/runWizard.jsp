@@ -13,7 +13,7 @@
 
 <f:view>
 <sakai:view>
-<h:form styleClass="portletBody">
+<h:form>
 
    <sakai:tool_bar>
       <sakai:tool_bar_item

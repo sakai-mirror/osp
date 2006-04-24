@@ -146,8 +146,8 @@
                     <osp:message key="remove"/>
                </a>
             </div>
-            <br />
          </c:if>
+         <br />
       
       </c:forEach>
         

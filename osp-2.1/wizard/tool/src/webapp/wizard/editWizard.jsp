@@ -68,10 +68,10 @@
             <h:outputText value="#{msgs.select_style}"/>
          </h:commandLink>
       </h:panelGroup>
-      <h:panelGroup>
+    <%--  <h:panelGroup>
 	   <h:selectBooleanCheckbox id="asTool" value="#{wizard.current.exposeAsTool}" />
 	   <h:outputLabel value="#{msgs.expose_as_tool}" for="asTool" />
-      </h:panelGroup>
+      </h:panelGroup> --%>
    </sakai:panel_edit>
 
    <%@include file="builderButtons.jspf"%>

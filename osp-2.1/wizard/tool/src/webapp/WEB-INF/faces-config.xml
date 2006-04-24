@@ -122,7 +122,7 @@
      </navigation-case>
      <navigation-case>
        <from-outcome>runWizard</from-outcome>
-       <to-view-id>/wizard/runWizard.jsp</to-view-id>
+       <to-view-id>/wizard/runWizardGuidance.jsp</to-view-id>
        <redirect/>
      </navigation-case>
      <navigation-case>
@@ -266,6 +266,25 @@
       <navigation-case>
         <from-outcome>editWizardPages</from-outcome>
         <to-view-id>/wizard/editWizardPages.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/wizard/runWizardGuidance.jsp</from-view-id>
+      <navigation-case>
+        <from-outcome>listWizards</from-outcome>
+        <to-view-id>/wizard/listWizards.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>main</from-outcome>
+        <to-view-id>/wizard/listWizards.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>page</from-outcome>
+        <to-view-id>/wizard/runWizard.jsp</to-view-id>
         <redirect/>
       </navigation-case>
    </navigation-rule>

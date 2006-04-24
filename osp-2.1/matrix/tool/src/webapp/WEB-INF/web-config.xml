@@ -101,6 +101,8 @@
               <prop key="/cellFormPicker.osp">cellFormPickerController</prop>
               <prop key="/styleRedirector.osp">styleRedirectorController</prop>
               <prop key="/scaffoldingStyleRedirector.osp">scaffoldingStyleRedirectorController</prop>
+              <prop key="/formDelete.osp">formDeleteController</prop>
+              <prop key="/resourceDelete.osp">resourceDeleteController</prop>
 
               <!--  Scaffolding -->
               <prop key="/importScaffolding.osp">importScaffoldingController</prop>

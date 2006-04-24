@@ -478,7 +478,14 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             Type[] types = new Type[]{Hibernate.custom(IdType.class), Hibernate.custom(IdType.class)};
 
             Cell cell = (Cell) session.load(Cell.class, cellId);
-            Set forms = cell.getCellForms();
+            WizardPage page = (WizardPage) session.load(WizardPage.class, cellId);
+            Set forms;
+            
+            if(page != null) {
+               forms = page.getPageForms();
+            } else {
+               forms = cell.getCellForms();
+            }
             Iterator iter = forms.iterator();
             List toRemove = new ArrayList();
             while (iter.hasNext()) {
@@ -489,7 +496,10 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             }
             forms.removeAll(toRemove);
 
-            session.update(cell);
+            if(page != null)
+               session.update(page);
+            else
+               session.update(cell);
             return null;
          }
 
