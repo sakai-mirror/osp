@@ -23,8 +23,13 @@ package org.theospi.portfolio.shared.tool;
 import javax.faces.model.SelectItem;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
+import javax.faces.component.UIViewRoot;
 //import java.util.ResourceBundle;
 import java.util.Locale;
+import java.util.List;
+import java.util.Iterator;
 import java.text.MessageFormat;
 
 import org.sakaiproject.util.java.ResourceLoader;
@@ -69,4 +74,23 @@ public class ToolBase {
       }
       return toolBundle.getString(key);
    }
+
+   protected void processChildCancel(UIComponent component) {
+      if (component instanceof UIInput) {
+         UIInput input = (UIInput) component;
+         input.setSubmittedValue(null);
+      }
+
+      for(Iterator i=component.getChildren().iterator();i.hasNext();) {
+         UIComponent child=(UIComponent)i.next();
+         processChildCancel(child);
+      }
+   }
+
+   protected void cancelBoundValues() {
+      FacesContext facesContext=FacesContext.getCurrentInstance();
+      UIViewRoot viewRoot= facesContext.getViewRoot();
+      processChildCancel(viewRoot);
+   }
+
 }
