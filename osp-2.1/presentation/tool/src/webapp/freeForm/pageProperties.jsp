@@ -18,7 +18,9 @@
 <sakai:view_title value="#{msgs.title_addPresentation1}" rendered="#{freeForm.presentation.newObject}"/>
 <sakai:view_title value="#{msgs.title_editPresentation1}" rendered="#{!freeForm.presentation.newObject}"/>
 <%@include file="steps.jspf"%>
-<sakai:view_title value="#{msgs.add_page}"/>
+<sakai:view_title value="#{msgs.add_page}" rendered="#{freeForm.presentation.newObject}"/>
+<sakai:view_title value="#{msgs.edit_page}" rendered="#{!freeForm.presentation.newObject}"/>
+
 <sakai:instruction_message value=""/>
 <sakai:messages/>
 <ospx:xheader>
@@ -30,7 +32,7 @@
                 <ospx:splitsection size="80%" valign="top">
                     <sakai:panel_edit>
                         <ospx:formLabel valueRequired="true">
-                            <h:outputLabel for="title" id="titleLabel" value="#{msgs.page_title}"/>
+                            <h:outputLabel for="title" id="titleLabel" value="#{msgs.page_title}" />
                         </ospx:formLabel>
                         <h:panelGroup>
                             <h:inputText id="title" value="#{freeForm.currentPage.base.title}" required="true">
@@ -122,7 +124,7 @@
 </ospx:xheaderdrawer>
 </ospx:xheader>
 <ospx:xheader>
-    <ospx:xheadertitle id="styleTitle2" value="#{msgs.page_information_title}"/>
+    <ospx:xheadertitle id="styleTitle2" value="#{msgs.page_content_title}"/>
     <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
         <f:subview id="arrange">
             <h:panelGrid columns="1">
