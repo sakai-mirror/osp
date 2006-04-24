@@ -67,7 +67,7 @@ public class DecoratedPage implements Comparable {
          setSelectedLayout(new DecoratedLayout(parent, base.getLayout()));
       }
    }
-   
+
    public String getStyleName() {
       ToolSession session = SessionManager.getCurrentToolSession();
       if (session.getAttribute(StyleHelper.CURRENT_STYLE) != null) {
@@ -79,17 +79,17 @@ public class DecoratedPage implements Comparable {
          session.removeAttribute(StyleHelper.UNSELECTED_STYLE);
          return "";
       }
-      
+
       if (base.getStyle() != null)
          return base.getStyle().getName();
       return "";
    }
-   
+
    public boolean isRenderLayoutName() {
       getLayoutName();
       return true;
    }
-   
+
    public String getLayoutName() {
       ToolSession session = SessionManager.getCurrentToolSession();
       if (session.getAttribute(PresentationLayoutHelper.CURRENT_LAYOUT) != null) {
@@ -105,14 +105,14 @@ public class DecoratedPage implements Comparable {
          setSelectedLayoutId(null);
          return null;
       }
-      
+
       if (getSelectedLayout() != null && getSelectedLayout().getBase() != null)
          return getSelectedLayout().getBase().getName();
       //return layoutName;
       setSelectedLayoutId(null);
       return null;
    }
-   
+
    public void setLayoutName(String name) {
       this.layoutName = name;
    }
@@ -175,17 +175,17 @@ public class DecoratedPage implements Comparable {
       getParent().reorderPages();
       return "main";
    }
-   
-   public String processActionSelectStyle() {      
+
+   public String processActionSelectStyle() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
       session.removeAttribute(StyleHelper.CURRENT_STYLE);
       session.removeAttribute(StyleHelper.CURRENT_STYLE_ID);
-      
+
       session.setAttribute(StyleHelper.STYLE_SELECTABLE, "true");
       if (base.getStyle() != null)
          session.setAttribute(StyleHelper.CURRENT_STYLE_ID, base.getStyle().getId().getValue());
-      
+
       try {
          context.redirect("osp.style.helper/listStyle");
       }
@@ -194,17 +194,17 @@ public class DecoratedPage implements Comparable {
       }
       return null;
    }
-   
-   public String processActionSelectLayout() {      
+
+   public String processActionSelectLayout() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
       session.removeAttribute(PresentationLayoutHelper.CURRENT_LAYOUT);
       session.removeAttribute(PresentationLayoutHelper.CURRENT_LAYOUT_ID);
-      
+
       session.setAttribute(PresentationLayoutHelper.LAYOUT_SELECTABLE, "true");
       if (getSelectedLayout() != null && getSelectedLayout().getBase() != null)
          session.setAttribute(PresentationLayoutHelper.CURRENT_LAYOUT_ID, getSelectedLayout().getBase().getId().getValue());
-      
+
       try {
          context.redirect("osp.presLayout.helper/listLayout");
       }
@@ -235,7 +235,7 @@ public class DecoratedPage implements Comparable {
     * @param layoutId
     */
    public void setSelectedLayoutId(String layoutId) {
-      
+
       Id id = getParent().getIdManager().getId(layoutId);
       PresentationLayout layout = getParent().getPresentationManager().getPresentationLayout(id);
       setSelectedLayout(new DecoratedLayout(getParent(), layout));
@@ -257,13 +257,14 @@ public class DecoratedPage implements Comparable {
       return getBase().compareTo(other.getBase());
    }
 
-   public void pagePropertiesSaved(ActionEvent event) {
+   public String pagePropertiesSaved() {
       if (getBase().getLayout() != null &&
           !getBase().getLayout().equals(getSelectedLayout().getBase())) {
          getBase().getRegions().clear();
          regionMap = null;
       }
       getBase().setLayout(getSelectedLayout().getBase());
+      return "main";
    }
 
    public boolean getHasLayout() {

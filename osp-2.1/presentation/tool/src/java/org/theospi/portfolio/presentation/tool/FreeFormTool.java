@@ -107,6 +107,11 @@ public class FreeFormTool extends HelperToolBase {
       return returnToCaller();
    }
 
+   public String processActionCancelPage() {
+       cancelBoundValues();
+       return "main";
+   }
+
    protected void initValues() {
       currentPage = null;
       pageList = null;
