@@ -325,6 +325,9 @@ public class WizardManagerImpl extends HibernateDaoSupport
          CompletedWizard cw = (CompletedWizard)i.next();
          deleteCompletedWizard(cw);
       }
+      //remove the tool from the menu
+      if (wiz.getExposedPageId() != null)
+         removeTool(wiz);
       getHibernateTemplate().delete(wiz);
    }
    
