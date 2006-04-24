@@ -20,18 +20,24 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.Date;
+
 public class ScaffoldingCellSupportDeviceBean {
    
    private String id;
    private String name;
    private String type;
+   private String owner;
+   private Date modifiedDate;
    
    public ScaffoldingCellSupportDeviceBean() {}
    
-   public ScaffoldingCellSupportDeviceBean(String id, String name, String type) {
+   public ScaffoldingCellSupportDeviceBean(String id, String name, String type, String owner, Date modifiedDate) {
       this.id = id;
       this.name = name;
       this.type = type;
+      this.owner = owner;
+      this.modifiedDate = modifiedDate;
    }
    
    public String getId() {
@@ -51,6 +57,18 @@ public class ScaffoldingCellSupportDeviceBean {
    }
    public void setType(String type) {
       this.type = type;
+   }
+   public String getOwner() {
+      return owner;
+   }
+   public void setOwner(String owner) {
+      this.owner = owner;
+   }
+   public Date getModifiedDate() {
+      return modifiedDate;
+   }
+   public void setModifiedDate(Date modifiedDate) {
+      this.modifiedDate = modifiedDate;
    }
    
    

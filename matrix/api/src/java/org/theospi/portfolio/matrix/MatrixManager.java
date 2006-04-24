@@ -77,6 +77,7 @@ public interface MatrixManager extends WorkflowEnabledManager {
    Attachment attachArtifact(Id pageId, Reference artifactId);
 
    void detachArtifact(final Id pageId, final Id artifactId);
+   void detachForm(final Id pageId, final Id artifactId);
    
    void removeFromSession(Object obj);
    void clearSession();

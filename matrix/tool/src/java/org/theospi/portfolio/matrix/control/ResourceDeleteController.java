@@ -38,7 +38,7 @@ import org.theospi.portfolio.matrix.model.WizardPage;
 /**
  * @author chmaurer
  */
-public class SubmitCellConfirmationController implements LoadObjectController, CustomCommandController {
+public class ResourceDeleteController implements LoadObjectController, CustomCommandController {
 
    IdManager idManager = null;
    MatrixManager matrixManager = null;
@@ -63,6 +63,7 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       WizardPage page = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
       Id cellId = idManager.getId((String) request.get("page_id"));
+      Id artifactId = idManager.getId((String) request.get("resource_id"));
       Cell cell = getMatrixManager().getCellFromPage(cellId);
       if (page == null) {
          page = cell.getWizardPage();
@@ -71,17 +72,17 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
       String cancelAction = (String)request.get("cancel");
       if (submitAction != null) {
          if (page != null) {
-            getMatrixManager().submitPageForEvaluation(page);
+            getMatrixManager().detachArtifact(page.getId(), artifactId);
          }
          else {
-            getMatrixManager().submitCellForEvaluation(cell);
+            getMatrixManager().detachArtifact(page.getId(), artifactId);
          }
          return new ModelAndView("continue", "page_id", page.getId().getValue());
       }
       if (cancelAction != null) {
          return new ModelAndView("continue", "page_id", page.getId().getValue());
       }
-      return new ModelAndView("success", "page", page);
+      return new ModelAndView("success", "cell", cell);
    }
    
    

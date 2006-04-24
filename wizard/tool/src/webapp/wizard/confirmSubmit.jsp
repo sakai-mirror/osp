@@ -15,6 +15,22 @@
 <sakai:view>
 <h:form>
 
+    <h3><osp:message key="submit_cell_confirmation"/></h3>
+   
+      <span class="chefAlert"><fmt:message key="complete_wizard"/></span>
+      <br />
+
+	<table class="listHier">
+	   <tr>
+	      <th><fmt:message key="table_header_title"/></th>
+          <th><fmt:message key="label_description"/></th>
+       </tr>
+       <tr>
+          <td><c:out value="${wizard.current.title}"/></td>
+          <td><c:out value="${wizard.current.description}" escapeXml="false"/></td>
+       </tr>
+    </table>
+    
    <sakai:view_title value="#{msgs.complete_wizard}"/>
    <sakai:instruction_message value="#{msgs.complete_wizard_instructions}" />
 

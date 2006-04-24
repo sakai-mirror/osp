@@ -32,6 +32,8 @@ import org.springframework.validation.Errors;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,6 +44,8 @@ import java.util.Map;
  */
 public class WizardPageDefinitionController extends EditScaffoldingCellController implements CancelableController {
 
+   private List pageList = null;
+   
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.FormController#referenceData(java.util.Map, java.lang.Object, org.springframework.validation.Errors)
     */
@@ -68,7 +72,19 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
    }
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
-      WizardPageDefinition page = (WizardPageDefinition) session.get(WizardPageHelper.WIZARD_PAGE);
+      Object pages = session.get(WizardPageHelper.WIZARD_PAGE);
+      
+      WizardPageDefinition page = null;
+      if(pages instanceof WizardPageDefinition) {
+         pageList = new ArrayList();
+         pageList.add(pages);
+      }
+      if(pages instanceof List) {
+         pageList = (List)pages;
+      }
+      
+      page = (WizardPageDefinition)pageList.get(0);
+      
       session.remove(WizardPageHelper.CANCELED);
       page.setSiteId(PortalService.getCurrentSiteId());
       page.setToolId(PortalService.getCurrentToolId());

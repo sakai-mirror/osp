@@ -20,6 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.model;
 
+import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.service.legacy.content.ContentResource;
@@ -84,6 +85,13 @@ public class GuidanceItemAttachment extends IdentifiableObject {
 
       String displayNameProp = resource.getProperties().getNamePropDisplayName();
       return resource.getProperties().getProperty(displayNameProp);
+   }
+
+   public MimeType getMimeType() {
+      ContentResource resource = (ContentResource)baseReference.getBase().getEntity();
+
+      String displayNameProp = resource.getProperties().getNamePropContentType();
+      return new MimeType(resource.getProperties().getProperty(displayNameProp));
    }
 
 	/**

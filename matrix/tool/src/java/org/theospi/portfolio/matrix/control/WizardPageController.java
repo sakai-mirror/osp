@@ -20,9 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import org.theospi.utils.mvc.impl.ToolFinishedView;
+
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
@@ -32,6 +35,7 @@ import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
@@ -58,6 +62,7 @@ public class WizardPageController extends CellController {
       //session.removeAttribute("readOnlyMatrix");
       model.put("pageTitleKey", "view_wizardPage");
       model.put("helperPage", "true");
+      model.put("isWizard", "true");
       return model;
    }
    
@@ -90,6 +95,18 @@ public class WizardPageController extends CellController {
       cellBean.setNodes(nodeList);
 
       return cellBean;
+   }
+
+   public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
+
+      String submitWizardAction = (String)request.get("submitWizard");
+      
+      if(submitWizardAction != null) {
+         session.put(ToolFinishedView.ALTERNATE_DONE_URL, "submitWizard");
+         return new ModelAndView("confirmWizard", "", "");
+      }
+
+      return super.handleRequest(requestModel, request, session, application, errors);
    }
 
    public static Cell createCellWrapper(WizardPage page) {

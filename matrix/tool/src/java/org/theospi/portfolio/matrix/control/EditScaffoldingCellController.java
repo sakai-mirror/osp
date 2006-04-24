@@ -351,7 +351,8 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       List retForms = new ArrayList();
       for(Iterator iter = commentForms.iterator(); iter.hasNext();) {
          StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) iter.next(); 
-         retForms.add(new ScaffoldingCellSupportDeviceBean(sad.getId().getValue(), sad.getDescription(), FORM_TYPE));
+         retForms.add(new ScaffoldingCellSupportDeviceBean(sad.getId().getValue(), sad.getDescription(), FORM_TYPE,
+                  sad.getOwner().getName(), sad.getModified()));
       }
       
       return retForms;
@@ -366,7 +367,8 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       for(Iterator iter = wizards.iterator(); iter.hasNext();) {
          Wizard wizard = (Wizard)iter.next();
          retWizards.add(new ScaffoldingCellSupportDeviceBean(wizard.getId().getValue(),
-               wizard.getName(), Wizard.WIZARD_TYPE_SEQUENTIAL));
+               wizard.getName(), Wizard.WIZARD_TYPE_SEQUENTIAL,
+               wizard.getOwner().getName(), wizard.getModified() ));
       }
       
       return retWizards;

@@ -199,6 +199,8 @@ public class HelperAwareJsfTool extends JsfTool {
        toolSession.setAttribute(helperTool.getId() + Tool.HELPER_DONE_URL,
              req.getContextPath() + req.getServletPath() + computeDefaultTarget(true));
     }
+    toolSession.setAttribute(helperTool.getId() + "thetoolPath",
+          req.getContextPath() + req.getServletPath());
 
 /*comment out for using the global parameter rather than tool-by-tool setting
     SessionState state = UsageSessionService.getSessionState(toolSession.getPlacementId());
