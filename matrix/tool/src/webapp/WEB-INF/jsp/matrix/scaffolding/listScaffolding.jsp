@@ -93,7 +93,7 @@
                 <c:set var="hasFirstAction" value="true" />
              <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=matrixManager&scaffoldingId=<c:out value="${scaffold.id.value}"/>/<c:out value="${scaffold.title}" />.zip"><fmt:message key="table_action_export"/></a>
             </c:if>
-            
+    <%--  Hiding this functionality as it hasn't gotten much testing
             <c:if test="${isMaintainer && empty scaffold.exposedPageId}">
                 <c:if test="${hasFirstAction}" > | </c:if>
                 <c:set var="hasFirstAction" value="true" />
@@ -109,7 +109,7 @@
                    <fmt:message key="table_action_unexpose"/>
                 </a>
             </c:if>
-            
+       --%>     
              
          </div>
       </TD>
