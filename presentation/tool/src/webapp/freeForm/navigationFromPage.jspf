@@ -5,5 +5,4 @@
    <h:commandButton action="main"
       actionListener="#{freeForm.currentPage.pagePropertiesSaved}"
       value="#{msgs.add_page}" rendered="#{freeForm.currentPage.base.title == null}"/>
-   <h:commandButton action="#{freeForm.processActionCancel}"
-      value="#{msgs.cancel}" immediate="true"/>
+   <h:commandButton action="main" value="#{msgs.cancel}" immediate="true"/>
