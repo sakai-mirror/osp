@@ -35,6 +35,8 @@
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />
    
+   <h:outputText value="#{wizard.lastSaveWizard} #{msgs.wizard_was_submitted}" styleClass="success" rendered="#{wizard.lastSaveWizard != ''}" />
+   
    <f:subview id="viewUsers" rendered="#{wizard.canEvaluateTool || wizard.canReviewTool}">
       <h:selectOneMenu id="users" immediate="true" value="#{wizard.currentUserId}">
          <f:selectItems value="#{wizard.userListForSelect}"/>

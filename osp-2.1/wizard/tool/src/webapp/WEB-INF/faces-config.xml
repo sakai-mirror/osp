@@ -287,6 +287,11 @@
         <to-view-id>/wizard/runWizard.jsp</to-view-id>
         <redirect/>
       </navigation-case>
+      <navigation-case>
+        <from-outcome>confirmSubmit</from-outcome>
+        <to-view-id>/wizard/confirmSubmit.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
    </navigation-rule>
 
    <navigation-rule>
@@ -306,8 +311,13 @@
    <navigation-rule>
      <from-view-id>/wizard/confirmSubmit.jsp</from-view-id>
       <navigation-case>
-        <from-outcome>runWizard</from-outcome>
-        <to-view-id>/wizard/runWizard.jsp</to-view-id>
+        <from-outcome>cancelled</from-outcome>
+        <to-view-id>/wizard/runWizardGuidance.jsp</to-view-id>
+        <redirect/>
+      </navigation-case>
+      <navigation-case>
+        <from-outcome>submitted</from-outcome>
+        <to-view-id>/wizard/listWizards.jsp</to-view-id>
         <redirect/>
       </navigation-case>
    </navigation-rule>

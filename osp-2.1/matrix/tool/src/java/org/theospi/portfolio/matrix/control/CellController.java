@@ -63,8 +63,9 @@ public class CellController implements FormController, LoadObjectController {
    private IdManager idManager = null;
    private ReviewManager reviewManager;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
-   
+
    public static final String WHICH_HELPER_KEY = "filepicker.helper.key";
+   public static final String KEEP_HELPER_LIST = "filepicker.helper.keeplist";
 
 
    public Map referenceData(Map request, Object command, Errors errors) {
@@ -225,8 +226,9 @@ public class CellController implements FormController, LoadObjectController {
       
       session.removeAttribute(ReviewHelper.REVIEW_TYPE);
       session.removeAttribute(ReviewHelper.REVIEW_TYPE_KEY);
-      
+
       session.removeAttribute(WHICH_HELPER_KEY);
+      session.removeAttribute(KEEP_HELPER_LIST);
       
    }
    

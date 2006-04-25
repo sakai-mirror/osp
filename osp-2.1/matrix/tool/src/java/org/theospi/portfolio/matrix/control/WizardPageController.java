@@ -34,6 +34,7 @@ import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,6 +64,9 @@ public class WizardPageController extends CellController {
       model.put("pageTitleKey", "view_wizardPage");
       model.put("helperPage", "true");
       model.put("isWizard", "true");
+      model.put("categoryTitle", request.get("categoryTitle"));
+      model.put("wizardTitle", request.get("wizardTitle"));
+      model.put("wizardDescription", request.get("wizardDescription"));
       return model;
    }
    
@@ -86,9 +90,19 @@ public class WizardPageController extends CellController {
       Agent owner = (Agent)session.get("wizardowner");
       request.put("wizardowner", owner);
       session.remove("wizardowner");
+      
+      WizardPageSequence seq = wizardManager.getWizardPageSeqByDef(page.getPageDefinition().getId());
+      if(seq.getCategory().getParentCategory() != null)
+         request.put("categoryTitle", seq.getCategory().getTitle());
+      else
+         request.put("categoryTitle", "");
 
+      request.put("wizardTitle", seq.getCategory().getWizard().getName());
+      request.put("wizardDescription", seq.getCategory().getWizard().getDescription());
+      
+      
       Cell cell = createCellWrapper(page);
-
+      
       CellFormBean cellBean = (CellFormBean) incomingModel;
       cellBean.setCell(cell);
       List nodeList = new ArrayList(getMatrixManager().getPageContents(page));

@@ -88,6 +88,7 @@ import org.theospi.portfolio.shared.tool.BuilderTool;
 import org.theospi.portfolio.shared.tool.BuilderScreen;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.style.StyleHelper;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
@@ -115,6 +116,10 @@ public class WizardTool extends BuilderTool {
    private int nextWizard = 0;
    private String currentUserId;
    
+   private String lastSaveWizard = "";
+   private boolean pageSaved = false;
+   private String lastSavePage = "";
+   
    //	import variables
    private String importFilesString = "";
    private List importFiles = new ArrayList();
@@ -129,6 +134,7 @@ public class WizardTool extends BuilderTool {
    public final static String EDIT_SUPPORT_PAGE = "editWizardSupport";
    public final static String EDIT_DESIGN_PAGE = "editWizardDesign";
    public final static String EDIT_PROPERTIES_PAGE = "editWizardProperties";
+   public final static String CONFIRM_SUBMIT_PAGE = "confirmSubmit";
    public final static String IMPORT_PAGE = "importWizard";
    public final static String CONFIRM_DELETE_PAGE = "confirmDeleteWizard";
 
@@ -283,39 +289,50 @@ public class WizardTool extends BuilderTool {
 
       return returned;
    }
+   
+   public void clearInterface()
+   {
+      lastSavePage = "";
+      pageSaved = false;
+      lastSavePage = "";
+   }
 
    public String processActionPublish(Wizard wizard) {
+      clearInterface();
       getWizardManager().publishWizard(wizard);
       current = null;
       return LIST_PAGE;
    }
 
    public String processActionEdit(Wizard wizard) {
+      clearInterface();
       wizard = getWizardManager().getWizard(wizard.getId());
       setCurrent(new DecoratedWizard(this, wizard, false));
       return startBuilder();
    }
 
    public String processActionDelete(Wizard wizard) {
+      clearInterface();
       getWizardManager().deleteWizard(wizard);
       current = null;
       return LIST_PAGE;
    }
 
    public String processActionConfirmDelete(Wizard wizard) {
+      clearInterface();
       setCurrent(new DecoratedWizard(this, wizard, false));
       return CONFIRM_DELETE_PAGE;
    }
    
    public String processActionCancel() {
+      clearInterface();
       setCurrent(null);
       cancelBoundValues();
       return LIST_PAGE;
    }
 
    public String processActionChangeUser() {
-
-
+      clearInterface();
       return LIST_PAGE;
    }
 
@@ -325,11 +342,13 @@ public class WizardTool extends BuilderTool {
    }
 
    public String processActionSaveFinished() {
+      clearInterface();
       processActionSave(getCurrentScreen().getNavigationKey());
       return LIST_PAGE;
    }
 
    protected void processActionSave(String currentView) {
+      clearInterface();
       if (currentView.equals(EDIT_PAGE) && getCurrent().getBase().getType().equals(Wizard.WIZARD_TYPE_SEQUENTIAL)) {
          boolean foundOne = false;
          List pageList = getCurrent().getRootCategory().getBase().getChildPages();
@@ -355,6 +374,7 @@ public class WizardTool extends BuilderTool {
    }
 
    public String processActionNew() {
+      clearInterface();
       Session session = SessionManager.getCurrentSession();
       Wizard newWizard = getWizardManager().createNew();
       newWizard.setSequence(getNextWizard());
@@ -364,12 +384,22 @@ public class WizardTool extends BuilderTool {
 
       return EDIT_PAGE_TYPE;
    }
+   
+   
+   public void processSubmitWizard(CompletedWizard completedWizard)
+   {
+      clearInterface();
+      completedWizard.setStatus(MatrixFunctionConstants.PENDING_STATUS);
+      getWizardManager().saveWizard(completedWizard);
+      lastSaveWizard = completedWizard.getWizard().getName();
+   }
 
    public String processActionNewSteps() {
       return startBuilder();
    }
 
    public String processActionRemoveGuidance() {
+      clearInterface();
       //Placement placement = ToolManager.getCurrentPlacement();
       //String currentSite = placement.getContext();
       Wizard wizard = getCurrent().getBase();
@@ -381,13 +411,16 @@ public class WizardTool extends BuilderTool {
    }
 
    public void processActionGuidanceHelper(Wizard w, int types) {
+      clearInterface();
       showGuidance(w, "tool", (types & 1) != 0, (types & 2) != 0, (types & 4) != 0);
    }
    public void processActionGuidanceHelper() {
+      clearInterface();
       processActionGuidanceHelper(getCurrent().getBase(), 7);
    }
 
    public void processActionViewGuidance() {
+      clearInterface();
       showGuidance(getCurrent().getBase(), "view", true, true, true);
    }
 
@@ -424,6 +457,7 @@ public class WizardTool extends BuilderTool {
    }
 
    public String processExecPage(WizardPageSequence pageSeq) {
+      clearInterface();
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
       
@@ -466,6 +500,7 @@ public class WizardTool extends BuilderTool {
    }
 
    public String processExecPages() {
+      clearInterface();
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
       
@@ -495,7 +530,7 @@ public class WizardTool extends BuilderTool {
          redirectAddress = "osp.wizard.page.helper/sequentialWizardPage.osp";
       }
 
-      session.setAttribute("submitWizard", "confirmSubmit");
+      session.setAttribute("submitWizard", CONFIRM_SUBMIT_PAGE);
       List otherViews = new ArrayList();
       otherViews.add("submitWizard");
       session.setAttribute("submitWizardFrom", otherViews);
@@ -593,6 +628,7 @@ public class WizardTool extends BuilderTool {
 
    public String processPermissions()
    {
+      clearInterface();
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 
        //todo userCan = null;
@@ -635,6 +671,7 @@ public class WizardTool extends BuilderTool {
 
    public String processPickImportFiles()
    {
+      clearInterface();
 	      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
 	      ToolSession session = SessionManager.getCurrentToolSession();
 	      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACH_LINKS, new Boolean(true).toString());
@@ -715,6 +752,7 @@ public class WizardTool extends BuilderTool {
     */
    public String processImportWizards()
    {
+      clearInterface();
 	   if(importFiles.size() == 0) {
 		   return IMPORT_PAGE;
 	   }
@@ -764,6 +802,7 @@ public class WizardTool extends BuilderTool {
    
    
    public String processActionSelectStyle() {      
+      clearInterface();
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
       session.removeAttribute(StyleHelper.CURRENT_STYLE);
@@ -1122,6 +1161,30 @@ public class WizardTool extends BuilderTool {
     */
    public void setReviewManager(ReviewManager reviewManager) {
       this.reviewManager = reviewManager;
+   }
+
+   public String getLastSaveWizard() {
+      return lastSaveWizard;
+   }
+
+   public void setLastSaveWizard(String lastSaveWizard) {
+      this.lastSaveWizard = lastSaveWizard;
+   }
+
+   public boolean isPageSaved() {
+      return pageSaved;
+   }
+
+   public void setPageSaved(boolean pageSaved) {
+      this.pageSaved = pageSaved;
+   }
+
+   public String getLastSavePage() {
+      return lastSavePage;
+   }
+
+   public void setLastSavePage(String lastSavePage) {
+      this.lastSavePage = lastSavePage;
    }
 
 }

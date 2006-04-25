@@ -46,14 +46,35 @@
 	</div>
 
 
-	<osp-h:glossary link="true" hover="true">
-    <h3><c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}"/></h3>
+	<c:if test="${isWizard == 'true'}">
+	   <osp-h:glossary link="true" hover="true">
+       <h3><c:out value="${wizardTitle}"/></h3>
     
-    <div class="instruction">
-       <c:out value="${cell.scaffoldingCell.wizardPageDefinition.description}" escapeXml="false" />
-    </div>
+       <div class="instruction">
+          <c:out value="${wizardDescription}" escapeXml="false" />
+       </div>
+	   </osp-h:glossary>
+	</c:if>
+	<c:if test="${isWizard != 'true'}">
+	   <osp-h:glossary link="true" hover="true">
+       <h3><c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}"/></h3>
     
-	</osp-h:glossary>
+       <div class="instruction">
+          <c:out value="${cell.scaffoldingCell.wizardPageDefinition.description}" escapeXml="false" />
+       </div>
+	   </osp-h:glossary>
+	</c:if>
+    
+	
+	
+       <c:if test="${sequential != 'true' && isWizard == 'true'}">
+          <h3><c:out value="${categoryTitle}" /><c:if test="${categoryTitle != ''}">:
+          
+          </c:if>
+          
+          <c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" /></h3>
+       </c:if>
+       <c:if test="${sequential == 'true' && isWizard == 'true'}">
     <p class="step">
        <fmt:message key="seq_pages_step">
 	      <fmt:param><c:out value="${currentStep}" /></fmt:param>
@@ -61,6 +82,7 @@
           <fmt:param><c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" /></fmt:param>
 	   </fmt:message>
     </p>
+       </c:if>
     
     <div class="instruction">
        <c:out value="${cell.scaffoldingCell.wizardPageDefinition.description}" escapeXml="false" />
@@ -271,11 +293,10 @@
                   </a>
                   <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
                       <div class="itemAction indnt2">
-                          <a name="linkNew" href="<osp:url value="attachToCell.osp">
+                   <%--       <a name="linkNew" href="<osp:url value="attachToCell.osp">
 						 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
 						 </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="edit"/></a>
-						 |
-						 
+						 |   --%>
                           <a name="linkNew" href="<osp:url value="resourceDelete.osp">
 						 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
 						 <osp:param name="resource_id" value="${node.id}"/>
