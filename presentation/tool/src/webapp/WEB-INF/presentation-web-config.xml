@@ -398,8 +398,10 @@
             <prop key="expired">presentationExpired</prop>
             <prop key="withoutHeader">renderPresentation</prop>
             <prop key="withHeader">renderPresentationHeader</prop>
-            <prop key="withHeaderStandalone">renderPresentationStandalone</prop> 
+            <prop key="withHeaderStandalone">renderPresentationStandalone</prop>
+            <prop key="authnRedirect">viewPresentationLoginRedirect</prop>
          </props>
+
       </property>
       <property name="commandName"><value>presentation</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.presentation.model.Presentation</value></property>

@@ -182,7 +182,12 @@
       <servlet-name>springapp</servlet-name>
       <url-pattern>*.osp</url-pattern>
    </servlet-mapping>
-   
+
+    <servlet-mapping>
+      <servlet-name>osp.presentation</servlet-name>
+      <url-pattern>/helper/*</url-pattern>
+   </servlet-mapping>
+
    <servlet-mapping>
      <servlet-name>repository</servlet-name>
      <url-pattern>/repository/*</url-pattern>
