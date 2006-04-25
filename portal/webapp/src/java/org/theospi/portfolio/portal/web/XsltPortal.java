@@ -49,6 +49,9 @@ import org.theospi.portfolio.portal.model.ToolCategory;
 import org.theospi.portfolio.portal.model.SitePageWrapper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.Serializer;
+import org.apache.xml.serialize.SerializerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -64,6 +67,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -369,7 +373,7 @@ public class XsltPortal extends CharonPortal {
          loggedIn = true;
       }
 
-      Map siteTypesMap = getPortalManager().getSitesByType();
+      Map siteTypesMap = getPortalManager().getSitesByType(siteId);
       Site site = null;
       SitePage page = null;
 
@@ -1103,6 +1107,17 @@ public class XsltPortal extends CharonPortal {
 
    public void setServletResolver(URIResolver servletResolver) {
       this.servletResolver = servletResolver;
+   }
+
+   protected void dumpDocument(Element element) throws IOException {
+      OutputFormat format = new OutputFormat();
+
+      format.setIndent(3);
+      format.setIndenting(true);
+      format.setPreserveSpace(true);
+
+      Serializer serializer = SerializerFactory.getSerializerFactory("xml").makeSerializer(System.out, format);
+      serializer.asDOMSerializer().serialize(element);
    }
 
 }

@@ -65,11 +65,19 @@ public class PortalManagerImpl implements PortalManager {
    }
 
    public Map getSitesByType() {
+      return getSitesByType(null);
+   }
+
+   public Map getSitesByType(String siteId) {
       Map typeMap = new Hashtable();
+      boolean addSite = (siteId != null);
 
       User currentUser = getCurrentUser();
       if (currentUser != null && currentUser.getId().length() > 0) {
-         addMyWorkspace(typeMap);
+         String mySiteId = addMyWorkspace(typeMap);
+         if (addSite) {
+            addSite = !(siteId.equals(mySiteId));
+         }
       }
       else {
          return createGatewayMap(typeMap);
@@ -87,6 +95,10 @@ public class PortalManagerImpl implements PortalManager {
             siteType = SiteType.OTHER;
          }
 
+         if (addSite) {
+            addSite = !checkSites(siteId, sites);
+         }
+
          addSpecialSites(siteType.getSpecialSites(), sites);
 
          if (sites.size() > 0) {
@@ -94,7 +106,29 @@ public class PortalManagerImpl implements PortalManager {
          }
       }
 
+      if (addSite) {
+         // didn't already get the site... let's add it here
+         Site siteToAdd = getSite(siteId);
+         SiteType typeToAdd = (SiteType) getSiteTypes().get(siteToAdd.getType());
+         List sitesToAdd = (List) typeMap.get(typeToAdd);
+         if (sitesToAdd == null) {
+            sitesToAdd = new ArrayList();
+            typeMap.put(typeToAdd, sitesToAdd);
+         }
+         sitesToAdd.add(siteToAdd);
+      }
+
       return typeMap;
+   }
+
+   protected boolean checkSites(String siteId, List sites) {
+      for (Iterator i=sites.iterator();i.hasNext();) {
+         Site site = (Site) i.next();
+         if (site.getId().equals(siteId)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    protected void addSpecialSites(List specialSites, List sites) {
@@ -131,13 +165,14 @@ public class PortalManagerImpl implements PortalManager {
       }
    }
 
-   protected void addMyWorkspace(Map typeMap) {
+   protected String addMyWorkspace(Map typeMap) {
       String myWorkspaceId = getSiteService().getUserSiteId(getCurrentUser().getId());
       try {
          Site myWorkspace = getSiteService().getSite(myWorkspaceId);
          List sites = new ArrayList();
          sites.add(myWorkspace);
          typeMap.put(SiteType.MY_WORKSPACE, sites);
+         return myWorkspace.getId();
       }
       catch (IdUnusedException e) {
          throw new RuntimeException(e);
