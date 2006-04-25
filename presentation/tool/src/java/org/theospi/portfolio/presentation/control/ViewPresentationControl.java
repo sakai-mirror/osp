@@ -42,6 +42,7 @@ import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.util.Tool;
 
@@ -98,9 +99,13 @@ public class ViewPresentationControl extends AbstractPresentationController impl
          if (!pres.getIsPublic()) {
             if (getAuthManager().getAgent().isInRole(Agent.ROLE_ANONYMOUS)){
 
-                 ToolSession ts = SessionManager.getCurrentSession().getToolSession(pres.getTemplate().getToolId());
+                 ToolSession ts = SessionManager.getCurrentSession().getToolSession(pres.getTemplate().getToolId());               
                  SessionManager.setCurrentToolSession(ts);
-                 return new ModelAndView("authnRedirect");
+                 Map model = new Hashtable();
+                 SessionManager.getCurrentSession().setAttribute(Tool.HELPER_DONE_URL, pres.getExternalUri());
+
+                 model.put("sakai.tool.placement.id", pres.getTemplate().getToolId());
+                 return new ModelAndView("authnRedirect", model);
 
             }
             else {
