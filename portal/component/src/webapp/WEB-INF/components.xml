@@ -51,19 +51,23 @@
       <property name="order">
          <value>1</value>
       </property>
+      <!-- 
       <property name="firstCategory">
          <value>1</value>
       </property>
       <property name="lastCategory">
          <value>5</value>
       </property>
+      -->
       <property name="toolCategories">
          <list>
+         <!-- 
             <ref bean="org.theospi.portfolio.portal.model.ToolCategory.collectReflect"/>
             <ref bean="org.theospi.portfolio.portal.model.ToolCategory.designPublish"/>
             <ref bean="org.theospi.portfolio.portal.model.ToolCategory.guide"/>
             <ref bean="org.theospi.portfolio.portal.model.ToolCategory.reviewEvaluate"/>
             <ref bean="org.theospi.portfolio.portal.model.ToolCategory.analyzeReport"/>
+         -->
          </list>
       </property>
       <property name="specialSites">
