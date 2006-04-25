@@ -49,6 +49,8 @@ public interface PortalManager {
 
    public Map getSitesByType();
 
+   public Map getSitesByType(String siteId);
+
    public List getSitesForType(String type, SiteService.SortType sort, PagingPosition page);
 
    public Map getPagesByCategory(String siteId);
