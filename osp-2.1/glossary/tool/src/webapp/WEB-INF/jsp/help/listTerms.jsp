@@ -23,13 +23,24 @@
         <a href="<osp:url value="editGlossaryTerm.osp"/>" title="<fmt:message key="label_title_new"/>">
         <fmt:message key="action_new"/></a>
     </c:if>
+    
+    <c:if test="${can.add}">
+        <a href="<osp:url value="importGlossaryTerm.osp"/>" title="<fmt:message key="label_import"/>">
+        <fmt:message key="action_import"/> </a>
+    </c:if>
+    
+    <c:if test="${can.export}">
+    <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=helpManagerTarget&templateId=<c:out value="${template.id.value}"/>/<c:out value="${worksite.title}" /> Glossary.zip"><fmt:message key="action_export"/></a>
+            
+    </c:if>
+    
     <c:if test="${canWorksite.maintain}">
         <a href="<osp:url value="osp.permissions.helper/editPermissions">
                     <osp:param name="message"> 
                       <fmt:message key="message_permissionsEdit">
-   	                    <fmt:param><c:out value="${tool.title}"/></fmt:param>
-		                <fmt:param><c:out value="${worksite.title}"/></fmt:param>
-		              </fmt:message>
+                          <fmt:param><c:out value="${tool.title}"/></fmt:param>
+                      <fmt:param><c:out value="${worksite.title}"/></fmt:param>
+                    </fmt:message>
                     </osp:param>
                     <osp:param name="name" value="glossary"/>
                     <c:if test="${!global}">
@@ -42,14 +53,6 @@
                 </osp:url>"
             title="<fmt:message key="action_permissions_title"/>">
             <fmt:message key="action_permissions"/></a>
-    </c:if>
-    <c:if test="${can.export}">
-    <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=helpManagerTarget&templateId=<c:out value="${template.id.value}"/>/<c:out value="${worksite.title}" /> Glossary.zip"><fmt:message key="action_export"/></a>
-            
-    </c:if>
-    <c:if test="${can.add}">
-        <a href="<osp:url value="importGlossaryTerm.osp"/>" title="<fmt:message key="label_import"/>">
-        <fmt:message key="action_import"/> </a>
     </c:if>
 </div>
 
