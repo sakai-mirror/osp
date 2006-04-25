@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -42,8 +43,12 @@ public class DeleteTemplateController extends AbstractPresentationController {
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       PresentationTemplate template = (PresentationTemplate) requestModel;
       getAuthzManager().checkPermission(PresentationFunctionConstants.DELETE_TEMPLATE, template.getId());
-      getPresentationManager().deletePresentationTemplate(template.getId());
-      return new ModelAndView("success");
+      
+      Map model = new HashMap();
+      if (!getPresentationManager().deletePresentationTemplate(template.getId())) {
+         model.put("presentationTemplateError", "cant_delete_template");
+      }
+      return new ModelAndView("success", model);
    }
 
 }
