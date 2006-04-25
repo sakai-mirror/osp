@@ -123,7 +123,7 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
    protected Boolean isLayoutAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function){
       PresentationLayout layout = getPresentationManager().getPresentationLayout(qualifier);
       //owner can do anything
-      if (layout.getOwner().equals(agent)){
+      if (agent.equals(layout.getOwner())){
          return new Boolean(true);
       }
       Id toolId = getIdManager().getId(layout.getToolId());
