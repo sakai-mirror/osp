@@ -19,6 +19,9 @@
    
    <sakai:messages />
    
+   <h:outputText value="#{wizard.lastSavePage} #{msgs.page_was_submitted}" styleClass="success" rendered="#{wizard.lastSavePage != ''}" />
+   <h:outputText value="#{msgs.changes_saved}" styleClass="success" rendered="#{wizard.pageSaved}" />
+   
    
    <sakai:instruction_message value="#{wizard.current.base.description}" />
    
@@ -75,7 +78,7 @@
    
    
    <f:subview id="thePagesCat"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}" >
-   <h:dataTable value="#{wizard.current.rootCategory.categoryPageList}" var="item" styleClass="lines listHier" headerClass="exclude">
+   <h:dataTable value="#{wizard.current.rootCategory.categoryPageList}" var="item" styleClass="listHier lines" headerClass="exclude">
      
       <h:column>
          <f:facet name="header">
@@ -127,7 +130,9 @@
    <sakai:button_bar>
     <sakai:button_bar_item id="returnToList" value="#{msgs.wizard_list}"
        action="#{wizard.processActionCancel}" />
-    <sakai:button_bar_item id="cancel" value="#{msgs.submit_wizard_for_evaluation}" action="#{wizard.processActionCancel}"
+    <sakai:button_bar_item id="cancel" value="#{msgs.submit_wizard_for_evaluation}" 
+       rendered="#{wizard.current.runningWizard.base.status == 'READY'}"
+       action="confirmSubmit" immediate="true"
         />
    </sakai:button_bar>
 </f:subview>

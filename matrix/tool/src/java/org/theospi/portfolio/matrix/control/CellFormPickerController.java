@@ -98,7 +98,8 @@ public class CellFormPickerController extends CellController implements FormCont
          // here is where we setup the id
          List refs = (List)session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
          //if (session.get(WHICH_HELPER_KEY).equals(HELPER_PICKER))
-         if (HELPER_PICKER.equals((String)session.get(WHICH_HELPER_KEY)))
+         if (HELPER_PICKER.equals((String)session.get(WHICH_HELPER_KEY)) &&
+               !"true".equals((String)session.get(KEEP_HELPER_LIST)))
             page.getPageForms().clear();
          
          for (Iterator iter = refs.iterator(); iter.hasNext();) {
@@ -121,6 +122,7 @@ public class CellFormPickerController extends CellController implements FormCont
          session.remove(ResourceEditingHelper.CREATE_SUB_TYPE);
          session.remove(ResourceEditingHelper.ATTACHMENT_ID);
          session.remove(WHICH_HELPER_KEY);
+         session.remove(KEEP_HELPER_LIST);
       }
       return null;
    }
@@ -160,6 +162,7 @@ public class CellFormPickerController extends CellController implements FormCont
          session.put("page_id", pageId);
          session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
          session.put(WHICH_HELPER_KEY, HELPER_PICKER);
+         session.put(KEEP_HELPER_LIST, "true");
          return new ModelAndView("formPicker");
          
       }

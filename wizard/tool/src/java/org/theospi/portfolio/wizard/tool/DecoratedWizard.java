@@ -161,6 +161,7 @@ public class DecoratedWizard implements DecoratedListInterface {
    }
    
    public String processActionSelectStyle() {      
+      getParent().clearInterface();
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       ToolSession session = SessionManager.getCurrentToolSession();
       session.removeAttribute(StyleHelper.CURRENT_STYLE);
@@ -248,6 +249,7 @@ public class DecoratedWizard implements DecoratedListInterface {
    }
 
    public String processActionRunWizard() {
+      getParent().clearInterface();
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       //ToolSession session = SessionManager.getCurrentToolSession();
       

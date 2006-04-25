@@ -38,6 +38,8 @@ public class Wizard extends ObjectWithWorkflow {
    public final static String WIZARD_TYPE_SEQUENTIAL = "org.theospi.portfolio.wizard.model.Wizard.sequential";
    public final static String WIZARD_TYPE_HIERARCHICAL = "org.theospi.portfolio.wizard.model.Wizard.hierarchical";
 
+   public final static String ROOT_TITLE = "root";
+   
    private String name;
    private String description;
    private String keywords;
@@ -73,7 +75,7 @@ public class Wizard extends ObjectWithWorkflow {
       this.toolId = toolId;
       newObject = true;
       rootCategory = new WizardCategory(this);
-      rootCategory.setTitle("root");
+      rootCategory.setTitle(ROOT_TITLE);
    }
    
    public String getType() {

@@ -15,33 +15,30 @@
 <sakai:view>
 <h:form>
 
-    <h3><osp:message key="submit_cell_confirmation"/></h3>
+    <h3><h:outputText value="#{msgs.submit_wizard_for_evaluation}"/></h3>
    
-      <span class="chefAlert"><fmt:message key="complete_wizard"/></span>
+      <span class="alertMessage"><h:outputText value="#{msgs.complete_wizard_instructions}"/></span>
       <br />
 
 	<table class="listHier">
 	   <tr>
-	      <th><fmt:message key="table_header_title"/></th>
-          <th><fmt:message key="label_description"/></th>
+	      <th><h:outputText value="#{msgs.wizard_meaning_title}"/></th>
+          <th><h:outputText value="#{msgs.wizard_description}"/></th>
        </tr>
        <tr>
-          <td><c:out value="${wizard.current.title}"/></td>
-          <td><c:out value="${wizard.current.description}" escapeXml="false"/></td>
+          <td><h:outputText value="#{wizard.current.base.name}"/></td>
+          <td><h:outputText value="#{wizard.current.base.description}" escape="false"/></td>
        </tr>
     </table>
-    
-   <sakai:view_title value="#{msgs.complete_wizard}"/>
-   <sakai:instruction_message value="#{msgs.complete_wizard_instructions}" />
 
 <sakai:button_bar>
    <sakai:button_bar_item id="submit" value="#{msgs.submit_wizard}"
       action="#{wizard.current.runningWizard.processSubmitWizard}" />
    <sakai:button_bar_item id="cancel" value="#{msgs.cancel_submit_wizard}"
-      action="runWizard" immediate="true" />
+      action="cancelled" immediate="true" />
 </sakai:button_bar>
 
 
 </h:form>
 </sakai:view>
-</f:view>
+</f:view> 

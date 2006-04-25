@@ -84,9 +84,8 @@ public class DecoratedCompletedWizard {
    }
 
    public String processSubmitWizard() {
-      getBase().setStatus(MatrixFunctionConstants.PENDING_STATUS);
-      getParent().getWizardManager().saveWizard(getBase());
-      return "runWizard";
+      getParent().processSubmitWizard(getBase());
+      return "submitted";
    }
    
    public List getEvaluations() {
