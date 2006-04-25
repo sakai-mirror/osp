@@ -40,6 +40,10 @@ import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
+import org.sakaiproject.api.kernel.tool.Placement;
+import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.util.Tool;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -79,9 +83,11 @@ public class ViewPresentationControl extends AbstractPresentationController impl
          presentation.setSecretExportKey(secretExportKey);
          return presentation;
       }
-      else {
-         return presentationManager.getPresentation(presentation.getId());
+      else{
+          return getPresentationManager().getLightweightPresentation(presentation.getId());
+
       }
+
    }
 
    public ModelAndView handleRequest(Object requestModel, Map request,
@@ -90,7 +96,17 @@ public class ViewPresentationControl extends AbstractPresentationController impl
 
       if (pres.getSecretExportKey() == null) {
          if (!pres.getIsPublic()) {
+            if (getAuthManager().getAgent().isInRole(Agent.ROLE_ANONYMOUS)){
+
+                 ToolSession ts = SessionManager.getCurrentSession().getToolSession(pres.getTemplate().getToolId());
+                 SessionManager.setCurrentToolSession(ts);
+                 return new ModelAndView("authnRedirect");
+
+            }
+            else {
+
             getAuthzManager().checkPermission(PresentationFunctionConstants.VIEW_PRESENTATION, pres.getId());
+            }
          }
 
          if (pres.isExpired() &&
