@@ -123,6 +123,7 @@ public interface PresentationManager extends CleanupableService {
    public Collection findAllGlobalLayouts();
 
    public PresentationLayout storeLayout(PresentationLayout layout);
+   public PresentationLayout storeLayout(PresentationLayout layout, boolean checkAuthz);
    
    public PresentationLayout getPresentationLayout(Id layoutId);
    

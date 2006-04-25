@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.service.framework.portal.cover.PortalService;
 
 import java.util.Map;
 
@@ -40,15 +41,18 @@ public class PublishLayoutController extends AbstractPresentationController {
          
          String suggest = (String)request.get("suggest");
          if (suggest == null) {
-            getAuthzManager().checkPermission(PresentationFunctionConstants.PUBLISH_LAYOUT, layout.getId());
+            Id siteId = getIdManager().getId(PortalService.getCurrentSiteId());
+            getAuthzManager().checkPermission(PresentationFunctionConstants.PUBLISH_LAYOUT, siteId);
+            layout.setSiteId(siteId.getValue());
             layout.setGlobalState(PresentationLayout.STATE_PUBLISHED);
          }
          else {
             getAuthzManager().checkPermission(PresentationFunctionConstants.SUGGEST_PUBLISH_LAYOUT, layout.getId());
             layout.setGlobalState(PresentationLayout.STATE_WAITING_APPROVAL);
          }
-            
-         getPresentationManager().storeLayout(layout);
+         
+//       Don't need to check authz for saving as we should already have perms via the publish
+         getPresentationManager().storeLayout(layout, false);
          request.put("newPresentationLayoutId", layout.getId().getValue());
       }
       return new ModelAndView("success");
