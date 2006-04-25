@@ -342,7 +342,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
    }
 
-   public void deletePresentationTemplate(final Id id) {
+   public boolean deletePresentationTemplate(final Id id) {
       PresentationTemplate template = getPresentationTemplate(id);
       getAuthzManager().checkPermission(PresentationFunctionConstants.DELETE_TEMPLATE, template.getId());
       clearLocks(template.getId());
@@ -351,8 +351,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       // this will delete all authorization as well
       Collection presentations = getHibernateTemplate().find("from Presentation where template_id=?", id.getValue(), Hibernate.STRING);
       for (Iterator i = presentations.iterator(); i.hasNext();) {
-         Presentation presentation = (Presentation) i.next();
-         deletePresentation(presentation.getId(), false);
+         //Presentation presentation = (Presentation) i.next();
+         //deletePresentation(presentation.getId(), false);
+         
+         //Don't think we want to just delete presentations.
+         // Let's return false instead.
+         return false;
       }
 
       HibernateCallback callback = new HibernateCallback() {
@@ -364,7 +368,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       };
       getHibernateTemplate().execute(callback);
-
+      return true;
 
    }
 

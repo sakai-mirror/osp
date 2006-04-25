@@ -41,6 +41,10 @@
 
 <h3><fmt:message key="title_listTemplate"/></h3>
 
+<c:if test="${not empty presentationTemplateError}">
+   <div class="validation"><fmt:message key="${presentationTemplateError}"/></div>
+</c:if>
+
 <table class="listHier" cellspacing="0" >
    <thead>
       <tr>

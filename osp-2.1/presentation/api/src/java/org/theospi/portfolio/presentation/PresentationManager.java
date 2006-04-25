@@ -54,7 +54,7 @@ public interface PresentationManager extends CleanupableService {
 
    public PresentationTemplate storeTemplate(PresentationTemplate template);
 
-   public void deletePresentationTemplate(Id id);
+   public boolean deletePresentationTemplate(Id id);
    public void deletePresentationLayout(Id id);
 
    public PresentationTemplate getPresentationTemplate(Id id);
