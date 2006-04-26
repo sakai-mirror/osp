@@ -110,6 +110,9 @@ public class PortalManagerImpl implements PortalManager {
          // didn't already get the site... let's add it here
          Site siteToAdd = getSite(siteId);
          SiteType typeToAdd = (SiteType) getSiteTypes().get(siteToAdd.getType());
+         if (typeToAdd == null) {
+            typeToAdd = SiteType.OTHER;
+         }
          List sitesToAdd = (List) typeMap.get(typeToAdd);
          if (sitesToAdd == null) {
             sitesToAdd = new ArrayList();
