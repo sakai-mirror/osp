@@ -46,8 +46,11 @@
                             </h:commandLink>
                             <h:commandLink action="#{page.processActionEdit}">
                                 <h:graphicImage height="125" width="100"
+                                                value="/img/page-new.png"
+                                                rendered="#{!page.layoutPreviewImage}"/>
+                                <h:graphicImage height="125" width="100"
                                                 value="#{page.selectedLayout.previewImage.externalUri}"
-                                                rendered="#{page.layoutSelected}"/>
+                                                rendered="#{page.layoutPreviewImage}"/>
                             </h:commandLink>
                             <h:commandLink action="#{page.moveDown}" rendered="#{!page.last}">
                                 <h:graphicImage value="/img/arrowRight.png"/>

@@ -253,6 +253,12 @@ public class DecoratedPage implements Comparable {
       return (getSelectedLayout() != null && getSelectedLayout().getBase() != null);
    }
 
+   public boolean isLayoutPreviewImage() {
+       if (islayoutSelected() && (getSelectedLayout().getPreviewImage() != null)) {
+           return true;
+       }
+       return false;
+   }
    public int compareTo(Object o) {
       DecoratedPage other = (DecoratedPage) o;
       return getBase().compareTo(other.getBase());
