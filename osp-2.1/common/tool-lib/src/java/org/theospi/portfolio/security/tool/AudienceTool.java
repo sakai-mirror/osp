@@ -133,6 +133,7 @@ public class AudienceTool extends HelperToolBase {
         ToolSession session = SessionManager.getCurrentToolSession();
         session.setAttribute("target", getCancelTarget());
         clearAudienceSelectionVariables();
+        processActionClearFilter();
         return returnToCaller();
     }
 
@@ -141,6 +142,7 @@ public class AudienceTool extends HelperToolBase {
         session.setAttribute("target", getSaveNotifyTarget());
         save();
         clearAudienceSelectionVariables();
+        processActionClearFilter();
         return returnToCaller();
     }
 
@@ -148,6 +150,7 @@ public class AudienceTool extends HelperToolBase {
         ToolSession session = SessionManager.getCurrentToolSession();
         session.setAttribute("target", getBackTarget());
         clearAudienceSelectionVariables();
+        processActionClearFilter();
         return returnToCaller();
     }
 
@@ -462,6 +465,7 @@ public class AudienceTool extends HelperToolBase {
         session.setAttribute("target", getSaveTarget());
         save();
         clearAudienceSelectionVariables();
+        processActionClearFilter();
         return returnToCaller();
     }
 
@@ -505,9 +509,9 @@ public class AudienceTool extends HelperToolBase {
     }
 
     public void processActionClearFilter() {
-        selectedGroupsFilter.clear();
-        selectedRolesFilter.clear();
-        processActionApplyFilter();
+       selectedGroupsFilter.clear();
+       selectedRolesFilter.clear();
+       processActionApplyFilter();
     }
 
     public void processActionApplyFilter() {
