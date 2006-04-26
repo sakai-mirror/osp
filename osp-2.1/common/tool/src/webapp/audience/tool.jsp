@@ -16,123 +16,132 @@
 
 <sakai:view>
 <sakai:view_title value="#{audience.globalTitle}"/>
-<ospx:splitarea direction="horizontal" width="100%" rendered="audience.portfolioWizard">
-    <ospx:splitsection >
-<%@include file="steps.jspf"%>
-     </ospx:splitsection>
-</ospx:splitarea>
+<f:subview rendered="#{audience.portfolioWizard}" id="steps">
+<%@ include file="steps.jspf" %>
+</f:subview>
+
 <sakai:instruction_message value="#{audience.instructions}"/>
 <sakai:messages/>
 
 <h:form>
-    <ospx:splitarea direction="horizontal" width="100%">
-        <ospx:splitsection size="75%" valign="top">
-            <ospx:xheader>
-                <ospx:xheadertitle id="groupTitle" value="#{audience.groupTitle}"/>
-                <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-                    <!-- worksite group drawer -->
-                    <ospx:splitarea direction="horizontal" width="100%">
-                        <ospx:splitsection size="25%" valign="top">
-                            <h:outputLabel value="#{common_msgs.label_roles}:" for="siteRoles"/>
-                        </ospx:splitsection>
-                        <ospx:splitsection size="50%" valign="top">
-                            <ospx:scrollablearea width="400px" height="100px">
-                                <h:selectManyCheckbox id="siteRoles" value="#{audience.selectedRoles}"
-                                                      layout="pageDirection">
-                                    <f:selectItems value="#{audience.siteRoles}"/>
-                                </h:selectManyCheckbox>
-                            </ospx:scrollablearea>
-                        </ospx:splitsection>
-                        <ospx:splitsection size="25%" valign="top">
-                            <h:panelGrid columns="1">
-                                <sakai:button_bar>
-                                    <sakai:button_bar_item id="add_group_button"
-                                                           action="#{audience.processActionAddGroup}"
-                                                           value="#{common_msgs.add_all}"/>
-                                </sakai:button_bar>
-                            </h:panelGrid>
-                        </ospx:splitsection>
-                    </ospx:splitarea>
-                </ospx:xheaderdrawer>
-            </ospx:xheader>
-            <ospx:xheader>
-                <ospx:xheadertitle id="individualTitle" value="#{audience.individualTitle}"/>
-                <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-                    <!-- user drawer -->
-                    <ospx:splitarea direction="horizontal" width="75%">
-                        <ospx:splitsection size="25%" valign="top">
+<ospx:splitarea direction="horizontal" width="100%">
+    <ospx:splitsection size="55%" valign="top">
+        <!-- group drawer -->
+        <ospx:xheader>
+            <ospx:xheadertitle id="groupTitle" value="#{audience.groupTitle}"/>
+            <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
+                <ospx:splitarea direction="horizontal" width="100%">
+                    <ospx:splitsection size="25%" valign="top">
+                        <h:outputLabel value="#{common_msgs.label_roles}:" for="siteRoles"/>
+                    </ospx:splitsection>
+                    <ospx:splitsection size="50%" valign="bottom">
+                        <h:selectManyCheckbox id="siteRoles" value="#{audience.selectedRoles}"
+                                              layout="pageDirection">
+                            <f:selectItems value="#{audience.siteRoles}"/>
+                        </h:selectManyCheckbox>
+                    </ospx:splitsection>
+                    <ospx:splitsection size="25%" valign="top" align="right">
+                        <sakai:button_bar>
+                            <sakai:button_bar_item id="add_group_button"
+                                                   action="#{audience.processActionAddGroup}"
+                                                   value="#{common_msgs.add_all}"/>
+                        </sakai:button_bar>
+                    </ospx:splitsection>
+                </ospx:splitarea>
+            </ospx:xheaderdrawer>
+        </ospx:xheader>
+        <!-- individual drawer -->
+        <ospx:xheader>
+            <ospx:xheadertitle id="individualTitle" value="#{audience.individualTitle}"/>
+            <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
+                <!-- user -->
+                <ospx:splitarea direction="horizontal" width="100%">
+                    <ospx:splitsection size="25%" valign="top">
 
-                                <h:outputLabel value="#{common_msgs.user_id_label}:" for="userId"/>
+                        <h:outputLabel value="#{common_msgs.user_id_label}:" for="userId"/>
 
-                        </ospx:splitsection>
-                        <ospx:splitsection size="25%" valign="top">
-                            <h:inputText value="#{audience.searchUsers}" id="userId" size="70"/>
-                        </ospx:splitsection>
-                        <ospx:splitsection size="25%" valign="top">
+                    </ospx:splitsection>
+                    <ospx:splitsection size="25%" valign="top">
+                        <h:inputText value="#{audience.searchUsers}" id="userId" size="70"/>
+                    </ospx:splitsection>
+                    <ospx:splitsection size="25%" valign="top" align="center">
+                        <h:commandLink id="browse_button" action="browse" value="#{common_msgs.browse_members}"
+                                       style="white-space:nowrap;"/>
+                    </ospx:splitsection>
+                    <ospx:splitsection size="25%" valign="top" align="right">
+                        <sakai:button_bar>
+                            <sakai:button_bar_item id="add_user_button"
+                                                   action="#{audience.processActionAddUser}"
+                                                   value="#{common_msgs.add_members}"/>
+                        </sakai:button_bar>
 
-                            <h:commandLink id="browse_button" action="browse" value="#{common_msgs.browse_members}"/>
-                        </ospx:splitsection>
-                        <ospx:splitsection size="25%" valign="top">
-                              <sakai:button_bar>
-                                <sakai:button_bar_item id="add_user_button"
-                                                       action="#{audience.processActionAddUser}"
-                                                       value="#{common_msgs.add_members}"/>
-                            </sakai:button_bar>
+                    </ospx:splitsection>
+                </ospx:splitarea>
 
-                        </ospx:splitsection>
-                    </ospx:splitarea>
+                <!-- email -->
+                <ospx:splitarea rendered="#{audience.emailCapable}" direction="horizontal" width="100%">
+                    <ospx:splitsection size="25%" valign="center">
+                        <h:outputLabel value="#{common_msgs.email_label}:" for="emails"/>
+                    </ospx:splitsection>
+                    <ospx:splitsection size="25%" valign="center">
+                        <h:inputText value="#{audience.searchEmails}" id="emails" size="70"/>
+                        <sakai:instruction_message value="#{common_msgs.email_instructions}"/>
+                    </ospx:splitsection>
+                    <ospx:splitsection size="25%" valign="center">
+                        <h:outputText value=" "/>
+                    </ospx:splitsection>
+                    <ospx:splitsection size="25%" valign="top" align="right">
+                        <sakai:button_bar>
+                            <sakai:button_bar_item id="add_email_button"
+                                                   action="#{audience.processActionAddEmail}"
+                                                   value="#{common_msgs.add_members}"/>
+                        </sakai:button_bar>
+                    </ospx:splitsection>
+                </ospx:splitarea>
+            </ospx:xheaderdrawer>
+        </ospx:xheader>
+        <!-- Public URL Drawer -->
+        <ospx:xheader rendered="#{audience.publicCapable}">
+            <ospx:xheadertitle id="publicTitle" value="#{audience.publicTitle}"/>
+            <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
+                <ospx:splitarea direction="horizontal">
+                    <ospx:splitsection size="100%">
+                        <sakai:instruction_message value="#{audience.publicInstructions}"/>
+                    </ospx:splitsection>
+                </ospx:splitarea>
+                <ospx:splitarea direction="horizontal" width="100%">
+                    <ospx:splitsection size="50%">
+                        <h:selectBooleanCheckbox id="isPublic" value="#{audience.publicAudience}"/>
+                        <h:outputLabel value="#{common_msgs.public_label}: " for="isPublic" style="white-space:nowrap;"/>
+                    </ospx:splitsection>
+                    <ospx:splitsection size="50%">
+                        <h:outputLink id="publicURL" value="#{audience.publicURL}">
+                            <h:outputText id="publicURLtext" value="#{audience.publicURL}"/>
+                        </h:outputLink>
+                     </ospx:splitsection>
+                </ospx:splitarea>
+            </ospx:xheaderdrawer>
+        </ospx:xheader>
+    </ospx:splitsection>
+    <!-- Selected Audience Panel -->
+    <ospx:splitsection size="45%" valign="top" cssclass="selectedListBox">
+        <f:subview id="selectedAudience">
+            <%@ include file="audience.inc" %>
+        </f:subview>
+    </ospx:splitsection>
+</ospx:splitarea>
 
-
-                    <ospx:splitarea rendered="#{audience.emailCapable}" direction="horizontal" width="75%">
-                        <ospx:splitsection size="25%" valign="top">
-                            <h:outputLabel value="#{common_msgs.email_label}:" for="emails"/>
-                        </ospx:splitsection>
-                        <ospx:splitsection size="25%" valign="top">
-                            <h:inputText value="#{audience.searchEmails}" id="emails" size="70"/>
-                            <sakai:instruction_message value="#{common_msgs.email_instructions}"/>
-                        </ospx:splitsection>
-                        <ospx:splitsection size="25%" valign="top">
-
-                        </ospx:splitsection>
-                        <ospx:splitsection size="25%" valign="top">
-                            <sakai:button_bar>
-                                <sakai:button_bar_item id="add_email_button"
-                                                       action="#{audience.processActionAddEmail}"
-                                                       value="#{common_msgs.add_members}"/>
-                            </sakai:button_bar>
-                        </ospx:splitsection>
-                    </ospx:splitarea>
-                </ospx:xheaderdrawer>
-            </ospx:xheader>
-            <ospx:xheader rendered="#{audience.publicCapable}">
-                <ospx:xheadertitle id="publicTitle" value="#{audience.publicTitle}"/>
-                <ospx:xheaderdrawer initiallyexpanded="true"
-                                    cssclass="drawerBorder">
-                    <h:selectBooleanCheckbox id="isPublic" value="#{audience.publicAudience}"/>
-                    <h:outputLabel value="#{common_msgs.public_label}:  " for="isPublic"/>
-                    <h:outputLink id="publicURL" value="#{audience.publicURL}">
-                        <h:outputText id="publicURLtext" value="#{audience.publicURL}"/>
-                    </h:outputLink>
-                </ospx:xheaderdrawer>
-            </ospx:xheader>
-        </ospx:splitsection>
-        <ospx:splitsection size="25%" valign="top" cssclass="selectedListBox">
-            <f:subview id="selectedAudience">
-                <%@ include file="audience.inc" %>
-            </f:subview>
-        </ospx:splitsection>
-    </ospx:splitarea>
-
-    <sakai:button_bar>
-        <sakai:button_bar_item id="save_button" action="#{audience.processActionSave}"
-                               value="#{common_msgs.save_audience}"/>
-        <sakai:button_bar_item id="saveNotify_button" action="#{audience.processActionSaveNotify}"
-                               value="#{common_msgs.save_notify_audience}" rendered="#{audience.portfolioWizard}"/>
-        <sakai:button_bar_item id="back_button" action="#{audience.processActionBack}" rendered="#{audience.portfolioWizard}"
-                               value="#{common_msgs.back_audience}"/>
-        <sakai:button_bar_item id="_target1" action="#{audience.processActionCancel}"
-                               value="#{common_msgs.cancel_audience}"/>
-    </sakai:button_bar>
+<sakai:button_bar>
+    <sakai:button_bar_item id="save_button" action="#{audience.processActionSave}"
+                           value="#{common_msgs.save_audience}"/>
+    <sakai:button_bar_item id="saveNotify_button" action="#{audience.processActionSaveNotify}"
+                           value="#{common_msgs.save_notify_audience}" rendered="#{audience.portfolioWizard}"/>
+    <sakai:button_bar_item id="back_button" action="#{audience.processActionBack}"
+                           rendered="#{audience.portfolioWizard}"
+                           value="#{common_msgs.back_audience}"/>
+    <sakai:button_bar_item id="_target1" action="#{audience.processActionCancel}"
+                           value="#{common_msgs.cancel_audience}"/>
+</sakai:button_bar>
 </h:form>
 
 </sakai:view>

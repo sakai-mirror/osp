@@ -73,7 +73,7 @@ public class AudienceTool extends HelperToolBase {
     private List selectedRolesFilter;
     private List selectedGroupsFilter;
     private PagingList browseUsers = null;
-    private String stepString = "3";
+    private String stepString = "2";
     private String function;
     private Id qualifier;
     private static final Pattern emailPattern = Pattern.compile(".*@.*");

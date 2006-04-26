@@ -526,14 +526,14 @@ public class AddPresentationController extends AbstractWizardFormController {
       String baseUrl = this.getServerConfigurationService().getServerUrl();
       ResourceBundle myResources =
          ResourceBundle.getBundle("org.theospi.portfolio.presentation.bundle.Messages");
-
+      if (pres.isNewObject())
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, "osp.presentation.view");
 
       String id = pres.getId()!=null ? pres.getId().getValue() : pres.getNewId().getValue();
        session.setAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD, "true");
        session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
        session.setAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE,
-            myResources.getString("title_addPortfolio"));
+            pres.isNewObject()? myResources.getString("title_addPortfolio") : myResources.getString("title_editPresentation1"));
        session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS,
             myResources.getString("instructions_addViewersToPresentation"));
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE,
