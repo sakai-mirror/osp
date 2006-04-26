@@ -22,6 +22,7 @@ package org.theospi.portfolio.wizard.tool;
 
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.style.StyleHelper;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.model.Wizard;
@@ -425,4 +426,5 @@ public class DecoratedWizard implements DecoratedListInterface {
        return getParent().getMessageFromBundle("delete_wizard_message", new Object[]{
              base.getName()});
     }
+    
 }

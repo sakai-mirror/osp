@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -292,7 +293,7 @@ public class WizardTool extends BuilderTool {
    
    public void clearInterface()
    {
-      lastSavePage = "";
+      lastSaveWizard = "";
       pageSaved = false;
       lastSavePage = "";
    }
@@ -476,6 +477,9 @@ public class WizardTool extends BuilderTool {
       }
       if(page == null)
          throw new NullPointerException("Failed to find the requested page");
+
+      session.removeAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES);
+      session.removeAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP);
       
       session.setAttribute(WizardPageHelper.WIZARD_PAGE, page);
       String redirectAddress = "osp.wizard.page.helper/wizardPage.osp";
@@ -522,6 +526,9 @@ public class WizardTool extends BuilderTool {
          session.setAttribute("readOnlyMatrix", "true");
       session.setAttribute("wizardowner", getCurrent().getRunningWizard().getBase().getOwner());
 
+      session.removeAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES);
+      session.removeAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP);
+      
       if (Wizard.WIZARD_TYPE_SEQUENTIAL.equals(
             getCurrent().getBase().getType())) {
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES, pages);
@@ -530,10 +537,10 @@ public class WizardTool extends BuilderTool {
          redirectAddress = "osp.wizard.page.helper/sequentialWizardPage.osp";
       }
 
-      session.setAttribute("submitWizard", CONFIRM_SUBMIT_PAGE);
-      List otherViews = new ArrayList();
-      otherViews.add("submitWizard");
-      session.setAttribute("submitWizardFrom", otherViews);
+      HashMap map = new HashMap();
+      map.put("submitWizard", CONFIRM_SUBMIT_PAGE);
+      map.put("submitWizardPage", LIST_PAGE);
+      session.setAttribute("altDoneURLSet", map);
 
       try {
          context.redirect(redirectAddress);
@@ -545,14 +552,53 @@ public class WizardTool extends BuilderTool {
       return null;
    }
 
+   public void processEditReflection() {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      ToolSession session = SessionManager.getCurrentToolSession();
+
+      //CWM use a constant for the below values
+      session.setAttribute("process_type_key", CompletedWizard.PROCESS_TYPE_KEY);
+      session.setAttribute(CompletedWizard.PROCESS_TYPE_KEY,
+            current.getRunningWizard().getBase().getId().getValue());
+      session.setAttribute(ReviewHelper.REVIEW_TYPE_KEY,
+            Integer.toString(Review.REFLECTION_TYPE));
+
+      try {
+         context.redirect("osp.review.processor.helper/reviewHelper.osp?current_review_id=" +
+               ((Review)current.getRunningWizard().getReflections().get(0))
+                                    .getReviewContentNode().getResource().getId());
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }
+   }
+
+   /**
+    * This is the action for redirecting the user to the "add reflection" form for 
+    * to a completed wizard.
+    */
+   public void processActionReflection() {
+         processActionReviewHelper(Review.REFLECTION_TYPE);
+   }
+
+   /**
+    * This is the action for redirecting the user to the "add evaluation" form for 
+    * to a completed wizard.
+    */
    public void processActionEvaluate() {
       if(getCanEvaluate())
          processActionReviewHelper(Review.EVALUATION_TYPE);
    }
 
+
+   /**
+    * This is the action for redirecting the user to the "add feedback/review" form for 
+    * to a completed wizard.
+    */
    public void processActionReview() {
       processActionReviewHelper(Review.REVIEW_TYPE);
    }
+   
 
    protected void processActionReviewHelper(int type) {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
@@ -571,7 +617,6 @@ public class WizardTool extends BuilderTool {
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
       }
-
    }
 
    public void processActionAudienceHelper() {
@@ -1171,7 +1216,28 @@ public class WizardTool extends BuilderTool {
       this.lastSaveWizard = lastSaveWizard;
    }
 
+   protected void checkSubmittedPage()
+   {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      if(session.getAttribute("submittedPage") != null) {
+         WizardPage page = (WizardPage)session.getAttribute("submittedPage");
+         session.removeAttribute("submittedPage");
+         
+         lastSavePage = page.getPageDefinition().getTitle();
+      }
+   }
+   protected void checkSavedPage()
+   {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      if(session.getAttribute("savedPage") != null) {
+         WizardPage page = (WizardPage)session.getAttribute("savedPage");
+         session.removeAttribute("savedPage");
+         
+         pageSaved = true;
+      }
+   }
    public boolean isPageSaved() {
+      checkSavedPage();
       return pageSaved;
    }
 
@@ -1180,6 +1246,7 @@ public class WizardTool extends BuilderTool {
    }
 
    public String getLastSavePage() {
+      checkSubmittedPage();
       return lastSavePage;
    }
 

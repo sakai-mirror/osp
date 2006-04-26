@@ -365,6 +365,7 @@
          <props>
             <prop key="success">submitCellConfirmation</prop>
             <prop key="continue">wizardPageRedirect</prop>
+            <prop key="done">wizardListRedirect</prop>
          </props>
       </property>
       <property name="customTypedEditors">

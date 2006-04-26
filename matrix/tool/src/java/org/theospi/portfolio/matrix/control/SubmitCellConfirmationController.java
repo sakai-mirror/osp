@@ -72,6 +72,9 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
       if (submitAction != null) {
          if (page != null) {
             getMatrixManager().submitPageForEvaluation(page);
+            session.put("altDoneURL", "submitWizardPage");
+            session.put("submittedPage", page);
+            return new ModelAndView("done", "page_id", page.getId().getValue());
          }
          else {
             getMatrixManager().submitCellForEvaluation(cell);
