@@ -557,7 +557,6 @@ public class AddPresentationController extends AbstractWizardFormController {
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_CANCEL_TARGET, PARAM_CANCEL);
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_SAVE_NOTIFY_TARGET, PARAM_FINISH_AND_NOTIFY);
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_SAVE_TARGET, PARAM_FINISH);
-      if (pres.getPresentationType().equals(Presentation.FREEFORM_TYPE))
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_BACK_TARGET, PARAM_TARGET +
               (pres.getPresentationType().equals(Presentation.FREEFORM_TYPE)?2:3));
    }
