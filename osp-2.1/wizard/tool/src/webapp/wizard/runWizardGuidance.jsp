@@ -95,10 +95,10 @@
          <h:graphicImage value="/img/page.gif" rendered="#{!item.category && !item.wizard}" />
          <!--h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" /-->
          
-         <h:outputLabel value="#{item.title}" rendered="#{item.category || item.wizard}" />
+         <h:outputText value="#{item.title}" rendered="#{item.category || item.wizard}" />
          
          <h:commandLink action="#{item.processExecPage}" rendered="#{!item.category && !item.wizard}">
-         	<h:outputLabel value="#{item.title}"/>
+         	<h:outputText value="#{item.title}"/>
          </h:commandLink>
          
       </h:column>
@@ -116,6 +116,106 @@
       
    </h:dataTable>
    </f:subview>
+   
+   
+      <ospx:xheader>
+         <ospx:xheadertitle id="reflectiontitleheader" value="#{msgs.reflection_section_header}" />
+      <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
+      
+      <f:subview id="noReflection" 
+      	rendered="#{empty wizard.current.runningWizard.reflections && wizard.current.runningWizard.base.status == 'READY'}">
+         <h:commandLink action="#{wizard.processActionReflection}">
+         	<h:outputText value="#{msgs.reflection_create}"/>
+         </h:commandLink>
+      </f:subview>
+      
+      <f:subview id="showReflection" rendered="#{not empty wizard.current.runningWizard.reflections}">
+      
+         <f:subview id="displayReflection" rendered="#{wizard.current.runningWizard.base.status != 'READY'}">
+            <h:outputLink value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.externalUri}" target="_blank">
+               <f:verbatim>
+                  <img src = '/library/image/sakai/generic.gif' border= '0' hspace='0' />
+               </f:verbatim>
+               <h:outputText value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.displayName}"/>
+            </h:outputLink>
+         </f:subview>
+         <f:subview id="editReflection" rendered="#{wizard.current.runningWizard.base.status == 'READY'}">
+           <f:verbatim>
+              <img src = '/library/image/sakai/generic.gif' border= '0' hspace='0' />
+           </f:verbatim>
+                     
+           <h:outputText value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.displayName}" />
+           <div class="itemAction indnt2">
+              <h:commandLink action="#{wizard.processEditReflection}">
+                 <h:outputText value="#{msgs.reflection_edit}"/>
+              </h:commandLink></a>
+           </div>
+         </f:subview>
+         
+         <h:outputText value="<br><br>" escape="false" />
+      </f:subview>
+      </ospx:xheaderdrawer>
+   </ospx:xheader>
+      
+
+   <ospx:xheader rendered="#{not empty wizard.current.runningWizard.reviews}">
+      <ospx:xheadertitle id="wizardReviews" value="#{msgs.wizard_reviews}" />
+      <ospx:xheaderdrawer initiallyexpanded="false" cssclass="drawerBorder">
+
+         <sakai:flat_list value="#{wizard.current.runningWizard.reviews}" var="review">
+            <h:column>
+               <f:facet name="header">
+                  <h:outputText value="#{msgs.wizard_eval_name}" />
+               </f:facet>
+               <h:outputLink value="#{review.reviewContentNode.externalUri}" target="_blank">
+                  <h:outputText value="#{review.reviewContentNode.displayName}" />
+               </h:outputLink>               
+            </h:column>
+            <h:column>
+               <f:facet name="header">
+                  <h:outputText value="#{msgs.wizard_eval_owner}" />
+               </f:facet>
+               <h:outputText value="#{review.reviewContentNode.technicalMetadata.owner.displayName}" />
+            </h:column>
+            <h:column>
+               <f:facet name="header">
+                  <h:outputText value="#{msgs.wizard_eval_date}" />
+               </f:facet>
+               <h:outputText value="#{review.reviewContentNode.technicalMetadata.creation}" />
+            </h:column>
+         </sakai:flat_list>
+      </ospx:xheaderdrawer>
+  </ospx:xheader>
+     
+   <ospx:xheader rendered="#{not empty wizard.current.runningWizard.evaluations}">
+      <ospx:xheadertitle id="wizardEvals" value="#{msgs.wizard_evals}" />
+      <ospx:xheaderdrawer initiallyexpanded="false" cssclass="drawerBorder">
+
+         <sakai:flat_list value="#{wizard.current.runningWizard.evaluations}" var="eval">
+            <h:column>
+               <f:facet name="header">
+                  <h:outputText value="#{msgs.wizard_eval_name}" />
+               </f:facet>
+               <h:outputLink value="#{eval.reviewContentNode.externalUri}" target="_blank">
+                  <h:outputText value="#{eval.reviewContentNode.displayName}" />
+               </h:outputLink>
+            </h:column>
+            <h:column>
+               <f:facet name="header">
+                  <h:outputText value="#{msgs.wizard_eval_owner}" />
+               </f:facet>
+               <h:outputText value="#{eval.reviewContentNode.technicalMetadata.owner.displayName}" />
+            </h:column>
+            <h:column>
+               <f:facet name="header">
+                  <h:outputText value="#{msgs.wizard_eval_date}" />
+               </f:facet>
+               <h:outputText value="#{eval.reviewContentNode.technicalMetadata.creation}" />
+            </h:column>
+         </sakai:flat_list>
+      </ospx:xheaderdrawer>
+  </ospx:xheader>
+      
    
    
 <f:subview id="seqWizardButtons"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.sequential'}" >

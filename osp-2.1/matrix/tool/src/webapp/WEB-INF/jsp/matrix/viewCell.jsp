@@ -141,60 +141,18 @@
       </c:forEach>
       
       
-   		<!-- ** rationale ** -->
-      <c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}" varStatus="loopStatus">
-         <c:if test="${guidanceItem.type == 'rationale'}">
-         <b>
-            <osp:message key="raiontale"/>
-         </b>
-         
-         <p class="longtext">
+      <osp:message key="additionalGuidance"/>
+      <br /><br />
             <div class="indnt2">
-               
+      
       <a href="<osp:url value="osp.guidance.helper/view">
          <osp:param name="session.page_id" value="${cell.wizardPage.id}"/>
          <osp:param name="${CURRENT_GUIDANCE_ID_KEY}" value="${cell.scaffoldingCell.guidance.id}"/>
       </osp:url>" title="<osp:message key="guidance_link_title"/>">
-         <osp:message key="viewRationale"/></a>
-               
-            </div>
-         </p>
-         <br/><br />
-         </c:if> <!--
-	         <a href="<osp:url value="osp.guidance.helper/view">
-	         <osp:param name="session.page_id" value="${cell.wizardPage.id}"/>
-	         <osp:param name="${CURRENT_GUIDANCE_ID_KEY}" value="${cell.scaffoldingCell.guidance.id}"/>
-	      </osp:url>" title="<osp:message key="guidance_link_title"/>">
-	         <osp:message key="guidance_link_text"/></a>
-         -->
-      </c:forEach>
-      
-      
-   		<!-- ** example ** -->
-      <c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}" varStatus="loopStatus">
-         <c:if test="${guidanceItem.type == 'example'}">
-         <b>
-            <osp:message key="examples"/>
-         </b>
-         
-         <p class="longtext">
-            <div class="indnt2">
-               
-      <a href="<osp:url value="osp.guidance.helper/view">
-         <osp:param name="session.page_id" value="${cell.wizardPage.id}"/>
-         <osp:param name="${CURRENT_GUIDANCE_ID_KEY}" value="${cell.scaffoldingCell.guidance.id}"/>
-         <osp:param name="org.theospi.portfolio.guidance.exampleFlag" value="true"/>
-         <osp:param name="org.theospi.portfolio.guidance.rationaleFlag" value="false"/>
-         <osp:param name="org.theospi.portfolio.guidance.instructionFlag" value="false"/>
-      </osp:url>" title="<osp:message key="guidance_link_title"/>">
-         <osp:message key="viewExamples"/></a>
-               
-            </div>
-         </p>
-         <br/><br />
-         </c:if>
-      </c:forEach>
+         <osp:message key="guidance_link_title"/></a>
       </div>
+      </div>
+      <br /><br />
       
    </c:if>
    <!-- ************* Guidance Area End ************* -->
@@ -366,7 +324,7 @@
             <a href='<c:out value="${reflections[0].reviewContentNode.externalUri}"/>' target="_blank" >
                <img src = '/library/image/sakai/generic.gif' border= '0' hspace='0' />
                <c:out value="${reflections[0].reviewContentNode.displayName}"/>
-            </a>            
+            </a>
          </c:if>
          <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
            <img src = '/library/image/sakai/generic.gif' border= '0' hspace='0' />
@@ -391,7 +349,7 @@
     		<c:if test="${canReflect == 'true'}">
     			<input type="submit" name="submit" value="<osp:message key="submit_for_evaluation"/>"/>
     		</c:if>
-    		<c:if test="${canReflect == 'true' && currentStep == (totalSteps) && isWizard == 'true'}">
+    		<c:if test="${canReflect == 'true' && currentStep == (totalSteps) && sequential == 'true'}">
     			<input type="submit" name="submitWizard" value="<osp:message key="submit_wizard_for_evaluation"/>"/>
     		</c:if>
     	</c:if>

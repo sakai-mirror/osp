@@ -46,7 +46,7 @@ public class ToolFinishedView extends HelperView {
    public static final String ALTERNATE_DONE_URL = "altDoneURL";
    
    /** the set of alternate views */
-   public static final String ALTERNATE_DONE_URL_SET = "altDoneURLSet";
+   public static final String ALTERNATE_DONE_URL_MAP = "altDoneURLSet";
    
    public void render(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
       ToolSession toolSession = SessionManager.getCurrentToolSession();
@@ -57,29 +57,28 @@ public class ToolFinishedView extends HelperView {
       
       toolSession.removeAttribute(tool.getId() + Tool.HELPER_DONE_URL);
       
-      String path = "";
-      Object altObj = toolSession.getAttribute(ALTERNATE_DONE_URL);
-      Object pathObj = toolSession.getAttribute(tool.getId() + "thetoolPath");
-
-      if(altObj != null) {
-         url = (String) toolSession.getAttribute((String)altObj);
-
-         if(pathObj != null) {
-            path = (String) pathObj;
-         }
-         
-         if(!url.startsWith("/"))
-            url = path + "/" + url;
-      }
-      if(toolSession.getAttribute(ALTERNATE_DONE_URL_SET) != null) {
-         List views = (List) toolSession.getAttribute(ALTERNATE_DONE_URL_SET);
-         
-         for(Iterator i = views.iterator(); i.hasNext();) {
-            toolSession.removeAttribute((String)i.next());
-         }
-         toolSession.removeAttribute(ALTERNATE_DONE_URL_SET);
-      }
+      String pathObj = (String)toolSession.getAttribute(tool.getId() + "thetoolPath");
       toolSession.removeAttribute(tool.getId() + "thetoolPath");
+      
+      if(toolSession.getAttribute(ALTERNATE_DONE_URL_MAP) != null) {
+         String path = "";
+         Object altObj = toolSession.getAttribute(ALTERNATE_DONE_URL);
+         Map urlMap = (Map)toolSession.getAttribute(ALTERNATE_DONE_URL_MAP);
+   
+         if(altObj != null) {
+            url = (String) urlMap.get((String)altObj);
+   
+            if(pathObj != null) {
+               path = (String) pathObj;
+            }
+            
+            if(!url.startsWith("/"))
+               url = path + "/" + url;
+         }
+
+         toolSession.removeAttribute(ALTERNATE_DONE_URL_MAP);
+         toolSession.removeAttribute(ALTERNATE_DONE_URL);
+      }
 
       
       setUrl(url);

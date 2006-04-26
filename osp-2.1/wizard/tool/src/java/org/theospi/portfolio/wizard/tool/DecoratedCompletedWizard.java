@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
-import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,6 +38,11 @@ public class DecoratedCompletedWizard {
    private DecoratedWizard wizard;
    private CompletedWizard base;
    private DecoratedCompletedCategory rootCategory;
+   
+   private List reflections = null;
+   private List evaluations = null;
+   private List reviews = null;
+   
 
    public DecoratedCompletedWizard() {
    }
@@ -88,20 +92,26 @@ public class DecoratedCompletedWizard {
       return "submitted";
    }
    
-   public List getEvaluations() {
-      return getParent().getReviewManager().getReviewsByParentAndType(
-            getBase().getId().getValue(), 
-            Review.EVALUATION_TYPE, 
-            getBase().getWizard().getSiteId(),
+   public List getReflections() {
+      if(reflections == null)
+         reflections = getParent().getReviewManager().getReviewsByParentAndType(
+            getBase().getId().getValue(), Review.REFLECTION_TYPE, getBase().getWizard().getSiteId(),
             getParent().getWizardManager().getWizardEntityProducer());
+      return reflections;
    }
-   
-   public List getReviews() {
-      return getParent().getReviewManager().getReviewsByParentAndType(
-            getBase().getId().getValue(), 
-            Review.REVIEW_TYPE, 
-            getBase().getWizard().getSiteId(),
+   public List getEvaluations() {
+      if(evaluations == null)
+         evaluations = getParent().getReviewManager().getReviewsByParentAndType(
+            getBase().getId().getValue(), Review.EVALUATION_TYPE, getBase().getWizard().getSiteId(),
             getParent().getWizardManager().getWizardEntityProducer());
+      return evaluations;
+   }
+   public List getReviews() {
+      if(reviews == null)
+         reviews = getParent().getReviewManager().getReviewsByParentAndType(
+            getBase().getId().getValue(), Review.REVIEW_TYPE, getBase().getWizard().getSiteId(),
+            getParent().getWizardManager().getWizardEntityProducer());
+      return reviews;
    }
 
 }
