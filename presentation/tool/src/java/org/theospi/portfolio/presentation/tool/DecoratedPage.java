@@ -94,12 +94,12 @@ public class DecoratedPage implements Comparable {
       ToolSession session = SessionManager.getCurrentToolSession();
       if (session.getAttribute(PresentationLayoutHelper.CURRENT_LAYOUT) != null) {
          PresentationLayout layout = (PresentationLayout)session.getAttribute(PresentationLayoutHelper.CURRENT_LAYOUT);
-         //base.setLayout(layout);
+         base.setLayout(layout);
          setSelectedLayout(new DecoratedLayout(getParent(), layout));
          session.removeAttribute(PresentationLayoutHelper.CURRENT_LAYOUT);
       }
       else if (session.getAttribute(PresentationLayoutHelper.UNSELECTED_LAYOUT) != null) {
-         //base.setLayout(null);
+         base.setLayout(null);
          setSelectedLayout(new DecoratedLayout(getParent(), null));
          session.removeAttribute(PresentationLayoutHelper.UNSELECTED_LAYOUT);
          setSelectedLayoutId(null);
@@ -132,6 +132,7 @@ public class DecoratedPage implements Comparable {
             getBase().getLayout().getXhtmlFileId(), getBase().getLayout());
       inputStream = node.getInputStream();
       }
+
       return inputStream;
    }
 
