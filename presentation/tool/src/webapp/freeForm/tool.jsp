@@ -63,21 +63,25 @@
                 </h:column>
             </sakai:flat_list>
             <h:panelGrid columns="3" cellspacing="1">
-                <h:outputLabel for="styleFile" id="styleLabel" value="#{msgs.page_style}"/>
-                <h:inputText id="styleFile" value="#{freeForm.styleName}"
+               <h:outputLabel for="styleFile" id="styleLabel" value="#{msgs.page_style}"/>
+               <h:inputText id="styleFile" value="#{freeForm.styleName}"
                              readonly="true" required="false"/>
-                <h:commandLink action="#{freeForm.processActionSelectStyle}" immediate="true">
-                    <h:outputText value="#{msgs.select_style}"/>
-                </h:commandLink>
-
-
-                <h:selectBooleanCheckbox disabled="true"
+               <h:commandLink action="#{freeForm.processActionSelectStyle}" immediate="true">
+                  <h:outputText value="#{msgs.select_style}"/>
+               </h:commandLink>
+            </h:panelGrid>
+            <h:panelGrid id="advNavGrid" columns="1">
+               <h:panelGroup id="advNavGrp">
+                  <h:selectBooleanCheckbox disabled="true"
                                          value="#{freeForm.presentation.advancedNavigation}" rendered="#{freeForm.pageCount == 0}"/>
-                <h:selectBooleanCheckbox id="advancedNavigation"
+                   <h:selectBooleanCheckbox id="advancedNavigation"
                                          value="#{freeForm.presentation.advancedNavigation}" rendered="#{freeForm.pageCount > 0}"/>
-                <h:outputLabel for="advancedNavigation" id="advancedNavigationLabel"
-                               value="#{msgs.advanced_navigation}"/>
-                <sakai:instruction_message value="#{msgs.advanced_navigation_disclaimer}"/>
+
+                   <h:outputLabel for="advancedNavigation" id="advancedNavigationLabel"
+                               value="#{msgs.advanced_navigation}" />
+                   <h:outputText id="advancedNavInstr" value="#{msgs.advanced_navigation_disclaimer}" styleClass="instruction"/>
+
+               </h:panelGroup>
             </h:panelGrid>
 
             <f:subview id="navigation">
