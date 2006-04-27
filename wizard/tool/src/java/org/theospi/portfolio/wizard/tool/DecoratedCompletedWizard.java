@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
+import org.sakaiproject.metaobj.shared.model.Agent;
 
 /**
  * Created by IntelliJ IDEA.
@@ -112,6 +113,11 @@ public class DecoratedCompletedWizard {
             getBase().getId().getValue(), Review.REVIEW_TYPE, getBase().getWizard().getSiteId(),
             getParent().getWizardManager().getWizardEntityProducer());
       return reviews;
+   }
+   public boolean getIsReadOnly() {
+      Agent completedWizardAgent = getBase().getOwner();
+      Agent currentAgent = getParent().getAuthManager().getAgent();
+      return !completedWizardAgent.equals(currentAgent);
    }
 
 }

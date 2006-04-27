@@ -310,7 +310,7 @@
 		</tr>
 	  </table>
       
-      <c:if test="${empty reflections}">
+      <c:if test="${empty reflections && cell.status == 'READY' and readOnlyMatrix != 'true'}">
          <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                <osp:param name="page_id" value="${cell.wizardPage.id}" />
                <osp:param name="org_theospi_portfolio_review_type" value="0" />

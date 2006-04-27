@@ -53,6 +53,11 @@
          <value>#{Components["authzManager"]}</value>
       </managed-property>
       <managed-property>
+         <description>Service Dependency: authzManager</description>
+         <property-name>authManager</property-name>
+         <value>#{Components["authManager"]}</value>
+      </managed-property>
+      <managed-property>
          <description>Service Dependency: workflowManager</description>
          <property-name>workflowManager</property-name>
          <value>#{Components["org.theospi.portfolio.workflow.mgt.WorkflowManager"]}</value>

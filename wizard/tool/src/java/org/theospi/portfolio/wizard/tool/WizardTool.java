@@ -50,6 +50,7 @@ import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
 import org.sakaiproject.api.kernel.tool.cover.ToolManager;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -100,6 +101,7 @@ public class WizardTool extends BuilderTool {
 	
    private WizardManager wizardManager;
    private GuidanceManager guidanceManager;
+   private AuthenticationManager authManager;
    private AuthorizationFacade authzManager;
    private MatrixManager matrixManager;
    private WorkflowManager workflowManager;
@@ -1206,6 +1208,20 @@ public class WizardTool extends BuilderTool {
     */
    public void setReviewManager(ReviewManager reviewManager) {
       this.reviewManager = reviewManager;
+   }
+   
+   /**
+    * @return
+    */
+   public AuthenticationManager getAuthManager() {
+      return authManager;
+   }
+
+   /**
+    * @param manager
+    */
+   public void setAuthManager(AuthenticationManager manager) {
+      authManager = manager;
    }
 
    public String getLastSaveWizard() {

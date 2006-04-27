@@ -110,7 +110,7 @@
          <f:facet name="header">
             <h:outputText value="#{msgs.wizard_description}" />
          </f:facet>
-         <h:outputLabel value="#{item.description}" />
+         <h:outputText value="#{item.description}" escape="false" />
       </h:column>
       
       
@@ -118,12 +118,14 @@
    </f:subview>
    
    
-      <ospx:xheader>
+      <h:outputText value="<br><br>" escape="false" rendered="wizard.current.base.reflectionDevice != null" />
+      <ospx:xheader rendered="wizard.current.base.reflectionDevice != null">
          <ospx:xheadertitle id="reflectiontitleheader" value="#{msgs.reflection_section_header}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
       
       <f:subview id="noReflection" 
-      	rendered="#{empty wizard.current.runningWizard.reflections && wizard.current.runningWizard.base.status == 'READY'}">
+      	rendered="#{empty wizard.current.runningWizard.reflections && wizard.current.runningWizard.base.status == 'READY' &&
+      		not wizard.current.runningWizard.isReadOnly}">
          <h:commandLink action="#{wizard.processActionReflection}">
          	<h:outputText value="#{msgs.reflection_create}"/>
          </h:commandLink>
@@ -131,7 +133,8 @@
       
       <f:subview id="showReflection" rendered="#{not empty wizard.current.runningWizard.reflections}">
       
-         <f:subview id="displayReflection" rendered="#{wizard.current.runningWizard.base.status != 'READY'}">
+         <f:subview id="displayReflection" rendered="#{wizard.current.runningWizard.base.status != 'READY' ||
+         		wizard.current.runningWizard.isReadOnly}">
             <h:outputLink value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.externalUri}" target="_blank">
                <f:verbatim>
                   <img src = '/library/image/sakai/generic.gif' border= '0' hspace='0' />
@@ -139,31 +142,59 @@
                <h:outputText value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.displayName}"/>
             </h:outputLink>
          </f:subview>
-         <f:subview id="editReflection" rendered="#{wizard.current.runningWizard.base.status == 'READY'}">
+         <f:subview id="editReflection" rendered="#{wizard.current.runningWizard.base.status == 'READY' && 
+         	not wizard.current.runningWizard.isReadOnly}">
            <f:verbatim>
               <img src = '/library/image/sakai/generic.gif' border= '0' hspace='0' />
            </f:verbatim>
                      
            <h:outputText value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.displayName}" />
-           <div class="itemAction indnt2">
+           <f:verbatim>
+              <div class="itemAction indnt2">
+           </f:verbatim>
               <h:commandLink action="#{wizard.processEditReflection}">
                  <h:outputText value="#{msgs.reflection_edit}"/>
-              </h:commandLink></a>
-           </div>
+              </h:commandLink>
+           <f:verbatim>
+              </div>
+           </f:verbatim>
          </f:subview>
          
-         <h:outputText value="<br><br>" escape="false" />
       </f:subview>
       </ospx:xheaderdrawer>
    </ospx:xheader>
+   <h:outputText value="<br><br>" escape="false" />
+   
       
-
-   <ospx:xheader rendered="#{not empty wizard.current.runningWizard.reviews}">
+   <!-- ****************** feedback ****************** -->
+   <ospx:xheader rendered="#{not empty wizard.current.runningWizard.reviews || 
+   			(wizard.canReview && wizard.current.base.reviewDevice != null)}">
       <ospx:xheadertitle id="wizardReviews" value="#{msgs.wizard_reviews}" />
-      <ospx:xheaderdrawer initiallyexpanded="false" cssclass="drawerBorder">
+      <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
 
+           <f:verbatim>
+			  <img border="0" src="/library/image/sakai/dir_openminus.gif"/>
+           </f:verbatim>
+			<h:outputText value="#{msgs.wizard_reviews}"/>
+               <f:verbatim>
+			      <div class="itemAction">
+               </f:verbatim>
+				  <f:subview id="feedbackAdd" 
+				  	rendered="#{wizard.canReview && wizard.current.base.reviewDevice != null}">
+				  	
+                    <h:commandLink action="#{wizard.processActionReview}">
+                       <h:outputText value="#{msgs.review_add}"/>
+                    </h:commandLink>
+				  </f:subview>
+              <f:verbatim>
+                 </div>
+              </f:verbatim>
+			   
          <sakai:flat_list value="#{wizard.current.runningWizard.reviews}" var="review">
             <h:column>
+               <f:facet name="header">
+                  <h:outputText value="#{msgs.wizard_eval_name}" />
+               </f:facet>
                <f:facet name="header">
                   <h:outputText value="#{msgs.wizard_eval_name}" />
                </f:facet>
@@ -187,10 +218,33 @@
       </ospx:xheaderdrawer>
   </ospx:xheader>
      
-   <ospx:xheader rendered="#{not empty wizard.current.runningWizard.evaluations}">
+     
+   <!-- ****************** evaluation ****************** -->
+   <ospx:xheader rendered="#{not empty wizard.current.runningWizard.evaluations || 
+   			(wizard.canEvaluate && wizard.current.base.evaluationDevice != null && 
+   			  wizard.current.runningWizard.base.status == 'PENDING')}">
       <ospx:xheadertitle id="wizardEvals" value="#{msgs.wizard_evals}" />
-      <ospx:xheaderdrawer initiallyexpanded="false" cssclass="drawerBorder">
+      <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
 
+           <f:verbatim>
+			  <img border="0" src="/library/image/sakai/dir_openminus.gif"/>
+           </f:verbatim>
+			<h:outputText value="#{msgs.wizard_evals}"/>
+               <f:verbatim>
+			      <div class="itemAction">
+               </f:verbatim>
+				  <f:subview id="evaluationAdd" 
+				  	rendered="#{wizard.canEvaluate && wizard.current.base.evaluationDevice != null &&
+				  		wizard.current.runningWizard.base.status == 'PENDING'}">
+				  	
+                    <h:commandLink action="#{wizard.processActionEvaluation}">
+                       <h:outputText value="#{msgs.evaluation_add}"/>
+                    </h:commandLink>
+				  </f:subview>
+              <f:verbatim>
+                 </div>
+              </f:verbatim>
+			   
          <sakai:flat_list value="#{wizard.current.runningWizard.evaluations}" var="eval">
             <h:column>
                <f:facet name="header">
@@ -231,7 +285,7 @@
     <sakai:button_bar_item id="returnToList" value="#{msgs.wizard_list}"
        action="#{wizard.processActionCancel}" />
     <sakai:button_bar_item id="cancel" value="#{msgs.submit_wizard_for_evaluation}" 
-       rendered="#{wizard.current.runningWizard.base.status == 'READY'}"
+       rendered="#{wizard.current.runningWizard.base.status == 'READY' && wizard.current.runningWizard.isReadOnly == 'false'}"
        action="confirmSubmit" immediate="true"
         />
    </sakai:button_bar>
