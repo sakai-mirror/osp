@@ -212,4 +212,8 @@ public class Wizard extends ObjectWithWorkflow {
    public void setStyleId(Id styleId) {
       this.styleId = styleId;
    }
+   public boolean getHasPages()
+   {
+      return rootCategory.getHasPages();
+   }
 }

@@ -509,8 +509,8 @@ public class AudienceTool extends HelperToolBase {
     }
 
     public void processActionClearFilter() {
-       selectedGroupsFilter.clear();
-       selectedRolesFilter.clear();
+       getSelectedGroupsFilter().clear();
+       getSelectedRolesFilter().clear();
        processActionApplyFilter();
     }
 
@@ -565,7 +565,10 @@ public class AudienceTool extends HelperToolBase {
     }
 
     public List getSelectedRolesFilter() {
-        return selectedRolesFilter;
+       if (selectedRolesFilter == null) {
+          selectedRolesFilter = new ArrayList();
+       }
+       return selectedRolesFilter;
     }
 
     public void setSelectedRolesFilter(List selectedRolesFilter) {

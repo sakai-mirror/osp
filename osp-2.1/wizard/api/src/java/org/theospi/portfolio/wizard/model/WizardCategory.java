@@ -25,6 +25,7 @@ import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -167,6 +168,21 @@ public class WizardCategory extends IdentifiableObject {
 
    public void setSequence(int sequence) {
       this.sequence = sequence;
+   }
+   
+   public boolean getHasPages()
+   {
+      if(childPages != null)
+         if(childPages.size() > 0)
+            return true;
+      if(childCategories != null) {
+         for(Iterator i = childCategories.iterator(); i.hasNext();) {
+            WizardCategory c = (WizardCategory)i.next();
+            if(c.getHasPages())
+               return true;
+         }
+      }
+      return false;
    }
 
 }

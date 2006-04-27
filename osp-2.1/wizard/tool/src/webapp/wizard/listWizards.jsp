@@ -38,6 +38,7 @@
    <h:outputText value="#{wizard.lastSaveWizard} #{msgs.wizard_was_submitted}" styleClass="success" rendered="#{wizard.lastSaveWizard != ''}" />
    <h:outputText value="#{wizard.lastSavePage} #{msgs.page_was_submitted}" styleClass="success" rendered="#{wizard.lastSavePage != ''}" />
    
+   
    <f:subview id="viewUsers" rendered="#{wizard.canEvaluateTool || wizard.canReviewTool}">
       <h:selectOneMenu id="users" immediate="true" value="#{wizard.currentUserId}">
          <f:selectItems value="#{wizard.userListForSelect}"/>
@@ -62,25 +63,25 @@
          </f:subview>
          <f:subview id="viewPermss" rendered="#{wizard.canView}">
 			<f:verbatim><div class="itemAction"></f:verbatim>
-	           <f:subview id="publishLink" rendered="#{wizardItem.canPublish}">
+	           <f:subview id="publishLink" rendered="#{wizardItem.canPublish && wizardItem.base.hasPages}">
 	                 <h:commandLink action="#{wizardItem.processActionPublish}">
 	                 <h:outputText value="#{msgs.publish}" />
 	              </h:commandLink>
 	           </f:subview>
 	           <f:subview id="editLink" rendered="#{wizardItem.canEdit}">
-	              <h:outputText value=" | "  rendered="#{wizardItem.canPublish}" />
+	              <h:outputText value=" | "  rendered="#{(wizardItem.canPublish && wizardItem.base.hasPages)}" />
 	              <h:commandLink action="#{wizardItem.processActionEdit}">
 	                 <h:outputText value="#{msgs.edit}"/>
 	              </h:commandLink>
 	           </f:subview>
 	           <f:subview id="deleteLink" rendered="#{wizardItem.canDelete}">
-	              <h:outputText value=" | "  rendered="#{wizardItem.canPublish || wizardItem.canEdit}" />
+	              <h:outputText value=" | "  rendered="#{(wizardItem.canPublish && wizardItem.base.hasPages) || wizardItem.canEdit}" />
 	              <h:commandLink action="#{wizardItem.processActionConfirmDelete}">
 	                 <h:outputText value="#{msgs.delete}" />
 	              </h:commandLink>
 	           </f:subview>
 	           <f:subview id="exportLink" rendered="#{wizardItem.canExport}">
-	              <h:outputText value=" | "  rendered="#{wizardItem.canPublish || wizardItem.canEdit || wizardItem.canDelete}" />
+	              <h:outputText value=" | "  rendered="#{(wizardItem.canPublish && wizardItem.base.hasPages) || wizardItem.canEdit || wizardItem.canDelete}" />
 	              <h:outputLink value="#{wizardItem.currentExportLink}">
 	                  <h:outputText value="#{msgs.export}"/>
 	              </h:outputLink>
