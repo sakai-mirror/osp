@@ -23,9 +23,15 @@
    <h:outputText value="#{msgs.changes_saved}" styleClass="success" rendered="#{wizard.pageSaved}" />
    
    
-   <sakai:instruction_message value="#{wizard.current.base.description}" />
+   <f:verbatim>
+      <p class="instruction">
+   </f:verbatim>
+      <h:outputText value="#{wizard.current.base.description}" />
+   <f:verbatim>
+      </p>
+   </f:verbatim>
    
-
+   
    <h:outputText value="<b>#{msgs.guidance_instructions}</b><br><br>" escape="false" />
    <h:outputText value="#{wizard.current.instruction.text}" />
    <h:outputText value="<br><br>" escape="false" />
@@ -237,7 +243,7 @@
 				  	rendered="#{wizard.canEvaluate && wizard.current.base.evaluationDevice != null &&
 				  		wizard.current.runningWizard.base.status == 'PENDING'}">
 				  	
-                    <h:commandLink action="#{wizard.processActionEvaluation}">
+                    <h:commandLink action="#{wizard.processActionEvaluate}">
                        <h:outputText value="#{msgs.evaluation_add}"/>
                     </h:commandLink>
 				  </f:subview>
