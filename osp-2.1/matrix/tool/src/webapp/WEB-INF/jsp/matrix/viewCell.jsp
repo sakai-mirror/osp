@@ -420,7 +420,7 @@
       			  <c:if test="${(matrixCan.evaluate || wizardCan.evaluate) && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING'}">
 					 <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 						   <osp:param name="page_id" value="${cell.wizardPage.id}" />
-						<osp:param name="org_theospi_portfolio_review_type" value="2" />
+						<osp:param name="org_theospi_portfolio_review_type" value="1" />
 						<osp:param name="process_type_key" value="page_id" />
 						</osp:url>">
 							  <osp:message key="add_evaluation"/></a>
