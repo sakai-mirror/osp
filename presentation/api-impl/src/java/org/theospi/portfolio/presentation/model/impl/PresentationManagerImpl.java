@@ -353,7 +353,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       for (Iterator i = presentations.iterator(); i.hasNext();) {
          //Presentation presentation = (Presentation) i.next();
          //deletePresentation(presentation.getId(), false);
-         
+
          //Don't think we want to just delete presentations.
          // Let's return false instead.
          return false;
@@ -419,7 +419,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       session.delete("from PresentationComment where presentation_id=?",
          presentation.getId().getValue(), Hibernate.STRING);
    }
-   
+
    protected void deletePresentationPages(Session session, Presentation presentation) throws HibernateException {
       session.delete("from PresentationPage where presentation_id=?",
             presentation.getId().getValue(), Hibernate.STRING);
@@ -1572,7 +1572,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          
          Artifact art = getPresentationItem(item.getDefinition().getType(), item.getArtifactId(), presentation);
 
-         if (art.getHome() instanceof PresentableObjectHome) {
+         if (art != null && art.getHome() instanceof PresentableObjectHome) {
             PresentableObjectHome home = (PresentableObjectHome) art.getHome();
             Element node = home.getArtifactAsXml(art);
             node.setName("artifact");
