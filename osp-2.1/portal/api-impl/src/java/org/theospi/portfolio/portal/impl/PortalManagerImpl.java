@@ -343,7 +343,9 @@ public class PortalManagerImpl implements PortalManager {
                throw new RuntimeException("invalid tool type qualifier");
             }
 
-            return getOspAuthzManager().isAuthorized((String)i.next(), getIdManager().getId(qualifier));
+            if (getOspAuthzManager().isAuthorized((String)i.next(), getIdManager().getId(qualifier))) {
+               return true;
+            }            
          }
       }
 
