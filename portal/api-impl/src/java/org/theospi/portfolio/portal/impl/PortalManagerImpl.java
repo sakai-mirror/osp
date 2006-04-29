@@ -85,6 +85,9 @@ public class PortalManagerImpl implements PortalManager {
 
       List types = getSiteService().getSiteTypes();
 
+      List allUserSites = getSiteService().getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ACCESS,
+         null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC, null);
+
       for (Iterator i=types.iterator();i.hasNext();) {
          String type = (String) i.next();
          List sites = getSiteService().getSites(SiteService.SelectionType.ACCESS, type, null,
@@ -99,7 +102,7 @@ public class PortalManagerImpl implements PortalManager {
             addSite = !checkSites(siteId, sites);
          }
 
-         addSpecialSites(siteType.getSpecialSites(), sites);
+         addSpecialSites(siteType.getSpecialSites(), sites, allUserSites);
 
          if (sites.size() > 0) {
             typeMap.put(siteType, sites);
@@ -134,20 +137,15 @@ public class PortalManagerImpl implements PortalManager {
       return false;
    }
 
-   protected void addSpecialSites(List specialSites, List sites) {
+   protected void addSpecialSites(List specialSites, List sites, List allUserSites) {
 
       if (specialSites == null) {
          return;
       }
 
-      for (Iterator i=specialSites.iterator();i.hasNext();) {
-         Site site = null;
-         try {
-            site = getSiteService().getSite((String) i.next());
-         } catch (IdUnusedException e) {
-            throw new RuntimeException(e);
-         }
-         if (site != null && site.getRole(getCurrentUser().getId()) != null) {
+      for (Iterator i=allUserSites.iterator();i.hasNext();) {
+         Site site = (Site) i.next();
+         if (specialSites.contains(site.getId())) {
             sites.add(site);
          }
       }
@@ -187,8 +185,11 @@ public class PortalManagerImpl implements PortalManager {
       List sites = getSiteService().getSites(SiteService.SelectionType.ACCESS, baseType, null,
 				null, sort, page);
 
+      List allUserSites = getSiteService().getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ACCESS,
+         null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC, null);
+
       SiteType siteType = (SiteType) getSiteTypes().get(baseType);
-      addSpecialSites(siteType.getSpecialSites(), sites);
+      addSpecialSites(siteType.getSpecialSites(), sites, allUserSites);
 
       return sites;
    }
@@ -345,7 +346,7 @@ public class PortalManagerImpl implements PortalManager {
 
             if (getOspAuthzManager().isAuthorized((String)i.next(), getIdManager().getId(qualifier))) {
                return true;
-            }            
+            }
          }
       }
 
