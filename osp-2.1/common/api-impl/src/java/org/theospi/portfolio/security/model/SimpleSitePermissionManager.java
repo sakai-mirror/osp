@@ -21,13 +21,13 @@
 
 package org.theospi.portfolio.security.model;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class SimpleSitePermissionManager extends SimpleToolPermissionManager {
 
@@ -44,13 +44,16 @@ public class SimpleSitePermissionManager extends SimpleToolPermissionManager {
       PermissionsEdit edit = new PermissionsEdit();
       edit.setName(getPermissionEditName());
       Site containingSite = toolConfig.getContainingPage().getContainingSite();
-      Id siteId = getIdManager().getId(containingSite.getId());
-      edit.setQualifier(siteId);
-      edit.setSiteId(containingSite.getId());
-      getPermissionManager().fillPermissions(edit);
-      List perms = filterPermissions(edit);
-      if (perms == null || perms.size() == 0){
-         createDefaultPermissions(edit.getSiteId(), siteId, containingSite.getType());
+
+      if (!isSpecial(containingSite)) {
+         Id siteId = getIdManager().getId(containingSite.getId());
+         edit.setQualifier(siteId);
+         edit.setSiteId(containingSite.getId());
+         getPermissionManager().fillPermissions(edit);
+         List perms = filterPermissions(edit);
+         if (perms == null || perms.size() == 0){
+            createDefaultPermissions(edit.getSiteId(), siteId, containingSite.getType());
+         }
       }
    }
    
@@ -60,15 +63,17 @@ public class SimpleSitePermissionManager extends SimpleToolPermissionManager {
     * @param site
     */
    public void helperSiteChanged(Site site) {
-      Id siteId = getIdManager().getId(site.getId());
-      PermissionsEdit edit = new PermissionsEdit();
-      edit.setQualifier(siteId);
-      edit.setName(getPermissionEditName());
-      edit.setSiteId(site.getId());
-      getPermissionManager().fillPermissions(edit);
-      List perms = filterPermissions(edit);
-      if (perms == null || perms.size() == 0){
-         createDefaultPermissions(edit.getSiteId(), siteId, site.getType());
+      if (!isSpecial(site)) {
+         Id siteId = getIdManager().getId(site.getId());
+         PermissionsEdit edit = new PermissionsEdit();
+         edit.setQualifier(siteId);
+         edit.setName(getPermissionEditName());
+         edit.setSiteId(site.getId());
+         getPermissionManager().fillPermissions(edit);
+         List perms = filterPermissions(edit);
+         if (perms == null || perms.size() == 0){
+            createDefaultPermissions(edit.getSiteId(), siteId, site.getType());
+         }
       }
    }
    
