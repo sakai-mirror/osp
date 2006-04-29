@@ -20,19 +20,23 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.web;
 
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.Serializer;
+import org.apache.xml.serialize.SerializerFactory;
 import org.sakaiproject.api.kernel.component.cover.ComponentManager;
 import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.api.kernel.session.ToolSession;
 import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.api.kernel.tool.Placement;
-import org.sakaiproject.api.kernel.tool.ToolException;
-import org.sakaiproject.api.kernel.tool.Tool;
 import org.sakaiproject.api.kernel.tool.ActiveTool;
+import org.sakaiproject.api.kernel.tool.Placement;
+import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.api.kernel.tool.ToolException;
 import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.portal.charon.CharonPortal;
 import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.entity.ResourceProperties;
 import org.sakaiproject.service.legacy.preference.Preferences;
 import org.sakaiproject.service.legacy.preference.cover.PreferencesService;
@@ -40,18 +44,14 @@ import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SitePage;
 import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.sakaiproject.service.legacy.user.User;
-import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.util.java.ResourceLoader;
 import org.sakaiproject.util.web.Web;
 import org.theospi.portfolio.portal.intf.PortalManager;
+import org.theospi.portfolio.portal.model.SitePageWrapper;
 import org.theospi.portfolio.portal.model.SiteType;
 import org.theospi.portfolio.portal.model.ToolCategory;
-import org.theospi.portfolio.portal.model.SitePageWrapper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -67,7 +67,6 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -684,6 +683,7 @@ public class XsltPortal extends CharonPortal {
 
       pageElement.appendChild(pageName);
       pageElement.appendChild(pageUrl);
+      pageElement.appendChild(popPageUrl);
       pageElement.appendChild(columns);
 
       return pageElement;
