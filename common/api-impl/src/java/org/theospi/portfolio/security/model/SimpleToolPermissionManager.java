@@ -28,6 +28,7 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.service.legacy.site.cover.SiteService;
 import org.theospi.portfolio.security.mgt.PermissionManager;
 import org.theospi.portfolio.security.mgt.ToolPermissionManager;
 import org.theospi.portfolio.worksite.intf.ToolEventListener;
@@ -57,10 +58,12 @@ public class SimpleToolPermissionManager implements ToolEventListener, ToolPermi
       edit.setQualifier(toolId);
       edit.setName(getPermissionEditName());
       Site containingSite = toolConfig.getContainingPage().getContainingSite();
-      edit.setSiteId(containingSite.getId());
-      getPermissionManager().fillPermissions(edit);
-      if (edit.getPermissions() == null || edit.getPermissions().size() == 0){
-         createDefaultPermissions(edit.getSiteId(), toolId, containingSite.getType());
+      if (!isSpecial(containingSite)) {
+         edit.setSiteId(containingSite.getId());
+         getPermissionManager().fillPermissions(edit);
+         if (edit.getPermissions() == null || edit.getPermissions().size() == 0){
+            createDefaultPermissions(edit.getSiteId(), toolId, containingSite.getType());
+         }
       }
    }
    
@@ -70,15 +73,21 @@ public class SimpleToolPermissionManager implements ToolEventListener, ToolPermi
     * @param site
     */
    public void helperSiteChanged(Site site) {
-      Id siteId = getIdManager().getId(site.getId());
-      PermissionsEdit edit = new PermissionsEdit();
-      edit.setQualifier(siteId);
-      edit.setName(getPermissionEditName());
-      edit.setSiteId(site.getId());
-      getPermissionManager().fillPermissions(edit);
-      if (edit.getPermissions() == null || edit.getPermissions().size() == 0){
-         createDefaultPermissions(edit.getSiteId(), siteId, site.getType());
+      if (!isSpecial(site)) {
+         Id siteId = getIdManager().getId(site.getId());
+         PermissionsEdit edit = new PermissionsEdit();
+         edit.setQualifier(siteId);
+         edit.setName(getPermissionEditName());
+         edit.setSiteId(site.getId());
+         getPermissionManager().fillPermissions(edit);
+         if (edit.getPermissions() == null || edit.getPermissions().size() == 0){
+            createDefaultPermissions(edit.getSiteId(), siteId, site.getType());
+         }
       }
+   }
+
+   protected boolean isSpecial(Site site) {
+      return SiteService.getInstance().isSpecialSite(site.getId());         
    }
 
    public void toolRemoved(SiteTool siteTool) {
