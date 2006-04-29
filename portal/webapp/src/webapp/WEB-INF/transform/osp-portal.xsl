@@ -64,10 +64,10 @@
 
 <div id="container" class="project">
 
-<xsl:call-template name="site_tools" />
 
    <xsl:choose>
       <xsl:when test="siteTypes/siteType/sites/site[@selected='true']">
+         <xsl:call-template name="site_tools" />
          <xsl:for-each select="categories/category" >
             <xsl:sort select="@order" data-type="number" />
             <xsl:apply-templates select=".">
@@ -536,7 +536,7 @@ your browser doesn't support iframes
    </xsl:apply-templates>
 </xsl:for-each>
 
-			<li>
+         <li>
 				<a  accesskey="h" href="javascript:;">
                <xsl:attribute name="onclick">
                   window.open('<xsl:value-of select="config/helpUrl"/>','Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')
@@ -546,7 +546,8 @@ your browser doesn't support iframes
                </xsl:attribute>
                Help</a>
 			</li>
-		</ul>
+
+      </ul>
 	</div>
 
    <xsl:if test="$config/presence[@include='true']">
