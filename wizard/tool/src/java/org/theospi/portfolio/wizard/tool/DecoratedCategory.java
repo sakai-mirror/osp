@@ -69,6 +69,12 @@ public class DecoratedCategory extends DecoratedCategoryChild {
       this.base = base;
    }
 
+   
+   /** 
+    * This returns the concat description string.  This is currently acceptable
+    * because the wizard description is not html 
+    * @return String
+    */
    public String getDescription() {
       String desc = base.getDescription();
       if(desc.length() > 100)

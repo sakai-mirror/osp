@@ -64,10 +64,14 @@ public class DecoratedWizardPage extends DecoratedCategoryChild {
       return getBase().getWizardPageDefinition().getTitle();
    }
 
+   /**
+    * This can't be concat-ed because it is in html
+    * @return String
+    */
    public String getDescription() {
       String desc = getBase().getWizardPageDefinition().getDescription();
-      if(desc.length() > 100)
-         return desc.substring(0, 100) + "...";
+      //if(desc.length() > 100)
+      //   return desc.substring(0, 100) + "...";
       return desc;
    }
 

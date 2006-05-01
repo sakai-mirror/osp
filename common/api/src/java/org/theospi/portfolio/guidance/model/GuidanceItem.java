@@ -61,10 +61,14 @@ public class GuidanceItem extends IdentifiableObject {
       return text;
    }
 
+   /**
+    * This can't be concat-ed because it is in html
+    * @return String
+    */
    public String getLimitedText() {
       String t = text;
-      if(t != null && t.length() > 100)
-         t = t.substring(0, 100) + "...";
+      //if(t != null && t.length() > 100)
+      //   t = t.substring(0, 100) + "...";
       return t;
    }
 
