@@ -83,6 +83,8 @@ public class AudienceTool extends HelperToolBase {
         if (getAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION) != null) {
             selectedMembers = fillMemberList();
         }
+        if(selectedMembers == null)
+           selectedMembers = new ArrayList();
         return selectedMembers;
     }
 
