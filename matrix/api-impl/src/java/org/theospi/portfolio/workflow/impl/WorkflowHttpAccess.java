@@ -20,17 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.workflow.impl;
 
-import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
+import org.sakaiproject.entity.api.EntityAccessOverloadException;
+import org.sakaiproject.entity.api.EntityCopyrightException;
+import org.sakaiproject.entity.api.EntityNotDefinedException;
+import org.sakaiproject.entity.api.EntityPermissionException;
 import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.CopyrightException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -45,7 +43,7 @@ public class WorkflowHttpAccess extends OspHttpAccessBase {
    private WorkflowManager workflowManager;
    
    protected void checkSource(Reference ref, ReferenceParser parser)
-      throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
+      throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
       // should setup access rights, etc.
       getWorkflowManager().getWorkflow(getIdManager().getId(parser.getId()));
    }

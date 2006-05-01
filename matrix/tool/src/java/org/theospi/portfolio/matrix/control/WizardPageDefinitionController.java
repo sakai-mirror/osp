@@ -21,6 +21,7 @@
 package org.theospi.portfolio.matrix.control;
 
 import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
+import org.sakaiproject.tool.cover.ToolManager;
 
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;

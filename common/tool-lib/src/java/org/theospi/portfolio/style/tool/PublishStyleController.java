@@ -29,6 +29,7 @@ import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.tool.cover.ToolManager;
 
 
 import java.util.Map;

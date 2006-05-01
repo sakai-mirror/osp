@@ -119,7 +119,7 @@ public class ListReviewerItemController implements FormController, LoadObjectCon
 
    private Boolean isMaintainer() {
       return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
-            getIdManager().getId(ToolManager.getCurrentPlacement().getContext())));
+            getIdManager().getId(getToolManager().getCurrentPlacement().getContext())));
    }
 
    /**

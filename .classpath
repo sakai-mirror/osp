@@ -107,5 +107,9 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/authz-impl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/event-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/db-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/util-util"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/portal-impl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/tool-util"/>
+	<classpathentry kind="var" path="MAVEN_REPO/xerces/jars/xerces-2.4.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

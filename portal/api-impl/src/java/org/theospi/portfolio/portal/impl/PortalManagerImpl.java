@@ -31,7 +31,7 @@ import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.user.api.User;
-import org.sakaiproject.service.legacy.user.UserDirectoryService;
+import org.sakaiproject.user.api.UserDirectoryService;
 import org.theospi.portfolio.portal.intf.PortalManager;
 import org.theospi.portfolio.portal.model.SitePageWrapper;
 import org.theospi.portfolio.portal.model.SiteType;
@@ -51,7 +51,6 @@ public class PortalManagerImpl implements PortalManager {
 
    private UserDirectoryService userDirectoryService;
    private SiteService siteService;
-   private PortalService portalService;
    private IdManager idManager;
    private org.sakaiproject.metaobj.security.AuthorizationFacade sakaiAuthzManager;
    private org.theospi.portfolio.security.AuthorizationFacade ospAuthzManager;
@@ -84,8 +83,8 @@ public class PortalManagerImpl implements PortalManager {
 
       List types = getSiteService().getSiteTypes();
 
-      List allUserSites = getSiteService().getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ACCESS,
-         null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC, null);
+      List allUserSites = getSiteService().getSites(SiteService.SelectionType.ACCESS,
+         null, null, null, SiteService.SortType.TITLE_ASC, null);
 
       for (Iterator i=types.iterator();i.hasNext();) {
          String type = (String) i.next();
@@ -184,8 +183,8 @@ public class PortalManagerImpl implements PortalManager {
       List sites = getSiteService().getSites(SiteService.SelectionType.ACCESS, baseType, null,
 				null, sort, page);
 
-      List allUserSites = getSiteService().getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ACCESS,
-         null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.TITLE_ASC, null);
+      List allUserSites = getSiteService().getSites(SiteService.SelectionType.ACCESS,
+         null, null, null, SiteService.SortType.TITLE_ASC, null);
 
       SiteType siteType = (SiteType) getSiteTypes().get(baseType);
       addSpecialSites(siteType.getSpecialSites(), sites, allUserSites);
@@ -500,14 +499,6 @@ public class PortalManagerImpl implements PortalManager {
 
    public void setSiteTypes(Map siteTypes) {
       this.siteTypes = siteTypes;
-   }
-
-   public PortalService getPortalService() {
-      return portalService;
-   }
-
-   public void setPortalService(PortalService portalService) {
-      this.portalService = portalService;
    }
 
    public org.sakaiproject.metaobj.security.AuthorizationFacade getSakaiAuthzManager() {

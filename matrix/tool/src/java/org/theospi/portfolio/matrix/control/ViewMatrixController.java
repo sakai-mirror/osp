@@ -32,6 +32,7 @@ import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.api.Placement;
@@ -213,7 +214,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
             try {
                Member member = (Member) memb.next();
                users.add(UserDirectoryService.getUser(member.getUserId()));
-            } catch (IdUnusedException e) {
+            } catch (UserNotDefinedException e) {
                logger.error("Unable to find user: " + e.getId(), e);
             }            
          }

@@ -26,13 +26,10 @@ import javax.faces.context.FacesContext;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIViewRoot;
-//import java.util.ResourceBundle;
-import java.util.Locale;
-import java.util.List;
 import java.util.Iterator;
 import java.text.MessageFormat;
 
-import org.sakaiproject.util.java.ResourceLoader;
+import org.sakaiproject.util.ResourceLoader;
 
 
 /**

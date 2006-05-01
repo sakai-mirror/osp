@@ -30,6 +30,7 @@ import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
+import org.sakaiproject.tool.cover.ToolManager;
 
 
 import java.util.*;

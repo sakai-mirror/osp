@@ -31,24 +31,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.awt.event.ActionEvent;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.component.UIInput;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.api.kernel.session.Session;
+import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.api.kernel.tool.ActiveTool;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.Tool;
-import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -66,6 +60,7 @@ import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
@@ -195,7 +190,7 @@ public class WizardTool extends BuilderTool {
          User user = UserDirectoryService.getUser(currentUserId);
          message = getMessageFromBundle("wizard_owner_message", new Object[]{
                readOnly, user.getDisplayName()});
-      } catch (IdUnusedException e) {
+      } catch (UserNotDefinedException e) {
          throw new OspException(e);
       }
 
@@ -909,7 +904,7 @@ public class WizardTool extends BuilderTool {
                User user = UserDirectoryService.getUser(member.getUserId());
                users.add(createSelect(user.getId(), user.getSortName()));
             }
-            catch (IdUnusedException e) {
+            catch (UserNotDefinedException e) {
                //TODO replace with a message bundle
                logger.warn("User " + e.getId() + " cannot be found");
             }

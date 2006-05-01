@@ -20,22 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.model.impl;
 
-import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.matrix.MatrixFunctionConstants;
-import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
+import org.sakaiproject.entity.api.EntityAccessOverloadException;
+import org.sakaiproject.entity.api.EntityCopyrightException;
+import org.sakaiproject.entity.api.EntityNotDefinedException;
+import org.sakaiproject.entity.api.EntityPermissionException;
 import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.CopyrightException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
-import org.sakaiproject.metaobj.shared.model.Id;
 
 /**
  * Created by IntelliJ IDEA.
@@ -50,7 +43,7 @@ public class MatrixHttpAccess extends OspHttpAccessBase {
    private MatrixManager matrixManager;
 
    protected void checkSource(Reference ref, ReferenceParser parser)
-         throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
+         throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
 
       getMatrixManager().checkPageAccess(parser.getId());
    }
