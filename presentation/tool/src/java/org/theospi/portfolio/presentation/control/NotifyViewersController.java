@@ -31,7 +31,6 @@ import org.sakaiproject.metaobj.utils.Config;
 import org.theospi.portfolio.presentation.model.VelocityMailMessage;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
-import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
 import org.sakaiproject.service.framework.config.ServerConfigurationService;
 import org.sakaiproject.service.framework.email.cover.EmailService;
 import org.sakaiproject.service.framework.portal.cover.PortalService;

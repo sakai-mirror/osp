@@ -22,14 +22,8 @@
              type="checkbox"
              name="<c:out value="${status.expression}"/>"
 
-           <c:choose>
-           <c:when test="${viewer.sakaiUser.type == 'guest'}">
              value="<c:out value="${viewer.displayName}"/>"
-           </c:when>
-           <c:otherwise>
-             value="<c:out value="${viewer.sakaiUser.email}"/>"
-           </c:otherwise>
-           </c:choose>
+          
            >
        <label><c:out value="${viewer.displayName}"/></label> <br/>
      </c:forEach>

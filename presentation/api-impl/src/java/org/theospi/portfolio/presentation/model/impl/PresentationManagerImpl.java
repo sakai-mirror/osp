@@ -497,8 +497,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          getHibernateTemplate().saveOrUpdateCopy(presentation);
       }
 
-      storePresentationViewers(presentation);
-
       storePresentationPages(presentation.getPages(), presentation.getId());
 
       return presentation;
@@ -549,55 +547,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          PresentationPageRegion region = (PresentationPageRegion) i.next();
          region.setPage(page);
       }
-   }
-
-   protected Agent createGuestUser(Agent viewer){
-      AgentImpl guest = (AgentImpl) viewer;
-      guest.setRole(Agent.ROLE_GUEST);
-      return getAgentManager().createAgent(guest);
-   }
-
-   protected void storePresentationViewers(Presentation presentation) {
-      Agent agent = presentation.getOwner();
-
-      Collection viewers = new ArrayList(presentation.getViewers());
-
-      Collection oldViewerAuthzs = getAuthzManager().getAuthorizations(null,
-            PresentationFunctionConstants.VIEW_PRESENTATION, presentation.getId());
-
-      boolean currentAgentFound = false;
-
-      for (Iterator i = viewers.iterator(); i.hasNext();) {
-         Agent viewer = (Agent) i.next();
-
-
-         if (viewer instanceof AgentImpl) {
-            viewer = createGuestUser(viewer);
-         }
-
-         if (agent.getId().equals(viewer.getId())){
-            currentAgentFound = true;
-         }
-
-         Authorization newAuthz = new Authorization(viewer,
-               PresentationFunctionConstants.VIEW_PRESENTATION, presentation.getId());
-
-         if (oldViewerAuthzs.contains(newAuthz)) {
-            oldViewerAuthzs.remove(newAuthz);
-         } else {
-            getAuthzManager().createAuthorization(newAuthz.getAgent(),
-                  newAuthz.getFunction(), newAuthz.getQualifier());
-         }
-      }
-
-      // any leftovers must be removes...
-      for (Iterator i = oldViewerAuthzs.iterator(); i.hasNext();) {
-         Authorization authz = (Authorization) i.next();
-         getAuthzManager().deleteAuthorization(authz.getAgent(),
-               authz.getFunction(), authz.getQualifier());
-      }
-
-   }
+   }      
 
    public Collection findPresentationsByOwner(Agent owner) {
       return getHibernateTemplate().find("from Presentation where owner_id=? Order by name",
