@@ -449,6 +449,11 @@ public class AddPresentationController extends AbstractWizardFormController {
       if (isPublic != null && !isPublic.equals("")) {
           presentation.setIsPublic(isPublic.equals("true") ? true : false);
       }
+      List viewers =  (List) session.getAttribute("PRESENTATION_VIEWERS");
+      if (viewers != null) {
+          presentation.setViewers(viewers);
+          session.removeAttribute("PRESENTATION_VIEWERS");
+      }
 
       //don't do this for an edit
       if (presentation.getId() == null){
@@ -526,15 +531,14 @@ public class AddPresentationController extends AbstractWizardFormController {
       String baseUrl = this.getServerConfigurationService().getServerUrl();
       ResourceBundle myResources =
          ResourceBundle.getBundle("org.theospi.portfolio.presentation.bundle.Messages");
-      if (pres.isNewObject())
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, "osp.presentation.view");
 
       String id = pres.getId()!=null ? pres.getId().getValue() : pres.getNewId().getValue();
-       session.setAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD, "true");
-       session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
-       session.setAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE,
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD, "true");
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE,
             pres.isNewObject()? myResources.getString("title_addPortfolio") : myResources.getString("title_editPresentation1"));
-       session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS,
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS,
             myResources.getString("instructions_addViewersToPresentation"));
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE,
             myResources.getString("instructions_publishToGroup"));

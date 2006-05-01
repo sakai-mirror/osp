@@ -25,18 +25,18 @@ import org.sakaiproject.api.kernel.session.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.Placement;
 import org.sakaiproject.api.kernel.tool.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.service.framework.email.cover.EmailService;
 import org.sakaiproject.service.legacy.authzGroup.Member;
 import org.sakaiproject.service.legacy.authzGroup.Role;
 import org.sakaiproject.service.legacy.site.Group;
 import org.sakaiproject.service.legacy.site.Site;
 import org.sakaiproject.service.legacy.site.SiteService;
 import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
-import org.sakaiproject.service.framework.email.cover.EmailService;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
@@ -83,6 +83,9 @@ public class AudienceTool extends HelperToolBase {
         if (getAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION) != null) {
             selectedMembers = fillMemberList();
         }
+
+        setAttribute("PRESENTATION_VIEWERS", selectedMembers);
+
         if(selectedMembers == null)
            selectedMembers = new ArrayList();
         return selectedMembers;
@@ -483,11 +486,9 @@ public class AudienceTool extends HelperToolBase {
                 added.add(member.getBase());
             }
         }
-
         setSelectedMembers(null);
         addMembers(added);
         removeMembers(originalMembers);
-
 
 
     }
@@ -509,11 +510,19 @@ public class AudienceTool extends HelperToolBase {
                     getFunction(), getQualifier());
         }
     }
-
     public void processActionClearFilter() {
-       getSelectedGroupsFilter().clear();
-       getSelectedRolesFilter().clear();
-       processActionApplyFilter();
+
+      getSelectedGroupsFilter().clear();
+      getSelectedRolesFilter().clear();
+      setSearchEmails("");
+      setSearchUsers("");
+      if (selectedMembers != null){
+        selectedMembers.clear();
+      }
+      if (selectedRoles != null){
+        selectedRoles.clear();
+      }
+      processActionApplyFilter();
     }
 
     public void processActionApplyFilter() {
@@ -636,25 +645,25 @@ public class AudienceTool extends HelperToolBase {
         return stepString;
     }
 
-  /*   protected boolean validateEmail(String displayName) {
+    /*   protected boolean validateEmail(String displayName) {
 
-      if (!emailPattern.matcher(displayName).matches()) {
-         //errors.rejectValue("displayName", "Invalid email address",
-         //      new Object[0], "Invalid email address");
-         return false;
-      }
+    if (!emailPattern.matcher(displayName).matches()) {
+       //errors.rejectValue("displayName", "Invalid email address",
+       //      new Object[0], "Invalid email address");
+       return false;
+    }
 
-      try {
-         InternetAddress.parse(displayName, true);
-      }
-      catch (AddressException e) {
-         //errors.rejectValue("displayName", "Invalid email address",
-         //      new Object[0], "Invalid email address");
-         return false;
-      }
+    try {
+       InternetAddress.parse(displayName, true);
+    }
+    catch (AddressException e) {
+       //errors.rejectValue("displayName", "Invalid email address",
+       //      new Object[0], "Invalid email address");
+       return false;
+    }
 
-      return true;
-   }   */
+    return true;
+ }   */
     protected Agent createGuestUser(Agent viewer){
       AgentImplOsp guest = (AgentImplOsp) viewer;
       guest.setRole(Agent.ROLE_GUEST);
