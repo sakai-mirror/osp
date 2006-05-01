@@ -25,8 +25,8 @@ import org.theospi.portfolio.wizard.model.WizardCategory;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.matrix.WizardPageHelper;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
 
 import java.util.List;
 import java.util.Iterator;

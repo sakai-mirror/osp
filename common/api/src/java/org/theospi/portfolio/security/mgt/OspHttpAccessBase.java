@@ -22,11 +22,11 @@ package org.theospi.portfolio.security.mgt;
 
 import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.CopyrightException;
+import org.sakaiproject.entity.api.EntityAccessOverloadException;
+import org.sakaiproject.entity.api.EntityCopyrightException;
+import org.sakaiproject.entity.api.EntityNotDefinedException;
+import org.sakaiproject.entity.api.EntityPermissionException;
+import org.sakaiproject.entity.api.Reference;
 import org.theospi.portfolio.security.AuthorizationFacade;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,8 +45,8 @@ public abstract class OspHttpAccessBase extends HttpAccessBase {
    private AuthorizationFacade authzManager;
 
    public void handleAccess(HttpServletRequest req, HttpServletResponse res, Reference ref,
-                            Collection copyrightAcceptedRefs) throws PermissionException, IdUnusedException,
-         ServerOverloadException, CopyrightException {
+                            Collection copyrightAcceptedRefs) 
+   		throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
       ReferenceParser parser =
             new ReferenceParser(ref.getReference(), ref.getEntityProducer());
       authzManager.pushAuthzGroups(parser.getSiteId());

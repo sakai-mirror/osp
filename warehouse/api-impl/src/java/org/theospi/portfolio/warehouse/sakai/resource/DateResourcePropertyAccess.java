@@ -20,8 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.sakai.resource;
 
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.time.Time;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.time.api.Time;
 
 import java.util.Date;
 

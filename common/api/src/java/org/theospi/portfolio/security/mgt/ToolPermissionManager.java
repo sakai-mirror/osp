@@ -20,7 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.mgt;
 
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.theospi.portfolio.security.model.PermissionsEdit;
 
 import java.util.List;

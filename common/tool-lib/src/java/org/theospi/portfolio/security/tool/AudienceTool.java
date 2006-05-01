@@ -20,23 +20,23 @@
  **********************************************************************************/
 package org.theospi.portfolio.security.tool;
 
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.api.kernel.tool.Placement;
-import org.sakaiproject.api.kernel.tool.ToolManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
-import org.sakaiproject.service.framework.email.cover.EmailService;
-import org.sakaiproject.service.legacy.authzGroup.Member;
-import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.site.Group;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SiteService;
-import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.email.cover.EmailService;
+import org.sakaiproject.authz.api.Member;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.site.api.Group;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.user.cover.UserDirectoryService;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;

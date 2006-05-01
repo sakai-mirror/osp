@@ -20,9 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.tool;
 
-import org.sakaiproject.service.legacy.content.ContentResourceFilter;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.content.api.ContentResourceFilter;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.ResourceProperties;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -23,7 +23,7 @@ package org.theospi.portfolio.portal.tool;
 import org.theospi.portfolio.shared.tool.HelperToolBase;
 import org.theospi.portfolio.shared.tool.PagingList;
 import org.theospi.portfolio.portal.intf.PortalManager;
-import org.sakaiproject.service.legacy.site.SiteService;
+import org.sakaiproject.site.api.SiteService;
 
 import java.util.List;
 

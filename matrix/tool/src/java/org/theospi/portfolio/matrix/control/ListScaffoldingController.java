@@ -30,7 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
+
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -42,7 +42,7 @@ public class ListScaffoldingController extends AbstractMatrixController {
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Hashtable model = new Hashtable();
       Agent currentAgent = getAuthManager().getAgent();
-      String currentToolId = PortalService.getCurrentToolId();
+      String currentToolId = ToolManager.getCurrentPlacement().getToolId();
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
 
       List scaffolding = new ArrayList(getMatrixManager().findScaffolding(

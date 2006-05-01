@@ -26,7 +26,7 @@ import org.sakaiproject.metaobj.security.impl.sakai.SecurityBase;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.api.kernel.thread_local.ThreadLocalManager;
+import org.sakaiproject.thread_local.api.ThreadLocalManager;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.impl.simple.SimpleAuthorizationFacade;
 

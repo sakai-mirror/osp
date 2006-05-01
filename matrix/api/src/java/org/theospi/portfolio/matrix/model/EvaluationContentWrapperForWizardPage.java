@@ -25,10 +25,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.user.cover.UserDirectoryService;
 import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 
 public class EvaluationContentWrapperForWizardPage extends
@@ -36,7 +36,7 @@ public class EvaluationContentWrapperForWizardPage extends
 
    
    public EvaluationContentWrapperForWizardPage(Id id, 
-         String title, Agent owner, Date submittedDate) throws IdUnusedException {
+         String title, Agent owner, Date submittedDate) throws UserNotDefinedException {
      
       setId(id);
       setTitle(title);

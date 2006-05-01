@@ -41,15 +41,15 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.sakaiproject.exception.*;
-import org.sakaiproject.service.framework.component.cover.ComponentManager;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
-import org.sakaiproject.service.framework.sql.cover.SqlService;
-import org.sakaiproject.service.legacy.content.ContentCollection;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.notification.NotificationService;
-import org.sakaiproject.service.legacy.entity.ResourceProperties;
-import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.event.cover.UsageSessionService;
+import org.sakaiproject.db.cover.SqlService;
+import org.sakaiproject.content.api.ContentCollection;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.event.api.NotificationService;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 
 /**
  * 

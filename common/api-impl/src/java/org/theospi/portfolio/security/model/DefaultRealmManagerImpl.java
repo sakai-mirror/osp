@@ -1,13 +1,15 @@
 package org.theospi.portfolio.security.model;
 
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.exception.IdInvalidException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.IdUsedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
-import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.AuthzGroupService;
+import org.sakaiproject.authz.api.AuthzPermissionException;
+import org.sakaiproject.authz.api.GroupAlreadyDefinedException;
+import org.sakaiproject.authz.api.GroupIdInvalidException;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.RoleAlreadyDefinedException;
 import org.theospi.portfolio.security.DefaultRealmManager;
 
 import java.util.Iterator;
@@ -29,7 +31,7 @@ public class DefaultRealmManagerImpl implements DefaultRealmManager {
 
    public void init() {
 
-      org.sakaiproject.api.kernel.session.Session sakaiSession = SessionManager.getCurrentSession();
+      Session sakaiSession = SessionManager.getCurrentSession();
       String userId = sakaiSession.getUserId();
       try {
          sakaiSession.setUserId("admin");
@@ -40,7 +42,7 @@ public class DefaultRealmManagerImpl implements DefaultRealmManager {
                newlyCreated = false;
                return;
             }
-         } catch (IdUnusedException e) {
+         } catch (GroupNotDefinedException e) {
             // no worries... must not be created yet.
          }
 
@@ -50,15 +52,17 @@ public class DefaultRealmManagerImpl implements DefaultRealmManager {
             AuthzGroup newRealm = getAuthzGroupService().addAuthzGroup(newRealmName);
             addRoles(newRealm);
             getAuthzGroupService().save(newRealm);
-         } catch (IdUnusedException e) {
+         } catch (GroupNotDefinedException e) {
             throw new RuntimeException(e);
-         } catch (PermissionException e) {
+         } catch (AuthzPermissionException e) {
             throw new RuntimeException(e);
-         } catch (IdUsedException e) {
+         } catch (GroupAlreadyDefinedException e) {
             throw new RuntimeException(e);
-         } catch (IdInvalidException e) {
+         } catch (GroupIdInvalidException e) {
             throw new RuntimeException(e);
-         }
+         } catch (RoleAlreadyDefinedException e) {
+        	   throw new RuntimeException(e);
+		}
       } finally {
          sakaiSession.setUserId(userId);
          sakaiSession.setUserEid(userId);
@@ -66,7 +70,7 @@ public class DefaultRealmManagerImpl implements DefaultRealmManager {
 
    }
 
-   protected void addRoles(AuthzGroup newRealm) throws IdUsedException {
+   protected void addRoles(AuthzGroup newRealm) throws RoleAlreadyDefinedException {
       for (Iterator i=getRoles().iterator();i.hasNext();) {
          Object roleInfo = i.next();
          if (roleInfo instanceof String) {

@@ -23,7 +23,7 @@ package org.theospi.portfolio.presentation.render;
 import org.theospi.jsf.impl.DefaultXmlTagFactory;
 import org.theospi.jsf.impl.DefaultXmlTagHandler;
 import org.theospi.jsf.intf.XmlTagHandler;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ComponentManager;
 
 /**
  * Created by IntelliJ IDEA.

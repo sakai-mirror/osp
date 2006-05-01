@@ -35,7 +35,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.api.kernel.tool.ToolManager;
+import org.sakaiproject.tool.api.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;

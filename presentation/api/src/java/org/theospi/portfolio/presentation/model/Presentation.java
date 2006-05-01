@@ -23,7 +23,7 @@ package org.theospi.portfolio.presentation.model;
 import org.sakaiproject.metaobj.shared.model.*;
 import org.theospi.portfolio.shared.model.DateBean;
 import org.theospi.portfolio.style.model.Style;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 
 import java.util.*;
 

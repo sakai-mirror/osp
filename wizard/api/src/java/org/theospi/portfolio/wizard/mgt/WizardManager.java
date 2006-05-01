@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.entity.api.Reference;
 import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.CompletedWizard;

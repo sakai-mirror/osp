@@ -22,31 +22,14 @@ package org.theospi.portfolio.reports.model.impl;
 
 import org.theospi.portfolio.reports.model.ReportResult;
 import org.theospi.portfolio.reports.model.ReportsManager;
-import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
-import org.theospi.portfolio.shared.intf.EntityContextFinder;
-import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
-import org.theospi.portfolio.reports.model.ReportsManager;
-import org.theospi.portfolio.reports.model.ReportResult;
 import org.theospi.portfolio.reports.model.impl.BaseResultProcessor;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.OspException;
-import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
-import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
-import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
-import org.sakaiproject.service.legacy.security.SecurityService;
-import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
+import org.sakaiproject.authz.api.SecurityService;
 
 import javax.sql.DataSource;
 import java.util.*;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.ResultSet;
 
 /**
  * Created by IntelliJ IDEA.

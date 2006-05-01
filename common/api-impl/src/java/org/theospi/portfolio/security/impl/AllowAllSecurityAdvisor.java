@@ -20,7 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.impl;
 
-import org.sakaiproject.service.legacy.security.SecurityAdvisor;
+import org.sakaiproject.authz.api.SecurityAdvisor;
 
 /**
  * Created by IntelliJ IDEA.

@@ -25,11 +25,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.legacy.user.User;
-import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.user.cover.UserDirectoryService;
 
 public abstract class EvaluationContentWrapper {
 
@@ -44,7 +44,7 @@ public abstract class EvaluationContentWrapper {
    public EvaluationContentWrapper() {;}
    
    public EvaluationContentWrapper(Id id, String title, Agent owner, 
-         Date submittedDate) throws IdUnusedException {
+         Date submittedDate) throws UserNotDefinedException {
       this.id = id;
       this.title = title;
       this.submittedDate = submittedDate;
@@ -53,7 +53,7 @@ public abstract class EvaluationContentWrapper {
    }
    
    public EvaluationContentWrapper(Id id, String title, Agent owner, 
-         Date submittedDate, String type) throws IdUnusedException {
+         Date submittedDate, String type) throws UserNotDefinedException {
       
       this.id = id;
       this.title = title;

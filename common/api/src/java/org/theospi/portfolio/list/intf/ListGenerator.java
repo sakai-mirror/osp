@@ -43,7 +43,7 @@
  */
 package org.theospi.portfolio.list.intf;
 
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.site.api.ToolConfiguration;
 
 import java.util.List;
 import java.util.Map;

@@ -26,7 +26,8 @@ import org.theospi.portfolio.presentation.CommentSortBy;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.tool.cover.ToolManager;
+
 
 import java.util.Hashtable;
 import java.util.List;
@@ -48,7 +49,7 @@ public class CommentListController extends AbstractPresentationController implem
       Agent agent = getAuthManager().getAgent();
       PresentationManager presentationManager = getPresentationManager();
       CommentSortBy sortBy = (CommentSortBy) requestModel;
-      String toolId = PortalService.getCurrentToolId();
+      String toolId = ToolManager.getCurrentPlacement().getToolId();
       if (type.equals("owner")) {
          commentList = presentationManager.getOwnerComments(agent, toolId, sortBy, false);
       } else {

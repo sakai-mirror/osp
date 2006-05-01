@@ -21,10 +21,10 @@
 package org.theospi.portfolio.warehouse.sakai.site;
 
 import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
-import org.sakaiproject.service.legacy.site.SiteService;
+import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.service.legacy.site.SiteService.SortType;
 import org.sakaiproject.service.legacy.site.SiteService.SelectionType;
-import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.site.api.Site;
 
 import java.util.Collection;
 import java.util.List;

@@ -20,18 +20,17 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.impl;
 
-import org.sakaiproject.api.kernel.tool.Placement;
+import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
-import org.sakaiproject.service.framework.portal.PortalService;
-import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.site.SiteService;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.user.api.User;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 import org.theospi.portfolio.portal.intf.PortalManager;
 import org.theospi.portfolio.portal.model.SitePageWrapper;

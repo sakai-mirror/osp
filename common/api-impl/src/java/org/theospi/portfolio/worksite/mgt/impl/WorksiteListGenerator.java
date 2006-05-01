@@ -47,9 +47,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.theospi.portfolio.list.intf.ListGenerator;
 import org.theospi.portfolio.list.impl.WorksiteBaseGenerator;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SitePage;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 
 import java.util.*;

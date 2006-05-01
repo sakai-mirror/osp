@@ -28,7 +28,7 @@ import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.site.api.ToolConfiguration;
 
 import java.util.*;
 

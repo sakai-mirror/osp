@@ -26,8 +26,8 @@ import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.style.StyleHelper;
 import org.theospi.portfolio.style.model.Style;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 
 import javax.faces.context.ExternalContext;

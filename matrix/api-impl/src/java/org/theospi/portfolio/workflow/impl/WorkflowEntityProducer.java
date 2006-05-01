@@ -21,7 +21,7 @@
 package org.theospi.portfolio.workflow.impl;
 
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
-import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.entity.api.Entity;
 
 /**
  * Created by IntelliJ IDEA.

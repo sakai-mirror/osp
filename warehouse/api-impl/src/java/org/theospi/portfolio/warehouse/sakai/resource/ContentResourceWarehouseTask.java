@@ -21,7 +21,7 @@
 package org.theospi.portfolio.warehouse.sakai.resource;
 
 import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
+import org.sakaiproject.content.api.ContentHostingService;
 
 import java.util.Collection;
 

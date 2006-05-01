@@ -2,8 +2,9 @@ package org.theospi.portfolio.admin.service;
 
 import org.quartz.*;
 import org.sakaiproject.api.app.scheduler.SchedulerManager;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin;
 import org.theospi.portfolio.admin.model.IntegrationOption;
 
@@ -24,7 +25,7 @@ public class PluginOptionJob implements Job {
    public final static String INTERVAL = "org.theospi.portfolio.admin.service.PluginOptionJob.interval";
 
    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-      org.sakaiproject.api.kernel.session.Session sakaiSession = SessionManager.getCurrentSession();
+      Session sakaiSession = SessionManager.getCurrentSession();
       String userId = sakaiSession.getUserId();
 
       try {

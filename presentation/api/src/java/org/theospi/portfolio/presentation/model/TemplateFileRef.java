@@ -25,10 +25,9 @@ import org.apache.commons.logging.LogFactory;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.shared.mgt.ArtifactUserType;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.theospi.portfolio.shared.model.Node;
-import org.sakaiproject.service.framework.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ComponentManager;
 
 import java.io.Serializable;
 

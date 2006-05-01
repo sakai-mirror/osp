@@ -21,8 +21,8 @@
 package org.theospi.utils.mvc.impl;
 
 import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.cover.EntityManager;
 
 import java.beans.PropertyEditorSupport;
 

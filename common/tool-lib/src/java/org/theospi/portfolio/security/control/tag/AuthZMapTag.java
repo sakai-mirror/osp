@@ -25,10 +25,11 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.model.AuthZMap;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.framework.component.cover.ComponentManager;
+
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.tool.cover.ToolManager;
 
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.PageContext;
@@ -91,10 +92,10 @@ public class AuthZMapTag extends TagSupport {
 
    public Id evaluateQualifier() throws JspException {
       if (isUseSite()) {
-         qualifier = getIdManager().getId(PortalService.getCurrentSiteId());
+         qualifier = getIdManager().getId(ToolManager.getCurrentPlacement().getContext());
       }
       else if (qualifierExpression == null){
-         qualifier = getIdManager().getId(PortalService.getCurrentToolId());
+         qualifier = getIdManager().getId(ToolManager.getCurrentPlacement().getToolId());
       }
       else {
          qualifier = (Id)ExpressionEvaluatorManager.evaluate(

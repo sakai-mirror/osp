@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
+
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.PresentationLayoutHelper;
@@ -50,8 +50,8 @@ public class ListLayoutController extends AbstractPresentationController {
       String selectable = (String)session.get(PresentationLayoutHelper.LAYOUT_SELECTABLE);
       
       List layouts = new ArrayList(
-         getPresentationManager().findLayoutsByOwner(agent, PortalService.getCurrentSiteId()));
-      layouts.addAll(getPresentationManager().findPublishedLayouts(PortalService.getCurrentSiteId()));
+         getPresentationManager().findLayoutsByOwner(agent, ToolManager.getCurrentPlacement().getContext()));
+      layouts.addAll(getPresentationManager().findPublishedLayouts(ToolManager.getCurrentPlacement().getContext()));
       
       if (selectable != null) {
          model.put("selectableLayout", selectable);
@@ -74,7 +74,7 @@ public class ListLayoutController extends AbstractPresentationController {
       model.put("osp_agent", agent);
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
-      model.put("tool", getWorksiteManager().getTool(PortalService.getCurrentToolId()));
+      model.put("tool", getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getToolId()));
       model.put("isMaintainer", isMaintainer());
       
       if (session.get(PresentationLayoutHelper.CURRENT_LAYOUT_ID) != null)

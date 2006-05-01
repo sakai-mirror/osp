@@ -31,11 +31,11 @@ import org.sakaiproject.metaobj.utils.Config;
 import org.theospi.portfolio.presentation.model.VelocityMailMessage;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
-import org.sakaiproject.service.framework.config.ServerConfigurationService;
-import org.sakaiproject.service.framework.email.cover.EmailService;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.user.User;
-import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.component.api.ServerConfigurationService;
+import org.sakaiproject.email.cover.EmailService;
+
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.cover.UserDirectoryService;
 
 import java.util.*;
 
@@ -104,7 +104,7 @@ public class NotifyViewersController extends AbstractPresentationController impl
       model.put("isMaintainer", isMaintainer());
 
       List presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(getAuthManager().getAgent(),
-         PortalService.getCurrentToolId()));
+         ToolManager.getCurrentPlacement().getToolId()));
 
 
 

@@ -20,14 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.control.tag;
 
-import org.sakaiproject.service.legacy.content.ContentTypeImageService;
+import org.sakaiproject.content.api.ContentTypeImageService;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 
 import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.JspException;
-import java.util.Map;
 import java.io.IOException;
 
 /**
@@ -88,7 +86,7 @@ public class ContentTypeMapTag extends TagSupport {
    }
 
    protected ContentTypeImageService getImageTypeService() {
-      return org.sakaiproject.service.legacy.content.cover.ContentTypeImageService.getInstance();
+      return org.sakaiproject.content.cover.ContentTypeImageService.getInstance();
    }
 
    public String getFileType() {

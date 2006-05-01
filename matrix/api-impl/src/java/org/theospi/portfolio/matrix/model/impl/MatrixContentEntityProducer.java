@@ -21,7 +21,7 @@
 package org.theospi.portfolio.matrix.model.impl;
 
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
-import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 
 /**

@@ -1,6 +1,6 @@
 package org.theospi.portfolio.list.impl;
 
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 
 /**
  * Created by IntelliJ IDEA.

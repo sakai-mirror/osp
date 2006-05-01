@@ -21,7 +21,7 @@
 package org.theospi.portfolio.guidance.impl;
 
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
-import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 
 /**

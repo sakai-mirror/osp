@@ -22,14 +22,14 @@ package org.theospi.portfolio.security.mgt.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.OspRole;
-import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.cover.AuthzGroupService;
+import org.sakaiproject.site.api.Site;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.mgt.PermissionManager;
@@ -56,7 +56,7 @@ public class PermissionManagerImpl implements PermissionManager {
          List returned = new ArrayList();
          returned.addAll(roles);
          return returned;
-      } catch (IdUnusedException e) {
+      } catch (GroupNotDefinedException e) {
          logger.error("", e);
          throw new OspException(e);
       }
@@ -106,7 +106,7 @@ public class PermissionManagerImpl implements PermissionManager {
                }
             }
          }
-      } catch (IdUnusedException e) {
+      } catch (GroupNotDefinedException e) {
          //This should be an okay exception to swallow.  If we can't find the realm, just skip it.
          // This came up when using the sites tool to create a site.  Since there wasn't 
          //   a realm yet, couldn't set permissions

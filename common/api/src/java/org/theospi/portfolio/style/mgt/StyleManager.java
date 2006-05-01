@@ -31,8 +31,8 @@ import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.legacy.content.ContentCollection;
-import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.content.api.ContentCollection;
+import org.sakaiproject.entity.api.Reference;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.style.model.Style;
 

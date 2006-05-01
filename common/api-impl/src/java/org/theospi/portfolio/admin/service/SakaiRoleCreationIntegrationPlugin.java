@@ -47,15 +47,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.theospi.portfolio.admin.model.IntegrationOption;
 import org.theospi.portfolio.shared.model.OspException;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
-import org.sakaiproject.service.legacy.authzGroup.Role;
-import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.InUseException;
-import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.AuthzPermissionException;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.RoleAlreadyDefinedException;
+import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 
 import java.util.List;
@@ -78,7 +77,7 @@ public class SakaiRoleCreationIntegrationPlugin extends IntegrationPluginBase {
       AuthzGroup realm = null;
       try {
          realm = AuthzGroupService.getAuthzGroup(roleOption.getRealm());
-      } catch (IdUnusedException e) {
+      } catch (GroupNotDefinedException e) {
          logger.error("", e);
          throw new OspException(e);
       }
@@ -88,8 +87,8 @@ public class SakaiRoleCreationIntegrationPlugin extends IntegrationPluginBase {
    }
 
    protected boolean existingWorksitesHasRole(ExistingWorksitesRoleIntegrationOption roleOption) {
-      List sites = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ANY,
-            null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.NONE, null);
+      List sites = SiteService.getSites(org.sakaiproject.site.api.SiteService.SelectionType.ANY,
+            null, null, null, org.sakaiproject.site.api.SiteService.SortType.NONE, null);
 
       for (Iterator i=sites.iterator();i.hasNext();) {
          Site site = (Site)i.next();
@@ -136,7 +135,7 @@ public class SakaiRoleCreationIntegrationPlugin extends IntegrationPluginBase {
       AuthzGroup realm = null;
       try {
          realm = AuthzGroupService.getAuthzGroup(roleOption.getRealm());
-      } catch (IdUnusedException e) {
+      } catch (GroupNotDefinedException e) {
          logger.error("", e);
          throw new OspException(e);
       }
@@ -145,8 +144,8 @@ public class SakaiRoleCreationIntegrationPlugin extends IntegrationPluginBase {
    }
 
    protected void addRoleToAllWorksites(ExistingWorksitesRoleIntegrationOption roleOption) {
-      List sites = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ANY,
-            null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.NONE, null);
+      List sites = SiteService.getSites(org.sakaiproject.site.api.SiteService.SelectionType.ANY,
+            null, null, null, org.sakaiproject.site.api.SiteService.SortType.NONE, null);
 
       for (Iterator i=sites.iterator();i.hasNext();) {
          Site site = (Site)i.next();
@@ -174,13 +173,13 @@ public class SakaiRoleCreationIntegrationPlugin extends IntegrationPluginBase {
          }
 
          AuthzGroupService.save(edit);
-      } catch (IdUnusedException e) {
+      } catch (GroupNotDefinedException e) {
          logger.error("", e);
          throw new OspException(e);
-      } catch (PermissionException e) {
+      } catch (AuthzPermissionException e) {
          logger.error("", e);
          throw new OspException(e);
-      } catch (IdUsedException e) {
+      } catch (RoleAlreadyDefinedException e) {
          logger.error("", e);
          throw new OspException(e);
       }
@@ -195,7 +194,7 @@ public class SakaiRoleCreationIntegrationPlugin extends IntegrationPluginBase {
       AuthzGroup realm = null;
       try {
          realm = AuthzGroupService.getAuthzGroup(roleOption.getRealm());
-      } catch (IdUnusedException e) {
+      } catch (GroupNotDefinedException e) {
          logger.error("", e);
          throw new OspException(e);
       }
@@ -203,8 +202,8 @@ public class SakaiRoleCreationIntegrationPlugin extends IntegrationPluginBase {
    }
 
    protected void removeRoleFromAllWorksites(ExistingWorksitesRoleIntegrationOption roleOption) {
-      List sites = SiteService.getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ANY,
-            null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.NONE, null);
+      List sites = SiteService.getSites(org.sakaiproject.site.api.SiteService.SelectionType.ANY,
+            null, null, null, org.sakaiproject.site.api.SiteService.SortType.NONE, null);
 
       for (Iterator i=sites.iterator();i.hasNext();) {
          Site site = (Site)i.next();
@@ -223,10 +222,10 @@ public class SakaiRoleCreationIntegrationPlugin extends IntegrationPluginBase {
          edit = AuthzGroupService.getAuthzGroup(realm.getId());
          edit.removeRole(remove.getDescription());
          AuthzGroupService.save(edit);
-      } catch (IdUnusedException e) {
+      } catch (GroupNotDefinedException e) {
          logger.error("", e);
          throw new OspException(e);
-      } catch (PermissionException e) {
+      } catch (AuthzPermissionException e) {
          logger.error("", e);
          throw new OspException(e);
       }

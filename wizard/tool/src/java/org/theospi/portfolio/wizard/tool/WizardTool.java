@@ -41,32 +41,32 @@ import javax.faces.component.UIViewRoot;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.api.kernel.session.Session;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.api.kernel.tool.ActiveTool;
-import org.sakaiproject.api.kernel.tool.Placement;
-import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.api.kernel.tool.cover.ActiveToolManager;
-import org.sakaiproject.api.kernel.tool.cover.ToolManager;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.authzGroup.Member;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.sakaiproject.service.legacy.site.Group;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
-import org.sakaiproject.service.legacy.user.User;
-import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.authz.api.Member;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.site.api.Group;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
@@ -670,7 +670,7 @@ public class WizardTool extends BuilderTool {
 
    public boolean isMaintainer() {
       return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
-         getIdManager().getId(PortalService.getCurrentSiteId()))).booleanValue();
+         getIdManager().getId(ToolManager.getCurrentPlacement().getContext()))).booleanValue();
    }
 
    public String processPermissions()
@@ -704,7 +704,7 @@ public class WizardTool extends BuilderTool {
 
    public Site getWorksite() {
       try {
-         return SiteService.getSite(PortalService.getCurrentSiteId());
+         return SiteService.getSite(ToolManager.getCurrentPlacement().getContext());
       }
       catch (IdUnusedException e) {
          throw new OspException(e);

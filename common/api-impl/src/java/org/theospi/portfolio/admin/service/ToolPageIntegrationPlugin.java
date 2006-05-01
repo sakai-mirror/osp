@@ -45,15 +45,14 @@ package org.theospi.portfolio.admin.service;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.api.kernel.tool.Tool;
-import org.sakaiproject.api.kernel.tool.ToolManager;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.service.legacy.site.SiteService;
-import org.sakaiproject.util.Placement;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.api.SiteService;
 import org.theospi.portfolio.admin.model.IntegrationOption;
 import org.theospi.portfolio.shared.model.OspException;
 
@@ -77,8 +76,8 @@ public class ToolPageIntegrationPlugin extends IntegrationPluginBase {
    }
 
    protected boolean includedInExistingWorksite(ExistingWorksitePageOption option) {
-      List sites = getSiteService().getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ANY,
-            null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.NONE, null);
+      List sites = getSiteService().getSites(org.sakaiproject.site.api.SiteService.SelectionType.ANY,
+            null, null, null, org.sakaiproject.site.api.SiteService.SortType.NONE, null);
 
       for (Iterator i=sites.iterator();i.hasNext();) {
          Site site = (Site)i.next();
@@ -181,7 +180,7 @@ public class ToolPageIntegrationPlugin extends IntegrationPluginBase {
       if (page instanceof ExistingWorksitePageOption) {
          ExistingWorksitePageOption option = (ExistingWorksitePageOption)page;
          List sites = getSiteService().getSites(SiteService.SelectionType.ANY,
-               null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.NONE, null);
+               null, null, null, org.sakaiproject.site.api.SiteService.SortType.NONE, null);
 
          for (Iterator i=sites.iterator();i.hasNext();) {
             Site site = (Site)i.next();
@@ -244,8 +243,8 @@ public class ToolPageIntegrationPlugin extends IntegrationPluginBase {
    protected void removePage(PageOption page) {
       if (page instanceof ExistingWorksitePageOption) {
          ExistingWorksitePageOption option = (ExistingWorksitePageOption)page;
-         List sites = getSiteService().getSites(org.sakaiproject.service.legacy.site.SiteService.SelectionType.ANY,
-               null, null, null, org.sakaiproject.service.legacy.site.SiteService.SortType.NONE, null);
+         List sites = getSiteService().getSites(org.sakaiproject.site.api.SiteService.SelectionType.ANY,
+               null, null, null, org.sakaiproject.site.api.SiteService.SortType.NONE, null);
 
          for (Iterator i=sites.iterator();i.hasNext();) {
             Site site = (Site)i.next();

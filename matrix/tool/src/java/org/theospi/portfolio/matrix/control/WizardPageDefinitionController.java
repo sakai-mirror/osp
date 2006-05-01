@@ -21,7 +21,7 @@
 package org.theospi.portfolio.matrix.control;
 
 import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
+
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.WizardPageHelper;
@@ -86,8 +86,8 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
       page = (WizardPageDefinition)pageList.get(0);
       
       session.remove(WizardPageHelper.CANCELED);
-      page.setSiteId(PortalService.getCurrentSiteId());
-      page.setToolId(PortalService.getCurrentToolId());
+      page.setSiteId(ToolManager.getCurrentPlacement().getContext());
+      page.setToolId(ToolManager.getCurrentPlacement().getToolId());
       ScaffoldingCell cell = new ScaffoldingCell();
       cell.setWizardPageDefinition(page);
       if (page.getId() == null) {

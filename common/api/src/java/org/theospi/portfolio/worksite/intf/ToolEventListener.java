@@ -20,8 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.worksite.intf;
 
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.theospi.portfolio.worksite.model.SiteTool;
 
 public interface ToolEventListener {

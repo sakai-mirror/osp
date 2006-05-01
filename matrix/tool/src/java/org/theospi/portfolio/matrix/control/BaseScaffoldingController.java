@@ -32,7 +32,7 @@ import org.theospi.portfolio.matrix.model.Criterion;
 import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
-import org.sakaiproject.service.legacy.content.LockManager;
+import org.sakaiproject.content.api.LockManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;

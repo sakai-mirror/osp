@@ -22,8 +22,8 @@ package org.theospi.portfolio.wizard.tool;
 
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.matrix.WizardPageHelper;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;

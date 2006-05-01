@@ -20,7 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.model;
 
-import org.sakaiproject.service.legacy.site.SitePage;
+import org.sakaiproject.site.api.SitePage;
 
 /**
  * Created by IntelliJ IDEA.

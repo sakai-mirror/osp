@@ -37,10 +37,9 @@ import org.theospi.portfolio.help.model.HelpFunctionConstants;
 import org.theospi.portfolio.help.model.HelpManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.AuthorizationFailedException;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.framework.portal.PortalService;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
@@ -49,14 +48,13 @@ import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.api.kernel.tool.Placement;
-import org.sakaiproject.api.kernel.tool.ToolManager;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.exception.UnsupportedFileTypeException;
 import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.utils.zip.UncloseableZipInputStream;
 import org.theospi.portfolio.help.model.GlossaryDescription;
 
@@ -142,7 +140,6 @@ public class HelpManagerImpl extends HibernateDaoSupport
    private IdManager idManager;
    private AuthorizationFacade authzManager;
    private WorksiteManager worksiteManager;
-   private PortalService portalService;
    private ToolManager toolManager;
    private ContentHostingService contentHosting;
    private AgentManager agentManager;
@@ -150,11 +147,11 @@ public class HelpManagerImpl extends HibernateDaoSupport
    private List globalSiteTypes;
 
    public GlossaryEntry searchGlossary(String keyword) {
-      return getGlossary().find(keyword, portalService.getCurrentSiteId());
+      return getGlossary().find(keyword, toolManager.getCurrentPlacement().getContext());
    }
 
    public boolean isPhraseStart(String phraseFragment) {
-      return getGlossary().isPhraseStart(phraseFragment, portalService.getCurrentSiteId());
+      return getGlossary().isPhraseStart(phraseFragment, toolManager.getCurrentPlacement().getContext());
    }
   
    public void setIdManager(IdManager idManager){
@@ -249,7 +246,7 @@ public class HelpManagerImpl extends HibernateDaoSupport
 
    public boolean isMaintainer(){
       return getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
-         idManager.getId(portalService.getCurrentSiteId()));
+         idManager.getId(toolManager.getCurrentPlacement().getContext()));
    }
 
    public Collection getWorksiteTerms() {
@@ -281,7 +278,7 @@ public class HelpManagerImpl extends HibernateDaoSupport
    }
    
    protected boolean entryExists(GlossaryEntry entry){
-      return entryExists(entry, portalService.getCurrentSiteId());
+      return entryExists(entry, toolManager.getCurrentPlacement().getContext());
    }
    protected boolean entryExists(GlossaryEntry entry, String worksite){
 	      Collection entryFound = getGlossary().findAll(entry.getTerm(), worksite);
@@ -567,15 +564,7 @@ public class HelpManagerImpl extends HibernateDaoSupport
    }
 
    public Set getSortedWorksiteTerms() {
-      return getGlossary().getSortedWorksiteTerms(portalService.getCurrentSiteId());
-   }
-
-   public PortalService getPortalService() {
-      return portalService;
-   }
-
-   public void setPortalService(PortalService portalService) {
-      this.portalService = portalService;
+      return getGlossary().getSortedWorksiteTerms(toolManager.getCurrentPlacement().getContext());
    }
 
    public ToolManager getToolManager() {

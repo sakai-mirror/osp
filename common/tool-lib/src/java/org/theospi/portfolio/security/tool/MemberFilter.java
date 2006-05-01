@@ -20,7 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.tool;
 
-import org.sakaiproject.service.legacy.authzGroup.Member;
+import org.sakaiproject.authz.api.Member;
 
 import java.util.List;
 import java.util.ArrayList;

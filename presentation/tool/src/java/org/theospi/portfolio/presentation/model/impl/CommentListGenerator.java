@@ -31,9 +31,9 @@ import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.control.servlet.SakaiComponentDispatchServlet;
 import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.service.framework.session.SessionState;
-import org.sakaiproject.service.framework.session.cover.UsageSessionService;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.event.api.SessionState;
+import org.sakaiproject.event.cover.UsageSessionService;
 
 import java.util.List;
 import java.util.Map;

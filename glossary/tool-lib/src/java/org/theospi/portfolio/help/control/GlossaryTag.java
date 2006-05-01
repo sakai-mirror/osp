@@ -22,9 +22,9 @@ package org.theospi.portfolio.help.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.model.OspException;
-import org.sakaiproject.service.framework.config.cover.ServerConfigurationService;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.portfolio.help.model.HelpManager;
 

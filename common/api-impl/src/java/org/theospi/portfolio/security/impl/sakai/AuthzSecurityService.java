@@ -20,11 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.impl.sakai;
 
-import org.sakaiproject.component.legacy.security.SakaiSecurity;
-import org.sakaiproject.service.legacy.user.User;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.entity.EntityManager;
+import org.sakaiproject.authz.impl.SakaiSecurity;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;

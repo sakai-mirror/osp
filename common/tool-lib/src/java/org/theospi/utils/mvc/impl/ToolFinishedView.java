@@ -21,10 +21,10 @@
 package org.theospi.utils.mvc.impl;
 
 import org.sakaiproject.metaobj.shared.control.RedirectView;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.api.kernel.tool.Tool;
-import org.sakaiproject.api.kernel.tool.cover.ToolManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.cover.ToolManager;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

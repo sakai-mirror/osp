@@ -29,7 +29,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
-import org.sakaiproject.service.legacy.content.LockManager;
+import org.sakaiproject.content.api.LockManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;

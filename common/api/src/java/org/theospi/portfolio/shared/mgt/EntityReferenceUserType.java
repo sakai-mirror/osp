@@ -29,8 +29,8 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.io.Serializable;
 
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.resource.cover.EntityManager;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.cover.EntityManager;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
 
 /**

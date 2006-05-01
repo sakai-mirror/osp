@@ -29,8 +29,8 @@ import java.sql.PreparedStatement;
 import java.sql.Types;
 import java.io.Serializable;
 
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.theospi.portfolio.worksite.model.ToolConfigurationWrapper;
 

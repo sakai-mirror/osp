@@ -30,7 +30,7 @@ import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
+
 
 import java.util.*;
 
@@ -49,10 +49,10 @@ public class ListStyleController extends AbstractStyleController {
       String selectable = (String)session.get(StyleHelper.STYLE_SELECTABLE);
       if (selectable != null) {
          model.put("selectableStyle", selectable);
-         styles.addAll(getStyleManager().findPublishedStyles(PortalService.getCurrentSiteId()));
+         styles.addAll(getStyleManager().findPublishedStyles(ToolManager.getCurrentPlacement().getContext()));
       }
       else if (!getStyleManager().isGlobal())
-         styles.addAll(getStyleManager().findSiteStyles(PortalService.getCurrentSiteId()));
+         styles.addAll(getStyleManager().findSiteStyles(ToolManager.getCurrentPlacement().getContext()));
       else
          styles.addAll(getStyleManager().findGlobalStyles(agent));
       
@@ -72,7 +72,7 @@ public class ListStyleController extends AbstractStyleController {
       model.put("osp_agent", agent);
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
-      model.put("tool", getWorksiteManager().getTool(PortalService.getCurrentToolId()));
+      model.put("tool", getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getToolId()));
       model.put("isMaintainer", isMaintainer());
       model.put("isGlobal", new Boolean(getStyleManager().isGlobal()));
       
@@ -94,7 +94,7 @@ public class ListStyleController extends AbstractStyleController {
    }
    
    protected void checkPermission(String function) throws AuthorizationFailedException{
-      getAuthzManager().checkPermission(function, getIdManager().getId(PortalService.getCurrentSiteId()));
+      getAuthzManager().checkPermission(function, getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
    }
 
    public ListScrollIndexer getListScrollIndexer() {

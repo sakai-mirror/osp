@@ -22,14 +22,12 @@ package org.theospi.portfolio.security.impl.sakai;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-//import org.sakaiproject.service.legacy.realm.Realm;
-//import org.sakaiproject.service.legacy.realm.cover.RealmService;
-import org.sakaiproject.service.legacy.authzGroup.cover.AuthzGroupService;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
+import org.sakaiproject.authz.cover.AuthzGroupService;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.app.ApplicationAuthorizer;
 
@@ -59,15 +57,13 @@ public class WorksiteAuthorizer implements ApplicationAuthorizer {
          else {
             return null;
          }
-      } catch (org.sakaiproject.exception.IdUnusedException e) {
+      } catch (GroupNotDefinedException e) {
          logger.info("current worksite not known", e);
          return null;
       }
    }
 
-   protected Boolean checkRoleAccess(Agent agent, String function, Id worksiteId) throws IdUnusedException {
-      boolean returned = false;
-      
+   protected Boolean checkRoleAccess(Agent agent, String function, Id worksiteId) throws GroupNotDefinedException {
       AuthzGroup authzgroup = AuthzGroupService.getInstance()
 								.getAuthzGroup("/site/" + worksiteId.getValue());
       

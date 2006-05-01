@@ -21,7 +21,7 @@
 package org.theospi.portfolio.security.mgt;
 
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.site.api.Site;
 import org.theospi.portfolio.security.model.PermissionsEdit;
 
 import java.util.List;

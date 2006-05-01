@@ -26,9 +26,9 @@ import org.theospi.portfolio.help.model.Glossary;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.service.legacy.event.Event;
-import org.sakaiproject.service.legacy.event.cover.EventTrackingService;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.event.api.Event;
+import org.sakaiproject.event.cover.EventTrackingService;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 

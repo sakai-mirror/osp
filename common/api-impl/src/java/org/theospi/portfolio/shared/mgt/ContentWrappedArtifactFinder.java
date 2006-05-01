@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.mgt;
 
-import org.sakaiproject.metaobj.shared.mgt.impl.FileArtifactFinder;
-import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
+import org.sakaiproject.content.api.ContentResource;
+
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
-import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
+import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
+import org.sakaiproject.metaobj.shared.mgt.impl.FileArtifactFinder;
 import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.metaobj.shared.model.Id;
+
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
 
 /**

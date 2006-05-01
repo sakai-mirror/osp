@@ -24,7 +24,7 @@ package org.theospi.portfolio.shared.model;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.service.legacy.content.ContentResource;
+import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.exception.ServerOverloadException;
 
 import java.io.InputStream;

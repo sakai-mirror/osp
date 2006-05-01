@@ -27,9 +27,9 @@ import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.legacy.entity.EntityManager;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.security.SecurityService;
+import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.authz.api.SecurityService;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;

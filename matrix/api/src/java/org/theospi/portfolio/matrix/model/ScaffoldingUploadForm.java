@@ -22,7 +22,7 @@ package org.theospi.portfolio.matrix.model;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.entity.api.Reference;
 
 public class ScaffoldingUploadForm {
    protected final transient Log logger = LogFactory.getLog(getClass());

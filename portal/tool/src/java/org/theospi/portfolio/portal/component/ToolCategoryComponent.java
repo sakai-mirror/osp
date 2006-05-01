@@ -22,7 +22,7 @@ package org.theospi.portfolio.portal.component;
 
 import org.theospi.portfolio.portal.model.ToolCategory;
 import org.theospi.portfolio.portal.model.SiteType;
-import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.authz.api.Role;
 
 import javax.faces.component.UINamingContainer;
 

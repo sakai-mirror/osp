@@ -20,8 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.component;
 
-import org.sakaiproject.api.kernel.tool.Placement;
-import org.sakaiproject.service.legacy.site.SitePage;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.site.api.SitePage;
 
 import javax.faces.component.UINamingContainer;
 

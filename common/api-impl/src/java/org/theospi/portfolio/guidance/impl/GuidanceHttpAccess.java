@@ -20,17 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.impl;
 
-import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.CopyrightException;
+import org.sakaiproject.entity.api.EntityAccessOverloadException;
+import org.sakaiproject.entity.api.EntityCopyrightException;
+import org.sakaiproject.entity.api.EntityNotDefinedException;
+import org.sakaiproject.entity.api.EntityPermissionException;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,8 +42,8 @@ public class GuidanceHttpAccess extends OspHttpAccessBase {
    private IdManager idManager;
    private GuidanceManager guidanceManager;
    
-   protected void checkSource(Reference ref, ReferenceParser parser)
-      throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
+   protected void checkSource(Reference ref, ReferenceParser parser) 
+   		throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
       // should setup access rights, etc.
       getGuidanceManager().getGuidance(getIdManager().getId(parser.getId()));
    }

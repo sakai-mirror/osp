@@ -20,13 +20,14 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.model;
 
-import org.sakaiproject.api.kernel.function.FunctionManager;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroup;
-import org.sakaiproject.service.legacy.authzGroup.AuthzGroupService;
-import org.sakaiproject.service.legacy.authzGroup.Role;
+import org.sakaiproject.authz.api.FunctionManager;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.AuthzGroupService;
+import org.sakaiproject.authz.api.AuthzPermissionException;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.api.Role;
 import org.theospi.portfolio.security.DefaultRealmManager;
 
 import java.util.Iterator;
@@ -51,7 +52,7 @@ public class SakaiDefaultPermsManager {
 
    public void init() {
       // need to register functions... set defaults on the ones that are not there
-      org.sakaiproject.api.kernel.session.Session sakaiSession = SessionManager.getCurrentSession();
+      Session sakaiSession = SessionManager.getCurrentSession();
       String userId = sakaiSession.getUserId();
 
       try {
@@ -95,10 +96,10 @@ public class SakaiDefaultPermsManager {
          }
          getAuthzGroupService().save(group);
       }
-      catch (IdUnusedException e) {
+      catch (GroupNotDefinedException e) {
          throw new RuntimeException(e);
       }
-      catch (PermissionException e) {
+      catch (AuthzPermissionException e) {
          throw new RuntimeException(e);
       }
    }

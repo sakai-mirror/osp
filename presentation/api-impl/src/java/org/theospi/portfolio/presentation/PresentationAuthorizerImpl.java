@@ -25,7 +25,7 @@ import org.theospi.portfolio.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;

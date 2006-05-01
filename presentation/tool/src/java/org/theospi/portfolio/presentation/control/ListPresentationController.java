@@ -26,8 +26,8 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.framework.config.ServerConfigurationService;
+
+import org.sakaiproject.component.api.ServerConfigurationService;
 
 import java.util.*;
 
@@ -40,7 +40,7 @@ public class ListPresentationController extends AbstractPresentationController {
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Hashtable model = new Hashtable();
       Agent currentAgent = getAuthManager().getAgent();
-      String currentToolId = PortalService.getCurrentToolId();
+      String currentToolId = ToolManager.getCurrentPlacement().getToolId();
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
 
       List presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(currentAgent,

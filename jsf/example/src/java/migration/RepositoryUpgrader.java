@@ -60,11 +60,11 @@ import java.util.GregorianCalendar;
 
 import org.apache.commons.logging.Log;
 
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ComponentManager;
 
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.tool.cover.SessionManager;
 
-import org.sakaiproject.api.kernel.session.Session;
+import org.sakaiproject.tool.api.Session;
 
 import org.sakaiproject.exception.IdInvalidException;
 
@@ -82,33 +82,29 @@ import org.sakaiproject.exception.ServerOverloadException;
 
 import org.sakaiproject.exception.OverQuotaException;
 
-import org.sakaiproject.service.framework.sql.SqlReader;
+import org.sakaiproject.db.api.SqlReader;
 
-import org.sakaiproject.service.framework.sql.cover.SqlService;
-
-
-
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-
-import org.sakaiproject.service.legacy.content.ContentCollection;
-
-import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
-
-import org.sakaiproject.service.legacy.content.ContentResource;
-
-import org.sakaiproject.service.legacy.content.ContentResourceEdit;
-
-import org.sakaiproject.service.legacy.entity.Entity;
-
-import org.sakaiproject.service.legacy.entity.ResourceProperties;
-
-import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
+import org.sakaiproject.db.cover.SqlService;
 
 
 
-import org.sakaiproject.service.legacy.time.Time;
+import org.sakaiproject.content.api.ContentHostingService;
 
-import org.sakaiproject.service.legacy.time.cover.TimeService;
+import org.sakaiproject.content.api.ContentCollectionEdit;
+
+import org.sakaiproject.content.api.ContentResourceEdit;
+
+import org.sakaiproject.entity.api.Entity;
+
+import org.sakaiproject.entity.api.ResourceProperties;
+
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
+
+
+
+import org.sakaiproject.time.api.Time;
+
+import org.sakaiproject.time.cover.TimeService;
 
 
 
@@ -166,7 +162,7 @@ public class RepositoryUpgrader {
 
    {
 
-      contentHostingService = (ContentHostingService) ComponentManager.get(ContentHostingService.SERVICE_NAME);
+      contentHostingService = (ContentHostingService) ComponentManager.get(ContentHostingService.APPLICATION_ID);
 
       // move the folder tree over to the resources
 

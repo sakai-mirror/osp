@@ -24,10 +24,10 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.Type;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.time.Time;
-import org.sakaiproject.exception.EmptyException;
-import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.time.api.Time;
+import org.sakaiproject.entity.api.EntityPropertyNotDefinedException;
+import org.sakaiproject.entity.api.EntityPropertyTypeException;
 
 import java.util.Date;
 
@@ -65,10 +65,10 @@ public class TechnicalMetadata {
          Time time = resource.getProperties().getTimeProperty(propName);
          return new Date(time.getTime());
       }
-      catch (EmptyException e) {
+      catch (EntityPropertyNotDefinedException e) {
          return null;
       }
-      catch (TypeException e) {
+      catch (EntityPropertyTypeException e) {
          throw new RuntimeException(e);
       }
    }

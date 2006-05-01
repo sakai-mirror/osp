@@ -29,7 +29,7 @@ import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
+
 
 import java.util.Map;
 
@@ -44,7 +44,7 @@ public class PublishStyleController extends ListStyleController implements LoadO
       String publishTo = (String)request.get("publishTo");
       if (publishTo.equals("global")) {
          style.setGlobalState(Style.STATE_PUBLISHED);
-         style.setSiteId(PortalService.getCurrentSiteId());
+         style.setSiteId(ToolManager.getCurrentPlacement().getContext());
          doSave(style, StyleFunctionConstants.GLOBAL_PUBLISH_STYLE, errors);
       }
       else {

@@ -24,7 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
-import org.sakaiproject.service.framework.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ComponentManager;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;

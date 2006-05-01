@@ -21,10 +21,10 @@
 package org.theospi.portfolio.portal.intf;
 
 import org.sakaiproject.javax.PagingPosition;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.site.SiteService;
-import org.sakaiproject.service.legacy.user.User;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.user.api.User;
 import org.theospi.portfolio.portal.model.SiteType;
 import org.theospi.portfolio.portal.model.ToolCategory;
 

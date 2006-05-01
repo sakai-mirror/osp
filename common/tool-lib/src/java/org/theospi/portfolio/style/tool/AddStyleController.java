@@ -20,16 +20,17 @@
 **********************************************************************************/
 package org.theospi.portfolio.style.tool;
 
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.entity.EntityManager;
+
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.EntityManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.api.kernel.session.SessionManager;
-import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
@@ -63,7 +64,7 @@ public class AddStyleController extends AbstractStyleController
       else {
          style = new Style();
          style.setOwner(getAuthManager().getAgent());
-         style.setSiteId(PortalService.getCurrentSiteId());
+         style.setSiteId(ToolManager.getCurrentPlacement().getContext());
       }
       return style;
    }
@@ -119,7 +120,7 @@ public class AddStyleController extends AbstractStyleController
       }
 
       if (request.get("save") != null) {
-         style.setSiteId(PortalService.getCurrentSiteId());
+         style.setSiteId(ToolManager.getCurrentPlacement().getContext());
          save(style, errors);
       }
 

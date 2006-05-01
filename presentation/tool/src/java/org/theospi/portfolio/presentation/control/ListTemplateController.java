@@ -28,7 +28,7 @@ import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
+
 
 import java.util.*;
 
@@ -43,8 +43,8 @@ public class ListTemplateController extends AbstractPresentationController {
       Hashtable model = new Hashtable();
       Agent agent = getAuthManager().getAgent();
       List templates = new ArrayList(
-         getPresentationManager().findTemplatesByOwner(agent, PortalService.getCurrentSiteId()));
-      templates.addAll(getPresentationManager().findPublishedTemplates(PortalService.getCurrentSiteId()));
+         getPresentationManager().findTemplatesByOwner(agent, ToolManager.getCurrentPlacement().getContext()));
+      templates.addAll(getPresentationManager().findPublishedTemplates(ToolManager.getCurrentPlacement().getContext()));
       model.put("templateCount", String.valueOf(templates.size()));
 
       if (request.get("newPresentationTemplateId") != null) {
@@ -58,7 +58,7 @@ public class ListTemplateController extends AbstractPresentationController {
       model.put("osp_agent", agent);
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
-      model.put("tool", getWorksiteManager().getTool(PortalService.getCurrentToolId()));
+      model.put("tool", getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getToolId()));
       model.put("isMaintainer", isMaintainer());
       return new ModelAndView("success", model);
    }

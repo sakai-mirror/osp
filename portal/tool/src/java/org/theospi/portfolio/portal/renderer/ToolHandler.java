@@ -26,7 +26,7 @@ import org.theospi.jsf.intf.XmlTagFactory;
 import org.theospi.portfolio.portal.component.ToolComponent;
 import org.theospi.portfolio.portal.component.ToolCategoryComponent;
 import org.xml.sax.Attributes;
-import org.sakaiproject.service.legacy.site.SitePage;
+import org.sakaiproject.site.api.SitePage;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;

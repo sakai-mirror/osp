@@ -53,8 +53,8 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 import org.jdom.DataConversionException;
-import org.sakaiproject.api.kernel.tool.cover.ToolManager;
-import org.sakaiproject.api.kernel.tool.Placement;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.exception.IdInvalidException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
@@ -74,24 +74,24 @@ import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.model.Type;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
-import org.sakaiproject.service.legacy.content.ContentCollection;
-import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.content.ContentResourceEdit;
-import org.sakaiproject.service.legacy.entity.EntityManager;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.entity.ResourceProperties;
-import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
+import org.sakaiproject.content.api.ContentCollection;
+import org.sakaiproject.content.api.ContentCollectionEdit;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.ContentResourceEdit;
+import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
-import org.sakaiproject.service.legacy.security.SecurityService;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
-import org.sakaiproject.service.legacy.user.User;
-import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.cover.UserDirectoryService;
+
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.theospi.portfolio.guidance.model.*;
 import org.theospi.portfolio.review.mgt.ReviewManager;
@@ -155,7 +155,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    public Wizard createNew() {
       Placement placement = ToolManager.getCurrentPlacement();
       String currentSite = placement.getContext();
-      String currentTool = PortalService.getCurrentToolId();
+      String currentTool = ToolManager.getCurrentPlacement().getToolId();
       Agent agent = getAuthManager().getAgent();
       Wizard wizard = new Wizard(getIdManager().createId(), agent, currentSite, currentTool);
       return wizard;
@@ -702,7 +702,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
        Map     importData = new HashMap();
       Wizard   wizard = new Wizard(null, getAuthManager().getAgent(), // TODO: parameterize toolid
-                              worksiteId, PortalService.getCurrentToolId());
+                              worksiteId, ToolManager.getCurrentPlacement().getToolId());
       String tempDirName = getIdManager().createId().getValue();
 
       // set values not coming from the zip

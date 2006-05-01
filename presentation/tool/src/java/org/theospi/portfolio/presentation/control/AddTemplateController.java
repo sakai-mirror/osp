@@ -20,11 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.entity.EntityManager;
+
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.EntityManager;
 import org.springframework.validation.Errors;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,9 +36,10 @@ import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
-import org.sakaiproject.api.kernel.session.SessionManager;
-import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -87,8 +88,8 @@ public class AddTemplateController extends AbstractWizardFormController {
       PresentationTemplate template = (PresentationTemplate) o;
       Agent agent = getAuthManager().getAgent();
       template.setOwner(agent);
-      template.setToolId(PortalService.getCurrentToolId());
-      template.setSiteId(PortalService.getCurrentSiteId());
+      template.setToolId(ToolManager.getCurrentPlacement().getToolId());
+      template.setSiteId(ToolManager.getCurrentPlacement().getContext());
 
       // remove id's from new dependent object, so hibernate doesn't freak out
       //removeTemporaryIds(template);
@@ -132,7 +133,7 @@ public class AddTemplateController extends AbstractWizardFormController {
          template = getPresentationManager().getPresentationTemplate(id);
       } else {
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_TEMPLATE,
-               getIdManager().getId(PortalService.getCurrentToolId()));
+               getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
       }
       ToolSession session = getSessionManager().getCurrentToolSession();
       if (session.getAttribute("SessionPresentationTemplate") != null) {

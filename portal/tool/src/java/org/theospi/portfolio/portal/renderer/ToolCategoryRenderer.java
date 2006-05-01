@@ -20,7 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.renderer;
 
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.theospi.jsf.impl.DefaultXmlTagFactory;
 import org.theospi.jsf.impl.DefaultXmlTagHandler;
 import org.theospi.jsf.intf.XmlTagHandler;

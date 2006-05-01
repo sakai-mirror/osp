@@ -1,6 +1,6 @@
 package org.theospi.portfolio.portal.impl;
 
-import org.sakaiproject.service.legacy.site.Site;
+import org.sakaiproject.site.api.Site;
 
 import java.util.Comparator;
 

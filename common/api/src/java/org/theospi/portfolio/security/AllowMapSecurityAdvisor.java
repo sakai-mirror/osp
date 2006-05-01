@@ -20,7 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.security;
 
-import org.sakaiproject.service.legacy.security.SecurityAdvisor;
+import org.sakaiproject.authz.api.SecurityAdvisor;
 
 import java.util.Map;
 import java.util.List;

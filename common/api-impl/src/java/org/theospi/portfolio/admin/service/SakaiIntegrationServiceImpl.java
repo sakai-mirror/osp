@@ -50,13 +50,14 @@ import org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin;
 import org.theospi.portfolio.admin.startup.ServerListener;
 import org.theospi.portfolio.admin.startup.ServerListeningService;
 import org.theospi.portfolio.admin.model.IntegrationOption;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.api.kernel.component.cover.ComponentManager;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.api.app.scheduler.SchedulerManager;
 import org.sakaiproject.exception.IdUsedException;
-import org.sakaiproject.service.legacy.content.ContentCollectionEdit;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.entity.ResourceProperties;
+import org.sakaiproject.content.api.ContentCollectionEdit;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.entity.api.ResourceProperties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +75,7 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService, Ser
 
    public void triggerEvent(String event) {
       if (event.equals(ServerListeningService.SERVER_STARTUP_COMPLETE)) {
-         org.sakaiproject.api.kernel.session.Session sakaiSession = SessionManager.getCurrentSession();
+         Session sakaiSession = SessionManager.getCurrentSession();
          String userId = sakaiSession.getUserId();
 
          try {
@@ -104,7 +105,7 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService, Ser
 
    public void init() {
       // go through each integration plugin and execute it...
-      org.sakaiproject.api.kernel.session.Session sakaiSession = SessionManager.getCurrentSession();
+      Session sakaiSession = SessionManager.getCurrentSession();
       String userId = sakaiSession.getUserId();
 
       try {

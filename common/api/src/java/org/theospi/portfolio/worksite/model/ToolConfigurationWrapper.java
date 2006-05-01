@@ -20,11 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.worksite.model;
 
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.service.legacy.site.SitePage;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
-import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.exception.IdUnusedException;
 import org.theospi.portfolio.shared.model.OspException;
 import org.apache.commons.logging.Log;

@@ -35,33 +35,9 @@
         </properties>
      </dependency>
 
-     <dependency>
-        <groupId>sakaiproject</groupId>
-        <artifactId>sakai-scheduler-api</artifactId>
-        <version>${sakai.version}</version>
-     </dependency>
-
-     <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-session</artifactId>
-       <version>${sakai.version}</version>
-     </dependency>
-
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-component</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-legacy-service</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-tool</artifactId>
       <version>${sakai.version}</version>
     </dependency>
 
@@ -70,7 +46,13 @@
        <artifactId>sakai-metaobj-api</artifactId>
        <version>${sakai.version}</version>
      </dependency>
-
+     
+  <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-util-api</artifactId>
+      <version>${sakai.version}</version>
+   </dependency>
+      
     <dependency>
       <groupId>aopalliance</groupId>
       <artifactId>aopalliance</artifactId>

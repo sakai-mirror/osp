@@ -28,11 +28,11 @@ import org.theospi.portfolio.presentation.model.*;
 import org.theospi.portfolio.style.StyleHelper;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.jsf.intf.XmlTagFactory;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.sakaiproject.service.legacy.resource.cover.EntityManager;
-import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.entity.cover.EntityManager;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 
 import javax.faces.context.ExternalContext;

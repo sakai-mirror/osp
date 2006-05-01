@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.app.ApplicationAuthorizer;
 import org.theospi.portfolio.matrix.model.Cell;

@@ -27,7 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
+
 
 import java.util.Map;
 
@@ -41,7 +41,7 @@ public class PublishLayoutController extends AbstractPresentationController {
          
          String suggest = (String)request.get("suggest");
          if (suggest == null) {
-            Id siteId = getIdManager().getId(PortalService.getCurrentSiteId());
+            Id siteId = getIdManager().getId(ToolManager.getCurrentPlacement().getContext());
             getAuthzManager().checkPermission(PresentationFunctionConstants.PUBLISH_LAYOUT, siteId);
             layout.setSiteId(siteId.getValue());
             layout.setGlobalState(PresentationLayout.STATE_PUBLISHED);

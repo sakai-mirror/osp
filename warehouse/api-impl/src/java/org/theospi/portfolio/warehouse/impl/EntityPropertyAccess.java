@@ -21,7 +21,7 @@
 package org.theospi.portfolio.warehouse.impl;
 
 import org.theospi.portfolio.warehouse.intf.PropertyAccess;
-import org.sakaiproject.service.legacy.entity.Entity;
+import org.sakaiproject.entity.api.Entity;
 
 /**
  * Created by IntelliJ IDEA.

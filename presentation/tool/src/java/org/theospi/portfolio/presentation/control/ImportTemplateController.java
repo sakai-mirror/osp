@@ -28,18 +28,18 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.TemplateUploadForm;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.shared.model.OspException;
-import org.sakaiproject.api.kernel.session.SessionManager;
-import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.theospi.portfolio.shared.model.Node;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.entity.EntityManager;
+
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.EntityManager;
 
 import java.util.*;
 
@@ -79,7 +79,7 @@ public class ImportTemplateController extends AbstractPresentationController imp
             Node file = getPresentationManager().getNode(templateForm.getUploadedTemplate());
             PresentationTemplate template = getPresentationManager().uploadTemplate(
                   file.getDisplayName(),
-                  PortalService.getCurrentToolId(),
+                  ToolManager.getCurrentPlacement().getToolId(),
                   file.getInputStream());
             Map model = new Hashtable();
             model.put("newPresentationTemplateId", template.getId().getValue());

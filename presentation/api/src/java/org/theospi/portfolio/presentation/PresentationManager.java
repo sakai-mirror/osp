@@ -34,7 +34,7 @@ import org.theospi.portfolio.security.model.CleanupableService;
 import org.jdom.Document;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.entity.api.Reference;
 
 import java.io.IOException;
 import java.io.InputStream;

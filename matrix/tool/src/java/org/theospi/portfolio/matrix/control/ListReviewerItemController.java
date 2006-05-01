@@ -22,7 +22,7 @@ package org.theospi.portfolio.matrix.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.api.kernel.tool.ToolManager;
+import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
@@ -32,7 +32,7 @@ import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
+
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
@@ -119,7 +119,7 @@ public class ListReviewerItemController implements FormController, LoadObjectCon
 
    private Boolean isMaintainer() {
       return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
-            getIdManager().getId(PortalService.getCurrentSiteId())));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getContext())));
    }
 
    /**

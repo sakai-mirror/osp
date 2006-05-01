@@ -35,8 +35,8 @@ import org.jdom.transform.JDOMSource;
 import org.sakaiproject.api.kernel.component.ComponentManager;
 import org.sakaiproject.api.kernel.function.cover.FunctionManager;
 import org.sakaiproject.api.kernel.session.Session;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
@@ -44,11 +44,11 @@ import org.sakaiproject.metaobj.security.model.AuthZMap;
 import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.security.SecurityService;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
-import org.sakaiproject.service.legacy.user.User;
+
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.user.api.User;
 import org.sakaiproject.service.legacy.user.UserDirectoryService;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.theospi.portfolio.reports.model.*;
@@ -308,7 +308,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
             ReportFunctions.REPORT_FUNCTION_RUN:ReportFunctions.REPORT_FUNCTION_VIEW;
 
       getAuthzManager().checkPermission(function,
-        getIdManager().getId(PortalService.getCurrentToolId()));
+        getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
 
     	//set the report and report result to that of already been saved
     	reportResult.setIsSaved(true);
@@ -439,7 +439,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	public Report createReport(ReportDefinition reportDefinition)
 	{
 		getAuthzManager().checkPermission(ReportFunctions.REPORT_FUNCTION_CREATE,
-        getIdManager().getId(PortalService.getCurrentToolId()));
+        getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
 
       Report report = new Report(reportDefinition);
 
@@ -805,8 +805,8 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		map.put("{useremail}", u.getEmail());
 		map.put("{userfirstname}", u.getFirstName());
 		map.put("{userlastname}", u.getLastName());
-		map.put("{worksiteid}", PortalService.getCurrentSiteId());
-		map.put("{toolid}", PortalService.getCurrentToolId());
+		map.put("{worksiteid}", ToolManager.getCurrentPlacement().getContext());
+		map.put("{toolid}", ToolManager.getCurrentPlacement().getToolId());
 
 		Iterator		iter = map.keySet().iterator();
 		StringBuffer	str = new StringBuffer(inString);
@@ -1032,7 +1032,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
    private String getCurrentSiteType()
    {
 	   try {
-		   Site site = SiteService.getSite(PortalService.getCurrentSiteId());
+		   Site site = SiteService.getSite(ToolManager.getCurrentPlacement().getContext());
 		   return site.getType();
 	   } catch(IdUnusedException iue) {
 		   //	just return null
@@ -1049,22 +1049,22 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
    }
 
    protected void checkPermission(String function) {
-      getAuthzManager().checkPermission(function, getIdManager().getId(PortalService.getCurrentToolId()));
+      getAuthzManager().checkPermission(function, getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
    }
 
    public Map getAuthorizationsMap() {
       return new AuthZMap(getAuthzManager(), ReportFunctions.REPORT_FUNCTION_PREFIX,
-            getIdManager().getId(PortalService.getCurrentToolId()));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
    }
 
    protected boolean can(String function) {
       return new Boolean(getAuthzManager().isAuthorized(function,
-            getIdManager().getId(PortalService.getCurrentToolId()))).booleanValue();
+            getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()))).booleanValue();
    }
 
    public boolean isMaintaner() {
       return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
-            getIdManager().getId(PortalService.getCurrentSiteId()))).booleanValue();
+            getIdManager().getId(ToolManager.getCurrentPlacement().getContext()))).booleanValue();
    }
    
    public void checkEditAccess()

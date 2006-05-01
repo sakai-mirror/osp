@@ -22,8 +22,8 @@
 package org.theospi.portfolio.security.model;
 
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
 
 import java.util.ArrayList;
 import java.util.Iterator;

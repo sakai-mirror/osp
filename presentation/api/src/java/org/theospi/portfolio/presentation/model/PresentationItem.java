@@ -26,7 +26,7 @@ import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
-import org.sakaiproject.service.framework.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.apache.commons.codec.digest.DigestUtils;
 
 public class PresentationItem extends IdentifiableObject {

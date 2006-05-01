@@ -39,8 +39,8 @@ import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
-import org.sakaiproject.service.legacy.security.SecurityService;
-import org.sakaiproject.service.legacy.content.cover.ContentHostingService;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.content.api.cover.ContentHostingService;
 
 import javax.sql.DataSource;
 import java.util.*;

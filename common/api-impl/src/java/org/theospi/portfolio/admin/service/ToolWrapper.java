@@ -1,6 +1,6 @@
 package org.theospi.portfolio.admin.service;
 
-import org.sakaiproject.api.kernel.tool.Tool;
+import org.sakaiproject.tool.api.Tool;
 
 import java.util.Properties;
 import java.util.Set;

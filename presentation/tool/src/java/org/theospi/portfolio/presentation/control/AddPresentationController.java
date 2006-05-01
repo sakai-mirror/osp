@@ -29,7 +29,6 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
 import org.sakaiproject.metaobj.utils.Config;
 import org.sakaiproject.metaobj.utils.mvc.impl.servlet.ServletRequestBeanDataBinder;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
@@ -38,10 +37,10 @@ import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.service.framework.config.ServerConfigurationService;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.component.api.ServerConfigurationService;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -103,10 +102,10 @@ public class AddPresentationController extends AbstractWizardFormController {
       } else {
          setInitialPage(0);
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
-            getIdManager().getId(PortalService.getCurrentToolId()));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
          presentation.setId(getIdManager().createId());
          presentation.setNewObject(true);
-         presentation.setSiteId(PortalService.getCurrentSiteId());
+         presentation.setSiteId(ToolManager.getCurrentPlacement().getContext());
       }
 
       if (request.getParameter("templateId") != null) {
@@ -181,8 +180,8 @@ public class AddPresentationController extends AbstractWizardFormController {
 
       if (page == ADD_PAGE) {
          Agent agent = getAuthManager().getAgent();
-         model.put("templates", getPresentationManager().findTemplatesByOwner(agent, PortalService.getCurrentSiteId()));
-         model.put("publishedTemplates", getPresentationManager().findPublishedTemplates(PortalService.getCurrentSiteId()));
+         model.put("templates", getPresentationManager().findTemplatesByOwner(agent, ToolManager.getCurrentPlacement().getContext()));
+         model.put("publishedTemplates", getPresentationManager().findPublishedTemplates(ToolManager.getCurrentPlacement().getContext()));
          return model;
       }
       if (page == PROPERTY_PAGE) {
@@ -463,7 +462,7 @@ public class AddPresentationController extends AbstractWizardFormController {
       if (presentation.getTemplate().getPropertyPage() == null){
          presentation.setProperties(null);
       }
-      presentation.setToolId(PortalService.getCurrentToolId());
+      presentation.setToolId(ToolManager.getCurrentPlacement().getToolId());
       getPresentationManager().storePresentation(presentation);
 
       httpServletRequest.getSession().removeAttribute(getCommandName());
@@ -479,7 +478,7 @@ public class AddPresentationController extends AbstractWizardFormController {
       model.put("newPresentationId", presentation.getId());
 
       List presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(getAuthManager().getAgent(),
-         PortalService.getCurrentToolId()));
+            ToolManager.getCurrentPlacement().getToolId()));
 
       Map request = new Hashtable();
       request.put(ListScroll.ENSURE_VISIBLE_TAG, "" + getPresentationIndex(presentations, presentation));
@@ -517,7 +516,7 @@ public class AddPresentationController extends AbstractWizardFormController {
       model.put("isMaintainer", isMaintainer());
 
       List presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(getAuthManager().getAgent(),
-         PortalService.getCurrentToolId()));
+            ToolManager.getCurrentPlacement().getToolId()));
 
       Map request = new Hashtable();
       request.put(ListScroll.ENSURE_VISIBLE_TAG, "" + getPresentationIndex(presentations, presentation));
@@ -572,7 +571,7 @@ public class AddPresentationController extends AbstractWizardFormController {
     */
    protected Boolean isMaintainer(){
       return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
-            getIdManager().getId(PortalService.getCurrentSiteId())));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getContext())));
    }
 
    public PresentationManager getPresentationManager() {

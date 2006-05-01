@@ -25,7 +25,8 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.utils.mvc.impl.servlet.AbstractFormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.tool.cover.ToolManager;
+
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.security.mgt.PermissionManager;
@@ -69,7 +70,7 @@ public class PermissionsController extends AbstractFormController implements For
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       PermissionsEdit edit = (PermissionsEdit)incomingModel;
-      edit.setSiteId(PortalService.getCurrentSiteId());
+      edit.setSiteId(ToolManager.getCurrentPlacement().getContext());
       return getPermissionManager().fillPermissions(edit);
    }
 

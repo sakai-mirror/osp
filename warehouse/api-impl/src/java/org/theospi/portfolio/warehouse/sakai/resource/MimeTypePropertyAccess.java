@@ -22,7 +22,7 @@ package org.theospi.portfolio.warehouse.sakai.resource;
 
 import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 import org.sakaiproject.metaobj.shared.model.MimeType;
-import org.sakaiproject.service.legacy.content.ContentResource;
+import org.sakaiproject.content.api.ContentResource;
 
 /**
  * Created by IntelliJ IDEA.

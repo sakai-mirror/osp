@@ -22,8 +22,8 @@ package org.theospi.portfolio.wizard.model;
 
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
 
 /**

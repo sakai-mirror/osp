@@ -22,10 +22,10 @@ package org.theospi.portfolio.guidance.tool;
 
 import org.theospi.portfolio.guidance.model.GuidanceItem;
 import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
-import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
 
 import javax.faces.model.SelectItem;
 import java.util.List;

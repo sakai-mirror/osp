@@ -30,10 +30,10 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.content.ContentHostingService;
-import org.sakaiproject.service.legacy.entity.EntityManager;
-import org.sakaiproject.api.kernel.session.SessionManager;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.Scaffolding;
@@ -76,7 +76,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
       String cancelAction = (String)request.get("cancelAction");
       
       Id worksiteId = worksiteManager.getCurrentWorksiteId();
-      Id toolId = getIdManager().getId(PortalService.getCurrentToolId());
+      Id toolId = getIdManager().getId(ToolManager.getCurrentPlacement().getToolId());
       Map model = new HashMap();
       
       EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(

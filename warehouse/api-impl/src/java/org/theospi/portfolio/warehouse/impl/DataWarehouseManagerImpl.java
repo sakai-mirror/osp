@@ -25,7 +25,7 @@ import org.theospi.portfolio.warehouse.intf.WarehouseTask;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.sakaiproject.service.legacy.security.SecurityService;
+import org.sakaiproject.authz.api.SecurityService;
 
 import java.util.List;
 import java.util.Iterator;

@@ -26,7 +26,7 @@ import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.utils.mvc.impl.servlet.AbstractFormController;
@@ -43,7 +43,7 @@ public abstract class AbstractMatrixController extends AbstractFormController im
    
    protected Boolean isMaintainer(){
       return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
-            getIdManager().getId(PortalService.getCurrentSiteId())));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getContext())));
    }
    
    /**

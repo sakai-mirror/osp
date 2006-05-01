@@ -2,7 +2,8 @@ package org.theospi.portfolio.security.impl;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.OspException;
-import org.sakaiproject.service.legacy.user.UserEdit;
+import org.sakaiproject.user.api.UserEdit;
+import org.sakaiproject.user.cover.UserDirectoryService;
 import org.theospi.portfolio.shared.model.AgentImplOsp;
 
 /**
@@ -20,7 +21,7 @@ public class AgentManagerOsp extends org.sakaiproject.metaobj.security.impl.saka
       }
 
       try {
-         UserEdit uEdit = org.sakaiproject.service.legacy.user.cover.UserDirectoryService.addUser(agent.getId().getValue());
+         UserEdit uEdit = UserDirectoryService.addUser(agent.getId().getValue());
 
          //set email address
          uEdit.setEmail(agent.getId().getValue());
@@ -33,7 +34,7 @@ public class AgentManagerOsp extends org.sakaiproject.metaobj.security.impl.saka
 
          String pw = getPasswordGenerator().generate();
          uEdit.setPassword(pw);
-         org.sakaiproject.service.legacy.user.cover.UserDirectoryService.commitEdit(uEdit);
+         UserDirectoryService.commitEdit(uEdit);
 
 
          AgentImplOsp impl = (AgentImplOsp) agent;

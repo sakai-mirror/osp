@@ -27,7 +27,7 @@ import net.sf.hibernate.Session;
 import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
@@ -38,19 +38,19 @@ import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.*;
 import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.content.*;
-import org.sakaiproject.service.legacy.entity.Reference;
-import org.sakaiproject.service.legacy.entity.ResourceProperties;
-import org.sakaiproject.service.legacy.entity.ResourcePropertiesEdit;
+
+import org.sakaiproject.content.api.*;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.service.legacy.notification.cover.NotificationService;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
-import org.sakaiproject.service.legacy.security.SecurityService;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.ToolConfiguration;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
-import org.sakaiproject.service.legacy.user.User;
-import org.sakaiproject.service.legacy.user.cover.UserDirectoryService;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.orm.hibernate.HibernateCallback;
 import org.springframework.orm.hibernate.HibernateObjectRetrievalFailureException;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
@@ -479,7 +479,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public Presentation storePresentation(Presentation presentation) {
 
       presentation.setModified(new Date(System.currentTimeMillis()));
-      presentation.setSiteId(PortalService.getCurrentSiteId());
+      presentation.setSiteId(ToolManager.getCurrentPlacement().getContext());
       setupPresItemDefinition(presentation);
 
       if (presentation.getOwner() == null) {
@@ -489,7 +489,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       if (presentation.isNewObject()) {
          presentation.setCreated(new Date(System.currentTimeMillis()));
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
-            getIdManager().getId(PortalService.getCurrentToolId()));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
          getHibernateTemplate().save(presentation, presentation.getId());
       } else {
          getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
@@ -1013,12 +1013,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public PresentationTemplate copyTemplate(Id templateId) {
       return copyTemplate(templateId,
-         getWorksiteManager().getTool(PortalService.getCurrentToolId()), true, true);
+         getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getToolId()), true, true);
    }
 
    public void packageTemplateForExport(Id templateId, OutputStream os) throws IOException {
       getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_TEMPLATE,
-         getIdManager().getId(PortalService.getCurrentToolId()));
+         getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
       packageTemplateForExportInternal(templateId, os);
    }
 

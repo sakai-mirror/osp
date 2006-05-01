@@ -29,20 +29,12 @@ import java.util.Map;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import org.sakaiproject.service.framework.portal.cover.PortalService;
-import org.sakaiproject.service.legacy.filepicker.FilePickerHelper;
-import org.sakaiproject.service.legacy.resource.cover.EntityManager;
-import org.sakaiproject.service.legacy.site.Site;
-import org.sakaiproject.service.legacy.site.cover.SiteService;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.api.kernel.session.ToolSession;
-import org.sakaiproject.api.kernel.session.cover.SessionManager;
-import org.sakaiproject.api.kernel.tool.Tool;
-import org.sakaiproject.api.kernel.tool.cover.ToolManager;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.theospi.portfolio.shared.tool.ToolBase;
-import org.theospi.portfolio.guidance.model.GuidanceItem;
-import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
-import org.theospi.portfolio.guidance.tool.GuidanceTool;
 import org.theospi.portfolio.reports.model.*;
 import org.theospi.portfolio.reports.tool.DecoratedReport;
 import org.theospi.portfolio.reports.tool.DecoratedReportDefinition;
@@ -136,7 +128,7 @@ public class ReportsTool extends ToolBase {
    public Site getWorksite() {
       if (worksite == null) {
          try {
-            worksite = SiteService.getSite(PortalService.getCurrentSiteId());
+            worksite = SiteService.getSite(ToolManager.getCurrentPlacement().getContext());
          }
          catch (IdUnusedException e) {
             throw new RuntimeException(e);
@@ -366,7 +358,6 @@ public class ReportsTool extends ToolBase {
 	public String processPermissions()
 	{
 	   ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-	   ToolSession session = SessionManager.getCurrentToolSession();
 	    
 	   userCan = null;
 

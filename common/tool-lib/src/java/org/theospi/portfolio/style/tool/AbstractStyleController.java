@@ -31,8 +31,8 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.theospi.utils.mvc.impl.servlet.AbstractFormController;
-import org.sakaiproject.service.framework.portal.cover.PortalService;
 
 import java.util.Collection;
 
@@ -53,7 +53,7 @@ abstract public class AbstractStyleController extends AbstractFormController imp
     */
    protected Boolean isMaintainer(){
       return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
-            getIdManager().getId(PortalService.getCurrentSiteId())));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getContext())));
    }
 
    protected Node loadNode(Id nodeId) {

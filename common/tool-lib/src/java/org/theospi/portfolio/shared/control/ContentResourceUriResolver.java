@@ -28,10 +28,10 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.service.framework.config.ServerConfigurationService;
-import org.sakaiproject.service.legacy.content.ContentResource;
-import org.sakaiproject.service.legacy.entity.EntityManager;
-import org.sakaiproject.service.legacy.entity.Reference;
+import org.sakaiproject.component.api.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.entity.api.Reference;
 
 public class ContentResourceUriResolver implements URIResolver {
    

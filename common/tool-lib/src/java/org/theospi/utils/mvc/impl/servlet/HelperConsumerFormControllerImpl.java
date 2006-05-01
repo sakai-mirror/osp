@@ -21,9 +21,9 @@
 package org.theospi.utils.mvc.impl.servlet;
 
 import org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl;
-import org.sakaiproject.api.kernel.tool.ToolManager;
-import org.sakaiproject.api.kernel.session.SessionManager;
-import org.sakaiproject.api.kernel.session.ToolSession;
+import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 
 import javax.servlet.http.HttpServletRequest;
 
