@@ -81,6 +81,11 @@ public class DecoratedWizard implements DecoratedListInterface {
       return getConcatDescription();
    }
    
+   /** 
+    * This returns the concat description string.  This is currently acceptable
+    * because the wizard description is not html 
+    * @return String
+    */
    public String getConcatDescription() {
       String s = getBase().getDescription();
       if(s.length() > 100)
