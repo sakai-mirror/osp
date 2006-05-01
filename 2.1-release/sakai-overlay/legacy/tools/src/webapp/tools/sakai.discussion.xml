@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool
+			id="sakai.discussion"
+			title="Discussion"
+			description="For conversations in written form.">
+
+		<configuration name="category" value="false" />
+		<configuration name="channel" value="" />
+
+		<category name="course" />
+		<category name="project" />
+
+	</tool>
+
+</registration>
