@@ -31,12 +31,14 @@ import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.exception.IdUnusedException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -184,13 +186,34 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       model.put("matrixOwner", owner);      
       model.put("readOnlyMatrix", readOnly);
       
-      if (PortalService.getCurrentSitePageId().equals(
+      if (getCurrentSitePageId().equals(
             grid.getScaffolding().getExposedPageId())) {
          model.put("isExposedPage", Boolean.valueOf(true));
       }
       
       return model;
    }
+   
+   /**
+    * Extract the site page id from the current request.
+    * 
+    * @return The site page id implied from the current request.
+    */
+   protected String getCurrentSitePageId()
+   {
+      ToolSession ts = SessionManager.getCurrentToolSession();
+      if (ts != null)
+      {
+         ToolConfiguration tool = SiteService.findTool(ts.getPlacementId());
+         if (tool != null)
+         {
+            return tool.getPageId();
+         }
+      }
+
+      return null;
+
+   } // getCurrentSitePageId
    
    private Set getUserList(String worksiteId) {
       Set members = new HashSet();

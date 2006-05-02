@@ -297,7 +297,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          page.setLayout(SitePage.LAYOUT_SINGLE_COL);
 
          ToolConfiguration tool = page.addTool();
-         tool.setTool(ToolManager.getTool("osp.exposedwizard"));
+         tool.setTool("osp.exposedwizard", ToolManager.getTool("osp.exposedwizard"));
          tool.setTitle(wizard.getName());
          tool.setLayoutHints("0,0");
          tool.getPlacementConfig().setProperty(WizardManager.EXPOSED_WIZARD_KEY, wizard.getId().getValue());

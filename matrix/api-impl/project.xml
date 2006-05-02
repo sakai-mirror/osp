@@ -36,7 +36,7 @@
       <artifactId>osp-common-api</artifactId>
       <version>${osp.version}</version>
     </dependency>
-    
+     
     <dependency>
       <groupId>osp</groupId>
       <artifactId>osp-wizard-api</artifactId>
@@ -57,13 +57,43 @@
 
     <dependency>
       <groupId>sakaiproject</groupId>
-      <artifactId>sakai-legacy-service</artifactId>
+      <artifactId>sakai-content-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
     
     <dependency>
       <groupId>sakaiproject</groupId>
-      <artifactId>sakai-tool</artifactId>
+      <artifactId>sakai-authz-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-user-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-site-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-entity-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-util-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-tool-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
 

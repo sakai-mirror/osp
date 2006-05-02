@@ -1621,7 +1621,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          page.setLayout(SitePage.LAYOUT_SINGLE_COL);
 
          ToolConfiguration tool = page.addTool();
-         tool.setTool(ToolManager.getTool("osp.exposedmatrix"));
+         
+         tool.setTool("osp.exposedmatrix", ToolManager.getTool("osp.exposedmatrix"));
          tool.setTitle(scaffolding.getTitle());
          tool.setLayoutHints("0,0");
          tool.getPlacementConfig().setProperty(MatrixManager.EXPOSED_MATRIX_KEY, scaffolding.getId().getValue());
