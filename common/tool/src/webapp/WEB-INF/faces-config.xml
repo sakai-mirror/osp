@@ -61,13 +61,13 @@
       <managed-property>
          <description>Service Dependency: siteService</description>
          <property-name>siteService</property-name>
-         <value>#{Components["org.sakaiproject.service.legacy.site.SiteService"]}</value>
+         <value>#{Components["org.sakaiproject.site.api.SiteService"]}</value>
       </managed-property>
 
       <managed-property>
          <description>Service Dependency: toolManager</description>
          <property-name>toolManager</property-name>
-         <value>#{Components["org.sakaiproject.api.kernel.tool.ToolManager"]}</value>
+         <value>#{Components["org.sakaiproject.tool.api.ActiveToolManager"]}</value>
       </managed-property>
 
    </managed-bean>

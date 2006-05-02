@@ -45,71 +45,8 @@
             <property-name>reportsManager</property-name>
             <value>#{Components["org.theospi.portfolio.reports.model.ReportsManager"]}</value>
         </managed-property>
-        <!-- 
-        <managed-property>
-            <description>logger</description>
-            <property-name>logger</property-name>
-            <value>#{Components["org.sakaiproject.service.framework.log.Logger"]}</value>
-        </managed-property>
-        <managed-property>
-            <description>syllabusService</description>
-            <property-name>syllabusService</property-name>
-            <value>#{Components["org.sakaiproject.api.app.syllabus.SyllabusService"]}</value>
-        </managed-property>    
-        -->
     </managed-bean>
-<!-- 
-  <component>
-    <component-type>SakaiSyllabusTable</component-type>
-    <component-class>org.sakaiproject.jsf.syllabus.SyllabusTableComponent</component-class>
-  </component>
 
-  <component>
-    <component-type>SakaiSyllabusIframe</component-type>
-    <component-class>org.sakaiproject.jsf.syllabus.SyllabusIframeComponent</component-class>
-  </component>
-  
-  <component>
-    <component-type>SakaiSyllabusIf</component-type>
-    <component-class>org.sakaiproject.jsf.syllabus.SyllabusIfComponent</component-class>
-  </component>
-  
-  <component>
-    <component-type>SakaiSyllabusIfNot</component-type>
-    <component-class>org.sakaiproject.jsf.syllabus.SyllabusIfNotComponent</component-class>
-  </component>
-
-  <component>
-    <component-type>SyllabusShowArea</component-type>
-    <component-class>org.sakaiproject.jsf.syllabus.SyllabusShowAreaComponent</component-class>
-  </component>
-
-  <render-kit>
-    <renderer>
-      <component-family>SakaiSyllabusIframe</component-family>
-      <renderer-type>SakaiSyllabusIframeRender</renderer-type>
-      <renderer-class>org.sakaiproject.jsf.syllabus.SyllabusIframeRender</renderer-class>
-    </renderer>
-
-    <renderer>
-      <component-family>SakaiSyllabusIf</component-family>
-      <renderer-type>SakaiSyllabusIfRender</renderer-type>
-      <renderer-class>org.sakaiproject.jsf.syllabus.SyllabusIfRender</renderer-class>
-    </renderer>
-
-    <renderer>
-      <component-family>SakaiSyllabusIfNot</component-family>
-      <renderer-type>SakaiSyllabusIfNotRender</renderer-type>
-      <renderer-class>org.sakaiproject.jsf.syllabus.SyllabusIfNotRender</renderer-class>
-    </renderer>
-
-    <renderer>
-      <component-family>SyllabusShowArea</component-family>
-      <renderer-type>SyllabusShowAreaRender</renderer-type>
-      <renderer-class>org.sakaiproject.jsf.syllabus.SyllabusShowAreaRender</renderer-class>
-    </renderer>
-  </render-kit>
-  -->
   <navigation-rule>
     <from-view-id>/reports/main.jsp</from-view-id>
     <navigation-case>

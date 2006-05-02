@@ -122,7 +122,7 @@
                <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
             </property>
             <property name="toolManager">
-               <ref bean="org.sakaiproject.api.kernel.tool.ToolManager" />
+               <ref bean="org.sakaiproject.tool.api.ActiveToolManager" />
             </property>
          </bean>
       </property>
@@ -280,16 +280,16 @@
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
             <property name="contentHosting">
-               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
+               <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
             </property>
             <property name="entityManager">
-               <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+               <ref bean="org.sakaiproject.entity.api.EntityManager"/>
             </property>
             <property name="sessionManager">
-               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+               <ref bean="org.sakaiproject.tool.api.SessionManager"/>
             </property>
             <property name="securityService">
-               <ref bean="org.sakaiproject.service.legacy.security.SecurityService" />
+               <ref bean="org.sakaiproject.authz.api.SecurityService" />
             </property>
          </bean>
       </property>
@@ -439,7 +439,7 @@
             <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
          </property>
          <property name="toolManager">
-            <ref bean="org.sakaiproject.api.kernel.tool.ToolManager" />
+            <ref bean="org.sakaiproject.tool.api.ActiveToolManager" />
          </property>
          <property name="listScrollIndexer">
             <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
@@ -469,7 +469,7 @@
                <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
             </property>
             <property name="toolManager">
-               <ref bean="org.sakaiproject.api.kernel.tool.ToolManager" />
+               <ref bean="org.sakaiproject.tool.api.ActiveToolManager" />
             </property>
             <property name="workflowManager">
                <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
@@ -500,20 +500,20 @@
          		<ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
 		      </property>
             <property name="entityManager">
-               <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+               <ref bean="org.sakaiproject.entity.api.EntityManager"/>
             </property>
 		      <property name="matrixManager"><ref bean="matrixManager"/></property>
 		      <property name="idManager"><ref bean="idManager"/></property>
 		      <property name="authzManager"><ref bean="authzManager"/></property>
 		      <property name="sessionManager">
-               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+               <ref bean="org.sakaiproject.tool.api.SessionManager"/>
             </property> 
 		      <property name="authManager"><ref bean="authManager"/></property>
 		      <property name="lockManager">
-		         <ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
+		         <ref bean="org.sakaiproject.content.api.LockManager"/>
       		</property>
             <property name="contentHosting">
-               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+               <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
             </property>
          </bean>
       </property>
@@ -640,7 +640,7 @@
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="authzManager"><ref bean="authzManager"/></property>
             <property name="lockManager">
-               <ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
+               <ref bean="org.sakaiproject.content.api.LockManager"/>
             </property>
          </bean>
       </property>
@@ -686,13 +686,13 @@
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="homeFactory"><ref bean="homeFactory"/></property>
             <property name="sessionManager">
-               <ref bean="org.sakaiproject.api.kernel.session.SessionManager" />
+               <ref bean="org.sakaiproject.tool.api.SessionManager" />
             </property>
             <property name="siteService">
-               <ref bean="org.sakaiproject.service.legacy.site.SiteService" />
+               <ref bean="org.sakaiproject.site.api.SiteService" />
             </property>
             <property name="toolManager">
-               <ref bean="org.sakaiproject.api.kernel.tool.ToolManager" />
+               <ref bean="org.sakaiproject.tool.api.ActiveToolManager" />
             </property>
          </bean>
       </property>
@@ -802,20 +802,20 @@
 
    <bean id="attachCellController" class="org.theospi.utils.mvc.impl.servlet.HelperConsumerFormControllerImpl">
       <property name="sessionManager">
-         <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+         <ref bean="org.sakaiproject.tool.api.SessionManager"/>
       </property>
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.AttachArtifactController">
             <property name="sessionManager">
-               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+               <ref bean="org.sakaiproject.tool.api.SessionManager"/>
             </property>
             <property name="entityManager">
-               <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+               <ref bean="org.sakaiproject.entity.api.EntityManager"/>
             </property>
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
             <property name="contentHosting">
-				<ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+				<ref bean="org.sakaiproject.content.api.ContentHostingService"/>
 			</property>
          </bean>
       </property>
@@ -888,7 +888,7 @@
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
             <property name="lockManager">
-               <ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
+               <ref bean="org.sakaiproject.content.api.LockManager"/>
             </property>
          </bean>
       </property>

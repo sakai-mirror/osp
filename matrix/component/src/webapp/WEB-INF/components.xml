@@ -21,7 +21,7 @@
       <property name="explicitAuthz"><ref bean="explicitAuthz"/></property>
       <property name="functions">
          <list>
-            <bean id="org.sakaiproject.service.legacy.content.ContentHostingService.EVENT_RESOURCE_READ"
+            <bean id="org.sakaiproject.content.api.ContentHostingService.EVENT_RESOURCE_READ"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.REVIEW_MATRIX"
@@ -128,10 +128,10 @@
          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
       </property>
       <property name="contentHosting">
-         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
       <property name="securityService">
-         <ref bean="org.sakaiproject.service.legacy.security.SecurityService" />
+         <ref bean="org.sakaiproject.authz.api.SecurityService" />
       </property>
       <property name="authnManager"><ref bean="authManager"/></property>
       <property name="authzManager"><ref bean="authzManager"/></property>
@@ -141,7 +141,7 @@
          <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
       </property>
       <property name="lockManager">
-         <ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
+         <ref bean="org.sakaiproject.content.api.LockManager"/>
       </property>
       <property name="workflowManager">
          <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager"/>
@@ -190,7 +190,7 @@
       </property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospMatrix"
+   <bean id="org.sakaiproject.entity.api.HttpAccess.ospMatrix"
       class="org.theospi.portfolio.matrix.model.impl.MatrixHttpAccess">
       <property name="idManager">
          <ref bean="idManager"/>
@@ -201,20 +201,20 @@
       <property name="authzManager"><ref bean="authzManager"/></property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospMatrix"
+   <bean id="org.sakaiproject.entity.api.EntityProducer.ospMatrix"
       class="org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer"
       init-method="init"
 		destroy-method="destroy"
 		singleton="true">
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="httpAccess">
-         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.ospMatrix" />
+         <ref bean="org.sakaiproject.entity.api.HttpAccess.ospMatrix" />
       </property>
    </bean>
    
-   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospWorkflow"
+   <bean id="org.sakaiproject.entity.api.HttpAccess.ospWorkflow"
       class="org.theospi.portfolio.workflow.impl.WorkflowHttpAccess">
       <property name="idManager">
          <ref bean="idManager"/>
@@ -225,16 +225,16 @@
       <property name="authzManager"><ref bean="authzManager"/></property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospWorkflow"
+   <bean id="org.sakaiproject.entity.api.EntityProducer.ospWorkflow"
       class="org.theospi.portfolio.workflow.impl.WorkflowEntityProducer"
       init-method="init"
       destroy-method="destroy"
       singleton="true">
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="httpAccess">
-         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.ospWorkflow" />
+         <ref bean="org.sakaiproject.entity.api.HttpAccess.ospWorkflow" />
       </property>
    </bean>
 
@@ -247,11 +247,11 @@
          <ref bean="authzManager"/>
       </property>
       <property name="securityService">
-         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+         <ref bean="org.sakaiproject.authz.api.SecurityService"/>
       </property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
    </bean>
 
@@ -394,8 +394,8 @@
       </property>
    </bean>
    
-   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.scaffoldingImportFile"
-      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+   <bean id="org.sakaiproject.content.api.ContentResourceFilter.scaffoldingImportFile"
+      parent="org.sakaiproject.content.api.ContentResourceFilter.base">
       <property name="viewAll"><value>true</value></property>
       <property name="mimeTypes">
          <list>

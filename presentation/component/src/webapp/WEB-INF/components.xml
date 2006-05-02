@@ -79,7 +79,7 @@
       </property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospPresentationLayout"
+   <bean id="org.sakaiproject.entity.api.HttpAccess.ospPresentationLayout"
       class="org.theospi.portfolio.presentation.model.impl.LayoutHttpAccess">
       <property name="idManager">
          <ref bean="idManager"/>
@@ -92,20 +92,20 @@
       </property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospPresentationLayout"
+   <bean id="org.sakaiproject.entity.api.EntityProducer.ospPresentationLayout"
       class="org.theospi.portfolio.presentation.model.impl.LayoutEntityProducer"
       init-method="init"
 		destroy-method="destroy"
 		singleton="true">
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="httpAccess">
-         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.ospPresentationLayout" />
+         <ref bean="org.sakaiproject.entity.api.HttpAccess.ospPresentationLayout" />
       </property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospPresentation"
+   <bean id="org.sakaiproject.entity.api.HttpAccess.ospPresentation"
       class="org.theospi.portfolio.presentation.model.impl.PresentationHttpAccess">
       <property name="idManager">
          <ref bean="idManager"/>
@@ -118,16 +118,16 @@
       </property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospPresentation"
+   <bean id="org.sakaiproject.entity.api.EntityProducer.ospPresentation"
       class="org.theospi.portfolio.presentation.model.impl.PresentationContentEntityProducer"
       init-method="init"
 		destroy-method="destroy"
 		singleton="true">
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="httpAccess">
-         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.ospPresentation" />
+         <ref bean="org.sakaiproject.entity.api.HttpAccess.ospPresentation" />
       </property>
    </bean>
 
@@ -135,7 +135,7 @@
       class="org.theospi.portfolio.presentation.model.impl.PresentationManagerImpl"
       singleton="true" init-method="init">
       <property name="lockManager">
-         <ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
+         <ref bean="org.sakaiproject.content.api.LockManager"/>
       </property>
       <property name="authnManager"><ref bean="authManager"/></property>
       <property name="sessionFactory">
@@ -160,10 +160,10 @@
          <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
       </property>
       <property name="contentHosting">
-         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
       <property name="securityService">
-         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+         <ref bean="org.sakaiproject.authz.api.SecurityService"/>
       </property>
       <property name="structuredArtifactDefinitionManager">
          <ref bean="structuredArtifactDefinitionManager"/>
@@ -171,7 +171,7 @@
       <property name="tempPresDownloadDir"><value>${sakai.home}/tempPresDownloadDir/</value></property>
       <property name="initializedServices">
          <list>
-            <ref bean="org.sakaiproject.service.legacy.authzGroup.AuthzGroupService"/>
+            <ref bean="org.sakaiproject.authz.api.AuthzGroupService"/>
             <ref bean="org.theospi.portfolio.security.model.BeanLoadCollector.common" />
          </list>
       </property>
@@ -223,7 +223,7 @@
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="functions">
          <list>
-            <bean id="org.sakaiproject.service.legacy.content.ContentHostingService.EVENT_RESOURCE_READ"
+            <bean id="org.sakaiproject.content.api.ContentHostingService.EVENT_RESOURCE_READ"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.VIEW_PRESENTATION"
@@ -486,8 +486,8 @@
       </property>
    </bean>
    
-   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.layoutFile"
-      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+   <bean id="org.sakaiproject.content.api.ContentResourceFilter.layoutFile"
+      parent="org.sakaiproject.content.api.ContentResourceFilter.base">
       <property name="viewAll"><value>true</value></property>
       <property name="mimeTypes">
          <list>
@@ -504,8 +504,8 @@
       </property>
    </bean>
    
-   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.layoutImageFile"
-      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+   <bean id="org.sakaiproject.content.api.ContentResourceFilter.layoutImageFile"
+      parent="org.sakaiproject.content.api.ContentResourceFilter.base">
       <property name="viewAll"><value>true</value></property>
       <property name="mimeTypes">
          <list>
@@ -514,8 +514,8 @@
       </property>
    </bean>
    
-   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.xslFile"
-      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+   <bean id="org.sakaiproject.content.api.ContentResourceFilter.xslFile"
+      parent="org.sakaiproject.content.api.ContentResourceFilter.base">
       <property name="viewAll">
          <value>true</value>
       </property>

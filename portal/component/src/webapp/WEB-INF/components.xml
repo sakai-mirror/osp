@@ -7,13 +7,10 @@
       class="org.theospi.portfolio.portal.impl.PortalManagerImpl"
       singleton="true">
       <property name="userDirectoryService">
-         <ref bean="org.sakaiproject.service.legacy.user.UserDirectoryService"/>
+         <ref bean="org.sakaiproject.user.api.UserDirectoryService"/>
       </property>
       <property name="siteService">
-         <ref bean="org.sakaiproject.service.legacy.site.SiteService"/>
-      </property>
-      <property name="portalService">
-         <ref bean="org.sakaiproject.service.framework.portal.PortalService"/>
+         <ref bean="org.sakaiproject.site.api.SiteService"/>
       </property>
       <property name="idManager">
          <ref bean="idManager" />

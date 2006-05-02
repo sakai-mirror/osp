@@ -41,7 +41,7 @@
       <property name="authnManager"><ref bean="authManager"/></property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="toolManager">
-         <ref bean="org.sakaiproject.api.kernel.tool.ToolManager"/>
+         <ref bean="org.sakaiproject.tool.api.ActiveToolManager"/>
       </property>
       <property name="sessionFactory">
          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
@@ -81,7 +81,7 @@
       <property name="authManager"><ref bean="authManager"/></property>
       <property name="agentManager"><ref bean="agentManager"/></property>
       <property name="threadLocalManager">
-         <ref bean="org.sakaiproject.api.kernel.thread_local.ThreadLocalManager" /> 
+         <ref bean="org.sakaiproject.thread_local.api.ThreadLocalManager" />
       </property>
       <property name="sakaiSecurityBase">
          <bean id="org.sakaiproject.metaobj.security.impl.sakai.SecurityBase"
@@ -131,7 +131,7 @@
       </property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospGuidance"
+   <bean id="org.sakaiproject.entity.api.HttpAccess.ospGuidance"
       class="org.theospi.portfolio.guidance.impl.GuidanceHttpAccess">
       <property name="idManager">
          <ref bean="idManager"/>
@@ -142,16 +142,16 @@
       <property name="authzManager"><ref bean="authzManager"/></property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospGuidance"
+   <bean id="org.sakaiproject.entity.api.EntityProducer.ospGuidance"
       class="org.theospi.portfolio.guidance.impl.GuidanceEntityProducer"
       init-method="init"
 		destroy-method="destroy"
 		singleton="true">
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="httpAccess">
-         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.ospGuidance" />
+         <ref bean="org.sakaiproject.entity.api.HttpAccess.ospGuidance" />
       </property>
    </bean>
 
@@ -164,14 +164,14 @@
          <ref bean="authzManager"/>
       </property>
       <property name="securityService">
-         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+         <ref bean="org.sakaiproject.authz.api.SecurityService"/>
       </property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="contentHostingService">
-         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
    </bean>
 
@@ -200,15 +200,15 @@
          <ref bean="authzManager"/>
       </property>
       <property name="securityService">
-         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+         <ref bean="org.sakaiproject.authz.api.SecurityService"/>
       </property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="agentManager"><ref bean="agentManager"/></property>
       <property name="contentHosting">
-         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
    </bean>
 
@@ -231,7 +231,7 @@
    <bean id="org.theospi.portfolio.style.mgt.StyleManager.target"
       class="org.theospi.portfolio.style.impl.StyleManagerImpl">
       <property name="lockManager">
-         <ref bean="org.sakaiproject.component.legacy.content.LockManager"/>
+         <ref bean="org.sakaiproject.content.api.LockManager"/>
       </property>
       <property name="authnManager"><ref bean="authManager"/></property>
       <property name="sessionFactory">
@@ -250,7 +250,7 @@
          <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
       </property>
       <property name="contentHosting">
-         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
       <property name="globalSites">
          <list>
@@ -403,8 +403,8 @@
       </property>
    </bean>
    
-   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.styleFile"
-      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+   <bean id="org.sakaiproject.content.api.ContentResourceFilter.styleFile"
+      parent="org.sakaiproject.content.api.ContentResourceFilter.base">
       <property name="viewAll"><value>true</value></property>
       <property name="mimeTypes">
          <list>
@@ -449,10 +449,7 @@
          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
       </property>
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
-      </property>
-      <property name="componentManager">
-         <ref bean="org.sakaiproject.service.framework.component.ComponentManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="siteHelperTools">
          <list>
@@ -477,7 +474,7 @@
       class="org.theospi.portfolio.security.model.DefaultRealmManagerImpl"
       singleton="true" init-method="init">
       <property name="authzGroupService">
-         <ref bean="org.sakaiproject.service.legacy.authzGroup.AuthzGroupService"/>
+         <ref bean="org.sakaiproject.authz.api.AuthzGroupService"/>
       </property>
       <property name="newRealmName" value="!site.template.portfolio"/>
       <property name="roles">
@@ -497,7 +494,7 @@
       class="org.theospi.portfolio.security.model.DefaultRealmManagerImpl"
       singleton="true" init-method="init">
       <property name="authzGroupService">
-         <ref bean="org.sakaiproject.service.legacy.authzGroup.AuthzGroupService"/>
+         <ref bean="org.sakaiproject.authz.api.AuthzGroupService"/>
       </property>
       <property name="newRealmName" value="!site.template.portfolioAdmin"/>
       <property name="roles">
@@ -514,10 +511,10 @@
    <bean name="org.theospi.portfolio.security.model.SakaiDefaultPermsManager.base"
       class="org.theospi.portfolio.security.model.SakaiDefaultPermsManager" abstract="true">
       <property name="functionManager">
-         <ref bean="org.sakaiproject.api.kernel.function.FunctionManager" />
+         <ref bean="org.sakaiproject.authz.api.FunctionManager" />
       </property>
       <property name="authzGroupService">
-         <ref bean="org.sakaiproject.service.legacy.authzGroup.AuthzGroupService" />
+         <ref bean="org.sakaiproject.authz.api.AuthzGroupService" />
       </property>
       <property name="realmManagers">
          <list>
@@ -1481,10 +1478,10 @@
    <bean id="org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin.pages"
       class="org.theospi.portfolio.admin.service.ToolPageIntegrationPlugin">
       <property name="siteService">
-         <ref bean="org.sakaiproject.service.legacy.site.SiteService"/>
+         <ref bean="org.sakaiproject.site.api.SiteService"/>
       </property>
       <property name="toolManager">
-         <ref bean="org.sakaiproject.api.kernel.tool.ActiveToolManager" />
+         <ref bean="org.sakaiproject.tool.api.ActiveToolManager" />
       </property>
       <property name="title" value=""/>
       <property name="description" value=""/>
@@ -1518,7 +1515,7 @@
    <bean id="org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin.sites"
       class="org.theospi.portfolio.admin.service.SiteIntegrationPlugin">
       <property name="siteService">
-         <ref bean="org.sakaiproject.service.legacy.site.SiteService"/>
+         <ref bean="org.sakaiproject.site.api.SiteService"/>
       </property>
       <property name="title" value="Site Creation"/>
       <property name="description" value="Plugin to create sites"/>
@@ -1553,7 +1550,7 @@
          </list>
       </property>
       <property name="contentHostingService">
-         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
    </bean>
    <!-- above: setup user and program admin site -->

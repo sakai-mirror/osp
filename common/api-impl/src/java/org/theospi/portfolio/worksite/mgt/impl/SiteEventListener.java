@@ -103,7 +103,7 @@ public class SiteEventListener extends HibernateDaoSupport implements Observer {
    }
 
    protected void removeTool(SiteTool tool) {
-      ToolEventListener listener = (ToolEventListener) componentManager.get(tool.getListenerId());
+      ToolEventListener listener = (ToolEventListener) getComponentManager().get(tool.getListenerId());
 
       listener.toolRemoved(tool);
 
@@ -131,7 +131,7 @@ public class SiteEventListener extends HibernateDaoSupport implements Observer {
                toolPlacement.getRegisteredConfig().getProperty(LISTENER_PROPERTY_TAG);
             if (listenerId != null) {
                storeHelperTool(site.getId(), toolId, listenerId);
-               ToolEventListener listener = (ToolEventListener) componentManager.get(listenerId);
+               ToolEventListener listener = (ToolEventListener) getComponentManager().get(listenerId);
    
                if (listener != null) {
                   listener.helperSiteChanged(site);
@@ -171,7 +171,7 @@ public class SiteEventListener extends HibernateDaoSupport implements Observer {
             toolConfiguration.getConfig().getProperty(LISTENER_PROPERTY_TAG);
       if (listenerId != null) {
          storeTool(toolConfiguration);
-         ToolEventListener listener = (ToolEventListener) componentManager.get(listenerId);
+         ToolEventListener listener = (ToolEventListener) getComponentManager().get(listenerId);
 
          if (listener != null) {
             listener.toolSiteChanged(toolConfiguration);
@@ -206,11 +206,7 @@ public class SiteEventListener extends HibernateDaoSupport implements Observer {
    }
 
    public ComponentManager getComponentManager() {
-      return componentManager;
-   }
-
-   public void setComponentManager(ComponentManager componentManager) {
-      this.componentManager = componentManager;
+      return org.sakaiproject.component.cover.ComponentManager.getInstance();
    }
 
    public EntityManager getEntityManager() {

@@ -50,7 +50,7 @@
                <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
             </property>
             <property name="toolManager">
-               <ref bean="org.sakaiproject.api.kernel.tool.ToolManager"/>
+               <ref bean="org.sakaiproject.tool.api.ActiveToolManager"/>
             </property>
          </bean>
       </property>
@@ -125,13 +125,13 @@
                <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
             </property>
             <property name="sessionManager">
-               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+               <ref bean="org.sakaiproject.tool.api.SessionManager"/>
             </property>
             <property name="contentHosting">
-               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+               <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
             </property>
             <property name="entityManager">
-                <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+                <ref bean="org.sakaiproject.entity.api.EntityManager"/>
             </property>
          </bean>
       </property>
@@ -157,13 +157,13 @@
          class="org.theospi.portfolio.help.control.GlossaryImportController">
       <property name="helpManager"><ref bean="helpManager"/></property>
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="sessionManager">
-         <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+         <ref bean="org.sakaiproject.tool.api.SessionManager"/>
       </property>
       <property name="contentHosting">
-         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
    </bean>
    

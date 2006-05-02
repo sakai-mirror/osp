@@ -19,10 +19,10 @@
    <bean id="org.theospi.portfolio.shared.control.ContentResourceUriResolver" 
       class="org.theospi.portfolio.shared.control.ContentResourceUriResolver" >
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="serverConfigurationService">
-         <ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/>
+         <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
       </property>
       
    </bean>
@@ -35,7 +35,7 @@
          <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
       </property>
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="presentationManager"><ref bean="presentationManager"/></property>
       <property name="authManager"><ref bean="authManager"/></property>
@@ -43,10 +43,10 @@
       <property name="authzManager"><ref bean="authzManager"/></property>
       <property name="homeFactory"><ref bean="homeFactory" /></property>
       <property name="sessionManager">
-		    <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+		    <ref bean="org.sakaiproject.tool.api.SessionManager"/>
       </property> 
       <property name="contentHosting">
-         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
       <property name="pages">
          <list>
@@ -237,7 +237,7 @@
          <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
       </property>
       <property name="serverConfigurationService">
-         <ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/>
+         <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
       </property>
       <property name="customTypedEditors">
          <list>
@@ -274,7 +274,7 @@
                <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
             </property>
              <property name="serverConfigurationService">
-                <ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/>
+                <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
           </property>
             <property name="worksiteManager">
                <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
@@ -443,7 +443,7 @@
                <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
             </property>
             <property name="serverConfigurationService">
-               <ref bean="org.sakaiproject.service.framework.config.ServerConfigurationService"/>
+               <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
             </property>
          </bean>
       </property>
@@ -699,13 +699,13 @@
       <property name="authManager"><ref bean="authManager"/></property>
       <property name="homeFactory"><ref bean="homeFactory" /></property>
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="sessionManager">
-         <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+         <ref bean="org.sakaiproject.tool.api.SessionManager"/>
       </property>
       <property name="contentHosting">
-         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
    </bean>
 
@@ -770,13 +770,13 @@
             <property name="authManager"><ref bean="authManager" /></property>
             <property name="idManager"><ref bean="idManager"/></property>
             <property name="entityManager">
-               <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+               <ref bean="org.sakaiproject.entity.api.EntityManager"/>
             </property>
             <property name="sessionManager">
-               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+               <ref bean="org.sakaiproject.tool.api.SessionManager"/>
             </property>
             <property name="contentHosting">
-               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+               <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
             </property>
          </bean>
       </property>

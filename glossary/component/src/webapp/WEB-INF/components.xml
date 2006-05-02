@@ -21,15 +21,12 @@
          <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
       </property>
       <property name="toolManager">
-         <ref bean="org.sakaiproject.api.kernel.tool.ToolManager"/>
-      </property>
-      <property name="portalService">
-         <ref bean="org.sakaiproject.service.framework.portal.PortalService"/>
+         <ref bean="org.sakaiproject.tool.api.ActiveToolManager"/>
       </property>
       <property name="authzManager"><ref bean="authzManager"/></property>
       <property name="glossary"><ref bean="glossary"/></property>
       <property name="contentHosting">
-         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService" /> 
+         <ref bean="org.sakaiproject.content.api.ContentHostingService" />
       </property>
       <property name="agentManager">
          <ref bean="agentManager" />
@@ -166,8 +163,8 @@
       </property>
    </bean>
    
-   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.glossaryStyleFile"
-      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+   <bean id="org.sakaiproject.content.api.ContentResourceFilter.glossaryStyleFile"
+      parent="org.sakaiproject.content.api.ContentResourceFilter.base">
       <property name="viewAll"><value>true</value></property>
       <property name="mimeTypes">
          <list>

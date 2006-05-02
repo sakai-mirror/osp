@@ -28,7 +28,7 @@
                         bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
                 </property>
                <property name="securityService">
-                  <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+                  <ref bean="org.sakaiproject.authz.api.SecurityService"/>
                </property>
                <property name="idManager">
                    <ref bean="idManager" />
@@ -76,14 +76,14 @@
          <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinderManager.reports" />
       </property>
       <property name="securityService">
-         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+         <ref bean="org.sakaiproject.authz.api.SecurityService"/>
       </property>
       <property name="reportsManager">
          <ref bean="org.theospi.portfolio.reports.model.ReportsManager"/>
       </property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospReports"
+   <bean id="org.sakaiproject.entity.api.HttpAccess.ospReports"
       class="org.theospi.portfolio.reports.model.impl.ReportsHttpAccess">
       <property name="reportsManager">
          <ref bean="org.theospi.portfolio.reports.model.ReportsManager"/>
@@ -91,16 +91,16 @@
       <property name="authzManager"><ref bean="authzManager"/></property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospReports"
+   <bean id="org.sakaiproject.entity.api.EntityProducer.ospReports"
       class="org.theospi.portfolio.reports.model.impl.ReportsEntityProducer"
       init-method="init"
 		destroy-method="destroy"
 		singleton="true">
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="httpAccess">
-         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.ospReports" />
+         <ref bean="org.sakaiproject.entity.api.HttpAccess.ospReports" />
       </property>
    </bean>
 

@@ -42,13 +42,13 @@
             <property name="authManager"><ref bean="authManager" /></property>
             <property name="idManager"><ref bean="idManager"/></property>
             <property name="entityManager">
-               <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+               <ref bean="org.sakaiproject.entity.api.EntityManager"/>
             </property>
             <property name="sessionManager">
-               <ref bean="org.sakaiproject.api.kernel.session.SessionManager"/>
+               <ref bean="org.sakaiproject.tool.api.SessionManager"/>
             </property>
             <property name="contentHosting">
-               <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/> 
+               <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
             </property>
             <property name="worksiteManager">
                <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>

@@ -189,7 +189,7 @@
       </property>
    </bean>
    
-   <bean id="org.sakaiproject.service.legacy.entity.HttpAccess.ospWizard"
+   <bean id="org.sakaiproject.entity.api.HttpAccess.ospWizard"
       class="org.theospi.portfolio.wizard.impl.WizardHttpAccess">
       <property name="idManager">
          <ref bean="idManager"/>
@@ -200,16 +200,16 @@
       <property name="authzManager"><ref bean="authzManager"/></property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.entity.EntityProducer.ospWizard"
+   <bean id="org.sakaiproject.entity.api.EntityProducer.ospWizard"
       class="org.theospi.portfolio.wizard.impl.WizardEntityProducer"
       init-method="init"
       destroy-method="destroy"
       singleton="true">
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="httpAccess">
-         <ref bean="org.sakaiproject.service.legacy.entity.HttpAccess.ospWizard" />
+         <ref bean="org.sakaiproject.entity.api.HttpAccess.ospWizard" />
       </property>
    </bean>
 
@@ -227,11 +227,11 @@
       </property>
       <property name="authManager"><ref bean="authManager"/></property>
       <property name="securityService">
-         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+         <ref bean="org.sakaiproject.authz.api.SecurityService"/>
       </property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="entityManager">
-         <ref bean="org.sakaiproject.service.legacy.entity.EntityManager"/>
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
       </property>
       <property name="agentManager"><ref bean="agentManager"/></property>
       <property name="structuredArtifactDefinitionManager"><ref bean="structuredArtifactDefinitionManager"/></property>
@@ -239,7 +239,7 @@
          <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager"/>
       </property>
       <property name="contentHosting">
-         <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService"/>
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
       <property name="xmlRenderer"><ref bean="wizardXmlRenderer"/></property>
       <property name="reviewManager">
@@ -277,8 +277,8 @@
       </property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.wizardStyleFile"
-      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+   <bean id="org.sakaiproject.content.api.ContentResourceFilter.wizardStyleFile"
+      parent="org.sakaiproject.content.api.ContentResourceFilter.base">
       <property name="viewAll"><value>true</value></property>
       <property name="mimeTypes">
          <list>
@@ -292,8 +292,8 @@
       </property>
    </bean>
 
-   <bean id="org.sakaiproject.service.legacy.content.ContentResourceFilter.wizardImportFile"
-      parent="org.sakaiproject.service.legacy.content.ContentResourceFilter.base">
+   <bean id="org.sakaiproject.content.api.ContentResourceFilter.wizardImportFile"
+      parent="org.sakaiproject.content.api.ContentResourceFilter.base">
       <property name="viewAll"><value>true</value></property>
       <property name="mimeTypes">
          <list>

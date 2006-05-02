@@ -16,7 +16,7 @@
          </list>
       </property>
       <property name="securityService">
-         <ref bean="org.sakaiproject.service.legacy.security.SecurityService"/>
+         <ref bean="org.sakaiproject.authz.api.SecurityService"/>
       </property>
    </bean>
 
@@ -2540,7 +2540,7 @@
            <value>/org/theospi/portfolio/warehouse/sakai/resource.xml</value>
        </property>
        <property name="contentHostingService">
-           <ref bean="org.sakaiproject.service.legacy.content.ContentHostingService" />
+           <ref bean="org.sakaiproject.content.api.ContentHostingService" />
        </property>
        <property name="task">
            <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.contentResources" />
@@ -2562,7 +2562,7 @@
            <value>/org/theospi/portfolio/warehouse/sakai/site.xml</value>
        </property>
        <property name="siteService">
-          <ref bean="org.sakaiproject.service.legacy.site.SiteService" />
+          <ref bean="org.sakaiproject.site.api.SiteService" />
        </property>
        <property name="task">
            <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.worksite" />
