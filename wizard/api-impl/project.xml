@@ -63,13 +63,13 @@
 
     <dependency>
       <groupId>sakaiproject</groupId>
-      <artifactId>sakai-legacy-service</artifactId>
+      <artifactId>sakai-site-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
     
     <dependency>
       <groupId>sakaiproject</groupId>
-      <artifactId>sakai-tool</artifactId>
+      <artifactId>sakai-tool-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
 
@@ -87,13 +87,37 @@
               <war.bundle>true</war.bundle>
            </properties>
      </dependency>
-
+ 
      <dependency>
          <groupId>sakaiproject</groupId>
-         <artifactId>sakai-function</artifactId>
+         <artifactId>sakai-util-api</artifactId>
+         <version>${sakai.version}</version>
+     </dependency>
+     
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-entity-api</artifactId>
          <version>${sakai.version}</version>
      </dependency>
 
+	<dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-user-api</artifactId>
+         <version>${sakai.version}</version>
+     </dependency>
+     
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-content-api</artifactId>
+         <version>${sakai.version}</version>
+     </dependency>
+     
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-authz-api</artifactId>
+         <version>${sakai.version}</version>
+     </dependency>
+     
     <dependency>
       <groupId>aopalliance</groupId>
       <artifactId>aopalliance</artifactId>
