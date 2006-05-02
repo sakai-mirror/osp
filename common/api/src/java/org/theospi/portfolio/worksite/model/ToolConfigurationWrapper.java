@@ -41,9 +41,9 @@ public class ToolConfigurationWrapper implements Serializable, ToolConfiguration
       this.toolConfig = toolConfig;
    }
 
-   //public String getToolId() {
-   //   return toolConfig.getTool().getId();
-   //}
+   public String getToolId() {
+      return toolConfig.getTool().getId();
+   }
 
    public String getTitle() {
       return toolConfig.getTitle();
@@ -126,8 +126,8 @@ public class ToolConfigurationWrapper implements Serializable, ToolConfiguration
 		toolConfig.setTitle(title);	
 	}
 	
-	public void setTool(Tool tool) {
-		toolConfig.setTool(tool);
+	public void setTool(String string, Tool tool) {
+		toolConfig.setTool(string, tool);
 	}
 	
 	public void save() {

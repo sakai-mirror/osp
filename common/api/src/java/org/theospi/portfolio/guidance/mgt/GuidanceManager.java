@@ -21,13 +21,10 @@
 package org.theospi.portfolio.guidance.mgt;
 
 import org.theospi.portfolio.guidance.model.Guidance;
-import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.content.api.ContentCollection;
-import org.sakaiproject.exception.ServerOverloadException;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.io.OutputStream;

@@ -25,96 +25,155 @@
          <type>plugin</type>
       </dependency>
 
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-component</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
+     <dependency>
+         <groupId>osp</groupId>
+         <artifactId>osp-common-api</artifactId>
+         <version>${osp.version}</version>
+      </dependency>
 
      <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-legacy-service</artifactId>
-       <version>${sakai.version}</version>
-     </dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-site-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
 
      <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-session</artifactId>
-       <version>${sakai.version}</version>
-     </dependency>
-
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-tool</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-user-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
 
      <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-metaobj-api</artifactId>
-       <version>${sakai.version}</version>
-     </dependency>
-
-      <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-metaobj-tool-lib</artifactId>
-       <version>${sakai.version}</version>
-     </dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-email-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
 
      <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-metaobj-impl</artifactId>
-       <version>${sakai.version}</version>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-metaobj-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-metaobj-tool-lib</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-tool-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-content-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-entity-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-util</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-component</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-component-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-util-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-authz-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-site-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-site-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
+     <!-- Sun JSF dependencies -->
+     <dependency>
+        <groupId>jsf</groupId>
+        <artifactId>jsf-api</artifactId>
+        <version>1.1.01</version>
+        <url>http://java.sun.com/j2ee/javaserverfaces/</url>
         <properties>
-              <war.bundle>true</war.bundle>
-           </properties>
+           <war.bundle>true</war.bundle>
+        </properties>
      </dependency>
-    
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-legacy-util</artifactId>
-      <version>${sakai.version}</version>
-      <properties>
-			<war.bundle>true</war.bundle>
-		</properties>
-    </dependency>
+
+
+     <dependency>
+        <groupId>jsf</groupId>
+        <artifactId>jsf-impl</artifactId>
+        <version>1.1.01</version>
+        <url>http://java.sun.com/j2ee/javaserverfaces/</url>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
+     </dependency>
 
      <dependency>
         <groupId>sakaiproject</groupId>
         <artifactId>sakai-jsf-tool</artifactId>
         <version>${sakai.version}</version>
+        <url>http://sakaiproject.org/</url>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
      </dependency>
 
+     <!-- Sakai tag library -->
      <dependency>
         <groupId>sakaiproject</groupId>
-        <artifactId>sakai-active-tool</artifactId>
+        <artifactId>sakai-jsf-widgets</artifactId>
         <version>${sakai.version}</version>
+        <url>http://sakaiproject.org/</url>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
      </dependency>
 
-	<dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-util-web</artifactId>
-      <version>${sakai.version}</version>
-      <properties>
-			<war.bundle>true</war.bundle>
-		</properties>
-    </dependency>
-
+     <!-- Adaptor to use tag library with Sun's RI -->
      <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-util-i18n</artifactId>
-       <version>${sakai.version}</version>
-       <properties>
-         <war.bundle>true</war.bundle>
-       </properties>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-jsf-widgets-sun</artifactId>
+        <version>${sakai.version}</version>
+        <url>http://sakaiproject.org/</url>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
      </dependency>
-
-
-     <dependency>
-        <groupId>osp</groupId>
-        <artifactId>osp-common-api</artifactId>
-        <version>${osp.version}</version>
-      </dependency>
 
      <dependency>
        <groupId>aopalliance</groupId>

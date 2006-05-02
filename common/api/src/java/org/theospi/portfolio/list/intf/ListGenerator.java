@@ -72,7 +72,7 @@ public interface ListGenerator {
    /**
     *
     * @param entry
-    * @return
+    * @return map of params
     */
    public Map getToolParams(Object entry);
 
