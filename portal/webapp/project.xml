@@ -37,60 +37,6 @@
        <version>${osp.version}</version>
      </dependency>
 
-      <dependency>
-         <groupId>sakaiproject</groupId>
-         <artifactId>sakai-portals</artifactId>
-         <version>${sakai.version}</version>
-         <properties>
-            <war.bundle>true</war.bundle>
-         </properties>
-      </dependency>
-
-     <dependency>
-        <groupId>sakaiproject</groupId>
-        <artifactId>sakai-util-web</artifactId>
-        <version>${sakai.version}</version>
-        <properties>
-           <war.bundle>true</war.bundle>
-        </properties>
-     </dependency>
-
-     <dependency>
-        <groupId>sakaiproject</groupId>
-        <artifactId>sakai-util-text</artifactId>
-        <version>${sakai.version}</version>
-        <properties>
-           <war.bundle>true</war.bundle>
-        </properties>
-     </dependency>
-
-     <dependency>
-        <groupId>sakaiproject</groupId>
-        <artifactId>sakai-util-java</artifactId>
-        <version>${sakai.version}</version>
-        <properties>
-           <war.bundle>true</war.bundle>
-        </properties>
-     </dependency>
-
-     <dependency>
-        <groupId>sakaiproject</groupId>
-        <artifactId>sakai-util-i18n</artifactId>
-        <version>${sakai.version}</version>
-        <properties>
-           <war.bundle>true</war.bundle>
-        </properties>
-     </dependency>
-
-     <dependency>
-        <groupId>sakaiproject</groupId>
-        <artifactId>sakai-util-portal</artifactId>
-        <version>${sakai.version}</version>
-        <properties>
-           <war.bundle>true</war.bundle>
-        </properties>
-     </dependency>
-
      <dependency>
         <groupId>servletapi</groupId>
         <artifactId>servletapi</artifactId>
@@ -99,32 +45,77 @@
 
      <dependency>
         <groupId>sakaiproject</groupId>
-        <artifactId>sakai-tool</artifactId>
+        <artifactId>sakai-tool-api</artifactId>
         <version>${sakai.version}</version>
      </dependency>
 
      <dependency>
         <groupId>sakaiproject</groupId>
-        <artifactId>sakai-active-tool</artifactId>
+        <artifactId>sakai-site-api</artifactId>
         <version>${sakai.version}</version>
      </dependency>
 
      <dependency>
         <groupId>sakaiproject</groupId>
-        <artifactId>sakai-session</artifactId>
+        <artifactId>sakai-entity-api</artifactId>
         <version>${sakai.version}</version>
      </dependency>
 
      <dependency>
         <groupId>sakaiproject</groupId>
-        <artifactId>sakai-thread_local</artifactId>
+        <artifactId>sakai-content-api</artifactId>
         <version>${sakai.version}</version>
      </dependency>
 
      <dependency>
         <groupId>sakaiproject</groupId>
-        <artifactId>sakai-legacy-service</artifactId>
+        <artifactId>sakai-authz-api</artifactId>
         <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-user-api</artifactId>
+        <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-util-api</artifactId>
+        <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-component-api</artifactId>
+        <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-portal-impl</artifactId>
+        <version>${sakai.version}</version>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
+     </dependency>
+
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-util</artifactId>
+        <version>${sakai.version}</version>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
+     </dependency>
+
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-tool-util</artifactId>
+        <version>${sakai.version}</version>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
      </dependency>
 
      <dependency>

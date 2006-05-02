@@ -262,7 +262,8 @@ public class XsltPortal extends CharonPortal {
       req.setAttribute(Tool.PLACEMENT_ID, placementId);
 
       ActiveTool helperTool = ActiveToolManager.getActiveTool("osp.site.type");
-      Placement placement = new org.sakaiproject.util.Placement(placementId, helperTool, null, null, null);
+      Placement placement = new org.sakaiproject.util.Placement(
+         placementId, "osp.site.type", helperTool, null, null, null);
 
       String context = req.getPathInfo();
       forwardTool(helperTool, req, res, placement, siteType.getSkin(), getContext() + "/" + context, "/siteType");
