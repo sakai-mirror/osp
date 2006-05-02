@@ -27,12 +27,6 @@
         </properties>
      </dependency>
 
-     <dependency>
-        <groupId>sakaiproject</groupId>
-        <artifactId>sakai-scheduler-api</artifactId>
-        <version>${sakai.version}</version>
-     </dependency>
-
   		<dependency>
 			<groupId>sakaiproject</groupId>
 			<artifactId>sakai</artifactId>
@@ -42,37 +36,25 @@
 
      <dependency>
        <groupId>sakaiproject</groupId>
-       <artifactId>sakai-component</artifactId>
+       <artifactId>sakai-component-api</artifactId>
        <version>${sakai.version}</version>
      </dependency>
 
      <dependency>
        <groupId>sakaiproject</groupId>
-       <artifactId>sakai-session</artifactId>
+       <artifactId>sakai-site-api</artifactId>
        <version>${sakai.version}</version>
      </dependency>
 
      <dependency>
        <groupId>sakaiproject</groupId>
-       <artifactId>sakai-function</artifactId>
+       <artifactId>sakai-tool-api</artifactId>
        <version>${sakai.version}</version>
      </dependency>
 
      <dependency>
        <groupId>sakaiproject</groupId>
-       <artifactId>sakai-thread_local</artifactId>
-       <version>${sakai.version}</version>
-     </dependency>
-
-     <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-legacy-service</artifactId>
-       <version>${sakai.version}</version>
-     </dependency>
-
-     <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-legacy-component</artifactId>
+       <artifactId>sakai-content-api</artifactId>
        <version>${sakai.version}</version>
      </dependency>
 
@@ -84,43 +66,28 @@
 
      <dependency>
        <groupId>sakaiproject</groupId>
-       <artifactId>sakai-metaobj-impl</artifactId>
+       <artifactId>sakai-entity-api</artifactId>
        <version>${sakai.version}</version>
      </dependency>
 
      <dependency>
        <groupId>sakaiproject</groupId>
-       <artifactId>sakai-metaobj-tool-lib</artifactId>
+       <artifactId>sakai-authz-api</artifactId>
        <version>${sakai.version}</version>
      </dependency>
-
-    <dependency>
-      <groupId>osp</groupId>
-      <artifactId>osp-common-api</artifactId>
-      <version>${pom.currentVersion}</version>
-    </dependency>
-    
+     
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-util-api</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+     
      <dependency>
        <groupId>osp</groupId>
-       <artifactId>osp-common-common</artifactId>
-       <version>${pom.currentVersion}</version>
+       <artifactId>osp-common-api</artifactId>
+       <version>${osp.version}</version>
      </dependency>
 
-     <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-util-i18n</artifactId>
-       <version>${sakai.version}</version>
-       <properties>
-         <war.bundle>true</war.bundle>
-       </properties>
-     </dependency>
-
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-tool</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    
     <dependency>
       <groupId>aopalliance</groupId>
       <artifactId>aopalliance</artifactId>
