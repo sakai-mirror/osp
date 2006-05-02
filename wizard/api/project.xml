@@ -34,16 +34,33 @@
 
     <dependency>
       <groupId>sakaiproject</groupId>
-      <artifactId>sakai-legacy-service</artifactId>
+      <artifactId>sakai-site-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
     
     <dependency>
       <groupId>sakaiproject</groupId>
-      <artifactId>sakai-tool</artifactId>
+      <artifactId>sakai-entity-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-tool-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
 
+	<dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-content-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-user-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
      <dependency>
        <groupId>sakaiproject</groupId>
        <artifactId>sakai-metaobj-api</artifactId>
