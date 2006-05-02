@@ -44,7 +44,7 @@
 
        <dependency>
          <groupId>sakaiproject</groupId>
-         <artifactId>sakai-util-i18n</artifactId>
+         <artifactId>sakai-util</artifactId>
          <version>${sakai.version}</version>
          <properties>
            <war.bundle>true</war.bundle>
@@ -60,15 +60,6 @@
             </properties>
        </dependency>
 
-     <dependency>
-       <groupId>osp</groupId>
-       <artifactId>osp-glossary-impl</artifactId>
-       <version>${osp.version}</version>
-       <properties>
-             <war.bundle>true</war.bundle>
-          </properties>
-     </dependency>
-
     <dependency>
       <groupId>sakaiproject</groupId>
       <artifactId>sakai-metaobj-impl</artifactId>
@@ -78,59 +69,6 @@
             </properties>
     </dependency>
 
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-component</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-legacy-service</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-metaobj-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-tool</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-        
-        
-        
-        
-        
-        
-        
-        
-
-     <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-metaobj-api</artifactId>
-       <version>${sakai.version}</version>
-     </dependency>
-
-     <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-metaobj-impl</artifactId>
-       <version>${sakai.version}</version>
-        <properties>
-              <war.bundle>true</war.bundle>
-           </properties>
-     </dependency>
-        
-        
-        
-        
-        
-      
-      
         <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>

@@ -27,12 +27,6 @@
             </properties>
         </dependency>
       
-        <dependency>
-            <groupId>osp</groupId>
-            <artifactId>osp-reports-component-shared</artifactId>
-            <version>${osp.version}</version>
-        </dependency>
-
        <dependency>
            <groupId>osp</groupId>
            <artifactId>osp-common-api</artifactId>
@@ -56,7 +50,7 @@
 
        <dependency>
          <groupId>sakaiproject</groupId>
-         <artifactId>sakai-util-i18n</artifactId>
+         <artifactId>sakai-util</artifactId>
          <version>${sakai.version}</version>
          <properties>
            <war.bundle>true</war.bundle>
@@ -74,14 +68,33 @@
 
         <dependency>
             <groupId>sakaiproject</groupId>
-            <artifactId>sakai-legacy-service</artifactId>
-            <version>${sakai.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>sakaiproject</groupId>
             <artifactId>sakai-component</artifactId>
             <version>${sakai.version}</version>
         </dependency>
+
+       <dependency>
+           <groupId>sakaiproject</groupId>
+           <artifactId>sakai-authz-api</artifactId>
+           <version>${sakai.version}</version>
+       </dependency>
+
+       <dependency>
+           <groupId>sakaiproject</groupId>
+           <artifactId>sakai-site-api</artifactId>
+           <version>${sakai.version}</version>
+       </dependency>
+
+       <dependency>
+           <groupId>sakaiproject</groupId>
+           <artifactId>sakai-tool-api</artifactId>
+           <version>${sakai.version}</version>
+       </dependency>
+
+       <dependency>
+           <groupId>sakaiproject</groupId>
+           <artifactId>sakai-entity-api</artifactId>
+           <version>${sakai.version}</version>
+       </dependency>
 
         <dependency>
             <groupId>jsf</groupId>
@@ -147,29 +160,10 @@
         </dependency>
         <dependency>
             <groupId>sakaiproject</groupId>
-            <artifactId>sakai-util-text</artifactId>
+            <artifactId>sakai-util-api</artifactId>
             <version>${sakai.version}</version>
-<!--  ??            <version></version> --> 
-            <!-- <properties>
-                <war.bundle>true</war.bundle>
-            </properties>--> 
-        </dependency> 
-        <dependency>
-            <groupId>sakaiproject</groupId>
-            <artifactId>sakai-util-web</artifactId>
-            <version>${sakai.version}</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>        
         </dependency>
-        <dependency>
-            <groupId>sakaiproject</groupId>
-            <artifactId>sakai-legacy-util</artifactId>
-            <version>${sakai.version}</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
+
         <dependency>
             <groupId>sakaiproject</groupId>
             <artifactId>sakai-jsf-widgets</artifactId>
@@ -187,27 +181,6 @@
                 <war.bundle>true</war.bundle>
             </properties>        
         </dependency>
-
-        <dependency>
-            <groupId>sakaiproject</groupId>
-            <artifactId>sakai-tool</artifactId>
-            <version>${sakai.version}</version>
-        </dependency>         
-
-        <dependency>
-            <groupId>sakaiproject</groupId>
-            <artifactId>sakai-active-tool</artifactId>
-            <version>${sakai.version}</version>
-        </dependency>         
-
-        <dependency>
-            <groupId>sakaiproject</groupId>
-            <artifactId>sakai-tool-registration</artifactId>
-            <version>${sakai.version}</version>
-        </dependency>         
-
-<!--try for sakai tag and wysiwyg-->
-
 
         <dependency>
             <groupId>commons-logging</groupId>
@@ -246,12 +219,6 @@
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>        
-        </dependency>
-
-        <dependency>
-            <groupId>sakaiproject</groupId>
-            <artifactId>sakai-session</artifactId>
-            <version>${sakai.version}</version>
         </dependency>
 
     </dependencies>
