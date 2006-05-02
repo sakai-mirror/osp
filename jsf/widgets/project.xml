@@ -36,24 +36,6 @@
 		<version>${sakai.version}</version>
 	</dependency>
    
-   <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-util-web</artifactId>
-      <version>${sakai.version}</version>
-   </dependency>
-
-      <dependency>
-         <groupId>sakaiproject</groupId>
-         <artifactId>sakai-session</artifactId>
-         <version>${sakai.version}</version>
-      </dependency>
-      
-      <dependency>
-         <groupId>sakaiproject</groupId>
-         <artifactId>sakai-tool</artifactId>
-         <version>${sakai.version}</version>
-      </dependency>
-
     <!-- Sun JSF dependencies -->
     <!-- 
     <dependency>
