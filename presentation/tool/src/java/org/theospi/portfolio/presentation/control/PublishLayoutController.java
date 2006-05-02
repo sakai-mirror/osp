@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.tool.cover.ToolManager;
 
 
 import java.util.Map;

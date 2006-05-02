@@ -24,11 +24,11 @@ package org.theospi.portfolio.wizard.impl;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
+import org.sakaiproject.entity.api.EntityAccessOverloadException;
+import org.sakaiproject.entity.api.EntityCopyrightException;
+import org.sakaiproject.entity.api.EntityNotDefinedException;
+import org.sakaiproject.entity.api.EntityPermissionException;
 import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.CopyrightException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 
 /**
@@ -44,7 +44,7 @@ public class WizardHttpAccess extends OspHttpAccessBase {
    private WizardManager wizardManager;
    
    protected void checkSource(Reference ref, ReferenceParser parser)
-      throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
+      throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
       // should setup access rights, etc.
       
       getWizardManager().checkWizardAccess(getIdManager().getId(parser.getId()));

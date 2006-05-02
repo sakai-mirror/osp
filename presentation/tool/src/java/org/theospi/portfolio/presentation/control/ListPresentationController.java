@@ -26,6 +26,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
+import org.sakaiproject.tool.cover.ToolManager;
 
 import org.sakaiproject.component.api.ServerConfigurationService;
 

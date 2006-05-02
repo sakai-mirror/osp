@@ -22,8 +22,8 @@ package org.theospi.portfolio.warehouse.sakai.site;
 
 import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
 import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.service.legacy.site.SiteService.SortType;
-import org.sakaiproject.service.legacy.site.SiteService.SelectionType;
+import org.sakaiproject.site.api.SiteService.SortType;
+import org.sakaiproject.site.api.SiteService.SelectionType;
 import org.sakaiproject.site.api.Site;
 
 import java.util.Collection;

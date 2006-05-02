@@ -20,17 +20,14 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model.impl;
 
-import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
-import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
-import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
 import org.theospi.portfolio.reports.model.ReportsManager;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
-import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
+import org.sakaiproject.entity.api.EntityAccessOverloadException;
+import org.sakaiproject.entity.api.EntityCopyrightException;
+import org.sakaiproject.entity.api.EntityNotDefinedException;
+import org.sakaiproject.entity.api.EntityPermissionException;
 import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.ServerOverloadException;
@@ -59,7 +56,7 @@ public class ReportsHttpAccess extends OspHttpAccessBase {
     * @throws CopyrightException
     */
    protected void checkSource(Reference ref, ReferenceParser parser)
-      throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
+      throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
       getReportsManager().checkReportAccess(parser.getId(), parser.getRef());
    }
 

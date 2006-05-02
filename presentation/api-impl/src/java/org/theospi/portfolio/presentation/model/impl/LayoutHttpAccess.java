@@ -20,21 +20,19 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model.impl;
 
-import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
+import org.sakaiproject.entity.api.EntityAccessOverloadException;
+import org.sakaiproject.entity.api.EntityCopyrightException;
+import org.sakaiproject.entity.api.EntityNotDefinedException;
+import org.sakaiproject.entity.api.EntityPermissionException;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.CopyrightException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
-import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
+import org.sakaiproject.tool.cover.SessionManager;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,16 +47,17 @@ public class LayoutHttpAccess extends OspHttpAccessBase {
    private IdManager idManager;
 
    protected void checkSource(Reference ref, ReferenceParser parser)
-         throws PermissionException, IdUnusedException, ServerOverloadException, CopyrightException {
+         throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
       try {
          PresentationLayout pres = presentationManager.getPresentationLayout(
             getIdManager().getId(parser.getId()));
          if (pres == null) {
-            throw new IdUnusedException(parser.getId());
+            throw new EntityNotDefinedException(parser.getId());
          }
       }
       catch (AuthorizationFailedException exp) {
-         throw new PermissionException(ContentHostingService.EVENT_RESOURCE_READ, ref.getReference());
+         throw new EntityPermissionException(SessionManager.getCurrentSessionUserId(), 
+               ContentHostingService.EVENT_RESOURCE_READ, ref.getReference());
       }
    }
 

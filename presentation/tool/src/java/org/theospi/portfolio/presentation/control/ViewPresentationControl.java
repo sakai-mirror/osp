@@ -40,9 +40,7 @@ import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.api.kernel.session.Session;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.util.Tool;
 

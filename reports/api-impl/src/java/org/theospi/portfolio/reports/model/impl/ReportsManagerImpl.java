@@ -32,16 +32,16 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 import org.jdom.transform.JDOMResult;
 import org.jdom.transform.JDOMSource;
-import org.sakaiproject.api.kernel.component.ComponentManager;
-import org.sakaiproject.api.kernel.function.cover.FunctionManager;
-import org.sakaiproject.api.kernel.session.Session;
+import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.authz.cover.FunctionManager;
+import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.security.model.AuthZMap;
-import org.sakaiproject.metaobj.shared.SharedFunctionConstants;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 
@@ -49,7 +49,7 @@ import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.user.api.User;
-import org.sakaiproject.service.legacy.user.UserDirectoryService;
+import org.sakaiproject.user.api.UserDirectoryService;
 import org.springframework.orm.hibernate.support.HibernateDaoSupport;
 import org.theospi.portfolio.reports.model.*;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
@@ -794,7 +794,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
     */
    public String replaceSystemValues(String inString)
 	{
-		UserDirectoryService dirServ = org.sakaiproject.service.legacy.user.cover.UserDirectoryService.getInstance();
+		UserDirectoryService dirServ = org.sakaiproject.user.cover.UserDirectoryService.getInstance();
 		User u = dirServ.getCurrentUser();
 		Session s = SessionManager.getCurrentSession();
 		

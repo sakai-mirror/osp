@@ -28,6 +28,7 @@ import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
@@ -36,14 +37,13 @@ import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.mgt.*;
 import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
 import org.sakaiproject.metaobj.shared.model.*;
-import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 
 import org.sakaiproject.content.api.*;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
-import org.sakaiproject.service.legacy.notification.cover.NotificationService;
+import org.sakaiproject.event.cover.NotificationService;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.site.api.Site;
@@ -228,7 +228,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    protected void switchUser(Agent owner) {
-      org.sakaiproject.api.kernel.session.Session sakaiSession = SessionManager.getCurrentSession();
+      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
       sakaiSession.setUserId(owner.getId().getValue());
       sakaiSession.setUserEid(owner.getId().getValue());
    }
@@ -2283,7 +2283,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    protected void initGlobalLayouts() {
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
 
-      org.sakaiproject.api.kernel.session.Session sakaiSession = SessionManager.getCurrentSession();
+      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
       String userId = sakaiSession.getUserId();
       sakaiSession.setUserId("admin");
       sakaiSession.setUserEid("admin");
@@ -2359,7 +2359,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    protected void initFreeFormTemplate() {
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
 
-      org.sakaiproject.api.kernel.session.Session sakaiSession = SessionManager.getCurrentSession();
+      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
       String userId = sakaiSession.getUserId();
       sakaiSession.setUserId("admin");
       sakaiSession.setUserEid("admin");

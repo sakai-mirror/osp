@@ -30,6 +30,7 @@ import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.shared.model.OspException;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;

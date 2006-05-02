@@ -22,7 +22,7 @@ package org.theospi.portfolio.warehouse.sakai.resource;
 
 import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.content.api.cover.ContentHostingService;
+import org.sakaiproject.content.cover.ContentHostingService;
 
 /**
  * Created by IntelliJ IDEA.

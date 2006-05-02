@@ -34,6 +34,7 @@ import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.cover.EmailService;
 
+import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
 
