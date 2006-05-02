@@ -30,25 +30,10 @@
       <artifactId>sakai-component</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-legacy-service</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
     
     <dependency>
       <groupId>sakaiproject</groupId>
-      <artifactId>sakai-legacy-util</artifactId>
-      <version>${sakai.version}</version>
-      <properties>
-			<war.bundle>true</war.bundle>
-		</properties>
-    </dependency>
-    
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-tool</artifactId>
+      <artifactId>sakai-component-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
     
@@ -105,13 +90,16 @@
            <war.bundle>true</war.bundle>
         </properties>
       </dependency>
-
-	<dependency>
+<!-- 
+    <dependency>
       <groupId>sakaiproject</groupId>
-      <artifactId>sakai-session</artifactId>
+      <artifactId>sakai-legacy-util</artifactId>
       <version>${sakai.version}</version>
+      <properties>
+			<war.bundle>true</war.bundle>
+		</properties>
     </dependency>
-
+    
      <dependency>
         <groupId>sakaiproject</groupId>
         <artifactId>sakai-util-web</artifactId>
@@ -120,7 +108,16 @@
            <war.bundle>true</war.bundle>
         </properties>
       </dependency>
-
+      
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-util-i18n</artifactId>
+       <version>${sakai.version}</version>
+       <properties>
+         <war.bundle>true</war.bundle>
+       </properties>
+     </dependency>
+-->
     <dependency>
       <groupId>aopalliance</groupId>
       <artifactId>aopalliance</artifactId>
@@ -296,15 +293,6 @@
         <properties>
            <war.bundle>true</war.bundle>
         </properties>
-     </dependency>
-
-     <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-util-i18n</artifactId>
-       <version>${sakai.version}</version>
-       <properties>
-         <war.bundle>true</war.bundle>
-       </properties>
      </dependency>
 
   </dependencies>
