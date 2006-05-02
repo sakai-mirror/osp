@@ -92,12 +92,6 @@
         </property>
     </bean>
 
-   <!-- pretty error page -->
-	<bean id="org.springframework.web.servlet.HandlerExceptionResolver.errorHandler"
-      class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
-		<property name="defaultErrorView"><value>defaultErrorPage</value></property>
-	</bean>
-
    <!-- check for session timeout, give pretty error page is timed out -->
     <bean id="org.sakaiproject.metaobj.shared.control.CheckForTimeout"
           class="org.sakaiproject.metaobj.shared.control.CheckForTimeout">
