@@ -21,16 +21,7 @@
 package org.theospi.portfolio.presentation.model.impl;
 
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
-import org.theospi.portfolio.presentation.PresentationManager;
-import org.theospi.portfolio.presentation.model.Presentation;
-import org.theospi.portfolio.security.AuthorizationFailedException;
-import org.sakaiproject.entity.api.EntityManager;
-import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.Entity;
-import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.exception.PermissionException;
 
 /**
  * Created by IntelliJ IDEA.

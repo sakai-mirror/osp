@@ -26,27 +26,27 @@
          <type>plugin</type>
       </dependency>
 
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-component</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-legacy-service</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>sakaiproject</groupId>
-      <artifactId>sakai-tool</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-component</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
 
      <dependency>
        <groupId>sakaiproject</groupId>
-       <artifactId>sakai-metaobj-api</artifactId>
+       <artifactId>sakai-component-api</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-entity-api</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-event-api</artifactId>
        <version>${sakai.version}</version>
      </dependency>
 
