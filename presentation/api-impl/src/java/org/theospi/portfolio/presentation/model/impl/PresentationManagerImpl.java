@@ -489,7 +489,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       if (presentation.isNewObject()) {
          presentation.setCreated(new Date(System.currentTimeMillis()));
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
-            getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
          getHibernateTemplate().save(presentation, presentation.getId());
       } else {
          getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
@@ -1013,12 +1013,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public PresentationTemplate copyTemplate(Id templateId) {
       return copyTemplate(templateId,
-         getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getToolId()), true, true);
+         getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getId()), true, true);
    }
 
    public void packageTemplateForExport(Id templateId, OutputStream os) throws IOException {
       getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_TEMPLATE,
-         getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
+         getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
       packageTemplateForExportInternal(templateId, os);
    }
 

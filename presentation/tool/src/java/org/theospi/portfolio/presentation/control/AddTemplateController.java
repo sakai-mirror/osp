@@ -88,7 +88,7 @@ public class AddTemplateController extends AbstractWizardFormController {
       PresentationTemplate template = (PresentationTemplate) o;
       Agent agent = getAuthManager().getAgent();
       template.setOwner(agent);
-      template.setToolId(ToolManager.getCurrentPlacement().getToolId());
+      template.setToolId(ToolManager.getCurrentPlacement().getId());
       template.setSiteId(ToolManager.getCurrentPlacement().getContext());
 
       // remove id's from new dependent object, so hibernate doesn't freak out
@@ -133,7 +133,7 @@ public class AddTemplateController extends AbstractWizardFormController {
          template = getPresentationManager().getPresentationTemplate(id);
       } else {
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_TEMPLATE,
-               getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
+               getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
       }
       ToolSession session = getSessionManager().getCurrentToolSession();
       if (session.getAttribute("SessionPresentationTemplate") != null) {

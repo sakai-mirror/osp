@@ -308,7 +308,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
             ReportFunctions.REPORT_FUNCTION_RUN:ReportFunctions.REPORT_FUNCTION_VIEW;
 
       getAuthzManager().checkPermission(function,
-        getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
+        getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
 
     	//set the report and report result to that of already been saved
     	reportResult.setIsSaved(true);
@@ -439,7 +439,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	public Report createReport(ReportDefinition reportDefinition)
 	{
 		getAuthzManager().checkPermission(ReportFunctions.REPORT_FUNCTION_CREATE,
-        getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
+        getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
 
       Report report = new Report(reportDefinition);
 
@@ -806,7 +806,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		map.put("{userfirstname}", u.getFirstName());
 		map.put("{userlastname}", u.getLastName());
 		map.put("{worksiteid}", ToolManager.getCurrentPlacement().getContext());
-		map.put("{toolid}", ToolManager.getCurrentPlacement().getToolId());
+		map.put("{toolid}", ToolManager.getCurrentPlacement().getId());
 
 		Iterator		iter = map.keySet().iterator();
 		StringBuffer	str = new StringBuffer(inString);
@@ -1049,17 +1049,17 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
    }
 
    protected void checkPermission(String function) {
-      getAuthzManager().checkPermission(function, getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
+      getAuthzManager().checkPermission(function, getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
    }
 
    public Map getAuthorizationsMap() {
       return new AuthZMap(getAuthzManager(), ReportFunctions.REPORT_FUNCTION_PREFIX,
-            getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
    }
 
    protected boolean can(String function) {
       return new Boolean(getAuthzManager().isAuthorized(function,
-            getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()))).booleanValue();
+            getIdManager().getId(ToolManager.getCurrentPlacement().getId()))).booleanValue();
    }
 
    public boolean isMaintaner() {

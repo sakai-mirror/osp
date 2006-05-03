@@ -102,7 +102,7 @@ public class AddPresentationController extends AbstractWizardFormController {
       } else {
          setInitialPage(0);
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
-            getIdManager().getId(ToolManager.getCurrentPlacement().getToolId()));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
          presentation.setId(getIdManager().createId());
          presentation.setNewObject(true);
          presentation.setSiteId(ToolManager.getCurrentPlacement().getContext());
@@ -462,7 +462,7 @@ public class AddPresentationController extends AbstractWizardFormController {
       if (presentation.getTemplate().getPropertyPage() == null){
          presentation.setProperties(null);
       }
-      presentation.setToolId(ToolManager.getCurrentPlacement().getToolId());
+      presentation.setToolId(ToolManager.getCurrentPlacement().getId());
       getPresentationManager().storePresentation(presentation);
 
       httpServletRequest.getSession().removeAttribute(getCommandName());
@@ -478,7 +478,7 @@ public class AddPresentationController extends AbstractWizardFormController {
       model.put("newPresentationId", presentation.getId());
 
       List presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(getAuthManager().getAgent(),
-            ToolManager.getCurrentPlacement().getToolId()));
+            ToolManager.getCurrentPlacement().getId()));
 
       Map request = new Hashtable();
       request.put(ListScroll.ENSURE_VISIBLE_TAG, "" + getPresentationIndex(presentations, presentation));
@@ -516,7 +516,7 @@ public class AddPresentationController extends AbstractWizardFormController {
       model.put("isMaintainer", isMaintainer());
 
       List presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(getAuthManager().getAgent(),
-            ToolManager.getCurrentPlacement().getToolId()));
+            ToolManager.getCurrentPlacement().getId()));
 
       Map request = new Hashtable();
       request.put(ListScroll.ENSURE_VISIBLE_TAG, "" + getPresentationIndex(presentations, presentation));

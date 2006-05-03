@@ -49,7 +49,7 @@ public class CommentListController extends AbstractPresentationController implem
       Agent agent = getAuthManager().getAgent();
       PresentationManager presentationManager = getPresentationManager();
       CommentSortBy sortBy = (CommentSortBy) requestModel;
-      String toolId = ToolManager.getCurrentPlacement().getToolId();
+      String toolId = ToolManager.getCurrentPlacement().getId();
       if (type.equals("owner")) {
          commentList = presentationManager.getOwnerComments(agent, toolId, sortBy, false);
       } else {

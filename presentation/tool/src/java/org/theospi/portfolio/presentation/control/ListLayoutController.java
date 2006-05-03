@@ -75,7 +75,7 @@ public class ListLayoutController extends AbstractPresentationController {
       model.put("osp_agent", agent);
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
-      model.put("tool", getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getToolId()));
+      model.put("tool", getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getId()));
       model.put("isMaintainer", isMaintainer());
       
       if (session.get(PresentationLayoutHelper.CURRENT_LAYOUT_ID) != null)

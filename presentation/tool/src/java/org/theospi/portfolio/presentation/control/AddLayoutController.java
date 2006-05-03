@@ -63,7 +63,7 @@ public class AddLayoutController extends AbstractPresentationController
       else {
          layout = new PresentationLayout();
          layout.setOwner(getAuthManager().getAgent());
-         layout.setToolId(ToolManager.getCurrentPlacement().getToolId());
+         layout.setToolId(ToolManager.getCurrentPlacement().getId());
          layout.setSiteId(ToolManager.getCurrentPlacement().getContext());
       }
       return layout;

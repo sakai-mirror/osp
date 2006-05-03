@@ -105,7 +105,7 @@ public class NotifyViewersController extends AbstractPresentationController impl
       model.put("isMaintainer", isMaintainer());
 
       List presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(getAuthManager().getAgent(),
-         ToolManager.getCurrentPlacement().getToolId()));
+         ToolManager.getCurrentPlacement().getId()));
 
 
 

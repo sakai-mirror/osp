@@ -43,7 +43,7 @@ public class ListScaffoldingController extends AbstractMatrixController {
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Hashtable model = new Hashtable();
       Agent currentAgent = getAuthManager().getAgent();
-      String currentToolId = ToolManager.getCurrentPlacement().getToolId();
+      String currentToolId = ToolManager.getCurrentPlacement().getId();
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
 
       List scaffolding = new ArrayList(getMatrixManager().findScaffolding(

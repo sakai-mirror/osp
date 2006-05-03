@@ -95,7 +95,7 @@ public class AuthZMapTag extends TagSupport {
          qualifier = getIdManager().getId(ToolManager.getCurrentPlacement().getContext());
       }
       else if (qualifierExpression == null){
-         qualifier = getIdManager().getId(ToolManager.getCurrentPlacement().getToolId());
+         qualifier = getIdManager().getId(ToolManager.getCurrentPlacement().getId());
       }
       else {
          qualifier = (Id)ExpressionEvaluatorManager.evaluate(

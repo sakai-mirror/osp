@@ -80,7 +80,7 @@ public class ImportTemplateController extends AbstractPresentationController imp
             Node file = getPresentationManager().getNode(templateForm.getUploadedTemplate());
             PresentationTemplate template = getPresentationManager().uploadTemplate(
                   file.getDisplayName(),
-                  ToolManager.getCurrentPlacement().getToolId(),
+                  ToolManager.getCurrentPlacement().getId(),
                   file.getInputStream());
             Map model = new Hashtable();
             model.put("newPresentationTemplateId", template.getId().getValue());

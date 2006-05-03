@@ -76,7 +76,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
       String cancelAction = (String)request.get("cancelAction");
       
       Id worksiteId = worksiteManager.getCurrentWorksiteId();
-      Id toolId = getIdManager().getId(ToolManager.getCurrentPlacement().getToolId());
+      Id toolId = getIdManager().getId(ToolManager.getCurrentPlacement().getId());
       Map model = new HashMap();
       
       EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(

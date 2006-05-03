@@ -73,7 +73,7 @@ public class ListStyleController extends AbstractStyleController {
       model.put("osp_agent", agent);
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
-      model.put("tool", getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getToolId()));
+      model.put("tool", getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getId()));
       model.put("isMaintainer", isMaintainer());
       model.put("isGlobal", new Boolean(getStyleManager().isGlobal()));
       

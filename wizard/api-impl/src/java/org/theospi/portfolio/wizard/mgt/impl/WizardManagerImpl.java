@@ -155,7 +155,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    public Wizard createNew() {
       Placement placement = ToolManager.getCurrentPlacement();
       String currentSite = placement.getContext();
-      String currentTool = ToolManager.getCurrentPlacement().getToolId();
+      String currentTool = ToolManager.getCurrentPlacement().getId();
       Agent agent = getAuthManager().getAgent();
       Wizard wizard = new Wizard(getIdManager().createId(), agent, currentSite, currentTool);
       return wizard;
@@ -702,7 +702,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
        Map     importData = new HashMap();
       Wizard   wizard = new Wizard(null, getAuthManager().getAgent(), // TODO: parameterize toolid
-                              worksiteId, ToolManager.getCurrentPlacement().getToolId());
+                              worksiteId, ToolManager.getCurrentPlacement().getId());
       String tempDirName = getIdManager().createId().getValue();
 
       // set values not coming from the zip
