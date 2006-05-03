@@ -1,4 +1,3 @@
-<%@ page import="org.sakaiproject.service.framework.portal.cover.PortalService"%>
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
