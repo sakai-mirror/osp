@@ -506,7 +506,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          presentation.setCreated(new Date(System.currentTimeMillis()));
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
             getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
-         getHibernateTemplate().save(presentation, presentation.getId());
+         //getHibernateTemplate().save(presentation, presentation.getId());
+         getHibernateTemplate().save(presentation);
       } else {
          getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
             presentation.getId());
@@ -542,7 +543,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          fixupRegions(page);
          if (page.isNewObject()) {
             page.setCreated(new Date(System.currentTimeMillis()));
-            getHibernateTemplate().save(page, page.getId());
+            //getHibernateTemplate().save(page, page.getId());
+            getHibernateTemplate().save(page);
          }
          else {
             getHibernateTemplate().merge(page);

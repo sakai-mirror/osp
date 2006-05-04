@@ -258,7 +258,8 @@ public class WizardManagerImpl extends HibernateDaoSupport
          wizard.getRootCategory().setCreated(now);
          wizard.getRootCategory().setModified(now);
          wizard.getRootCategory().setWizard(null);
-         getHibernateTemplate().save(wizard, wizard.getId());
+         //getHibernateTemplate().save(wizard, wizard.getId());
+         getHibernateTemplate().save(wizard);
          wizard.getRootCategory().setWizard(wizard);
          wizard.setNewObject(false);
       }
