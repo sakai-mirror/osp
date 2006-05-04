@@ -691,7 +691,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          " creator_id = :viewerId)" +
          " ORDER BY {osp_presentation_comment}.created");
 
-      query.addEntity(PresentationComment.class);
+      query.addEntity("osp_presentation_comment", PresentationComment.class);
       query.setString("presentationId", presentationId.getValue());
       query.setString("viewerId", viewer.getId().getValue());
 
@@ -759,7 +759,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          "  p.owner_id = :ownerId " +
          " ORDER BY " + orderBy + " " + sortBy.getDirection());
 
-      query.addEntity(PresentationComment.class);
+      query.addEntity("osp_presentation_comment", PresentationComment.class);
       query.setString("ownerId", owner.getId().getValue());
 
       try {
@@ -809,7 +809,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          "  p.owner_id = :ownerId " +
          " ORDER BY " + orderBy + " " + sortBy.getDirection());
 
-      query.addEntity(PresentationComment.class);
+      query.addEntity("osp_presentation_comment", PresentationComment.class);
       query.setString("toolId", toolId);
       query.setString("ownerId", owner.getId().getValue());
 
@@ -847,7 +847,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       SQLQuery query = session.createSQLQuery(queryString);
 
-      query.addEntity(PresentationComment.class);
+      query.addEntity("osp_presentation_comment", PresentationComment.class);
       query.setString("creatorId", creator.getId().getValue());
 
       try {
@@ -884,7 +884,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       SQLQuery query = session.createSQLQuery(queryString);
       
-      query.addEntity(PresentationComment.class);
+      query.addEntity("osp_presentation_comment", PresentationComment.class);
       query.setString("toolId", toolId);
       query.setString("creatorId", creator.getId().getValue());
 
@@ -941,7 +941,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          " FROM osp_presentation {osp_presentation}, osp_presentation_item pi " +
          " WHERE {osp_presentation}.id = pi.presentation_id and pi.artifact_id = :artifactId");
 
-      query.addEntity(Presentation.class);
+      query.addEntity("osp_presentation", Presentation.class);
       query.setString("artifactId", artifactId.getValue());
 
       try {
@@ -966,7 +966,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             " FROM osp_presentation {osp_presentation}, osp_template_file_ref tfr" +
             " WHERE {osp_presentation}.template_id = tfr.template_id and tfr.file_id = :artifactId");
 
-         query.addEntity(Presentation.class);
+         query.addEntity("osp_presentation", Presentation.class);
          query.setString("artifactId", artifactId.getValue());
 
          Collection tfr = query.list();
@@ -975,7 +975,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             " WHERE {osp_presentation}.template_id = templ.id and (templ.renderer = :artifactId " +
             "       or templ.propertyPage = :artifactId)");
          
-         query.addEntity(Presentation.class);
+         query.addEntity("osp_presentation", Presentation.class);
          query.setString("artifactId", artifactId.getValue());
          tfr.addAll(query.list());
          return tfr;
