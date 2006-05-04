@@ -38,14 +38,14 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import net.sf.hibernate.AssertionFailure;
-import net.sf.hibernate.Criteria;
-import net.sf.hibernate.FetchMode;
-import net.sf.hibernate.Hibernate;
-import net.sf.hibernate.HibernateException;
-import net.sf.hibernate.Session;
-import net.sf.hibernate.expression.Expression;
-import net.sf.hibernate.type.Type;
+import org.hibernate.AssertionFailure;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.Hibernate;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.criterion.Expression;
+import org.hibernate.type.Type;
 
 import org.jdom.Element;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
@@ -68,8 +68,8 @@ import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.exception.*;
 import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.orm.hibernate.HibernateCallback;
-import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.matrix.model.*;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.review.mgt.ReviewManager;
@@ -370,7 +370,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
 
    public void store(final Object obj) {
-      this.getHibernateTemplate().saveOrUpdateCopy(obj);
+      this.getHibernateTemplate().merge(obj);
    }
 
    public Matrix createMatrix(Agent owner, Scaffolding scaffolding) {

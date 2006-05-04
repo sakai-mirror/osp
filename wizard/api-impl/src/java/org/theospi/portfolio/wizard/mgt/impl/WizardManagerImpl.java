@@ -92,7 +92,7 @@ import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
 
-import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.guidance.model.*;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
@@ -117,7 +117,7 @@ import org.theospi.portfolio.workflow.model.WorkflowItem;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
-import net.sf.hibernate.HibernateException;
+import org.hibernate.HibernateException;
 
 public class WizardManagerImpl extends HibernateDaoSupport
       implements WizardManager, DownloadableManager, ReadableObjectHome, ArtifactFinder, 

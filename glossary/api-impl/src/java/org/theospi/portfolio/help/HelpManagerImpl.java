@@ -20,7 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.help;
 
-import net.sf.hibernate.HibernateException;
+import org.hibernate.HibernateException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +30,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
-import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.portfolio.help.model.Glossary;
 import org.theospi.portfolio.help.model.HelpFunctionConstants;

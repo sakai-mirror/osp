@@ -24,10 +24,9 @@ import org.sakaiproject.metaobj.shared.IdGenerator;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 
-import net.sf.hibernate.engine.SessionImplementor;
-import net.sf.hibernate.HibernateException;
+import org.hibernate.engine.SessionImplementor;
+import org.hibernate.HibernateException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,7 +37,7 @@ import net.sf.hibernate.HibernateException;
  */
 public class IdentifiableIdGenerator extends IdGenerator {
 
-   public Serializable generate(SessionImplementor arg0, Object arg1) throws SQLException, HibernateException {
+   public Serializable generate(SessionImplementor arg0, Object arg1) throws HibernateException {
 
       IdentifiableObject object = (IdentifiableObject) arg1;
       if (object.getNewId() != null) {

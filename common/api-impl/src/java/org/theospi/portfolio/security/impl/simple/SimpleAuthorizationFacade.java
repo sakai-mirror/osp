@@ -20,8 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.impl.simple;
 
-import org.springframework.orm.hibernate.HibernateObjectRetrievalFailureException;
-import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.AuthorizationFailedException;

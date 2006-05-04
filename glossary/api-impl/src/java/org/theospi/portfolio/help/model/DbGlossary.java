@@ -23,7 +23,7 @@ package org.theospi.portfolio.help.model;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.theospi.portfolio.help.model.Glossary;
-import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.sakaiproject.site.api.ToolConfiguration;
@@ -34,7 +34,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 
 import java.util.*;
 
-import net.sf.hibernate.HibernateException;
+import org.hibernate.HibernateException;
 
 public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observer {
    protected final transient Log logger = LogFactory.getLog(getClass());
@@ -150,10 +150,10 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
    }
 
    public void updateEntry(GlossaryEntry entry) {
-      getHibernateTemplate().saveOrUpdateCopy(entry);
+      getHibernateTemplate().merge(entry);
       GlossaryDescription desc = loadDescription(entry.getId());
       desc.setLongDescription(entry.getLongDescription());
-      getHibernateTemplate().saveOrUpdateCopy(desc);
+      getHibernateTemplate().merge(desc);
       updateCache(entry, false);
    }
 
@@ -217,7 +217,7 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
          GlossaryEntry entry = (GlossaryEntry)i.next();
          entry.setWorksiteId(toTool.getSiteId());
          entry.setId(null);
-         getHibernateTemplate().saveOrUpdateCopy(entry);
+         getHibernateTemplate().merge(entry);
       }
    }
 

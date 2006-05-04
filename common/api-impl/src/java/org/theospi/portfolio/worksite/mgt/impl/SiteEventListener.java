@@ -37,7 +37,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.worksite.intf.ToolEventListener;
 import org.theospi.portfolio.worksite.model.SiteTool;
-import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import java.util.*;
 

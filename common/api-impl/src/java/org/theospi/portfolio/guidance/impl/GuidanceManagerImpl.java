@@ -20,7 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.impl;
 
-import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.guidance.model.GuidanceItem;

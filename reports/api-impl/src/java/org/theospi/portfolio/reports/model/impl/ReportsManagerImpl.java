@@ -20,8 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model.impl;
 
-import net.sf.hibernate.Hibernate;
-import net.sf.hibernate.HibernateException;
+import org.hibernate.HibernateException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,7 +49,7 @@ import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
-import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.reports.model.*;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.shared.model.OspException;
@@ -243,7 +242,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		List returned = new ArrayList();
 
 		if (viewReports | runReports) {
-			List results = getHibernateTemplate().find("from ReportResult r WHERE r.userId=?", s.getUserId(), Hibernate.STRING);
+			List results = getHibernateTemplate().find("from ReportResult r WHERE r.userId=?", s.getUserId());
 
 			Iterator iter = results.iterator();
 			while(iter.hasNext()) {
@@ -255,7 +254,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		}
 
 		if (runReports) {
-			List liveReports = getHibernateTemplate().find("from Report r WHERE r.userId=? AND r.isLive=1 AND r.display=1", s.getUserId(), Hibernate.STRING);
+			List liveReports = getHibernateTemplate().find("from Report r WHERE r.userId=? AND r.isLive=1 AND r.display=1", s.getUserId());
 
 			Iterator iter = liveReports.iterator();
 			while(iter.hasNext()) {
@@ -469,7 +468,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		
 		//fail over to the session connection
 		if(con == null) {
-			net.sf.hibernate.Session	session = getSession();
+			org.hibernate.Session	session = getSession();
 		
 			con = session.connection();
 			canCloseConnection = false;
@@ -988,7 +987,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
             );
        
        List results = getHibernateTemplate().find("from ReportResult rr WHERE rr.report=?", 
-                report.getReportId().getValue(), Hibernate.STRING);
+                report.getReportId().getValue());
        
        if(report.getIsLive()) {
           if(results.size() == 0)

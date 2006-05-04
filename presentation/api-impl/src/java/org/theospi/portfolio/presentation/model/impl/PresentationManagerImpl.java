@@ -20,10 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model.impl;
 
-import net.sf.hibernate.Hibernate;
-import net.sf.hibernate.HibernateException;
-import net.sf.hibernate.Query;
-import net.sf.hibernate.Session;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -51,9 +51,9 @@ import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.exception.*;
-import org.springframework.orm.hibernate.HibernateCallback;
-import org.springframework.orm.hibernate.HibernateObjectRetrievalFailureException;
-import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.presentation.CommentSortBy;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.PresentationManager;
@@ -134,7 +134,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          template.setNewObject(false);
       }
       else {
-         getHibernateTemplate().saveOrUpdateCopy(template);
+         getHibernateTemplate().merge(template);
       }
 
       lockTemplateFiles(template);
@@ -349,7 +349,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       // first delete all presentations that use this template
       // this will delete all authorization as well
-      Collection presentations = getHibernateTemplate().find("from Presentation where template_id=?", id.getValue(), Hibernate.STRING);
+      Collection presentations = getHibernateTemplate().find("from Presentation where template_id=?", id.getValue());
+      //Query q = getHibernateTemplate().
       for (Iterator i = presentations.iterator(); i.hasNext();) {
          //Presentation presentation = (Presentation) i.next();
          //deletePresentation(presentation.getId(), false);
@@ -362,7 +363,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       HibernateCallback callback = new HibernateCallback() {
 
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
-            session.delete("from PresentationTemplate where id=?", id.getValue(), Hibernate.STRING);
+            //session.delete("from PresentationTemplate where id=?", id.getValue(), Hibernate.STRING);
+            Query q = session.createQuery("delete from PresentationTemplate where id=?");
+            q.setString(0, id.getValue());
+            q.executeUpdate();
             return null;
          }
 
@@ -411,18 +415,30 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    protected void deleteLogs(Session session, Presentation presentation) throws HibernateException {
-      session.delete("from PresentationLog where presentation_id=?",
-         presentation.getId().getValue(), Hibernate.STRING);
+      //session.delete("from PresentationLog where presentation_id=?",
+      //   presentation.getId().getValue(), Hibernate.STRING);
+      
+      Query q = session.createQuery("delete from PresentationLog where presentation_id=?");
+      q.setString(0, presentation.getId().getValue());
+      q.executeUpdate();
    }
 
    protected void deleteComments(Session session, Presentation presentation) throws HibernateException {
-      session.delete("from PresentationComment where presentation_id=?",
-         presentation.getId().getValue(), Hibernate.STRING);
+      //session.delete("from PresentationComment where presentation_id=?",
+      //   presentation.getId().getValue(), Hibernate.STRING);
+      
+      Query q = session.createQuery("delete from PresentationComment where presentation_id=?");
+      q.setString(0, presentation.getId().getValue());
+      q.executeUpdate();
    }
 
    protected void deletePresentationPages(Session session, Presentation presentation) throws HibernateException {
-      session.delete("from PresentationPage where presentation_id=?",
-            presentation.getId().getValue(), Hibernate.STRING);
+      //session.delete("from PresentationPage where presentation_id=?",
+      //      presentation.getId().getValue(), Hibernate.STRING);
+      
+      Query q = session.createQuery("delete from PresentationPage where presentation_id=?");
+      q.setString(0, presentation.getId().getValue());
+      q.executeUpdate();
    }
 
    public PresentationItemDefinition getPresentationItemDefinition(final Id id) {
@@ -494,7 +510,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       } else {
          getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
             presentation.getId());
-         getHibernateTemplate().saveOrUpdateCopy(presentation);
+         getHibernateTemplate().merge(presentation);
       }
 
       storePresentationPages(presentation.getPages(), presentation.getId());
@@ -529,7 +545,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             getHibernateTemplate().save(page, page.getId());
          }
          else {
-            getHibernateTemplate().saveOrUpdateCopy(page);
+            getHibernateTemplate().merge(page);
          }
       }
 
@@ -666,17 +682,16 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public List getPresentationComments(Id presentationId, Agent viewer) {
       Session session = getSession();
 
-      Query query = session.createSQLQuery("SELECT {osp_presentation_comment.*} " +
+      SQLQuery query = session.createSQLQuery("SELECT {osp_presentation_comment.*} " +
          " FROM osp_presentation_comment {osp_presentation_comment}, osp_presentation p " +
          " WHERE {osp_presentation_comment}.presentation_id = p.id and p.id = :presentationId and" +
          " (visibility = " + PresentationComment.VISABILITY_PUBLIC + " or " +
          "   (visibility = " + PresentationComment.VISABILITY_SHARED + " and " +
          "    p.owner_id = :viewerId) or " +
          " creator_id = :viewerId)" +
-         " ORDER BY {osp_presentation_comment}.created",
-         "osp_presentation_comment",
-         PresentationComment.class);
+         " ORDER BY {osp_presentation_comment}.created");
 
+      query.addEntity(PresentationComment.class);
       query.setString("presentationId", presentationId.getValue());
       query.setString("viewerId", viewer.getId().getValue());
 
@@ -735,17 +750,16 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          includeOwnerCondition = " ) and ( creator_id != :ownerId )";
       }
 
-      Query query = session.createSQLQuery("SELECT {osp_presentation_comment.*} " +
+      SQLQuery query = session.createSQLQuery("SELECT {osp_presentation_comment.*} " +
          " FROM osp_presentation_comment {osp_presentation_comment}, osp_presentation p " +
          " WHERE {osp_presentation_comment}.presentation_id = p.id and " +
          " (visibility = " + PresentationComment.VISABILITY_PUBLIC + " or " +
          "  visibility = " + PresentationComment.VISABILITY_SHARED +
          includeOwnerCondition + " and " +
          "  p.owner_id = :ownerId " +
-         " ORDER BY " + orderBy + " " + sortBy.getDirection(),
-         "osp_presentation_comment",
-         PresentationComment.class);
+         " ORDER BY " + orderBy + " " + sortBy.getDirection());
 
+      query.addEntity(PresentationComment.class);
       query.setString("ownerId", owner.getId().getValue());
 
       try {
@@ -785,7 +799,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          includeOwnerCondition = " ) and ( creator_id != :ownerId )";
       }
 
-      Query query = session.createSQLQuery("SELECT {osp_presentation_comment.*} " +
+      SQLQuery query = session.createSQLQuery("SELECT {osp_presentation_comment.*} " +
          " FROM osp_presentation_comment {osp_presentation_comment}, osp_presentation p " +
          " WHERE {osp_presentation_comment}.presentation_id = p.id and " +
          " p.tool_id = :toolId and " +
@@ -793,10 +807,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          "  visibility = " + PresentationComment.VISABILITY_SHARED +
          includeOwnerCondition + " and " +
          "  p.owner_id = :ownerId " +
-         " ORDER BY " + orderBy + " " + sortBy.getDirection(),
-         "osp_presentation_comment",
-         PresentationComment.class);
+         " ORDER BY " + orderBy + " " + sortBy.getDirection());
 
+      query.addEntity(PresentationComment.class);
       query.setString("toolId", toolId);
       query.setString("ownerId", owner.getId().getValue());
 
@@ -832,10 +845,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       Session session = getSession();
 
-      Query query = session.createSQLQuery(queryString,
-         "osp_presentation_comment",
-         PresentationComment.class);
+      SQLQuery query = session.createSQLQuery(queryString);
 
+      query.addEntity(PresentationComment.class);
       query.setString("creatorId", creator.getId().getValue());
 
       try {
@@ -870,10 +882,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       Session session = getSession();
 
-      Query query = session.createSQLQuery(queryString,
-         "osp_presentation_comment",
-         PresentationComment.class);
-
+      SQLQuery query = session.createSQLQuery(queryString);
+      
+      query.addEntity(PresentationComment.class);
       query.setString("toolId", toolId);
       query.setString("creatorId", creator.getId().getValue());
 
@@ -926,12 +937,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public Collection getPresentationItems(Id artifactId) {
       Session session = getSession();
 
-      Query query = session.createSQLQuery("SELECT {osp_presentation.*} " +
+      SQLQuery query = session.createSQLQuery("SELECT {osp_presentation.*} " +
          " FROM osp_presentation {osp_presentation}, osp_presentation_item pi " +
-         " WHERE {osp_presentation}.id = pi.presentation_id and pi.artifact_id = :artifactId",
-         "osp_presentation",
-         Presentation.class);
+         " WHERE {osp_presentation}.id = pi.presentation_id and pi.artifact_id = :artifactId");
 
+      query.addEntity(Presentation.class);
       query.setString("artifactId", artifactId.getValue());
 
       try {
@@ -952,21 +962,20 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       Session session = getSession();
 
       try {
-         Query query = session.createSQLQuery("SELECT {osp_presentation.*} " +
+         SQLQuery query = session.createSQLQuery("SELECT {osp_presentation.*} " +
             " FROM osp_presentation {osp_presentation}, osp_template_file_ref tfr" +
-            " WHERE {osp_presentation}.template_id = tfr.template_id and tfr.file_id = :artifactId",
-            "osp_presentation",
-            Presentation.class);
+            " WHERE {osp_presentation}.template_id = tfr.template_id and tfr.file_id = :artifactId");
 
+         query.addEntity(Presentation.class);
          query.setString("artifactId", artifactId.getValue());
 
          Collection tfr = query.list();
          query = session.createSQLQuery("SELECT {osp_presentation.*} " +
             " FROM osp_presentation {osp_presentation}, osp_presentation_template templ " +
             " WHERE {osp_presentation}.template_id = templ.id and (templ.renderer = :artifactId " +
-            "       or templ.propertyPage = :artifactId)",
-            "osp_presentation",
-            Presentation.class);
+            "       or templ.propertyPage = :artifactId)");
+         
+         query.addEntity(Presentation.class);
          query.setString("artifactId", artifactId.getValue());
          tfr.addAll(query.list());
          return tfr;
@@ -2000,7 +2009,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                   layout.getId());
          }
       }
-      getHibernateTemplate().saveOrUpdateCopy(layout);
+      getHibernateTemplate().merge(layout);
       lockLayoutFiles(layout);
 
       return layout;
@@ -2051,7 +2060,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       HibernateCallback callback = new HibernateCallback() {
 
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
-            session.delete("from PresentationLayout where id=?", id.getValue(), Hibernate.STRING);
+            //session.delete("from PresentationLayout where id=?", id.getValue(), Hibernate.STRING);
+            Query q = session.createQuery("delete from PresentationLayout where id=?");
+            q.setString(0, id.getValue());
+            q.executeUpdate();
             return null;
          }
 

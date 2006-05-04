@@ -55,10 +55,10 @@
 	</bean>
 
    <bean name="openSessionInViewInterceptor"
-      class="org.springframework.orm.hibernate.support.OpenSessionInViewInterceptor">
+      class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
       <property name="sessionFactory"><ref bean="sessionFactory"/></property>
       <property name="flushMode">
-         <bean id="org.springframework.orm.hibernate.HibernateAccessor.FLUSH_EAGER"
+         <bean id="org.springframework.orm.hibernate3.HibernateAccessor.FLUSH_EAGER"
             class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
       </property>
   </bean>

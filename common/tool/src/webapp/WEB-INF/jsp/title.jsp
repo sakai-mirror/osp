@@ -27,7 +27,7 @@
             <a href="/portal/tool/<c:out value="${tool.id}"/>/<c:out value="${resetUrl}"/>?panel=Main"
                target="<c:out value="${mainPanel}"/>"  title="Reset"><img src="/library/image/transparent.gif" alt="Reset" border="0"/></a>
          </c:if>
-         <c:out value="${tool.title}"/>
+         <c:out value="${tool.title}"/> - foo
 		</td>
 		<td class="action">
 		<c:if test="${not empty helpDocId}">

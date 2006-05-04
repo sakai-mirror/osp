@@ -123,7 +123,7 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService, Ser
       for (Iterator iter = getInitUsers().iterator(); iter.hasNext();) {
          String userId = (String)iter.next();
          try {
-            ContentCollectionEdit userCollection = getContentHostingService().addCollection("/user/" + userId);
+            ContentCollectionEdit userCollection = getContentHostingService().addCollection("/user/" + userId + "/");
             userCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, userId);
             getContentHostingService().commitCollection(userCollection);
          }

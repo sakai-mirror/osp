@@ -45,9 +45,10 @@ package org.theospi.portfolio.list.model;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import net.sf.hibernate.UserType;
-import net.sf.hibernate.HibernateException;
+import org.hibernate.usertype.UserType;
+import org.hibernate.HibernateException;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
@@ -114,7 +115,7 @@ public class ColumnsType implements UserType {
     * @param names the column names
     * @param owner the containing entity
     * @return Object
-    * @throws net.sf.hibernate.HibernateException
+    * @throws org.hibernate.HibernateException
     *
     * @throws java.sql.SQLException
     */
@@ -141,7 +142,7 @@ public class ColumnsType implements UserType {
     * @param st    a JDBC prepared statement
     * @param value the object to write
     * @param index statement parameter index
-    * @throws net.sf.hibernate.HibernateException
+    * @throws org.hibernate.HibernateException
     *
     * @throws java.sql.SQLException
     */
@@ -183,5 +184,25 @@ public class ColumnsType implements UserType {
     */
    public boolean isMutable() {
       return true;
+   }
+
+   public int hashCode(Object arg0) throws HibernateException {
+      // TODO Auto-generated method stub
+      return 0;
+   }
+
+   public Serializable disassemble(Object arg0) throws HibernateException {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public Object assemble(Serializable arg0, Object arg1) throws HibernateException {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public Object replace(Object arg0, Object arg1, Object arg2) throws HibernateException {
+      // TODO Auto-generated method stub
+      return null;
    }
 }

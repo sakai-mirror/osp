@@ -51,7 +51,7 @@ import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
 import org.theospi.portfolio.list.intf.ListGenerator;
 import org.theospi.portfolio.list.intf.ListService;

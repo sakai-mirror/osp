@@ -20,8 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.worksite.mgt.impl;
 
-import net.sf.hibernate.UserType;
-import net.sf.hibernate.HibernateException;
+import org.hibernate.usertype.UserType;
+import org.hibernate.HibernateException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -79,5 +79,25 @@ public class ToolConfigurationUserType implements UserType, Serializable {
 
    protected WorksiteManager getWorksiteManager(){
       return (WorksiteManager) ComponentManager.getInstance().get(WorksiteManager.class.getName());
+   }
+
+   public int hashCode(Object arg0) throws HibernateException {
+      // TODO Auto-generated method stub
+      return 0;
+   }
+
+   public Serializable disassemble(Object arg0) throws HibernateException {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public Object assemble(Serializable arg0, Object arg1) throws HibernateException {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   public Object replace(Object arg0, Object arg1, Object arg2) throws HibernateException {
+      // TODO Auto-generated method stub
+      return null;
    }
 }

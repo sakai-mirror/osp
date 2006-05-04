@@ -44,9 +44,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import net.sf.hibernate.Hibernate;
-import net.sf.hibernate.HibernateException;
-import net.sf.hibernate.Session;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
 
 import org.jdom.CDATA;
 import org.jdom.Document;
@@ -76,9 +76,9 @@ import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService.SelectionType;
 import org.sakaiproject.site.cover.SiteService;
-import org.springframework.orm.hibernate.HibernateCallback;
-import org.springframework.orm.hibernate.HibernateObjectRetrievalFailureException;
-import org.springframework.orm.hibernate.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.style.StyleConsumer;
@@ -123,7 +123,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
                   style.getId());
          }
       }
-      getHibernateTemplate().saveOrUpdateCopy(style);
+      getHibernateTemplate().merge(style);
       lockStyleFiles(style);
 
       return style;
@@ -268,7 +268,12 @@ public class StyleManagerImpl extends HibernateDaoSupport
          HibernateCallback callback = new HibernateCallback() {
    
             public Object doInHibernate(Session session) throws HibernateException, SQLException {
-               session.delete("from Style s where s.id=?", styleId.getValue(), Hibernate.STRING);
+               //session.delete("from Style s where s.id=?", styleId.getValue(), Hibernate.STRING);
+               
+               Query q = session.createQuery("delete from Style s where s.id=?");
+               q.setString(0, styleId.getValue());
+               q.executeUpdate();
+               
                return null;
             }
          };
