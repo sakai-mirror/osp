@@ -83,7 +83,7 @@ public class ImportScaffoldingController implements Controller, FormController {
       if (formAction.equals("filePicker")) {
          
          session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER, 
-               ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.scaffoldingImportFile"));
+               ComponentManager.get("org.sakaiproject.content.api.ContentResourceFilter.scaffoldingImportFile"));
          session.put(FilePickerHelper.FILE_PICKER_MAX_ATTACHMENTS, new Integer(1));
          return new ModelAndView("filePicker");
       }

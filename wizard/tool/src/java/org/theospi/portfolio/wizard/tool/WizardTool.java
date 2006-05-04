@@ -727,7 +727,7 @@ public class WizardTool extends BuilderTool {
 
 	      session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS, importFiles);
 	      session.setAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
-	            ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.wizardImportFile"));
+	            ComponentManager.get("org.sakaiproject.content.api.ContentResourceFilter.wizardImportFile"));
          
 	      try {
 	         context.redirect("sakai.filepicker.helper/tool");

@@ -90,7 +90,7 @@ public class AddStyleController extends AbstractStyleController
          List files = new ArrayList();
          String id = "";
          if (STYLE_FILE.equals(style.getFilePickerAction())) {
-            filter = "org.sakaiproject.service.legacy.content.ContentResourceFilter.styleFile";
+            filter = "org.sakaiproject.content.api.ContentResourceFilter.styleFile";
             if (style.getStyleFile() != null)
                id = getContentHosting().resolveUuid(style.getStyleFile().getValue());
          }

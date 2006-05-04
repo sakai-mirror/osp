@@ -200,7 +200,7 @@ public class GlossaryImportController extends HelpController implements Validato
       session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
       session.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
       session.setAttribute(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER,
-              ComponentManager.get("org.sakaiproject.service.legacy.content.ContentResourceFilter.glossaryStyleFile"));
+              ComponentManager.get("org.sakaiproject.content.api.ContentResourceFilter.glossaryStyleFile"));
       return model;
    }
 

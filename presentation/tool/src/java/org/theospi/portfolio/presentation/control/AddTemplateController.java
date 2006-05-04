@@ -303,13 +303,13 @@ public class AddTemplateController extends AbstractWizardFormController {
             String pickField = (String)request.getParameter("pickerField");
             String id = "";
             if (pickField.equals(TEMPLATE_RENDERER)) {
-               filter = "org.sakaiproject.service.legacy.content.ContentResourceFilter.xslFile";
+               filter = "org.sakaiproject.content.api.ContentResourceFilter.xslFile";
                if (template.getRenderer() != null) {
                   id = getContentHosting().resolveUuid(template.getRenderer().getValue());
                }
             }
             else if (pickField.equals(TEMPLATE_PROPERTYFILE)) {
-               filter = "org.sakaiproject.service.legacy.content.ContentResourceFilter.metaobjFile";
+               filter = "org.sakaiproject.content.api.ContentResourceFilter.metaobjFile";
                if (template.getPropertyPage() != null) {
                   id = getContentHosting().resolveUuid(template.getPropertyPage().getValue());
                }

@@ -91,12 +91,12 @@ public class AddLayoutController extends AbstractPresentationController
          List files = new ArrayList();
          String id = "";
          if (XHTML_FILE.equals(layout.getFilePickerAction())) {
-            filter = "org.sakaiproject.service.legacy.content.ContentResourceFilter.layoutFile";
+            filter = "org.sakaiproject.content.api.ContentResourceFilter.layoutFile";
             if (layout.getXhtmlFileId() != null)
                id = getContentHosting().resolveUuid(layout.getXhtmlFileId().getValue());
          }
          else if (PREVIEW_IMAGE.equals(layout.getFilePickerAction())) {
-            filter = "org.sakaiproject.service.legacy.content.ContentResourceFilter.layoutImageFile";
+            filter = "org.sakaiproject.content.api.ContentResourceFilter.layoutImageFile";
             if (layout.getPreviewImageId() != null)
                id = getContentHosting().resolveUuid(layout.getPreviewImageId().getValue());
          }
