@@ -129,7 +129,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
       }
 
-      if (template.isNewObject()) {
+      if (template.isNewObject() || newTemplate) {
          getHibernateTemplate().save(template);
          template.setNewObject(false);
       }
@@ -363,10 +363,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       HibernateCallback callback = new HibernateCallback() {
 
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
-            //session.delete("from PresentationTemplate where id=?", id.getValue(), Hibernate.STRING);
-            Query q = session.createQuery("delete from PresentationTemplate where id=?");
-            q.setString(0, id.getValue());
-            q.executeUpdate();
+            PresentationTemplate template =
+               (PresentationTemplate) session.load(PresentationTemplate.class, id);
+            
+            session.delete(template);
+            
             return null;
          }
 
@@ -401,11 +402,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                (Presentation) session.load(Presentation.class, id);
 
             // delete viewer authz
-            deleteViewers(presentation.getId());
+            deleteViewers(id);
 
-            deleteComments(session, presentation);
-            deleteLogs(session, presentation);
-            deletePresentationPages(session, presentation);
+            deleteComments(id);
+            deleteLogs(id);
+            deletePresentationPages(id);
             session.delete(presentation);
             return null;
          }
@@ -414,31 +415,52 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       getHibernateTemplate().execute(callback);
    }
 
-   protected void deleteLogs(Session session, Presentation presentation) throws HibernateException {
+   protected void deleteLogs(final Id presentationId) throws HibernateException {
       //session.delete("from PresentationLog where presentation_id=?",
       //   presentation.getId().getValue(), Hibernate.STRING);
+      HibernateCallback callback = new HibernateCallback() {
+         public Object doInHibernate(Session session) throws HibernateException, SQLException {
       
-      Query q = session.createQuery("delete from PresentationLog where presentation_id=?");
-      q.setString(0, presentation.getId().getValue());
-      q.executeUpdate();
+            Query q = session.createQuery("from PresentationLog where presentation_id=?");
+            q.setString(0, presentationId.getValue());
+            return q.list();
+         }
+      };
+      List logs = (List)getHibernateTemplate().execute(callback);
+      getHibernateTemplate().deleteAll(logs);
    }
 
-   protected void deleteComments(Session session, Presentation presentation) throws HibernateException {
+   protected void deleteComments(final Id presentationId) throws HibernateException {
       //session.delete("from PresentationComment where presentation_id=?",
       //   presentation.getId().getValue(), Hibernate.STRING);
       
-      Query q = session.createQuery("delete from PresentationComment where presentation_id=?");
-      q.setString(0, presentation.getId().getValue());
-      q.executeUpdate();
+      HibernateCallback callback = new HibernateCallback() {
+         public Object doInHibernate(Session session) throws HibernateException, SQLException {
+            
+
+            Query q = session.createQuery("from PresentationComment where presentation_id=?");
+            q.setString(0, presentationId.getValue());
+            return q.list();
+         }
+      };
+      List comments = (List)getHibernateTemplate().execute(callback);
+      getHibernateTemplate().deleteAll(comments);
    }
 
-   protected void deletePresentationPages(Session session, Presentation presentation) throws HibernateException {
+   protected void deletePresentationPages(final Id presentationId) throws HibernateException {
       //session.delete("from PresentationPage where presentation_id=?",
       //      presentation.getId().getValue(), Hibernate.STRING);
       
-      Query q = session.createQuery("delete from PresentationPage where presentation_id=?");
-      q.setString(0, presentation.getId().getValue());
-      q.executeUpdate();
+      HibernateCallback callback = new HibernateCallback() {
+         public Object doInHibernate(Session session) throws HibernateException, SQLException {
+            Query q = session.createQuery("from PresentationPage where presentation_id=?");
+            q.setString(0, presentationId.getValue());
+            return q.list();
+         }
+      };
+      
+      List pages = (List)getHibernateTemplate().execute(callback);
+      getHibernateTemplate().deleteAll(pages);
    }
 
    public PresentationItemDefinition getPresentationItemDefinition(final Id id) {
@@ -2062,10 +2084,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       HibernateCallback callback = new HibernateCallback() {
 
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
+            
+            PresentationLayout layout =
+               (PresentationLayout) session.load(PresentationLayout.class, id);
             //session.delete("from PresentationLayout where id=?", id.getValue(), Hibernate.STRING);
-            Query q = session.createQuery("delete from PresentationLayout where id=?");
-            q.setString(0, id.getValue());
-            q.executeUpdate();
+            //Query q = session.createQuery("from PresentationLayout where id=?");
+            //q.setString(0, id.getValue());
+            //q.executeUpdate();
+            session.delete(layout);
             return null;
          }
 
