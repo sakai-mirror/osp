@@ -20,19 +20,18 @@
 **********************************************************************************/
 package org.theospi.jsf.impl;
 
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.InputSource;
-import org.theospi.jsf.intf.XmlTagFactory;
-import org.theospi.jsf.intf.XmlTagHandler;
-import org.theospi.jsf.intf.ComponentWrapper;
+import java.io.IOException;
+import java.util.Stack;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-import java.io.InputStream;
-import java.io.IOException;
-import java.util.Stack;
+
+import org.theospi.jsf.intf.ComponentWrapper;
+import org.theospi.jsf.intf.XmlTagFactory;
+import org.theospi.jsf.intf.XmlTagHandler;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Created by IntelliJ IDEA.
@@ -97,10 +96,6 @@ public class XmlDocumentHandler extends DefaultHandler {
       catch (IOException e) {
          throw new SAXException(e);
       }
-   }
-
-   public InputSource resolveEntity(String publicId, String systemId) throws IOException, SAXException {
-      return super.resolveEntity(publicId, systemId);
    }
 
    protected XmlTagHandler getCurrentHandler() {
