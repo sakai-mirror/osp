@@ -28,7 +28,7 @@ import java.util.Locale;
 /**
  * Thin wrapper for lookup of configuration of resources.
  * @author Ed Smiley
- * @version $Id$
+ * @version $Id: $
  */
 public class ConfigurationResource
 {
