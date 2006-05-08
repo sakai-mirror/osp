@@ -100,7 +100,7 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
       //review.setModified(now);
       
       if (review.isNewObject()) {
-         getHibernateTemplate().save(review, review.getId());
+         getHibernateTemplate().save(review);
          review.setNewObject(false);
       }
       else {

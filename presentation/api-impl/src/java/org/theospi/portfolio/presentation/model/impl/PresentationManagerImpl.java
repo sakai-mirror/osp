@@ -130,7 +130,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
 
       if (template.isNewObject()) {
-         getHibernateTemplate().save(template, template.getId());
+         getHibernateTemplate().save(template);
          template.setNewObject(false);
       }
       else {
@@ -2011,7 +2011,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                   layout.getId());
          }
       }
-      getHibernateTemplate().merge(layout);
+      getHibernateTemplate().saveOrUpdate(layout);
       lockLayoutFiles(layout);
 
       return layout;

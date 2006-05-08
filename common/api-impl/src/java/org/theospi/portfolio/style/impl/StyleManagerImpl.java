@@ -123,7 +123,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
                   style.getId());
          }
       }
-      getHibernateTemplate().merge(style);
+      getHibernateTemplate().saveOrUpdate(style);
       lockStyleFiles(style);
 
       return style;

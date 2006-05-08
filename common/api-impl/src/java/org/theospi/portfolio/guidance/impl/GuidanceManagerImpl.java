@@ -114,7 +114,7 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
 
    public Guidance saveGuidance(Guidance guidance) {
       if (guidance.isNewObject()) {
-         getHibernateTemplate().save(guidance, guidance.getId());
+         getHibernateTemplate().save(guidance);
          guidance.setNewObject(false);
       }
       else {
