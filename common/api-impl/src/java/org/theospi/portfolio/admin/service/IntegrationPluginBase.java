@@ -39,7 +39,7 @@
  *
  * $Header: /root/osp/src/portfolio/org/theospi/portfolio/admin/service/IntegrationPluginBase.java,v 1.4 2004/12/14 20:52:11 jellis Exp $
  * $Revision: 1.4 $
- * $Date: 2004/12/14 20:52:11 $
+ * $Date$
  */
 package org.theospi.portfolio.admin.service;
 

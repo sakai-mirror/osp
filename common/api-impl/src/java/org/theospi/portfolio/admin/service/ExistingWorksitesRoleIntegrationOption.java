@@ -39,7 +39,7 @@
  *
  * $Header: /root/osp/src/portfolio/org/theospi/portfolio/admin/service/ExistingWorksitesRoleIntegrationOption.java,v 1.1 2004/12/02 23:59:11 jellis Exp $
  * $Revision: 1.1 $
- * $Date: 2004/12/02 23:59:11 $
+ * $Date$
  */
 package org.theospi.portfolio.admin.service;
 

@@ -1,8 +1,8 @@
 /**********************************************************************************
 
-* $URL: https://source.sakaiproject.org/svn/trunk/sakai/legacy/component/src/java/org/sakaiproject/component/framework/email/TestEmailService.java $
+* $URL$
 
-* $Id: TestEmailService.java 3831 2005-11-14 20:17:24Z ggolden@umich.edu $
+* $Id$
 
 ***********************************************************************************
 

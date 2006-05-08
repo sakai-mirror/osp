@@ -38,7 +38,7 @@
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
  * $Header: /opt/CVS/osp/src/portfolio/org/theospi/portfolio/worksite/mgt/impl/WorksiteListGenerator.java,v 1.4 2005/08/29 18:24:53 jellis Exp $
- * $Revision$
+ * $Revision: 8645 $
  * $Date$
  */
 package org.theospi.portfolio.worksite.mgt.impl;

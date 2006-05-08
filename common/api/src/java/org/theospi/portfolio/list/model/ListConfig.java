@@ -38,7 +38,7 @@
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
  * $Header: /opt/CVS/osp/src/portfolio/org/theospi/portfolio/list/model/ListConfig.java,v 1.3 2004/11/02 22:08:31 jellis Exp $
- * $Revision$
+ * $Revision: 5901 $
  * $Date$
  */
 package org.theospi.portfolio.list.model;

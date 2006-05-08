@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL: https://source.sakaiproject.org/svn/trunk/osp/osp-2.1/warehouse/api-impl/src/java/org/theospi/portfolio/warehouse/impl/EntityPropertyAccess.java $
-* $Id: EntityPropertyAccess.java 5557 2006-01-26 06:02:52Z john.ellis@rsmart.com $
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.

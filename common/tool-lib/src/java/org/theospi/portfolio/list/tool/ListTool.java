@@ -38,7 +38,7 @@
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
  * $Header: /opt/CVS/osp/src/portfolio/org/theospi/portfolio/list/tool/ListTool.java,v 1.5 2005/02/04 21:47:05 jellis Exp $
- * $Revision$
+ * $Revision: 6699 $
  * $Date$
  */
 package org.theospi.portfolio.list.tool;

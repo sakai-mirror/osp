@@ -39,7 +39,7 @@
  *
  * $Header: /root/osp/src/portfolio/org/theospi/portfolio/admin/service/ExistingWorksitePageOption.java,v 1.1 2004/12/14 21:33:45 jellis Exp $
  * $Revision: 1.1 $
- * $Date: 2004/12/14 21:33:45 $
+ * $Date$
  */
 package org.theospi.portfolio.admin.service;
 

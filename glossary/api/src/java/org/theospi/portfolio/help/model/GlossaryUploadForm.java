@@ -39,7 +39,7 @@
  *
  * $Header: /opt/CVS/osp2.x/presentation/api/src/java/org/theospi/portfolio/presentation/model/TemplateUploadForm.java,v 1.2 2005/09/08 17:05:08 chmaurer Exp $
  * $Revision: 3474 $
- * $Date: 2005-11-03 18:05:53 -0500 (Thu, 03 Nov 2005) $
+ * $Date$
  */
 package org.theospi.portfolio.help.model;
 

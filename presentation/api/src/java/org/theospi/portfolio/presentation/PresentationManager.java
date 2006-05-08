@@ -46,7 +46,7 @@ import java.util.List;
  * This class provides a management layer into the presentations included in the system.
  * @author John Bush (jbush@rsmart.com)
  * $Header: /opt/CVS/osp2.x/presentation/api/src/java/org/theospi/portfolio/presentation/PresentationManager.java,v 1.5 2005/10/26 23:53:01 jellis Exp $
- * $Revision$
+ * $Revision: 8645 $
  * $Date$
  */
 

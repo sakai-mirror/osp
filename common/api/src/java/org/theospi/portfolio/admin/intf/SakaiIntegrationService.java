@@ -39,7 +39,7 @@
  *
  * $Header: /root/osp/src/portfolio/org/theospi/portfolio/admin/intf/SakaiIntegrationService.java,v 1.2 2004/12/15 21:47:09 jellis Exp $
  * $Revision: 1.2 $
- * $Date: 2004/12/15 21:47:09 $
+ * $Date$
  */
 package org.theospi.portfolio.admin.intf;
 

@@ -39,7 +39,7 @@
  *
  * $Header: /root/osp/src/portfolio/org/theospi/portfolio/admin/service/ToolPageIntegrationPlugin.java,v 1.5 2005/01/13 21:57:08 chmaurer Exp $
  * $Revision: 1.5 $
- * $Date: 2005/01/13 21:57:08 $
+ * $Date$
  */
 package org.theospi.portfolio.admin.service;
 

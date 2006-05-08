@@ -38,7 +38,7 @@
  * in the Original Work and any associated documentation will at all times remain with the copyright holders.
  *
  * $Header: /opt/CVS/osp/src/portfolio/org/theospi/portfolio/list/model/Column.java,v 1.2 2004/11/03 00:38:46 jellis Exp $
- * $Revision$
+ * $Revision: 5901 $
  * $Date$
  */
 package org.theospi.portfolio.list.model;

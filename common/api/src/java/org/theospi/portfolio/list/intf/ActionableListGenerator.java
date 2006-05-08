@@ -5,7 +5,7 @@ import java.util.Map;
 /*
  * forces tool into certain state
  * $Header: /opt/CVS/osp/src/portfolio/org/theospi/portfolio/list/intf/ActionableListGenerator.java,v 1.1 2004/11/02 23:47:28 jbush Exp $
- * $Revision$
+ * $Revision: 5901 $
  * $Date$
  */
 

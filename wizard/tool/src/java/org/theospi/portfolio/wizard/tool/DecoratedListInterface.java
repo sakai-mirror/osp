@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL: https://source.sakaiproject.org/svn/trunk/osp/osp-2.1/wizard/tool/src/java/org/theospi/portfolio/wizard/tool/DecoratedCompletedWizard.java $
-* $Id: DecoratedCompletedWizard.java 6396 2006-03-02 17:19:22Z chmaurer@iupui.edu $
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.

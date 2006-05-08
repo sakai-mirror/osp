@@ -97,7 +97,7 @@ import javax.xml.transform.stream.StreamSource;
  *
  * @author <a href="kweiner@interactivebusiness.com">Ken Weiner</a>, kweiner@interactivebusiness.com
  * @author modified and adapted to OSPI by <a href="felipeen@udel.edu">Luis F.C. Mendes</a> - University of Delaware
- * @version $Revision$
+ * @version $Revision: 7153 $
  * @see java.sql.Types
  */
 public class DbLoader {

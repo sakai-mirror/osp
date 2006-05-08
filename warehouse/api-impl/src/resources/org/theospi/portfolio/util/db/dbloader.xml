@@ -113,7 +113,7 @@
       <db-name>MySQL</db-name>
       <db-version>3.23.54</db-version>
       <driver-name>MySQL-AB JDBC Driver</driver-name>
-      <driver-version>3.0.6-stable ( $Date: 2004/06/07 22:54:23 $, $Revision: 1.10 $ )</driver-version>
+      <driver-version>3.0.6-stable ( $Date$, $Revision: 1.10 $ )</driver-version>
       <type><generic>BLOB</generic><local>BLOB</local></type>
       <!-- map more types here -->
     </db-type-mapping>
