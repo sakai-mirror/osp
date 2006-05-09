@@ -21,7 +21,7 @@ public class AgentManagerOsp extends org.sakaiproject.metaobj.security.impl.saka
       }
 
       try {
-         UserEdit uEdit = UserDirectoryService.addUser(agent.getId().getValue());
+         UserEdit uEdit = UserDirectoryService.addUser(agent.getId().getValue(), agent.getId().getValue());
 
          //set email address
          uEdit.setEmail(agent.getId().getValue());
