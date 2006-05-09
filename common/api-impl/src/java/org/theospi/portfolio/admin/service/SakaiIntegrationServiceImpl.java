@@ -91,6 +91,8 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService, Ser
          sakaiSession.setUserEid("admin");
          ServerListeningService.getInstance().addListener(this);
          createUserResourceDir();
+      } catch (Exception e) {
+         logger.warn("Temporarily catching all exceptions in osp.SakaiIntegrationServiceImpl.init()", e);
       } finally {
          sakaiSession.setUserEid(userId);
          sakaiSession.setUserId(userId);

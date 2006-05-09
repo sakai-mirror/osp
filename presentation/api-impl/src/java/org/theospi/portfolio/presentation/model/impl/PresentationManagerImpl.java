@@ -2316,8 +2316,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    public void init() {
-      initFreeFormTemplate();
-      initGlobalLayouts();
+      try {
+         initFreeFormTemplate();
+         initGlobalLayouts();
+      }
+      catch (Exception e) {
+         logger.warn("Temporarily catching all exceptions in osp.PresentationManagerImpl.init()", e);
+      }
    }
 
    protected void initGlobalLayouts() {
