@@ -70,6 +70,8 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
 
    public Workflow saveWorkflow(Workflow workflow) {
       if (workflow.isNewObject()) {
+         workflow.setNewId(workflow.getId());
+         workflow.setId(null);
          getHibernateTemplate().save(workflow);
          workflow.setNewObject(false);
       }

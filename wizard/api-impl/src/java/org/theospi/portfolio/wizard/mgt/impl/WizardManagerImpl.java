@@ -253,7 +253,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          // for some reason the save throws a null pointer exception
          //    if the id isn't set, so generate a new one if need be
          if(wizard.getId() == null)
-            wizard.setId(getIdManager().createId());
+            wizard.setNewId(getIdManager().createId());
          wizard.setCreated(now);
          wizard.getRootCategory().setCreated(now);
          wizard.getRootCategory().setModified(now);

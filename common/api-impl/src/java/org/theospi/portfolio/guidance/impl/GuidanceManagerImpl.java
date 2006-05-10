@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/guidance/impl/GuidanceManagerImpl.java $
+* $Id:GuidanceManagerImpl.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -114,6 +114,8 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
 
    public Guidance saveGuidance(Guidance guidance) {
       if (guidance.isNewObject()) {
+         guidance.setNewId(guidance.getId());
+         guidance.setId(null);
          getHibernateTemplate().save(guidance);
          guidance.setNewObject(false);
       }

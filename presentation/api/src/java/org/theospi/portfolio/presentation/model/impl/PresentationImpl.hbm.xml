@@ -6,7 +6,7 @@
 
    <class name="PresentationTemplate" table="osp_presentation_template">
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="name" type="string" column="name" not-null="false"/>
       <property name="description" type="string" column="description" not-null="false"/>
@@ -69,7 +69,7 @@
 
    <class name="Presentation" table="osp_presentation">
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="owner" column="owner_id" not-null="true"
          type="org.sakaiproject.metaobj.shared.mgt.AgentUserType"/>
@@ -144,7 +144,7 @@
    
    <class name="PresentationPage" table="osp_presentation_page">
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="title" column="title" type="string" not-null="false" />
       <property name="description" column="description" type="string" not-null="false" />

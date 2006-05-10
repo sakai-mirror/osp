@@ -7,7 +7,7 @@
    <class name="Review" table="osp_review" lazy="false" batch-size="10">
       <cache usage="nonstrict-read-write"/>
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="reviewContent" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="review_content_id" />
       <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="true"/>

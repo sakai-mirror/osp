@@ -130,6 +130,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
 
       if (template.isNewObject() || newTemplate) {
+         template.setNewId(template.getId());
+         template.setId(null);
          getHibernateTemplate().save(template);
          template.setNewObject(false);
       }
@@ -529,6 +531,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
             getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
          //getHibernateTemplate().save(presentation, presentation.getId());
+         presentation.setNewId(presentation.getId());
+         presentation.setId(null);
          getHibernateTemplate().save(presentation);
       } else {
          getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
@@ -566,6 +570,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          if (page.isNewObject()) {
             page.setCreated(new Date(System.currentTimeMillis()));
             //getHibernateTemplate().save(page, page.getId());
+            //TODO changing the save to use newId instead of Id since we're setting a specific one
+            page.setNewId(page.getId());
+            page.setId(null);
             getHibernateTemplate().save(page);
          }
          else {
@@ -2433,6 +2440,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    protected PresentationTemplate createFreeFormTemplate(Id rendererId) {
       PresentationTemplate template = new PresentationTemplate();
       template.setId(getFreeFormTemplateId());
+      template.setNewId(getFreeFormTemplateId());
       template.setName("Free Form Presentation");
       template.setRenderer(rendererId);
       template.setNewObject(true);
