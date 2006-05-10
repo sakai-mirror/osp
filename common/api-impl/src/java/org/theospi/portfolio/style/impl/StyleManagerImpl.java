@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/style/impl/StyleManagerImpl.java $
+* $Id:StyleManagerImpl.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -123,7 +123,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
                   style.getId());
          }
       }
-      getHibernateTemplate().saveOrUpdate(style);
+      style = (Style)getHibernateTemplate().merge(style);
       lockStyleFiles(style);
 
       return style;
@@ -137,14 +137,14 @@ public class StyleManagerImpl extends HibernateDaoSupport
    }
    
    public Style getStyle(Id styleId) {
-      return (Style) getHibernateTemplate().load(Style.class, styleId);
+      return (Style) getHibernateTemplate().get(Style.class, styleId);
    }
    
    public Style getLightWeightStyle(final Id styleId) {
       HibernateCallback callback = new HibernateCallback() {
 
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
-            Style style = (Style) session.load(Style.class, styleId);
+            Style style = (Style) session.get(Style.class, styleId);
             return style;
          }
 
