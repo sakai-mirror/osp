@@ -26,7 +26,6 @@ import org.theospi.portfolio.help.model.Glossary;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
-import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.event.api.Event;
 import org.sakaiproject.event.cover.EventTrackingService;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -210,14 +209,15 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
       this.url = url;
    }
    
-   public void importResources(ToolConfiguration fromTool, ToolConfiguration toTool, List resourceIds) {
-      Collection orig = findAll(fromTool.getSiteId());
+   public void importResources(String fromContext, String toContext, List resourceIds) {
+      Collection orig = findAll(fromContext);
 
       for (Iterator i=orig.iterator();i.hasNext();) {
          GlossaryEntry entry = (GlossaryEntry)i.next();
-         entry.setWorksiteId(toTool.getSiteId());
+         getHibernateTemplate().evict(entry);
+         entry.setWorksiteId(toContext);
          entry.setId(null);
-         getHibernateTemplate().merge(entry);
+         getHibernateTemplate().save(entry);
       }
    }
 

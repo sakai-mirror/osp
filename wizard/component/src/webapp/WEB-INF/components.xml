@@ -211,6 +211,9 @@
       <property name="httpAccess">
          <ref bean="org.sakaiproject.entity.api.HttpAccess.ospWizard" />
       </property>
+      <property name="wizardManager">
+         <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" />
+      </property>
    </bean>
 
    <bean id="org.theospi.portfolio.wizard.mgt.WizardManager.target"

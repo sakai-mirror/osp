@@ -20,7 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.impl;
 
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.entity.api.EntityTransferrer;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
+import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,16 +35,41 @@ import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
  * Time: 6:03:02 PM
  * To change this template use File | Settings | File Templates.
  */
-public class WizardEntityProducer extends EntityProducerBase {
+public class WizardEntityProducer extends EntityProducerBase implements EntityTransferrer {
            
+   protected final Log logger = LogFactory.getLog(getClass());
    public static final String WIZARD_PRODUCER = "ospWizard";
+   private DuplicatableToolService wizardManager;
 
    public String getLabel() {
       return WIZARD_PRODUCER;
    }
 
    public void init() {
-      getEntityManager().registerEntityProducer(this, WIZARD_PRODUCER);
+      try {
+         getEntityManager().registerEntityProducer(this, WIZARD_PRODUCER);
+      }
+      catch (Exception e) {
+         logger.warn("Error registering Wizard Entity Producer", e);
+      }
    }
+   
+   public void transferCopyEntities(String fromContext, String toContext, List ids) {
+      wizardManager.importResources(fromContext, toContext, ids);
+   }
+
+   /**
+    * @inheritDoc
+    */
+   public String[] myToolIds() {
+      String[] toolIds = { "osp.wizard" };
+      return toolIds;
+   }
+
+   public void setWizardManager(DuplicatableToolService wizardManager) {
+      this.wizardManager = wizardManager;
+   }
+   
+   
 
 }

@@ -1810,12 +1810,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return false;
    }
 
-   public void importResources(ToolConfiguration fromTool, ToolConfiguration toTool, List resourceIds) {
+   public void importResources(String fromContext, String toContext, List resourceIds) {
+//    TODO CWM fix this ASAP
+      /*
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       
       try {
    
-         List wizards = this.findPublishedWizards(fromTool.getSiteId(), fromTool.getId());
+         List wizards = this.findPublishedWizards(fromContext, fromTool.getId());
          if (wizards == null) {
             return;
          }
@@ -1835,5 +1837,6 @@ public class WizardManagerImpl extends HibernateDaoSupport
          logger.error("", e);
          throw new OspException(e);
       }
+   */
    }
 }

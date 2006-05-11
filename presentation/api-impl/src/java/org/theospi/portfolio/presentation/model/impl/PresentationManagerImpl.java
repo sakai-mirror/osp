@@ -1768,15 +1768,18 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
 
-   public void importResources(ToolConfiguration fromTool, ToolConfiguration toTool, List resourceIds) {
+   public void importResources(String fromContext, String toContext, List resourceIds) {
+//    TODO CWM fix this ASAP
+      /*
       Agent agent = getAuthnManager().getAgent();
-      Collection templates = findTemplatesByOwner(agent, fromTool.getSiteId());
-      templates.addAll(findPublishedTemplates(fromTool.getSiteId()));
+      Collection templates = findTemplatesByOwner(agent, fromContext);
+      templates.addAll(findPublishedTemplates(fromContext));
 
       for (Iterator i=templates.iterator();i.hasNext();) {
          PresentationTemplate template = (PresentationTemplate)i.next();
          copyTemplate(template.getId(), toTool, false, false);
       }
+      */
    }
 
    protected PresentationTemplate copyTemplate(Id templateId, ToolConfiguration toolConfiguration,

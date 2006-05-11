@@ -1831,15 +1831,16 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          out);
    }
 
-   public void importResources(ToolConfiguration fromTool, ToolConfiguration toTool, List resourceIds) {
+   public void importResources(String fromContext, String toContext, List resourceIds) {
+      //TODO CWM fix this ASAP
+      /*
       ClassLoader currentLoader = Thread.currentThread().getContextClassLoader();
-
       try {
          Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
          ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-         List scaffolding = this.findScaffolding(fromTool.getSiteId(), fromTool.getId());
+         List scaffolding = this.findScaffolding(fromContext, fromTool.getId());
          if (scaffolding == null) {
             return;
          }
@@ -1862,6 +1863,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       finally {
          Thread.currentThread().setContextClassLoader(currentLoader);
       }
+      */
    }
 
    public ContentHostingService getContentHosting() {
