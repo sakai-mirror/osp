@@ -940,7 +940,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public WizardPage submitPageForEvaluation(WizardPage page) {
       getHibernateTemplate().refresh(page); //TODO not sure if this is necessary
       page.setStatus(MatrixFunctionConstants.PENDING_STATUS);
-      getHibernateTemplate().saveOrUpdate(page);
+      getHibernateTemplate().merge(page);
       return page;
    }
    

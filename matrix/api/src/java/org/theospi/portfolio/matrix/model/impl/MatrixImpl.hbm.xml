@@ -55,7 +55,7 @@
        </set>
 
        <many-to-one name="pageDefinition" column="wiz_page_def_id"
-           class="WizardPageDefinition" cascade="delete" />
+           class="WizardPageDefinition" cascade="delete" lazy="false" />
 
        <set name="pageForms" cascade="all-delete-orphan"
            inverse="true" lazy="true">

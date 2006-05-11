@@ -259,6 +259,8 @@ public class DecoratedWizard implements DecoratedListInterface {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       //ToolSession session = SessionManager.getCurrentToolSession();
       
+      setBase(parent.getWizardManager().getWizard(getBase().getId()));
+      rootCategory = new DecoratedCategory(base.getRootCategory(), parent);
       getParent().setCurrent(this);
       setRunningWizard(new DecoratedCompletedWizard(getParent(), this,
          parent.getWizardManager().getCompletedWizard(getBase(), getParent().getCurrentUserId())));
