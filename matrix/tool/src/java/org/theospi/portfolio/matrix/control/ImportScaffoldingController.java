@@ -106,7 +106,7 @@ public class ImportScaffoldingController implements Controller, FormController {
          scaffolding = getMatrixManager().uploadScaffolding(
               scaffoldingForm.getUploadedScaffolding(), toolConfig);
       } catch (InvalidUploadException e) {
-         logger.warn("Failed uploading template", e);
+         logger.warn("Failed uploading scaffolding", e);
          errors.rejectValue(e.getFieldName(), e.getMessage(), e.getMessage());
          return null;
       } catch (Exception e) {

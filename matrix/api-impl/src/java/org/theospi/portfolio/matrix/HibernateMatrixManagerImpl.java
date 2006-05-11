@@ -358,26 +358,26 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       this.storeScaffolding(scaffolding);
 
    }
-   public Id storeScaffolding(Scaffolding scaffolding) {
-      this.store(scaffolding);
+   public Scaffolding storeScaffolding(Scaffolding scaffolding) {
+      scaffolding = (Scaffolding)this.store(scaffolding);
       getHibernateTemplate().flush();
-      return scaffolding.getId();
+      return scaffolding;
    }
    
    public Id storeScaffoldingCell(ScaffoldingCell scaffoldingCell) {
-      this.store(scaffoldingCell);
+      scaffoldingCell = (ScaffoldingCell)store(scaffoldingCell);
       return scaffoldingCell.getId();
    }
 
-   public void store(final Object obj) {
-      this.getHibernateTemplate().merge(obj);
+   public Object store(Object obj) {
+      obj = this.getHibernateTemplate().merge(obj);
+      return obj;
    }
 
    public Matrix createMatrix(Agent owner, Scaffolding scaffolding) {
       Matrix matrix = new Matrix();
       matrix.setOwner(owner);
       matrix.setScaffolding(scaffolding);
-      //Scaffolding scaffolding = matrixTool.getScaffolding();
 
       List levels = scaffolding.getLevels();
       List criteria = scaffolding.getCriteria();

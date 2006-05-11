@@ -97,11 +97,15 @@ public class BaseScaffoldingController {
       return (newProgression != origProgression);
    }
 
-   protected void saveScaffolding(Scaffolding scaffolding) {
+   protected Scaffolding saveScaffolding(Scaffolding scaffolding) {
       boolean isDirty = isDirtyProgression(scaffolding);
-      getMatrixManager().storeScaffolding(scaffolding);
+      scaffolding = getMatrixManager().storeScaffolding(scaffolding);
+      
+      //getMatrixManager().refresh(scaffolding);
+      
       //regen the cells
       regenerateCells(scaffolding, isDirty);
+      return scaffolding;
    }
    
    protected void regenerateCells(Scaffolding scaffolding, boolean dirtyProgression) {

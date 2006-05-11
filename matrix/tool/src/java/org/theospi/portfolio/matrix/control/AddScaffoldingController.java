@@ -92,7 +92,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
             return new ModelAndView("editScaffoldingConfirm");             
          }           
          
-         saveScaffolding(scaffolding);
+         scaffolding = saveScaffolding(scaffolding);
          session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
          session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
          model.put("scaffolding_id", scaffolding.getId());
@@ -132,7 +132,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
       }
       return new ModelAndView("success");
    }
-
+/*
    private void touchAllScaffolding(Scaffolding scaffolding) {
 	  scaffolding.getLevels().size();
  	  scaffolding.getCriteria().size();
@@ -142,7 +142,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
          //sCell.getExpectations().size();
       }
    }
-
+*/
    protected void touchAllCells(Scaffolding scaffolding) {
       for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
