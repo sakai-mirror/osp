@@ -20,6 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.workflow.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.sakaiproject.entity.api.Entity;
 
@@ -32,6 +34,7 @@ import org.sakaiproject.entity.api.Entity;
  */
 public class WorkflowEntityProducer extends EntityProducerBase {
 
+   protected final Log logger = LogFactory.getLog(getClass());
    public static final String WORKFLOW_PRODUCER = "ospWorkflow";
 
    public String getLabel() {
@@ -39,7 +42,12 @@ public class WorkflowEntityProducer extends EntityProducerBase {
    }
 
    public void init() {
-      getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + WORKFLOW_PRODUCER);
+      try {
+         getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + WORKFLOW_PRODUCER);
+      }
+      catch (Exception e) {
+         logger.warn("Error registering Workflow Entity Producer", e);
+      }
    }
 
 }

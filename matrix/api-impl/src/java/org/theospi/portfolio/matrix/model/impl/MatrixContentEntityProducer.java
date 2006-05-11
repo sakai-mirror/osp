@@ -20,9 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.model.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.sakaiproject.entity.api.Entity;
-import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,12 +34,19 @@ import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
  */
 public class MatrixContentEntityProducer extends EntityProducerBase {
    public static final String MATRIX_PRODUCER = "ospMatrix";
+   protected final Log logger = LogFactory.getLog(getClass());
+   
 
    public String getLabel() {
       return MATRIX_PRODUCER;
    }
 
    public void init() {
-      getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + MATRIX_PRODUCER);
+      try {
+         getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + MATRIX_PRODUCER);
+      }
+      catch (Exception e) {
+         logger.warn("Error registering Glossary Entity Producer", e);
+      }
    }
 }

@@ -20,6 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.sakaiproject.entity.api.Entity;
 
@@ -31,6 +33,8 @@ import org.sakaiproject.entity.api.Entity;
  * To change this template use File | Settings | File Templates.
  */
 public class LayoutEntityProducer extends EntityProducerBase {
+   
+   protected final Log logger = LogFactory.getLog(getClass());
    protected static final String PRODUCER_NAME = "ospPresentationLayout";
 
    public String getLabel() {
@@ -38,6 +42,11 @@ public class LayoutEntityProducer extends EntityProducerBase {
    }
 
    public void init() {
-      getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + PRODUCER_NAME);
+      try {
+         getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + PRODUCER_NAME);
+      }
+      catch (Exception e) {
+         logger.warn("Error registering Layout Entity Producer", e);
+      }
    }
 }

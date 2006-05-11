@@ -20,6 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
@@ -40,6 +42,7 @@ import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
  */
 public class ReportsEntityProducer extends EntityProducerBase {
 
+   protected final Log logger = LogFactory.getLog(getClass());
    public static final String REPORTS_PRODUCER = "ospReports";
 
    public String getLabel() {
@@ -47,7 +50,12 @@ public class ReportsEntityProducer extends EntityProducerBase {
    }
 
    public void init() {
-      getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + REPORTS_PRODUCER);
+      try {
+         getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + REPORTS_PRODUCER);
+      }
+      catch (Exception e) {
+         logger.warn("Error registering Reports Entity Producer", e);
+      }
    }
 
 }

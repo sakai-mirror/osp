@@ -20,6 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
@@ -33,6 +35,7 @@ import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
  */
 public class GuidanceEntityProducer extends EntityProducerBase {
 
+   protected final Log logger = LogFactory.getLog(getClass());
    public static final String GUIDANCE_PRODUCER = "ospGuidance";
 
    public String getLabel() {
@@ -40,7 +43,12 @@ public class GuidanceEntityProducer extends EntityProducerBase {
    }
 
    public void init() {
-      getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + GUIDANCE_PRODUCER);
+      try {
+         getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + GUIDANCE_PRODUCER);
+      }
+      catch (Exception e) {
+         logger.warn("Error registering Guidance Entity Producer", e);
+      }
    }
 
 }
