@@ -32,6 +32,10 @@ public class ToolWrapper implements Tool {
       return null;
    }
 
+   public String getHome() {
+	   return null;
+   }
+
    public Properties getRegisteredConfig() {
       return null;
    }
