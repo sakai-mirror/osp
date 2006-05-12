@@ -29,7 +29,7 @@
    </bean>
    
    <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.wizard"
-      class="org.theospi.portfolio.security.model.SimpleToolPermissionManager"
+      class="org.theospi.portfolio.security.model.SimpleSitePermissionManager"
        singleton="true">
 
       <property name="idManager"><ref bean="idManager"/></property>
@@ -38,6 +38,7 @@
       </property>
       <property name="agentManager"><ref bean="agentManager" /></property>
       <property name="permissionEditName"><value>wizard</value></property>
+      <property name="functionPrefix"><value>osp.wizard</value></property>
       <property name="defaultPermissions">
          <map>
             <entry>

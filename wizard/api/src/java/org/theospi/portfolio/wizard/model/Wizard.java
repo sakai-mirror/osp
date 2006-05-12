@@ -47,15 +47,12 @@ public class Wizard extends ObjectWithWorkflow {
    private Date modified;
    private transient Agent owner;
    private Id guidanceId;
-   //private Set supportItems = new HashSet();
    private boolean published = false;
    private String type = WIZARD_TYPE_SEQUENTIAL;
-   //private List wizardStyleItems = new ArrayList();
    private String exposedPageId;
    private transient Boolean exposeAsTool = null;
    
    private String siteId;
-   private String toolId;
    private WizardCategory rootCategory;
    private int sequence = 0;
    private Style style;
@@ -68,11 +65,10 @@ public class Wizard extends ObjectWithWorkflow {
    public Wizard() {
    }
 
-   public Wizard(Id id, Agent owner, String siteId, String toolId) {
+   public Wizard(Id id, Agent owner, String siteId) {
       setId(id);
       this.owner = owner;
       this.siteId = siteId;
-      this.toolId = toolId;
       newObject = true;
       rootCategory = new WizardCategory(this);
       rootCategory.setTitle(ROOT_TITLE);
@@ -171,14 +167,6 @@ public class Wizard extends ObjectWithWorkflow {
 
    public void setExposedPageId(String exposedPageId) {
       this.exposedPageId = exposedPageId;
-   }
-
-   public String getToolId() {
-      return toolId;
-   }
-
-   public void setToolId(String toolId) {
-      this.toolId = toolId;
    }
 
    public WizardCategory getRootCategory() {

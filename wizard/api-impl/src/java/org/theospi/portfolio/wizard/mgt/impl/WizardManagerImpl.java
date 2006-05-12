@@ -155,21 +155,25 @@ public class WizardManagerImpl extends HibernateDaoSupport
    public Wizard createNew() {
       Placement placement = ToolManager.getCurrentPlacement();
       String currentSite = placement.getContext();
-      String currentTool = ToolManager.getCurrentPlacement().getId();
       Agent agent = getAuthManager().getAgent();
-      Wizard wizard = new Wizard(getIdManager().createId(), agent, currentSite, currentTool);
+      Wizard wizard = new Wizard(getIdManager().createId(), agent, currentSite);
       return wizard;
    }
 
    public Wizard getWizard(Id wizardId) {
+      return getWizard(wizardId, true);
+   }
+   
+   protected Wizard getWizard(Id wizardId, boolean checkAuthz) {
       Wizard wizard = (Wizard)getHibernateTemplate().get(Wizard.class, wizardId);
 
       if (wizard == null) {
          return null;
       }
 
-      getAuthorizationFacade().checkPermission(WizardFunctionConstants.VIEW_WIZARD,
-         getIdManager().getId(wizard.getToolId()));
+      if (checkAuthz)
+         getAuthorizationFacade().checkPermission(WizardFunctionConstants.VIEW_WIZARD,
+               getIdManager().getId(wizard.getSiteId()));
 
       // setup access to the files
       List refs = new ArrayList();
@@ -395,16 +399,15 @@ public class WizardManagerImpl extends HibernateDaoSupport
       Object[] params = new Object[]{new Boolean(true), siteId};
       return getHibernateTemplate().find("from Wizard w where w.published=? and w.siteId=? order by seq_num", params);
    }
+   
+   protected Wizard getWizard(String id, boolean checkAuthz) {
+      return getWizard(getIdManager().getId(id), checkAuthz);
+   }
 
-   public List findPublishedWizards(String siteId, String toolId) {
-      Object[] params = new Object[]{new Boolean(true), siteId, toolId};
-      return getHibernateTemplate().find("from Wizard w where w.published=? and w.siteId=? and w.toolId=? order by seq_num", params);
+   public Wizard getWizard(String id) {
+      return getWizard(id, true);
    }
    
-   public Wizard getWizard(String id) {
-      return getWizard(getIdManager().getId(id));
-   }
-
    public Collection getAvailableForms(String siteId, String type) {
       return getStructuredArtifactDefinitionManager().findHomes(
             getIdManager().getId(siteId));
@@ -538,7 +541,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       boolean canEval = getAuthorizationFacade().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
             cw.getWizard().getId());
       boolean canReview = getAuthorizationFacade().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
-            getIdManager().getId(cw.getWizard().getToolId()));
+            getIdManager().getId(cw.getWizard().getSiteId()));
       
       boolean owns = cw.getOwner().getId().equals(getAuthManager().getAgent().getId());
       
@@ -623,12 +626,6 @@ public class WizardManagerImpl extends HibernateDaoSupport
       this.guidanceManager = guidanceManager;
    }
 
-   protected Id getToolId() {
-      Placement placement = ToolManager.getCurrentPlacement();
-      return idManager.getId(placement.getId());
-   }
-
-
    /**
     * @return Returns the workflowManager.
     */
@@ -702,8 +699,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          return null;
 
        Map     importData = new HashMap();
-      Wizard   wizard = new Wizard(null, getAuthManager().getAgent(), // TODO: parameterize toolid
-                              worksiteId, ToolManager.getCurrentPlacement().getId());
+      Wizard   wizard = new Wizard(null, getAuthManager().getAgent(), worksiteId);
       String tempDirName = getIdManager().createId().getValue();
 
       // set values not coming from the zip
@@ -1169,35 +1165,35 @@ public class WizardManagerImpl extends HibernateDaoSupport
       }
    }
 
-
-   
-   
-   
-   
-
-
    public void packageForDownload(Map params, OutputStream out) throws IOException {
 
       String[] formIdObj = (String[])params.get(DOWNLOAD_WIZARD_ID_PARAM);
       packageWizardForExport(formIdObj[0], out);
    }
 
-
-   public void packageWizardForExport(String wizardId, OutputStream os) throws IOException
+   
+   protected void packageWizardForExport(String wizardId, OutputStream os, boolean checkAuthz) throws IOException
    {
-      getAuthorizationFacade().checkPermission(WizardFunctionConstants.EXPORT_WIZARD, getToolId());
+      if (checkAuthz)
+         getAuthorizationFacade().checkPermission(WizardFunctionConstants.EXPORT_WIZARD, 
+               idManager.getId(ToolManager.getCurrentPlacement().getContext()));
 
       CheckedOutputStream checksum = new CheckedOutputStream(os, new Adler32());
 
       ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(checksum));
       try {
-         putWizardIntoZip(wizardId, zos);
+         putWizardIntoZip(wizardId, zos, checkAuthz);
       } catch(ServerOverloadException soe) {
          logger.warn(soe);
       }
 
       zos.finish();
       zos.flush();
+   }
+
+   public void packageWizardForExport(String wizardId, OutputStream os) throws IOException
+   {
+      packageWizardForExport(wizardId, os, true);
    }
 
    /**
@@ -1209,6 +1205,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
     * @throws ServerOverloadException
     */
    public void putWizardIntoZip(String wizardId, ZipOutputStream zos)
+      throws IOException, ServerOverloadException
+   {
+      putWizardIntoZip(wizardId, zos, true);
+   }
+   
+
+   protected void putWizardIntoZip(String wizardId, ZipOutputStream zos, boolean checkAuthz)
                      throws IOException, ServerOverloadException
    {
 
@@ -1217,7 +1220,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       List exportGuidanceIds = new ArrayList(); /* List of guidance id */
       Set exportStyleIds = new HashSet(); /* Set of style id */
 
-      Wizard   wiz = getWizard(wizardId);
+      Wizard   wiz = getWizard(wizardId, checkAuthz);
       Document document = new Document(wizardToXML(wiz, exportForms, exportFiles, exportGuidanceIds, exportStyleIds));
       ZipEntry newfileEntry = null;
 
@@ -1334,7 +1337,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
        //   add the wizard guidance to the list
        attrNode = new Element("guidance");
-       if(wiz.getGuidanceId() != null) {
+       if(wiz.getGuidanceId() != null && !wiz.getGuidanceId().getValue().equals("")) {
           exportGuidanceIds.add(wiz.getGuidanceId().getValue());
           attrNode.addContent(new CDATA(wiz.getGuidanceId().getValue()));
        }
@@ -1811,13 +1814,8 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    public void importResources(String fromContext, String toContext, List resourceIds) {
-//    TODO CWM fix this ASAP
-      /*
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      
       try {
-   
-         List wizards = this.findPublishedWizards(fromContext, fromTool.getId());
+         List wizards = this.findPublishedWizards(fromContext);
          if (wizards == null) {
             return;
          }
@@ -1828,15 +1826,20 @@ public class WizardManagerImpl extends HibernateDaoSupport
    
             getHibernateTemplate().evict(wizard);
    
-            packageWizardForExport(id.getValue(), bos);
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            //TODO think it's okay to not check permissions here?
+            packageWizardForExport(id.getValue(), bos, false);
             ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-            importWizard(getIdManager().getId(toTool.getId()), bis);
+            
+            importWizard(getIdManager().getId(toContext), bis);
+            bos.close();
+            bis.close();
          }
       }
       catch (IOException e) {
          logger.error("", e);
          throw new OspException(e);
       }
-   */
+   
    }
 }

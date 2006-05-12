@@ -15,7 +15,6 @@
       <property name="created" type="java.util.Date" update="false" not-null="true"/>
       <property name="modified" type="java.util.Date" update="true" not-null="true"/>
       <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="true"/>
-      <property name="toolId" type="string" update="false" length="36" column="tool_id" not-null="true"/>
       <property name="guidanceId" column="guidance_id" not-null="false" length="36"
          type="org.sakaiproject.metaobj.shared.IdType"/>
 

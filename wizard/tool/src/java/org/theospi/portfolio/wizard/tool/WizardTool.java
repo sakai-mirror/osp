@@ -679,7 +679,7 @@ public class WizardTool extends BuilderTool {
            context.redirect("osp.permissions.helper/editPermissions?" +
                  "message=" + getPermissionsMessage() +
                  "&name=wizard" +
-                 "&qualifier=" + ToolManager.getCurrentPlacement().getId() +
+                 "&qualifier=" + ToolManager.getCurrentPlacement().getContext() +
                  "&returnView=matrixRedirect");
        }
        catch (IOException e) {
@@ -750,7 +750,7 @@ public class WizardTool extends BuilderTool {
 				&& session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
 
 			List refs = (List) session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-			importFiles.clear();
+			//importFiles.clear();
 			importFilesString = "";
 			for (int i = 0; i < refs.size(); i++) {
 				Reference ref = (Reference) refs.get(i);
@@ -918,12 +918,12 @@ public class WizardTool extends BuilderTool {
    
    public boolean getCanCreate() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.CREATE_WIZARD, 
-            getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
    }
    
    public boolean getCanView() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.VIEW_WIZARD, 
-            getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
    }
    
    public boolean getCanReview() {
@@ -933,12 +933,12 @@ public class WizardTool extends BuilderTool {
 
    public boolean getCanReviewTool() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
-            getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
    }
    
    public boolean getCanEvaluateTool() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
-            getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
+            getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
    }
    
    public boolean getCanEvaluate() {
