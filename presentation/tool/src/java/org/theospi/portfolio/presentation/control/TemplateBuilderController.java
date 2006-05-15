@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/TemplateBuilderController.java $
+* $Id:TemplateBuilderController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,12 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
-import org.springframework.validation.Errors;
-import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
-import org.theospi.portfolio.presentation.model.PresentationTemplate;
-import org.theospi.portfolio.presentation.model.TemplateFileRef;
-//import org.theospi.portfolio.repository.model.FileArtifact;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.mgt.WritableObjectHome;
@@ -34,12 +35,11 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.*;
+import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
+import org.theospi.portfolio.presentation.model.PresentationTemplate;
+import org.theospi.portfolio.presentation.model.TemplateFileRef;
 
 public class TemplateBuilderController extends AbstractPresentationController implements LoadObjectController{
    private WritableObjectHome fileArtifactHome;

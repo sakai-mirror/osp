@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/matrix/tool/src/java/org/theospi/portfolio/matrix/control/SessionConditionalRedirect.java $
+* $Id:SessionConditionalRedirect.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,12 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
-import org.sakaiproject.metaobj.shared.control.RedirectView;
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.io.IOException;
+
+import org.sakaiproject.metaobj.shared.control.RedirectView;
 
 /**
  * Created by IntelliJ IDEA.

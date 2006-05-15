@@ -20,20 +20,25 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix;
 
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.site.api.ToolConfiguration;
-import org.theospi.portfolio.matrix.model.*;
-import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
-import org.theospi.portfolio.shared.model.Node;
-
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
+
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.theospi.portfolio.matrix.model.Attachment;
+import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.Criterion;
+import org.theospi.portfolio.matrix.model.Level;
+import org.theospi.portfolio.matrix.model.Matrix;
+import org.theospi.portfolio.matrix.model.Scaffolding;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
+import org.theospi.portfolio.shared.model.Node;
 
 /**
  * @author apple
@@ -87,8 +92,7 @@ public interface MatrixManager extends WorkflowEnabledManager {
    public List getMatricesForWarehousing();
 
    Scaffolding getScaffolding(Id scaffoldingId);
-   List findScaffolding(String siteId, String toolId, String userId);
-   public List findScaffolding(String siteId, String toolId);
+   List findScaffolding(String siteId, String userId);
    
    ScaffoldingCell getNextScaffoldingCell(ScaffoldingCell scaffoldingCell, 
          int progressionOption);
@@ -130,16 +134,16 @@ public interface MatrixManager extends WorkflowEnabledManager {
    public void removeExposedMatrixTool(Scaffolding scaffolding);
    
    void packageScffoldingForExport(Id scaffoldingId, OutputStream os) throws IOException;
-   Scaffolding uploadScaffolding(String scaffoldingFileName, String toolId, 
-         InputStream zipFileStream) throws IOException;
 
    Node getNode(Id artifactId);
 
    Node getNode(Reference ref);
 
    Scaffolding uploadScaffolding(Reference uploadedScaffoldingFile,
-                                 ToolConfiguration currentPlacement) throws IOException;
+                                 String toContext) throws IOException;
 
+   //Scaffolding uploadScaffolding(String toContext, ZipInputStream zis) throws IOException;
+   
    void checkPageAccess(String id);
    
    Scaffolding createDefaultScaffolding();

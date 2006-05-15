@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/wizard/tool/src/java/org/theospi/portfolio/wizard/tool/DecoratedWizardPage.java $
+* $Id:DecoratedWizardPage.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,16 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.tool;
 
-import org.theospi.portfolio.wizard.model.WizardPageSequence;
-import org.theospi.portfolio.matrix.WizardPageHelper;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.SessionManager;
+import java.io.IOException;
+import java.util.Collections;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import java.util.Collections;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.io.IOException;
+
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
 
 /**
  * Created by IntelliJ IDEA.

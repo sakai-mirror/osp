@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api-impl/src/java/org/theospi/portfolio/presentation/model/impl/PresentationAuthzMap.java $
+* $Id:PresentationAuthzMap.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,14 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model.impl;
 
+import java.util.HashMap;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Agent;
-import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
-
-import java.util.Hashtable;
-import java.util.HashMap;
+import org.theospi.portfolio.presentation.model.Presentation;
 
 public class PresentationAuthzMap extends HashMap {
    protected final transient Log logger = LogFactory.getLog(getClass());

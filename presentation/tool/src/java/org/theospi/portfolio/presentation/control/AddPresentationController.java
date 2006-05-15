@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/AddPresentationController.java $
+* $Id:AddPresentationController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,8 +20,16 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
@@ -37,7 +45,6 @@ import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
@@ -51,16 +58,13 @@ import org.springframework.web.util.WebUtils;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.intf.FreeFormHelper;
-import org.theospi.portfolio.presentation.model.*;
-import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationItem;
+import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
+import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
+import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.Node;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 public class AddPresentationController extends AbstractWizardFormController {
    public static final String PARAM_FINISH_AND_NOTIFY = "_finish_notify";

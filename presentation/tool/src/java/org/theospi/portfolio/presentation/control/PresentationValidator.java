@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/PresentationValidator.java $
+* $Id:PresentationValidator.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,6 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
+import org.jdom.Element;
+import org.jdom.IllegalNameException;
+import org.sakaiproject.metaobj.utils.TypedMap;
 import org.springframework.validation.Errors;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationItem;
@@ -27,10 +30,7 @@ import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
-import org.sakaiproject.metaobj.utils.TypedMap;
 import org.theospi.utils.mvc.impl.ValidatorBase;
-import org.jdom.Element;
-import org.jdom.IllegalNameException;
 
 /**
  * Created by IntelliJ IDEA.

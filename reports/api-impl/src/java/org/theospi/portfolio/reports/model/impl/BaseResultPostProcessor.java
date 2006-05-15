@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/api-impl/src/java/org/theospi/portfolio/reports/model/impl/BaseResultPostProcessor.java $
+* $Id:BaseResultPostProcessor.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model.impl;
 
+import java.io.IOException;
+import java.io.StringReader;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.theospi.portfolio.shared.model.OspException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import java.io.StringReader;
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.

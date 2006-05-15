@@ -20,13 +20,13 @@
 **********************************************************************************/
 package org.theospi.jsf.util;
 
-import java.io.Writer;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Iterator;
 
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import javax.faces.component.UIComponent;
 import javax.servlet.http.HttpServletRequest;
 
 public class TagUtil {

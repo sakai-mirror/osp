@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/api/src/java/org/theospi/portfolio/reports/model/ReportDefinitionParam.java $
+* $Id:ReportDefinitionParam.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -19,8 +19,6 @@
 *
 **********************************************************************************/
 package org.theospi.portfolio.reports.model;
-
-import java.util.List;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 

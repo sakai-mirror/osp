@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api/src/java/org/theospi/portfolio/security/mgt/OspHttpAccessBase.java $
+* $Id:OspHttpAccessBase.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -20,18 +20,19 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.mgt;
 
-import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
-import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
+import java.util.Collection;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.sakaiproject.entity.api.EntityAccessOverloadException;
 import org.sakaiproject.entity.api.EntityCopyrightException;
 import org.sakaiproject.entity.api.EntityNotDefinedException;
 import org.sakaiproject.entity.api.EntityPermissionException;
 import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.metaobj.shared.mgt.HttpAccessBase;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.theospi.portfolio.security.AuthorizationFacade;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.

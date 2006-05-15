@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api-impl/src/java/org/theospi/portfolio/presentation/export/StreamedPage.java $
+* $Id:StreamedPage.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,16 +20,17 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.export;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import websphinx.Page;
-import websphinx.Link;
-import websphinx.Access;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import websphinx.Access;
+import websphinx.Link;
+import websphinx.Page;
 
 public class StreamedPage extends Page {
    protected final transient Log logger = LogFactory.getLog(getClass());

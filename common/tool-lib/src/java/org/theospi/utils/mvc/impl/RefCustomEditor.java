@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/utils/mvc/impl/RefCustomEditor.java $
+* $Id:RefCustomEditor.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,11 +20,11 @@
 **********************************************************************************/
 package org.theospi.utils.mvc.impl;
 
-import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
+import java.beans.PropertyEditorSupport;
+
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.cover.EntityManager;
-
-import java.beans.PropertyEditorSupport;
+import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
 
 /**
  * Created by IntelliJ IDEA.

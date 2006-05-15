@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api/src/java/org/theospi/portfolio/presentation/model/PresentationItemDefinition.java $
+* $Id:PresentationItemDefinition.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model;
 
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.sakaiproject.metaobj.shared.model.MimeType;
-import org.theospi.portfolio.shared.model.ItemDefinitionMimeType;
-import org.apache.commons.codec.digest.DigestUtils;
-
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.sakaiproject.metaobj.shared.model.MimeType;
+import org.theospi.portfolio.shared.model.ItemDefinitionMimeType;
 
 
 public class PresentationItemDefinition extends IdentifiableObject implements Serializable {

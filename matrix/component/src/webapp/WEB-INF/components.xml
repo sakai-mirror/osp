@@ -212,6 +212,7 @@
       <property name="httpAccess">
          <ref bean="org.sakaiproject.entity.api.HttpAccess.ospMatrix" />
       </property>
+      <property name="matrixManager"><ref bean="matrixManager"/></property>
    </bean>
    
    <bean id="org.sakaiproject.entity.api.HttpAccess.ospWorkflow"
@@ -290,7 +291,7 @@
        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
 
    <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.scaffolding"
-      class="org.theospi.portfolio.security.model.SimpleToolPermissionManager" >
+      class="org.theospi.portfolio.security.model.SimpleSitePermissionManager" >
 
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="permissionManager">
@@ -298,6 +299,7 @@
       </property>
       <property name="agentManager"><ref bean="agentManager" /></property>
       <property name="permissionEditName"><value>scaffolding</value></property>
+      <property name="functionPrefix"><value>osp.matrix</value></property>
       <property name="defaultPermissions">
          <map>
             <entry>

@@ -1,7 +1,8 @@
 package org.theospi.portfolio.security.model;
 
-import org.sakaiproject.tool.api.Session;
-import org.sakaiproject.tool.cover.SessionManager;
+import java.util.Iterator;
+import java.util.List;
+
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.authz.api.AuthzPermissionException;
@@ -10,10 +11,9 @@ import org.sakaiproject.authz.api.GroupIdInvalidException;
 import org.sakaiproject.authz.api.GroupNotDefinedException;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.RoleAlreadyDefinedException;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.portfolio.security.DefaultRealmManager;
-
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

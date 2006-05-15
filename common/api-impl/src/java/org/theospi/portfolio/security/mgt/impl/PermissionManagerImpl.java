@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/security/mgt/impl/PermissionManagerImpl.java $
+* $Id:PermissionManagerImpl.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,15 +20,21 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.mgt.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.OspRole;
-import org.sakaiproject.authz.api.GroupNotDefinedException;
-import org.sakaiproject.authz.api.Role;
-import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.site.api.Site;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
@@ -37,8 +43,6 @@ import org.theospi.portfolio.security.mgt.ToolPermissionManager;
 import org.theospi.portfolio.security.model.Permission;
 import org.theospi.portfolio.security.model.PermissionsEdit;
 import org.theospi.portfolio.shared.model.OspException;
-
-import java.util.*;
 
 public class PermissionManagerImpl implements PermissionManager {
    protected final transient Log logger = LogFactory.getLog(getClass());

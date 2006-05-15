@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/utils/mvc/impl/ToolFinishedView.java $
+* $Id:ToolFinishedView.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,15 @@
 **********************************************************************************/
 package org.theospi.utils.mvc.impl;
 
-import org.sakaiproject.metaobj.shared.control.RedirectView;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.tool.api.Tool;
-import org.sakaiproject.tool.cover.ToolManager;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
+
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.cover.ToolManager;
 
 /**
  * Created by IntelliJ IDEA.

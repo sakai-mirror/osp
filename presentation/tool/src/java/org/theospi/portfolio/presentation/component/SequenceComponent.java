@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/component/SequenceComponent.java $
+* $Id:SequenceComponent.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,19 +20,17 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.component;
 
-import org.theospi.jsf.intf.XmlDocumentContainer;
-import org.theospi.portfolio.presentation.model.PresentationPageRegion;
-import org.theospi.portfolio.presentation.tool.RegionMap;
-import org.theospi.portfolio.presentation.tool.DecoratedRegion;
-import org.theospi.portfolio.presentation.tool.RegionSequenceMap;
-
-import javax.faces.component.UIData;
-import javax.faces.component.html.HtmlDataTable;
-import javax.faces.el.ValueBinding;
-import javax.faces.context.FacesContext;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
+import javax.faces.component.html.HtmlDataTable;
+import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
+
+import org.theospi.jsf.intf.XmlDocumentContainer;
+import org.theospi.portfolio.presentation.tool.DecoratedRegion;
+import org.theospi.portfolio.presentation.tool.RegionSequenceMap;
 
 /**
  * Created by IntelliJ IDEA.

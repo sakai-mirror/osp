@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api/src/java/org/theospi/portfolio/shared/model/TechnicalMetadata.java $
+* $Id:TechnicalMetadata.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,16 +20,16 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.model;
 
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.Type;
-import org.sakaiproject.metaobj.shared.model.MimeType;
-import org.sakaiproject.metaobj.shared.model.Agent;
+import java.util.Date;
+
 import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.time.api.Time;
 import org.sakaiproject.entity.api.EntityPropertyNotDefinedException;
 import org.sakaiproject.entity.api.EntityPropertyTypeException;
-
-import java.util.Date;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.MimeType;
+import org.sakaiproject.metaobj.shared.model.Type;
+import org.sakaiproject.time.api.Time;
 
 /**
  * Created by IntelliJ IDEA.

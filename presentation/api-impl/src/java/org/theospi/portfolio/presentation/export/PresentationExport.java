@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api-impl/src/java/org/theospi/portfolio/presentation/export/PresentationExport.java $
+* $Id:PresentationExport.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,19 +20,33 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.export;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import websphinx.*;
-
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
-import java.io.*;
-import java.util.zip.CheckedOutputStream;
-import java.util.zip.Adler32;
-import java.util.zip.ZipOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.StringTokenizer;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.StringTokenizer;
+import java.util.zip.Adler32;
+import java.util.zip.CheckedOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import websphinx.Access;
+import websphinx.Crawler;
+import websphinx.DownloadParameters;
+import websphinx.Link;
+import websphinx.LinkEvent;
+import websphinx.LinkListener;
+import websphinx.Page;
 
 public class PresentationExport extends Crawler implements LinkListener {
    protected final transient Log logger = LogFactory.getLog(getClass());

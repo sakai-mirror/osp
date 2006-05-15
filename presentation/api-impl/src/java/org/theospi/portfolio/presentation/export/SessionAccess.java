@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api-impl/src/java/org/theospi/portfolio/presentation/export/SessionAccess.java $
+* $Id:SessionAccess.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,18 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.export;
 
-import websphinx.Access;
-import websphinx.Link;
-import websphinx.DownloadParameters;
-
-import java.net.URLConnection;
-import java.net.URL;
-import java.net.HttpURLConnection;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.StringTokenizer;
-import java.util.Map;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+import websphinx.Access;
+import websphinx.DownloadParameters;
+import websphinx.Link;
 
 /**
  * Created by IntelliJ IDEA.

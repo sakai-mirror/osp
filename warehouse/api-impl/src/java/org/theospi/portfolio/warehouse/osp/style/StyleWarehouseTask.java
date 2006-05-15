@@ -20,11 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.osp.style;
 
-import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
-import org.theospi.portfolio.style.mgt.StyleManager;
 import java.util.Collection;
-import java.util.List;
-import java.util.Iterator;
+
+import org.theospi.portfolio.style.mgt.StyleManager;
+import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
 
 /**
  * Created by IntelliJ IDEA.

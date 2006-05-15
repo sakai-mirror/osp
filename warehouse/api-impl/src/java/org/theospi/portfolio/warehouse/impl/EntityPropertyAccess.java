@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/warehouse/api-impl/src/java/org/theospi/portfolio/warehouse/impl/EntityPropertyAccess.java $
+* $Id:EntityPropertyAccess.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,8 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.impl;
 
-import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 import org.sakaiproject.entity.api.Entity;
+import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 
 /**
  * Created by IntelliJ IDEA.

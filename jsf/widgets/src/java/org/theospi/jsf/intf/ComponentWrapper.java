@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/jsf/widgets/src/java/org/theospi/jsf/intf/ComponentWrapper.java $
+* $Id:ComponentWrapper.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -21,7 +21,6 @@
 package org.theospi.jsf.intf;
 
 import javax.faces.component.UIComponent;
-import javax.faces.component.UINamingContainer;
 
 /**
  * Created by IntelliJ IDEA.

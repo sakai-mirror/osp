@@ -21,9 +21,9 @@
 
 package org.theospi.portfolio.admin.intf;
 
-import org.theospi.portfolio.admin.model.IntegrationOption;
-
 import java.util.List;
+
+import org.theospi.portfolio.admin.model.IntegrationOption;
 
 public interface SakaiIntegrationPlugin {
 

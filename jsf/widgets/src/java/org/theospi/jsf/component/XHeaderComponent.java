@@ -20,13 +20,11 @@
 **********************************************************************************/
 package org.theospi.jsf.component;
 
-import java.io.IOException;
 import java.util.Iterator;
 
-import javax.faces.component.UIOutput;
 import javax.faces.component.UIComponent;
+import javax.faces.component.UIOutput;
 
-import org.sakaiproject.jsf.util.RendererUtil;
 
 
 public class XHeaderComponent extends UIOutput

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/matrix/api/src/java/org/theospi/portfolio/matrix/model/WizardPage.java $
+* $Id:WizardPage.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,13 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.model;
 
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.sakaiproject.metaobj.shared.model.Id;
-
 import java.util.Date;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
+
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/matrix/tool/src/java/org/theospi/portfolio/matrix/control/AttachArtifactController.java $
+* $Id:AttachArtifactController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,19 +20,26 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
-import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.FilePickerHelper;
-import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
+import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
+import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
@@ -40,8 +47,6 @@ import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Attachment;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPage;
-
-import java.util.*;
 
 public class AttachArtifactController implements Controller, LoadObjectController, CancelableController {
    protected final transient Log logger = LogFactory.getLog(getClass());

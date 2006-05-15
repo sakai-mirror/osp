@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/shared/control/servlet/HelperAwareJsfTool.java $
+* $Id:HelperAwareJsfTool.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,21 +20,22 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.control.servlet;
 
-import org.sakaiproject.jsf.util.JsfTool;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.tool.api.Tool;
-import org.sakaiproject.tool.api.ActiveTool;
-import org.sakaiproject.tool.api.ToolException;
-import org.sakaiproject.tool.cover.ActiveToolManager;
-import org.sakaiproject.util.Web;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletException;
-import javax.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.util.Enumeration;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.sakaiproject.jsf.util.JsfTool;
+import org.sakaiproject.tool.api.ActiveTool;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolException;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.ActiveToolManager;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.util.Web;
 
 /**
  * Created by IntelliJ IDEA.

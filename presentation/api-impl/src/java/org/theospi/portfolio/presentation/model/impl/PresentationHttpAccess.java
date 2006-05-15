@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api-impl/src/java/org/theospi/portfolio/presentation/model/impl/PresentationHttpAccess.java $
+* $Id:PresentationHttpAccess.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,19 +20,19 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model.impl;
 
-import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
-import org.theospi.portfolio.presentation.PresentationManager;
-import org.theospi.portfolio.presentation.model.Presentation;
-import org.theospi.portfolio.security.AuthorizationFailedException;
-import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entity.api.EntityAccessOverloadException;
 import org.sakaiproject.entity.api.EntityCopyrightException;
 import org.sakaiproject.entity.api.EntityNotDefinedException;
 import org.sakaiproject.entity.api.EntityPermissionException;
 import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.security.AuthorizationFailedException;
+import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
 
 /**
  * Created by IntelliJ IDEA.

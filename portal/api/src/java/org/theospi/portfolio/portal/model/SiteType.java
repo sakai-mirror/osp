@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/portal/api/src/java/org/theospi/portfolio/portal/model/SiteType.java $
+* $Id:SiteType.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -20,7 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.model;
 
-import java.util.Map;
 import java.util.List;
 
 /**

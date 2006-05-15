@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/AddTemplateController.java $
+* $Id:AddTemplateController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -21,42 +21,50 @@
 package org.theospi.portfolio.presentation.control;
 
 
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.FilePickerHelper;
-import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.entity.api.EntityManager;
-import org.springframework.validation.Errors;
-import org.springframework.validation.BindException;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractWizardFormController;
-import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.theospi.portfolio.presentation.model.PresentationTemplate;
-import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
-import org.theospi.portfolio.presentation.model.TemplateFileRef;
-import org.theospi.portfolio.presentation.PresentationManager;
-import org.theospi.portfolio.presentation.PresentationFunctionConstants;
-import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
-import org.sakaiproject.metaobj.security.AuthenticationManager;
-import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.shared.model.Node;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
-import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-import java.text.SimpleDateFormat;
+
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
+import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
+import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractWizardFormController;
+import org.theospi.portfolio.presentation.PresentationFunctionConstants;
+import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
+import org.theospi.portfolio.presentation.model.PresentationTemplate;
+import org.theospi.portfolio.presentation.model.TemplateFileRef;
+import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.shared.model.Node;
 
 public class AddTemplateController extends AbstractWizardFormController {
    final public static int DESCRIBE_PAGE = 0;

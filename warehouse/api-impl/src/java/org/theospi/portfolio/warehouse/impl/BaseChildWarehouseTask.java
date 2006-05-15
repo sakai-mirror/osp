@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/warehouse/api-impl/src/java/org/theospi/portfolio/warehouse/impl/BaseChildWarehouseTask.java $
+* $Id:BaseChildWarehouseTask.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,20 +20,19 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.impl;
 
-import org.theospi.portfolio.warehouse.intf.ChildWarehouseTask;
-import org.theospi.portfolio.warehouse.intf.PropertyAccess;
-import org.theospi.portfolio.warehouse.intf.ParentPropertyAccess;
-import org.theospi.portfolio.warehouse.intf.ItemIndexInParentPropertyAccess;
-import org.quartz.JobExecutionException;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Iterator;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import org.quartz.JobExecutionException;
+import org.theospi.portfolio.warehouse.intf.ChildWarehouseTask;
+import org.theospi.portfolio.warehouse.intf.ItemIndexInParentPropertyAccess;
+import org.theospi.portfolio.warehouse.intf.ParentPropertyAccess;
+import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/matrix/api/src/java/org/theospi/portfolio/matrix/model/Scaffolding.java $
+* $Id:Scaffolding.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,17 +20,17 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.model;
 
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.theospi.portfolio.style.model.Style;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.theospi.portfolio.style.model.Style;
 
 /**
  * I. Communication
@@ -69,7 +69,6 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    
    private String description;
    private Id worksiteId;
-   private Id toolId;
    
    private boolean published = false;
    private Agent publishedBy;
@@ -348,14 +347,6 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    public void add(Matrix matrix) {
       this.getMatrix().add(matrix);
       matrix.setScaffolding(this);
-   }
-
-   public Id getToolId() {
-      return toolId;
-   }
-
-   public void setToolId(Id toolId) {
-      this.toolId = toolId;
    }
 
    public Boolean getExposeAsTool() {

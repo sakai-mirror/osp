@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool/src/java/org/theospi/portfolio/security/control/PermissionsController.java $
+* $Id:PermissionsController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,20 +20,19 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.control;
 
+import java.util.Hashtable;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.utils.mvc.impl.servlet.AbstractFormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.tool.cover.ToolManager;
-
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.security.mgt.PermissionManager;
 import org.theospi.portfolio.security.model.PermissionsEdit;
-
-import java.util.Hashtable;
-import java.util.Map;
 
 public class PermissionsController extends AbstractFormController implements FormController, LoadObjectController {
    protected final transient Log logger = LogFactory.getLog(getClass());

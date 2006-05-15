@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/portal/api-impl/src/java/org/theospi/portfolio/portal/impl/PortalManagerImpl.java $
+* $Id:PortalManagerImpl.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -20,16 +20,23 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.impl;
 
-import org.sakaiproject.tool.api.Placement;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.theospi.portfolio.portal.intf.PortalManager;
@@ -37,8 +44,6 @@ import org.theospi.portfolio.portal.model.SitePageWrapper;
 import org.theospi.portfolio.portal.model.SiteType;
 import org.theospi.portfolio.portal.model.ToolCategory;
 import org.theospi.portfolio.portal.model.ToolType;
-
-import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.

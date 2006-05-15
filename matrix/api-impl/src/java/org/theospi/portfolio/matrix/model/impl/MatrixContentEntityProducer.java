@@ -20,10 +20,14 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.model.impl;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.sakaiproject.entity.api.Entity;
+import org.sakaiproject.entity.api.EntityTransferrer;
+import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
+import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,9 +36,10 @@ import org.sakaiproject.entity.api.Entity;
  * Time: 5:27:48 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MatrixContentEntityProducer extends EntityProducerBase {
+public class MatrixContentEntityProducer extends EntityProducerBase implements EntityTransferrer {
    public static final String MATRIX_PRODUCER = "ospMatrix";
    protected final Log logger = LogFactory.getLog(getClass());
+   private DuplicatableToolService matrixManager;
    
 
    public String getLabel() {
@@ -46,7 +51,23 @@ public class MatrixContentEntityProducer extends EntityProducerBase {
          getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + MATRIX_PRODUCER);
       }
       catch (Exception e) {
-         logger.warn("Error registering Glossary Entity Producer", e);
+         logger.warn("Error registering Matrix Content Entity Producer", e);
       }
+   }
+   
+   public void transferCopyEntities(String fromContext, String toContext, List ids) {
+      matrixManager.importResources(fromContext, toContext, ids);
+   }
+
+   /**
+    * @inheritDoc
+    */
+   public String[] myToolIds() {
+      String[] toolIds = { "osp.matrix" };
+      return toolIds;
+   }
+
+   public void setMatrixManager(DuplicatableToolService matrixManager) {
+      this.matrixManager = matrixManager;
    }
 }

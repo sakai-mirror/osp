@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/list/impl/BaseListGenerator.java $
+* $Id:BaseListGenerator.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -21,8 +21,8 @@
 package org.theospi.portfolio.list.impl;
 
 import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
-import org.theospi.portfolio.list.intf.ListService;
 import org.theospi.portfolio.list.intf.ListGenerator;
+import org.theospi.portfolio.list.intf.ListService;
 
 /**
  * Created by IntelliJ IDEA.

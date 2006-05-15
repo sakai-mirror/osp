@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/component/RegionComponent.java $
+* $Id:RegionComponent.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,7 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.component;
 
-import javax.faces.component.UIOutput;
 import javax.faces.component.UIComponentBase;
 
 /**

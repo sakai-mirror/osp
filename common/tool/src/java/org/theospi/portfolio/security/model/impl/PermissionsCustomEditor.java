@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool/src/java/org/theospi/portfolio/security/model/impl/PermissionsCustomEditor.java $
+* $Id:PermissionsCustomEditor.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,18 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.model.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.theospi.portfolio.security.model.Permission;
-import org.sakaiproject.metaobj.shared.mgt.AgentManager;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
-
 import java.beans.PropertyEditorSupport;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
+import org.theospi.portfolio.security.model.Permission;
 
 public class PermissionsCustomEditor extends PropertyEditorSupport implements TypedPropertyEditor  {
    protected final transient Log logger = LogFactory.getLog(getClass());

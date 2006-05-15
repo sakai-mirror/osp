@@ -21,13 +21,13 @@
 
 package org.theospi.portfolio.admin.model;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.theospi.portfolio.shared.model.OspException;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
 
 public class IntegrationList {
    protected final transient Log logger = LogFactory.getLog(getClass());

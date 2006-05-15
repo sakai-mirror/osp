@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool-lib/src/java/org/theospi/portfolio/presentation/model/impl/PresentationItemCustomEditor.java $
+* $Id:PresentationItemCustomEditor.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,19 +20,19 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.theospi.portfolio.presentation.PresentationManager;
-import org.theospi.portfolio.presentation.model.PresentationItem;
-import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
-
 import java.beans.PropertyEditorSupport;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
+import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.model.PresentationItem;
 
 /**
  * Created by IntelliJ IDEA.

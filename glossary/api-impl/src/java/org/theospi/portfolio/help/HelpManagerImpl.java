@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/glossary/api-impl/src/java/org/theospi/portfolio/help/HelpManagerImpl.java $
+* $Id:HelpManagerImpl.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,46 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.help;
 
-import org.hibernate.HibernateException;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
-import org.jdom.CDATA;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.theospi.portfolio.help.model.GlossaryEntry;
-import org.theospi.portfolio.help.model.Glossary;
-import org.theospi.portfolio.help.model.HelpFunctionConstants;
-import org.theospi.portfolio.help.model.HelpManager;
-import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.security.AuthorizationFailedException;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.metaobj.shared.DownloadableManager;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.AgentManager;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.PersistenceException;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.MimeType;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.tool.api.Placement;
-import org.sakaiproject.tool.api.ToolManager;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.exception.UnsupportedFileTypeException;
-import org.theospi.portfolio.shared.model.Node;
-import org.theospi.utils.zip.UncloseableZipInputStream;
-import org.theospi.portfolio.help.model.GlossaryDescription;
-
-import java.io.BufferedReader;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,17 +29,54 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.Map;
 import java.util.Set;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
+import org.jdom.CDATA;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.exception.UnsupportedFileTypeException;
+import org.sakaiproject.metaobj.shared.DownloadableManager;
+import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.MimeType;
+import org.sakaiproject.metaobj.shared.model.PersistenceException;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.ToolManager;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.theospi.portfolio.help.model.Glossary;
+import org.theospi.portfolio.help.model.GlossaryDescription;
+import org.theospi.portfolio.help.model.GlossaryEntry;
+import org.theospi.portfolio.help.model.HelpFunctionConstants;
+import org.theospi.portfolio.help.model.HelpManager;
+import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.security.AuthorizationFailedException;
+import org.theospi.portfolio.shared.model.Node;
+import org.theospi.utils.zip.UncloseableZipInputStream;
 
 /**
  * This implementation uses the spring config to configure the system, and

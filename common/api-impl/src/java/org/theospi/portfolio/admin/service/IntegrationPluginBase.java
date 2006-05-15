@@ -21,11 +21,11 @@
 
 package org.theospi.portfolio.admin.service;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin;
-
-import java.util.List;
 
 abstract public class IntegrationPluginBase implements SakaiIntegrationPlugin {
    protected final transient Log logger = LogFactory.getLog(getClass());

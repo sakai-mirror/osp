@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/security/impl/sakai/WorksiteAuthorizer.java $
+* $Id:WorksiteAuthorizer.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,18 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.impl.sakai;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.authz.cover.AuthzGroupService;
-import org.sakaiproject.authz.api.AuthzGroup;
-import org.sakaiproject.authz.api.GroupNotDefinedException;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.app.ApplicationAuthorizer;
-
-import java.util.List;
 
 
 public class WorksiteAuthorizer implements ApplicationAuthorizer {

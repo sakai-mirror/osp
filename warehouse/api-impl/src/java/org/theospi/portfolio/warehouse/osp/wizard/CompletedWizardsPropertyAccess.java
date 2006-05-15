@@ -20,9 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.osp.wizard;
 
-import org.theospi.portfolio.wizard.mgt.WizardManager;
-import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.theospi.portfolio.warehouse.intf.PropertyAccess;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
 
 /**
  * Created by IntelliJ IDEA.

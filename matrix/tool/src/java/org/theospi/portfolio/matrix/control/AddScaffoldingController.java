@@ -21,19 +21,20 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.Scaffolding;
@@ -76,7 +77,6 @@ public class AddScaffoldingController extends BaseScaffoldingController
       String cancelAction = (String)request.get("cancelAction");
       
       Id worksiteId = worksiteManager.getCurrentWorksiteId();
-      Id toolId = getIdManager().getId(ToolManager.getCurrentPlacement().getId());
       Map model = new HashMap();
       
       EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
@@ -84,7 +84,6 @@ public class AddScaffoldingController extends BaseScaffoldingController
       Scaffolding scaffolding = sessionBean.getScaffolding();
       scaffolding.setWorksiteId(worksiteId);
       
-      scaffolding.setToolId(toolId);
       scaffolding.setOwner(authManager.getAgent());
       
       if (generateAction != null) {

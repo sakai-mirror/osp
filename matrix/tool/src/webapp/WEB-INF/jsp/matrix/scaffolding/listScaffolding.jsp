@@ -6,7 +6,7 @@
 
 <!-- GUID=<c:out value="${newScaffoldingId}"/> -->
 
-<osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" />
+<osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" useSite="true"/>
 
 
 <c:if test="${can.create || isMaintainer}">
@@ -27,7 +27,7 @@
                <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message>
              </osp:param>
                <osp:param name="name" value="scaffolding"/>
-               <osp:param name="qualifier" value="${tool.id}"/>
+               <osp:param name="qualifier" value="${worksite.i\d}"/>
                <osp:param name="returnView" value="listScaffoldingRedirect"/>
                </osp:url>"
                title="<fmt:message key="action_permissions_title"/>" >

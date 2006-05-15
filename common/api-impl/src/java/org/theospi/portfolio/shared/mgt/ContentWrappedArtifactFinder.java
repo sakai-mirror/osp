@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/shared/mgt/ContentWrappedArtifactFinder.java $
+* $Id:ContentWrappedArtifactFinder.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -21,14 +21,12 @@
 package org.theospi.portfolio.shared.mgt;
 
 import org.sakaiproject.content.api.ContentResource;
-
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
 import org.sakaiproject.metaobj.shared.mgt.impl.FileArtifactFinder;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
 import org.sakaiproject.metaobj.shared.model.Id;
-
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
 
 /**

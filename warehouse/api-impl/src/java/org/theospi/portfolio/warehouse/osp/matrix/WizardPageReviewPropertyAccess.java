@@ -20,11 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.osp.matrix;
 
-import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.theospi.portfolio.review.mgt.ReviewManager;
-import java.util.Date;
+import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 
 /**
  * Created by IntelliJ IDEA.

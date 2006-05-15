@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/style/tool/PublishStyleController.java $
+* $Id:PublishStyleController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,19 +20,18 @@
 **********************************************************************************/
 package org.theospi.portfolio.style.tool;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.validation.Errors;
-import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.style.StyleFunctionConstants;
-import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.tool.cover.ToolManager;
-
-
-import java.util.Map;
+import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.style.StyleFunctionConstants;
+import org.theospi.portfolio.style.model.Style;
 
 public class PublishStyleController extends ListStyleController implements LoadObjectController {
    protected final Log logger = LogFactory.getLog(getClass());

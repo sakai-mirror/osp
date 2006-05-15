@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api/src/java/org/theospi/portfolio/security/model/AuthZMap.java $
+* $Id:AuthZMap.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,10 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.model;
 
-import org.theospi.portfolio.security.AuthorizationFacade;
-import org.sakaiproject.metaobj.shared.model.Id;
-
 import java.util.HashMap;
+
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.theospi.portfolio.security.AuthorizationFacade;
 
 public class AuthZMap extends HashMap {
    private AuthorizationFacade authzFacade;

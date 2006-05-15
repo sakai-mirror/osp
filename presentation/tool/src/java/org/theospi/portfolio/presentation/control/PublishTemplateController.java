@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/PublishTemplateController.java $
+* $Id:PublishTemplateController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
-import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-
-import java.util.Map;
+import org.theospi.portfolio.presentation.model.PresentationTemplate;
 
 public class PublishTemplateController extends ListTemplateController implements LoadObjectController {
    protected final Log logger = LogFactory.getLog(getClass());

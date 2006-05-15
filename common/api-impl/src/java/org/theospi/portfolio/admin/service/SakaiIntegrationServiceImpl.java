@@ -21,25 +21,25 @@
 
 package org.theospi.portfolio.admin.service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.theospi.portfolio.admin.intf.SakaiIntegrationService;
-import org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin;
-import org.theospi.portfolio.admin.startup.ServerListener;
-import org.theospi.portfolio.admin.startup.ServerListeningService;
-import org.theospi.portfolio.admin.model.IntegrationOption;
-import org.sakaiproject.tool.api.Session;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.api.app.scheduler.SchedulerManager;
-import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entity.api.ResourceProperties;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Iterator;
+import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin;
+import org.theospi.portfolio.admin.intf.SakaiIntegrationService;
+import org.theospi.portfolio.admin.model.IntegrationOption;
+import org.theospi.portfolio.admin.startup.ServerListener;
+import org.theospi.portfolio.admin.startup.ServerListeningService;
 
 public class SakaiIntegrationServiceImpl implements SakaiIntegrationService, ServerListener {
    protected final transient Log logger = LogFactory.getLog(getClass());

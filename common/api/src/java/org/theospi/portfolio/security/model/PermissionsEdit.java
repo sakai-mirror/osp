@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api/src/java/org/theospi/portfolio/security/model/PermissionsEdit.java $
+* $Id:PermissionsEdit.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,11 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.model;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Id;
-
-import java.util.List;
 
 public class PermissionsEdit {
    protected final transient Log logger = LogFactory.getLog(getClass());

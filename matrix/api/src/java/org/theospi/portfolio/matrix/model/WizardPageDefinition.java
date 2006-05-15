@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/matrix/api/src/java/org/theospi/portfolio/matrix/model/WizardPageDefinition.java $
+* $Id:WizardPageDefinition.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,12 +20,16 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.style.model.Style;
-
-import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,7 +51,6 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    transient private Id deleteGuidanceId;
    
    private String siteId;
-   private String toolId;
    private Style style;
    
    transient private Id styleId;
@@ -174,12 +177,6 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
 
    public void setSiteId(String siteId) {
       this.siteId = siteId;
-   }
-   public String getToolId() {
-      return toolId;
-   }
-   public void setToolId(String toolId) {
-      this.toolId = toolId;
    }
    public Style getStyle() {
       return style;

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api/src/java/org/theospi/portfolio/presentation/model/PresentationItem.java $
+* $Id:PresentationItem.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,14 +20,14 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
-import org.sakaiproject.component.cover.ComponentManager;
-import org.apache.commons.codec.digest.DigestUtils;
 
 public class PresentationItem extends IdentifiableObject {
    private PresentationItemDefinition definition;

@@ -23,11 +23,11 @@ package org.theospi.portfolio.wizard.mgt;
 import java.util.Collection;
 import java.util.List;
 
-import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
-import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
+import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 
 public interface WizardManager extends WorkflowEnabledManager {

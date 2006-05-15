@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/security/impl/PasswordGeneratorImpl.java $
+* $Id:PasswordGeneratorImpl.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -21,9 +21,9 @@
 package org.theospi.portfolio.security.impl;
 
 
-import org.sakaiproject.metaobj.security.PasswordGenerator;
-
 import java.util.Random;
+
+import org.sakaiproject.metaobj.security.PasswordGenerator;
 
 public class PasswordGeneratorImpl implements PasswordGenerator {
    private int length;

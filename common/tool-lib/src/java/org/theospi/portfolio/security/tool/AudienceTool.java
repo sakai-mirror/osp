@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/security/tool/AudienceTool.java $
+ * $Id:AudienceTool.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,22 +20,32 @@
  **********************************************************************************/
 package org.theospi.portfolio.security.tool;
 
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.tool.api.Placement;
-import org.sakaiproject.tool.api.ToolManager;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import javax.faces.context.FacesContext;
+
+import org.sakaiproject.authz.api.Member;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.email.cover.EmailService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.email.cover.EmailService;
-import org.sakaiproject.authz.api.Member;
-import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
@@ -43,10 +53,6 @@ import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.AgentImplOsp;
 import org.theospi.portfolio.shared.tool.HelperToolBase;
 import org.theospi.portfolio.shared.tool.PagingList;
-
-import javax.faces.context.FacesContext;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.

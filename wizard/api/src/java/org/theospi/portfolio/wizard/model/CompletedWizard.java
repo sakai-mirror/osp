@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/wizard/api/src/java/org/theospi/portfolio/wizard/model/CompletedWizard.java $
+* $Id:CompletedWizard.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,14 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.model;
 
+import java.util.Date;
+
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.sakaiproject.metaobj.shared.model.Agent;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
-
-import java.util.Date;
-import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.

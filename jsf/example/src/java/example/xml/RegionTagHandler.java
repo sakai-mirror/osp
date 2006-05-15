@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/jsf/example/src/java/example/xml/RegionTagHandler.java $
+* $Id:RegionTagHandler.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,14 +20,15 @@
 **********************************************************************************/
 package example.xml;
 
-import org.theospi.jsf.impl.DefaultXmlTagHandler;
-import org.theospi.jsf.intf.XmlTagFactory;
-import org.theospi.jsf.intf.ComponentWrapper;
-import org.xml.sax.Attributes;
-
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIInput;
 import java.io.IOException;
+
+import javax.faces.component.UIInput;
+import javax.faces.context.FacesContext;
+
+import org.theospi.jsf.impl.DefaultXmlTagHandler;
+import org.theospi.jsf.intf.ComponentWrapper;
+import org.theospi.jsf.intf.XmlTagFactory;
+import org.xml.sax.Attributes;
 
 /**
  * Created by IntelliJ IDEA.

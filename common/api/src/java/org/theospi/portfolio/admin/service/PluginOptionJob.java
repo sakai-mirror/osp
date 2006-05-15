@@ -1,16 +1,21 @@
 package org.theospi.portfolio.admin.service;
 
-import org.quartz.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.quartz.Job;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleTrigger;
 import org.sakaiproject.api.app.scheduler.SchedulerManager;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin;
 import org.theospi.portfolio.admin.model.IntegrationOption;
-
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.

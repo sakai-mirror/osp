@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/portal/tool/src/java/org/theospi/portfolio/portal/component/ToolComponent.java $
+* $Id:ToolComponent.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -20,10 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.component;
 
-import org.sakaiproject.tool.api.Placement;
-import org.sakaiproject.site.api.SitePage;
-
 import javax.faces.component.UINamingContainer;
+
+import org.sakaiproject.site.api.SitePage;
 
 /**
  * Created by IntelliJ IDEA.

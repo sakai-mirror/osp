@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api/src/java/org/theospi/portfolio/worksite/mgt/impl/ToolConfigurationUserType.java $
+* $Id:ToolConfigurationUserType.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,17 @@
 **********************************************************************************/
 package org.theospi.portfolio.worksite.mgt.impl;
 
-import org.hibernate.usertype.UserType;
-import org.hibernate.HibernateException;
-
+import java.io.Serializable;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
 import java.sql.Types;
-import java.io.Serializable;
 
-import org.sakaiproject.site.api.ToolConfiguration;
+import org.hibernate.HibernateException;
+import org.hibernate.usertype.UserType;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.theospi.portfolio.worksite.model.ToolConfigurationWrapper;
 
 public class ToolConfigurationUserType implements UserType, Serializable {

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/NotifyViewersController.java $
+* $Id:NotifyViewersController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,25 +20,28 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+import org.sakaiproject.component.api.ServerConfigurationService;
+import org.sakaiproject.email.cover.EmailService;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.utils.Config;
+import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
+import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.mail.MailSender;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.NotificationForm;
 import org.theospi.portfolio.presentation.model.Presentation;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.utils.Config;
 import org.theospi.portfolio.presentation.model.VelocityMailMessage;
-import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
-import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
-import org.sakaiproject.component.api.ServerConfigurationService;
-import org.sakaiproject.email.cover.EmailService;
-
-import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.user.api.User;
-import org.sakaiproject.user.cover.UserDirectoryService;
-
-import java.util.*;
 
 public class NotifyViewersController extends AbstractPresentationController implements CustomCommandController {
    public static final String PARAM_CANCEL = "_cancel";

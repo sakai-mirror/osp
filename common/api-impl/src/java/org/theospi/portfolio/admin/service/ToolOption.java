@@ -21,10 +21,10 @@
 
 package org.theospi.portfolio.admin.service;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.Map;
 
 public class ToolOption {
    protected final transient Log logger = LogFactory.getLog(getClass());

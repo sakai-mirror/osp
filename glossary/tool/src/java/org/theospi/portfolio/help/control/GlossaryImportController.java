@@ -21,12 +21,21 @@
 
 package org.theospi.portfolio.help.control;
 
-import org.jdom.input.JDOMParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdom.input.JDOMParseException;
 import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
@@ -34,23 +43,13 @@ import org.sakaiproject.exception.UnsupportedFileTypeException;
 import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
-
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.entity.api.EntityManager;
-import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.content.api.FilePickerHelper;
-import org.springframework.web.servlet.ModelAndView;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
+import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.help.model.GlossaryUploadForm;
 import org.theospi.portfolio.shared.model.Node;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 
 public class GlossaryImportController extends HelpController implements Validator, CancelableController, FormController {

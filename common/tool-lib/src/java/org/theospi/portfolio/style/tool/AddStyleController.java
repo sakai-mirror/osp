@@ -21,27 +21,30 @@
 package org.theospi.portfolio.style.tool;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.FilePickerHelper;
-import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.EntityManager;
-import org.springframework.validation.Errors;
-import org.springframework.web.servlet.ModelAndView;
-import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-
-import java.util.*;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.style.model.Style;
 
 public class AddStyleController extends AbstractStyleController 
       implements CustomCommandController, FormController, LoadObjectController {

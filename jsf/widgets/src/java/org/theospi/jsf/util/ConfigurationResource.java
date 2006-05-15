@@ -21,9 +21,9 @@
 **********************************************************************************/
 package org.theospi.jsf.util;
 
-import java.util.ResourceBundle;
 import java.util.Enumeration;
 import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Thin wrapper for lookup of configuration of resources.

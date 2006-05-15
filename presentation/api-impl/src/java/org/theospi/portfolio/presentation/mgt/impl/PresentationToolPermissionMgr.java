@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api-impl/src/java/org/theospi/portfolio/presentation/mgt/impl/PresentationToolPermissionMgr.java $
+* $Id:PresentationToolPermissionMgr.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.mgt.impl;
 
-import org.theospi.portfolio.security.model.SimpleToolPermissionManager;
-import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.worksite.model.SiteTool;
-import org.theospi.portfolio.presentation.PresentationManager;
-import org.theospi.portfolio.presentation.model.Presentation;
+import java.util.Iterator;
+
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
-
-import java.util.Iterator;
+import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.security.model.SimpleToolPermissionManager;
+import org.theospi.portfolio.worksite.model.SiteTool;
 
 public class PresentationToolPermissionMgr extends SimpleToolPermissionManager {
 

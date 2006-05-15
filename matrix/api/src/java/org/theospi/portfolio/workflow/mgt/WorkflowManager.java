@@ -23,8 +23,8 @@ package org.theospi.portfolio.workflow.mgt;
 import java.util.List;
 import java.util.Set;
 
-import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.workflow.model.Workflow;
 

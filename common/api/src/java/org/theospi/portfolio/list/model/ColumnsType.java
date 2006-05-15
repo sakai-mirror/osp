@@ -21,20 +21,20 @@
 
 package org.theospi.portfolio.list.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.usertype.UserType;
-import org.hibernate.HibernateException;
-
 import java.io.Serializable;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
 import java.sql.Types;
-import java.util.StringTokenizer;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
+import org.hibernate.usertype.UserType;
 
 public class ColumnsType implements UserType {
    protected final transient Log logger = LogFactory.getLog(getClass());

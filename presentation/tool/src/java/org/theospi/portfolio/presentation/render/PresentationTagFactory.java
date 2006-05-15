@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/render/PresentationTagFactory.java $
+* $Id:PresentationTagFactory.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,10 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.render;
 
+import org.sakaiproject.component.cover.ComponentManager;
 import org.theospi.jsf.impl.DefaultXmlTagFactory;
 import org.theospi.jsf.impl.DefaultXmlTagHandler;
 import org.theospi.jsf.intf.XmlTagHandler;
-import org.sakaiproject.component.cover.ComponentManager;
 
 /**
  * Created by IntelliJ IDEA.

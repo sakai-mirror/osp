@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/glossary/tool/src/java/org/theospi/portfolio/help/control/HelpController.java $
+* $Id:HelpController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,6 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.help.control;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -29,9 +32,6 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.help.model.HelpManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
-
-import java.util.Map;
-import java.util.List;
 
 public class HelpController implements Controller {
    private HelpManager helpManager;

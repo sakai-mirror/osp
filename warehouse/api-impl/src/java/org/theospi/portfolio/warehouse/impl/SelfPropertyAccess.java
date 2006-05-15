@@ -20,16 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.impl;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-import java.util.Hashtable;
-import java.util.Map;
-
 import org.theospi.portfolio.warehouse.intf.PropertyAccess;
-import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
 
 /**
  * Created by IntelliJ IDEA.

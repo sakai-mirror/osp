@@ -20,26 +20,23 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.tool;
 
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.theospi.portfolio.review.model.Review;
-import org.theospi.portfolio.style.StyleHelper;
-import org.theospi.portfolio.style.model.Style;
-import org.theospi.portfolio.wizard.model.Wizard;
-import org.theospi.portfolio.guidance.model.GuidanceItem;
-import org.theospi.portfolio.wizard.mgt.WizardManager;
-import org.theospi.portfolio.guidance.model.Guidance;
-import org.theospi.portfolio.guidance.model.GuidanceItem;
-
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
-import java.util.List;
-import java.util.ArrayList;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.theospi.portfolio.guidance.model.Guidance;
+import org.theospi.portfolio.guidance.model.GuidanceItem;
+import org.theospi.portfolio.style.StyleHelper;
+import org.theospi.portfolio.style.model.Style;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
+import org.theospi.portfolio.wizard.model.Wizard;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/tool/DecoratedRegion.java $
+* $Id:DecoratedRegion.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.tool;
 
-import org.theospi.portfolio.presentation.model.PresentationPageRegion;
-import org.theospi.portfolio.presentation.model.PresentationPageItem;
-import org.theospi.portfolio.presentation.component.SequenceComponent;
-
-import javax.faces.event.ActionEvent;
-import javax.faces.component.UIComponent;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.List;
+
+import javax.faces.component.UIComponent;
+import javax.faces.event.ActionEvent;
+
+import org.theospi.portfolio.presentation.component.SequenceComponent;
+import org.theospi.portfolio.presentation.model.PresentationPageItem;
+import org.theospi.portfolio.presentation.model.PresentationPageRegion;
 
 /**
  * Created by IntelliJ IDEA.

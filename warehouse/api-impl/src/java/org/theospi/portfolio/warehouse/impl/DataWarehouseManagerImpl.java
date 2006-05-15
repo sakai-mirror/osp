@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/warehouse/api-impl/src/java/org/theospi/portfolio/warehouse/impl/DataWarehouseManagerImpl.java $
+* $Id:DataWarehouseManagerImpl.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.impl;
 
-import org.theospi.portfolio.warehouse.intf.DataWarehouseManager;
-import org.theospi.portfolio.warehouse.intf.WarehouseTask;
-import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
+import java.util.Iterator;
+import java.util.List;
+
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.sakaiproject.authz.api.SecurityService;
-
-import java.util.List;
-import java.util.Iterator;
+import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
+import org.theospi.portfolio.warehouse.intf.DataWarehouseManager;
+import org.theospi.portfolio.warehouse.intf.WarehouseTask;
 
 /**
  * Created by IntelliJ IDEA.

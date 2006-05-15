@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/ViewPresentationStatsController.java $
+* $Id:ViewPresentationStatsController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AuthorizationFailedException;
-import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-
-import java.util.Map;
 
 public class ViewPresentationStatsController extends AbstractPresentationController implements LoadObjectController {
 

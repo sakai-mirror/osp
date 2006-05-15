@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/wizard/tool/src/java/org/theospi/portfolio/wizard/tool/DecoratedCompletedCategory.java $
+* $Id:DecoratedCompletedCategory.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,11 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.tool;
 
-import org.theospi.portfolio.wizard.model.*;
-
-import java.util.List;
-import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.theospi.portfolio.wizard.model.CompletedWizardCategory;
+import org.theospi.portfolio.wizard.model.CompletedWizardPage;
+import org.theospi.portfolio.wizard.model.Wizard;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/PresentationPropertyFileView.java $
+* $Id:PresentationPropertyFileView.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,19 +20,19 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
-import org.apache.velocity.VelocityContext;
-import org.theospi.portfolio.presentation.model.Presentation;
-import org.sakaiproject.metaobj.shared.control.SchemaBean;
-import org.theospi.portfolio.shared.control.XmlElementView;
-import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.shared.model.TechnicalMetadata;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.velocity.VelocityContext;
+import org.sakaiproject.metaobj.shared.control.SchemaBean;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.shared.control.XmlElementView;
+import org.theospi.portfolio.shared.model.TechnicalMetadata;
 
 /**
  * Created by IntelliJ IDEA.

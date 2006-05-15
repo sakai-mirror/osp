@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/model/impl/CommentListGenerator.java $
+* $Id:CommentListGenerator.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,25 +20,25 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model.impl;
 
-import org.theospi.portfolio.list.intf.ActionableListGenerator;
-import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
-import org.theospi.portfolio.presentation.PresentationManager;
-import org.theospi.portfolio.presentation.CommentSortBy;
-import org.theospi.portfolio.presentation.model.Presentation;
-import org.theospi.portfolio.presentation.model.PresentationComment;
-import org.theospi.portfolio.presentation.model.PresentationTemplate;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.sakaiproject.event.api.SessionState;
+import org.sakaiproject.event.cover.UsageSessionService;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.control.servlet.SakaiComponentDispatchServlet;
 import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.ToolConfiguration;
-import org.sakaiproject.event.api.SessionState;
-import org.sakaiproject.event.cover.UsageSessionService;
-
-import java.util.List;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.HashMap;
+import org.theospi.portfolio.list.intf.ActionableListGenerator;
+import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
+import org.theospi.portfolio.presentation.CommentSortBy;
+import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationComment;
+import org.theospi.portfolio.presentation.model.PresentationTemplate;
 
 public class CommentListGenerator implements ActionableListGenerator, CustomLinkListGenerator {
    private PresentationManager presentationManager;

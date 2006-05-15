@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/api-impl/src/java/org/theospi/portfolio/reports/model/impl/LoadArtifactResultProcessor.java $
+* $Id:LoadArtifactResultProcessor.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,28 +20,32 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model.impl;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
+import org.jdom.Document;
+import org.jdom.Element;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.metaobj.shared.ArtifactFinder;
+import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
+import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.OspException;
 import org.theospi.portfolio.reports.model.ReportResult;
 import org.theospi.portfolio.reports.model.ReportsManager;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
-import org.theospi.portfolio.reports.model.impl.BaseResultProcessor;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.OspException;
-import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
-import org.sakaiproject.metaobj.shared.ArtifactFinder;
-import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
-import org.sakaiproject.authz.api.SecurityService;
-import org.sakaiproject.content.cover.ContentHostingService;
-
-import javax.sql.DataSource;
-import java.util.*;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.ResultSet;
 
 /**
  * Created by IntelliJ IDEA.

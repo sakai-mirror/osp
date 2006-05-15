@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/tool/RegionMap.java $
+* $Id:RegionMap.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,17 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.tool;
 
-import org.theospi.portfolio.presentation.model.PresentationPage;
-import org.theospi.portfolio.presentation.model.PresentationPageRegion;
-import org.theospi.portfolio.presentation.model.PresentationPageItem;
-
-import javax.faces.event.ActionEvent;
-import javax.faces.el.ValueBinding;
-import javax.faces.context.FacesContext;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.List;
+
+import org.theospi.portfolio.presentation.model.PresentationPage;
+import org.theospi.portfolio.presentation.model.PresentationPageRegion;
 
 /**
  * Created by IntelliJ IDEA.

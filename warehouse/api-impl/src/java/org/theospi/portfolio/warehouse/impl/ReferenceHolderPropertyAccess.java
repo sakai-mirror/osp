@@ -28,8 +28,8 @@ import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
+import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 
 /**
  * Created by IntelliJ IDEA.

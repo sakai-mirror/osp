@@ -20,12 +20,12 @@
 **********************************************************************************/
 package org.theospi.jsf.component;
 
-import org.sakaiproject.jsf.model.InitObjectContainer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.component.UIOutput;
-import javax.faces.component.UIComponent;
-import java.util.List;
-import java.util.ArrayList;
+
+import org.sakaiproject.jsf.model.InitObjectContainer;
 
 
 public class XHeaderDrawerComponent extends UIOutput implements InitObjectContainer

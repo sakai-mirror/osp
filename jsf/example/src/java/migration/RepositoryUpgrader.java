@@ -43,68 +43,35 @@ package migration;
 
 
 import java.sql.Connection;
-
 import java.sql.ResultSet;
-
 import java.sql.SQLException;
-
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
-import java.util.Iterator;
-
-import java.util.Date;
-
-import java.util.GregorianCalendar;
-
-
-
 import org.apache.commons.logging.Log;
-
 import org.sakaiproject.component.cover.ComponentManager;
-
-import org.sakaiproject.tool.cover.SessionManager;
-
-import org.sakaiproject.tool.api.Session;
-
-import org.sakaiproject.exception.IdInvalidException;
-
-import org.sakaiproject.exception.IdUnusedException;
-
-import org.sakaiproject.exception.IdUsedException;
-
-import org.sakaiproject.exception.InconsistentException;
-
-import org.sakaiproject.exception.PermissionException;
-
-import org.sakaiproject.exception.TypeException;
-
-import org.sakaiproject.exception.ServerOverloadException;
-
-import org.sakaiproject.exception.OverQuotaException;
-
-import org.sakaiproject.db.api.SqlReader;
-
-import org.sakaiproject.db.cover.SqlService;
-
-
-
-import org.sakaiproject.content.api.ContentHostingService;
-
 import org.sakaiproject.content.api.ContentCollectionEdit;
-
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResourceEdit;
-
+import org.sakaiproject.db.api.SqlReader;
+import org.sakaiproject.db.cover.SqlService;
 import org.sakaiproject.entity.api.Entity;
-
 import org.sakaiproject.entity.api.ResourceProperties;
-
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
-
-
-
+import org.sakaiproject.exception.IdInvalidException;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.exception.InconsistentException;
+import org.sakaiproject.exception.OverQuotaException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.time.api.Time;
-
 import org.sakaiproject.time.cover.TimeService;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.cover.SessionManager;
 
 
 

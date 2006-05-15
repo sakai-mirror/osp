@@ -31,7 +31,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
@@ -46,51 +54,74 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Expression;
 import org.hibernate.type.Type;
-
 import org.jdom.Element;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.content.api.ContentCollection;
+import org.sakaiproject.content.api.ContentCollectionEdit;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.ContentResourceEdit;
+import org.sakaiproject.content.api.LockManager;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
+import org.sakaiproject.exception.IdInvalidException;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.exception.ImportException;
+import org.sakaiproject.exception.InconsistentException;
+import org.sakaiproject.exception.OverQuotaException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.IdType;
-import org.sakaiproject.metaobj.shared.mgt.*;
-import org.sakaiproject.metaobj.shared.model.*;
+import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
+import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.model.FinderException;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.MimeType;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.content.api.*;
-import org.sakaiproject.entity.api.*;
+import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
-import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
-import org.sakaiproject.authz.api.SecurityService;
-import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.exception.*;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.theospi.portfolio.guidance.mgt.GuidanceManager;
+import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.model.*;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
+import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
+import org.theospi.portfolio.shared.intf.EntityContextFinder;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
-import org.theospi.portfolio.shared.intf.EntityContextFinder;
 import org.theospi.portfolio.style.StyleConsumer;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.style.model.Style;
-import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
-import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
 import org.theospi.portfolio.workflow.model.WorkflowItem;
-import org.theospi.portfolio.guidance.mgt.GuidanceManager;
-import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.utils.zip.UncloseableZipInputStream;
 
 /**
@@ -129,18 +160,21 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return getHibernateTemplate().find("from Scaffolding");
    }
    
-   public List findScaffolding(String siteId, String toolId, String userId) {
+   public List findScaffolding(String siteId, String userId) {
       if (userId == null)
          userId = "%";
       
-      Object[] params = new Object[]{siteId, toolId, userId, new Boolean(true)};
+      Object[] params = new Object[]{siteId, userId, new Boolean(true)};
       return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
-            "and s.toolId=? and (s.owner=? or s.published=?)", 
+            "and (s.owner=? or s.published=?)", 
             params);
    }
    
-   public List findScaffolding(String siteId, String toolId) {
-      return findScaffolding(siteId, toolId, null);
+   protected List findPublishedScaffolding(String siteId) {
+      Object[] params = new Object[]{siteId, new Boolean(true)};
+      return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
+            "and s.published=?",
+            params);
    }
 
    public List getScaffoldingForWarehousing() {
@@ -807,8 +841,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Criteria c = null;
       try {
          c = this.getSession().createCriteria(Cell.class);
-         c.setFetchMode("scaffoldingCell", FetchMode.EAGER);
-         c.setFetchMode("scaffoldingCell.scaffolding", FetchMode.EAGER);
+         c.setFetchMode("scaffoldingCell", FetchMode.JOIN);
+         c.setFetchMode("scaffoldingCell.scaffolding", FetchMode.JOIN);
          //c.add(Expression.eq("artifactId", artifactId));
          Criteria att = c.createCriteria("attachments");
          att.add(Expression.eq("artifactId", artifactId));
@@ -830,8 +864,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Criteria c = null;
       try {
          c = this.getSession().createCriteria(Cell.class);
-         c.setFetchMode("scaffoldingCell", FetchMode.EAGER);
-         c.setFetchMode("scaffoldingCell.scaffolding", FetchMode.EAGER);
+         c.setFetchMode("scaffoldingCell", FetchMode.JOIN);
+         c.setFetchMode("scaffoldingCell.scaffolding", FetchMode.JOIN);
          //c.add(Expression.eq("artifactId", artifactId));
          Criteria att = c.createCriteria("pageForms");
          att.add(Expression.eq("artifactId", formId));
@@ -1236,9 +1270,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       zos.closeEntry();
       in.close();
    }
-   
+   /*
    public Scaffolding uploadScaffolding(String scaffoldingFileName,
-         String toolId, InputStream zipFileStream) throws IOException {
+         String siteId, InputStream zipFileStream) throws IOException {
       try {
          return uploadScaffolding(scaffoldingFileName, SiteService.findTool(toolId).getId(), zipFileStream);
       }
@@ -1249,13 +1283,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          throw new InvalidUploadException("Invalid scaffolding file.", exp, "uploadedScaffolding");
       }
    }
-
-   public Scaffolding uploadScaffolding(Reference uploadedScaffoldingFile, ToolConfiguration currentPlacement)
-         throws IOException {
-      Node file = getNode(uploadedScaffoldingFile);
-
-      ZipInputStream zis = new UncloseableZipInputStream(file.getInputStream());
-
+   */
+   protected Scaffolding uploadScaffolding(String siteId, ZipInputStream zis)  throws IOException {
+      
       ZipEntry currentEntry = zis.getNextEntry();
       Hashtable fileMap = new Hashtable();
       Scaffolding scaffolding = null;
@@ -1285,15 +1315,15 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             else if (!currentEntry.isDirectory()) {
                if (currentEntry.getName().startsWith("forms/")) {
                   processMatrixForm(currentEntry, zis, formsMap,
-                        getIdManager().getId(currentPlacement.getSiteId()));
+                        getIdManager().getId(siteId));
                }
                else if (currentEntry.getName().equals("guidance/guidanceList")) {
                   gotFile = true;
-                  guidanceMap = processMatrixGuidance(fileParent, currentPlacement.getSiteId(), zis);
+                  guidanceMap = processMatrixGuidance(fileParent, siteId, zis);
                }
                else if (currentEntry.getName().equals("style/styleList")) {
                   gotFile = true;
-                  styleMap = processMatrixStyle(fileParent, currentPlacement.getSiteId(), zis);
+                  styleMap = processMatrixStyle(fileParent, siteId, zis);
                }
             }
 
@@ -1306,11 +1336,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          scaffolding.setPublishedBy(null);
          scaffolding.setPublishedDate(null);
          scaffolding.setOwner(getAuthnManager().getAgent());
-         scaffolding.setWorksiteId(getIdManager().getId(currentPlacement.getSiteId()));
+         scaffolding.setWorksiteId(getIdManager().getId(siteId));
          
          resetIds(scaffolding, guidanceMap, formsMap, styleMap);
 
-         storeScaffolding(scaffolding);         
+         scaffolding = storeScaffolding(scaffolding);         
 
          if (gotFile) {
             fileParent.getPropertiesEdit().addProperty(
@@ -1321,7 +1351,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             getContentHosting().cancelCollection(fileParent);
          }
 
-         storeScaffolding(scaffolding);
+         scaffolding = storeScaffolding(scaffolding);
          
          createEvaluatorAuthzForImport(scaffolding);
          
@@ -1339,6 +1369,15 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             logger.error("", e);
          }
       }
+   }
+
+   public Scaffolding uploadScaffolding(Reference uploadedScaffoldingFile, String siteId)
+         throws IOException {
+      Node file = getNode(uploadedScaffoldingFile);
+
+      ZipInputStream zis = new UncloseableZipInputStream(file.getInputStream());
+      return uploadScaffolding(siteId, zis);
+      
    }
 
    protected Map processMatrixGuidance(ContentCollection parent, String siteId,
@@ -1380,11 +1419,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       boolean canEval = getAuthzManager().isAuthorized(MatrixFunctionConstants.EVALUATE_MATRIX, 
             page.getPageDefinition().getId());
       boolean canReview = getAuthzManager().isAuthorized(MatrixFunctionConstants.REVIEW_MATRIX, 
-            getIdManager().getId(page.getPageDefinition().getToolId()));
+            getIdManager().getId(page.getPageDefinition().getSiteId()));
       
       if (!canReview) {
          canReview = getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
-            getIdManager().getId(page.getPageDefinition().getToolId()));
+            getIdManager().getId(page.getPageDefinition().getSiteId()));
       }
       
       
@@ -1831,16 +1870,14 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          out);
    }
 
-   public void importResources(String fromContext, String toContext, List resourceIds) {
-      //TODO CWM fix this ASAP
-      /*
+   public void importResources(String fromContext, String toContext, List resourceIds) {      
       ClassLoader currentLoader = Thread.currentThread().getContextClassLoader();
       try {
          Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
          ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-         List scaffolding = this.findScaffolding(fromContext, fromTool.getId());
+         List scaffolding = this.findPublishedScaffolding(fromContext);
          if (scaffolding == null) {
             return;
          }
@@ -1848,13 +1885,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          for (Iterator iter = scaffolding.iterator(); iter.hasNext();) {
             Scaffolding scaffold = (Scaffolding)iter.next();
             Id id = scaffold.getId();
-            String title = scaffold.getTitle();
    
             getHibernateTemplate().evict(scaffold);
    
             packageScffoldingForExport(id, bos);
-            ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-            uploadScaffolding(title, toTool.getId(), bis);
+            InputStream is = new ByteArrayInputStream(bos.toByteArray());
+            ZipInputStream zis = new UncloseableZipInputStream(is);
+            uploadScaffolding(toContext, zis);
          }
       } catch (IOException e) {
          logger.error("", e);
@@ -1863,7 +1900,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       finally {
          Thread.currentThread().setContextClassLoader(currentLoader);
       }
-      */
+      
    }
 
    public ContentHostingService getContentHosting() {

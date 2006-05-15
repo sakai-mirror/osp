@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/portal/tool/src/java/org/theospi/portfolio/portal/tool/ToolCategoryTool.java $
+* $Id:ToolCategoryTool.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -20,14 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.tool;
 
-import org.theospi.portfolio.shared.tool.HelperToolBase;
-import org.theospi.portfolio.portal.intf.PortalManager;
-import org.theospi.portfolio.portal.model.ToolCategory;
-import org.theospi.jsf.intf.XmlTagFactory;
+import java.io.InputStream;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import java.io.InputStream;
+
+import org.theospi.jsf.intf.XmlTagFactory;
+import org.theospi.portfolio.portal.intf.PortalManager;
+import org.theospi.portfolio.portal.model.ToolCategory;
+import org.theospi.portfolio.shared.tool.HelperToolBase;
 
 /**
  * Created by IntelliJ IDEA.

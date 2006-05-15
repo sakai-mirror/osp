@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/shared/control/tag/DateSelectPopupTag.java $
+* $Id:DateSelectPopupTag.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,15 +20,16 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.control.tag;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
-import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
-import org.sakaiproject.component.cover.ComponentManager;
+import java.io.IOException;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-import java.io.IOException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
 
 public class DateSelectPopupTag extends BodyTagSupport {
    protected final transient Log logger = LogFactory.getLog(getClass());

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/CommentListController.java $
+* $Id:CommentListController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,17 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.CommentSortBy;
 import org.theospi.portfolio.presentation.PresentationManager;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
-import org.sakaiproject.tool.cover.ToolManager;
-
-
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/api-impl/src/java/org/theospi/portfolio/reports/model/impl/ReportsHttpAccess.java $
+* $Id:ReportsHttpAccess.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,18 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model.impl;
 
-import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
-import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
-import org.theospi.portfolio.reports.model.ReportsManager;
 import org.sakaiproject.entity.api.EntityAccessOverloadException;
 import org.sakaiproject.entity.api.EntityCopyrightException;
 import org.sakaiproject.entity.api.EntityNotDefinedException;
 import org.sakaiproject.entity.api.EntityPermissionException;
 import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.CopyrightException;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
+import org.theospi.portfolio.reports.model.ReportsManager;
+import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
 
 /**
  * This class can check for access permissions on a particular reference

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api/src/java/org/theospi/portfolio/presentation/model/Presentation.java $
+* $Id:Presentation.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,12 +20,21 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model;
 
-import org.sakaiproject.metaobj.shared.model.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.ElementBean;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdImpl;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.theospi.portfolio.shared.model.DateBean;
 import org.theospi.portfolio.style.model.Style;
-import org.sakaiproject.component.cover.ServerConfigurationService;
-
-import java.util.*;
 
 public class Presentation extends IdentifiableObject {
    private String name;

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api/src/java/org/theospi/utils/Config.java $
+* $Id:Config.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,9 +20,9 @@
 **********************************************************************************/
 package org.theospi.utils;
 
-import org.springframework.beans.factory.InitializingBean;
-
 import java.util.Properties;
+
+import org.springframework.beans.factory.InitializingBean;
 
 /** 
  * Created by IntelliJ IDEA.

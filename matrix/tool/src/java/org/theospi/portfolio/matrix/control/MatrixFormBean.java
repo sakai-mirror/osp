@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/matrix/tool/src/java/org/theospi/portfolio/matrix/control/MatrixFormBean.java $
+* $Id:MatrixFormBean.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,11 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.List;
+
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.matrix.model.Criterion;
 import org.theospi.portfolio.matrix.model.Matrix;
-
-import java.util.List;
 
 /**
  * @author apple

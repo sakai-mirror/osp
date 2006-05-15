@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/warehouse/api/src/java/org/theospi/portfolio/warehouse/intf/WarehouseTask.java $
+* $Id:WarehouseTask.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -22,7 +22,6 @@ package org.theospi.portfolio.warehouse.intf;
 
 import org.quartz.JobExecutionException;
 
-import java.io.InputStream;
 
 /**
  * Created by IntelliJ IDEA.

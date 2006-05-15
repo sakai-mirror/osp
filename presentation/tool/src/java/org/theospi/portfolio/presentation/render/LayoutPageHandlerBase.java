@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/render/LayoutPageHandlerBase.java $
+* $Id:LayoutPageHandlerBase.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,11 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.render;
 
-import org.theospi.jsf.impl.DefaultXmlTagHandler;
-import org.theospi.jsf.intf.XmlTagFactory;
-import org.theospi.jsf.intf.XmlDocumentContainer;
-
 import javax.faces.component.UIComponent;
+
+import org.theospi.jsf.impl.DefaultXmlTagHandler;
+import org.theospi.jsf.intf.XmlDocumentContainer;
+import org.theospi.jsf.intf.XmlTagFactory;
 
 /**
  * Created by IntelliJ IDEA.

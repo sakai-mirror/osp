@@ -26,16 +26,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.sakaiproject.content.api.LockManager;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Criterion;
 import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
-import org.sakaiproject.content.api.LockManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.Id;
 
 public class BaseScaffoldingController {
    
@@ -131,7 +131,6 @@ public class BaseScaffoldingController {
             if (scaffoldingCell == null) {
                scaffoldingCell = new ScaffoldingCell(criterion, level, status, scaffolding);
                scaffoldingCell.getWizardPageDefinition().setSiteId(scaffolding.getWorksiteId().getValue());
-               scaffoldingCell.getWizardPageDefinition().setToolId(scaffolding.getToolId().getValue());
                scaffoldingCell.getWizardPageDefinition().setTitle(getDefaultTitle(scaffolding, criterion, level));
                getMatrixManager().storeScaffoldingCell(scaffoldingCell);
             }

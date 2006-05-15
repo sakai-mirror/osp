@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/warehouse/api-impl/src/java/org/theospi/portfolio/warehouse/sakai/resource/ResourcePropertyPropertyAccess.java $
+* $Id:ResourcePropertyPropertyAccess.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,8 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.sakai.resource;
 
-import org.theospi.portfolio.warehouse.impl.BeanPropertyAccess;
 import org.sakaiproject.content.api.ContentResource;
+import org.theospi.portfolio.warehouse.impl.BeanPropertyAccess;
 
 /**
  * Created by IntelliJ IDEA.

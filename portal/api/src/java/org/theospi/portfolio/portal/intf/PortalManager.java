@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/portal/api/src/java/org/theospi/portfolio/portal/intf/PortalManager.java $
+* $Id:PortalManager.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -20,6 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.intf;
 
+import java.util.List;
+import java.util.Map;
+
 import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
@@ -27,9 +30,6 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.user.api.User;
 import org.theospi.portfolio.portal.model.SiteType;
 import org.theospi.portfolio.portal.model.ToolCategory;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.

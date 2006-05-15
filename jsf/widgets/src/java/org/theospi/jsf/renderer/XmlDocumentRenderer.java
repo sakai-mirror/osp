@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/jsf/widgets/src/java/org/theospi/jsf/renderer/XmlDocumentRenderer.java $
+* $Id:XmlDocumentRenderer.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,13 +20,14 @@
 **********************************************************************************/
 package org.theospi.jsf.renderer;
 
-import org.theospi.jsf.component.XmlDocumentComponent;
-import org.theospi.jsf.util.TagUtil;
+import java.io.IOException;
 
-import javax.faces.component.*;
+import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.render.Renderer;
-import java.io.IOException;
+
+import org.theospi.jsf.component.XmlDocumentComponent;
+import org.theospi.jsf.util.TagUtil;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/render/TextTypeTagHandler.java $
+* $Id:TextTypeTagHandler.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,24 +20,25 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.render;
 
-import org.theospi.jsf.intf.XmlTagFactory;
-import org.theospi.jsf.intf.ComponentWrapper;
-import org.theospi.jsf.intf.XmlDocumentContainer;
-import org.theospi.portfolio.presentation.component.RegionComponent;
-import org.theospi.portfolio.presentation.component.SequenceComponent;
-import org.theospi.portfolio.presentation.tool.RegionMap;
-import org.theospi.portfolio.presentation.tool.DecoratedRegion;
-import org.theospi.portfolio.presentation.model.PresentationPageRegion;
-import org.xml.sax.Attributes;
-import org.sakaiproject.jsf.component.InputRichTextComponent;
-
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UIComponent;
-import javax.faces.component.html.HtmlInputText;
-import javax.faces.el.ValueBinding;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIViewRoot;
+import javax.faces.component.html.HtmlInputText;
+import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
+
+import org.sakaiproject.jsf.component.InputRichTextComponent;
+import org.theospi.jsf.intf.ComponentWrapper;
+import org.theospi.jsf.intf.XmlDocumentContainer;
+import org.theospi.jsf.intf.XmlTagFactory;
+import org.theospi.portfolio.presentation.component.RegionComponent;
+import org.theospi.portfolio.presentation.component.SequenceComponent;
+import org.theospi.portfolio.presentation.model.PresentationPageRegion;
+import org.theospi.portfolio.presentation.tool.DecoratedRegion;
+import org.theospi.portfolio.presentation.tool.RegionMap;
+import org.xml.sax.Attributes;
 
 /**
  * Created by IntelliJ IDEA.

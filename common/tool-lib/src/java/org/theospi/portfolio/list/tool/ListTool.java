@@ -21,17 +21,17 @@
 
 package org.theospi.portfolio.list.tool;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.theospi.portfolio.list.intf.ListService;
-import org.theospi.portfolio.list.model.ListConfig;
-import org.theospi.portfolio.list.intf.ListItemUtils;
-import org.theospi.portfolio.list.intf.DecoratedListItem;
-import org.theospi.portfolio.shared.tool.ToolBase;
-
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.theospi.portfolio.list.intf.DecoratedListItem;
+import org.theospi.portfolio.list.intf.ListItemUtils;
+import org.theospi.portfolio.list.intf.ListService;
+import org.theospi.portfolio.list.model.ListConfig;
+import org.theospi.portfolio.shared.tool.ToolBase;
 
 public class ListTool extends ToolBase implements ListItemUtils {
    protected final transient Log logger = LogFactory.getLog(getClass());

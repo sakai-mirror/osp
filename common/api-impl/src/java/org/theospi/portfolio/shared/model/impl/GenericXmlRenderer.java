@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/shared/model/impl/GenericXmlRenderer.java $
+* $Id:GenericXmlRenderer.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.model.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdom.Element;
-import org.jdom.Document;
-import org.jdom.input.SAXBuilder;
-import org.sakaiproject.metaobj.shared.ArtifactFinder;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
-import org.sakaiproject.metaobj.shared.model.Artifact;
-import org.theospi.portfolio.shared.model.OspException;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -41,6 +29,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Iterator;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
+import org.sakaiproject.metaobj.shared.ArtifactFinder;
+import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
+import org.sakaiproject.metaobj.shared.model.Artifact;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
+import org.theospi.portfolio.shared.model.OspException;
 
 /**
  * This class renders an object into an xml object.  This implementation

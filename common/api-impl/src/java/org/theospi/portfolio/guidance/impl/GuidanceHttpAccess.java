@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/guidance/impl/GuidanceHttpAccess.java $
+* $Id:GuidanceHttpAccess.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.impl;
 
-import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
-import org.theospi.portfolio.guidance.mgt.GuidanceManager;
-import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
 import org.sakaiproject.entity.api.EntityAccessOverloadException;
 import org.sakaiproject.entity.api.EntityCopyrightException;
 import org.sakaiproject.entity.api.EntityNotDefinedException;
 import org.sakaiproject.entity.api.EntityPermissionException;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
+import org.theospi.portfolio.guidance.mgt.GuidanceManager;
+import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api-impl/src/java/org/theospi/portfolio/presentation/export/PortfolioMirror.java $
+* $Id:PortfolioMirror.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,20 +20,23 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.export;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import websphinx.*;
-
-import javax.servlet.http.HttpUtils;
-import java.io.IOException;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Map;
+import java.net.URL;
 import java.util.Vector;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import websphinx.Access;
+import websphinx.Link;
+import websphinx.Mirror;
+import websphinx.Page;
+import websphinx.RewritableLinkTransformer;
 
 public class PortfolioMirror extends Mirror {
    protected final transient Log logger = LogFactory.getLog(getClass());

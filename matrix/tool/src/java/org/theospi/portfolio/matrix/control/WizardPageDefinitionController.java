@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/matrix/tool/src/java/org/theospi/portfolio/matrix/control/WizardPageDefinitionController.java $
+* $Id:WizardPageDefinitionController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,21 +20,20 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+
 import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
 import org.sakaiproject.tool.cover.ToolManager;
-
-import org.theospi.portfolio.matrix.model.WizardPageDefinition;
-import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.validation.Errors;
-
-import java.util.HashSet;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * Created by IntelliJ IDEA.
@@ -88,7 +87,6 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
       
       session.remove(WizardPageHelper.CANCELED);
       page.setSiteId(ToolManager.getCurrentPlacement().getContext());
-      page.setToolId(ToolManager.getCurrentPlacement().getId());
       ScaffoldingCell cell = new ScaffoldingCell();
       cell.setWizardPageDefinition(page);
       if (page.getId() == null) {

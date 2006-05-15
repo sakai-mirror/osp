@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/jsf/widgets/src/java/org/theospi/jsf/impl/DefaultComponentWrapper.java $
+* $Id:DefaultComponentWrapper.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,12 +20,13 @@
 **********************************************************************************/
 package org.theospi.jsf.impl;
 
-import org.theospi.jsf.intf.ComponentWrapper;
-import org.theospi.jsf.intf.XmlTagHandler;
+import java.io.StringWriter;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.ResponseWriter;
-import java.io.StringWriter;
+
+import org.theospi.jsf.intf.ComponentWrapper;
+import org.theospi.jsf.intf.XmlTagHandler;
 
 /**
  * Created by IntelliJ IDEA.

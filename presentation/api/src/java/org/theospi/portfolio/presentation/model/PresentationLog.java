@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api/src/java/org/theospi/portfolio/presentation/model/PresentationLog.java $
+* $Id:PresentationLog.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,10 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model;
 
+import java.util.Date;
+
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-
-import java.util.Date;
 
 /**
  * what are the things we might need for logging

@@ -20,17 +20,21 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.theospi.portfolio.list.impl.BaseListGenerator;
 import org.theospi.portfolio.list.intf.ActionableListGenerator;
 import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
-import org.theospi.portfolio.list.impl.BaseListGenerator;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.metaobj.security.AuthenticationManager;
-import org.sakaiproject.site.api.ToolConfiguration;
-
-import java.util.*;
 
 public class PresentationListGenerator extends BaseListGenerator implements ActionableListGenerator, CustomLinkListGenerator {
    private PresentationManager presentationManager;

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api/src/java/org/theospi/portfolio/presentation/model/TemplateFileRef.java $
+* $Id:TemplateFileRef.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,16 +20,16 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model;
 
+import java.io.Serializable;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.theospi.portfolio.presentation.PresentationManager;
-import org.theospi.portfolio.shared.mgt.ArtifactUserType;
+import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.shared.mgt.ArtifactUserType;
 import org.theospi.portfolio.shared.model.Node;
-import org.sakaiproject.component.cover.ComponentManager;
-
-import java.io.Serializable;
 
 
 /** @author Hibernate CodeGenerator */

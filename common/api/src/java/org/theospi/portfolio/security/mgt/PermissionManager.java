@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api/src/java/org/theospi/portfolio/security/mgt/PermissionManager.java $
+* $Id:PermissionManager.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,12 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.mgt;
 
+import java.util.List;
+import java.util.Map;
+
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.site.api.Site;
 import org.theospi.portfolio.security.model.PermissionsEdit;
-
-import java.util.List;
-import java.util.Map;
 
 public interface PermissionManager {
 

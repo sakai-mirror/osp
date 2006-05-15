@@ -21,16 +21,19 @@
 
 package org.theospi.portfolio.worksite.mgt.impl;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.theospi.portfolio.list.intf.ListGenerator;
-import org.theospi.portfolio.list.impl.WorksiteBaseGenerator;
-import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-
-import java.util.*;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.theospi.portfolio.list.impl.WorksiteBaseGenerator;
+import org.theospi.portfolio.list.intf.ListGenerator;
 
 public class WorksiteListGenerator extends WorksiteBaseGenerator implements ListGenerator {
    protected final transient Log logger = LogFactory.getLog(getClass());

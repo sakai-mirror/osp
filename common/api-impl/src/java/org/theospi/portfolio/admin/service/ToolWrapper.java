@@ -1,9 +1,9 @@
 package org.theospi.portfolio.admin.service;
 
-import org.sakaiproject.tool.api.Tool;
-
 import java.util.Properties;
 import java.util.Set;
+
+import org.sakaiproject.tool.api.Tool;
 
 /**
  * Created by IntelliJ IDEA.

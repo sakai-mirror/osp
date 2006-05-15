@@ -31,7 +31,6 @@ import javax.faces.render.Renderer;
 
 import org.sakaiproject.jsf.util.RendererUtil;
 
-import org.theospi.jsf.util.TagUtil;
 
 /**
  * This class renders a scrollable area.  It does this by

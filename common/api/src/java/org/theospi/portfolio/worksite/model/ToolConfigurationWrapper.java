@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api/src/java/org/theospi/portfolio/worksite/model/ToolConfigurationWrapper.java $
+* $Id:ToolConfigurationWrapper.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,18 @@
 **********************************************************************************/
 package org.theospi.portfolio.worksite.model;
 
-import org.sakaiproject.site.api.ToolConfiguration;
-import org.sakaiproject.site.api.SitePage;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.tool.api.Tool;
-import org.sakaiproject.exception.IdUnusedException;
-import org.theospi.portfolio.shared.model.OspException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.Serializable;
 import java.util.Properties;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.tool.api.Tool;
+import org.theospi.portfolio.shared.model.OspException;
 
 public class ToolConfigurationWrapper implements Serializable, ToolConfiguration{
    protected final transient Log logger = LogFactory.getLog(getClass());

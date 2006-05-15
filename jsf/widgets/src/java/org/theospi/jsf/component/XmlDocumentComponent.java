@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/jsf/widgets/src/java/org/theospi/jsf/component/XmlDocumentComponent.java $
+* $Id:XmlDocumentComponent.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,17 @@
 **********************************************************************************/
 package org.theospi.jsf.component;
 
-import org.theospi.jsf.intf.XmlTagFactory;
-import org.theospi.jsf.intf.XmlDocumentContainer;
+import java.io.InputStream;
 
-import javax.faces.component.UIOutput;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
-import javax.faces.el.ValueBinding;
 import javax.faces.context.FacesContext;
-import javax.faces.event.FacesEvent;
+import javax.faces.el.ValueBinding;
 import javax.faces.event.AbortProcessingException;
-import java.io.InputStream;
-import java.io.IOException;
+import javax.faces.event.FacesEvent;
+
+import org.theospi.jsf.intf.XmlDocumentContainer;
+import org.theospi.jsf.intf.XmlTagFactory;
 
 /**
  * Created by IntelliJ IDEA.

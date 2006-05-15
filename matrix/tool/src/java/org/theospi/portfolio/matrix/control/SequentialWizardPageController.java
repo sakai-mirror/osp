@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/matrix/tool/src/java/org/theospi/portfolio/matrix/control/SequentialWizardPageController.java $
+* $Id:SequentialWizardPageController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -20,13 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
-
-import java.util.Map;
-import java.util.List;
 
 /**
  * The steps are referenced from 1 to n.  this way we can render the step number to the interface correctly

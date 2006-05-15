@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/glossary/tool/src/java/org/theospi/portfolio/help/control/GlossaryRemoveController.java $
+* $Id:GlossaryRemoveController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,13 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.help.control;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.help.model.GlossaryEntry;
-
-import java.util.Map;
 
 public class GlossaryRemoveController extends HelpController {
    protected final transient Log logger = LogFactory.getLog(getClass());

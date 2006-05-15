@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/security/model/CleanupPermissionManager.java $
+* $Id:CleanupPermissionManager.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,10 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.model;
 
-import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.worksite.model.SiteTool;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.worksite.model.SiteTool;
 
 /**
  * Created by IntelliJ IDEA.

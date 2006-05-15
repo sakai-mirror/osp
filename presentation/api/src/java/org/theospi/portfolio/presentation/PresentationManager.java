@@ -20,6 +20,16 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Collection;
+import java.util.List;
+
+import org.jdom.Document;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationComment;
 import org.theospi.portfolio.presentation.model.PresentationItem;
@@ -29,18 +39,8 @@ import org.theospi.portfolio.presentation.model.PresentationLog;
 import org.theospi.portfolio.presentation.model.PresentationPage;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
-import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.security.model.CleanupableService;
-import org.jdom.Document;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.entity.api.Reference;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Collection;
-import java.util.List;
+import org.theospi.portfolio.shared.model.Node;
 
 /**
  * This class provides a management layer into the presentations included in the system.

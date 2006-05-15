@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/EditItemDefinitionController.java $
+* $Id:EditItemDefinitionController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+
+import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
-import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
-
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Iterator;
 
 public class EditItemDefinitionController extends AbstractPresentationController implements Controller {
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {

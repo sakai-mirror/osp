@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/jsf/widgets/src/java/org/theospi/jsf/tag/XmlDocumentTag.java $
+* $Id:XmlDocumentTag.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,21 +20,22 @@
 **********************************************************************************/
 package org.theospi.jsf.tag;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIOutput;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+import javax.faces.webapp.UIComponentTag;
+import javax.servlet.jsp.JspException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.sakaiproject.jsf.util.TagUtil;
 import org.theospi.jsf.component.XmlDocumentComponent;
 import org.theospi.jsf.impl.XmlDocumentHandler;
 import org.xml.sax.SAXException;
-
-import javax.faces.webapp.UIComponentTag;
-import javax.faces.component.UIComponent;
-import javax.faces.component.UIViewRoot;
-import javax.faces.component.UIOutput;
-import javax.faces.context.FacesContext;
-import javax.servlet.jsp.JspException;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Created by IntelliJ IDEA.

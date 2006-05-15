@@ -22,7 +22,6 @@ package org.theospi.portfolio.presentation.model;
 
 import java.io.Serializable;
 import java.util.Set;
-import java.util.Iterator;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;

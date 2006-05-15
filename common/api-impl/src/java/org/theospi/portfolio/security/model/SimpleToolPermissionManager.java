@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/security/model/SimpleToolPermissionManager.java $
+* $Id:SimpleToolPermissionManager.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,6 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.model;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
@@ -33,8 +39,6 @@ import org.theospi.portfolio.security.mgt.PermissionManager;
 import org.theospi.portfolio.security.mgt.ToolPermissionManager;
 import org.theospi.portfolio.worksite.intf.ToolEventListener;
 import org.theospi.portfolio.worksite.model.SiteTool;
-
-import java.util.*;
 
 public class SimpleToolPermissionManager implements ToolEventListener, ToolPermissionManager {
    protected final transient Log logger = LogFactory.getLog(getClass());

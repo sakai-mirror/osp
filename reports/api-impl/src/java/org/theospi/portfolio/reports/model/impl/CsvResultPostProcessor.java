@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/api-impl/src/java/org/theospi/portfolio/reports/model/impl/CsvResultPostProcessor.java $
+* $Id:CsvResultPostProcessor.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,19 +20,16 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model.impl;
 
-import org.theospi.portfolio.reports.model.ResultsPostProcessor;
-import org.theospi.portfolio.reports.model.ResultsPostProcessor;
-import org.theospi.portfolio.reports.model.impl.BaseResultPostProcessor;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.DataConversionException;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
-import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+
+import org.jdom.DataConversionException;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.theospi.portfolio.reports.model.ResultsPostProcessor;
 
 /**
  * Created by IntelliJ IDEA.

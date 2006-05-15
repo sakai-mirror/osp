@@ -20,16 +20,20 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model.impl;
 
-import org.theospi.portfolio.reports.model.ReportResult;
-import org.theospi.portfolio.reports.model.ReportsManager;
-import org.theospi.portfolio.reports.model.impl.BaseResultProcessor;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
-import org.sakaiproject.authz.api.SecurityService;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
-import java.util.*;
+
+import org.jdom.Document;
+import org.jdom.Element;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
+import org.theospi.portfolio.reports.model.ReportResult;
+import org.theospi.portfolio.reports.model.ReportsManager;
 
 /**
  * Created by IntelliJ IDEA.

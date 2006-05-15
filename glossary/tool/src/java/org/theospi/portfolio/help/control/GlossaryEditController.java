@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/glossary/tool/src/java/org/theospi/portfolio/help/control/GlossaryEditController.java $
+* $Id:GlossaryEditController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.help.control;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.theospi.portfolio.help.model.GlossaryEntry;
+import org.sakaiproject.metaobj.shared.model.PersistenceException;
+import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-import org.sakaiproject.metaobj.shared.model.PersistenceException;
-
-import java.util.Map;
+import org.theospi.portfolio.help.model.GlossaryEntry;
 
 public class GlossaryEditController extends HelpController implements LoadObjectController {
    protected final transient Log logger = LogFactory.getLog(getClass());

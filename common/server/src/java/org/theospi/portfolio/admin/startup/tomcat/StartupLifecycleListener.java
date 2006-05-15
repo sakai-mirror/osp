@@ -1,6 +1,10 @@
 package org.theospi.portfolio.admin.startup.tomcat;
 
-import org.apache.catalina.*;
+import org.apache.catalina.Context;
+import org.apache.catalina.Host;
+import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleEvent;
+import org.apache.catalina.LifecycleListener;
 import org.theospi.portfolio.admin.startup.ServerListeningService;
 
 /**

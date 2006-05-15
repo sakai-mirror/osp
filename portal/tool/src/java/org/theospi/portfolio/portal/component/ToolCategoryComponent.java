@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/portal/tool/src/java/org/theospi/portfolio/portal/component/ToolCategoryComponent.java $
+* $Id:ToolCategoryComponent.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -20,11 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.component;
 
-import org.theospi.portfolio.portal.model.ToolCategory;
-import org.theospi.portfolio.portal.model.SiteType;
-import org.sakaiproject.authz.api.Role;
-
 import javax.faces.component.UINamingContainer;
+
+import org.sakaiproject.authz.api.Role;
+import org.theospi.portfolio.portal.model.SiteType;
+import org.theospi.portfolio.portal.model.ToolCategory;
 
 /**
  * Created by IntelliJ IDEA.

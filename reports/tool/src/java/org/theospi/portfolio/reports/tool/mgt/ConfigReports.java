@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/tool/src/java/org/theospi/portfolio/reports/tool/mgt/ConfigReports.java $
+* $Id:ConfigReports.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -21,6 +21,7 @@
 package org.theospi.portfolio.reports.tool.mgt;
 
 import java.util.List;
+
 import org.theospi.portfolio.reports.model.ReportsManager;
 /**
  * This class takes the reportsfrom the given list and sets them in the ReportsManager

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/wizard/tool/src/java/org/theospi/portfolio/wizard/tool/DecoratedCategory.java $
+* $Id:DecoratedCategory.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,18 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.tool;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardCategory;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
-import org.theospi.portfolio.matrix.model.WizardPageDefinition;
-import org.theospi.portfolio.matrix.WizardPageHelper;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.SessionManager;
-
-import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * Created by IntelliJ IDEA.

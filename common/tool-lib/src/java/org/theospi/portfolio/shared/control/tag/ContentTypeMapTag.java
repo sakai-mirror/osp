@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/shared/control/tag/ContentTypeMapTag.java $
+* $Id:ContentTypeMapTag.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,13 +20,14 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.control.tag;
 
+import java.io.IOException;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
+
+import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 import org.sakaiproject.content.api.ContentTypeImageService;
 import org.sakaiproject.metaobj.shared.model.MimeType;
-import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
-
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.JspException;
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.

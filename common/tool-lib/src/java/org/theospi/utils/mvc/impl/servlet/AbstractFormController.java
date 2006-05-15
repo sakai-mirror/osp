@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/utils/mvc/impl/servlet/AbstractFormController.java $
+* $Id:AbstractFormController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,14 +20,15 @@
 **********************************************************************************/
 package org.theospi.utils.mvc.impl.servlet;
 
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.validation.Errors;
-import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
-import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
-import java.util.Map;
-import java.util.HashMap;
+
+import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
+import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
+import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * Created by IntelliJ IDEA.

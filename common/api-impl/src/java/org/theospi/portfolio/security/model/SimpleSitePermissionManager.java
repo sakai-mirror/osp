@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/security/model/SimpleSitePermissionManager.java $
+* $Id:SimpleSitePermissionManager.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -21,13 +21,13 @@
 
 package org.theospi.portfolio.security.model;
 
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.api.ToolConfiguration;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
 
 public class SimpleSitePermissionManager extends SimpleToolPermissionManager {
 

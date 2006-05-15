@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/glossary/api-impl/src/java/org/theospi/portfolio/help/model/TermComparator.java $
+* $Id:TermComparator.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,10 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.help.model;
 
+import java.util.Comparator;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.util.Comparator;
 
 public class TermComparator implements Comparator {
    protected final transient Log logger = LogFactory.getLog(getClass());

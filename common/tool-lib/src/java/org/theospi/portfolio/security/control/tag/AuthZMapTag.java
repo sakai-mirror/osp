@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/security/control/tag/AuthZMapTag.java $
+* $Id:AuthZMapTag.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,21 +20,21 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.control.tag;
 
+import java.util.Map;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.TagSupport;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.model.AuthZMap;
-
-import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.tool.cover.ToolManager;
-
-import javax.servlet.jsp.tagext.TagSupport;
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.JspException;
-import java.util.Map;
 
 public class AuthZMapTag extends TagSupport {
 

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api/src/java/org/theospi/portfolio/shared/mgt/EntityReferenceUserType.java $
+* $Id:EntityReferenceUserType.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,16 +20,14 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.mgt;
 
-import org.hibernate.usertype.UserType;
-import org.hibernate.HibernateException;
-
-import java.sql.Types;
+import java.io.Serializable;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
-import java.io.Serializable;
+import java.sql.Types;
 
-import org.sakaiproject.entity.api.Reference;
+import org.hibernate.HibernateException;
+import org.hibernate.usertype.UserType;
 import org.sakaiproject.entity.cover.EntityManager;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
 

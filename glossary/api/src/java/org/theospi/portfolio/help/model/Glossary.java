@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/glossary/api/src/java/org/theospi/portfolio/help/model/Glossary.java $
+* $Id:Glossary.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,11 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.help.model;
 
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
-
 import java.util.Collection;
 import java.util.Set;
+
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 
 public interface Glossary extends DuplicatableToolService {
    public GlossaryEntry load(Id id);

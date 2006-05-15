@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/tool/src/java/org/theospi/portfolio/reports/tool/DecoratedReport.java $
+* $Id:DecoratedReport.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -25,9 +25,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.theospi.portfolio.reports.model.ReportParam;
 import org.theospi.portfolio.reports.model.Report;
-import org.theospi.portfolio.reports.tool.DecoratedAbstractResult;
+import org.theospi.portfolio.reports.model.ReportParam;
 
 /**
  * This class allows the Report to interact with the view

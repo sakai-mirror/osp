@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/security/impl/sakai/WorksiteAwareAuthorizationFacade.java $
+* $Id:WorksiteAwareAuthorizationFacade.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,6 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.impl.sakai;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.security.impl.sakai.SecurityBase;
@@ -29,8 +36,6 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.thread_local.api.ThreadLocalManager;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.impl.simple.SimpleAuthorizationFacade;
-
-import java.util.*;
 
 public class WorksiteAwareAuthorizationFacade extends SimpleAuthorizationFacade {
    protected final transient Log logger = LogFactory.getLog(getClass());

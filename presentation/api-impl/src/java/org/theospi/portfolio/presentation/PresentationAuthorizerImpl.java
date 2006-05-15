@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api-impl/src/java/org/theospi/portfolio/presentation/PresentationAuthorizerImpl.java $
+* $Id:PresentationAuthorizerImpl.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,19 +20,19 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation;
 
-import org.theospi.portfolio.security.app.ApplicationAuthorizer;
-import org.theospi.portfolio.security.AuthorizationFacade;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.theospi.portfolio.presentation.model.Presentation;
-import org.theospi.portfolio.presentation.model.PresentationLayout;
-import org.theospi.portfolio.presentation.model.PresentationTemplate;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationLayout;
+import org.theospi.portfolio.presentation.model.PresentationTemplate;
+import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.security.app.ApplicationAuthorizer;
 
 public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
    private PresentationManager presentationManager;

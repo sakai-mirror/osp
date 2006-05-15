@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/tool/src/java/org/theospi/portfolio/reports/tool/DecoratedReportParam.java $
+* $Id:DecoratedReportParam.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,17 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.tool;
 
-import java.lang.NumberFormatException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
 
 import javax.faces.model.SelectItem;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.theospi.portfolio.reports.model.ReportParam;
 import org.theospi.portfolio.reports.model.ReportDefinitionParam;
+import org.theospi.portfolio.reports.model.ReportParam;
 
 
 /**

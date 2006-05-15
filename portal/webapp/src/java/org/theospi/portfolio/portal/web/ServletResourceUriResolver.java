@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/portal/webapp/src/java/org/theospi/portfolio/portal/web/ServletResourceUriResolver.java $
+* $Id:ServletResourceUriResolver.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -20,11 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.web;
 
-import javax.xml.transform.URIResolver;
+import javax.servlet.ServletContext;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
-import javax.servlet.ServletContext;
 
 /**
  * Created by IntelliJ IDEA.

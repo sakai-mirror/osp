@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.sakai.site;
 
-import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
-import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.site.api.SiteService.SortType;
-import org.sakaiproject.site.api.SiteService.SelectionType;
-import org.sakaiproject.site.api.Site;
-
 import java.util.Collection;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
+
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.SiteService.SelectionType;
+import org.sakaiproject.site.api.SiteService.SortType;
+import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
 
 /**
  * Created by IntelliJ IDEA.

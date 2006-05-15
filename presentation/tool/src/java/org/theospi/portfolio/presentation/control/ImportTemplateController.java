@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/ImportTemplateController.java $
+* $Id:ImportTemplateController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,29 +20,32 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
-import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.presentation.model.TemplateUploadForm;
-import org.theospi.portfolio.presentation.model.PresentationTemplate;
-import org.theospi.portfolio.shared.model.OspException;
-import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.springframework.validation.Errors;
+import org.springframework.validation.Validator;
+import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.presentation.model.PresentationTemplate;
+import org.theospi.portfolio.presentation.model.TemplateUploadForm;
 import org.theospi.portfolio.shared.model.Node;
-
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.FilePickerHelper;
-import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.entity.api.EntityManager;
-
-import java.util.*;
+import org.theospi.portfolio.shared.model.OspException;
 
 public class ImportTemplateController extends AbstractPresentationController implements Validator{
    protected final transient Log logger = LogFactory.getLog(getClass());

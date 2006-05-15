@@ -20,15 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.osp.matrix;
 
-import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
-import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.matrix.model.Scaffolding;
-import org.theospi.portfolio.matrix.model.ScaffoldingCell;
-
 import java.util.Collection;
-import java.util.List;
-import java.util.Iterator;
-import java.util.Set;
+
+import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
 
 /**
  * Created by IntelliJ IDEA.

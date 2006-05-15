@@ -20,12 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-
-import java.io.Serializable;
-import java.util.*;
 
 public class PresentationLayout extends IdentifiableObject implements Serializable {
    private String name;

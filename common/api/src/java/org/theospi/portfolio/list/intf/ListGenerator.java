@@ -21,10 +21,10 @@
 
 package org.theospi.portfolio.list.intf;
 
-import org.sakaiproject.site.api.ToolConfiguration;
-
 import java.util.List;
 import java.util.Map;
+
+import org.sakaiproject.site.api.ToolConfiguration;
 
 public interface ListGenerator {
 

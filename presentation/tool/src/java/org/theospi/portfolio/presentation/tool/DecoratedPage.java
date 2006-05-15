@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/tool/DecoratedPage.java $
+* $Id:DecoratedPage.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,23 +20,22 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.tool;
 
-import org.theospi.portfolio.presentation.PresentationLayoutHelper;
-import org.theospi.portfolio.presentation.model.PresentationPage;
-import org.theospi.portfolio.presentation.model.PresentationLayout;
-import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.style.StyleHelper;
-import org.theospi.portfolio.style.model.Style;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.metaobj.shared.model.Id;
-
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.theospi.portfolio.presentation.PresentationLayoutHelper;
+import org.theospi.portfolio.presentation.model.PresentationLayout;
+import org.theospi.portfolio.presentation.model.PresentationPage;
+import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.style.StyleHelper;
+import org.theospi.portfolio.style.model.Style;
 
 /**
  * Created by IntelliJ IDEA.

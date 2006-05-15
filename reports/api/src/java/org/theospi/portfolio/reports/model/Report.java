@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/api/src/java/org/theospi/portfolio/reports/model/Report.java $
+* $Id:Report.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Date;
 
 import org.sakaiproject.metaobj.shared.model.Id;
-
 import org.theospi.portfolio.shared.model.OspException;
-import org.theospi.portfolio.reports.model.ReportParam;
-import org.theospi.portfolio.reports.model.ReportResult;
-import org.theospi.portfolio.reports.model.ReportDefinitionParam;
-import org.theospi.portfolio.reports.model.ReportDefinition;
 
 /**
  * After loading a report from the database you must call connectToDefinition 

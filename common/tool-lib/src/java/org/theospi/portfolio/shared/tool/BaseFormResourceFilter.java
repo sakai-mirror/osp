@@ -20,12 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.tool;
 
-import org.sakaiproject.content.api.ContentResourceFilter;
-import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.entity.api.ResourceProperties;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.ContentResourceFilter;
+import org.sakaiproject.entity.api.ResourceProperties;
 
 /**
  * This class implements the typical form type filter.

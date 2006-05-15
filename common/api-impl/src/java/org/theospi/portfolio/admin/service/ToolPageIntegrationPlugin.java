@@ -21,23 +21,23 @@
 
 package org.theospi.portfolio.admin.service;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.tool.api.Tool;
-import org.sakaiproject.tool.api.ToolManager;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.api.SitePage;
-import org.sakaiproject.site.api.ToolConfiguration;
-import org.sakaiproject.site.api.SiteService;
-import org.theospi.portfolio.admin.model.IntegrationOption;
-import org.theospi.portfolio.shared.model.OspException;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolManager;
+import org.theospi.portfolio.admin.model.IntegrationOption;
+import org.theospi.portfolio.shared.model.OspException;
 
 public class ToolPageIntegrationPlugin extends IntegrationPluginBase {
    protected final transient Log logger = LogFactory.getLog(getClass());

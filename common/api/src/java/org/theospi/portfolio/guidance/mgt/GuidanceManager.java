@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api/src/java/org/theospi/portfolio/guidance/mgt/GuidanceManager.java $
+* $Id:GuidanceManager.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,16 +20,16 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.mgt;
 
-import org.theospi.portfolio.guidance.model.Guidance;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.content.api.ContentCollection;
-
-import java.util.List;
-import java.util.Map;
-import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.Map;
+
+import org.sakaiproject.content.api.ContentCollection;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.theospi.portfolio.guidance.model.Guidance;
 
 /**
  * Created by IntelliJ IDEA.

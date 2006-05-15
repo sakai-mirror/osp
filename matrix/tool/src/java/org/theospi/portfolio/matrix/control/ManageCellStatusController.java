@@ -25,10 +25,10 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
-import org.sakaiproject.content.api.LockManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;

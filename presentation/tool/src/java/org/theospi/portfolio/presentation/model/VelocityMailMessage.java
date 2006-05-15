@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/model/VelocityMailMessage.java $
+* $Id:VelocityMailMessage.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,12 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model;
 
+import java.util.Map;
+
 import org.apache.velocity.exception.VelocityException;
 import org.sakaiproject.metaobj.utils.mvc.impl.LocalVelocityConfigurer;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.ui.velocity.VelocityEngineUtils;
-
-import java.util.Map;
 
 public class VelocityMailMessage extends SimpleMailMessage {
    private String template;

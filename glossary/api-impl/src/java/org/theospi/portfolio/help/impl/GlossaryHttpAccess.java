@@ -20,13 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.help.impl;
 
-import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
-import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
 import org.sakaiproject.entity.api.EntityAccessOverloadException;
 import org.sakaiproject.entity.api.EntityCopyrightException;
 import org.sakaiproject.entity.api.EntityNotDefinedException;
 import org.sakaiproject.entity.api.EntityPermissionException;
 import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
+import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
 
 /**
  * Created by IntelliJ IDEA.

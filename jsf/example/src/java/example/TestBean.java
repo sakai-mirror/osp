@@ -20,14 +20,15 @@
 **********************************************************************************/
 package example;
 
-import org.theospi.jsf.intf.XmlTagFactory;
-import org.theospi.jsf.impl.DefaultXmlTagFactory;
-import org.theospi.jsf.impl.DefaultXmlTagHandler;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.faces.event.ActionEvent;
-import java.util.List;
-import java.util.ArrayList;
-import java.io.InputStream;
+
+import org.theospi.jsf.impl.DefaultXmlTagFactory;
+import org.theospi.jsf.impl.DefaultXmlTagHandler;
+import org.theospi.jsf.intf.XmlTagFactory;
 
 import example.xml.TestXmlTagFactory;
 

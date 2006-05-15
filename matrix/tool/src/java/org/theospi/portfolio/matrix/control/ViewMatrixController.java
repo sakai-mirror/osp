@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/matrix/tool/src/java/org/theospi/portfolio/matrix/control/ViewMatrixController.java $
+* $Id:ViewMatrixController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,37 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.metaobj.security.FunctionConstants;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
-import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-
-import org.sakaiproject.authz.api.Member;
-import org.sakaiproject.site.api.Group;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.api.ToolConfiguration;
-import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.user.api.UserNotDefinedException;
-import org.sakaiproject.user.cover.UserDirectoryService;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.tool.api.Placement;
-import org.sakaiproject.tool.api.ToolManager;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.exception.IdUnusedException;
-import org.springframework.validation.Errors;
-import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.matrix.model.Criterion;
-import org.theospi.portfolio.matrix.model.Level;
-import org.theospi.portfolio.matrix.model.Matrix;
-import org.theospi.portfolio.matrix.model.Scaffolding;
-import org.theospi.portfolio.matrix.model.ScaffoldingCell;
-
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -60,6 +29,35 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.Member;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.metaobj.security.FunctionConstants;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
+import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.site.api.Group;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.user.api.UserNotDefinedException;
+import org.sakaiproject.user.cover.UserDirectoryService;
+import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.Criterion;
+import org.theospi.portfolio.matrix.model.Level;
+import org.theospi.portfolio.matrix.model.Matrix;
+import org.theospi.portfolio.matrix.model.Scaffolding;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 
 public class ViewMatrixController extends AbstractMatrixController implements FormController, LoadObjectController {
 

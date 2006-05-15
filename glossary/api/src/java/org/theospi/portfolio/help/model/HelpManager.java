@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/glossary/api/src/java/org/theospi/portfolio/help/model/HelpManager.java $
+* $Id:HelpManager.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Set;
 
 import org.jdom.JDOMException;
-
 import org.sakaiproject.exception.UnsupportedFileTypeException;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.shared.model.Node;

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/security/tool/DecoratedMember.java $
+* $Id:DecoratedMember.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,9 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.tool;
 
-import org.sakaiproject.metaobj.shared.model.Agent;
-
 import java.util.List;
+
+import org.sakaiproject.metaobj.shared.model.Agent;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/worksite/mgt/impl/SiteEventListener.java $
+* $Id:SiteEventListener.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,26 +20,31 @@
 **********************************************************************************/
 package org.theospi.portfolio.worksite.mgt.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.entity.api.EntityManager;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.event.api.Event;
 import org.sakaiproject.event.cover.EventTrackingService;
-import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.ToolConfiguration;
-import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.entity.api.EntityManager;
-import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.exception.IdUnusedException;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.worksite.intf.ToolEventListener;
 import org.theospi.portfolio.worksite.model.SiteTool;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-
-import java.util.*;
 
 public class SiteEventListener extends HibernateDaoSupport implements Observer {
    protected final transient Log logger = LogFactory.getLog(getClass());

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/api/src/java/org/theospi/portfolio/reports/model/ReportDefinition.java $
+* $Id:ReportDefinition.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,13 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.theospi.portfolio.reports.model.ReportDefinitionParam;
 
 public class ReportDefinition
 {

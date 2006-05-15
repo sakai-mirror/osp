@@ -20,13 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.osp.matrix;
 
-import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.matrix.model.Matrix;
-import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
 import java.util.Collection;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.HashSet;
+
+import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
 
 
 class MatrixWarehouseTask extends BaseWarehouseTask {

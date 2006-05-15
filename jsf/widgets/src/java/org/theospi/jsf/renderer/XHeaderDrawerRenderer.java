@@ -25,18 +25,16 @@ package org.theospi.jsf.renderer;
 import java.io.IOException;
 import java.util.Iterator;
 
-import javax.faces.component.UIColumn;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
-import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.render.Renderer;
 
 import org.sakaiproject.jsf.util.RendererUtil;
-import org.theospi.jsf.util.TagUtil;
-import org.theospi.jsf.util.OspxTagHelper;
 import org.theospi.jsf.component.XHeaderDrawerComponent;
+import org.theospi.jsf.util.OspxTagHelper;
+import org.theospi.jsf.util.TagUtil;
 
 
 public class XHeaderDrawerRenderer extends Renderer

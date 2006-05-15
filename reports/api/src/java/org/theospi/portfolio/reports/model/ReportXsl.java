@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/api/src/java/org/theospi/portfolio/reports/model/ReportXsl.java $
+* $Id:ReportXsl.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -21,11 +21,9 @@
 package org.theospi.portfolio.reports.model;
 
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.theospi.portfolio.reports.model.ReportDefinition;
-import org.theospi.portfolio.reports.model.ResultsPostProcessor;
+import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.context.ResourceLoaderAware;
 
 public class ReportXsl implements ResourceLoaderAware
 {

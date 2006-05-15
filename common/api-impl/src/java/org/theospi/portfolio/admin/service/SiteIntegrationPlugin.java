@@ -1,16 +1,14 @@
 package org.theospi.portfolio.admin.service;
 
-import org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin;
-import org.theospi.portfolio.admin.model.IntegrationOption;
-import org.theospi.portfolio.shared.model.OspException;
-import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.site.api.Site;
 import org.sakaiproject.exception.IdInvalidException;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SiteService;
+import org.theospi.portfolio.admin.model.IntegrationOption;
+import org.theospi.portfolio.shared.model.OspException;
 
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/AbstractPresentationController.java $
+* $Id:AbstractPresentationController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,24 +20,24 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.theospi.portfolio.presentation.PresentationManager;
-import org.theospi.portfolio.presentation.model.PresentationTemplate;
-import org.theospi.portfolio.shared.model.Node;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
-import org.theospi.portfolio.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
-import org.theospi.utils.mvc.impl.servlet.AbstractFormController;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.tool.cover.ToolManager;
-
-import java.util.Collection;
-import java.util.Map;
+import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.model.PresentationTemplate;
+import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.shared.model.Node;
+import org.theospi.utils.mvc.impl.servlet.AbstractFormController;
 
 abstract public class AbstractPresentationController extends AbstractFormController implements Controller {
    private AgentManager agentManager;

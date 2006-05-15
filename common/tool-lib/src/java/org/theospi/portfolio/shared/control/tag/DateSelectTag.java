@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/shared/control/tag/DateSelectTag.java $
+* $Id:DateSelectTag.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,17 +20,18 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.control.tag;
 
+import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+import javax.servlet.jsp.JspException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
-import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
 import org.sakaiproject.component.cover.ComponentManager;
-
-import javax.servlet.jsp.JspException;
-import java.io.IOException;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Calendar;
+import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
 
 public class DateSelectTag extends DateSelectPopupTag {
    protected final transient Log logger = LogFactory.getLog(getClass());

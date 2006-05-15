@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/warehouse/api/src/java/org/theospi/portfolio/warehouse/intf/PropertyAccess.java $
+* $Id:PropertyAccess.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,8 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.intf;
 
-import java.lang.reflect.InvocationTargetException;
-import java.beans.IntrospectionException;
 
 /**
  * Created by IntelliJ IDEA.

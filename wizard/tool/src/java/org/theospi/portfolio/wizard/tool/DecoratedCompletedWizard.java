@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/wizard/tool/src/java/org/theospi/portfolio/wizard/tool/DecoratedCompletedWizard.java $
+* $Id:DecoratedCompletedWizard.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -22,9 +22,9 @@ package org.theospi.portfolio.wizard.tool;
 
 import java.util.List;
 
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
-import org.sakaiproject.metaobj.shared.model.Agent;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/portal/tool/src/java/org/theospi/portfolio/portal/renderer/ToolCategoryHandler.java $
+* $Id:ToolCategoryHandler.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -20,16 +20,17 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.renderer;
 
+import java.io.IOException;
+
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.FacesContext;
+import javax.faces.el.ValueBinding;
+
 import org.theospi.jsf.impl.DefaultXmlTagHandler;
-import org.theospi.jsf.intf.XmlTagFactory;
 import org.theospi.jsf.intf.ComponentWrapper;
+import org.theospi.jsf.intf.XmlTagFactory;
 import org.theospi.portfolio.portal.component.ToolCategoryComponent;
 import org.xml.sax.Attributes;
-
-import javax.faces.context.FacesContext;
-import javax.faces.component.UIViewRoot;
-import javax.faces.el.ValueBinding;
-import java.io.IOException;
 
 /**
  * Created by IntelliJ IDEA.

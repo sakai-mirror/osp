@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/jsf/widgets/src/java/org/theospi/jsf/impl/DefaultXmlTagHandler.java $
+* $Id:DefaultXmlTagHandler.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,19 +20,19 @@
 **********************************************************************************/
 package org.theospi.jsf.impl;
 
-import org.theospi.jsf.intf.XmlTagHandler;
-import org.theospi.jsf.intf.XmlTagFactory;
-import org.theospi.jsf.intf.ComponentWrapper;
-import org.xml.sax.Attributes;
+import java.io.IOException;
+import java.io.StringWriter;
 
-import javax.faces.component.UINamingContainer;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlOutputText;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
-import java.io.IOException;
-import java.io.StringWriter;
+
+import org.theospi.jsf.intf.ComponentWrapper;
+import org.theospi.jsf.intf.XmlTagFactory;
+import org.theospi.jsf.intf.XmlTagHandler;
+import org.xml.sax.Attributes;
 
 /**
  * Created by IntelliJ IDEA.

@@ -21,22 +21,26 @@
 
 package org.theospi.portfolio.list.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.tool.api.Placement;
-import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.ToolManager;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
 import org.theospi.portfolio.list.intf.ListGenerator;
 import org.theospi.portfolio.list.intf.ListService;
 import org.theospi.portfolio.list.model.Column;
 import org.theospi.portfolio.list.model.ListConfig;
-
-import java.util.*;
 
 public class ListServiceImpl  extends HibernateDaoSupport implements ListService {
    protected final transient Log logger = LogFactory.getLog(getClass());

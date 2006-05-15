@@ -21,9 +21,9 @@
 
 package org.theospi.portfolio.list.intf;
 
-import org.theospi.portfolio.list.model.ListConfig;
-
 import java.util.List;
+
+import org.theospi.portfolio.list.model.ListConfig;
 
 public interface ListService {
 

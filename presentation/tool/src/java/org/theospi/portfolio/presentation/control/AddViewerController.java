@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/AddViewerController.java $
+* $Id:AddViewerController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,22 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
+import org.sakaiproject.metaobj.utils.Config;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.Presentation;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
-import org.sakaiproject.metaobj.utils.Config;
-
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.AddressException;
-import java.util.*;
-import java.util.regex.Pattern;
 
 public class AddViewerController extends AbstractPresentationController {
    

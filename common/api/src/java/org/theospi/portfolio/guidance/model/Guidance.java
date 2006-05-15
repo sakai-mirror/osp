@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api/src/java/org/theospi/portfolio/guidance/model/Guidance.java $
+* $Id:Guidance.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,10 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.model;
 
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.sakaiproject.metaobj.shared.model.Id;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
-import java.util.*;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
 /**
  * Created by IntelliJ IDEA.

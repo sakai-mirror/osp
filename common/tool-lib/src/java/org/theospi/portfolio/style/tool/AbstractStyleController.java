@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/style/tool/AbstractStyleController.java $
+* $Id:AbstractStyleController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,21 +20,21 @@
 **********************************************************************************/
 package org.theospi.portfolio.style.tool;
 
+import java.util.Collection;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.style.mgt.StyleManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
-import org.theospi.portfolio.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.utils.mvc.impl.servlet.AbstractFormController;
-
-import java.util.Collection;
 
 abstract public class AbstractStyleController extends AbstractFormController implements Controller {
    private AgentManager agentManager;

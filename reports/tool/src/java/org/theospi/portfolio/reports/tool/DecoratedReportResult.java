@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/tool/src/java/org/theospi/portfolio/reports/tool/DecoratedReportResult.java $
+* $Id:DecoratedReportResult.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,19 +20,21 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.tool;
 
-import org.theospi.portfolio.reports.model.*;
-import org.theospi.portfolio.reports.tool.DecoratedAbstractResult;
-
-import java.util.Date;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
-import javax.faces.model.SelectItem;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
+
+import org.theospi.portfolio.reports.model.Report;
+import org.theospi.portfolio.reports.model.ReportDefinition;
+import org.theospi.portfolio.reports.model.ReportResult;
+import org.theospi.portfolio.reports.model.ReportXsl;
+import org.theospi.portfolio.reports.model.ReportsManager;
 
 /**
  * This class allows the ReportResult to interact with the view

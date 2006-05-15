@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/tool/FreeFormTool.java $
+* $Id:FreeFormTool.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,27 +20,34 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.tool;
 
-import org.theospi.portfolio.shared.tool.HelperToolBase;
-import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.presentation.intf.FreeFormHelper;
-import org.theospi.portfolio.presentation.PresentationManager;
-import org.theospi.portfolio.presentation.model.*;
-import org.theospi.portfolio.style.StyleHelper;
-import org.theospi.portfolio.style.model.Style;
-import org.theospi.jsf.intf.XmlTagFactory;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.content.api.FilePickerHelper;
-import org.sakaiproject.entity.cover.EntityManager;
-import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
-import java.util.*;
-import java.io.IOException;
+
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.cover.EntityManager;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.theospi.jsf.intf.XmlTagFactory;
+import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.intf.FreeFormHelper;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationItem;
+import org.theospi.portfolio.presentation.model.PresentationPage;
+import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.shared.tool.HelperToolBase;
+import org.theospi.portfolio.style.StyleHelper;
+import org.theospi.portfolio.style.model.Style;
 
 
 /**

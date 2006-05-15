@@ -20,6 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -29,9 +32,6 @@ import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
-
-import java.util.Iterator;
-import java.util.List;
 
 public class WizardAuthorizerImpl implements ApplicationAuthorizer{
    private WizardManager wizardManager;

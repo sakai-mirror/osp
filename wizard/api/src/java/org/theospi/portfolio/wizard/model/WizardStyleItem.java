@@ -20,11 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.model;
 
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
 /**
  * Created by IntelliJ IDEA.

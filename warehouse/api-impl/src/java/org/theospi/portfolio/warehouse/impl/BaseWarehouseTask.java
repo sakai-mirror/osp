@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/warehouse/api-impl/src/java/org/theospi/portfolio/warehouse/impl/BaseWarehouseTask.java $
+* $Id:BaseWarehouseTask.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,21 +20,20 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.impl;
 
-import org.theospi.portfolio.warehouse.intf.WarehouseTask;
-import org.theospi.portfolio.warehouse.intf.ChildWarehouseTask;
-import org.theospi.portfolio.warehouse.intf.DataWarehouseManager;
-import org.theospi.portfolio.util.db.DbLoader;
-import org.quartz.JobExecutionException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import javax.sql.DataSource;
-import java.util.List;
-import java.util.Collection;
-import java.util.Iterator;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.io.InputStream;
+import java.util.Collection;
+
+import javax.sql.DataSource;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.quartz.JobExecutionException;
+import org.theospi.portfolio.util.db.DbLoader;
+import org.theospi.portfolio.warehouse.intf.ChildWarehouseTask;
+import org.theospi.portfolio.warehouse.intf.DataWarehouseManager;
+import org.theospi.portfolio.warehouse.intf.WarehouseTask;
 
 /**
  * Created by IntelliJ IDEA.

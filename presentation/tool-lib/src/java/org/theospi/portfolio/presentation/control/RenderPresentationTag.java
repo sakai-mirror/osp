@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool-lib/src/java/org/theospi/portfolio/presentation/control/RenderPresentationTag.java $
+* $Id:RenderPresentationTag.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
-import org.jdom.Document;
-import org.jdom.transform.JDOMSource;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamResult;
+
+import org.jdom.Document;
+import org.jdom.transform.JDOMSource;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/component/SequenceComponentProxy.java $
+* $Id:SequenceComponentProxy.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,11 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.component;
 
-import org.theospi.jsf.util.TagUtil;
+import java.io.IOException;
 
 import javax.faces.component.UIOutput;
 import javax.faces.context.FacesContext;
-import java.io.IOException;
+
+import org.theospi.jsf.util.TagUtil;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,11 +1,11 @@
 package org.theospi.portfolio.presentation.model.impl;
 
-import org.theospi.portfolio.presentation.model.Presentation;
-import org.theospi.portfolio.presentation.model.PresentationTemplate;
-import org.theospi.portfolio.list.intf.ListItemUtils;
-import org.theospi.portfolio.list.intf.DecoratedListItem;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.theospi.portfolio.list.intf.DecoratedListItem;
+import org.theospi.portfolio.list.intf.ListItemUtils;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationTemplate;
 
 /**
  * Created by IntelliJ IDEA.

@@ -20,10 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.osp.presentation;
 
+import java.util.Collection;
+
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
-import java.util.Collection;
-import java.util.ArrayList;
 
 class GuidanceWarehouseTask extends BaseWarehouseTask {
 

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/utils/mvc/impl/MultiModelViewController.java $
+* $Id:MultiModelViewController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,19 +20,19 @@
 **********************************************************************************/
 package org.theospi.utils.mvc.impl;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.springframework.validation.Errors;
-import org.springframework.web.servlet.ModelAndView;
-import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
-import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
-import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
+import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
+import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
 
 public class MultiModelViewController implements LoadObjectController, CustomCommandController {
    protected final Log logger = LogFactory.getLog(getClass());

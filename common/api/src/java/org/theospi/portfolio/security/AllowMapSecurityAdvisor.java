@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api/src/java/org/theospi/portfolio/security/AllowMapSecurityAdvisor.java $
+* $Id:AllowMapSecurityAdvisor.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,12 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.security;
 
-import org.sakaiproject.authz.api.SecurityAdvisor;
-
-import java.util.Map;
-import java.util.List;
-import java.util.Hashtable;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+import org.sakaiproject.authz.api.SecurityAdvisor;
 
 /**
  * Created by IntelliJ IDEA.

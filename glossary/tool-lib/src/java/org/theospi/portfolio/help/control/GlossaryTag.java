@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/glossary/tool-lib/src/java/org/theospi/portfolio/help/control/GlossaryTag.java $
+* $Id:GlossaryTag.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,24 +20,25 @@
 **********************************************************************************/
 package org.theospi.portfolio.help.control;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.metaobj.shared.model.OspException;
-import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.theospi.portfolio.help.model.GlossaryEntry;
-import org.theospi.portfolio.help.model.HelpManager;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.BodyContent;
+import javax.servlet.jsp.tagext.BodyTagSupport;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.metaobj.shared.model.OspException;
+import org.theospi.portfolio.help.model.GlossaryEntry;
+import org.theospi.portfolio.help.model.HelpManager;
 
 /**
  * Matches keywords in the body to those in the glossary,

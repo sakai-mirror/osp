@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/ViewPresentationControl.java $
+* $Id:ViewPresentationControl.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,38 +20,41 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
-import org.springframework.validation.BindException;
-import org.springframework.validation.Errors;
-import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.presentation.PresentationManager;
-import org.theospi.portfolio.presentation.PresentationFunctionConstants;
-import org.theospi.portfolio.presentation.model.*;
-import org.sakaiproject.metaobj.shared.ArtifactFinder;
-import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
-import org.theospi.portfolio.security.AuthorizationFacade;
-import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.shared.model.OspException;
-import org.sakaiproject.metaobj.shared.model.PersistenceException;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.util.Tool;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.jdom.Document;
+import org.sakaiproject.metaobj.shared.ArtifactFinder;
+import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
+import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.PersistenceException;
+import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.util.Tool;
+import org.springframework.validation.BindException;
+import org.springframework.validation.Errors;
+import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.presentation.PresentationFunctionConstants;
+import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationComment;
+import org.theospi.portfolio.presentation.model.PresentationLog;
+import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.shared.model.OspException;
 
 /**
  * Created by IntelliJ IDEA.

@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api/src/java/org/theospi/portfolio/guidance/model/GuidanceItemAttachment.java $
+* $Id:GuidanceItemAttachment.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,11 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.model;
 
-import org.sakaiproject.metaobj.shared.model.MimeType;
-import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.metaobj.shared.mgt.ReferenceHolder;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.sakaiproject.metaobj.shared.model.MimeType;
 
 /**
  * Created by IntelliJ IDEA.

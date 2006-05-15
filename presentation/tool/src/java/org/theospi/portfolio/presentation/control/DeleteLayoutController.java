@@ -20,15 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
-
-import java.util.Map;
+import org.theospi.portfolio.presentation.model.PresentationLayout;
 
 /**
  * Created by IntelliJ IDEA.

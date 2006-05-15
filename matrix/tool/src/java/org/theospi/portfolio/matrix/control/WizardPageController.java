@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/matrix/tool/src/java/org/theospi/portfolio/matrix/control/WizardPageController.java $
+* $Id:WizardPageController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,26 +20,24 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
-import org.theospi.utils.mvc.impl.ToolFinishedView;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
-import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.ArrayList;
+import org.theospi.utils.mvc.impl.ToolFinishedView;
 
 /**
  * Created by IntelliJ IDEA.

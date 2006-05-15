@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/tool/src/java/org/theospi/portfolio/reports/tool/DecoratedReportDefinition.java $
+* $Id:DecoratedReportDefinition.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -21,7 +21,6 @@
 package org.theospi.portfolio.reports.tool;
 
 import org.theospi.portfolio.reports.model.ReportDefinition;
-import org.theospi.portfolio.reports.tool.DecoratedReport;
 
 /**
  * This class allows the ReportDefinition to interact with

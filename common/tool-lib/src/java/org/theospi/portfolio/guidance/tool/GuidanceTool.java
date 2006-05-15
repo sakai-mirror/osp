@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/guidance/tool/GuidanceTool.java $
+* $Id:GuidanceTool.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,29 +20,30 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.tool;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.content.api.ResourceEditingHelper;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.cover.EntityManager;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.theospi.portfolio.guidance.mgt.GuidanceHelper;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.guidance.model.GuidanceItem;
 import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
 import org.theospi.portfolio.shared.tool.HelperToolBase;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.tool.api.Placement;
-import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.content.api.FilePickerHelper;
-import org.sakaiproject.content.api.ResourceEditingHelper;
-import org.sakaiproject.entity.cover.EntityManager;
-import org.sakaiproject.entity.api.Reference;
-
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.

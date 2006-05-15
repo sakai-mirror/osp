@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/guidance/tool/DecoratedGuidanceItem.java $
+* $Id:DecoratedGuidanceItem.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,17 +20,18 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.tool;
 
-import org.theospi.portfolio.guidance.model.GuidanceItem;
-import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.faces.model.SelectItem;
+
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
-
-import javax.faces.model.SelectItem;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
+import org.theospi.portfolio.guidance.model.GuidanceItem;
+import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
 
 /**
  * Created by IntelliJ IDEA.

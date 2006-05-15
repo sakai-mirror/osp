@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/matrix/tool/src/java/org/theospi/portfolio/matrix/control/ListScaffoldingController.java $
+* $Id:ListScaffoldingController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -31,7 +31,6 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.tool.cover.ToolManager;
-
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -47,7 +46,7 @@ public class ListScaffoldingController extends AbstractMatrixController {
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
 
       List scaffolding = new ArrayList(getMatrixManager().findScaffolding(
-            worksiteId, currentToolId, currentAgent.getId().getValue()));
+            worksiteId, currentAgent.getId().getValue()));
       
       // When selecting a matrix the user should start with a fresh user
       session.remove(ViewMatrixController.VIEW_USER);

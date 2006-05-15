@@ -1,8 +1,8 @@
 package org.theospi.portfolio.portal.impl;
 
-import org.sakaiproject.site.api.Site;
-
 import java.util.Comparator;
+
+import org.sakaiproject.site.api.Site;
 
 /**
  * Created by IntelliJ IDEA.

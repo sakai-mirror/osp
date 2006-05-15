@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/shared/control/XmlElementView.java $
+* $Id:XmlElementView.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,28 +20,29 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.control;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ResourceNotFoundException;
+import org.sakaiproject.metaobj.shared.control.EditedArtifactStorage;
+import org.sakaiproject.metaobj.shared.control.SchemaBean;
+import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
+import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
+import org.sakaiproject.metaobj.utils.mvc.impl.TemplateJstlView;
+import org.sakaiproject.metaobj.utils.mvc.intf.VelocityEngineFactory;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContextException;
-import org.sakaiproject.metaobj.utils.mvc.impl.TemplateJstlView;
-import org.sakaiproject.metaobj.utils.mvc.intf.VelocityEngineFactory;
-import org.sakaiproject.metaobj.utils.xml.SchemaNode;
-import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
-import org.sakaiproject.metaobj.shared.mgt.home.StructuredArtifactHomeInterface;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
-import org.sakaiproject.metaobj.shared.control.EditedArtifactStorage;
-import org.sakaiproject.metaobj.shared.control.SchemaBean;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileWriter;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.

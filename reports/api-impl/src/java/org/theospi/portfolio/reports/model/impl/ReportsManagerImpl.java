@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/reports/api-impl/src/java/org/theospi/portfolio/reports/model/impl/ReportsManagerImpl.java $
+* $Id:ReportsManagerImpl.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,47 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model.impl;
 
-import org.hibernate.HibernateException;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.jdom.CDATA;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
-import org.jdom.transform.JDOMResult;
-import org.jdom.transform.JDOMSource;
-import org.sakaiproject.component.api.ComponentManager;
-import org.sakaiproject.authz.cover.FunctionManager;
-import org.sakaiproject.tool.api.Session;
-import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.metaobj.security.AuthorizationFacade;
-import org.sakaiproject.metaobj.security.AuthorizationFailedException;
-import org.sakaiproject.metaobj.security.model.AuthZMap;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-
-import org.sakaiproject.authz.api.SecurityService;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.user.api.User;
-import org.sakaiproject.user.api.UserDirectoryService;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.theospi.portfolio.reports.model.*;
-import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
-import org.theospi.portfolio.shared.model.OspException;
-
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -71,7 +30,54 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.HibernateException;
+import org.jdom.CDATA;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
+import org.jdom.transform.JDOMResult;
+import org.jdom.transform.JDOMSource;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.authz.cover.FunctionManager;
+import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.metaobj.security.AuthorizationFacade;
+import org.sakaiproject.metaobj.security.AuthorizationFailedException;
+import org.sakaiproject.metaobj.security.model.AuthZMap;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserDirectoryService;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.theospi.portfolio.reports.model.*;
+import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
+import org.theospi.portfolio.shared.model.OspException;
 
 /**
  * This class is a singleton that manages the reports on a general basis

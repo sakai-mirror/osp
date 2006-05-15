@@ -21,12 +21,12 @@
 
 package org.theospi.portfolio.admin.service;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.theospi.portfolio.admin.model.IntegrationOption;
-import org.theospi.portfolio.shared.model.OspException;
-import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.site.api.Site;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.AuthzPermissionException;
 import org.sakaiproject.authz.api.GroupNotDefinedException;
@@ -34,10 +34,10 @@ import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.RoleAlreadyDefinedException;
 import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-
-import java.util.List;
-import java.util.Iterator;
-import java.util.HashSet;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
+import org.theospi.portfolio.admin.model.IntegrationOption;
+import org.theospi.portfolio.shared.model.OspException;
 
 public class SakaiRoleCreationIntegrationPlugin extends IntegrationPluginBase {
    protected final transient Log logger = LogFactory.getLog(getClass());

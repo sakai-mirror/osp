@@ -20,11 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.osp.wizard;
 
-import org.theospi.portfolio.wizard.mgt.WizardManager;
+import java.util.Collection;
 
 import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
-import java.util.Collection;
-import java.util.ArrayList;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
 
 class WizardWarehouseTask extends BaseWarehouseTask {
 

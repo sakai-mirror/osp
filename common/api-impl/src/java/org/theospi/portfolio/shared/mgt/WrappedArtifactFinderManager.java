@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/api-impl/src/java/org/theospi/portfolio/shared/mgt/WrappedArtifactFinderManager.java $
+* $Id:WrappedArtifactFinderManager.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,10 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.mgt;
 
-import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
-import org.sakaiproject.metaobj.shared.ArtifactFinder;
-
 import java.util.Map;
+
+import org.sakaiproject.metaobj.shared.ArtifactFinder;
+import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
 
 /**
  * Created by IntelliJ IDEA.

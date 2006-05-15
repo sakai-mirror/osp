@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/shared/tool/ToolBase.java $
+* $Id:ToolBase.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,14 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.tool;
 
-import javax.faces.model.SelectItem;
+import java.text.MessageFormat;
+import java.util.Iterator;
+
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
 import javax.faces.component.UIViewRoot;
-import java.util.Iterator;
-import java.text.MessageFormat;
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 
 import org.sakaiproject.util.ResourceLoader;
 

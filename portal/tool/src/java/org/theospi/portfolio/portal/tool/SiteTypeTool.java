@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/portal/tool/src/java/org/theospi/portfolio/portal/tool/SiteTypeTool.java $
+* $Id:SiteTypeTool.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -20,12 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.tool;
 
+import java.util.List;
+
+import org.sakaiproject.site.api.SiteService;
+import org.theospi.portfolio.portal.intf.PortalManager;
 import org.theospi.portfolio.shared.tool.HelperToolBase;
 import org.theospi.portfolio.shared.tool.PagingList;
-import org.theospi.portfolio.portal.intf.PortalManager;
-import org.sakaiproject.site.api.SiteService;
-
-import java.util.List;
 
 
 /**

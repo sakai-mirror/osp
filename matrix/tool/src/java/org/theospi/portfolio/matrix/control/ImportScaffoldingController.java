@@ -20,32 +20,29 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
-import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
-import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolManager;
-import org.sakaiproject.content.api.FilePickerHelper;
-import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.site.api.ToolConfiguration;
-import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
-
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingUploadForm;
 import org.theospi.portfolio.shared.model.Node;
-
-import java.util.Map;
-import java.util.List;
 
 public class ImportScaffoldingController implements Controller, FormController {
    protected final transient Log logger = LogFactory.getLog(getClass());
@@ -101,10 +98,8 @@ public class ImportScaffoldingController implements Controller, FormController {
       Scaffolding scaffolding = null;
 
       try {
-         ToolConfiguration toolConfig = getSiteService().findTool(
-               getToolManager().getCurrentPlacement().getId());
          scaffolding = getMatrixManager().uploadScaffolding(
-              scaffoldingForm.getUploadedScaffolding(), toolConfig);
+              scaffoldingForm.getUploadedScaffolding(), getToolManager().getCurrentPlacement().getContext());
       } catch (InvalidUploadException e) {
          logger.warn("Failed uploading scaffolding", e);
          errors.rejectValue(e.getFieldName(), e.getMessage(), e.getMessage());

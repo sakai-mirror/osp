@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/tool/src/java/org/theospi/portfolio/presentation/control/ListTemplateController.java $
+* $Id:ListTemplateController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -20,18 +20,20 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
+import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
-import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
-import org.sakaiproject.tool.cover.ToolManager;
-
-
-import java.util.*;
 
 public class ListTemplateController extends AbstractPresentationController {
 
