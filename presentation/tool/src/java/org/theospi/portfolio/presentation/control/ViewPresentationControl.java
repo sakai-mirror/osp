@@ -33,6 +33,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
@@ -40,6 +41,9 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.PersistenceException;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
@@ -99,15 +103,22 @@ public class ViewPresentationControl extends AbstractPresentationController impl
       if (pres.getSecretExportKey() == null) {
          if (!pres.getIsPublic()) {
             if (getAuthManager().getAgent().isInRole(Agent.ROLE_ANONYMOUS)){
+               try {
+                  Site site = SiteService.getSite(pres.getSiteId());               
+                  ToolConfiguration toolConfig = site.getToolForCommonId(PresentationFunctionConstants.PRES_TOOL_ID);
+                  String placement = toolConfig.getId();
+                  ToolSession ts = SessionManager.getCurrentSession().getToolSession(placement);               
+                  SessionManager.setCurrentToolSession(ts);
+                 
+                  SessionManager.getCurrentSession().setAttribute(Tool.HELPER_DONE_URL, pres.getExternalUri());
 
-                 ToolSession ts = SessionManager.getCurrentSession().getToolSession(pres.getTemplate().getToolId());               
-                 SessionManager.setCurrentToolSession(ts);
-                 Map model = new Hashtable();
-                 SessionManager.getCurrentSession().setAttribute(Tool.HELPER_DONE_URL, pres.getExternalUri());
-
-                 model.put("sakai.tool.placement.id", pres.getTemplate().getToolId());
-                 return new ModelAndView("authnRedirect", model);
-
+                  Map model = new Hashtable();
+                  model.put("sakai.tool.placement.id", placement);
+                  return new ModelAndView("authnRedirect", model);
+                 
+               } catch (IdUnusedException e) {
+                  logger.error("", e);
+               }
             }
             else {
 

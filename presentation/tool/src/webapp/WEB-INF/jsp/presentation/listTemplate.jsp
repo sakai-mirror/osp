@@ -3,7 +3,7 @@
 
 <!-- GUID=<c:out value="${newPresentationTemplateId}"/> -->
 
-<osp-c:authZMap prefix="osp.presentation.template." var="can" />
+<osp-c:authZMap prefix="osp.presentation.template." var="can" useSite="true" />
 
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
@@ -24,7 +24,7 @@
 	          <fmt:param><c:out value="${tool.title}"/></fmt:param>
 		  <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message></osp:param>
                 <osp:param name="name" value="presentationTemplate"/>
-                <osp:param name="qualifier" value="${tool.id}"/>
+                <osp:param name="qualifier" value="${worksite.id}"/>
                 <osp:param name="returnView" value="listTemplateRedirect"/>
                 </osp:url>"
                 title="<fmt:message key="action_permissions_title"/>" >

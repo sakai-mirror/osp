@@ -49,7 +49,6 @@ public class PresentationTemplate extends IdentifiableObject implements Serializ
    private boolean includeComments = false;
    private boolean published = false;
    private String markup;
-   private String toolId;
    private String siteId;
    transient private Set deletedItems = new HashSet();
    transient private boolean validate = true;
@@ -92,14 +91,6 @@ public class PresentationTemplate extends IdentifiableObject implements Serializ
 
    public void setSiteId(String siteId) {
       this.siteId = siteId;
-   }
-
-   public String getToolId() {
-      return toolId;
-   }
-
-   public void setToolId(String toolId) {
-      this.toolId = toolId;
    }
 
    public String getName() {

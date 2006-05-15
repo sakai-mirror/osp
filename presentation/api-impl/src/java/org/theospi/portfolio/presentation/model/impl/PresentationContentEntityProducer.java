@@ -20,10 +20,14 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model.impl;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.entity.api.Entity;
+import org.sakaiproject.entity.api.EntityTransferrer;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
+import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,9 +36,10 @@ import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
  * Time: 6:48:14 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PresentationContentEntityProducer extends EntityProducerBase {
+public class PresentationContentEntityProducer extends EntityProducerBase implements EntityTransferrer {
    protected final Log logger = LogFactory.getLog(getClass());
    protected static final String PRODUCER_NAME = "ospPresentation";
+   private DuplicatableToolService presentationManager;
 
    public String getLabel() {
       return PRODUCER_NAME;
@@ -47,5 +52,21 @@ public class PresentationContentEntityProducer extends EntityProducerBase {
       catch (Exception e) {
          logger.warn("Error registering Presentation Content Entity Producer", e);
       }
+   }
+   
+   public void transferCopyEntities(String fromContext, String toContext, List ids) {
+      presentationManager.importResources(fromContext, toContext, ids);
+   }
+
+   /**
+    * @inheritDoc
+    */
+   public String[] myToolIds() {
+      String[] toolIds = { "osp.presTemplate" };
+      return toolIds;
+   }
+
+   public void setPresentationManager(DuplicatableToolService presentationManager) {
+      this.presentationManager = presentationManager;
    }
 }

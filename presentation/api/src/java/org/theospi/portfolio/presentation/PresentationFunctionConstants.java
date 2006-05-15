@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/presentation/api/src/java/org/theospi/portfolio/presentation/PresentationFunctionConstants.java $
+* $Id:PresentationFunctionConstants.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -21,6 +21,9 @@
 package org.theospi.portfolio.presentation;
 
 public class PresentationFunctionConstants {
+   
+   public final static String PRES_TOOL_ID = "osp.presentation";
+   
    public final static String TEMPLATE_PREFIX = "osp.presentation.template.";
    public final static String DELETE_TEMPLATE = TEMPLATE_PREFIX + "delete";
    public final static String EDIT_TEMPLATE = TEMPLATE_PREFIX + "edit";

@@ -199,7 +199,7 @@ public interface PresentationManager extends CleanupableService {
 
    public void packageTemplateForExport(Id templateId, OutputStream os) throws IOException;
 
-   public PresentationTemplate uploadTemplate(String templateFileName, String toolId, InputStream zipFileStream) throws IOException;
+   public PresentationTemplate uploadTemplate(String templateFileName, String toContext, InputStream zipFileStream) throws IOException;
 
    public void storePresentationLog(PresentationLog log);
 

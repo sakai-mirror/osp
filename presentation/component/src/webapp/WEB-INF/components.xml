@@ -129,6 +129,9 @@
       <property name="httpAccess">
          <ref bean="org.sakaiproject.entity.api.HttpAccess.ospPresentation" />
       </property>
+      <property name="presentationManager">
+         <ref bean="presentationManager"/>
+      </property>
    </bean>
 
    <bean id="presentationManagerTarget"

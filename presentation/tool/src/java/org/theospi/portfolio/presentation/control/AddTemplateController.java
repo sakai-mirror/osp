@@ -96,7 +96,6 @@ public class AddTemplateController extends AbstractWizardFormController {
       PresentationTemplate template = (PresentationTemplate) o;
       Agent agent = getAuthManager().getAgent();
       template.setOwner(agent);
-      template.setToolId(ToolManager.getCurrentPlacement().getId());
       template.setSiteId(ToolManager.getCurrentPlacement().getContext());
 
       // remove id's from new dependent object, so hibernate doesn't freak out

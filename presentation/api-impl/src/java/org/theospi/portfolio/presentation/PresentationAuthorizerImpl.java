@@ -62,8 +62,8 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
          return isTemplateAuth(facade, id, agent, PresentationFunctionConstants.EDIT_TEMPLATE);
       } else if (function.equals(PresentationFunctionConstants.PUBLISH_TEMPLATE)) {
          PresentationTemplate template = getPresentationManager().getPresentationTemplate(id);
-         Id toolId = getIdManager().getId(template.getToolId());
-         return new Boolean(facade.isAuthorized(agent,function,toolId));
+         Id siteId = getIdManager().getId(template.getSiteId());
+         return new Boolean(facade.isAuthorized(agent,function,siteId));
       } else if (function.equals(PresentationFunctionConstants.DELETE_TEMPLATE)) {
          return isTemplateAuth(facade, id, agent, PresentationFunctionConstants.DELETE_TEMPLATE);
       } else if (function.equals(PresentationFunctionConstants.COPY_TEMPLATE)) {
@@ -116,8 +116,8 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
       if (template.getOwner().equals(agent)){
          return new Boolean(true);
       }
-      Id toolId = getIdManager().getId(template.getToolId());
-      return new Boolean(facade.isAuthorized(function,toolId));
+      Id siteId = getIdManager().getId(template.getSiteId());
+      return new Boolean(facade.isAuthorized(function,siteId));
    }
    
    protected Boolean isLayoutAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function){

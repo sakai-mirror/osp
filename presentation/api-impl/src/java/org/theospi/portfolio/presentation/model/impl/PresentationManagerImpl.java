@@ -81,7 +81,6 @@ import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
@@ -148,7 +147,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
          if (checkAuthz) {
             getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_TEMPLATE,
-               getIdManager().getId(template.getToolId()));
+               getIdManager().getId(template.getSiteId()));
          }
       } else {
          deleteUnusedItemDefinition(template);
@@ -656,6 +655,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          new Object[]{new Boolean(true), getAuthnManager().getAgent().getId().getValue(), siteId});
    }
 
+   protected Collection findPublishedTemplatesBySite(String siteId) {
+      return getHibernateTemplate().find(
+         "from PresentationTemplate where published=? and site_id=? Order by name",
+         new Object[]{new Boolean(true), siteId});
+   }
+   
    public Collection findPresentationsByViewer(Agent viewer) {
 
       Collection presentationAuthzs = getAuthzManager().getAuthorizations(viewer,
@@ -1081,8 +1086,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    public PresentationTemplate copyTemplate(Id templateId) {
-      return copyTemplate(templateId,
-         getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getId()), true, true);
+      return copyTemplate(templateId, ToolManager.getCurrentPlacement().getContext(), true, true);
    }
 
    public void packageTemplateForExport(Id templateId, OutputStream os) throws IOException {
@@ -1165,10 +1169,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       zos.closeEntry();
    }
 
-   public PresentationTemplate uploadTemplate(String templateFileName, String toolId,
+   public PresentationTemplate uploadTemplate(String templateFileName, String toContext,
                                               InputStream zipFileStream) throws IOException {
       try {
-         return uploadTemplate(templateFileName, getWorksiteManager().getTool(toolId), zipFileStream, true);
+         return uploadTemplate(templateFileName, toContext, zipFileStream, true);
       }
       catch (InvalidUploadException exp) {
          throw exp;
@@ -1178,12 +1182,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
    }
 
-   protected PresentationTemplate uploadTemplate(String templateFileName, ToolConfiguration toolConfiguration,
+   protected PresentationTemplate uploadTemplate(String templateFileName, String toContext,
                                               InputStream zipFileStream, boolean checkAuthz) throws IOException {
 
       if (checkAuthz) {
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_TEMPLATE,
-            getIdManager().getId(toolConfiguration.getId()));
+            getIdManager().getId(toContext));
       }
 
       ZipInputStream zis = new UncloseableZipInputStream(zipFileStream);
@@ -1215,7 +1219,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             else if (!currentEntry.isDirectory()) {
                if (currentEntry.getName().startsWith("forms/")) {
                   processTemplateForm(currentEntry, zis, formMap,
-                        getIdManager().getId(toolConfiguration.getSiteId()));
+                        getIdManager().getId(toContext));
                }
                else {
                   gotFile = true;
@@ -1243,8 +1247,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          template.setId(null);
          template.setOwner(getAuthnManager().getAgent());
          template.setRenderer((Id)fileMap.get(template.getRenderer()));
-         template.setToolId(toolConfiguration.getId());
-         template.setSiteId(toolConfiguration.getSiteId());
+         //template.setToolId(toolConfiguration.getId());
+         template.setSiteId(toContext);
 
          if (template.getPropertyPage() != null) {
             template.setPropertyPage((Id)fileMap.get(template.getPropertyPage()));
@@ -1798,20 +1802,17 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
 
    public void importResources(String fromContext, String toContext, List resourceIds) {
-//    TODO CWM fix this ASAP
-      /*
-      Agent agent = getAuthnManager().getAgent();
-      Collection templates = findTemplatesByOwner(agent, fromContext);
-      templates.addAll(findPublishedTemplates(fromContext));
+      //Agent agent = getAuthnManager().getAgent();
+      //Collection templates = findTemplatesByOwner(agent, fromContext);
+      Collection templates = findPublishedTemplatesBySite(fromContext);
 
       for (Iterator i=templates.iterator();i.hasNext();) {
          PresentationTemplate template = (PresentationTemplate)i.next();
-         copyTemplate(template.getId(), toTool, false, false);
+         copyTemplate(template.getId(), toContext, false, false);
       }
-      */
    }
 
-   protected PresentationTemplate copyTemplate(Id templateId, ToolConfiguration toolConfiguration,
+   protected PresentationTemplate copyTemplate(Id templateId, String toContext,
                                                boolean checkAuthz, boolean rename) {
       try {
          if (checkAuthz)
@@ -1827,7 +1828,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
 
          PresentationTemplate newTemplate = uploadTemplate(oldTemplate.getName() + ".zip",
-            toolConfiguration, bis, false);
+            toContext, bis, false);
 
          if (rename) {
             newTemplate.setName(newTemplate.getName() + " Copy");
@@ -2477,7 +2478,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       template.setRenderer(rendererId);
       template.setNewObject(true);
       template.setSiteId(getIdManager().createId().getValue());
-      template.setToolId(getIdManager().createId().getValue());
       template.setOwner(getAgentManager().getAnonymousAgent());
       template.getItemDefinitions().add(createFreeFormItemDef(template));
       return template;
