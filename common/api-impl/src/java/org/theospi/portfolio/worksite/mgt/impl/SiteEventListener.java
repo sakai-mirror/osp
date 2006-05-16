@@ -20,13 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.worksite.mgt.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.api.ComponentManager;
@@ -45,6 +38,8 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.worksite.intf.ToolEventListener;
 import org.theospi.portfolio.worksite.model.SiteTool;
+
+import java.util.*;
 
 public class SiteEventListener extends HibernateDaoSupport implements Observer {
    protected final transient Log logger = LogFactory.getLog(getClass());
@@ -135,7 +130,6 @@ public class SiteEventListener extends HibernateDaoSupport implements Observer {
             String listenerId = 
                toolPlacement.getRegisteredConfig().getProperty(LISTENER_PROPERTY_TAG);
             if (listenerId != null) {
-               storeHelperTool(site.getId(), toolId, listenerId);
                ToolEventListener listener = (ToolEventListener) getComponentManager().get(listenerId);
    
                if (listener != null) {
@@ -150,19 +144,6 @@ public class SiteEventListener extends HibernateDaoSupport implements Observer {
       }
    }
    
-   protected void storeHelperTool(String siteId, String toolId, String listenerId) {
-      SiteTool tool = new SiteTool();
-      tool.setSiteId(siteId);
-      tool.setToolId(toolId);
-      if (getSiteTool(tool.getSiteId(), tool.getToolId()).size() > 0) {
-         return;
-      }
-
-      tool.setListenerId(listenerId);
-
-      getHibernateTemplate().saveOrUpdate(tool);
-   }
-
    protected void processPage(SitePage sitePage) {
       List tools = sitePage.getTools();
 
@@ -192,6 +173,7 @@ public class SiteEventListener extends HibernateDaoSupport implements Observer {
       SiteTool tool = new SiteTool();
       tool.setSiteId(toolConfiguration.getContainingPage().getContainingSite().getId());
       tool.setToolId(toolConfiguration.getId());
+
       if (getSiteTool(tool.getSiteId(), tool.getToolId()).size() > 0) {
          return;
       }
