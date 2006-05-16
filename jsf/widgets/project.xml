@@ -6,7 +6,7 @@
   <name>OSP JSF Widgets</name>
   <groupId>osp</groupId>
   <id>osp-jsf-widgets</id>
-  <currentVersion>${osp.version}</currentVersion>
+  <currentVersion>${sakai.version}</currentVersion>
   <organization>
     <name>Sakai Project</name>
     <url>http://sakaiproject.org/</url>

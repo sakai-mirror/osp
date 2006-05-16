@@ -5,7 +5,7 @@
     <name>OSP Reports API</name>
     <groupId>osp</groupId>
     <id>osp-reports-api</id>
-    <currentVersion>${osp.version}</currentVersion>
+    <currentVersion>${sakai.version}</currentVersion>
     <organization>
         <name>OSP</name>
         <url>http://theospi.org/</url>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>osp</groupId>
             <artifactId>osp-common-api</artifactId>
-            <version>${osp.version}</version>
+            <version>${sakai.version}</version>
         </dependency>
 
      <dependency>

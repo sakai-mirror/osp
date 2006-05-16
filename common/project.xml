@@ -5,7 +5,7 @@
 	<extend>../master/project.xml</extend>
 	<name>osp-common</name>
 	<groupId>osp-common</groupId>
-	<currentVersion>${osp.version}</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>OSP</name>
 		<url>http://theospi.org/</url>

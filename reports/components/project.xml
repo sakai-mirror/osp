@@ -6,7 +6,7 @@
     <name>OSP Reports Components</name>
     <groupId>osp</groupId>
     <id>osp-reports-components</id>
-    <currentVersion>${osp.version}</currentVersion>
+    <currentVersion>${sakai.version}</currentVersion>
     <organization>
         <name>theospi</name>
         <url>http://theospi.org/</url>
@@ -21,13 +21,13 @@
         <dependency>
             <groupId>osp</groupId>
             <artifactId>osp-reports-api</artifactId>
-            <version>${osp.version}</version>
+            <version>${sakai.version}</version>
         </dependency>
       
         <dependency>
             <groupId>osp</groupId>
             <artifactId>osp-reports-component-shared</artifactId>
-            <version>${osp.version}</version>
+            <version>${sakai.version}</version>
            <properties>
               <war.bundle>true</war.bundle>
            </properties>
@@ -54,7 +54,7 @@
        <dependency>
          <groupId>osp</groupId>
          <artifactId>osp-common-impl</artifactId>
-         <version>${osp.version}</version>
+         <version>${sakai.version}</version>
          <properties>
                <war.bundle>true</war.bundle>
             </properties>

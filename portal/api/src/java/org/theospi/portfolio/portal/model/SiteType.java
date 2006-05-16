@@ -38,16 +38,26 @@ public class SiteType implements Comparable {
    private int lastCategory = 0;
    private List toolCategories;
    private List specialSites;
-   public static final SiteType OTHER = new SiteType("org.theospi.portfolio.portal.other", Integer.MAX_VALUE);
-   public static final SiteType MY_WORKSPACE = new SiteType("org.theospi.portfolio.portal.myWorkspace", 0);
-   public static final SiteType GATEWAY = new SiteType("org.theospi.portfolio.portal.gateway", 0);
+   private String name;
+   public static final SiteType OTHER = new SiteType("org.theospi.portfolio.portal.other", "other", Integer.MAX_VALUE);
+   public static final SiteType MY_WORKSPACE = new SiteType("org.theospi.portfolio.portal.myWorkspace", "workspace", 0);
+   public static final SiteType GATEWAY = new SiteType("org.theospi.portfolio.portal.gateway", "gateway", 0);
 
    public SiteType() {
    }
 
-   public SiteType(String key, int order) {
+   public SiteType(String key, String name, int order) {
+      this.name = name;
       this.key = key;
       this.order = order;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
    }
 
    public String getKey() {

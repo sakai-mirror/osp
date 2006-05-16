@@ -6,7 +6,7 @@
     <name>OSP Reports Tool</name>
     <groupId>osp</groupId>
     <id>osp-reports-tool</id>
-    <currentVersion>${osp.version}</currentVersion>
+    <currentVersion>${sakai.version}</currentVersion>
     <organization>
         <name>The OSPI</name>
         <url>http://theospi.org/</url>
@@ -21,16 +21,13 @@
         <dependency>
             <groupId>osp</groupId>
             <artifactId>osp-reports-api</artifactId>
-            <version>${osp.version}</version>
-            <properties>
-                <deploy.target>shared</deploy.target>
-            </properties>
+            <version>${sakai.version}</version>
         </dependency>
       
        <dependency>
            <groupId>osp</groupId>
            <artifactId>osp-common-api</artifactId>
-           <version>${osp.version}</version>
+           <version>${sakai.version}</version>
        </dependency>
 
      <dependency>
@@ -60,7 +57,7 @@
        <dependency>
            <groupId>osp</groupId>
            <artifactId>osp-common-tool-lib</artifactId>
-           <version>${osp.version}</version>
+           <version>${sakai.version}</version>
            <properties>
               <war.bundle>true</war.bundle>
            </properties>
@@ -136,9 +133,6 @@
             <groupId>jstl</groupId>
             <artifactId>jstl</artifactId>
             <version>1.0.2</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>        
         </dependency>
         
         <dependency>

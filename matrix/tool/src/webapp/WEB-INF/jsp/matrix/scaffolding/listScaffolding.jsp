@@ -27,7 +27,7 @@
                <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message>
              </osp:param>
                <osp:param name="name" value="scaffolding"/>
-               <osp:param name="qualifier" value="${worksite.i\d}"/>
+               <osp:param name="qualifier" value="${worksite.id}"/>
                <osp:param name="returnView" value="listScaffoldingRedirect"/>
                </osp:url>"
                title="<fmt:message key="action_permissions_title"/>" >

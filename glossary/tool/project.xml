@@ -5,7 +5,7 @@
   <id>osp-glossary-tool</id>
   <groupId>osp</groupId>
   <name>OSP Glossary Tool</name>
-  <currentVersion>${osp.version}</currentVersion>
+  <currentVersion>${sakai.version}</currentVersion>
   <organization>
       <name>Sakai Project</name>
       <url>http://sakaiproject.org/</url>
@@ -49,7 +49,7 @@
      <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-common-tool-lib</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
        <properties>
              <war.bundle>true</war.bundle>
           </properties>
@@ -58,19 +58,19 @@
      <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-common-api</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
      </dependency>
 
 	<dependency>
       <groupId>osp</groupId>
       <artifactId>osp-glossary-api</artifactId>
-      <version>${osp.version}</version>
+      <version>${sakai.version}</version>
     </dependency>
     
     <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-glossary-tool-lib</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
        <properties>
              <war.bundle>true</war.bundle>
           </properties>
@@ -136,12 +136,6 @@
       <version>1.0</version>
     </dependency>
 
-    <dependency>
-      <groupId>tomcat</groupId>
-      <artifactId>catalina</artifactId>
-      <version>5.5.9</version>
-    </dependency>
-    
     <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib-full</artifactId>
@@ -257,9 +251,6 @@
       <groupId>jstl</groupId>
       <artifactId>jstl</artifactId>
       <version>1.1.2</version>
-      <properties>
-			<war.bundle>true</war.bundle>
-		</properties>
     </dependency>
     
     <dependency>

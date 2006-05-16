@@ -20,35 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.web;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.URIResolver;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.Serializer;
 import org.apache.xml.serialize.SerializerFactory;
@@ -62,17 +33,12 @@ import org.sakaiproject.portal.charon.CharonPortal;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.tool.api.ActiveTool;
-import org.sakaiproject.tool.api.Session;
-import org.sakaiproject.tool.api.Tool;
-import org.sakaiproject.tool.api.ToolException;
-import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.api.*;
 import org.sakaiproject.tool.cover.ActiveToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.user.api.Preferences;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.PreferencesService;
-import org.sakaiproject.util.Placement;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.util.Web;
 import org.theospi.portfolio.portal.intf.PortalManager;
@@ -81,6 +47,24 @@ import org.theospi.portfolio.portal.model.SiteType;
 import org.theospi.portfolio.portal.model.ToolCategory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -774,6 +758,10 @@ public class XsltPortal extends CharonPortal {
       Element siteTypeKey = doc.createElement("key");
       safeAppendTextNode(doc, siteTypeKey, type.getKey(), false);
       siteTypeElement.appendChild(siteTypeKey);
+
+      Element siteTypeName = doc.createElement("name");
+      safeAppendTextNode(doc, siteTypeName, type.getName(), false);
+      siteTypeElement.appendChild(siteTypeName);
 
       Element siteTypeEscapedKey = doc.createElement("escapedKey");
       safeAppendTextNode(doc, siteTypeEscapedKey, Web.escapeJavascript(type.getKey()), false);

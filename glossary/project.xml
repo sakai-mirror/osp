@@ -5,7 +5,7 @@
 	<extend>../master/project.xml</extend>
 	<name>osp-glossary</name>
 	<groupId>osp-glossary</groupId>
-	<currentVersion>${osp.version}</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>Sakai Project</name>
 		<url>http://sakaiproject.org/</url>

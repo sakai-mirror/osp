@@ -6,7 +6,7 @@
    <id>osp-common-server</id>
    <groupId>osp</groupId>
    <name>OSP Common Server</name>
-   <currentVersion>${osp.version}</currentVersion>
+   <currentVersion>${sakai.version}</currentVersion>
    <organization>
       <name>Sakai Project</name>
       <url>http://sakaiproject.org/</url>

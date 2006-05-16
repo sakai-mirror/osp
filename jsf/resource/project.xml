@@ -6,7 +6,7 @@
 	<name>OSP JSF Widgets - Resource</name>
 	<groupId>sakaiproject</groupId>
 	<id>osp-jsf-resource</id>
-	<currentVersion>${osp.version}</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>University of Michigan</name>
 		<url>http://sakaiproject.org/</url>

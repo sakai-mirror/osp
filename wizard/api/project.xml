@@ -5,7 +5,7 @@
   <id>osp-wizard-api</id>
   <groupId>osp</groupId>
   <name>OSP Wizard Service</name>
-  <currentVersion>${osp.version}</currentVersion>
+  <currentVersion>${sakai.version}</currentVersion>
   <organization>
       <name>OSPI</name>
       <url>http://theospi.org/</url>
@@ -76,19 +76,19 @@
      <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-common-api</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
      </dependency>
 
      <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-matrix-api</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
      </dependency>
 
      <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-common-tool-lib</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
      </dependency>
           
     <dependency>
@@ -113,9 +113,6 @@
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
       <version>1.2</version>
-      <properties>
-         <deploy.target>shared</deploy.target>
-      </properties>
     </dependency>
 
     <dependency>
@@ -164,24 +161,12 @@
       <groupId>jdom</groupId>
       <artifactId>jdom</artifactId>
       <version>1.0</version>
-      <properties>
-         <deploy.target>shared</deploy.target>
-      </properties>
     </dependency>
     
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>jstl</groupId>
-      <artifactId>jstl</artifactId>
-      <version>1.1.2</version>
-      <properties>
-         <deploy.target>shared</deploy.target>
-      </properties>
     </dependency>
     
     <dependency>

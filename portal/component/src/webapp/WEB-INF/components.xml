@@ -45,6 +45,9 @@
       <property name="key">
          <value>org.theospi.portfolio.portal.portfolioAdmin</value>
       </property>
+      <property name="name">
+         <value>portfolioAdmin</value>
+      </property>
       <property name="order">
          <value>1</value>
       </property>
@@ -80,6 +83,9 @@
       <property name="key">
          <value>org.theospi.portfolio.portal.portfolio</value>
       </property>
+      <property name="name">
+         <value>portfolio</value>
+      </property>
       <property name="order">
          <value>2</value>
       </property>
@@ -106,6 +112,9 @@
       <property name="key">
          <value>org.theospi.portfolio.portal.project</value>
       </property>
+      <property name="name">
+         <value>project</value>
+      </property>
       <property name="order">
          <value>3</value>
       </property>
@@ -120,6 +129,9 @@
       <!-- title will come from a messages.properties so that i18n can be supported -->
       <property name="key">
          <value>org.theospi.portfolio.portal.course</value>
+      </property>
+      <property name="name">
+         <value>course</value>
       </property>
       <property name="order">
          <value>4</value>

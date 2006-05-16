@@ -5,7 +5,7 @@
   <id>osp-common-api</id>
   <groupId>osp</groupId>
   <name>OSP Common Service</name>
-  <currentVersion>${osp.version}</currentVersion>
+  <currentVersion>${sakai.version}</currentVersion>
   <organization>
       <name>OSPI</name>
       <url>http://theospi.org/</url>
@@ -30,9 +30,6 @@
         <groupId>quartz</groupId>
         <artifactId>quartz</artifactId>
         <version>1.5.1</version>
-        <properties>
-           <deploy.target>shared</deploy.target>>
-        </properties>
      </dependency>
 
     <dependency>
@@ -201,24 +198,12 @@
       <groupId>jdom</groupId>
       <artifactId>jdom</artifactId>
       <version>1.0</version>
-      <properties>
-      	<deploy.target>shared</deploy.target>
-      </properties>
     </dependency>
     
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>jstl</groupId>
-      <artifactId>jstl</artifactId>
-      <version>1.1.2</version>
-      <properties>
-			<deploy.target>shared</deploy.target>
-		</properties>
     </dependency>
     
     <dependency>

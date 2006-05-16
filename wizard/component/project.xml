@@ -6,7 +6,7 @@
     <name>OSP Wizard Components</name>
     <groupId>osp</groupId>
     <id>osp-wizard-components</id>
-    <currentVersion>${osp.version}</currentVersion>
+    <currentVersion>${sakai.version}</currentVersion>
     <organization>
         <name>theospi</name>
         <url>http://theospi.org/</url>
@@ -21,17 +21,14 @@
         <dependency>
             <groupId>osp</groupId>
             <artifactId>osp-wizard-api</artifactId>
-            <version>${osp.version}</version>
-            <properties>
-                <deploy.target>shared</deploy.target>
-            </properties>        
+            <version>${sakai.version}</version>
         </dependency>
 
         
      <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-common-impl</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
        <properties>
              <war.bundle>true</war.bundle>
           </properties>
@@ -40,7 +37,7 @@
      <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-glossary-impl</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
        <properties>
              <war.bundle>true</war.bundle>
           </properties>
@@ -58,7 +55,7 @@
        <dependency>
          <groupId>osp</groupId>
          <artifactId>osp-wizard-impl</artifactId>
-         <version>${osp.version}</version>
+         <version>${sakai.version}</version>
          <properties>
                    <war.bundle>true</war.bundle>
                </properties>

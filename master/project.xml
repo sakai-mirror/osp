@@ -5,7 +5,7 @@
    <extend>../../master/project.xml</extend>
 	<name>OSP</name>
 	<groupId>osp</groupId>
-	<currentVersion>${osp.version}</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>OS Portfolio</name>
 		<url>http://www.osportfolio.org/</url>

@@ -6,7 +6,7 @@
     <name>OSP Wizard Tool</name>
     <groupId>osp</groupId>
     <id>osp-wizard-tool</id>
-    <currentVersion>${osp.version}</currentVersion>
+    <currentVersion>${sakai.version}</currentVersion>
     <organization>
         <name>The OSPI</name>
         <url>http://theospi.org/</url>
@@ -21,16 +21,13 @@
         <dependency>
             <groupId>osp</groupId>
             <artifactId>osp-wizard-api</artifactId>
-            <version>${osp.version}</version>
-            <properties>
-                <deploy.target>shared</deploy.target>
-            </properties>
+            <version>${sakai.version}</version>
         </dependency>
       
      <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-common-tool-lib</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
        <properties>
              <war.bundle>true</war.bundle>
        </properties>
@@ -39,7 +36,7 @@
      <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-glossary-tool-lib</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
        <properties>
              <war.bundle>true</war.bundle>
           </properties>
@@ -48,7 +45,7 @@
     <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-wizard-tool-lib</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
        <properties>
              <war.bundle>true</war.bundle>
        </properties>
@@ -57,20 +54,20 @@
        <dependency>
           <groupId>osp</groupId>
           <artifactId>osp-common-api</artifactId>
-          <version>${osp.version}</version>
+          <version>${sakai.version}</version>
         </dependency>
 
        <dependency>
           <groupId>osp</groupId>
           <artifactId>osp-matrix-api</artifactId>
-          <version>${osp.version}</version>
+          <version>${sakai.version}</version>
         </dependency>
 
     <!-- OSP tag library -->
      <dependency>
         <groupId>osp</groupId>
         <artifactId>osp-jsf-widgets</artifactId>
-        <version>${osp.version}</version>
+        <version>${sakai.version}</version>
         <url>http://www.theospi.org/jsf/osp</url>
         <properties>
            <war.bundle>true</war.bundle>
@@ -197,9 +194,6 @@
             <groupId>jstl</groupId>
             <artifactId>jstl</artifactId>
             <version>1.0.2</version>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>        
         </dependency>
         
         <dependency>

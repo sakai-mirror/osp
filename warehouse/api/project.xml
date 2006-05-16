@@ -5,7 +5,7 @@
   <id>osp-warehouse-api</id>
   <groupId>osp</groupId>
   <name>OSP Warehouse Service</name>
-  <currentVersion>${osp.version}</currentVersion>
+  <currentVersion>${sakai.version}</currentVersion>
   <organization>
       <name>OSPI</name>
       <url>http://theospi.org/</url>

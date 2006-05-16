@@ -5,7 +5,7 @@
   <id>osp-portal-impl</id>
   <groupId>osp</groupId>
   <name>OSP Portal Implementation</name>
-  <currentVersion>${osp.version}</currentVersion>
+  <currentVersion>${sakai.version}</currentVersion>
   <organization>
       <name>OSPI</name>
       <url>http://theospi.org/</url>
@@ -40,13 +40,13 @@
      <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-common-api</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
      </dependency>
 
      <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-portal-api</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
      </dependency>
 
      <dependency>

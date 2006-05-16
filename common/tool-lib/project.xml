@@ -5,7 +5,7 @@
   <id>osp-common-tool-lib</id>
   <groupId>osp</groupId>
   <name>OSP Common Tool Lib</name>
-  <currentVersion>${osp.version}</currentVersion>
+  <currentVersion>${sakai.version}</currentVersion>
   <organization>
       <name>OSP</name>
       <url>http://theospi.org/</url>
@@ -28,7 +28,7 @@
      <dependency>
          <groupId>osp</groupId>
          <artifactId>osp-common-api</artifactId>
-         <version>${osp.version}</version>
+         <version>${sakai.version}</version>
       </dependency>
 
      <dependency>
@@ -182,12 +182,6 @@
      </dependency>
 
     <dependency>
-      <groupId>tomcat</groupId>
-      <artifactId>catalina</artifactId>
-      <version>5.5.9</version>
-    </dependency>
-    
-    <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib-full</artifactId>
       <version>2.0.2</version>
@@ -302,9 +296,6 @@
       <groupId>jstl</groupId>
       <artifactId>jstl</artifactId>
       <version>1.1.2</version>
-      <properties>
-			<war.bundle>true</war.bundle>
-		</properties>
     </dependency>
     
     <dependency>

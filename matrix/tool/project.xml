@@ -5,7 +5,7 @@
   <id>osp-matrix-tool</id>
   <groupId>osp</groupId>
   <name>OSP Matrix Tool</name>
-  <currentVersion>${osp.version}</currentVersion>
+  <currentVersion>${sakai.version}</currentVersion>
   <organization>
       <name>Sakai Project</name>
       <url>http://sakaiproject.org/</url>
@@ -21,7 +21,7 @@
     <dependency> <!-- THIS IS A TEMPORARY WORKAROUND -->
       <groupId>osp</groupId>
       <artifactId>osp-matrix-impl</artifactId>
-      <version>${osp.version}</version>
+      <version>${sakai.version}</version>
     </dependency>
 
     <dependency> <!-- THIS IS A TEMPORARY WORKAROUND -->
@@ -97,7 +97,7 @@
      <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-common-tool-lib</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
        <properties>
              <war.bundle>true</war.bundle>
           </properties>
@@ -106,7 +106,7 @@
      <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-glossary-tool-lib</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
        <properties>
              <war.bundle>true</war.bundle>
           </properties>
@@ -115,19 +115,19 @@
 	<dependency>
       <groupId>osp</groupId>
       <artifactId>osp-matrix-api</artifactId>
-      <version>${osp.version}</version>
+      <version>${sakai.version}</version>
     </dependency>
     
    <dependency>
       <groupId>osp</groupId>
       <artifactId>osp-wizard-api</artifactId>
-      <version>${osp.version}</version>
+      <version>${sakai.version}</version>
     </dependency>
 
 	<dependency>
       <groupId>osp</groupId>
       <artifactId>osp-common-api</artifactId>
-      <version>${osp.version}</version>
+      <version>${sakai.version}</version>
     </dependency>
 
      <dependency>
@@ -154,12 +154,6 @@
       <version>1.0</version>
     </dependency>
 
-    <dependency>
-      <groupId>tomcat</groupId>
-      <artifactId>catalina</artifactId>
-      <version>5.5.9</version>
-    </dependency>
-    
     <dependency>
       <groupId>cglib</groupId>
       <artifactId>cglib-full</artifactId>

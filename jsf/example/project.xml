@@ -6,7 +6,7 @@
 	<name>OSP JSF Widgets - Example</name>
 	<groupId>osp</groupId>
 	<id>osp-jsf-example</id>
-	<currentVersion>${osp.version}</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>University of Michigan</name>
 		<url>http://sakaiproject.org/</url>
@@ -146,7 +146,7 @@
       <dependency>
          <groupId>osp</groupId>
          <artifactId>osp-jsf-widgets</artifactId>
-         <version>${osp.version}</version>
+         <version>${sakai.version}</version>
          <url>http://www.theospi.org/jsf/osp</url>
          <properties>
             <war.bundle>true</war.bundle>
@@ -200,9 +200,6 @@
 			<groupId>jstl</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.0.2</version>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
 		</dependency>
 
 		<dependency>
@@ -232,27 +229,18 @@
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.0</version>
 			<url>http://jakarta.apache.org/commons/fileupload/</url>
-			<properties>
-				<deploy.target>shared</deploy.target>
-			</properties>
 		</dependency>
 
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 			<version>3.1</version>
-			<properties>
-				<deploy.target>shared</deploy.target>
-			</properties>
 		</dependency>
 		
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 			<version>1.0.4</version>
-			<properties>
-				<deploy.target>shared</deploy.target>
-			</properties>
 		</dependency>
 
 	</dependencies>

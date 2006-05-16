@@ -5,7 +5,7 @@
   <id>osp-portal-tool</id>
   <groupId>osp</groupId>
   <name>OSP Portal</name>
-  <currentVersion>${osp.version}</currentVersion>
+  <currentVersion>${sakai.version}</currentVersion>
   <organization>
       <name>Sakai Project</name>
       <url>http://sakaiproject.org/</url>
@@ -28,7 +28,7 @@
      <dependency>
 			<groupId>osp</groupId>
 			<artifactId>osp-common-tool-lib</artifactId>
-			<version>${osp.version}</version>
+			<version>${sakai.version}</version>
         <properties>
            <war.bundle>true</war.bundle>
         </properties>
@@ -65,9 +65,18 @@
      </dependency>
 
      <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-util</artifactId>
+       <version>${sakai.version}</version>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
+     </dependency>
+
+     <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-portal-api</artifactId>
-       <version>${osp.version}</version>
+       <version>${sakai.version}</version>
      </dependency>
 
      <dependency>
@@ -98,7 +107,7 @@
      <dependency>
         <groupId>osp</groupId>
         <artifactId>osp-jsf-widgets</artifactId>
-        <version>${osp.version}</version>
+        <version>${sakai.version}</version>
         <url>http://www.theospi.org/jsf/osp</url>
         <properties>
            <war.bundle>true</war.bundle>
@@ -196,6 +205,12 @@
         <groupId>commons-logging</groupId>
         <artifactId>commons-logging</artifactId>
         <version>1.0.4</version>
+     </dependency>
+
+     <dependency>
+        <groupId>jstl</groupId>
+        <artifactId>jstl</artifactId>
+        <version>1.1.2</version>
      </dependency>
 
   </dependencies>

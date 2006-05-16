@@ -5,7 +5,7 @@
 	<extend>../master/project.xml</extend>
 	<name>osp-portal</name>
 	<groupId>osp-portal</groupId>
-	<currentVersion>${osp.version}</currentVersion>
+	<currentVersion>${sakai.version}</currentVersion>
 	<organization>
 		<name>Sakai Project</name>
 		<url>http://sakaiproject.org/</url>
