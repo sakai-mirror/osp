@@ -118,8 +118,12 @@
       <property name="order">
          <value>3</value>
       </property>
+      <property name="firstCategory">
+         <value>1</value>
+      </property>
       <property name="toolCategories">
          <list>
+            <ref bean="org.theospi.portfolio.portal.model.ToolCategory.collectReflect"/>
          </list>
       </property>
    </bean>

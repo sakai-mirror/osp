@@ -318,8 +318,6 @@ public class XsltPortal extends CharonPortal {
          return;
       }
 
-      Site site = getPortalManager().getSite(siteId);
-
       Document doc = createPortalDocument(null, siteId, null, pageId);
       outputDocument(req, res, session, doc);
    }

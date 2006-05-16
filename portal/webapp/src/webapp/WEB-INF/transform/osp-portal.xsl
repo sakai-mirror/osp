@@ -39,8 +39,6 @@
       </script>
    </head>
 <body class="portalBody">
-   <div id="portalOuterContainer">
-      <div id="portalContainer">
    <a href="#tocontent"  class="skip" accesskey="c">
    <xsl:attribute name="title">
       <xsl:value-of select="$externalized/entry[@key='sit.jumpcontent']"/>
@@ -75,6 +73,8 @@
    </tr>
    <tr>
       <td>
+         <div id="portalOuterContainer">
+            <div id="portalContainer">
 <div id="container">
    <xsl:attribute name="class">
       <xsl:value-of select="siteTypes/siteType[@selected='true']/name"/>
@@ -101,11 +101,11 @@
 <xsl:call-template name="footer"/>
 </div>
 </div>
+</div>
+</div>
       </td>
    </tr>
 </table>
-</div>
-</div>
 </body></html>
 	</xsl:template>
 
@@ -268,9 +268,9 @@ your browser doesn't support iframes
          </img>
       </div>
       <div id="mastLogin">
-         <div id="loginLinks">
-            <xsl:choose>
-           <xsl:when test="currentUser">
+        <xsl:choose>
+        <xsl:when test="currentUser">
+           <div id="loginLinks">
               <a target="_parent">
                  <xsl:attribute name="href">
                     <xsl:value-of select="config/logout"/>
@@ -280,8 +280,9 @@ your browser doesn't support iframes
                  </xsl:attribute>
                  <xsl:value-of select="$externalized/entry[@key='sit.log']"/>
               </a>
-           </xsl:when>
-           <xsl:otherwise>
+           </div>
+        </xsl:when>
+        <xsl:otherwise>
 <form method="post" action="/osp-portal/xlogin" enctype="application/x-www-form-urlencoded" target="_parent">
 <xsl:value-of select="$externalized/entry[@key='log.userid']"/>
 <input name="eid" id="eid" type="text" style ="width: 10em" />
@@ -295,9 +296,8 @@ your browser doesn't support iframes
 </input>
 <br/>
 </form>
-           </xsl:otherwise>
-            </xsl:choose>
-         </div>
+         </xsl:otherwise>
+         </xsl:choose>
       </div>
    </div>
    <div>
@@ -454,7 +454,7 @@ your browser doesn't support iframes
       </h1>
       <a id="tocontent" class="skip" name="tocontent"></a>
       <div id="content">
-         <div class="col1of2">
+         <div id="col1of2">
             <div class="portlet">
          <xsl:for-each select="$page/columns/column[@index='0']/tools/tool">
             <xsl:call-template name="tool">
@@ -463,7 +463,7 @@ your browser doesn't support iframes
          </xsl:for-each>
             </div>
          </div>
-         <div class="col2of2">
+         <div id="col2of2">
          <div class="portlet">
          <xsl:for-each select="$page/columns/column[@index='1']/tools/tool">
             <xsl:call-template name="tool">
@@ -770,20 +770,20 @@ your browser doesn't support iframes
          <div id="presenceTitle">
          <xsl:value-of select="$externalized/entry[@key='sit.presencetitle']"/>
          </div>
+         <iframe
+            name="presence"
+            id="presence"
+            title="Users Present in Site"
+            frameborder="0"
+            marginwidth="0"
+            marginheight="0"
+            scrolling="auto">
+            <xsl:attribute name="src">
+               <xsl:value-of select="$config/presence"/>
+            </xsl:attribute>
+            Your browser doesn't support frames
+         </iframe>
       </div>
-      <iframe
-         name="presence"
-         id="presence"
-         title="Users Present in Site"
-         frameborder="0"
-         marginwidth="0"
-         marginheight="0"
-         scrolling="auto">
-         <xsl:attribute name="src">
-            <xsl:value-of select="$config/presence"/>
-         </xsl:attribute>
-         Your browser doesn't support frames
-      </iframe>
    </xsl:template>
 
    <!--

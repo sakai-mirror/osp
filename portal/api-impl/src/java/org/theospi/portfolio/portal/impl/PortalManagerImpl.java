@@ -20,13 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
@@ -44,6 +37,8 @@ import org.theospi.portfolio.portal.model.SitePageWrapper;
 import org.theospi.portfolio.portal.model.SiteType;
 import org.theospi.portfolio.portal.model.ToolCategory;
 import org.theospi.portfolio.portal.model.ToolType;
+
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -74,6 +69,10 @@ public class PortalManagerImpl implements PortalManager {
    public Map getSitesByType(String siteId) {
       Map typeMap = new Hashtable();
       boolean addSite = (siteId != null);
+
+      if (siteId != null) {
+         getOspAuthzManager().pushAuthzGroups(siteId);
+      }
 
       User currentUser = getCurrentUser();
       if (currentUser != null && currentUser.getId().length() > 0) {
