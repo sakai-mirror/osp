@@ -409,7 +409,7 @@
    </bean>
 
    <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.presentationTemplate"
-      class="org.theospi.portfolio.security.model.SimpleToolPermissionManager"
+      class="org.theospi.portfolio.security.model.SimpleSitePermissionManager"
        singleton="true">
 
       <property name="idManager"><ref bean="idManager"/></property>
@@ -418,6 +418,7 @@
       </property>
       <property name="agentManager"><ref bean="agentManager" /></property>
       <property name="permissionEditName"><value>presentationTemplate</value></property>
+      <property name="functionPrefix"><value>osp.presentation.template</value></property>
       <property name="defaultPermissions">
          <map>
             <entry>
