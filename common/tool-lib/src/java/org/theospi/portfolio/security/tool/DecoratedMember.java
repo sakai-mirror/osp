@@ -43,7 +43,7 @@ public class DecoratedMember {
    }
 
    public String getDisplayName() {
-      String baseName = base.getId().getValue();
+      String baseName = base.getEid().getValue();
       if (base.isRole()) {
          return parent.getMessageFromBundle("decorated_role_format",
                new Object[]{base.getDisplayName()});

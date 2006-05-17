@@ -80,7 +80,7 @@
                   <h:outputText value="#{common_msgs.user_column_header}" />
                </f:facet>
                <h:selectBooleanCheckbox id="memberSelect" value="#{member.selected}" />
-               <h:outputLabel value="#{member.base.id.value}" for="memberSelect" />
+               <h:outputLabel value="#{member.base.eid.value}" for="memberSelect" />
             </h:column>
             <h:column>
                <f:facet name="header">

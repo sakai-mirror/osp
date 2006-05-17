@@ -23,6 +23,7 @@ public class AgentImplOsp implements org.sakaiproject.metaobj.shared.model.Agent
        static public final String ROLES = "roles";
 
        private Id id;
+       private Id eid;
        private StructuredArtifact profile;
        private String[] roles;
        private HomeFactory homeFactory;
@@ -51,7 +52,14 @@ public class AgentImplOsp implements org.sakaiproject.metaobj.shared.model.Agent
        public void setId(Id id) {
           this.id = id;
        }
-
+       
+       public Id getEid() {
+          return eid;
+       }
+       
+       public void setEid(Id eid) {
+          this.eid = eid;
+       }      
 
        public Artifact getProfile() {
           return profile;

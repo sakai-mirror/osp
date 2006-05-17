@@ -827,7 +827,7 @@ public class WizardTool extends BuilderTool {
       for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
          Authorization az = (Authorization) iter.next();
          Agent agent = az.getAgent();
-         String userId = az.getAgent().getId().getValue();
+         String userId = az.getAgent().getEid().getValue();
          if (agent.isRole()) {
             evalList.add(MessageFormat.format(myResources.getString("decorated_role_format"), 
                   new Object[]{agent.getDisplayName()}));
