@@ -13,8 +13,8 @@ function hrefViewCell(pageId) {
 
 
 </SCRIPT>
-<osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" />
-<osp-c:authZMap prefix="osp.matrix." var="matrixCan" />
+<osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" useSite="true" />
+<osp-c:authZMap prefix="osp.matrix." var="matrixCan" useSite="true" />
 
    <c:if test="${isExposedPage != true}">
    <div class="navIntraTool">
