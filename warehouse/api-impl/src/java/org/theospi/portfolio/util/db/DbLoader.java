@@ -373,11 +373,12 @@ public class DbLoader {
                 return localDataTypeName;
 
             // No matching type found, report an error
-            System.out.println("Your database driver, '" + driverName + "', version '" + driverVersion + "', was unable to find a local type name that matches the generic type name, '" + genericDataTypeName + "'.");
-            System.out.println("Please add a mapped type for database '" + dbName + "', version '" + dbVersion + "' inside your properties file and run this program again.");
-            System.out.println("Exiting...");
+            logger.error("Error in DbLoader.getLocalDataTypeName()");
+            logger.error("Your database driver, '" + driverName + "', version '" + driverVersion + "', was unable to find a local type name that matches the generic type name, '" + genericDataTypeName + "'.");
+            logger.error("Please add a mapped type for database '" + dbName + "', version '" + dbVersion + "' inside your properties file and run this program again.");
+            logger.error("Exiting...");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error in DbLoader.getLocalDataTypeName()", e);
         }
 
         return null;
@@ -455,7 +456,7 @@ public class DbLoader {
     }
 
     protected  void dropTable(String dropTableStatement) {
-        System.out.print("...");
+        logger.debug("...");
 
         if (createScript)
             scriptOut.println(dropTableStatement + propertiesHandler.properties.getStatementTerminator());
@@ -467,7 +468,7 @@ public class DbLoader {
             } catch (SQLException sqle) {/*Table didn't exist*/
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error in DbLoader.dropTable()", e);
         } finally {
             try {
                 stmt.close();
@@ -477,7 +478,7 @@ public class DbLoader {
     }
 
     protected  void createTable(String createTableStatement) {
-        System.out.print("...");
+        logger.debug("...");
         if (createScript)
             scriptOut.println(createTableStatement + propertiesHandler.properties.getStatementTerminator());
 
@@ -485,8 +486,8 @@ public class DbLoader {
             stmt = con.createStatement();
             stmt.executeUpdate(createTableStatement);
         } catch (Exception e) {
-            System.out.println(createTableStatement);
-            e.printStackTrace();
+            logger.error("error creating table with this sql: " + createTableStatement);
+            logger.error("", e);
         } finally {
             try {
                 stmt.close();
@@ -498,15 +499,15 @@ public class DbLoader {
 
 
     protected  void alterTable( String alterTableStatement ) {
-        System.out.print( "..." );
+        logger.debug( "..." );
         if ( createScript )
             scriptOut.println( alterTableStatement + propertiesHandler.properties.getStatementTerminator() );
         try {
             stmt = con.createStatement();
             stmt.executeUpdate( alterTableStatement );
         } catch ( Exception e ) {
-            System.out.println( alterTableStatement );
-            e.printStackTrace();
+           logger.error("error altering table with this sql: " + alterTableStatement);
+           logger.error("", e);
         } finally {
             try {
                 stmt.close();
@@ -516,7 +517,7 @@ public class DbLoader {
     }
 
     protected  void indexTable( String indexTableStatement ) {
-        System.out.print( "..." );
+        logger.debug( "..." );
         if ( createScript )
             scriptOut.println( indexTableStatement + propertiesHandler.properties.getStatementTerminator() );
 
@@ -524,8 +525,8 @@ public class DbLoader {
             stmt = con.createStatement();
             stmt.executeUpdate( indexTableStatement );
         } catch ( Exception e ) {
-            System.out.println( indexTableStatement );
-            e.printStackTrace();
+           logger.error("error indexing table with this sql: " + indexTableStatement);
+           logger.error("", e);
         } finally {
             try {
                 stmt.close();
@@ -809,16 +810,16 @@ public class DbLoader {
          String type;    //determines type of column
 
         public void startDocument() {
-            System.out.print("Populating tables...");
+            logger.debug("Populating tables...");
 
             if (!populateTables)
-                System.out.print("disabled.");
+               logger.debug("disabled.");
 
             supportsPreparedStatements = supportsPreparedStatements();
         }
 
         public void endDocument() {
-            System.out.println("");
+           logger.debug("");
         }
 
         public void startElement(String namespaceURI, String localName, String qName, Attributes atts) {
@@ -1058,7 +1059,7 @@ public class DbLoader {
         }
 
         private void executeSQL(Table table, Row row, String action) {
-            System.out.print("...");
+           logger.debug("...");
             if (createScript) {
                 if (action.equals("delete"))
                     scriptOut.println(prepareDeleteStatement(row, false) + propertiesHandler.properties.getStatementTerminator());
@@ -1131,12 +1132,10 @@ public class DbLoader {
                     }
                     pstmt.executeUpdate();
                 } catch (SQLException sqle) {
-                    System.err.println();
-                    System.err.println(preparedStatement);
-                    sqle.printStackTrace();
+                   logger.error("Error in DbLoader.DataHandler.executeSQL()", sqle);
+                   logger.error("Error in DbLoader.DataHandler.executeSQL(): " + preparedStatement);
                 } catch (Exception e) {
-                    System.err.println();
-                    e.printStackTrace();
+                   logger.error("Error in DbLoader.DataHandler.executeSQL()", e);
                 } finally {
                     try {
                         pstmt.close();
@@ -1159,9 +1158,8 @@ public class DbLoader {
                     stmt = con.createStatement();
                     stmt.executeUpdate(statement);
                 } catch (Exception e) {
-                    System.err.println();
-                    System.err.println(statement);
-                    e.printStackTrace();
+                   logger.error("Error in DbLoader.DataHandler.executeSQL()", e);
+                   logger.error("Error in DbLoader.DataHandler.executeSQL(): " + statement); 
                 } finally {
                     try {
                         stmt.close();
@@ -1198,7 +1196,7 @@ public class DbLoader {
                 rs.close();
             } catch (SQLException sqle) {
                 supportsPreparedStatements = false;
-                sqle.printStackTrace();
+                logger.error("Error in DbLoader.DataHandler.supportsPreparedStatements()", sqle);
             } finally {
                 try {
                     stmt = con.createStatement();

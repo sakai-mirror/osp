@@ -21,6 +21,8 @@
 package org.theospi.portfolio.util.db;
 
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -46,9 +48,11 @@ public class MySqlHandler implements ContentHandler{
    private String tmpType;
    private String tmpParm; 
    private DbLoader loader;	
+   
+   protected final Log logger = LogFactory.getLog(getClass());
 
    public MySqlHandler(DbLoader loader){
-	  System.out.println("MySQL table handler...");
+      logger.debug("MySQL table handler...");
 	  this.loader = loader; 
    }
 		
@@ -58,7 +62,7 @@ public class MySqlHandler implements ContentHandler{
 
    public void endDocument ()
    {
-      System.out.println();
+      //System.out.println();
    }
 	  
    public void startElement (String namespaceURI, String localName, String qName, Attributes atts)
@@ -75,37 +79,37 @@ public class MySqlHandler implements ContentHandler{
 		 {
 			mode = DROP;
 
-			System.out.print("Dropping tables...");
+         logger.debug("Dropping tables...");
 
 			if (!this.loader.isDropTables())
-			   System.out.print("disabled.");
+            logger.debug("disabled.");
 		 }
 		 else if (mode == UNSET || mode != CREATE && statementType != null && statementType.equals("create"))
 		 {
 			mode = CREATE;
 
-			System.out.print("\nCreating tables...");
+         logger.debug("\nCreating tables...");
 
 			if (!this.loader.isCreateTables())
-			   System.out.print("disabled.");
+            logger.debug("disabled.");
 		 }
 		 else if (mode == UNSET || mode != ALTER && statementType != null && statementType.equals("alter"))
 		 {
 			mode = ALTER;
 
-			System.out.print("\nAltering tables...");
+         logger.debug("\nAltering tables...");
 
 			if (!this.loader.isAlterTables())
-			   System.out.print("disabled.");
+            logger.debug("disabled.");
 		 }
 		 else if (mode == UNSET || mode != INDEX && statementType != null && statementType.equals("index"))
 		 {
 			mode = INDEX;
 
-			System.out.print("\nIndexing tables...");
+         logger.debug("\nIndexing tables...");
 
 			if (!this.loader.isIndexTables())
-			   System.out.print("disabled.");
+            logger.debug("disabled.");
 		 }
 			
       }
