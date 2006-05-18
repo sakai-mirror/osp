@@ -140,7 +140,7 @@ public class AddTemplateController extends AbstractWizardFormController {
          template = getPresentationManager().getPresentationTemplate(id);
       } else {
          getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_TEMPLATE,
-               getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
+               getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
          template.setNewObject(true);
       }
       ToolSession session = getSessionManager().getCurrentToolSession();
