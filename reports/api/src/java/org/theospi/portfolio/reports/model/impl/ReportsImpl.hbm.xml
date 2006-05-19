@@ -3,7 +3,7 @@
     PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN"
     "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping package="org.theospi.portfolio.reports.model">
+<hibernate-mapping package="org.theospi.portfolio.reports.model" default-lazy="false" >
 <!-- 
     <class
         name="ReportDefinition"
