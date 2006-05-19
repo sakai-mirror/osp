@@ -86,7 +86,7 @@
       <set name="items" table="osp_presentation_item" lazy="false" >
          <key column="presentation_id"/>
          <composite-element class="PresentationItem">
-            <property name="artifactId" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="artifact_id"/>
+            <property name="artifactId" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="artifact_id" not-null="true"/>
             <many-to-one name="definition" column="item_definition_id" not-null="true" class="PresentationItemDefinition"/>
          </composite-element>
       </set>
