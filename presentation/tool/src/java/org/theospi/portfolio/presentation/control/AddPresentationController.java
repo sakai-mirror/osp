@@ -404,7 +404,7 @@ public class AddPresentationController extends AbstractWizardFormController {
 
    }
 
-   protected boolean isCancel(HttpServletRequest request) {
+   protected boolean isCancelRequest(HttpServletRequest request) {
       ToolSession session = SessionManager.getCurrentToolSession();
       String action = (String) session.getAttribute(FreeFormHelper.FREE_FORM_ACTION);
       if (action != null) {
@@ -412,7 +412,7 @@ public class AddPresentationController extends AbstractWizardFormController {
             return true;
          }
       }
-      return super.isCancel(request);
+      return super.isCancelRequest(request);
    }
 
    protected void validatePage(Object model, Errors errors, int page) {
