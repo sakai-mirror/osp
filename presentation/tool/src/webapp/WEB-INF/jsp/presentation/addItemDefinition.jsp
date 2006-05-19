@@ -53,9 +53,6 @@
                 onchange='displayMimeTypeSelection(this,"mimeTypeSelection")'>
             <option value=""><fmt:message key="addItemDef_pleaseSelectaType"/></option>
             <option value="">- - - - - - - - - - - - - - - - - - - - -</option>
-            <option
-                <c:if test="${status.value == 'fileArtifact'}">selected</c:if>
-                value="fileArtifact"><fmt:message key="addItemDef_uploadedFile"/></option>
             <c:forEach var="home" items="${homes}">
                 <c:if test="${!home.value.type.systemOnly}">
                     <option
