@@ -57,11 +57,11 @@
      <primary-key>user_id</primary-key>
    </table>
 
-
+<!--  Don't think we need this index as that column is a PK
    <index>
      <index-name>FK4440EC9296D518</index-name>
      <table-name>dw_sites</table-name>
      <column>id</column>
    </index>
-
+-->
 </tables>
