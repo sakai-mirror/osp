@@ -20,7 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
@@ -58,8 +57,7 @@ public class PresentationItem extends IdentifiableObject {
       if (getId() != null){
          return getId().hashCode();
       }
-      return (artifactId != null) ?
-         DigestUtils.md5Hex(artifactId.getValue() + getHashDefId()).hashCode() : 0;
+      return (artifactId != null) ? (artifactId.getValue() + getHashDefId()).hashCode() : 0;
    }
 
    protected String getHashDefId() {

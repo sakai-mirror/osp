@@ -1,13 +1,12 @@
 package org.theospi.portfolio.shared.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.commons.codec.digest.DigestUtils;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifact;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -141,7 +140,6 @@ public class AgentImplOsp implements org.sakaiproject.metaobj.shared.model.Agent
 
        public void setPassword(String password) {
           this.password = password;
-          this.md5Password = DigestUtils.md5Hex(password);
        }
 
        public String getMd5Password() {

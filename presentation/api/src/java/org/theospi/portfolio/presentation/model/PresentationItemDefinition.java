@@ -20,15 +20,14 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model;
 
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.sakaiproject.metaobj.shared.model.MimeType;
+import org.theospi.portfolio.shared.model.ItemDefinitionMimeType;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.sakaiproject.metaobj.shared.model.MimeType;
-import org.theospi.portfolio.shared.model.ItemDefinitionMimeType;
 
 
 public class PresentationItemDefinition extends IdentifiableObject implements Serializable {
@@ -134,7 +133,7 @@ public class PresentationItemDefinition extends IdentifiableObject implements Se
          return getId().hashCode();
       }
       return (type != null && name != null ) ?
-            DigestUtils.md5Hex(type + name).hashCode() : 0;
+            (type + name).hashCode() : 0;
    }
 
    public boolean allowsMimeType(MimeType mimeType) {

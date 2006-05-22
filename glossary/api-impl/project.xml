@@ -48,6 +48,15 @@
      </dependency>
 
      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.2</version>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
+     </dependency>
+
+     <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-glossary-api</artifactId>
        <version>${sakai.version}</version>
@@ -114,12 +123,6 @@
       <version>1.0.4</version>
     </dependency>
     
-    <dependency>
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>1.2</version>
-    </dependency>
-
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>

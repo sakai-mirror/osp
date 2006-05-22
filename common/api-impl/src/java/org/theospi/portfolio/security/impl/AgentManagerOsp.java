@@ -1,5 +1,6 @@
 package org.theospi.portfolio.security.impl;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.user.api.UserEdit;
@@ -39,7 +40,7 @@ public class AgentManagerOsp extends org.sakaiproject.metaobj.security.impl.saka
 
          AgentImplOsp impl = (AgentImplOsp) agent;
          impl.setPassword(pw);
-
+         impl.setMd5Password(DigestUtils.md5Hex(pw));
 
          return agent;
       }
