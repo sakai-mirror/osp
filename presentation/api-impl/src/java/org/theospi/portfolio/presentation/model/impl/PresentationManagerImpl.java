@@ -2518,12 +2518,18 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          //TODO use the bean org.theospi.portfolio.admin.model.IntegrationOption.siteOption 
          // in common/components to get the name and id for this site.
          
-         /*
          ContentCollectionEdit groupCollection = getContentHosting().addCollection("/group/PortfolioAdmin");
          groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "Portfolio Admin");
          getContentHosting().commitCollection(groupCollection);
-         */           
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
 
+      try {
          ContentCollectionEdit collection = getContentHosting().addCollection(folder);
          collection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "system");
          getContentHosting().commitCollection(collection);
