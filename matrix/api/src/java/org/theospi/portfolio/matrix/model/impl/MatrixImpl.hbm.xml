@@ -152,7 +152,7 @@
         
         <set name="matrix" cascade="all-delete-orphan" inverse="true"
             lazy="true">
-            <key column="id" />
+            <key column="scaffolding_id" />
             <one-to-many class="Matrix" />
         </set>
         <property name="exposedPageId" type="string" length="36" column="exposed_page_id" not-null="false"/>
