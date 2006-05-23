@@ -13,7 +13,7 @@ function hrefViewCell(cellId) {
 
 </SCRIPT>
 
-<osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" />
+<osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" useSite="true"/>
 
 
 		<div class="navIntraTool">
