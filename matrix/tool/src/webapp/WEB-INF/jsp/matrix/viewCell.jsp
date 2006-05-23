@@ -32,9 +32,9 @@
    <input type="hidden" name="submitAction" value="" />
 
 	<c:set var="cell" value="${cellBean.cell}"/>
-   <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" />
-   <osp-c:authZMap prefix="osp.matrix." var="matrixCan" />
-   <osp-c:authZMap prefix="osp.wizard." var="wizardCan" />
+   <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" useSite="true"/>
+   <osp-c:authZMap prefix="osp.matrix." var="matrixCan" useSite="true"/>
+   <osp-c:authZMap prefix="osp.wizard." var="wizardCan" useSite="true"/>
 
 	<div class="navIntraTool">
 		<c:if test="${can.create}">
