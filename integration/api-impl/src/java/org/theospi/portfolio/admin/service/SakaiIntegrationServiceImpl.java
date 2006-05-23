@@ -35,8 +35,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.theospi.portfolio.admin.intf.SakaiIntegrationPlugin;
 import org.theospi.portfolio.admin.intf.SakaiIntegrationService;
 import org.theospi.portfolio.admin.model.IntegrationOption;
-import org.theospi.portfolio.admin.startup.ServerListener;
-import org.theospi.portfolio.admin.startup.ServerListeningService;
 
 import java.util.ArrayList;
 import java.util.Iterator;

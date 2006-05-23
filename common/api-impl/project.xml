@@ -99,12 +99,6 @@
      </dependency>
 
      <dependency>
-       <groupId>osp</groupId>
-       <artifactId>osp-common-common</artifactId>
-       <version>${sakai.version}</version>
-     </dependency>
-
-     <dependency>
        <groupId>sakaiproject</groupId>
        <artifactId>sakai-util</artifactId>
        <version>${sakai.version}</version>
