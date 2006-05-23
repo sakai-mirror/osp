@@ -3,7 +3,7 @@
 
 <!-- GUID=<c:out value="${newPresentationTemplateId}"/> -->
 
-<osp-c:authZMap prefix="osp.presentation.template." var="can" useSite="true" />
+<osp-c:authZMap prefix="osp.presentation.template." useSite="true" var="can" />
 
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
