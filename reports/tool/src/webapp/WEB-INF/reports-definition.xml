@@ -25,7 +25,7 @@
         <property name="query">
             <list>
                <value>
-                select * from sakai_site where createdby IN (?, ?, ?, ?, ?)
+                select * from SAKAI_SITE where CREATEDBY IN (?, ?, ?, ?, ?)
                </value>
             </list>
         </property>
@@ -94,7 +94,7 @@
                                     <!-- int/float/date/string -->
                     <property name="valueType"><value>sql</value></property>
                                     <!-- fillin/set/multiset/sql/multisql/static -->
-                    <property name="value"><value>select site_id from sakai_site_user where user_id='{userid}'</value></property>
+                    <property name="value"><value>select SITE_ID from SAKAI_SITE_USER where USER_ID='{userid}'</value></property>
                             <!-- (validation rules)/[(elem1; title1), (elem2), elem3,
                                     etc]/ select username, firstName from worksite/value -->
                 </bean>
@@ -105,7 +105,7 @@
                     <property name="description"><value>a param for the user to select from a list box by sql</value></property>
                     <property name="type"><value>string</value></property>
                     <property name="valueType"><value>multisql</value></property>
-                    <property name="value"><value>select site_id from sakai_site</value></property>
+                    <property name="value"><value>select SITE_ID from SAKAI_SITE</value></property>
                 </bean>
                 -->
                 <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
@@ -196,11 +196,11 @@
         <property name="query">
             <list>
                <value>
-                select * from sakai_site where createdby=?
+                select * from SAKAI_SITE where CREATEDBY=?
                </value>
             </list>
             <!-- 
-            select body, length(body) `bodysize` from content_resource_body_binary
+            select BODY, length(BODY) `bodysize` from CONTENT_RESOURCE_BODY_BINARY
                 -->
         </property>
         <property name="keywords">
@@ -418,7 +418,7 @@
         <property name="query">
            <list>
               <value>
-                select * from sakai_session where SESSION_START &lt; ?
+                select * from SAKAI_SESSION where SESSION_START &lt; ?
               </value>
            </list>
         </property>
