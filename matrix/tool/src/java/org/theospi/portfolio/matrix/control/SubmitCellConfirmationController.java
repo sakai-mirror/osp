@@ -61,16 +61,18 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
     * @see org.theospi.utils.mvc.intf.Controller#handleRequest(java.lang.Object, java.util.Map, java.util.Map, java.util.Map, org.springframework.validation.Errors)
     */
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
+      boolean isCellPage = false;
       WizardPage page = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
       Id cellId = idManager.getId((String) request.get("page_id"));
       Cell cell = getMatrixManager().getCellFromPage(cellId);
       if (page == null) {
          page = cell.getWizardPage();
+         isCellPage = true;
       }
       String submitAction = (String)request.get("submit");
       String cancelAction = (String)request.get("cancel");
       if (submitAction != null) {
-         if (page != null) {
+         if (!isCellPage) {
             getMatrixManager().submitPageForEvaluation(page);
             session.put("altDoneURL", "submitWizardPage");
             session.put("submittedPage", page);
