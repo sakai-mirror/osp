@@ -33,7 +33,7 @@
    
    
    <h:outputText value="<b>#{msgs.guidance_instructions}</b><br><br>" escape="false" />
-   <h:outputText value="#{wizard.current.instruction.text}" />
+   <h:outputText value="#{wizard.current.instruction.text}" escape="false" />
    <h:outputText value="<br><br>" escape="false" />
    <sakai:flat_list value="#{wizard.current.instruction.attachments}" var="attachment">
       <h:column>
@@ -50,7 +50,7 @@
    
    
    <h:outputText value="<b>#{msgs.guidance_rationale}</b><br><br>" escape="false" />
-   <h:outputText value="#{wizard.current.rationale.text}" />
+   <h:outputText value="#{wizard.current.rationale.text}" escape="false" />
    <h:outputText value="<br><br>" escape="false" />
    <sakai:flat_list value="#{wizard.current.rationale.attachments}" var="attachment">
       <h:column>
@@ -68,7 +68,7 @@
    
    
    <h:outputText value="<b>#{msgs.guidance_examples}</b><br><br>" escape="false" />
-   <h:outputText value="#{wizard.current.example.text}" />
+   <h:outputText value="#{wizard.current.example.text}" escape="false" />
    <h:outputText value="<br><br>" escape="false" />
    <sakai:flat_list value="#{wizard.current.example.attachments}" var="attachment">
       <h:column>
