@@ -88,7 +88,7 @@ public class MySqlHandler implements ContentHandler{
 		 {
 			mode = CREATE;
 
-         logger.debug("\nCreating tables...");
+         logger.debug("Creating tables...");
 
 			if (!this.loader.isCreateTables())
             logger.debug("disabled.");
@@ -97,7 +97,7 @@ public class MySqlHandler implements ContentHandler{
 		 {
 			mode = ALTER;
 
-         logger.debug("\nAltering tables...");
+         logger.debug("Altering tables...");
 
 			if (!this.loader.isAlterTables())
             logger.debug("disabled.");
@@ -106,7 +106,7 @@ public class MySqlHandler implements ContentHandler{
 		 {
 			mode = INDEX;
 
-         logger.debug("\nIndexing tables...");
+         logger.debug("Indexing tables...");
 
 			if (!this.loader.isIndexTables())
             logger.debug("disabled.");

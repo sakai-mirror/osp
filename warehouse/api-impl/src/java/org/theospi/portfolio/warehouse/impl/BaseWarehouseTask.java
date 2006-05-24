@@ -86,16 +86,29 @@ public abstract class BaseWarehouseTask implements WarehouseTask {
     * Children are singletons where there bean init function is this method.
     */
    public void init() {
+      Connection connection = null;
       try {
          InputStream tableDdl = getTableDdl();
          if (tableDdl != null) {
-            DbLoader loader = new DbLoader(getDataSource().getConnection());
+            connection = getDataSource().getConnection();
+            connection.setAutoCommit(true);
+            DbLoader loader = new DbLoader(connection);
             loader.runLoader(tableDdl);
          }
          getDataWarehouseManager().registerTask(this);
       }
       catch (SQLException e) {
          throw new RuntimeException(e);
+      }
+      finally {
+         if (connection != null) {
+            try {
+               connection.close();
+            }
+            catch (Exception e) {
+               // can't do anything with this.
+            }
+         }
       }
    }
 

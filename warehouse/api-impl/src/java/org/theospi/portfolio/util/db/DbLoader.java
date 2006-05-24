@@ -456,8 +456,6 @@ public class DbLoader {
     }
 
     protected  void dropTable(String dropTableStatement) {
-        logger.debug("...");
-
         if (createScript)
             scriptOut.println(dropTableStatement + propertiesHandler.properties.getStatementTerminator());
 
@@ -478,7 +476,6 @@ public class DbLoader {
     }
 
     protected  void createTable(String createTableStatement) {
-        logger.debug("...");
         if (createScript)
             scriptOut.println(createTableStatement + propertiesHandler.properties.getStatementTerminator());
 
@@ -499,7 +496,6 @@ public class DbLoader {
 
 
     protected  void alterTable( String alterTableStatement ) {
-        logger.debug( "..." );
         if ( createScript )
             scriptOut.println( alterTableStatement + propertiesHandler.properties.getStatementTerminator() );
         try {
@@ -517,7 +513,6 @@ public class DbLoader {
     }
 
     protected  void indexTable( String indexTableStatement ) {
-        logger.debug( "..." );
         if ( createScript )
             scriptOut.println( indexTableStatement + propertiesHandler.properties.getStatementTerminator() );
 
@@ -819,7 +814,7 @@ public class DbLoader {
         }
 
         public void endDocument() {
-           logger.debug("");
+           //logger.debug("");
         }
 
         public void startElement(String namespaceURI, String localName, String qName, Attributes atts) {
@@ -1059,7 +1054,6 @@ public class DbLoader {
         }
 
         private void executeSQL(Table table, Row row, String action) {
-           logger.debug("...");
             if (createScript) {
                 if (action.equals("delete"))
                     scriptOut.println(prepareDeleteStatement(row, false) + propertiesHandler.properties.getStatementTerminator());
