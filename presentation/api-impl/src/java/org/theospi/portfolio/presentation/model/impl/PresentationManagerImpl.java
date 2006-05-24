@@ -1060,8 +1060,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    public void packageTemplateForExport(Id templateId, OutputStream os) throws IOException {
-      getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_TEMPLATE,
-         getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
+      getAuthzManager().checkPermission(PresentationFunctionConstants.EXPORT_TEMPLATE,
+         templateId);
       packageTemplateForExportInternal(templateId, os);
    }
 
@@ -1353,6 +1353,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       if (fileId == null) {
          return;
       }
+      //TODO: Need to add file to security authorizer
       Node oldNode = getNode(fileId);
       String newName = oldNode.getName();
       //if (newName.lastIndexOf('\\') != -1) {
@@ -1866,6 +1867,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
 
       try {
+         String ref = getContentHosting().getReference(id);
+         getSecurityService().pushAdvisor(
+               new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, ref));
          ContentResource resource = getContentHosting().getResource(id);
          String ownerId = resource.getProperties().getProperty(resource.getProperties().getNamePropCreator());
          Agent owner = getAgentManager().getAgent(getIdManager().getId(ownerId));
@@ -1923,7 +1927,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          siteId = "~admin";
       }
       ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
-            buildLayoutRef(layout.getSiteId(), layout.getId().getValue(), node.getResource()));
+            buildLayoutRef(siteId, layout.getId().getValue(), node.getResource()));
 
       return new Node(node.getId(), wrapped, node.getTechnicalMetadata().getOwner());
    }
