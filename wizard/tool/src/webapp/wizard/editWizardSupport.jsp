@@ -47,7 +47,7 @@
 	     <h:outputLabel id="editInstructionsLabel" value="#{msgs.guidance_instructions}" />
 	     
 	     <h:panelGroup>
-	     	<h:outputText value="#{wizard.current.guidanceInstructions}" escape="false" />
+	     	<h:outputText value="#{wizard.current.instruction.text}" escape="false" />
             <sakai:flat_list value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment">
                <h:column>
                		<h:outputText value="<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />" escape="false" />
@@ -68,7 +68,7 @@
 	     
 	     <h:outputLabel id="editRationaleLabel" value="#{msgs.guidance_rationale}" />
 	     <h:panelGroup>
-	     	<h:outputText value="#{wizard.current.guidanceRationale}" escape="false"/>
+	     	<h:outputText value="#{wizard.current.rationale.text}" escape="false"/>
             <sakai:flat_list value="#{wizard.current.guidanceRationaleAttachments}" var="attachment">
                <h:column>
                		<h:outputText value="<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />" escape="false" />
@@ -89,7 +89,7 @@
 	     
 	     <h:outputLabel id="editExamplesLabel" value="#{msgs.guidance_examples}" />
 	     <h:panelGroup>
-	     	<h:outputText value="#{wizard.current.guidanceExamples}" escape="false"/>
+	     	<h:outputText value="#{wizard.current.example.text}" escape="false"/>
             <sakai:flat_list value="#{wizard.current.guidanceExamplesAttachments}" var="attachment">
                <h:column>
                		<h:outputText value="<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />" escape="false" />
