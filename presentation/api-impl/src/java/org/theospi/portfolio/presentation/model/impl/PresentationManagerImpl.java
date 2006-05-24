@@ -1927,7 +1927,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          siteId = "~admin";
       }
       ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
-            buildLayoutRef(siteId, layout.getId().getValue(), node.getResource()));
+            buildLayoutRef(layout.getSiteId(), layout.getId().getValue(), node.getResource()));
 
       return new Node(node.getId(), wrapped, node.getTechnicalMetadata().getOwner());
    }

@@ -33,6 +33,7 @@ import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
+import org.theospi.portfolio.shared.model.Node;
 
 /**
  * Created by IntelliJ IDEA.
@@ -49,10 +50,13 @@ public class LayoutHttpAccess extends OspHttpAccessBase {
    protected void checkSource(Reference ref, ReferenceParser parser)
          throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
       try {
-         PresentationLayout pres = presentationManager.getPresentationLayout(
+         PresentationLayout layout = presentationManager.getPresentationLayout(
             getIdManager().getId(parser.getId()));
-         if (pres == null) {
+         if (layout == null) {
             throw new EntityNotDefinedException(parser.getId());
+         }
+         else {
+            Node node = getPresentationManager().getNode(layout.getPreviewImageId(), layout);            
          }
       }
       catch (AuthorizationFailedException exp) {

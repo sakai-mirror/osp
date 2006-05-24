@@ -91,9 +91,13 @@
 
                         </h:panelGroup>
                         <h:outputLabel id="blank" value=""/>
-                        <h:panelGroup><h:graphicImage height="125" width="100"
+                        <h:panelGroup>
+                        <h:graphicImage height="125" width="100"
+												                    value="/img/page-new.png"
+												                    rendered="#{!freeForm.currentPage.layoutPreviewImage}"/>
+                        <h:graphicImage height="125" width="100"
                                                       value="#{freeForm.currentPage.selectedLayout.previewImage.externalUri}"
-                                                      rendered="#{freeForm.currentPage.layoutSelected}"
+                                                      rendered="#{freeForm.currentPage.layoutPreviewImage}"
                                 /></h:panelGroup>
                         <h:outputLabel for="styleFile" id="styleLabel" value="#{msgs.page_style}"/>
                         <h:panelGroup>
