@@ -1864,10 +1864,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       this.lockManager = lockManager;
    }
 
-   public void packageForDownload(Map params, OutputStream out) throws IOException {
+   public String packageForDownload(Map params, OutputStream out) throws IOException {
       packageScffoldingForExport(
          getIdManager().getId(((String[])params.get(SCAFFOLDING_ID_TAG))[0]),
          out);
+      
+      //Blank filename for now -- no more dangerous, since the request is in the form of a filename
+      return "";      
    }
 
    public void importResources(String fromContext, String toContext, List resourceIds) {      

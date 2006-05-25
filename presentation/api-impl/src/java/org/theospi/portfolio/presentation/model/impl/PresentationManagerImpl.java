@@ -1059,14 +1059,17 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return copyTemplate(templateId, ToolManager.getCurrentPlacement().getContext(), true, true);
    }
 
-   public void packageTemplateForExport(Id templateId, OutputStream os) throws IOException {
+   public String packageTemplateForExport(Id templateId, OutputStream os) throws IOException {
       getAuthzManager().checkPermission(PresentationFunctionConstants.EXPORT_TEMPLATE,
          templateId);
-      packageTemplateForExportInternal(templateId, os);
+      return packageTemplateForExportInternal(templateId, os);
    }
 
-   protected void packageTemplateForExportInternal(Id templateId, OutputStream os) throws IOException {
+   protected String packageTemplateForExportInternal(Id templateId, OutputStream os) throws IOException {
       PresentationTemplate oldTemplate = this.getPresentationTemplate(templateId);
+      
+      String filename = oldTemplate.getName() + ".zip";
+      
       Set items = oldTemplate.getItems();
       Set files = oldTemplate.getFiles();
 
@@ -1126,6 +1129,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       zos.finish();
       zos.flush();
+      
+      return filename;
    }
 
    protected void storeFormInZip(ZipOutputStream zos, ReadableObjectHome home) throws IOException {
@@ -1812,19 +1817,23 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
    }
 
-   public void packageForDownload(Map params, OutputStream out) throws IOException {
+   public String packageForDownload(Map params, OutputStream out) throws IOException {
 
+      String filename = "";
       if (params.get(TEMPLATE_ID_TAG) != null) {
-         packageTemplateForExport(getIdManager().getId(((String[])params.get(TEMPLATE_ID_TAG))[0]),
+         filename = packageTemplateForExport(getIdManager().getId(((String[])params.get(TEMPLATE_ID_TAG))[0]),
             out);
       }
       else if (params.get(PRESENTATION_ID_TAG) != null) {
-         packagePresentationForExport(getIdManager().getId(((String[])params.get(PRESENTATION_ID_TAG))[0]), out);
+         filename = packagePresentationForExport(getIdManager().getId(((String[])params.get(PRESENTATION_ID_TAG))[0]), out);
       }
+      return filename;
    }
 
-   protected void packagePresentationForExport(Id presentationId, OutputStream out) throws IOException {
+   protected String packagePresentationForExport(Id presentationId, OutputStream out) throws IOException {
       Presentation presentation = getLightweightPresentation(presentationId);
+      
+      String filename = presentation.getName() + ".zip";
 
       if (!presentation.getOwner().equals(getAuthnManager().getAgent())) {
          throw new AuthorizationFailedException("Only the presentation owner can export a presentation");
@@ -1858,6 +1867,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       finally {
          export.deleteTemp();
       }
+      return filename;
    }
 
    public Node getNode(Id artifactId) {

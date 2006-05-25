@@ -560,7 +560,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	 * @param out
 	 * @throws IOException
 	 */
-   public void packageForDownload(Map params, OutputStream out) throws IOException {
+   public String packageForDownload(Map params, OutputStream out) throws IOException {
       ReportResult result = getCurrentResult();
 
       String exportResultsId = ((String[]) params.get(EXPORT_XSL_ID))[0];
@@ -574,6 +574,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
       else {
          out.write(fileData.getBytes());
       }
+            
+      //Blank filename for now -- no more dangerous, since the request is in the form of a filename
+      return "";
+
    }
 
 	/**

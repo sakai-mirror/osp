@@ -1152,10 +1152,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
       }
    }
 
-   public void packageForDownload(Map params, OutputStream out) throws IOException {
+   public String packageForDownload(Map params, OutputStream out) throws IOException {
 
       String[] formIdObj = (String[])params.get(DOWNLOAD_WIZARD_ID_PARAM);
       packageWizardForExport(formIdObj[0], out);
+            
+      //Blank filename for now -- no more dangerous, since the request is in the form of a filename
+      return "";
    }
 
    

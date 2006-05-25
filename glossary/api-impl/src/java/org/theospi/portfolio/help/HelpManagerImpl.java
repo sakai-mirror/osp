@@ -300,9 +300,12 @@ public class HelpManagerImpl extends HibernateDaoSupport
 	   }
    
 
-   public void packageForDownload(Map params, OutputStream out) throws IOException {
+   public String packageForDownload(Map params, OutputStream out) throws IOException {
 
 	   packageGlossaryForExport(getWorksiteManager().getCurrentWorksiteId(), out);
+          
+          //Blank filename for now -- no more dangerous, since the request is in the form of a filename
+          return "";
    }
    
    public void packageGlossaryForExport(Id worksiteId, OutputStream os)
