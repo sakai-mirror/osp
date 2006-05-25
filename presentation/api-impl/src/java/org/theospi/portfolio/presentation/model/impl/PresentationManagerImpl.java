@@ -1459,7 +1459,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       catch (ServerOverloadException e) {
          // TODO Better error message here?
          logger.error("", e);
-      } finally {
+      } catch (PermissionException e) {
+		// TODOCWM Auto-generated catch block
+    	  	logger.error("", e);
+	} finally {
          try {
             if (is != null) is.close();
          } catch (Exception e){
