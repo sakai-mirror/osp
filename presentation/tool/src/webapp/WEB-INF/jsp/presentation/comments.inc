@@ -23,7 +23,7 @@
          <c:if test="${comment.visibility == 3}">
             <fmt:message key="comments_public"/> 
          </c:if>      
-      <fmt:message key="comments.from"/>
+      <fmt:message key="comments_from"/>
       
       <c:choose>
       <c:when test="${comment.creator == currentAgent}">

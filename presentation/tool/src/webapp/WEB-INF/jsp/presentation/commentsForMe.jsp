@@ -19,7 +19,7 @@
       </c:if>
       <c:if test="${commentsCount > 1}">
          <fmt:message key="title_commentsForMe_More">
-            <param><c:out value="${commentsCount}" /></param>
+            <fmt:param><c:out value="${commentsCount}" /></fmt:param>
          </fmt:message>
       </c:if>
    </h3>

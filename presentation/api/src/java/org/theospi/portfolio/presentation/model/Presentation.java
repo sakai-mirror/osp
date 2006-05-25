@@ -60,6 +60,7 @@ public class Presentation extends IdentifiableObject {
    private boolean advancedNavigation = false;
    private Style style;
    private String styleName;
+   private boolean allowComments = false;
 
    public final static String FREEFORM_TYPE = "osp.presentation.type.freeForm";
    public final static String TEMPLATE_TYPE = "osp.presentation.type.template";
@@ -270,6 +271,14 @@ public class Presentation extends IdentifiableObject {
             return getStyle().getName();
         }
         return null;
+    }
+
+    public boolean isAllowComments() {
+        return allowComments;
+    }
+
+    public void setAllowComments(boolean allowComments) {
+        this.allowComments = allowComments;
     }
 
 

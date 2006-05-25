@@ -77,6 +77,7 @@
       <property name="expiresOn" type="java.util.Date" not-null="false"/>
       <property name="created" type="java.util.Date" update="false" not-null="true"/>
       <property name="modified" type="java.util.Date" update="true" not-null="true"/>
+      <property name="allowComments" type="boolean" column="allowComments" not-null="false"/>
       <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="true"/>
       <property name="properties" type="org.theospi.portfolio.presentation.model.impl.HibernatePresentationProperties"
          not-null="false" column="properties"/>

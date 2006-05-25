@@ -84,6 +84,15 @@
          </p>
      </spring:bind>
 
+     <spring:bind path="presentation.allowComments">
+            <div class="checkbox indnt1">
+                <input type="checkbox" name="<c:out value="${status.expression}"/>" value="true"
+                    <c:if test="${status.value}">checked</c:if> />
+                <legend class="checkbox"><fmt:message key="label_allowComments"/></legend>
+                <label class="instruction"><fnt:message key="instruction_allowComments"/></label>
+            </div>
+     </spring:bind>
+
      <c:set var="suppress_submit" value="true" />
      <c:if test="${empty presentation.id}">
          <c:set var="suppress_save" value="true" />
