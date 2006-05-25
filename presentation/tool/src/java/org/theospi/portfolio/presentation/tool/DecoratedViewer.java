@@ -29,7 +29,18 @@ public class DecoratedViewer {
         if (isRole()) {
             return base.getDisplayName() + (" (Role)");
         } else {
-            return base.getDisplayName();
+            if (base.getDisplayName() != null && base.getDisplayName().length() > 0) {
+                return base.getDisplayName();
+            } else {
+                try {
+                    return UserDirectoryService.getUserByEid(base.getEid().toString()).getEmail();
+                }
+
+                catch (UserNotDefinedException e) {
+                    return "";
+                }
+            }
+
         }
     }
 

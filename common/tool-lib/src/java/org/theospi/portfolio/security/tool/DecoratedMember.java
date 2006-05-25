@@ -43,14 +43,20 @@ public class DecoratedMember {
    }
 
    public String getDisplayName() {
-      String baseName = base.getEid().getValue();
       if (base.isRole()) {
          return parent.getMessageFromBundle("decorated_role_format",
                new Object[]{base.getDisplayName()});
       }
       else {
-         return parent.getMessageFromBundle("decorated_user_format",
-               new Object[]{base.getDisplayName(), baseName});
+         if (base.getEid() != null) {
+            return parent.getMessageFromBundle("decorated_user_format",
+                new Object[]{base.getDisplayName(), base.getEid().getValue()});
+         }
+         else {
+             return parent.getMessageFromBundle("decorated_guest_format",
+               new Object[]{base.getDisplayName()});
+         }
+
       }
    }
 
