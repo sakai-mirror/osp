@@ -92,10 +92,10 @@
                         </h:panelGroup>
                         <h:outputLabel id="blank" value=""/>
                         <h:panelGroup>
-                        <h:graphicImage height="125" width="100"
+                        <h:graphicImage id="defaultLayoutImage" height="125" width="100"
 												                    value="/img/page-new.png"
-												                    rendered="#{!freeForm.currentPage.layoutPreviewImage}"/>
-                        <h:graphicImage height="125" width="100"
+												                    rendered="#{!freeForm.currentPage.layoutPreviewImage and freeForm.currentPage.layoutSelected}"/>
+                        <h:graphicImage id="selectedLayoutImage" height="125" width="100"
                                                       value="#{freeForm.currentPage.selectedLayout.previewImage.externalUri}"
                                                       rendered="#{freeForm.currentPage.layoutPreviewImage}"
                                 /></h:panelGroup>
