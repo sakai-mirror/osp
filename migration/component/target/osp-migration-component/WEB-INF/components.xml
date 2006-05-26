@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans default-lazy-init="false">
+   <bean id="org.theospi.portfolio.migration.OspMigrationJob.dataSource"
+     parent="javax.sql.BaseDataSource">
+   </bean>
+   
+   <bean id="org.sakaiproject.api.app.scheduler.JobBeanWrapper.ospDataMigration"
+      class="org.sakaiproject.component.app.scheduler.jobs.SpringJobBeanWrapper"
+      singleton="true" init-method="init">
+      <property name="beanId">
+         <value>org.theospi.portfolio.migration.OspMigrationJob</value>
+      </property>
+      <property name="jobName">
+         <value>OSP Data Migration</value>
+      </property>
+      <property name="schedulerManager">
+         <ref bean="org.sakaiproject.api.app.scheduler.SchedulerManager" />
+      </property>
+   </bean>
+   
+   <bean id="org.theospi.portfolio.migration.OspMigrationJob"
+      class="org.theospi.portfolio.migration.OspMigrationJob"
+      singleton="true">
+      <property name="dataSource">
+         <ref bean="org.theospi.portfolio.migration.OspMigrationJob.dataSource" />
+      </property>
+      <property name="tableMap">
+      	<map>
+      		<entry key="osp_authz_simple"><value>old_osp_authz_simple</value></entry>
+      	</map>
+      </property>
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="authzManager"><ref bean="authzManager"/></property>
+      <property name="agentManager"><ref bean="agentManager"/></property>
+   </bean>
+</beans>
