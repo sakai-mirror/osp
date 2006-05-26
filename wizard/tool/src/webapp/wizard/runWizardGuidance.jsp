@@ -186,7 +186,8 @@
 			      <div class="itemAction">
                </f:verbatim>
 				  <f:subview id="feedbackAdd" 
-				  	rendered="#{wizard.canReview && wizard.current.base.reviewDevice != null}">
+				  	rendered="#{wizard.canReview && wizard.current.base.reviewDevice != null &&
+				  		wizard.current.base.reviewDevice.value != ''}">
 				  	
                     <h:commandLink action="#{wizard.processActionReview}">
                        <h:outputText value="#{msgs.review_add}"/>
