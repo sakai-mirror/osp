@@ -174,7 +174,8 @@
       
    <!-- ****************** feedback ****************** -->
    <ospx:xheader rendered="#{not empty wizard.current.runningWizard.reviews || 
-   			(wizard.canReview && wizard.current.base.reviewDevice != null)}">
+   			(wizard.canReview && wizard.current.base.reviewDevice != null &&
+				  		wizard.current.base.reviewDevice.value != '')}">
       <ospx:xheadertitle id="wizardReviews" value="#{msgs.wizard_reviews}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
 
@@ -228,7 +229,8 @@
      
    <!-- ****************** evaluation ****************** -->
    <ospx:xheader rendered="#{not empty wizard.current.runningWizard.evaluations || 
-   			(wizard.canEvaluate && wizard.current.base.evaluationDevice != null && 
+   			(wizard.canEvaluate && wizard.current.base.evaluationDevice != null &&
+				  		wizard.current.base.evaluationDevice.value != '' && 
    			  wizard.current.runningWizard.base.status == 'PENDING')}">
       <ospx:xheadertitle id="wizardEvals" value="#{msgs.wizard_evals}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
@@ -242,6 +244,7 @@
                </f:verbatim>
 				  <f:subview id="evaluationAdd" 
 				  	rendered="#{wizard.canEvaluate && wizard.current.base.evaluationDevice != null &&
+				  		wizard.current.base.evaluationDevice.value != '' &&
 				  		wizard.current.runningWizard.base.status == 'PENDING'}">
 				  	
                     <h:commandLink action="#{wizard.processActionEvaluate}">
