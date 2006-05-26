@@ -100,13 +100,13 @@ public class PortalManagerImpl implements PortalManager {
             siteType = SiteType.OTHER;
          }
 
-         if (addSite) {
-            addSite = !checkSites(siteId, sites);
-         }
-
          addSpecialSites(siteType.getSpecialSites(), sites, allUserSites);
 
          if (sites.size() > 0) {
+            if (addSite) {
+               addSite = !checkSites(siteId, sites);
+            }
+
             typeMap.put(siteType, sites);
          }
       }
@@ -387,7 +387,7 @@ public class PortalManagerImpl implements PortalManager {
 
    public String getPageCategory(String siteId, String pageId) {
       Site site = getSite(siteId);
-      SitePage page = site.getPage(siteId);
+      SitePage page = site.getPage(pageId);
       SiteType siteType = (SiteType) getSiteTypes().get(decorateSiteType(site));
 
       ToolCategory[] categories = findCategories(page, siteType, 0);

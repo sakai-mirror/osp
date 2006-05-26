@@ -401,8 +401,9 @@ your browser doesn't support iframes
                <xsl:if test="@popUp='true'">
                   <xsl:attribute name="href">#</xsl:attribute>
                   <xsl:attribute name="onclick">
-                     window.open('<xsl:value-of select="popUrl"/>','<xsl:value-of select="title"/>',
-                        'resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')
+                     window.open('<xsl:value-of select="columns/column/tools/tool/url"/>',
+                        '<xsl:value-of select="title"/>',
+                        'resizable=yes,toolbar=no,scrollbars=yes, width=800,height=600')
                   </xsl:attribute>
                </xsl:if>
                <xsl:attribute name="accesskey">
@@ -558,10 +559,10 @@ your browser doesn't support iframes
          <li>
 				<a  accesskey="h" href="javascript:;">
                <xsl:attribute name="onclick">
-                  window.open('<xsl:value-of select="config/helpUrl"/>','Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')
+                  window.open('<xsl:value-of select="config/helpUrl"/>','Help','resizable=yes,toolbar=no,scrollbars=yes, width=800,height=600')
                </xsl:attribute>
                <xsl:attribute name="onkeypress">
-                  window.open('<xsl:value-of select="config/helpUrl"/>','Help','resize=yes,toolbar=no,scrollbars=yes, width=800,height=600')
+                  window.open('<xsl:value-of select="config/helpUrl"/>','Help','resizable=yes,toolbar=no,scrollbars=yes, width=800,height=600')
                </xsl:attribute>
                Help</a>
 			</li>
@@ -927,10 +928,21 @@ your browser doesn't support iframes
    <xsl:template match="osp:toolLink">
       <xsl:param name="category" />
       <xsl:param name="currentTool" />
-      <a target="_parent">
-         <xsl:attribute name="href">
-            <xsl:value-of select="$currentTool/url"/>
-         </xsl:attribute>
+      <a>
+         <xsl:if test="$currentTool/@popUp='false'">
+            <xsl:attribute name="href">
+               <xsl:value-of select="$currentTool/url"/>
+            </xsl:attribute>
+            <xsl:attribute name="target">_parent</xsl:attribute>
+         </xsl:if>
+         <xsl:if test="$currentTool/@popUp='true'">
+            <xsl:attribute name="href">#</xsl:attribute>
+            <xsl:attribute name="onclick">
+               window.open('<xsl:value-of select="$currentTool/columns/column/tools/tool/url"/>',
+                  '<xsl:value-of select="title"/>',
+                  'resizable=yes,toolbar=no,scrollbars=yes, width=800,height=600')
+            </xsl:attribute>
+         </xsl:if>
          <xsl:apply-templates select="@*|node()" >
             <xsl:with-param name="currentTool" select="$currentTool" />
             <xsl:with-param name="category" select="$category" />

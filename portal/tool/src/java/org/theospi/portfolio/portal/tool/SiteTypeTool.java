@@ -20,12 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.tool;
 
-import java.util.List;
-
 import org.sakaiproject.site.api.SiteService;
 import org.theospi.portfolio.portal.intf.PortalManager;
 import org.theospi.portfolio.shared.tool.HelperToolBase;
 import org.theospi.portfolio.shared.tool.PagingList;
+
+import java.util.List;
 
 
 /**
@@ -42,7 +42,7 @@ public class SiteTypeTool extends HelperToolBase {
    private PagingList sites = null;
 
    public PagingList getSites() {
-      String siteType = (String) getAttribute(PortalManager.SITE_TYPE);
+      String siteType = getSiteType();
       if (siteType != null) {
          List sitesBase = getPortalManager().getSitesForType(siteType, SiteService.SortType.TITLE_ASC, null);
          setSites(new PagingList(sitesBase));
@@ -50,6 +50,14 @@ public class SiteTypeTool extends HelperToolBase {
       }
 
       return sites;
+   }
+
+   public String getSiteType() {
+      return (String) getAttribute(PortalManager.SITE_TYPE);
+   }
+
+   public String getSiteTypeClass() {
+      return getSiteType().replace('.', '_');
    }
 
    public void setSites(PagingList sites) {

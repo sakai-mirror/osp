@@ -14,9 +14,17 @@
 <f:view>
 <f:loadBundle basename="org.theospi.portfolio.portal.messages" var="msgs"/>
 <sakai:view>
-<h:form>
+<h:form styleClass="#{siteType.siteTypeClass}">
 
-<sakai:view_title value="#{msgs.siteType_page_title}" />
+   <sakai:view_title value="#{msgs.siteType_page_title_portfolioAdmin}"
+                     rendered="#{siteType.siteType == 'org.theospi.portfolio.portal.portfolioAdmin'}" />
+   <sakai:view_title value="#{msgs.siteType_page_title_portfolio}"
+                     rendered="#{siteType.siteType == 'org.theospi.portfolio.portal.portfolio'}" />
+   <sakai:view_title value="#{msgs.siteType_page_title_project}"
+                     rendered="#{siteType.siteType == 'org.theospi.portfolio.portal.project'}" />
+   <sakai:view_title value="#{msgs.siteType_page_title_course}"
+                     rendered="#{siteType.siteType == 'org.theospi.portfolio.portal.course'}" />
+   <sakai:view_title value="#{msgs.siteType_page_title}" />
 
 <sakai:pager id="pager"
     totalItems="#{siteType.sites.totalItems}"
@@ -24,17 +32,25 @@
     pageSize="#{siteType.sites.pageSize}"
     textItem="#{msgs.site_types_item}" />
 
-   <sakai:flat_list value="#{siteType.sites.subList}" var="site">
+   <h:dataTable value="#{siteType.sites.subList}" var="site" styleClass="listHier">
       <h:column>
          <h:outputLink
             value="/osp-portal/site/#{site.id}" target="_parent"
             title="#{site.title}">
-               <h:outputText value="#{site.title}"/>
+            <h:graphicImage value="/library/skin/default/images/portfolioAdminLink.gif"
+               rendered="#{siteType.siteType == 'org.theospi.portfolio.portal.portfolioAdmin'}" />
+            <h:graphicImage value="/library/skin/default/images/portfolioLink.gif"
+               rendered="#{siteType.siteType == 'org.theospi.portfolio.portal.portfolio'}" />
+            <h:graphicImage value="/library/skin/default/images/projectLink.gif"
+               rendered="#{siteType.siteType == 'org.theospi.portfolio.portal.project'}" />
+            <h:graphicImage value="/library/skin/default/images/courseLink.gif"
+               rendered="#{siteType.siteType == 'org.theospi.portfolio.portal.course'}" />
+            <h:outputText value="#{site.title}"/>
          </h:outputLink>
-         <h:outputText value=" -- " rendered="#{site.description != null}" />
-         <h:outputText value="#{site.description}"/>
+         <h:outputText value=" -- " rendered="#{site.shortDescription != null}" />
+         <h:outputText value="#{site.shortDescription}"/>
       </h:column>
-   </sakai:flat_list>
+   </h:dataTable>
 
    </h:form>
    </sakai:view>
