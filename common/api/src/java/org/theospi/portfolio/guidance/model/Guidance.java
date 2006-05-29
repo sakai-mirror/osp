@@ -20,12 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.model;
 
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,7 +35,7 @@ import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
  * Time: 12:06:22 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Guidance extends IdentifiableObject {
+public class Guidance extends IdentifiableObject implements Serializable {
 
    public final static String INSTRUCTION_TYPE = "instruction";
    public final static String EXAMPLE_TYPE = "example";
@@ -49,6 +50,8 @@ public class Guidance extends IdentifiableObject {
    private List items;
 
    private boolean newObject = false;
+
+   private static final long serialVersionUID = 7834424504411509616L;
 
    public Guidance() {
    }

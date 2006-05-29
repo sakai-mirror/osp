@@ -20,18 +20,17 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.app.ApplicationAuthorizer;
+
+import java.util.Iterator;
+import java.util.List;
 
 
 
@@ -84,21 +83,23 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
          //If I can eval, review, or own it
          ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(id);
          //sCell.getWizardPageDefinition().get
+
          Boolean returned = null;
+
+         Id worksiteId = sCell.getScaffolding().getWorksiteId();
+
+         // first check global perms for the site
+         if (checkPerms(facade, new String[]{MatrixFunctionConstants.USE_SCAFFOLDING,
+            MatrixFunctionConstants.EVALUATE_MATRIX, MatrixFunctionConstants.REVIEW_MATRIX}, worksiteId)) {
+            return Boolean.valueOf(true);
+         }
+
          for (Iterator iter=sCell.getCells().iterator(); iter.hasNext();) {
             Cell cell = (Cell)iter.next();
-            returned = Boolean.valueOf(facade.isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, cell.getId()));
-            if (returned == null || !returned.booleanValue()) {
-               returned = Boolean.valueOf(facade.isAuthorized(agent, MatrixFunctionConstants.REVIEW_MATRIX, cell.getId()));
+            if (checkPerms(facade, new String[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+               MatrixFunctionConstants.REVIEW_MATRIX}, cell.getId())) {
+               return Boolean.valueOf(true);
             }
-            if (returned == null || !returned.booleanValue()) {
-               Matrix matrix = cell.getMatrix();
-               if (matrix != null) {
-                  returned = Boolean.valueOf(matrix.getOwner().equals(agent));
-               }
-            }
-            if (returned.booleanValue())
-               return returned;
          }
          returned = Boolean.valueOf(sCell.getScaffolding().getOwner().equals(agent));
          if (returned.booleanValue())
@@ -115,7 +116,16 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       
       return null;  //don't care
    }
-   
+
+   protected boolean checkPerms(AuthorizationFacade facade, String[] functions, Id qualifier) {
+      for (int i=0;i<functions.length;i++) {
+         if (facade.isAuthorized(functions[i], qualifier)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    protected Boolean isCellAuthForEval(AuthorizationFacade facade, Agent agent, Id cellId) {
       return new Boolean(facade.isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, cellId));
    }

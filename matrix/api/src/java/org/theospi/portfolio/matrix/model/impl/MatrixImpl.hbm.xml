@@ -217,9 +217,9 @@
            type="org.sakaiproject.metaobj.shared.IdType"/-->
 
       <property name="siteId" type="string" column="site_id" />
-      
-      <many-to-one name="guidance" column="guidance_id" not-null="false"
-        class="org.theospi.portfolio.guidance.model.Guidance"/>
+
+      <property name="guidance" column="guidance_id" not-null="false"
+        type="org.theospi.portfolio.guidance.mgt.GuidanceUserType"/>
 
       <list name="additionalForms" cascade="all-delete-orphan"
            inverse="false" lazy="false" table="osp_scaffolding_cell_form_defs">

@@ -20,26 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.impl;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.Adler32;
-import java.util.zip.CheckedOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.CDATA;
@@ -70,6 +50,10 @@ import org.theospi.portfolio.guidance.model.GuidanceItem;
 import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.AuthorizationFacade;
+
+import java.io.*;
+import java.util.*;
+import java.util.zip.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -117,6 +101,12 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
             guidance.getSecurityQualifier());
       }
 
+      assureAccess(guidance);
+
+      return guidance;
+   }
+
+   public void assureAccess(Guidance guidance) {
       // setup access to the files
       List refs = new ArrayList();
       for (Iterator i=guidance.getItems().iterator();i.hasNext();) {
@@ -129,8 +119,6 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
 
       getSecurityService().pushAdvisor(new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
          refs));
-
-      return guidance;
    }
 
    public Guidance saveGuidance(Guidance guidance) {

@@ -20,16 +20,16 @@
 **********************************************************************************/
 package org.theospi.portfolio.guidance.mgt;
 
+import org.sakaiproject.content.api.ContentCollection;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.theospi.portfolio.guidance.model.Guidance;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
-
-import org.sakaiproject.content.api.ContentCollection;
-import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.theospi.portfolio.guidance.model.Guidance;
 
 /**
  * Created by IntelliJ IDEA.
@@ -47,6 +47,8 @@ public interface GuidanceManager {
                              String securityViewFunction, String securityEditFunction);
 
    public Guidance getGuidance(Id guidanceId);
+
+   public void assureAccess(Guidance guidance);
 
    public Guidance saveGuidance(Guidance guidance);
 
