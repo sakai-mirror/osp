@@ -165,11 +165,11 @@
       		   </c:if>
                <c:forEach var="attachment" items="${scaffoldingCell.guidance.instruction.attachments}" varStatus="loopStatus">
                		<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />
-                     <a title="${attachment.displayName}"
-                        href="${attachment.fullReference.base.url}" target="_new">
+                     <a title="<c:out value="${attachment.displayName}" />"
+                        href="<c:out value="${attachment.fullReference.base.url}" />" target="_new">
                         <c:out value="${attachment.displayName}"/>
                      </a>
-                        <h:outputText value=" (#{attachment.contentLength})"/>
+                        <c:out value=" (${attachment.contentLength})"/>
                         <br />
                </c:forEach>
                <div class="act">
@@ -193,11 +193,11 @@
       		   </c:if>
                <c:forEach var="attachment" items="${scaffoldingCell.guidance.rationale.attachments}" varStatus="loopStatus">
                		<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />
-                     <a title="${attachment.displayName}"
-                        href="${attachment.fullReference.base.url}" target="_new">
+                     <a title="<c:out value="${attachment.displayName}" />"
+                        href="<c:out value="${attachment.fullReference.base.url}" />" target="_new">
                         <c:out value="${attachment.displayName}"/>
                      </a>
-                        <h:outputText value=" (#{attachment.contentLength})"/>
+                        <c:out value=" (${attachment.contentLength})"/>
                         <br />
                </c:forEach>
                <div class="act">
@@ -221,11 +221,11 @@
       		   </c:if>
                <c:forEach var="attachment" items="${scaffoldingCell.guidance.example.attachments}" varStatus="loopStatus">
                		<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />
-                     <a title="${attachment.displayName}"
-                        href="${attachment.fullReference.base.url}" target="_new">
+                     <a title="<c:out value="${attachment.displayName}" />"
+                        href="<c:out value="${attachment.fullReference.base.url}" />" target="_new">
                         <c:out value="${attachment.displayName}"/>
                      </a>
-                        <h:outputText value=" (#{attachment.contentLength})"/>
+                        <c:out value=" (${attachment.contentLength})"/>
                         <br />
                </c:forEach>
                <div class="act">
