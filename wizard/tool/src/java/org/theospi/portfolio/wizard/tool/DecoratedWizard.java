@@ -20,15 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.tool;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.portfolio.guidance.model.Guidance;
@@ -37,6 +28,14 @@ import org.theospi.portfolio.style.StyleHelper;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -85,6 +84,10 @@ public class DecoratedWizard implements DecoratedListInterface {
     */
    public String getConcatDescription() {
       String s = getBase().getDescription();
+      if (s == null) {
+         s = "";
+      }
+      
       if(s.length() > 100)
          s = s.substring(0, 100) + "...";
       return s;
