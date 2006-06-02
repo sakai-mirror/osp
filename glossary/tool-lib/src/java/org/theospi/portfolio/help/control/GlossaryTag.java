@@ -20,25 +20,26 @@
 **********************************************************************************/
 package org.theospi.portfolio.help.control;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.metaobj.shared.model.OspException;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.theospi.portfolio.help.model.GlossaryEntry;
+import org.theospi.portfolio.help.model.HelpManager;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.BodyContent;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyContent;
-import javax.servlet.jsp.tagext.BodyTagSupport;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.metaobj.shared.model.OspException;
-import org.theospi.portfolio.help.model.GlossaryEntry;
-import org.theospi.portfolio.help.model.HelpManager;
 
 /**
  * Matches keywords in the body to those in the glossary,
@@ -266,6 +267,7 @@ public class GlossaryTag extends BodyTagSupport {
       StringBuffer markup = new StringBuffer();
       String url = ServerConfigurationService.getServerUrl();
       String linkName = url + getHelpManager().getGlossary().getUrl() + "?id=" + entry.getId();
+      linkName += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
 
       markup.append("<a href=\"#\" onclick=\"openNewWindow('" + linkName + "');return false;\"");
 
