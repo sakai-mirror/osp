@@ -29,8 +29,19 @@
       <property name="tableMap">
       	<map>
       		<entry key="osp_authz_simple"><value>old_osp_authz_simple</value></entry>
+      		
       		<entry key="osp_help_glossary"><value>old_osp_help_glossary</value></entry>
       		<entry key="osp_help_glossary_desc"><value>old_osp_help_glossary_desc</value></entry>
+      		
+      		<entry key="osp_structured_artifact_def"><value>old_osp_structured_artifact_def</value></entry>
+      		
+      		<entry key="osp_scaffolding"><value>old_osp_scaffolding</value></entry>
+      		<entry key="osp_matrix_label"><value>old_osp_matrix_label</value></entry>
+      		<entry key="osp_scaffolding_criteria"><value>old_osp_scaffolding_criteria</value></entry>
+      		<entry key="osp_scaffolding_levels"><value>old_osp_scaffolding_levels</value></entry>
+      		<entry key="osp_scaffolding_cell"><value>old_osp_scaffolding_cell</value></entry>
+      		
+      	
       	</map>
       </property>
       <property name="idManager"><ref bean="idManager"/></property>
@@ -40,5 +51,7 @@
       <property name="structuredArtifactDefinitionManager">
          <ref bean="structuredArtifactDefinitionManager"/>
       </property>
+      <property name="matrixManager"><ref bean="matrixManager"/></property>
+      <property name="presentationManager"><ref bean="presentationManager"/></property>
    </bean>
 </beans>

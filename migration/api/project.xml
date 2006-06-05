@@ -26,6 +26,12 @@
 			<type>plugin</type>
 		</dependency>
 
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-component-api</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
      <dependency>
        <groupId>aopalliance</groupId>
        <artifactId>aopalliance</artifactId>
@@ -97,6 +103,18 @@
       <artifactId>osp-glossary-api</artifactId>
       <version>${sakai.version}</version>
    </dependency>
+   
+    <dependency>
+      <groupId>osp</groupId>
+      <artifactId>osp-matrix-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+
+     <dependency>
+       <groupId>osp</groupId>
+       <artifactId>osp-presentation-api</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
 
   </dependencies>
 
