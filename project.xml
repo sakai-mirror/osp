@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<pomVersion>3</pomVersion>
+	<extend>master/project.xml</extend>
+	<id>osp-main</id>
+	<groupId>osp</groupId>
+	<name>OSP Main</name>
+	<currentVersion>${sakai.version}</currentVersion>
+	<organization>
+		<name>OSPI</name>
+		<url>http://theospi.org/</url>
+	</organization>
+	<inceptionYear>2004</inceptionYear>
+
+	<!-- 
+		<properties>
+		<deploy.type>jar</deploy.type>
+		<deploy.target>shared</deploy.target>
+		</properties>
+	-->
+	<dependencies>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai</artifactId>
+			<version>${sakai.plugin.version}</version>
+			<type>plugin</type>
+		</dependency>
+
+		<dependency>
+			<groupId>osp</groupId>
+			<artifactId>osp-common-api</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>osp</groupId>
+			<artifactId>osp-glossary-api</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>osp</groupId>
+			<artifactId>osp-matrix-api</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>osp</groupId>
+			<artifactId>osp-presentation-api</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>osp</groupId>
+			<artifactId>osp-reports-api</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>osp</groupId>
+			<artifactId>osp-wizard-api</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-metaobj-api</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-full</artifactId>
+			<version>2.0.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.1</version>
+		</dependency>		
+
+		<dependency>
+			<groupId>jdom</groupId>
+			<artifactId>jdom</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
+	   <dependency>
+			<groupId>dom4j</groupId>
+			<artifactId>dom4j</artifactId>
+			<version>1.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>${sakai.hibernate.groupId}</groupId>
+			<artifactId>${sakai.hibernate.artifactId}</artifactId>
+			<version>${sakai.hibernate.version}</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<!-- java source -->
+		<sourceDirectory>.</sourceDirectory>
+
+		<resources>
+			<resource>
+				<directory>.</directory>
+				<includes>
+					<include>**/target/**/*.hbm.xml</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+</project>
