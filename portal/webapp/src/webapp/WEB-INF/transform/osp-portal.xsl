@@ -58,7 +58,7 @@
    <xsl:value-of select="$externalized/entry[@key='sit.jumpworksite']"/>
 </a>
 
-<table width="100%">
+<table border="0"  width="100%">
    <tr>
       <td>
          <xsl:call-template name="site_tabs" />
@@ -535,11 +535,9 @@ your browser doesn't support iframes
    <xsl:template name="site_tools">
 <div class="divColor" id="toolMenuWrap">
 	<div id="worksiteLogo">
-      <a name="logo"/>
       <xsl:if test="siteTypes/siteType[@selected='true']/sites/site[@selected='true' and @published='false']">
          <p id="siteStatus">unpublished site</p>
       </xsl:if>
-      <p id="siteType"><xsl:value-of select="siteTypes/siteType[@selected='true']/name"/></p>
 	</div>
 	<a id="toolmenu" class="skip" name="toolmenu"></a>
 	<h1 class="skip">
@@ -773,7 +771,7 @@ your browser doesn't support iframes
          </div>
          <iframe
             name="presence"
-            id="presence"
+            id="presenceIframe"
             title="Users Present in Site"
             frameborder="0"
             marginwidth="0"
