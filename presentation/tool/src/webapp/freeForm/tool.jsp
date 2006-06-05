@@ -81,7 +81,7 @@
 
                </h:panelGroup>
             </h:panelGrid>
-            <f:subview id="comments" rendered=""
+            
             <f:subview id="navigation">
                 <%@ include file="navigation.jspf" %>
             </f:subview>
