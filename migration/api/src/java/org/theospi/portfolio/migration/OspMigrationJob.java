@@ -136,6 +136,8 @@ public class OspMigrationJob implements Job {
          stmt.executeUpdate(sql);
          sql = "TRUNCATE osp_scaffolding";
          stmt.executeUpdate(sql);
+         sql = "TRUNCATE osp_pres_itemdef_mimetype";
+         stmt.executeUpdate(sql);
          sql = "TRUNCATE osp_presentation_item_def";
          stmt.executeUpdate(sql);
          sql = "TRUNCATE osp_template_file_ref";
