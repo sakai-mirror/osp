@@ -135,5 +135,19 @@
       </attribute>
    </tag>
    
+   <tag>
+     <name>richTextWrapper</name>
+     <tag-class>org.theospi.portfolio.shared.control.tag.RichTextWrapperTag</tag-class>
+     <body-content>JSP</body-content>
+     <description>
+    Looks up the configuration property "wysiwyg.editor" and then sets up for the appropriate editor (currently fckeditor or htmlarea)
+     </description>
+     <attribute>
+          <name>textAreaId</name>
+          <required>true</required>
+          <rtexprvalue>true</rtexprvalue>
+         <description>The id attribute of the textarea control that will be wrapped with a rich text editor</description>
+      </attribute>
+   </tag>
 
 </taglib>
