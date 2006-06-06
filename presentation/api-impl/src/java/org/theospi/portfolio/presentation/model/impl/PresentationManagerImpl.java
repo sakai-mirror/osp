@@ -1460,7 +1460,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          // TODO Better error message here?
          logger.error("", e);
       } catch (PermissionException e) {
-		// TODOCWM Auto-generated catch block
+		   // TODO Better error message here?
     	  	logger.error("", e);
 	} finally {
          try {
