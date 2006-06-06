@@ -41,6 +41,10 @@
       		<entry key="osp_scaffolding_levels"><value>old_osp_scaffolding_levels</value></entry>
       		<entry key="osp_scaffolding_cell"><value>old_osp_scaffolding_cell</value></entry>
       		
+      		<entry key="osp_matrix_tool"><value>old_osp_matrix_tool</value></entry>
+      		<entry key="osp_matrix"><value>old_osp_matrix</value></entry>
+      		<entry key="osp_matrix_cell"><value>old_osp_matrix_cell</value></entry>
+      		
       	
       	</map>
       </property>

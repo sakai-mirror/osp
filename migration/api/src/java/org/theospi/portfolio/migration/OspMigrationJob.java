@@ -48,10 +48,12 @@ import org.theospi.portfolio.help.model.Glossary;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.Criterion;
 import org.theospi.portfolio.matrix.model.Level;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.style.model.Style;
 
@@ -90,9 +92,9 @@ public class OspMigrationJob implements Job {
          if(isDeveloper)
             developerClearTables(connection);
          
-         runAuthzMigration(connection, isDeveloper);
-         runGlossaryMigration(connection, isDeveloper);
-         runFormMigration(connection, isDeveloper);
+         //runAuthzMigration(connection, isDeveloper);
+         //runGlossaryMigration(connection, isDeveloper);
+         //runFormMigration(connection, isDeveloper);
          runMatrixMigration(connection, isDeveloper);
          runPresentationMigration(connection, isDeveloper);
       } catch (SQLException e) {
@@ -268,10 +270,11 @@ public class OspMigrationJob implements Job {
                   sad.setGlobalState(globalState);
                   String schema = new String(schemaData);
                   if(schema != null && schema.equals("Err"))
-                     schemaData = null;
+                     schemaData = " ".getBytes();
                   sad.setSchema(schemaData);
                   sad.setInstruction(instr);
                   
+                  if(!schema.equals("Err"))
                   structuredArtifactDefinitionManager.save(sad, false);
                   
                }
@@ -293,7 +296,10 @@ public class OspMigrationJob implements Job {
 
    protected void runMatrixMigration(Connection con, boolean isDeveloper) throws JobExecutionException {
       logger.info("Quartz task started: runMatrixMigration()");
-      String tableName = getOldTableName("osp_scaffolding"), tableName2 = null;
+      
+      String tableName = getOldTableName("osp_scaffolding"), 
+         tableName2 = null,
+         tableName3 = null;
       String sql = "select * from " + tableName;
       
       try {
@@ -306,19 +312,22 @@ public class OspMigrationJob implements Job {
                   String owner = rs.getString("ownerid");
                   String title = rs.getString("title");
                   String description = rs.getString("description");
+                  String documentRoot = rs.getString("documentroot");
+                  String privacyxsdid = rs.getString("privacyxsdid");
                   String worksite = rs.getString("worksiteId");
                   boolean published = rs.getBoolean("published");
                   String publishedBy = rs.getString("publishedBy");
                   Date   publishedDate = rs.getDate("publishedDate");
-                  String columnLabel = rs.getString("columnLabel");
-                  String rowLabel = rs.getString("rowLabel");
-                  String readyColor = rs.getString("readyColor");
-                  String pendingColor = rs.getString("pendingColor");
-                  String completedColor = rs.getString("completedColor");
-                  String lockColor = rs.getString("lockColor");
-                  int    workflowOption = rs.getInt("workflowOption");
-                  String exposed_page_id = rs.getString("exposed_page_id");
-                  String style_id = rs.getString("style_id");
+                  
+                  String columnLabel = ""; //rs.getString("columnLabel");
+                  String rowLabel = ""; //rs.getString("rowLabel");
+                  String readyColor = ""; //rs.getString("readyColor");
+                  String pendingColor = ""; //rs.getString("pendingColor");
+                  String completedColor = ""; //rs.getString("completedColor");
+                  String lockColor = ""; //rs.getString("lockColor");
+                  int    workflowOption = Scaffolding.HORIZONTAL_PROGRESSION; //rs.getInt("workflowOption");
+                  String exposed_page_id = ""; //rs.getString("exposed_page_id");
+                  String style_id = ""; //rs.getString("style_id");
                   
                   Scaffolding scaffolding = new Scaffolding();
 
@@ -328,7 +337,8 @@ public class OspMigrationJob implements Job {
                   scaffolding.setDescription(description);
                   scaffolding.setWorksiteId(idManager.getId(worksite));
                   scaffolding.setPublished(published);
-                  scaffolding.setPublishedBy(agentManager.getAgent(publishedBy));
+                  if(publishedBy != null)
+                     scaffolding.setPublishedBy(agentManager.getAgent(publishedBy));
                   scaffolding.setColumnLabel(columnLabel);
                   scaffolding.setPublishedDate(publishedDate);
                   scaffolding.setRowLabel(rowLabel);
@@ -340,17 +350,17 @@ public class OspMigrationJob implements Job {
                   scaffolding.setWorkflowOption(workflowOption);
                   scaffolding.setExposedPageId(exposed_page_id);
                   
-                  Style style = new Style();
+                  Style style = null; //new Style();
                   
-                  style.setId(idManager.getId(style_id));
+                  //style.setId(idManager.getId(style_id));
                   scaffolding.setStyle(style);
 
                   
-
+                  //*****************  run through the criteria
                   tableName = getOldTableName("osp_scaffolding_criteria");
                   tableName2 = getOldTableName("osp_matrix_label");
-                  sql = "select * from " + tableName + " join" + tableName2 + " on ELT=ID" +
-                     " where scaffolding_id='" + id + "' order by seq_num";
+                  sql = "select * from " + tableName + " join " + tableName2 + " on ELT=ID" +
+                     " where parent_id='" + id + "' order by seq_num";
                   
                   ResultSet rss = innerStmt.executeQuery(sql);
 
@@ -378,10 +388,11 @@ public class OspMigrationJob implements Job {
                   }
                   
                   
-                  
+
+                  //*****************  run through the levels
                   tableName = getOldTableName("osp_scaffolding_levels");
                   tableName2 = getOldTableName("osp_matrix_label");
-                  sql = "select * from " + tableName + " join" + tableName2 + " on ELT=ID" +
+                  sql = "select * from " + tableName + " join " + tableName2 + " on ELT=ID" +
                      " where scaffolding_id='" + id + "' order by seq_num";
                   
                   rss = innerStmt.executeQuery(sql);
@@ -410,7 +421,8 @@ public class OspMigrationJob implements Job {
                   }
                   
                   
-                  
+
+                  //*****************  run through the cells
                   tableName = getOldTableName("osp_scaffolding_cell");
                   sql = "select * from " + tableName + " where scaffolding_id='" + id + "' ";
                   
@@ -424,17 +436,82 @@ public class OspMigrationJob implements Job {
                      String initialStatus = rss.getString("initialstatus");
                      String gradablereflection = rss.getString("gradablereflection");
                      
+                     Level level = (Level)levelMap.get(levelStr);
+                     Criterion criterion = (Criterion)criteriaMap.get(criterionStr);
                      ScaffoldingCell cell = new ScaffoldingCell();
 
                      cell.setId(cid);
                      cell.setInitialStatus(initialStatus);
-                     cell.setLevel((Level)levelMap.get(cid.getValue()));
-                     cell.setRootCriterion((Criterion)criteriaMap.get(cid.getValue()));
+                     cell.setLevel(level);
+                     cell.setRootCriterion(criterion);
+                     cell.setScaffolding(scaffolding);
+                     WizardPageDefinition page = cell.getWizardPageDefinition();
                      
-                     //TODO: create the wizard page
+                     page.setSiteId(worksite);
+                     page.setTitle(
+                           (criterion.getDescription() != null ? criterion.getDescription() : "") 
+                           + " - " + 
+                           (level.getDescription() != null ? level.getDescription() : ""));
                      
                      scaffolding.add(cell);
                   }
+                  
+                  
+                  scaffolding = matrixManager.storeScaffolding(scaffolding);
+                  
+
+                  
+                  
+
+                  //*****************  run through the user matrices
+                 /* tableName = getOldTableName("osp_matrix_tool");
+                  tableName2 = getOldTableName("osp_matrix");
+                  tableName3 = getOldTableName("osp_matrix_cell");
+                  sql = "select matrix_id, owner, status, reflection_id  " +
+                     " from " + tableName + " join " + tableName2 + 
+                        " on matrixtool_id=" + tableName + ".id " + 
+                     " join " + tableName3 + " on matrix_id=" + tableName2 + ".id " +
+                     " where scaffolding_id='" + id + "' order by owner";
+                  
+                  rss = innerStmt.executeQuery(sql);
+
+                  String lastOwner = "";
+                  Matrix matrix = null;
+                  while (rss.next()) {
+                     
+                     String owner = rss.getString("owner");
+                     
+                     if(!owner.equals(lastOwner)) {
+                        matrix = new Matrix();
+                     }
+                     
+                     Id cid = idManager.getId(rss.getString("id"));
+                     String criterionStr = rss.getString("rootcriterion_id");
+                     String levelStr = rss.getString("level_id");
+                     String expectationheader = rss.getString("expectationheader");
+                     String initialStatus = rss.getString("initialstatus");
+                     String gradablereflection = rss.getString("gradablereflection");
+                     
+                     Level level = (Level)levelMap.get(levelStr);
+                     Criterion criterion = (Criterion)criteriaMap.get(criterionStr);
+                     ScaffoldingCell cell = new ScaffoldingCell();
+
+                     cell.setId(cid);
+                     cell.setInitialStatus(initialStatus);
+                     cell.setLevel(level);
+                     cell.setRootCriterion(criterion);
+                     cell.setScaffolding(scaffolding);
+                     WizardPageDefinition page = cell.getWizardPageDefinition();
+                     
+                     page.setSiteId(worksite);
+                     page.setTitle(
+                           (criterion.getDescription() != null ? criterion.getDescription() : "") 
+                           + " - " + 
+                           (level.getDescription() != null ? level.getDescription() : ""));
+                     
+                     scaffolding.add(cell);
+                  }
+                  */
                   
                   scaffolding = matrixManager.storeScaffolding(scaffolding);
                   
