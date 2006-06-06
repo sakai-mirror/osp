@@ -20,27 +20,22 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.tool;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-
+import org.sakaiproject.authz.api.PermissionsHelper;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.cover.ToolManager;
-import org.theospi.portfolio.reports.model.Report;
-import org.theospi.portfolio.reports.model.ReportDefinition;
-import org.theospi.portfolio.reports.model.ReportExecutionException;
-import org.theospi.portfolio.reports.model.ReportFunctions;
-import org.theospi.portfolio.reports.model.ReportResult;
-import org.theospi.portfolio.reports.model.ReportsManager;
+import org.theospi.portfolio.reports.model.*;
 import org.theospi.portfolio.shared.tool.ToolBase;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -365,11 +360,11 @@ public class ReportsTool extends ToolBase {
        
 	   try {
           String url = "sakai.permissions.helper.helper/tool?" + 
-            "session.sakaiproject.permissions.description=" + 
+            "session."+ PermissionsHelper.DESCRIPTION +"=" +
                getPermissionsMessage() + 
-            "&session.sakaiproject.permissions.siteRef=" + 
+            "&session."+ PermissionsHelper.TARGET_REF +"=" +
                getWorksite().getReference() + 
-            "&session.sakaiproject.permissions.prefix=" + 
+            "&session."+ PermissionsHelper.PREFIX +"=" +
                getReportFunctionPrefix();
            
 	        context.redirect(url);
