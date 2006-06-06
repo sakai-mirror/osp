@@ -18,6 +18,9 @@
 	<classpathentry kind="src" path="glossary/tool/src/webapp"/>
 	<classpathentry kind="src" path="glossary/tool-lib/src/java"/>
 	<classpathentry kind="src" path="glossary/tool-lib/src/META-INF"/>
+	<classpathentry kind="src" path="integration/api/src/java"/>
+	<classpathentry kind="src" path="integration/component/src/webapp"/>
+	<classpathentry kind="src" path="integration/api-impl/src/java"/>
 	<classpathentry kind="src" path="jsf/example/src/bundle"/>
 	<classpathentry kind="src" path="jsf/example/src/java"/>
 	<classpathentry kind="src" path="jsf/example/src/webapp"/>
@@ -31,6 +34,9 @@
 	<classpathentry kind="src" path="matrix/tool/src/bundle"/>
 	<classpathentry kind="src" path="matrix/tool/src/java"/>
 	<classpathentry kind="src" path="matrix/tool/src/webapp"/>
+	<classpathentry kind="src" path="migration/api/src/java"/>
+	<classpathentry kind="src" path="migration/api-impl/src/java"/>
+	<classpathentry kind="src" path="migration/component/src/webapp"/>
 	<classpathentry kind="src" path="portal/api/src/java"/>
 	<classpathentry kind="src" path="portal/api-impl/src/java"/>
 	<classpathentry kind="src" path="portal/component/src/webapp"/>
