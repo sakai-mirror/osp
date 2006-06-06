@@ -20,21 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.tool;
 
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
-
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.Member;
@@ -88,6 +73,12 @@ import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.*;
 
 public class WizardTool extends BuilderTool {
 
@@ -980,7 +971,7 @@ public class WizardTool extends BuilderTool {
       List retForms = new ArrayList();
       for(Iterator iter = forms.iterator(); iter.hasNext();) {
          StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) iter.next(); 
-         retForms.add(createSelect(sad.getId().getValue(), sad.getDescription()));
+         retForms.add(createSelect(sad.getId().getValue(), sad.getDecoratedDescription()));
       }
       
       return retForms;

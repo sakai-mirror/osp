@@ -20,12 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.content.api.FilePickerHelper;
@@ -54,6 +48,8 @@ import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.style.model.Style;
+
+import java.util.*;
 
 public class CellController implements FormController, LoadObjectController {
 
@@ -208,7 +204,7 @@ public class CellController implements FormController, LoadObjectController {
          bean.getDescription();
          //cwm use a different bean below, as the name has implications
          retList.add(new ScaffoldingCellSupportDeviceBean(
-                  strFormDefId, bean.getDescription(), strFormDefId, 
+                  strFormDefId, bean.getDecoratedDescription(), strFormDefId,
                   bean.getOwner().getName(), bean.getModified()));
       }
       return retList;

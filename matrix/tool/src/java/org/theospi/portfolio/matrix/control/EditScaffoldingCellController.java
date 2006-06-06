@@ -21,15 +21,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
@@ -57,6 +48,9 @@ import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
+
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * @author chmaurer
@@ -357,7 +351,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       List retForms = new ArrayList();
       for(Iterator iter = commentForms.iterator(); iter.hasNext();) {
          StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) iter.next(); 
-         retForms.add(new ScaffoldingCellSupportDeviceBean(sad.getId().getValue(), sad.getDescription(), FORM_TYPE,
+         retForms.add(new ScaffoldingCellSupportDeviceBean(sad.getId().getValue(), sad.getDecoratedDescription(), FORM_TYPE,
                   sad.getOwner().getName(), sad.getModified()));
       }
       
