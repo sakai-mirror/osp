@@ -41,7 +41,12 @@
       		<entry key="osp_scaffolding_levels"><value>old_osp_scaffolding_levels</value></entry>
       		<entry key="osp_scaffolding_cell"><value>old_osp_scaffolding_cell</value></entry>
       		
-      		<entry key="osp_matrix_tool"><value>old_osp_matrix_tool</value></entry>
+      		<entry key="osp_presentation_template"><value>old_osp_presentation_template</value></entry>
+      		<entry key="osp_presentation_item_def"><value>old_osp_presentation_item_def</value></entry>
+      		<entry key="osp_template_file_ref"><value>old_osp_template_file_ref</value></entry>
+      		<entry key="osp_pres_itemdef_mimetype"><value>old_osp_pres_itemdef_mimetype</value></entry>
+      		
+			<entry key="osp_matrix_tool"><value>old_osp_matrix_tool</value></entry>
       		<entry key="osp_matrix"><value>old_osp_matrix</value></entry>
       		<entry key="osp_matrix_cell"><value>old_osp_matrix_cell</value></entry>
       		

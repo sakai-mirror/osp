@@ -25,11 +25,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -43,18 +43,20 @@ import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.theospi.portfolio.help.model.Glossary;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.shared.model.ItemDefinitionMimeType;
 import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.Criterion;
 import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
+import org.theospi.portfolio.presentation.model.PresentationTemplate;
+import org.theospi.portfolio.presentation.model.TemplateFileRef;
 import org.theospi.portfolio.style.model.Style;
 
 /**
@@ -94,7 +96,6 @@ public class OspMigrationJob implements Job {
          
          //runAuthzMigration(connection, isDeveloper);
          //runGlossaryMigration(connection, isDeveloper);
-         //runFormMigration(connection, isDeveloper);
          runMatrixMigration(connection, isDeveloper);
          runPresentationMigration(connection, isDeveloper);
       } catch (SQLException e) {
@@ -134,6 +135,12 @@ public class OspMigrationJob implements Job {
          sql = "TRUNCATE osp_matrix_label";
          stmt.executeUpdate(sql);
          sql = "TRUNCATE osp_scaffolding";
+         stmt.executeUpdate(sql);
+         sql = "TRUNCATE osp_presentation_item_def";
+         stmt.executeUpdate(sql);
+         sql = "TRUNCATE osp_template_file_ref";
+         stmt.executeUpdate(sql);
+         sql = "TRUNCATE osp_presentation_template";
          stmt.executeUpdate(sql);
          
       } catch (Exception e) {
@@ -230,68 +237,6 @@ public class OspMigrationJob implements Job {
             }
         }
         logger.info("Quartz task fininshed: runGlossaryMigration()");
-   }
-   
-   protected void runFormMigration(Connection con, boolean isDeveloper) throws JobExecutionException {
-      logger.info("Quartz task started: runFormMigration()");
-      String tableName = getOldTableName("osp_structured_artifact_def");
-      String sql = "select * from " + tableName;
-      
-      try {
-            stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            try {
-               while (rs.next()) {
-                  String id = rs.getString("id");
-                  String desc = rs.getString("description");
-                  String docRoot = rs.getString("documentRoot");
-                  String owner = rs.getString("owner");
-                  Date created = rs.getDate("created");
-                  Date modified = rs.getDate("modified");
-                  boolean systemOnly = rs.getBoolean("systemOnly");
-                  String extType = rs.getString("externalType");
-                  String siteId = rs.getString("siteId");
-                  int siteState = rs.getInt("siteState");
-                  int globalState = rs.getInt("globalState");
-                  byte[] schemaData = rs.getBytes("schemaData");
-                  String instr = rs.getString("instruction");
-                  
-                  StructuredArtifactDefinitionBean sad = new StructuredArtifactDefinitionBean();
-                  sad.setId(idManager.getId(id));
-                  sad.setDescription(desc);
-                  sad.setDocumentRoot(docRoot);
-                  sad.setOwner(agentManager.getAgent(owner));
-                  sad.setCreated(created);
-                  sad.setModified(modified);
-                  sad.setSystemOnly(systemOnly);
-                  sad.setExternalType(extType);
-                  sad.setSiteId(siteId);
-                  sad.setSiteState(siteState);
-                  sad.setGlobalState(globalState);
-                  String schema = new String(schemaData);
-                  if(schema != null && schema.equals("Err"))
-                     schemaData = " ".getBytes();
-                  sad.setSchema(schemaData);
-                  sad.setInstruction(instr);
-                  
-                  if(!schema.equals("Err"))
-                  structuredArtifactDefinitionManager.save(sad, false);
-                  
-               }
-           } finally {
-               rs.close();
-           }
-        } catch (Exception e) {
-            logger.error("error selecting data with this sql: " + sql);
-            logger.error("", e);
-            throw new JobExecutionException(e);
-        } finally {
-            try {
-                stmt.close();
-            } catch (Exception e) {
-            }
-        }
-        logger.info("Quartz task fininshed: runFormMigration()");
    }
 
    protected void runMatrixMigration(Connection con, boolean isDeveloper) throws JobExecutionException {
@@ -534,26 +479,60 @@ public class OspMigrationJob implements Job {
    }
 
    protected void runPresentationMigration(Connection con, boolean isDeveloper) throws JobExecutionException {
-      logger.info("Quartz task started: runFormMigration()");
-      String tableName = getOldTableName("osp_structured_artifact_def");
-      String sql = "select * from " + tableName;
+      logger.info("Quartz task started: runPresentationMigration()");
+      String templateTableName = getOldTableName("osp_presentation_template");
+      String sql = "select * from " + templateTableName;
       
-      try { /*
+      try { 
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             try {
                while (rs.next()) {
                   String id = rs.getString("id");
+                  String name = rs.getString("name");
+                  String desc = rs.getString("description");
+                  boolean includeHeaderAndFooter = rs.getBoolean("includeHeaderAndFooter");
+                  boolean includeComments = rs.getBoolean("includeComments");
+                  boolean published = rs.getBoolean("published");
+                  String owner = rs.getString("owner_id");
+                  String renderer = rs.getString("renderer");
+                  String markup = rs.getString("markup");
+                  String propertyPage = rs.getString("propertyPage");
+                  String documentRoot = rs.getString("documentRoot");
+                  Date created = rs.getDate("created");
+                  Date modified = rs.getDate("modified");
+                  String siteId = rs.getString("site_id");
                   
-                  StructuredArtifactDefinitionBean sad = new StructuredArtifactDefinitionBean();
-                  sad.setId(idManager.getId(id));
                   
-                  structuredArtifactDefinitionManager.save(sad, false);
+                  PresentationTemplate template = new PresentationTemplate();
+                  template.setId(idManager.getId(id));
+                  template.setName(name);
+                  template.setDescription(desc);
+                  template.setIncludeHeaderAndFooter(includeHeaderAndFooter);
+                  template.setIncludeComments(includeComments);
+                  template.setPublished(published);
+                  template.setOwner(agentManager.getAgent(owner));
+                  template.setRenderer(idManager.getId(renderer));
+                  template.setMarkup(markup);
+                  template.setPropertyPage(idManager.getId(propertyPage));
+                  template.setDocumentRoot(documentRoot);
+                  template.setCreated(created);
+                  template.setModified(modified);
+                  template.setSiteId(siteId);
+                  
+                  Set itemDefs = createTemplateItemDefs(con, template);
+                  template.setItems(itemDefs);
+                  
+                  Set fileRefs = createTemplateFileRefs(con, template);
+                  template.setFiles(fileRefs);
+                  
+                  
+                  presentationManager.storeTemplate(template);
                   
                }
            } finally {
                rs.close();
-           } */
+           } 
         } catch (Exception e) {
             logger.error("error selecting data with this sql: " + sql);
             logger.error("", e);
@@ -564,7 +543,144 @@ public class OspMigrationJob implements Job {
             } catch (Exception e) {
             }
         }
-        logger.info("Quartz task fininshed: runFormMigration()");
+        logger.info("Quartz task fininshed: runPresentationMigration()");
+   }
+   
+   protected Set createTemplateItemDefs(Connection con, PresentationTemplate template) throws JobExecutionException {
+      Set itemDefs = new HashSet();
+      String itemDefTableName = getOldTableName("osp_presentation_item_def");
+      String sql = "select * from " + itemDefTableName + " where template_id = " + template.getId().getValue();
+      Statement innerstmt = null;
+      try {
+         
+         innerstmt = con.createStatement();
+         ResultSet rs2 = innerstmt.executeQuery(sql);
+         try {
+            while (rs2.next()) {
+
+               String id = rs2.getString("id");
+               String name = rs2.getString("name");
+               String title = rs2.getString("title");
+               String description = rs2.getString("description");
+               boolean allowMultiple = rs2.getBoolean("allowMultiple");
+               String type = rs2.getString("type");
+               String externalType = rs2.getString("external_type");
+               int seq = rs2.getInt("sequence_no");
+               //String templateId = rs2.getString("template_id");
+               
+               
+               PresentationItemDefinition pid = new PresentationItemDefinition();
+               pid.setId(idManager.getId(id));
+               pid.setName(name);
+               pid.setTitle(title);
+               pid.setDescription(description);
+               pid.setAllowMultiple(allowMultiple);
+               pid.setType(type);
+               pid.setExternalType(externalType);
+               pid.setSequence(seq);
+               pid.setPresentationTemplate(template);
+               Set mimeTypes = createTemplateItemDefMimeTypes(con, pid);
+               pid.setMimeTypes(mimeTypes);
+               
+               itemDefs.add(pid);
+            }
+
+         } finally {
+            rs2.close();
+         } 
+      } catch (Exception e) {
+         logger.error("error selecting data with this sql: " + sql);
+         logger.error("", e);
+         throw new JobExecutionException(e);
+      } finally {
+         try {
+            innerstmt.close();
+         } catch (Exception e) {
+         }
+      }
+      return itemDefs;
+   }
+   
+   protected Set createTemplateFileRefs(Connection con, PresentationTemplate template) throws JobExecutionException {
+      Set fileRefs = new HashSet();
+      String fileRefTableName = getOldTableName("osp_template_file_ref");
+      String sql = "select * from " + fileRefTableName + " where template_id = " + template.getId().getValue();
+      Statement innerstmt = null;
+      try {
+         
+         innerstmt = con.createStatement();
+         ResultSet rs2 = innerstmt.executeQuery(sql);
+         try {
+            while (rs2.next()) {
+
+               String id = rs2.getString("id");
+               String fileId = rs2.getString("file_id");
+               String fileTypeId = rs2.getString("file_type_id");
+               String usage = rs2.getString("usage_desc");
+               //String templateId = rs2.getString("template_id");
+               
+               
+               TemplateFileRef tfr = new TemplateFileRef();
+               tfr.setId(idManager.getId(id));
+               tfr.setFileId(fileId);
+               tfr.setFileType(fileTypeId);
+               tfr.setUsage(usage);
+               
+               tfr.setPresentationTemplate(template);
+               
+               fileRefs.add(tfr);
+            }
+
+         } finally {
+            rs2.close();
+         } 
+      } catch (Exception e) {
+         logger.error("error selecting data with this sql: " + sql);
+         logger.error("", e);
+         throw new JobExecutionException(e);
+      } finally {
+         try {
+            innerstmt.close();
+         } catch (Exception e) {
+         }
+      }
+      return fileRefs;
+   }
+   
+   protected Set createTemplateItemDefMimeTypes(Connection con, PresentationItemDefinition itemDef) throws JobExecutionException {
+      Set mimeTypes = new HashSet();
+      String itemDefMimeTypeTableName = getOldTableName("osp_pres_itemdef_mimetype");
+      String sql = "select * from " + itemDefMimeTypeTableName + " where item_def_id = " + itemDef.getId().getValue();
+      Statement innerstmt = null;
+      try {
+         
+         innerstmt = con.createStatement();
+         ResultSet rs2 = innerstmt.executeQuery(sql);
+         try {
+            while (rs2.next()) {
+
+               String primary = rs2.getString("primaryMimeType");
+               String secondary = rs2.getString("secondaryMimeType");
+               
+               ItemDefinitionMimeType mimeType = new ItemDefinitionMimeType(primary, secondary);
+               
+               mimeTypes.add(mimeType);
+            }
+
+         } finally {
+            rs2.close();
+         } 
+      } catch (Exception e) {
+         logger.error("error selecting data with this sql: " + sql);
+         logger.error("", e);
+         throw new JobExecutionException(e);
+      } finally {
+         try {
+            innerstmt.close();
+         } catch (Exception e) {
+         }
+      }
+      return mimeTypes;
    }
    
    protected String getOldTableName(String tableName)
