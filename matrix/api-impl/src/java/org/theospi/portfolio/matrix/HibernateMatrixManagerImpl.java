@@ -397,6 +397,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       getHibernateTemplate().flush();
       return scaffolding;
    }
+   public Scaffolding saveNewScaffolding(Scaffolding scaffolding) {
+      scaffolding = (Scaffolding)this.save(scaffolding);
+      getHibernateTemplate().flush();
+      return scaffolding;
+   }
    
    public Id storeScaffoldingCell(ScaffoldingCell scaffoldingCell) {
       scaffoldingCell = (ScaffoldingCell)store(scaffoldingCell);
@@ -405,6 +410,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public Object store(Object obj) {
       obj = this.getHibernateTemplate().merge(obj);
+      return obj;
+   }
+
+   public Object save(Object obj) {
+      obj = this.getHibernateTemplate().save(obj);
       return obj;
    }
 

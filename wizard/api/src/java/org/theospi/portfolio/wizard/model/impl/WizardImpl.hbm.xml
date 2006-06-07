@@ -31,7 +31,7 @@
    <class name="WizardPageSequence" table="osp_wizard_page_sequence">
       <cache usage="nonstrict-read-write"/>
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="sequence" type="int" column="seq_num" not-null="false"/>
 
@@ -46,7 +46,7 @@
    <class name="WizardCategory" table="osp_wizard_category">
       <cache usage="nonstrict-read-write"/>
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
 
       <property name="title" type="string" column="name" not-null="false"/>
@@ -82,7 +82,7 @@
    <class name="CompletedWizard" table="osp_completed_wizard">
       <cache usage="nonstrict-read-write"/>
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
 
       <property name="owner" column="owner_id" not-null="true"
@@ -105,7 +105,7 @@
    <class name="CompletedWizardCategory" table="osp_completed_wiz_category">
       <cache usage="nonstrict-read-write"/>
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
 
       <many-to-one name="wizard" column="completed_wizard_id"
@@ -139,7 +139,7 @@
    <class name="CompletedWizardPage" table="osp_completed_wizard_page">
       <cache usage="nonstrict-read-write"/>
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
 
       <many-to-one name="category" column="completed_category_id"

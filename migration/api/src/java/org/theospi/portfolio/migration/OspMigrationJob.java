@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Iterator;
 
 import javax.sql.DataSource;
 
@@ -46,13 +47,17 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.theospi.portfolio.help.model.Glossary;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.ItemDefinitionMimeType;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.Criterion;
@@ -108,8 +113,7 @@ public class OspMigrationJob implements Job {
          
          //runAuthzMigration(connection, isDeveloper);
          //runGlossaryMigration(connection, isDeveloper);
-         //runMatrixMigration(connection, isDeveloper);
-         runPresentationTemplateMigration(connection, isDeveloper);
+         runMatrixMigration(connection, isDeveloper);
          runPresentationMigration(connection, isDeveloper);
       } catch (SQLException e) {
          logger.error("Quartz job errored: "+this.getClass().getName(), e);
@@ -395,6 +399,8 @@ public class OspMigrationJob implements Job {
                   sql = "select * from " + tableName + " where scaffolding_id='" + id + "' ";
                   
                   rss = innerStmt.executeQuery(sql);
+                  
+                  Map scaffoldingCellMap = new HashMap();
 
                   while (rss.next()) {
                      Id cid = idManager.getId(rss.getString("id"));
@@ -422,20 +428,19 @@ public class OspMigrationJob implements Job {
                            (level.getDescription() != null ? level.getDescription() : ""));
                      
                      scaffolding.add(cell);
+                     scaffoldingCellMap.put(cid.getValue(), cell);
                   }
                   
                   
                   scaffolding = matrixManager.storeScaffolding(scaffolding);
                   
-
-                  
                   
 
                   //*****************  run through the user matrices
-                 /* tableName = getOldTableName("osp_matrix_tool");
+                  tableName = getOldTableName("osp_matrix_tool");
                   tableName2 = getOldTableName("osp_matrix");
                   tableName3 = getOldTableName("osp_matrix_cell");
-                  sql = "select matrix_id, owner, status, reflection_id  " +
+                  sql = "select " + tableName3 + ".id, matrix_id, owner, status, reflection_id, scaffolding_cell_id " +
                      " from " + tableName + " join " + tableName2 + 
                         " on matrixtool_id=" + tableName + ".id " + 
                      " join " + tableName3 + " on matrix_id=" + tableName2 + ".id " +
@@ -446,42 +451,35 @@ public class OspMigrationJob implements Job {
                   String lastOwner = "";
                   Matrix matrix = null;
                   while (rss.next()) {
-                     
-                     String owner = rss.getString("owner");
+
+                     String mowner = rss.getString("owner");
+                     String status = rss.getString("status");
+                     String scaffolding_cell_id = rss.getString("scaffolding_cell_id");
                      
                      if(!owner.equals(lastOwner)) {
+                        if(matrix != null)
+                           matrixManager.save(matrix);
                         matrix = new Matrix();
+                        
+                        matrix.setOwner(agentManager.getAgent(mowner));
+                        matrix.setScaffolding(scaffolding);
                      }
-                     
-                     Id cid = idManager.getId(rss.getString("id"));
-                     String criterionStr = rss.getString("rootcriterion_id");
-                     String levelStr = rss.getString("level_id");
-                     String expectationheader = rss.getString("expectationheader");
-                     String initialStatus = rss.getString("initialstatus");
-                     String gradablereflection = rss.getString("gradablereflection");
-                     
-                     Level level = (Level)levelMap.get(levelStr);
-                     Criterion criterion = (Criterion)criteriaMap.get(criterionStr);
-                     ScaffoldingCell cell = new ScaffoldingCell();
 
-                     cell.setId(cid);
-                     cell.setInitialStatus(initialStatus);
-                     cell.setLevel(level);
-                     cell.setRootCriterion(criterion);
-                     cell.setScaffolding(scaffolding);
-                     WizardPageDefinition page = cell.getWizardPageDefinition();
+                     ScaffoldingCell sCell = (ScaffoldingCell)scaffoldingCellMap.get(scaffolding_cell_id);
                      
-                     page.setSiteId(worksite);
-                     page.setTitle(
-                           (criterion.getDescription() != null ? criterion.getDescription() : "") 
-                           + " - " + 
-                           (level.getDescription() != null ? level.getDescription() : ""));
+                     Cell cell = new Cell();
+                     cell.getWizardPage().setOwner(matrix.getOwner());
+                     cell.setScaffoldingCell(sCell);
+                     cell.setStatus(status);
                      
-                     scaffolding.add(cell);
+                     matrix.add(cell);
                   }
-                  */
                   
-                  scaffolding = matrixManager.storeScaffolding(scaffolding);
+                  
+                  if(matrix != null)
+                     matrixManager.save(matrix);
+                  
+                  
                   
                }
            } finally {

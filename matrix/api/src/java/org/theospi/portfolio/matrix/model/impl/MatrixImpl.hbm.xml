@@ -8,7 +8,7 @@
        <cache usage="nonstrict-read-write"/>
         <id name="id" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" column="id">
-            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+            <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator" />
         </id>
         <property name="owner" not-null="true"
         		type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" />
@@ -41,7 +41,7 @@
       <cache usage="nonstrict-read-write"/>
        <id name="id" length="36"
            type="org.sakaiproject.metaobj.shared.IdType" column="id">
-           <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+           <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator" />
        </id>
        
        <property name="owner" not-null="true"
@@ -114,7 +114,7 @@
        <cache usage="nonstrict-read-write"/>
         <id name="id" length="36"
             type="org.sakaiproject.metaobj.shared.IdType" column="id">
-            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+            <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator" />
         </id>
         <property name="owner" column="ownerId" not-null="true"
             type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" />
@@ -162,7 +162,7 @@
     <class name="ScaffoldingCell" table="osp_scaffolding_cell" lazy="true" >
       <cache usage="nonstrict-read-write"/>
     	<id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-			<generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+			<generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
     	</id>
     	<many-to-one name="rootCriterion" column="rootcriterion_id" class="Criterion"/>
       <many-to-one name="level" column="level_id" class="Level"/>

@@ -28,7 +28,7 @@
    <class name="WorkflowItem" table="osp_workflow_item" lazy="true">
       <cache usage="nonstrict-read-write"/>
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="actionType" type="int" column="actionType" not-null="true"/>
       <property name="actionObjectId" type="org.sakaiproject.metaobj.shared.IdType" 

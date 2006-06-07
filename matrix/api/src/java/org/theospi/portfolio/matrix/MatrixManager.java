@@ -68,12 +68,14 @@ public interface MatrixManager extends WorkflowEnabledManager {
    Id storePage(WizardPage page);
 
    Scaffolding storeScaffolding(Scaffolding scaffolding);
+   Scaffolding saveNewScaffolding(Scaffolding scaffolding);
    
    Id storeScaffoldingCell(ScaffoldingCell scaffoldingCell);
    
    void publishScaffolding(Id scaffoldingId);
 
    Object store(Object obj);
+   Object save(Object obj);
    
    Matrix createMatrix(Agent owner, Scaffolding scaffolding);
 
