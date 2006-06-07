@@ -96,6 +96,6 @@
       </property>
       <property name="matrixManager"><ref bean="matrixManager"/></property>
       <property name="presentationManager"><ref bean="presentationManager"/></property>
-      <property name="toolManager"><ref bean="org.sakaiproject.tool.api.ActiveToolManager"/></property>
+      <property name="siteService"><ref bean="org.sakaiproject.site.api.SiteService"/></property>
    </bean>
 </beans>
