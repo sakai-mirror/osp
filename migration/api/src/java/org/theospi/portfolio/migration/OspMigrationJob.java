@@ -114,6 +114,7 @@ public class OspMigrationJob implements Job {
          //runAuthzMigration(connection, isDeveloper);
          //runGlossaryMigration(connection, isDeveloper);
          runMatrixMigration(connection, isDeveloper);
+         runPresentationTemplateMigration(connection, isDeveloper);
          runPresentationMigration(connection, isDeveloper);
       } catch (SQLException e) {
          logger.error("Quartz job errored: "+this.getClass().getName(), e);
@@ -603,6 +604,8 @@ public class OspMigrationJob implements Job {
                   presentation.setCreated(created);
                   presentation.setModified(modified);
                   presentation.setToolId(toolId);
+                  
+                  //TODOCWM What about the new comment functionality?
                   
                   String siteId = siteService.findTool(toolId).getContext();
                   presentation.setSiteId(siteId);
