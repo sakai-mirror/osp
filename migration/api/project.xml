@@ -93,6 +93,24 @@
     </dependency>
     
     <dependency>
+    	<groupId>sakaiproject</groupId>
+    	<artifactId>sakai-site-api</artifactId>
+    	<version>${sakai.version}</version>
+    </dependency>
+    
+    <dependency>
+    	<groupId>sakaiproject</groupId>
+    	<artifactId>sakai-tool-api</artifactId>
+    	<version>${sakai.version}</version>
+    </dependency>
+    
+    <dependency>
+    	<groupId>sakaiproject</groupId>
+    	<artifactId>sakai-entity-api</artifactId>
+    	<version>${sakai.version}</version>
+    </dependency>
+    
+    <dependency>
        <groupId>osp</groupId>
        <artifactId>osp-common-api</artifactId>
        <version>${sakai.version}</version>
@@ -115,6 +133,12 @@
        <artifactId>osp-presentation-api</artifactId>
        <version>${sakai.version}</version>
      </dependency>
+     
+     <dependency>
+         <groupId>${sakai.hibernate.groupId}</groupId>
+         <artifactId>${sakai.hibernate.artifactId}</artifactId>
+         <version>${sakai.hibernate.version}</version>
+      </dependency>
 
   </dependencies>
 
