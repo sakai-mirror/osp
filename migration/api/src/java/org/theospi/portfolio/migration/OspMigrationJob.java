@@ -25,9 +25,11 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,8 +43,11 @@ import org.quartz.JobExecutionException;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.theospi.portfolio.help.model.Glossary;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.portfolio.security.AuthorizationFacade;
@@ -54,9 +59,14 @@ import org.theospi.portfolio.matrix.model.Criterion;
 import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationComment;
+import org.theospi.portfolio.presentation.model.PresentationItem;
 import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
+import org.theospi.portfolio.presentation.model.PresentationLog;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
+import org.theospi.portfolio.presentation.model.impl.HibernatePresentationProperties;
 import org.theospi.portfolio.style.model.Style;
 
 /**
@@ -77,8 +87,10 @@ public class OspMigrationJob implements Job {
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private PresentationManager presentationManager;
    private MatrixManager matrixManager;
+   private SiteService siteService;
    private Statement stmt;
    private Map tableMap = new HashMap();
+   private List authzToolFunctions;
    
    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
       logger.info("Quartz job started: "+this.getClass().getName());
@@ -96,9 +108,11 @@ public class OspMigrationJob implements Job {
          
          //runAuthzMigration(connection, isDeveloper);
          //runGlossaryMigration(connection, isDeveloper);
-         runMatrixMigration(connection, isDeveloper);
+         //runMatrixMigration(connection, isDeveloper);
+         runPresentationTemplateMigration(connection, isDeveloper);
          runPresentationMigration(connection, isDeveloper);
       } catch (SQLException e) {
+         logger.error("Quartz job errored: "+this.getClass().getName(), e);
          throw new JobExecutionException(e);
       } finally {
          if (connection != null) {
@@ -174,6 +188,13 @@ public class OspMigrationJob implements Job {
                   //TODOCWM: Do transformations on the authz stuff that needs to 
                   // change from a tool_id to a site_id
                   try {
+                     if (getAuthzToolFunctions().contains(func)) {
+                        ToolConfiguration toolConfig = siteService.findTool(qual);
+                        if (toolConfig != null) {
+                           qual = toolConfig.getContext();
+                        }
+                     }
+                     
                      authzManager.createAuthorization(agentManager.getAgent(agent), func, idManager.getId(qual));
                   } catch(Exception e) {
                      if(!isDeveloper)
@@ -480,8 +501,8 @@ public class OspMigrationJob implements Job {
       
    }
 
-   protected void runPresentationMigration(Connection con, boolean isDeveloper) throws JobExecutionException {
-      logger.info("Quartz task started: runPresentationMigration()");
+   protected void runPresentationTemplateMigration(Connection con, boolean isDeveloper) throws JobExecutionException {
+      logger.info("Quartz task started: runPresentationTemplateMigration()");
       String templateTableName = getOldTableName("osp_presentation_template");
       String sql = "select * from " + templateTableName;
       
@@ -530,6 +551,78 @@ public class OspMigrationJob implements Job {
                   
                   
                   presentationManager.storeTemplate(template);
+                  
+               }
+           } finally {
+               rs.close();
+           } 
+        } catch (Exception e) {
+            logger.error("error selecting data with this sql: " + sql);
+            logger.error("", e);
+            throw new JobExecutionException(e);
+        } finally {
+            try {
+                stmt.close();
+            } catch (Exception e) {
+            }
+        }
+        logger.info("Quartz task fininshed: runPresentationTemplateMigration()");
+   }
+   
+   protected void runPresentationMigration(Connection con, boolean isDeveloper) throws JobExecutionException {
+      logger.info("Quartz task started: runPresentationMigration()");
+      String templateTableName = getOldTableName("osp_presentation");
+      String sql = "select * from " + templateTableName;
+      
+      try { 
+            stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            try {
+               while (rs.next()) {
+                  String id = rs.getString("id");
+                  String owner = rs.getString("owner_id");
+                  String templateId = rs.getString("template_id");
+                  String name = rs.getString("name");
+                  String desc = rs.getString("description");
+                  boolean isDefault = rs.getBoolean("isDefault");
+                  boolean isPublic = rs.getBoolean("isPublic");
+                  
+                  Date expiresOn = rs.getDate("expiresOn");
+                  Date created = rs.getDate("created");
+                  Date modified = rs.getDate("modified");
+                  //Blob properties = rs.getBlob("properties");
+                  String toolId = rs.getString("tool_id");
+                  
+                  
+                  Presentation presentation = new Presentation();
+                  presentation.setId(idManager.getId(id));
+                  presentation.setName(name);
+                  presentation.setDescription(desc);
+                  presentation.setIsDefault(isDefault);
+                  presentation.setIsPublic(isPublic);
+                  presentation.setOwner(agentManager.getAgent(owner));
+                  presentation.setExpiresOn(expiresOn);
+                  presentation.setCreated(created);
+                  presentation.setModified(modified);
+                  presentation.setToolId(toolId);
+                  
+                  String siteId = siteService.findTool(toolId).getContext();
+                  presentation.setSiteId(siteId);
+                  
+                  HibernatePresentationProperties hpp = new HibernatePresentationProperties();
+                  String[] names = {"properties"};
+                  Object props = hpp.nullSafeGet(rs, names, null);
+                  presentation.setProperties((ElementBean)props);
+                  presentation.setPresentationType(Presentation.TEMPLATE_TYPE);
+                  presentation.setTemplate(presentationManager.getPresentationTemplate(idManager.getId(templateId)));
+                  
+                  Set items = createPresentationItems(con, presentation);
+                  presentation.setItems(items);
+                  
+                  presentationManager.storePresentation(presentation);
+                  
+                  createPresentationComments(con, presentation);
+                  createPresentationLogs(con, presentation);
                   
                }
            } finally {
@@ -685,6 +778,126 @@ public class OspMigrationJob implements Job {
       return mimeTypes;
    }
    
+   protected Set createPresentationItems(Connection con, Presentation presentation) throws JobExecutionException {
+      Set items = new HashSet();
+      String itemTableName = getOldTableName("osp_presentation_item");
+      String sql = "select * from " + itemTableName + " where presentation_id = " + presentation.getId().getValue();
+      Statement innerstmt = null;
+      try {
+         
+         innerstmt = con.createStatement();
+         ResultSet rs2 = innerstmt.executeQuery(sql);
+         try {
+            while (rs2.next()) {
+
+               String artifactId = rs2.getString("artifact_id");
+               String itemDef = rs2.getString("item_definition_id");
+               
+               PresentationItem item = new PresentationItem();
+               item.setArtifactId(idManager.getId(artifactId));
+               item.setDefinition(presentationManager.getPresentationItemDefinition(idManager.getId(itemDef)));
+               
+               items.add(item);
+            }
+
+         } finally {
+            rs2.close();
+         } 
+      } catch (Exception e) {
+         logger.error("error selecting data with this sql: " + sql);
+         logger.error("", e);
+         throw new JobExecutionException(e);
+      } finally {
+         try {
+            innerstmt.close();
+         } catch (Exception e) {
+         }
+      }
+      return items;
+   }
+   
+   protected void createPresentationComments(Connection con, Presentation presentation) throws JobExecutionException {
+      String commentTableName = getOldTableName("osp_presentation_comment");
+      String sql = "select * from " + commentTableName + " where presentation_id = " + presentation.getId().getValue();
+      Statement innerstmt = null;
+      try {
+         
+         innerstmt = con.createStatement();
+         ResultSet rs2 = innerstmt.executeQuery(sql);
+         try {
+            while (rs2.next()) {
+
+               String id = rs2.getString("id");
+               String title = rs2.getString("title");
+               String commentText = rs2.getString("commentText");
+               String owner = rs2.getString("creator_id");
+               byte visibility = rs2.getByte("visibility");
+               Date created = rs2.getDate("created");
+               
+               PresentationComment comment = new PresentationComment();
+               comment.setId(idManager.getId(id));
+               comment.setTitle(title);
+               comment.setComment(commentText);
+               comment.setCreator(agentManager.getAgent(idManager.getId(owner)));
+               comment.setPresentation(presentation);
+               comment.setVisibility(visibility);
+               comment.setCreated(created);
+               presentationManager.createComment(comment);
+            }
+
+         } finally {
+            rs2.close();
+         } 
+      } catch (Exception e) {
+         logger.error("error selecting data with this sql: " + sql);
+         logger.error("", e);
+         throw new JobExecutionException(e);
+      } finally {
+         try {
+            innerstmt.close();
+         } catch (Exception e) {
+         }
+      }
+   }
+   
+   protected void createPresentationLogs(Connection con, Presentation presentation) throws JobExecutionException {
+      String logTableName = getOldTableName("osp_presentation_log");
+      String sql = "select * from " + logTableName + " where presentation_id = " + presentation.getId().getValue();
+      Statement innerstmt = null;
+      try {
+         
+         innerstmt = con.createStatement();
+         ResultSet rs2 = innerstmt.executeQuery(sql);
+         try {
+            while (rs2.next()) {
+
+               String id = rs2.getString("id");
+               String viewer = rs2.getString("viewer_id");
+               Date viewed = rs2.getDate("view_date");
+               
+               PresentationLog log = new PresentationLog();
+               log.setId(idManager.getId(id));
+               log.setViewer(agentManager.getAgent(idManager.getId(viewer)));
+               log.setViewDate(viewed);
+               log.setPresentation(presentation);
+               presentationManager.storePresentationLog(log);
+            }
+
+         } finally {
+            rs2.close();
+         } 
+      } catch (Exception e) {
+         logger.error("error selecting data with this sql: " + sql);
+         logger.error("", e);
+         throw new JobExecutionException(e);
+      } finally {
+         try {
+            innerstmt.close();
+         } catch (Exception e) {
+         }
+      }
+   }
+   
    protected String getOldTableName(String tableName)
    {
       return (String)getTableMap().get(tableName);
@@ -764,7 +977,21 @@ public class OspMigrationJob implements Job {
          StructuredArtifactDefinitionManager structuredArtifactDefinitionManager) {
       this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
    }
-   
-   
+
+   public SiteService getSiteService() {
+      return siteService;
+   }
+
+   public void setSiteService(SiteService siteService) {
+      this.siteService = siteService;
+   }
+
+   public List getAuthzToolFunctions() {
+      return authzToolFunctions;
+   }
+
+   public void setAuthzToolFunctions(List authzToolFunctions) {
+      this.authzToolFunctions = authzToolFunctions;
+   }
 
 }

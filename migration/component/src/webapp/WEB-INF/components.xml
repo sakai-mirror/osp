@@ -46,13 +46,47 @@
       		<entry key="osp_template_file_ref"><value>old_osp_template_file_ref</value></entry>
       		<entry key="osp_pres_itemdef_mimetype"><value>old_osp_pres_itemdef_mimetype</value></entry>
       		
-			<entry key="osp_matrix_tool"><value>old_osp_matrix_tool</value></entry>
+      		<entry key="osp_presentation"><value>old_osp_presentation</value></entry>
+      		<entry key="osp_presentation_comment"><value>old_osp_presentation_comment</value></entry>
+      		<entry key="osp_presentation_log"><value>old_osp_presentation_log</value></entry>
+      		<entry key="osp_presentation_item"><value>old_osp_presentation_item</value></entry>
+      		
+				<entry key="osp_matrix_tool"><value>old_osp_matrix_tool</value></entry>
       		<entry key="osp_matrix"><value>old_osp_matrix</value></entry>
       		<entry key="osp_matrix_cell"><value>old_osp_matrix_cell</value></entry>
       		
       	
       	</map>
       </property>
+      <property name="authzToolFunctions">
+      	<list>
+      		<bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.DELETE_TEMPLATE"
+      			class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+      		<bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.EDIT_TEMPLATE"
+      			class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+      		<bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.COPY_TEMPLATE"
+      			class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+      		<bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.PUBLISH_TEMPLATE"
+      			class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+      		<bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.CREATE_TEMPLATE"
+      			class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+      		<bean id="org.theospi.portfolio.presentation.PresentationFunctionConstants.EXPORT_TEMPLATE"
+      			class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+      		
+				<bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.REVIEW_MATRIX"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EVALUATE_MATRIX"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.CREATE_SCAFFOLDING"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EXPORT_SCAFFOLDING"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.USE_SCAFFOLDING"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.PUBLISH_SCAFFOLDING"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
+      	</list>
+      	</property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="authzManager"><ref bean="authzManager"/></property>
       <property name="agentManager"><ref bean="agentManager"/></property>
@@ -62,5 +96,6 @@
       </property>
       <property name="matrixManager"><ref bean="matrixManager"/></property>
       <property name="presentationManager"><ref bean="presentationManager"/></property>
+      <property name="toolManager"><ref bean="org.sakaiproject.tool.api.ActiveToolManager"/></property>
    </bean>
 </beans>
