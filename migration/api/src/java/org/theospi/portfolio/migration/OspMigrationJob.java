@@ -25,14 +25,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Iterator;
 
 import javax.sql.DataSource;
 
@@ -47,14 +45,12 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
-import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.theospi.portfolio.help.model.Glossary;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.ItemDefinitionMimeType;
-import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Matrix;
@@ -303,8 +299,9 @@ public class OspMigrationJob implements Job {
                   String style_id = ""; //rs.getString("style_id");
                   
                   Scaffolding scaffolding = new Scaffolding();
-
-                  scaffolding.setId(idManager.getId(id));
+                  Id sid = idManager.getId(id);
+                  scaffolding.setId(null);
+                  scaffolding.setNewId(sid);
                   scaffolding.setOwner(agentManager.getAgent(owner));
                   scaffolding.setTitle(title);
                   scaffolding.setDescription(description);
@@ -348,7 +345,8 @@ public class OspMigrationJob implements Job {
                      
                      Criterion criterion = new Criterion();
                      
-                     criterion.setId(lid);
+                     criterion.setId(null);
+                     criterion.setNewId(lid);
                      criterion.setColor(color);
                      criterion.setTextColor(textColor);
                      criterion.setScaffolding(scaffolding);
@@ -381,7 +379,8 @@ public class OspMigrationJob implements Job {
                      
                      Level level = new Level();
 
-                     level.setId(lid);
+                     level.setId(null);
+                     level.setNewId(lid);
                      level.setColor(color);
                      level.setTextColor(textColor);
                      level.setScaffolding(scaffolding);
@@ -415,7 +414,8 @@ public class OspMigrationJob implements Job {
                      Criterion criterion = (Criterion)criteriaMap.get(criterionStr);
                      ScaffoldingCell cell = new ScaffoldingCell();
 
-                     cell.setId(cid);
+                     cell.setId(null);
+                     cell.setNewId(cid);
                      cell.setInitialStatus(initialStatus);
                      cell.setLevel(level);
                      cell.setRootCriterion(criterion);
@@ -432,8 +432,8 @@ public class OspMigrationJob implements Job {
                      scaffoldingCellMap.put(cid.getValue(), cell);
                   }
                   
-                  
-                  scaffolding = matrixManager.storeScaffolding(scaffolding);
+                  Id scaffId = (Id)matrixManager.save(scaffolding);
+                  scaffolding = matrixManager.getScaffolding(scaffId);
                   
                   
 
