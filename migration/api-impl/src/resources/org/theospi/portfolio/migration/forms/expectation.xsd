@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified">
+
+<xs:element name="expectationform">
+    <xs:complexType>
+        <xs:sequence>
+  
+            
+
+		<xs:element name="evidence" minOccurs="1" type="xs:string">
+
+               		<xs:simpleType>
+
+                  		<xs:restriction base="xs:string">
+
+                     			<xs:maxLength value="512" />
+
+                  		</xs:restriction>
+
+               		</xs:simpleType>
+
+               		<xs:annotation>
+
+                  		<xs:documentation source="ospi.label">
+					Evidence -                 
+		
+				</xs:documentation>
+
+                  		<xs:documentation source="ospi.description" />
+
+
+                  		<xs:documentation source="ospi.isRichText">true</xs:documentation>
+
+               		</xs:annotation>
+
+            	</xs:element>
+
+		
+		<xs:element name="connect" minOccurs="1" type="xs:string">
+
+               		<xs:simpleType>
+
+                  		<xs:restriction base="xs:string">
+
+                     			<xs:maxLength value="512" />
+
+                  		</xs:restriction>
+
+               		</xs:simpleType>
+
+               		<xs:annotation>
+
+                  		<xs:documentation source="ospi.label">
+					Connect - 
+					
+				</xs:documentation>
+
+                  		<xs:documentation source="ospi.description" />
+
+                  		<xs:documentation source="ospi.isRichText">true</xs:documentation>
+
+               		</xs:annotation>
+
+            	</xs:element>
+
+
+
+
+      
+        </xs:sequence>
+    </xs:complexType>
+</xs:element>
+
+</xs:schema>

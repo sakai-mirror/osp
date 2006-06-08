@@ -45,7 +45,7 @@
 
      <dependency>
        <groupId>osp</groupId>
-       <artifactId>osp-warehouse-impl</artifactId>
+       <artifactId>osp-migration-impl</artifactId>
        <version>${sakai.version}</version>
        <properties>
              <war.bundle>true</war.bundle>

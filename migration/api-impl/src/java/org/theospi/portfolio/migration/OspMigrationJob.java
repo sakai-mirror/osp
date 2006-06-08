@@ -21,13 +21,18 @@
 
 package org.theospi.portfolio.migration;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,18 +44,22 @@ import org.apache.commons.logging.LogFactory;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.portfolio.help.model.Glossary;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.shared.model.ItemDefinitionMimeType;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
@@ -60,11 +69,13 @@ import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.Criterion;
 import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.migration.model.impl.FormWrapper;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationComment;
 import org.theospi.portfolio.presentation.model.PresentationItem;
 import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
+import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.model.PresentationLog;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
@@ -72,8 +83,6 @@ import org.theospi.portfolio.presentation.model.impl.HibernatePresentationProper
 import org.theospi.portfolio.style.model.Style;
 
 /**
- * 
- *    
  *
  */
 public class OspMigrationJob implements Job {
@@ -89,9 +98,11 @@ public class OspMigrationJob implements Job {
    private PresentationManager presentationManager;
    private MatrixManager matrixManager;
    private SiteService siteService;
+   private SecurityService securityService;
    private Statement stmt;
    private Map tableMap = new HashMap();
    private List authzToolFunctions;
+   private List matrixForms;
    
    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
       logger.info("Quartz job started: "+this.getClass().getName());
@@ -106,6 +117,8 @@ public class OspMigrationJob implements Job {
          
          if(isDeveloper)
             developerClearAllTables(connection);
+         
+         //initMatrixForms();
          
          runAuthzMigration(connection, isDeveloper);
          runGlossaryMigration(connection, isDeveloper);
@@ -127,68 +140,6 @@ public class OspMigrationJob implements Job {
       }
       
       logger.info("Quartz job fininshed: "+this.getClass().getName());
-   }
-   
-   private void developerClearTables(Connection con) throws JobExecutionException
-   {
-      String sql = "";
-      try {
-         stmt = con.createStatement();
-         
-         sql = "SET FOREIGN_KEY_CHECKS=0";
-         stmt.executeUpdate(sql);
-         
-         sql = "TRUNCATE osp_authz_simple";
-         stmt.executeUpdate(sql);
-         
-         sql = "TRUNCATE osp_help_glossary";
-         stmt.executeUpdate(sql);
-         sql = "TRUNCATE osp_help_glossary_desc";
-         stmt.executeUpdate(sql);
-         
-         sql = "TRUNCATE osp_scaffolding_cell_form_defs";
-         stmt.executeUpdate(sql);
-         sql = "TRUNCATE osp_scaffolding_cell";
-         stmt.executeUpdate(sql);
-         sql = "TRUNCATE osp_scaffolding_levels";
-         stmt.executeUpdate(sql);
-         sql = "TRUNCATE osp_scaffolding_criteria";
-         stmt.executeUpdate(sql);
-         sql = "TRUNCATE osp_matrix_label";
-         stmt.executeUpdate(sql);
-         sql = "TRUNCATE osp_scaffolding";
-         stmt.executeUpdate(sql);
-
-         sql = "TRUNCATE osp_presentation_comment";
-         stmt.executeUpdate(sql);
-         sql = "TRUNCATE osp_presentation_log";
-         stmt.executeUpdate(sql);
-         sql = "TRUNCATE osp_presentation_item";
-         stmt.executeUpdate(sql);
-         sql = "TRUNCATE osp_presentation";
-         stmt.executeUpdate(sql);
-         
-         sql = "TRUNCATE osp_pres_itemdef_mimetype";
-         stmt.executeUpdate(sql);
-         sql = "TRUNCATE osp_presentation_item_def";
-         stmt.executeUpdate(sql);
-         sql = "TRUNCATE osp_template_file_ref";
-         stmt.executeUpdate(sql);
-         sql = "TRUNCATE osp_presentation_template";
-         stmt.executeUpdate(sql);
-         
-      } catch (Exception e) {
-         logger.error("error truncating data with this sql: " + sql);
-         logger.error("", e);
-         throw new JobExecutionException(e);
-     } finally {
-         try {
-            sql = "SET FOREIGN_KEY_CHECKS=1";
-            stmt.executeUpdate(sql);
-             stmt.close();
-         } catch (Exception e) {
-         }
-     }
    }
    
    private void developerClearAllTables(Connection con) throws JobExecutionException
@@ -233,6 +184,86 @@ public class OspMigrationJob implements Job {
          } catch (Exception e) {
          }
      }
+   }
+   
+   protected void initMatrixForms() {
+      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+
+      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+      String userId = sakaiSession.getUserId();
+      sakaiSession.setUserId("admin");
+      sakaiSession.setUserEid("admin");
+      List forms = new ArrayList();
+
+      try {
+         for (Iterator i=getMatrixForms().iterator();i.hasNext();) {
+            forms.add(processDefinedForm((FormWrapper)i.next()));
+         }
+
+         for (Iterator i=forms.iterator();i.hasNext();) {
+            StructuredArtifactDefinitionBean form = (StructuredArtifactDefinitionBean) i.next();
+            structuredArtifactDefinitionManager.save(form);
+         }
+
+      } finally {
+         getSecurityService().popAdvisor();
+         sakaiSession.setUserEid(userId);
+         sakaiSession.setUserId(userId);
+      }
+
+   }
+   
+   protected StructuredArtifactDefinitionBean processDefinedForm(FormWrapper wrapper) {
+      StructuredArtifactDefinitionBean form = structuredArtifactDefinitionManager.loadHome(getIdManager().getId(wrapper.getIdValue()));
+
+      if (form == null) {
+         form = new StructuredArtifactDefinitionBean();
+         form.setCreated(new Date());
+         form.setNewId(getIdManager().getId(wrapper.getIdValue()));
+         //TODO This probably wont keep the id yet until we switch id generators
+      }
+
+      updateForm(wrapper, form);
+      return form;
+   }
+   
+   protected void updateForm(FormWrapper wrapper, StructuredArtifactDefinitionBean form) {
+      if (form.getId() == null) {
+         
+      }
+      
+      form.setSchema(loadResource(wrapper.getXsdFileLocation()).toByteArray());
+      form.setModified(new Date());
+      form.setDescription(wrapper.getDescription());
+      form.setGlobalState(StructuredArtifactDefinitionBean.STATE_PUBLISHED);
+      form.setSiteState(StructuredArtifactDefinitionBean.STATE_UNPUBLISHED);
+      form.setSiteId(null);
+      form.setOwner(getAgentManager().getAgent("admin"));
+   }
+   
+   protected ByteArrayOutputStream loadResource(String name) {
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      InputStream is = getClass().getResourceAsStream(name);
+
+      try {
+         int c = is.read();
+         while (c != -1) {
+            bos.write(c);
+            c = is.read();
+         }
+         bos.flush();
+      }
+      catch (IOException e) {
+         throw new RuntimeException(e);
+      } finally {
+         try {
+            is.close();
+         }
+         catch (IOException e) {
+            // can't do anything now..
+         }
+      }
+      return bos;
    }
    
    protected void runAuthzMigration(Connection con, boolean isDeveloper) throws JobExecutionException {
@@ -1086,6 +1117,22 @@ public class OspMigrationJob implements Job {
 
    public void setAuthzToolFunctions(List authzToolFunctions) {
       this.authzToolFunctions = authzToolFunctions;
+   }
+
+   public List getMatrixForms() {
+      return matrixForms;
+   }
+
+   public void setMatrixForms(List matrixForms) {
+      this.matrixForms = matrixForms;
+   }
+
+   public SecurityService getSecurityService() {
+      return securityService;
+   }
+
+   public void setSecurityService(SecurityService securityService) {
+      this.securityService = securityService;
    }
 
 }

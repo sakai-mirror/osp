@@ -86,7 +86,33 @@
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.PUBLISH_SCAFFOLDING"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
       	</list>
-      	</property>
+      </property>
+      <property name="matrixForms">
+         <list>
+            <bean class="org.theospi.portfolio.migration.model.impl.FormWrapper">
+               <property name="idValue"><value>expectationForm</value></property>
+               <property name="description"><value>Expectation</value></property>
+               <property name="documentRoot"><value>expectationform</value></property>
+               <property name="xsdFileLocation">
+                  <value>/org/theospi/portfolio/migration/formse/expectation.xsd</value>
+               </property>
+               <property name="siteId"><value></value></property>
+               <property name="externalType"><value></value></property>
+               <property name="instruction"><value></value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.migration.model.impl.FormWrapper">
+               <property name="idValue"><value>intellectualGrowthForm</value></property>
+               <property name="description"><value>Two Column Layout File</value></property>
+               <property name="documentRoot"><value>intellectualgrowthform</value></property>
+               <property name="xsdFileLocation">
+                  <value>/org/theospi/portfolio/migration/forms/intellectualgrowth.xsd</value>
+               </property>
+               <property name="siteId"><value></value></property>
+               <property name="externalType"><value></value></property>
+               <property name="instruction"><value></value></property>
+            </bean>
+         </list>
+      </property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="authzManager"><ref bean="authzManager"/></property>
       <property name="agentManager"><ref bean="agentManager"/></property>
@@ -97,5 +123,8 @@
       <property name="matrixManager"><ref bean="matrixManager"/></property>
       <property name="presentationManager"><ref bean="presentationManager"/></property>
       <property name="siteService"><ref bean="org.sakaiproject.site.api.SiteService"/></property>
+      <property name="securityService">
+         <ref bean="org.sakaiproject.authz.api.SecurityService"/>
+      </property>
    </bean>
 </beans>
