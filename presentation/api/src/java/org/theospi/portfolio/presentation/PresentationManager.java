@@ -53,7 +53,8 @@ import org.theospi.portfolio.shared.model.Node;
 public interface PresentationManager extends CleanupableService {
 
    public PresentationTemplate storeTemplate(PresentationTemplate template);
-
+   public PresentationTemplate storeTemplate(PresentationTemplate template, boolean checkAuthz, boolean updateDates);
+   
    public boolean deletePresentationTemplate(Id id);
    public void deletePresentationLayout(Id id);
 
@@ -67,7 +68,8 @@ public interface PresentationManager extends CleanupableService {
    public Presentation getLightweightPresentation(Id id);
 
    public Presentation storePresentation(Presentation presentation);
-
+   public Presentation storePresentation(Presentation presentation, boolean checkAuthz, boolean updateDates);
+   
    public void deletePresentation(Id presentation);
 
    public PresentationItem getPresentationItem(Id itemDef);
@@ -148,6 +150,7 @@ public interface PresentationManager extends CleanupableService {
    public Collection findPresentationsByViewer(Agent viewer, String toolId);
 
    public void createComment(PresentationComment comment);
+   public void createComment(PresentationComment comment, boolean checkAuthz, boolean updateDates);
 
    public List getPresentationComments(Id presentationId, Agent viewer);
 

@@ -104,16 +104,22 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private static final String SYSTEM_COLLECTION_ID = "/system/";
 
    public PresentationTemplate storeTemplate(final PresentationTemplate template) {
-      return storeTemplate(template, true);
+      return storeTemplate(template, true, true);
    }
 
    protected PresentationTemplate storeTemplate(final PresentationTemplate template, boolean checkAuthz) {
-      template.setModified(new Date(System.currentTimeMillis()));
+      return storeTemplate(template, checkAuthz, true);
+   }
+   
+   public PresentationTemplate storeTemplate(final PresentationTemplate template, boolean checkAuthz, boolean updateDates) {
+      if (updateDates || template.getModified() == null)
+         template.setModified(new Date(System.currentTimeMillis()));
 
       boolean newTemplate = (template.getId() == null);
 
       if (newTemplate || template.isNewObject()) {
-         template.setCreated(new Date(System.currentTimeMillis()));
+         if (updateDates || template.getCreated() == null)
+            template.setCreated(new Date(System.currentTimeMillis()));
 
          if (checkAuthz) {
             getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_TEMPLATE,
@@ -128,8 +134,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
 
       if (template.isNewObject() || newTemplate) {
-         template.setNewId(template.getId());
-         template.setId(null);
+         if (template.getId() != null) {
+            template.setNewId(template.getId());
+            template.setId(null);
+         }
          getHibernateTemplate().save(template);
          template.setNewObject(false);
       }
@@ -514,10 +522,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
     * @param presentation
     * @return
     */
-   public Presentation storePresentation(Presentation presentation) {
-
-      presentation.setModified(new Date(System.currentTimeMillis()));
-      presentation.setSiteId(ToolManager.getCurrentPlacement().getContext());
+   public Presentation storePresentation(Presentation presentation, boolean checkAuthz, boolean updateDates) {
+      if (updateDates || presentation.getModified() == null)
+         presentation.setModified(new Date(System.currentTimeMillis()));
+      
+      if (presentation.getSiteId() == null || presentation.getSiteId().equals(""))
+         presentation.setSiteId(ToolManager.getCurrentPlacement().getContext());
+      
       setupPresItemDefinition(presentation);
 
       if (presentation.getOwner() == null) {
@@ -525,22 +536,33 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
 
       if (presentation.isNewObject()) {
-         presentation.setCreated(new Date(System.currentTimeMillis()));
-         getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
-            getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
+         if (updateDates || presentation.getCreated() == null)
+            presentation.setCreated(new Date(System.currentTimeMillis()));
+         
+         if (checkAuthz)
+            getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
+                  getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
          //getHibernateTemplate().save(presentation, presentation.getId());
-         presentation.setNewId(presentation.getId());
-         presentation.setId(null);
+         
+         if (presentation.getId() != null) {
+            presentation.setNewId(presentation.getId());
+            presentation.setId(null);
+         }
          getHibernateTemplate().save(presentation);
       } else {
-         getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
-            presentation.getId());
+         if (checkAuthz)
+            getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
+                  presentation.getId());
          getHibernateTemplate().merge(presentation);
       }
 
       storePresentationPages(presentation.getPages(), presentation.getId());
 
       return presentation;
+   }
+   
+   public Presentation storePresentation(Presentation presentation) {
+      return storePresentation(presentation, true, true);
    }
 
    protected void setupPresItemDefinition(Presentation presentation) {
@@ -705,11 +727,19 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    public void createComment(PresentationComment comment) {
-      getAuthzManager().checkPermission(PresentationFunctionConstants.COMMENT_PRESENTATION,
-         comment.getPresentationId());
+      createComment(comment, true, true);
+   }
+   
+   public void createComment(PresentationComment comment, boolean checkAuthz, boolean updateDates) {
+      if (checkAuthz)
+         getAuthzManager().checkPermission(PresentationFunctionConstants.COMMENT_PRESENTATION,
+               comment.getPresentationId());
 
-      comment.setCreated(new Date(System.currentTimeMillis()));
-      comment.setCreator(getAuthnManager().getAgent());
+      if (updateDates || comment.getCreated() == null)
+         comment.setCreated(new Date(System.currentTimeMillis()));
+      
+      if (comment.getCreator() == null)
+         comment.setCreator(getAuthnManager().getAgent());
 
       getHibernateTemplate().save(comment);
    }

@@ -33,7 +33,7 @@
 
    <class name="PresentationItemDefinition" table="osp_presentation_item_def">
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="name" type="string" column="name" not-null="false"/>
       <property name="title" type="string" column="title" not-null="false"/>
@@ -54,7 +54,7 @@
 
    <class name="TemplateFileRef" table="osp_template_file_ref">
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="fileId" column="file_id" length="36" />
       <property name="fileType" column="file_type_id" length="36" />
@@ -100,7 +100,7 @@
 
    <class name="PresentationComment" table="osp_presentation_comment">
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="title" type="string" column="title" not-null="true"/>
       <property name="comment" column="commentText" length="1024" not-null="false"/>
@@ -114,7 +114,7 @@
 
    <class name="PresentationLog" table="osp_presentation_log">
       <id name="id" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="id">
-         <generator class="org.sakaiproject.metaobj.shared.IdGenerator"/>
+         <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="viewer" column="viewer_id" not-null="true"
          type="org.sakaiproject.metaobj.shared.mgt.AgentUserType"/>

@@ -44,6 +44,7 @@ import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.site.api.ToolConfiguration;
@@ -107,9 +108,9 @@ public class OspMigrationJob implements Job {
          if(isDeveloper)
             developerClearAllTables(connection);
          
-         //runAuthzMigration(connection, isDeveloper);
+         runAuthzMigration(connection, isDeveloper);
          runGlossaryMigration(connection, isDeveloper);
-         runMatrixMigration(connection, isDeveloper);
+         //runMatrixMigration(connection, isDeveloper);
          runPresentationTemplateMigration(connection, isDeveloper);
          runPresentationMigration(connection, isDeveloper);
       } catch (SQLException e) {
@@ -193,6 +194,7 @@ public class OspMigrationJob implements Job {
    
    private void developerClearAllTables(Connection con) throws JobExecutionException
    {
+      logger.info("Quartz task started: developerClearAllTables()");
       String sql = "";
       try {
          stmt = con.createStatement();
@@ -224,7 +226,8 @@ public class OspMigrationJob implements Job {
          logger.error("", e);
          throw new JobExecutionException(e);
      } finally {
-         try {
+        logger.info("Quartz task finished: developerClearAllTables()");        
+        try {
             sql = "SET FOREIGN_KEY_CHECKS=1";
             stmt.executeUpdate(sql);
              stmt.close();
@@ -586,10 +589,11 @@ public class OspMigrationJob implements Job {
                   Date created = rs.getDate("created");
                   Date modified = rs.getDate("modified");
                   String siteId = rs.getString("site_id");
-                  
+                  Id tid = idManager.getId(id);
                   
                   PresentationTemplate template = new PresentationTemplate();
-                  template.setId(idManager.getId(id));
+                  template.setId(null);
+                  template.setNewId(tid);
                   template.setName(name);
                   template.setDescription(desc);
                   template.setIncludeHeaderAndFooter(includeHeaderAndFooter);
@@ -611,7 +615,7 @@ public class OspMigrationJob implements Job {
                   template.setFiles(fileRefs);
                   
                   
-                  presentationManager.storeTemplate(template);
+                  presentationManager.storeTemplate(template, false, false);
                   
                }
            } finally {
@@ -653,10 +657,12 @@ public class OspMigrationJob implements Job {
                   Date modified = rs.getDate("modified");
                   //Blob properties = rs.getBlob("properties");
                   String toolId = rs.getString("tool_id");
-                  
+                  Id pid = idManager.getId(id);
                   
                   Presentation presentation = new Presentation();
-                  presentation.setId(idManager.getId(id));
+                  presentation.setNewObject(true);
+                  presentation.setId(null);
+                  presentation.setNewId(pid);
                   presentation.setName(name);
                   presentation.setDescription(desc);
                   presentation.setIsDefault(isDefault);
@@ -669,7 +675,14 @@ public class OspMigrationJob implements Job {
                   
                   //TODOCWM What about the new comment functionality?
                   
-                  String siteId = siteService.findTool(toolId).getContext();
+                  String siteId = "";
+                  try {
+                     siteId = siteService.findTool(toolId).getContext();
+                  } catch (NullPointerException npe) {
+                     logger.warn("Quartz task warning: runPresentationMigration().  Can't find context for toolId: " + toolId);
+                     siteId = "dataMigrationError";
+                  }
+                  
                   presentation.setSiteId(siteId);
                   
                   HibernatePresentationProperties hpp = new HibernatePresentationProperties();
@@ -682,7 +695,7 @@ public class OspMigrationJob implements Job {
                   Set items = createPresentationItems(con, presentation);
                   presentation.setItems(items);
                   
-                  presentationManager.storePresentation(presentation);
+                  presentationManager.storePresentation(presentation, false, false);
                   
                   createPresentationComments(con, presentation);
                   createPresentationLogs(con, presentation);
@@ -707,7 +720,7 @@ public class OspMigrationJob implements Job {
    protected Set createTemplateItemDefs(Connection con, PresentationTemplate template) throws JobExecutionException {
       Set itemDefs = new HashSet();
       String itemDefTableName = getOldTableName("osp_presentation_item_def");
-      String sql = "select * from " + itemDefTableName + " where template_id = " + template.getId().getValue();
+      String sql = "select * from " + itemDefTableName + " where template_id = '" + resolveId(template).getValue() + "'";
       Statement innerstmt = null;
       try {
          
@@ -726,9 +739,10 @@ public class OspMigrationJob implements Job {
                int seq = rs2.getInt("sequence_no");
                //String templateId = rs2.getString("template_id");
                
-               
+               Id defid = idManager.getId(id);
                PresentationItemDefinition pid = new PresentationItemDefinition();
-               pid.setId(idManager.getId(id));
+               pid.setId(null);
+               pid.setNewId(defid);
                pid.setName(name);
                pid.setTitle(title);
                pid.setDescription(description);
@@ -762,7 +776,7 @@ public class OspMigrationJob implements Job {
    protected Set createTemplateFileRefs(Connection con, PresentationTemplate template) throws JobExecutionException {
       Set fileRefs = new HashSet();
       String fileRefTableName = getOldTableName("osp_template_file_ref");
-      String sql = "select * from " + fileRefTableName + " where template_id = " + template.getId().getValue();
+      String sql = "select * from " + fileRefTableName + " where template_id = '" + resolveId(template).getValue() + "'";
       Statement innerstmt = null;
       try {
          
@@ -777,9 +791,10 @@ public class OspMigrationJob implements Job {
                String usage = rs2.getString("usage_desc");
                //String templateId = rs2.getString("template_id");
                
-               
+               Id refid = idManager.getId(id);
                TemplateFileRef tfr = new TemplateFileRef();
-               tfr.setId(idManager.getId(id));
+               tfr.setId(null);
+               tfr.setNewId(refid);
                tfr.setFileId(fileId);
                tfr.setFileType(fileTypeId);
                tfr.setUsage(usage);
@@ -808,7 +823,7 @@ public class OspMigrationJob implements Job {
    protected Set createTemplateItemDefMimeTypes(Connection con, PresentationItemDefinition itemDef) throws JobExecutionException {
       Set mimeTypes = new HashSet();
       String itemDefMimeTypeTableName = getOldTableName("osp_pres_itemdef_mimetype");
-      String sql = "select * from " + itemDefMimeTypeTableName + " where item_def_id = " + itemDef.getId().getValue();
+      String sql = "select * from " + itemDefMimeTypeTableName + " where item_def_id = '" + resolveId(itemDef).getValue() + "'";
       Statement innerstmt = null;
       try {
          
@@ -844,7 +859,7 @@ public class OspMigrationJob implements Job {
    protected Set createPresentationItems(Connection con, Presentation presentation) throws JobExecutionException {
       Set items = new HashSet();
       String itemTableName = getOldTableName("osp_presentation_item");
-      String sql = "select * from " + itemTableName + " where presentation_id = " + presentation.getId().getValue();
+      String sql = "select * from " + itemTableName + " where presentation_id = '" + resolveId(presentation).getValue() + "'";
       Statement innerstmt = null;
       try {
          
@@ -881,7 +896,7 @@ public class OspMigrationJob implements Job {
    
    protected void createPresentationComments(Connection con, Presentation presentation) throws JobExecutionException {
       String commentTableName = getOldTableName("osp_presentation_comment");
-      String sql = "select * from " + commentTableName + " where presentation_id = " + presentation.getId().getValue();
+      String sql = "select * from " + commentTableName + " where presentation_id = '" + resolveId(presentation).getValue() + "'";
       Statement innerstmt = null;
       try {
          
@@ -897,15 +912,17 @@ public class OspMigrationJob implements Job {
                byte visibility = rs2.getByte("visibility");
                Date created = rs2.getDate("created");
                
+               Id cid = idManager.getId(id);
                PresentationComment comment = new PresentationComment();
-               comment.setId(idManager.getId(id));
+               comment.setId(null);
+               comment.setNewId(cid);
                comment.setTitle(title);
                comment.setComment(commentText);
                comment.setCreator(agentManager.getAgent(idManager.getId(owner)));
                comment.setPresentation(presentation);
                comment.setVisibility(visibility);
                comment.setCreated(created);
-               presentationManager.createComment(comment);
+               presentationManager.createComment(comment, false, false);
             }
 
          } finally {
@@ -925,7 +942,7 @@ public class OspMigrationJob implements Job {
    
    protected void createPresentationLogs(Connection con, Presentation presentation) throws JobExecutionException {
       String logTableName = getOldTableName("osp_presentation_log");
-      String sql = "select * from " + logTableName + " where presentation_id = " + presentation.getId().getValue();
+      String sql = "select * from " + logTableName + " where presentation_id = '" + resolveId(presentation).getValue()  +"'";
       Statement innerstmt = null;
       try {
          
@@ -938,8 +955,10 @@ public class OspMigrationJob implements Job {
                String viewer = rs2.getString("viewer_id");
                Date viewed = rs2.getDate("view_date");
                
+               Id lid = idManager.getId(id);
                PresentationLog log = new PresentationLog();
-               log.setId(idManager.getId(id));
+               log.setId(null);
+               log.setNewId(lid);
                log.setViewer(agentManager.getAgent(idManager.getId(viewer)));
                log.setViewDate(viewed);
                log.setPresentation(presentation);
@@ -959,6 +978,12 @@ public class OspMigrationJob implements Job {
          } catch (Exception e) {
          }
       }
+   }
+   
+   private Id resolveId(IdentifiableObject obj) {
+      if (obj.getId() == null)
+         return obj.getNewId();
+      return obj.getId();
    }
    
    protected String getOldTableName(String tableName)
