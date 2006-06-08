@@ -110,7 +110,7 @@ public class OspMigrationJob implements Job {
          
          runAuthzMigration(connection, isDeveloper);
          runGlossaryMigration(connection, isDeveloper);
-         //runMatrixMigration(connection, isDeveloper);
+         runMatrixMigration(connection, isDeveloper);
          runPresentationTemplateMigration(connection, isDeveloper);
          runPresentationMigration(connection, isDeveloper);
       } catch (SQLException e) {
@@ -515,34 +515,39 @@ public class OspMigrationJob implements Job {
 
                   String lastOwner = "";
                   Matrix matrix = null;
+                  boolean badCell = false;
                   while (rss.next()) {
 
                      String mowner = rss.getString("owner");
                      String status = rss.getString("status");
                      String scaffolding_cell_id = rss.getString("scaffolding_cell_id");
                      
-                     if(!owner.equals(lastOwner)) {
-                        lastOwner = owner;
-                        if(matrix != null)
+                     if(!mowner.equals(lastOwner)) {
+                        lastOwner = mowner;
+                        if(matrix != null && !badCell)
                            matrixManager.save(matrix);
+                        
+                        badCell = false;
                         matrix = new Matrix();
                         
                         matrix.setOwner(agentManager.getAgent(mowner));
                         matrix.setScaffolding(scaffolding);
                      }
-
-                     ScaffoldingCell sCell = (ScaffoldingCell)scaffoldingCellMap.get(scaffolding_cell_id);
+                     badCell = scaffolding_cell_id == null;
                      
-                     Cell cell = new Cell();
-                     cell.getWizardPage().setOwner(matrix.getOwner());
-                     cell.setScaffoldingCell(sCell);
-                     cell.setStatus(status);
-                     
-                     matrix.add(cell);
+                     if(!badCell) {
+                        ScaffoldingCell sCell = (ScaffoldingCell)scaffoldingCellMap.get(scaffolding_cell_id);
+                        
+                        Cell cell = new Cell();
+                        cell.getWizardPage().setOwner(matrix.getOwner());
+                        cell.setScaffoldingCell(sCell);
+                        cell.setStatus(status);
+                        
+                        matrix.add(cell);
+                     }
                   }
                   
-                  
-                  if(matrix != null)
+                  if(matrix != null && !badCell)
                      matrixManager.save(matrix);
                   
                   
