@@ -73,8 +73,7 @@ import org.theospi.portfolio.style.model.Style;
 
 /**
  * 
- *    TODO:  
- *       the authorization needs to convertion from tool to site for things that have switched
+ *    
  *
  */
 public class OspMigrationJob implements Job {
@@ -250,7 +249,7 @@ public class OspMigrationJob implements Job {
                   String qual = rs.getString("qualifier_id");
                   String agent = rs.getString("agent_id");
                   String func = rs.getString("function_name");
-                  //TODOCWM: Do transformations on the authz stuff that needs to 
+                  // Transformations on the authz stuff that needs to 
                   // change from a tool_id to a site_id
                   try {
                      if (getAuthzToolFunctions().contains(func)) {
@@ -677,9 +676,7 @@ public class OspMigrationJob implements Job {
                   presentation.setCreated(created);
                   presentation.setModified(modified);
                   presentation.setToolId(toolId);
-                  
-                  //TODOCWM What about the new comment functionality?
-                  
+                                    
                   String siteId = "";
                   try {
                      siteId = siteService.findTool(toolId).getContext();
@@ -695,7 +692,11 @@ public class OspMigrationJob implements Job {
                   Object props = hpp.nullSafeGet(rs, names, null);
                   presentation.setProperties((ElementBean)props);
                   presentation.setPresentationType(Presentation.TEMPLATE_TYPE);
-                  presentation.setTemplate(presentationManager.getPresentationTemplate(idManager.getId(templateId)));
+                  PresentationTemplate template = 
+                     presentationManager.getPresentationTemplate(idManager.getId(templateId));
+                  presentation.setTemplate(template);
+                  
+                  presentation.setAllowComments(template.isIncludeComments());
                   
                   Set items = createPresentationItems(con, presentation);
                   presentation.setItems(items);
