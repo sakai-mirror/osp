@@ -105,10 +105,10 @@ public class OspMigrationJob implements Job {
          connection = getDataSource().getConnection();
          
          if(isDeveloper)
-            developerClearTables(connection);
+            developerClearAllTables(connection);
          
          //runAuthzMigration(connection, isDeveloper);
-         //runGlossaryMigration(connection, isDeveloper);
+         runGlossaryMigration(connection, isDeveloper);
          runMatrixMigration(connection, isDeveloper);
          runPresentationTemplateMigration(connection, isDeveloper);
          runPresentationMigration(connection, isDeveloper);
@@ -135,10 +135,17 @@ public class OspMigrationJob implements Job {
       try {
          stmt = con.createStatement();
          
+         sql = "SET FOREIGN_KEY_CHECKS=0";
+         stmt.executeUpdate(sql);
+         
+         sql = "TRUNCATE osp_authz_simple";
+         stmt.executeUpdate(sql);
+         
          sql = "TRUNCATE osp_help_glossary";
          stmt.executeUpdate(sql);
          sql = "TRUNCATE osp_help_glossary_desc";
          stmt.executeUpdate(sql);
+         
          sql = "TRUNCATE osp_scaffolding_cell_form_defs";
          stmt.executeUpdate(sql);
          sql = "TRUNCATE osp_scaffolding_cell";
@@ -151,6 +158,16 @@ public class OspMigrationJob implements Job {
          stmt.executeUpdate(sql);
          sql = "TRUNCATE osp_scaffolding";
          stmt.executeUpdate(sql);
+
+         sql = "TRUNCATE osp_presentation_comment";
+         stmt.executeUpdate(sql);
+         sql = "TRUNCATE osp_presentation_log";
+         stmt.executeUpdate(sql);
+         sql = "TRUNCATE osp_presentation_item";
+         stmt.executeUpdate(sql);
+         sql = "TRUNCATE osp_presentation";
+         stmt.executeUpdate(sql);
+         
          sql = "TRUNCATE osp_pres_itemdef_mimetype";
          stmt.executeUpdate(sql);
          sql = "TRUNCATE osp_presentation_item_def";
@@ -161,11 +178,55 @@ public class OspMigrationJob implements Job {
          stmt.executeUpdate(sql);
          
       } catch (Exception e) {
-         logger.error("error selecting data with this sql: " + sql);
+         logger.error("error truncating data with this sql: " + sql);
          logger.error("", e);
          throw new JobExecutionException(e);
      } finally {
          try {
+            sql = "SET FOREIGN_KEY_CHECKS=1";
+            stmt.executeUpdate(sql);
+             stmt.close();
+         } catch (Exception e) {
+         }
+     }
+   }
+   
+   private void developerClearAllTables(Connection con) throws JobExecutionException
+   {
+      String sql = "";
+      try {
+         stmt = con.createStatement();
+         Statement innerstmt = con.createStatement();
+         
+         sql = "SET FOREIGN_KEY_CHECKS=0";
+         stmt.executeUpdate(sql);
+         
+         sql = "show tables like 'osp_%'";
+         ResultSet rs = stmt.executeQuery(sql);
+         try {
+            while (rs.next()) {
+               String tableName = rs.getString(1);
+               sql = "TRUNCATE " + tableName;
+               innerstmt.executeUpdate(sql);
+            }
+         }
+         finally {
+            try {
+               innerstmt.close();
+               rs.close();
+            } catch (Exception e) {
+            }
+         }
+         
+         
+      } catch (Exception e) {
+         logger.error("error truncating data with this sql: " + sql);
+         logger.error("", e);
+         throw new JobExecutionException(e);
+     } finally {
+         try {
+            sql = "SET FOREIGN_KEY_CHECKS=1";
+            stmt.executeUpdate(sql);
              stmt.close();
          } catch (Exception e) {
          }
