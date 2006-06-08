@@ -519,6 +519,7 @@ public class OspMigrationJob implements Job {
                      String scaffolding_cell_id = rss.getString("scaffolding_cell_id");
                      
                      if(!owner.equals(lastOwner)) {
+                        lastOwner = owner;
                         if(matrix != null)
                            matrixManager.save(matrix);
                         matrix = new Matrix();
