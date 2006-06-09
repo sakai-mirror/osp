@@ -181,7 +181,7 @@ public class OspMigrationJob implements Job {
       
       String name = "cwm test form";
       String description = "testing programatic creation of a form";
-      String folder = "/user/admin";
+      String folder = "/user/admin/";
       String type = "application/x-osp";
       try {
          ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
