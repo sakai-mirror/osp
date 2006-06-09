@@ -2,9 +2,9 @@
 
 <project xmlns:j="jelly:core"
 	xmlns:ant="jelly:ant">
-
+	
+<!-- This was for the maven hibernate plugin which doesn't work with hibernate 3
    <goal name="osp_ddl">
-<!--       <j:set var="maven.hibernate.properties" value="/java/apache-tomcat-5.5.16/sakai/sakai.properties" /> -->
       <j:set var="maven.hibernate.properties" value="ddl.properties" />
       <j:set var="maven.hibernate.text" value="true" />
       <j:set var="maven.hibernate.delimiter" value=";" />
@@ -15,15 +15,12 @@
 
       <attainGoal name="hibernate:schema-export" />
    </goal>
+   -->
    
-	<goal name="osp-schema">
+	<goal name="schemagen">
 		<!-- Skip the tests -->
 		<j:set var="maven.test.skip" value="true" />
 
-		<!-- Run the non-db tests first, so all of the test classes and mappings are available in ${maven.build.dest} -->
-	 <!-- 
-	 <attainGoal name="test:test" />
-	  -->
 		<j:set var="maven.hibernate.properties" value="ddl.properties" />
 		<j:set var="hibernate.hbm2ddl.auto" value="create" />
 		<j:set var="maven.hibernate.delimiter" value=";" />
@@ -37,8 +34,6 @@
 		<!--
 		<attainGoal name="hibernate:schema-export" />
 		-->
-		
-		 <echo message="Basedir ${basedir}"/>
 		 
 		<ant:path id="schemaexport.classpath">
 			<ant:path refid="maven.dependency.classpath" />
