@@ -33,7 +33,7 @@ public class Attachment {
    Id id;
    Id artifactId;
    WizardPage wizardPage;
-   Set attachmentCriteria = new HashSet();
+   //Set attachmentCriteria = new HashSet();
 
    /**
     * @return Returns the artifactId.
@@ -80,15 +80,15 @@ public class Attachment {
    /**
     * @return Returns the attachmentCriteria.
     */
-   public Set getAttachmentCriteria() {
-      return attachmentCriteria;
-   }
+   //public Set getAttachmentCriteria() {
+   //   return attachmentCriteria;
+   //}
    /**
     * @param attachmentCriteria The attachmentCriteria to set.
     */
-   public void setAttachmentCriteria(Set attachmentCriteria) {
-      this.attachmentCriteria = attachmentCriteria;
-   }
+   //public void setAttachmentCriteria(Set attachmentCriteria) {
+   //   this.attachmentCriteria = attachmentCriteria;
+   //}
    
    /* (non-Javadoc)
     * @see java.lang.Object#equals(java.lang.Object)

@@ -470,7 +470,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       WizardPage page = (WizardPage) this.getHibernateTemplate().get(WizardPage.class, pageId);
       for (Iterator i=page.getAttachments().iterator();i.hasNext();) {
          Attachment a = (Attachment) i.next();
-         a.getAttachmentCriteria().size();
+      //   a.getAttachmentCriteria().size();
       }
 
       for (Iterator i=page.getPageForms().iterator();i.hasNext();) {

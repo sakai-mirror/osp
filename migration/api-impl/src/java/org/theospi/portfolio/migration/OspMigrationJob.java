@@ -66,17 +66,19 @@ import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.cover.SessionManager;
-import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
+import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.help.model.Glossary;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.shared.model.ItemDefinitionMimeType;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.model.Attachment;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
@@ -122,8 +124,9 @@ public class OspMigrationJob implements Job {
    private List matrixForms;
    
    private Map userUniquenessMap;
-
-   private static final String MIGRATED_FOLDER = "/migratedMatrixForms/";
+   
+   private static final String MIGRATED_FOLDER = "migratedMatrixForms";
+   private static final String MIGRATED_FOLDER_PATH = "/" + MIGRATED_FOLDER + "/";
    private static final String EXPECTATION_FORM_ID_VALUE = "expectationForm";
    private static final String INTELLECTUAL_GROWTH_FORM_ID_VALUE = "intellectualGrowthForm";
    private static final String FEEDBACK_FORM_ID_VALUE = "feedbackForm";
@@ -184,8 +187,6 @@ public class OspMigrationJob implements Job {
    }
    
    private Id saveForm(String owner, String name, byte[] fileContent, String formType) {
-      //This should be a feedback form...
-      
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
 
       org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
@@ -199,7 +200,7 @@ public class OspMigrationJob implements Job {
 
       try {
          ContentCollectionEdit groupCollection = getContentHosting().addCollection(folder);
-         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "Folder for Migrated Matrix Forms");
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, owner);
          getContentHosting().commitCollection(groupCollection);
       }
       catch (IdUsedException e) {
@@ -209,11 +210,12 @@ public class OspMigrationJob implements Job {
          throw new RuntimeException(e);
       }
 
-      folder = "/user/" + owner + MIGRATED_FOLDER;
+      folder = "/user/" + owner + MIGRATED_FOLDER_PATH;
       
       try {
          ContentCollectionEdit groupCollection = getContentHosting().addCollection(folder);
-         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "Folder for Migrated Matrix Forms");
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, MIGRATED_FOLDER);
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DESCRIPTION, "Folder for Migrated Matrix Forms");
          getContentHosting().commitCollection(groupCollection);
       }
       catch (IdUsedException e) {
@@ -426,44 +428,88 @@ public class OspMigrationJob implements Job {
       String sql = "select * from " + tableName;
       
       try {
-            stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            try {
-               while (rs.next()) {
-                  //String id = rs.getString("id");
-                  String qual = rs.getString("qualifier_id");
-                  String agent = rs.getString("agent_id");
-                  String func = rs.getString("function_name");
-                  // Transformations on the authz stuff that needs to 
-                  // change from a tool_id to a site_id
-                  try {
-                     if (getAuthzToolFunctions().contains(func)) {
-                        ToolConfiguration toolConfig = siteService.findTool(qual);
-                        if (toolConfig != null) {
-                           qual = toolConfig.getContext();
-                        }
+         stmt = con.createStatement();
+         ResultSet rs = stmt.executeQuery(sql);
+         try {
+            while (rs.next()) {
+               //String id = rs.getString("id");
+               String qual = rs.getString("qualifier_id");
+               String agent = rs.getString("agent_id");
+               String func = rs.getString("function_name");
+               // Transformations on the authz stuff that needs to 
+               // change from a tool_id to a site_id
+               try {
+                  if (getAuthzToolFunctions().contains(func)) {
+                     ToolConfiguration toolConfig = siteService.findTool(qual);
+                     if (toolConfig != null) {
+                        qual = toolConfig.getContext();
                      }
-                     
-                     authzManager.createAuthorization(agentManager.getAgent(agent), func, idManager.getId(qual));
-                  } catch(Exception e) {
-                     if(!isDeveloper)
-                        throw e;
                   }
+                  if (func.equalsIgnoreCase(MatrixFunctionConstants.REVIEW_MATRIX)) {
+                     func = MatrixFunctionConstants.EVALUATE_MATRIX;
+                  }
+                  
+                  authzManager.createAuthorization(agentManager.getAgent(agent), func, idManager.getId(qual));
+               } catch(Exception e) {
+                  if(!isDeveloper)
+                     throw e;
                }
-           } finally {
-               rs.close();
-           }
-        } catch (Exception e) {
-            logger.error("error selecting data with this sql: " + sql);
-            logger.error("", e);
-            throw new JobExecutionException(e);
-        } finally {
-            try {
-                stmt.close();
-            } catch (Exception e) {
             }
-        }
-        logger.info("Quartz task fininshed: runAuthzMigration()");
+         } finally {
+            rs.close();
+         }
+        
+         //This will create new authorizations for the review and view functions
+         sql = "select distinct ss.site_id, role_name, '" + MatrixFunctionConstants.USE_SCAFFOLDING + "' as func " + 
+               "From sakai_site_tool st, sakai_site ss, SAKAI_REALM r, sakai_realm_rl_fn rf, sakai_realm_role rr " +
+               "where st.site_id = ss.site_id " +
+               "and st.registration = 'osp.matrix' " +
+               "and realm_id = '/site/' || ss.site_id " +
+               "and r.REALM_KEY = rf.REALM_KEY " +
+               "and rf.ROLE_KEY = rr.ROLE_KEY " +
+               "and role_name in ('access', 'member', 'student') " + 
+               "union " +
+               "select distinct ss.site_id, role_name, '" + MatrixFunctionConstants.REVIEW_MATRIX + "' as func " + 
+               "From sakai_site_tool st, sakai_site ss, SAKAI_REALM r, sakai_realm_rl_fn rf, sakai_realm_role rr " +
+               "where st.site_id = ss.site_id " +
+               "and st.registration = 'osp.matrix' " +
+               "and realm_id = '/site/' || ss.site_id " +
+               "and r.REALM_KEY = rf.REALM_KEY " +
+               "and rf.ROLE_KEY = rr.ROLE_KEY " +
+               "and role_name in ('maintain', 'project owner', 'instructor');";
+      
+         stmt = con.createStatement();
+         rs = stmt.executeQuery(sql);
+         try {
+            while (rs.next()) {
+               //String id = rs.getString("id");
+               String siteId = rs.getString("site_id");
+               String role = rs.getString("role_name");
+               String func = rs.getString("func");
+
+               String agent = "/site/" + siteId + "/" + role;
+               try {
+                  authzManager.createAuthorization(agentManager.getAgent(agent), func, idManager.getId(siteId));
+               } catch(Exception e) {
+                  if(!isDeveloper)
+                     throw e;
+               }
+            }
+         } finally {
+            rs.close();
+         }
+         
+      } catch (Exception e) {
+         logger.error("error selecting data with this sql: " + sql);
+         logger.error("", e);
+         throw new JobExecutionException(e);
+      } finally {
+         try {
+             stmt.close();
+         } catch (Exception e) {
+         }
+      }        
+      logger.info("Quartz task fininshed: runAuthzMigration()");
    }
    
    protected void runGlossaryMigration(Connection con, boolean isDeveloper) throws JobExecutionException {
@@ -654,8 +700,9 @@ public class OspMigrationJob implements Job {
                   sql = "select * from " + tableName + " where scaffolding_id='" + id + "' ";
                   
                   rss = innerStmt.executeQuery(sql);
-                  
+
                   Map scaffoldingCellMap = new HashMap();
+                  Map scaffoldingCellExpheadMap = new HashMap();
 
                   while (rss.next()) {
                      Id cid = idManager.getId(rss.getString("id"));
@@ -693,6 +740,7 @@ public class OspMigrationJob implements Job {
                      
                      scaffolding.add(cell);
                      scaffoldingCellMap.put(cid.getValue(), cell);
+                     scaffoldingCellExpheadMap.put(cid.getValue(), expectationheader);
                   }
                   rss.close();
                   
@@ -704,10 +752,10 @@ public class OspMigrationJob implements Job {
                   tableName = getOldTableName("osp_scaffolding_cell");
                   tableName2 = getOldTableName("osp_expectation");
                   tableName3 = getOldTableName("osp_matrix_label");
-                  sql = "select SCAFFOLDING_CELL_ID, OLD_OSP_MATRIX_LABEL.ID, DESCRIPTION " +
+                  sql = "select SCAFFOLDING_CELL_ID, " + tableName3 + ".ID, DESCRIPTION " +
                      " FROM " + tableName +
-                        " JOIN " + tableName2 + " ON OLD_OSP_SCAFFOLDING_CELL.ID=SCAFFOLDING_CELL_ID " +
-                        " JOIN " + tableName3 + " ON ELT=OLD_OSP_MATRIX_LABEL.ID " + 
+                        " JOIN " + tableName2 + " ON " + tableName + ".ID=SCAFFOLDING_CELL_ID " +
+                        " JOIN " + tableName3 + " ON ELT=" + tableName3 + ".ID " + 
                         " where scaffolding_id='" + id + "' ORDER BY SCAFFOLDING_CELL_ID, SEQ_NUM";
 
                   rss = innerStmt.executeQuery(sql);
@@ -718,38 +766,42 @@ public class OspMigrationJob implements Job {
                      scaffoldingCellId = rss.getString("SCAFFOLDING_CELL_ID");
                      
                      if(!scaffoldingCellId.equals(lastScaffoldingCellId)) {
-                        lastScaffoldingCellId = scaffoldingCellId;
                         if(guidanceText != null) {
-                           ScaffoldingCell scell = (ScaffoldingCell)scaffoldingCellMap.get(scaffoldingCellId);
+                           ScaffoldingCell scell = (ScaffoldingCell)scaffoldingCellMap.get(lastScaffoldingCellId);
                            Guidance guide = guidanceManager.createNew(
                                  "", worksite, 
-                                 idManager.getId(scaffoldingCellId), 
-                                 "", "");
+                                 scell.getWizardPageDefinition().getId(), 
+                                 MatrixFunctionConstants.VIEW_SCAFFOLDING_GUIDANCE, 
+                                 MatrixFunctionConstants.EDIT_SCAFFOLDING_GUIDANCE);
+                           guidanceText += "</ul>";
                            guide.getInstruction().setText(guidanceText);
                            /*
                            description, idManager.getId(worksite), 
                            securityQualifier, 
                            securityViewFunction, securityEditFunction);*/
+                           guidanceManager.saveGuidance(guide);
                            scell.setGuidance(guide);
                         }
-                        guidanceText = "<ul>";
+                        lastScaffoldingCellId = scaffoldingCellId;
+                        //starts a new cell
+                        String expHeader = (String)scaffoldingCellExpheadMap.get(scaffoldingCellId);
+                        guidanceText = expHeader + "\n<ul>";
                      }
                      if(guidanceText.length() > 0)
                         guidanceText += "\n<br />";
-                     guidanceText += "<li>"  + rss.getString("DESCRIPTION") +"</li>";
+                     guidanceText += "<li>" + rss.getString("DESCRIPTION") + "</li>";
                   }
                   rss.close();
                   if(guidanceText != null) {
                      ScaffoldingCell scell = (ScaffoldingCell)scaffoldingCellMap.get(scaffoldingCellId);
                      Guidance guide = guidanceManager.createNew(
                            "", worksite, 
-                           idManager.getId(scaffoldingCellId), 
-                           "", ""); 
+                           scell.getWizardPageDefinition().getId(), 
+                           MatrixFunctionConstants.VIEW_SCAFFOLDING_GUIDANCE, 
+                           MatrixFunctionConstants.EDIT_SCAFFOLDING_GUIDANCE);
+                     guidanceText += "</ul>";
                      guide.getInstruction().setText(guidanceText);
-                     /*
-                     description, idManager.getId(worksite), 
-                     securityQualifier, 
-                     securityViewFunction, securityEditFunction);*/
+                     guidanceManager.saveGuidance(guide);
                      scell.setGuidance(guide);
                   }
                   scaffId = (Id)matrixManager.save(scaffolding);
@@ -807,6 +859,19 @@ public class OspMigrationJob implements Job {
                         cell.getWizardPage().setOwner(matrix.getOwner());
                         cell.setScaffoldingCell(sCell);
                         cell.setStatus(status);
+                        
+                        Set attachments = new HashSet();
+                        String cellAttachmentTable = getOldTableName("osp_cell_attachment");
+                        sql = "select * from " + cellAttachmentTable + " where cell_id='" + mcidStr + "'";
+                        ResultSet rsCellFiles = matrixInnerStmt.executeQuery(sql);
+                        while(rsCellFiles.next()) {
+                           String artifact = rsCellFiles.getString("artifactId");
+                           Attachment att = new Attachment();
+                           att.setArtifactId(idManager.getId(artifact));
+                           attachments.add(att);
+                        }
+                        cell.setAttachments(attachments);
+                        rsCellFiles.close();
 
                            // get the intellectual growth
                         sql = "SELECT ID, GROWTHSTATEMENT FROM " + tableName + " WHERE CELL_ID='" + mcidStr + "'";
