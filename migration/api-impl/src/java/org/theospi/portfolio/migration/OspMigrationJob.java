@@ -567,7 +567,7 @@ public class OspMigrationJob implements Job {
       
       try {
          List additionalForms = new ArrayList();
-         additionalForms.add(expectationFormId);
+         additionalForms.add(expectationFormId.getValue());
          
          Statement matrixInnerStmt = con.createStatement(),
             innerStmt = con.createStatement();
