@@ -55,6 +55,11 @@
       		<entry key="osp_matrix"><value>old_osp_matrix</value></entry>
       		<entry key="osp_matrix_cell"><value>old_osp_matrix_cell</value></entry>
       		
+      		<entry key="osp_reflection"><value>OLD_OSP_REFLECTION</value></entry>
+      		<entry key="osp_reflection_item"><value>OLD_OSP_REFLECTION_ITEM</value></entry>
+      		<entry key="osp_expectation"><value>OLD_OSP_EXPECTATION</value></entry>
+      		<entry key="osp_reviewer_item"><value>OLD_OSP_REVIEWER_ITEM</value></entry>
+      		
       	
       	</map>
       </property>
@@ -139,6 +144,7 @@
       <property name="authzManager"><ref bean="authzManager"/></property>
       <property name="agentManager"><ref bean="agentManager"/></property>
       <property name="glossaryManager"><ref bean="glossary"/></property>
+      <property name="guidanceManager"><ref bean="org.theospi.portfolio.guidance.mgt.GuidanceManager"/></property>
       <property name="structuredArtifactDefinitionManager">
          <ref bean="structuredArtifactDefinitionManager"/>
       </property>

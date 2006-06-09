@@ -166,9 +166,19 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    public void setReflectionDeviceType(String reflectionDeviceType) {
       wizardPageDefinition.setReflectionDeviceType(reflectionDeviceType);
    }
+   
+   
+   /**
+    * This is for getting the feedback/comments form id
+    * @param reviewDevice
+    */
    public Id getReviewDevice() {
       return wizardPageDefinition.getReviewDevice();
    }
+   /**
+    * This is for setting the feedback/comments form id
+    * @param reviewDevice
+    */
    public void setReviewDevice(Id reviewDevice) {
       wizardPageDefinition.setReviewDevice(reviewDevice);
    }

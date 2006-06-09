@@ -66,6 +66,8 @@ import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.theospi.portfolio.guidance.model.Guidance;
+import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.help.model.Glossary;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.portfolio.security.AuthorizationFacade;
@@ -103,6 +105,7 @@ public class OspMigrationJob implements Job {
    private AgentManager agentManager;
    private AuthorizationFacade authzManager;
    private Glossary glossaryManager;
+   private GuidanceManager guidanceManager;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private PresentationManager presentationManager;
    private MatrixManager matrixManager;
@@ -115,6 +118,11 @@ public class OspMigrationJob implements Job {
    private List matrixForms;
    
    private static final String MIGRATED_FOLDER = "/migratedMatrixForms/";
+   
+   
+   public final static String FORM_TYPE = "form";
+   
+   private Id feedbackFormId, evaluationFormId, intelGrowthFormId, expectationFormId;
    
    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
       logger.info("Quartz job started: "+this.getClass().getName());
@@ -131,14 +139,14 @@ public class OspMigrationJob implements Job {
             developerClearAllTables(connection);
          
          initMatrixForms();
-         createFeedbackForm("admin", "testform", "foobar");
-         /*
+         //createFeedbackForm("admin", "testform", "foobar");
+         
          runAuthzMigration(connection, isDeveloper);
          runGlossaryMigration(connection, isDeveloper);
          runMatrixMigration(connection, isDeveloper);
          runPresentationTemplateMigration(connection, isDeveloper);
          runPresentationMigration(connection, isDeveloper);
-         */
+         
       } catch (SQLException e) {
          logger.error("Quartz job errored: "+this.getClass().getName(), e);
          throw new JobExecutionException(e);
@@ -167,8 +175,22 @@ public class OspMigrationJob implements Job {
       sakaiSession.setUserEid(owner);
       
       String description = "";
-      String folder = "/user/" + owner + MIGRATED_FOLDER;
+      String folder = "/user/" + owner;
       String type = "application/x-osp";
+
+      try {
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection(folder);
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "Folder for Migrated Matrix Forms");
+         getContentHosting().commitCollection(groupCollection);
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
+      folder = "/user/" + owner + MIGRATED_FOLDER;
       
       try {
          ContentCollectionEdit groupCollection = getContentHosting().addCollection(folder);
@@ -472,7 +494,11 @@ public class OspMigrationJob implements Job {
       String sql = "select * from " + tableName;
       
       try {
-         Statement innerStmt = con.createStatement();
+         List additionalForms = new ArrayList();
+         additionalForms.add(expectationFormId);
+         
+         Statement matrixInnerStmt = con.createStatement(),
+            innerStmt = con.createStatement();
             stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             try {
@@ -628,12 +654,69 @@ public class OspMigrationJob implements Job {
                            + " - " + 
                            (level.getDescription() != null ? level.getDescription() : ""));
                      
+                     cell.setEvaluationDevice(evaluationFormId);
+                     cell.setEvaluationDeviceType(FORM_TYPE);
+                     cell.setReflectionDevice(intelGrowthFormId);
+                     cell.setReflectionDeviceType(FORM_TYPE);
+                     cell.setReviewDevice(feedbackFormId);
+                     cell.setReviewDeviceType(FORM_TYPE);
+                     cell.setAdditionalForms(additionalForms);
+                     
                      scaffolding.add(cell);
                      scaffoldingCellMap.put(cid.getValue(), cell);
                   }
                   
                   Id scaffId = (Id)matrixManager.save(scaffolding);
                   scaffolding = matrixManager.getScaffolding(scaffId);
+                  
+                  
+
+                  tableName = getOldTableName("osp_scaffolding_cell");
+                  tableName2 = getOldTableName("osp_expectation");
+                  tableName3 = getOldTableName("osp_matrix_label");
+                  sql = "select SCAFFOLDING_CELL_ID, OLD_OSP_MATRIX_LABEL.ID, DESCRIPTION " +
+                     " FROM " + tableName +
+                        " JOIN " + tableName2 + " ON OLD_OSP_SCAFFOLDING_CELL.ID=SCAFFOLDING_CELL_ID " +
+                        " JOIN " + tableName3 + " ON ELT=OLD_OSP_MATRIX_LABEL.ID " + 
+                        " where scaffolding_id='" + id + "' ORDER BY SCAFFOLDING_CELL_ID, SEQ_NUM";
+
+                  rss = innerStmt.executeQuery(sql);
+                  
+                  String lastScaffoldingCellId = "", guidanceText = null, scaffoldingCellId = null;
+                  
+                  while (rss.next()) {
+                     scaffoldingCellId = rss.getString("SCAFFOLDING_CELL_ID");
+                     
+                     if(!scaffoldingCellId.equals(lastScaffoldingCellId)) {
+                        lastScaffoldingCellId = scaffoldingCellId;
+                        if(guidanceText != null) {
+                           ScaffoldingCell scell = (ScaffoldingCell)scaffoldingCellMap.get(scaffoldingCellId);
+                           Guidance guide = guidanceManager.createNew(
+                                 "", worksite, 
+                                 idManager.getId(scaffoldingCellId), 
+                                 "", "");
+                           guide.getInstruction().setText(guidanceText);
+                           /*
+                           description, idManager.getId(worksite), 
+                           securityQualifier, 
+                           securityViewFunction, securityEditFunction);*/
+                           scell.setGuidance(guide);
+                        }
+                        guidanceText = "";
+                     }
+                     if(guidanceText.length() > 0)
+                        guidanceText += "\n<br />";
+                     guidanceText += rss.getString("DESCRIPTION");
+                  }
+                  if(guidanceText != null) {
+                     ScaffoldingCell scell = (ScaffoldingCell)scaffoldingCellMap.get(scaffoldingCellId);
+                     Guidance guide = guidanceManager.createNew(
+                           "", worksite, 
+                           idManager.getId(scaffoldingCellId), 
+                           "", "");
+                     guide.getInstruction().setText(guidanceText);
+                     scell.setGuidance(guide);
+                  }
                   
                   
 
@@ -649,11 +732,17 @@ public class OspMigrationJob implements Job {
                   
                   rss = innerStmt.executeQuery(sql);
 
+                  tableName = getOldTableName("osp_reflection");
+                  tableName2 = getOldTableName("osp_reflection_item");
+                  tableName3 = getOldTableName("osp_reviewer_item");
+
                   String lastOwner = "";
                   Matrix matrix = null;
                   boolean badCell = false;
                   while (rss.next()) {
 
+                     String mcidStr = rss.getString("id");
+                     Id mcid = idManager.getId(mcidStr);
                      String mowner = rss.getString("owner");
                      String status = rss.getString("status");
                      String scaffolding_cell_id = rss.getString("scaffolding_cell_id");
@@ -675,9 +764,47 @@ public class OspMigrationJob implements Job {
                         ScaffoldingCell sCell = (ScaffoldingCell)scaffoldingCellMap.get(scaffolding_cell_id);
                         
                         Cell cell = new Cell();
+                        cell.setNewId(mcid);
                         cell.getWizardPage().setOwner(matrix.getOwner());
                         cell.setScaffoldingCell(sCell);
                         cell.setStatus(status);
+
+                           // get the intellectual growth
+                        sql = "SELECT ID, GROWTHSTATEMENT FROM " + tableName + " WHERE CELL_ID='" + mcidStr + "'";
+                        ResultSet rsss = matrixInnerStmt.executeQuery(sql);
+                        if(rsss.next()) {
+                           String reflection_id = rsss.getString(1);
+                           String growth = rsss.getString(2);
+                           Id reflectionForm = createReflectionForm(matrix.getOwner().getId().getValue(), "Intellectual Growth", growth);
+                           //
+                           sql = "SELECT CONNECTTEXT, EVIDENCE FROM " + tableName2 + " WHERE REFLECTION_ID='" + reflection_id + "' ORDER BY SEQ_NUM";
+                           rsss = matrixInnerStmt.executeQuery(sql);
+                           while(rsss.next()) {
+                              String connect_text = rsss.getString("CONNECTTEXT");
+                              String evidence = rsss.getString("EVIDENCE");
+                              
+                              createExpectationForm(matrix.getOwner().getId().getValue(), "Reflection Item", evidence, connect_text);
+                           }
+                        }
+                        rsss.close();
+                        rsss.close();
+                           
+                        //
+                        sql = "SELECT ID, REVIEWER_ID, COMMENTS, GRADE, STATUS, CREATED, MODIFIED FROM " + tableName3 + " WHERE CELL_ID='" + mcidStr + "'";
+                        rsss = matrixInnerStmt.executeQuery(sql);
+                        while(rsss.next()) {
+                           String riid = rsss.getString("ID");
+                           String reviewer_id = rsss.getString("REVIEWER_ID");
+                           String comment = rsss.getString("COMMENTS");
+                           String grade = rsss.getString("GRADE");
+                           String ri_status = rsss.getString("STATUS");
+                           String ri_created = rsss.getString("CREATED");
+                           String ri_modified = rsss.getString("MODIFIED");
+
+                           Id evaluationForm = createEvaluationForm(reviewer_id, "Review", grade, comment);
+                           
+                        }
+                        rsss.close();
                         
                         matrix.add(cell);
                      }
@@ -1247,6 +1374,14 @@ public class OspMigrationJob implements Job {
 
    public void setContentHosting(ContentHostingService contentHosting) {
       this.contentHosting = contentHosting;
+   }
+
+   public GuidanceManager getGuidanceManager() {
+      return guidanceManager;
+   }
+
+   public void setGuidanceManager(GuidanceManager guidanceManager) {
+      this.guidanceManager = guidanceManager;
    }
 
 }

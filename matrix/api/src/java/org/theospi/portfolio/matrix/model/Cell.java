@@ -25,11 +25,12 @@ package org.theospi.portfolio.matrix.model;
 import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
 /**
  * @author rpembry
  */
-public class Cell {
+public class Cell extends IdentifiableObject {
 
    private Id id;
    private Matrix matrix;
