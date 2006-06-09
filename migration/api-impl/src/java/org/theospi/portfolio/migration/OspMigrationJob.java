@@ -47,24 +47,18 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.event.cover.NotificationService;
-import org.sakaiproject.exception.IdInvalidException;
-import org.sakaiproject.exception.IdLengthException;
-import org.sakaiproject.exception.IdUniquenessException;
-import org.sakaiproject.exception.InconsistentException;
-import org.sakaiproject.exception.OverQuotaException;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
@@ -91,7 +85,6 @@ import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationComment;
 import org.theospi.portfolio.presentation.model.PresentationItem;
 import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
-import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.model.PresentationLog;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
@@ -121,6 +114,8 @@ public class OspMigrationJob implements Job {
    private List authzToolFunctions;
    private List matrixForms;
    
+   private static final String MIGRATED_FOLDER = "/migratedMatrixForms/";
+   
    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
       logger.info("Quartz job started: "+this.getClass().getName());
       Connection connection = null;
@@ -136,7 +131,7 @@ public class OspMigrationJob implements Job {
             developerClearAllTables(connection);
          
          initMatrixForms();
-         createTestForm();
+         createFeedbackForm("admin", "testform", "foobar");
          /*
          runAuthzMigration(connection, isDeveloper);
          runGlossaryMigration(connection, isDeveloper);
@@ -161,64 +156,92 @@ public class OspMigrationJob implements Job {
       logger.info("Quartz job fininshed: "+this.getClass().getName());
    }
    
-   private void createTestForm() {
+   private Id saveForm(String owner, String name, byte[] fileContent, String formType) {
       //This should be a feedback form...
       
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
 
       org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
       String userId = sakaiSession.getUserId();
-      sakaiSession.setUserId("admin");
-      sakaiSession.setUserEid("admin");
+      sakaiSession.setUserId(owner);
+      sakaiSession.setUserEid(owner);
       
-      String formId = "feedbackForm";
-      StructuredArtifactDefinitionBean bean = structuredArtifactDefinitionManager.loadHome(idManager.getId(formId));
-      SchemaFactory schemaFactory = SchemaFactory.getInstance();
-      SchemaNode schema = schemaFactory.getSchema(new ByteArrayInputStream(bean.getSchema())).getChild(bean.getDocumentRoot());
-      ElementBean testForm = new ElementBean(bean.getDocumentRoot(),schema);
-      testForm.put("comment", "blahblah comment");
-      String xml = testForm.toXmlString();
-      
-      String name = "cwm test form";
-      String description = "testing programatic creation of a form";
-      String folder = "/user/admin/";
+      String description = "";
+      String folder = "/user/" + owner + MIGRATED_FOLDER;
       String type = "application/x-osp";
+      
+      try {
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection(folder);
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "Folder for Migrated Matrix Forms");
+         getContentHosting().commitCollection(groupCollection);
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+      
       try {
          ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
          resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
          resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
          resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
-         resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, formId);
+         resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, formType);
          
          ContentResource resource = getContentHosting().addResource(name, folder, 0, type,
-               xml.getBytes(), resourceProperties, NotificationService.NOTI_NONE);
+               fileContent, resourceProperties, NotificationService.NOTI_NONE);
+         return idManager.getId(getContentHosting().getUuid(resource.getId()));
       }
-       catch (PermissionException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      } catch (IdUniquenessException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      } catch (IdLengthException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      } catch (IdInvalidException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      } catch (InconsistentException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      } catch (OverQuotaException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      } catch (ServerOverloadException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+      catch (Exception e) {
+         throw new RuntimeException(e);
       } finally {
          getSecurityService().popAdvisor();
          sakaiSession.setUserEid(userId);
          sakaiSession.setUserId(userId);
       }
+   }
+   
+   private Id createFeedbackForm(String owner, String title, String comment) {
+      String formId = "feedbackForm";
+      ElementBean feedbackForm = setupForm(formId);
+      feedbackForm.put("comment", comment);
+      byte[] xml = feedbackForm.toXmlString().getBytes();
+      return saveForm(owner, title, xml, formId);
+   }
+
+   private Id createEvaluationForm(String owner, String title, String grade, String comment) {
+      String formId = "evaluationForm";
+      ElementBean evalForm = setupForm(formId);
+      evalForm.put("grade", grade);
+      evalForm.put("comment", comment);
+      byte[] xml = evalForm.toXmlString().getBytes();
+      return saveForm(owner, title, xml, formId);
+   }
+   
+   private Id createReflectionForm(String owner, String title, String evidence) {
+      String formId = "intellectualGrowthForm";
+      ElementBean feedbackForm = setupForm(formId);
+      feedbackForm.put("evidence", evidence);
+      byte[] xml = feedbackForm.toXmlString().getBytes();
+      return saveForm(owner, title, xml, formId);
+   }
+   
+   private Id createExpectationForm(String owner, String title, String evidence, String connect) {
+      String formId = "expectationForm";
+      ElementBean feedbackForm = setupForm(formId);
+      feedbackForm.put("evidence", evidence);
+      feedbackForm.put("connect", connect);
+      byte[] xml = feedbackForm.toXmlString().getBytes();
+      return saveForm(owner, title, xml, formId);
+   }
+   
+   private ElementBean setupForm(String formId) {
+      StructuredArtifactDefinitionBean bean = structuredArtifactDefinitionManager.loadHome(idManager.getId(formId));
+      SchemaFactory schemaFactory = SchemaFactory.getInstance();
+      SchemaNode schema = schemaFactory.getSchema(new ByteArrayInputStream(bean.getSchema())).getChild(bean.getDocumentRoot());
+      ElementBean form = new ElementBean(bean.getDocumentRoot(),schema);
+      return form;
    }
    
    private void developerClearAllTables(Connection con) throws JobExecutionException
@@ -300,7 +323,6 @@ public class OspMigrationJob implements Job {
          form = new StructuredArtifactDefinitionBean();
          form.setCreated(new Date());
          form.setNewId(getIdManager().getId(wrapper.getIdValue()));
-         //TODO This probably wont keep the id yet until we switch id generators
       }
 
       updateForm(wrapper, form);
