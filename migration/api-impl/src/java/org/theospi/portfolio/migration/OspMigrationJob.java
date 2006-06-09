@@ -21,6 +21,7 @@
 
 package org.theospi.portfolio.migration;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,13 +47,28 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
+import org.sakaiproject.event.cover.NotificationService;
+import org.sakaiproject.exception.IdInvalidException;
+import org.sakaiproject.exception.IdLengthException;
+import org.sakaiproject.exception.IdUniquenessException;
+import org.sakaiproject.exception.InconsistentException;
+import org.sakaiproject.exception.OverQuotaException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
+import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.cover.SessionManager;
@@ -99,6 +115,7 @@ public class OspMigrationJob implements Job {
    private MatrixManager matrixManager;
    private SiteService siteService;
    private SecurityService securityService;
+   private ContentHostingService contentHosting;
    private Statement stmt;
    private Map tableMap = new HashMap();
    private List authzToolFunctions;
@@ -118,13 +135,15 @@ public class OspMigrationJob implements Job {
          if(isDeveloper)
             developerClearAllTables(connection);
          
-         //initMatrixForms();
-         
+         initMatrixForms();
+         createTestForm();
+         /*
          runAuthzMigration(connection, isDeveloper);
          runGlossaryMigration(connection, isDeveloper);
          runMatrixMigration(connection, isDeveloper);
          runPresentationTemplateMigration(connection, isDeveloper);
          runPresentationMigration(connection, isDeveloper);
+         */
       } catch (SQLException e) {
          logger.error("Quartz job errored: "+this.getClass().getName(), e);
          throw new JobExecutionException(e);
@@ -140,6 +159,66 @@ public class OspMigrationJob implements Job {
       }
       
       logger.info("Quartz job fininshed: "+this.getClass().getName());
+   }
+   
+   private void createTestForm() {
+      //This should be a feedback form...
+      
+      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+
+      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+      String userId = sakaiSession.getUserId();
+      sakaiSession.setUserId("admin");
+      sakaiSession.setUserEid("admin");
+      
+      String formId = "feedbackForm";
+      StructuredArtifactDefinitionBean bean = structuredArtifactDefinitionManager.loadHome(idManager.getId(formId));
+      SchemaFactory schemaFactory = SchemaFactory.getInstance();
+      SchemaNode schema = schemaFactory.getSchema(new ByteArrayInputStream(bean.getSchema())).getChild(bean.getDocumentRoot());
+      ElementBean testForm = new ElementBean(bean.getDocumentRoot(),schema);
+      testForm.put("comment", "blahblah comment");
+      String xml = testForm.toXmlString();
+      
+      String name = "cwm test form";
+      String description = "testing programatic creation of a form";
+      String folder = "/user/admin";
+      String type = "application/x-osp";
+      try {
+         ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
+         resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
+         resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
+         resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
+         resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, formId);
+         
+         ContentResource resource = getContentHosting().addResource(name, folder, 0, type,
+               xml.getBytes(), resourceProperties, NotificationService.NOTI_NONE);
+      }
+       catch (PermissionException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } catch (IdUniquenessException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } catch (IdLengthException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } catch (IdInvalidException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } catch (InconsistentException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } catch (OverQuotaException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } catch (ServerOverloadException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      } finally {
+         getSecurityService().popAdvisor();
+         sakaiSession.setUserEid(userId);
+         sakaiSession.setUserId(userId);
+      }
    }
    
    private void developerClearAllTables(Connection con) throws JobExecutionException
@@ -187,6 +266,7 @@ public class OspMigrationJob implements Job {
    }
    
    protected void initMatrixForms() {
+      logger.info("Quartz task started: initMatrixForms()"); 
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
 
       org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
@@ -210,7 +290,7 @@ public class OspMigrationJob implements Job {
          sakaiSession.setUserEid(userId);
          sakaiSession.setUserId(userId);
       }
-
+      logger.info("Quartz task finished: initMatrixForms()"); 
    }
    
    protected StructuredArtifactDefinitionBean processDefinedForm(FormWrapper wrapper) {
@@ -237,6 +317,10 @@ public class OspMigrationJob implements Job {
       form.setDescription(wrapper.getDescription());
       form.setGlobalState(StructuredArtifactDefinitionBean.STATE_PUBLISHED);
       form.setSiteState(StructuredArtifactDefinitionBean.STATE_UNPUBLISHED);
+      form.setDocumentRoot(wrapper.getDocumentRoot());
+      form.setInstruction(wrapper.getInstruction());
+      form.setExternalType(wrapper.getExternalType());
+      
       form.setSiteId(null);
       form.setOwner(getAgentManager().getAgent("admin"));
    }
@@ -1133,6 +1217,14 @@ public class OspMigrationJob implements Job {
 
    public void setSecurityService(SecurityService securityService) {
       this.securityService = securityService;
+   }
+
+   public ContentHostingService getContentHosting() {
+      return contentHosting;
+   }
+
+   public void setContentHosting(ContentHostingService contentHosting) {
+      this.contentHosting = contentHosting;
    }
 
 }

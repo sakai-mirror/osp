@@ -94,21 +94,43 @@
                <property name="description"><value>Expectation</value></property>
                <property name="documentRoot"><value>expectationform</value></property>
                <property name="xsdFileLocation">
-                  <value>/org/theospi/portfolio/migration/formse/expectation.xsd</value>
+                  <value>/org/theospi/portfolio/migration/forms/expectation.xsd</value>
                </property>
                <property name="siteId"><value></value></property>
-               <property name="externalType"><value></value></property>
+               <property name="externalType"><value>?expectationform</value></property>
                <property name="instruction"><value></value></property>
             </bean>
             <bean class="org.theospi.portfolio.migration.model.impl.FormWrapper">
                <property name="idValue"><value>intellectualGrowthForm</value></property>
-               <property name="description"><value>Two Column Layout File</value></property>
+               <property name="description"><value>Intellectual Growth</value></property>
                <property name="documentRoot"><value>intellectualgrowthform</value></property>
                <property name="xsdFileLocation">
                   <value>/org/theospi/portfolio/migration/forms/intellectualgrowth.xsd</value>
                </property>
                <property name="siteId"><value></value></property>
-               <property name="externalType"><value></value></property>
+               <property name="externalType"><value>?intellectualgrowthform</value></property>
+               <property name="instruction"><value></value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.migration.model.impl.FormWrapper">
+               <property name="idValue"><value>feedbackForm</value></property>
+               <property name="description"><value>Feedback</value></property>
+               <property name="documentRoot"><value>feedbackform</value></property>
+               <property name="xsdFileLocation">
+                  <value>/org/theospi/portfolio/migration/forms/feedback.xsd</value>
+               </property>
+               <property name="siteId"><value></value></property>
+               <property name="externalType"><value>?feedbackform</value></property>
+               <property name="instruction"><value></value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.migration.model.impl.FormWrapper">
+               <property name="idValue"><value>evaluationForm</value></property>
+               <property name="description"><value>Evaluation</value></property>
+               <property name="documentRoot"><value>evaluationform</value></property>
+               <property name="xsdFileLocation">
+                  <value>/org/theospi/portfolio/migration/forms/evaluationform.xsd</value>
+               </property>
+               <property name="siteId"><value></value></property>
+               <property name="externalType"><value>?evaluationform</value></property>
                <property name="instruction"><value></value></property>
             </bean>
          </list>
@@ -125,6 +147,9 @@
       <property name="siteService"><ref bean="org.sakaiproject.site.api.SiteService"/></property>
       <property name="securityService">
          <ref bean="org.sakaiproject.authz.api.SecurityService"/>
+      </property>
+      <property name="contentHosting">
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
    </bean>
 </beans>
