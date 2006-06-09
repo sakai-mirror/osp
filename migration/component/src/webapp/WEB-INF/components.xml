@@ -54,7 +54,7 @@
 				<entry key="osp_matrix_tool"><value>old_osp_matrix_tool</value></entry>
       		<entry key="osp_matrix"><value>old_osp_matrix</value></entry>
       		<entry key="osp_matrix_cell"><value>old_osp_matrix_cell</value></entry>
-      		<entry key="osp_matrix_cell"><value>old_osp_cell_attachment</value></entry>
+      		<entry key="osp_matrix_cell_attachment"><value>old_osp_cell_attachment</value></entry>
       		
       		<entry key="osp_reflection"><value>OLD_OSP_REFLECTION</value></entry>
       		<entry key="osp_reflection_item"><value>OLD_OSP_REFLECTION_ITEM</value></entry>
