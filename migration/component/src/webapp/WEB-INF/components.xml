@@ -149,6 +149,7 @@
          <ref bean="structuredArtifactDefinitionManager"/>
       </property>
       <property name="matrixManager"><ref bean="matrixManager"/></property>
+      <property name="reviewManager"><ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/></property>
       <property name="presentationManager"><ref bean="presentationManager"/></property>
       <property name="siteService"><ref bean="org.sakaiproject.site.api.SiteService"/></property>
       <property name="securityService">
