@@ -779,8 +779,9 @@ public class OspMigrationJob implements Job {
                            description, idManager.getId(worksite), 
                            securityQualifier, 
                            securityViewFunction, securityEditFunction);*/
-                           guidanceManager.saveGuidance(guide);
+                           //guidanceManager.saveGuidance(guide);
                            scell.setGuidance(guide);
+                           matrixManager.storeScaffoldingCell(scell);
                         }
                         lastScaffoldingCellId = scaffoldingCellId;
                         //starts a new cell
@@ -801,10 +802,11 @@ public class OspMigrationJob implements Job {
                            MatrixFunctionConstants.EDIT_SCAFFOLDING_GUIDANCE);
                      guidanceText += "</ul>";
                      guide.getInstruction().setText(guidanceText);
-                     guidanceManager.saveGuidance(guide);
+                     //guidanceManager.saveGuidance(guide);
                      scell.setGuidance(guide);
+                     matrixManager.storeScaffoldingCell(scell);
                   }
-                  scaffId = (Id)matrixManager.save(scaffolding);
+                  //scaffId = (Id)matrixManager.save(scaffolding);
                   
                   
 
@@ -856,6 +858,7 @@ public class OspMigrationJob implements Job {
                         
                         Cell cell = new Cell();
                         cell.setNewId(mcid);
+                        cell.getWizardPage().setNewId(idManager.createId());
                         cell.getWizardPage().setOwner(matrix.getOwner());
                         cell.setScaffoldingCell(sCell);
                         cell.setStatus(status);
@@ -865,9 +868,13 @@ public class OspMigrationJob implements Job {
                         sql = "select * from " + cellAttachmentTable + " where cell_id='" + mcidStr + "'";
                         ResultSet rsCellFiles = matrixInnerStmt.executeQuery(sql);
                         while(rsCellFiles.next()) {
+                           String attid = rsCellFiles.getString("id");
                            String artifact = rsCellFiles.getString("artifactId");
                            Attachment att = new Attachment();
+                           att.setNewId(idManager.getId(attid));
                            att.setArtifactId(idManager.getId(artifact));
+                           att.setWizardPage(cell.getWizardPage());
+                           //matrixManager.save(att);
                            attachments.add(att);
                         }
                         cell.setAttachments(attachments);
@@ -940,7 +947,8 @@ public class OspMigrationJob implements Job {
 
                            Review review = reviewManager.createNew("", worksite);
                            review.setDeviceId(evaluationFormId.getValue());// form idvalue
-                           review.setParent(cell.getWizardPage().getId().getValue());// wizard page
+                           Id pageId = resolveId(cell.getWizardPage());
+                           review.setParent(pageId.getValue());// wizard page
                            review.setType(Review.EVALUATION_TYPE);//contant
                            review.setReviewContent(evaluationForm);
                            getReviewManager().saveReview(review);

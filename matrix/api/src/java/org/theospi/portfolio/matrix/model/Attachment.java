@@ -20,20 +20,17 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.model;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
 
 /**
  * @author rpembry
  */
-public class Attachment {
+public class Attachment extends IdentifiableObject {
    Id id;
    Id artifactId;
    WizardPage wizardPage;
-   //Set attachmentCriteria = new HashSet();
 
    /**
     * @return Returns the artifactId.
@@ -50,20 +47,6 @@ public class Attachment {
    }
 
    /**
-    * @return Returns the id.
-    */
-   public Id getId() {
-      return id;
-   }
-
-   /**
-    * @param id The id to set.
-    */
-   public void setId(Id id) {
-      this.id = id;
-   }
-
-   /**
     * @return Returns the wizardPage that contains this Attachment
     */
    public WizardPage getWizardPage() {
@@ -77,19 +60,6 @@ public class Attachment {
       this.wizardPage = wizardPage;
    }
    
-   /**
-    * @return Returns the attachmentCriteria.
-    */
-   //public Set getAttachmentCriteria() {
-   //   return attachmentCriteria;
-   //}
-   /**
-    * @param attachmentCriteria The attachmentCriteria to set.
-    */
-   //public void setAttachmentCriteria(Set attachmentCriteria) {
-   //   this.attachmentCriteria = attachmentCriteria;
-   //}
-   
    /* (non-Javadoc)
     * @see java.lang.Object#equals(java.lang.Object)
     */
@@ -97,6 +67,9 @@ public class Attachment {
       if (other == this) return true;
       if (other == null || !(other instanceof Attachment)) return false;
       //TODO need better equals method
+      
+      if (getId() == null && getNewId() != null && ((Attachment)other).getId() == null && 
+            ((Attachment)other).getNewId() != null) return (this.getNewId().equals(((Attachment) other).getNewId()));
       return (this.getId().equals(((Attachment) other).getId()));
 
    }
