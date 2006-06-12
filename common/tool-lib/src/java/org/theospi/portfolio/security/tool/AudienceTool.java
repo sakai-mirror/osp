@@ -20,16 +20,6 @@
  **********************************************************************************/
 package org.theospi.portfolio.security.tool;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.faces.context.FacesContext;
-
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.cover.ServerConfigurationService;
@@ -54,6 +44,11 @@ import org.theospi.portfolio.shared.model.AgentImplOsp;
 import org.theospi.portfolio.shared.tool.HelperToolBase;
 import org.theospi.portfolio.shared.tool.PagingList;
 
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import java.util.*;
+import java.util.regex.Pattern;
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -68,6 +63,7 @@ public class AudienceTool extends HelperToolBase {
     private SiteService siteService;
     private ToolManager toolManager;
     private AgentManager agentManager;
+    private int maxRoleMemberList;
 
     private List selectedMembers = null;
     private List originalMembers = null;
@@ -76,6 +72,28 @@ public class AudienceTool extends HelperToolBase {
     private String searchEmails;
     private Site site;
 
+    /**
+     * ***********************************
+     */
+    private String[] availableRoleMember;
+    private List availableRoleMemberList;
+
+    private String[] selectedRoleMember;
+    private List selectedRoleMemberList;
+
+    private List availableRoleList;
+    private List availableMemberList;
+
+    private List selectedRoleList = new ArrayList();
+    private List selectedMemberList = new ArrayList();
+
+
+    private boolean maxList;
+
+    /**
+     * **********************************
+     */
+
     private List selectedRolesFilter;
     private List selectedGroupsFilter;
     private PagingList browseUsers = null;
@@ -83,17 +101,44 @@ public class AudienceTool extends HelperToolBase {
     private String function;
     private Id qualifier;
     private static final Pattern emailPattern = Pattern.compile(".*@.*");
+    private List roleMemberList = null;
+    private List groupMemberList = null;
+    private String LIST_SEPERATOR = "__________________";
     private boolean publicAudience = false;
+
+
+
+
+    /*************************************************************************/
+
+
+
+
+    public boolean isMaxList() {
+
+        if (getMembersList().size() > getMaxRoleMemberList()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public int getMaxRoleMemberList() {
+        return maxRoleMemberList;
+    }
+
+    public void setMaxRoleMemberList(int maxRoleMemberList) {
+        this.maxRoleMemberList = maxRoleMemberList;
+    }
 
     public List getSelectedMembers() {
         if (getAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION) != null) {
             selectedMembers = fillMemberList();
         }
-
         setAttribute("PRESENTATION_VIEWERS", selectedMembers);
 
-        if(selectedMembers == null)
-           selectedMembers = new ArrayList();
+        if (selectedMembers == null)
+            selectedMembers = new ArrayList();
         return selectedMembers;
     }
 
@@ -264,7 +309,7 @@ public class AudienceTool extends HelperToolBase {
 
     public void setPublicAudience(boolean publicAudience) {
         this.publicAudience = publicAudience;
-        setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, publicAudience ? "true" : "false") ;
+        setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, publicAudience ? "true" : "false");
     }
 
     public String getSearchUsers() {
@@ -283,19 +328,6 @@ public class AudienceTool extends HelperToolBase {
         this.searchEmails = searchEmails;
     }
 
-    public List getSiteRoles() {
-        List returned = new ArrayList();
-        Set roles = getSite().getRoles();
-        String siteId = getSite().getId();
-
-        for (Iterator i = roles.iterator(); i.hasNext();) {
-            Role role = (Role) i.next();
-            Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), siteId);
-            returned.add(createSelect(roleAgent.getId().getValue(), role.getId()));
-        }
-
-        return returned;
-    }
 
     public List getSiteGroups() {
         List returned = new ArrayList();
@@ -303,7 +335,7 @@ public class AudienceTool extends HelperToolBase {
 
         for (Iterator i = groups.iterator(); i.hasNext();) {
             Group group = (Group) i.next();
-            returned.add(createSelect(group.getId(), group.getDescription()));
+            returned.add(new SelectItem(group.getId(), group.getDescription(), "group"));
         }
 
         return returned;
@@ -360,7 +392,7 @@ public class AudienceTool extends HelperToolBase {
         }
     }
 
-    public String processActionAddUser() {
+    /*public String processActionAddUser() {
         boolean worksiteLimited = isWorksiteLimited();
         if (!findByEmailOrDisplayName(getSearchUsers(), false, worksiteLimited)) {
             FacesContext.getCurrentInstance().addMessage(null,
@@ -370,7 +402,7 @@ public class AudienceTool extends HelperToolBase {
             setSearchUsers("");
         }
         return "tool";
-    }
+    } */
 
     public String processActionAddEmail() {
         boolean worksiteLimited = isWorksiteLimited();
@@ -382,8 +414,7 @@ public class AudienceTool extends HelperToolBase {
             }
 
 
-        }
-           else {
+        } else {
             setSearchEmails("");
         }
         return "tool";
@@ -409,14 +440,15 @@ public class AudienceTool extends HelperToolBase {
 
     /**
      * @param displayName - for a guest user, this is the email address
-     * @  */
+     * @
+     */
     protected boolean findByEmailOrDisplayName(String displayName, boolean includeEmail, boolean worksiteLimited) {
         List retVal = new ArrayList();
         List guestUsers = null;
         AgentImplOsp viewer = new AgentImplOsp();
         if (includeEmail) {
             guestUsers = getAgentManager().findByProperty("email", displayName);
-            if (!worksiteLimited && guestUsers == null){
+            if (!worksiteLimited && guestUsers == null) {
                 viewer.setDisplayName(displayName);
                 viewer.setRole(Agent.ROLE_GUEST);
                 viewer.setId(getIdManager().getId(viewer.getDisplayName()));
@@ -444,9 +476,9 @@ public class AudienceTool extends HelperToolBase {
                     return false;
                 }
             }
-            if (agent instanceof AgentImplOsp){
+            if (agent instanceof AgentImplOsp) {
                 agent = createGuestUser(agent);
-                if (agent != null){
+                if (agent != null) {
                     notifyNewUserEmail(agent);
                 }
             }
@@ -516,19 +548,26 @@ public class AudienceTool extends HelperToolBase {
                     getFunction(), getQualifier());
         }
     }
+
     public void processActionClearFilter() {
 
-      getSelectedGroupsFilter().clear();
-      getSelectedRolesFilter().clear();
-      setSearchEmails("");
-      setSearchUsers("");
-      if (selectedMembers != null){
-        selectedMembers.clear();
-      }
-      if (selectedRoles != null){
-        selectedRoles.clear();
-      }
-      processActionApplyFilter();
+        getSelectedGroupsFilter().clear();
+        getSelectedRolesFilter().clear();
+        setSearchEmails("");
+        setSearchUsers("");
+        if (selectedMembers != null) {
+            selectedMembers.clear();
+        }
+        if (selectedRoles != null) {
+            selectedRoles.clear();
+        }
+        if (availableRoleMemberList !=null){
+            availableRoleMemberList.clear();
+        }
+        if (selectedRoleMemberList != null){
+            selectedRoleMemberList.clear();
+        }
+        processActionApplyFilter();
     }
 
     public void processActionApplyFilter() {
@@ -567,9 +606,31 @@ public class AudienceTool extends HelperToolBase {
         return members;
     }
 
+    public List getMembersList() {
+        Set members = getSite().getMembers();
+        List memberList = new ArrayList();
+        for (Iterator i = members.iterator(); i.hasNext();) {
+            Member member = (Member) i.next();
+
+            DecoratedMember decoratedMember = new DecoratedMember(this, getAgentManager().getAgent((member.getUserId())));
+            memberList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), "member"));
+        }
+
+        return memberList;
+    }
+
     public List getRoles() {
-        List siteRoles = getSiteRoles();
-        return siteRoles;
+        List returned = new ArrayList();
+        Set roles = getSite().getRoles();
+        String siteId = getSite().getId();
+
+        for (Iterator i = roles.iterator(); i.hasNext();) {
+            Role role = (Role) i.next();
+            Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), siteId);
+            returned.add(new SelectItem(roleAgent.getId().getValue(), role.getId(), "role"));
+        }
+
+        return returned;
     }
 
     public boolean getHasGroups() {
@@ -582,15 +643,16 @@ public class AudienceTool extends HelperToolBase {
     }
 
     public List getSelectedRolesFilter() {
-       if (selectedRolesFilter == null) {
-          selectedRolesFilter = new ArrayList();
-       }
-       return selectedRolesFilter;
+        if (selectedRolesFilter == null) {
+            selectedRolesFilter = new ArrayList();
+        }
+        return selectedRolesFilter;
     }
 
     public void setSelectedRolesFilter(List selectedRolesFilter) {
         this.selectedRolesFilter = selectedRolesFilter;
     }
+
 
     public List getSelectedGroupsFilter() {
         if (selectedGroupsFilter == null) {
@@ -601,6 +663,78 @@ public class AudienceTool extends HelperToolBase {
 
     public void setSelectedGroupsFilter(List selectedGroupsFilter) {
         this.selectedGroupsFilter = selectedGroupsFilter;
+    }
+
+    public String[] getAvailableRoleMember() {
+        return availableRoleMember;
+    }
+
+    public void setAvailableRoleMember(String[] availableRoleMember) {
+        this.availableRoleMember = availableRoleMember;
+    }
+
+    public void setAvailableRoleMemberList(List availableRoleMemberList) {
+        this.availableRoleMemberList = availableRoleMemberList;
+    }
+
+    public List getAvailableRoleMemberList() {
+
+            availableRoleMemberList = new ArrayList();
+
+            List roleMemberList = new ArrayList();
+            roleMemberList.addAll(getRoles());
+
+            roleMemberList.add(new SelectItem("null", LIST_SEPERATOR, ""));
+            if (!isMaxList()) {
+                roleMemberList.addAll(getMembersList());
+            }
+
+            for (Iterator idx = roleMemberList.iterator(); idx.hasNext();) {
+                SelectItem availableItem = (SelectItem) idx.next();
+                boolean matchFound = false;
+                for (Iterator jdx = getSelectedRoleMemberList().iterator(); jdx.hasNext();) {
+                    SelectItem selecteItem = (SelectItem) jdx.next();
+                    if (selecteItem.getValue().toString().equals(availableItem.getValue().toString())) {
+                        matchFound = true;
+                        break;
+
+                    }
+
+                }
+                if (!matchFound){
+                    availableRoleMemberList.add(availableItem);
+                }
+            }
+
+        return availableRoleMemberList;
+    }
+
+
+    public String[] getSelectedRoleMember() {
+        return selectedRoleMember;
+    }
+
+    public void setSelectedRoleMember(String[] selectedRoleMember) {
+        this.selectedRoleMember = selectedRoleMember;
+    }
+
+    public List getSelectedRoleMemberList() {
+
+            selectedRoleMemberList = new ArrayList();
+            for (Iterator i = getSelectedMembers().iterator(); i.hasNext();) {
+                DecoratedMember decoratedMember = (DecoratedMember) i.next();
+                String description = "member";
+                if (decoratedMember.getBase().isRole()) {
+                    description = "role";
+                }
+                selectedRoleMemberList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), description));
+            }
+
+        return selectedRoleMemberList;
+    }
+
+    public void setSelectedRoleMemberList(List selectedRoleMemberList) {
+        this.selectedRoleMemberList = selectedRoleMemberList;
     }
 
     public PagingList getBrowseUsers() {
@@ -623,8 +757,82 @@ public class AudienceTool extends HelperToolBase {
                 member.setSelected(false);
             }
         }
-        getSelectedRoles().clear();
+        if (getSelectedRoles() != null) {
+            getSelectedRoles().clear();
+        }
     }
+
+    public String processActionAdd() {
+        String[] selected = getAvailableRoleMember();
+        if (selected.length < 1) {
+            //put in a message that they need to select something from the lsit to add
+            return "main";
+        }
+
+        for (int i = 0; i < selected.length; i++) {
+
+            SelectItem addItem = removeItems(selected[i], getAvailableRoleMemberList());
+            if (addItem.getDescription().equals("role")){
+               addAgent(getAgentManager().getAgent(getIdManager().getId(addItem.getValue().toString())), "role_exists");
+            } else if (addItem.getDescription().equals("member")){
+                addAgent(getAgentManager().getAgent(addItem.getValue().toString()), "user_exists");
+            }
+            getSelectedRoleMemberList().add(addItem);
+            setSelectedRoleMemberList(sortList(getSelectedRoleMemberList(), false));
+        }
+
+        return "main";
+    }
+
+    public String processActionRemoveSelected() {
+        String[] selected = getSelectedRoleMember();
+        if (selected.length < 1) {
+            //put in a message that they need to select something from the lsit to add
+            return "main";
+        }
+
+        for (int i = 0; i < selected.length; i++) {
+            for (Iterator idx = getSelectedMembers().iterator(); idx.hasNext();) {
+            DecoratedMember member = (DecoratedMember) idx.next();
+            if (member.getBase().getId().toString().equals(selected[i])) {
+                idx.remove();
+            }
+            getAvailableRoleMemberList().add(removeItems(selected[i], getSelectedRoleMemberList()));
+            setAvailableRoleMemberList(sortList(getAvailableRoleMemberList(), true));
+
+
+        }
+        }
+
+
+        return "main";
+    }
+
+    private SelectItem removeItems(String value, List items) {
+
+        SelectItem result = null;
+        for (int i = 0; i < items.size(); i++) {
+            SelectItem item = (SelectItem) items.get(i);
+            if (value.equals(item.getValue())) {
+                result = (SelectItem) items.remove(i);
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /*public void processActionAddSelected() {
+        for (Iterator i = getAvailableRoleMemberList().iterator(); i.hasNext();) {
+            Member user = (Member) i.next();
+            DecoratedMember member = new DecoratedMember(this, getAgentManager().getAgent(user.getUserId()));
+            if (member.isSelected()) {
+                Agent agentUser = member.getBase();
+                addAgent(agentUser, "user_exists");
+                member.setSelected(false);
+            }
+        }
+    }*/
 
     protected void clearAudienceSelectionVariables() {
         ToolSession session = SessionManager.getCurrentToolSession();
@@ -670,44 +878,64 @@ public class AudienceTool extends HelperToolBase {
 
     return true;
  }   */
-    protected Agent createGuestUser(Agent viewer){
-      AgentImplOsp guest = (AgentImplOsp) viewer;
-      guest.setRole(Agent.ROLE_GUEST);
-      return getAgentManager().createAgent(guest);
-   }
+    protected Agent createGuestUser(Agent viewer) {
+        AgentImplOsp guest = (AgentImplOsp) viewer;
+        guest.setRole(Agent.ROLE_GUEST);
+        return getAgentManager().createAgent(guest);
+    }
 
-   private void notifyNewUserEmail(Agent guest)
-	{
-    	String from = ServerConfigurationService.getString("setup.request", null);
-		if (from == null)
-		{
+    private void notifyNewUserEmail(Agent guest) {
+        String from = ServerConfigurationService.getString("setup.request", null);
+        if (from == null) {
 
-			from = "postmaster@".concat(ServerConfigurationService.getServerName());
-		}
-		String productionSiteName = ServerConfigurationService.getString("ui.service", "");
-		String productionSiteUrl = ServerConfigurationService.getPortalUrl();
+            from = "postmaster@".concat(ServerConfigurationService.getServerName());
+        }
+        String productionSiteName = ServerConfigurationService.getString("ui.service", "");
+        String productionSiteUrl = ServerConfigurationService.getPortalUrl();
 
-		String to = guest.getDisplayName();
-		String headerTo = to;
-		String replyTo = to;
-		String message_subject = getMessageFromBundle("email.guestusernoti", new Object[]{productionSiteName});
-		String content = "";
+        String to = guest.getDisplayName();
+        String headerTo = to;
+        String replyTo = to;
+        String message_subject = getMessageFromBundle("email.guestusernoti", new Object[]{productionSiteName});
+        String content = "";
 
-		if (from != null && to !=null)
-		{
-			StringBuffer buf = new StringBuffer();
-			buf.setLength(0);
+        if (from != null && to != null) {
+            StringBuffer buf = new StringBuffer();
+            buf.setLength(0);
 
-			// email body
-			buf.append(to + ":\n\n");
+            // email body
+            buf.append(to + ":\n\n");
             AgentImplOsp impl = (AgentImplOsp) guest;
-			buf.append(getMessageFromBundle("email.addedto", new Object[]{productionSiteName, productionSiteUrl}) + "\n\n");
-			buf.append(getMessageFromBundle("email.simpleby", new Object[]{UserDirectoryService.getCurrentUser().getDisplayName()}) + "\n\n");
+            buf.append(getMessageFromBundle("email.addedto", new Object[]{productionSiteName, productionSiteUrl}) + "\n\n");
+            buf.append(getMessageFromBundle("email.simpleby", new Object[]{UserDirectoryService.getCurrentUser().getDisplayName()}) + "\n\n");
             buf.append(getMessageFromBundle("email.userid", new Object[]{to}) + "\n\n");
             buf.append(getMessageFromBundle("email.password", new Object[]{impl.getPassword()}) + "\n\n");
 
-			content = buf.toString();
-			EmailService.send(from, to, message_subject, content, headerTo, replyTo, null);
-		}
+            content = buf.toString();
+            EmailService.send(from, to, message_subject, content, headerTo, replyTo, null);
+        }
+    }
+
+    private List sortList(List sortList, boolean seperator) {
+        List roleList = new ArrayList();
+        List groupList = new ArrayList();
+        List memberList = new ArrayList();
+        for (Iterator i = sortList.iterator(); i.hasNext();) {
+            SelectItem item = (SelectItem) i.next();
+            if (item.getDescription().equals("role")) {
+                roleList.add(item);
+            } else if (item.getDescription().equals("group")) {
+                groupList.add(item);
+            } else if (item.getDescription().equals("member")) {
+                memberList.add(item);
+            }
+        }
+        roleList.addAll(groupList);
+        if (seperator) {
+            roleList.add(new SelectItem("null", LIST_SEPERATOR, ""));
+        }
+        roleList.addAll(memberList);
+        return roleList;
+
     }
 }

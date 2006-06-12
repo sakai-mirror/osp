@@ -46,6 +46,12 @@
          <value>#{Components["idManager"]}</value>
       </managed-property>
 
+       <managed-property>
+         <description>Max site members in list</description>
+         <property-name>maxRoleMemberList</property-name>
+         <value>100</value>
+      </managed-property>
+
       <managed-property>
          <description>Service Dependency: authzManager</description>
          <property-name>authzManager</property-name>
