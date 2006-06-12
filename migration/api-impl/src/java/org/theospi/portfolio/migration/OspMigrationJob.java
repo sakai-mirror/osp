@@ -74,7 +74,6 @@ import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.shared.model.ItemDefinitionMimeType;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
-import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.matrix.MatrixManager;
@@ -937,21 +936,24 @@ public class OspMigrationJob implements Job {
                            String ri_modified = rsss.getString("MODIFIED");
 
                            // save the Reviews
-                           Integer anId = incUser(reviewer_id);
-                           Id evaluationForm = createEvaluationForm(reviewer_id, 
-                                 "Review "+ scaffolding.getTitle() + 
-                                 " " + sCell.getRootCriterion().getDescription() +
-                                 " " + sCell.getLevel().getDescription() +
-                                 " - " + anId.toString(), 
-                                 grade, comment);
-
-                           Review review = reviewManager.createNew("", worksite);
-                           review.setDeviceId(evaluationFormId.getValue());// form idvalue
-                           Id pageId = resolveId(cell.getWizardPage());
-                           review.setParent(pageId.getValue());// wizard page
-                           review.setType(Review.EVALUATION_TYPE);//contant
-                           review.setReviewContent(evaluationForm);
-                           getReviewManager().saveReview(review);
+                           //Skip if the reviewer is null
+                           if (reviewer_id != null && !reviewer_id.equalsIgnoreCase("")) {
+                              Integer anId = incUser(reviewer_id);
+                              Id evaluationForm = createEvaluationForm(reviewer_id, 
+                                    "Review "+ scaffolding.getTitle() + 
+                                    " " + sCell.getRootCriterion().getDescription() +
+                                    " " + sCell.getLevel().getDescription() +
+                                    " - " + anId.toString(), 
+                                    grade, comment);
+   
+                              Review review = reviewManager.createNew("", worksite);
+                              review.setDeviceId(evaluationFormId.getValue());// form idvalue
+                              Id pageId = resolveId(cell.getWizardPage());
+                              review.setParent(pageId.getValue());// wizard page
+                              review.setType(Review.EVALUATION_TYPE);//contant
+                              review.setReviewContent(evaluationForm);
+                              getReviewManager().saveReview(review);
+                           }
                         }
                         rsss.close();
                         
