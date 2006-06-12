@@ -594,6 +594,7 @@
                         <value>metaobj.create</value>
                         <value>metaobj.edit</value>
                         <value>metaobj.publish</value>
+                        <value>metaobj.export</value>
                         <value>metaobj.suggest.global.publish</value>
                         <value>realm.del</value>
                         <value>realm.upd</value>
@@ -746,6 +747,7 @@
                         <value>metaobj.create</value>
                         <value>metaobj.edit</value>
                         <value>metaobj.publish</value>
+                        <value>metaobj.export</value>
                         <value>metaobj.suggest.global.publish</value>
                         <value>realm.del</value>
                         <value>realm.upd</value>
@@ -819,6 +821,7 @@
                         <value>metaobj.create</value>
                         <value>metaobj.edit</value>
                         <value>metaobj.publish</value>
+                        <value>metaobj.export</value>
                         <value>metaobj.suggest.global.publish</value>
                         <value>realm.del</value>
                         <value>realm.upd</value>
