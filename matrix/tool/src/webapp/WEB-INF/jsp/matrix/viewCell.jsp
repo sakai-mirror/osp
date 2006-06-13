@@ -47,47 +47,51 @@
 
 
 	<c:if test="${isWizard == 'true'}">
-	   <osp-h:glossary link="true" hover="true">
-       <h3><c:out value="${wizardTitle}"/></h3>
-    
-       <div class="instruction">
-          <c:out value="${wizardDescription}" escapeXml="false" />
-       </div>
-	   </osp-h:glossary>
-	</c:if>
-	<c:if test="${isWizard != 'true'}">
-	   <osp-h:glossary link="true" hover="true">
-       <h3><c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}"/></h3>
-    
-       <div class="instruction">
-          <c:out value="${cell.scaffoldingCell.wizardPageDefinition.description}" escapeXml="false" />
-       </div>
-	   </osp-h:glossary>
-	</c:if>
-    
-	
-	
-       <c:if test="${sequential != 'true' && isWizard == 'true'}">
-          <h3><c:out value="${categoryTitle}" /><c:if test="${categoryTitle != ''}">:
+		<osp-h:glossary link="true" hover="true">
+			<h3><c:out value="${wizardTitle}" /></h3>
+
+			<div class="instruction">
+				<c:out value="${wizardDescription}" escapeXml="false" />
+			</div>
+		</osp-h:glossary>
+
+		<c:if test="${sequential != 'true'}">
+			<h3>
+				<c:out value="${categoryTitle}" />
+				<c:if test="${categoryTitle != ''}">:
           
           </c:if>
-          
-          <c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" /></h3>
-       </c:if>
-       <c:if test="${sequential == 'true' && isWizard == 'true'}">
-    <p class="step">
-       <fmt:message key="seq_pages_step">
-	      <fmt:param><c:out value="${currentStep}" /></fmt:param>
-          <fmt:param><c:out value="${totalSteps}" /></fmt:param>
-          <fmt:param><c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" /></fmt:param>
-	   </fmt:message>
-    </p>
-       </c:if>
-    
-    <div class="instruction">
-       <c:out value="${cell.scaffoldingCell.wizardPageDefinition.description}" escapeXml="false" />
-    </div>
-    
+
+				<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
+			</h3>
+		</c:if>
+		<c:if test="${sequential == 'true'}">
+			<p class="step">
+				<fmt:message key="seq_pages_step">
+					<fmt:param><c:out value="${currentStep}" /></fmt:param>
+					<fmt:param><c:out value="${totalSteps}" /></fmt:param>
+					<fmt:param>
+						<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
+					</fmt:param>
+				</fmt:message>
+			</p>
+		</c:if>
+
+	</c:if>
+
+	<osp-h:glossary link="true" hover="true">
+		<h3>
+			<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
+		</h3>
+
+		<div class="instruction">
+			<c:out
+				value="${cell.scaffoldingCell.wizardPageDefinition.description}"
+				escapeXml="false" />
+		</div>
+	</osp-h:glossary>
+
+
 	<c:if test="${cell.status != 'READY'}">
 		<div class="validation">
 		   <fmt:message key="status_warning">
