@@ -1000,7 +1000,7 @@ public class OspMigrationJob implements Job {
                   String name = rs.getString("name");
                   String desc = rs.getString("description");
                   boolean includeHeaderAndFooter = rs.getBoolean("includeHeaderAndFooter");
-                  boolean includeComments = rs.getBoolean("includeComments");
+                  //boolean includeComments = rs.getBoolean("includeComments");
                   boolean published = rs.getBoolean("published");
                   String owner = rs.getString("owner_id");
                   String renderer = rs.getString("renderer");
@@ -1018,7 +1018,6 @@ public class OspMigrationJob implements Job {
                   template.setName(name);
                   template.setDescription(desc);
                   template.setIncludeHeaderAndFooter(includeHeaderAndFooter);
-                  template.setIncludeComments(includeComments);
                   template.setPublished(published);
                   template.setOwner(agentManager.getAgent(owner));
                   template.setRenderer(idManager.getId(renderer));
@@ -1112,8 +1111,9 @@ public class OspMigrationJob implements Job {
                   PresentationTemplate template = 
                      presentationManager.getPresentationTemplate(idManager.getId(templateId));
                   presentation.setTemplate(template);
-                  
-                  presentation.setAllowComments(template.isIncludeComments());
+
+                   //TODO template no longer has comments, replace line below
+                  //presentation.setAllowComments(template.isIncludeComments());
                   
                   Set items = createPresentationItems(con, presentation);
                   presentation.setItems(items);

@@ -46,7 +46,6 @@ public class PresentationTemplate extends IdentifiableObject implements Serializ
    private boolean includeHeaderAndFooter;
    private Set items = new TreeSet(new PresentationItemComparator());
    private Set files = new HashSet();
-   private boolean includeComments = false;
    private boolean published = false;
    private String markup;
    private String siteId;
@@ -212,14 +211,6 @@ public class PresentationTemplate extends IdentifiableObject implements Serializ
 
    public void setFiles(Set files) {
       this.files = files;
-   }
-
-   public boolean isIncludeComments() {
-      return includeComments;
-   }
-
-   public void setIncludeComments(boolean includeComments) {
-      this.includeComments = includeComments;
    }
 
    public boolean isPublished() {

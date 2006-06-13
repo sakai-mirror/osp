@@ -11,7 +11,6 @@
       <property name="name" type="string" column="name" not-null="false"/>
       <property name="description" type="string" column="description" not-null="false"/>
       <property name="includeHeaderAndFooter" type="boolean" column="includeHeaderAndFooter" not-null="false"/>
-      <property name="includeComments" type="boolean" column="includeComments" not-null="false"/>
       <property name="published" type="boolean" column="published" not-null="false"/>
       <property name="owner" type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" column="owner_id" not-null="true"/>
       <property name="renderer" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="renderer"/>

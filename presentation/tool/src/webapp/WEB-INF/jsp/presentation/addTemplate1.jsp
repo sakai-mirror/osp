@@ -60,26 +60,8 @@
                     <label for="showWithinNo"><fmt:message key="label_no"/></label>
             </div>
         </fieldset>
-    </spring:bind>
-    <BR />
-    
-    <spring:bind path="template.includeComments">
-        <fieldset>
-            <legend class="radio"><fmt:message key="legend_allowComments"/></legend>
-            <div class="checkbox indnt1">
-                <input type="radio" id="commentsYes"
-                    name="<c:out value="${status.expression}"/>" value="true"
-                    <c:if test="${status.value}">checked</c:if> />
-                <label for="commentsYes"><fmt:message key="label_yes"/></label>
-            </div>
-            <div class="checkbox indnt1">
-                <input type="radio" id="commentsNo"
-                    name="<c:out value="${status.expression}"/>" value="false"
-                    <c:if test="${status.value == false}">checked</c:if> />
-                    <label for="commentsNo"><fmt:message key="label_no"/></label>
-            </div>
-        </fieldset>
-    </spring:bind>
+    </spring:bind>  
+
     
 <c:set var="suppress_previous" value="true" />
 <c:set var="suppress_submit" value="true" />

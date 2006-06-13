@@ -143,7 +143,7 @@ public class PresentationAuthorizerImpl implements ApplicationAuthorizer{
    protected Boolean isPresentationCommentAuth(AuthorizationFacade facade, Agent agent, Id id) {
       Presentation pres = getPresentationManager().getLightweightPresentation(id);
 
-      if (!pres.getTemplate().isIncludeComments() && !pres.isAllowComments()){
+      if (!pres.isAllowComments()){
          return new Boolean(false);
       }
 

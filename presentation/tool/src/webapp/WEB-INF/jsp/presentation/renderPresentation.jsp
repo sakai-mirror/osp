@@ -9,6 +9,6 @@
 <osp-c:authZMap prefix="osp.presentation." qualifier="${presentation.id}" var="isAuthorizedTo" />
 
 
-<c:if test="${presentation.template.includeComments or presentation.allowComments}">
+<c:if test="${presentation.allowComments}">
  <%@ include file="/WEB-INF/jsp/presentation/comments.inc" %>
 </c:if>
