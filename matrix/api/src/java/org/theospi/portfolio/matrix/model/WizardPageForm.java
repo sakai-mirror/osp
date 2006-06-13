@@ -77,6 +77,8 @@ public class WizardPageForm {
       
    /* (non-Javadoc)
     * @see java.lang.Object#equals(java.lang.Object)
+    * the OspMigrationJob class creates instances of this class.
+    * it doesn't set the id, thus it is null, but each is different from each other
     */
    public boolean equals(Object other) {
       if (other == this) return true;
@@ -84,6 +86,7 @@ public class WizardPageForm {
       //TODO need better equals method
       if (this.getId() == null && ((WizardPageForm) other).getId() != null) return false;
       if (this.getId() != null && ((WizardPageForm) other).getId() == null) return false;
+      if(this.getId() == null) return false;
       return (this.getId().equals(((WizardPageForm) other).getId()));
 
    }
