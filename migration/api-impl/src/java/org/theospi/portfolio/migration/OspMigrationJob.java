@@ -99,6 +99,7 @@ import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
 import org.theospi.portfolio.presentation.model.impl.HibernatePresentationProperties;
 import org.theospi.portfolio.style.model.Style;
+import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 
 /**
  *
@@ -117,6 +118,7 @@ public class OspMigrationJob implements Job {
    private PresentationManager presentationManager;
    private MatrixManager matrixManager;
    private ReviewManager reviewManager;
+   private WorkflowManager workflowManager;
    private SiteService siteService;
    private SecurityService securityService;
    private ContentHostingService contentHosting;
@@ -321,7 +323,8 @@ public class OspMigrationJob implements Job {
             while (rs.next()) {
                String tableName = rs.getString(1);
                sql = "TRUNCATE " + tableName;
-               innerstmt.executeUpdate(sql);
+               if(!tableName.endsWith("_BKP"))
+                  innerstmt.executeUpdate(sql);
             }
          }
          finally {
@@ -746,6 +749,7 @@ public class OspMigrationJob implements Job {
                            (criterion.getDescription() != null ? criterion.getDescription() : "") 
                            + " - " + 
                            (level.getDescription() != null ? level.getDescription() : ""));
+
    
                      cell.setEvaluationDevice(evaluationFormId);
                      cell.setEvaluationDeviceType(FORM_TYPE);
@@ -754,6 +758,11 @@ public class OspMigrationJob implements Job {
                      cell.setReviewDevice(feedbackFormId);
                      cell.setReviewDeviceType(FORM_TYPE);
                      cell.setAdditionalForms(additionalForms);
+
+                     // this needs to be after setting the forms
+                     page.setEvalWorkflows(
+                           new HashSet(getWorkflowManager().createEvalWorkflows(page))
+                           );
    
                      scaffolding.add(cell);
                      scaffoldingCellMap.put(cid.getValue(), cell);
@@ -1613,6 +1622,20 @@ public class OspMigrationJob implements Job {
    public void setDefaultScaffoldingBean(
          DefaultScaffoldingBean defaultScaffoldingBean) {
       this.defaultScaffoldingBean = defaultScaffoldingBean;
+   }
+
+   /**
+    * @return Returns the workflowManager.
+    */
+   public WorkflowManager getWorkflowManager() {
+      return workflowManager;
+   }
+
+   /**
+    * @param workflowManager The workflowManager to set.
+    */
+   public void setWorkflowManager(WorkflowManager workflowManager) {
+      this.workflowManager = workflowManager;
    }
 
 }
