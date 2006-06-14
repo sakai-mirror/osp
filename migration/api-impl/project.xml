@@ -90,7 +90,13 @@
       <artifactId>spring</artifactId>
       <version>${sakai.spring.version}</version>
     </dependency>
-    
+
+    <dependency>
+    	<groupId>sakaiproject</groupId>
+    	<artifactId>sakai-db-api</artifactId>
+    	<version>${sakai.version}</version>
+    </dependency>
+        
     <dependency>
     	<groupId>sakaiproject</groupId>
     	<artifactId>sakai-metaobj-api</artifactId>
