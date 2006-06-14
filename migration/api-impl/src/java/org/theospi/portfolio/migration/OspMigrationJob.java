@@ -50,6 +50,7 @@ import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.db.cover.SqlService;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.event.cover.NotificationService;
@@ -156,7 +157,7 @@ public class OspMigrationJob implements Job {
          
          boolean isDeveloper = developerFlag.equalsIgnoreCase("true");
          
-         connection = getDataSource().getConnection();
+         connection = SqlService.borrowConnection(); // getDataSource().getConnection();
          
          if(isDeveloper)
             developerClearAllTables(connection);
@@ -180,7 +181,7 @@ public class OspMigrationJob implements Job {
       } finally {
          if (connection != null) {
             try {
-               connection.close();
+               SqlService.returnConnection(connection); //connection.close();
             }
             catch (Exception e) {
                // can't do anything with this.
