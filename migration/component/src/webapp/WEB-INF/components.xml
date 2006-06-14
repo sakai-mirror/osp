@@ -62,38 +62,38 @@
       		<entry key="osp_reviewer_item"><value>OLD_OSP_REVIEWER_ITEM</value></entry>
       		-->
       		
-      		<entry key="osp_authz_simple"><value>OSP_AUTHZ_SIMPLE_BKP</value></entry>
+      		<entry key="osp_authz_simple"><value>ONC.OSP_AUTHZ_SIMPLE_BKP</value></entry>
       		
-      		<entry key="osp_help_glossary"><value>OSP_HELP_GLOSSARY_BKP</value></entry>
-      		<entry key="osp_help_glossary_desc"><value>OSP_HELP_GLOSSARY_DESC_BKP</value></entry>
+      		<entry key="osp_help_glossary"><value>ONC.OSP_HELP_GLOSSARY_BKP</value></entry>
+      		<entry key="osp_help_glossary_desc"><value>ONC.OSP_HELP_GLOSSARY_DESC_BKP</value></entry>
       		
-      		<entry key="osp_structured_artifact_def"><value>old_osp_structured_artifact_def</value></entry>
+      		<entry key="osp_structured_artifact_def"><value>ONC.old_osp_structured_artifact_def</value></entry>
       		
-      		<entry key="osp_scaffolding"><value>OSP_SCAFFOLDING_BKP</value></entry>
-      		<entry key="osp_matrix_label"><value>OSP_MATRIX_LABEL_BKP</value></entry>
-      		<entry key="osp_scaffolding_criteria"><value>OSP_SCAFFOLDING_CRITERIA_BKP</value></entry>
-      		<entry key="osp_scaffolding_levels"><value>OSP_SCAFFOLDING_LEVELS_BKP</value></entry>
-      		<entry key="osp_scaffolding_cell"><value>OSP_SCAFFOLDING_CELL_BKP</value></entry>
+      		<entry key="osp_scaffolding"><value>ONC.OSP_SCAFFOLDING_BKP</value></entry>
+      		<entry key="osp_matrix_label"><value>ONC.OSP_MATRIX_LABEL_BKP</value></entry>
+      		<entry key="osp_scaffolding_criteria"><value>ONC.OSP_SCAFFOLDING_CRITERIA_BKP</value></entry>
+      		<entry key="osp_scaffolding_levels"><value>ONC.OSP_SCAFFOLDING_LEVELS_BKP</value></entry>
+      		<entry key="osp_scaffolding_cell"><value>ONC.OSP_SCAFFOLDING_CELL_BKP</value></entry>
       		
-      		<entry key="osp_presentation_template"><value>OSP_PRESENTATION_TEMPLATE_BKP</value></entry>
-      		<entry key="osp_presentation_item_def"><value>OSP_PRESENTATION_ITEM_DEF_BKP</value></entry>
-      		<entry key="osp_template_file_ref"><value>OSP_TEMPLATE_FILE_REF_BKP</value></entry>
-      		<entry key="osp_pres_itemdef_mimetype"><value>OSP_PRES_ITEMDEF_MIMETYPE_BKP</value></entry>
+      		<entry key="osp_presentation_template"><value>ONC.OSP_PRESENTATION_TEMPLATE_BKP</value></entry>
+      		<entry key="osp_presentation_item_def"><value>ONC.OSP_PRESENTATION_ITEM_DEF_BKP</value></entry>
+      		<entry key="osp_template_file_ref"><value>ONC.OSP_TEMPLATE_FILE_REF_BKP</value></entry>
+      		<entry key="osp_pres_itemdef_mimetype"><value>ONC.OSP_PRES_ITEMDEF_MIMETYPE_BKP</value></entry>
       		
-      		<entry key="osp_presentation"><value>OSP_PRESENTATION_BKP</value></entry>
-      		<entry key="osp_presentation_comment"><value>OSP_PRESENTATION_COMMENT_BKP</value></entry>
-      		<entry key="osp_presentation_log"><value>OSP_PRESENTATION_LOG_BKP</value></entry>
-      		<entry key="osp_presentation_item"><value>OSP_PRESENTATION_ITEM_BKP</value></entry>
+      		<entry key="osp_presentation"><value>ONC.OSP_PRESENTATION_BKP</value></entry>
+      		<entry key="osp_presentation_comment"><value>ONC.OSP_PRESENTATION_COMMENT_BKP</value></entry>
+      		<entry key="osp_presentation_log"><value>ONC.OSP_PRESENTATION_LOG_BKP</value></entry>
+      		<entry key="osp_presentation_item"><value>ONC.OSP_PRESENTATION_ITEM_BKP</value></entry>
       		
-				<entry key="osp_matrix_tool"><value>OSP_MATRIX_TOOL_BKP</value></entry>
-      		<entry key="osp_matrix"><value>OSP_MATRIX_BKP</value></entry>
-      		<entry key="osp_matrix_cell"><value>OSP_MATRIX_CELL_BKP</value></entry>
-      		<entry key="osp_cell_attachment"><value>OSP_CELL_ATTACHMENT_BKP</value></entry>
+				<entry key="osp_matrix_tool"><value>ONC.OSP_MATRIX_TOOL_BKP</value></entry>
+      		<entry key="osp_matrix"><value>ONC.OSP_MATRIX_BKP</value></entry>
+      		<entry key="osp_matrix_cell"><value>ONC.OSP_MATRIX_CELL_BKP</value></entry>
+      		<entry key="osp_cell_attachment"><value>ONC.OSP_CELL_ATTACHMENT_BKP</value></entry>
       		
-      		<entry key="osp_reflection"><value>OSP_REFLECTION_BKP</value></entry>
-      		<entry key="osp_reflection_item"><value>OSP_REFLECTION_ITEM_BKP</value></entry>
-      		<entry key="osp_expectation"><value>OSP_EXPECTATION_BKP</value></entry>
-      		<entry key="osp_reviewer_item"><value>OSP_REVIEWER_ITEM_BKP</value></entry>
+      		<entry key="osp_reflection"><value>ONC.OSP_REFLECTION_BKP</value></entry>
+      		<entry key="osp_reflection_item"><value>ONC.OSP_REFLECTION_ITEM_BKP</value></entry>
+      		<entry key="osp_expectation"><value>ONC.OSP_EXPECTATION_BKP</value></entry>
+      		<entry key="osp_reviewer_item"><value>ONC.OSP_REVIEWER_ITEM_BKP</value></entry>
       	
       	</map>
       </property>
