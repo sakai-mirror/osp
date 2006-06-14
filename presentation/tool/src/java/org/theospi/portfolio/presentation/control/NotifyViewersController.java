@@ -106,7 +106,7 @@ public class NotifyViewersController extends AbstractPresentationController impl
                     for (Iterator j = members.iterator(); j.hasNext();) {
                         Member member = (Member) j.next();
                         if (member.getRole().getId().equals(role)) {
-                            String email = UserDirectoryService.getUserByEid(member.getUserEid()).getEmail();
+                            String email = UserDirectoryService.getUser(member.getUserId()).getEmail();
                             if (validateEmail(email)) {
                                 EmailService.send(user.getEmail(), email,
                                         getMailMessage().getSubject(), message, null, null, null);
