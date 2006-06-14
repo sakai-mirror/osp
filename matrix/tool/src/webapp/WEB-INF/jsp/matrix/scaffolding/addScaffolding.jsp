@@ -338,7 +338,6 @@
 			<input type="submit" name="cancelAction" value="<osp:message key="button_cancel"/>"/>
 		</div>
 
-    <script type="text/javascript" src="/library/htmlarea/sakai-htmlarea.js"></script>
-    <script type="text/javascript" defer="1">chef_setupformattedtextarea('descriptionTextArea');</script>
+   <osp:richTextWrapper textAreaId="descriptionTextArea" />
 
 </form>

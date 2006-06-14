@@ -73,8 +73,7 @@
     
     <input type="hidden" name="worksiteId" value="<c:out value="${entry.worksiteId}" />"/>
     
-    <script type="text/javascript" src="/library/htmlarea/sakai-htmlarea.js"></script>
-    <script type="text/javascript" defer="1">chef_setupformattedtextarea('longDescription');</script>
+   <osp:richTextWrapper textAreaId="longDescription" />
     
     <div class="act">
         <c:if test="${not empty entry.id}">
