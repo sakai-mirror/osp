@@ -502,7 +502,7 @@ public class OspMigrationJob implements Job {
                "JOIN sakai_realm_rl_fn rf ON r.REALM_KEY = rf.REALM_KEY " +
                " JOIN sakai_realm_role rr ON rf.ROLE_KEY = rr.ROLE_KEY " +
                "where st.registration = 'osp.matrix' " +
-               "and role_name in ('maintain', 'project owner', 'instructor');";
+               "and role_name in ('maintain', 'project owner', 'instructor')";
       
          stmt = con.createStatement();
          rs = stmt.executeQuery(sql);
