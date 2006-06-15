@@ -515,6 +515,7 @@ public class OspMigrationJob implements Job {
 
                String agent = "/site/" + siteId + "/" + role;
                try {
+                  // the agent has already been verified as they are coming from the db
                   authzManager.createAuthorization(agentManager.getAgent(agent), func, idManager.getId(siteId));
                } catch(Exception e) {
                   if(!isDeveloper)
@@ -629,7 +630,21 @@ public class OspMigrationJob implements Job {
                Id sid = idManager.getId(id);
                scaffolding.setId(null);
                scaffolding.setNewId(sid);
-               scaffolding.setOwner(agentManager.getAgent(owner));
+               Agent scaffAgent = agentManager.getAgent(owner);
+               /*
+               if(scaffAgent == null) {
+                  logger.error("OSP Migration Error: The scaffolding owner agent couldn't be found: " + lastOwner);
+                  continue;
+               } else if(scaffAgent.getId() == null) {
+                  logger.error("OSP Migration Error: The scaffolding owner agent id couldn't be found: " + lastOwner);
+                  continue;
+               } else if(scaffAgent.getId().getValue() == null) {
+                  logger.error("OSP Migration Error: The scaffolding owner agent id value couldn't be found: " + lastOwner);
+                  continue;
+               } 
+               */
+               
+               scaffolding.setOwner(scaffAgent);
                scaffolding.setTitle(title);
                scaffolding.setDescription(description);
                scaffolding.setWorksiteId(idManager.getId(worksite));
@@ -890,8 +905,16 @@ public class OspMigrationJob implements Job {
                      String scaffolding_cell_id = rss.getString("scaffolding_cell_id");
    
                      if(!mowner.equals(lastOwner)) {
-                        if(matrix != null && !badCell)
-                           matrixManager.save(matrix);
+                        if(matrix != null && !badCell) {
+                           if(matrix.getOwner() == null)
+                              logger.error("OSP Migration Error: The matrix owner agent couldn't be found: " + lastOwner);
+                           else if(matrix.getOwner().getId() == null)
+                              logger.error("OSP Migration Error: The matrix owner agent id couldn't be found: " + lastOwner);
+                           else if(matrix.getOwner().getId().getValue() == null)
+                              logger.error("OSP Migration Error: The matrix owner agent id value couldn't be found: " + lastOwner);
+                           else
+                              matrixManager.save(matrix);
+                        }
    
                         lastOwner = mowner;
    
@@ -1033,8 +1056,16 @@ public class OspMigrationJob implements Job {
                   rss.close();
                }
                
-               if(matrix != null && !badCell)
-                  matrixManager.save(matrix);
+               if(matrix != null && !badCell) {
+                  if(matrix.getOwner() == null)
+                     logger.error("OSP Migration Error: The matrix owner agent couldn't be found: " + lastOwner);
+                  else if(matrix.getOwner().getId() == null)
+                     logger.error("OSP Migration Error: The matrix owner agent id couldn't be found: " + lastOwner);
+                  else if(matrix.getOwner().getId().getValue() == null)
+                     logger.error("OSP Migration Error: The matrix owner agent id value couldn't be found: " + lastOwner);
+                  else
+                     matrixManager.save(matrix);
+               }
                
             }  // end while(rs.next()) -- looping through each scaffolding
             
@@ -1106,8 +1137,15 @@ public class OspMigrationJob implements Job {
                   Set fileRefs = createTemplateFileRefs(con, template);
                   template.setFiles(fileRefs);
                   
-                  
-                  presentationManager.storeTemplate(template, false, false);
+
+                  if(template.getOwner() == null)
+                     logger.error("OSP Migration Error: The template owner agent couldn't be found: " + owner);
+                  else if(template.getOwner().getId() == null)
+                     logger.error("OSP Migration Error: The template owner agent id couldn't be found: " + owner);
+                  else if(template.getOwner().getId().getValue() == null)
+                     logger.error("OSP Migration Error: The template owner agent id value couldn't be found: " + owner);
+                  else
+                     presentationManager.storeTemplate(template, false, false);
                   
                }
            } finally {
@@ -1164,6 +1202,17 @@ public class OspMigrationJob implements Job {
                   presentation.setCreated(created);
                   presentation.setModified(modified);
                   presentation.setToolId(toolId);
+
+                  if(presentation.getOwner() == null) {
+                     logger.error("OSP Migration Error: The presentation owner agent couldn't be found: " + owner);
+                     continue;
+                  } else if(presentation.getOwner().getId() == null) {
+                     logger.error("OSP Migration Error: The presentation owner agent id couldn't be found: " + owner);
+                     continue;
+                  } else if(presentation.getOwner().getId().getValue() == null) {
+                     logger.error("OSP Migration Error: The presentation owner agent id value couldn't be found: " + owner);
+                     continue;
+                  }
                                     
                   String siteId = "";
                   try {
