@@ -57,6 +57,7 @@ import org.sakaiproject.event.cover.NotificationService;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
@@ -449,7 +450,7 @@ public class OspMigrationJob implements Job {
             while (rs.next()) {
                //String id = rs.getString("id");
                String qual = rs.getString("qualifier_id");
-               String agent = rs.getString("agent_id");
+               String agentStr = rs.getString("agent_id");
                String func = rs.getString("function_name");
                // Transformations on the authz stuff that needs to 
                // change from a tool_id to a site_id
@@ -464,7 +465,19 @@ public class OspMigrationJob implements Job {
                      func = MatrixFunctionConstants.EVALUATE_MATRIX;
                   }
                   
-                  authzManager.createAuthorization(agentManager.getAgent(agent), func, idManager.getId(qual));
+                  Agent agent = agentManager.getAgent(agentStr);
+                  
+                  // there needs to be an agent or else the authorization is invalid
+                  if(agent == null)
+                     logger.error("OSP Migration error: agent was null: " + agentStr);
+                  else if(agent.getId() == null)
+                     logger.error("OSP Migration error: agent id was null: " + agentStr);
+                  else if(agent.getId().getValue() == null)
+                     logger.error("OSP Migration error: agent id value was null: " + agentStr);
+                  else if(qual == null)
+                     logger.error("OSP Migration error: qualifier was null: " + qual);
+                  else
+                     authzManager.createAuthorization(agent, func, idManager.getId(qual));
                } catch(Exception e) {
                   if(!isDeveloper)
                      throw e;
