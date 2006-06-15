@@ -62,14 +62,18 @@
                             </h:selectManyListbox>
                         </h:panelGroup>
                     </h:panelGrid>
-                    <h:panelGrid rendered="#{audience.maxList}" columns="2">
+                    <h:panelGrid  rendered="audience.maxList" columns="1">
                     <h:panelGroup>
-                     <h:outputFormat value="#{msgs.browseUserInstruction}"/>
 
+                     <h:outputFormat value = "#{audience.browseMessage}"/>
+                      <h:outputFormat value = " "/>
                      <h:commandLink id="browse_button" action="browse" value="#{common_msgs.browse_members}"
                                        style="white-space:nowrap;"/>
+                        <h:outputFormat value = " "/>
+                     <h:outputFormat value = "#{audience.browseUserInstructions}" />
                      </h:panelGroup>
                     </h:panelGrid>
+
                     <ospx:splitarea rendered="#{audience.emailCapable}" direction="horizontal" width="100%">
                         <ospx:splitsection size="25%" valign="center">
                             <h:outputLabel value="#{common_msgs.email_label}:" for="emails"/>

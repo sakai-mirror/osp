@@ -321,6 +321,8 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
             myResources.getString("eval_audience_filter_instructions"));
       session.put(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, null);
       session.put(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "true");
+      session.put(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL,
+            myResources.getString("eval_audience_browse_individual"));
    }
    
    protected void clearAudienceSelectionVariables(Map session) {
@@ -336,6 +338,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       session.remove(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS);
       session.remove(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL);
       session.remove(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED);
+      session.remove(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL);
    }
    
    protected Collection getAvailableForms(String siteId, String type) {

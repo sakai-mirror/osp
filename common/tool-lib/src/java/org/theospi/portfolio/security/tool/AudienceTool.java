@@ -41,6 +41,7 @@ import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.AgentImplOsp;
+import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.tool.HelperToolBase;
 import org.theospi.portfolio.shared.tool.PagingList;
 
@@ -81,14 +82,7 @@ public class AudienceTool extends HelperToolBase {
     private String[] selectedRoleMember;
     private List selectedRoleMemberList;
 
-    private List availableRoleList;
-    private List availableMemberList;
 
-    private List selectedRoleList = new ArrayList();
-    private List selectedMemberList = new ArrayList();
-
-
-    private boolean maxList;
 
     /**
      * **********************************
@@ -244,6 +238,9 @@ public class AudienceTool extends HelperToolBase {
 
     public String getInstructions() {
         return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS);
+    }
+    public String getBrowseUserInstructions() {
+        return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL);
     }
 
     public String getPublicInstructions() {
@@ -853,6 +850,7 @@ public class AudienceTool extends HelperToolBase {
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_SAVE_NOTIFY_TARGET);
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_SAVE_TARGET);
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD);
+        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL); 
     }
 
     public String getStepString() {
@@ -938,4 +936,14 @@ public class AudienceTool extends HelperToolBase {
         return roleList;
 
     }
+     public String getBrowseMessage() {
+      String message = "";
+
+
+         message = getMessageFromBundle("browseUserInstruction1", new Object[]{
+               new Integer(getMaxRoleMemberList())});
+
+
+      return message;
+   }
 }

@@ -89,5 +89,8 @@ public interface AudienceSelectionHelper {
          "org.theospi.portfolio.security.audienceBackTarget";
 
     public static final String AUDIENCE_PRESENTATION_MANAGER =
-         "org.theospi.portfolio.security.PresentationManager";   
+         "org.theospi.portfolio.security.PresentationManager";
+
+     public static final String AUDIENCE_BROWSE_INDIVIDUAL =
+         "org.theospi.portfolio.security.audienceBrowseIndividual"; 
 }

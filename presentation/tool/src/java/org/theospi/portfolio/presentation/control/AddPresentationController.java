@@ -566,6 +566,8 @@ public class AddPresentationController extends AbstractWizardFormController {
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_SAVE_TARGET, PARAM_FINISH);
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_BACK_TARGET, PARAM_TARGET +
               (pres.getPresentationType().equals(Presentation.FREEFORM_TYPE)?2:3));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL,
+            myResources.getString("audience_browse_individual"));
    }
 
 

@@ -104,6 +104,8 @@
                    <osp:param name="session.org.theospi.portfolio.security.audiencePublicInstructions">
                         <fmt:message key="publish_message"/></osp:param>
                    <osp:param name="session.org.theospi.portfolio.security.audiencePublicURL" value="${url}"/>
+                  <osp:param name="session.org.theospi.portfolio.security.audienceBrowseIndividual">
+                      <fmt:message key='audience_browse_individual'/> </osp:param>
                    </osp:url>"title="<fmt:message key='action_publish'/>" ><fmt:message key="action_publish"/></a>
                <c:set var="hasFirstAction" value="true" />
              </c:if>
