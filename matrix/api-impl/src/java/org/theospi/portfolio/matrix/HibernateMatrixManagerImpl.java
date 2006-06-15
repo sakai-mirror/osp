@@ -398,8 +398,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return scaffolding;
    }
    public Scaffolding saveNewScaffolding(Scaffolding scaffolding) {
-      scaffolding = (Scaffolding)this.save(scaffolding);
+      
+      Id id = (Id)this.save(scaffolding);
       getHibernateTemplate().flush();
+      scaffolding = getScaffolding(id);
+      
       return scaffolding;
    }
    
@@ -1348,9 +1351,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          scaffolding.setOwner(getAuthnManager().getAgent());
          scaffolding.setWorksiteId(getIdManager().getId(siteId));
          
-         resetIds(scaffolding, guidanceMap, formsMap, styleMap);
+         resetIds(scaffolding, guidanceMap, formsMap, styleMap, siteId);
 
-         scaffolding = storeScaffolding(scaffolding);         
+         scaffolding = saveNewScaffolding(scaffolding);         
 
          if (gotFile) {
             fileParent.getPropertiesEdit().addProperty(
@@ -1552,7 +1555,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       fileMap.put(oldId, newId);
    }
 
-   protected void resetIds(Scaffolding scaffolding, Map guidanceMap, Map formsMap, Map styleMap) {
+   protected void resetIds(Scaffolding scaffolding, Map guidanceMap, Map formsMap, Map styleMap, String siteId) {
       
       if (scaffolding.getStyle() != null) {
          if (styleMap != null) {
@@ -1565,7 +1568,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       
       substituteCriteria(scaffolding);
       substituteLevels(scaffolding);
-      substituteScaffoldingCells(scaffolding, guidanceMap, formsMap, styleMap);
+      substituteScaffoldingCells(scaffolding, guidanceMap, formsMap, styleMap, siteId);
    }
 
    protected void substituteCriteria(Scaffolding scaffolding) {
@@ -1589,7 +1592,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       scaffolding.setLevels(newLevels);
    }
    
-   protected void substituteScaffoldingCells(Scaffolding scaffolding, Map guidanceMap, Map formsMap, Map styleMap) {
+   protected void substituteScaffoldingCells(Scaffolding scaffolding, Map guidanceMap, Map formsMap, Map styleMap, String siteId) {
       Set sCells = new HashSet(); 
       for (Iterator iter=scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell scaffoldingCell = (ScaffoldingCell) iter.next();
@@ -1597,9 +1600,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          
          WizardPageDefinition wpd = scaffoldingCell.getWizardPageDefinition();
          wpd.setId(null);
+         wpd.setSiteId(siteId);
          if (wpd.getGuidance() != null) {
             if (guidanceMap != null) {
-               wpd.setGuidance((Guidance) guidanceMap.get(wpd.getGuidance().getId().getValue()));
+               Guidance guidance = (Guidance) guidanceMap.get(wpd.getGuidance().getId().getValue());
+               wpd.setNewId(getIdManager().createId());
+               guidance.setSecurityQualifier(wpd.getNewId());
+               wpd.setGuidance(guidance);
             }
             else {
                wpd.getGuidance().setId(null);
