@@ -674,7 +674,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Object[] params = new Object[]{id.getValue()};
       
       List list = this.getHibernateTemplate().find("from " +
-            "ScaffoldingCell scaffoldingCell where scaffoldingCell.wizardPageDefinition=?", 
+            "ScaffoldingCell scaffoldingCell where scaffoldingCell.wizardPageDefinition.id=?", 
             params);
       if (list.size() == 1) {
          scaffoldingCell = (ScaffoldingCell) list.get(0);
