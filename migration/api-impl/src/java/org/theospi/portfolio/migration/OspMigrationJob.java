@@ -631,18 +631,18 @@ public class OspMigrationJob implements Job {
                scaffolding.setId(null);
                scaffolding.setNewId(sid);
                Agent scaffAgent = agentManager.getAgent(owner);
-               /*
+               
                if(scaffAgent == null) {
-                  logger.error("OSP Migration Error: The scaffolding owner agent couldn't be found: " + lastOwner);
+                  logger.error("OSP Migration Error: The scaffolding owner agent couldn't be found: " + owner);
                   continue;
                } else if(scaffAgent.getId() == null) {
-                  logger.error("OSP Migration Error: The scaffolding owner agent id couldn't be found: " + lastOwner);
+                  logger.error("OSP Migration Error: The scaffolding owner agent id couldn't be found: " + owner);
                   continue;
                } else if(scaffAgent.getId().getValue() == null) {
-                  logger.error("OSP Migration Error: The scaffolding owner agent id value couldn't be found: " + lastOwner);
+                  logger.error("OSP Migration Error: The scaffolding owner agent id value couldn't be found: " + owner);
                   continue;
                } 
-               */
+               
                
                scaffolding.setOwner(scaffAgent);
                scaffolding.setTitle(title);
