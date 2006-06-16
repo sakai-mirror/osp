@@ -53,6 +53,12 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
    private ContentHostingService contentHosting = null;
    private AgentManager agentManager = null;
    
+   /**
+    * This creates a new review with a generated id.  it also flags the review as being a new object
+    * @param String description
+    * @param String siteId
+    * @return Review
+    */
    public Review createNew(String description, String siteId) {
       Review review = new Review(getIdManager().createId(), description, 
             siteId);

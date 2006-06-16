@@ -811,10 +811,12 @@ public class OspMigrationJob implements Job {
                   rss.close();
                }
 
+               // save the scaffolding!
                Id scaffId = (Id)matrixManager.save(scaffolding);
                scaffolding = matrixManager.getScaffolding(scaffId);
 
 
+               // migrate the expectations into the guidance.instruction of the cell
 
                tableName = getOldTableName("osp_scaffolding_cell");
                tableName2 = getOldTableName("osp_expectation");
@@ -892,7 +894,7 @@ public class OspMigrationJob implements Job {
 
                String lastOwner = "";
                Matrix matrix = null;
-               boolean badCell = false;
+               boolean badCell = false, badMatrix = false;
                int intelGrowthIndex = 1;
 
                try {
@@ -918,17 +920,22 @@ public class OspMigrationJob implements Job {
    
                         lastOwner = mowner;
    
-                        badCell = false;
                         matrix = new Matrix();
    
                         matrix.setOwner(agentManager.getAgent(mowner));
                         matrix.setScaffolding(scaffolding);
+
+                        badMatrix = matrix.getOwner() == null ||
+                                  matrix.getOwner().getId() == null   ||
+                                  matrix.getOwner().getId().getValue() == null;
+                        badCell = false;
                      }
-                     badCell = scaffolding_cell_id == null;
+                     badCell = scaffolding_cell_id == null || badMatrix;
    
                      if(!badCell) {
                         ScaffoldingCell sCell = (ScaffoldingCell)scaffoldingCellMap.get(scaffolding_cell_id);
    
+                        boolean isReady = status.equals(MatrixFunctionConstants.READY_STATUS);
                         Cell cell = new Cell();
                         cell.setNewId(mcid);
                         cell.getWizardPage().setNewId(idManager.createId());
@@ -949,6 +956,9 @@ public class OspMigrationJob implements Job {
                               att.setArtifactId(idManager.getId(artifact));
                               att.setWizardPage(cell.getWizardPage());
                               attachments.add(att);
+                              if(!isReady)
+                                 contentHosting.lockObject(artifact, 
+                                    cell.getWizardPage().getNewId().getValue(), "cell attachments are locked when submitted", true);
                            }
                            cell.setAttachments(attachments);
                         } finally {
@@ -977,6 +987,10 @@ public class OspMigrationJob implements Job {
                               review.setType(Review.REFLECTION_TYPE);//contant
                               review.setReviewContent(reflectionForm);
                               getReviewManager().saveReview(review);
+                              
+                              if(!isReady)
+                                 contentHosting.lockObject(reflectionForm.getValue(), 
+                                       review.getId().getValue(), "reflection has been submitted", true);
       
                               sql = "SELECT CONNECTTEXT, EVIDENCE FROM " + tableName2 + " WHERE REFLECTION_ID='" + reflection_id + "' ORDER BY SEQ_NUM";
                               ResultSet reflectionRS = matrixInnerStmt.executeQuery(sql);
@@ -1000,6 +1014,10 @@ public class OspMigrationJob implements Job {
                                     pageForm.setArtifactId(expectationForm);
                                     pageForm.setFormType(EXPECTATION_FORM_ID_VALUE);
                                     pageForm.setWizardPage(cell.getWizardPage());
+
+                                    if(!isReady)
+                                       contentHosting.lockObject(expectationForm.getValue(), 
+                                             cell.getWizardPage().getNewId().getValue(), "expectation has been submitted", true);
          
                                     pageForms.add(pageForm);
                                  }
@@ -1042,7 +1060,10 @@ public class OspMigrationJob implements Job {
                                  review.setParent(pageId.getValue());// wizard page
                                  review.setType(Review.EVALUATION_TYPE);//contant
                                  review.setReviewContent(evaluationForm);
-                                 getReviewManager().saveReview(review);
+                                 review = getReviewManager().saveReview(review);
+                                 
+                                 contentHosting.lockObject(evaluationForm.getValue(), 
+                                       review.getId().getValue(), "evaluation is once off", true);
                               }
                            }
                         } finally {

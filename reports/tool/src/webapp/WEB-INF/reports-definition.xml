@@ -796,7 +796,7 @@
            <list>
               <value><![CDATA[
                     select dw_scaffolding.title, dw_scaffolding.readyColor, dw_scaffolding.pendingColor, dw_scaffolding.lockedColor, dw_scaffolding.completedColor,
-                        if(0, 'true', 'false') `random`, dw_site_users.user_id `userId`, dw_matrix.owner `matrix_userId`, `status`, 
+                        if(?, 'true', 'false') `random`, dw_site_users.user_id `userId`, dw_matrix.owner `matrix_userId`, `status`, 
                         dw_scaffolding_criteria.sequenceNumber `criterion_sequence`,
                             dw_scaffolding_criteria.description `criterion_description`,
                         dw_scaffolding_levels.sequenceNumber `level_sequence`,
@@ -811,7 +811,7 @@
                     LEFT JOIN dw_scaffolding_criteria ON dw_scaffolding_cell.rootcriterion_id = dw_scaffolding_criteria.id
                     LEFT JOIN dw_scaffolding_levels ON dw_scaffolding_cell.level_id = dw_scaffolding_levels.id
                     LEFT JOIN dw_wizard_page_review ON dw_matrix_cell.wizard_page_id = dw_wizard_page_review.id
-                                where dw_scaffolding.id="85F628536653692A62D197B8DD5E5DDE"
+                                where dw_scaffolding.id=?
                 
                     ORDER BY `level_sequence`, `userId`, `criterion_sequence`
                     ]]>
