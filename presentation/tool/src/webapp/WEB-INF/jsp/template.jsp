@@ -25,7 +25,7 @@
   <%
       String panelId = request.getParameter("panel");
       if (panelId == null) {
-         panelId = "Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getContext();
+         panelId = "Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId();
       }
 
   %>
