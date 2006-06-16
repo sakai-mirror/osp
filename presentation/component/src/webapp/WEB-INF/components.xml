@@ -534,6 +534,22 @@
          </list>
       </property>
    </bean>
+   
+   <bean id="org.sakaiproject.content.api.ContentResourceFilter.templateImportFile"
+      parent="org.sakaiproject.content.api.ContentResourceFilter.base">
+      <property name="viewAll"><value>true</value></property>
+      <property name="mimeTypes">
+         <list>
+            <value>application/zip</value>
+            <value>application/x-zip-compressed</value>
+         </list>
+      </property>
+      <property name="acceptedExtensions">
+         <list>
+            <value>zip</value>
+         </list>
+      </property>
+   </bean>
 
    <bean id="org.theospi.portfolio.list.intf.ListGenerator.portfolios"
       class="org.theospi.portfolio.presentation.model.impl.PresentationListGenerator" init-method="init">
