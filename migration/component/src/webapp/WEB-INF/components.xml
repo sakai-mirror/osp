@@ -20,6 +20,28 @@
       </property>
    </bean>
    
+   <bean id="org.sakaiproject.api.app.scheduler.JobBeanWrapper.ospFormPropsUpdate"
+      class="org.sakaiproject.component.app.scheduler.jobs.SpringJobBeanWrapper"
+      singleton="true" init-method="init">
+      <property name="beanId">
+         <value>org.theospi.portfolio.migration.UpdateFormPropsJob</value>
+      </property>
+      <property name="jobName">
+         <value>OSP Form Property Update</value>
+      </property>
+      <property name="schedulerManager">
+         <ref bean="org.sakaiproject.api.app.scheduler.SchedulerManager" />
+      </property>
+   </bean>
+   
+   <bean id="org.theospi.portfolio.migration.UpdateFormPropsJob"
+      class="org.theospi.portfolio.migration.UpdateFormPropsJob"
+      singleton="true">
+      <property name="contentHosting">
+         <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
+      </property>
+   </bean>
+   
    <bean id="org.theospi.portfolio.migration.OspMigrationJob"
       class="org.theospi.portfolio.migration.OspMigrationJob"
       singleton="true">
