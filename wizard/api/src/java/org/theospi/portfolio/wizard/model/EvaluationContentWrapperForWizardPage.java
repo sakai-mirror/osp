@@ -19,7 +19,7 @@
 *
 **********************************************************************************/
 
-package org.theospi.portfolio.matrix.model;
+package org.theospi.portfolio.wizard.model;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -29,14 +29,16 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
+import org.theospi.portfolio.wizard.model.Wizard;
 
 public class EvaluationContentWrapperForWizardPage extends
       EvaluationContentWrapper {
 
    
    public EvaluationContentWrapperForWizardPage(Id id, 
-         String title, Agent owner, Date submittedDate) throws UserNotDefinedException {
+         String title, Agent owner, Date submittedDate, String wizardType) throws UserNotDefinedException {
      
       setId(id);
       setTitle(title);
@@ -51,6 +53,11 @@ public class EvaluationContentWrapperForWizardPage extends
       
       params.add(new ParamBean("page_id", getId().getValue()));
       params.add(new ParamBean("readOnlyMatrix", "true"));
+      
+      if (wizardType.equals(Wizard.WIZARD_TYPE_SEQUENTIAL)) {
+         params.add(new ParamBean("sequential", "true"));
+      }
+      
       setUrlParams(params);
    }
 }
