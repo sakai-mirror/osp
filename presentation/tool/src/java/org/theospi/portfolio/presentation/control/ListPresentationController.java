@@ -31,6 +31,8 @@ import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.api.Tool;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -53,7 +55,10 @@ public class ListPresentationController extends AbstractPresentationController {
          getListScrollIndexer().indexList(request, model, presentations));
 
       String baseUrl = getServerConfigurationService().getServerUrl();
-      model.put("baseUrl", baseUrl);
+
+      String url =  baseUrl + "/osp-presentation-tool/viewPresentation.osp?";
+      url += Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
+      model.put("baseUrl", url);
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", getWorksiteManager().getTool(currentToolId));
       model.put("isMaintainer", isMaintainer());

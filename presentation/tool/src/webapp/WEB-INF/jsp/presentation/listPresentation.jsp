@@ -72,7 +72,7 @@
                 
              <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
              <c:set var="url">
-                 <c:out value="${baseUrl}"/>/osp-presentation-tool/viewPresentation.osp?id=<c:out value="${presentation.id.value}"/>
+                 <c:out value="${baseUrl}"/>&id=<c:out value="${presentation.id.value}"/>
                 </c:set>
                   <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />

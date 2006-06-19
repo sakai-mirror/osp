@@ -46,6 +46,7 @@ import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -532,6 +533,9 @@ public class AddPresentationController extends AbstractWizardFormController {
    }
     protected void setAudienceSelectionVariables(HttpSession session, Presentation pres) {
       String baseUrl = this.getServerConfigurationService().getServerUrl();
+      String url =  baseUrl + "/osp-presentation-tool/viewPresentation.osp?id=" + pres.getId().getValue();
+      url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
+
       ResourceBundle myResources =
          ResourceBundle.getBundle("org.theospi.portfolio.presentation.bundle.Messages");
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, "osp.presentation.view");
@@ -559,7 +563,7 @@ public class AddPresentationController extends AbstractWizardFormController {
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "false");
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_INSTRUCTIONS,
               myResources.getString("publish_message"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_URL, baseUrl + "/osp-presentation-tool/viewPresentation.osp?id=" + pres.getId().getValue());
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_URL,  url);
 
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_CANCEL_TARGET, PARAM_CANCEL);
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_SAVE_NOTIFY_TARGET, PARAM_FINISH_AND_NOTIFY);

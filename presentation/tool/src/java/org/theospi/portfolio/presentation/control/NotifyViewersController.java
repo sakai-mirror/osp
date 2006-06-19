@@ -29,6 +29,8 @@ import org.sakaiproject.metaobj.utils.Config;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.mail.MailSender;
@@ -84,7 +86,7 @@ public class NotifyViewersController extends AbstractPresentationController impl
 
         String url = getServerConfigurationService().getServerUrl() +
                 "/osp-presentation-tool/viewPresentation.osp?id=" + presentation.getId().getValue();
-
+        url += Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
 
         String message = form.getMessage() +
                 "\n" + "****************************************************************" +
