@@ -20,14 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.shared.control.servlet;
 
-import java.io.IOException;
-import java.util.Enumeration;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.sakaiproject.jsf.util.JsfTool;
 import org.sakaiproject.tool.api.ActiveTool;
 import org.sakaiproject.tool.api.Tool;
@@ -36,6 +28,13 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.ActiveToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.util.Web;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Enumeration;
 
 /**
  * Created by IntelliJ IDEA.
@@ -89,6 +88,11 @@ public class HelperAwareJsfTool extends JsfTool {
 
 			if (target == null || "/".equals(target))
 			{
+            if (!m_defaultToLastView) {
+               // make sure tool session is clean
+               session.clearAttributes();
+            }
+
 				target = computeDefaultTarget();
 
 				// make sure it's a valid path
@@ -120,10 +124,7 @@ public class HelperAwareJsfTool extends JsfTool {
 			target = newTarget;
 
 			// store this
-			if (m_defaultToLastView)
-			{
-				session.setAttribute(LAST_VIEW_VISITED, target);
-			}
+   		session.setAttribute(LAST_VIEW_VISITED, target);
 		}
 
 		// add the configured folder root and extension (if missing)
