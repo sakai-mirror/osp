@@ -170,8 +170,7 @@ public class PresentationExport extends Crawler implements LinkListener {
          mirror.writePage(page);
          mirror.rewrite();
       } catch (IOException e) {
-         logger.error("", e);
-         throw new RuntimeException(e);
+         logger.info("Error visiting link.  Most likely broken link.", e);
       }
 
       logger.debug("visiting page");
