@@ -20,13 +20,18 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.wizard.model.CompletedWizard;
+import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 
 /**
  * The steps are referenced from 1 to n.  this way we can render the step number to the interface correctly
@@ -38,18 +43,15 @@ import org.theospi.portfolio.matrix.model.WizardPage;
  */
 public class SequentialWizardPageController extends WizardPageController {
 
-   private static final String TOTAL_STEPS =
-      "org.theospi.portfolio.matrix.control.SequentialWizardPageController.totalSteps";
-
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.FormController#referenceData(java.util.Map, java.lang.Object, org.springframework.validation.Errors)
     */
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = super.referenceData(request, command, errors);
-      if (request.get(TOTAL_STEPS) != null) {
+      if (request.get(WizardPageHelper.TOTAL_STEPS) != null) {
          model.put("sequential", "true");
          model.put("currentStep", request.get(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP));
-         model.put("totalSteps", request.get(TOTAL_STEPS));
+         model.put("totalSteps", request.get(WizardPageHelper.TOTAL_STEPS));
       }
       return model;
    }
@@ -59,9 +61,20 @@ public class SequentialWizardPageController extends WizardPageController {
       // get the step and get the appropriate page
       List steps = (List) session.get(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES);
 
+      if (steps == null) {
+         Id pageId = getIdManager().getId((String)request.get("page_id"));
+         WizardPage page = getMatrixManager().getWizardPage(pageId);
+         CompletedWizard cw = getWizardManager().getCompletedWizardByPage(pageId);
+         List completedPages = cw.getRootCategory().getChildPages();
+         steps = getPageList(completedPages);
+         session.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, getCurrentStepFromList(steps, page));
+         session.put(WizardPageHelper.WIZARD_OWNER, cw.getOwner());
+      }
+      //TODO: It's probably safe to assume that steps will not be null at this point, 
+      // but I'm leaving the check here for the time being.
       if (steps != null) {
          int currentStep = getCurrentStep(session);
-         request.put(TOTAL_STEPS, new Integer(steps.size()));
+         request.put(WizardPageHelper.TOTAL_STEPS, new Integer(steps.size()));
          if(currentStep == 0)
             currentStep = 1;
          WizardPage page = (WizardPage) steps.get(currentStep - 1);
@@ -71,6 +84,27 @@ public class SequentialWizardPageController extends WizardPageController {
          session.put(WizardPageHelper.WIZARD_PAGE, page);
       }
       return super.fillBackingObject(incomingModel, request, session, application);
+   }
+   
+   protected Integer getCurrentStepFromList(List pages, WizardPage curPage) {
+      int counter = 0;
+      for (Iterator iter = pages.iterator(); iter.hasNext();) {
+         WizardPage page = (WizardPage) iter.next();
+         if (page.equals(curPage))
+            break;
+         counter++;
+      }
+      return new Integer(counter);
+   }
+   
+   protected List getPageList(List completedPages) {
+      List pageList = new ArrayList();
+
+      for (Iterator i=completedPages.iterator();i.hasNext();) {
+         CompletedWizardPage page = (CompletedWizardPage) i.next();
+         pageList.add(page.getWizardPage());
+      }
+      return pageList;
    }
 
    protected int getCurrentStep(Map session) {

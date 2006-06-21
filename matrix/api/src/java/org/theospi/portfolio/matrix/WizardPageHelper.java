@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/matrix/api/src/java/org/theospi/portfolio/matrix/WizardPageHelper.java $
+* $Id:WizardPageHelper.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -38,5 +38,10 @@ public interface WizardPageHelper {
    public final static String SEQUENTIAL_WIZARD_CURRENT_STEP = "org.theospi.portfolio.matrix.WizardPageHelper.step";
 
    public final static String SEQUENTIAL_WIZARD_PAGES = "org.theospi.portfolio.matrix.WizardPageHelper.pages";
+   
+   public final static String TOTAL_STEPS =
+      "org.theospi.portfolio.matrix.control.SequentialWizardPageController.totalSteps";
+   
+   public final static String WIZARD_OWNER = "wizardowner";
 
 }

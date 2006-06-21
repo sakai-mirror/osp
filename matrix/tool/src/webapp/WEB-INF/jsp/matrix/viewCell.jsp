@@ -464,7 +464,9 @@
         <input type="submit" name="_back" value="<fmt:message key="button_back"/>"/>
     </c:if>
     <input type="submit" name="matrix" value="<fmt:message key="button_finish"/>"/>
+    <!-- 
     <input type="submit" name="cancel" value="<fmt:message key="button_cancel"/>"/>
+	-->
 </div>
 </c:if>
 <c:if test="${sequential != 'true'}">

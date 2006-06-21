@@ -473,7 +473,7 @@ public class WizardTool extends BuilderTool {
       
       if (!getCurrentUserId().equalsIgnoreCase(SessionManager.getCurrentSessionUserId()))
          session.setAttribute("readOnlyMatrix", "true");
-      session.setAttribute("wizardowner", getCurrent().getRunningWizard().getBase().getOwner());
+      session.setAttribute(WizardPageHelper.WIZARD_OWNER, getCurrent().getRunningWizard().getBase().getOwner());
 
       if (Wizard.WIZARD_TYPE_SEQUENTIAL.equals(
             getCurrent().getBase().getType())) {
@@ -511,7 +511,7 @@ public class WizardTool extends BuilderTool {
       
       if (!getCurrentUserId().equalsIgnoreCase(SessionManager.getCurrentSessionUserId()))
          session.setAttribute("readOnlyMatrix", "true");
-      session.setAttribute("wizardowner", getCurrent().getRunningWizard().getBase().getOwner());
+      session.setAttribute(WizardPageHelper.WIZARD_OWNER, getCurrent().getRunningWizard().getBase().getOwner());
 
       session.removeAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES);
       session.removeAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP);

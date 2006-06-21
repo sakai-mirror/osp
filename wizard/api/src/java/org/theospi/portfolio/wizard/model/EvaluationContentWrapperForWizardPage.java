@@ -47,15 +47,15 @@ public class EvaluationContentWrapperForWizardPage extends
       setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
       setEvalType(WizardPage.TYPE);
       
-      setUrl("osp.wizard.page.helper/wizardPage.osp");
-      
       Set params = new HashSet();
       
       params.add(new ParamBean("page_id", getId().getValue()));
       params.add(new ParamBean("readOnlyMatrix", "true"));
       
       if (wizardType.equals(Wizard.WIZARD_TYPE_SEQUENTIAL)) {
-         params.add(new ParamBean("sequential", "true"));
+         setUrl("osp.wizard.page.helper/sequentialWizardPage.osp");         
+      } else {
+         setUrl("osp.wizard.page.helper/wizardPage.osp");
       }
       
       setUrlParams(params);

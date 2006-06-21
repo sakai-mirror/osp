@@ -56,7 +56,7 @@ public class WizardPageController extends CellController {
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = super.referenceData(request, command, errors);
       
-      Agent owner = (Agent)request.get("wizardowner");
+      Agent owner = (Agent)request.get(WizardPageHelper.WIZARD_OWNER);
       model.put("readOnlyMatrix", super.isReadOnly(owner));
       //session.removeAttribute("readOnlyMatrix");
       model.put("pageTitleKey", "view_wizardPage");
@@ -85,9 +85,9 @@ public class WizardPageController extends CellController {
       session.put(WizardPageHelper.WIZARD_PAGE, page);
       session.remove(WizardPageHelper.CANCELED);
       
-      Agent owner = (Agent)session.get("wizardowner");
-      request.put("wizardowner", owner);
-      session.remove("wizardowner");
+      Agent owner = (Agent)session.get(WizardPageHelper.WIZARD_OWNER);
+      request.put(WizardPageHelper.WIZARD_OWNER, owner);
+      session.remove(WizardPageHelper.WIZARD_OWNER);
       
       WizardPageSequence seq = wizardManager.getWizardPageSeqByDef(page.getPageDefinition().getId());
       if(seq.getCategory().getParentCategory() != null)
