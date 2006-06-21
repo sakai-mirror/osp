@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Vector;
 
 import org.apache.commons.logging.Log;
@@ -140,7 +141,7 @@ public class PortfolioMirror extends Mirror {
       String orig = local;
       File file = null;
       try {
-         file = new File(new URI(local));
+         file = new File(new URI(encode(local)));
          int current = 0;
          while (file.exists()) {
             current++;
@@ -161,7 +162,7 @@ public class PortfolioMirror extends Mirror {
       return local;
    }
 
-   private static String encode (String component) {
+  private static String encode (String component) {
        char[] chars = component.toCharArray ();
 
        for (int i=0; i<chars.length; ++i)
@@ -181,7 +182,7 @@ public class PortfolioMirror extends Mirror {
                case '0': case '1': case '2': case '3': case '4':
                case '5': case '6': case '7': case '8': case '9':
 
-               case '/': case '.': case '-': case '_': case '~':
+               case '/': case '.': case '-': case '_': case '~':  case ':':
 
                   break;
 
@@ -189,8 +190,9 @@ public class PortfolioMirror extends Mirror {
                   chars[i] = '_';
                   break;
           }
+       String newString = new String(chars);
 
-       return new String (chars);
+       return newString;
    }
 
    private class PortfolioMirrorTransformer extends RewritableLinkTransformer {
