@@ -1364,12 +1364,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
          
          String fileId = fileParent.getId() + file.getName();
-         ContentResourceEdit resource = getContentHosting().addResource(fileId);
-         ResourcePropertiesEdit resourceProperties = resource.getPropertiesEdit();
+         ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
          resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, file.getName());
-         resource.setContent(bos.toByteArray());
-         resource.setContentType(contentType);
-         getContentHosting().commitResource(resource);
+         ContentResource /*Edit*/ resource = getContentHosting().addResource(fileId, contentType, bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
+//         ResourcePropertiesEdit resourceProperties = resource.getPropertiesEdit();
+//         resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, file.getName());
+//         resource.setContent(bos.toByteArray());
+//         resource.setContentType(contentType);
+//         getContentHosting().commitResource(resource);
          
          Id newId = getIdManager().getId(getContentHosting().getUuid(resource.getId()));
          fileMap.put(oldId, newId);
@@ -2609,7 +2611,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
 
       try {
-         resource = getContentHosting().addResource(name, folder, 0, type,
+         resource = getContentHosting().addResource(name, folder, 100, type,
                      bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
       }
       catch (Exception e) {
