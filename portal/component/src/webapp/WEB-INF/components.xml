@@ -291,7 +291,7 @@
    <bean class="org.theospi.portfolio.portal.model.ToolType"
          id="org.theospi.portfolio.portal.model.ToolType.osp.wizard">
       <property name="qualifierType">
-         <ref bean="org.theospi.portfolio.portal.model.ToolType.PLACEMENT_QUALIFIER"/>
+         <ref bean="org.theospi.portfolio.portal.model.ToolType.SITE_QUALIFIER"/>
       </property>
       <property name="functions">
          <list>
@@ -304,7 +304,7 @@
    <bean class="org.theospi.portfolio.portal.model.ToolType"
          id="org.theospi.portfolio.portal.model.ToolType.osp.matrix">
       <property name="qualifierType">
-         <ref bean="org.theospi.portfolio.portal.model.ToolType.PLACEMENT_QUALIFIER"/>
+         <ref bean="org.theospi.portfolio.portal.model.ToolType.SITE_QUALIFIER"/>
       </property>
    </bean>
 
