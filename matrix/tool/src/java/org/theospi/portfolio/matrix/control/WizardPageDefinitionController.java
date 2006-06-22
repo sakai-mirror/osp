@@ -66,6 +66,7 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
       
       model.put("wizardPublished", new Boolean(wizardPublished));
       model.put("helperPage", "true");
+      model.put("isWizard", "true");
       model.put("pageTitleKey", "title_editWizardPage");
       model.put("pageInstructionsKey", "instructions_wizardPageSettings");
       return model;

@@ -69,7 +69,8 @@
             </spring:bind>
       </p>
       
-      <spring:bind path="scaffoldingCell.initialStatus">  
+      <c:if test="${isWizard != 'true'}">
+         <spring:bind path="scaffoldingCell.initialStatus">  
             <c:if test="${status.error}">
                 <div class="validation"><c:out value="${status.errorMessage}"/></div>
             </c:if>
@@ -81,7 +82,13 @@
                   <option value="LOCKED" <c:if test="${status.value=='LOCKED'}"> selected</c:if>>Locked</option>
                </select>
           </p>
-      </spring:bind>
+         </spring:bind>
+      </c:if>
+      <c:if test="${isWizard == 'true'}">
+         <spring:bind path="scaffoldingCell.initialStatus">  
+            <input type="hidden" name="<c:out value="${status.expression}"/>" value="READY" />
+         </spring:bind>
+      </c:if>
       
      <!-- ************* Style Area Start ************* -->
          <p class="shorttext">
