@@ -2004,12 +2004,15 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             workflowOption == Scaffolding.VERTICAL_PROGRESSION) {
 
          Cell actionCell = getNextCell(cell, workflowOption);
-         WizardPage actionPage = actionCell.getWizardPage();
-         if (actionPage != null) {               
-            processContentLockingWorkflow(WorkflowItem.CONTENT_LOCKING_UNLOCK, actionPage);
-            processStatusChangeWorkflow(MatrixFunctionConstants.READY_STATUS, actionPage);
-            page.setModified(now);
-         }             
+         //If action cell is null, that means we are at the end of the row/column and have no next cell.
+         if (actionCell != null) {
+            WizardPage actionPage = actionCell.getWizardPage();
+            if (actionPage != null) {               
+               processContentLockingWorkflow(WorkflowItem.CONTENT_LOCKING_UNLOCK, actionPage);
+               processStatusChangeWorkflow(MatrixFunctionConstants.READY_STATUS, actionPage);
+               page.setModified(now);
+            }             
+         }
       }
    }
 
