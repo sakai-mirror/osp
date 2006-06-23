@@ -226,6 +226,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return list;
    }
    
+   public List getPagesByPageDef(Id pageDefId) {
+      List list = getHibernateTemplate().find("from WizardPage page where page.pageDefinition.id=?", pageDefId.getValue());
+      return list;
+   }
+   
    public List getMatrices(Id scaffoldingId, Id agentId) {
       String scaffId;
       String ownerId;
@@ -2030,6 +2035,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
                   page.getId().getValue());
          }         
       } 
+      //TODO lock page forms and reflection too - OSP-1519
    }
 
    private void processContentLockingWorkflow(WorkflowItem wi, WizardPage page) {

@@ -49,6 +49,7 @@ public interface MatrixManager extends WorkflowEnabledManager {
    
    Matrix getMatrix(Id scaffoldingId, Id agentId);
    List getCellsByScaffoldingCell(Id scaffoldingCellId);
+   List getPagesByPageDef(Id pageDefId);
 
    Cell getCell(Matrix matrix, Criterion rootCriterion, Level level);
 

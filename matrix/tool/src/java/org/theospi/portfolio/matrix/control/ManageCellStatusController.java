@@ -22,8 +22,8 @@ package org.theospi.portfolio.matrix.control;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -33,8 +33,10 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Attachment;
-import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.matrix.model.WizardPageForm;
 
 public class ManageCellStatusController implements Controller {
 
@@ -52,8 +54,9 @@ public class ManageCellStatusController implements Controller {
       
       Map model = new HashMap();
       model.put("page_id", id);
-      Cell cell = getMatrixManager().getCellFromPage(id);
-      String newStatus = getNewCellStatus(cell);
+      //Cell cell = getMatrixManager().getCellFromPage(id);
+      WizardPage page = getMatrixManager().getWizardPage(id);
+      String newStatus = getNewPageStatus(page);
       model.put("newStatus", newStatus);
       model.put("readOnlyMatrix", (String)request.get("readOnlyMatrix"));
       
@@ -67,39 +70,48 @@ public class ManageCellStatusController implements Controller {
       }
       else if (next != null && setSingle != null) {
          viewName = "done";
-         setCellStatus(cell, newStatus);
+         setPageStatus(page, newStatus);
       }
       else if (next != null && setAll != null) {
-         Set allCells = cell.getScaffoldingCell().getCells();
+         //Set allCells = cell.getScaffoldingCell().getCells();
+         List allPages = getMatrixManager().getPagesByPageDef(page.getPageDefinition().getId());
+         //cell.getWizardPage().getPageDefinition().get
          viewName = "done";
-         for (Iterator iter = allCells.iterator(); iter.hasNext();) {
-            Cell iterCell = (Cell) iter.next();
-            setCellStatus(iterCell, newStatus);
+         for (Iterator iter = allPages.iterator(); iter.hasNext();) {
+            WizardPage iterPage = (WizardPage) iter.next();
+            setPageStatus(iterPage, newStatus);
          }
       }
 
+      session.put(WizardPageHelper.WIZARD_OWNER, page.getOwner());
       return new ModelAndView(viewName, model);
    }
    
-   protected void setCellStatus(Cell cell, String status) {
+   protected void setPageStatus(WizardPage page, String status) {
       //Set the status only if it needs to be changed
-      if (!cell.getStatus().equals(status)) {
-         cell.setStatus(status);
-         getMatrixManager().storeCell(cell);
+      if (!page.getStatus().equals(status)) {
+         page.setStatus(status);
+         getMatrixManager().storePage(page);
          if (status.equals(MatrixFunctionConstants.READY_STATUS)) {
-            //Unlock cell's content
-            for (Iterator iter = cell.getAttachments().iterator(); iter.hasNext();) {
+            //Unlock page's content
+            for (Iterator iter = page.getAttachments().iterator(); iter.hasNext();) {
                Attachment att = (Attachment) iter.next();
                getLockManager().removeLock(att.getArtifactId().getValue(), 
-                     cell.getId().getValue());
+                     page.getId().getValue());
             }
+            for (Iterator iter2 = page.getPageForms().iterator(); iter2.hasNext();) {
+               WizardPageForm form = (WizardPageForm) iter2.next();
+               getLockManager().removeLock(form.getArtifactId().getValue(), 
+                     page.getId().getValue());
+            }
+            //TODO unlock reflection form too - OSP-1519
          }
       }
    }
    
-   protected String getNewCellStatus (Cell cell) {
+   protected String getNewPageStatus (WizardPage page) {
       //TODO setting to READY for now no matter what the previous status is
-      String status = cell.getStatus();
+      String status = page.getStatus();
       /*
       if (cell.getStatus().equals(MatrixFunctionConstants.LOCKED_STATUS))
          status = MatrixFunctionConstants.READY_STATUS;
