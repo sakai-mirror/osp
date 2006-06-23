@@ -1084,6 +1084,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Set scaffoldingCells = oldScaffolding.getScaffoldingCells();
       List guidanceIds = new ArrayList();
       Set styleIds = new HashSet();
+      List formIds = new ArrayList();
       
       levels.size();
       criteria.size();
@@ -1093,8 +1094,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          Collection evalWorkflows = sCell.getWizardPageDefinition().getEvalWorkflows();
          for (Iterator iter2 = evalWorkflows.iterator(); iter2.hasNext();) {
             Workflow wf = (Workflow)iter2.next();
-            Collection items = wf.getItems();
-            wf.setItems(new HashSet(items));
+            wf.getItems().size();
          }
       }
       removeFromSession(oldScaffolding);
@@ -1121,7 +1121,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             wf.setItems(new HashSet(items));
          }
          sCell.getWizardPageDefinition().setEvalWorkflows(new HashSet(evalWorkflows));
-         exportCellForms(zos, sCell);
+         exportCellForms(zos, sCell, formIds);
          if (sCell.getGuidance() != null) {
             guidanceIds.add(sCell.getGuidance().getId().getValue());
          }
@@ -1186,9 +1186,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       zos.closeEntry();
    }
 
-   protected void exportCellForms(ZipOutputStream zos, ScaffoldingCell cell) throws IOException {
-      List formIds = new ArrayList();
-
+   protected void exportCellForms(ZipOutputStream zos, ScaffoldingCell cell, List formIds) throws IOException {
       List forms = cell.getAdditionalForms();
       for (Iterator i=forms.iterator();i.hasNext();) {
          String formId = (String) i.next();
@@ -1199,20 +1197,26 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       }
 
       if (cell.getEvaluationDevice() != null) {
-         if (!formIds.contains(cell.getEvaluationDevice().getValue())) {
-            storeFormInZip(zos, cell.getEvaluationDevice().getValue());
+         String evalDevId = cell.getEvaluationDevice().getValue();
+         if (!formIds.contains(evalDevId)) {
+            storeFormInZip(zos, evalDevId);
+            formIds.add(evalDevId);
          }
       }
 
       if (cell.getReflectionDevice() != null) {
-         if (!formIds.contains(cell.getReflectionDevice().getValue())) {
-            storeFormInZip(zos, cell.getReflectionDevice().getValue());
+         String reflDevId = cell.getReflectionDevice().getValue();
+         if (!formIds.contains(reflDevId)) {
+            storeFormInZip(zos, reflDevId);
+            formIds.add(reflDevId);
          }
       }
 
       if (cell.getReviewDevice() != null) {
-         if (!formIds.contains(cell.getReviewDevice().getValue())) {
-            storeFormInZip(zos, cell.getReviewDevice().getValue());
+         String revDevId = cell.getReviewDevice().getValue();
+         if (!formIds.contains(revDevId)) {
+            storeFormInZip(zos, revDevId);
+            formIds.add(revDevId);
          }
       }
    }
