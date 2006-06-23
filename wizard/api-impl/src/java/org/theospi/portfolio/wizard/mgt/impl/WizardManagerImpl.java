@@ -1090,10 +1090,20 @@ public class WizardManagerImpl extends HibernateDaoSupport
          Style wizardStyle = (Style)styleMap.get( wizard.getStyleId().getValue());
          if(wizardStyle == null)
             throw new NullPointerException("Style for Wizard was not found");
-         getStyleManager().storeStyle(wizardStyle);
+         getStyleManager().storeStyle(wizardStyle, false);
          wizard.setStyle(wizardStyle);
       }
    }
+   
+   /**
+    * runs through each of the pages in the category and maps the guidance and 
+    * additional forms from the old ids to the new ids.  It saves and sets the
+    * guidance and page style as well.  Lastly, it loops into the sub categories.
+    * @param cat  WizardCategory
+    * @param guidanceMap Map
+    * @param formsMap Map
+    * @param styleMap Map
+    */
    protected void replaceCatIds(WizardCategory cat, Map guidanceMap, Map formsMap, Map styleMap)
    {
       for(Iterator i = cat.getChildPages().iterator(); i.hasNext(); ) {
@@ -1141,7 +1151,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
             if(pageDefStyle== null)
                throw new NullPointerException("Style for Wizard Page was not found");
             
-            getStyleManager().storeStyle(pageDefStyle);
+            getStyleManager().storeStyle(pageDefStyle, false);
             definition.setStyle(pageDefStyle);
          }
       }

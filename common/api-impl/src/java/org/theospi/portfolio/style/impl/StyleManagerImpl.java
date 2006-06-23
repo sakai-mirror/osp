@@ -122,7 +122,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
                   style.getId());
          }
       }
-      style = (Style)getHibernateTemplate().merge(style);
+      getHibernateTemplate().saveOrUpdate(style);
       lockStyleFiles(style);
 
       return style;
@@ -448,6 +448,13 @@ public class StyleManagerImpl extends HibernateDaoSupport
       return styleMap;
    }
    
+   /**
+    * given a stream this reads in an xml style and places the new style into the map
+    * @param siteId
+    * @param is
+    * @param styleMap
+    * @throws IOException
+    */
    protected void importStyle(String siteId, InputStream is, Map styleMap)
          throws IOException {
       SAXBuilder builder = new SAXBuilder();
