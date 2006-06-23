@@ -42,6 +42,7 @@ public interface PortalManager {
 
    public static final String CONTEXT = "org.theospi.portfolio.portal.context";
    public static final String SITE_TYPE = "org.theospi.portfolio.portal.siteType";
+   public static final String RELOAD_SITES = "org.theospi.portfolio.portal.reloadSites";
    public static final String SITE_ID = "org.theospi.portfolio.portal.siteId";
    public static final String TOOL_CATEGORY = "org.theospi.portfolio.portal.toolCategory";
 

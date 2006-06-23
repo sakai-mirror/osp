@@ -242,6 +242,8 @@ public class XsltPortal extends CharonPortal {
 
       ToolSession toolSession = session.getToolSession(Web.escapeJavascript(siteTypeKey));
 
+      toolSession.setAttribute(PortalManager.RELOAD_SITES, "true");
+
       if (!returning) {
          toolSession.setAttribute(PortalManager.SITE_TYPE, siteTypeKey);
       }

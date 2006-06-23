@@ -42,11 +42,15 @@ public class SiteTypeTool extends HelperToolBase {
    private PagingList sites = null;
 
    public PagingList getSites() {
-      String siteType = getSiteType();
-      if (siteType != null) {
-         List sitesBase = getPortalManager().getSitesForType(siteType, SiteService.SortType.TITLE_ASC, null);
-         setSites(new PagingList(sitesBase));
-         removeAttribute(PortalManager.SITE_TYPE);
+      if (getAttribute(PortalManager.RELOAD_SITES) != null) {
+         List sitesBase = getPortalManager().getSitesForType(getSiteType(), SiteService.SortType.TITLE_ASC, null);
+         if (sites != null) {
+            sites.setWholeList(sitesBase);
+         }
+         else {
+            setSites(new PagingList(sitesBase));
+         }
+         removeAttribute(PortalManager.RELOAD_SITES);
       }
 
       return sites;
