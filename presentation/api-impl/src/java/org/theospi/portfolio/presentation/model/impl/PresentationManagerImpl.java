@@ -1255,6 +1255,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          template.setRenderer((Id)fileMap.get(template.getRenderer()));
          //template.setToolId(toolConfiguration.getId());
          template.setSiteId(toContext);
+         template.setPublished(false);
 
          if (template.getPropertyPage() != null) {
             template.setPropertyPage((Id)fileMap.get(template.getPropertyPage()));
