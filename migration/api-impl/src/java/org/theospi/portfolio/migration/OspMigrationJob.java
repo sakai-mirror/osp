@@ -57,6 +57,7 @@ import org.sakaiproject.event.cover.NotificationService;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.MetaobjEntityManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -238,6 +239,7 @@ public class OspMigrationJob implements Job {
          resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
          resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
          resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, formType);
+         resourceProperties.addProperty(ContentHostingService.PROP_ALTERNATE_REFERENCE, MetaobjEntityManager.METAOBJ_ENTITY_PREFIX);
          
          ContentResource resource = getContentHosting().addResource(name, folder, 0, type,
                fileContent, resourceProperties, NotificationService.NOTI_NONE);
