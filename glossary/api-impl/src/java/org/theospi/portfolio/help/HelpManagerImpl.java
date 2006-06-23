@@ -377,7 +377,6 @@ public class HelpManagerImpl extends HibernateDaoSupport
 			osw.write(data, 0, count);
 		}
 		origin.close();
-		osw.close();
 		zos.closeEntry();
 		in.close();
 	}
