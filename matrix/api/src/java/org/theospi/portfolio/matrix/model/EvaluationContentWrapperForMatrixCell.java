@@ -47,6 +47,7 @@ public class EvaluationContentWrapperForMatrixCell extends EvaluationContentWrap
       
       params.add(new ParamBean("page_id", getId().getValue()));
       params.add(new ParamBean("readOnlyMatrix", "true"));
+      params.add(new ParamBean("view_user", owner.getId().getValue()));
       setUrlParams(params);      
    }
 }

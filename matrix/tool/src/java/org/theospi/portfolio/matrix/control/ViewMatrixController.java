@@ -51,6 +51,7 @@ import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Criterion;
@@ -97,8 +98,10 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       Matrix matrix = getMatrixManager().getMatrix(scaffoldingId, currentAgent.getId());
       if (matrix == null) {
          if (currentAgent != null && !currentAgent.equals("")) {
-            //Don't create a matrix unless the scaffolding has been published
-            if (scaffolding.isPublished()) {
+            //Don't create a matrix unless the scaffolding has been published 
+            // and the user has permission to use a matrix.
+            if (scaffolding.isPublished() && getAuthzManager().isAuthorized(
+                  MatrixFunctionConstants.USE_SCAFFOLDING, scaffolding.getWorksiteId())) {
                matrix = getMatrixManager().createMatrix(currentAgent, scaffolding);
             }
             else {

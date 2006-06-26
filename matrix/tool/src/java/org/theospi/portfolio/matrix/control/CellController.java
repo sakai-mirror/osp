@@ -94,6 +94,7 @@ public class CellController implements FormController, LoadObjectController {
       if (cell.getCell().getMatrix() != null) {
          Agent owner = cell.getCell().getMatrix().getOwner();
          readOnly = isReadOnly(owner);
+         
       }
       model.put("readOnlyMatrix", readOnly);
       
@@ -151,6 +152,9 @@ public class CellController implements FormController, LoadObjectController {
 
       List nodeList = new ArrayList(matrixManager.getPageContents(cell.getWizardPage()));
       cellBean.setNodes(nodeList);
+      
+      if (request.get("view_user") != null)
+         session.put("view_user", cell.getWizardPage().getOwner().getId().getValue());
       
       clearSession(SessionManager.getCurrentToolSession());
       return cellBean;
