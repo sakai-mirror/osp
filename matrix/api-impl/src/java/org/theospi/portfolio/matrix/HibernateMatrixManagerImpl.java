@@ -1474,7 +1474,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
                MatrixContentEntityProducer.MATRIX_PRODUCER);
       }
       
-      if (canReview || owns) {
+      if (canEval || canReview || owns) {
          //can I look at reviews/evals/reflections? - own or review
          getReviewManager().getReviewsByParentAndType(
                id, Review.REVIEW_TYPE,
