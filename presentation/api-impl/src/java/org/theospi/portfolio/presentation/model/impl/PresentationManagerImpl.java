@@ -1282,6 +1282,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             }
 
             item.setId(null);
+            item.setNewId(idManager.createId());
             item.setPresentationTemplate(template);
          }
          template.orderItemDefs();
