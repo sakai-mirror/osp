@@ -39,6 +39,9 @@
                      </f:facet>
                      <h:outputLink title="#{material.displayName}"
                         value="#{material.fullReference.base.url}" target="_new">
+                        <f:verbatim>
+                        	<img border="0" src="/library/image/sakai/generic.gif"/>
+                        </f:verbatim>
                         <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
                      <f:facet name="footer">
@@ -91,6 +94,9 @@
                      </f:facet>
                      <h:outputLink title="#{material.displayName}"
                         value="#{material.fullReference.base.url}" target="_new">
+                        <f:verbatim>
+                        	<img border="0" src="/library/image/sakai/generic.gif"/>
+                        </f:verbatim>
                         <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
                      <f:facet name="footer">
@@ -144,6 +150,9 @@
                      </f:facet>
                      <h:outputLink title="#{material.displayName}"
                         value="#{material.fullReference.base.url}" target="_new">
+                        <f:verbatim>
+                        	<img border="0" src="/library/image/sakai/generic.gif"/>
+                        </f:verbatim>
                         <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
                      <f:facet name="footer">
