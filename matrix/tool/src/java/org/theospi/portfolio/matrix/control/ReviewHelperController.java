@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -51,6 +52,7 @@ public class ReviewHelperController implements Controller {
    private IdManager idManager = null;
    private ReviewManager reviewManager;
    private WizardManager wizardManager;
+   private LockManager lockManager;
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String strId = null;
@@ -116,6 +118,10 @@ public class ReviewHelperController implements Controller {
                review.setReviewContentNode(node);
                review.setReviewContent(node.getId());
                getReviewManager().saveReview(review);
+
+               if(review.getType() == Review.EVALUATION_TYPE || review.getType() == Review.REVIEW_TYPE)
+                  getLockManager().lockObject(review.getReviewContent().getValue(), 
+                     strId, "evaluation and review are always locked", true);
             }
             else {
                review.setReviewContent(null);
@@ -278,6 +284,13 @@ public class ReviewHelperController implements Controller {
     */
    public void setWizardManager(WizardManager wizardManager) {
       this.wizardManager = wizardManager;
+   }
+   
+   public LockManager getLockManager() {
+      return lockManager;
+   }
+   public void setLockManager(LockManager lockManager) {
+      this.lockManager = lockManager;
    }
    
 }

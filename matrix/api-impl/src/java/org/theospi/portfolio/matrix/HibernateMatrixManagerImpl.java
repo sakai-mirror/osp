@@ -2025,10 +2025,16 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       }
    }
 
+   /**
+    * This method locks and unlocks the page file attachments, the additional filled in forms,
+    * and the filled in reflection forms.  There is other locking in the ReviewHelperController 
+    * which locks the feedback and evaluation.
+    * @param lockAction String WorkflowItem public statics
+    * @param page WizardPage of the content to lock
+    */
    private void processContentLockingWorkflow(String lockAction, WizardPage page) {
       for (Iterator iter = page.getAttachments().iterator(); iter.hasNext();) {
          Attachment att = (Attachment)iter.next();
-         
          if (lockAction.equals(WorkflowItem.CONTENT_LOCKING_LOCK)) {
             getLockManager().lockObject(att.getArtifactId().getValue(), 
                   page.getId().getValue(), 
@@ -2038,8 +2044,41 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             getLockManager().removeLock(att.getArtifactId().getValue(), 
                   page.getId().getValue());
          }         
+      }
+      
+      //the expectations, additional forms
+      for (Iterator iter = page.getPageForms().iterator(); iter.hasNext();) {
+         WizardPageForm pageForm = (WizardPageForm)iter.next();
+         
+         if (lockAction.equals(WorkflowItem.CONTENT_LOCKING_LOCK)) {
+            getLockManager().lockObject(pageForm.getArtifactId().getValue(), 
+                  page.getId().getValue(), 
+                  "Submitting cell for evaluation", true);
+         }
+         else {
+            getLockManager().removeLock(pageForm.getArtifactId().getValue(), 
+                  page.getId().getValue());
+         }         
+      }
+
+      //the reflections
+      List reflections = getReviewManager().getReviewsByParentAndType(
+            page.getId().getValue(), Review.REFLECTION_TYPE,
+            page.getPageDefinition().getSiteId(),
+            MatrixContentEntityProducer.MATRIX_PRODUCER);
+      for (Iterator iter = reflections.iterator(); iter.hasNext();) {
+         Review review = (Review)iter.next();
+         
+         if (lockAction.equals(WorkflowItem.CONTENT_LOCKING_LOCK)) {
+            getLockManager().lockObject(review.getReviewContent().getValue(), 
+                  page.getId().getValue(), 
+                  "Submitting cell for evaluation", true);
+         }
+         else {
+            getLockManager().removeLock(review.getReviewContent().getValue(), 
+                  page.getId().getValue());
+         }         
       } 
-      //TODO lock page forms and reflection too - OSP-1519
    }
 
    private void processContentLockingWorkflow(WorkflowItem wi, WizardPage page) {

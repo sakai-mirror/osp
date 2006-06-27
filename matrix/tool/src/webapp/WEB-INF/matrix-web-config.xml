@@ -388,6 +388,9 @@
             <property name="wizardManager">
                <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" />
             </property>
+	        <property name="lockManager">
+	           <ref bean="org.sakaiproject.content.api.LockManager"/>
+	        </property>
          </bean>
       </property>
       <property name="screenMappings">

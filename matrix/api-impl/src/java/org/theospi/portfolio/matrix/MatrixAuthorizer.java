@@ -83,7 +83,10 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
          //If I can eval, review, or own it
          ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(id);
          //sCell.getWizardPageDefinition().get
-
+         
+         if(sCell == null)
+            throw new NullPointerException("The cell was not found.  Wizard Page Def for cell: " + id.getValue());
+            
          Boolean returned = null;
 
          Id worksiteId = sCell.getScaffolding().getWorksiteId();

@@ -44,6 +44,7 @@ public class Cell extends IdentifiableObject {
    }
 
    /**
+    * gets the attachments from the wizard page
     * @return Returns Set of Attachments
     */
    public Set getAttachments() {
@@ -51,6 +52,7 @@ public class Cell extends IdentifiableObject {
    }
 
    /**
+    * This sets the attachments in the contained wizard page
     * @param attachments A Set of Attachments to set.
     */
    public void setAttachments(Set attachments) {
