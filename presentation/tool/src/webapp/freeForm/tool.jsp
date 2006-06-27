@@ -32,31 +32,38 @@
 	                    <h:outputText value="#{msgs.add_page}"/>
 	                </h:commandLink>
 					</h:panelGroup>
-	            	<h:panelGrid columns="1000">
-		            <sakai:dataLine value="#{freeForm.pageList}" rows="#{freeForm.pageCount}" separator="" var="page">
-		                <h:column>
-			                <h:panelGroup>
-												<h:commandLink action="#{page.moveUp}" rendered="#{page.base.sequence != 0}">
-												    <h:graphicImage value="/img/arrowLeft.png"/>
-												</h:commandLink>
-												<h:commandLink action="#{page.processActionEdit}">
-												    <h:graphicImage height="125" width="100"
-												                    value="/img/page-new.png"
-												                    rendered="#{!page.layoutPreviewImage}"/>
-												    <h:graphicImage height="125" width="100"
-												                    value="#{page.selectedLayout.previewImage.externalUri}"
-												                    rendered="#{page.layoutPreviewImage}"/>
-												</h:commandLink>
-												<h:commandLink action="#{page.moveDown}" rendered="#{!page.last}">
-												    <h:graphicImage value="/img/arrowRight.png"/>
-												</h:commandLink>
-										    <h:commandLink action="#{page.processActionEdit}">
-										        <h:outputText value="#{page.base.title}"/>
-										    </h:commandLink>
-			                </h:panelGroup>
-		                </h:column>
-		            </sakai:dataLine>
-		          </h:panelGrid>
+                  <h:panelGrid columns="1000">
+                  <sakai:dataLine value="#{freeForm.pageList}" rows="#{freeForm.pageCount}" separator="" var="page">
+                      <h:column>
+                        <f:verbatim><td width='120'></f:verbatim>
+                           <h:commandLink action="#{page.moveUp}" rendered="#{page.base.sequence != 0}">
+                               <h:graphicImage value="/img/arrowLeft.png"/>
+                           </h:commandLink>
+                        <f:verbatim><br/></f:verbatim>
+                           <h:commandLink action="#{page.processActionEdit}">
+                               <h:graphicImage height="125" width="100"
+                                               value="/img/page-new.png"
+                                               rendered="#{!page.layoutPreviewImage}"/>
+                               <h:graphicImage height="125" width="100"
+                                               value="#{page.selectedLayout.previewImage.externalUri}"
+                                               rendered="#{page.layoutPreviewImage}"/>
+                           </h:commandLink>
+                        <f:verbatim><br/></f:verbatim>
+                           <h:commandLink action="#{page.moveDown}" rendered="#{!page.last}">
+                               <h:graphicImage value="/img/arrowRight.png"/>
+                           </h:commandLink>
+                        <f:verbatim><br/></f:verbatim>
+                           <h:commandLink action="#{page.processActionEdit}">
+                             <h:outputText value="#{page.base.title}"/>
+                           </h:commandLink>
+                        <f:verbatim><br/></f:verbatim>
+                           <h:commandLink action="#{page.processActionDelete}">
+                              <h:outputText value="#{msgs.remove_page}"/>
+                           </h:commandLink>
+                        <f:verbatim></td></f:verbatim>
+                      </h:column>
+                  </sakai:dataLine>
+                </h:panelGrid>
 		          </h:panelGrid>
             </f:subview>
 
