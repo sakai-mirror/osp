@@ -89,6 +89,9 @@ public class PresentationValidator extends ValidatorBase {
       if (template.getName() == null || template.getName().length() == 0) {
          errors.rejectValue("name", "error.required", "required");
       }
+      if (template.getDescription() != null && template.getDescription().length() > 255) {
+         errors.rejectValue("description", "error.lengthExceded", new Object[]{"255"}, "Value must be less than {0} characters");
+      }
    }
 
    protected void validateTemplateSecondPage(Object obj, Errors errors){
