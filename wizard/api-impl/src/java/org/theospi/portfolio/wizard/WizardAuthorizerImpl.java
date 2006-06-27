@@ -59,8 +59,8 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
          return isWizardAuth(facade, id, agent, WizardFunctionConstants.EDIT_WIZARD);
       } else if (function.equals(WizardFunctionConstants.PUBLISH_WIZARD)) {
          Wizard wizard = getWizardManager().getWizard(id);
-         Id toolId = getIdManager().getId(wizard.getSiteId());
-         return new Boolean(facade.isAuthorized(agent,function,toolId));
+         Id siteId = getIdManager().getId(wizard.getSiteId());
+         return new Boolean(facade.isAuthorized(agent,function,siteId));
       } else if (function.equals(WizardFunctionConstants.DELETE_WIZARD)) {
          return isWizardAuth(facade, id, agent, WizardFunctionConstants.DELETE_WIZARD);
       } else if (function.equals(WizardFunctionConstants.COPY_WIZARD)) {
