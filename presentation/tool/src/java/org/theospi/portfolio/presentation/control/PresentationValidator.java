@@ -225,6 +225,9 @@ public class PresentationValidator extends ValidatorBase {
                layout.getXhtmlFileId().getValue().length() == 0) {
             errors.rejectValue("xhtmlFileId", "error.required", "XHTML file is required");
          }
+         if (layout.getDescription() != null && layout.getDescription().length() > 255) {
+            errors.rejectValue("description", "error.lengthExceded", new Object[]{"255"}, "Value must be less than {0} characters");
+         }
       }
    }
 }

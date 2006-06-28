@@ -38,17 +38,18 @@
          </p>
         </spring:bind>
       
-      <p class="longtext">
-         <label class="block"><fmt:message key="label_description"/></label>
-         <spring:bind path="layout.description">
+      <spring:bind path="layout.description">
+         <c:if test="${status.error}">
+            <div class="validation"><c:out value="${status.errorMessage}" /></div>
+         </c:if>
+      	<p class="longtext">
+         	<label class="block"><fmt:message key="label_description"/></label>
                 <table><tr>
-            <td><textarea name="<c:out value="${status.expression}"/>" id="descriptionTextArea" rows="5" cols="80" 
+         		   <td><textarea name="<c:out value="${status.expression}"/>" id="descriptionTextArea" rows="5" cols="80" 
                     <c:out value="${disabledText}"/>><c:out value="${status.value}"/></textarea></td>
                 </tr></table>
-            <font color="red"><c:out value="${status.errorMessage}"/></font>
-         </spring:bind>
-      </p>
-    
+         </p>
+      </spring:bind>    
 
     <spring:bind path="layout.xhtmlFileId">
         <c:if test="${status.error}">
