@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/common/tool-lib/src/java/org/theospi/portfolio/style/tool/StyleValidator.java $
+* $Id:StyleValidator.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -63,6 +63,9 @@ public class StyleValidator extends ValidatorBase {
                style.getStyleFile().getValue() == null || 
                style.getStyleFile().getValue().length() == 0) {
             errors.rejectValue("styleFile", "error.required", "Style file is required");
+         }
+         if (style.getDescription() != null && style.getDescription().length() > 255) {
+            errors.rejectValue("description", "error.lengthExceded", new Object[]{"255"}, "Value must be less than {0} characters");
          }
       }
    }
