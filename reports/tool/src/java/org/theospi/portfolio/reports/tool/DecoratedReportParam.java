@@ -101,6 +101,7 @@ public class DecoratedReportParam {
 					value =  Integer.toString(Integer.parseInt(value));
 					isValid = true;
 				} catch(NumberFormatException pe) {
+				   //if it fails to parse then it won't set isValid to true
 				}
 			}
 			if(getIsFloat()) {
@@ -108,6 +109,7 @@ public class DecoratedReportParam {
 					value =  Float.toString(Float.parseFloat(value));
 					isValid = true;
 				} catch(NumberFormatException pe) {
+				   //if it fails to parse then it won't set isValid to true
 				}
 			}
 			if(getIsString()) {
