@@ -295,7 +295,7 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="page">wizardPageRedirect</prop>
+            <prop key="page">helperDone</prop>
             <prop key="formPicker">formPicker</prop>
             <prop key="formCreator">formCreator</prop>
             <prop key="formViewer">formViewer</prop>
@@ -320,7 +320,7 @@
       <property name="screenMappings">
          <props>
             <prop key="success">wizardPageRedirect</prop>
-            <prop key="continue">wizardPageRedirect</prop>
+            <prop key="continue">helperDone</prop>
          </props>
       </property>
       <property name="customTypedEditors">

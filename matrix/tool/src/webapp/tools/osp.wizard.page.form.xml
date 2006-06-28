@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<registration>
+
+	<tool id="osp.wizard.page.form" title="Wizard Page Form" description="OSP Wizard Page Form Helper Tool">
+       <configuration name="test" value="reg-value" />
+
+       <category name="sakai.helper" />
+<!--
+       <configuration name="theospi.resetUrl"
+            value="/wizardPage.osp" />
+-->       
+	</tool>
+
+</registration>

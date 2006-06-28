@@ -175,13 +175,13 @@
 					<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
 						<div class="itemAction indnt2">
 						
-							 <a href="<osp:url value="cellFormPicker.osp">
+							 <a href="<osp:url value="osp.wizard.page.form.helper/cellFormPicker.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
 										<osp:param name="createFormAction" value="${cellFormDef.id}" />
 										</osp:url>" onclick="javascript:stopEvents(event)">
 									 <fmt:message key="action_createForm"/></a>
 							 | 
-							 <a href="<osp:url value="cellFormPicker.osp">
+							 <a href="<osp:url value="osp.wizard.page.form.helper/cellFormPicker.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
 										<osp:param name="attachFormAction" value="${cellFormDef.id}" />
 										</osp:url>" onclick="javascript:stopEvents(event)">
@@ -213,13 +213,13 @@
                   </c:if>
                   <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
                       <div class="itemAction indent2">
-                          &nbsp; &nbsp; &nbsp;<a href="<osp:url value="cellFormPicker.osp">
+                          &nbsp; &nbsp; &nbsp;<a href="<osp:url value="osp.wizard.page.form.helper/cellFormPicker.osp">
                               <osp:param name="page_id" value="${cell.wizardPage.id}" />
                               <osp:param name="createFormAction" value="${cellFormDef.id}" />
                               <osp:param name="current_form_id" value="${node.resource.id}" />
                               </osp:url>"><fmt:message key="edit"/></a>
                           |
-                          <a href="<osp:url value="formDelete.osp">
+                          <a href="<osp:url value="osp.wizard.page.form.helper/formDelete.osp">
                               <osp:param name="page_id" value="${cell.wizardPage.id}" />
                               <osp:param name="formDefId" value="${cellFormDef.id}" />
                               <osp:param name="current_form_id" value="${node.id}" />

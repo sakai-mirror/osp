@@ -44,6 +44,14 @@
        <dispatcher>FORWARD</dispatcher>
        <dispatcher>INCLUDE</dispatcher>
    </filter-mapping>
+   
+   <filter-mapping>
+       <filter-name>sakai.request</filter-name>
+       <servlet-name>osp.wizard.page.form</servlet-name>
+       <dispatcher>REQUEST</dispatcher>
+       <dispatcher>FORWARD</dispatcher>
+       <dispatcher>INCLUDE</dispatcher>
+   </filter-mapping>
 
    <filter-mapping>
        <filter-name>sakai.request</filter-name>
@@ -125,6 +133,20 @@
       <load-on-startup>2</load-on-startup>
    </servlet>
 
+   <servlet>
+      <servlet-name>osp.wizard.page.form</servlet-name>
+      <servlet-class>org.sakaiproject.spring.util.SpringTool</servlet-class>
+      <init-param>
+            <param-name>default</param-name>
+            <param-value></param-value>
+        </init-param>
+        <init-param>
+            <param-name>path</param-name>
+            <param-value></param-value>
+        </init-param>
+      <load-on-startup>2</load-on-startup>
+   </servlet>
+   
    <servlet>
       <servlet-name>osp.wizard.page.def</servlet-name>
       <servlet-class>org.sakaiproject.spring.util.SpringTool</servlet-class>
