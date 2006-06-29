@@ -121,7 +121,7 @@ public class ReviewHelperController implements Controller {
 
                if(review.getType() == Review.EVALUATION_TYPE || review.getType() == Review.REVIEW_TYPE)
                   getLockManager().lockObject(review.getReviewContent().getValue(), 
-                     strId, "evaluation and review are always locked", true);
+                     strId, "evals and review always locked", true);
             }
             else {
                review.setReviewContent(null);

@@ -960,7 +960,7 @@ public class OspMigrationJob implements Job {
                               attachments.add(att);
                               if(!isReady)
                                  contentHosting.lockObject(artifact, 
-                                    cell.getWizardPage().getNewId().getValue(), "cell attachments are locked when submitted", true);
+                                    cell.getWizardPage().getNewId().getValue(), "cell atts locked on submit", true);
                            }
                            cell.setAttachments(attachments);
                         } finally {
@@ -992,7 +992,7 @@ public class OspMigrationJob implements Job {
                               
                               if(!isReady)
                                  contentHosting.lockObject(reflectionForm.getValue(), 
-                                       review.getId().getValue(), "reflection has been submitted", true);
+                                       review.getId().getValue(), "reflection submitted", true);
       
                               sql = "SELECT CONNECTTEXT, EVIDENCE FROM " + tableName2 + " WHERE REFLECTION_ID='" + reflection_id + "' ORDER BY SEQ_NUM";
                               ResultSet reflectionRS = matrixInnerStmt.executeQuery(sql);
@@ -1019,7 +1019,7 @@ public class OspMigrationJob implements Job {
 
                                     if(!isReady)
                                        contentHosting.lockObject(expectationForm.getValue(), 
-                                             cell.getWizardPage().getNewId().getValue(), "expectation has been submitted", true);
+                                             cell.getWizardPage().getNewId().getValue(), "expectation submitted", true);
          
                                     pageForms.add(pageForm);
                                  }

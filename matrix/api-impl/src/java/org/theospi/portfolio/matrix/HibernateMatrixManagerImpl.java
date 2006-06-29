@@ -2038,7 +2038,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          if (lockAction.equals(WorkflowItem.CONTENT_LOCKING_LOCK)) {
             getLockManager().lockObject(att.getArtifactId().getValue(), 
                   page.getId().getValue(), 
-                  "Submitting cell for evaluation", true);
+                  "Submitting cell, 4 eval", true);
          }
          else {
             getLockManager().removeLock(att.getArtifactId().getValue(), 
@@ -2053,7 +2053,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          if (lockAction.equals(WorkflowItem.CONTENT_LOCKING_LOCK)) {
             getLockManager().lockObject(pageForm.getArtifactId().getValue(), 
                   page.getId().getValue(), 
-                  "Submitting cell for evaluation", true);
+                  "Submitting cell, 4 eval", true);
          }
          else {
             getLockManager().removeLock(pageForm.getArtifactId().getValue(), 
@@ -2072,7 +2072,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          if (lockAction.equals(WorkflowItem.CONTENT_LOCKING_LOCK)) {
             getLockManager().lockObject(review.getReviewContent().getValue(), 
                   page.getId().getValue(), 
-                  "Submitting cell for evaluation", true);
+                  "Submitting cell, 4 eval", true);
          }
          else {
             getLockManager().removeLock(review.getReviewContent().getValue(), 
