@@ -53,6 +53,7 @@ import org.sakaiproject.exception.InconsistentException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.exception.UnsupportedFileTypeException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
@@ -636,7 +637,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
 
-   public boolean importResource(Id worksiteId, String nodeId)
+   public boolean importResource(Id worksiteId, String nodeId) throws UnsupportedFileTypeException, ImportException
    {
 
       String id = getContentHosting().resolveUuid(nodeId);
@@ -651,7 +652,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
             return bean != null;
          } else {
-            throw new OspException("Unsupported file type");
+            throw new UnsupportedFileTypeException("Unsupported file type");
          }
       } catch(ServerOverloadException soe) {
             logger.warn(soe);
@@ -667,7 +668,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return false;
    }
    
-   private Wizard importWizard(Id worksiteId, InputStream in) throws IOException
+   private Wizard importWizard(Id worksiteId, InputStream in) throws IOException, ImportException
    {
       ZipInputStream zis = new ZipInputStream(in);
 
@@ -678,7 +679,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    private static final String IMPORT_CREATE_DATE_KEY = "createDate";
    private static final String IMPORT_EVALUATORS_KEY = "evaluators";
    //private static final String IMPORT_STYLES_KEY = "style";
-   private Wizard readWizardFromZip(ZipInputStream zis, String worksiteId) throws IOException
+   private Wizard readWizardFromZip(ZipInputStream zis, String worksiteId) throws IOException, ImportException
    {
       ZipEntry currentEntry = zis.getNextEntry();
 
@@ -768,6 +769,8 @@ public class WizardManagerImpl extends HibernateDaoSupport
          //set the authorization for the pages
          setAuthnCat(wizard.getRootCategory(), worksiteId);
 
+      } catch(ImportException ie) {
+         throw new ImportException(ie);
       } catch(Exception e) {
          throw new RuntimeException(e);
       }
@@ -885,7 +888,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       }
    }
 
-   private boolean readWizardXML(Wizard wizard, InputStream inStream, Map importData)
+   private boolean readWizardXML(Wizard wizard, InputStream inStream, Map importData) throws ImportException
    {
       SAXBuilder builder = new SAXBuilder();
       Map evaluatorsMap = (Map)importData.get(IMPORT_EVALUATORS_KEY);
@@ -949,7 +952,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          //stylesMap.put(styleId, null);
          
       } catch(Exception jdome) {
-            throw new OspException(jdome);
+            throw new ImportException(jdome);
       }
       return true;
    }
@@ -1837,6 +1840,9 @@ public class WizardManagerImpl extends HibernateDaoSupport
          }
       }
       catch (IOException e) {
+         logger.error("", e);
+         throw new OspException(e);
+      } catch (ImportException e) {
          logger.error("", e);
          throw new OspException(e);
       }

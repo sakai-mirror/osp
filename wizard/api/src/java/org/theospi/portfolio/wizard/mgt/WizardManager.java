@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.exception.ImportException;
+import org.sakaiproject.exception.UnsupportedFileTypeException;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
@@ -74,7 +76,7 @@ public interface WizardManager extends WorkflowEnabledManager {
 
    public CompletedWizard saveWizard(CompletedWizard wizard);
 
-   public boolean importResource(Id worksite, String reference);
+   public boolean importResource(Id worksite, String reference) throws UnsupportedFileTypeException, ImportException;
    
    public WizardPageSequence getWizardPageSeqByDef(Id id);
    public List getCompletedWizardPagesByPageDef(Id id);

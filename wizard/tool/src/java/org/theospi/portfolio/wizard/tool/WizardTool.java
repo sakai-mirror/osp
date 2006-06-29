@@ -31,6 +31,8 @@ import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.exception.ImportException;
+import org.sakaiproject.exception.UnsupportedFileTypeException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -81,6 +83,9 @@ import java.text.MessageFormat;
 import java.util.*;
 
 public class WizardTool extends BuilderTool {
+   
+   static final private String   BAD_FILE_TYPE_ID = "badFileType";
+   static final private String   BAD_IMPORT_ID = "badImport";
 
    protected final Log logger = LogFactory.getLog(getClass());
 	
@@ -107,6 +112,7 @@ public class WizardTool extends BuilderTool {
    private String lastSaveWizard = "";
    private boolean pageSaved = false;
    private String lastSavePage = "";
+   private String lastError = "";
    
    //	import variables
    private String importFilesString = "";
@@ -283,6 +289,7 @@ public class WizardTool extends BuilderTool {
       lastSaveWizard = "";
       pageSaved = false;
       lastSavePage = "";
+      lastError = "";
    }
 
    public String processActionPublish(Wizard wizard) {
@@ -794,9 +801,15 @@ public class WizardTool extends BuilderTool {
 	   for(Iterator i = importFiles.iterator(); i.hasNext(); ) {
 		   Reference ref = (Reference)i.next();
 		   
-		   wizardManager.importResource(
+         try {
+            wizardManager.importResource(
 				   getIdManager().getId(getWorksite().getId()),
 				   getContentHosting().getUuid(ref.getId()));
+         } catch(ImportException ie) {
+            lastError = BAD_IMPORT_ID;
+         } catch(UnsupportedFileTypeException ufte) {
+            lastError = BAD_FILE_TYPE_ID;
+         }
 	   }
 	   
 	   return LIST_PAGE;
@@ -1255,6 +1268,14 @@ public class WizardTool extends BuilderTool {
 
    public void setLastSavePage(String lastSavePage) {
       this.lastSavePage = lastSavePage;
+   }
+
+   public String getLastError() {
+      return lastError;
+   }
+
+   public void setLastError(String lastError) {
+      this.lastError = lastError;
    }
 
 }

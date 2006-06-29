@@ -37,6 +37,8 @@
    
    <h:outputText value="#{wizard.lastSaveWizard} #{msgs.wizard_was_submitted}" styleClass="success" rendered="#{wizard.lastSaveWizard != ''}" />
    <h:outputText value="#{wizard.lastSavePage} #{msgs.page_was_submitted}" styleClass="success" rendered="#{wizard.lastSavePage != ''}" />
+   <h:outputText value="#{wizard.lastError} #{msgs.wizard_bad_file_type}" styleClass="validation" rendered="#{wizard.lastError == 'badFileType'}" />
+   <h:outputText value="#{wizard.lastError} #{msgs.wizard_bad_import}" styleClass="validation" rendered="#{wizard.lastError == 'badImport'}" />
    
    
    <f:subview id="viewUsers" rendered="#{wizard.canEvaluateTool || wizard.canReviewTool}">
