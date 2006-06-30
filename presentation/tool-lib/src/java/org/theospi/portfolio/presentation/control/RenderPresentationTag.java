@@ -44,15 +44,16 @@ public class RenderPresentationTag extends TagSupport {
    private URIResolver uriResolver;
 
    public final int doStartTag() throws JspException {
-      // transform xml and spit it out
-      try {
-         template.setURIResolver(uriResolver);
-         template.transform(new JDOMSource(doc),
-            new StreamResult(pageContext.getOut()));
-      } catch (TransformerException e) {
-         throw new JspException(e);
+      if(doc != null) {
+         // transform xml and spit it out
+         try {
+            template.setURIResolver(uriResolver);
+            template.transform(new JDOMSource(doc),
+               new StreamResult(pageContext.getOut()));
+         } catch (TransformerException e) {
+            throw new JspException(e);
+         }
       }
-
       return EVAL_BODY_INCLUDE;
    }
 
@@ -73,7 +74,8 @@ public class RenderPresentationTag extends TagSupport {
    }
 
    public void setDoc(Object doc) {
-      setDoc((Document) doc);
+      if(doc instanceof Document)
+         setDoc((Document) doc);
    }
 
    public void setDoc(Document doc) {

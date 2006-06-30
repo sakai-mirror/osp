@@ -2165,11 +2165,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public PresentationPage getPresentationPage(Id id) {
       PresentationPage page = (PresentationPage) getHibernateTemplate().get(PresentationPage.class, id);
 
-      for (Iterator i=page.getRegions().iterator();i.hasNext();) {
-         PresentationPageRegion region = (PresentationPageRegion) i.next();
-         for (Iterator j=region.getItems().iterator();j.hasNext();) {
-            PresentationPageItem item = (PresentationPageItem) j.next();
-            item.getProperties().size();
+      if(page != null) {
+         for (Iterator i=page.getRegions().iterator();i.hasNext();) {
+            PresentationPageRegion region = (PresentationPageRegion) i.next();
+            for (Iterator j=region.getItems().iterator();j.hasNext();) {
+               PresentationPageItem item = (PresentationPageItem) j.next();
+               item.getProperties().size();
+            }
          }
       }
       return page;
@@ -2196,6 +2198,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          page = getFirstPresentationPage(presentation.getId());
       else
          page = getPresentationPage(getIdManager().getId(pageId));
+      if(page == null)
+         return null;
       return getPresentationLayoutAsXml(page.getId());
    }
    

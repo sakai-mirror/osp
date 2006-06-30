@@ -146,7 +146,10 @@ public class ViewPresentationControl extends AbstractPresentationController impl
             doc = getPresentationManager().getPresentationLayoutAsXml(pres, page);
          }
 
-         model.put("document", doc);
+         if(doc != null)
+            model.put("document", doc);
+         else
+            model.put("document", "notfound");
          model.put("renderer", getTransformer(pres, request));
          model.put("uriResolver", getUriResolver());
 
