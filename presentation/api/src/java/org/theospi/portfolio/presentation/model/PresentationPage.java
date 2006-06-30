@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.sakaiproject.tool.api.Tool;
 import org.theospi.portfolio.style.model.Style;
 
 public class PresentationPage extends IdentifiableObject implements Serializable, Comparable {
@@ -131,7 +132,7 @@ public class PresentationPage extends IdentifiableObject implements Serializable
 
    public String getUrl() {
       return "viewPresentation.osp?id=" + getPresentation().getId().getValue() +
-         "&page=" + getId().getValue();
+         "&page=" + getId().getValue() + "&" + Tool.PLACEMENT_ID + "=" + getPresentation().getToolId();
    }
 
    public int compareTo(Object o) {
