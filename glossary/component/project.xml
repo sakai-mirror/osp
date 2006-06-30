@@ -53,6 +53,15 @@
     </dependency>
 
      <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-util</artifactId>
+        <version>${sakai.version}</version>
+        <properties>
+           <war.bundle>true</war.bundle>
+        </properties>
+     </dependency>
+
+     <dependency>
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
         <version>1.2</version>
