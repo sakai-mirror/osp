@@ -2527,7 +2527,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          ContentResourceEdit resourceEdit =
                getContentHosting().editResource(getContentHosting().resolveUuid(resourceId.getValue()));
          resourceEdit.setContent(bos.toByteArray());
-         getContentHosting().commitResource(resourceEdit);
+         getContentHosting().commitResource(resourceEdit, NotificationService.NOTI_NONE);
          return resourceId;
       }
       catch (Exception e) {
