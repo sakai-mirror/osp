@@ -22,14 +22,7 @@ package org.theospi.portfolio.presentation.control;
 
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,6 +35,7 @@ import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
@@ -91,6 +85,14 @@ public class AddTemplateController extends AbstractWizardFormController {
    private SessionManager sessionManager;
    private ContentHostingService contentHosting;
    private EntityManager entityManager;
+   public static Comparator worksiteHomesComparator;
+   static {
+    worksiteHomesComparator = new Comparator() {
+			public int compare(Object o1, Object o2) {
+                return ((ReadableObjectHome)o1).getType().getDescription().toLowerCase().compareTo(((ReadableObjectHome)o2).getType().getDescription().toLowerCase());
+			}
+        };
+   }
 
    protected ModelAndView processFinish(HttpServletRequest request, HttpServletResponse response, Object o, BindException e) throws Exception {
       PresentationTemplate template = (PresentationTemplate) o;
@@ -346,8 +348,14 @@ public class AddTemplateController extends AbstractWizardFormController {
    }
 
    protected Collection getHomes() {
-      return getHomeFactory().getWorksiteHomes(
-         getWorksiteManager().getCurrentWorksiteId()).entrySet();
+      ArrayList list = new ArrayList();
+      Map homeMap =  getHomeFactory().getWorksiteHomes(
+         getWorksiteManager().getCurrentWorksiteId());
+      for (Iterator i = homeMap.values().iterator(); i.hasNext();){
+           list.add(i.next());
+      }
+      Collections.sort(list, worksiteHomesComparator);
+      return homeMap.entrySet();
    }
 
 
