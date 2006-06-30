@@ -593,6 +593,7 @@
                 <prop key="withHeader">renderPresentationHeader</prop>
                 <prop key="withHeaderStandalone">renderPresentationStandalone</prop>
                 <prop key="authnRedirect">viewPresentationLoginRedirect</prop>
+                <prop key="notFound">presentationPageNotFound</prop>
             </props>
 
         </property>

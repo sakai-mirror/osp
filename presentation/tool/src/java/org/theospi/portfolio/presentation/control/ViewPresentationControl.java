@@ -149,7 +149,7 @@ public class ViewPresentationControl extends AbstractPresentationController impl
          if(doc != null)
             model.put("document", doc);
          else
-            model.put("document", "notfound");
+            return new ModelAndView("notFound", model);
          model.put("renderer", getTransformer(pres, request));
          model.put("uriResolver", getUriResolver());
 
