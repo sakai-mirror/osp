@@ -101,6 +101,7 @@ public class GlossaryTag extends BodyTagSupport {
             char in = (char) reader.read();
 
             if (wordState && isWordBoundary(in)) {
+               // check if the captured phrase is a part of any of the terms
                boolean currentPhrase = isPhraseStart(buf.toString() + in, terms);
 
                if (currentPhrase) {
@@ -123,6 +124,7 @@ public class GlossaryTag extends BodyTagSupport {
                   foundWords.add(buf.toString());
                }
 
+               // If we are going into an HTML tog then stop
                if (in == '<') {
                   wordState = false;
                }
@@ -132,6 +134,7 @@ public class GlossaryTag extends BodyTagSupport {
             } else if (wordState) {
                buf.append(in);
             } else if (in == '>') {
+               // If we are going out of an HTML tog then start
                wordState = true;
                out.write(in);
             } else {
@@ -169,6 +172,9 @@ public class GlossaryTag extends BodyTagSupport {
    }
 
    protected GlossaryEntry searchGlossary(String phrase, GlossaryEntry[] terms) {
+      phrase = phrase.replaceAll("&amp;", "&");
+      phrase = phrase.replaceAll("&gr;", ">");
+      phrase = phrase.replaceAll("&lt;", "<");
       for (int i=0;i<terms.length;i++) {
          GlossaryEntry entry = terms[i];
          if (entry.getTerm().toLowerCase().equals(phrase.toLowerCase())) {
@@ -190,9 +196,15 @@ public class GlossaryTag extends BodyTagSupport {
       }
 
       // go backwards... more efficient
+      //each term must be translated into it's html equivalent
+      //    the phrase may not have the whole html equivalent yet.
       for (int i=terms.length - 1;i>=0;i--) {
          GlossaryEntry entry = terms[i];
-         if (entry.getTerm().toLowerCase().startsWith(phrase.toLowerCase())) {
+         String term = entry.getTerm();
+         term = term.replaceAll("&", "&amp;");
+         term = term.replaceAll(">", "&gr;");
+         term = term.replaceAll("<", "&lt;");
+         if (term.toLowerCase().startsWith(phrase.toLowerCase())) {
             return true;
          }
       }
@@ -260,7 +272,7 @@ public class GlossaryTag extends BodyTagSupport {
    }
 
    protected boolean isWordBoundary(char c) {
-      return !String.valueOf(c).matches("[A-Za-z0-9]");
+      return !String.valueOf(c).matches("[A-Za-z0-9;&]");
    }
 
    protected String getMarkup(String originalTerm, GlossaryEntry entry) {
