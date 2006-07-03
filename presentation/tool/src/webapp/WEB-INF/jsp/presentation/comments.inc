@@ -102,7 +102,7 @@
      <osp:form/>
       <input type="hidden" name="presentationId" value="<c:out value="${presentation.id.value}"/>"/>
       <input type="hidden" name="id" value="<c:out value="${presentation.id.value}"/>"/>
-
+      <input type="hidden" name="sakai.tool.placement.id" value="<c:out value="${placementId}"/>"/>
       <p class="instruction">
          <fmt:message key="instructions_addComment"/> 
          <fmt:message key="instructions_requiredFields"/>
@@ -130,7 +130,7 @@
             <span class="reqStar">*</span>
             <label class="block"><fmt:message key="table_row_comment"/></label>
 
-            <textarea name="<c:out value="${status.expression}"/>" cols="80" rows="5" onkeyup="limitChar(this,4000)">
+            <textarea name="<c:out value="${status.expression}"/>" cols="80" rows="5" maxlength="4000">
                <c:out value="${status.value}"/>
             </textarea>
          </p>

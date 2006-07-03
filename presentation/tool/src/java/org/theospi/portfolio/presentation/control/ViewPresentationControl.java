@@ -81,7 +81,6 @@ public class ViewPresentationControl extends AbstractPresentationController impl
                                    Map session, Map application) throws Exception {
       PresentationManager presentationManager = getPresentationManager();
       Presentation presentation = (Presentation) incomingModel;
-
       if (presentation.getSecretExportKey() != null) {
          String secretExportKey = presentation.getSecretExportKey();
          presentation = presentationManager.getPresentation(presentation.getId(),
@@ -145,7 +144,10 @@ public class ViewPresentationControl extends AbstractPresentationController impl
             String page = (String)request.get("page");
             doc = getPresentationManager().getPresentationLayoutAsXml(pres, page);
          }
-
+         Site site = SiteService.getSite(pres.getSiteId());
+         ToolConfiguration toolConfig = site.getToolForCommonId(PresentationFunctionConstants.PRES_TOOL_ID);
+         String placement = toolConfig.getId();
+         model.put("placementId", placement); 
          if(doc != null)
             model.put("document", doc);
          else
@@ -168,7 +170,10 @@ public class ViewPresentationControl extends AbstractPresentationController impl
       } catch (PersistenceException e) {
          logger.error("",e);
          throw new OspException(e);
-      }
+      } catch (IdUnusedException e) {
+                  logger.error("", e);
+               }
+
 
       boolean headers = pres.getTemplate().isIncludeHeaderAndFooter();
       String viewName = "withoutHeader";

@@ -21,6 +21,7 @@
 package org.theospi.portfolio.presentation.control;
 
 import java.util.Map;
+import java.util.Hashtable;
 
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -57,8 +58,10 @@ public class AddCommentController extends AbstractPresentationController {
       if (!errors.hasErrors()) {
          getPresentationManager().createComment((PresentationComment) requestModel);
       }
-
-      return new ModelAndView("success", "id", comment.getPresentation().getId());
+       Hashtable model = new Hashtable();
+      model.put("sakai.tool.placement.id", request.get("sakai.tool.placement.id"));
+      model.put("id", comment.getPresentation().getId());
+      return new ModelAndView("success", model);
    }
 
    public AuthorizationFacade getAuthzManager() {
