@@ -32,6 +32,7 @@ import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
+import org.theospi.utils.mvc.impl.ToolFinishedView;
 
 /**
  * The steps are referenced from 1 to n.  this way we can render the step number to the interface correctly
@@ -85,7 +86,7 @@ public class SequentialWizardPageController extends WizardPageController {
       }
       return super.fillBackingObject(incomingModel, request, session, application);
    }
-   
+
    protected Integer getCurrentStepFromList(List pages, WizardPage curPage) {
       int counter = 0;
       for (Iterator iter = pages.iterator(); iter.hasNext();) {
@@ -96,7 +97,7 @@ public class SequentialWizardPageController extends WizardPageController {
       }
       return new Integer(counter);
    }
-   
+
    protected List getPageList(List completedPages) {
       List pageList = new ArrayList();
 
@@ -117,6 +118,11 @@ public class SequentialWizardPageController extends WizardPageController {
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session,
                                      Map application, Errors errors) {
+      if (request.get("matrix") != null) {
+         session.put(ToolFinishedView.ALTERNATE_DONE_URL, "finishSeqWizard");
+         return new ModelAndView("confirmWizard", "", "");
+      }
+
       session.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, getNextStep(request, session));
 
       return super.handleRequest(requestModel, request,

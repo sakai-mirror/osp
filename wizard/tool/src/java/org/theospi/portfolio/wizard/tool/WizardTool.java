@@ -42,10 +42,8 @@ import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.tool.api.Placement;
-import org.sakaiproject.tool.api.Session;
-import org.sakaiproject.tool.api.Tool;
-import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.api.*;
+import org.sakaiproject.tool.cover.*;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
@@ -523,15 +521,17 @@ public class WizardTool extends BuilderTool {
       session.removeAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES);
       session.removeAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP);
       
+      HashMap map = new HashMap();
+
       if (Wizard.WIZARD_TYPE_SEQUENTIAL.equals(
             getCurrent().getBase().getType())) {
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES, pages);
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP,
                new Integer(1));
          redirectAddress = "osp.wizard.page.helper/sequentialWizardPage.osp";
+         map.put("finishSeqWizard", LIST_PAGE);
       }
 
-      HashMap map = new HashMap();
       map.put("submitWizard", CONFIRM_SUBMIT_PAGE);
       map.put("submitWizardPage", LIST_PAGE);
       session.setAttribute("altDoneURLSet", map);
@@ -817,8 +817,8 @@ public class WizardTool extends BuilderTool {
    
    /**
     * This gets the list of evluators for the wizard
-    * @param Wizard
-    * @returns List
+    * @param wizard
+    * @return List
     */
    protected List getEvaluators(Wizard wizard) {
       ResourceBundle myResources = 
@@ -1211,7 +1211,7 @@ public class WizardTool extends BuilderTool {
    }
    
    /**
-    * @return
+    * @return AuthenticationManager
     */
    public AuthenticationManager getAuthManager() {
       return authManager;
