@@ -48,7 +48,7 @@
             type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" />
 
        <property name="status" type="java.lang.String" />
-       <set name="attachments" cascade="all-delete-orphan"
+       <set name="attachments" cascade="all,delete"
            inverse="true" lazy="true">
            <key column="page_id" />
            <one-to-many class="Attachment" />
@@ -193,7 +193,7 @@
         <property name="reviewDevice" column="review_device_id" length="36"
             type="org.sakaiproject.metaobj.shared.IdType"/>
         <property name="reviewDeviceType" type="string" column="review_device_type" />
-        <set name="evalWorkflows" cascade="all-delete-orphan" inverse="true" lazy="false" >
+        <set name="evalWorkflows" cascade="all,delete" inverse="true" lazy="false" >
            <key column="parent_id" />
            <one-to-many class="org.theospi.portfolio.workflow.model.Workflow" />
         </set>

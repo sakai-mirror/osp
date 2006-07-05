@@ -527,7 +527,7 @@ public class WizardTool extends BuilderTool {
             getCurrent().getBase().getType())) {
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES, pages);
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP,
-               new Integer(1));
+               new Integer(0));
          redirectAddress = "osp.wizard.page.helper/sequentialWizardPage.osp";
          map.put("finishSeqWizard", LIST_PAGE);
       }

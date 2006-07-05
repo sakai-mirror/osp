@@ -21,6 +21,7 @@
 package org.theospi.portfolio.matrix.control;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -70,17 +71,22 @@ public class SequentialWizardPageController extends WizardPageController {
          steps = getPageList(completedPages);
          session.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, getCurrentStepFromList(steps, page));
          session.put(WizardPageHelper.WIZARD_OWNER, cw.getOwner());
+         session.put(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES, steps);
       }
       //TODO: It's probably safe to assume that steps will not be null at this point, 
       // but I'm leaving the check here for the time being.
       if (steps != null) {
          int currentStep = getCurrentStep(session);
          request.put(WizardPageHelper.TOTAL_STEPS, new Integer(steps.size()));
-         if(currentStep == 0)
-            currentStep = 1;
+         //if(currentStep == 0)
+         //   currentStep = 1;
+         currentStep = currentStep + 1;
          WizardPage page = (WizardPage) steps.get(currentStep - 1);
+         if (session.get(WizardPageHelper.WIZARD_OWNER) == null)
+            session.put(WizardPageHelper.WIZARD_OWNER, page.getOwner());
 
          request.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, new Integer(currentStep));
+         //session.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, currentStep);
 
          session.put(WizardPageHelper.WIZARD_PAGE, page);
       }
@@ -124,6 +130,13 @@ public class SequentialWizardPageController extends WizardPageController {
       }
 
       session.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, getNextStep(request, session));
+      
+      String finishAction = (String)request.get("matrix");
+      if (finishAction != null) {
+         //Clear out some session variables
+         session.remove(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP);
+         session.remove(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES);
+      }   
 
       return super.handleRequest(requestModel, request,
          session, application, errors);

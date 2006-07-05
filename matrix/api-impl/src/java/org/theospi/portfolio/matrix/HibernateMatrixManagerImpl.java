@@ -476,15 +476,21 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public WizardPage getWizardPage(Id pageId) {
       WizardPage page = (WizardPage) this.getHibernateTemplate().get(WizardPage.class, pageId);
+      page.getAttachments().size();
+      /*
       for (Iterator i=page.getAttachments().iterator();i.hasNext();) {
          Attachment a = (Attachment) i.next();
-      //   a.getAttachmentCriteria().size();
+         //a.getAttachmentCriteria().size();
       }
-
+*/
+      page.getPageForms().size();
+      /*
       for (Iterator i=page.getPageForms().iterator();i.hasNext();) {
          WizardPageForm wpf = (WizardPageForm) i.next();
       }
+      */
 
+      removeFromSession(page);
       return page;
    }
 

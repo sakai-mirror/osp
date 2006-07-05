@@ -29,6 +29,7 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 import org.theospi.portfolio.wizard.model.Wizard;
@@ -51,6 +52,7 @@ public class EvaluationContentWrapperForWizardPage extends
       
       params.add(new ParamBean("page_id", getId().getValue()));
       params.add(new ParamBean("readOnlyMatrix", "true"));
+      params.add(new ParamBean("session." + WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, null));
       
       if (wizardType.equals(Wizard.WIZARD_TYPE_SEQUENTIAL)) {
          setUrl("osp.wizard.page.helper/sequentialWizardPage.osp");         
