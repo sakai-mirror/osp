@@ -190,7 +190,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       getSecurityService().pushAdvisor(new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
          refs));
       
-      removeFromSession(wizard);
+      //removeFromSession(wizard);
       return wizard;
    }
    
@@ -756,7 +756,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          // the wizard needs to be saved so it has an id
          // the id is needed because guidance needs the security qualifier
          //wizard = saveWizard(wizard);
-         wizard.setId(getIdManager().createId());
+         wizard.setNewId(getIdManager().createId());
          
          replaceIds(wizard, guidanceMap, formsMap, styleMap);
 
@@ -988,6 +988,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          Element pageSequenceNode = (Element)i.next();
          WizardPageSequence pageSequence = new WizardPageSequence();
 
+         
          pageSequence.setCategory(category);
          pageSequence.setTitle(pageSequenceNode.getChildTextTrim("title"));
          pageSequence.setSequence(Integer.parseInt(
@@ -996,6 +997,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          Element pageDefNode = pageSequenceNode.getChild("pageDef");
          WizardPageDefinition wizardPageDefinition = new WizardPageDefinition();
 
+         wizardPageDefinition.setNewId(getIdManager().createId());
 
          wizardPageDefinition.setTitle(pageDefNode.getChildTextTrim("title"));
          wizardPageDefinition.setDescription(pageDefNode.getChildTextTrim("description"));
@@ -1098,7 +1100,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          if(wizardGuidance == null)
             throw new NullPointerException("Guidance for Wizard was not found");
          
-         wizardGuidance.setSecurityQualifier(wizard.getId());
+         wizardGuidance.setSecurityQualifier(wizard.getNewId());
          getGuidanceManager().saveGuidance(wizardGuidance);
          wizard.setGuidanceId( wizardGuidance.getId() );
       }
@@ -1154,7 +1156,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
             if(pageDefGuidance == null)
                throw new NullPointerException("Guidance for Wizard Page was not found");
             
-            pageDefGuidance.setSecurityQualifier(definition.getId());
+            pageDefGuidance.setSecurityQualifier(definition.getVirtualId());
             getGuidanceManager().saveGuidance(pageDefGuidance);
             definition.setGuidanceId( pageDefGuidance.getId() );
 
@@ -1548,7 +1550,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    
    public WizardPageSequence getWizardPageSeqByDef(Id id) {
       Object[] params = new Object[]{id.getValue()};
-      List seqs = getHibernateTemplate().find("from WizardPageSequence w where w.wizardPageDefinition=?", params);
+      List seqs = getHibernateTemplate().find("from WizardPageSequence w where w.wizardPageDefinition.id=?", params);
       if (seqs.size() > 0)
          return (WizardPageSequence)seqs.get(0);
       

@@ -85,6 +85,10 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
     */
    protected Authorization getAuthorization(Agent agent, String function, Id id) {
       try {
+         if(id == null)
+            throw new NullPointerException("The id was null while getting the authorization");
+         if(agent == null || agent.getId() == null)
+            throw new NullPointerException("The agent was null while getting the authorization");
          getHibernateTemplate().setCacheQueries(true);
          return (Authorization) safePopList(getHibernateTemplate().findByNamedQuery("getAuthorization",
             new Object[]{agent.getId().getValue(), function, id.getValue()}));
