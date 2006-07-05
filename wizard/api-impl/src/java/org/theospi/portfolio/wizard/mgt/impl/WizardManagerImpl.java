@@ -258,7 +258,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       if (wizard.isNewObject()) {
          // for some reason the save throws a null pointer exception
          //    if the id isn't set, so generate a new one if need be
-         if(wizard.getId() == null)
+         if(wizard.getId() == null && wizard.getNewId() == null)
             wizard.setNewId(getIdManager().createId());
          wizard.setCreated(now);
          wizard.getRootCategory().setCreated(now);
@@ -1128,6 +1128,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       for(Iterator i = cat.getChildPages().iterator(); i.hasNext(); ) {
          WizardPageSequence sequence = (WizardPageSequence)i.next();
          WizardPageDefinition definition = (WizardPageDefinition)sequence.getWizardPageDefinition();
+         definition.setSiteId(cat.getWizard().getSiteId());
 
          if(definition.getEvaluationDevice() != null && definition.getEvaluationDevice().getValue() != null)
             definition.setEvaluationDevice(idManager.getId(
