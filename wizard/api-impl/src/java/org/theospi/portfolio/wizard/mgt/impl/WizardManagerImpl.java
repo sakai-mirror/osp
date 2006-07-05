@@ -147,6 +147,19 @@ public class WizardManagerImpl extends HibernateDaoSupport
       Wizard wizard = new Wizard(getIdManager().createId(), agent, currentSite);
       return wizard;
    }
+   
+   protected void removeFromSession(Object obj) {
+      this.getHibernateTemplate().evict(obj);
+      try {
+         getHibernateTemplate().getSessionFactory().evict(obj.getClass());
+      } catch (HibernateException e) {
+         logger.error(e);
+      }
+   }
+   
+   protected void clearSession() {
+      this.getHibernateTemplate().clear();
+   }
 
    public Wizard getWizard(Id wizardId) {
       return getWizard(wizardId, true);
@@ -176,7 +189,8 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
       getSecurityService().pushAdvisor(new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
          refs));
-
+      
+      removeFromSession(wizard);
       return wizard;
    }
    
