@@ -59,6 +59,8 @@ public interface GuidanceManager {
    public List listGuidances(String siteId);
 
    public Guidance getGuidance(String id);
+   
+   public Guidance getGuidance(String id, boolean checkAuthz);
 
    public void packageGuidanceForExport(List guidanceIds, OutputStream os) throws IOException;
 

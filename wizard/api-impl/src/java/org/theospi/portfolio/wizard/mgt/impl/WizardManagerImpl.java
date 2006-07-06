@@ -1550,12 +1550,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
       }
    
    public WizardPageSequence getWizardPageSeqByDef(Id id) {
+      WizardPageSequence wps = null;
       Object[] params = new Object[]{id.getValue()};
       List seqs = getHibernateTemplate().find("from WizardPageSequence w where w.wizardPageDefinition.id=?", params);
-      if (seqs.size() > 0)
-         return (WizardPageSequence)seqs.get(0);
+      if (seqs.size() > 0) {
+         wps = (WizardPageSequence)seqs.get(0);
+      }
       
-      return null;
+      return wps;
    }
    
    public List getCompletedWizardPagesByPageDef(Id id) {

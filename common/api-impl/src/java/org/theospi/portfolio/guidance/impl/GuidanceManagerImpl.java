@@ -88,15 +88,19 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
 
       return guidance;
    }
-
+   
    public Guidance getGuidance(Id guidanceId) {
+      return getGuidance(guidanceId, true);
+   }
+
+   protected Guidance getGuidance(Id guidanceId, boolean checkAuthz) {
       Guidance guidance = (Guidance)getHibernateTemplate().get(Guidance.class, guidanceId);
 
       if (guidance == null) {
          return null;
       }
 
-      if (guidance.getSecurityQualifier() != null) {
+      if (guidance.getSecurityQualifier() != null && checkAuthz) {
          getAuthorizationFacade().checkPermission(guidance.getSecurityViewFunction(),
             guidance.getSecurityQualifier());
       }
@@ -152,7 +156,11 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
    }
 
    public Guidance getGuidance(String id) {
-      return getGuidance(getIdManager().getId(id));
+      return getGuidance(id, true);
+   }
+   
+   public Guidance getGuidance(String id, boolean checkAuthz) {
+      return getGuidance(getIdManager().getId(id), checkAuthz);
    }
 
    public void packageGuidanceForExport(List guidanceIds, OutputStream os) throws IOException {

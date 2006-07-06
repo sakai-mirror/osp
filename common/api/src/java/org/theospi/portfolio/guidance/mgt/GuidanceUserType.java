@@ -66,7 +66,7 @@ public class GuidanceUserType implements UserType {
          return null;
       }
 
-      return getGuidanceManager().getGuidance(result);
+      return getGuidanceManager().getGuidance(result, false);
    }
 
    public void nullSafeSet(PreparedStatement st, Object object, int index) throws HibernateException, SQLException {
