@@ -130,9 +130,7 @@
             <span class="reqStar">*</span>
             <label class="block"><fmt:message key="table_row_comment"/></label>
 
-            <textarea name="<c:out value="${status.expression}"/>" cols="80" rows="5" maxlength="4000">
-               <c:out value="${status.value}"/>
-            </textarea>
+            <textarea name="<c:out value="${status.expression}"/>" value="" cols="80" rows="5" maxlength="4000"></textarea>
          </p>
       </spring:bind>
 
