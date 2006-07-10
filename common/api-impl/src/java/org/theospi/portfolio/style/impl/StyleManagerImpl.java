@@ -264,20 +264,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
       
          getLockManager().removeAllLocks(styleId.getValue());
          
-         HibernateCallback callback = new HibernateCallback() {
-   
-            public Object doInHibernate(Session session) throws HibernateException, SQLException {
-               //session.delete("from Style s where s.id=?", styleId.getValue(), Hibernate.STRING);
-               
-               Query q = session.createQuery("delete from Style s where s.id=?");
-               q.setString(0, styleId.getValue());
-               q.executeUpdate();
-               
-               return null;
-            }
-         };
-      
-         getHibernateTemplate().execute(callback);
+         getHibernateTemplate().delete(style);
       }
       else {
          return false;
