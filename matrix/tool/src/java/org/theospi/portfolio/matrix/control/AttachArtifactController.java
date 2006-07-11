@@ -45,7 +45,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Attachment;
-import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 
 public class AttachArtifactController implements Controller, LoadObjectController, CancelableController {
@@ -65,16 +64,9 @@ public class AttachArtifactController implements Controller, LoadObjectControlle
          form.setPage_id(page_id);
          session.put(getModelName(), form);
 
-         Cell cell;
-         WizardPage page = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
-         if (page != null) {
-            cell = WizardPageController.createCellWrapper(page);
-         }
-         else {
-            cell = matrixManager.getCellFromPage(idManager.getId(page_id));
-         }
-
-         Set attachments = cell.getAttachments();
+         WizardPage page = matrixManager.getWizardPage(idManager.getId(page_id));
+         
+         Set attachments = page.getAttachments();
          List files = new ArrayList();
          for (Iterator iter=attachments.iterator(); iter.hasNext();) {
         	   Attachment att = (Attachment)iter.next();
@@ -104,9 +96,9 @@ public class AttachArtifactController implements Controller, LoadObjectControlle
       boolean sessionPage = true;
       if (page == null) {
          sessionPage = false;
-         Cell cell = getMatrixManager().getCellFromPage(getIdManager().getId(form.getPage_id()));
-         page = cell.getWizardPage();
+         //page = getMatrixManager().getWizardPage(getIdManager().getId(form.getPage_id()));
       }
+      page = getMatrixManager().getWizardPage(getIdManager().getId(form.getPage_id()));
       attachArtifacts(session,  page);
       if (sessionPage) {
          session.put(WizardPageHelper.WIZARD_PAGE, getMatrixManager().getWizardPage(page.getId()));

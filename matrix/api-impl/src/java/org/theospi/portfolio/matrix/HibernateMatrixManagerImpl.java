@@ -469,8 +469,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Attachment attachment = new Attachment();
       attachment.setArtifactId(artifactId);
       attachment.setWizardPage(page);
+      attachment.setNewId(getIdManager().createId());
+      
+      page.getAttachments().add(attachment);
 
-      this.getHibernateTemplate().save(attachment);
+      this.getHibernateTemplate().saveOrUpdate(page);
       return attachment;
    }
 
@@ -517,8 +520,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
                }
             }
             attachments.removeAll(toRemove);
+            page.setAttachments(attachments);
 
-            session.update(page);
+            session.saveOrUpdate(page);
             return null;
          }
 

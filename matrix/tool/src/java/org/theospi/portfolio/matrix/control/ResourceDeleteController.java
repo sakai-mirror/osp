@@ -65,7 +65,9 @@ public class ResourceDeleteController implements LoadObjectController, CustomCom
       Id cellId = idManager.getId((String) request.get("page_id"));
       Id artifactId = idManager.getId((String) request.get("resource_id"));
       Cell cell = getMatrixManager().getCellFromPage(cellId);
+      boolean sessionPage = true;
       if (page == null) {
+         sessionPage = false;
          page = cell.getWizardPage();
       }
       String submitAction = (String)request.get("submit");
@@ -76,6 +78,9 @@ public class ResourceDeleteController implements LoadObjectController, CustomCom
          }
          else {
             getMatrixManager().detachArtifact(page.getId(), artifactId);
+         }
+         if (sessionPage) {
+            session.put(WizardPageHelper.WIZARD_PAGE, getMatrixManager().getWizardPage(page.getId()));
          }
          return new ModelAndView("continue", "page_id", page.getId().getValue());
       }

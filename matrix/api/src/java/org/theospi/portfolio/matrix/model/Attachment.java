@@ -28,7 +28,6 @@ import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
  * @author rpembry
  */
 public class Attachment extends IdentifiableObject {
-   Id id;
    Id artifactId;
    WizardPage wizardPage;
 
@@ -68,9 +67,14 @@ public class Attachment extends IdentifiableObject {
       if (other == null || !(other instanceof Attachment)) return false;
       //TODO need better equals method
       
-      if (getId() == null && getNewId() != null && ((Attachment)other).getId() == null && 
-            ((Attachment)other).getNewId() != null) return (this.getNewId().equals(((Attachment) other).getNewId()));
-      return (this.getId().equals(((Attachment) other).getId()));
+      Attachment att = (Attachment) other;
+      if (this.getArtifactId().equals(att.getArtifactId()) && this.getWizardPage().getVirtualId().equals(att.getWizardPage().getVirtualId()))
+         return true;
+      //if (getId() == null && getNewId() != null && att.getId() == null && 
+      //      att.getNewId() != null) return (this.getNewId().equals(att.getNewId()));
+      if (getVirtualId() == null && att.getVirtualId() != null) return false;
+      if (getVirtualId() != null && att.getVirtualId() == null) return false;
+      return (this.getVirtualId().equals(att.getVirtualId()));
 
    }
 
@@ -79,7 +83,7 @@ public class Attachment extends IdentifiableObject {
     */
    public int hashCode() {
       //TODO need better hashcode
-      Id id = this.getId();
+      Id id = this.getVirtualId();
       if (id == null) return 0;
       return id.getValue().hashCode();
    }

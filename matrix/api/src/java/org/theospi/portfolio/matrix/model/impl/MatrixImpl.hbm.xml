@@ -48,8 +48,8 @@
             type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" />
 
        <property name="status" type="java.lang.String" />
-       <set name="attachments" cascade="all,delete"
-           inverse="true" lazy="true">
+       <set name="attachments" cascade="all-delete-orphan"
+           inverse="true" lazy="false">
            <key column="page_id" />
            <one-to-many class="Attachment" />
        </set>
@@ -58,7 +58,7 @@
            class="WizardPageDefinition" cascade="delete" lazy="false" />
 
        <set name="pageForms" cascade="all-delete-orphan"
-           inverse="true" lazy="true">
+           inverse="true" lazy="false">
            <key column="page_id" />
            <one-to-many class="WizardPageForm" />
        </set>
