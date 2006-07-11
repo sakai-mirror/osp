@@ -131,7 +131,7 @@ public class AddStyleController extends AbstractStyleController
    }
    
    protected void save(Style style, Errors errors) {
-        getStyleManager().storeStyle(style);
+        getStyleManager().mergeStyle(style);
    }
 
    public Map referenceData(Map request, Object command, Errors errors) {

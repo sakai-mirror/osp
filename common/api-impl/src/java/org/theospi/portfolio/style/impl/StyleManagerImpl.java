@@ -97,13 +97,35 @@ public class StyleManagerImpl extends HibernateDaoSupport
    private List globalSites;
    private List globalSiteTypes;
    private List consumers;
-   
+
    
    public Style storeStyle(Style style) {
       return storeStyle(style, true);
    }
    
    public Style storeStyle (Style style, boolean checkAuthz) {
+      updateFields(style, checkAuthz);
+      getHibernateTemplate().saveOrUpdate(style);
+      lockStyleFiles(style);
+
+      return style;
+   }
+   
+   public Style mergeStyle(Style style) {
+      return mergeStyle(style, true);
+   }
+   
+   public Style mergeStyle (Style style, boolean checkAuthz) {
+      if(style.getId() == null)
+            return storeStyle(style, checkAuthz);
+      updateFields(style, checkAuthz);
+      getHibernateTemplate().merge(style);
+      lockStyleFiles(style);
+
+      return style;
+   }
+   protected void updateFields(Style style, boolean checkAuthz)
+   {
       style.setModified(new Date(System.currentTimeMillis()));
 
       boolean newStyle = (style.getId() == null);
@@ -121,10 +143,6 @@ public class StyleManagerImpl extends HibernateDaoSupport
                   style.getId());
          }
       }
-      getHibernateTemplate().saveOrUpdate(style);
-      lockStyleFiles(style);
-
-      return style;
    }
    
    protected void lockStyleFiles(Style style){
