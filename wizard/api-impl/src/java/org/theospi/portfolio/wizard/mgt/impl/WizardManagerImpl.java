@@ -707,6 +707,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       // set values not coming from the zip
       wizard.setCreated(new Date(System.currentTimeMillis()));
       wizard.setModified(wizard.getCreated());
+      wizard.setNewId(getIdManager().createId());
 
       importData.put(IMPORT_CREATE_DATE_KEY, wizard.getCreated());
       importData.put(IMPORT_EVALUATORS_KEY, new HashMap()); // key: userid  value: isRole
@@ -756,7 +757,6 @@ public class WizardManagerImpl extends HibernateDaoSupport
          // the wizard needs to be saved so it has an id
          // the id is needed because guidance needs the security qualifier
          //wizard = saveWizard(wizard);
-         wizard.setNewId(getIdManager().createId());
          
          replaceIds(wizard, guidanceMap, formsMap, styleMap);
 

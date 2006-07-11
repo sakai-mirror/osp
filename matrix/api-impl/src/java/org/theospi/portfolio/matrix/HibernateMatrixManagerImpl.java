@@ -1996,18 +1996,23 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          //Cell actionCell = this.getMatrixCellByWizardPageDef(cell.getMatrix(), 
          //      wi.getActionObjectId());
          switch (wi.getActionType()) {
+            // complete / return part 2
             case(WorkflowItem.STATUS_CHANGE_WORKFLOW):
                processStatusChangeWorkflow(wi, page);
                break;
+            
             case(WorkflowItem.NOTIFICATION_WORKFLOW):
                processNotificationWorkflow(wi);
                break;
+               
+            // Return part 1
             case(WorkflowItem.CONTENT_LOCKING_WORKFLOW):
                processContentLockingWorkflow(wi, page);
                break;
-         }
-      }      
-   }
+         } // end processWorkflow
+      } // end items.iterator
+      storePage(page);
+   } // end processWorkflow
    
    public void processWorkflow(int workflowOption, Id cellId) {
       Cell cell = getCell(cellId);

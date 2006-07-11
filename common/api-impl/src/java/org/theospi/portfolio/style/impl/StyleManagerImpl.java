@@ -45,7 +45,6 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.jdom.CDATA;
 import org.jdom.Document;
@@ -264,20 +263,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
       
          getLockManager().removeAllLocks(styleId.getValue());
          
-         HibernateCallback callback = new HibernateCallback() {
-   
-            public Object doInHibernate(Session session) throws HibernateException, SQLException {
-               //session.delete("from Style s where s.id=?", styleId.getValue(), Hibernate.STRING);
-               
-               Query q = session.createQuery("delete from Style s where s.id=?");
-               q.setString(0, styleId.getValue());
-               q.executeUpdate();
-               
-               return null;
-            }
-         };
-      
-         getHibernateTemplate().execute(callback);
+         getHibernateTemplate().delete(style);
       }
       else {
          return false;
