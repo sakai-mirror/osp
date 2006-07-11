@@ -95,6 +95,9 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
             if (returned == null || !returned.booleanValue()) {
                returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.VIEW_WIZARD,id));
             }
+            if (returned == null || !returned.booleanValue()) {
+               returned = Boolean.valueOf(cwp.getCategory().getWizard().getWizard().getOwner().equals(agent));
+            }
             if (returned.booleanValue())
                return returned;
          }

@@ -956,7 +956,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          wizard.setGuidanceId(idManager.getId(guidanceIdStr));
 
          // read the categories/pages
-         readCategoriesAndPages(wizard.getRootCategory(), topNode.getChild("category"), importData);
+         readCategoriesAndPages(wizard, wizard.getRootCategory(), topNode.getChild("category"), importData);
 
           //   pull the styles from the xml
          //    WizardStyleItem only works with Resources not IDs
@@ -971,7 +971,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return true;
    }
 
-   private void readCategoriesAndPages(WizardCategory category, Element categoryNode, Map importData)
+   private void readCategoriesAndPages(Wizard wizard, WizardCategory category, Element categoryNode, Map importData)
             throws DataConversionException
    {
       category.setCreated((Date)importData.get(IMPORT_CREATE_DATE_KEY));
@@ -981,6 +981,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       category.setDescription(categoryNode.getChildTextTrim("description"));
       category.setKeywords(categoryNode.getChildTextTrim("keywords"));
       category.setSequence(Integer.parseInt(categoryNode.getChildTextTrim("sequence")));
+      category.setWizard(wizard);
 
       List pageSequences = categoryNode.getChild("pages").getChildren("pageSequence");
       List pages = new ArrayList();
@@ -1071,7 +1072,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          Element pageSequenceNode = (Element)i.next();
          WizardCategory childCategory = new WizardCategory();
          childCategory.setParentCategory(category);
-         readCategoriesAndPages(childCategory, pageSequenceNode, importData);
+         readCategoriesAndPages(wizard, childCategory, pageSequenceNode, importData);
          categories.add(childCategory);
       }
       category.setChildCategories(categories);
@@ -1550,12 +1551,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
       }
    
    public WizardPageSequence getWizardPageSeqByDef(Id id) {
+      WizardPageSequence wps = null;
       Object[] params = new Object[]{id.getValue()};
       List seqs = getHibernateTemplate().find("from WizardPageSequence w where w.wizardPageDefinition.id=?", params);
-      if (seqs.size() > 0)
-         return (WizardPageSequence)seqs.get(0);
+      if (seqs.size() > 0) {
+         wps = (WizardPageSequence)seqs.get(0);
+      }
       
-      return null;
+      return wps;
    }
    
    public List getCompletedWizardPagesByPageDef(Id id) {
