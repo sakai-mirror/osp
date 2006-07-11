@@ -43,6 +43,8 @@ public interface StyleManager {
    
    public Style storeStyle(Style style);
    public Style storeStyle(Style style, boolean checkAuthz);
+   public Style mergeStyle(Style style);
+   public Style mergeStyle (Style style, boolean checkAuthz);
    public Style getStyle(Id styleId);
    public boolean deleteStyle(final Id styleId);
    public Style getLightWeightStyle(final Id styleId);
