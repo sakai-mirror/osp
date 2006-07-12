@@ -148,6 +148,7 @@
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="authManager"><ref bean="authManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
+            <property name="authzManager"><ref bean="authzManager"/></property>
             <property name="reviewManager">
                <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
             </property>
@@ -481,7 +482,7 @@
             <property name="homeFactory"><ref bean="homeFactory"/></property>
             <property name="repositoryManager"><ref bean="repositoryManager"/></property>
             <property name="matrixAuthorizer"><ref bean="matrixAuthorizer"/></property>
-            
+
             -->
          </bean>
       </property>
@@ -490,12 +491,12 @@
             <prop key="success">viewScaffolding</prop>
             <prop key="cellView">viewCell</prop>
          </props>
-      </property>      
+      </property>
       <property name="commandName"><value>matrixContents</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.matrix.control.MatrixGridBean</value></property>
-      <property name="formView"><value>viewScaffolding</value></property>      
+      <property name="formView"><value>viewScaffolding</value></property>
    </bean>
-  
+
    <bean id="addScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.AddScaffoldingController">
@@ -510,7 +511,7 @@
 		      <property name="authzManager"><ref bean="authzManager"/></property>
 		      <property name="sessionManager">
                <ref bean="org.sakaiproject.tool.api.SessionManager"/>
-            </property> 
+            </property>
 		      <property name="authManager"><ref bean="authManager"/></property>
 		      <property name="lockManager">
 		         <ref bean="org.sakaiproject.content.api.LockManager"/>
@@ -545,7 +546,7 @@
       <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Scaffolding</value></property>
       <property name="formView"><value>addScaffolding</value></property>
    </bean>
-   
+
    <bean id="addLevelController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.AddLevelController"/>
@@ -565,7 +566,7 @@
       <property name="commandClass"><value>org.theospi.portfolio.matrix.model.LevelTransport</value></property>
       <property name="formView"><value>addLevel</value></property>
    </bean>
-   
+
    <bean id="deleteLevelController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.DeleteLevelController"/>
@@ -578,7 +579,7 @@
       <property name="commandName"><value>level</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Level</value></property>
    </bean>
-   
+
    <bean id="moveLevelController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.MoveLevelController"/>
@@ -591,7 +592,7 @@
       <property name="commandName"><value>level</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Level</value></property>
    </bean>
-   
+
    <bean id="moveCriterionController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.MoveCriterionController"/>
@@ -635,7 +636,7 @@
       <property name="commandName"><value>criterion</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Criterion</value></property>
    </bean>
-       
+
    <bean id="editScaffoldingConfirmController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.EditScaffoldingConfirmationController">
@@ -657,7 +658,7 @@
       <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Scaffolding</value></property>
       <property name="formView"><value>editScaffoldingCellConfirm</value></property>
    </bean>
-   
+
    <bean id="editScaffoldingCellConfirmController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.EditScaffoldingCellConfirmationController">
@@ -682,7 +683,7 @@
       <property name="commandClass"><value>org.theospi.portfolio.matrix.model.ScaffoldingCell</value></property>
       <property name="formView"><value>editScaffoldingCellConfirm</value></property>
    </bean>
-       
+
    <bean id="importScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.ImportScaffoldingController">
@@ -788,7 +789,7 @@
             <prop key="success">editScaffoldingCellRedirect</prop>
             <prop key="loadReviewers">editScaffoldingCellRedirect</prop>
 				<prop key="return">viewScaffoldingRedirect</prop>
-            <prop key="editScaffoldingCellConfirm">editScaffoldingCellConfirmRedirect</prop> 
+            <prop key="editScaffoldingCellConfirm">editScaffoldingCellConfirmRedirect</prop>
             <prop key="selectEvaluators">selectCellEvaluators</prop>
             <prop key="createGuidance">createGuidance</prop>
             <prop key="deleteGuidance">editScaffoldingCellRedirect</prop>
@@ -800,7 +801,7 @@
       <property name="validator"><ref bean="matrixValidator"/></property>
       <property name="commandName"><value>scaffoldingCell</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.matrix.model.ScaffoldingCell</value></property>
-      <property name="formView"><value>editScaffoldingCell</value></property>      
+      <property name="formView"><value>editScaffoldingCell</value></property>
    </bean>
 
    <bean id="attachCellController" class="org.theospi.utils.mvc.impl.servlet.HelperConsumerFormControllerImpl">

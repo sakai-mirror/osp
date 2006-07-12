@@ -39,6 +39,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
@@ -48,6 +49,7 @@ import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.style.model.Style;
+import org.theospi.portfolio.security.AuthorizationFacade;
 
 import java.util.*;
 
@@ -59,6 +61,7 @@ public class CellController implements FormController, LoadObjectController {
    private IdManager idManager = null;
    private ReviewManager reviewManager;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
+   private AuthorizationFacade authzManager = null;
 
    public static final String WHICH_HELPER_KEY = "filepicker.helper.key";
    public static final String KEEP_HELPER_LIST = "filepicker.helper.keeplist";
@@ -93,8 +96,8 @@ public class CellController implements FormController, LoadObjectController {
       
       if (cell.getCell().getMatrix() != null) {
          Agent owner = cell.getCell().getMatrix().getOwner();
-         readOnly = isReadOnly(owner);
-         
+         readOnly = isReadOnly(owner, cell.getCell().getMatrix().getScaffolding().getWorksiteId());
+
       }
       model.put("readOnlyMatrix", readOnly);
       
@@ -130,10 +133,11 @@ public class CellController implements FormController, LoadObjectController {
       return MatrixContentEntityProducer.MATRIX_PRODUCER;
    }
    
-   protected Boolean isReadOnly(Agent owner) {
-      if (owner != null && !owner.equals(getAuthManager().getAgent()))
-         return new Boolean(true);
-      return new Boolean(false);
+   protected Boolean isReadOnly(Agent owner, Id id) {
+      if ((owner != null && owner.equals(getAuthManager().getAgent()))&&
+          (id != null && getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING, id)))
+          return new Boolean(false);
+      return new Boolean(true);
    }
    
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
@@ -302,4 +306,12 @@ public class CellController implements FormController, LoadObjectController {
          StructuredArtifactDefinitionManager structuredArtifactDefinitionManager) {
       this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
    }
+
+    public AuthorizationFacade getAuthzManager() {
+        return authzManager;
+    }
+
+    public void setAuthzManager(AuthorizationFacade authzManager) {
+        this.authzManager = authzManager;
+    }
 }

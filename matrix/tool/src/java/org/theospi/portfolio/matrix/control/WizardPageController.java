@@ -57,7 +57,7 @@ public class WizardPageController extends CellController {
       Map model = super.referenceData(request, command, errors);
       
       Agent owner = (Agent)request.get(WizardPageHelper.WIZARD_OWNER);
-      model.put("readOnlyMatrix", super.isReadOnly(owner));
+      model.put("readOnlyMatrix", super.isReadOnly(owner, null));
       //session.removeAttribute("readOnlyMatrix");
       model.put("pageTitleKey", "view_wizardPage");
       model.put("helperPage", "true");
