@@ -100,8 +100,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
          if (currentAgent != null && !currentAgent.equals("")) {
             //Don't create a matrix unless the scaffolding has been published 
             // and the user has permission to use a matrix.
-            if (scaffolding.isPublished() && getAuthzManager().isAuthorized(
-                  MatrixFunctionConstants.USE_SCAFFOLDING, scaffolding.getWorksiteId())) {
+            if (scaffolding.isPublished()) {
                matrix = getMatrixManager().createMatrix(currentAgent, scaffolding);
             }
             else {
@@ -181,9 +180,10 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       Agent owner = grid.getMatrixOwner();
       Boolean readOnly = Boolean.valueOf(false);
 
-      if (owner != null && !owner.equals(getAuthManager().getAgent()))
+      if ((owner != null && !owner.equals(getAuthManager().getAgent())) ||
+           !getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING,getWorksiteManager().getCurrentWorksiteId()))
          readOnly = Boolean.valueOf(true);
-      
+
       model.put("matrixOwner", owner);      
       model.put("readOnlyMatrix", readOnly);
       
