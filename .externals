@@ -46,7 +46,7 @@ roster			-r11919	https://source.sakaiproject.org/svn/roster/tags/sakai_2-2-010
 syllabus		-r11919	https://source.sakaiproject.org/svn/syllabus/tags/sakai_2-2-010
 presentation		-r11919	https://source.sakaiproject.org/svn/presentation/tags/sakai_2-2-010
 sam			-r11919	https://source.sakaiproject.org/svn/sam/tags/sakai_2-2-010
-osp			-r11919	https://source.sakaiproject.org/svn/osp/tags/sakai_2-2-010
+osp			-r11983	https://source.sakaiproject.org/svn/osp/tags/sakai_2-2-010_OSP
 jobscheduler		-r11919	https://source.sakaiproject.org/svn/jobscheduler/tags/sakai_2-2-010
 providers		-r11919	https://source.sakaiproject.org/svn/providers/tags/sakai_2-2-010
 textarea		-r11919	https://source.sakaiproject.org/svn/textarea/tags/sakai_2-2-010
