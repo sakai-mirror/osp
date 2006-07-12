@@ -10,7 +10,7 @@
          <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="reviewContent" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="review_content_id" />
-      <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="true"/>
+      <property name="siteId" type="string" update="false" length="99" column="site_id" not-null="true"/>
       <property name="parent" length="36" type="string" column="parent_id" />
       <property name="deviceId" length="36" type="string" column="review_device_id" />
       <property name="type" type="int" column="review_type" not-null="true"/>

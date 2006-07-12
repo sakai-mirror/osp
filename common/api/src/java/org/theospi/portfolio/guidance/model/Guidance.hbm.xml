@@ -10,7 +10,7 @@
          <generator class="org.theospi.portfolio.shared.model.IdentifiableIdGenerator"/>
       </id>
       <property name="description" type="string" column="description" not-null="false"/>
-      <property name="siteId" type="string" update="false" length="36" column="site_id" not-null="true"/>
+      <property name="siteId" type="string" update="false" length="99" column="site_id" not-null="true"/>
 
       <property name="securityQualifier" type="org.sakaiproject.metaobj.shared.IdType" />
       <property name="securityViewFunction" type="string" not-null="true"/>
