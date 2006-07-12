@@ -110,6 +110,7 @@ public class CellFormPickerController extends CellController implements FormCont
             wpf.setFormType(ref.getProperties().getProperty(
                   ref.getProperties().getNamePropStructObjType()));
             wpf.setWizardPage(page);
+            wpf.setNewId(getIdManager().createId());
             page.getPageForms().add(wpf);
          }
          getMatrixManager().storePage(page);
@@ -162,7 +163,7 @@ public class CellFormPickerController extends CellController implements FormCont
          session.put("page_id", pageId);
          session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
          session.put(WHICH_HELPER_KEY, HELPER_PICKER);
-         session.put(KEEP_HELPER_LIST, "true");
+         session.put(KEEP_HELPER_LIST, "false");
          return new ModelAndView("formPicker");
          
       }

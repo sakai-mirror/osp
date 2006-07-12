@@ -21,13 +21,13 @@
 package org.theospi.portfolio.matrix.model;
 
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 
 
 /**
  * @author rpembry
  */
-public class WizardPageForm {
-   private Id id;
+public class WizardPageForm extends IdentifiableObject {
    private Id artifactId;
    private WizardPage wizardPage;
    private String formType;
@@ -44,20 +44,6 @@ public class WizardPageForm {
     */
    public void setArtifactId(Id artifactId) {
       this.artifactId = artifactId;
-   }
-
-   /**
-    * @return Returns the id.
-    */
-   public Id getId() {
-      return id;
-   }
-
-   /**
-    * @param id The id to set.
-    */
-   public void setId(Id id) {
-      this.id = id;
    }
 
    /**
@@ -84,10 +70,16 @@ public class WizardPageForm {
       if (other == this) return true;
       if (other == null || !(other instanceof WizardPageForm)) return false;
       //TODO need better equals method
-      if (this.getId() == null && ((WizardPageForm) other).getId() != null) return false;
-      if (this.getId() != null && ((WizardPageForm) other).getId() == null) return false;
-      if(this.getId() == null) return false;
-      return (this.getId().equals(((WizardPageForm) other).getId()));
+      
+      WizardPageForm form = (WizardPageForm) other;
+      
+      if (this.getArtifactId().equals(form.getArtifactId()) && this.getWizardPage().getVirtualId().equals(form.getWizardPage().getVirtualId()))
+         return true;
+      
+      if (this.getVirtualId() == null && form.getVirtualId() != null) return false;
+      if (this.getVirtualId() != null && form.getVirtualId() == null) return false;
+      //if(this.getId() == null) return false;
+      return (this.getVirtualId().equals(form.getVirtualId()));
 
    }
 
@@ -96,7 +88,7 @@ public class WizardPageForm {
     */
    public int hashCode() {
       //TODO need better hashcode
-      Id id = this.getId();
+      Id id = this.getVirtualId();
       if (id == null) return 0;
       return id.getValue().hashCode();
    }

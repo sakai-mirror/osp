@@ -2,7 +2,7 @@
 
 <registration>
 
-	<tool id="osp.wizard.page.form" title="Wizard Page Form" description="OSP Wizard Page Form Helper Tool">
+	<tool id="osp.wizard.page.contents" title="Wizard Page Contents" description="OSP Wizard Page Contents Helper Tool">
        <configuration name="test" value="reg-value" />
 
        <category name="sakai.helper" />

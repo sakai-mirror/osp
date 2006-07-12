@@ -175,13 +175,13 @@
 					<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
 						<div class="itemAction indnt2">
 						
-							 <a href="<osp:url value="osp.wizard.page.form.helper/cellFormPicker.osp">
+							 <a href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
 										<osp:param name="createFormAction" value="${cellFormDef.id}" />
 										</osp:url>" onclick="javascript:stopEvents(event)">
 									 <fmt:message key="action_createForm"/></a>
 							 | 
-							 <a href="<osp:url value="osp.wizard.page.form.helper/cellFormPicker.osp">
+							 <a href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
 										<osp:param name="attachFormAction" value="${cellFormDef.id}" />
 										</osp:url>" onclick="javascript:stopEvents(event)">
@@ -213,13 +213,13 @@
                   </c:if>
                   <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
                       <div class="itemAction indent2">
-                          &nbsp; &nbsp; &nbsp;<a href="<osp:url value="osp.wizard.page.form.helper/cellFormPicker.osp">
+                          &nbsp; &nbsp; &nbsp;<a href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
                               <osp:param name="page_id" value="${cell.wizardPage.id}" />
                               <osp:param name="createFormAction" value="${cellFormDef.id}" />
                               <osp:param name="current_form_id" value="${node.resource.id}" />
                               </osp:url>"><fmt:message key="edit"/></a>
                           |
-                          <a href="<osp:url value="osp.wizard.page.form.helper/formDelete.osp">
+                          <a href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
                               <osp:param name="page_id" value="${cell.wizardPage.id}" />
                               <osp:param name="formDefId" value="${cellFormDef.id}" />
                               <osp:param name="current_form_id" value="${node.id}" />
@@ -259,7 +259,7 @@
 						 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
 						 </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="edit"/></a>
 						 |   --%>
-                          <a name="linkNew" href="<osp:url value="resourceDelete.osp">
+                          <a name="linkNew" href="<osp:url value="osp.wizard.page.contents.helper/resourceDelete.osp">
 						 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
 						 <osp:param name="resource_id" value="${node.id}"/>
 						 <osp:param name="submit" value="delete"/>
@@ -292,7 +292,7 @@
    <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
       <div class="act">
          <input type="submit" name="manageAttachments" value="<fmt:message key="action_manageItems"/>"
-         	onclick="javascript:stopEvents(event); document.form.method='GET';document.form.action='<osp:url value="attachToCell.osp">
+         	onclick="javascript:stopEvents(event); document.form.method='GET';document.form.action='<osp:url value="osp.wizard.page.contents.helper/attachToCell.osp">
         	 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
         	 </osp:url>'" /> <!--
       <a name="linkNew" id="linkNew" href="<osp:url value="attachToCell.osp">

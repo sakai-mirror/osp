@@ -341,8 +341,8 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">wizardPageRedirect</prop>
-            <prop key="continue">wizardPageRedirect</prop>
+            <prop key="success">helperDone</prop>
+            <prop key="continue">helperDone</prop>
          </props>
       </property>
       <property name="customTypedEditors">
@@ -824,8 +824,8 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">wizardPageRedirect</prop>
-            <prop key="cancel">wizardPageRedirect</prop>
+            <prop key="success">helperDone</prop>
+            <prop key="cancel">helperDone</prop>
          </props>
       </property>
       <property name="formView"><value>attachCell</value></property>
