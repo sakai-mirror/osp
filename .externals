@@ -12,7 +12,7 @@ db			-r11919	https://source.sakaiproject.org/svn/db/tags/sakai_2-2-010
 email			-r11919	https://source.sakaiproject.org/svn/email/tags/sakai_2-2-010
 alias			-r11919	https://source.sakaiproject.org/svn/alias/tags/sakai_2-2-010
 site			-r11919	https://source.sakaiproject.org/svn/site/tags/sakai_2-2-010
-master			-r11919	https://source.sakaiproject.org/svn/master/tags/sakai_2-2-010
+master			-r11973	https://source.sakaiproject.org/svn/master/branches/sakai_2-2-x/
 reference		-r11919	https://source.sakaiproject.org/svn/reference/tags/sakai_2-2-010
 login			-r11919	https://source.sakaiproject.org/svn/login/tags/sakai_2-2-010
 access			-r11919	https://source.sakaiproject.org/svn/access/tags/sakai_2-2-010
