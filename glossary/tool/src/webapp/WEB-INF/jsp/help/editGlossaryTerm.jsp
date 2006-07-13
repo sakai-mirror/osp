@@ -25,23 +25,23 @@
         <c:if test="${status.error}"> 
             <div class="validation"><c:out value="${status.errorMessage}"/></div>
         </c:if>
-        <p class="shorttext indnt2">
+        <div class="shorttext indnt2">
             <span class="reqStar">*</span>
             <label>
                 <fmt:message key="label_Term"/>
             </label>
             <input type="text" name="term" 
                    value="<c:out value="${status.value}"/>" 
-                   size="50" maxlength="255"
+                   size="47" maxlength="255"
             />
-        </p>
+        </div>
     </spring:bind>
     
     <spring:bind path="entry.description">
         <c:if test="${status.error}">
             <div class="validation"><c:out value="${status.errorMessage}"/></div>
         </c:if>
-        <p class="longtext indnt2">
+        <div class="longtext indnt2">
             <span class="reqStar">*</span>
             <label class="block">
                 <fmt:message key="label_shortDesc"/>
@@ -51,14 +51,14 @@
             <textarea rows="3" name="description" 
                 onkeyup="limitChar(this,255)"  cols="80"
             ><c:out value="${item}"/></textarea>
-        </p>
+        </div>
     </spring:bind>
     
     <spring:bind path="entry.longDescription">
         <c:if test="${status.error}">
             <div class="validation"><c:out value="${status.errorMessage}"/></div>
         </c:if>
-        <p class="longtext indnt2">
+        <div class="longtext indnt2">
             <span class="reqStar">*</span>
             <label class="block">
                 <fmt:message key="label_longDesc"/>
@@ -67,7 +67,7 @@
             <table><tr>
             <td><textarea id="longDescription" name="longDescription" rows="25" cols="80"><c:out value="${item}"/></textarea></td>
             </tr></table>
-        </p>
+        </div>
     </spring:bind>
 
     
