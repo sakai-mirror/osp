@@ -135,7 +135,7 @@ public class CellController implements FormController, LoadObjectController {
    
    protected Boolean isReadOnly(Agent owner, Id id) {
       if ((owner != null && owner.equals(getAuthManager().getAgent()))&&
-          (id != null && getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING, id)))
+          (id == null || getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING, id)))
           return new Boolean(false);
       return new Boolean(true);
    }
