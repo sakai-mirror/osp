@@ -129,7 +129,8 @@ public class DecoratedWizardPage extends DecoratedCategoryChild {
       DecoratedCategory parentCategory = getCategory();
       parentCategory.getBase().getChildPages().remove(getBase());
       parentCategory.resequencePages();
-      getParent().getDeletedItems().add(getBase());
+      if(getBase().getId() != null)
+         getParent().getDeletedItems().add(getBase());
       return null;
    }
 
