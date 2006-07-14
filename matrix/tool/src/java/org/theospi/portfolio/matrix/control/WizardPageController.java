@@ -26,6 +26,8 @@ import java.util.Map;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.WizardPageHelper;
@@ -49,14 +51,23 @@ import org.theospi.utils.mvc.impl.ToolFinishedView;
 public class WizardPageController extends CellController {
    
    private WizardManager wizardManager;
+   private SessionManager sessionManager;
 
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.FormController#referenceData(java.util.Map, java.lang.Object, org.springframework.validation.Errors)
     */
    public Map referenceData(Map request, Object command, Errors errors) {
+      ToolSession session = getSessionManager().getCurrentToolSession();
+      
       Map model = super.referenceData(request, command, errors);
       
       Agent owner = (Agent)request.get(WizardPageHelper.WIZARD_OWNER);
+      
+      if(owner == null)
+         owner = (Agent)session.getAttribute(WizardPageHelper.WIZARD_OWNER);
+      
+      session.setAttribute(WizardPageHelper.WIZARD_OWNER, owner);
+      
       model.put("readOnlyMatrix", super.isReadOnly(owner, null));
       //session.removeAttribute("readOnlyMatrix");
       model.put("pageTitleKey", "view_wizardPage");
@@ -152,6 +163,14 @@ public class WizardPageController extends CellController {
 
    public void setWizardManager(WizardManager wizardManager) {
       this.wizardManager = wizardManager;
+   }
+
+   public SessionManager getSessionManager() {
+      return sessionManager;
+   }
+
+   public void setSessionManager(SessionManager sessionManager) {
+      this.sessionManager = sessionManager;
    }
 
 }
