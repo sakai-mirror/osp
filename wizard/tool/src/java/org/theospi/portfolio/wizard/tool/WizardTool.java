@@ -203,6 +203,7 @@ public class WizardTool extends BuilderTool {
             userId = (String)session.getAttribute("WIZARD_USER_ID");   
             session.removeAttribute("WIZARD_USER_ID");
             session.removeAttribute("CURRENT_WIZARD_ID");
+            this.setCurrentUserId(userId);
          }
          else {
             Placement placement = ToolManager.getCurrentPlacement();
