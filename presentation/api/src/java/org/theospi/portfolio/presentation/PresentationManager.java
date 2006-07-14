@@ -117,6 +117,8 @@ public interface PresentationManager extends CleanupableService {
 
    public Collection findPublishedTemplates(String siteId);
 
+   public Collection findGlobalTemplates();
+
    public Collection findPublishedTemplates();
 
    public Collection findPublishedLayouts(String siteId);

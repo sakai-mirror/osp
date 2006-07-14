@@ -212,11 +212,11 @@
          <list>
             <value>~admin</value>
             <value>!admin</value>
+            <value>PortfolioAdmin</value>
          </list>
       </property>
       <property name="globalSiteTypes">
          <list>
-            <value>portfolioAdmin</value>
          </list>
       </property>
    </bean>

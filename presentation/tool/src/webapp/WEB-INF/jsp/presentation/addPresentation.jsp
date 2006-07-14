@@ -4,7 +4,7 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename="org.theospi.portfolio.presentation.bundle.Messages"/>
 
-<c:if test="${empty templates && empty publishedTemplates}" var="noTemplates"/>
+<c:if test="${empty templates && empty publishedTemplates && empty globalPublishedTemplates}" var="noTemplates"/>
 <c:set var="targetNext" value="_target1"/>
 <c:set var="suppress_previous" value="true"/>
 
@@ -50,14 +50,22 @@
     <option value=""><fmt:message key="addPresentation1_selectTemplate"/></option>
     <option value="">- - - - - - - - - - - - - - - - - -
         - - -</option>
-    <c:forEach var="template"
-               items="${publishedTemplates}"
-               varStatus="templateStatus">
-        <option
-        <c:if test="${presentation.template.id.value == template.id.value }">selected</c:if>
-        value="<c:out value="${template.id.value}"/>"><c:out
-            value="${template.name}"/> <fmt:message key="addPresentation1_publishedTemplate"/>
-    </c:forEach>
+   <c:forEach var="template"
+              items="${publishedTemplates}"
+              varStatus="templateStatus">
+       <option
+       <c:if test="${presentation.template.id.value == template.id.value }">selected</c:if>
+       value="<c:out value="${template.id.value}"/>"><c:out
+           value="${template.name}"/> <fmt:message key="addPresentation1_publishedTemplate"/>
+   </c:forEach>
+   <c:forEach var="template"
+              items="${globalPublishedTemplates}"
+              varStatus="templateStatus">
+       <option
+       <c:if test="${presentation.template.id.value == template.id.value }">selected</c:if>
+       value="<c:out value="${template.id.value}"/>"><c:out
+           value="${template.name}"/> <fmt:message key="addPresentation1_globalPublishedTemplate"/>
+   </c:forEach>
     <c:forEach var="template" items="${templates}"
                varStatus="templateStatus">
         <option
