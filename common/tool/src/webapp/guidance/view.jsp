@@ -31,6 +31,8 @@
                   </f:facet>
                   <h:outputLink title="#{material.displayName}"
                      value="#{material.fullReference.base.url}" target="_new">
+                     <ospx:contentTypeMap displayName="#{material.displayName}" fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+                     <h:graphicImage id="instrFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
                      <h:outputText value="#{material.displayName}"/>
                   </h:outputLink>
                </h:column>
@@ -51,6 +53,8 @@
                   </f:facet>
                   <h:outputLink title="#{material.displayName}"
                      value="#{material.fullReference.base.url}" target="_new">
+                     <ospx:contentTypeMap displayName="#{material.displayName}" fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+                     <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
                      <h:outputText value="#{material.displayName}"/>
                   </h:outputLink>
                </h:column>
@@ -71,6 +75,8 @@
                   </f:facet>
                   <h:outputLink title="#{material.displayName}"
                      value="#{material.fullReference.base.url}" target="_new">
+                     <ospx:contentTypeMap displayName="#{material.displayName}" fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+                     <h:graphicImage id="rationaleFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
                      <h:outputText value="#{material.displayName}"/>
                   </h:outputLink>
                </h:column>

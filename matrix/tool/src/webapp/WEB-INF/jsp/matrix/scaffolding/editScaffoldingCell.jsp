@@ -171,7 +171,11 @@
                   <br />
       		   </c:if>
                <c:forEach var="attachment" items="${scaffoldingCell.guidance.instruction.attachments}" varStatus="loopStatus">
-               		<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />
+               		<img border="0" title="<c:out value="${attachment.displayName}" />"
+                                  alt="<c:out value="${attachment.displayName}"/>" 
+                                  src="/library/image/<osp-c:contentTypeMap 
+                                  fileType="${attachment.mimeType}" mapType="image" 
+                                  />"/>
                      <a title="<c:out value="${attachment.displayName}" />"
                         href="<c:out value="${attachment.fullReference.base.url}" />" target="_new">
                         <c:out value="${attachment.displayName}"/>
@@ -199,7 +203,11 @@
                   <br />
       		   </c:if>
                <c:forEach var="attachment" items="${scaffoldingCell.guidance.rationale.attachments}" varStatus="loopStatus">
-               		<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />
+               		<img border="0" title="<c:out value="${attachment.displayName}" />"
+                                  alt="<c:out value="${attachment.displayName}"/>" 
+                                  src="/library/image/<osp-c:contentTypeMap 
+                                  fileType="${attachment.mimeType}" mapType="image" 
+                                  />"/>
                      <a title="<c:out value="${attachment.displayName}" />"
                         href="<c:out value="${attachment.fullReference.base.url}" />" target="_new">
                         <c:out value="${attachment.displayName}"/>
@@ -227,7 +235,11 @@
                   <br />
       		   </c:if>
                <c:forEach var="attachment" items="${scaffoldingCell.guidance.example.attachments}" varStatus="loopStatus">
-               		<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />
+               		<img border="0" title="<c:out value="${attachment.displayName}" />"
+                                  alt="<c:out value="${attachment.displayName}"/>" 
+                                  src="/library/image/<osp-c:contentTypeMap 
+                                  fileType="${attachment.mimeType}" mapType="image" 
+                                  />"/>
                      <a title="<c:out value="${attachment.displayName}" />"
                         href="<c:out value="${attachment.fullReference.base.url}" />" target="_new">
                         <c:out value="${attachment.displayName}"/>

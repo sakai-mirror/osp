@@ -1016,5 +1016,44 @@
      ]]></description>
 
    </tag>
+   
+   <tag>
+     <name>contentTypeMap</name>
+     <tag-class>org.theospi.jsf.tag.JsfContentTypeMapTag</tag-class>
+     <body-content>empty</body-content>
+     <description>
+    exposes a map of the file types: images, names and extensions
+     </description>
+     <attribute>
+         <name>fileType</name>
+         <required>false</required>
+         <rtexprvalue>false</rtexprvalue>
+     </attribute>
+     <attribute>
+         <name>mapType</name>
+         <required>false</required>
+         <rtexprvalue>false</rtexprvalue>
+     </attribute>
+     <attribute>
+         <name>displayName</name>
+         <required>false</required>
+         <rtexprvalue>false</rtexprvalue>
+     </attribute>
+     <attribute>
+         <name>pathPrefix</name>
+         <required>false</required>
+         <rtexprvalue>false</rtexprvalue>
+     </attribute>
+     <attribute>
+      <name>var</name>
+      <required>true</required>
+      <rtexprvalue>false</rtexprvalue>
+      <description>
+      
+          Name of a request-scope attribute under which the return value will be exposed.
+      </description>
+    </attribute>
+   </tag>
+   
 </taglib
 >
