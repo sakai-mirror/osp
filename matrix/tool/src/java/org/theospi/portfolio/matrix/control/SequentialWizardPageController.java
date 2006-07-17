@@ -115,8 +115,9 @@ public class SequentialWizardPageController extends WizardPageController {
 
    protected int getCurrentStep(Map session) {
       int currentStep = 0;
-      if (session.get(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP) != null) {
-         currentStep = ((Integer)session.get(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP)).intValue();
+      Object stepObj = (Object) session.get(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP);
+      if (stepObj != null && stepObj instanceof Integer) {
+         currentStep = ((Integer)stepObj).intValue();
       }
       return currentStep;
    }
