@@ -39,9 +39,8 @@
                      </f:facet>
                      <h:outputLink title="#{material.displayName}"
                         value="#{material.fullReference.base.url}" target="_new">
-                        <f:verbatim>
-                        	<img border="0" src="/library/image/sakai/generic.gif"/>
-                        </f:verbatim>
+                        <ospx:contentTypeMap displayName="#{material.displayName}" fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+                        <h:graphicImage id="instrFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
                         <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
                      <f:facet name="footer">
@@ -94,9 +93,8 @@
                      </f:facet>
                      <h:outputLink title="#{material.displayName}"
                         value="#{material.fullReference.base.url}" target="_new">
-                        <f:verbatim>
-                        	<img border="0" src="/library/image/sakai/generic.gif"/>
-                        </f:verbatim>
+                        <ospx:contentTypeMap displayName="#{material.displayName}" fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+                        <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
                         <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
                      <f:facet name="footer">
@@ -150,9 +148,8 @@
                      </f:facet>
                      <h:outputLink title="#{material.displayName}"
                         value="#{material.fullReference.base.url}" target="_new">
-                        <f:verbatim>
-                        	<img border="0" src="/library/image/sakai/generic.gif"/>
-                        </f:verbatim>
+                        <ospx:contentTypeMap displayName="#{material.displayName}" fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+                        <h:graphicImage id="rationaleFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
                         <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
                      <f:facet name="footer">

@@ -65,7 +65,14 @@
              <c:if test="${isAuthorizedTo.publish && template.published == false}">
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="publishTemplate.osp"/>&id=<c:out value="${template.id.value}" />"><fmt:message key="table_action_publish"/></a>
+                 <a href="<osp:url value="publishTemplate.osp"/>&id=<c:out value="${template.id.value}" />">
+                    <c:if test="${globalTool}">
+                       <fmt:message key="table_action_PublishGlobal"/>
+                    </c:if>
+                    <c:if test="${not globalTool}">
+                        <fmt:message key="table_action_publish"/>
+                    </c:if>
+                 </a>
              </c:if>
              
              <c:if test="${isAuthorizedTo.edit}">

@@ -63,6 +63,7 @@ public class ListTemplateController extends AbstractPresentationController {
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getId()));
       model.put("isMaintainer", isMaintainer());
+      model.put("globalTool", "" + getPresentationManager().isGlobal());
       return new ModelAndView("success", model);
    }
 

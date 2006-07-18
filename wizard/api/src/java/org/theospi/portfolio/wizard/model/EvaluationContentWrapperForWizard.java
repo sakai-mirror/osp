@@ -42,7 +42,7 @@ public class EvaluationContentWrapperForWizard extends EvaluationContentWrapper 
       setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
       setEvalType(CompletedWizard.TYPE);
       
-      setUrl("osp.wizard.run.helper/runWizard");
+      setUrl("osp.wizard.run.helper/runWizardGuidance");
       
       Set params = new HashSet();      
       params.add(new ParamBean("session.CURRENT_WIZARD_ID", getId().getValue()));

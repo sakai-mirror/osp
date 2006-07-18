@@ -21,7 +21,6 @@
 package org.theospi.portfolio.matrix.control;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -116,8 +115,9 @@ public class SequentialWizardPageController extends WizardPageController {
 
    protected int getCurrentStep(Map session) {
       int currentStep = 0;
-      if (session.get(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP) != null) {
-         currentStep = ((Integer)session.get(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP)).intValue();
+      Object stepObj = (Object) session.get(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP);
+      if (stepObj != null && stepObj instanceof Integer) {
+         currentStep = ((Integer)stepObj).intValue();
       }
       return currentStep;
    }

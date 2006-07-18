@@ -79,6 +79,11 @@
        <component-class>org.theospi.jsf.component.TestComponent</component-class>
    </component>
 
+   <component>
+      <component-type>org.theospi.JsfContentTypeMap</component-type>
+       <component-class>org.theospi.jsf.component.JsfContentTypeMapComponent</component-class>
+   </component>
+   
     <!-- =================== Renderers ============== -->
 
     <render-kit>
@@ -165,6 +170,12 @@
            <component-family>javax.faces.Output</component-family>
            <renderer-type>org.theospi.TestComponent</renderer-type>
            <renderer-class>org.theospi.jsf.renderer.TestComponentRenderer</renderer-class>
+       </renderer>
+       
+       <renderer>
+           <component-family>javax.faces.Output</component-family>
+           <renderer-type>org.theospi.JsfContentTypeMap</renderer-type>
+           <renderer-class>org.theospi.jsf.renderer.JsfContentTypeMapRenderer</renderer-class>
        </renderer>
 
     </render-kit>

@@ -192,6 +192,9 @@
             <property name="wizardManager">
                <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" />
             </property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.tool.api.SessionManager" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -240,6 +243,9 @@
             </property>
             <property name="wizardManager">
                <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" />
+            </property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.tool.api.SessionManager" />
             </property>
          </bean>
       </property>

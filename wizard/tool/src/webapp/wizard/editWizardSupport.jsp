@@ -50,7 +50,8 @@
 	     	<h:outputText value="#{wizard.current.instruction.text}" escape="false" />
             <sakai:flat_list value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment">
                <h:column>
-               		<h:outputText value="<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />" escape="false" />
+               		<ospx:contentTypeMap displayName="#{attachment.displayName}" fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+                     <h:graphicImage id="instrFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
                      <h:outputLink title="#{attachment.displayName}"
                         value="#{attachment.fullReference.base.url}" target="_new">
                         <h:outputText value="#{attachment.displayName}"/>
@@ -71,7 +72,8 @@
 	     	<h:outputText value="#{wizard.current.rationale.text}" escape="false"/>
             <sakai:flat_list value="#{wizard.current.guidanceRationaleAttachments}" var="attachment">
                <h:column>
-               		<h:outputText value="<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />" escape="false" />
+               		<ospx:contentTypeMap displayName="#{attachment.displayName}" fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+                     <h:graphicImage id="rationaleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
                      <h:outputLink title="#{attachment.displayName}"
                         value="#{attachment.fullReference.base.url}" target="_new">
                         <h:outputText value="#{attachment.displayName}"/>
@@ -92,7 +94,8 @@
 	     	<h:outputText value="#{wizard.current.example.text}" escape="false"/>
             <sakai:flat_list value="#{wizard.current.guidanceExamplesAttachments}" var="attachment">
                <h:column>
-               		<h:outputText value="<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />" escape="false" />
+               		<ospx:contentTypeMap displayName="#{attachment.displayName}" fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+                     <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
                      <h:outputLink title="#{attachment.displayName}"
                         value="#{attachment.fullReference.base.url}" target="_new">
                         <h:outputText value="#{attachment.displayName}"/>

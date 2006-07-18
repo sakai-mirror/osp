@@ -1007,7 +1007,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
    
    protected List getEvaluatableCells(Agent agent, Agent role, Id worksiteId) {
-      List returned = this.getHibernateTemplate().find("select new " +
+      List returned = this.getHibernateTemplate().find("select distinct new " +
             "org.theospi.portfolio.matrix.model.EvaluationContentWrapperForMatrixCell(" +
             "wp.id, " +
             "wp.pageDefinition.title, c.matrix.owner, " +
@@ -1027,7 +1027,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
    
    protected List getEvaluatableWizardPages(Agent agent, Agent role, Id worksiteId) {
-      List wizardPages = this.getHibernateTemplate().find("select new " +
+      List wizardPages = this.getHibernateTemplate().find("select distinct new " +
             "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizardPage(" +
             "cwp.wizardPage.id, " +
             "cwp.wizardPage.pageDefinition.title, cwp.category.wizard.owner, " +
@@ -1049,7 +1049,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    
    protected List getEvaluatableWizards(Agent agent, Agent role, Id worksiteId) {
      
-      List wizards = this.getHibernateTemplate().find("select new " +
+      List wizards = this.getHibernateTemplate().find("select distinct new " +
             "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizard(" +
             "cw.wizard.id, " +
             "cw.wizard.name, cw.owner, " +
@@ -1544,7 +1544,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          Hashtable fileMap, ContentCollection fileParent) throws IOException, InconsistentException, PermissionException, IdUsedException, IdInvalidException, OverQuotaException, ServerOverloadException {
       File file = new File(currentEntry.getName());
 
-      MimeType mimeType = new MimeType(file.getParentFile().getParentFile().getParent(),
+      MimeType mimeType = new MimeType(file.getParentFile().getParentFile().getParentFile().getName(),
          file.getParentFile().getParentFile().getName());
 
       String contentType = mimeType.getValue();

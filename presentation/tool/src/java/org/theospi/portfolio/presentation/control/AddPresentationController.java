@@ -187,6 +187,7 @@ public class AddPresentationController extends AbstractWizardFormController {
          Agent agent = getAuthManager().getAgent();
          model.put("templates", getPresentationManager().findTemplatesByOwner(agent, ToolManager.getCurrentPlacement().getContext()));
          model.put("publishedTemplates", getPresentationManager().findPublishedTemplates(ToolManager.getCurrentPlacement().getContext()));
+         model.put("globalPublishedTemplates", getPresentationManager().findGlobalTemplates());
          return model;
       }
       if (page == PROPERTY_PAGE) {

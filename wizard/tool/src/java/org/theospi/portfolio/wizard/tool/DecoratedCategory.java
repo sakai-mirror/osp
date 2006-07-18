@@ -201,7 +201,8 @@ public class DecoratedCategory extends DecoratedCategoryChild {
       DecoratedCategory parentCategory = getParentCategory();
       parentCategory.getBase().getChildCategories().remove(getBase());
       parentCategory.resequenceCategories();
-      getParent().getDeletedItems().add(getBase());
+      if(getBase().getId() != null)
+         getParent().getDeletedItems().add(getBase());
       return null;
    }
 

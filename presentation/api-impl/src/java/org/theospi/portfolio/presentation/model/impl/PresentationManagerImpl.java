@@ -648,6 +648,20 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          new Object[]{new Boolean(true), getAuthnManager().getAgent().getId().getValue(), siteId});
    }
 
+   public Collection findGlobalTemplates() {
+      String query =  "from PresentationTemplate where published=? and owner_id!=? and site_id in (" ;
+
+      for (Iterator i = getGlobalSites().iterator(); i.hasNext();) {
+         String site = (String) i.next();
+         query += "'" + site + "'";
+         query += ",";
+      }
+
+      query += "'') Order by name";
+      return getHibernateTemplate().find(query,
+         new Object[]{new Boolean(true), getAuthnManager().getAgent().getId().getValue()});
+   }
+
    protected Collection findPublishedTemplatesBySite(String siteId) {
       return getHibernateTemplate().find(
          "from PresentationTemplate where published=? and site_id=? Order by name",
@@ -1349,7 +1363,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       File file = new File(currentEntry.getName());
 
-      MimeType mimeType = new MimeType(file.getParentFile().getParentFile().getParent(),
+      MimeType mimeType = new MimeType(file.getParentFile().getParentFile().getParentFile().getName(),
          file.getParentFile().getParentFile().getName());
 
       String contentType = mimeType.getValue();
