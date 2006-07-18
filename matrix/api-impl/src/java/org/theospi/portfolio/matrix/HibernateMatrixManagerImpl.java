@@ -1544,7 +1544,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          Hashtable fileMap, ContentCollection fileParent) throws IOException, InconsistentException, PermissionException, IdUsedException, IdInvalidException, OverQuotaException, ServerOverloadException {
       File file = new File(currentEntry.getName());
 
-      MimeType mimeType = new MimeType(file.getParentFile().getParentFile().getParent(),
+      MimeType mimeType = new MimeType(file.getParentFile().getParentFile().getParentFile().getName(),
          file.getParentFile().getParentFile().getName());
 
       String contentType = mimeType.getValue();
