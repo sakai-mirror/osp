@@ -1,3 +1,2 @@
 Skipped:
-11679 SAK-5235 Spring 1.2.8 upgrade
 
