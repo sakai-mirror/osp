@@ -75,12 +75,11 @@ public class ResourceDeleteController implements LoadObjectController, CustomCom
       if (submitAction != null) {
          if (page != null) {
             getMatrixManager().detachArtifact(page.getId(), artifactId);
-         }
-         else {
-            getMatrixManager().detachArtifact(page.getId(), artifactId);
-         }
-         if (sessionPage) {
-            session.put(WizardPageHelper.WIZARD_PAGE, getMatrixManager().getWizardPage(page.getId()));
+            
+            if (sessionPage) {
+               session.remove(WizardPageHelper.WIZARD_PAGE);
+               session.put(WizardPageHelper.WIZARD_PAGE, getMatrixManager().getWizardPage(page.getId()));
+            }
          }
          return new ModelAndView("continue", "page_id", page.getId().getValue());
       }

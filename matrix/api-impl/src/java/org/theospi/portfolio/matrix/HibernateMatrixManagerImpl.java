@@ -49,11 +49,9 @@ import java.util.zip.ZipOutputStream;
 import org.hibernate.AssertionFailure;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Expression;
-import org.hibernate.type.Type;
 import org.jdom.Element;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.content.api.ContentCollection;
@@ -77,7 +75,6 @@ import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
-import org.sakaiproject.metaobj.shared.IdType;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
@@ -506,9 +503,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       HibernateCallback callback = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
-            Object[] params = new Object[]{pageId, artifactId};
-            Type[] types = new Type[]{Hibernate.custom(IdType.class), Hibernate.custom(IdType.class)};
-
             WizardPage page = (WizardPage) session.load(WizardPage.class, pageId);
             Set attachments = page.getAttachments();
             Iterator iter = attachments.iterator();
@@ -532,22 +526,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    }
    
-   public void detachForm(final Id cellId, final Id artifactId) {
+   public void detachForm(final Id pageId, final Id artifactId) {
 
       HibernateCallback callback = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
-            Object[] params = new Object[]{cellId, artifactId};
-            Type[] types = new Type[]{Hibernate.custom(IdType.class), Hibernate.custom(IdType.class)};
-
-            Cell cell = (Cell) session.load(Cell.class, cellId);
-            WizardPage page = (WizardPage) session.load(WizardPage.class, cellId);
-            Set forms;
+            WizardPage page = (WizardPage) session.load(WizardPage.class, pageId);
+            Set forms = page.getPageForms();
             
-            if(page != null) {
-               forms = page.getPageForms();
-            } else {
-               forms = cell.getCellForms();
-            }
             Iterator iter = forms.iterator();
             List toRemove = new ArrayList();
             while (iter.hasNext()) {
@@ -557,11 +542,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
                }
             }
             forms.removeAll(toRemove);
-
-            if(page != null)
-               session.update(page);
-            else
-               session.update(cell);
+            page.setPageForms(forms);
+            
+            session.saveOrUpdate(page);            
             return null;
          }
 
@@ -1000,9 +983,14 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
 
    public WizardPage submitPageForEvaluation(WizardPage page) {
-      getHibernateTemplate().refresh(page); //TODO not sure if this is necessary
-      page.setStatus(MatrixFunctionConstants.PENDING_STATUS);
-      getHibernateTemplate().merge(page);
+      Date now = new Date(System.currentTimeMillis());
+      
+      WizardPage thePage = getWizardPage(page.getId());
+      getHibernateTemplate().refresh(thePage); //TODO not sure if this is necessary
+      
+      thePage.setStatus(MatrixFunctionConstants.PENDING_STATUS);
+      thePage.setModified(now);
+      getHibernateTemplate().merge(thePage);
       return page;
    }
    
