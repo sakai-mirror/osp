@@ -128,9 +128,9 @@ public class HibernatePresentationProperties implements UserType {
       return StructuredArtifact.class;
    }
 
-   public int hashCode(Object arg0) throws HibernateException {
+   public int hashCode(Object o) throws HibernateException {
       // TODO Auto-generated method stub
-      return 0;
+      return o.hashCode();
    }
 
    public Serializable disassemble(Object arg0) throws HibernateException {
@@ -143,9 +143,9 @@ public class HibernatePresentationProperties implements UserType {
       return null;
    }
 
-   public Object replace(Object arg0, Object arg1, Object arg2) throws HibernateException {
+   public Object replace(Object original, Object target, Object owner) throws HibernateException {
       // TODO Auto-generated method stub
-      return null;
+      return original;
    }
 
 }
