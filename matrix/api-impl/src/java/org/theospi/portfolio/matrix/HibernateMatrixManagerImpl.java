@@ -972,7 +972,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       WizardPage page = cell.getWizardPage();
       
       //    Actions for current cell
-      processContentLockingWorkflow(WorkflowItem.CONTENT_LOCKING_LOCK, page);
+      processContentLockingWorkflow(true, page);
       processStatusChangeWorkflow(MatrixFunctionConstants.PENDING_STATUS, page);
       cell.getWizardPage().setModified(now);
       
@@ -987,10 +987,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       
       WizardPage thePage = getWizardPage(page.getId());
       getHibernateTemplate().refresh(thePage); //TODO not sure if this is necessary
+
+      processContentLockingWorkflow(true, thePage);
       
       thePage.setStatus(MatrixFunctionConstants.PENDING_STATUS);
       thePage.setModified(now);
       getHibernateTemplate().merge(thePage);
+      
       return page;
    }
    
@@ -2020,7 +2023,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          if (actionCell != null) {
             WizardPage actionPage = actionCell.getWizardPage();
             if (actionPage != null) {               
-               processContentLockingWorkflow(WorkflowItem.CONTENT_LOCKING_UNLOCK, actionPage);
+               processContentLockingWorkflow(false, actionPage);
                processStatusChangeWorkflow(MatrixFunctionConstants.READY_STATUS, actionPage);
                page.setModified(now);
             }             
@@ -2032,13 +2035,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     * This method locks and unlocks the page file attachments, the additional filled in forms,
     * and the filled in reflection forms.  There is other locking in the ReviewHelperController 
     * which locks the feedback and evaluation.
-    * @param lockAction String WorkflowItem public statics
+    * @param lock boolean true locks the resources, false unlocks
     * @param page WizardPage of the content to lock
     */
-   private void processContentLockingWorkflow(String lockAction, WizardPage page) {
+   private void processContentLockingWorkflow(boolean lock, WizardPage page) {
       for (Iterator iter = page.getAttachments().iterator(); iter.hasNext();) {
          Attachment att = (Attachment)iter.next();
-         if (lockAction.equals(WorkflowItem.CONTENT_LOCKING_LOCK)) {
+         if (lock) {
             getLockManager().lockObject(att.getArtifactId().getValue(), 
                   page.getId().getValue(), 
                   "Submitting cell, 4 eval", true);
@@ -2053,7 +2056,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       for (Iterator iter = page.getPageForms().iterator(); iter.hasNext();) {
          WizardPageForm pageForm = (WizardPageForm)iter.next();
          
-         if (lockAction.equals(WorkflowItem.CONTENT_LOCKING_LOCK)) {
+         if (lock) {
             getLockManager().lockObject(pageForm.getArtifactId().getValue(), 
                   page.getId().getValue(), 
                   "Submitting cell, 4 eval", true);
@@ -2072,7 +2075,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       for (Iterator iter = reflections.iterator(); iter.hasNext();) {
          Review review = (Review)iter.next();
          
-         if (lockAction.equals(WorkflowItem.CONTENT_LOCKING_LOCK)) {
+         if (lock) {
             getLockManager().lockObject(review.getReviewContent().getValue(), 
                   page.getId().getValue(), 
                   "Submitting cell, 4 eval", true);
@@ -2085,7 +2088,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
 
    private void processContentLockingWorkflow(WorkflowItem wi, WizardPage page) {
-      processContentLockingWorkflow(wi.getActionValue(), page);     
+      processContentLockingWorkflow(wi.getActionValue().equals(WorkflowItem.CONTENT_LOCKING_LOCK), page);     
    }
 
    private void processNotificationWorkflow(WorkflowItem wi) {
