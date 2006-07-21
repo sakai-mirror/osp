@@ -159,6 +159,7 @@ public class ReviewHelperController implements Controller {
       int intType = Integer.parseInt(type);
       
       String formTypeId = "";
+      session.remove(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
       switch (intType) {
          case Review.REVIEW_TYPE:
             formTypeId = obj.getReviewDevice().getValue();
