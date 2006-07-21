@@ -73,6 +73,7 @@ import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
+import org.theospi.utils.mvc.impl.ToolFinishedView;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -522,7 +523,11 @@ public class WizardTool extends BuilderTool {
       session.removeAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES);
       session.removeAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP);
       
-      HashMap map = new HashMap();
+      Map map = (Map) session.getAttribute(ToolFinishedView.ALTERNATE_DONE_URL_MAP);
+
+      if (map == null) {
+         map = new HashMap();
+      }
 
       if (Wizard.WIZARD_TYPE_SEQUENTIAL.equals(
             getCurrent().getBase().getType())) {
@@ -535,7 +540,7 @@ public class WizardTool extends BuilderTool {
 
       map.put("submitWizard", CONFIRM_SUBMIT_PAGE);
       map.put("submitWizardPage", LIST_PAGE);
-      session.setAttribute("altDoneURLSet", map);
+      session.setAttribute(ToolFinishedView.ALTERNATE_DONE_URL_MAP, map);
 
       try {
          context.redirect(redirectAddress);
