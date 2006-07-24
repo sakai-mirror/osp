@@ -39,6 +39,8 @@ import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.ServerOverloadException;
+import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -105,24 +107,52 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
             guidance.getSecurityQualifier());
       }
 
-      assureAccess(guidance);
+      if (assureAccess(guidance)) {
+         getHibernateTemplate().save(guidance);
+      }
 
       return guidance;
    }
 
-   public void assureAccess(Guidance guidance) {
+   public boolean assureAccess(Guidance guidance) {
+      boolean changed = false;
       // setup access to the files
       List refs = new ArrayList();
       for (Iterator i=guidance.getItems().iterator();i.hasNext();) {
          GuidanceItem item = (GuidanceItem)i.next();
          for (Iterator j=item.getAttachments().iterator();j.hasNext();) {
             GuidanceItemAttachment attachment = (GuidanceItemAttachment)j.next();
-            refs.add(attachment.getBaseReference().getBase().getReference());
+            if (checkAttachment(attachment)) {
+               refs.add(attachment.getBaseReference().getBase().getReference());
+            }
+            else {
+               j.remove();
+               changed = true;
+            }
          }
       }
 
       getSecurityService().pushAdvisor(new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ,
          refs));
+
+      return changed;
+   }
+
+   protected boolean checkAttachment(GuidanceItemAttachment attachment) {
+      String id = attachment.getBaseReference().getBase().getId();
+
+      try {
+         if (getContentHostingService().getResource(id) == null) {
+            logger.warn("couldn't find attachment");
+            return false;
+         }
+      } catch (Exception e) {
+         // must have been deleted
+         logger.warn("couldn't find attachment", e);
+         return false;
+      }
+
+      return true;
    }
 
    public Guidance saveGuidance(Guidance guidance) {

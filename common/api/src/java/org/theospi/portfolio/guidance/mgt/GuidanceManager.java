@@ -48,7 +48,7 @@ public interface GuidanceManager {
 
    public Guidance getGuidance(Id guidanceId);
 
-   public void assureAccess(Guidance guidance);
+   public boolean assureAccess(Guidance guidance);
 
    public Guidance saveGuidance(Guidance guidance);
 
