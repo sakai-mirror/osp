@@ -54,16 +54,22 @@ public class DecoratedWizard implements DecoratedListInterface {
 
    private DecoratedCompletedWizard runningWizard;
 
+   private DecoratedCompletedWizard usersWizard;
+
+   private int totalPages;
+
    public DecoratedWizard(WizardTool tool, Wizard base) {
       this.base = base;
       this.parent = tool;
       rootCategory = new DecoratedCategory(base.getRootCategory(), tool);
+      usersWizard = null;
    }
    public DecoratedWizard(WizardTool tool, Wizard base, boolean newWizard) {
        this.newWizard = newWizard;
        this.base = base;
        this.parent = tool;
        rootCategory = new DecoratedCategory(base.getRootCategory(), tool);
+      usersWizard = null;
    }
    public Wizard getBase() {
       return base;
@@ -87,17 +93,19 @@ public class DecoratedWizard implements DecoratedListInterface {
       if (s == null) {
          s = "";
       }
-      
-      if(s.length() > 100)
+
+      if (s.length() > 100) {
          s = s.substring(0, 100) + "...";
+      }
       return s;
    }
    
    public boolean getExposeAsTool() {
-      if (base.getExposeAsTool() == null)
+      if (base.getExposeAsTool() == null) {
          return false;
-      else
+      } else {
          return base.getExposeAsTool().booleanValue();
+      }
    }
    
    public void setExposeAsTool(boolean exposeAsTool) {
@@ -160,9 +168,10 @@ public class DecoratedWizard implements DecoratedListInterface {
          session.removeAttribute(StyleHelper.UNSELECTED_STYLE);
          return "";
       }
-      
-      if (base.getStyle() != null)
+
+      if (base.getStyle() != null) {
          return base.getStyle().getName();
+      }
       return "";
    }
    
@@ -176,9 +185,10 @@ public class DecoratedWizard implements DecoratedListInterface {
       session.setAttribute(StyleHelper.STYLE_SELECTABLE, "true");
       
       Wizard wizard = getBase();
-      
-      if (wizard.getStyle() != null)
+
+      if (wizard.getStyle() != null) {
          session.setAttribute(StyleHelper.CURRENT_STYLE_ID, wizard.getStyle().getId().getValue());
+      }
       
       try {
          context.redirect("osp.style.helper/listStyle");
@@ -249,8 +259,9 @@ public class DecoratedWizard implements DecoratedListInterface {
    
    public boolean isOwner() {
       String userId = SessionManager.getCurrentSessionUserId();
-      if(userId != null)
+      if (userId != null) {
          return userId.equals(getBase().getOwner().getId().getValue());
+      }
       return false;
    }
 
@@ -303,20 +314,23 @@ public class DecoratedWizard implements DecoratedListInterface {
    }
 
    public GuidanceItem getInstruction() {
-      if(getBase().getGuidance() == null)
-            return null;
+      if (getBase().getGuidance() == null) {
+         return null;
+      }
       return getBase().getGuidance().getInstruction();
    }
 
    public GuidanceItem getExample() {
-      if(getBase().getGuidance() == null)
+      if (getBase().getGuidance() == null) {
          return null;
+      }
       return getBase().getGuidance().getExample();
    }
 
    public GuidanceItem getRationale() {
-      if(getBase().getGuidance() == null)
+      if (getBase().getGuidance() == null) {
          return null;
+      }
       return getBase().getGuidance().getRationale();
    }
 
@@ -326,70 +340,84 @@ public class DecoratedWizard implements DecoratedListInterface {
    
    protected String limitString(String s, int max)
    {
-      if(s == null)
+      if (s == null) {
          return "";
-      if(s.length() > max)
-         s = s.substring(0,max) + "...";
+      }
+      if (s.length() > max) {
+         s = s.substring(0, max) + "...";
+      }
       return s;
    }
 
    public String getGuidanceInstructions() {
       Guidance guidance = getBase().getGuidance();
-      if(guidance == null)
-           return null;
-      GuidanceItem item = guidance.getInstruction();
-      if(item == null)
+      if (guidance == null) {
          return null;
+      }
+      GuidanceItem item = guidance.getInstruction();
+      if (item == null) {
+         return null;
+      }
       return limitString(item.getText(), 100);
    }
 
    public List getGuidanceInstructionsAttachments() {
       Guidance guidance = getBase().getGuidance();
-      if(guidance == null)
+      if (guidance == null) {
          return new ArrayList();
+      }
       GuidanceItem item = guidance.getInstruction();
-      if(item == null)
+      if (item == null) {
          return new ArrayList();
+      }
       return item.getAttachments();
    }
 
    public String getGuidanceRationale() {
       Guidance guidance = getBase().getGuidance();
-      if(guidance == null)
-           return "";
-      GuidanceItem item = guidance.getRationale();
-      if(item == null)
+      if (guidance == null) {
          return "";
+      }
+      GuidanceItem item = guidance.getRationale();
+      if (item == null) {
+         return "";
+      }
       return limitString(item.getText(), 100);
    }
 
    public List getGuidanceRationaleAttachments() {
       Guidance guidance = getBase().getGuidance();
-      if(guidance == null)
-           return new ArrayList();
-      GuidanceItem item = guidance.getRationale();
-      if(item == null)
+      if (guidance == null) {
          return new ArrayList();
+      }
+      GuidanceItem item = guidance.getRationale();
+      if (item == null) {
+         return new ArrayList();
+      }
       return item.getAttachments();
    }
 
    public String getGuidanceExamples() {
       Guidance guidance = getBase().getGuidance();
-      if(guidance == null)
-           return "";
-      GuidanceItem item = guidance.getExample();
-      if(item == null)
+      if (guidance == null) {
          return "";
+      }
+      GuidanceItem item = guidance.getExample();
+      if (item == null) {
+         return "";
+      }
       return limitString(item.getText(), 100);
    }
 
    public List getGuidanceExamplesAttachments() {
       Guidance guidance = getBase().getGuidance();
-      if(guidance == null)
-           return new ArrayList();
-      GuidanceItem item = guidance.getExample();
-      if(item == null)
+      if (guidance == null) {
          return new ArrayList();
+      }
+      GuidanceItem item = guidance.getExample();
+      if (item == null) {
+         return new ArrayList();
+      }
       return item.getAttachments();
    }
 
@@ -433,5 +461,25 @@ public class DecoratedWizard implements DecoratedListInterface {
        return getParent().getMessageFromBundle("delete_wizard_message", new Object[]{
              base.getName()});
     }
-    
+
+   public DecoratedCompletedWizard getUsersWizard() {
+      if (usersWizard == null) {
+         setUsersWizard(new DecoratedCompletedWizard(getParent(), this,
+            parent.getWizardManager().getCompletedWizard(getBase(), getParent().getCurrentUserId(), false)));
+      }
+      return usersWizard;
+   }
+
+   public void setUsersWizard(DecoratedCompletedWizard usersWizard) {
+      this.usersWizard = usersWizard;
+   }
+
+   public int getTotalPages() {
+      return totalPages;
+   }
+
+   public void setTotalPages(int totalPages) {
+      this.totalPages = totalPages;
+   }
+
 }

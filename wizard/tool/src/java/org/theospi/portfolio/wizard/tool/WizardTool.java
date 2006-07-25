@@ -269,6 +269,7 @@ public class WizardTool extends BuilderTool {
       for (Iterator i=wizards.iterator();i.hasNext();) {
          Wizard wizard = (Wizard)i.next();
          DecoratedWizard current = new DecoratedWizard(this, wizard);
+         current.setTotalPages(getWizardManager().getTotalPageCount(wizard));
          returned.add(current);
          if (lastWizard != null) {
             lastWizard.setNext(current);

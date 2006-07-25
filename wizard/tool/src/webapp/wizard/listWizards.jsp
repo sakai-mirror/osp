@@ -129,7 +129,28 @@
             <h:outputText value="#{msgs.org_theospi_portfolio_wizard_model_Wizard_sequential}"/>
          </f:subview>
       </h:column>
-      
+      <h:column>
+         <f:facet name="header">
+            <h:outputText value="#{msgs.wizard_list_submitted_pages}" />
+         </f:facet>
+         <h:outputText value="#{wizardItem.usersWizard.submittedPages}"/>
+      </h:column>
+      <h:column>
+         <f:facet name="header">
+            <h:outputText value="#{msgs.wizard_list_total_pages}" />
+         </f:facet>
+         <h:outputText value="#{wizardItem.totalPages}"/>
+      </h:column>
+      <h:column>
+         <f:facet name="header">
+            <h:outputText value="#{msgs.wizard_list_last_visited}" />
+         </f:facet>
+         <h:outputFormat id="lastVisited" value="#{msgs.date_format}"
+                rendered="#{!empty wizardItem.usersWizard.base.lastVisited}">
+             <f:param value="#{wizardItem.usersWizard.base.lastVisited}"/>
+         </h:outputFormat>
+      </h:column>
+
    </h:dataTable>
    
 </h:form>

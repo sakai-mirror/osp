@@ -27,8 +27,12 @@ import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import java.sql.SQLException;
 
 import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Query;
+import org.hibernate.Hibernate;
 import org.jdom.CDATA;
 import org.jdom.DataConversionException;
 import org.jdom.Document;
@@ -80,6 +84,7 @@ import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate3.HibernateCallback;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
@@ -452,9 +457,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    public CompletedWizard getCompletedWizard(Wizard wizard, String userId) {
+      return getCompletedWizard(wizard,  userId, true);
+   }
+
+   public CompletedWizard getCompletedWizard(Wizard wizard, String userId, boolean create) {
       Agent agent = getAgentManager().getAgent(userId);
 
-      return getUsersWizard(wizard, agent);
+      return getUsersWizard(wizard, agent, create);
    }
    
    public CompletedWizard getCompletedWizardByPage(Id pageId) {
@@ -476,17 +485,30 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    public CompletedWizard getUsersWizard(Wizard wizard, Agent agent) {
+      return getUsersWizard(wizard, agent, true);
+   }
+
+   public CompletedWizard getUsersWizard(Wizard wizard, Agent agent, boolean create) {
       List completedWizards = getHibernateTemplate().find(" from CompletedWizard where wizard_id=? and owner_id=?",
             new Object[]{wizard.getId().getValue(), agent.getId().getValue()});
 
-      if (completedWizards.size() == 0) {
-         CompletedWizard returned = new CompletedWizard(wizard, agent);
-         getHibernateTemplate().save(returned);
-         return returned;
+      CompletedWizard returned;
+      if (completedWizards.size() != 0) {
+         returned = (CompletedWizard)completedWizards.get(0);
+      }
+      else if (create) {
+         returned = new CompletedWizard(wizard, agent);
       }
       else {
-         return (CompletedWizard)completedWizards.get(0);
+         return null;
       }
+
+      if (create) {
+         returned.setLastVisited(new Date());
+         getHibernateTemplate().save(returned);
+      }
+
+      return returned;
    }
 
    public void processWorkflow(int workflowOption, Id id) {
@@ -562,6 +584,47 @@ public class WizardManagerImpl extends HibernateDaoSupport
                cw.getWizard().getSiteId(),
                WizardEntityProducer.WIZARD_PRODUCER);         
       }
+   }
+
+   public int getTotalPageCount(final Wizard wizard) {
+      HibernateCallback hcb = new HibernateCallback() {
+         public Object doInHibernate(Session session) throws HibernateException, SQLException  {
+            String queryString = "select count(page) from WizardPageSequence page, WizardCategory category " +
+               "where page.category = category.id and category.wizard = ?";
+
+            Query query = session.createQuery(queryString);
+
+            query.setParameter(0, wizard.getId().getValue(), Hibernate.STRING);
+
+            Integer results = (Integer) query.uniqueResult();
+            return results;
+         }
+      };
+
+      return ((Integer)getHibernateTemplate().execute(hcb)).intValue();
+   }
+
+   public int getSubmittedPageCount(final CompletedWizard wizard) {
+      HibernateCallback hcb = new HibernateCallback() {
+         public Object doInHibernate(Session session) throws HibernateException, SQLException  {
+            String queryString = "select count(page) " +
+               "from WizardPage page, CompletedWizardPage completedPage, CompletedWizardCategory category " +
+               "where page.id = completedPage.wizardPage and " +
+               "      completedPage.category = category.id and " +
+               "      category.wizard = ? and " +
+               "      page.status != ?";
+
+            Query query = session.createQuery(queryString);
+
+            query.setParameter(0, wizard.getId().getValue(), Hibernate.STRING);
+            query.setParameter(1, MatrixFunctionConstants.READY_STATUS, Hibernate.STRING);
+
+            Integer results = (Integer) query.uniqueResult();
+            return results;
+         }
+      };
+
+      return ((Integer)getHibernateTemplate().execute(hcb)).intValue();
    }
 
    public AuthorizationFacade getAuthorizationFacade() {

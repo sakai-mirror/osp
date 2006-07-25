@@ -43,7 +43,8 @@ public class DecoratedCompletedWizard {
    private List reflections = null;
    private List evaluations = null;
    private List reviews = null;
-   
+
+   private int submittedPages = 0;
 
    public DecoratedCompletedWizard() {
    }
@@ -52,8 +53,11 @@ public class DecoratedCompletedWizard {
       this.parent = parent;
       this.wizard = wizard;
       this.base = base;
-      setRootCategory(new DecoratedCompletedCategory(
-            parent, wizard.getRootCategory(), base.getRootCategory()));
+      if (base != null) {
+         setRootCategory(new DecoratedCompletedCategory(
+               parent, wizard.getRootCategory(), base.getRootCategory()));
+         setSubmittedPages(parent.getWizardManager().getSubmittedPageCount(base));
+      }
    }
 
    public WizardTool getParent() {
@@ -94,24 +98,27 @@ public class DecoratedCompletedWizard {
    }
    
    public List getReflections() {
-      if(reflections == null)
+      if (reflections == null) {
          reflections = getParent().getReviewManager().getReviewsByParentAndType(
             getBase().getId().getValue(), Review.REFLECTION_TYPE, getBase().getWizard().getSiteId(),
             getParent().getWizardManager().getWizardEntityProducer());
+      }
       return reflections;
    }
    public List getEvaluations() {
-      if(evaluations == null)
+      if (evaluations == null) {
          evaluations = getParent().getReviewManager().getReviewsByParentAndType(
             getBase().getId().getValue(), Review.EVALUATION_TYPE, getBase().getWizard().getSiteId(),
             getParent().getWizardManager().getWizardEntityProducer());
+      }
       return evaluations;
    }
    public List getReviews() {
-      if(reviews == null)
+      if (reviews == null) {
          reviews = getParent().getReviewManager().getReviewsByParentAndType(
             getBase().getId().getValue(), Review.REVIEW_TYPE, getBase().getWizard().getSiteId(),
             getParent().getWizardManager().getWizardEntityProducer());
+      }
       return reviews;
    }
    public boolean getIsReadOnly() {
@@ -120,4 +127,11 @@ public class DecoratedCompletedWizard {
       return !completedWizardAgent.equals(currentAgent);
    }
 
+   public int getSubmittedPages() {
+      return submittedPages;
+   }
+
+   public void setSubmittedPages(int submittedPages) {
+      this.submittedPages = submittedPages;
+   }
 }
