@@ -63,21 +63,27 @@ public class FormDeleteController implements LoadObjectController, CustomCommand
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       WizardPage page = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
       Id cellId = idManager.getId((String) request.get("page_id"));
-      Id formDefId = idManager.getId((String) request.get("formDefId"));
       Id formId = idManager.getId((String) request.get("current_form_id"));
       Cell cell = getMatrixManager().getCellFromPage(cellId);
+      boolean sessionPage = true;
       if (page == null) {
+         sessionPage = false;
          page = cell.getWizardPage();
       }
+      
       String submitAction = (String)request.get("submit");
       String cancelAction = (String)request.get("cancel");
       if (submitAction != null) {
          if (page != null) {
+            session.remove(WizardPageHelper.WIZARD_PAGE);
+            getMatrixManager().removeFromSession(page);
             getMatrixManager().detachForm(page.getId(), formId);
+            if (sessionPage) {
+               
+               session.put(WizardPageHelper.WIZARD_PAGE, getMatrixManager().getWizardPage(page.getId()));
+            }
          }
-         else {
-            getMatrixManager().detachForm(page.getId(), formId);
-         }
+
          return new ModelAndView("continue", "page_id", page.getId().getValue());
       }
       if (cancelAction != null) {

@@ -97,6 +97,8 @@ public class AddPresentationController extends AbstractWizardFormController {
       Presentation presentation = new Presentation();
       presentation.setTemplate(new PresentationTemplate());
 
+      presentation.setToolId(ToolManager.getCurrentPlacement().getId());
+      
       // this is an edit, load model
       if (request.getParameter("id") != null) {
          setInitialPage(1);

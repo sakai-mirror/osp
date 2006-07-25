@@ -129,17 +129,6 @@
       <xsl:if test="$presContent/ospiPresentation/navigation/nextPage |
                     $presContent/ospiPresentation/navigation/previousPage">
 <div class="navIntraTool">
-   <xsl:if test="$presContent/ospiPresentation/navigation/nextPage">
-<a title="Next">
-<xsl:attribute name="href">
-   <xsl:value-of
-      select="$presContent/ospiPresentation/navigation/nextPage/artifact/fileArtifact/uri"/>
-</xsl:attribute>
-<xsl:value-of
-   select="$presContent/ospiPresentation/navigation/nextPage/artifact/metaData/displayName"/>
-</a>
-   </xsl:if>
-   <xsl:text>   </xsl:text>
    <xsl:if test="$presContent/ospiPresentation/navigation/previousPage">
 <a title="Previous">
 <xsl:attribute name="href">
@@ -148,6 +137,17 @@
 </xsl:attribute>
 <xsl:value-of
    select="$presContent/ospiPresentation/navigation/previousPage/artifact/metaData/displayName"/>
+</a>
+   </xsl:if>
+   <xsl:text>   </xsl:text>
+   <xsl:if test="$presContent/ospiPresentation/navigation/nextPage">
+<a title="Next">
+<xsl:attribute name="href">
+   <xsl:value-of
+      select="$presContent/ospiPresentation/navigation/nextPage/artifact/fileArtifact/uri"/>
+</xsl:attribute>
+<xsl:value-of
+   select="$presContent/ospiPresentation/navigation/nextPage/artifact/metaData/displayName"/>
 </a>
    </xsl:if>
 </div>

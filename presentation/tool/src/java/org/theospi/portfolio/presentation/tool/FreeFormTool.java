@@ -31,6 +31,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
 
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.entity.api.Reference;
@@ -262,9 +263,22 @@ public class FreeFormTool extends HelperToolBase {
 
       List pages = getPageList();
       for (Iterator i=pages.iterator();i.hasNext();) {
-         DecoratedPage page = (DecoratedPage) i.next();
-         attachableItems.add(createSelect(page.getBase().getUrl(),
-               page.getBase().getTitle()));
+         DecoratedPage decoratedPage = (DecoratedPage) i.next();
+         PresentationPage page = decoratedPage.getBase();
+         SelectItem si = (SelectItem)createSelect(page.getUrl(),
+                 page.getTitle());
+         
+         boolean present = false;
+         for (Iterator j=attachableItems.iterator();j.hasNext();) {
+        	 SelectItem isi = (SelectItem) j.next();
+        	 if(isi.getLabel() != null && isi.getValue() != null)
+        	 if(isi.getLabel().equals(si.getLabel()) && isi.getValue().equals(si.getValue())) {
+        		 present = true;
+        		 break;
+        	 }
+         }
+         if(!present)
+        	 attachableItems.add(si);
       }
 
       return attachableItems;
@@ -320,7 +334,7 @@ public class FreeFormTool extends HelperToolBase {
       page.setId(getIdManager().createId());
       page.setPresentation(getPresentation());
       page.setRegions(new HashSet());
-      presentation.getPages().add(page);
+      getPresentation().getPages().add(page);
       reorderPages();
       DecoratedPage decoratedPage = new DecoratedPage(page, this);
       setCurrentPage(decoratedPage);

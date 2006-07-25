@@ -73,6 +73,7 @@ public interface WizardManager extends WorkflowEnabledManager {
    public CompletedWizard getCompletedWizard(Id completedWizardId);
    public CompletedWizard getCompletedWizard(Wizard wizard);
    public CompletedWizard getCompletedWizard(Wizard wizard, String userId);
+   public CompletedWizard getCompletedWizard(Wizard wizard, String userId, boolean create);
 
    public CompletedWizard saveWizard(CompletedWizard wizard);
 
@@ -83,4 +84,8 @@ public interface WizardManager extends WorkflowEnabledManager {
    public CompletedWizard getCompletedWizardByPage(Id pageId);
    
    public void checkWizardAccess(Id id);
+
+   public int getTotalPageCount(Wizard wizard);
+
+   public int getSubmittedPageCount(CompletedWizard wizard);
 }

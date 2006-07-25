@@ -63,9 +63,10 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       boolean isCellPage = false;
       WizardPage page = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
-      Id cellId = idManager.getId((String) request.get("page_id"));
-      Cell cell = getMatrixManager().getCellFromPage(cellId);
+      Cell cell = null;
       if (page == null) {
+         Id pageId = idManager.getId((String) request.get("page_id"));
+         cell = getMatrixManager().getCellFromPage(pageId);
          page = cell.getWizardPage();
          isCellPage = true;
       }

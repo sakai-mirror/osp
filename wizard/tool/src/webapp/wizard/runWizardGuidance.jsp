@@ -119,8 +119,8 @@
    </f:subview>
    
    
-      <h:outputText value="<br><br>" escape="false" rendered="wizard.current.base.reflectionDevice != null" />
-      <ospx:xheader rendered="wizard.current.base.reflectionDevice != null">
+      <h:outputText value="<br><br>" escape="false" rendered="#{wizard.current.base.reflectionDevice != null}" />
+      <ospx:xheader rendered="#{wizard.current.base.reflectionDevice != null}">
          <ospx:xheadertitle id="reflectiontitleheader" value="#{msgs.reflection_section_header}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
       

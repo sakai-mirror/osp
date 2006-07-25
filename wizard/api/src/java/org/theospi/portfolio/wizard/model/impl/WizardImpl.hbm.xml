@@ -89,7 +89,7 @@
          type="org.sakaiproject.metaobj.shared.mgt.AgentUserType"/>
 
       <property name="created" type="java.util.Date" update="false" not-null="true"/>
-      <property name="lastVisited" type="java.util.Date" update="true" not-null="true"/>
+      <property name="lastVisited" type="java.util.Date" not-null="true"/>
 
       <property name="status" type="java.lang.String" />
 
@@ -154,7 +154,7 @@
 
       <property name="sequence" type="int" column="seq_num" not-null="false"/>
       <property name="created" type="java.util.Date" update="false" not-null="true"/>
-      <property name="lastVisited" type="java.util.Date" update="true" not-null="false"/>
+      <property name="lastVisited" type="java.util.Date" not-null="false"/>
 
    </class>
 
