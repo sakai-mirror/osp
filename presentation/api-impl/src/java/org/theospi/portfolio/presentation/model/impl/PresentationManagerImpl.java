@@ -1379,10 +1379,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             c = zis.read();
          }
          
-         String fileId = fileParent.getId() + file.getName();
+         String fileName = findUniqueFileName(fileParent.getId(), file.getName());
          ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
-         resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, file.getName());
-         ContentResource /*Edit*/ resource = getContentHosting().addResource(fileId, contentType, bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
+         resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, fileName);
+         ContentResource /*Edit*/ resource;
+
+         resource = getContentHosting().addResource(fileParent.getId() + fileName, contentType, bos.toByteArray(),
+            resourceProperties, NotificationService.NOTI_NONE);
 //         ResourcePropertiesEdit resourceProperties = resource.getPropertiesEdit();
 //         resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, file.getName());
 //         resource.setContent(bos.toByteArray());
@@ -1394,6 +1397,33 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
       catch (Exception exp) {
          throw new RuntimeException(exp);
+      }
+   }
+
+   protected String findUniqueFileName(String id, String name) throws TypeException, PermissionException {
+      String orig = name;
+      String testId = id + name;
+      int current = 0;
+      while (resourceExists(testId)) {
+         current++;
+         int dotPos = orig.lastIndexOf('.');
+         if (dotPos == -1) {
+            name = orig + current;
+         }
+         else {
+            name = orig.substring(0, dotPos) + "-" + current + orig.substring(dotPos);
+         }
+         testId = id + name;
+      }
+
+      return name;
+   }
+
+   protected boolean resourceExists(String returned) throws TypeException, PermissionException {
+      try {
+         return getContentHosting().getResource(returned) != null;
+      } catch (IdUnusedException e) {
+         return false;
       }
    }
 
