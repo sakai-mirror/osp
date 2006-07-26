@@ -64,6 +64,19 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    }
    
    /**
+    * @return String Returns the title.
+    */
+   public String getTitle() {
+      return wizardPageDefinition.getTitle();
+   }
+   /**
+    * @param title String The title to set.
+    */
+   public void setTitle(String title) {
+      wizardPageDefinition.setTitle(title);
+   }
+   
+   /**
     * @return Returns the level.
     */
    public Level getLevel() {

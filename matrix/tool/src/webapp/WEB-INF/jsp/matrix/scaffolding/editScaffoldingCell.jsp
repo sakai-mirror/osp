@@ -45,7 +45,7 @@
           </table>
       </c:if>
 
-        <spring:bind path="scaffoldingCell.wizardPageDefinition.title">
+        <spring:bind path="scaffoldingCell.title">
           <c:if test="${status.error}">
              <div class="validation"><c:out value="${status.errorMessage}"/></div>
           </c:if>
