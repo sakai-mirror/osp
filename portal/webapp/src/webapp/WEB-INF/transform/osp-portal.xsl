@@ -288,7 +288,7 @@ your browser doesn't support iframes
 <input name="eid" id="eid" type="text" style ="width: 10em" />
 
 <xsl:value-of select="$externalized/entry[@key='log.pass']"/>
-<input name="pw" type="password" style ="width: 10em" />
+<input name="pw" id="pw" type="password" style ="width: 10em" />
 <input name="submit" type="submit" id="submit">
    <xsl:attribute name="value">
       <xsl:value-of select="$externalized/entry[@key='log.login']"/>
