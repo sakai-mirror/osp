@@ -64,32 +64,29 @@
             </h:commandLink>
          </f:subview>
          <f:subview id="viewPermss" rendered="#{wizard.canView}">
-			<f:verbatim><div class="itemAction"></f:verbatim>
+			  <ospx:separatedList id="wizActionList" separator=" | " styleClass="itemAction">
 	           <f:subview id="publishLink" rendered="#{wizardItem.canPublish && wizardItem.base.hasPages}">
 	                 <h:commandLink action="#{wizardItem.processActionPublish}">
 	                 <h:outputText value="#{msgs.publish}" />
 	              </h:commandLink>
 	           </f:subview>
 	           <f:subview id="editLink" rendered="#{wizardItem.canEdit}">
-	              <h:outputText value=" | "  rendered="#{(wizardItem.canPublish && wizardItem.base.hasPages)}" />
 	              <h:commandLink action="#{wizardItem.processActionEdit}">
 	                 <h:outputText value="#{msgs.edit}"/>
 	              </h:commandLink>
 	           </f:subview>
 	           <f:subview id="deleteLink" rendered="#{wizardItem.canDelete}">
-	              <h:outputText value=" | "  rendered="#{(wizardItem.canPublish && wizardItem.base.hasPages) || wizardItem.canEdit}" />
 	              <h:commandLink action="#{wizardItem.processActionConfirmDelete}">
 	                 <h:outputText value="#{msgs.delete}" />
 	              </h:commandLink>
 	           </f:subview>
 	           <f:subview id="exportLink" rendered="#{wizardItem.canExport}">
-	              <h:outputText value=" | "  rendered="#{(wizardItem.canPublish && wizardItem.base.hasPages) || wizardItem.canEdit || wizardItem.canDelete}" />
 	              <h:outputLink value="#{wizardItem.currentExportLink}">
 	                  <h:outputText value="#{msgs.export}"/>
 	              </h:outputLink>
 	           </f:subview>
-			<f:verbatim></div></f:verbatim>
-         </f:subview>
+	         </ospx:separatedList>
+			</f:subview>
       </h:column>
       <h:column>
          <f:facet name="header">
