@@ -18,7 +18,7 @@
     </spring:hasBindErrors>
 
 
-<form method="post" action="<c:out value="${action}"/>" > 
+<form method="post" name="editTermForm" action="<c:out value="${action}"/>" > 
     <osp:form/>
     
     <spring:bind path="entry.term">
@@ -85,5 +85,7 @@
 
         <input type="button" value="<fmt:message key="button_cancel"/>" onclick="window.document.location='<osp:url value="glossaryList.osp"/>'">
     </div>
-
+<script language="Javascript"><!--
+	document.editTermForm.term.focus();
+--></script>
 </form>

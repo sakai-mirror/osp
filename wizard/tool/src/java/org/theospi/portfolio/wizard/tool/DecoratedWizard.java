@@ -20,6 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.tool;
 
+import org.theospi.portfolio.security.AuthorizationFailedException;
+
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.portfolio.guidance.model.Guidance;
@@ -126,6 +128,36 @@ public class DecoratedWizard implements DecoratedListInterface {
    
    public boolean getCanExport() {
       return parent.getCanExport(base);
+   }
+   
+   public boolean getCanOperateOnWizardInstance() {
+      boolean isPublished = getBase().isPublished();
+      
+      boolean canView = false;
+      try {
+         canView = parent.getCanView();
+      } catch(AuthorizationFailedException e) {
+         canView = false;
+      }
+      
+      boolean canEvaluate = false;
+      try {
+         canEvaluate = parent.getCanEvaluate(base);
+      } catch(AuthorizationFailedException e) {
+         canEvaluate = false;
+      }
+      
+      boolean canReview = false;
+      try {
+         canReview = parent.getCanReview(base);
+      } catch(AuthorizationFailedException e) {
+         canReview = false;
+      }
+      
+      boolean isOwner = parent.getCurrentUserId().equals(base.getOwner().getId().getValue());
+      
+      return getBase().isPublished() &&
+         (canView || canEvaluate || canReview || isOwner);
    }
    
    public String getCurrentExportLink() {
