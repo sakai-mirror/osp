@@ -128,6 +128,13 @@ public class DecoratedWizard implements DecoratedListInterface {
       return parent.getCanExport(base);
    }
    
+   public boolean getCanOperateOnWizardInstance() {
+      return getBase().isPublished() &&
+         (parent.getCanView() || parent.getCanEvaluate() || 
+               parent.getCanReview() || 
+               parent.getCurrentUserId().equals(base.getOwner().getId().getValue()));
+   }
+   
    public String getCurrentExportLink() {
 
 	      try {

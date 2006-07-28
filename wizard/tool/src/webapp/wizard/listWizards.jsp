@@ -57,8 +57,8 @@
          <f:facet name="header">
             <h:outputText value="#{msgs.wizards}" />
          </f:facet>
-         <h:outputText value="#{wizardItem.base.name}" rendered="#{!wizardItem.base.published}"/>
-         <f:subview id="runLink" rendered="#{wizardItem.base.published}">
+         <h:outputText value="#{wizardItem.base.name}" rendered="#{!wizardItem.canOperateOnWizardInstance}"/>
+         <f:subview id="runLink" rendered="#{wizardItem.canOperateOnWizardInstance}">
             <h:commandLink action="#{wizardItem.processActionRunWizard}" title="#{msgs.run_wizard}">
                <h:outputText value="#{wizardItem.base.name}"/>
             </h:commandLink>
