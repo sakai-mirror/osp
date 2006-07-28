@@ -939,8 +939,13 @@ public class WizardTool extends BuilderTool {
    }
    
    public boolean getCanReview() {
+      return getCanReview(current.getBase());
+   }
+   
+   public boolean getCanReview(Wizard wizard) {
+      
       return getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
-            current.getBase().getId());
+            wizard.getId());
    }
 
    public boolean getCanReviewTool() {
@@ -954,8 +959,12 @@ public class WizardTool extends BuilderTool {
    }
    
    public boolean getCanEvaluate() {
+      return getCanEvaluate(current.getBase());
+   }
+   
+   public boolean getCanEvaluate(Wizard wizard) {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
-            current.getBase().getId());
+            wizard.getId());
    }
    
    public boolean getCanPublish(Wizard wizard) {
