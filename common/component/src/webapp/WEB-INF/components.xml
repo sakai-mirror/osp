@@ -593,6 +593,7 @@
                         <value>mail.read</value>
                         <value>metaobj.create</value>
                         <value>metaobj.edit</value>
+                        <value>metaobj.delete</value>
                         <value>metaobj.publish</value>
                         <value>metaobj.export</value>
                         <value>metaobj.suggest.global.publish</value>
@@ -746,6 +747,7 @@
                         <value>mail.read</value>
                         <value>metaobj.create</value>
                         <value>metaobj.edit</value>
+                        <value>metaobj.delete</value>
                         <value>metaobj.publish</value>
                         <value>metaobj.export</value>
                         <value>metaobj.suggest.global.publish</value>
@@ -820,6 +822,7 @@
                         <value>mail.read</value>
                         <value>metaobj.create</value>
                         <value>metaobj.edit</value>
+                        <value>metaobj.delete</value>
                         <value>metaobj.publish</value>
                         <value>metaobj.export</value>
                         <value>metaobj.suggest.global.publish</value>
