@@ -108,6 +108,10 @@ public class MatrixValidator extends ValidatorBase {
             scaffoldingCell.getInitialStatus().equals("")) {
          errors.rejectValue("initialStatus", "error.required", "required");
       }
+      if (scaffoldingCell.getTitle() == null ||
+            scaffoldingCell.getTitle().equals("")) {
+         errors.rejectValue("title", "error.required", "required");
+      }
    }
 
    protected void validateCriterion(CriterionTransport criterion, Errors errors) {
@@ -151,4 +155,3 @@ public class MatrixValidator extends ValidatorBase {
       this.authManager = authManager;
    }
 }
-
