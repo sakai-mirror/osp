@@ -131,7 +131,7 @@ public class SequentialWizardPageController extends WizardPageController {
 
       session.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, getNextStep(request, session));
       if (isLast(request)) {
-         session.put(WizardPageHelper.IS_LAST_STEP, true);
+         session.put(WizardPageHelper.IS_LAST_STEP, "true");
       }
       else {
          session.remove(WizardPageHelper.IS_LAST_STEP);
