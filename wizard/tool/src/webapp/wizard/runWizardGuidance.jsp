@@ -281,8 +281,12 @@
    <sakai:button_bar>
     <sakai:button_bar_item id="submitContinue" value="#{msgs.save_continue_wizard}"
        action="#{wizard.processExecPages}" />
-    <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard}" action="#{wizard.processActionCancel}"
+    <sakai:button_bar_item id="cancel" value="#{msgs.wizard_list}" action="#{wizard.processActionCancel}"
         />
+   <sakai:button_bar_item id="submitEvalWizard" value="#{msgs.submit_wizard_for_evaluation}"
+      rendered="#{wizard.current.runningWizard.base.status == 'READY' && wizard.current.runningWizard.isReadOnly == 'false'}"
+      action="confirmSubmit" immediate="true"
+       />
    </sakai:button_bar>
 </f:subview>
 <f:subview id="hierWizardButtons"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}" >
@@ -295,8 +299,6 @@
         />
    </sakai:button_bar>
 </f:subview>
-
-     
 
 </h:form>
 </sakai:view>
