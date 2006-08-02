@@ -138,21 +138,19 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
       return changed;
    }
 
+   /**
+    * This checks for the existance of a resource in a non-permission checking way.
+    * If there isn't a uuid for a resource or there isn't a resolved id then it doesn't exist
+    * @param attachment
+    * @return boolean true if a resource exists, false if it does not
+    */
    protected boolean checkAttachment(GuidanceItemAttachment attachment) {
       String id = attachment.getBaseReference().getBase().getId();
 
-      try {
-         if (getContentHostingService().getResource(id) == null) {
-            logger.warn("couldn't find attachment");
+      String uuid = getContentHostingService().getUuid(id);
+      if(uuid == null)
             return false;
-         }
-      } catch (Exception e) {
-         // must have been deleted
-         logger.warn("couldn't find attachment", e);
-         return false;
-      }
-
-      return true;
+      return getContentHostingService().resolveUuid(uuid) != null;
    }
 
    public Guidance saveGuidance(Guidance guidance) {
