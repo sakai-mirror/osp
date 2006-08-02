@@ -130,7 +130,13 @@ public class SequentialWizardPageController extends WizardPageController {
       }
 
       session.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, getNextStep(request, session));
-      
+      if (isLast(request)) {
+         session.put(WizardPageHelper.IS_LAST_STEP, "true");
+      }
+      else {
+         session.remove(WizardPageHelper.IS_LAST_STEP);
+      }
+
       String finishAction = (String)request.get("matrix");
       if (finishAction != null) {
          //Clear out some session variables
@@ -140,6 +146,10 @@ public class SequentialWizardPageController extends WizardPageController {
 
       return super.handleRequest(requestModel, request,
          session, application, errors);
+   }
+
+   protected boolean isLast(Map request) {
+      return request.get("_last") != null;
    }
 
    protected Integer getNextStep(Map request, Map session) {

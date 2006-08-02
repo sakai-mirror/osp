@@ -351,8 +351,20 @@
     <p class="act">
     	<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
     		<c:if test="${canReflect == 'true'}">
-    			<input type="submit" name="submit" value="<osp:message key="submit_for_evaluation"/>"/>
-    		</c:if>
+    			<input type="submit" name="submit" value="<osp:message key='submit_for_evaluation'/>"
+               <c:if test="${sequential == 'true' && currentStep < (totalSteps)}">
+                  onclick="document.form._next=true"
+               </c:if>
+            />
+             <c:if test="${sequential == 'true'}">
+                <c:if test="${currentStep < (totalSteps)}">
+                   <input type="hidden" name="_next" id="_next" />
+                </c:if>
+                <c:if test="${currentStep == (totalSteps)}">
+                   <input type="hidden" name="_last" id="_last" value="true" />
+                </c:if>
+             </c:if>
+          </c:if>
     		<c:if test="${canReflect == 'true' && currentStep == (totalSteps) && sequential == 'true'}">
     			<input type="submit" name="submitWizard" value="<osp:message key="submit_wizard_for_evaluation"/>"/>
     		</c:if>

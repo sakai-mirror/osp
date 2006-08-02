@@ -44,4 +44,6 @@ public interface WizardPageHelper {
    
    public final static String WIZARD_OWNER = "wizardowner";
 
+   public final static String IS_LAST_STEP = "org.theospi.portfolio.matrix.WizardPageHelper.isLast";
+
 }

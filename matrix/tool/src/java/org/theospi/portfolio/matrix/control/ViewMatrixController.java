@@ -91,9 +91,11 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
          currentAgent = getAgentManager().getAgent(getIdManager().getId(userRequest));
          createAuthz = true;
       } else if(userSession != null) {
+         userRequest = userSession;
          currentAgent = getAgentManager().getAgent(getIdManager().getId(userSession));
          // The authorize was already created by this point
       }
+      session.put(VIEW_USER, userRequest);
 
       Matrix matrix = getMatrixManager().getMatrix(scaffoldingId, currentAgent.getId());
       if (matrix == null) {
@@ -114,7 +116,6 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
          getAuthzManager().createAuthorization(getAuthManager().getAgent(), 
                  FunctionConstants.READ_MATRIX, matrix.getId());
       }
-      session.put(VIEW_USER, userRequest);
 
       List levels = scaffolding.getLevels();
       List criteria = scaffolding.getCriteria();

@@ -77,7 +77,13 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
             getMatrixManager().submitPageForEvaluation(page);
             session.put("altDoneURL", "submitWizardPage");
             session.put("submittedPage", page);
-            return new ModelAndView("done", "page_id", page.getId().getValue());
+
+            String view = "continue";
+            if (isLast(session)) {
+               view = "done";
+            }
+
+            return new ModelAndView(view, "page_id", page.getId().getValue());
          }
          else {
             getMatrixManager().submitCellForEvaluation(cell);
@@ -89,8 +95,11 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
       }
       return new ModelAndView("success", "page", page);
    }
-   
-   
+
+   protected boolean isLast(Map session) {
+      return session.get(WizardPageHelper.IS_LAST_STEP) != null;
+   }
+
 
    /**
     * @return Returns the idManager.
