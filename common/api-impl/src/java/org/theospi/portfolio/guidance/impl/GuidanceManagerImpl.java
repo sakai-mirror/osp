@@ -56,6 +56,7 @@ import org.theospi.portfolio.security.AuthorizationFacade;
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
+import java.net.URLEncoder;
 
 /**
  * Created by IntelliJ IDEA.
@@ -114,6 +115,11 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
       return guidance;
    }
 
+   /**
+    * Pushes the files in the guidance into the security bypass advisor thus allowing the 
+    * files to be read.
+    * @return boolean whether or not the guidance has been changed
+    */
    public boolean assureAccess(Guidance guidance) {
       boolean changed = false;
       // setup access to the files
@@ -127,6 +133,22 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
             }
             else {
                j.remove();
+               String guidanceText = item.getText();
+               int fileLocation = -1;
+
+                  String encodedRef = attachment.getBaseReference().getBase().getReference();
+                  encodedRef = encodedRef.replaceAll(" ", "%20");
+                  do {
+                     fileLocation = guidanceText.indexOf(encodedRef);
+                     if(fileLocation >= 0) {
+                        int startChar = guidanceText.lastIndexOf("<a", fileLocation);
+                        int lastChar = guidanceText.indexOf("</a", fileLocation);
+                        lastChar = guidanceText.indexOf(">", lastChar)+ 1;
+                        guidanceText = guidanceText.substring(0, startChar) + "--File Deleted--" + guidanceText.substring(lastChar);
+                     }
+                  } while(fileLocation > 0);
+                  item.setText(guidanceText);
+               
                changed = true;
             }
          }
