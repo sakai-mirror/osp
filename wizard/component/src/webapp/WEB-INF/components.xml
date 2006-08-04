@@ -30,7 +30,7 @@
    
    <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.wizard"
       class="org.theospi.portfolio.security.model.SimpleSitePermissionManager"
-       singleton="true">
+       singleton="true" init-method="init">
 
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="permissionManager">

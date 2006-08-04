@@ -353,7 +353,7 @@
 
    <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.presentation"
       class="org.theospi.portfolio.security.model.CleanupPermissionManager"
-       singleton="true">
+       singleton="true" init-method="init">
 
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="service"><ref bean="presentationManager"/></property>
@@ -410,7 +410,7 @@
 
    <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.presentationTemplate"
       class="org.theospi.portfolio.security.model.SimpleSitePermissionManager"
-       singleton="true">
+       singleton="true" init-method="init">
 
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="permissionManager">
@@ -448,7 +448,7 @@
 
    <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.presentationLayout"
       class="org.theospi.portfolio.security.model.SimpleSitePermissionManager"
-       singleton="true">
+       singleton="true" init-method="init">
 
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="permissionManager">

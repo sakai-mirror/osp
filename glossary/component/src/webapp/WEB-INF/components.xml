@@ -86,7 +86,7 @@
    </bean>
 
    <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.glossary"
-      class="org.theospi.portfolio.security.model.SimpleToolPermissionManager" >
+      class="org.theospi.portfolio.security.model.SimpleToolPermissionManager" init-method="init">
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="permissionManager">
          <ref bean="org.theospi.portfolio.security.mgt.PermissionManager" />

@@ -21,6 +21,8 @@
 package org.theospi.portfolio.security.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -28,6 +30,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -51,6 +54,57 @@ public class SimpleToolPermissionManager implements ToolEventListener, ToolPermi
    private IdManager idManager;
    private List functions = new ArrayList();
 
+   // set default permissions with some overrides from sakai.properties
+   // example:
+   // glossary.permissions.override=false
+   // glossary.permissions.map.count=2
+   // glossary.permissions.map.1=Coordinator
+   // glossary.permissions.map.1.siteTypes=portfolio,project
+   // glossary.permissions.map.1.value.count=4
+   // glossary.permissions.map.1.value.1=osp.help.glossary.delete
+   // glossary.permissions.map.1.value.2=osp.help.glossary.add
+   // glossary.permissions.map.1.value.3=osp.help.glossary.edit
+   // glossary.permissions.map.1.value.4=osp.help.glossary.export
+   // glossary.permissions.map.2=Assistant
+   // glossary.permissions.map.2.siteTypes=portfolio
+   // glossary.permissions.map.2.value.count=4
+   // glossary.permissions.map.2.value.1=osp.help.glossary.delete
+   // glossary.permissions.map.2.value.2=osp.help.glossary.add
+   // glossary.permissions.map.2.value.3=osp.help.glossary.edit
+   // glossary.permissions.map.2.value.4=osp.help.glossary.export
+   public void init() {
+      logger.debug("Entering SimpleToolPermissionManager.init() for " + getPermissionEditName());
+      
+      String roles[] = ServerConfigurationService.getStrings(getPermissionEditName() + ".permissions.map");
+      if (roles != null)
+      {
+         //Check to see if we should override the system configured defaults or 
+         // just append the custom ones to the list
+         String override = ServerConfigurationService.getString(getPermissionEditName() + ".permissions.override");
+         if (override.equalsIgnoreCase("true"))
+            defaultPermissions.clear();
+         
+         for (int i = 0; i < roles.length; i++)
+         {
+            String perms[] = ServerConfigurationService.getStrings(getPermissionEditName() + ".permissions.map." + String.valueOf(i+1) + ".value");
+            String siteTypes = ServerConfigurationService.getString(getPermissionEditName() + ".permissions.map." + String.valueOf(i+1) + ".siteTypes");
+            String siteTypeList[] = siteTypes.split(",");
+            List permList =  Arrays.asList(perms);
+            CrossRealmRoleWrapper crrw = new CrossRealmRoleWrapper();
+            Map roleMap = new HashMap();
+            List roleList = new ArrayList();
+            roleList.add(roles[i]);
+            for (int j=0; j < siteTypeList.length; j++) {
+               roleMap.put(siteTypeList[j], roleList);
+            }
+            crrw.setSiteTypeRoles(roleMap);
+            defaultPermissions.put(crrw, permList);
+            
+         }
+      }
+   }
+   
+   
    /**
     * sets up the default perms for a tool.  Use's the tool id as the qualifier.
     * Assumes that if no perms exist for the tool, the perms should be set to the defaults.
