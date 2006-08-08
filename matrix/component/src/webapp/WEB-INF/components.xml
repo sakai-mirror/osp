@@ -291,7 +291,7 @@
        class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
 
    <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.scaffolding"
-      class="org.theospi.portfolio.security.model.SimpleSitePermissionManager" >
+      class="org.theospi.portfolio.security.model.SimpleSitePermissionManager"  init-method="init">
 
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="permissionManager">
@@ -344,7 +344,7 @@
    </bean>
 
    <bean id="org.theospi.portfolio.security.mgt.ToolPermissionManager.review"
-      class="org.theospi.portfolio.security.model.SimpleToolPermissionManager" >
+      class="org.theospi.portfolio.security.model.SimpleToolPermissionManager" init-method="init">
 
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="permissionManager">
