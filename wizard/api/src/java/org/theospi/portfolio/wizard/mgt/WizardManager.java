@@ -26,6 +26,7 @@ import java.util.List;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.exception.ImportException;
 import org.sakaiproject.exception.UnsupportedFileTypeException;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
@@ -88,4 +89,20 @@ public interface WizardManager extends WorkflowEnabledManager {
    public int getTotalPageCount(Wizard wizard);
 
    public int getSubmittedPageCount(CompletedWizard wizard);
+   
+   
+   /**
+    * This is the light weight method of getting the site id of a wizard given its id.
+    * @param Id wizardId
+    * @return String of the site id
+    */
+   public String getWizardIdSiteId(final Id wizardId);
+   
+
+   /**
+    * This is the light weight method of getting the owner of a wizard given its id.
+    * @param Id wizardId
+    * @return Agent of the owner id
+    */
+   public Agent getWizardIdOwner(final Id wizardId);
 }
