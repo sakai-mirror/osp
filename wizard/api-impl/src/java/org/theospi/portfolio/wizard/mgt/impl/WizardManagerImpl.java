@@ -29,6 +29,10 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import java.sql.SQLException;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.CacheException;
+
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Query;
@@ -131,8 +135,20 @@ public class WizardManagerImpl extends HibernateDaoSupport
    private PresentableObjectHome xmlRenderer;
    private ReviewManager reviewManager;
    private StyleManager styleManager;
+   
+   private static String SITE_CACHE_NAME = "wizardSiteCache";
+   private Cache siteCache = null;
 
    protected void init() throws Exception {
+      
+
+      CacheManager cacheManager = CacheManager.create();
+      if (cacheManager.cacheExists(SITE_CACHE_NAME))
+         cacheManager.removeCache(SITE_CACHE_NAME);
+      Cache memoryOnlyCache = new Cache(SITE_CACHE_NAME, 500, false, false, 60, 10);
+      cacheManager.addCache(memoryOnlyCache);
+      siteCache = cacheManager.getCache(SITE_CACHE_NAME);
+      
       /*
       FunctionManager.registerFunction(WizardFunctionConstants.CREATE_WIZARD);
       FunctionManager.registerFunction(WizardFunctionConstants.EDIT_WIZARD);
@@ -602,6 +618,57 @@ public class WizardManagerImpl extends HibernateDaoSupport
       };
 
       return ((Integer)getHibernateTemplate().execute(hcb)).intValue();
+   }
+   public String getWizardIdSiteId(final Id wizardId) {
+      
+      try {
+    	  net.sf.ehcache.Element elem = null;
+    	  if(wizardId != null)
+    		  	elem = siteCache.get(wizardId.getValue());
+         if(siteCache != null && elem != null) {
+        	   if(elem.getValue() == null)
+        	      return null;
+            return elem.getValue().toString();
+         }
+      } catch(CacheException e) {
+         logger.warn("the wizard ehcache had an exception", e);
+      }
+      String siteId;
+      
+      HibernateCallback hcb = new HibernateCallback() {
+         public Object doInHibernate(Session session) throws HibernateException, SQLException  {
+            String queryString = "select wizard.siteId from Wizard wizard where wizard.id = ?";
+
+            Query query = session.createQuery(queryString);
+
+            query.setParameter(0, wizardId.getValue(), Hibernate.STRING);
+
+            String results = (String) query.uniqueResult();
+            return results;
+         }
+      };
+      siteId = ((String)getHibernateTemplate().execute(hcb));
+      if(siteCache != null)
+         siteCache.put(new net.sf.ehcache.Element(wizardId.getValue(), siteId));
+      
+      return siteId;
+   }
+
+   public Agent getWizardIdOwner(final Id wizardId) {
+      HibernateCallback hcb = new HibernateCallback() {
+         public Object doInHibernate(Session session) throws HibernateException, SQLException  {
+            String queryString = "select wizard.owner from Wizard wizard where wizard.id = ?";
+
+            Query query = session.createQuery(queryString);
+
+            query.setParameter(0, wizardId.getValue(), Hibernate.STRING);
+
+            Agent results = (Agent) query.uniqueResult();
+            return results;
+         }
+      };
+
+      return ((Agent)getHibernateTemplate().execute(hcb));
    }
 
    public int getSubmittedPageCount(final CompletedWizard wizard) {
