@@ -67,6 +67,13 @@ public class Node {
    public String getExternalUri() {
       return externalUri;
    }
+   
+   /**
+    * @return Returns the externalUri.
+    */
+   public String getFixedExternalUri() {
+      return externalUri.replaceAll(" ", "%20");
+   }
 
 
 

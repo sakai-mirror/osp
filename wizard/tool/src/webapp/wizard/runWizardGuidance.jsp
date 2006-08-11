@@ -136,7 +136,7 @@
       
          <f:subview id="displayReflection" rendered="#{wizard.current.runningWizard.base.status != 'READY' ||
          		wizard.current.runningWizard.isReadOnly}">
-            <h:outputLink value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.externalUri}" target="_blank">
+            <h:outputLink value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.fixedExternalUri}" target="_blank">
                <f:verbatim>
                   <img src = '/library/image/sakai/generic.gif' border= '0' hspace='0' />
                </f:verbatim>
