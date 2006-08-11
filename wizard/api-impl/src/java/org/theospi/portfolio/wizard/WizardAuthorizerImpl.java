@@ -58,7 +58,6 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       } else if (function.equals(WizardFunctionConstants.EDIT_WIZARD)) {
          return isWizardAuth(facade, id, agent, WizardFunctionConstants.EDIT_WIZARD);
       } else if (function.equals(WizardFunctionConstants.PUBLISH_WIZARD)) {
-         //Wizard wizard = getWizardManager().getWizard(id);
          String siteStr = getWizardManager().getWizardIdSiteId(id);
          Id siteId = getIdManager().getId(siteStr);
          return new Boolean(facade.isAuthorized(agent,function,siteId));
@@ -126,7 +125,6 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
     * @return Boolean
     */
    protected Boolean isWizardAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function) {
-      //Wizard wizard = getWizardManager().getWizard(qualifier);
       
       String siteStr = getWizardManager().getWizardIdSiteId(qualifier);
       
@@ -154,8 +152,7 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
     * @return
     */
    protected Boolean isWizardViewAuth(AuthorizationFacade facade, Agent agent, Id id, boolean allowAnonymous) {
-      //Wizard wizard = getWizardManager().getWizard(id);
-
+      
       String siteStr = getWizardManager().getWizardIdSiteId(id);
       
       if (siteStr == null) {
@@ -197,7 +194,6 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
    }
 
    protected Boolean isWizardAuthForReview(AuthorizationFacade facade, Agent agent, Id wizardId) {
-     // Wizard wizard = getWizardManager().getWizard(wizardId);
       String siteStr = getWizardManager().getWizardIdSiteId(wizardId);
       Id id = wizardId;
       if (siteStr != null) {
@@ -208,8 +204,6 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
    }
    
    protected Boolean isWizardAuthForEval(AuthorizationFacade facade, Agent agent, Id id) {
-      //Wizard wizard = getWizardManager().getWizard(wizardId);
-      //Id toolId = getIdManager().getId(wizard.getToolId());
       return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.EVALUATE_WIZARD, id));
    }
 

@@ -216,7 +216,7 @@ public class WizardTool extends BuilderTool {
          }
          if(id == null)
             return null;
-         Wizard wizard = getWizardManager().getWizard(id);
+         Wizard wizard = getWizardManager().getWizard(id, WizardManager.WIZARD_VIEW_CHECK);
          if(wizard == null)
             return null;
          setCurrent(new DecoratedWizard(this, wizard));
@@ -302,7 +302,7 @@ public class WizardTool extends BuilderTool {
 
    public String processActionEdit(Wizard wizard) {
       clearInterface();
-      wizard = getWizardManager().getWizard(wizard.getId());
+      wizard = getWizardManager().getWizard(wizard.getId(), WizardManager.WIZARD_EDIT_CHECK);
       setCurrent(new DecoratedWizard(this, wizard, false));
       return startBuilder();
    }

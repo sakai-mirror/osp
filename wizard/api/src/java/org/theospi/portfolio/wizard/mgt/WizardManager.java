@@ -35,12 +35,48 @@ import org.theospi.portfolio.wizard.model.WizardPageSequence;
 
 public interface WizardManager extends WorkflowEnabledManager {
 
+   public static final int    WIZARD_NO_CHECK = 0;
+   public static final int    WIZARD_VIEW_CHECK = 1;
+   public static final int    WIZARD_EDIT_CHECK = 2;
+   public static final int    WIZARD_EXPORT_CHECK = 3;
+   public static final int    WIZARD_DELETE_CHECK = 4;
+   
 	   public static final String WIZARD_PARAM_ID = "wizardId";
       public static final String EXPOSED_WIZARD_KEY = "osp.exposedwizard.wizard.id";
 	
    public Wizard createNew();
 
+   /**
+    * Gets a wizard given its id.  This performs a check on the view permission
+    * @param Id wizardId
+    * @return Wizard
+    */
    public Wizard getWizard(Id wizardId);
+   
+   /**
+    * gets a wizard given its id.  it may perform a check on the view permission
+    * if the checkAuthz is true
+    * @param Id wizardId
+    * @param boolean checkAuthz
+    * @return
+    */
+   public Wizard getWizard(Id wizardId, int checkAuthz);
+
+   /**
+    * Gets a wizard given its id.  This performs a check on the view permission
+    * @param String wizardId
+    * @return Wizard
+    */
+   public Wizard getWizard(String id);
+   
+   /**
+    * gets a wizard given its id.  it may perform a check on the view permission
+    * if the checkAuthz is true
+    * @param String wizardId
+    * @param boolean checkAuthz
+    * @return
+    */
+   public Wizard getWizard(String id, int checkAuthz);
 
    public Wizard saveWizard(Wizard wizard);
    
@@ -61,8 +97,7 @@ public interface WizardManager extends WorkflowEnabledManager {
    public List listWizardsByType(String owner, String siteId, String type);
    public List findWizardsByOwner(String ownerId, String siteId);
    public List findPublishedWizards(String siteId);
-   
-   public Wizard getWizard(String id);
+
    
    public void publishWizard(Wizard wizard);
    
