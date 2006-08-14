@@ -343,7 +343,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
       zos.putNextEntry(definitionFile);
       Document doc = createStyleAsXml(style);
       String docStr = (new XMLOutputter()).outputString(doc);
-      zos.write(docStr.getBytes());
+      zos.write(docStr.getBytes("UTF-8"));
       zos.closeEntry();
    }
    

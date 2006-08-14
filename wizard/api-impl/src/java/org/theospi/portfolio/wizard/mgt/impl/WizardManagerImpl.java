@@ -1385,8 +1385,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       ZipEntry newfileEntry = null;
 
 
-      storeFileInZip(zos, new java.io.StringReader(
-               (new XMLOutputter()).outputString(document)), "wizardDefinition.xml");
+      storeStringInZip(zos, (new XMLOutputter()).outputString(document), "wizardDefinition.xml");
 
       // Allow access to the various files for export
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
@@ -1766,6 +1765,17 @@ public class WizardManagerImpl extends HibernateDaoSupport
       workflowObjNode.addContent(attrNode);
 
       return workflowObjNode;
+   }
+
+
+   protected void storeStringInZip(ZipOutputStream zos, String in,
+         String entryName) throws IOException {
+
+      ZipEntry newfileEntry = new ZipEntry(entryName);
+
+      zos.putNextEntry(newfileEntry);
+      zos.write(in.getBytes("UTF-8"));
+      zos.closeEntry();
    }
 
 

@@ -244,7 +244,7 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
       zos.putNextEntry(definitionFile);
       Document doc = createGuidanceAsXml(guidance);
       String docStr = (new XMLOutputter()).outputString(doc);
-      zos.write(docStr.getBytes());
+      zos.write(docStr.getBytes("UTF-8"));
       zos.closeEntry();
    }
 

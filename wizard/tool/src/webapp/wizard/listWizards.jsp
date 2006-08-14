@@ -15,11 +15,11 @@
 <sakai:view>
 <h:form>
    <sakai:tool_bar>
-      <sakai:tool_bar_item rendered="#{wizard.canCreate && wizard.canView}"
+      <sakai:tool_bar_item rendered="#{wizard.canCreate}"
       action="#{wizard.processActionNew}"
       value="#{msgs.new_wizard}" />
           
-      <sakai:tool_bar_item rendered="#{wizard.canCreate && wizard.canView}"
+      <sakai:tool_bar_item rendered="#{wizard.canCreate}"
           action="#{wizard.importWizard}"
           value="#{msgs.import}" />
 
