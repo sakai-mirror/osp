@@ -22,14 +22,18 @@ package org.theospi.portfolio.presentation.render;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIViewRoot;
 import javax.faces.component.html.HtmlInputText;
+import javax.faces.component.html.HtmlInputTextarea;
 import javax.faces.context.FacesContext;
 import javax.faces.el.ValueBinding;
 
 import org.sakaiproject.jsf.component.InputRichTextComponent;
+import org.sakaiproject.jsf.util.RendererUtil;
 import org.theospi.jsf.intf.ComponentWrapper;
 import org.theospi.jsf.intf.XmlDocumentContainer;
 import org.theospi.jsf.intf.XmlTagFactory;
@@ -48,6 +52,13 @@ import org.xml.sax.Attributes;
  * To change this template use File | Settings | File Templates.
  */
 public class TextTypeTagHandler extends LayoutPageHandlerBase {
+   
+   public final static String ATTR_COLS = "cols";
+   public final static String ATTR_ROWS = "rows";
+   public final static String ATTR_WIDTH = "width";
+   public final static String ATTR_HEIGHT = "height";
+   public final static String ATTR_ISRICHTEXT = "isRichText";
+   
 
    public TextTypeTagHandler(XmlTagFactory factory) {
       super(factory);
@@ -59,20 +70,34 @@ public class TextTypeTagHandler extends LayoutPageHandlerBase {
       XmlDocumentContainer parentContainer = getParentContainer(parent.getComponent());
       String mapVar = parentContainer.getVariableName();
       RegionComponent parentRegion = (RegionComponent) parent.getComponent();
+      Map sizeAttributeMap = new HashMap();
 
       boolean richEdit = false;
 
       if (attributes.getValue("isRichText") != null) {
          richEdit = new Boolean(attributes.getValue("isRichText")).booleanValue();
       }
-
+      
+      if (attributes.getValue(ATTR_COLS) != null) {
+         sizeAttributeMap.put(ATTR_COLS, (String)attributes.getValue(ATTR_COLS));
+      }
+      if (attributes.getValue(ATTR_ROWS) != null) {
+         sizeAttributeMap.put(ATTR_ROWS, (String)attributes.getValue(ATTR_ROWS));
+      }
+      if (attributes.getValue(ATTR_WIDTH) != null) {
+         sizeAttributeMap.put(ATTR_WIDTH, (String)attributes.getValue(ATTR_WIDTH));
+      }
+      if (attributes.getValue(ATTR_HEIGHT) != null) {
+         sizeAttributeMap.put(ATTR_HEIGHT, (String)attributes.getValue(ATTR_HEIGHT));
+      }
+      
       UIComponent input;
 
       if (richEdit) {
-         input = createRichTextRegion(context, root, mapVar, parentRegion.getRegionId(),  parent);
+         input = createRichTextRegion(context, root, mapVar, parentRegion.getRegionId(),  parent, sizeAttributeMap);
       }
       else {
-         input = createTextRegion(context, root, mapVar, parentRegion.getRegionId(),  parent);
+         input = createTextRegion(context, root, mapVar, parentRegion.getRegionId(),  parent, sizeAttributeMap);
       }
 
       ValueBinding vbValue = context.getApplication().createValueBinding(
@@ -115,20 +140,57 @@ public class TextTypeTagHandler extends LayoutPageHandlerBase {
    }
 
    protected UIComponent createRichTextRegion(FacesContext context, UIViewRoot root, String mapVar,
-                                   String regionId, ComponentWrapper parent) {
+                                   String regionId, ComponentWrapper parent, Map sizeAttributeMap) {
       InputRichTextComponent input = (InputRichTextComponent) context.getApplication().createComponent(
          "org.sakaiproject.InputRichText");
       input.setId(root.createUniqueId());
       ValueBinding attachedFiles = context.getApplication().createValueBinding("#{freeForm.attachableItems}");
       input.setValueBinding("attachedFiles", attachedFiles);
+      
+      if (sizeAttributeMap.get(ATTR_ROWS) != null) {
+         String rows = (String)sizeAttributeMap.get(ATTR_ROWS);
+         RendererUtil.setAttribute(context, input, ATTR_ROWS, Integer.valueOf(rows));
+      }
+      if (sizeAttributeMap.get(ATTR_COLS) != null) {
+         String cols = (String)sizeAttributeMap.get(ATTR_COLS);
+         RendererUtil.setAttribute(context, input, ATTR_COLS, Integer.valueOf(cols));
+      }
+      
+      if (sizeAttributeMap.get(ATTR_WIDTH) != null) {
+         String width = (String)sizeAttributeMap.get(ATTR_WIDTH);
+         RendererUtil.setAttribute(context, input, ATTR_WIDTH, width);
+      }
+      
+      if (sizeAttributeMap.get(ATTR_HEIGHT) != null) {
+         String height = (String)sizeAttributeMap.get(ATTR_HEIGHT);
+         RendererUtil.setAttribute(context, input, ATTR_HEIGHT, height);
+      }
+      
       parent.getComponent().getChildren().add(input);
       return input;
    }
 
    protected UIComponent createTextRegion(FacesContext context, UIViewRoot root, String mapVar,
-                                   String regionId, ComponentWrapper parent) {
-      HtmlInputText input = (HtmlInputText) context.getApplication().createComponent(HtmlInputText.COMPONENT_TYPE);
+                                   String regionId, ComponentWrapper parent, Map sizeAttributeMap) {
+      UIComponent input = null;
+      
+      if (sizeAttributeMap.get(ATTR_ROWS) != null || sizeAttributeMap.get(ATTR_COLS) != null) {
+         input = (HtmlInputTextarea) context.getApplication().createComponent(HtmlInputTextarea.COMPONENT_TYPE);
+      }
+      else {
+         input = (HtmlInputText) context.getApplication().createComponent(HtmlInputText.COMPONENT_TYPE);
+      }
+      
       input.setId(root.createUniqueId());
+      if (sizeAttributeMap.get(ATTR_ROWS) != null) {
+         String rows = (String)sizeAttributeMap.get(ATTR_ROWS);
+         ((HtmlInputTextarea)input).setRows(Integer.parseInt(rows));
+      }
+      if (sizeAttributeMap.get(ATTR_COLS) != null) {
+         String cols = (String)sizeAttributeMap.get(ATTR_COLS);
+         ((HtmlInputTextarea)input).setCols(Integer.parseInt(cols));
+      }
+      
       parent.getComponent().getChildren().add(input);
       return input;
    }
