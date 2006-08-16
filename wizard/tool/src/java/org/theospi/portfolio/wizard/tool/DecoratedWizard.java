@@ -129,35 +129,28 @@ public class DecoratedWizard implements DecoratedListInterface {
    public boolean getCanExport() {
       return parent.getCanExport(base);
    }
-   
+
    public boolean getCanOperateOnWizardInstance() {
+   	boolean rethrow = false;
       boolean isPublished = getBase().isPublished();
+      Exception exc = null;
       
-      boolean canView = false;
+      boolean canOperate = false;
       try {
-         canView = parent.getCanView();
+         canOperate = parent.getCanOperate(base);
       } catch(AuthorizationFailedException e) {
-         canView = false;
-      }
-      
-      boolean canEvaluate = false;
-      try {
-         canEvaluate = parent.getCanEvaluate(base);
-      } catch(AuthorizationFailedException e) {
-         canEvaluate = false;
-      }
-      
-      boolean canReview = false;
-      try {
-         canReview = parent.getCanReview(base);
-      } catch(AuthorizationFailedException e) {
-         canReview = false;
+         canOperate = false;
+         exc = e;
       }
       
       boolean isOwner = parent.getCurrentUserId().equals(base.getOwner().getId().getValue());
       
-      return getBase().isPublished() &&
-         (canView || canEvaluate || canReview || isOwner);
+      boolean can = getBase().isPublished() && (canOperate || isOwner);
+      
+      if(!can && rethrow && exc != null)
+         throw new RuntimeException("couldn't authorize", exc);
+         
+      return can;
    }
    
    public String getCurrentExportLink() {

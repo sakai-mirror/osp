@@ -434,7 +434,7 @@ public class WizardTool extends BuilderTool {
       Guidance guidance = wizard.getGuidance();
       if (guidance == null) {
          guidance = getGuidanceManager().createNew(wizard.getName() + " Guidance", 
-               currentSite, wizard.getId(), WizardFunctionConstants.VIEW_WIZARD, 
+               currentSite, wizard.getId(), WizardFunctionConstants.OPERATE_WIZARD, 
                WizardFunctionConstants.EDIT_WIZARD);
       }
 
@@ -937,33 +937,75 @@ public class WizardTool extends BuilderTool {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.VIEW_WIZARD, 
             getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
    }
-   
+
+   /**
+    * This is to check if the current user is authorized by tool permissions to review
+    * the current wizard.  individual wizard permissions for review does not exist
+    * @return boolean is authorized
+    */
    public boolean getCanReview() {
       return getCanReview(current.getBase());
    }
-   
+
+   /**
+    * This is to check if the current user is authorized by tool permissions to review
+    * the wizards.  individual wizard permissions for review does not exist
+    * @return boolean is authorized
+    */
    public boolean getCanReview(Wizard wizard) {
       
       return getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
             wizard.getId());
    }
 
+   /**
+    * This is to check if the current user is authorized by tool permissions to review
+    * the various wizards
+    * @return boolean is authorized
+    */
    public boolean getCanReviewTool() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
             getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
    }
-   
+
+   /**
+    * This is to check if the current user is authorized by tool permissions to evaluate
+    * the various wizards
+    * @return boolean is authorized
+    */
    public boolean getCanEvaluateTool() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
             getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
    }
-   
+
+   /**
+    * This is to check if the current user is listed as an evaluator of the current wizard
+    * @return boolean is authorized
+    */
    public boolean getCanEvaluate() {
       return getCanEvaluate(current.getBase());
    }
-   
+
+
+   /**
+    * This is to check if the current user is listed as an evaluator of the given wizard
+    * @param Wizard wizard to check
+    * @return boolean is authorized
+    */
    public boolean getCanEvaluate(Wizard wizard) {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
+            wizard.getId());
+   }
+
+
+   /**
+    * This is to check if the current user is can operate on the wizard.
+    * The operate permission mean view or review or evaluate wizard
+    * @param Wizard wizard to check
+    * @return boolean is authorized
+    */
+   public boolean getCanOperate(Wizard wizard) {
+      return getAuthzManager().isAuthorized(WizardFunctionConstants.OPERATE_WIZARD, 
             wizard.getId());
    }
    

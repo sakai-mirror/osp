@@ -183,7 +183,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    public Wizard getWizard(Id wizardId) {
-      return getWizard(wizardId, WIZARD_VIEW_CHECK);
+      return getWizard(wizardId, WIZARD_OPERATE_CHECK);
    }
    
    public Wizard getWizard(Id wizardId, int checkAuthz) {
@@ -193,6 +193,9 @@ public class WizardManagerImpl extends HibernateDaoSupport
          return null;
       }
 
+      if (checkAuthz == WIZARD_OPERATE_CHECK)
+         getAuthorizationFacade().checkPermission(WizardFunctionConstants.OPERATE_WIZARD,
+               wizardId);
       if (checkAuthz == WIZARD_VIEW_CHECK)
          getAuthorizationFacade().checkPermission(WizardFunctionConstants.VIEW_WIZARD,
                getIdManager().getId(wizard.getSiteId()));

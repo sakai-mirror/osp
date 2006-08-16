@@ -36,10 +36,11 @@ import org.theospi.portfolio.wizard.model.WizardPageSequence;
 public interface WizardManager extends WorkflowEnabledManager {
 
    public static final int    WIZARD_NO_CHECK = 0;
-   public static final int    WIZARD_VIEW_CHECK = 1;
-   public static final int    WIZARD_EDIT_CHECK = 2;
-   public static final int    WIZARD_EXPORT_CHECK = 3;
-   public static final int    WIZARD_DELETE_CHECK = 4;
+   public static final int    WIZARD_OPERATE_CHECK = 10;
+   public static final int    WIZARD_VIEW_CHECK = 20;
+   public static final int    WIZARD_EDIT_CHECK = 30;
+   public static final int    WIZARD_EXPORT_CHECK = 40;
+   public static final int    WIZARD_DELETE_CHECK = 50;
    
 	   public static final String WIZARD_PARAM_ID = "wizardId";
       public static final String EXPOSED_WIZARD_KEY = "osp.exposedwizard.wizard.id";

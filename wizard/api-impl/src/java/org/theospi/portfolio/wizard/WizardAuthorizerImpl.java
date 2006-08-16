@@ -32,7 +32,27 @@ import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
-
+/**
+ * These are the permissions and their definitions:
+ * 
+ * View:       Can a user complete a wizard (is the wizard owner or 
+ *                can complete the wizard or the tool permits the user to complete)
+ * Review:     can the user review the wizard definition (check the tool for review)
+ * Evaluate:   can the user exaluate the wizard definition (check the tool for evaluate)
+ * Operate:    does the user have view or review or evaluate
+ * Create:     Can a user create a wizard (permitted by the tool)
+ * Edit:       can the user change the wizard definition (check the tool for edit)
+ * Publish:    can the user publish the wizard definition (check the tool for publish)
+ * Delete:     can the user delete the wizard definition (check the tool for delete)
+ *                The delete only works on unpublished wizards
+ * Copy:       can the user copy the wizard definition (check the tool for copy)
+ * Delete:     can the user delete the wizard definition (check the tool for delete)
+ * Edit Wizard Page Guidance:  the owner of the wizard can edit guidance of a wizard page
+ * View Wizard Page Guidance:  loop through each completed wizard page and:
+ *                   does the completed page have evaluate or review or is the owner
+ *                   or the page def has view permission
+ *                or is the page sequence owned by the current user
+ */
 public class WizardAuthorizerImpl implements ApplicationAuthorizer{
    private WizardManager wizardManager;
    private IdManager idManager;
@@ -51,24 +71,41 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
                                String function, Id id) {
 
       // return null if we don't know what is up...
-      if (function.equals(WizardFunctionConstants.VIEW_WIZARD)) {
-         return isWizardViewAuth(facade, agent, id, true);
+      if (function.equals(WizardFunctionConstants.OPERATE_WIZARD)) {
+         Boolean access = isWizardViewAuth(facade, agent, id, true);
+         if(access == null || access == false) {
+            access = isWizardAuthForReview(facade, agent, id);
+            if(access == null || access == false) {
+               access = isWizardAuthForEval(facade, agent, id);
+            }
+         }
+         return access;
+      } else if (function.equals(WizardFunctionConstants.VIEW_WIZARD)) {
+            return isWizardViewAuth(facade, agent, id, true);
+            
       } else if (function.equals(WizardFunctionConstants.CREATE_WIZARD)) {
          return new Boolean(facade.isAuthorized(agent,function,id));
+         
       } else if (function.equals(WizardFunctionConstants.EDIT_WIZARD)) {
          return isWizardAuth(facade, id, agent, WizardFunctionConstants.EDIT_WIZARD);
+         
       } else if (function.equals(WizardFunctionConstants.PUBLISH_WIZARD)) {
          String siteStr = getWizardManager().getWizardIdSiteId(id);
          Id siteId = getIdManager().getId(siteStr);
          return new Boolean(facade.isAuthorized(agent,function,siteId));
+         
       } else if (function.equals(WizardFunctionConstants.DELETE_WIZARD)) {
          return isWizardAuth(facade, id, agent, WizardFunctionConstants.DELETE_WIZARD);
+         
       } else if (function.equals(WizardFunctionConstants.COPY_WIZARD)) {
          return isWizardAuth(facade, id, agent, WizardFunctionConstants.COPY_WIZARD);
+         
       } else if (function.equals(WizardFunctionConstants.EXPORT_WIZARD)) {
          return isWizardAuth(facade, id, agent, WizardFunctionConstants.EXPORT_WIZARD);
+         
       } else if (WizardFunctionConstants.REVIEW_WIZARD.equals(function)) {
          return isWizardAuthForReview(facade, agent, id);
+         
       } else if (WizardFunctionConstants.EVALUATE_WIZARD.equals(function)) {
          return isWizardAuthForEval(facade, agent, id);
       } 
