@@ -178,6 +178,8 @@
                         <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_CREATE"/>
                         <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_RUN"/>
                         <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_VIEW"/>
+                        <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_EDIT"/>
+                        <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_DELETE"/>
                      </list>
                   </entry>
                </map>
@@ -189,6 +191,8 @@
                         <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_CREATE"/>
                         <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_RUN"/>
                         <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_VIEW"/>
+                        <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_EDIT"/>
+                        <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_DELETE"/>
                      </list>
                   </entry>
                   <entry key="Program Coordinator">
@@ -196,6 +200,8 @@
                         <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_CREATE"/>
                         <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_RUN"/>
                         <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_VIEW"/>
+                        <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_EDIT"/>
+                        <ref bean="org.theospi.portfolio.reports.model.ReportFunctions.REPORT_FUNCTION_DELETE"/>
                      </list>
                   </entry>
                </map>
