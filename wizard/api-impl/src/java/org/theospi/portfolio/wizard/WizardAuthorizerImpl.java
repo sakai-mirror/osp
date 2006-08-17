@@ -73,9 +73,9 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       // return null if we don't know what is up...
       if (function.equals(WizardFunctionConstants.OPERATE_WIZARD)) {
          Boolean access = isWizardViewAuth(facade, agent, id, true);
-         if(access == null || access == false) {
+         if(access == null || access.booleanValue() == false) {
             access = isWizardAuthForReview(facade, agent, id);
-            if(access == null || access == false) {
+            if(access == null || access.booleanValue() == false) {
                access = isWizardAuthForEval(facade, agent, id);
             }
          }
