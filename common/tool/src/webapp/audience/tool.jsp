@@ -33,15 +33,17 @@
                     <h:panelGrid id="transferTable" columns="3" columnClasses="available,transferButtons,selected">
 
                         <h:panelGroup>
-                            <x:div>
-                                <h:outputFormat value="#{msgs.role_name_label}"/>
-                            </x:div>
-                            <x:div>
-                                <h:selectManyListbox id="availableUsers" value="#{audience.availableRoleMember}"
+							<ospx:splitarea direction="vertical">
+								<ospx:splitsection valign="top">
+                                	<h:outputFormat value="#{msgs.role_name_label}"/>
+								</ospx:splitsection>
+								<ospx:splitsection valign="top">
+                                	<h:selectManyListbox id="availableUsers" value="#{audience.availableRoleMember}"
                                                      size="10" style="width:250px;">
-                                    <f:selectItems value="#{audience.availableRoleMemberList}"/>
-                                </h:selectManyListbox>
-                            </x:div>
+                                    	<f:selectItems value="#{audience.availableRoleMemberList}"/>
+                                	</h:selectManyListbox>
+								</ospx:splitsection>
+							</ospx:splitarea>
                         </h:panelGroup>
 
                         <h:panelGrid id="transferButtons" columns="1" columnClasses="transferButtonTable">
@@ -54,12 +56,18 @@
                         </h:panelGrid>
 
                         <h:panelGroup>
-                            <h:outputFormat value="#{audience.selectedTitle}"/>
+							<ospx:splitarea direction="vertical">
+								<ospx:splitsection valign="top">
+                            		<h:outputFormat value="#{audience.selectedTitle}"/>
+								</ospx:splitsection>
+								<ospx:splitsection valign="top">
 
-                            <h:selectManyListbox id="selectedUsers" size="10" value="#{audience.selectedRoleMember}"
-                                                 style="width:250px;">
-                                <f:selectItems value="#{audience.selectedRoleMemberList}"/>
-                            </h:selectManyListbox>
+		                            <h:selectManyListbox id="selectedUsers" size="10" value="#{audience.selectedRoleMember}"
+		                                                 style="width:250px;">
+		                                <f:selectItems value="#{audience.selectedRoleMemberList}"/>
+		                            </h:selectManyListbox>
+								</ospx:splitsection>
+							</ospx:splitarea>
                         </h:panelGroup>
                     </h:panelGrid>
                     <h:panelGrid  rendered="audience.maxList" columns="1">
