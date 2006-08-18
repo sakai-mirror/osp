@@ -23,7 +23,7 @@
 <sakai:instruction_message value="#{audience.instructions}"/>
 <sakai:messages/>
 
-<h:form>
+<h:form id="mainForm">
     <ospx:splitarea direction="horizontal" width="100%">
         <ospx:splitsection size="100%" valign="top">
             <!-- group drawer -->
@@ -47,12 +47,20 @@
                         </h:panelGroup>
 
                         <h:panelGrid id="transferButtons" columns="1" columnClasses="transferButtonTable">
-                            <sakai:button_bar>
-                                <sakai:button_bar_item id="add_selected" action="#{audience.processActionAdd}"
+							<ospx:splitarea width="120" direction="vertical">
+								<ospx:splitsection valign="top" align="center">
+		                            <sakai:button_bar>
+		                                <sakai:button_bar_item id="add_selected" action="#{audience.processActionAdd}"
                                                        value="#{msgs.add_members}"/>
-                                <sakai:button_bar_item id="remove_button" action="#{audience.processActionRemoveSelected}"
-                                                       value="#{msgs.remove_members}"/>
-                            </sakai:button_bar>
+	                            	</sakai:button_bar>
+								</ospx:splitsection>
+								<ospx:splitsection valign="top" align="center">
+		                           		<sakai:button_bar>
+			                                <sakai:button_bar_item id="remove_button" action="#{audience.processActionRemoveSelected}"
+			                                                       value="#{msgs.remove_members}"/>
+			                            </sakai:button_bar>
+									</ospx:splitsection>
+								</ospx:splitarea>
                         </h:panelGrid>
 
                         <h:panelGroup>
@@ -81,25 +89,21 @@
                      <h:outputFormat value = "#{audience.browseUserInstructions}" />
                      </h:panelGroup>
                     </h:panelGrid>
-
-                    <ospx:splitarea rendered="#{audience.emailCapable}" direction="horizontal" width="100%">
-                        <ospx:splitsection size="25%" valign="center">
+					
+					
+   					<f:subview id="thePagesCat"  rendered="#{audience.emailCapable}" >
+   
+						<f:verbatim><p class='shorttext'></f:verbatim>
+					
                             <h:outputLabel value="#{common_msgs.email_label}:" for="emails"/>
-                        </ospx:splitsection>
-                        <ospx:splitsection size="25%" valign="center">
-                            <h:inputText value="#{audience.searchEmails}" id="emails" size="70"/>
-                        </ospx:splitsection>
-                        <ospx:splitsection size="25%" valign="center">
+                            
+                            <h:inputText value="#{audience.searchEmails}" id="emails" size="60"/>
                             <h:outputText value=" "/>
-                        </ospx:splitsection>
-                        <ospx:splitsection size="25%" valign="top" align="left">
-                            <sakai:button_bar>
-                                <sakai:button_bar_item id="add_email_button"
+                                <h:commandButton id="add_email_button"
                                                        action="#{audience.processActionAddEmail}"
                                                        value="#{common_msgs.add_members}"/>
-                            </sakai:button_bar>
-                        </ospx:splitsection>
-                    </ospx:splitarea>
+						<f:verbatim></p></f:verbatim>
+                    </f:subview>
                 </ospx:xheaderdrawer>
             </ospx:xheader>
 
@@ -112,18 +116,28 @@
                             <sakai:instruction_message value="#{audience.publicInstructions}"/>
                         </ospx:splitsection>
                     </ospx:splitarea>
-                    <ospx:splitarea direction="horizontal" width="100%">
-                        <ospx:splitsection size="50%">
-                            <h:selectBooleanCheckbox id="isPublic" value="#{audience.publicAudience}"/>
-                            <h:outputLabel value="#{common_msgs.public_label}: " for="isPublic"
-                                           style="white-space:nowrap;"/>
-                        </ospx:splitsection>
-                        <ospx:splitsection size="50%">
-                            <h:outputLink id="publicURL" value="#{audience.publicURL}">
-                                <h:outputText id="publicURLtext" value="#{audience.publicURL}"/>
-                            </h:outputLink>
-                        </ospx:splitsection>
-                    </ospx:splitarea>
+                    
+					<f:verbatim><script>
+						function setPublicURLDisabled(){
+							isPublic = document.getElementById("mainForm:isPublic");
+							publicUrl = document.getElementById("mainForm:publicUrl");
+
+							publicUrl.disabled = !isPublic.checked;
+						}
+						var selected = false;
+					</script></f:verbatim>
+					<f:verbatim><p class='shorttext'><label for="isPublic"></f:verbatim>
+                            <h:selectBooleanCheckbox id="isPublic" value="#{audience.publicAudience}"
+                            	onclick="setPublicURLDisabled()"/>
+                            <h:outputText value="#{common_msgs.public_label}: " style="white-space:nowrap;"/>
+						<f:verbatim></label></f:verbatim>
+                            <h:inputText value="#{audience.publicURL}" id="publicUrl" size="60" readonly="true"
+                            	onclick="if(!selected){this.focus(); this.select();selected=true;}"/>
+                            
+					<f:verbatim><script>
+						setPublicURLDisabled();
+					</script></f:verbatim>
+					<f:verbatim></p></f:verbatim>
                 </ospx:xheaderdrawer>
             </ospx:xheader>
         </ospx:splitsection>
