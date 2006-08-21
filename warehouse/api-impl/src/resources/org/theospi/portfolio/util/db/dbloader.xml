@@ -42,8 +42,12 @@
   <!-- DbLoader can dump DROP, CREATE, ALTER, INDEX and INSERT statements to a file. If <create-script> is
        set to true, the script file will be created in <OSPI base directory>/properties -->
 
-  <create-script>false</create-script>
-  <script-file-name>dbloader.script</script-file-name>
+  <create-table-script>false</create-table-script>
+  <table-script-file-name>osp_dw_tables.script</table-script-file-name>
+  
+  <create-content-script>false</create-content-script>
+  <content-script-file-name>osp_dw_content.script</content-script-file-name>
+  
   <statement-terminator>;</statement-terminator>
 
   <!-- Mappings for cases where database metadata is incomplete.
