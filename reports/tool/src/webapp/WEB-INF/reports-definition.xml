@@ -77,7 +77,7 @@
                                     <!-- fillin/set/multiset/sql/multisql/static -->
                     <property name="value"><value>[(dogs; Goldie), cat, (car), apple, turkey, paper, ]</value></property>
                 </bean>
-                <!-- 
+
                 <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>A multi Set Variable</value></property>
                     <property name="paramName"><value>[multiset]</value></property>
@@ -85,7 +85,7 @@
                     <property name="type"><value>string</value></property>
                     <property name="valueType"><value>multiset</value></property>
                     <property name="value"><value>[(dogs; Goldie), cat, (car), apple, turkey, paper, {userid}]</value></property>
-                </bean> -->
+                </bean>
                 <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>A sql Variable</value></property>
                     <property name="paramName"><value>[sql]</value></property>
@@ -98,7 +98,7 @@
                             <!-- (validation rules)/[(elem1; title1), (elem2), elem3,
                                     etc]/ select username, firstName from worksite/value -->
                 </bean>
-                <!-- 
+
                 <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>A multi sql Variable</value></property>
                     <property name="paramName"><value>[multisql]</value></property>
@@ -107,7 +107,7 @@
                     <property name="valueType"><value>multisql</value></property>
                     <property name="value"><value>select SITE_ID from SAKAI_SITE</value></property>
                 </bean>
-                -->
+                
                 <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
                     <property name="title"><value>A static Variable</value></property>
                     <property name="paramName"><value>[static]</value></property>

@@ -156,7 +156,12 @@ public class DecoratedReportParam {
 	 */
 	public List getListValue()
 	{
-		return new ArrayList();
+		if (reportParam.getListValue() == null ) {
+            return new ArrayList();
+        }    
+        else {
+            return reportParam.getListValue();
+        }
 	}
 	
 	/**
@@ -167,9 +172,13 @@ public class DecoratedReportParam {
 	public void setListValue(List value)
 	{
 		if(getIsSet() && getIsMultiSelectable()) {
-			reportParam.setValue(value.toString());
-			isValid = true;
-		}
+			reportParam.setListValue(value);
+            if (value.size() < 1){
+                isValid = false;
+            } else {
+                isValid = true;
+            }    
+        }
 	}
 	
 	/**

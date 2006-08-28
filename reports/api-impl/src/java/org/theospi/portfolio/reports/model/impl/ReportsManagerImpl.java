@@ -147,6 +147,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	 */
 	public void setReportDefinitions(List reportDefinitions)
 	{
+        addReportDefinitions(reportDefinitions);
 		this.reportDefinitions = reportDefinitions;
 		
 		Iterator iter = reportDefinitions.iterator();
@@ -157,15 +158,33 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		}
 	}
 	
-	
-	/**
+    public void addReportDefinitions(List reportDefinitions) {
+
+        if (this.reportDefinitions == null) {
+            this.reportDefinitions = new ArrayList();
+        }
+
+        Iterator iter = reportDefinitions.iterator();
+        while (iter.hasNext()) {
+
+            ReportDefinition rd = (ReportDefinition) iter.next();
+            rd.finishLoading();
+
+            this.reportDefinitions.add(rd);
+
+        }
+
+
+    }
+
+
+    /**
 	 * Returns the ReportDefinitions.  The list returned is filtered
 	 * for the worksite type against the report types
 	 * @return List of ReportDefinitions
 	 */
 	public List getReportDefinitions()
 	{
-		String currentWorksiteType = getCurrentSiteType();
 		
 		//load any reportDefinitions in the database
 		loadReportsFromDB();
@@ -176,20 +195,52 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		while(iter.hasNext()) {
 			ReportDefinition rd = (ReportDefinition)iter.next();
 			
-			String typesStr = rd.getType();
-			if(typesStr != null) {
-				String []types = typesStr.split(",");
-				for(int i = 0; i < types.length; i++) {
-					String type = types[i];
-					if(type.trim().equals(currentWorksiteType))
-						reportsDefs.add(rd);
-				}
-			}
-		}
-		
-		return reportsDefs;
-	}
-	
+
+            if (isValidWorksiteType(rd.getType()) && isValidRole(rd.getRole())) {
+
+                reportsDefs.add(rd);
+
+
+            }
+        }
+
+        return reportsDefs;
+    }
+
+    public boolean isValidRole(String roleStr) {
+        if (roleStr != null && roleStr.length() > 0) {
+            String currentRole = getCurrentSite().getMember(SessionManager.getCurrentSessionUserId()).getRole().getId().toString();
+            String []roles = roleStr.split(",");
+            for (int i = 0; i < roles.length; i++) {
+                String role = roles[i];
+                if (role.trim().equals(currentRole)) {
+                    return true;
+                }
+            }
+        }
+        else {
+            return true;
+        }
+        return false;
+
+    }
+
+    public boolean isValidWorksiteType(String typesStr) {
+        if (typesStr != null && typesStr.length() >0) {
+            String []types = typesStr.split(",");
+            for (int i = 0; i < types.length; i++) {
+                String type = types[i];
+                if (type.trim().equals(getCurrentSiteType())) {
+                    return true;
+                }
+            }
+        }
+        else {
+            return true;
+        }
+        return false;
+
+    }
 	
 	/**
 	 * This is the setter for the idManager
@@ -596,9 +647,8 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			ReportDefinition rd = report.getReportDefinition();
 			
 			connection = getWarehouseConnection();
-			stmt = connection
-					.prepareStatement(replaceSystemValues((String)rd.getQuery().get(0)));
-			
+
+            StringBuffer query = new StringBuffer(replaceSystemValues((String) rd.getQuery().get(0)));
 			//	get the query from the Definition and replace the values
 			//	no should be able to put in a system parameter into a report parameter and have it work
 			//		so replace the system values before processing the report parameters
@@ -606,34 +656,44 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			//	replace the parameters with the values
 			List reportParams = report.getReportParams();
 			
-			//If there are params, place them with values in the query
-			if(reportParams != null) {
-				Iterator	iter = reportParams.iterator();
-				int			paramIndex = 0;
-				
-				//	loop through all the parameters and find in query for replacement
-				while(iter.hasNext()) {
-					
-					//	get the paremeter and associated parameter definition
-					ReportParam rp = (ReportParam)iter.next();
-					ReportDefinitionParam rdp = rp.getReportDefinitionParam();
-					
-					if(rp.getValue() == null)
-						throw new OspException("The Report Parameter Value was blank.  Offending parameter: " + rdp.getParamName());
-					
-					String value = rp.getValue();
-					
-					//	Dates need to be formatted from user format to database format
-					if( ReportDefinitionParam.TYPE_DATE.equals(rdp.getType())) {
-						value = dbDateFormat.format(userDateFormat.parse( rp.getValue() ));
-					}
-					stmt.setString(paramIndex+1, value);
-					
-					paramIndex++;
-				}
-			}
-			
-			rr.setCreationDate(new Date());
+            query = replaceForMultiSet(query, reportParams);
+            stmt = connection.prepareStatement(query.toString());
+            //If there are params, place them with values in the query
+            if (reportParams != null) {
+                Iterator iter = reportParams.iterator();
+                int paramIndex = 0;
+
+                //	loop through all the parameters and find in query for replacement
+                while (iter.hasNext()) {
+
+                    //	get the paremeter and associated parameter definition
+                    ReportParam rp = (ReportParam) iter.next();
+                    ReportDefinitionParam rdp = rp.getReportDefinitionParam();
+                    if (ReportDefinitionParam.VALUE_TYPE_MULTI_OF_SET.equals(rdp.getValueType()) ||
+                            ReportDefinitionParam.VALUE_TYPE_MULTI_OF_QUERY.equals(rdp.getValueType())) {
+
+                        for (Iterator i = rp.getListValue().iterator(); i.hasNext();) {
+                            stmt.setString(paramIndex + 1, i.next().toString());
+                            paramIndex++;
+                        }
+
+                    } else if (rp.getValue() == null) {
+                        throw new OspException("The Report Parameter Value was blank.  Offending parameter: " + rdp.getParamName());
+                    } else {
+                        String value = rp.getValue();
+
+                        //	Dates need to be formatted from user format to database format
+                        if (ReportDefinitionParam.TYPE_DATE.equals(rdp.getType())) {
+                            value = dbDateFormat.format(userDateFormat.parse(rp.getValue()));
+                        }
+                        stmt.setString(paramIndex + 1, value);
+                        paramIndex++;
+                    }
+
+                }
+            }
+
+            rr.setCreationDate(new Date());
 			
 			// run the query
 			ResultSet			rs = null;
@@ -792,6 +852,36 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
       return rr;
    }
 
+    public StringBuffer replaceForMultiSet(StringBuffer inQuery, List reportParams) {
+        if (reportParams == null) {
+            return inQuery;
+        }
+        Iterator iter = reportParams.iterator();
+        //	loop through all the parameters and find in query for replacement
+        while (iter.hasNext()) {
+
+            //	get the paremeter and associated parameter definition
+            ReportParam rp = (ReportParam) iter.next();
+            ReportDefinitionParam rdp = rp.getReportDefinitionParam();
+            if (ReportDefinitionParam.VALUE_TYPE_MULTI_OF_SET.equals(rdp.getValueType()) ||
+                    ReportDefinitionParam.VALUE_TYPE_MULTI_OF_QUERY.equals(rdp.getValueType())) {
+
+
+                if (rp.getListValue().size() > 1) {
+                    int index = inQuery.indexOf("(?)");
+                    inQuery.delete(index, index + 3);
+                    StringBuffer tempString = new StringBuffer("(");
+                    for (int i = 0; i < rp.getListValue().size(); i++) {
+                        tempString.append("?,");
+                    }
+                    tempString.delete(tempString.length() - 1, tempString.length());
+                    tempString.append(") ");
+                    inQuery.insert(index + 2, tempString);
+                }
+            }
+        }
+        return inQuery;
+    }
    /**
     * Replaces the the system value proxy with the values.
     * The list of system value proxies(without quote characters):
@@ -831,11 +921,12 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			//	Loop until no instances exist
 			while(i != -1) {
 				
-				//	replace the parameter with the value
-				str.replace(i, i + key.length(), (String)map.get(key));
-				
-				//	look for a second instance
-				i = str.indexOf(key);
+                //	replace the parameter with the value
+                str.delete(i, i + key.length());
+                str.insert(i, (String) map.get(key));
+
+                //	look for a second instance
+                i = str.indexOf(key);
 			}
 		}
 		
@@ -1034,20 +1125,22 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
       this.securityService = securityService;
    }
    
-   /**
-    * Returns the type of current worksite 
-    * @return String
-    */
-   private String getCurrentSiteType()
-   {
-	   try {
-		   Site site = SiteService.getSite(ToolManager.getCurrentPlacement().getContext());
-		   return site.getType();
-	   } catch(IdUnusedException iue) {
-		   //	just return null
-	   }
-	   return null;
-   }
+    private Site getCurrentSite() {
+        try {
+            return SiteService.getSite(ToolManager.getCurrentPlacement().getContext());
+        } catch (IdUnusedException iue) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the type of current worksite
+     *
+     * @return String
+     */
+    private String getCurrentSiteType() {
+        return getCurrentSite() != null ? getCurrentSite().getType() : "";
+    }
 
    public AuthorizationFacade getAuthzManager() {
       return authzManager;

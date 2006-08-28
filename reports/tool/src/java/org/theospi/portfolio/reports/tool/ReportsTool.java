@@ -25,9 +25,12 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.portfolio.reports.model.*;
 import org.theospi.portfolio.shared.tool.ToolBase;
+import org.theospi.portfolio.security.AudienceSelectionHelper;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
