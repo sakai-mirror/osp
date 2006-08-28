@@ -57,10 +57,10 @@ public class ToolFinishedView extends HelperView {
       String pathObj = (String)toolSession.getAttribute(tool.getId() + "thetoolPath");
       toolSession.removeAttribute(tool.getId() + "thetoolPath");
       
-      if(toolSession.getAttribute(ALTERNATE_DONE_URL) != null) {
+      if(toolSession.getAttribute(tool.getId() + ALTERNATE_DONE_URL) != null) {
          String path = "";
-         Object altObj = toolSession.getAttribute(ALTERNATE_DONE_URL);
-         Map urlMap = (Map)toolSession.getAttribute(ALTERNATE_DONE_URL_MAP);
+         Object altObj = toolSession.getAttribute(tool.getId() + ALTERNATE_DONE_URL);
+         Map urlMap = (Map)toolSession.getAttribute(tool.getId() + ALTERNATE_DONE_URL_MAP);
    
          if(urlMap != null) {
             url = (String) urlMap.get((String)altObj);
@@ -73,7 +73,7 @@ public class ToolFinishedView extends HelperView {
                url = path + "/" + url;
          }
 
-         toolSession.removeAttribute(ALTERNATE_DONE_URL);
+         toolSession.removeAttribute(tool.getId() + ALTERNATE_DONE_URL);
       }
       
       setUrl(url);

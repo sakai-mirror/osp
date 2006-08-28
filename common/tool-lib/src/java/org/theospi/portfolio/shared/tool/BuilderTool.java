@@ -27,7 +27,7 @@ package org.theospi.portfolio.shared.tool;
  * Time: 1:26:29 PM
  * To change this template use File | Settings | File Templates.
  */
-public abstract class BuilderTool extends ToolBase {
+public abstract class BuilderTool extends HelperToolBase {
 
    private BuilderScreen currentScreen;
    private BuilderScreen[] screens;

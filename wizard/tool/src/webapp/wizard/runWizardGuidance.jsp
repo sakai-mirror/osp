@@ -287,7 +287,7 @@
 		</f:subview>
 
     <sakai:button_bar_item id="returnToList" value="#{msgs.wizard_list}"
-       action="#{wizard.processActionCancel}" />
+       action="#{wizard.processActionCancelRun}" />
     <sakai:button_bar_item id="submitEvalWizard" value="#{msgs.submit_wizard_for_evaluation}" 
        rendered="#{wizard.current.runningWizard.base.status == 'READY' && wizard.current.runningWizard.isReadOnly == 'false'}"
        action="confirmSubmit" immediate="true"

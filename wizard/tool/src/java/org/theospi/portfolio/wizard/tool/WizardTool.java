@@ -129,6 +129,7 @@ public class WizardTool extends BuilderTool {
    public final static String CONFIRM_SUBMIT_PAGE = "confirmSubmit";
    public final static String IMPORT_PAGE = "importWizard";
    public final static String CONFIRM_DELETE_PAGE = "confirmDeleteWizard";
+   public final static String CANCEL_RUN_WIZARD_PAGE = "runWizardEnd";
 
    private BuilderScreen[] screens = {
      // new BuilderScreen(EDIT_PAGE_TYPE),
@@ -324,6 +325,27 @@ public class WizardTool extends BuilderTool {
       setCurrent(null);
       cancelBoundValues();
       return LIST_PAGE;
+   }
+   
+   /**
+    * This function is used to cancel a running wizard.  This will
+    * ensure that the user is returned to the caller correctly (aka the list wizard page) 
+    * @return String next page, this is null
+    */
+   public String processActionCancelRun() {
+      processActionCancel();
+      return returnToCaller();
+   }
+   
+   /**
+    * This function is used to cancel a running wizard.  This will
+    * ensure that the user is returned to the caller correctly (aka the list wizard page) 
+    * @return String next page, this is null
+    */
+   public String getCancelTool() {
+      processActionCancel();
+      returnToCaller();
+      return "";
    }
 
    public String processActionChangeUser() {
@@ -535,11 +557,15 @@ public class WizardTool extends BuilderTool {
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP,
                new Integer(0));
          redirectAddress = "osp.wizard.page.helper/sequentialWizardPage.osp";
-         map.put("finishSeqWizard", LIST_PAGE);
+
+         // this page goes to back to the list page
+         map.put("finishSeqWizard", CANCEL_RUN_WIZARD_PAGE);
       }
 
       map.put("submitWizard", CONFIRM_SUBMIT_PAGE);
-      map.put("submitWizardPage", LIST_PAGE);
+      
+      // this page goes to back to the list page
+      map.put("submitWizardPage", CANCEL_RUN_WIZARD_PAGE);
       session.setAttribute(ToolFinishedView.ALTERNATE_DONE_URL_MAP, map);
 
       try {
