@@ -432,9 +432,6 @@
             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                <property name="propertyName"><value>siteId</value></property>
             </bean>
-            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-               <property name="propertyName"><value>toolId</value></property>
-            </bean>
             <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
                <property name="propertyName"><value>guidance</value></property>
             </bean>
@@ -443,8 +440,8 @@
       </property>
       <property name="insertStmt">
          <value>insert into dw_wizard_page_def
-                    (id, initialStatus, title, description, site_id, tool_id, guidance_id)
-                        values (?, ?, ?, ?, ?, ?, ?)
+                    (id, initialStatus, title, description, site_id, guidance_id)
+                        values (?, ?, ?, ?, ?, ?)
                       
          </value>
       </property>
@@ -663,9 +660,6 @@
               <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>siteId</value></property>
               </bean>
-              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>toolId</value></property>
-              </bean>
               <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
               <property name="propertyName"><value>guidanceId</value></property>
               </bean>
@@ -689,9 +683,9 @@
         <property name="insertStmt">
            <value>insert into dw_wizard
                             (id, owner_id, name, description, keywords, created, modified,
-                            site_id, tool_id, guidance_id, published, wizard_type, exposed_page_id,
+                            site_id, guidance_id, published, wizard_type, exposed_page_id,
                             root_category, seq_num)
-                          values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                          values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
            </value>
         </property>
         <property name="clearStmt">
@@ -901,9 +895,6 @@
               <property name="propertyName"><value>includeHeaderAndFooter</value></property>
            </bean>
            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>includeComments</value></property>
-           </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>published</value></property>
            </bean>
            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.owner" />
@@ -923,20 +914,15 @@
               <property name="propertyName"><value>modified</value></property>
            </bean>
            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>toolId</value></property>
-           </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>siteId</value></property>
            </bean>
         </list>
      </property>
      <property name="insertStmt">
         <value>insert into dw_presentation_template
-                                    (id, name,  description, includeHeaderAndFooter, includeComments, published,
-                                     owner_id, renderer,
-                                     propertyPage, documentRoot, created, modified,
-                                     tool_id, site_id)
-                                    values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+               (id, name,  description, includeHeaderAndFooter, published,
+               owner_id, renderer, propertyPage, documentRoot, created, modified, site_id)
+               values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         </value>
      </property>
      <property name="clearStmt">
@@ -1221,9 +1207,7 @@
             <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
                <property name="propertyName"><value>fileRef</value></property>
             </bean>
-            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-               <property name="propertyName"><value>toolId</value></property>
-            </bean>
+
             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                <property name="propertyName"><value>siteId</value></property>
             </bean>
@@ -1232,8 +1216,8 @@
       <property name="insertStmt">
          <value>insert into dw_presentation_layout
                                     (id, name,  description, published, owner_id, created, modified,
-                                    fileRef, tool_id, site_id)
-                                     values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                    fileRef, site_id)
+                                     values (?, ?, ?, ?, ?, ?, ?, ?, ?)
          </value>
       </property>
       <property name="clearStmt">
@@ -1272,16 +1256,13 @@
             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                <property name="propertyName"><value>modified</value></property>
             </bean>
-            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-               <property name="propertyName"><value>toolId</value></property>
-            </bean>
          </list>
       </property>
       <property name="insertStmt">
          <value>insert into dw_presentation
                   (id, owner_id, template_id, name, description, isDefault,
-                  isPublic, expiresOn, created, modified, tool_id)
-               values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)</value>
+                  isPublic, expiresOn, created, modified)
+               values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)</value>
       </property>
       <property name="clearStmt">
          <value>delete from dw_presentation</value>
@@ -2360,18 +2341,6 @@
    	     <value>delete from dw_wizard_style</value>
    	  </property> 
    </bean>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
    <!--  **************************************************************************
    ********************************************************************************
         - list of users and names and such
