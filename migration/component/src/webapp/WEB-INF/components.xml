@@ -2,6 +2,9 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans default-lazy-init="false">
+
+<!-- CWM - commenting these beans out as we don't need to use them
+
    <bean id="org.theospi.portfolio.migration.OspMigrationJob.dataSource"
      parent="javax.sql.BaseDataSource">
    </bean>
@@ -49,7 +52,9 @@
          <ref bean="org.theospi.portfolio.migration.OspMigrationJob.dataSource" />
       </property>
       <property name="tableMap">
-      	<map><!-- 
+      	<map>
+      	-->
+      	<!-- CWM These were already commented out
       		<entry key="osp_authz_simple"><value>old_osp_authz_simple</value></entry>
       		
       		<entry key="osp_help_glossary"><value>old_osp_help_glossary</value></entry>
@@ -83,7 +88,7 @@
       		<entry key="osp_expectation"><value>OLD_OSP_EXPECTATION</value></entry>
       		<entry key="osp_reviewer_item"><value>OLD_OSP_REVIEWER_ITEM</value></entry>
       		-->
-      		
+      		<!-- CWM - Continuing commenting out the beans in this file
       		<entry key="osp_authz_simple"><value>ONC.OSP_AUTHZ_SIMPLE_BKP</value></entry>
       		
       		<entry key="osp_help_glossary"><value>ONC.OSP_HELP_GLOSSARY_BKP</value></entry>
@@ -221,4 +226,6 @@
          <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager"/>
       </property>
    </bean>
+   
+    -->
 </beans>
