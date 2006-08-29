@@ -116,7 +116,7 @@ public class FreeFormTool extends HelperToolBase {
    }
 
    public String processActionCancelPage() {
-       if (getCurrentPage().getBase().isNewObject()) {
+       if (getCurrentPage().isNewPage()) {
             deletePage(getCurrentPage());
        }
        cancelBoundValues();
@@ -337,6 +337,7 @@ public class FreeFormTool extends HelperToolBase {
       getPresentation().getPages().add(page);
       reorderPages();
       DecoratedPage decoratedPage = new DecoratedPage(page, this);
+      decoratedPage.setNewPage(true);
       setCurrentPage(decoratedPage);
       return "edit";
    }
