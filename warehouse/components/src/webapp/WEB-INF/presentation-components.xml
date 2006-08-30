@@ -465,6 +465,7 @@
    </bean>
 
 
+
    <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.layout"
       class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
       <property name="fields">
@@ -477,7 +478,7 @@
                <property name="propertyName"><value>description</value></property>
             </bean>
             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-               <property name="propertyName"><value>published</value></property>
+               <property name="propertyName"><value>globalState</value></property>
             </bean>
             <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.owner" />
             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
@@ -486,10 +487,15 @@
             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                <property name="propertyName"><value>modified</value></property>
             </bean>
-            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
-               <property name="propertyName"><value>fileRef</value></property>
+            <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+               <property name="propertyName"><value>xhtmlFileId</value></property>
             </bean>
-
+            <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+               <property name="propertyName"><value>previewImageId</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>toolId</value></property>
+            </bean>
             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                <property name="propertyName"><value>siteId</value></property>
             </bean>
@@ -497,16 +503,15 @@
       </property>
       <property name="insertStmt">
          <value>insert into dw_presentation_layout
-                                    (id, name,  description, published, owner_id, created, modified,
-                                    fileRef, site_id)
-                                     values (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                    (id, name,  description, globalState, owner_id, created, modified,
+                                    xhtml_file_id, preview_image_id, tool_id, site_id)
+                                     values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
          </value>
       </property>
       <property name="clearStmt">
          <value>delete from dw_presentation_layout</value>
       </property>
    </bean>
-   
    
    <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation"
       class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">

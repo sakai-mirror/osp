@@ -267,7 +267,7 @@
          <param>255</param>
        </column>
        <column>
-         <name>published</name>
+         <name>globalState</name>
          <type>TINYINT</type>
        </column>
        <column>
@@ -284,7 +284,17 @@
          <type>TIMESTAMP</type>
        </column>
        <column>
-         <name>fileRef</name>
+         <name>xhtml_file_id</name>
+         <type>VARCHAR</type>
+         <param>36</param>
+       </column>
+        <column>
+         <name>preview_image_id</name>
+         <type>VARCHAR</type>
+         <param>36</param>
+       </column>
+       <column>
+         <name>tool_id</name>
          <type>VARCHAR</type>
          <param>36</param>
        </column>

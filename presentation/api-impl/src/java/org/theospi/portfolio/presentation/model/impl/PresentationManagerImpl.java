@@ -1711,7 +1711,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          return new ArrayList();
       }
    }
+   public Collection getAllPresentationLayouts() {
 
+            return getHibernateTemplate().find("from PresentationLayout");
+
+   }
    public void viewingPresentation(Presentation presentation) {
       // go through and setup all pres and pres template files for read access
       List readableFiles = new ArrayList();
