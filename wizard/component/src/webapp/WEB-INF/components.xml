@@ -49,7 +49,6 @@
                   <value>osp.wizard.create</value>
                   <value>osp.wizard.edit</value>
                   <value>osp.wizard.review</value>
-                  <value>osp.wizard.view</value>
                   <value>osp.wizard.export</value>
                </list>
             </entry>
