@@ -31,6 +31,7 @@ public interface ReportsManager extends DownloadableManager
    public static final String EXPORT_XSL_ID = "reportExportId";
 
 	public void setReportDefinitions(List reportdefs);
+	public void addReportDefinitions(List reportDefinitions);
 	public List getReportDefinitions();	
 
 	public void createReportParameters(Report report);

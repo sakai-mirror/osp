@@ -54,6 +54,8 @@ public class DecoratedPage implements Comparable {
    private String layoutName;
    private String lastModified;
    private String expandedInformationSection = "true";
+   private boolean newPage = false;
+
 
    public DecoratedPage(PresentationPage base, FreeFormTool parent) {
       this.base = base;
@@ -314,6 +316,14 @@ public class DecoratedPage implements Comparable {
        }
          return "false";
     }
+     
+   public boolean isNewPage() {
+      return newPage;
+   }
+
+   public void setNewPage(boolean newPage) {
+      this.newPage = newPage;
+   }
 
 
 }

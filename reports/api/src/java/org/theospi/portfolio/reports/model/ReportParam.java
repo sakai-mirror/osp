@@ -22,6 +22,8 @@ package org.theospi.portfolio.reports.model;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 
+import java.util.List;
+import java.util.ArrayList;
 public class ReportParam
 {
 	/** the identifier to the report paramater */
@@ -49,6 +51,7 @@ public class ReportParam
 	
 	private String	reportDefParamIdMark = null;
 	
+    private List listValue = null;
 	/**
 	 * the getter for the paramId property
 	 * @return String the unique identifier
@@ -174,5 +177,14 @@ public class ReportParam
 			validated = true;
 		}
 		return valid;
-	}
+    }
+
+    public List getListValue() {
+        return listValue;
+    }
+
+    public void setListValue(List listValue) {
+        this.listValue = listValue;
+        validated = false;
+    }
 }

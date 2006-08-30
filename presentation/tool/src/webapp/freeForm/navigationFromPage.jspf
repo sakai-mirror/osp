@@ -1,8 +1,8 @@
 
   <sakai:button_bar>
-  <sakai:button_bar_item action="#{freeForm.currentPage.pagePropertiesSaved}"
+  <sakai:button_bar_item action="#{freeForm.currentPage.pagePropertiesSaved}" id="saveButton"
       value="#{msgs.save_changes}" rendered="#{freeForm.currentPage.base.title != null}"/>
-   <sakai:button_bar_item action="#{freeForm.currentPage.pagePropertiesSaved}"
+   <sakai:button_bar_item action="#{freeForm.currentPage.pagePropertiesSaved}" id="addButton"
       value="#{msgs.add_page}" rendered="#{freeForm.currentPage.base.title == null}"/>
-   <sakai:button_bar_item action="#{freeForm.processActionCancelPage}" value="#{msgs.cancel}" immediate="true"/>
+   <sakai:button_bar_item action="#{freeForm.processActionCancelPage}" value="#{msgs.cancel}" id="cancelButton" immediate="true"/>
    </sakai:button_bar>

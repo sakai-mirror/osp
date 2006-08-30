@@ -183,19 +183,31 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    public Wizard getWizard(Id wizardId) {
-      return getWizard(wizardId, true);
+      return getWizard(wizardId, WIZARD_OPERATE_CHECK);
    }
    
-   protected Wizard getWizard(Id wizardId, boolean checkAuthz) {
+   public Wizard getWizard(Id wizardId, int checkAuthz) {
       Wizard wizard = (Wizard)getHibernateTemplate().get(Wizard.class, wizardId);
 
       if (wizard == null) {
          return null;
       }
 
-      if (checkAuthz)
+      if (checkAuthz == WIZARD_OPERATE_CHECK)
+         getAuthorizationFacade().checkPermission(WizardFunctionConstants.OPERATE_WIZARD,
+               wizardId);
+      if (checkAuthz == WIZARD_VIEW_CHECK)
          getAuthorizationFacade().checkPermission(WizardFunctionConstants.VIEW_WIZARD,
                getIdManager().getId(wizard.getSiteId()));
+      if (checkAuthz == WIZARD_EDIT_CHECK)
+         getAuthorizationFacade().checkPermission(WizardFunctionConstants.EDIT_WIZARD,
+               wizardId);
+      if (checkAuthz == WIZARD_EXPORT_CHECK)
+         getAuthorizationFacade().checkPermission(WizardFunctionConstants.EXPORT_WIZARD, 
+               idManager.getId(ToolManager.getCurrentPlacement().getContext()));
+      if (checkAuthz == WIZARD_DELETE_CHECK)
+         getAuthorizationFacade().checkPermission(WizardFunctionConstants.DELETE_WIZARD,
+               wizardId);
 
       // setup access to the files
       List refs = new ArrayList();
@@ -213,6 +225,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
       
       //removeFromSession(wizard);
       return wizard;
+   }
+   
+   public Wizard getWizard(String id, int checkAuthz) {
+      return getWizard(getIdManager().getId(id), checkAuthz);
+   }
+
+   public Wizard getWizard(String id) {
+      return getWizard(id, WIZARD_VIEW_CHECK);
    }
    
    public Node getNode(Id artifactId) {
@@ -347,7 +367,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       //This shouldn't be necessary since a user can't fill it out if it hasn't been 
       //published and you can't delete if it has been published
       //But I'm leaving it here just in case...don't want foreign key errors when deleting
-      Wizard wiz = this.getWizard(wizard.getId());
+      Wizard wiz = this.getWizard(wizard.getId(), WIZARD_DELETE_CHECK);
       List completedWizards = getCompletedWizards(wiz);
       for (Iterator i = completedWizards.iterator(); i.hasNext();) {
          CompletedWizard cw = (CompletedWizard)i.next();
@@ -421,14 +441,6 @@ public class WizardManagerImpl extends HibernateDaoSupport
    public List findPublishedWizards(String siteId) {
       Object[] params = new Object[]{new Boolean(true), siteId};
       return getHibernateTemplate().find("from Wizard w where w.published=? and w.siteId=? order by seq_num", params);
-   }
-   
-   protected Wizard getWizard(String id, boolean checkAuthz) {
-      return getWizard(getIdManager().getId(id), checkAuthz);
-   }
-
-   public Wizard getWizard(String id) {
-      return getWizard(id, true);
    }
    
    public Collection getAvailableForms(String siteId, String type) {
@@ -1323,9 +1335,9 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    
-   protected void packageWizardForExport(String wizardId, OutputStream os, boolean checkAuthz) throws IOException
+   protected void packageWizardForExport(String wizardId, OutputStream os, int checkAuthz) throws IOException
    {
-      if (checkAuthz)
+      if (checkAuthz == WIZARD_EXPORT_CHECK)
          getAuthorizationFacade().checkPermission(WizardFunctionConstants.EXPORT_WIZARD, 
                idManager.getId(ToolManager.getCurrentPlacement().getContext()));
 
@@ -1344,7 +1356,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public void packageWizardForExport(String wizardId, OutputStream os) throws IOException
    {
-      packageWizardForExport(wizardId, os, true);
+      packageWizardForExport(wizardId, os, WIZARD_EXPORT_CHECK);
    }
 
    /**
@@ -1358,11 +1370,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
    public void putWizardIntoZip(String wizardId, ZipOutputStream zos)
       throws IOException, ServerOverloadException
    {
-      putWizardIntoZip(wizardId, zos, true);
+      putWizardIntoZip(wizardId, zos, WIZARD_EXPORT_CHECK);
    }
    
 
-   protected void putWizardIntoZip(String wizardId, ZipOutputStream zos, boolean checkAuthz)
+   protected void putWizardIntoZip(String wizardId, ZipOutputStream zos, int checkAuthz)
                      throws IOException, ServerOverloadException
    {
 
@@ -1376,8 +1388,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       ZipEntry newfileEntry = null;
 
 
-      storeFileInZip(zos, new java.io.StringReader(
-               (new XMLOutputter()).outputString(document)), "wizardDefinition.xml");
+      storeStringInZip(zos, (new XMLOutputter()).outputString(document), "wizardDefinition.xml");
 
       // Allow access to the various files for export
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
@@ -1760,6 +1771,17 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
 
+   protected void storeStringInZip(ZipOutputStream zos, String in,
+         String entryName) throws IOException {
+
+      ZipEntry newfileEntry = new ZipEntry(entryName);
+
+      zos.putNextEntry(newfileEntry);
+      zos.write(in.getBytes("UTF-8"));
+      zos.closeEntry();
+   }
+
+
    protected void storeFileInZip(ZipOutputStream zos, Reader in,
          String entryName) throws IOException {
 
@@ -1981,7 +2003,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             //TODO think it's okay to not check permissions here?
-            packageWizardForExport(id.getValue(), bos, false);
+            packageWizardForExport(id.getValue(), bos, WIZARD_NO_CHECK);
             ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
             
             importWizard(getIdManager().getId(toContext), bis);

@@ -10,12 +10,14 @@
                 
                 <sakai:view_title value="#{msgs.title_create_report_params}" indent="1" />
                 
-                <h:outputText value="#{msgs.report_title_is} #{ReportsTool.workingReportDefinition.reportDefinition.title}" />
-                
-                <br /><br /><h:outputText value="<span style='color:#F66'>#{ReportsTool.workingReport.paramErrorMessages}</span>
-                " escape="false" />
-                
-                <h:dataTable var="decoratedReportParam" id="paramsTable"
+            <h:outputText
+                    value="#{msgs.report_title_is} #{ReportsTool.workingReportDefinition.reportDefinition.title}"/>
+
+            <br/><br/>
+            <h:outputText value="<span style='color:#F66'>#{ReportsTool.workingReport.paramErrorMessages}</span>"
+                          escape="false"/>
+
+            <h:dataTable var="decoratedReportParam" id="paramsTable"
                     value="#{ReportsTool.workingReport.reportParams}">
                     <h:column>
                         <f:facet name="header">
@@ -39,21 +41,27 @@
 							rendered="#{decoratedReportParam.isFillIn && decoratedReportParam.isDate}"
 							onkeypress="return submitOnEnter(event, 'rpForm:saveButton');">
 						</h:inputText>
-						<h:outputText escape="false" rendered="#{decoratedReportParam.isFillIn && decoratedReportParam.isDate}"
-							value="
-							<input type=\"image\" id=\"dueDatePopup\" src=\"images/calendar_icon.gif\"
+                    <h:outputText escape="false"
+                                  rendered="#{decoratedReportParam.isFillIn && decoratedReportParam.isDate}"
+                                  value="<input type=\"image\" id=\"dueDatePopup\" src=\"images/calendar_icon.gif\"
 								onclick=\"jscalendarPopUpCalendar(this,this.form.elements['rpForm:paramsTable:#{decoratedReportParam.index}:dueDate'],'M/d/yyyy'); return false;\" />
 							"
-						/>
-		
-                        <h:selectOneMenu value="#{decoratedReportParam.menuValue}" 
-                                rendered="#{decoratedReportParam.isSet && !decoratedReportParam.isMultiSelectable}">
-                            <f:selectItems value="#{decoratedReportParam.selectableValues}" />
-                        </h:selectOneMenu>
-                        
-                        <h:outputText value="#{decoratedReportParam.staticValue}" rendered="#{decoratedReportParam.isStatic}"/>
-                    </h:column>
-                </h:dataTable>
+                            />
+                     <h:selectManyListbox id="multilset" value="#{decoratedReportParam.listValue}"
+                             rendered="#{decoratedReportParam.isSet && decoratedReportParam.isMultiSelectable}">
+                        <f:selectItems value="#{decoratedReportParam.selectableValues}"/>
+                    </h:selectManyListbox>
+                    <h:selectOneMenu id="set" value="#{decoratedReportParam.menuValue}"
+                                     rendered="#{decoratedReportParam.isSet && !decoratedReportParam.isMultiSelectable}">
+                        <f:selectItems value="#{decoratedReportParam.selectableValues}"/>
+                    </h:selectOneMenu>
+
+
+
+                    <h:outputText value="#{decoratedReportParam.staticValue}"
+                                  rendered="#{decoratedReportParam.isStatic}"/>
+                </h:column>
+            </h:dataTable>
                 
                 <sakai:button_bar>
                     <sakai:button_bar_item

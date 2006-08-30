@@ -167,6 +167,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             params);
    }
    
+   /**
+    * gathers all the published scaffolding from the given site (id)
+    * @param siteId String
+    * @return List of Scaffolding
+    */
    protected List findPublishedScaffolding(String siteId) {
       Object[] params = new Object[]{siteId, new Boolean(true)};
       return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
@@ -174,6 +179,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             params);
    }
 
+   /**
+    * Gets all the scaffolding for the data warehouse.  It preloads all the cells, levels, criterion.
+    * It sets the back trace from the level and criterion back to the scaffolding and sets the sequence 
+    * index number for ordering.  
+    * @return List of Scaffolding
+    */
    public List getScaffoldingForWarehousing() {
       List scaffolding = getHibernateTemplate().find("from Scaffolding");
       
@@ -1901,12 +1912,18 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return "";      
    }
 
+   /**
+    * This is the method called when duplicating a site.  It copies all published scaffolding
+    * from the fromContext site id to the toContext site id
+    * @param fromContext   String  from site id
+    * @param toContext     String  to site id
+    * @param resourceIds   List
+    */
    public void importResources(String fromContext, String toContext, List resourceIds) {      
       ClassLoader currentLoader = Thread.currentThread().getContextClassLoader();
       try {
          Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
-         ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
          List scaffolding = this.findPublishedScaffolding(fromContext);
          if (scaffolding == null) {
@@ -1918,11 +1935,18 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             Id id = scaffold.getId();
    
             getHibernateTemplate().evict(scaffold);
-   
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            
             packageScffoldingForExport(id, bos);
+            
             InputStream is = new ByteArrayInputStream(bos.toByteArray());
             ZipInputStream zis = new UncloseableZipInputStream(is);
+            bos = null;
+            
             uploadScaffolding(toContext, zis);
+            is = null;
+            zis = null;
          }
       } catch (IOException e) {
          logger.error("", e);

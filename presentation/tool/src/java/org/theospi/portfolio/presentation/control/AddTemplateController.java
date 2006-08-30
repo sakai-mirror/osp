@@ -355,7 +355,7 @@ public class AddTemplateController extends AbstractWizardFormController {
            list.add(i.next());
       }
       Collections.sort(list, worksiteHomesComparator);
-      return homeMap.entrySet();
+      return list;
    }
 
 

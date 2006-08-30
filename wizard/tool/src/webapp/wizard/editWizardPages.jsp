@@ -47,10 +47,11 @@
    <sakai:tool_bar>
       <sakai:tool_bar_item
          action="#{wizard.current.rootCategory.processActionNewPage}"
-         value="#{msgs.new_root_wizard_page_seq}" rendered="#{!wizard.moving}"/>
+         value="#{msgs.new_root_wizard_page_seq}" 
+         rendered="#{!wizard.moving && !wizard.current.base.published}"/>
       <sakai:tool_bar_item
          rendered="#{wizard.current.base.type ==
-               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.moving}"
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.moving && !wizard.current.base.published}"
          action="#{wizard.current.rootCategory.processActionNewCategory}"
          value="#{msgs.new_root_wizard_category}" />
    </sakai:tool_bar>
@@ -142,38 +143,38 @@
             <h:outputText value="#{msgs.actions_column_header}" />
          </f:facet>
          
-         <f:subview id="columnActions" rendered="#{wizard.current.base.type == 
+         <f:subview id="columnActions" rendered="#{!wizard.moving && wizard.current.base.type == 
          					'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !item.wizard}">
 		 
 	         <h:outputLabel value="#{item.indentString}"
-	            rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
+	            rendered="#{!wizard.moving && wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
 	         <h:commandLink action="#{item.processActionEdit}">
 	            <h:outputText value="#{msgs.editProperties}" />
 	         </h:commandLink>
-	         <h:outputText value=" | "  rendered="#{ !wizard.current.base.published}"/>
-	         <h:commandLink action="#{item.processActionDelete}" rendered="#{ !wizard.current.base.published}">
+	         <h:outputText value=" | "  rendered="#{!wizard.moving && !wizard.current.base.published}"/>
+	         <h:commandLink action="#{item.processActionDelete}" rendered="#{!wizard.moving && !wizard.current.base.published}">
 	            <h:outputText value="#{msgs.delete}" />
 	         </h:commandLink>
 	
-	         <h:outputText value=" | " rendered="#{item.category &&  !wizard.current.base.published}"/>
+	         <h:outputText value=" | " rendered="#{item.category && !wizard.moving && !wizard.current.base.published}"/>
 	         <h:commandLink action="#{item.processActionNewCategory}" rendered="#{item.category &&  !wizard.current.base.published}">
 	            <h:outputText value="#{msgs.new_category}" />
 	         </h:commandLink>
-	         <h:outputText value=" | "  rendered="#{item.category &&  !wizard.current.base.published}"/>
+	         <h:outputText value=" | "  rendered="#{item.category && !wizard.moving && !wizard.current.base.published}"/>
 	         <h:commandLink action="#{item.processActionNewPage}" rendered="#{item.category &&  !wizard.current.base.published}">
 	            <h:outputText value="#{msgs.new_page}" />
 	         </h:commandLink>
 	
-	         <h:outputText value=" | " rendered="#{ !wizard.current.base.published &&
+	         <h:outputText value=" | " rendered="#{!wizard.moving && !wizard.current.base.published &&
 	               wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
-	         <h:commandLink action="#{item.processActionMove}" rendered="#{ !wizard.current.base.published &&
+	         <h:commandLink action="#{item.processActionMove}" rendered="#{!wizard.moving && !wizard.current.base.published &&
 	               wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
 	            <h:outputText value="#{msgs.move_category}" rendered="#{item.category}"/>
 	            <h:outputText value="#{msgs.move_page}" rendered="#{!item.category}"/>
 	         </h:commandLink>
 		 </f:subview>
 		 
-         <f:subview id="columnWizardActions" rendered="#{item.wizard && !wizard.current.base.published}">
+         <f:subview id="columnWizardActions" rendered="#{item.wizard && !wizard.moving && !wizard.current.base.published}">
 		      <h:commandLink
 		         action="#{wizard.current.rootCategory.processActionNewPage}"
 		         value="#{msgs.new_root_wizard_page}" />
@@ -185,7 +186,7 @@
 		         value="#{msgs.new_root_wizard_category}" />
 		 </f:subview>
          <f:subview id="moveIntoWizard" rendered="#{wizard.moving && item.wizard}">
-               <h:outputText value=" | " rendered="#{wizard.current.rootCategory.containerForMove}"/>
+               <h:outputText value=" | " rendered="#{!wizard.moving && wizard.current.rootCategory.containerForMove}"/>
                <h:commandLink action="#{wizard.current.rootCategory.processActionMoveTo}"
                   rendered="#{wizard.current.rootCategory.containerForMove}">
                   <h:outputText value="#{msgs.move_to_here_category}" rendered="#{wizard.moveCategoryChild.category}"/>
@@ -197,7 +198,7 @@
                </h:commandLink>
          </f:subview>
 		 
-         <h:outputText value=" | " rendered="#{item.category && item.containerForMove}"/>
+         <h:outputText value=" | " rendered="#{!wizard.moving && item.category && item.containerForMove}"/>
          <h:commandLink action="#{item.processActionMoveTo}" rendered="#{item.category && item.containerForMove}">
             <h:outputText value="#{msgs.move_to_here_category}" rendered="#{wizard.moveCategoryChild.category}"/>
             <h:outputText value="#{msgs.move_to_here_page}" rendered="#{!wizard.moveCategoryChild.category}"/>

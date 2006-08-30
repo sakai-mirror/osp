@@ -81,17 +81,7 @@
          <name>modified</name>
          <type>TIMESTAMP</type>
        </column>
-       <!--
-       <column>
-         <name>properties</name>
-         <type>BLOB</type>
-       </column>
-        -->
-       <column>
-         <name>tool_id</name>
-         <type>VARCHAR</type>
-         <param>36</param>
-       </column>
+
     </columns>
     <not-null>id</not-null>
     <not-null>owner_id</not-null>
@@ -299,11 +289,6 @@
          <param>36</param>
        </column>
        <column>
-         <name>tool_id</name>
-         <type>VARCHAR</type>
-         <param>36</param>
-       </column>
-       <column>
          <name>site_id</name>
          <type>VARCHAR</type>
          <param>36</param>
@@ -315,7 +300,6 @@
     <not-null>created</not-null>
     <not-null>modified</not-null>
     <not-null>xhtml_file_id</not-null>
-    <not-null>tool_id</not-null>
     <primary-key>id</primary-key>
   </table>
 
@@ -520,10 +504,6 @@
          <type>TINYINT</type>
        </column>
        <column>
-         <name>includeComments</name>
-         <type>TINYINT</type>
-       </column>
-       <column>
          <name>published</name>
          <type>TINYINT</type>
        </column>
@@ -562,11 +542,6 @@
          <type>TIMESTAMP</type>
        </column>
        <column>
-         <name>tool_id</name>
-         <type>VARCHAR</type>
-         <param>36</param>
-       </column>
-       <column>
          <name>site_id</name>
          <type>VARCHAR</type>
          <param>36</param>
@@ -576,7 +551,6 @@
     <not-null>owner_id</not-null>
     <not-null>created</not-null>
     <not-null>modified</not-null>
-    <not-null>tool_id</not-null>
     <not-null>site_id</not-null>
     <primary-key>id</primary-key>
   </table>

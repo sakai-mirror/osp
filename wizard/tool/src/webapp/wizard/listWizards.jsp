@@ -15,11 +15,11 @@
 <sakai:view>
 <h:form>
    <sakai:tool_bar>
-      <sakai:tool_bar_item rendered="#{wizard.canCreate && wizard.canView}"
+      <sakai:tool_bar_item rendered="#{wizard.canCreate}"
       action="#{wizard.processActionNew}"
       value="#{msgs.new_wizard}" />
           
-      <sakai:tool_bar_item rendered="#{wizard.canCreate && wizard.canView}"
+      <sakai:tool_bar_item rendered="#{wizard.canCreate}"
           action="#{wizard.importWizard}"
           value="#{msgs.import}" />
 
@@ -63,8 +63,7 @@
                <h:outputText value="#{wizardItem.base.name}"/>
             </h:commandLink>
          </f:subview>
-         <f:subview id="viewPermss" rendered="#{wizard.canView}">
-			  <ospx:separatedList id="wizActionList" separator=" | " styleClass="itemAction">
+	     <ospx:separatedList id="wizActionList" separator=" | " styleClass="itemAction">
 	           <f:subview id="publishLink" rendered="#{wizardItem.canPublish && wizardItem.base.hasPages}">
 	                 <h:commandLink action="#{wizardItem.processActionPublish}">
 	                 <h:outputText value="#{msgs.publish}" />
@@ -85,8 +84,7 @@
 	                  <h:outputText value="#{msgs.export}"/>
 	              </h:outputLink>
 	           </f:subview>
-	         </ospx:separatedList>
-			</f:subview>
+	     </ospx:separatedList>
       </h:column>
       <h:column>
          <f:facet name="header">

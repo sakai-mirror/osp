@@ -52,11 +52,6 @@
           <param>36</param>
         </column>
         <column>
-          <name>tool_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
           <name>guidance_id</name>
           <type>VARCHAR</type>
           <param>36</param>
@@ -90,7 +85,6 @@
      <not-null>created</not-null>
      <not-null>modified</not-null>
      <not-null>site_id</not-null>
-     <not-null>tool_id</not-null>
      <primary-key>id</primary-key>
    </table>
 
@@ -199,11 +193,6 @@
         </column>
         <column>
           <name>site_id</name>
-          <type>VARCHAR</type>
-          <param>36</param>
-        </column>
-        <column>
-          <name>tool_id</name>
           <type>VARCHAR</type>
           <param>36</param>
         </column>

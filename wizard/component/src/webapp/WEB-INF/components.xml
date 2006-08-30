@@ -127,6 +127,9 @@
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.VIEW_WIZARD"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.OPERATE_WIZARD"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.EXPORT_WIZARD"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>

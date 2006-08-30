@@ -82,7 +82,7 @@ public class CsvResultPostProcessor extends BaseResultPostProcessor implements R
 
    protected void writeDataValue(Element column, OutputStream os) throws IOException {
       os.write('"');
-      os.write(escapeValue(column.getTextNormalize()).getBytes());
+      os.write(escapeValue(column.getTextNormalize()).getBytes("UTF-8"));
       os.write('"');
    }
 
@@ -100,7 +100,7 @@ public class CsvResultPostProcessor extends BaseResultPostProcessor implements R
 
    protected void writeHeaderValue(Element column, OutputStream os) throws IOException {
       os.write('"');
-      os.write(escapeValue(column.getAttributeValue("title")).getBytes());
+      os.write(escapeValue(column.getAttributeValue("title")).getBytes("UTF-8"));
       os.write('"');
    }
 

@@ -36,6 +36,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Enumeration;
 
+import org.theospi.utils.mvc.impl.ToolFinishedView;
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -197,12 +199,23 @@ public class HelperAwareJsfTool extends JsfTool {
     String helperId = target.substring(1, posEnd + 1);
     ActiveTool helperTool = ActiveToolManager.getActiveTool(helperId);
 
+    //get the current location (if one doesn't exist) and save it for when we return from the helper
     if (toolSession.getAttribute(helperTool.getId() + Tool.HELPER_DONE_URL) == null) {
        toolSession.setAttribute(helperTool.getId() + Tool.HELPER_DONE_URL,
              req.getContextPath() + req.getServletPath() + computeDefaultTarget(true));
     }
     toolSession.setAttribute(helperTool.getId() + "thetoolPath",
           req.getContextPath() + req.getServletPath());
+    
+    // saves the alternate done url map into a tool specific attribute
+    if (toolSession.getAttribute(helperTool.getId() + ToolFinishedView.ALTERNATE_DONE_URL) == null) {
+       toolSession.setAttribute(helperTool.getId() + ToolFinishedView.ALTERNATE_DONE_URL,
+             toolSession.getAttribute(ToolFinishedView.ALTERNATE_DONE_URL));
+       toolSession.setAttribute(helperTool.getId() + ToolFinishedView.ALTERNATE_DONE_URL_MAP,
+             toolSession.getAttribute(ToolFinishedView.ALTERNATE_DONE_URL_MAP));
+       toolSession.removeAttribute(ToolFinishedView.ALTERNATE_DONE_URL);
+       toolSession.removeAttribute(ToolFinishedView.ALTERNATE_DONE_URL_MAP);
+    }
 
 /*comment out for using the global parameter rather than tool-by-tool setting
     SessionState state = UsageSessionService.getSessionState(toolSession.getPlacementId());

@@ -37,7 +37,15 @@ public interface WizardFunctionConstants {
    public final static String PUBLISH_WIZARD = WIZARD_PREFIX + "publish";
    public static final String REVIEW_WIZARD = WIZARD_PREFIX + "review";
    public static final String EVALUATE_WIZARD = WIZARD_PREFIX + "evaluate";
+   
+   /** This is when the client user fills in a completed wizard */
    public static final String VIEW_WIZARD = WIZARD_PREFIX + "view";
+   
+   /** The view permission is a campasite permission of complete, review, evaluate.
+    * it has no hooks into the interface.
+    */
+   public static final String OPERATE_WIZARD = WIZARD_PREFIX + "operate";
+   
    public static final String COPY_WIZARD = WIZARD_PREFIX + "copy";
    public static final String EXPORT_WIZARD = WIZARD_PREFIX + "export";
    

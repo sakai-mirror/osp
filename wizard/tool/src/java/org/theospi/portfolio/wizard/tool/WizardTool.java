@@ -43,7 +43,6 @@ import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.*;
-import org.sakaiproject.tool.cover.*;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
@@ -130,6 +129,7 @@ public class WizardTool extends BuilderTool {
    public final static String CONFIRM_SUBMIT_PAGE = "confirmSubmit";
    public final static String IMPORT_PAGE = "importWizard";
    public final static String CONFIRM_DELETE_PAGE = "confirmDeleteWizard";
+   public final static String CANCEL_RUN_WIZARD_PAGE = "runWizardEnd";
 
    private BuilderScreen[] screens = {
      // new BuilderScreen(EDIT_PAGE_TYPE),
@@ -216,7 +216,7 @@ public class WizardTool extends BuilderTool {
          }
          if(id == null)
             return null;
-         Wizard wizard = getWizardManager().getWizard(id);
+         Wizard wizard = getWizardManager().getWizard(id, WizardManager.WIZARD_VIEW_CHECK);
          if(wizard == null)
             return null;
          setCurrent(new DecoratedWizard(this, wizard));
@@ -302,7 +302,7 @@ public class WizardTool extends BuilderTool {
 
    public String processActionEdit(Wizard wizard) {
       clearInterface();
-      wizard = getWizardManager().getWizard(wizard.getId());
+      wizard = getWizardManager().getWizard(wizard.getId(), WizardManager.WIZARD_EDIT_CHECK);
       setCurrent(new DecoratedWizard(this, wizard, false));
       return startBuilder();
    }
@@ -325,6 +325,27 @@ public class WizardTool extends BuilderTool {
       setCurrent(null);
       cancelBoundValues();
       return LIST_PAGE;
+   }
+   
+   /**
+    * This function is used to cancel a running wizard.  This will
+    * ensure that the user is returned to the caller correctly (aka the list wizard page) 
+    * @return String next page, this is null
+    */
+   public String processActionCancelRun() {
+      processActionCancel();
+      return returnToCaller();
+   }
+   
+   /**
+    * This function is used to cancel a running wizard.  This will
+    * ensure that the user is returned to the caller correctly (aka the list wizard page) 
+    * @return String next page, this is null
+    */
+   public String getCancelTool() {
+      processActionCancel();
+      returnToCaller();
+      return "";
    }
 
    public String processActionChangeUser() {
@@ -434,7 +455,7 @@ public class WizardTool extends BuilderTool {
       Guidance guidance = wizard.getGuidance();
       if (guidance == null) {
          guidance = getGuidanceManager().createNew(wizard.getName() + " Guidance", 
-               currentSite, wizard.getId(), WizardFunctionConstants.VIEW_WIZARD, 
+               currentSite, wizard.getId(), WizardFunctionConstants.OPERATE_WIZARD, 
                WizardFunctionConstants.EDIT_WIZARD);
       }
 
@@ -536,11 +557,15 @@ public class WizardTool extends BuilderTool {
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP,
                new Integer(0));
          redirectAddress = "osp.wizard.page.helper/sequentialWizardPage.osp";
-         map.put("finishSeqWizard", LIST_PAGE);
+
+         // this page goes to back to the list page
+         map.put("finishSeqWizard", CANCEL_RUN_WIZARD_PAGE);
       }
 
       map.put("submitWizard", CONFIRM_SUBMIT_PAGE);
-      map.put("submitWizardPage", LIST_PAGE);
+      
+      // this page goes to back to the list page
+      map.put("submitWizardPage", CANCEL_RUN_WIZARD_PAGE);
       session.setAttribute(ToolFinishedView.ALTERNATE_DONE_URL_MAP, map);
 
       try {
@@ -937,33 +962,75 @@ public class WizardTool extends BuilderTool {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.VIEW_WIZARD, 
             getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
    }
-   
+
+   /**
+    * This is to check if the current user is authorized by tool permissions to review
+    * the current wizard.  individual wizard permissions for review does not exist
+    * @return boolean is authorized
+    */
    public boolean getCanReview() {
       return getCanReview(current.getBase());
    }
-   
+
+   /**
+    * This is to check if the current user is authorized by tool permissions to review
+    * the wizards.  individual wizard permissions for review does not exist
+    * @return boolean is authorized
+    */
    public boolean getCanReview(Wizard wizard) {
       
       return getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
             wizard.getId());
    }
 
+   /**
+    * This is to check if the current user is authorized by tool permissions to review
+    * the various wizards
+    * @return boolean is authorized
+    */
    public boolean getCanReviewTool() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
             getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
    }
-   
+
+   /**
+    * This is to check if the current user is authorized by tool permissions to evaluate
+    * the various wizards
+    * @return boolean is authorized
+    */
    public boolean getCanEvaluateTool() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
             getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
    }
-   
+
+   /**
+    * This is to check if the current user is listed as an evaluator of the current wizard
+    * @return boolean is authorized
+    */
    public boolean getCanEvaluate() {
       return getCanEvaluate(current.getBase());
    }
-   
+
+
+   /**
+    * This is to check if the current user is listed as an evaluator of the given wizard
+    * @param Wizard wizard to check
+    * @return boolean is authorized
+    */
    public boolean getCanEvaluate(Wizard wizard) {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
+            wizard.getId());
+   }
+
+
+   /**
+    * This is to check if the current user is can operate on the wizard.
+    * The operate permission mean view or review or evaluate wizard
+    * @param Wizard wizard to check
+    * @return boolean is authorized
+    */
+   public boolean getCanOperate(Wizard wizard) {
+      return getAuthzManager().isAuthorized(WizardFunctionConstants.OPERATE_WIZARD, 
             wizard.getId());
    }
    

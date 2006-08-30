@@ -54,11 +54,11 @@
             <option value=""><fmt:message key="addItemDef_pleaseSelectaType"/></option>
             <option value="">- - - - - - - - - - - - - - - - - - - - -</option>
             <c:forEach var="home" items="${homes}">
-                <c:if test="${!home.value.type.systemOnly}">
+                <c:if test="${!home.type.systemOnly}">
                     <option
-                        <c:if test="${status.value == home.value.type.id.value}">selected</c:if>
-                        value="<c:out value="${home.value.type.id.value}"/>"><c:out
-                        value="${home.value.type.description}" /></option>
+                        <c:if test="${status.value == home.type.id.value}">selected</c:if>
+                        value="<c:out value="${home.type.id.value}"/>"><c:out
+                        value="${home.type.description}" /></option>
                 </c:if>
             </c:forEach>
         </select> 

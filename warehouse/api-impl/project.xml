@@ -39,6 +39,12 @@
 
      <dependency>
        <groupId>sakaiproject</groupId>
+       <artifactId>sakai-component-api</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+     
+     <dependency>
+       <groupId>sakaiproject</groupId>
        <artifactId>sakai-site-api</artifactId>
        <version>${sakai.version}</version>
      </dependency>
@@ -91,7 +97,7 @@
      <dependency>
         <groupId>quartz</groupId>
         <artifactId>quartz</artifactId>
-        <version>1.4.0</version>
+        <version>1.5.2</version>
      </dependency>
 
      <dependency>

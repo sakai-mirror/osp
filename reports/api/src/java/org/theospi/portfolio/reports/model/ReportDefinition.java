@@ -67,6 +67,7 @@ public class ReportDefinition
     * @see ResultProcessor
     */
 	private List resultProcessors;
+    private String role;
 	
 	/**
 	 * when the report is finished loading the link in the report parameters
@@ -330,6 +331,13 @@ public class ReportDefinition
       this.resultProcessors = resultProcessors;
    }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
    public ReportXsl findReportXsl(String link)
    {
       Iterator iter = xsls.iterator();

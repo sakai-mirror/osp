@@ -118,9 +118,13 @@
    </h:dataTable>
    </f:subview>
    
-   
-      <h:outputText value="<br><br>" escape="false" rendered="#{wizard.current.base.reflectionDevice != null}" />
-      <ospx:xheader rendered="#{wizard.current.base.reflectionDevice != null}">
+    <!-- ****************** reflection ****************** -->
+    <f:subview id="reflectionArea" rendered="#{wizard.current.base.reflectionDevice != null && 
+      				wizard.current.base.reflectionDevice.value != ''}">
+      <h:outputText value="<br><br>" escape="false" rendered="#{wizard.current.base.reflectionDevice != null && 
+      				wizard.current.base.reflectionDevice.value != ''}" />
+      <ospx:xheader rendered="#{wizard.current.base.reflectionDevice != null || 
+      				wizard.current.base.reflectionDevice.value != ''}">
          <ospx:xheadertitle id="reflectiontitleheader" value="#{msgs.reflection_section_header}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
       
@@ -136,7 +140,7 @@
       
          <f:subview id="displayReflection" rendered="#{wizard.current.runningWizard.base.status != 'READY' ||
          		wizard.current.runningWizard.isReadOnly}">
-            <h:outputLink value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.externalUri}" target="_blank">
+            <h:outputLink value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.fixedExternalUri}" target="_blank">
                <f:verbatim>
                   <img src = '/library/image/sakai/generic.gif' border= '0' hspace='0' />
                </f:verbatim>
@@ -165,7 +169,7 @@
       </ospx:xheaderdrawer>
    </ospx:xheader>
    <h:outputText value="<br><br>" escape="false" />
-   
+   </f:subview>
       
    <!-- ****************** feedback ****************** -->
    <ospx:xheader rendered="#{not empty wizard.current.runningWizard.reviews || 
@@ -276,29 +280,19 @@
   </ospx:xheader>
       
    
-   
-<f:subview id="seqWizardButtons"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.sequential'}" >
    <sakai:button_bar>
-    <sakai:button_bar_item id="submitContinue" value="#{msgs.save_continue_wizard}"
-       action="#{wizard.processExecPages}" />
-    <sakai:button_bar_item id="cancel" value="#{msgs.wizard_list}" action="#{wizard.processActionCancel}"
-        />
-   <sakai:button_bar_item id="submitEvalWizard" value="#{msgs.submit_wizard_for_evaluation}"
-      rendered="#{wizard.current.runningWizard.base.status == 'READY' && wizard.current.runningWizard.isReadOnly == 'false'}"
-      action="confirmSubmit" immediate="true"
-       />
-   </sakai:button_bar>
-</f:subview>
-<f:subview id="hierWizardButtons"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}" >
-   <sakai:button_bar>
+		<f:subview id="seqWizardButtons"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.sequential'}" >
+       	<sakai:button_bar_item id="submitContinue" value="#{msgs.save_continue_wizard}"
+	      	 action="#{wizard.processExecPages}" />
+		</f:subview>
+
     <sakai:button_bar_item id="returnToList" value="#{msgs.wizard_list}"
-       action="#{wizard.processActionCancel}" />
-    <sakai:button_bar_item id="cancel" value="#{msgs.submit_wizard_for_evaluation}" 
+       action="#{wizard.processActionCancelRun}" />
+    <sakai:button_bar_item id="submitEvalWizard" value="#{msgs.submit_wizard_for_evaluation}" 
        rendered="#{wizard.current.runningWizard.base.status == 'READY' && wizard.current.runningWizard.isReadOnly == 'false'}"
        action="confirmSubmit" immediate="true"
         />
-   </sakai:button_bar>
-</f:subview>
+</sakai:button_bar>
 
 </h:form>
 </sakai:view>
