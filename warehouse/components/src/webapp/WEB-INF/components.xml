@@ -1084,6 +1084,20 @@
      <property name="clearStmt">
         <value>delete from dw_presentation_page_region</value>
      </property>
+     <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+               <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>items</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.page.item"/>
+               </property>
+            </bean>
+         </list>
+      </property>
    </bean>
     
 
@@ -1147,20 +1161,43 @@
       class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
        <property name="fields">
           <list>
-             <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-            <property name="propertyName"><value>entryId</value></property>
-             </bean>
+            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>region</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>type</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>value</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+               <property name="propertyName"><value>regionItemSeq</value></property>
+            </bean>
           </list>
-       </property>
+       </property>       
        <property name="insertStmt">
-          <value>insert into dw_help_glossary_desc  (id, entry_id )
-                   values (?, ? )
+          <value>insert into dw_presentation_page_item  (id, presentation_page_region_id, type, value, seq_num )
+                   values (?, ?, ?, ?, ? )
          </value>
        </property>
        <property name="clearStmt">
-          <value>delete from dw_help_glossary_desc</value>
+          <value>delete from dw_presentation_page_item</value>
        </property>
+       <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+               <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>properties</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.page.item.property"/>
+               </property>
+            </bean>
+         </list>
+      </property>
    </bean>
    
    
@@ -1201,6 +1238,20 @@
      <property name="clearStmt">
         <value>delete from dw_presentation_page</value>
      </property>
+     <property name="complexFields" >
+         <list>
+            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+               <property name="propertyAccess">
+                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <property name="propertyName"><value>regions</value></property>
+                  </bean>
+               </property>
+               <property name="task">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.page.region"/>
+               </property>
+            </bean>
+         </list>
+      </property>
    </bean>
 
 
@@ -1300,16 +1351,16 @@
                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.page"/>
                </property>
             </bean>
-            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+            <!-- >bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
                <property name="propertyAccess">
                   <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                      <property name="propertyName"><value>template</value></property>
                   </bean>
                </property>
                <property name="task">
-                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.layout"/>
+                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.template"/>
                </property>
-            </bean>
+            </bean-->
             <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
                <property name="propertyAccess">
                   <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">

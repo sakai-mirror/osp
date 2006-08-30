@@ -37,7 +37,7 @@ public class PresentationWarehouseTask extends BaseWarehouseTask {
    private PresentationManager presentationManager;
 
    protected Collection getItems() {
-      return getPresentationManager().getAllPresentations();
+      return getPresentationManager().getAllPresentationsForWarehouse();
    }
 
    public PresentationManager getPresentationManager() {
