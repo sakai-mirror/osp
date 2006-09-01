@@ -157,13 +157,20 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return getHibernateTemplate().find("from Scaffolding");
    }
    
+   /**
+    * gathers all the scaffolding from the given site (id) and user.
+    * If the userId is null, it will get all users.
+    * @param siteId String
+    * @param userId String
+    * @return List of Scaffolding
+    */
    public List findScaffolding(String siteId, String userId) {
       if (userId == null)
          userId = "%";
       
-      Object[] params = new Object[]{siteId, userId, new Boolean(true)};
+      Object[] params = new Object[]{siteId, userId};
       return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
-            "and (s.owner=? or s.published=?)", 
+            "and s.owner like ? ", 
             params);
    }
    

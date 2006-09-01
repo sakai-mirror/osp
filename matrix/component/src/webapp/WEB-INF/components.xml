@@ -307,6 +307,8 @@
                <list>
                   <value>osp.matrix.review</value>
                   <value>osp.matrix.scaffolding.create</value>
+                  <value>osp.matrix.scaffolding.edit</value>
+                  <value>osp.matrix.scaffolding.delete</value>
                   <value>osp.matrix.scaffolding.publish</value>
                   <value>osp.matrix.scaffolding.export</value>
                </list>
@@ -335,6 +337,8 @@
          <list>
             <value>osp.matrix.scaffolding.use</value>
             <value>osp.matrix.scaffolding.create</value>
+            <value>osp.matrix.scaffolding.edit</value>
+            <value>osp.matrix.scaffolding.delete</value>
             <value>osp.matrix.scaffolding.publish</value>
             <value>osp.matrix.scaffolding.export</value>
             <value>osp.matrix.review</value>

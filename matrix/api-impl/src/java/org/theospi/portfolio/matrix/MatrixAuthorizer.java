@@ -67,13 +67,20 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       }
       else if (MatrixFunctionConstants.DELETE_SCAFFOLDING.equals(function)) {
          Scaffolding scaffolding = getMatrixManager().getScaffolding(id);
-         if (!scaffolding.isPublished() && scaffolding.getOwner().equals(agent))
+         if (scaffolding == null)
+            return new Boolean(facade.isAuthorized(agent,function,id));
+         
+         if (!scaffolding.isPublished() && (scaffolding.getOwner().equals(agent)) || 
+               facade.isAuthorized(agent,function,scaffolding.getWorksiteId()))
             return new Boolean(true);
       }
       else if (ContentHostingService.EVENT_RESOURCE_READ.equals(function)) {
          return isFileAuth(facade, agent, id);
       }
       else if (function.equals(MatrixFunctionConstants.CREATE_SCAFFOLDING)) {
+         return new Boolean(facade.isAuthorized(agent,function,id));
+      }
+      else if (function.equals(MatrixFunctionConstants.EDIT_SCAFFOLDING)) {
          return new Boolean(facade.isAuthorized(agent,function,id));
       }
       else if (function.equals(MatrixFunctionConstants.EXPORT_SCAFFOLDING)) {

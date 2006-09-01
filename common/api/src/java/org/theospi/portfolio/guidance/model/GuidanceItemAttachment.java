@@ -90,8 +90,8 @@ public class GuidanceItemAttachment extends IdentifiableObject {
    public MimeType getMimeType() {
       ContentResource resource = (ContentResource)baseReference.getBase().getEntity();
 
-      String displayNameProp = resource.getProperties().getNamePropContentType();
-      return new MimeType(resource.getProperties().getProperty(displayNameProp));
+      String contentTypeProp = resource.getProperties().getNamePropContentType();
+      return new MimeType(resource.getProperties().getProperty(contentTypeProp));
    }
 
 	/**

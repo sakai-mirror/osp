@@ -112,9 +112,20 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       else if (function.equals(WizardFunctionConstants.EDIT_WIZARDPAGE_GUIDANCE)) {
          //ScaffoldingCell sCell = getMatrixManager().getScaffoldingCellByWizardPageDef(id);
          WizardPageSequence wps = wizardManager.getWizardPageSeqByDef(id);
-         Agent owner = wps.getCategory().getWizard().getOwner();
+         Wizard wizard = wps.getCategory().getWizard();
+         Agent owner = wizard.getOwner();
          
-         return new Boolean(agent.equals(owner));
+         
+         Boolean returned = new Boolean(agent.equals(owner));
+         
+         if (returned == null || !returned.booleanValue()) {
+            returned = Boolean.valueOf(facade.isAuthorized(agent, 
+                  WizardFunctionConstants.EDIT_WIZARD, 
+                  getIdManager().getId(wizard.getSiteId())));
+         }
+         
+         return returned;
+         
       } else if (function.equals(WizardFunctionConstants.VIEW_WIZARDPAGE_GUIDANCE)) {
          //If I can eval, review, or own it
          List pages = wizardManager.getCompletedWizardPagesByPageDef(id);

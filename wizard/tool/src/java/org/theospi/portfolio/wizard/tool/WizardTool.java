@@ -262,7 +262,7 @@ public class WizardTool extends BuilderTool {
             currentUserId : SessionManager.getCurrentSessionUserId();
       setCurrentUserId(user);
 
-      List wizards = getWizardManager().listAllWizards(user, currentSiteId);
+      List wizards = getWizardManager().listAllWizards(currentSiteId);
 
       DecoratedWizard lastWizard = null;
 
@@ -1041,22 +1041,22 @@ public class WizardTool extends BuilderTool {
    
    public boolean getCanDelete(Wizard wizard) {
       if (wizard.getOwner() == null) return false;
-      return getAuthzManager().isAuthorized(WizardFunctionConstants.DELETE_WIZARD, 
-            wizard.getId()) && SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
-                  wizard.getOwner().getId().getValue()) && !wizard.isPublished();
+      return !wizard.isPublished() && (getAuthzManager().isAuthorized(WizardFunctionConstants.DELETE_WIZARD, 
+            wizard.getId()) || SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
+                  wizard.getOwner().getId().getValue()));
    }
    
    public boolean getCanEdit(Wizard wizard) {
       if (wizard.getOwner() == null) return false;
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EDIT_WIZARD, 
-            wizard.getId()) && SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
+            wizard.getId()) || SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
                   wizard.getOwner().getId().getValue());
    }
    
    public boolean getCanExport(Wizard wizard) {
       if (wizard.getOwner() == null) return false;
       return getAuthzManager().isAuthorized(WizardFunctionConstants.EXPORT_WIZARD, 
-            wizard.getId()) && SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
+            wizard.getId()) || SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
                   wizard.getOwner().getId().getValue());
    }
    
