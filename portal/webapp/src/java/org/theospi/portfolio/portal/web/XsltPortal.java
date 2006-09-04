@@ -80,6 +80,7 @@ public class XsltPortal extends CharonPortal {
    private Templates templates;
    private Templates toolCategoryTemplates;
    private URIResolver servletResolver;
+   private String categoryBasePath;
 
    /** messages. */
    private static ResourceLoader rb = new ResourceLoader("org/theospi/portfolio/portal/messages");
@@ -293,7 +294,7 @@ public class XsltPortal extends CharonPortal {
 
 
    protected void outputDocument(HttpServletRequest req, HttpServletResponse res,
-                                    Session session, Document doc, Transformer transformer) throws IOException {
+                                 Session session, Document doc, Transformer transformer) throws IOException {
 
       res.setContentType("text/html; charset=UTF-8");
       res.addDateHeader("Expires", System.currentTimeMillis() - (1000L * 60L * 60L * 24L * 365L));
@@ -630,7 +631,7 @@ public class XsltPortal extends CharonPortal {
       categoryElement.appendChild(categoryEscapedKeyElement);
       categoryElement.appendChild(categoryUrlElement);
       categoryElement.appendChild(categoryHelperUrlElement);
-      appendTextElementNode(doc, "layoutFile", category.getHomePagePath(), categoryElement);
+      appendTextElementNode(doc, "layoutFile", getCategoryHomePagePath(category.getHomePagePath()), categoryElement);
 
       Element pagesElement = doc.createElement("pages");
 
@@ -641,6 +642,33 @@ public class XsltPortal extends CharonPortal {
 
       categoryElement.appendChild(pagesElement);
       return categoryElement;
+   }
+
+   /**
+    * concatenates categoryBasePath, locale, and homePagePath.  If can't resolve this path the locale
+    * portion is removed.
+    * @param homePagePath
+    * @return localized path
+    */
+   protected String getCategoryHomePagePath(String homePagePath) {
+      ResourceLoader rl = new ResourceLoader();
+      String localeStr = rl.getLocale().toString();
+      String localizedPath = categoryBasePath + "_" + localeStr +"/" + homePagePath;
+      try {
+         URL url = getServletContext().getResource(localizedPath);
+         if (url != null) {
+            return localizedPath;
+         }
+         // try without the country part
+         localizedPath = categoryBasePath + "_" + localeStr.replaceFirst("_.*","") +"/" + homePagePath;
+         url = getServletContext().getResource(localizedPath);
+         if (url != null) {
+            return localizedPath;
+         }
+      } catch (MalformedURLException e) {
+         e.printStackTrace();
+      }
+      return categoryBasePath + "/" + homePagePath;
    }
 
    protected Element createPageXml(Document doc, int index, String siteId, SitePage page,
@@ -965,7 +993,7 @@ public class XsltPortal extends CharonPortal {
    }
 
    protected String checkVisitSite(String siteId, Session session,
-                                    HttpServletRequest req, HttpServletResponse res) throws IOException, ToolException {
+                                   HttpServletRequest req, HttpServletResponse res) throws IOException, ToolException {
       // default site if not set
       if (siteId == null)
       {
@@ -1020,6 +1048,11 @@ public class XsltPortal extends CharonPortal {
          Templates templatesToolCategory = createTemplate(config, transformToolCategoryPath);
          setServletResolver(new ServletResourceUriResolver(config.getServletContext()));
          setToolCategoryTemplates(templatesToolCategory);
+
+         categoryBasePath = config.getInitParameter("categoryBasePath");
+         if (categoryBasePath == null || categoryBasePath.length() == 0) {
+            categoryBasePath = "/WEB-INF/category";
+         }
       }
       catch (ParserConfigurationException e) {
          throw new ServletException(e);

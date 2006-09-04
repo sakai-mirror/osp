@@ -47,8 +47,11 @@
           <param-name>transformToolCategory</param-name>
           <param-value>/WEB-INF/transform/toolCategory.xsl</param-value>
        </init-param>
-       <!-- Changed ordering - PAFH 8/22/2006 -->
-        <load-on-startup>1</load-on-startup>
+       <init-param>
+          <param-name>categoryBasePath</param-name>
+          <param-value>/WEB-INF/category</param-value>
+       </init-param>
+       <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
