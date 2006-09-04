@@ -54,6 +54,8 @@ public class PortalManagerImpl implements PortalManager {
    private IdManager idManager;
    private org.sakaiproject.metaobj.security.AuthorizationFacade sakaiAuthzManager;
    private org.theospi.portfolio.security.AuthorizationFacade ospAuthzManager;
+   private boolean displayToolCategories = true;
+   private boolean displaySiteTypes = true;
 
    private Map siteTypes;
    private static final String TYPE_PREFIX = "org.theospi.portfolio.portal.";
@@ -291,7 +293,7 @@ public class PortalManagerImpl implements PortalManager {
    protected ToolCategory[] findCategories(SitePage page, SiteType siteType, int index) {
       List tools = page.getTools();
 
-      if (tools.size() == 0) {
+      if (tools.size() == 0 || !isDisplayToolCategories()) {
          return createUncategorized(index);
       }
 
@@ -523,6 +525,22 @@ public class PortalManagerImpl implements PortalManager {
 
    public void setOspAuthzManager(org.theospi.portfolio.security.AuthorizationFacade ospAuthzManager) {
       this.ospAuthzManager = ospAuthzManager;
+   }
+
+   public boolean isDisplayToolCategories() {
+      return displayToolCategories;
+   }
+
+   public void setDisplayToolCategories(boolean displayToolCategories) {
+      this.displayToolCategories = displayToolCategories;
+   }
+
+   public boolean isDisplaySiteTypes() {
+      return displaySiteTypes;
+   }
+
+   public void setDisplaySiteTypes(boolean displaySiteTypes) {
+      this.displaySiteTypes = displaySiteTypes;
    }
 
    public IdManager getIdManager() {
