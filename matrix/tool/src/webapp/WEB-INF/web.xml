@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE web-app PUBLIC '-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN' 'http://java.sun.com/dtd/web-app_2_3.dtd'>
 
-<web-app>
-   <context-param>
+<!-- Changed spec level to 2.4 - PAFH 8/21/2006 -->
+<web-app id="WebApp_9a" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+	<context-param>
       <param-name>contextConfigLocation</param-name>
       <param-value>
          /web-context.properties
@@ -172,11 +175,12 @@
             <param-name>path</param-name>
             <param-value></param-value>
         </init-param>
-      <load-on-startup>2</load-on-startup>
       <init-param>
           <param-name>default.last.view</param-name>
           <param-value>false</param-value>
       </init-param>
+	<!-- Changed ordering - PAFH 8/21/2006 -->
+      <load-on-startup>2</load-on-startup>
    </servlet>
    
    <servlet>
@@ -186,7 +190,6 @@
             <param-name>path</param-name>
             <param-value></param-value>
         </init-param>
-      <load-on-startup>2</load-on-startup>
 
         <init-param>
             <param-name>default</param-name>
@@ -196,6 +199,9 @@
             <param-name>default.last.view</param-name>
             <param-value>false</param-value>
         </init-param>
+	<!-- Changed ordering - PAFH 8/21/2006 -->
+      <load-on-startup>2</load-on-startup>
+      
    </servlet>
 
    <listener>

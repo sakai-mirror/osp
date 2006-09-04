@@ -29,7 +29,6 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.PortalParamManager;
 
@@ -38,19 +37,9 @@ public class DateSelectTag extends DateSelectPopupTag {
 
    private String earliestYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR) - 5);
    private String latestYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR) + 5);
-   private Date selected;
-   private String selectedDate;
+   private Date selectedDate;
 
    public int doStartTag() throws JspException {
-      //EL support for setting selectedDate attribute
-      if (selectedDate != null && selectedDate.length() > 0){
-         selected = (Date) ExpressionEvaluatorManager.evaluate(
-                 "selectedDate",                // attribute name
-                 selectedDate,              // expression
-                 java.util.Date.class,  // expected type
-                 this,                 // this tag handler
-                 pageContext);         // the page context
-      }
 
       try {
          StringBuffer buffer = new StringBuffer();
@@ -122,22 +111,22 @@ public class DateSelectTag extends DateSelectPopupTag {
 
    protected Calendar getCalendar(){
       Calendar calendar = new GregorianCalendar();
-      calendar.setTime(selected);
+      calendar.setTime(selectedDate);
       return calendar;
    }
 
    protected int getMonthSelected(){
-      if (selected == null) return -1;
+      if (selectedDate == null) return -1;
       return getCalendar().get(Calendar.MONTH)+1; // Calendar indexes months starting at 0
    }
 
    protected int getYearSelected(){
-      if (selected == null) return -1;
+      if (selectedDate == null) return -1;
       return getCalendar().get(Calendar.YEAR);
    }
 
    protected int getDaySelected(){
-      if (selected == null) return -1;
+      if (selectedDate == null) return -1;
       return getCalendar().get(Calendar.DAY_OF_MONTH);
    }
 
@@ -157,11 +146,11 @@ public class DateSelectTag extends DateSelectPopupTag {
       this.latestYear = lastestYear;
    }
 
-   public String getSelectedDate() {
+   public Date getSelectedDate() {
       return selectedDate;
    }
 
-   public void setSelectedDate(String selectedDate) {
+   public void setSelectedDate(Date selectedDate) {
       this.selectedDate = selectedDate;
    }
 }

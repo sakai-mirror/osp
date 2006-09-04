@@ -25,7 +25,6 @@ import java.io.IOException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 import org.sakaiproject.content.api.ContentTypeImageService;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 
@@ -42,7 +41,7 @@ public class ContentTypeMapTag extends TagSupport {
    private static final String MAP_TYPE_NAME = "name";
    private static final String MAP_TYPE_EXTENSION = "extension";
 
-   private String fileType;
+   private MimeType fileType;
    private String mapType;
 
    public ContentTypeMapTag() {
@@ -50,8 +49,7 @@ public class ContentTypeMapTag extends TagSupport {
    }
 
    public int doStartTag() throws JspException {
-      MimeType fileMimeType = evaluateFileType();
-      String result = getValue(fileMimeType.getValue(), mapType, getImageTypeService());
+       String result = getValue(fileType.getValue(), mapType, getImageTypeService());
       try {
          pageContext.getOut().write(result);
       }
@@ -80,21 +78,15 @@ public class ContentTypeMapTag extends TagSupport {
       }
    }
 
-   public MimeType evaluateFileType() throws JspException {
-      return (MimeType)ExpressionEvaluatorManager.evaluate(
-           "fileType", fileType,
-          MimeType.class, this, pageContext);
-   }
-
    protected ContentTypeImageService getImageTypeService() {
       return org.sakaiproject.content.cover.ContentTypeImageService.getInstance();
    }
 
-   public String getFileType() {
+   public MimeType getFileType() {
       return fileType;
    }
 
-   public void setFileType(String fileType) {
+   public void setFileType(MimeType fileType) {
       this.fileType = fileType;
    }
 

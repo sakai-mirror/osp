@@ -76,7 +76,8 @@
                  <div class="validation"><c:out value="${status.errorMessage}"/></div>
              </c:if>
              <label><fmt:message key="label_expires"/></label>
-             <osp-c:dateSelect daySelectId="expiresOnBean.day"
+           
+  <osp-c:dateSelect daySelectId="expiresOnBean.day"
                  yearSelectId="expiresOnBean.year"
                  monthSelectId="expiresOnBean.month"
                  earliestYear="2004"

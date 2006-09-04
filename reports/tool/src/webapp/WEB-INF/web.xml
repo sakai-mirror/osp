@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Changed spec level to 2.4 PAFH 8/22/2006 -->
 <web-app id="WebApp_9" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" 
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
@@ -43,7 +45,6 @@
             <param-name>path</param-name>
             <param-value>/reports</param-value>
         </init-param>
-      <load-on-startup>1</load-on-startup>
 
         <init-param>
             <param-name>default</param-name>
@@ -54,6 +55,8 @@
             <param-name>default.last.view</param-name>
             <param-value>false</param-value>
         </init-param>
+        <!-- Changed ordering - PAFH 8/24/2006 -->
+      <load-on-startup>1</load-on-startup>
    </servlet>
 
    <servlet>
