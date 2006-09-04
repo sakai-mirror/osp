@@ -230,14 +230,18 @@ public class PortalManagerImpl implements PortalManager {
 
          Collections.sort(categoryList);
 
+         Map newCategories = new HashMap();
+
          int index = 0;
          for (Iterator i=categoryList.iterator();i.hasNext();) {
             ToolCategory category = (ToolCategory) i.next();
+            Object oldValue = categories.get(category);
             category.setOrder(index);
             index++;
+            newCategories.put(category, oldValue);
          }
 
-         return categories;
+         return newCategories;
       }
       catch (IdUnusedException e) {
          throw new RuntimeException(e);
@@ -305,10 +309,10 @@ public class PortalManagerImpl implements PortalManager {
                Object key = category.getTools().get(toolId);
                if (key instanceof String) {
                   // no functions or authz to check here...
-                  toolCategories.add(category);
+                  toolCategories.add(new ToolCategory(category));
                }
                else if (hasAccess(page, tool, (ToolType)category.getTools().get(toolId))) {
-                  toolCategories.add(category);
+                  toolCategories.add(new ToolCategory(category));
                }
             }
          }
