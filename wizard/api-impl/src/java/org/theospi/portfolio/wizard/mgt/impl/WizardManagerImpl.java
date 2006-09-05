@@ -907,7 +907,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          //wizard = saveWizard(wizard);
          
          replaceIds(wizard, guidanceMap, formsMap, styleMap);
-
+         
          // save the wizard
          wizard = saveWizard(wizard);
 
@@ -1229,6 +1229,8 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    protected void replaceIds(Wizard wizard, Map guidanceMap, Map formsMap, Map styleMap)
    {
+      wizard.setEvalWorkflows(getWorkflowManager().createEvalWorkflows(wizard));
+      
       replaceCatIds(wizard.getRootCategory(), guidanceMap, formsMap, styleMap);
 
       if(wizard.getEvaluationDevice() != null && wizard.getEvaluationDevice().getValue() != null)
@@ -1291,6 +1293,9 @@ public class WizardManagerImpl extends HibernateDaoSupport
             definition.setReviewDevice(idManager.getId(
                (String)formsMap.get(definition.getReviewDevice().getValue())  ));
 
+         definition.setEvalWorkflows(
+               new HashSet(getWorkflowManager().createEvalWorkflows(definition)));
+         
          List newAddForms = new ArrayList();
          for(Iterator ii = definition.getAdditionalForms().iterator(); ii.hasNext(); ) {
             String addForm = (String)ii.next();
