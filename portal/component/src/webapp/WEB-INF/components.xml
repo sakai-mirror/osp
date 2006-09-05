@@ -196,7 +196,7 @@
       <property name="qualifierType" ref="org.theospi.portfolio.portal.model.ToolType.SITE_QUALIFIER"/>
       <property name="functions">
          <list>
-            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.VIEW_WIZARD"
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.OPERATE_WIZARD"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
          </list>
       </property>
