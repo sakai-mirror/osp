@@ -23,15 +23,6 @@
 
             <f:subview id="newPage">
             	<h:panelGrid columns="1000">
-                <h:panelGroup>
-	                <h:commandLink action="#{freeForm.processActionNewPage}">
-	                    <h:graphicImage id="addPageImage" height="125" width="100" value="/img/page-new.png"/>
-	                </h:commandLink>
-	                <f:verbatim><br/></f:verbatim>
-	                <h:commandLink action="#{freeForm.processActionNewPage}">
-	                    <h:outputText value="#{msgs.add_page}"/>
-	                </h:commandLink>
-					</h:panelGroup>
                   <h:panelGrid columns="1000">
                   <sakai:dataLine value="#{freeForm.pageList}" rows="#{freeForm.pageCount}" separator="" var="page">
                       <h:column>
@@ -42,7 +33,7 @@
                         <f:verbatim><br/></f:verbatim>
                            <h:commandLink action="#{page.processActionEdit}">
                                <h:graphicImage height="125" width="100"
-                                               value="/img/page-new.png"
+                                               value="/img/page-nopreview.png"
                                                rendered="#{!page.layoutPreviewImage}"/>
                                <h:graphicImage height="125" width="100"
                                                value="#{page.selectedLayout.previewImage.externalUri}"
@@ -64,7 +55,16 @@
                       </h:column>
                   </sakai:dataLine>
                 </h:panelGrid>
-		          </h:panelGrid>
+                  <h:panelGroup>
+	                <h:commandLink action="#{freeForm.processActionNewPage}">
+	                    <h:graphicImage id="addPageImage" height="125" width="100" value="/img/page-new.png"/>
+	                </h:commandLink>
+	                <f:verbatim><br/></f:verbatim>
+	                <h:commandLink action="#{freeForm.processActionNewPage}">
+	                    <h:outputText value="#{msgs.add_page}"/>
+	                </h:commandLink>
+			      </h:panelGroup>
+		       </h:panelGrid>
             </f:subview>
 
              <h:panelGrid columns="3" cellspacing="1">
