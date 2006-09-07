@@ -310,9 +310,14 @@ public class HelpManagerImpl extends HibernateDaoSupport
    
    public void packageGlossaryForExport(Id worksiteId, OutputStream os)
 			throws IOException {
-		getAuthzManager().checkPermission(HelpFunctionConstants.EXPORT_TERMS,
-				getToolId());
-
+      if (isGlobal()) {
+         getAuthzManager().checkPermission(HelpFunctionConstants.EXPORT_TERMS,
+            idManager.getId(GLOBAL_GLOSSARY_QUALIFIER));
+      }
+      else {
+         getAuthzManager().checkPermission(HelpFunctionConstants.EXPORT_TERMS, 
+               getToolId());
+      }
 		CheckedOutputStream checksum = new CheckedOutputStream(os,
 				new Adler32());
 		ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(

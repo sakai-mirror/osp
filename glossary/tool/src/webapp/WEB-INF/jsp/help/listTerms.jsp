@@ -27,7 +27,7 @@
         <fmt:message key="action_import"/> </a>
     </c:if>
     
-    <c:if test="${can.export}">
+    <c:if test="${can.export && not empty glossary}">
     <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=helpManagerTarget&templateId=<c:out value="${template.id.value}"/>/<c:out value="${worksite.title}" /> Glossary.zip"><fmt:message key="action_export"/></a>
             
     </c:if>
