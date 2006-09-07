@@ -117,6 +117,8 @@ import org.theospi.portfolio.style.StyleConsumer;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
+import org.theospi.portfolio.wizard.model.CompletedWizardCategory;
+import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
 import org.theospi.portfolio.workflow.model.WorkflowItem;
@@ -1514,7 +1516,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       if (canEval || canReview || owns) {
          //can I look at reviews/evals/reflections? - own or review
          getReviewManager().getReviewsByParentAndType(
-               id, Review.REVIEW_TYPE,
+               id, Review.FEEDBACK_TYPE,
                page.getPageDefinition().getSiteId(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);         
       }
@@ -1808,8 +1810,26 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     */
    public Artifact load(Id id) {
       Matrix matrix = getMatrix(id);
+      loadMatrixCellReviews(matrix);
       matrix.setHome(this);
       return matrix;
+   }
+   
+   private void loadMatrixCellReviews(Matrix matrix) {
+      for (Iterator cells = matrix.getCells().iterator(); cells.hasNext();) {
+         Cell cell = (Cell) cells.next();
+         WizardPage page = cell.getWizardPage();
+         List reflections = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId(),
+               MatrixContentEntityProducer.MATRIX_PRODUCER);
+         List evaluations = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.EVALUATION_TYPE, page.getPageDefinition().getSiteId(),
+               MatrixContentEntityProducer.MATRIX_PRODUCER);
+         List feedback = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.FEEDBACK_TYPE, page.getPageDefinition().getSiteId(),
+               MatrixContentEntityProducer.MATRIX_PRODUCER);
+         
+         page.setReflections(reflections);
+         page.setEvaluations(evaluations);
+         page.setFeedback(feedback);
+      }
    }
 
    public Collection findByType(String type) {

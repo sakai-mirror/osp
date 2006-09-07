@@ -20,8 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -44,6 +46,10 @@ public class WizardPage extends IdentifiableObject {
    private Date modified;
    
    private Agent owner;
+   
+   private transient List reflections = new ArrayList();
+   private transient List evaluations = new ArrayList();
+   private transient List feedback = new ArrayList();
    
    public final static String TYPE = "wizard_page_type";
    public final static String PROCESS_TYPE_KEY = "page_id";
@@ -158,5 +164,49 @@ public class WizardPage extends IdentifiableObject {
    public void setOwner(Agent owner) {
       this.owner = owner;
    }
+
+   /**
+    * @return the evaluations
+    */
+   public List getEvaluations() {
+      return evaluations;
+   }
+
+   /**
+    * @param evaluations the evaluations to set
+    */
+   public void setEvaluations(List evaluations) {
+      this.evaluations = evaluations;
+   }
+
+   /**
+    * @return the feedback
+    */
+   public List getFeedback() {
+      return feedback;
+   }
+
+   /**
+    * @param feedback the feedback to set
+    */
+   public void setFeedback(List feedback) {
+      this.feedback = feedback;
+   }
+
+   /**
+    * @return the reflections
+    */
+   public List getReflections() {
+      return reflections;
+   }
+
+   /**
+    * @param reflections the reflections to set
+    */
+   public void setReflections(List reflections) {
+      this.reflections = reflections;
+   }
+
+
 
 }

@@ -119,7 +119,7 @@ public class ReviewHelperController implements Controller {
                review.setReviewContent(node.getId());
                getReviewManager().saveReview(review);
 
-               if(review.getType() == Review.EVALUATION_TYPE || review.getType() == Review.REVIEW_TYPE)
+               if(review.getType() == Review.EVALUATION_TYPE || review.getType() == Review.FEEDBACK_TYPE)
                   getLockManager().lockObject(review.getReviewContent().getValue(), 
                      strId, "evals and review always locked", true);
             }
@@ -161,7 +161,7 @@ public class ReviewHelperController implements Controller {
       String formTypeId = "";
       session.remove(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
       switch (intType) {
-         case Review.REVIEW_TYPE:
+         case Review.FEEDBACK_TYPE:
             formTypeId = obj.getReviewDevice().getValue();
             break;
          case Review.EVALUATION_TYPE:

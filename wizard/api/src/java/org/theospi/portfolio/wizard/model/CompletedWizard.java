@@ -20,7 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -44,6 +46,10 @@ public class CompletedWizard extends IdentifiableObject implements Artifact {
    private Date lastVisited;
    private String status;
    private ReadableObjectHome home;
+
+   private transient List reflections = new ArrayList();
+   private transient List evaluations = new ArrayList();
+   private transient List feedback = new ArrayList();
 
    public final static String TYPE = "wizard_type";
    public final static String PROCESS_TYPE_KEY = "completed_wizard_id";
@@ -121,5 +127,49 @@ public class CompletedWizard extends IdentifiableObject implements Artifact {
    public String getDisplayName() {
       return wizard.getName();
    }
+
+   /**
+    * @return the evaluations
+    */
+   public List getEvaluations() {
+      return evaluations;
+   }
+
+   /**
+    * @param evaluations the evaluations to set
+    */
+   public void setEvaluations(List evaluations) {
+      this.evaluations = evaluations;
+   }
+
+   /**
+    * @return the feedback
+    */
+   public List getFeedback() {
+      return feedback;
+   }
+
+   /**
+    * @param feedback the feedback to set
+    */
+   public void setFeedback(List feedback) {
+      this.feedback = feedback;
+   }
+
+   /**
+    * @return the reflections
+    */
+   public List getReflections() {
+      return reflections;
+   }
+
+   /**
+    * @param reflections the reflections to set
+    */
+   public void setReflections(List reflections) {
+      this.reflections = reflections;
+   }
+
+
 
 }

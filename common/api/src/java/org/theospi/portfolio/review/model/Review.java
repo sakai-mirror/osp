@@ -28,7 +28,7 @@ public class Review extends IdentifiableObject {
    
    public static final int REFLECTION_TYPE = 0;
    public static final int EVALUATION_TYPE = 1;
-   public static final int REVIEW_TYPE = 2;
+   public static final int FEEDBACK_TYPE = 2;
 
    private String siteId;
    private String parent;

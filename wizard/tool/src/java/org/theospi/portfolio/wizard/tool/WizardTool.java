@@ -622,7 +622,7 @@ public class WizardTool extends BuilderTool {
     * to a completed wizard.
     */
    public void processActionReview() {
-      processActionReviewHelper(Review.REVIEW_TYPE);
+      processActionReviewHelper(Review.FEEDBACK_TYPE);
    }
    
 

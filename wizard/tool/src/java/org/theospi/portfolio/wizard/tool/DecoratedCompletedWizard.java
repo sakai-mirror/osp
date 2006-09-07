@@ -116,7 +116,7 @@ public class DecoratedCompletedWizard {
    public List getReviews() {
       if (reviews == null) {
          reviews = getParent().getReviewManager().getReviewsByParentAndType(
-            getBase().getId().getValue(), Review.REVIEW_TYPE, getBase().getWizard().getSiteId(),
+            getBase().getId().getValue(), Review.FEEDBACK_TYPE, getBase().getWizard().getSiteId(),
             getParent().getWizardManager().getWizardEntityProducer());
       }
       return reviews;
