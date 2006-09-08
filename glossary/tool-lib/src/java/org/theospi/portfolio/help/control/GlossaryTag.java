@@ -173,7 +173,7 @@ public class GlossaryTag extends BodyTagSupport {
 
    protected GlossaryEntry searchGlossary(String phrase, GlossaryEntry[] terms) {
       phrase = phrase.replaceAll("&amp;", "&");
-      phrase = phrase.replaceAll("&gr;", ">");
+      phrase = phrase.replaceAll("&gt;", ">");
       phrase = phrase.replaceAll("&lt;", "<");
       for (int i=0;i<terms.length;i++) {
          GlossaryEntry entry = terms[i];
@@ -184,14 +184,14 @@ public class GlossaryTag extends BodyTagSupport {
       return null;
    }
 
+   /**
+    * Checks to see if the phrase matches the beginning of any terms
+    * @param phrase
+    * @param terms
+    * @return boolean
+    */
    protected boolean isPhraseStart(String phrase, GlossaryEntry[] terms) {
       if (phrase.length() == 0) {
-         return false;
-      }
-
-      char start = phrase.charAt(0);
-
-      if (!Character.isLetterOrDigit(start)) {
          return false;
       }
 
@@ -202,7 +202,7 @@ public class GlossaryTag extends BodyTagSupport {
          GlossaryEntry entry = terms[i];
          String term = entry.getTerm();
          term = term.replaceAll("&", "&amp;");
-         term = term.replaceAll(">", "&gr;");
+         term = term.replaceAll(">", "&gt;");
          term = term.replaceAll("<", "&lt;");
          if (term.toLowerCase().startsWith(phrase.toLowerCase())) {
             return true;
@@ -272,7 +272,8 @@ public class GlossaryTag extends BodyTagSupport {
    }
 
    protected boolean isWordBoundary(char c) {
-      return !String.valueOf(c).matches("[A-Za-z0-9;&]");
+      //       matching [\s] means white space
+      return String.valueOf(c).matches("[\\s]");
    }
 
    protected String getMarkup(String originalTerm, GlossaryEntry entry) {

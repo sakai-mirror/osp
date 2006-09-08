@@ -90,6 +90,11 @@ public class GuidanceItemAttachment extends IdentifiableObject {
    public MimeType getMimeType() {
       ContentResource resource = (ContentResource)baseReference.getBase().getEntity();
 
+      if(resource == null)
+         throw new NullPointerException("the content resource is null");
+      if(resource.getProperties() == null)
+         throw new NullPointerException("the content resource properties are null");
+      
       String contentTypeProp = resource.getProperties().getNamePropContentType();
       return new MimeType(resource.getProperties().getProperty(contentTypeProp));
    }

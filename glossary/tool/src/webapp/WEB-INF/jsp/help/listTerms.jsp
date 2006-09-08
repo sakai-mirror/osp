@@ -91,9 +91,7 @@
 
             <TR>
                 <TD>
-                    <osp-h:glossary link="true" hover="false">
-                        <c:out value="${term.term}" />
-                    </osp-h:glossary>
+                    <osp-h:glossary link="true" hover="false"><c:out value="${term.term}" /></osp-h:glossary>
                     <c:if test="${can.edit || can.delete}">
                         <div class="itemAction">
                             <c:if test="${can.edit}">
