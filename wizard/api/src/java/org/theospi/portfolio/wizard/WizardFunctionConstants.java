@@ -51,5 +51,8 @@ public interface WizardFunctionConstants {
    
    public static final String VIEW_WIZARDPAGE_GUIDANCE = WIZARD_PREFIX + "viewWizPageGuidance";
    public static final String EDIT_WIZARDPAGE_GUIDANCE = WIZARD_PREFIX + "editWizPageGuidance";
+   
+   public static final String EVALUATE_SPECIFIC_WIZARD = WIZARD_PREFIX + "evaluateSpecificWizard";
+   public static final String EVALUATE_SPECIFIC_WIZARDPAGE = WIZARD_PREFIX + "evaluateSpecificWizardPage";
 }
 

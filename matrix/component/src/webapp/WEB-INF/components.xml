@@ -19,6 +19,7 @@
    <bean id="matrixAuthorizer" class="org.theospi.portfolio.matrix.MatrixAuthorizer">
       <property name="matrixManager"><ref bean="matrixManager"/></property>
       <property name="explicitAuthz"><ref bean="explicitAuthz"/></property>
+      <property name="idManager"><ref bean="idManager"/></property>
       <property name="functions">
          <list>
             <bean id="org.sakaiproject.content.api.ContentHostingService.EVENT_RESOURCE_READ"
@@ -52,6 +53,9 @@
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
             <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.DELETE_SCAFFOLDING"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
+            <bean id="org.theospi.portfolio.matrix.MatrixFunctionConstants.EVALUATE_SPECIFIC_MATRIXCELL"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
          </list>

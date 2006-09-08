@@ -216,7 +216,7 @@ public class WizardTool extends BuilderTool {
          }
          if(id == null)
             return null;
-         Wizard wizard = getWizardManager().getWizard(id, WizardManager.WIZARD_VIEW_CHECK);
+         Wizard wizard = getWizardManager().getWizard(id, WizardManager.WIZARD_OPERATE_CHECK);
          if(wizard == null)
             return null;
          setCurrent(new DecoratedWizard(this, wizard));

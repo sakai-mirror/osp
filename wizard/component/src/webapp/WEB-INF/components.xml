@@ -138,6 +138,12 @@
             <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.EDIT_WIZARDPAGE_GUIDANCE"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
             </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.EVALUATE_SPECIFIC_WIZARD"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.EVALUATE_SPECIFIC_WIZARDPAGE"
+               class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+            </bean>
          </list>
       </property>
    </bean>
