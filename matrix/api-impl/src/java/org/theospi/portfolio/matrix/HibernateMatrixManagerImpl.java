@@ -117,8 +117,6 @@ import org.theospi.portfolio.style.StyleConsumer;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
-import org.theospi.portfolio.wizard.model.CompletedWizardCategory;
-import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 import org.theospi.portfolio.workflow.model.Workflow;
 import org.theospi.portfolio.workflow.model.WorkflowItem;
@@ -514,6 +512,10 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       removeFromSession(page);
       return page;
    }
+   
+   protected List getWizardPages() {
+      return this.getHibernateTemplate().find("from WizardPage");
+   }
 
    protected Id convertRef(Reference artifactRef) {
       String uuid = getContentHosting().getUuid(artifactRef.getId());
@@ -615,6 +617,23 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
            getHibernateTemplate().evict(mat);
         }
       return matrices;
+   }
+   
+   public List getWizardPagesForWarehousing() {
+      
+      List wizardPages = this.getWizardPages();
+
+        
+        for(Iterator ii = wizardPages.iterator(); ii.hasNext(); ) {
+           WizardPage wizardPage = (WizardPage)ii.next();
+           
+           wizardPage.getId();
+           wizardPage.getPageForms().size();
+           wizardPage.getAttachments().size();
+           
+           getHibernateTemplate().evict(wizardPage);
+        }
+      return wizardPages;
    }
 
    public Scaffolding getScaffolding(Id scaffoldingId) {

@@ -125,5 +125,65 @@
      <table-name>dw_guidance_item_file</table-name>
      <column>item_id</column>
    </index>
+   <table>
+     <name>dw_review_items</name>
+     <desc>The reviews (Review, Evaluation, Reflection)</desc>
+     <columns>
+        <column>
+          <name>id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>review_content_id</name> <!-- the filled out form -->
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>site_id</name>
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>parent_id</name> <!-- this links back to the Wizard Page Id -->
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>review_device_id</name> <!-- the form being filled out -->
+          <type>VARCHAR</type>
+          <param>36</param>
+        </column>
+        <column>
+          <name>review_type</name> <!-- the form being filled out -->
+          <type>INTEGER</type>
+        </column>
+        <column>
+          <name>securityQualifier</name> <!-- the form being filled out -->
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>securityViewFunction</name> <!-- the form being filled out -->
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+        <column>
+          <name>securityEditFunction</name> <!-- the form being filled out -->
+          <type>VARCHAR</type>
+          <param>255</param>
+        </column>
+     </columns>
+     <not-null>id</not-null>
+     <not-null>parent_id</not-null>
+     <primary-key>id</primary-key>
+   </table>
+
+
+   <index>
+     <index-name>FK4240ED2786D510</index-name>
+     <table-name>dw_review_items</table-name>
+     <column>parent_id</column>
+   </index>
 
 </tables>

@@ -3,98 +3,6 @@
 
 <beans default-lazy-init="false">
 
-	  
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.cell.attachment.criterion"
-     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
-     <property name="fields">
-        <list>
-           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-                                
-           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
-              <property name="propertyName"><value>criterion</value></property>
-           </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
-              <property name="propertyName"><value>attachment</value></property>
-           </bean>           
-        </list>
-     </property>
-     <property name="insertStmt">
-        <value>insert into dw_cell_attachment_criterion
-                                    (id, criterion_id, attachment_id) values (?, ?, ?)
-        </value>
-     </property>
-     <property name="clearStmt">
-        <value>delete from dw_cell_attachment_criterion</value>
-     </property>
-   </bean>
-   
-   
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.cell.attachment"
-     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
-     <property name="fields">
-        <list>
-           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
-              <property name="propertyName"><value>artifactId</value></property>
-           </bean>   
-                     
-           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
-              <property name="propertyName"><value>cell</value></property>
-           </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>privacyResponse</value></property>
-           </bean>           
-        </list>
-     </property>
-     <property name="insertStmt">
-        <value>insert into dw_cell_attachment
-                                    (id, artifactId, cell_id, privacyResponse) values (?, ?, ?, ?)
-        </value>
-     </property>
-     <property name="clearStmt">
-        <value>delete from dw_cell_attachment</value>
-     </property>
-     <property name="complexFields" >
-          <list>
-          </list>
-       </property>
-   </bean>
-   
-   
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.review"
-     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
-     <property name="fields">
-        <list>
-           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
-              <property name="propertyName"><value>reviewContent</value></property>
-           </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>siteId</value></property>
-           </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>parent</value></property>
-           </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>deviceId</value></property>
-           </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>type</value></property>
-           </bean>
-        </list>
-     </property>
-     <property name="insertStmt">
-        <value>insert into dw_wizard_page_review
-                                    (id, review_content_id, site_id, parent_id, review_device_id, review_type) 
-                                    values (?, ?, ?, ?, ?, ?)
-        </value>
-     </property>
-     <property name="clearStmt">
-        <value>delete from dw_wizard_page_review</value>
-     </property>
-   </bean>
-   
-   
    <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.attachments"
      class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
      <property name="fields">
@@ -174,18 +82,6 @@
      <property name="complexFields" >
          <list> <!-- TODO: wizard page attachments, and wizard page form -->
             <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
-               <property name="propertyAccess">               
-                  <bean class="org.theospi.portfolio.warehouse.osp.matrix.WizardPageReviewPropertyAccess">
-                     <property name="reviewManager">
-                        <ref bean="org.theospi.portfolio.review.mgt.ReviewManager" />
-                     </property>
-                  </bean>
-               </property>
-               <property name="task">
-                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage.review"/>
-               </property>
-            </bean>
-            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
                <property name="propertyAccess">        
                   <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                      <property name="propertyName"><value>attachments</value></property>
@@ -236,64 +132,9 @@
         <value>delete from dw_matrix_cell</value>
      </property>
      <property name="complexFields" >
-         <list> 
-            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
-               <property name="propertyAccess">
-                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-                     <property name="propertyName"><value>wizardPage</value></property>
-                  </bean>
-               </property>
-               <property name="task">
-                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage"/>
-               </property>
-            </bean>    <!-- 
-            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
-               <property name="propertyAccess">               
-                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-                     <property name="propertyName"><value>reviewerItems</value></property>
-                  </bean>
-               </property>
-               <property name="task">
-                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.reviewer.item"/>
-               </property>
-            </bean> -->
+         <list>
          </list>
       </property>
-   </bean>
-   
-   
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.label"
-     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
-     <property name="fields">
-        <list>
-           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>type</value></property>
-           </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>description</value></property>
-           </bean>            
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>indent</value></property>
-           </bean>            
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>color</value></property>
-           </bean> 
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>required</value></property>
-           </bean>            
-        </list>
-     </property>
-     <property name="insertStmt">
-        <value>insert into dw_matrix_label
-                                    (id, type, description, indent, color, required)
-                                                                        values (?, ?, ?, ?, ?, ?)
-        </value>
-     </property>
-     <property name="clearStmt">
-        <value>delete from dw_matrix_label</value>
-     </property>
-     
    </bean>
 
    

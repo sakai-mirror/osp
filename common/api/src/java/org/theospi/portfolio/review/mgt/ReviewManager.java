@@ -47,6 +47,7 @@ public interface ReviewManager {
    
    public Node getNode(Reference ref);
    
+   public List getReviews();
    public List getReviewsByParent(String parentId);
    public List getReviewsByParent(String parentId, String siteId, String producer);
    public List getReviewsByParentAndType(String parentId, int type, String siteId, String producer);

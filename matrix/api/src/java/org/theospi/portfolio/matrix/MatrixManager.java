@@ -158,6 +158,7 @@ public interface MatrixManager extends WorkflowEnabledManager {
    public List getMatrices(Id scaffoldingId, Id agentId);
 
    WizardPage getWizardPage(Id pageId);
+   List getWizardPagesForWarehousing();
    
    Matrix getMatrixByPage(Id pageId);
 

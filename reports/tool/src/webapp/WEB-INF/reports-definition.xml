@@ -699,7 +699,7 @@
                         dw_scaffolding_levels.sequenceNumber `level_sequence`,
                             dw_scaffolding_levels.description `level_description`, dw_scaffolding_cell.rootcriterion_id,
                                 -- dw_scaffolding_cell_evaluators.id `evaluators`, 
-                                dw_wizard_page_review.review_content_id `evaluation_artifact`,
+                                dw_review_items.review_content_id `evaluation_artifact`,
                                 dw_resource.created_by
                     FROM dw_scaffolding 
                     JOIN dw_site_users ON dw_scaffolding.worksiteId = dw_site_users.site_id -- get the users for the site
@@ -710,11 +710,11 @@
                     LEFT JOIN dw_scaffolding_criteria ON dw_scaffolding_cell.rootcriterion_id = dw_scaffolding_criteria.id
                     LEFT JOIN dw_scaffolding_levels ON dw_scaffolding_cell.level_id = dw_scaffolding_levels.id
                     
-                    LEFT JOIN dw_wizard_page_review ON dw_wizard_page_review.parent_id=dw_wizard_page.id AND 
-                                                    dw_wizard_page_review.review_type = 1 -- reflection=0, eval=1, review=2
+                    LEFT JOIN dw_review_items ON dw_review_items.parent_id=dw_wizard_page.id AND 
+                                                    dw_review_items.review_type = 1 -- reflection=0, eval=1, review=2
                     -- by this point we have all the cells' evaluations for each evaluator for each cell for each user
                     --  and we want to link the evaluators' evaluation
-                    LEFT JOIN dw_resource ON dw_wizard_page_review.review_content_id=dw_resource.id
+                    LEFT JOIN dw_resource ON dw_review_items.review_content_id=dw_resource.id
                     
                    -- LEFT JOIN dw_scaffolding_cell_evaluators ON 
                    --             dw_scaffolding_cell_evaluators.scaffolding_cell_id = dw_scaffolding_cell.id
@@ -801,7 +801,7 @@
                             dw_scaffolding_criteria.description `criterion_description`,
                         dw_scaffolding_levels.sequenceNumber `level_sequence`,
                             dw_scaffolding_levels.description `level_description`, dw_scaffolding_cell.rootcriterion_id,
-                        dw_wizard_page_review.review_content_id `review_artifact`
+                        dw_review_items.review_content_id `review_artifact`
                     FROM dw_scaffolding 
                     JOIN dw_site_users ON dw_scaffolding.worksiteId = dw_site_users.site_id 
                     LEFT JOIN dw_matrix ON dw_site_users.user_id = dw_matrix.owner AND dw_matrix.scaffolding_id = dw_scaffolding.id
@@ -810,7 +810,7 @@
                     LEFT JOIN dw_scaffolding_cell ON dw_matrix_cell.scaffolding_cell_id = dw_scaffolding_cell.id
                     LEFT JOIN dw_scaffolding_criteria ON dw_scaffolding_cell.rootcriterion_id = dw_scaffolding_criteria.id
                     LEFT JOIN dw_scaffolding_levels ON dw_scaffolding_cell.level_id = dw_scaffolding_levels.id
-                    LEFT JOIN dw_wizard_page_review ON dw_matrix_cell.wizard_page_id = dw_wizard_page_review.id
+                    LEFT JOIN dw_review_items ON dw_matrix_cell.wizard_page_id = dw_review_items.id
                                 where dw_scaffolding.id=?
                 
                     ORDER BY `level_sequence`, `userId`, `criterion_sequence`
@@ -895,7 +895,7 @@
                             dw_scaffolding_criteria.description `criterion_description`,
                         dw_scaffolding_levels.sequenceNumber `level_sequence`,
                             dw_scaffolding_levels.description `level_description`, dw_scaffolding_cell.rootcriterion_id,
-                                dw_scaffolding_cell_evaluators.id `evaluators`, dw_wizard_page_review.review_content_id `evaluation_artifact`,
+                                dw_scaffolding_cell_evaluators.id `evaluators`, dw_review_items.review_content_id `evaluation_artifact`,
                                 dw_resource.created_by
                     FROM dw_scaffolding 
                     JOIN dw_site_users ON dw_scaffolding.worksiteId = dw_site_users.site_id -- get the users for the site
@@ -906,11 +906,11 @@
                     LEFT JOIN dw_scaffolding_criteria ON dw_scaffolding_cell.rootcriterion_id = dw_scaffolding_criteria.id
                     LEFT JOIN dw_scaffolding_levels ON dw_scaffolding_cell.level_id = dw_scaffolding_levels.id
                     
-                    LEFT JOIN dw_wizard_page_review ON dw_wizard_page_review.parent_id=dw_wizard_page.id AND 
-                                                    dw_wizard_page_review.review_type = 1 -- reflection=0, eval=1, review=2
+                    LEFT JOIN dw_review_items ON dw_review_items.parent_id=dw_wizard_page.id AND 
+                                                    dw_review_items.review_type = 1 -- reflection=0, eval=1, review=2
                     -- by this point we have all the cells' evaluations for each evaluator for each cell for each user
                     --  and we want to link the evaluators' evaluation
-                    LEFT JOIN dw_resource ON dw_wizard_page_review.review_content_id=dw_resource.id
+                    LEFT JOIN dw_resource ON dw_review_items.review_content_id=dw_resource.id
                     
                     LEFT JOIN dw_scaffolding_cell_evaluators ON 
                                 dw_scaffolding_cell_evaluators.scaffolding_cell_id = dw_scaffolding_cell.id
