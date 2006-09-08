@@ -130,7 +130,7 @@
             <prop key="/exposedScaffolding.osp">exposedScaffoldingController</prop>
 
               <!--  Reviewer Stuff -->
-              <prop key="/listReviewerItems.osp">listReviewerItemsController</prop>
+              <prop key="/listEvaluationItems.osp">listEvaluationItemsController</prop>
               
               <!-- helpers -->
               <prop key="/wizardPage.osp">wizardPageController</prop>
