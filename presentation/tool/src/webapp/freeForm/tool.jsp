@@ -48,7 +48,7 @@
                              <h:outputText value="#{page.base.title}"/>
                            </h:commandLink>
                         <f:verbatim><br/></f:verbatim>
-                           <h:commandLink action="#{page.processActionDelete}">
+                           <h:commandLink action="#{page.processActionConfirmDelete}" >
                               <h:outputText value="#{msgs.remove_page}"/>
                            </h:commandLink>
                         <f:verbatim></td></f:verbatim>
