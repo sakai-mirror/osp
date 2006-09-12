@@ -45,9 +45,6 @@
   <create-table-script>false</create-table-script>
   <table-script-file-name>osp_dw_tables.script</table-script-file-name>
   
-  <create-content-script>false</create-content-script>
-  <content-script-file-name>osp_dw_content.script</content-script-file-name>
-  
   <statement-terminator>;</statement-terminator>
 
   <!-- Mappings for cases where database metadata is incomplete.

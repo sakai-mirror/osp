@@ -10,8 +10,8 @@
 <tables>
 
   <table>
-    <name>dw_repository_lock</name>
-    <desc>Repository lock Datawarehouse table</desc>
+    <name>dw_content_resource_lock</name>
+    <desc>Content resource lock Datawarehouse table</desc>
     <columns>
        <column>
          <name>id</name>

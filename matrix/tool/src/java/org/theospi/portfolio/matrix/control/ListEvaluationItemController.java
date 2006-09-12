@@ -46,7 +46,7 @@ import org.theospi.portfolio.security.AuthorizationFacade;
 /**
  * @author chmaurer
  */
-public class ListReviewerItemController implements FormController, LoadObjectController, CustomCommandController {
+public class ListEvaluationItemController implements FormController, LoadObjectController, CustomCommandController {
 
    protected final Log logger = LogFactory.getLog(getClass());
    private MatrixManager matrixManager = null;

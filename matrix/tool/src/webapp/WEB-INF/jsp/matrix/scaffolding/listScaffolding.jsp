@@ -55,7 +55,6 @@
    </thead>
    <tbody>
   <c:forEach var="scaffold" items="${scaffolding}">
-    <osp-c:authZMap prefix="osp.matrix.scaffolding." qualifier="${scaffold.id}" var="isAuthorizedTo" />
     <TR>
       <TD nowrap>
          <c:if test="${scaffold.published == true && (scaffold.owner == osp_agent || can.use || can.review || can.evaluate)}">
@@ -69,18 +68,18 @@
          </c:if>
          <c:set var="hasFirstAction" value="false" />
          <div class="itemAction">
-             <c:if test="${can.publish && scaffold.owner == osp_agent && scaffold.published == false}">
+             <c:if test="${can.publish && scaffold.published == false}">
                 <c:set var="hasFirstAction" value="true" />
                 <a href="<osp:url value="publishScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="action_publish"/></a>
              </c:if>
              
-             <c:if test="${scaffold.owner == osp_agent}">
+             <c:if test="${can.edit}">
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
                 <a href="<osp:url value="viewScaffolding.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_edit"/></a>
              </c:if>
              
-             <c:if test="${scaffold.owner == osp_agent && scaffold.published == false}">
+             <c:if test="${can.delete && scaffold.published == false}">
                 <c:if test="${hasFirstAction}" > | </c:if>
                 <c:set var="hasFirstAction" value="true" />
              <a onclick="return confirmDeletion();"

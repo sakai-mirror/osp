@@ -88,6 +88,7 @@ import org.sakaiproject.metaobj.shared.model.FinderException;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
+import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.site.api.Site;
@@ -157,13 +158,20 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return getHibernateTemplate().find("from Scaffolding");
    }
    
+   /**
+    * gathers all the scaffolding from the given site (id) and user.
+    * If the userId is null, it will get all users.
+    * @param siteId String
+    * @param userId String
+    * @return List of Scaffolding
+    */
    public List findScaffolding(String siteId, String userId) {
       if (userId == null)
          userId = "%";
       
-      Object[] params = new Object[]{siteId, userId, new Boolean(true)};
+      Object[] params = new Object[]{siteId, userId};
       return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
-            "and (s.owner=? or s.published=?)", 
+            "and s.owner like ? ", 
             params);
    }
    
@@ -504,6 +512,10 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       removeFromSession(page);
       return page;
    }
+   
+   protected List getWizardPages() {
+      return this.getHibernateTemplate().find("from WizardPage");
+   }
 
    protected Id convertRef(Reference artifactRef) {
       String uuid = getContentHosting().getUuid(artifactRef.getId());
@@ -605,6 +617,23 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
            getHibernateTemplate().evict(mat);
         }
       return matrices;
+   }
+   
+   public List getWizardPagesForWarehousing() {
+      
+      List wizardPages = this.getWizardPages();
+
+        
+        for(Iterator ii = wizardPages.iterator(); ii.hasNext(); ) {
+           WizardPage wizardPage = (WizardPage)ii.next();
+           
+           wizardPage.getId();
+           wizardPage.getPageForms().size();
+           wizardPage.getAttachments().size();
+           
+           getHibernateTemplate().evict(wizardPage);
+        }
+      return wizardPages;
    }
 
    public Scaffolding getScaffolding(Id scaffoldingId) {
@@ -1157,6 +1186,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       removeFromSession(oldScaffolding);
 
+      //Saving the agent is not necessary and causes a StackOverflowError when XMLEncoder tries
+      // to serialize.  So, we clear out the agents.
+      oldScaffolding.setOwner(null);
+      oldScaffolding.setPublishedBy(null);
+      
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
       XMLEncoder xenc=new XMLEncoder(bos);
       xenc.writeObject(oldScaffolding);
@@ -1319,6 +1353,17 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       }
    }
    */
+   
+   /**
+    * This unpacks a zipped scaffolding and places it into the siteId. It saves the guidance, styles,
+    * and forms, resets the ids, and saves the scaffolding.  It returns the new unpacked scaffolding.
+    * 
+    * The owner becomes the current agent.
+    * 
+    * @param siteId String of the site id
+    * @param zis ZipInputStream of the packed scaffolding
+    * @throws IOException
+    */
    protected Scaffolding uploadScaffolding(String siteId, ZipInputStream zis)  throws IOException {
       
       ZipEntry currentEntry = zis.getNextEntry();
@@ -1365,7 +1410,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             zis.closeEntry();
             currentEntry = zis.getNextEntry();
          }
-
+         if(scaffolding == null)
+            throw new InvalidUploadException("The scaffolding file was not found in the import file");
          scaffolding.setId(null);
          scaffolding.setPublished(false);
          scaffolding.setPublishedBy(null);
@@ -1489,12 +1535,16 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       if (canEval || canReview || owns) {
          //can I look at reviews/evals/reflections? - own or review
          getReviewManager().getReviewsByParentAndType(
-               id, Review.REVIEW_TYPE,
+               id, Review.FEEDBACK_TYPE,
                page.getPageDefinition().getSiteId(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);         
       }
    }
 
+   /**
+    * this creates authorizations for each cell from the evaluators contained in the cell
+    * @param scaffolding
+    */
    private void createEvaluatorAuthzForImport(Scaffolding scaffolding) {
       for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
@@ -1536,6 +1586,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return getContentHosting().addCollection(childId);
    }
 
+   /**
+    * This unpacks the scaffolding in a zip stream and returns it
+    * @param zis
+    * @return
+    * @throws IOException
+    * @throws ClassNotFoundException
+    */
    protected Scaffolding processScaffolding(ZipInputStream zis) throws IOException, ClassNotFoundException {
       XMLDecoder dec = new XMLDecoder(zis);
       return (Scaffolding)dec.readObject();
@@ -1577,6 +1634,14 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       fileMap.put(oldId, newId);
    }
 
+   /**
+    * resets the style, criteria, levels, and scaffolding cells
+    * @param scaffolding
+    * @param guidanceMap
+    * @param formsMap
+    * @param styleMap
+    * @param siteId
+    */
    protected void resetIds(Scaffolding scaffolding, Map guidanceMap, Map formsMap, Map styleMap, String siteId) {
       
       if (scaffolding.getStyle() != null) {
@@ -1764,8 +1829,26 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     */
    public Artifact load(Id id) {
       Matrix matrix = getMatrix(id);
+      loadMatrixCellReviews(matrix);
       matrix.setHome(this);
       return matrix;
+   }
+   
+   private void loadMatrixCellReviews(Matrix matrix) {
+      for (Iterator cells = matrix.getCells().iterator(); cells.hasNext();) {
+         Cell cell = (Cell) cells.next();
+         WizardPage page = cell.getWizardPage();
+         List reflections = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId(),
+               MatrixContentEntityProducer.MATRIX_PRODUCER);
+         List evaluations = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.EVALUATION_TYPE, page.getPageDefinition().getSiteId(),
+               MatrixContentEntityProducer.MATRIX_PRODUCER);
+         List feedback = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.FEEDBACK_TYPE, page.getPageDefinition().getSiteId(),
+               MatrixContentEntityProducer.MATRIX_PRODUCER);
+         
+         page.setReflections(reflections);
+         page.setEvaluations(evaluations);
+         page.setFeedback(feedback);
+      }
    }
 
    public Collection findByType(String type) {
@@ -1903,6 +1986,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       this.lockManager = lockManager;
    }
 
+   /**
+    * This is called by the download manager to package a scaffolding for download as zip
+    * @param params Map of url parameters
+    * @param out  OutputStream to push the file
+    */
    public String packageForDownload(Map params, OutputStream out) throws IOException {
       packageScffoldingForExport(
          getIdManager().getId(((String[])params.get(SCAFFOLDING_ID_TAG))[0]),

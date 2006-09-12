@@ -75,7 +75,7 @@ public class CellController implements FormController, LoadObjectController {
          cell.getCell().getWizardPage().getPageDefinition().getSiteId();
       
        model.put("reviews", getReviewManager().getReviewsByParentAndType(
-             pageId, Review.REVIEW_TYPE, siteId,
+             pageId, Review.FEEDBACK_TYPE, siteId,
              getEntityProducer()));
       model.put("evaluations", getReviewManager().getReviewsByParentAndType(
              pageId, Review.EVALUATION_TYPE, siteId,

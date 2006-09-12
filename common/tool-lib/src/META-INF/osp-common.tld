@@ -14,6 +14,7 @@
 	<description>osp common tag library</description>
 
    <tag>
+   	<!-- Changed rtexprvalue on several tags to true - PAFH 8/11/2006 -->
      <name>authZMap</name>
      <tag-class>org.theospi.portfolio.security.control.tag.AuthZMapTag</tag-class>
      <body-content>JSP</body-content>
@@ -23,27 +24,27 @@
      <attribute>
          <name>qualifier</name>
          <required>false</required>
-         <rtexprvalue>false</rtexprvalue>
+         <rtexprvalue>true</rtexprvalue>
      </attribute>
      <attribute>
          <name>prefix</name>
          <required>true</required>
-         <rtexprvalue>false</rtexprvalue>
+         <rtexprvalue>true</rtexprvalue>
      </attribute>
      <attribute>
          <name>var</name>
          <required>false</required>
-         <rtexprvalue>false</rtexprvalue>
+         <rtexprvalue>true</rtexprvalue>
      </attribute>
      <attribute>
          <name>scope</name>
          <required>false</required>
-         <rtexprvalue>false</rtexprvalue>
+         <rtexprvalue>true</rtexprvalue>
      </attribute>
       <attribute>
           <name>useSite</name>
           <required>false</required>
-          <rtexprvalue>false</rtexprvalue>
+          <rtexprvalue>true</rtexprvalue>
       </attribute>
    </tag>
 
@@ -57,12 +58,12 @@
      <attribute>
          <name>fileType</name>
          <required>false</required>
-         <rtexprvalue>false</rtexprvalue>
+         <rtexprvalue>true</rtexprvalue>
      </attribute>
      <attribute>
          <name>mapType</name>
          <required>false</required>
-         <rtexprvalue>false</rtexprvalue>
+         <rtexprvalue>true</rtexprvalue>
      </attribute>
    </tag>
    

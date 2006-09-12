@@ -92,6 +92,7 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
+import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
@@ -109,6 +110,8 @@ import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.impl.WizardEntityProducer;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
+import org.theospi.portfolio.wizard.model.CompletedWizardCategory;
+import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardCategory;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
@@ -427,12 +430,18 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return completedWizards;
    }
 
-   public List listAllWizards(String owner, String siteId) {
+   public List listAllWizardsByOwner(String owner, String siteId) {
       Object[] params = new Object[]{owner, new Boolean(true), siteId};
       return getHibernateTemplate().find("from Wizard w where " +
             "(w.owner=? or w.published=?) and w.siteId=? order by seq_num", params);
    }
 
+   public List listAllWizards(String siteId) {
+      Object[] params = new Object[]{siteId};
+      return getHibernateTemplate().find("from Wizard w where " +
+            " w.siteId=? order by seq_num", params);
+   }
+   
    public List findWizardsByOwner(String ownerId, String siteId) {
       Object[] params = new Object[]{ownerId, siteId};
       return getHibernateTemplate().find("from Wizard w where w.owner=? and w.siteId=? order by seq_num", params);
@@ -608,7 +617,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       if (canReview || owns) {
          //can I look at reviews/evals/reflections? - own or review
          getReviewManager().getReviewsByParentAndType(
-               id.getValue(), Review.REVIEW_TYPE,
+               id.getValue(), Review.FEEDBACK_TYPE,
                cw.getWizard().getSiteId(),
                WizardEntityProducer.WIZARD_PRODUCER);         
       }
@@ -901,7 +910,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          //wizard = saveWizard(wizard);
          
          replaceIds(wizard, guidanceMap, formsMap, styleMap);
-
+         
          // save the wizard
          wizard = saveWizard(wizard);
 
@@ -1223,6 +1232,8 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    protected void replaceIds(Wizard wizard, Map guidanceMap, Map formsMap, Map styleMap)
    {
+      wizard.setEvalWorkflows(getWorkflowManager().createEvalWorkflows(wizard));
+      
       replaceCatIds(wizard.getRootCategory(), guidanceMap, formsMap, styleMap);
 
       if(wizard.getEvaluationDevice() != null && wizard.getEvaluationDevice().getValue() != null)
@@ -1285,6 +1296,9 @@ public class WizardManagerImpl extends HibernateDaoSupport
             definition.setReviewDevice(idManager.getId(
                (String)formsMap.get(definition.getReviewDevice().getValue())  ));
 
+         definition.setEvalWorkflows(
+               new HashSet(getWorkflowManager().createEvalWorkflows(definition)));
+         
          List newAddForms = new ArrayList();
          for(Iterator ii = definition.getAdditionalForms().iterator(); ii.hasNext(); ) {
             String addForm = (String)ii.next();
@@ -1881,8 +1895,49 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public Artifact load(Id id) {
       CompletedWizard cw = this.getCompletedWizard(id);
+      
+      List reflections = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
+            Review.REFLECTION_TYPE, cw.getWizard().getSiteId(),
+            WizardEntityProducer.WIZARD_PRODUCER);
+      List evaluations = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
+            Review.EVALUATION_TYPE, cw.getWizard().getSiteId(),
+            WizardEntityProducer.WIZARD_PRODUCER);
+      List feedback = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
+            Review.FEEDBACK_TYPE, cw.getWizard().getSiteId(),
+            WizardEntityProducer.WIZARD_PRODUCER);
+      cw.setReflections(reflections);
+      cw.setEvaluations(evaluations);
+      cw.setFeedback(feedback);
+      
+      loadWizardPageReviews(cw.getRootCategory());
+      //cw.get
       cw.setHome(this);
       return cw;
+   }
+   
+   private void loadWizardPageReviews(CompletedWizardCategory category) {
+      for (Iterator pages = category.getChildPages().iterator(); pages.hasNext();) {
+         CompletedWizardPage cPage = (CompletedWizardPage) pages.next();
+         WizardPage page = cPage.getWizardPage();
+         
+         List reflections = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), 
+               Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId(),
+               WizardEntityProducer.WIZARD_PRODUCER);
+         List evaluations = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), 
+               Review.EVALUATION_TYPE, page.getPageDefinition().getSiteId(),
+               WizardEntityProducer.WIZARD_PRODUCER);
+         List feedback = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), 
+               Review.FEEDBACK_TYPE, page.getPageDefinition().getSiteId(),
+               WizardEntityProducer.WIZARD_PRODUCER);
+         page.setReflections(reflections);
+         page.setEvaluations(evaluations);
+         page.setFeedback(feedback);
+      }
+      
+      for (Iterator i = category.getChildCategories().iterator(); i.hasNext();) {
+         CompletedWizardCategory cat = (CompletedWizardCategory) i.next();
+         loadWizardPageReviews(cat);
+      }
    }
 
    public Collection findByType(String type) {

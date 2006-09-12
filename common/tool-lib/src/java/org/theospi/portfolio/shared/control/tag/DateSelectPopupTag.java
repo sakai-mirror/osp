@@ -40,22 +40,7 @@ public class DateSelectPopupTag extends BodyTagSupport {
 
    public int doStartTag() throws JspException {
       try {
-         daySelectId = (String) ExpressionEvaluatorManager.evaluate("daySelectId", // attribute name
-               daySelectId, // expression
-               java.lang.String.class, // expected type
-               this, // this tag handler
-               pageContext);         // the page context
-         monthSelectId = (String) ExpressionEvaluatorManager.evaluate("monthSelectId", // attribute name
-               monthSelectId, // expression
-               java.lang.String.class, // expected type
-               this, // this tag handler
-               pageContext);         // the page context
-         yearSelectId = (String) ExpressionEvaluatorManager.evaluate("yearSelectId", // attribute name
-               yearSelectId, // expression
-               java.lang.String.class, // expected type
-               this, // this tag handler
-               pageContext);         // the page context
-
+ 
          pageContext.getOut().write("<script type=\"text/javascript\" src=\"/library/calendar/sakai-calendar.js\"></script>\n" +
                "<script type=\"text/javascript\" src=\"/osp-common-tool/js/eport.js\"></script>\n" +
                "<script type=\"text/javascript\">osp_dateselectionwidgetpopup('" +

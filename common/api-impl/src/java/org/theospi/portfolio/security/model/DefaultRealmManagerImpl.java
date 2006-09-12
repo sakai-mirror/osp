@@ -14,6 +14,8 @@ import org.sakaiproject.authz.api.RoleAlreadyDefinedException;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.portfolio.security.DefaultRealmManager;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Created by IntelliJ IDEA.
@@ -24,10 +26,13 @@ import org.theospi.portfolio.security.DefaultRealmManager;
  */
 public class DefaultRealmManagerImpl implements DefaultRealmManager {
 
+   protected final transient Log logger = LogFactory.getLog(getClass());
+
    private AuthzGroupService authzGroupService;
    private String newRealmName;
    private List roles;
    private boolean newlyCreated;
+   private boolean recreate = false;
 
    public void init() {
 
@@ -39,11 +44,20 @@ public class DefaultRealmManagerImpl implements DefaultRealmManager {
          try {
             AuthzGroup group = getAuthzGroupService().getAuthzGroup(newRealmName);
             if (group != null) {
-               newlyCreated = false;
-               return;
+               if (recreate){
+                  getAuthzGroupService().removeAuthzGroup(group);
+               }
+               else {
+                  newlyCreated = false;
+                  return;
+               }
             }
          } catch (GroupNotDefinedException e) {
             // no worries... must not be created yet.
+         } catch (AuthzPermissionException e) {
+            logger.error("Failed to recreate realm.", e);
+            newlyCreated = false;
+            return;
          }
 
          newlyCreated = true;
@@ -61,8 +75,8 @@ public class DefaultRealmManagerImpl implements DefaultRealmManager {
          } catch (GroupIdInvalidException e) {
             throw new RuntimeException(e);
          } catch (RoleAlreadyDefinedException e) {
-        	   throw new RuntimeException(e);
-		}
+              throw new RuntimeException(e);
+      }
       } finally {
          sakaiSession.setUserId(userId);
          sakaiSession.setUserEid(userId);
@@ -118,5 +132,12 @@ public class DefaultRealmManagerImpl implements DefaultRealmManager {
       this.newlyCreated = newlyCreated;
    }
 
+   public boolean isRecreate() {
+      return recreate;
+   }
+
+   public void setRecreate(boolean recreate) {
+      this.recreate = recreate;
+   }
 }
 

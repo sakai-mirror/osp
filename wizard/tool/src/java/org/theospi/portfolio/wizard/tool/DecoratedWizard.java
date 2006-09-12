@@ -373,6 +373,14 @@ public class DecoratedWizard implements DecoratedListInterface {
       }
       return s;
    }
+   
+   private void assureAttachmentAccess(Guidance guidance) {
+      if (getParent().getAuthzManager().isAuthorized(guidance.getSecurityEditFunction(), guidance.getSecurityQualifier()) ||
+            getParent().getAuthzManager().isAuthorized(guidance.getSecurityViewFunction(), guidance.getSecurityQualifier()))
+      {
+         getParent().getGuidanceManager().assureAccess(guidance);
+      }
+   }
 
    public String getGuidanceInstructions() {
       Guidance guidance = getBase().getGuidance();
@@ -395,6 +403,7 @@ public class DecoratedWizard implements DecoratedListInterface {
       if (item == null) {
          return new ArrayList();
       }
+      assureAttachmentAccess(guidance);
       return item.getAttachments();
    }
 
@@ -419,6 +428,7 @@ public class DecoratedWizard implements DecoratedListInterface {
       if (item == null) {
          return new ArrayList();
       }
+      assureAttachmentAccess(guidance);
       return item.getAttachments();
    }
 
@@ -443,6 +453,7 @@ public class DecoratedWizard implements DecoratedListInterface {
       if (item == null) {
          return new ArrayList();
       }
+      assureAttachmentAccess(guidance);
       return item.getAttachments();
    }
 

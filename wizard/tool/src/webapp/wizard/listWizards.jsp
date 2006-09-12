@@ -108,6 +108,12 @@
       </h:column>  --%>
       <h:column>
          <f:facet name="header">
+            <h:outputText value="#{msgs.owner_title}" />
+         </f:facet>
+         <h:outputText value="#{wizardItem.base.owner.displayName}" />
+      </h:column>
+      <h:column>
+         <f:facet name="header">
             <h:outputText value="#{msgs.published_title}" />
          </f:facet>
          <h:outputText value="#{msgs.published}" rendered="#{wizardItem.base.published}"/>

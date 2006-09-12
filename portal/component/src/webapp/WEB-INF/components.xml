@@ -11,6 +11,8 @@
       <property name="idManager" ref="idManager"/>
       <property name="ospAuthzManager" ref="authzManager"/>
       <property name="sakaiAuthzManager" ref="org.sakaiproject.metaobj.security.AuthorizationFacade"/>
+      <property name="displayToolCategories" value="true" />
+      <property name="displaySiteTypes" value="true" />
       <property name="siteTypes">
          <map>
             <entry key="portfolioAdmin" value-ref="org.theospi.portfolio.portal.model.SiteType.portfolioAdmin"/>
@@ -101,7 +103,7 @@
       class="org.theospi.portfolio.portal.model.ToolCategory">
       <property name="key" value="org.theospi.portfolio.portal.model.collectReflect"/>
       <property name="order" value="1"/>
-      <property name="homePagePath" value="/WEB-INF/category/collectReflect.xhtml"/>
+      <property name="homePagePath" value="collectReflect.xhtml"/>
       <property name="tools">
          <map>
             <entry key="sakai.resources" value-ref="org.theospi.portfolio.portal.model.ToolType.sakai.resources"/>
@@ -109,13 +111,14 @@
             <entry key="osp.matrix" value-ref="org.theospi.portfolio.portal.model.ToolType.osp.matrix"/>
          </map>
       </property>
+      
    </bean>
 
    <bean id="org.theospi.portfolio.portal.model.ToolCategory.designPublish"
       class="org.theospi.portfolio.portal.model.ToolCategory">
       <property name="key" value="org.theospi.portfolio.portal.model.designPublish"/>
       <property name="order" value="2"/>
-      <property name="homePagePath" value="/WEB-INF/category/designPublish.xhtml"/>
+      <property name="homePagePath" value="designPublish.xhtml"/>
       <property name="tools">
          <map>
             <entry key="osp.presentation" value="osp.presentation"/>
@@ -129,7 +132,7 @@
       class="org.theospi.portfolio.portal.model.ToolCategory">
       <property name="key" value="org.theospi.portfolio.portal.model.guide"/>
       <property name="order" value="3"/>
-      <property name="homePagePath" value="/WEB-INF/category/guide.xhtml"/>
+      <property name="homePagePath" value="guide.xhtml"/>
       <property name="tools">
          <map>
             <entry key="osp.presentation" value="osp.presentation"/>
@@ -148,7 +151,7 @@
       class="org.theospi.portfolio.portal.model.ToolCategory">
       <property name="key" value="org.theospi.portfolio.portal.model.reviewEvaluate"/>
       <property name="order" value="4"/>
-      <property name="homePagePath" value="/WEB-INF/category/reviewEvaluate.xhtml"/>
+      <property name="homePagePath" value="reviewEvaluate.xhtml"/>
       <property name="tools">
          <map>
             <entry key="osp.presentation" value="osp.presentation"/>
@@ -163,7 +166,7 @@
       class="org.theospi.portfolio.portal.model.ToolCategory">
       <property name="key" value="org.theospi.portfolio.portal.model.analyzeReport"/>
       <property name="order" value="5"/>
-      <property name="homePagePath" value="/WEB-INF/category/analyzeReport.xhtml"/>
+      <property name="homePagePath" value="analyzeReport.xhtml"/>
       <property name="tools">
          <map>
             <entry key="osp.reports" value="osp.reports"/>
@@ -193,7 +196,7 @@
       <property name="qualifierType" ref="org.theospi.portfolio.portal.model.ToolType.SITE_QUALIFIER"/>
       <property name="functions">
          <list>
-            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.VIEW_WIZARD"
+            <bean id="org.theospi.portfolio.wizard.WizardFunctionConstants.OPERATE_WIZARD"
                class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean"/>
          </list>
       </property>

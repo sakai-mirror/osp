@@ -21,11 +21,13 @@
 package org.theospi.portfolio.matrix;
 
 import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.app.ApplicationAuthorizer;
 
@@ -48,6 +50,7 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
    
    private MatrixManager matrixManager;
    private AuthorizationFacade explicitAuthz;
+   private IdManager idManager;
 
    protected final org.apache.commons.logging.Log logger = org.apache.commons.logging.LogFactory
       .getLog(getClass());
@@ -67,13 +70,20 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       }
       else if (MatrixFunctionConstants.DELETE_SCAFFOLDING.equals(function)) {
          Scaffolding scaffolding = getMatrixManager().getScaffolding(id);
-         if (!scaffolding.isPublished() && scaffolding.getOwner().equals(agent))
+         if (scaffolding == null)
+            return new Boolean(facade.isAuthorized(agent,function,id));
+         
+         if (!scaffolding.isPublished() && (scaffolding.getOwner().equals(agent)) || 
+               facade.isAuthorized(agent,function,scaffolding.getWorksiteId()))
             return new Boolean(true);
       }
       else if (ContentHostingService.EVENT_RESOURCE_READ.equals(function)) {
          return isFileAuth(facade, agent, id);
       }
       else if (function.equals(MatrixFunctionConstants.CREATE_SCAFFOLDING)) {
+         return new Boolean(facade.isAuthorized(agent,function,id));
+      }
+      else if (function.equals(MatrixFunctionConstants.EDIT_SCAFFOLDING)) {
          return new Boolean(facade.isAuthorized(agent,function,id));
       }
       else if (function.equals(MatrixFunctionConstants.EXPORT_SCAFFOLDING)) {
@@ -116,7 +126,12 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
          }
          return new Boolean(agent.equals(owner));
       }
-      
+      else if (function.equals(MatrixFunctionConstants.EVALUATE_SPECIFIC_MATRIXCELL)) {
+         WizardPage page = getMatrixManager().getWizardPage(id);
+         Id siteId = idManager.getId(page.getPageDefinition().getSiteId());
+         return new Boolean(facade.isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, siteId));
+      }
+            
       return null;  //don't care
    }
 
@@ -192,5 +207,19 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
 
    public void setExplicitAuthz(AuthorizationFacade explicitAuthz) {
       this.explicitAuthz = explicitAuthz;
+   }
+
+   /**
+    * @return the idManager
+    */
+   public IdManager getIdManager() {
+      return idManager;
+   }
+
+   /**
+    * @param idManager the idManager to set
+    */
+   public void setIdManager(IdManager idManager) {
+      this.idManager = idManager;
    }
 }

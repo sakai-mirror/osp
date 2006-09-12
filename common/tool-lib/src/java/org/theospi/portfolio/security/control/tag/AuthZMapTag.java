@@ -28,7 +28,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.taglibs.standard.lang.support.ExpressionEvaluatorManager;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -39,7 +38,6 @@ import org.theospi.portfolio.security.model.AuthZMap;
 public class AuthZMapTag extends TagSupport {
 
    private Id qualifier;
-   private String qualifierExpression;
    private boolean useSite;
    private String prefix;
    private String var;
@@ -94,19 +92,14 @@ public class AuthZMapTag extends TagSupport {
       if (isUseSite()) {
          qualifier = getIdManager().getId(ToolManager.getCurrentPlacement().getContext());
       }
-      else if (qualifierExpression == null){
+      else if (qualifier == null){
          qualifier = getIdManager().getId(ToolManager.getCurrentPlacement().getId());
-      }
-      else {
-         qualifier = (Id)ExpressionEvaluatorManager.evaluate(
-              "qualifier", qualifierExpression,
-             Id.class, this, pageContext);
       }
       return qualifier;
    }
 
-   public void setQualifier(String qualifierExpression) {
-      this.qualifierExpression = qualifierExpression;
+   public void setQualifier(Id qualifier) {
+      this.qualifier = qualifier;
    }
 
    public int getScope() {

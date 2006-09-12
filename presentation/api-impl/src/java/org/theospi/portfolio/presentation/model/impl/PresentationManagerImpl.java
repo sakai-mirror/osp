@@ -1677,8 +1677,16 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return new Document(root);
    }
 
-   public Collection getAllPresentations() {
-      return getHibernateTemplate().find("from Presentation");
+   public Collection getAllPresentationsForWarehouse() {
+      Collection presentations = getHibernateTemplate().find("from Presentation");
+      //need to load up all of the pages, since hibernate isn't linking them.
+      for (Iterator i = presentations.iterator(); i.hasNext();) {
+         Presentation presentation = (Presentation) i.next();
+         List pages = getPresentationPagesByPresentation(presentation.getId());
+         presentation.setPages(pages);
+      }
+      
+      return presentations;
    }
 
    public Collection getAllPresentationTemplates() {
@@ -1703,7 +1711,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          return new ArrayList();
       }
    }
+   public Collection getAllPresentationLayouts() {
 
+            return getHibernateTemplate().find("from PresentationLayout");
+
+   }
    public void viewingPresentation(Presentation presentation) {
       // go through and setup all pres and pres template files for read access
       List readableFiles = new ArrayList();

@@ -54,6 +54,8 @@ public class PortalManagerImpl implements PortalManager {
    private IdManager idManager;
    private org.sakaiproject.metaobj.security.AuthorizationFacade sakaiAuthzManager;
    private org.theospi.portfolio.security.AuthorizationFacade ospAuthzManager;
+   private boolean displayToolCategories = true;
+   private boolean displaySiteTypes = true;
 
    private Map siteTypes;
    private static final String TYPE_PREFIX = "org.theospi.portfolio.portal.";
@@ -230,14 +232,18 @@ public class PortalManagerImpl implements PortalManager {
 
          Collections.sort(categoryList);
 
+         Map newCategories = new HashMap();
+
          int index = 0;
          for (Iterator i=categoryList.iterator();i.hasNext();) {
             ToolCategory category = (ToolCategory) i.next();
+            Object oldValue = categories.get(category);
             category.setOrder(index);
             index++;
+            newCategories.put(category, oldValue);
          }
 
-         return categories;
+         return newCategories;
       }
       catch (IdUnusedException e) {
          throw new RuntimeException(e);
@@ -287,7 +293,7 @@ public class PortalManagerImpl implements PortalManager {
    protected ToolCategory[] findCategories(SitePage page, SiteType siteType, int index) {
       List tools = page.getTools();
 
-      if (tools.size() == 0) {
+      if (tools.size() == 0 || !isDisplayToolCategories()) {
          return createUncategorized(index);
       }
 
@@ -305,10 +311,10 @@ public class PortalManagerImpl implements PortalManager {
                Object key = category.getTools().get(toolId);
                if (key instanceof String) {
                   // no functions or authz to check here...
-                  toolCategories.add(category);
+                  toolCategories.add(new ToolCategory(category));
                }
                else if (hasAccess(page, tool, (ToolType)category.getTools().get(toolId))) {
-                  toolCategories.add(category);
+                  toolCategories.add(new ToolCategory(category));
                }
             }
          }
@@ -519,6 +525,22 @@ public class PortalManagerImpl implements PortalManager {
 
    public void setOspAuthzManager(org.theospi.portfolio.security.AuthorizationFacade ospAuthzManager) {
       this.ospAuthzManager = ospAuthzManager;
+   }
+
+   public boolean isDisplayToolCategories() {
+      return displayToolCategories;
+   }
+
+   public void setDisplayToolCategories(boolean displayToolCategories) {
+      this.displayToolCategories = displayToolCategories;
+   }
+
+   public boolean isDisplaySiteTypes() {
+      return displaySiteTypes;
+   }
+
+   public void setDisplaySiteTypes(boolean displaySiteTypes) {
+      this.displaySiteTypes = displaySiteTypes;
    }
 
    public IdManager getIdManager() {

@@ -126,6 +126,10 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
       return getHibernateTemplate().find("from Review where site_id=? ",
             siteId);
    }
+   
+   public List getReviews() {
+      return getHibernateTemplate().find("from Review");
+   }
 
    public Review getReview(String id) {
       return getReview(getIdManager().getId(id));

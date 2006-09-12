@@ -65,7 +65,7 @@
             </label>
             <c:set var="item" value="${status.value}"/>
             <table><tr>
-            <td><textarea id="longDescription" name="longDescription" rows="25" cols="80"><c:out value="${item}"/></textarea></td>
+            <td><textarea id="longDescription" name="longDescription" rows="25" cols="105"><c:out value="${item}"/></textarea></td>
             </tr></table>
         </div>
     </spring:bind>

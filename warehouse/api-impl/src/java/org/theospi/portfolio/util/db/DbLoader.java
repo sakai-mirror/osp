@@ -117,10 +117,8 @@ public class DbLoader {
     private Document tablesDoc;
     private Document tablesDocGeneric;
     private boolean createTableScript;
-    private boolean createContentScript;
     private boolean populateTables;
     private PrintWriter tableScriptOut;
-    private PrintWriter contentScriptOut;
     private boolean dropTables;
     private boolean createTables;
     private String dbName;
@@ -163,16 +161,10 @@ public class DbLoader {
             propertiesHandler.properties.setCreateTableScript(
                   ServerConfigurationService.getString("osp.datawarehouse.dbLoader.properties.createTableScript", 
                         propertiesHandler.properties.getCreateTableScript()));
-            propertiesHandler.properties.setCreateContentScript(
-                  ServerConfigurationService.getString("osp.datawarehouse.dbLoader.properties.createContentScript", 
-                        propertiesHandler.properties.getCreateContentScript()));
-            
+             
             propertiesHandler.properties.setTableScriptFileName(
                   ServerConfigurationService.getString("osp.datawarehouse.dbLoader.properties.tableScriptFileName", 
                         propertiesHandler.properties.getTableScriptFileName()));
-            propertiesHandler.properties.setContentScriptFileName(
-                  ServerConfigurationService.getString("osp.datawarehouse.dbLoader.properties.contentScriptFileName", 
-                        propertiesHandler.properties.getContentScriptFileName()));
             
            //print db info
             printInfo();
@@ -186,16 +178,9 @@ public class DbLoader {
 
 // Set up script
             createTableScript = Boolean.valueOf(propertiesHandler.properties.getCreateTableScript()).booleanValue();
-            createContentScript = Boolean.valueOf(propertiesHandler.properties.getCreateContentScript()).booleanValue();
-            
-            
-            
             
             if (createTableScript)
                 initTableScript();
-            
-            if (createContentScript)
-               initContentScript();
 
 // read command line arguements to override properties in dbloader.xml
 
@@ -287,28 +272,6 @@ public class DbLoader {
         }
         tableScriptOut = new PrintWriter(new BufferedWriter(new FileWriter(scriptFileName, true)), true);
     }
-    
-    protected void initContentScript() throws java.io.IOException {
-       String scriptFileName = System.getProperty("sakai.home") +propertiesHandler.properties.getContentScriptFileName();
-       //String scriptFileName = System.getProperty("sakai.home") +propertiesHandler.properties.getScriptFileName() + "." + System.currentTimeMillis();
-       //String scriptFileName = propertiesHandler.properties.getScriptFileName() + "." + System.currentTimeMillis();
-       //File scriptFile = new File(scriptFileName);
-       //if (scriptFile.exists())
-       //    scriptFile.delete();
-       //scriptFile.createNewFile();
-       //if (!scriptFile.exists())
-       //   scriptFile.createNewFile();
-       String initProperty = "osp.dw.initializedContent";
-       //CWM fix when the file gets refreshed
-       String inited = System.getProperty(initProperty);
-       if (inited == null) {
-          System.getProperties().setProperty(initProperty, "true");
-          File scriptFile = new File(scriptFileName);
-          if (scriptFile.exists())
-             scriptFile.delete();
-       }
-       contentScriptOut = new PrintWriter(new BufferedWriter(new FileWriter(scriptFileName, true)), true);
-   }
 
     protected void replaceDataTypes(Document tablesDoc) {
         Element tables = tablesDoc.getDocumentElement();
@@ -533,38 +496,40 @@ public class DbLoader {
     protected  void dropTable(String dropTableStatement) {
         if (createTableScript)
             tableScriptOut.println(dropTableStatement + propertiesHandler.properties.getStatementTerminator());
-
-        try {
-            stmt = con.createStatement();
-            try {
-                stmt.executeUpdate(dropTableStatement);
-            } catch (SQLException sqle) {/*Table didn't exist*/
-            }
-        } catch (Exception e) {
-            logger.error("Error in DbLoader.dropTable()", e);
-        } finally {
-            try {
-                stmt.close();
-            } catch (Exception e) {
-            }
+        else {
+           try {
+               stmt = con.createStatement();
+               try {
+                   stmt.executeUpdate(dropTableStatement);
+               } catch (SQLException sqle) {/*Table didn't exist*/
+               }
+           } catch (Exception e) {
+               logger.error("Error in DbLoader.dropTable()", e);
+           } finally {
+               try {
+                   stmt.close();
+               } catch (Exception e) {
+               }
+           }
         }
     }
 
     protected  void createTable(String createTableStatement) {
         if (createTableScript)
            tableScriptOut.println(createTableStatement + propertiesHandler.properties.getStatementTerminator());
-
-        try {
-            stmt = con.createStatement();
-            stmt.executeUpdate(createTableStatement);
-        } catch (Exception e) {
-            logger.error("error creating table with this sql: " + createTableStatement);
-            logger.error("", e);
-        } finally {
-            try {
-                stmt.close();
-            } catch (Exception e) {
-            }
+        else {
+           try {
+               stmt = con.createStatement();
+               stmt.executeUpdate(createTableStatement);
+           } catch (Exception e) {
+               logger.error("error creating table with this sql: " + createTableStatement);
+               logger.error("", e);
+           } finally {
+               try {
+                   stmt.close();
+               } catch (Exception e) {
+               }
+           }
         }
     }
 
@@ -573,35 +538,38 @@ public class DbLoader {
     protected  void alterTable( String alterTableStatement ) {
         if ( createTableScript )
            tableScriptOut.println( alterTableStatement + propertiesHandler.properties.getStatementTerminator() );
-        try {
-            stmt = con.createStatement();
-            stmt.executeUpdate( alterTableStatement );
-        } catch ( Exception e ) {
-           logger.error("error altering table with this sql: " + alterTableStatement);
-           logger.error("", e);
-        } finally {
-            try {
-                stmt.close();
-            } catch ( Exception e ) {
-            }
+        else {
+           try {
+               stmt = con.createStatement();
+               stmt.executeUpdate( alterTableStatement );
+           } catch ( Exception e ) {
+              logger.error("error altering table with this sql: " + alterTableStatement);
+              logger.error("", e);
+           } finally {
+               try {
+                   stmt.close();
+               } catch ( Exception e ) {
+               }
+           }
         }
     }
 
     protected  void indexTable( String indexTableStatement ) {
         if ( createTableScript )
            tableScriptOut.println( indexTableStatement + propertiesHandler.properties.getStatementTerminator() );
-
-        try {
-            stmt = con.createStatement();
-            stmt.executeUpdate( indexTableStatement );
-        } catch ( Exception e ) {
-           logger.error("error indexing table with this sql: " + indexTableStatement);
-           logger.error("", e);
-        } finally {
-            try {
-                stmt.close();
-            } catch ( Exception e ) {
-            }
+        else {
+           try {
+               stmt = con.createStatement();
+               stmt.executeUpdate( indexTableStatement );
+           } catch ( Exception e ) {
+              logger.error("error indexing table with this sql: " + indexTableStatement);
+              logger.error("", e);
+           } finally {
+               try {
+                   stmt.close();
+               } catch ( Exception e ) {
+               }
+           }
         }
     }
 
@@ -645,12 +613,8 @@ public class DbLoader {
                 properties.setPopulateTables(charBuff.toString());
             else if (qName.equals("create-table-script")) // create table script ("true" or "false")
                 properties.setCreateTableScript(charBuff.toString());
-            else if (qName.equals("create-content-script")) // create content script ("true" or "false")
-               properties.setCreateContentScript(charBuff.toString());
             else if (qName.equals("table-script-file-name")) // script file name
                 properties.setTableScriptFileName(charBuff.toString());
-            else if (qName.equals("content-script-file-name")) // script file name
-               properties.setContentScriptFileName(charBuff.toString());
             else if (qName.equals("statement-terminator")) // statement terminator
                 properties.setStatementTerminator(charBuff.toString());
             else if (qName.equals("db-type-mapping"))
@@ -684,9 +648,7 @@ public class DbLoader {
             private String createTables;
             private String populateTables;
             private String createTableScript;
-            private String createContentScript;
             private String tableScriptFileName;
-            private String contentScriptFileName;
             private String statementTerminator;
             private ArrayList dbTypeMappings = new ArrayList();
 
@@ -708,18 +670,10 @@ public class DbLoader {
             public String getCreateTableScript() {
                 return createTableScript;
             }
-
-            public String getCreateContentScript() {
-               return createContentScript;
-           }
             
             public String getTableScriptFileName() {
                 return tableScriptFileName;
             }
-
-            public String getContentScriptFileName() {
-               return contentScriptFileName;
-           }
             
             public String getStatementTerminator() {
                 return statementTerminator;
@@ -744,18 +698,10 @@ public class DbLoader {
             public void setCreateTableScript(String createTableScript) {
                 this.createTableScript = createTableScript;
             }
-
-            public void setCreateContentScript(String createContentScript) {
-               this.createContentScript = createContentScript;
-           }
             
             public void setTableScriptFileName(String tableScriptFileName) {
                 this.tableScriptFileName = tableScriptFileName;
             }
-
-            public void setContentScriptFileName(String contentScriptFileName) {
-               this.contentScriptFileName = contentScriptFileName;
-           }
             
             public void setStatementTerminator(String statementTerminator) {
                 this.statementTerminator = statementTerminator;
@@ -1151,13 +1097,13 @@ public class DbLoader {
         }
 
         private void executeSQL(Table table, Row row, String action) {
-            if (createContentScript) {
+            if (createTableScript) {
                 if (action.equals("delete"))
-                   contentScriptOut.println(prepareDeleteStatement(row, false) + propertiesHandler.properties.getStatementTerminator());
+                   tableScriptOut.println(prepareDeleteStatement(row, false) + propertiesHandler.properties.getStatementTerminator());
                 else if (action.equals("modify"))
-                   contentScriptOut.println(prepareUpdateStatement(row, false) + propertiesHandler.properties.getStatementTerminator());
+                   tableScriptOut.println(prepareUpdateStatement(row, false) + propertiesHandler.properties.getStatementTerminator());
                 else if (action.equals("insert"))
-                   contentScriptOut.println(prepareInsertStatement(row, false) + propertiesHandler.properties.getStatementTerminator());
+                   tableScriptOut.println(prepareInsertStatement(row, false) + propertiesHandler.properties.getStatementTerminator());
             }
 
             if (supportsPreparedStatements) {
@@ -1426,14 +1372,6 @@ public class DbLoader {
 
    public void setTableScriptOut(PrintWriter tableScriptOut) {
       this.tableScriptOut = tableScriptOut;
-   }
-
-   public PrintWriter getContentScriptOut() {
-      return contentScriptOut;
-   }
-
-   public void setContentScriptOut(PrintWriter contentScriptOut) {
-      this.contentScriptOut = contentScriptOut;
    }
    
    public boolean isDropTables() {

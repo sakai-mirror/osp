@@ -235,7 +235,9 @@ public interface PresentationManager extends CleanupableService {
    
    public Document createDocument(Presentation presentation);
 
-   public Collection getAllPresentations();
+   public Collection getAllPresentationsForWarehouse();
+
+   public Collection getAllPresentationLayouts();
 
    public Collection getAllPresentationTemplates();
 
