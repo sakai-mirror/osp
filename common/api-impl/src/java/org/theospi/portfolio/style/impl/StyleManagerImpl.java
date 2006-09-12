@@ -176,18 +176,16 @@ public class StyleManagerImpl extends HibernateDaoSupport
    }
    
    public Collection findSiteStyles(String currentWorksiteId) {
-      String query = "from Style s where s.siteId = ? and s.owner = ? ";
       Object[] params = new Object[]{currentWorksiteId,
-                                     getAuthnManager().getAgent().getId().getValue()};
-      return getHibernateTemplate().find(query, params);
+                                     getAuthnManager().getAgent()};
+      return getHibernateTemplate().findByNamedQuery("findSiteStyles", params);
    }
    
    public Collection findPublishedStyles(String currentWorksiteId) {
-      String query = "from Style s where s.globalState = ? or (s.siteId = ? and s.owner = ? ) ";
       Object[] params = new Object[]{new Integer(Style.STATE_PUBLISHED),
                                      currentWorksiteId,
-                                     getAuthnManager().getAgent().getId().getValue()};
-      return getHibernateTemplate().find(query, params);
+                                     getAuthnManager().getAgent()};
+      return getHibernateTemplate().findByNamedQuery("findPublishedStyles", params);
    }
    
    protected String buildGlobalSiteList() {
@@ -216,13 +214,8 @@ public class StyleManagerImpl extends HibernateDaoSupport
       String query = "from Style s where ((s.siteId in " + buildGlobalSiteList() + 
             " and (s.globalState = ? or s.owner = ?)) or s.globalState = 1)";
       Object[] params = new Object[]{new Integer(Style.STATE_PUBLISHED),
-                                     agent.getId().getValue()};
+                                     agent};
       return getHibernateTemplate().find(query, params);
-   }
-   
-   public Collection findStylesByOwner(Agent owner, String siteId) {
-      return getHibernateTemplate().find("from Style where owner_id=? and site_id=? Order by name",
-            new Object[]{owner.getId().getValue(), siteId});
    }
    
    public boolean isGlobal() {
@@ -309,7 +302,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
    
    public Collection getStylesForWarehouse()
    {
-      return getHibernateTemplate().find("from Style s");
+      return getHibernateTemplate().findByNamedQuery("findStyles");
    }
    
    public void packageStyleForExport(Set styleIds, OutputStream os) throws IOException {

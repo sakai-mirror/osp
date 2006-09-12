@@ -18,4 +18,16 @@
       <property name="modified" type="java.util.Date" update="true" not-null="true"/>
    </class> 
    
+   <query name="findSiteStyles">
+      from Style s where s.siteId = ? and s.owner = ? 
+   </query>
+   
+   <query name="findPublishedStyles">
+      from Style s where s.globalState = ? or (s.siteId = ? and s.owner = ? ) 
+   </query>
+   
+   <query name="findStyles">
+      from Style s
+   </query>
+   
 </hibernate-mapping>
