@@ -2180,7 +2180,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public List getPresentationPagesByPresentation(Id presentationId) {
       return getHibernateTemplate().find(
             "from PresentationPage page where page.presentation.id=? order by seq_num",
-            new Object[]{presentationId.getValue()});
+            new Object[]{presentationId});
    }
 
    public void deletePresentationLayout(final Id id) {
