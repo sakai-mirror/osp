@@ -404,7 +404,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    public List listWizardsByType(String owner, String siteId, String type) {
-      Object[] params = new Object[]{owner, new Boolean(true), siteId, type};
+      Object[] params = new Object[]{getAgentManager().getAgent(owner), new Boolean(true), siteId, type};
       return getHibernateTemplate().find("from Wizard w where " +
             "(w.owner=? or w.published=?) and w.siteId=? and w.type=? order by seq_num", params);
    }
@@ -443,7 +443,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
    
    public List findWizardsByOwner(String ownerId, String siteId) {
-      Object[] params = new Object[]{ownerId, siteId};
+      Object[] params = new Object[]{getAgentManager().getAgent(ownerId), siteId};
       return getHibernateTemplate().find("from Wizard w where w.owner=? and w.siteId=? order by seq_num", params);
    }
 
@@ -472,7 +472,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    
    protected List getCompletedWizards(Wizard wizard) {
       List completedWizards = getHibernateTemplate().find(" from CompletedWizard cw where cw.wizard.id=?",
-            new Object[]{wizard.getId().getValue()});
+            new Object[]{wizard.getId()});
       return completedWizards;
    }
 
@@ -505,7 +505,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    
    public CompletedWizard getCompletedWizardByPage(Id pageId) {
       CompletedWizard cw = null;
-      Object[] params = new Object[]{pageId.getValue()};
+      Object[] params = new Object[]{pageId};
       List list = getHibernateTemplate().find("select w.category.wizard from CompletedWizardPage w " +
             "where w.wizardPage.id=?", params);
       
@@ -527,7 +527,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public CompletedWizard getUsersWizard(Wizard wizard, Agent agent, boolean create) {
       List completedWizards = getHibernateTemplate().find(" from CompletedWizard where wizard_id=? and owner_id=?",
-            new Object[]{wizard.getId().getValue(), agent.getId().getValue()});
+            new Object[]{wizard.getId(), agent.getId().getValue()});
 
       CompletedWizard returned;
       if (completedWizards.size() != 0) {
@@ -1707,7 +1707,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    
    public WizardPageSequence getWizardPageSeqByDef(Id id) {
       WizardPageSequence wps = null;
-      Object[] params = new Object[]{id.getValue()};
+      Object[] params = new Object[]{id};
       List seqs = getHibernateTemplate().find("from WizardPageSequence w where w.wizardPageDefinition.id=?", params);
       if (seqs.size() > 0) {
          wps = (WizardPageSequence)seqs.get(0);
@@ -1717,8 +1717,8 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
    
    public List getCompletedWizardPagesByPageDef(Id id) {
-      Object[] params = new Object[]{id.getValue()};
-      return getHibernateTemplate().find("from CompletedWizardPage w where w.wizardPageDefinition.wizardPageDefinition=?", params);
+      Object[] params = new Object[]{id};
+      return getHibernateTemplate().find("from CompletedWizardPage w where w.wizardPageDefinition.wizardPageDefinition.id=?", params);
    }
 
 
@@ -2030,7 +2030,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
    
    protected List getWizardsByStyle(Id styleId) {
-      Object[] params = new Object[]{styleId.getValue()};
+      Object[] params = new Object[]{styleId};
       return getHibernateTemplate().find("from Wizard w where w.style.id=? " , 
                params);
    }
