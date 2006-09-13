@@ -165,14 +165,18 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     * @param userId String
     * @return List of Scaffolding
     */
-   public List findScaffolding(String siteId, String userId) {
-      if (userId == null)
-         userId = "%";
+   public List findScaffolding(String siteIdStr, String userId) {
       
-      Object[] params = new Object[]{siteId, userId};
-      return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
-            "and s.owner like ? ", 
-            params);
+      if (userId == null || userId.equals("%")) {
+         Object[] params = new Object[]{getIdManager().getId(siteIdStr)};
+         return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? ", params);
+      } else {
+         Agent agent = getAgentManager().getAgent(userId);
+      
+         Object[] params = new Object[]{getIdManager().getId(siteIdStr), agent};
+         return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
+               "and s.owner like ? ", params);
+      }
    }
    
    /**
@@ -181,7 +185,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     * @return List of Scaffolding
     */
    protected List findPublishedScaffolding(String siteId) {
-      Object[] params = new Object[]{siteId, new Boolean(true)};
+      Object[] params = new Object[]{getIdManager().getId(siteId), new Boolean(true)};
       return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
             "and s.published=?",
             params);
@@ -232,40 +236,41 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public List getMatrices(Id scaffoldingId) {
       List matrices = getHibernateTemplate().find(
-            "from Matrix matrix where matrix.scaffolding_id = ?", new Object[]{scaffoldingId.getValue()});
+            "from Matrix matrix where matrix.scaffolding_id = ?", new Object[]{scaffoldingId});
 
       return matrices;
    }
 
    public List getCellsByScaffoldingCell(Id scaffoldingCellId) {
-      List list = getHibernateTemplate().find("from Cell cell where cell.scaffoldingCell.id=?", scaffoldingCellId.getValue());
+      List list = getHibernateTemplate().find("from Cell cell where cell.scaffoldingCell.id=?", scaffoldingCellId);
       return list;
    }
    
    public List getPagesByPageDef(Id pageDefId) {
-      List list = getHibernateTemplate().find("from WizardPage page where page.pageDefinition.id=?", pageDefId.getValue());
+      List list = getHibernateTemplate().find("from WizardPage page where page.pageDefinition.id=?", pageDefId);
       return list;
    }
    
    public List getMatrices(Id scaffoldingId, Id agentId) {
-      String scaffId;
-      String ownerId;
+      String query = "from Matrix matrix";
+      Object[] params = new Object[]{};
 
-      if (scaffoldingId == null)
-         scaffId = "%";
-      else
-         scaffId = scaffoldingId.getValue();
+      if (scaffoldingId == null && agentId == null) {
+      } else if(scaffoldingId == null) {
+         query += " where matrix.owner like ?";
+         params = new Object[]{getAgentManager().getAgent(agentId)};
+      } else if (agentId == null) {
+         query += " where matrix.scaffolding.id like ?";
+         params = new Object[]{scaffoldingId};
+      } else {
+         query += " where matrix.scaffolding.id like ? and matrix.owner like ?";
+         params = new Object[]{scaffoldingId, getAgentManager().getAgent(agentId)};
+      }
 
-      if (agentId == null)
-         ownerId = "%";
-      else
-         ownerId = agentId.getValue();
-
-      Object[] params = new Object[]{scaffId, ownerId};
       //TODO move this into a callback
       getHibernateTemplate().setCacheQueries(true);
 
-      List list = getHibernateTemplate().find("from Matrix matrix where matrix.scaffolding like ? and matrix.owner like ?", params);
+      List list = getHibernateTemplate().find(query, params);
 
       return list;
    }
@@ -282,15 +287,15 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public List getCells(Matrix matrix) {
       getHibernateTemplate().setCacheQueries(true);
       return getHibernateTemplate().find("from Cell cell where cell.matrix.id=?",
-            matrix.getId().getValue());
+            matrix.getId());
       
    }
 
    public Cell getCell(Matrix matrix, Criterion rootCriterion, Level level) {
       //TODO should be something easier for this HQL
       
-      Object[] params = new Object[]{matrix.getId().getValue(),
-                                     rootCriterion.getId().getValue(), level.getId().getValue()};
+      Object[] params = new Object[]{matrix.getId(),
+                                     rootCriterion.getId(), level.getId()};
       getHibernateTemplate().setCacheQueries(true);
       List list = getHibernateTemplate()
             .find("from Cell cell where cell.matrix.id=? and cell.scaffoldingCell.rootCriterion.id=? and cell.scaffoldingCell.level.id=?",
@@ -579,10 +584,10 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    
    public Matrix getMatrixByPage(Id pageId) {
       Matrix matrix = null;
-      Object[] params = new Object[]{pageId.getValue()};
+      Object[] params = new Object[]{pageId};
       
       List list = this.getHibernateTemplate().find("select cell.matrix from " +
-            "Cell cell where cell.wizardPage=? ", params);
+            "Cell cell where cell.wizardPage.id=? ", params);
       if (list.size() == 1) {
          matrix = (Matrix) list.get(0);
       }
@@ -654,14 +659,14 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
    
    protected List getScaffoldingByStyle(Id styleId) {
-      Object[] params = new Object[]{styleId.getValue()};
+      Object[] params = new Object[]{styleId};
       return getHibernateTemplate().find("from Scaffolding s where s.style.id=? " , 
                params);
       
    }
    
    protected List getWizardPageDefByStyle(Id styleId) {
-      Object[] params = new Object[]{styleId.getValue()};
+      Object[] params = new Object[]{styleId};
       return getHibernateTemplate().find("from WizardPageDefinition wpd where wpd.style.id=? " , 
                params);
       
@@ -669,12 +674,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    
    public ScaffoldingCell getScaffoldingCell(Criterion criterion, Level level) {
       ScaffoldingCell scaffoldingCell = null;
-      Object[] params = new Object[]{criterion.getId().getValue(), 
-            level.getId().getValue()};
+      Object[] params = new Object[]{criterion.getId(), 
+            level.getId()};
       
       List list = this.getHibernateTemplate().find("from " +
-            "ScaffoldingCell scaffoldingCell where scaffoldingCell.rootCriterion=? " +
-            "and scaffoldingCell.level=?", params);
+            "ScaffoldingCell scaffoldingCell where scaffoldingCell.rootCriterion.id=? " +
+            "and scaffoldingCell.level.id=?", params);
       if (list.size() == 1) {
          scaffoldingCell = (ScaffoldingCell) list.get(0);
       }
@@ -709,7 +714,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    
    public ScaffoldingCell getScaffoldingCellByWizardPageDef(Id id) {
       ScaffoldingCell scaffoldingCell = null;
-      Object[] params = new Object[]{id.getValue()};
+      Object[] params = new Object[]{id};
       
       List list = this.getHibernateTemplate().find("from " +
             "ScaffoldingCell scaffoldingCell where scaffoldingCell.wizardPageDefinition.id=?", 
@@ -1051,7 +1056,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             " and wp.pageDefinition.siteId=?",
          new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
             MatrixFunctionConstants.PENDING_STATUS,
-            agent.getId().getValue(), role.getId().getValue(),
+            agent, role,
             worksiteId.getValue()});
 
       return returned;
@@ -1072,7 +1077,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             " and cwp.wizardPage.pageDefinition.siteId=?",
          new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
             MatrixFunctionConstants.PENDING_STATUS,
-            agent.getId().getValue(), role.getId().getValue(),
+            agent, role,
             worksiteId.getValue()});
       
       return wizardPages;
@@ -1093,7 +1098,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             " and cw.wizard.siteId=?",
          new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
             MatrixFunctionConstants.PENDING_STATUS,
-            agent.getId().getValue(), role.getId().getValue(),
+            agent, role,
             worksiteId.getValue()});
       return wizards;
    }
