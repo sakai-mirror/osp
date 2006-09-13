@@ -21,7 +21,6 @@
 package org.theospi.portfolio.workflow.impl;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.authz.api.SecurityService;
@@ -94,11 +93,6 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
    public Reference decorateReference(Workflow workflow, String reference) {
       // TODO Auto-generated method stub
       return null;
-   }
-
-   public List listWorkflows(String siteId) {
-      return getHibernateTemplate().find("from Workflow where site_id=? ",
-            siteId);
    }
 
    public Workflow getWorkflow(String id) {

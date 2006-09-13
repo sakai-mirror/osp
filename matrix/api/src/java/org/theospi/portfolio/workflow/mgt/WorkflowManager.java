@@ -20,7 +20,6 @@
 **********************************************************************************/
 package org.theospi.portfolio.workflow.mgt;
 
-import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.entity.api.Reference;
@@ -43,8 +42,6 @@ public interface WorkflowManager {
    public void deleteWorkflow(Workflow workflow);
 
    public Reference decorateReference(Workflow workflow, String reference);
-
-   public List listWorkflows(String siteId);
 
    public Workflow getWorkflow(String id);
    
