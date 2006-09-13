@@ -195,4 +195,80 @@
       <property name="value" column="property_value" type="string" not-null="false"/>
    </class>
    
+   <query name="findPortfolioByTemplate">
+		from Presentation where template_id=?
+   </query>
+   
+   <query name="findPortfolioByOwner">
+		from Presentation where owner=? Order by name
+   </query>
+   
+   <query name="findPortfolioByOwnerAndTool">
+		from Presentation where owner=? and toolId=? Order by name
+   </query>
+
+   <query name="findTemplateByOwnerAndSite">
+		from PresentationTemplate where owner=? and siteId=? Order by name
+   </query>
+         
+   <query name="findTemplateByOwner">
+		from PresentationTemplate where owner=? Order by name
+   </query>
+      
+   <query name="findPublishedTemplates">
+		from PresentationTemplate where published=? and owner!=? Order by name
+   </query>
+      
+   <query name="findPublishedTemplatesBySite">
+		from PresentationTemplate where published=? and owner!=? and siteId=? Order by name
+   </query>
+      
+   <query name="findAllPublishedTemplatesBySite">
+		from PresentationTemplate where published=? and siteId=? Order by name
+   </query>
+      
+   <query name="findPortfolios">
+		from Presentation
+   </query>
+      
+   <query name="findTemplates">
+		from PresentationTemplate
+   </query>
+      
+   <query name="findLayouts">
+		from PresentationLayout
+   </query>
+      
+   <query name="findLogsByPortfolio">
+		from PresentationLog where presentation_id=? ORDER BY view_date DESC
+   </query>
+      
+   <query name="findLayoutsByOwner">
+		from PresentationLayout where owner=? and siteId=? Order by name
+   </query>
+      
+   <query name="findPublishedLayouts">
+		from PresentationLayout where globalState=? Order by name
+   </query>
+      
+   <query name="findGlobalLayouts">
+		from PresentationLayout where globalState=? or globalState=? Order by name
+   </query>
+      
+   <query name="findPortfolioPagesByPortfolio">
+		from PresentationPage page where page.presentation.id=? order by seq_num
+   </query>
+      
+   <query name="findPortfolioPagesByPortfolioAndSequence">
+		from PresentationPage page where page.presentation.id=? and page.sequence=?
+   </query>
+      
+   <query name="findPortfolioPagesByStyle">
+		from PresentationPage pp where pp.style.id=?
+   </query>
+      
+   <query name="findPortfoliosByStyle">
+		from Presentation p where p.style.id=? 
+   </query>
+   
 </hibernate-mapping>

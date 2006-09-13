@@ -358,7 +358,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       // first delete all presentations that use this template
       // this will delete all authorization as well
-      Collection presentations = getHibernateTemplate().find("from Presentation where template_id=?", id.getValue());
+      Collection presentations = getHibernateTemplate().findByNamedQuery("findPortfolioByTemplate", id.getValue());
       //Query q = getHibernateTemplate().
       for (Iterator i = presentations.iterator(); i.hasNext();) {
          //Presentation presentation = (Presentation) i.next();
@@ -618,34 +618,33 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }      
 
    public Collection findPresentationsByOwner(Agent owner) {
-      return getHibernateTemplate().find("from Presentation where owner_id=? Order by name",
-         owner.getId().getValue());
+      return getHibernateTemplate().findByNamedQuery("findPortfolioByOwner",
+         owner);
    }
 
    public Collection findPresentationsByOwner(Agent owner, String toolId) {
-      return getHibernateTemplate().find("from Presentation where owner_id=? and tool_id=? Order by name",
-            new Object[]{owner.getId().getValue(), toolId});
+      return getHibernateTemplate().findByNamedQuery("findPortfolioByOwnerAndTool",
+            new Object[]{owner, toolId});
    }
 
    public Collection findTemplatesByOwner(Agent owner, String siteId) {
-      return getHibernateTemplate().find("from PresentationTemplate where owner_id=? and site_id=? Order by name",
-            new Object[]{owner.getId().getValue(), siteId});
+      return getHibernateTemplate().findByNamedQuery("findTemplateByOwnerAndSite",
+            new Object[]{owner, siteId});
    }
 
 
    public Collection findTemplatesByOwner(Agent owner) {
-      return getHibernateTemplate().find("from PresentationTemplate where owner_id=? Order by name", owner.getId().getValue());
+      return getHibernateTemplate().findByNamedQuery("findTemplateByOwner", owner);
    }
 
    public Collection findPublishedTemplates() {
-      return getHibernateTemplate().find("from PresentationTemplate where published=? and owner_id!=? Order by name",
-         new Object[]{new Boolean(true), getAuthnManager().getAgent().getId().getValue()});
+      return getHibernateTemplate().findByNamedQuery("findPublishedTemplates",
+         new Object[]{new Boolean(true), getAuthnManager().getAgent()});
    }
 
    public Collection findPublishedTemplates(String siteId) {
-      return getHibernateTemplate().find(
-         "from PresentationTemplate where published=? and owner_id!=? and site_id=? Order by name",
-         new Object[]{new Boolean(true), getAuthnManager().getAgent().getId().getValue(), siteId});
+      return getHibernateTemplate().findByNamedQuery("findPublishedTemplatesBySite",
+         new Object[]{new Boolean(true), getAuthnManager().getAgent(), siteId});
    }
 
    public Collection findGlobalTemplates() {
@@ -663,8 +662,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    protected Collection findPublishedTemplatesBySite(String siteId) {
-      return getHibernateTemplate().find(
-         "from PresentationTemplate where published=? and site_id=? Order by name",
+      return getHibernateTemplate().findByNamedQuery(
+         "findAllPublishedTemplatesBySite",
          new Object[]{new Boolean(true), siteId});
    }
    
@@ -1678,7 +1677,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    public Collection getAllPresentationsForWarehouse() {
-      Collection presentations = getHibernateTemplate().find("from Presentation");
+      Collection presentations = getHibernateTemplate().findByNamedQuery("findPortfolios");
       //need to load up all of the pages, since hibernate isn't linking them.
       for (Iterator i = presentations.iterator(); i.hasNext();) {
          Presentation presentation = (Presentation) i.next();
@@ -1692,7 +1691,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public Collection getAllPresentationTemplates() {
       HibernateCallback callback = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
-            List templates = getHibernateTemplate().find("from PresentationTemplate");
+            List templates = getHibernateTemplate().findByNamedQuery("findTemplates");
             for (Iterator i = templates.iterator();i.hasNext();) {
                PresentationTemplate template = (PresentationTemplate) i.next();
                for (Iterator j = template.getItems().iterator();j.hasNext();) {
@@ -1713,7 +1712,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
    public Collection getAllPresentationLayouts() {
 
-            return getHibernateTemplate().find("from PresentationLayout");
+            return getHibernateTemplate().findByNamedQuery("findLayouts");
 
    }
    public void viewingPresentation(Presentation presentation) {
@@ -1799,7 +1798,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    public Collection findLogsByPresID(Id presID) {
-      return getHibernateTemplate().find("from PresentationLog where presentation_id=? ORDER BY view_date DESC", presID.getValue());
+      return getHibernateTemplate().findByNamedQuery("findLogsByPortfolio", presID.getValue());
    }
 
    public TemplateFileRef getTemplateFileRef(Id refId) {
@@ -2111,19 +2110,17 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    
    
    public Collection findLayoutsByOwner(Agent owner, String siteId) {
-      return getHibernateTemplate().find("from PresentationLayout where owner_id=? and site_id=? Order by name",
-            new Object[]{owner.getId().getValue(), siteId});
+      return getHibernateTemplate().findByNamedQuery("findLayoutsByOwner",
+            new Object[]{owner, siteId});
    }
 
    public Collection findMyGlobalLayouts() {
-      return getHibernateTemplate().find(
-         "from PresentationLayout where globalState=? Order by name",
+      return getHibernateTemplate().findByNamedQuery("findPublishedLayouts",
          new Object[]{new Integer(PresentationLayout.STATE_PUBLISHED)});
    }
 
    public Collection findAllGlobalLayouts() {
-      return getHibernateTemplate().find(
-         "from PresentationLayout where globalState=? or globalState=? Order by name",
+      return getHibernateTemplate().findByNamedQuery("findGlobalLayouts",
          new Object[]{new Integer(PresentationLayout.STATE_PUBLISHED), new Integer(PresentationLayout.STATE_WAITING_APPROVAL)});
    }
    
@@ -2178,8 +2175,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
    
    public List getPresentationPagesByPresentation(Id presentationId) {
-      return getHibernateTemplate().find(
-            "from PresentationPage page where page.presentation.id=? order by seq_num",
+      return getHibernateTemplate().findByNamedQuery(
+            "findPortfolioPagesByPortfolio",
             new Object[]{presentationId});
    }
 
@@ -2235,10 +2232,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
    
    public PresentationPage getPresentationPage(Id presentationId, int pageIndex) {
-      String query = "from PresentationPage page where page.presentation.id=? and page.sequence=? ";
-
-      List pages = getHibernateTemplate().find(query, 
-            new Object[]{presentationId.getValue(), new Integer(pageIndex)});
+      List pages = getHibernateTemplate().findByNamedQuery("findPortfolioPagesByPortfolioAndSequence", 
+            new Object[]{presentationId, new Integer(pageIndex)});
 
       return (PresentationPage)pages.get(0);
    }
@@ -2725,14 +2720,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    protected List getPresentationPagesByStyle(Id styleId) {
-      Object[] params = new Object[]{styleId.getValue()};
-      return getHibernateTemplate().find("from PresentationPage pp where pp.style.id=? " , 
+      Object[] params = new Object[]{styleId};
+      return getHibernateTemplate().findByNamedQuery("findPortfolioPagesByStyle", 
                params);
    }
    
    protected List getPresentationsByStyle(Id styleId) {
-      Object[] params = new Object[]{styleId.getValue()};
-      return getHibernateTemplate().find("from Presentation p where p.style.id=? " , 
+      Object[] params = new Object[]{styleId};
+      return getHibernateTemplate().findByNamedQuery("findPortfoliosByStyle", 
                params);
    }
    
