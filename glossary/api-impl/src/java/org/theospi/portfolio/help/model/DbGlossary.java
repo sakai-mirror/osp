@@ -71,8 +71,8 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
    }
 
    protected GlossaryDescription loadDescription(Id entryId) {
-      Collection entries = getHibernateTemplate().find("from GlossaryDescription where entry_id = ?",
-         entryId.getValue());
+      Collection entries = getHibernateTemplate().findByNamedQuery("loadDescription",
+         entryId);
 
       if (entries.size() > 0) {
          return (GlossaryDescription)entries.iterator().next();
@@ -90,8 +90,7 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
     * @return
     */
    public GlossaryEntry find(String keyword, String worksite) {
-      Collection entries = getHibernateTemplate().find("from GlossaryEntry where lower(term)=lower(?) AND " +
-         "(worksite_id=? or worksite_id is null)", new Object[]{keyword, worksite});
+      Collection entries = getHibernateTemplate().findByNamedQuery("findTerms", new Object[]{keyword, worksite});
       if (entries.size() == 0) {
          return null;
       }
@@ -117,8 +116,7 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
     */
    
    public Collection findAll(String keyword, String worksite) {
-      return getHibernateTemplate().find("from GlossaryEntry where lower(term)=lower(?) AND " +
-            "(worksite_id=? or worksite_id is null)", new Object[]{keyword, worksite});
+      return getHibernateTemplate().findByNamedQuery("findTerms", new Object[]{keyword, worksite});
    }
 
    /**
@@ -127,16 +125,16 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
     * @return
     */
    public Collection findAll(String worksite) {
-      return getHibernateTemplate().find("from GlossaryEntry where worksite_id=? Order by term",
+      return getHibernateTemplate().findByNamedQuery("findAllSiteTerms",
          new Object[]{worksite});
    }
 
    public Collection findAll() {
-      return getHibernateTemplate().find("from GlossaryEntry Order by term");
+      return getHibernateTemplate().findByNamedQuery("findAllTerms");
    }
 
    public Collection findAllGlobal() {
-      return getHibernateTemplate().find("from GlossaryEntry where worksite_id is null Order by term");
+      return getHibernateTemplate().findByNamedQuery("findGlobalTerms");
    }
 
    public GlossaryEntry addEntry(GlossaryEntry newEntry) {
@@ -198,8 +196,7 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
 
    public boolean isPhraseStart(String phraseFragment, String worksite) {
       phraseFragment += "%";
-      Collection entries = getHibernateTemplate().find("from GlossaryEntry where term like(?) AND " +
-         "(worksite_id=? or worksite_id is null)", new Object[]{phraseFragment, worksite});
+      Collection entries = getHibernateTemplate().findByNamedQuery("findByPhrase", new Object[]{phraseFragment, worksite});
       if (entries.size() > 0) {
          return true;
       }

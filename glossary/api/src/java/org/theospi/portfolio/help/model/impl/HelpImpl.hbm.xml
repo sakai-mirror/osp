@@ -20,6 +20,31 @@
       <property name="entryId" column="entry_id" type="org.sakaiproject.metaobj.shared.IdType"/>
       <property name="longDescription" column="long_description" type="text" />
    </class>
+   
+   
+   <query name="loadDescription">
+      from GlossaryDescription where entryId = ?
+   </query>
+   
+   <query name="findTerms">
+      from GlossaryEntry where lower(term)=lower(?) AND (worksite_id=? or worksite_id is null)
+   </query>
+   
+	<query name="findAllSiteTerms">
+      from GlossaryEntry where worksite_id=? Order by term
+   </query>
+   
+	<query name="findAllTerms">
+      from GlossaryEntry Order by term
+   </query>
+   
+	<query name="findGlobalTerms">
+		from GlossaryEntry where worksite_id is null Order by term
+   </query>
+   
+	<query name="findByPhrase">
+		from GlossaryEntry where term like(?) AND (worksite_id=? or worksite_id is null)
+   </query>   
 
 </hibernate-mapping>
 
