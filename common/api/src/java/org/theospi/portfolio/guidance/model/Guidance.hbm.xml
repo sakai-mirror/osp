@@ -46,5 +46,14 @@
       <property name="fullReference" type="org.theospi.portfolio.shared.mgt.EntityReferenceUserType" />
       <many-to-one name="item" column="item_id" not-null="true" class="GuidanceItem"/>
    </class>
+   
+   
+   <query name="listGuidancesBySite">
+      from Guidance where siteId=? 
+   </query>
+   
+   <query name="listGuidances">
+      from Guidance
+   </query>
 
 </hibernate-mapping>

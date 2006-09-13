@@ -201,8 +201,7 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
    }
 
    public List listGuidances(String siteId) {
-      return getHibernateTemplate().find("from Guidance where site_id=? ",
-         siteId);
+      return getHibernateTemplate().findByNamedQuery("listGuidancesBySite", siteId);
    }
 
    public Guidance getGuidance(String id) {
@@ -537,7 +536,7 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
     */
    public List getGuidanceForWarehousing()
    {
-      List guidance = getHibernateTemplate().find("from Guidance");
+      List guidance = getHibernateTemplate().findByNamedQuery("listGuidances");
       
       for(Iterator i = guidance.iterator(); i.hasNext(); ) {
          Guidance w = (Guidance)i.next();
