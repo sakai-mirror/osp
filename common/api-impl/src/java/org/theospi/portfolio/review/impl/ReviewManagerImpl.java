@@ -78,21 +78,21 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
    
    public List getReviewsByParent(String parentId) {
       Object[] params = new Object[]{parentId};
-      return getHibernateTemplate().find("from Review r where r.parent=? ", params);
+      return getHibernateTemplate().findByNamedQuery("getReviewsByParent", params);
    }
    
    public List getReviewsByParent(String parentId, String siteId, String producer) {
       Object[] params = new Object[]{parentId};
-      return getReviewsByParent("from Review r where r.parent=? ", params, parentId, siteId, producer);
+      return getReviewsByParent("getReviewsByParent", params, parentId, siteId, producer);
    }
    
    public List getReviewsByParentAndType(String parentId, int type, String siteId, String producer) {
       Object[] params = new Object[]{parentId, new Integer(type)};
-      return getReviewsByParent("from Review r where r.parent=? and r.type=? ", params, parentId, siteId, producer);
+      return getReviewsByParent("getReviewsByParentAndType", params, parentId, siteId, producer);
    }
    
-   protected List getReviewsByParent(String sql, Object[] params, String parentId, String siteId, String producer) {
-      List reviews = getHibernateTemplate().find(sql, params);
+   protected List getReviewsByParent(String query, Object[] params, String parentId, String siteId, String producer) {
+      List reviews = getHibernateTemplate().findByNamedQuery(query, params);
       for (Iterator i = reviews.iterator(); i.hasNext();) {
          Review review = (Review) i.next();
          Node node = getNode(review.getReviewContent(), parentId, siteId, producer);
@@ -123,12 +123,12 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
    }
 
    public List listReviews(String siteId) {
-      return getHibernateTemplate().find("from Review where site_id=? ",
+      return getHibernateTemplate().findByNamedQuery("getReviewsBySite",
             siteId);
    }
    
    public List getReviews() {
-      return getHibernateTemplate().find("from Review");
+      return getHibernateTemplate().findByNamedQuery("getReviews");
    }
 
    public Review getReview(String id) {

@@ -16,5 +16,20 @@
       <property name="type" type="int" column="review_type" not-null="true"/>
    </class>
 
+   <query name="getReviewsByParent">
+      from Review r where r.parent=? 
+   </query>
+
+   <query name="getReviewsByParentAndType">
+      from Review r where r.parent=? and r.type=? 
+   </query>
+
+   <query name="getReviewsBySite">
+      from Review r where r.siteId=? 
+   </query>
+
+   <query name="getReviews">
+      from Review
+   </query>
    
 </hibernate-mapping>
