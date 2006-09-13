@@ -184,12 +184,12 @@ public class SiteEventListener extends HibernateDaoSupport implements Observer {
    }
 
    protected Collection getSiteTool(String siteId, String toolId) {
-      return getHibernateTemplate().find("from SiteTool where site_id=? and tool_id=?",
+      return getHibernateTemplate().findByNamedQuery("bySiteAndTool",
          new Object[]{siteId, toolId});
    }
 
    protected Collection getSiteTools(String siteId) {
-      return getHibernateTemplate().find("from SiteTool where site_id=?", siteId);
+      return getHibernateTemplate().findByNamedQuery("bySite", siteId);
    }
 
    public ComponentManager getComponentManager() {

@@ -13,5 +13,13 @@
       <property name="toolId" length="36" column="tool_id" not-null="false"/>
       <property name="listenerId" column="listener_id" not-null="false"/>                  
    </class>
+   
+   <query name="bySiteAndTool">
+      from SiteTool where site_id=? and tool_id=?
+   </query>
+   
+   <query name="bySite">
+      from SiteTool where site_id=?
+   </query>
 
 </hibernate-mapping>
