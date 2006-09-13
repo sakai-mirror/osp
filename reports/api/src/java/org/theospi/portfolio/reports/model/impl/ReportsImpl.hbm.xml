@@ -144,5 +144,16 @@
         <property name="xml" type="text" />
     </class>
     
+    <query name="findResultsByUser">
+		from ReportResult r WHERE r.userId=?
+   </query>
+    
+    <query name="findReportsByUser">
+		from Report r WHERE r.userId=? AND r.isLive=1 AND r.display=1
+   </query>
+    
+    <query name="findResultsByReport">
+		from ReportResult rr WHERE rr.report=?
+   </query>
     
 </hibernate-mapping>

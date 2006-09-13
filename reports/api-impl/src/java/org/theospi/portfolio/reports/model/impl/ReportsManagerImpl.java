@@ -299,7 +299,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		List returned = new ArrayList();
 
 		if (viewReports | runReports) {
-			List results = getHibernateTemplate().find("from ReportResult r WHERE r.userId=?", s.getUserId());
+			List results = getHibernateTemplate().findByNamedQuery("findResultsByUser", s.getUserId());
 
 			Iterator iter = results.iterator();
 			while(iter.hasNext()) {
@@ -311,7 +311,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		}
 
 		if (runReports) {
-			List liveReports = getHibernateTemplate().find("from Report r WHERE r.userId=? AND r.isLive=1 AND r.display=1", s.getUserId());
+			List liveReports = getHibernateTemplate().findByNamedQuery("findReportsByUser", s.getUserId());
 
 			Iterator iter = liveReports.iterator();
 			while(iter.hasNext()) {
@@ -1087,7 +1087,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
                   report.getReportId()
             );
        
-       List results = getHibernateTemplate().find("from ReportResult rr WHERE rr.report=?", 
+       List results = getHibernateTemplate().findByNamedQuery("findResultsByReport", 
                 report.getReportId().getValue());
        
        if(report.getIsLive()) {
