@@ -15,5 +15,10 @@
       <property name="rows"               type="java.lang.Integer"                                 column="numRows"          not-null="false"/>
       <property name="selectedColumns"    type="org.theospi.portfolio.list.model.ColumnsType"      column="selected_columns" not-null="true" />
    </class>
+   
+   
+   <query name="loadCurrentConfig">
+      from ListConfig where owner=? and toolId=?
+   </query>
 
 </hibernate-mapping>

@@ -146,8 +146,8 @@ public class ListServiceImpl  extends HibernateDaoSupport implements ListService
       Id toolId = getIdManager().getId(getCurrentTool().getId());
 
       Collection configs =
-         getHibernateTemplate().find("from ListConfig where owner_id=? and tool_id=?",
-            new Object[]{currentAgent.getId().getValue(), toolId.getValue()});
+         getHibernateTemplate().findByNamedQuery("loadCurrentConfig",
+            new Object[]{currentAgent, toolId});
 
       if (configs.size() >= 1) {
          return (ListConfig)configs.iterator().next();
