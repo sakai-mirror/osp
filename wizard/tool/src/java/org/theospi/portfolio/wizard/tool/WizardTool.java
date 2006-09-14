@@ -98,6 +98,7 @@ public class WizardTool extends BuilderTool {
 
    private IdManager idManager;
    private DecoratedWizard current = null;
+   private DecoratedWizardPage currentPage = null;
 
    private String expandedGuidanceSection = "false";
    private List wizardTypes = null;
@@ -1359,6 +1360,20 @@ public class WizardTool extends BuilderTool {
 
    public void setLastError(String lastError) {
       this.lastError = lastError;
+   }
+
+   public DecoratedWizardPage getCurrentPage() {
+      return currentPage;
+   }
+
+   public List getCurrentPageList() {
+      List thepage = new ArrayList();
+      thepage.add(currentPage);
+      return thepage;
+   }
+
+   public void setCurrentPage(DecoratedWizardPage currentPage) {
+      this.currentPage = currentPage;
    }
 
 }
