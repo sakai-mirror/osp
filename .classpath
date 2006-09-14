@@ -117,6 +117,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.4.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/tomcat/jars/catalina-tomcat-5.5.17.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/metaobj-impl"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/metaobj-tool"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/metaobj-util"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
