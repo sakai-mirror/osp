@@ -109,8 +109,9 @@ public class XmlDocumentTag extends UIComponentTag {
 
    protected UIComponent findComponent(FacesContext context) throws JspException {
        XmlDocumentComponent docComponent = (XmlDocumentComponent) super.findComponent(context);
-      if (docComponent.getXmlFile() == null){
-        return docComponent;
+       InputStream xmlFile = docComponent.getXmlFile();
+      if (xmlFile == null) {
+         return docComponent;
       }
       if (docComponent.getXmlRootComponent() != null && docComponent.getOldXmlFileId() != null) {
          String lastId = docComponent.getOldXmlFileId();
@@ -134,9 +135,7 @@ public class XmlDocumentTag extends UIComponentTag {
       try {
          SAXParserFactory parserFactory = SAXParserFactory.newInstance();
          parserFactory.setNamespaceAware(true);
-         InputStream xmlFile = docComponent.getXmlFile();
          parserFactory.newSAXParser().parse(xmlFile, handler);
-         xmlFile.close();
       }
       catch (SAXException e) {
          throw new JspException(e);
@@ -146,6 +145,12 @@ public class XmlDocumentTag extends UIComponentTag {
       }
       catch (IOException e) {
          throw new JspException(e);
+      } finally {
+         try {
+            xmlFile.close();
+         } catch (IOException e) {
+            throw new JspException(e);
+         }
       }
 
       docComponent.setXmlRootComponent(base);
