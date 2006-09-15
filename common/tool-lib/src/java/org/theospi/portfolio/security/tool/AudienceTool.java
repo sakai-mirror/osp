@@ -609,8 +609,12 @@ public class AudienceTool extends HelperToolBase {
         for (Iterator i = members.iterator(); i.hasNext();) {
             Member member = (Member) i.next();
 
-            DecoratedMember decoratedMember = new DecoratedMember(this, getAgentManager().getAgent((member.getUserId())));
-            memberList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), "member"));
+            Agent agent = getAgentManager().getAgent((member.getUserId()));
+            //Check for a null agent since the site.getMembers() will return member records for deleted users
+            if (agent != null) {
+               DecoratedMember decoratedMember = new DecoratedMember(this, agent);
+               memberList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), "member"));
+            }
         }
 
         return memberList;
