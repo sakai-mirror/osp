@@ -168,10 +168,12 @@ public class DecoratedPage implements Comparable {
    public boolean isXmlFileNotNull() {
       InputStream  inputStream = getXmlFile();
       boolean isNotNull = inputStream != null;
-      try {
-         inputStream.close();
-      } catch(IOException ioe) {
-         logger.equals(ioe);
+      if(isNotNull) {
+         try {
+            inputStream.close();
+         } catch(IOException ioe) {
+            logger.equals(ioe);
+         }
       }
       return isNotNull;
    }
