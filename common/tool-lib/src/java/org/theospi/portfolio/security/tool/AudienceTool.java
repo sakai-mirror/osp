@@ -94,7 +94,35 @@ public class AudienceTool extends HelperToolBase {
     private String stepString = "2";
     private String function;
     private Id qualifier;
-    private static final Pattern emailPattern = Pattern.compile(".*@.*");
+    
+    /** This accepts email addresses */
+    private static final Pattern emailPattern = Pattern.compile(
+          "^" +
+             "(?>" +
+                "\\.?[a-zA-Z\\d!#$%&'*+\\-/=?^_`{|}~]+" +
+             ")+" + 
+          "@" + 
+             "(" +
+                "(" +
+                   "(?!-)[a-zA-Z\\d\\-]+(?<!-)\\." +
+                ")+" +
+                "[a-zA-Z]{2,}" +
+             "|" +
+                "(?!\\.)" +
+                "(" +
+                   "\\.?" +
+                   "(" +
+                      "25[0-5]" +
+                   "|" +
+                      "2[0-4]\\d" +
+                   "|" +
+                      "[01]?\\d?\\d" +
+                   ")" +
+                "){4}" +
+             ")" +
+          "$"
+          );
+    
     private List roleMemberList = null;
     private List groupMemberList = null;
     private String LIST_SEPERATOR = "__________________";
@@ -279,6 +307,11 @@ public class AudienceTool extends HelperToolBase {
         return getAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD) != null;
     }
 
+    public boolean isPortfolioWizardNotify() {
+        return getAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD) != null ||
+               getAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD_NOTIFY) != null;
+    }
+
     public boolean isPublicCapable() {
         return getAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE) != null;
     }
@@ -388,6 +421,31 @@ public class AudienceTool extends HelperToolBase {
             }
         }
     }
+    
+    /**
+     * This checks that the parameter does not contain the 
+     * invalidEmailInIdAccountString string from sakai.properties
+     * 
+     * @param id String email address
+     * @return boolean 
+     */
+    protected boolean isDomainAllowed(String email)
+    {
+       String invalidEmailInIdAccountString = ServerConfigurationService.getString("invalidEmailInIdAccountString", null);
+       
+       if(invalidEmailInIdAccountString != null) {
+          String[] invalidDomains = invalidEmailInIdAccountString.split(",");
+          
+          for(int i = 0; i < invalidDomains.length; i++) {
+             String domain = invalidDomains[i].trim();
+             
+             if(email.toLowerCase().indexOf(domain.toLowerCase()) != -1) {
+                return false;
+             }
+          }
+       }
+       return true;
+    }
 
     /*public String processActionAddUser() {
         boolean worksiteLimited = isWorksiteLimited();
@@ -403,12 +461,23 @@ public class AudienceTool extends HelperToolBase {
 
     public String processActionAddEmail() {
         boolean worksiteLimited = isWorksiteLimited();
-
-        if (!findByEmailOrDisplayName(getSearchEmails(), true, worksiteLimited)) {
+        
+        String email2add = getSearchEmails();
+        
+        if (!findByEmailOrDisplayName(email2add, true, worksiteLimited)) {
+           String msgKey = null;
             if (worksiteLimited) {
-                FacesContext.getCurrentInstance().addMessage(null,
-                        getFacesMessageFromBundle("worksite_user_not_found", (new Object[]{getSearchUsers()})));
+               msgKey = "worksite_user_not_found";
+            } else { // if we get here, then the input was not an email address
+               if(isDomainAllowed(email2add)) {
+                  msgKey = "email_not_formatted";
+               } else {
+                  msgKey = "email_in_invalid_domain";
+               }
             }
+            if(msgKey != null)
+               FacesContext.getCurrentInstance().addMessage(null,
+                     getFacesMessageFromBundle(msgKey, (new Object[]{email2add})));
 
 
         } else {
@@ -437,7 +506,7 @@ public class AudienceTool extends HelperToolBase {
 
     /**
      * @param displayName - for a guest user, this is the email address
-     * @
+     * 
      */
     protected boolean findByEmailOrDisplayName(String displayName, boolean includeEmail, boolean worksiteLimited) {
         List retVal = new ArrayList();
@@ -445,12 +514,16 @@ public class AudienceTool extends HelperToolBase {
         AgentImplOsp viewer = new AgentImplOsp();
         if (includeEmail) {
             guestUsers = getAgentManager().findByProperty("email", displayName);
+            
+            // When seaching is not limited to the worksite and the email was not found
             if (!worksiteLimited && guestUsers == null) {
-                viewer.setDisplayName(displayName);
-                viewer.setRole(Agent.ROLE_GUEST);
-                viewer.setId(getIdManager().getId(viewer.getDisplayName()));
-                guestUsers = new ArrayList();
-                guestUsers.add(viewer);
+               if(validateEmail(displayName) && isDomainAllowed(displayName)) {
+                   viewer.setDisplayName(displayName);
+                   viewer.setRole(Agent.ROLE_GUEST);
+                   viewer.setId(getIdManager().getId(viewer.getDisplayName()));
+                   guestUsers = new ArrayList();
+                   guestUsers.add(viewer);
+               }
             }
 
         }
@@ -609,8 +682,12 @@ public class AudienceTool extends HelperToolBase {
         for (Iterator i = members.iterator(); i.hasNext();) {
             Member member = (Member) i.next();
 
-            DecoratedMember decoratedMember = new DecoratedMember(this, getAgentManager().getAgent((member.getUserId())));
-            memberList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), "member"));
+            Agent agent = getAgentManager().getAgent((member.getUserId()));
+            //Check for a null agent since the site.getMembers() will return member records for deleted users
+            if (agent != null) {
+               DecoratedMember decoratedMember = new DecoratedMember(this, agent);
+               memberList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), "member"));
+            }
         }
 
         return memberList;
@@ -857,25 +934,23 @@ public class AudienceTool extends HelperToolBase {
         return stepString;
     }
 
-    /*   protected boolean validateEmail(String displayName) {
+   protected boolean validateEmail(String displayName)
+   {
+      if (!emailPattern.matcher(displayName).matches()) {
+         return false;
+      }
+ /*
+      try {
+         InternetAddress.parse(displayName, true);
+      } catch (AddressException e) {
+         // errors.rejectValue("displayName", "Invalid email address",
+         // new Object[0], "Invalid email address");
+         return false;
+      } */
 
-    if (!emailPattern.matcher(displayName).matches()) {
-       //errors.rejectValue("displayName", "Invalid email address",
-       //      new Object[0], "Invalid email address");
-       return false;
-    }
-
-    try {
-       InternetAddress.parse(displayName, true);
-    }
-    catch (AddressException e) {
-       //errors.rejectValue("displayName", "Invalid email address",
-       //      new Object[0], "Invalid email address");
-       return false;
-    }
-
-    return true;
- }   */
+      return true;
+   }
+   
     protected Agent createGuestUser(Agent viewer) {
         AgentImplOsp guest = (AgentImplOsp) viewer;
         guest.setRole(Agent.ROLE_GUEST);

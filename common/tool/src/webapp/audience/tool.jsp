@@ -147,7 +147,7 @@
         <sakai:button_bar_item id="save_button" action="#{audience.processActionSave}"
                                value="#{common_msgs.save_audience}"/>
         <sakai:button_bar_item id="saveNotify_button" action="#{audience.processActionSaveNotify}"
-                               value="#{common_msgs.save_notify_audience}" rendered="#{audience.portfolioWizard}"/>
+                               value="#{common_msgs.save_notify_audience}" rendered="#{audience.portfolioWizardNotify}"/>
         <sakai:button_bar_item id="back_button" action="#{audience.processActionBack}"
                                rendered="#{audience.portfolioWizard}"
                                value="#{common_msgs.back_audience}"/>

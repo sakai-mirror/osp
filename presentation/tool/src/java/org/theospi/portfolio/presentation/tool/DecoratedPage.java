@@ -20,6 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.tool;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
@@ -27,6 +29,8 @@ import java.util.Collections;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
@@ -46,6 +50,8 @@ import org.theospi.portfolio.style.model.Style;
  */
 public class DecoratedPage implements Comparable {
 
+   protected final transient Log logger = LogFactory.getLog(getClass());
+   
    private FreeFormTool parent;
    private PresentationPage base;
    private RegionMap regionMap;
@@ -126,15 +132,50 @@ public class DecoratedPage implements Comparable {
       this.base = base;
    }
 
+   /**
+    * Any time this is called the calling method MUST close the input stream!!
+    * This has the potential of causing memory leaks if the calling method does not close the stream
+    * @return InputStream
+    */
    public InputStream getXmlFile() {
       InputStream  inputStream = null;
       if (getBase() != null && getBase().getLayout() != null){
-       Node node = getParent().getPresentationManager().getNode(
+         Node node = getParent().getPresentationManager().getNode(
             getBase().getLayout().getXhtmlFileId(), getBase().getLayout());
-      inputStream = node.getInputStream();
+         inputStream = node.getInputStream();
+         
+         // we want to read the entire file into memory so wo can close the inputStream
+         //    and thus release the database connection / file connection
+         
+         ByteArrayOutputStream bytesOS = new ByteArrayOutputStream();
+         int buffersize = 1024, s;
+         byte[] buffer = new byte[buffersize];
+         try {
+            while((s = inputStream.read(buffer)) != -1) {
+               bytesOS.write(buffer, 0, s);
+            }
+            inputStream.close();
+            inputStream = new ByteArrayInputStream(bytesOS.toByteArray());
+         } catch(IOException ioe) {
+            logger.error(ioe);
+            inputStream = null;
+         }
       }
 
       return inputStream;
+   }
+
+   public boolean isXmlFileNotNull() {
+      InputStream  inputStream = getXmlFile();
+      boolean isNotNull = inputStream != null;
+      if(isNotNull) {
+         try {
+            inputStream.close();
+         } catch(IOException ioe) {
+            logger.equals(ioe);
+         }
+      }
+      return isNotNull;
    }
 
    public String getXmlFileId() {

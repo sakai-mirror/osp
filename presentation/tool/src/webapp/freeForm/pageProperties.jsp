@@ -138,7 +138,7 @@
                     </h:panelGrid>
             <ospx:xmlDocument factory="#{freeForm.factory}"
                               xmlFile="#{freeForm.currentPage.xmlFile}"
-                              var="freeForm.currentPage.regionMap" rendered ="#{freeForm.currentPage.xmlFile != null}"/>
+                              var="freeForm.currentPage.regionMap" rendered ="#{freeForm.currentPage.xmlFileNotNull}"/>
         </f:subview>             
     </ospx:xheaderdrawer>
 </ospx:xheader>

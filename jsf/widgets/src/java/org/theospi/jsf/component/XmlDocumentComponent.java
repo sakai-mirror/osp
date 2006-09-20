@@ -67,7 +67,12 @@ public class XmlDocumentComponent extends UIComponentBase implements XmlDocument
    public void setFactory(XmlTagFactory factory) {
       this.factory = factory;
    }
-
+   
+   /**
+    * Any time this is called the calling method MUST close the input stream!!
+    * This has the potential of causing memory leaks if the calling method does not close the stream
+    * @return InputStream
+    */
    public InputStream getXmlFile() {
       ValueBinding vb = getValueBinding("xmlFile");
       return (InputStream) vb.getValue(getFacesContext());

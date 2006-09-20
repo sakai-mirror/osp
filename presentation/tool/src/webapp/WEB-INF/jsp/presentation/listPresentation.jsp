@@ -99,6 +99,8 @@
                         <fmt:message key="instructions_selectFilterUserList"/></osp:param>
                    <osp:param name="session.org.theospi.portfolio.security.audienceGuestEmail"
                         value="true"/>
+                   <osp:param name="session.org.theospi.portfolio.security.audiencePortfolioWizardNotify"
+                        value="true"/>
                    <osp:param name="session.org.theospi.portfolio.security.audienceWorksiteLimited"
                         value="false"/>
                    <osp:param name="session.org.theospi.portfolio.security.audiencePublicInstructions">

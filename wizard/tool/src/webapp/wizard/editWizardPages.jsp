@@ -92,7 +92,7 @@
 	            <h:outputText value="#{msgs.editProperties}" />
 	         </h:commandLink>
 	         <h:outputText value=" | "  rendered="#{!wizard.moving && !wizard.current.base.published}"/>
-	         <h:commandLink action="#{item.processActionDelete}" rendered="#{!wizard.moving && !wizard.current.base.published}">
+	         <h:commandLink action="#{item.processActionConfirmDelete}" rendered="#{!wizard.moving && !wizard.current.base.published}">
 	            <h:outputText value="#{msgs.delete}" />
 	         </h:commandLink>
 	
@@ -152,7 +152,7 @@
 	            <h:outputText value="#{msgs.editProperties}" />
 	         </h:commandLink>
 	         <h:outputText value=" | "  rendered="#{!wizard.moving && !wizard.current.base.published}"/>
-	         <h:commandLink action="#{item.processActionDelete}" rendered="#{!wizard.moving && !wizard.current.base.published}">
+	         <h:commandLink action="#{item.processActionConfirmDelete}" rendered="#{!wizard.moving && !wizard.current.base.published}">
 	            <h:outputText value="#{msgs.delete}" />
 	         </h:commandLink>
 	

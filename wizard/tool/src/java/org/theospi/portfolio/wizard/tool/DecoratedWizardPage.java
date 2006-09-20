@@ -125,13 +125,18 @@ public class DecoratedWizardPage extends DecoratedCategoryChild {
       return getParent().processExecPage(base);
    }
 
+   public String processActionConfirmDelete() {
+      getParent().setCurrentPage(this);
+      return "confirmDeletePage";
+   }
+
    public String processActionDelete() {
       DecoratedCategory parentCategory = getCategory();
       parentCategory.getBase().getChildPages().remove(getBase());
       parentCategory.resequencePages();
       if(getBase().getId() != null)
          getParent().getDeletedItems().add(getBase());
-      return null;
+      return "continue";
    }
 
    public String processActionEdit(boolean isNew) {
