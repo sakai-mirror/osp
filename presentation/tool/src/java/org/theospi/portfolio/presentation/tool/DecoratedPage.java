@@ -172,6 +172,11 @@ public class DecoratedPage implements Comparable {
       return "edit";
    }
 
+   public String processActionConfirmDelete() {
+      getParent().setCurrentPage(this);
+      return "confirm";
+   }
+
    public String processActionDelete() {
       getParent().deletePage(this);
       getParent().reorderPages();
