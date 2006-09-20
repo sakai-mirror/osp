@@ -76,6 +76,9 @@ public interface AudienceSelectionHelper {
    public static final String AUDIENCE_PORTFOLIO_WIZARD =
          "org.theospi.portfolio.security.audiencePortfolioWizard";
 
+   public static final String AUDIENCE_PORTFOLIO_WIZARD_NOTIFY =
+         "org.theospi.portfolio.security.audiencePortfolioWizardNotify";
+
     public static final String AUDIENCE_CANCEL_TARGET =
          "org.theospi.portfolio.security.audienceCancelTarget";
 

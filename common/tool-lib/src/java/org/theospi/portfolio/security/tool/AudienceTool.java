@@ -307,6 +307,11 @@ public class AudienceTool extends HelperToolBase {
         return getAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD) != null;
     }
 
+    public boolean isPortfolioWizardNotify() {
+        return getAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD) != null ||
+               getAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD_NOTIFY) != null;
+    }
+
     public boolean isPublicCapable() {
         return getAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE) != null;
     }
