@@ -50,7 +50,7 @@
 	     	<h:outputText value="#{wizard.current.instruction.text}" escape="false" />
             <sakai:flat_list value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment">
                <h:column>
-               		<ospx:contentTypeMap displayName="#{attachment.displayName}" fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+               		<sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
                      <h:graphicImage id="instrFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
                      <h:outputLink title="#{attachment.displayName}"
                         value="#{attachment.fullReference.base.url}" target="_new">
@@ -72,7 +72,7 @@
 	     	<h:outputText value="#{wizard.current.rationale.text}" escape="false"/>
             <sakai:flat_list value="#{wizard.current.guidanceRationaleAttachments}" var="attachment">
                <h:column>
-               		<ospx:contentTypeMap displayName="#{attachment.displayName}" fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+               		<sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
                      <h:graphicImage id="rationaleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
                      <h:outputLink title="#{attachment.displayName}"
                         value="#{attachment.fullReference.base.url}" target="_new">
@@ -94,7 +94,7 @@
 	     	<h:outputText value="#{wizard.current.example.text}" escape="false"/>
             <sakai:flat_list value="#{wizard.current.guidanceExamplesAttachments}" var="attachment">
                <h:column>
-               		<ospx:contentTypeMap displayName="#{attachment.displayName}" fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+               		<sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
                      <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
                      <h:outputLink title="#{attachment.displayName}"
                         value="#{attachment.fullReference.base.url}" target="_new">
