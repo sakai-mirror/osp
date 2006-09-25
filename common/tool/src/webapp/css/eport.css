@@ -107,3 +107,11 @@ hide {
    visibility: hidden;
 }
 
+INPUT.colorBox {
+	border: 1px solid black;
+	width:32px;
+	height:16px;
+	margin-left:20px;
+}
+
+
