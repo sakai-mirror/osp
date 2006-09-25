@@ -43,7 +43,7 @@
       				<f:facet name="header">
       					<h:outputText value="#{common_msgs.title_header}"/>
       				</f:facet>
-      				<h:outputText value="#{msgs[column.name]}"/>
+      				<h:outputText value="#{common_msgs[column.name]}"/>
       			</h:column>               
             </sakai:flat_list>
 
