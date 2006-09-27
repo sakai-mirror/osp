@@ -140,10 +140,12 @@
 
     				<c:forEach var="level" items="${scaffolding.levels}" varStatus="itemLoopStatus">
     					<tr>
-                        <td <c:if test="${not empty level.color}">bgcolor="<c:out value="${level.color}"/>"</c:if>>
+                        <td>
     							<div class="tier0">
     								<font color="<c:out value="${level.textColor}"/>"><c:out value="${level.description}"/></font>
-
+										<c:if test="${not empty level.color}">
+											<input class="colorBox" disabled="disabled" value="" size="2" style="background-color: <c:out value="${level.color}"/>" type="text">
+										</c:if>
     									<div class="itemAction">
 
                          <a href="javascript:document.forms[0].dest.value='addLevel';
@@ -224,9 +226,12 @@
     			<tbody>
 					<c:forEach var="criterion" items="${scaffolding.criteria}" varStatus="itemLoopStatus">
 							<tr>
-								<td <c:if test="${not empty criterion.color}">bgcolor="<c:out value="${criterion.color}"/>"</c:if>>
+								<td>
 									<div class="tier0">
 										<font color="<c:out value="${criterion.textColor}"/>"><c:out value="${criterion.description}"/></font>
+										<c:if test="${not empty criterion.color}">
+											<input class="colorBox" disabled="disabled" value="" size="2" style="background-color: <c:out value="${criterion.color}"/>" type="text">
+										</c:if>
 										<div class="itemAction">
 
                       <a href="javascript:document.forms[0].dest.value='addCriterion';

@@ -86,7 +86,7 @@ public class NotifyViewersController extends AbstractPresentationController impl
 
         String url = getServerConfigurationService().getServerUrl() +
                 "/osp-presentation-tool/viewPresentation.osp?id=" + presentation.getId().getValue();
-        url += Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
+        url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
 
         String message = form.getMessage() +
                 "\n" + "****************************************************************" +
