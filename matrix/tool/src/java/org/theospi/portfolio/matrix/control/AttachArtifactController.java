@@ -71,7 +71,7 @@ public class AttachArtifactController implements Controller, LoadObjectControlle
          for (Iterator iter=attachments.iterator(); iter.hasNext();) {
         	   Attachment att = (Attachment)iter.next();
         	   String id = getContentHosting().resolveUuid(att.getArtifactId().getValue());
-            Reference ref = getEntityManager().newReference(contentHosting.getResource(id).getReference());
+            Reference ref = getEntityManager().newReference(contentHosting.getReference(id));
             files.add(ref);
          }
          
