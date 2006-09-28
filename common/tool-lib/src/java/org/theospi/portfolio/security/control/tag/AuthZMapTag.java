@@ -89,13 +89,17 @@ public class AuthZMapTag extends TagSupport {
    }
 
    public Id evaluateQualifier() throws JspException {
+      Id qual;
       if (isUseSite()) {
-         qualifier = getIdManager().getId(ToolManager.getCurrentPlacement().getContext());
+         qual = getIdManager().getId(ToolManager.getCurrentPlacement().getContext());
       }
       else if (qualifier == null){
-         qualifier = getIdManager().getId(ToolManager.getCurrentPlacement().getId());
+         qual = getIdManager().getId(ToolManager.getCurrentPlacement().getId());
       }
-      return qualifier;
+      else {
+         qual = qualifier;
+      }
+      return qual;
    }
 
    public void setQualifier(Id qualifier) {
@@ -131,6 +135,7 @@ public class AuthZMapTag extends TagSupport {
    protected void init() {
       var = "can";
       scope = PageContext.PAGE_SCOPE;
+      qualifier = null;
       setUseSite(false);
    }
 
