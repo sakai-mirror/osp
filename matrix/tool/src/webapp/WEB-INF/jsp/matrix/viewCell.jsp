@@ -113,10 +113,13 @@
          <osp:message key="guidance_instructions"/>
       </div>
       
-      
+      <c:set value="0" var="guidanceItemCount" />
       <div id="guidanceDiv" class="indnt1">
    		<!-- ** instruction ** -->
-      <c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}" varStatus="loopStatus">
+      <c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}">
+         <c:if test="${guidanceItem.activeContent}">
+         <c:set value="${guidanceItemCount+1}" var="guidanceItemCount" />
+         </c:if>
          <c:if test="${guidanceItem.type == 'instruction'}">
          <b>
             <osp:message key="instructions"/>
@@ -126,7 +129,7 @@
             <div class="indnt2">
                <c:out value="${guidanceItem.text}" escapeXml="false" />
                
-               <c:forEach var="guidanceItemAtt" items="${guidanceItem.attachments}" varStatus="loopStatus">
+               <c:forEach var="guidanceItemAtt" items="${guidanceItem.attachments}" >
                   <br/><a href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />" target="_new">
                      
                      <img border="0" title="<c:out value="${hover}" />"
@@ -144,7 +147,7 @@
          </c:if>
       </c:forEach>
       
-      
+      <c:if test="${guidanceItemCount > 1}" >
       <osp:message key="additionalGuidance"/>
       <br /><br />
             <div class="indnt2">
@@ -155,6 +158,7 @@
       </osp:url>" title="<osp:message key="guidance_link_title"/>">
          <osp:message key="guidance_link_title"/></a>
       </div>
+      </c:if>
       </div>
       <br /><br />
       

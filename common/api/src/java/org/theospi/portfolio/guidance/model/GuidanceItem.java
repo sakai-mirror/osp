@@ -59,6 +59,14 @@ public class GuidanceItem extends IdentifiableObject {
    public String getText() {
       return text;
    }
+   
+   public boolean isActiveContent() {
+      if ((text != null && text.trim().length() > 0) || 
+            (attachments != null && attachments.size() > 0)) {
+         return true;
+      }
+      return false;      
+   }
 
    /**
     * This can't be concat-ed because it is in html
