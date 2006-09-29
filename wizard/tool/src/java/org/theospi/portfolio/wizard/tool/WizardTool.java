@@ -221,9 +221,11 @@ public class WizardTool extends BuilderTool {
          if(wizard == null)
             return null;
          setCurrent(new DecoratedWizard(this, wizard));
+         current.setRunningWizard(null);
+      }
+      if(current.getRunningWizard() == null) {
          current.setRunningWizard(new DecoratedCompletedWizard(this, current,
-               getWizardManager().getCompletedWizard(wizard, userId)));
-
+               getWizardManager().getCompletedWizard(current.getBase(), getCurrentUserId())));
       }
       Wizard wizard = current.getBase();
 
@@ -638,6 +640,9 @@ public class WizardTool extends BuilderTool {
       session.setAttribute(ReviewHelper.REVIEW_TYPE_KEY,
             Integer.toString(type));
 
+      // we want to have this reload when we come back
+      current.setRunningWizard(null);
+      
       try {
          context.redirect("osp.review.processor.helper/reviewHelper.osp");
       }

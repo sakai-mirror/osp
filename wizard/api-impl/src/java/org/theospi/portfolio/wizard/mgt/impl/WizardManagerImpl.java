@@ -421,13 +421,12 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
    
    /**
+    * @param String the wizard id for the completed wizard classes
     * @return List of CompletedWizard
     */
    public List getCompletedWizardsByWizardId(String wizardId)
    {
-      List completedWizards = getHibernateTemplate().find(" from CompletedWizard where wizard_id=?",
-            new Object[]{wizardId});
-      return completedWizards;
+      return getCompletedWizards(getIdManager().getId(wizardId));
    }
 
    public List listAllWizardsByOwner(String owner, String siteId) {
@@ -471,14 +470,19 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
    
    protected List getCompletedWizards(Wizard wizard) {
+      return getCompletedWizards(wizard.getId());
+   }
+   
+   private List getCompletedWizards(Id id)
+   {
       List completedWizards = getHibernateTemplate().find(" from CompletedWizard cw where cw.wizard.id=?",
-            new Object[]{wizard.getId()});
+            new Object[]{id});
       return completedWizards;
    }
 
    protected List getCompletedWizards(String owner) {
-      List completedWizards = getHibernateTemplate().find(" from CompletedWizard where owner_id=?",
-            new Object[]{owner});
+      List completedWizards = getHibernateTemplate().find(" from CompletedWizard cw where cw.owner=?",
+            new Object[]{getAgentManager().getAgent(owner)});
       return completedWizards;
    }
 
@@ -526,8 +530,8 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    public CompletedWizard getUsersWizard(Wizard wizard, Agent agent, boolean create) {
-      List completedWizards = getHibernateTemplate().find(" from CompletedWizard where wizard_id=? and owner_id=?",
-            new Object[]{wizard.getId(), agent.getId().getValue()});
+      List completedWizards = getHibernateTemplate().find(" from CompletedWizard cw where cw.wizard.id=? and cw.owner=?",
+            new Object[]{wizard.getId(), agent});
 
       CompletedWizard returned;
       if (completedWizards.size() != 0) {
