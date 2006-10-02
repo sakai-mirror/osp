@@ -91,11 +91,17 @@
       <spring:bind path="presentation.properties.${field.fieldNamePath}">
         <td>
  #if ($field.schema.type.maxLength >= 100 || $field.schema.type.maxLength == -1)
-   <textarea cols="40" rows="5" name="properties.${field.fieldNamePath}"
+   <textarea cols="80" rows="5" name="properties.${field.fieldNamePath}" id="properties.${field.fieldNamePath}"
       #if ($field.schema.type.maxLength != -1)
       onkeyup="limitChar(this,${field.schema.type.maxLength})" 
       #end
       ><c:out value="${status.value}"/></textarea>
+      
+      #if ($field.annotations.containsKey("isRichText") && $field.annotations.isRichText == 'true')
+      	<osp:richTextWrapper textAreaId="properties.${field.fieldNamePath}" />
+      #end    
+      
+      
  #else
           <input type="text" name="properties.${field.fieldNamePath}" value="<c:out value="${status.value}"/>"
    #if ($field.schema.type.maxLength != -1)

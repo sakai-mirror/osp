@@ -33,6 +33,7 @@ import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdImpl;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.sakaiproject.tool.api.Tool;
 import org.theospi.portfolio.shared.model.DateBean;
 import org.theospi.portfolio.style.model.Style;
 
@@ -206,6 +207,7 @@ public class Presentation extends IdentifiableObject {
    public String getExternalUri() {
       String uri = ServerConfigurationService.getServerUrl();
       uri += "/osp-presentation-tool/viewPresentation.osp?panel=presentation&id=" + getId().getValue();
+      uri += "&" + Tool.PLACEMENT_ID + "=" + getToolId();
       return uri;
    }
 
