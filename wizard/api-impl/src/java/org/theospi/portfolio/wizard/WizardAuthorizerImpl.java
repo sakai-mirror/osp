@@ -214,7 +214,8 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       String siteStr = getWizardManager().getWizardIdSiteId(id);
       
       if (siteStr == null) {
-         return null;
+         return new Boolean(facade.isAuthorized(agent, 
+               WizardFunctionConstants.VIEW_WIZARD, id));
       }
 
       return isWizardViewAuth(id, facade, agent, id, allowAnonymous);
@@ -251,14 +252,14 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       return new Boolean(isAuthorized);
    }
 
-   protected Boolean isWizardAuthForReview(AuthorizationFacade facade, Agent agent, Id wizardId) {
-      String siteStr = getWizardManager().getWizardIdSiteId(wizardId);
-      Id id = wizardId;
+   protected Boolean isWizardAuthForReview(AuthorizationFacade facade, Agent agent, Id id) {
+      String siteStr = getWizardManager().getWizardIdSiteId(id);
+      Id tmpId = id;
       if (siteStr != null) {
-         id = getIdManager().getId(siteStr);
+         tmpId = getIdManager().getId(siteStr);
       }
       
-      return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.REVIEW_WIZARD, id));
+      return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.REVIEW_WIZARD, tmpId));
    }
    
    protected Boolean isWizardAuthForEval(AuthorizationFacade facade, Agent agent, Id id) {
