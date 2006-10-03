@@ -528,7 +528,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			org.hibernate.Session	session = getSession();
 		
 			con = session.connection();
-			canCloseConnection = false;
+			//as of hibernate 3.1 you must close your connections
+			//http://www.hibernate.org/250.html
+			canCloseConnection = true;
 		}
 		
 		return con;
@@ -538,6 +540,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	 * This closes the database connection if it was pulled from the
 	 * data warehouse.  (IOW, doesn't close if the connection came from
 	 * the hibernate session)
+	 * @deprecated ? should this method even be used now that both sources require connections to be closed?
 	 * @param connection
 	 * @throws SQLException
 	 */
@@ -587,18 +590,38 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		} catch (HibernateException e) {
 			logger.error("", e);
 			throw new OspException(e);
-		} finally {
-			try {
-				stmt.close();
-			} catch (Exception e) {
-				logger.error("", e);
+		} 
+		finally {
+			//ensure that the results set is clsoed
+			if (rs != null) {
+				try {
+					rs.close();
+				} catch (SQLException e) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("loadArtifactTypes(String, Map) caught " + e);
+					}
+				}
 			}
-			try {
-				closeWarehouseConnection(connection);
-			} catch (Exception e) {
-				logger.error("", e);
+			//ensure that the stmt is closed
+			if (stmt != null) {
+				try {
+					stmt.close();
+				} catch (SQLException e) {
+					if (logger.isDebugEnabled()) {
+						logger.debug("loadArtifactTypes(String, Map) caught " + e);
+					}
+				}
 			}
-		}
+			if (connection != null) {
+				try {
+					closeWarehouseConnection(connection);
+				} catch (Exception e) {
+					if (logger.isDebugEnabled()) {
+						logger.error("", e);
+					}
+				}
+			}
+        }
 		return results;
 	}
 

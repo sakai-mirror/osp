@@ -194,10 +194,10 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
     */
    protected void loadArtifactTypes(String artifactIds, Map artifactsToLoad) {
       Connection conn = null;
-
+      ResultSet rs = null;
       try {
          conn = getDataSource().getConnection();
-         ResultSet rs = conn.createStatement().executeQuery(
+         rs = conn.createStatement().executeQuery(
                "select id, sub_type from dw_resource where id in (" + artifactIds + ")");
          while (rs.next()) {
             String id = rs.getString(1);
@@ -213,11 +213,26 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
          throw new OspException(e);
       }
       finally {
-         try {
-            conn.close();
+         //ensure that the results set is clsoed
+         if (rs != null) {
+            try {
+               rs.close();
+            } catch (SQLException e) {
+               if (logger.isDebugEnabled()) {
+                  logger.debug("loadArtifactTypes(String, Map) caught " + e);
+               }
+            }
          }
-         catch (SQLException e) {
-            // con't do nothing here... let the last error go through
+         //ensure that the connection is closed
+         if (conn != null) {
+            try {
+               conn.close();
+            }
+            catch (SQLException e) {
+               if (logger.isDebugEnabled()) {
+                  logger.debug("loadArtifactTypes(String, Map) caught " + e);
+			   }              
+            }
          }
       }
    }

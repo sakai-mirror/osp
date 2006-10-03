@@ -328,14 +328,23 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    public void deleteUnusedItemDefinition(Id itemDefId) {
+      String statement = "delete from osp_presentation_item " +
+               " where osp_presentation_item.item_definition_id = ?";
+       deleteByStatementHelper(statement, itemDefId);
+   }
+
+   /* 
+    * generic delete by Id using prepared statement helper function
+    * to reduce redundency.
+    */
+   private void deleteByStatementHelper(String statement, Id targetId) {
       Connection connection = null;
       PreparedStatement stmt = null;
       Session session = getSession();
       try {
          connection = session.connection();
-         stmt = connection.prepareStatement("delete from osp_presentation_item " +
-            " where osp_presentation_item.item_definition_id = ?");
-         stmt.setString(1, itemDefId.getValue());
+         stmt = connection.prepareStatement(statement);
+         stmt.setString(1, targetId.getValue());
          stmt.execute();
       } catch (SQLException e) {
          logger.error("",e);
@@ -344,13 +353,32 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          logger.error("",e);
          throw new OspException(e);
       } finally {
-         try {
-            stmt.close();
-         } catch (Exception e) {
+         if (stmt != null) {
+            //ensure the statement is closed
+            try {
+               stmt.close();
+            } 
+            catch (Exception e) {
+               if (logger.isDebugEnabled()) {
+                  logger.debug(e);
+               }
+            }
          }
+         if (connection != null) {
+            //ensure the connection is closed
+            //as of hibernate 3.1 we are responsible for this here
+            try {
+                connection.close();  
+            } 
+            catch (Exception e) {
+               if (logger.isDebugEnabled()) {
+                  logger.debug(e);
+               }
+            }
+         }         
       }
    }
-
+   
    public boolean deletePresentationTemplate(final Id id) {
       PresentationTemplate template = getPresentationTemplate(id);
       getAuthzManager().checkPermission(PresentationFunctionConstants.DELETE_TEMPLATE, template.getId());
@@ -1075,28 +1103,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    public void deleteArtifactReference(Id artifactId) {
-      // I can't figure out how to write a hibernate query to do this
-      // I'm not sure how to directly access composite-elements, maybe you can't ?
-      Connection connection = null;
-      PreparedStatement stmt = null;
-      Session session = getSession();
-      try {
-         connection = session.connection();
-         stmt = connection.prepareStatement("delete from osp_presentation_item where artifact_id = ?");
-         stmt.setString(1, artifactId.getValue());
-         stmt.execute();
-      } catch (SQLException e) {
-         logger.error("",e);
-         throw new OspException(e);
-      } catch (HibernateException e) {
-         logger.error("",e);
-         throw new OspException(e);
-      } finally {
-         try {
-            stmt.close();
-         } catch (Exception e) {
-         }
-      }
+      String statement = "delete from osp_presentation_item where artifact_id = ?";
+      deleteByStatementHelper(statement, artifactId);
    }
 
    public PresentationTemplate copyTemplate(Id templateId) {
@@ -2602,7 +2610,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             is.close();
          }
          catch (IOException e) {
-            // can't do anything now..
+            //can't do anything now..
+            if (logger.isDebugEnabled()) {
+                logger.debug(e);
+            } 
          }
       }
       return bos;
@@ -2629,6 +2640,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
       catch (IdUsedException e) {
          // ignore... it is already there.
+          if (logger.isDebugEnabled()) {
+              logger.debug(e);
+          } 
       }
       catch (Exception e) {
          throw new RuntimeException(e);
@@ -2642,6 +2656,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
       catch (IdUsedException e) {
          // ignore... it is already there.
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         } 
       }
       catch (Exception e) {
          throw new RuntimeException(e);
@@ -2653,15 +2670,27 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
       catch (TypeException e) {
          // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         } 
       }
       catch (IdUnusedException e) {
          // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         } 
       }
       catch (PermissionException e) {
          // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         } 
       }
       catch (InUseException e) {
          // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         } 
       }
 
       try {
