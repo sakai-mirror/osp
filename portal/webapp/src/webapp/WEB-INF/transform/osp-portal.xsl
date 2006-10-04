@@ -38,7 +38,7 @@
          <xsl:value-of select="' '"/>
       </script>
    </head>
-<body class="portalBody">
+<body class="portalBody" onload="document.forms[0].eid.focus();">
    <a href="#tocontent"  class="skip" accesskey="c">
    <xsl:attribute name="title">
       <xsl:value-of select="$externalized/entry[@key='sit.jumpcontent']"/>
