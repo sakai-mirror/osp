@@ -1128,14 +1128,15 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       CheckedOutputStream checksum = new CheckedOutputStream(os, new Adler32());
       ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(checksum));
 
-      storeTemplateFile(zos, oldTemplate.getRenderer());
-      storeTemplateFile(zos, oldTemplate.getPropertyPage());
+      List existingEntries = new ArrayList();
+      storeTemplateFile(zos, oldTemplate.getRenderer(), existingEntries);
+      storeTemplateFile(zos, oldTemplate.getPropertyPage(), existingEntries);
 
       // go through each associated file... store them...
       if (files != null) {
          for (Iterator i=files.iterator();i.hasNext();) {
             TemplateFileRef fileRef = (TemplateFileRef)i.next();
-            storeTemplateFile(zos, getIdManager().getId(fileRef.getFileId()));
+            storeTemplateFile(zos, getIdManager().getId(fileRef.getFileId()), existingEntries);
          }
          oldTemplate.setFiles(new HashSet(files));
       }
@@ -1440,19 +1441,21 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return (PresentationTemplate)oos.readObject();
    }
 
-   protected void storeTemplateFile(ZipOutputStream zos, Id fileId) throws IOException {
+   protected void storeTemplateFile(ZipOutputStream zos, Id fileId, List existingEntries) throws IOException {
       if (fileId == null) {
          return;
       }
       //TODO: Need to add file to security authorizer
       Node oldNode = getNode(fileId);
       String newName = oldNode.getName();
-      //if (newName.lastIndexOf('\\') != -1) {
-         String cleanedName = newName.substring(newName.lastIndexOf('\\')+1);
-      //}
-      storeFileInZip(zos, oldNode.getInputStream(),
-            oldNode.getMimeType().getValue() + File.separator +
-            fileId.getValue() + File.separator + cleanedName);
+      String cleanedName = newName.substring(newName.lastIndexOf('\\')+1);
+      
+      if (!existingEntries.contains(fileId)) {
+         existingEntries.add(fileId);
+         storeFileInZip(zos, oldNode.getInputStream(),
+               oldNode.getMimeType().getValue() + File.separator +
+               fileId.getValue() + File.separator + cleanedName);
+      }
    }
 
    protected void storeFileInZip(ZipOutputStream zos, InputStream in, String entryName)
