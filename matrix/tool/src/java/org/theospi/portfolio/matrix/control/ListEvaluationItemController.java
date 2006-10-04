@@ -23,6 +23,7 @@ package org.theospi.portfolio.matrix.control;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +43,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.EvaluationContentComparator;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 
 /**
  * @author chmaurer
@@ -80,7 +82,7 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
             sortColumn, asc));
       list = getListScrollIndexer().indexList(request, request, list);
 
-      return list;
+      return list; /* goes into 'reviewerItems'  */
    }
 
    /* (non-Javadoc)
@@ -94,7 +96,35 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
     * @see org.theospi.utils.mvc.intf.Controller#handleRequest(java.lang.Object, java.util.Map, java.util.Map, java.util.Map, org.springframework.validation.Errors)
     */
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-      return new ModelAndView("success");
+      
+      String action = (String)request.get("action");
+      String view = "success";
+
+      Map model = new HashMap();
+      
+      if("open".equals(action)) {
+         String id = (String)request.get("id");
+         List list = (List)requestModel;
+         
+         if(id != null) {
+            for(Iterator i = list.iterator(); i.hasNext(); ) {
+               EvaluationContentWrapper wrapper = (EvaluationContentWrapper)i.next();
+               
+               if(id.equals(wrapper.getId().getValue())) {
+                  view = wrapper.getUrl();
+                  
+                  for(Iterator params = wrapper.getUrlParams().iterator(); params.hasNext(); ) {
+                     EvaluationContentWrapper.ParamBean param = (EvaluationContentWrapper.ParamBean)params.next();
+                     
+                     model.put(param.getKey(), param.getValue());
+                  }
+                  session.put("is_eval_page_id", id);
+               }
+            }
+         }
+      }
+      
+      return new ModelAndView(view, model);
    }
 
    public Map referenceData(Map request, Object command, Errors errors) {

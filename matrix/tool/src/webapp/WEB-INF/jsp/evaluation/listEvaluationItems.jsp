@@ -38,9 +38,10 @@
 </c:if>
 
 <c:if test="${can.evaluate}">
-    <form method="POST" id="reviewList" name="reviewList">
+    <form method="POST" id="evalList" name="evalList">
         <osp:form />
-    
+    <input type="hidden" id="action" name="action" value="" />
+    <input type="hidden" id="eval_id" name="id" value="" />
     
     <c:if test="${not empty errorMessage}">
         <div class="validation"><c:out value="${errorMessage}" /></div>
@@ -169,11 +170,7 @@
                     <td>
                     <div align="left">
                     		<c:if test="${permCheck}">
-                        <a href="<osp:url value="${item.url}">
-                           <c:forEach var="paramBean" items="${item.urlParams}">
-                              <osp:param name="${paramBean.key}" value="${paramBean.value}" />
-                           </c:forEach>
-                           </osp:url>">
+                        <a href="#" onClick="document.getElementById('action').value='open';document.getElementById('eval_id').value='<c:out value="${item.id.value}" />';document.getElementById('evalList').submit();">
                         <c:out value="${item.title}" />
                         </a>
                         </c:if>

@@ -68,6 +68,8 @@ public class CellController implements FormController, LoadObjectController {
 
 
    public Map referenceData(Map request, Object command, Errors errors) {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      
       CellFormBean cell = (CellFormBean) command;
       Map model = new HashMap();
       String pageId = cell.getCell().getWizardPage().getId().getValue();
@@ -100,6 +102,7 @@ public class CellController implements FormController, LoadObjectController {
 
       }
       model.put("readOnlyMatrix", readOnly);
+      model.put("isMatrix", "true");
       
       Style style = cell.getCell().getWizardPage().getPageDefinition().getStyle();
       
@@ -115,10 +118,18 @@ public class CellController implements FormController, LoadObjectController {
          Node node = getMatrixManager().getNode(fileId);
          model.put("defaultStyleUrl", node.getExternalUri());
       }
+
+      model.put("isEvaluation", "false");
+      
+      // This is the tool session so evaluation tool gets "is_eval_page_id" and the matrix/wizard does not
+      if(session.getAttribute("is_eval_page_id") != null) {
+         String eval_page_id = (String)session.getAttribute("is_eval_page_id");
+         model.put("isEvaluation", "true");
+      }
       
       model.put("pageTitleKey", "view_cell");
       
-      clearSession(SessionManager.getCurrentToolSession());
+      clearSession(session);
       return model;
    }
    
@@ -197,6 +208,15 @@ public class CellController implements FormController, LoadObjectController {
          String scaffId = "";
          if (cell.getMatrix() != null)
             scaffId = cell.getMatrix().getScaffolding().getId().getValue();
+
+         if(session.get("is_eval_page_id") != null) {
+            String eval_page_id = (String)session.get("is_eval_page_id");
+            String pageId = cell.getWizardPage().getId().getValue();
+            if(eval_page_id.equals(pageId))
+               return new ModelAndView("cancelEvaluation");
+         }
+            
+         
          return new ModelAndView("cancel", "scaffolding_id", scaffId);
       }      
 

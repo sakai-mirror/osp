@@ -1103,6 +1103,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return wizards;
    }
    
+   /**
+    * This gets all the submitted cell, wizard pages, and wizards that need to be evaluated
+    * 
+    * @param agent Agent who is looking for evaluatable items
+    * @param worksiteId Id of the worksite containing evaluatable items
+    * @return List of 
+    */
    public List getEvaluatableItems(Agent agent, Id worksiteId) {
       List roles = agent.getWorksiteRoles(worksiteId.getValue());
       Agent role = (Agent)roles.get(0);

@@ -471,29 +471,33 @@
 
 <!-- ************* Evaluation Area End ************* -->
 
+<div class="act">
 <c:if test="${sequential == 'true'}">
-<div class="act">
-    <c:if test="${currentStep < (totalSteps)}">
-        <input type="submit" name="_next" value="<fmt:message key="button_continue"/>"/>
+    <c:if test="${currentStep < (totalSteps)}"><!-- this is included because evaluating a seq wizard the user can browse all the pages -->
+       <input type="submit" name="_next" value="<fmt:message key="button_continue"/>"/>
     </c:if>
-    <c:if test="${currentStep != 1}">
-        <input type="submit" name="_back" value="<fmt:message key="button_back"/>"/>
+    
+    <c:if test="${isEvaluation != 'true'}">
+	   <c:if test="${currentStep != 1}">
+	     <input type="submit" name="_back" value="<fmt:message key="button_back"/>"/>
+	   </c:if>
+	     <input type="submit" name="matrix" value="<fmt:message key="button_finish"/>"/>
+	   <!-- 
+	   <input type="submit" name="cancel" value="<fmt:message key="button_cancel"/>"/>
+	   -->
     </c:if>
-    <input type="submit" name="matrix" value="<fmt:message key="button_finish"/>"/>
-    <!-- 
-    <input type="submit" name="cancel" value="<fmt:message key="button_cancel"/>"/>
-	-->
-</div>
 </c:if>
-<c:if test="${sequential != 'true'}">
-<div class="act">
-   <c:if test="${isWizard == 'true'}">
-      <input type="submit" name="matrix" class="active" value="<fmt:message key="button_back_to_wizard"/>"/>
+   <c:if test="${isEvaluation == 'true'}">
+	  <input type="submit" name="matrix" class="active" value="<fmt:message key="button_back_to_evaluation"/>"/>
    </c:if>
-   <c:if test="${isWizard != 'true'}">
-      <input type="submit" name="matrix" class="active" value="<fmt:message key="button_back_to_matrix"/>"/>
-   </c:if>
-</div>
+<c:if test="${sequential != 'true' && isEvaluation != 'true'}">
+      <c:if test="${isWizard == 'true'}">
+	     <input type="submit" name="matrix" class="active" value="<fmt:message key="button_back_to_wizard"/>"/>
+	  </c:if>
+	  <c:if test="${isMatrix == 'true'}">
+	     <input type="submit" name="matrix" class="active" value="<fmt:message key="button_back_to_matrix"/>"/>
+	  </c:if>
 </c:if>
+</div>
 
 </form>

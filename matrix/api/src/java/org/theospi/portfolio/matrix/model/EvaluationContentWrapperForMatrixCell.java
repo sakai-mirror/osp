@@ -31,6 +31,12 @@ import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 
+/**
+ * This class is created when looking up cells to evaluate.  Hibernate calls the constructor.
+ * This is used in the listEvaluationItem
+ * @author andersjb
+ *
+ */
 public class EvaluationContentWrapperForMatrixCell extends EvaluationContentWrapper{
    
    public EvaluationContentWrapperForMatrixCell(Id id, String title, Agent owner, Date submittedDate) throws UserNotDefinedException {
@@ -41,7 +47,7 @@ public class EvaluationContentWrapperForMatrixCell extends EvaluationContentWrap
       setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
       setEvalType(Cell.TYPE);
       
-      setUrl("viewCell.osp");
+      setUrl("openEvaluationCellRedirect");
       
       Set params = new HashSet();
       

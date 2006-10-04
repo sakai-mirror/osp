@@ -161,6 +161,7 @@
          <props>
             <prop key="success">viewCell</prop>
             <prop key="cancel">matrixRedirect</prop>
+            <prop key="cancelEvaluation">evaluationRedirect</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="guidance">viewGuidance</prop>
             <prop key="review">formCreator</prop>
@@ -202,6 +203,7 @@
             <prop key="success">wizardPageRedirect</prop>
             <prop key="cancel">helperDone</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
+            <prop key="cancelEvaluation">evaluationRedirect</prop>
             <prop key="confirmWizard">submitWizardConfirmationRedirect</prop>
             <prop key="guidance">viewGuidance</prop>
             <prop key="review">formCreator</prop>
@@ -254,6 +256,7 @@
             <prop key="success">wizardPageRedirect</prop>
             <prop key="cancel">helperDone</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
+            <prop key="cancelEvaluation">evaluationRedirect</prop>
             <prop key="confirmWizard">submitWizardConfirmationRedirect</prop>
             <prop key="guidance">viewGuidance</prop>
             <prop key="review">formCreator</prop>
@@ -459,6 +462,10 @@
       <property name="screenMappings">
          <props>
             <prop key="success">reviewCellRedirect</prop>
+            <prop key="open_eval_cell">openEvaluationCellRedirect</prop>
+            <prop key="open_eval_page_seq">openEvaluationPageSeqRedirect</prop>
+            <prop key="open_eval_page_hier">openEvaluationPageHierRedirect</prop>
+            <prop key="open_eval_wizard">openEvaluationWizardRedirect</prop>
             <prop key="nothing">listEvaluationItemsRedirect</prop>
          </props>
       </property>

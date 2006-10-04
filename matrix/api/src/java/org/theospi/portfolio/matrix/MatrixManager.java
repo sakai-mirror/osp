@@ -114,6 +114,12 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    WizardPage submitPageForEvaluation(WizardPage page);
 
+   /**
+    * gets all the cells, pages, and wizards that this user can evaluate within a worksite
+    * @param agent Agent 
+    * @param worksiteId Id
+    * @return List of org.theospi.portfolio.shared.model.EvaluationContentWrapper
+    */
    List getEvaluatableItems(Agent agent, Id worksiteId);
 
 

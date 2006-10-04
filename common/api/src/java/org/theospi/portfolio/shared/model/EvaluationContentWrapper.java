@@ -70,7 +70,7 @@ public abstract class EvaluationContentWrapper {
       this.submittedDate = submittedDate;
    }
    
-   protected class ParamBean {
+   public class ParamBean {
       
       private String key;
       private String value;
@@ -188,7 +188,8 @@ public abstract class EvaluationContentWrapper {
    }
 
    /**
-    * @return Returns the urlParams.
+    * returns the url parameters to be passed along
+    * @return Set of ParamBean.
     */
    public Set getUrlParams() {
       return urlParams;

@@ -55,9 +55,9 @@ public class EvaluationContentWrapperForWizardPage extends
       params.add(new ParamBean("session." + WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, null));
       
       if (wizardType.equals(Wizard.WIZARD_TYPE_SEQUENTIAL)) {
-         setUrl("osp.wizard.page.helper/sequentialWizardPage.osp");         
+         setUrl("openEvaluationPageSeqRedirect");         
       } else {
-         setUrl("osp.wizard.page.helper/wizardPage.osp");
+         setUrl("openEvaluationPageHierRedirect");
       }
       
       setUrlParams(params);

@@ -73,6 +73,7 @@ public class WizardPageController extends CellController {
       model.put("pageTitleKey", "view_wizardPage");
       model.put("helperPage", "true");
       model.put("isWizard", "true");
+      model.put("isMatrix", "false");
       model.put("categoryTitle", request.get("categoryTitle"));
       model.put("wizardTitle", request.get("wizardTitle"));
       model.put("wizardDescription", request.get("wizardDescription"));

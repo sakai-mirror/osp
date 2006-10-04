@@ -192,6 +192,17 @@ public class WizardTool extends BuilderTool {
 
       return message;
    }
+   
+   public boolean isFromEvaluation()
+   {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      
+      if(session.getAttribute("is_eval_page_id") != null) {
+         return true;
+      }
+         
+      return false;
+   }
 
    public DecoratedWizard getCurrent() {
       ToolSession session = SessionManager.getCurrentToolSession();
