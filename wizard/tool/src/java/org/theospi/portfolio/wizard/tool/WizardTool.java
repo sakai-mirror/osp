@@ -113,6 +113,8 @@ public class WizardTool extends BuilderTool {
    private String lastSavePage = "";
    private String lastError = "";
    
+   private boolean loadCompletedWizard = false;
+   
    //	import variables
    private String importFilesString = "";
    private List importFiles = new ArrayList();
@@ -221,9 +223,13 @@ public class WizardTool extends BuilderTool {
          if(wizard == null)
             return null;
          setCurrent(new DecoratedWizard(this, wizard));
+         
+         loadCompletedWizard = true;
+      }
+      if(loadCompletedWizard) {
          current.setRunningWizard(new DecoratedCompletedWizard(this, current,
-               getWizardManager().getCompletedWizard(wizard, userId)));
-
+            getWizardManager().getCompletedWizard(current.getBase(), getCurrentUserId())));
+         loadCompletedWizard = false;
       }
       Wizard wizard = current.getBase();
 
@@ -637,6 +643,10 @@ public class WizardTool extends BuilderTool {
             current.getRunningWizard().getBase().getId().getValue());
       session.setAttribute(ReviewHelper.REVIEW_TYPE_KEY,
             Integer.toString(type));
+      
+      // we want to have this reload when we come back
+      current.setRunningWizard(null);
+      loadCompletedWizard = true;
 
       try {
          context.redirect("osp.review.processor.helper/reviewHelper.osp");
