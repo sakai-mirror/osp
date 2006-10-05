@@ -34,6 +34,9 @@ import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
+import org.theospi.portfolio.wizard.model.Wizard;
 
 /**
  * @author chmaurer
@@ -42,6 +45,7 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
 
    IdManager idManager = null;
    MatrixManager matrixManager = null;
+   WizardManager wizardManager = null;
    
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.CustomCommandController#formBackingObject(java.util.Map, java.util.Map, java.util.Map)
@@ -62,13 +66,21 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
     */
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       boolean isCellPage = false;
+      String view = "continueSeq";
+      
       WizardPage page = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
+      
       Cell cell = null;
       if (page == null) {
          Id pageId = idManager.getId((String) request.get("page_id"));
          cell = getMatrixManager().getCellFromPage(pageId);
          page = cell.getWizardPage();
          isCellPage = true;
+      } else {
+         WizardPageSequence seq = wizardManager.getWizardPageSeqByDef(page.getPageDefinition().getId());
+         
+         if(seq.getCategory().getWizard().getType().equals(Wizard.WIZARD_TYPE_HIERARCHICAL))
+            view = "continueHier";
       }
       String submitAction = (String)request.get("submit");
       String cancelAction = (String)request.get("cancel");
@@ -78,7 +90,6 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
             session.put("altDoneURL", "submitWizardPage");
             session.put("submittedPage", page);
 
-            String view = "continue";
             if (isLast(session)) {
                view = "done";
             }
@@ -88,10 +99,10 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
          else {
             getMatrixManager().submitCellForEvaluation(cell);
          }
-         return new ModelAndView("continue", "page_id", page.getId().getValue());
+         return new ModelAndView(view, "page_id", page.getId().getValue());
       }
       if (cancelAction != null) {
-         return new ModelAndView("continue", "page_id", page.getId().getValue());
+         return new ModelAndView(view, "page_id", page.getId().getValue());
       }
       return new ModelAndView("success", "page", page);
    }
@@ -124,5 +135,13 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
     */
    public void setMatrixManager(MatrixManager matrixManager) {
       this.matrixManager = matrixManager;
+   }
+
+   public WizardManager getWizardManager() {
+      return wizardManager;
+   }
+
+   public void setWizardManager(WizardManager wizardManager) {
+      this.wizardManager = wizardManager;
    }
 }

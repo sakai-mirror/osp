@@ -83,13 +83,10 @@ public class FormDeleteController implements LoadObjectController, CustomCommand
                session.put(WizardPageHelper.WIZARD_PAGE, getMatrixManager().getWizardPage(page.getId()));
             }
          }
-
-         return new ModelAndView("continue", "page_id", page.getId().getValue());
       }
-      if (cancelAction != null) {
-         return new ModelAndView("continue", "page_id", page.getId().getValue());
-      }
-      return new ModelAndView("success", "cell", cell);
+      
+      // if not submit, then cancel, but both submit and cancel have the some view, so
+      return new ModelAndView("continue", "page_id", page.getId().getValue());
    }
    
    

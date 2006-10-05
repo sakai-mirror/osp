@@ -200,7 +200,6 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">wizardPageRedirect</prop>
             <prop key="cancel">helperDone</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="cancelEvaluation">evaluationRedirect</prop>
@@ -253,7 +252,6 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">wizardPageRedirect</prop>
             <prop key="cancel">helperDone</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="cancelEvaluation">evaluationRedirect</prop>
@@ -329,7 +327,6 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">wizardPageRedirect</prop>
             <prop key="continue">helperDone</prop>
          </props>
       </property>
@@ -368,13 +365,15 @@
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.SubmitCellConfirmationController">
             <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="wizardManager"><ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" /></property>
             <property name="idManager"><ref bean="idManager"/></property>
          </bean>
       </property>
       <property name="screenMappings">
          <props>
             <prop key="success">submitCellConfirmation</prop>
-            <prop key="continue">wizardPageRedirect</prop>
+            <prop key="continueSeq">wizardPageSeqAndMatrixRedirect</prop>
+            <prop key="continueHier">wizardPageHierRedirect</prop>
             <prop key="done">wizardListRedirect</prop>
          </props>
       </property>
