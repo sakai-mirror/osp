@@ -33,7 +33,6 @@ import javax.faces.render.Renderer;
 import org.sakaiproject.jsf.util.RendererUtil;
 import org.theospi.jsf.component.SplitAreaComponent;
 import org.theospi.jsf.util.OspxTagHelper;
-import org.theospi.jsf.util.TagUtil;
 
 
 public class SplitSectionRenderer extends Renderer
@@ -79,15 +78,15 @@ public class SplitSectionRenderer extends Renderer
 			writer.write("<tr>");
 		writer.write("<td");
 		
-		TagUtil.writeAttr(writer, "class", cssclass);
-		TagUtil.writeAttr(writer, "id", id);
-		TagUtil.writeAttr(writer, "align", align);
-		TagUtil.writeAttr(writer, "valign", valign);
+      RendererUtil.writeAttr(writer, "class", cssclass);
+      RendererUtil.writeAttr(writer, "id", id);
+      RendererUtil.writeAttr(writer, "align", align);
+      RendererUtil.writeAttr(writer, "valign", valign);
 		
 		if(vertical)
-			TagUtil.writeAttr(writer, "height", size);
+         RendererUtil.writeAttr(writer, "height", size);
 		else
-			TagUtil.writeAttr(writer, "width", size);
+         RendererUtil.writeAttr(writer, "width", size);
 			
 		writer.write(">");
 

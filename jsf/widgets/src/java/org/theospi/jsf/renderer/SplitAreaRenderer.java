@@ -32,7 +32,6 @@ import javax.faces.render.Renderer;
 
 import org.sakaiproject.jsf.util.RendererUtil;
 import org.theospi.jsf.util.OspxTagHelper;
-import org.theospi.jsf.util.TagUtil;
 
 /**
  * This creates a split content area.  It divides a space in two.
@@ -72,10 +71,10 @@ public class SplitAreaRenderer extends Renderer
 		//checks for vertical, its abbr., and the y axis
 		
 		writer.write("<table");
-		TagUtil.writeAttr(writer, "width", width);
-		TagUtil.writeAttr(writer, "height", height);
-		TagUtil.writeAttr(writer, "cellspacing", "0");
-		TagUtil.writeAttr(writer, "cellpadding", "0");
+      RendererUtil.writeAttr(writer, "width", width);
+      RendererUtil.writeAttr(writer, "height", height);
+      RendererUtil.writeAttr(writer, "cellspacing", "0");
+      RendererUtil.writeAttr(writer, "cellpadding", "0");
 		writer.write(">");
 		
 		if(!OspxTagHelper.isVertical(directionStr))

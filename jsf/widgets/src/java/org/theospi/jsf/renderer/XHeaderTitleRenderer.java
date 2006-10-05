@@ -37,7 +37,6 @@ import org.theospi.jsf.component.XHeaderDrawerComponent;
 import org.theospi.jsf.component.XHeaderTitleComponent;
 import org.theospi.jsf.util.ConfigurationResource;
 import org.theospi.jsf.util.OspxTagHelper;
-import org.theospi.jsf.util.TagUtil;
 
 
 public class XHeaderTitleRenderer extends Renderer
@@ -73,8 +72,8 @@ public class XHeaderTitleRenderer extends Renderer
 		ResponseWriter writer = context.getResponseWriter();
 		HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
       
-      TagUtil.writeExternalCSSDependencies(context, writer, "osp.jsf.css", CSS_LOC);
-      TagUtil.writeExternalJSDependencies(context, writer, "osp.jsf.xheader.js", JS_LOC);
+      RendererUtil.writeExternalCSSDependencies(context, writer, "osp.jsf.css", CSS_LOC);
+      RendererUtil.writeExternalJSDependencies(context, writer, "osp.jsf.xheader.js", JS_LOC);
       
 		XHeaderTitleComponent component = (XHeaderTitleComponent)inComponent;
 		
@@ -87,8 +86,8 @@ public class XHeaderTitleRenderer extends Renderer
 		
       writer.write("<div");
 		
-		TagUtil.writeAttr(writer, "class", cssclass);
-		TagUtil.writeAttr(writer, "id", id);
+      RendererUtil.writeAttr(writer, "class", cssclass);
+      RendererUtil.writeAttr(writer, "id", id);
 
 		writer.write(">");
       

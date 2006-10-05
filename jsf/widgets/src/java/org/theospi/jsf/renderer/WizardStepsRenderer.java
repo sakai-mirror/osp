@@ -34,7 +34,6 @@ import javax.faces.render.Renderer;
 import org.sakaiproject.jsf.util.RendererUtil;
 import org.theospi.jsf.component.WizardStepComponent;
 import org.theospi.jsf.util.ConfigurationResource;
-import org.theospi.jsf.util.TagUtil;
 
 
 public class WizardStepsRenderer extends Renderer
@@ -66,7 +65,7 @@ public class WizardStepsRenderer extends Renderer
 	public void encodeBegin(FacesContext context, UIComponent component) throws IOException
 	{
 		ResponseWriter writer = context.getResponseWriter();
-      TagUtil.writeExternalCSSDependencies(context, writer, "osp.jsf.css", CSS_LOC);
+      RendererUtil.writeExternalCSSDependencies(context, writer, "osp.jsf.css", CSS_LOC);
             
 		writer.write("<div class=\"xheader\">");
 	}

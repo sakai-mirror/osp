@@ -66,9 +66,7 @@
                             <f:subview id="originalLayout" rendered="#{freeForm.currentPage.hasLayout}">
                                 <sakai:doc_properties>
                                     <h:outputLabel for="layout" id="layoutLabel"
-                                                   value="#{msgs.original_layout}"/>
-                                    <h:outputLabel for="layout" id="layoutLabel"
-                                                   value=" "/>
+                                                   value="#{msgs.original_layout}: "/>
                                     <h:outputText id="layout" value="#{freeForm.currentPage.base.layout.name}"/>
                                 </sakai:doc_properties>
                             </f:subview>
@@ -93,7 +91,7 @@
                         <h:outputLabel id="blank" value=""/>
                         <h:panelGroup>
                         <h:graphicImage id="defaultLayoutImage" height="125" width="100"
-												                    value="/img/page-new.png"
+												                    value="/img/page-nopreview.png"
 												                    rendered="#{!freeForm.currentPage.layoutPreviewImage and freeForm.currentPage.layoutSelected}"/>
                         <h:graphicImage id="selectedLayoutImage" height="125" width="100"
                                                       value="#{freeForm.currentPage.selectedLayout.previewImage.externalUri}"
@@ -115,9 +113,10 @@
                 </ospx:splitsection>
                 <ospx:splitsection valign="top">
                     <sakai:panel_edit>
-                        <h:outputLabel for="modified" id="modifiedLabel" value="#{msgs.page_modified} "/>
+                        <h:outputLabel for="modified" id="modifiedLabel" value="#{msgs.page_modified} "
+                        					rendered="#{freeForm.currentPage.base.modified != null}"/>
                         <h:outputFormat id="modified" value="#{msgs.date_format}"
-                                        rendered="#{!empty freeForm.currentPage.base.modified}">
+                                        rendered="#{freeForm.currentPage.base.modified != null}">
                             <f:param value="#{freeForm.currentPage.base.modified}"/>
                         </h:outputFormat>
                     </sakai:panel_edit>

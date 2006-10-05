@@ -101,12 +101,14 @@ public class DecoratedPage implements Comparable {
       ToolSession session = SessionManager.getCurrentToolSession();
       if (session.getAttribute(PresentationLayoutHelper.CURRENT_LAYOUT) != null) {
          PresentationLayout layout = (PresentationLayout)session.getAttribute(PresentationLayoutHelper.CURRENT_LAYOUT);
-         base.setLayout(layout);
+         //base.setLayout(layout);
+         clearRegionsIfDirtyLayout(layout);
          setSelectedLayout(new DecoratedLayout(getParent(), layout));
          session.removeAttribute(PresentationLayoutHelper.CURRENT_LAYOUT);
       }
       else if (session.getAttribute(PresentationLayoutHelper.UNSELECTED_LAYOUT) != null) {
-         base.setLayout(null);
+         //base.setLayout(null);
+         clearRegions();
          setSelectedLayout(new DecoratedLayout(getParent(), null));
          session.removeAttribute(PresentationLayoutHelper.UNSELECTED_LAYOUT);
          setSelectedLayoutId(null);
@@ -118,6 +120,24 @@ public class DecoratedPage implements Comparable {
       //return layoutName;
       setSelectedLayoutId(null);
       return null;
+   }
+   
+   protected boolean isLayoutDirty(PresentationLayout layout) {
+      if (getSelectedLayout() != null && getSelectedLayout().getBase() != null)
+         return !getSelectedLayout().getBase().equals(layout);
+      
+      return false;
+   }
+   
+   protected void clearRegionsIfDirtyLayout(PresentationLayout layout) {
+      if (isLayoutDirty(layout)) {
+         clearRegions();
+      }
+   }
+   
+   protected void clearRegions() {
+      getBase().getRegions().clear();
+      regionMap = null;
    }
 
    public void setLayoutName(String name) {
@@ -139,9 +159,9 @@ public class DecoratedPage implements Comparable {
     */
    public InputStream getXmlFile() {
       InputStream  inputStream = null;
-      if (getBase() != null && getBase().getLayout() != null){
+      if (getSelectedLayout().getBase() != null){
          Node node = getParent().getPresentationManager().getNode(
-            getBase().getLayout().getXhtmlFileId(), getBase().getLayout());
+               getSelectedLayout().getBase().getXhtmlFileId(), getSelectedLayout().getBase());
          inputStream = node.getInputStream();
          
          // we want to read the entire file into memory so wo can close the inputStream
@@ -179,7 +199,7 @@ public class DecoratedPage implements Comparable {
    }
 
    public String getXmlFileId() {
-      return getBase().getLayout().getId().getValue() + getBase().getLayout().getModified().toString();
+      return getSelectedLayout().getBase().getId().getValue() + getSelectedLayout().getBase().getModified().toString();
    }
 
    public RegionMap getRegionMap() {
@@ -314,8 +334,7 @@ public class DecoratedPage implements Comparable {
    public String pagePropertiesSaved() {
       if (getBase().getLayout() != null &&
           !getBase().getLayout().equals(getSelectedLayout().getBase())) {
-         getBase().getRegions().clear();
-         regionMap = null;
+         clearRegions();
       }
       getBase().setLayout(getSelectedLayout().getBase());
       return "main";

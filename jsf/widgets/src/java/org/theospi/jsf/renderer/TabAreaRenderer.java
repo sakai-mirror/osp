@@ -35,7 +35,6 @@ import org.sakaiproject.jsf.util.RendererUtil;
 import org.theospi.jsf.component.TabComponent;
 import org.theospi.jsf.util.ConfigurationResource;
 import org.theospi.jsf.util.OspxTagHelper;
-import org.theospi.jsf.util.TagUtil;
 
 /**
  * This creates a split content area.  It divides a space in two.
@@ -86,10 +85,10 @@ public class TabAreaRenderer extends Renderer
 		
 		//checks for vertical, its abbr., and the y axis
 		
-        TagUtil.writeExternalCSSDependencies(context, writer, "osp.jsf.css", CSS_LOC);
+      RendererUtil.writeExternalCSSDependencies(context, writer, "osp.jsf.css", CSS_LOC);
 		writer.write("<table border=\"0\" ");
-		TagUtil.writeAttr(writer, "height", height);
-		TagUtil.writeAttr(writer, "width", width);
+      RendererUtil.writeAttr(writer, "height", height);
+      RendererUtil.writeAttr(writer, "width", width);
 		
 		//the tab cell needs to be small, it will be expanded
 		writer.write("><tr><td width=\"1%\">");

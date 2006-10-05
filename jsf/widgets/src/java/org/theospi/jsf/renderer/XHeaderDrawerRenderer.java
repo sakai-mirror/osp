@@ -34,7 +34,6 @@ import javax.faces.render.Renderer;
 import org.sakaiproject.jsf.util.RendererUtil;
 import org.theospi.jsf.component.XHeaderDrawerComponent;
 import org.theospi.jsf.util.OspxTagHelper;
-import org.theospi.jsf.util.TagUtil;
 
 
 public class XHeaderDrawerRenderer extends Renderer
@@ -61,12 +60,12 @@ public class XHeaderDrawerRenderer extends Renderer
 		boolean initiallyexpanded = OspxTagHelper.parseBoolean(initiallyexpandedStr);
 		
 		writer.write("<div");
-		TagUtil.writeAttr(writer, "class", cssclass);
-		TagUtil.writeAttr(writer, "id", component.getDivId());
+      RendererUtil.writeAttr(writer, "class", cssclass);
+      RendererUtil.writeAttr(writer, "id", component.getDivId());
 		if(!initiallyexpanded)
-			TagUtil.writeAttr(writer, "style", "display:none;padding:3%");
+         RendererUtil.writeAttr(writer, "style", "display:none;padding:3%");
       else
-         TagUtil.writeAttr(writer, "style", "display:block;;padding:3%");
+         RendererUtil.writeAttr(writer, "style", "display:block;;padding:3%");
 		writer.write(">");
 	}
 

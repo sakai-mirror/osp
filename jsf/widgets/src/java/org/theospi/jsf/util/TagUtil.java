@@ -31,62 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 
 public class TagUtil {
 	
-	public static void writeAttr(Writer inWriter, String inAttr, String inAttrValue)
-		throws IOException
-	{
-		if(inWriter == null || inAttr == null || inAttrValue == null)
-			return;
-
-		inWriter.write(" ");
-		inWriter.write(inAttr);
-		inWriter.write("=\"");
-		inWriter.write(inAttrValue);
-		inWriter.write("\" ");
-	}
-   
-   /**
-    * @param context FacesContext for the request we are processing
-    * @param writer ResponseWriter to be used
-    * @param key key to use to look up the value in the request
-    * @param path path to the file
-    * @exception IOException if an input/output error occurs while rendering
-    */
-   public static void writeExternalJSDependencies(FacesContext context, 
-         ResponseWriter writer, String key, String path) throws IOException
-   {
-      HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
-      String jsInclude= (String) req.getAttribute(key);
-      
-      if (jsInclude == null || jsInclude.length() == 0)
-      {
-         // include default stylesheet
-         jsInclude = "<script type=\"text/javascript\" src=\"" + path + "\"></script>\n";
-         req.setAttribute(key, jsInclude);
-         writer.write(jsInclude);
-      }
-   }
-   
-   /**
-    * @param context FacesContext for the request we are processing
-    * @param writer ResponseWriter to be used
-    * @param key key to use to look up the value in the request
-    * @param path path to the file
-    * @exception IOException if an input/output error occurs while rendering
-    */
-   public static void writeExternalCSSDependencies(FacesContext context, 
-         ResponseWriter writer, String key, String path) throws IOException
-   {
-      HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
-      String cssInclude = (String) req.getAttribute(key);
-      
-      if (cssInclude == null || cssInclude.length() == 0)
-      {
-         // include default stylesheet
-         cssInclude = "<link href=\"" + path + "\" type=\"text/css\" rel=\"stylesheet\" media=\"all\" />\n";
-         req.setAttribute(key, cssInclude);
-         writer.write(cssInclude);
-      }
-   }
 
    public static void renderChildren(FacesContext facesContext, UIComponent component)
            throws IOException

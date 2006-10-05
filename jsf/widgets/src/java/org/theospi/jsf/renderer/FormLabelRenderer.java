@@ -30,7 +30,6 @@ import javax.faces.render.Renderer;
 
 import org.sakaiproject.jsf.util.RendererUtil;
 import org.theospi.jsf.util.ConfigurationResource;
-import org.theospi.jsf.util.TagUtil;
 
 public class FormLabelRenderer extends Renderer {
    
@@ -88,7 +87,7 @@ public class FormLabelRenderer extends Renderer {
    }
    
    protected void writeReqChar(FacesContext context, ResponseWriter writer) throws IOException {
-      TagUtil.writeExternalCSSDependencies(context, writer, "osp.jsf.css", CSS_LOC);
+      RendererUtil.writeExternalCSSDependencies(context, writer, "osp.jsf.css", CSS_LOC);
       writer.write("<span class=\"osp_required_field\">");
       writer.write(REQ_CHAR);
       writer.write("</span>");
