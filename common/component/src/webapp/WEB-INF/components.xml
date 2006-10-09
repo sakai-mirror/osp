@@ -229,7 +229,7 @@
    </bean>   
    
    <bean id="org.theospi.portfolio.style.mgt.StyleManager.target"
-      class="org.theospi.portfolio.style.impl.StyleManagerImpl">
+      init-method="init" class="org.theospi.portfolio.style.impl.StyleManagerImpl">
       <property name="lockManager">
          <ref bean="org.sakaiproject.content.api.LockManager"/>
       </property>
@@ -251,6 +251,9 @@
       </property>
       <property name="contentHosting">
          <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
+      </property>
+      <property name="securityService">
+         <ref bean="org.sakaiproject.authz.api.SecurityService"/>
       </property>
       <property name="globalSites">
          <list>
