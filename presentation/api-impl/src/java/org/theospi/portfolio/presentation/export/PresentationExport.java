@@ -103,9 +103,20 @@ public class PresentationExport extends Crawler implements LinkListener {
       zos.flush();
    }
 
+   /**
+    * places a directory into the zip stream
+    * @param parentPath
+    * @param directory
+    * @param zos
+    * @throws IOException
+    */
    protected void recurseDirectory(String parentPath, File directory, ZipOutputStream zos) throws IOException {
       // get all files... go through those
       File[] files = directory.listFiles(new DirectoryFileFilter(false));
+      
+      if(files == null)
+         throw new NullPointerException("recursing through a directory which is not a directory: " + parentPath + " ---- " + directory);
+      
       addFiles(zos, parentPath, files);
 
       // get all directories... go through those...
@@ -248,6 +259,10 @@ public class PresentationExport extends Crawler implements LinkListener {
       errorLinks.add(newLink);
    }
 
+   /**
+    * Implements the FileFilter.  it accepts the switch of whether to accept files or directories
+    *
+    */
    private class DirectoryFileFilter implements FileFilter {
       private boolean directories = false;
 
