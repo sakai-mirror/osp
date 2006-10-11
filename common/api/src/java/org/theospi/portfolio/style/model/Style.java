@@ -36,6 +36,7 @@ public class Style extends IdentifiableObject {
    private Date created = new Date();
    private Date modified = new Date();
    private String siteId;
+   private String styleHash;
    
    transient private String styleFileName;
    transient private String filePickerAction;
@@ -127,6 +128,18 @@ public class Style extends IdentifiableObject {
    }
    public void setNodeRef(String nodeRef) {
       this.nodeRef = nodeRef;
+   }
+   /**
+    * @return the styleHash
+    */
+   public String getStyleHash() {
+      return styleHash;
+   }
+   /**
+    * @param styleHash the styleHash to set
+    */
+   public void setStyleHash(String styleHash) {
+      this.styleHash = styleHash;
    }
 
 }

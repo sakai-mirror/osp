@@ -51,6 +51,9 @@
             <entry key="worksites">
                <ref bean="org.theospi.portfolio.list.intf.ListGenerator.worksites"/>
             </entry>
+            <entry key="portfolioWorksites">
+               <ref bean="org.theospi.portfolio.list.intf.ListGenerator.portfolioWorksites"/>
+            </entry>
          </map>
       </property>
    </bean>
@@ -71,6 +74,31 @@
          <list>
             <value>title</value>
          </list>
+      </property>
+   </bean>
+   
+   <bean id="org.theospi.portfolio.list.intf.ListGenerator.portfolioWorksites"
+      class="org.theospi.portfolio.worksite.mgt.impl.WorksiteListGenerator">
+      <property name="worksiteManager">
+         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+      </property>
+      <property name="columns">
+         <list>
+            <value>title</value>
+            <value>type</value>
+            <value>description</value>
+         </list>
+      </property>
+      <property name="defaultColumns">
+         <list>
+            <value>title</value>
+         </list>
+      </property>
+      <property name="siteTypes">
+      	<list>
+      		<value>portfolio</value>
+			<value>portfolioAdmin</value>
+      	</list>
       </property>
    </bean>
 
@@ -229,7 +257,7 @@
    </bean>   
    
    <bean id="org.theospi.portfolio.style.mgt.StyleManager.target"
-      class="org.theospi.portfolio.style.impl.StyleManagerImpl">
+      init-method="init" class="org.theospi.portfolio.style.impl.StyleManagerImpl">
       <property name="lockManager">
          <ref bean="org.sakaiproject.content.api.LockManager"/>
       </property>
@@ -251,6 +279,9 @@
       </property>
       <property name="contentHosting">
          <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
+      </property>
+      <property name="securityService">
+         <ref bean="org.sakaiproject.authz.api.SecurityService"/>
       </property>
       <property name="globalSites">
          <list>

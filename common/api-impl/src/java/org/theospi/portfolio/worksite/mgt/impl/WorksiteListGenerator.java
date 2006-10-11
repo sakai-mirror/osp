@@ -43,6 +43,8 @@ public class WorksiteListGenerator extends WorksiteBaseGenerator implements List
    private WorksiteManager worksiteManager;
    private List columns;
    private List defaultColumns;
+   private List siteTypes;
+   
    public void init(){
        super.init();
    }
@@ -73,7 +75,7 @@ public class WorksiteListGenerator extends WorksiteBaseGenerator implements List
     *         (whatever that means to the implentation)
     */
    public List getObjects() {
-      return getWorksiteManager().getUserSites();
+      return getWorksiteManager().getUserSites(null, siteTypes);
    }
 
    public ToolConfiguration getToolInfo(Map request) {
@@ -129,5 +131,17 @@ public class WorksiteListGenerator extends WorksiteBaseGenerator implements List
 
       }
       return null;
+   }
+   /**
+    * @return the siteTypes
+    */
+   public List getSiteTypes() {
+      return siteTypes;
+   }
+   /**
+    * @param siteTypes the siteTypes to set
+    */
+   public void setSiteTypes(List siteTypes) {
+      this.siteTypes = siteTypes;
    }
 }

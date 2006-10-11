@@ -52,6 +52,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
@@ -70,6 +71,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService.SelectionType;
@@ -77,6 +79,7 @@ import org.sakaiproject.site.cover.SiteService;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.style.StyleConsumer;
@@ -94,6 +97,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
    private LockManager lockManager;
    private ContentHostingService contentHosting = null;
    private AgentManager agentManager;
+   private SecurityService securityService = null;
    private List globalSites;
    private List globalSiteTypes;
    private List consumers;
@@ -127,6 +131,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
    protected void updateFields(Style style, boolean checkAuthz)
    {
       style.setModified(new Date(System.currentTimeMillis()));
+      style.setStyleHash(calculateStyleHash(style));
 
       boolean newStyle = (style.getId() == null);
 
@@ -240,6 +245,9 @@ public class StyleManagerImpl extends HibernateDaoSupport
       }
 
       try {
+         String ref = getContentHosting().getReference(id);
+         getSecurityService().pushAdvisor(
+               new AllowMapSecurityAdvisor(ContentHostingService.EVENT_RESOURCE_READ, ref));
          ContentResource resource = getContentHosting().getResource(id);
          String ownerId = resource.getProperties().getProperty(resource.getProperties().getNamePropCreator());
          Agent owner = getAgentManager().getAgent(getIdManager().getId(ownerId));
@@ -437,9 +445,17 @@ public class StyleManagerImpl extends HibernateDaoSupport
 
       postPocessAttachments(styleMap.values(), attachmentMap);
 
-      for (Iterator i=styleMap.values().iterator();i.hasNext();) {
-         Style style = (Style) i.next();
-         storeStyle(style, false);
+      for (Iterator i=styleMap.keySet().iterator();i.hasNext();) {
+         String key = (String) i.next();
+         Style style = (Style)styleMap.get(key);
+         Style found = findMatchingStyle(style);
+         if (found == null)
+            storeStyle(style, false);
+         else {
+            removeFromSession(style);
+            removeFromSession(found);
+            styleMap.put(key, found);
+         }
       }
 
       return styleMap;
@@ -556,9 +572,76 @@ public class StyleManagerImpl extends HibernateDaoSupport
       if (id != null) {
          String nodeId = getContentHosting().getUuid(id);
          style.setStyleFile(getIdManager().getId(nodeId));
+         style.setStyleHash(calculateStyleHash(style));
       }
       else
          style.setStyleFile(null);
+   }
+   
+   /**
+    * 
+    * @param style
+    * @return The calculated hash string using the Style file's content (the css file)
+    */
+   protected String calculateStyleHash(Style style) {
+      String hashString = "";
+      try {
+         Node styleFileNode = getNode(style.getStyleFile());
+         
+         if (styleFileNode != null) {
+            hashString += new String(styleFileNode.getResource().getContent());
+            //hashString += Integer.toString(styleFileNode.getInputStream().hashCode());
+         }
+      }
+      catch (ServerOverloadException e) {
+         return null;
+      }
+      return hashString.hashCode() + "";
+   }
+   
+   protected void updateStyleHash() {
+      List styles = getHibernateTemplate().findByNamedQuery("findByNullStyleHash");
+
+      for (Iterator i = styles.iterator(); i.hasNext();) {
+         Style style = (Style) i.next();
+         style.setStyleHash(calculateStyleHash(style));
+         getHibernateTemplate().saveOrUpdate(style);
+      }
+   }
+   
+   public void init() {
+      try {
+         updateStyleHash();
+      }
+      catch (Exception e) {
+         logger.error("Error in StyleManager.init()", e);
+      }
+   }
+   
+   /**
+    * 
+    * @param style
+    * @return Returns the first Style object it finds that is either globally published,
+    *  or in the same site and also has the same styleHash value.
+    */
+   protected Style findMatchingStyle(Style style) {
+      Object[] params = new Object[]{new Integer(Style.STATE_PUBLISHED),
+                                     style.getSiteId(), style.getStyleHash()};
+      List styles = getHibernateTemplate().findByNamedQuery("findMatchingStyle", params);
+
+      if (styles.size() > 0) {
+         return (Style) styles.get(0);
+      }
+      return null;
+   }
+   
+   public void removeFromSession(Object obj) {
+      this.getHibernateTemplate().evict(obj);
+      try {
+         getHibernateTemplate().getSessionFactory().evict(obj.getClass());
+      } catch (HibernateException e) {
+         logger.error(e);
+      }
    }
 
    public AuthenticationManager getAuthnManager() {
@@ -631,5 +714,19 @@ public class StyleManagerImpl extends HibernateDaoSupport
 
    public void setContentHosting(ContentHostingService contentHosting) {
       this.contentHosting = contentHosting;
+   }
+
+   /**
+    * @return the securityService
+    */
+   public SecurityService getSecurityService() {
+      return securityService;
+   }
+
+   /**
+    * @param securityService the securityService to set
+    */
+   public void setSecurityService(SecurityService securityService) {
+      this.securityService = securityService;
    }
 }

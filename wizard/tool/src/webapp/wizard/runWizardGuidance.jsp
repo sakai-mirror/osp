@@ -27,7 +27,7 @@
    <h:outputText value="<b>#{msgs.guidance_instructions}</b><br><br>" escape="false" />
    <h:outputText value="#{wizard.current.instruction.text}" escape="false" />
    <h:outputText value="<br><br>" escape="false" />
-   <sakai:flat_list value="#{wizard.current.instruction.attachments}" var="attachment">
+   <sakai:flat_list value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment">
       <h:column>
       <sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
       <h:graphicImage id="instrFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
@@ -45,7 +45,7 @@
    <h:outputText value="<b>#{msgs.guidance_rationale}</b><br><br>" escape="false" />
    <h:outputText value="#{wizard.current.rationale.text}" escape="false" />
    <h:outputText value="<br><br>" escape="false" />
-   <sakai:flat_list value="#{wizard.current.rationale.attachments}" var="attachment">
+   <sakai:flat_list value="#{wizard.current.guidanceRationaleAttachments}" var="attachment">
       <h:column>
       <sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
       <h:graphicImage id="rationaleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
@@ -64,7 +64,7 @@
    <h:outputText value="<b>#{msgs.guidance_examples}</b><br><br>" escape="false" />
    <h:outputText value="#{wizard.current.example.text}" escape="false" />
    <h:outputText value="<br><br>" escape="false" />
-   <sakai:flat_list value="#{wizard.current.example.attachments}" var="attachment">
+   <sakai:flat_list value="#{wizard.current.guidanceExamplesAttachments}" var="attachment">
       <h:column>
       <sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
       <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
