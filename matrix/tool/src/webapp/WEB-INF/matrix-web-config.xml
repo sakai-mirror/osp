@@ -200,7 +200,7 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">wizardPageRedirect</prop>
+            <prop key="success">wizardPageSeqAndMatrixRedirect</prop>
             <prop key="cancel">helperDone</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="cancelEvaluation">evaluationRedirect</prop>
