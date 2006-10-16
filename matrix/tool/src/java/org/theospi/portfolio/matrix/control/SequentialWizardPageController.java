@@ -37,6 +37,8 @@ import org.theospi.utils.mvc.impl.ToolFinishedView;
 /**
  * The steps are referenced from 1 to n.  this way we can render the step number to the interface correctly
  * 
+ * openEvaluationPageSeqRedirect will put the user here
+ * 
  * User: John Ellis
  * Date: Feb 3, 2006
  * Time: 1:51:18 PM

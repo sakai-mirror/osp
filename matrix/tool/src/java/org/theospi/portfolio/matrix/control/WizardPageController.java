@@ -42,6 +42,8 @@ import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.utils.mvc.impl.ToolFinishedView;
 
 /**
+ * openEvaluationPageHierRedirect will put the user here
+ * 
  * Created by IntelliJ IDEA.
  * User: John Ellis
  * Date: Jan 24, 2006
@@ -86,6 +88,17 @@ public class WizardPageController extends CellController {
       return cw.getWizard().getStyle();
    }
 
+   /**
+    * If there is a page in the session we want to display that.  Otherwise look in the request for "page_id"
+    * If you are getting the wrong page displayed then you should make sure that the appropriate session/request variables
+    * are set.
+    * 
+    * @param incomingModel
+    * @param request
+    * @param session
+    * @param application
+    * @throws Exception
+    */
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       WizardPage page = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
       Id pageId = null;

@@ -41,6 +41,7 @@ import org.sakaiproject.tool.api.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.EvaluationContentComparator;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
@@ -118,7 +119,9 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
                      
                      model.put(param.getKey(), param.getValue());
                   }
+                  session.remove(WizardPageHelper.WIZARD_PAGE);
                   session.put("is_eval_page_id", id);
+                  break;
                }
             }
          }
