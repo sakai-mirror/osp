@@ -121,12 +121,29 @@ public interface WizardManager extends WorkflowEnabledManager {
    public List getCompletedWizardPagesByPageDef(Id id);
    public CompletedWizard getCompletedWizardByPage(Id pageId);
    
+   /**
+    * Checks if the current user is authorized to review all the types of Reviews.
+    * If the user is the owner or the user is authorized then the Reviews are read in
+    * and pushed into the security advisor.
+    * 
+    * @param id Id of the wizard to check
+    */
    public void checkWizardAccess(Id id);
 
+   /**
+    * Gets the total number of pages for the given wizard
+    * @param wizard Wizard to tally the number of pages
+    * @return int
+    */
    public int getTotalPageCount(Wizard wizard);
 
+   /**
+    * Given a user's completed wizard this takes a look at the number of submitted 
+    * pages (not in the READY state)
+    * @param wizard CompletedWizard to tally the number of submitted pages
+    * @return int
+    */
    public int getSubmittedPageCount(CompletedWizard wizard);
-   
    
    /**
     * This is the light weight method of getting the site id of a wizard given its id.
