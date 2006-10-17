@@ -59,7 +59,7 @@ public class WizardEntityProducer extends EntityProducerBase implements EntityTr
    }
 
    /**
-    * @inheritDoc
+    * {@inheritDoc}
     */
    public String[] myToolIds() {
       String[] toolIds = { "osp.wizard" };

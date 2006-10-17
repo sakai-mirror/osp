@@ -53,7 +53,7 @@ public class GlossaryEntityProducer extends EntityProducerBase implements Entity
    }
 
    /**
-    * @inheritDoc
+    * {@inheritDoc}
     */
    public String[] myToolIds() {
       String[] toolIds = { "osp.glossary" };

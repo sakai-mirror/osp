@@ -60,7 +60,7 @@ public class MatrixContentEntityProducer extends EntityProducerBase implements E
    }
 
    /**
-    * @inheritDoc
+    * {@inheritDoc}
     */
    public String[] myToolIds() {
       String[] toolIds = { "osp.matrix" };
