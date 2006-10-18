@@ -333,6 +333,8 @@ public class DecoratedPage implements Comparable {
 
    public String pagePropertiesSaved() {
       getBase().setLayout(getSelectedLayout().getBase());
+      //Make sure the page list is being refreshed after a save.
+      getParent().setPageList(null);
       return "main";
    }
 
