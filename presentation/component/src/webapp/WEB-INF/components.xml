@@ -137,6 +137,7 @@
    <bean id="presentationManagerTarget"
       class="org.theospi.portfolio.presentation.model.impl.PresentationManagerImpl"
       singleton="true" init-method="init">
+      <property name="importFolderName"><value>Imported Presentations' Files</value></property>
       <property name="lockManager">
          <ref bean="org.sakaiproject.content.api.LockManager"/>
       </property>

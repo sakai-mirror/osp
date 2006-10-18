@@ -81,16 +81,35 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
       return getHibernateTemplate().findByNamedQuery("getReviewsByParent", params);
    }
    
+   /**
+    * {@inheritDoc}
+    */
    public List getReviewsByParent(String parentId, String siteId, String producer) {
       Object[] params = new Object[]{parentId};
       return getReviewsByParent("getReviewsByParent", params, parentId, siteId, producer);
    }
+
    
+   /**
+    * {@inheritDoc}
+    */
    public List getReviewsByParentAndType(String parentId, int type, String siteId, String producer) {
       Object[] params = new Object[]{parentId, new Integer(type)};
       return getReviewsByParent("getReviewsByParentAndType", params, parentId, siteId, producer);
    }
    
+   
+   /**
+    * the top function for getting the reviews.  This pushes these review content 
+    * into the security advisor.
+    * 
+    * @param query
+    * @param params
+    * @param parentId
+    * @param siteId
+    * @param producer
+    * @return List of Review classes
+    */
    protected List getReviewsByParent(String query, Object[] params, String parentId, String siteId, String producer) {
       List reviews = getHibernateTemplate().findByNamedQuery(query, params);
       for (Iterator i = reviews.iterator(); i.hasNext();) {
@@ -147,6 +166,14 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
       return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner());
    }
    
+   /**
+    * pushes the artifact into the security advisor.  It then gets the resource, properties, and owner
+    * and places these into a Node.  
+    * 
+    * @param artifactId Id
+    * @return Node
+    * @throws RuntimeException on PermissionException, IdUnusedException, and TypeException
+    */
    protected Node getNode(Id artifactId) {
       String id = getContentHosting().resolveUuid(artifactId.getValue());
       if (id == null) {
