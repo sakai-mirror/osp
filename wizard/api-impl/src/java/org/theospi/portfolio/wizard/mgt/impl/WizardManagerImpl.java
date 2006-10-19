@@ -124,6 +124,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
             PresentableObjectHome, StyleConsumer, DuplicatableToolService {
 
    static final private String   DOWNLOAD_WIZARD_ID_PARAM = "wizardId";
+   static final private String   IMPORT_BASE_FOLDER_ID = "importedWizards";
 
    private AuthorizationFacade authorizationFacade;
    private SecurityService securityService;
@@ -141,6 +142,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    
    private static String SITE_CACHE_NAME = "wizardSiteCache";
    private Cache siteCache = null;
+   private String importFolderName;
 
    protected void init() throws Exception {
       
@@ -600,6 +602,10 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    }
    
+   
+   /**
+    * {@inheritDoc}
+    */
    public void checkWizardAccess(Id id) {
       CompletedWizard cw = getCompletedWizard(id);
       
@@ -607,6 +613,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
             cw.getWizard().getId());
       boolean canReview = getAuthorizationFacade().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
             getIdManager().getId(cw.getWizard().getSiteId()));
+      boolean canReflect = canEval || canReview;
       
       boolean owns = cw.getOwner().getId().equals(getAuthManager().getAgent().getId());
       
@@ -625,8 +632,20 @@ public class WizardManagerImpl extends HibernateDaoSupport
                cw.getWizard().getSiteId(),
                WizardEntityProducer.WIZARD_PRODUCER);         
       }
+      
+      if (canReflect || owns) {
+         //can I look at reviews/evals/reflections? - own or reflect
+         getReviewManager().getReviewsByParentAndType(
+               id.getValue(), Review.REFLECTION_TYPE,
+               cw.getWizard().getSiteId(),
+               WizardEntityProducer.WIZARD_PRODUCER);         
+      }
    }
-
+   
+   
+   /**
+    * {@inheritDoc}
+    */
    public int getTotalPageCount(final Wizard wizard) {
       HibernateCallback hcb = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException  {
@@ -644,6 +663,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
       return ((Integer)getHibernateTemplate().execute(hcb)).intValue();
    }
+   
+   
+   /**
+    * {@inheritDoc}
+    */
    public String getWizardIdSiteId(final Id wizardId) {
       
       try {
@@ -678,7 +702,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
       
       return siteId;
    }
-
+   
+   
+   /**
+    * {@inheritDoc}
+    */
    public Agent getWizardIdOwner(final Id wizardId) {
       HibernateCallback hcb = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException  {
@@ -695,7 +723,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
       return ((Agent)getHibernateTemplate().execute(hcb));
    }
-
+   
+   
+   /**
+    * {@inheritDoc}
+    */
    public int getSubmittedPageCount(final CompletedWizard wizard) {
       HibernateCallback hcb = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException  {
@@ -877,7 +909,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          
          // read the wizard
          readWizardXML(wizard, zis, importData);
-
+         // presentationmanagerimpl: 2642
          ContentCollectionEdit fileParent = getFileDir(tempDirName);
 
          currentEntry = zis.getNextEntry();
@@ -979,6 +1011,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
       }
    }
 
+   /**
+    * gets the current user's resource collection
+    * 
+    * @return ContentCollection
+    * @throws TypeException
+    * @throws IdUnusedException
+    * @throws PermissionException
+    */
    protected ContentCollection getUserCollection() throws TypeException, IdUnusedException, PermissionException {
       User user = UserDirectoryService.getCurrentUser();
       String userId = user.getId();
@@ -998,9 +1038,47 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return getStyleManager().importStyleList(parent, siteId, zis);
    }
    
+   /**
+    * This gets the directory in which the import places files into.
+    * 
+    * This method gets the current users base collection, creates an imported directory,
+    * then uses the param to create a new directory.
+    * 
+    * this uses the bean property importFolderName to name the
+    * 
+    * @param origName String
+    * @return ContentCollectionEdit
+    * @throws InconsistentException
+    * @throws PermissionException
+    * @throws IdUsedException
+    * @throws IdInvalidException
+    * @throws IdUnusedException
+    * @throws TypeException
+    */
    protected ContentCollectionEdit getFileDir(String origName) throws InconsistentException,
          PermissionException, IdUsedException, IdInvalidException, IdUnusedException, TypeException {
-      ContentCollection collection = getUserCollection();
+      ContentCollection userCollection = getUserCollection();
+      
+      try {
+         //TODO use the bean org.theospi.portfolio.admin.model.IntegrationOption.siteOption 
+         // in common/components to get the name and id for this site.
+         
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID);
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, getImportFolderName());
+         getContentHosting().commitCollection(groupCollection);
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+          if (logger.isDebugEnabled()) {
+              logger.debug(e);
+          } 
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+      
+      ContentCollection collection = getContentHosting().getCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID + "/");
+      
       String childId = collection.getId() + origName;
       return getContentHosting().addCollection(childId);
    }
@@ -2078,5 +2156,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
          throw new OspException(e);
       }
    
+   }
+
+   public String getImportFolderName() {
+      return importFolderName;
+   }
+
+   public void setImportFolderName(String importFolderName) {
+      this.importFolderName = importFolderName;
    }
 }

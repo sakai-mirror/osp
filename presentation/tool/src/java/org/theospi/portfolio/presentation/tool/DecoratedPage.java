@@ -332,10 +332,6 @@ public class DecoratedPage implements Comparable {
    }
 
    public String pagePropertiesSaved() {
-      if (getBase().getLayout() != null &&
-          !getBase().getLayout().equals(getSelectedLayout().getBase())) {
-         clearRegions();
-      }
       getBase().setLayout(getSelectedLayout().getBase());
       return "main";
    }

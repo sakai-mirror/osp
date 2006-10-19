@@ -228,6 +228,7 @@
    <bean id="org.theospi.portfolio.wizard.mgt.WizardManager.target"
       class="org.theospi.portfolio.wizard.mgt.impl.WizardManagerImpl"
       singleton="true" init-method="init" >
+      <property name="importFolderName"><value>Imported Wizards' Files</value></property>
       <property name="sessionFactory">
          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
       </property>
