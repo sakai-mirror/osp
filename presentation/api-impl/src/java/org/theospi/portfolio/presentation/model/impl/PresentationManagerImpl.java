@@ -2519,6 +2519,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          for (Iterator i=layouts.iterator();i.hasNext();) {
             PresentationLayout layout = (PresentationLayout) i.next();
             getHibernateTemplate().saveOrUpdate(layout);
+            lockLayoutFiles(layout);
          }
 
       } finally {
