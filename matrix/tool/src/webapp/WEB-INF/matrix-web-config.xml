@@ -200,7 +200,7 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">wizardPageRedirect</prop>
+            <prop key="success">wizardPageSeqAndMatrixRedirect</prop>
             <prop key="cancel">helperDone</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="cancelEvaluation">evaluationRedirect</prop>
@@ -253,7 +253,7 @@
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">wizardPageRedirect</prop>
+            <prop key="success">wizardPageSeqAndMatrixRedirect</prop>
             <prop key="cancel">helperDone</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="cancelEvaluation">evaluationRedirect</prop>
@@ -913,8 +913,8 @@
       <property name="screenMappings">
          <props>
             <prop key="success">manageCellStatus</prop>
-            <prop key="cancel">wizardPageRedirect</prop>
-            <prop key="done">wizardPageRedirect</prop>
+            <prop key="cancel">wizardPageSeqAndMatrixRedirect</prop>
+            <prop key="done">wizardPageSeqAndMatrixRedirect</prop>
          </props>
       </property>
       <property name="commandName"><value>cell</value></property>

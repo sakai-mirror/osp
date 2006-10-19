@@ -7,7 +7,7 @@
 <!-- GUID=<c:out value="${newScaffoldingId}"/> -->
 
 <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" useSite="true"/>
-
+<osp-c:authZMap prefix="osp.matrix." var="matrixCan" useSite="true"/>
 
 <c:if test="${can.create || isMaintainer}">
    <div class="navIntraTool">
@@ -57,13 +57,13 @@
   <c:forEach var="scaffold" items="${scaffolding}">
     <TR>
       <TD nowrap>
-         <c:if test="${scaffold.published == true && (scaffold.owner == osp_agent || can.use || can.review || can.evaluate)}">
+         <c:if test="${scaffold.published == true && (scaffold.owner == osp_agent || can.use || matrixCan.review || matrixCan.evaluate)}">
             <a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />" title="<fmt:message key="scaffolding_link_title">
                <fmt:param><c:out value="${scaffold.title}"/></fmt:param>
                </fmt:message>">
          </c:if>
          <c:out value="${scaffold.title}" />
-         <c:if test="${scaffold.published == true && (scaffold.owner == osp_agent || can.use || can.review || can.evaluate)}">
+         <c:if test="${scaffold.published == true && (scaffold.owner == osp_agent || can.use || matrixCan.review || matrixCan.evaluate)}">
             </a>
          </c:if>
          <c:set var="hasFirstAction" value="false" />
