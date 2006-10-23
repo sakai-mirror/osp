@@ -71,45 +71,10 @@
          <c:set var="hasFirstAction" value="false" />
                 
              <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
-             <c:set var="url">
-                 <c:out value="${baseUrl}"/>&id=<c:out value="${presentation.id.value}"/>
-                </c:set>
-                  <c:if test="${hasFirstAction}" > | </c:if>
+					  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="osp.audience.helper/tool.jsf?panel=Main">
-                   <osp:param name="session.org.theospi.portfolio.security.audienceFunction"
-                        value="osp.presentation.view"/>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceQualifier"
-                        value="${presentation.id.value}"/>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceInstructions">
-                        <fmt:message key='instructions_addViewersToPresentation'/></osp:param>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceGlobalTitle">
-                        <fmt:message key='instructions_audiencesToPublishTo'/></osp:param>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceIndTitle">
-                        <fmt:message key='instructions_publishToIndividual'/></osp:param>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceGroupTitle">
-                        <fmt:message key='instructions_publishToGroup'/></osp:param>
-                   <osp:param name="session.org.theospi.portfolio.security.audiencePublic"
-                        value="${presentation.isPublic}"/>
-                   <osp:param name="session.org.theospi.portfolio.security.audiencePublicTitle">
-                        <fmt:message key="instructions_publishToInternet"/></osp:param>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceSelectedTitle">
-                        <fmt:message key="instructions_selectedAudience"/></osp:param>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceFilterInstructions">
-                        <fmt:message key="instructions_selectFilterUserList"/></osp:param>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceGuestEmail"
-                        value="true"/>
-                   <osp:param name="session.org.theospi.portfolio.security.audiencePortfolioWizardNotify"
-                        value="true"/>
-                   <osp:param name="session.org.theospi.portfolio.security.audienceWorksiteLimited"
-                        value="false"/>
-                   <osp:param name="session.org.theospi.portfolio.security.audiencePublicInstructions">
-                        <fmt:message key="publish_message"/></osp:param>
-                   <osp:param name="session.org.theospi.portfolio.security.audiencePublicURL" value="${url}"/>
-                  <osp:param name="session.org.theospi.portfolio.security.audienceBrowseIndividual">
-                      <fmt:message key='audience_browse_individual'/> </osp:param>
-                   </osp:url>" title="<fmt:message key='action_share'/>" ><fmt:message key="action_share"/></a>
-               <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url value="addPresentation.osp"/>&target=_target5&resetForm=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="action_share"/></a>
+             
              </c:if>
              <c:if test="${isAuthorizedTo.edit}">
                  <input name="_page" type="hidden" value="1">
