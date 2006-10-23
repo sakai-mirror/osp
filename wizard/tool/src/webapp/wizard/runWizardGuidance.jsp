@@ -205,7 +205,7 @@
                <f:facet name="header">
                   <h:outputText value="#{msgs.wizard_eval_name}" />
                </f:facet>
-               <h:outputLink value="#{review.reviewContentNode.externalUri}" target="_blank">
+               <h:outputLink value="#{review.reviewContentNode.fixedExternalUri}" target="_blank">
                   <h:outputText value="#{review.reviewContentNode.displayName}" />
                </h:outputLink>               
             </h:column>
@@ -259,7 +259,7 @@
                <f:facet name="header">
                   <h:outputText value="#{msgs.wizard_eval_name}" />
                </f:facet>
-               <h:outputLink value="#{eval.reviewContentNode.externalUri}" target="_blank">
+               <h:outputLink value="#{eval.reviewContentNode.fixedExternalUri}" target="_blank">
                   <h:outputText value="#{eval.reviewContentNode.displayName}" />
                </h:outputLink>
             </h:column>
