@@ -112,7 +112,6 @@ public class WizardPageController extends CellController {
       
       Agent owner = (Agent)session.get(WizardPageHelper.WIZARD_OWNER);
       request.put(WizardPageHelper.WIZARD_OWNER, owner);
-      session.remove(WizardPageHelper.WIZARD_OWNER);
       
       WizardPageSequence seq = wizardManager.getWizardPageSeqByDef(page.getPageDefinition().getId());
       if(seq.getCategory().getParentCategory() != null)
