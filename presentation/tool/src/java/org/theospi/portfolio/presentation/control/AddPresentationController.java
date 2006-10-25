@@ -101,7 +101,8 @@ public class AddPresentationController extends AbstractWizardFormController {
       
       // this is an edit, load model
       if (request.getParameter("id") != null) {
-         setInitialPage(1);
+         int page = parseTarget(request.getParameter("target"));
+         setInitialPage(page);
          Id id = getIdManager().getId(request.getParameter("id"));
          presentation = getPresentationManager().getPresentation(id);
          getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
@@ -123,6 +124,26 @@ public class AddPresentationController extends AbstractWizardFormController {
       }
 
       return presentation;
+   }
+   
+   /**
+    * 
+    * @param target The target parameter from the request string - Like "_target3"
+    * @return The number at the end of the "_target".  If it happens to be 
+    * something else, an exception is caught and 1 is returned 
+    */
+   protected int parseTarget(String target) {
+      try {
+         if (target.startsWith(PARAM_TARGET)) {
+            String retTar = target.substring(PARAM_TARGET.length(), target.length());
+            return Integer.parseInt(retTar);
+         }
+      }
+      catch (Exception e) {
+         //In case something goes wrong, just return 1
+         return 1;
+      }
+      return 1;
    }
 
    protected String getFormSessionAttributeName() {
@@ -422,6 +443,9 @@ public class AddPresentationController extends AbstractWizardFormController {
    protected void validatePage(Object model, Errors errors, int page) {
       PresentationValidator validator = (PresentationValidator) getValidator();
       switch (page) {
+         case ADD_PAGE:
+            validator.validatePresentationInitialPage(model, errors);
+            break;
          case INITIAL_PAGE:
             validator.validatePresentationFirstPage(model, errors);
             break;

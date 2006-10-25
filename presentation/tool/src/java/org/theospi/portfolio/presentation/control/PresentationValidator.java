@@ -170,11 +170,21 @@ public class PresentationValidator extends ValidatorBase {
    }
 
    protected void validatePresentation(Object obj, Errors errors) {
+      validatePresentationInitialPage(obj, errors);
       validatePresentationFirstPage(obj, errors);
       validatePresentationSecondPage(obj, errors);
       validatePresentationThirdPage(obj, errors);
    }
 
+   protected void validatePresentationInitialPage(Object obj, Errors errors) {
+      Presentation presentation = (Presentation) obj;
+      if (presentation.getTemplate().getId() == null ||
+         presentation.getTemplate().getId().getValue() == null ||
+         presentation.getTemplate().getId().getValue().length() == 0) {
+         errors.rejectValue("template.id", "error.required", "template is required");
+      }
+   }
+   
    protected void validatePresentationFirstPage(Object obj, Errors errors) {
       Presentation presentation = (Presentation) obj;
       if (presentation.getName() == null || presentation.getName().length() == 0) {
