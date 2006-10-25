@@ -96,6 +96,10 @@ public class NotifyViewersController extends AbstractPresentationController impl
 
 
         try {
+           
+           String from = getServerConfigurationService().getString("setup.request", 
+                 "postmaster@".concat(getServerConfigurationService().getServerName()));
+                      
             //getMailMessage().setTo(form.getRecipients());
             //getMailMessage().setModel(model);
             //getMailMessage().setFrom(user.getEmail());
@@ -110,7 +114,7 @@ public class NotifyViewersController extends AbstractPresentationController impl
                         if (member.getRole().getId().equals(role)) {
                             String email = UserDirectoryService.getUser(member.getUserId()).getEmail();
                             if (validateEmail(email)) {
-                                EmailService.send(user.getEmail(), email,
+                                EmailService.send(from, email,
                                         getMailMessage().getSubject(), message, null, null, null);
 
                             }
@@ -118,7 +122,7 @@ public class NotifyViewersController extends AbstractPresentationController impl
                     }
 
                 } else {
-                    EmailService.send(user.getEmail(), toUser,
+                    EmailService.send(from, toUser,
                             getMailMessage().getSubject(), message, null, null, null);
                 }
             }
