@@ -225,6 +225,7 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
    }
 
    public void init() {
+      logger.info("init()");
       Collection terms = findAll();
 
       for (Iterator i=terms.iterator();i.hasNext();) {

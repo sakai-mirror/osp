@@ -46,6 +46,7 @@ public class WorksiteListGenerator extends WorksiteBaseGenerator implements List
    private List siteTypes;
    
    public void init(){
+      logger.info("init()");
        super.init();
    }
    /**

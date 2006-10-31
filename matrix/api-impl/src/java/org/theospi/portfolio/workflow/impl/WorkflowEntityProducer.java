@@ -42,6 +42,7 @@ public class WorkflowEntityProducer extends EntityProducerBase {
    }
 
    public void init() {
+      logger.info("init()");
       try {
          getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + WORKFLOW_PRODUCER);
       }

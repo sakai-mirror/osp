@@ -42,6 +42,7 @@ public class LayoutEntityProducer extends EntityProducerBase {
    }
 
    public void init() {
+      logger.info("init()");
       try {
          getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + PRODUCER_NAME);
       }

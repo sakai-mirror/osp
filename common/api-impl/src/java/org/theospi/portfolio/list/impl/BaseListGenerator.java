@@ -20,6 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.list.impl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
 import org.theospi.portfolio.list.intf.ListGenerator;
 import org.theospi.portfolio.list.intf.ListService;
@@ -35,6 +37,8 @@ public abstract class BaseListGenerator implements CustomLinkListGenerator {
    private String listGeneratorId;
    private ListService listService;
    private ListGenerator listGenerator;
+   
+   protected final Log logger = LogFactory.getLog(getClass());
 
 
    public void init()

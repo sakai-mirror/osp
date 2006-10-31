@@ -610,6 +610,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
    }
    
    public void init() {
+      logger.info("init()");
       try {
          updateStyleHash();
       }

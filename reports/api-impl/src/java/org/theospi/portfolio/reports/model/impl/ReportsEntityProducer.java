@@ -49,6 +49,7 @@ public class ReportsEntityProducer extends EntityProducerBase {
    }
 
    public void init() {
+      logger.info("init()");
       try {
          getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + REPORTS_PRODUCER);
       }

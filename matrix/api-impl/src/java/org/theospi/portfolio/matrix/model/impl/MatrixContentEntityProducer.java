@@ -47,6 +47,7 @@ public class MatrixContentEntityProducer extends EntityProducerBase implements E
    }
 
    public void init() {
+      logger.info("init()");
       try {
          getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + MATRIX_PRODUCER);
       }

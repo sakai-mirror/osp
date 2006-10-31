@@ -47,7 +47,8 @@ public class PresentationListGenerator extends BaseListGenerator implements Acti
    private AuthenticationManager authnManager;
 
    public void init(){
-       super.init();
+      logger.info("init()"); 
+      super.init();
    }
    public WorksiteManager getWorksiteManager() {
       return worksiteManager;

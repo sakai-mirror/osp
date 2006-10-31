@@ -130,6 +130,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
    	 */
     protected void init() throws Exception
     {
+       logger.info("init()");
        // register functions
        FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_CREATE);
        FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_RUN);

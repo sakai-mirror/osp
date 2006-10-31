@@ -146,7 +146,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    protected void init() throws Exception {
       
-
+      logger.info("init()");
       CacheManager cacheManager = CacheManager.create();
       if (cacheManager.cacheExists(SITE_CACHE_NAME))
          cacheManager.removeCache(SITE_CACHE_NAME);
