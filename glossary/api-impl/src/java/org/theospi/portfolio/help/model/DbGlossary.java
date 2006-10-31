@@ -217,10 +217,20 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
 
       for (Iterator i=orig.iterator();i.hasNext();) {
          GlossaryEntry entry = (GlossaryEntry)i.next();
+         
+         entry.setLongDescriptionObject(loadDescription(entry.getId()));
+         
          getHibernateTemplate().evict(entry);
+         getHibernateTemplate().evict(entry.getLongDescriptionObject());
+         
          entry.setWorksiteId(toContext);
          entry.setId(null);
          getHibernateTemplate().save(entry);
+         
+         entry.getLongDescriptionObject().setEntryId(entry.getId());
+         entry.getLongDescriptionObject().setId(null);
+         getHibernateTemplate().save(entry.getLongDescriptionObject());
+         addUpdateTermCache(entry);
       }
    }
 
