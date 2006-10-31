@@ -32,7 +32,7 @@ import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
-import org.theospi.utils.mvc.impl.ToolFinishedView;
+import org.sakaiproject.metaobj.shared.control.ToolFinishedView;
 
 /**
  * The steps are referenced from 1 to n.  this way we can render the step number to the interface correctly

@@ -28,6 +28,7 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.ActiveToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.util.Web;
+import org.sakaiproject.metaobj.shared.control.ToolFinishedView;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -35,8 +36,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Enumeration;
-
-import org.theospi.utils.mvc.impl.ToolFinishedView;
 
 /**
  * Created by IntelliJ IDEA.
@@ -51,121 +50,121 @@ public class HelperAwareJsfTool extends JsfTool {
 
   private static final String HELPER_SESSION_PREFIX = "session.";
 
-	protected void dispatch(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
-	{
-		// NOTE: this is a simple path dispatching, taking the path as the view id = jsp file name for the view,
-		//       with default used if no path and a path prefix as configured.
-		// TODO: need to allow other sorts of dispatching, such as pulling out drill-down ids and making them
-		//       available to the JSF
+   protected void dispatch(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+   {
+      // NOTE: this is a simple path dispatching, taking the path as the view id = jsp file name for the view,
+      //       with default used if no path and a path prefix as configured.
+      // TODO: need to allow other sorts of dispatching, such as pulling out drill-down ids and making them
+      //       available to the JSF
 
-		// build up the target that will be dispatched to
-		String target = req.getPathInfo();
+      // build up the target that will be dispatched to
+      String target = req.getPathInfo();
 
-		// see if we have a helper request
+      // see if we have a helper request
     if (sendToHelper(req, res, target)) {
        return;
     }
 
-		// see if we have a resource request - i.e. a path with an extension, and one that is not the JSF_EXT
-		if (isResourceRequest(target))
-		{
-			// get a dispatcher to the path
-			RequestDispatcher resourceDispatcher = getServletContext().getRequestDispatcher(target);
-			if (resourceDispatcher != null)
-			{
-				resourceDispatcher.forward(req, res);
-				return;
-			}
-		}
+      // see if we have a resource request - i.e. a path with an extension, and one that is not the JSF_EXT
+      if (isResourceRequest(target))
+      {
+         // get a dispatcher to the path
+         RequestDispatcher resourceDispatcher = getServletContext().getRequestDispatcher(target);
+         if (resourceDispatcher != null)
+         {
+            resourceDispatcher.forward(req, res);
+            return;
+         }
+      }
 
-		if ("Title".equals(req.getParameter("panel")))
-		{
-			// This allows only one Title JSF for each tool
-			target = "/title.jsf";
-		}
+      if ("Title".equals(req.getParameter("panel")))
+      {
+         // This allows only one Title JSF for each tool
+         target = "/title.jsf";
+      }
 
-		else
-		{
-			ToolSession session = SessionManager.getCurrentToolSession();
+      else
+      {
+         ToolSession session = SessionManager.getCurrentToolSession();
 
-			if (target == null || "/".equals(target))
-			{
+         if (target == null || "/".equals(target))
+         {
             if (!m_defaultToLastView) {
                // make sure tool session is clean
                session.clearAttributes();
             }
 
-				target = computeDefaultTarget();
+            target = computeDefaultTarget();
 
-				// make sure it's a valid path
-				if (!target.startsWith("/"))
-				{
-					target = "/" + target;
-				}
+            // make sure it's a valid path
+            if (!target.startsWith("/"))
+            {
+               target = "/" + target;
+            }
 
-				// now that we've messed with the URL, send a redirect to make it official
-				res.sendRedirect(Web.returnUrl(req, target));
-				return;
-			}
+            // now that we've messed with the URL, send a redirect to make it official
+            res.sendRedirect(Web.returnUrl(req, target));
+            return;
+         }
 
-			// see if we want to change the specifically requested view
-			String newTarget = redirectRequestedTarget(target);
+         // see if we want to change the specifically requested view
+         String newTarget = redirectRequestedTarget(target);
 
-			// make sure it's a valid path
-			if (!newTarget.startsWith("/"))
-			{
-				newTarget = "/" + newTarget;
-			}
+         // make sure it's a valid path
+         if (!newTarget.startsWith("/"))
+         {
+            newTarget = "/" + newTarget;
+         }
 
-			if (!newTarget.equals(target))
-			{
-				// now that we've messed with the URL, send a redirect to make it official
-				res.sendRedirect(Web.returnUrl(req, newTarget));
-				return;
-			}
-			target = newTarget;
+         if (!newTarget.equals(target))
+         {
+            // now that we've messed with the URL, send a redirect to make it official
+            res.sendRedirect(Web.returnUrl(req, newTarget));
+            return;
+         }
+         target = newTarget;
 
-			// store this
-   		session.setAttribute(LAST_VIEW_VISITED, target);
-		}
+         // store this
+         session.setAttribute(LAST_VIEW_VISITED, target);
+      }
 
-		// add the configured folder root and extension (if missing)
-		target = m_path + target;
+      // add the configured folder root and extension (if missing)
+      target = m_path + target;
 
-		// add the default JSF extension (if we have no extension)
-		int lastSlash = target.lastIndexOf("/");
-		int lastDot = target.lastIndexOf(".");
-		if (lastDot < 0 || lastDot < lastSlash)
-		{
-			target += JSF_EXT;
-		}
+      // add the default JSF extension (if we have no extension)
+      int lastSlash = target.lastIndexOf("/");
+      int lastDot = target.lastIndexOf(".");
+      if (lastDot < 0 || lastDot < lastSlash)
+      {
+         target += JSF_EXT;
+      }
 
-		// set the information that can be removed from return URLs
-		req.setAttribute(URL_PATH, m_path);
-		req.setAttribute(URL_EXT, ".jsp");
+      // set the information that can be removed from return URLs
+      req.setAttribute(URL_PATH, m_path);
+      req.setAttribute(URL_EXT, ".jsp");
 
-		// set the sakai request object wrappers to provide the native, not Sakai set up, URL information
-		// - this assures that the FacesServlet can dispatch to the proper view based on the path info
-		req.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
+      // set the sakai request object wrappers to provide the native, not Sakai set up, URL information
+      // - this assures that the FacesServlet can dispatch to the proper view based on the path info
+      req.setAttribute(Tool.NATIVE_URL, Tool.NATIVE_URL);
 
-		// TODO: Should setting the HTTP headers be moved up to the portal level as well?
-		res.setContentType("text/html; charset=UTF-8");
-		res.addDateHeader("Expires", System.currentTimeMillis() - (1000L * 60L * 60L * 24L * 365L));
-		res.addDateHeader("Last-Modified", System.currentTimeMillis());
-		res.addHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0");
-		res.addHeader("Pragma", "no-cache");
+      // TODO: Should setting the HTTP headers be moved up to the portal level as well?
+      res.setContentType("text/html; charset=UTF-8");
+      res.addDateHeader("Expires", System.currentTimeMillis() - (1000L * 60L * 60L * 24L * 365L));
+      res.addDateHeader("Last-Modified", System.currentTimeMillis());
+      res.addHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0, post-check=0, pre-check=0");
+      res.addHeader("Pragma", "no-cache");
 
-		// dispatch to the target
-		/*M_log.debug("dispatching path: " + req.getPathInfo() + " to: " + target + " context: "
-				+ getServletContext().getServletContextName());*/
-		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(target);
-		dispatcher.forward(req, res);
+      // dispatch to the target
+      /*M_log.debug("dispatching path: " + req.getPathInfo() + " to: " + target + " context: "
+              + getServletContext().getServletContextName());*/
+      RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(target);
+      dispatcher.forward(req, res);
 
-		// restore the request object
-		req.removeAttribute(Tool.NATIVE_URL);
-		req.removeAttribute(URL_PATH);
-		req.removeAttribute(URL_EXT);
-	}
+      // restore the request object
+      req.removeAttribute(Tool.NATIVE_URL);
+      req.removeAttribute(URL_PATH);
+      req.removeAttribute(URL_EXT);
+   }
 
   protected boolean sendToHelper(HttpServletRequest req, HttpServletResponse res, String target) {
     String path = req.getPathInfo();
@@ -206,7 +205,7 @@ public class HelperAwareJsfTool extends JsfTool {
     }
     toolSession.setAttribute(helperTool.getId() + "thetoolPath",
           req.getContextPath() + req.getServletPath());
-    
+
     // saves the alternate done url map into a tool specific attribute
     if (toolSession.getAttribute(helperTool.getId() + ToolFinishedView.ALTERNATE_DONE_URL) == null) {
        toolSession.setAttribute(helperTool.getId() + ToolFinishedView.ALTERNATE_DONE_URL,

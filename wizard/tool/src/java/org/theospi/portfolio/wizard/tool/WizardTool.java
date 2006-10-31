@@ -38,6 +38,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
+import org.sakaiproject.metaobj.shared.control.ToolFinishedView;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
@@ -72,7 +73,6 @@ import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
-import org.theospi.utils.mvc.impl.ToolFinishedView;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;

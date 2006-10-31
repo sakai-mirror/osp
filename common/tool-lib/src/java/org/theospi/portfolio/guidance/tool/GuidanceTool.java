@@ -399,7 +399,7 @@ public class GuidanceTool extends HelperToolBase {
       session.setAttribute(ResourceEditingHelper.CREATE_PARENT, "/");
 
       try {
-         context.redirect("sakai.resource.helper.helper/tool");
+         context.redirect("sakai.metaobj.form.helper/formHelper");
       }
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);

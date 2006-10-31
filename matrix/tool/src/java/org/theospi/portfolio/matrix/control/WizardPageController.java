@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.control.ToolFinishedView;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
@@ -39,7 +40,6 @@ import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
-import org.theospi.utils.mvc.impl.ToolFinishedView;
 
 /**
  * openEvaluationPageHierRedirect will put the user here
@@ -51,7 +51,7 @@ import org.theospi.utils.mvc.impl.ToolFinishedView;
  * To change this template use File | Settings | File Templates.
  */
 public class WizardPageController extends CellController {
-   
+
    private WizardManager wizardManager;
    private SessionManager sessionManager;
 
@@ -60,16 +60,16 @@ public class WizardPageController extends CellController {
     */
    public Map referenceData(Map request, Object command, Errors errors) {
       ToolSession session = getSessionManager().getCurrentToolSession();
-      
+
       Map model = super.referenceData(request, command, errors);
-      
+
       Agent owner = (Agent)request.get(WizardPageHelper.WIZARD_OWNER);
-      
+
       if(owner == null)
          owner = (Agent)session.getAttribute(WizardPageHelper.WIZARD_OWNER);
-      
+
       session.setAttribute(WizardPageHelper.WIZARD_OWNER, owner);
-      
+
       model.put("readOnlyMatrix", super.isReadOnly(owner, null));
       //session.removeAttribute("readOnlyMatrix");
       model.put("pageTitleKey", "view_wizardPage");
@@ -81,7 +81,7 @@ public class WizardPageController extends CellController {
       model.put("wizardDescription", request.get("wizardDescription"));
       return model;
    }
-   
+
    protected Style getDefaultStyle(Id pageId) {
       //Get the wizard default style
       CompletedWizard cw = getWizardManager().getCompletedWizardByPage(pageId);
@@ -109,10 +109,10 @@ public class WizardPageController extends CellController {
       page = getMatrixManager().getWizardPage(pageId);
       session.put(WizardPageHelper.WIZARD_PAGE, page);
       session.remove(WizardPageHelper.CANCELED);
-      
+
       Agent owner = (Agent)session.get(WizardPageHelper.WIZARD_OWNER);
       request.put(WizardPageHelper.WIZARD_OWNER, owner);
-      
+
       WizardPageSequence seq = wizardManager.getWizardPageSeqByDef(page.getPageDefinition().getId());
       if(seq.getCategory().getParentCategory() != null)
          request.put("categoryTitle", seq.getCategory().getTitle());
@@ -121,10 +121,10 @@ public class WizardPageController extends CellController {
 
       request.put("wizardTitle", seq.getCategory().getWizard().getName());
       request.put("wizardDescription", seq.getCategory().getWizard().getDescription());
-      
-      
+
+
       Cell cell = createCellWrapper(page);
-      
+
       CellFormBean cellBean = (CellFormBean) incomingModel;
       cellBean.setCell(cell);
       List nodeList = new ArrayList(getMatrixManager().getPageContents(page));
@@ -136,7 +136,7 @@ public class WizardPageController extends CellController {
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
 
       String submitWizardAction = (String)request.get("submitWizard");
-      
+
       if(submitWizardAction != null) {
          session.put(ToolFinishedView.ALTERNATE_DONE_URL, "submitWizard");
          return new ModelAndView("confirmWizard", "", "");
