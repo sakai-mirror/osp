@@ -62,7 +62,7 @@ import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.shared.model.ScaffoldingCellSupportDeviceBean;
+import org.theospi.portfolio.shared.model.CommonFormBean;
 
 public class AddTemplateController extends AbstractWizardFormController {
    final public static int DESCRIBE_PAGE = 0;
@@ -210,11 +210,11 @@ public class AddTemplateController extends AbstractWizardFormController {
       List retForms = new ArrayList();
       for(Iterator iter = commentForms.iterator(); iter.hasNext();) {
          StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) iter.next(); 
-         retForms.add(new ScaffoldingCellSupportDeviceBean(sad.getId().getValue(), sad.getDecoratedDescription(), "form",
+         retForms.add(new CommonFormBean(sad.getId().getValue(), sad.getDecoratedDescription(), "form",
                   sad.getOwner().getName(), sad.getModified()));
       }
       
-      Collections.sort(retForms, ScaffoldingCellSupportDeviceBean.beanComparator);
+      Collections.sort(retForms, CommonFormBean.beanComparator);
       return retForms;
    }
    

@@ -48,7 +48,7 @@ import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.shared.model.ScaffoldingCellSupportDeviceBean;
+import org.theospi.portfolio.shared.model.CommonFormBean;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.security.AuthorizationFacade;
 
@@ -232,7 +232,7 @@ public class CellController implements FormController, LoadObjectController {
             getStructuredArtifactDefinitionManager().loadHome(strFormDefId);
          bean.getDescription();
          //cwm use a different bean below, as the name has implications
-         retList.add(new ScaffoldingCellSupportDeviceBean(
+         retList.add(new CommonFormBean(
                   strFormDefId, bean.getDecoratedDescription(), strFormDefId,
                   bean.getOwner().getName(), bean.getModified()));
       }

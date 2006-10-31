@@ -45,7 +45,7 @@ import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.shared.model.ScaffoldingCellSupportDeviceBean;
+import org.theospi.portfolio.shared.model.CommonFormBean;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
@@ -355,11 +355,11 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       List retForms = new ArrayList();
       for(Iterator iter = commentForms.iterator(); iter.hasNext();) {
          StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) iter.next(); 
-         retForms.add(new ScaffoldingCellSupportDeviceBean(sad.getId().getValue(), sad.getDecoratedDescription(), FORM_TYPE,
+         retForms.add(new CommonFormBean(sad.getId().getValue(), sad.getDecoratedDescription(), FORM_TYPE,
                   sad.getOwner().getName(), sad.getModified()));
       }
       
-      Collections.sort(retForms, ScaffoldingCellSupportDeviceBean.beanComparator);
+      Collections.sort(retForms, CommonFormBean.beanComparator);
       return retForms;
    }
    
@@ -371,12 +371,12 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       List retWizards = new ArrayList();
       for(Iterator iter = wizards.iterator(); iter.hasNext();) {
          Wizard wizard = (Wizard)iter.next();
-         retWizards.add(new ScaffoldingCellSupportDeviceBean(wizard.getId().getValue(),
+         retWizards.add(new CommonFormBean(wizard.getId().getValue(),
                wizard.getName(), Wizard.WIZARD_TYPE_SEQUENTIAL,
                wizard.getOwner().getName(), wizard.getModified() ));
       }
       
-      Collections.sort(retWizards, ScaffoldingCellSupportDeviceBean.beanComparator);
+      Collections.sort(retWizards, CommonFormBean.beanComparator);
       return retWizards;
    }
    
@@ -408,7 +408,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       Collection returnCol = new ArrayList();
       Collection col = getAdditionalFormDevices();
       for (Iterator iter = col.iterator(); iter.hasNext();) {
-         ScaffoldingCellSupportDeviceBean bean = (ScaffoldingCellSupportDeviceBean) iter.next();
+         CommonFormBean bean = (CommonFormBean) iter.next();
          if (sCell.getAdditionalForms().contains(bean.getId()))
             returnCol.add(bean);
       }

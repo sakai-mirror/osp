@@ -23,7 +23,7 @@ package org.theospi.portfolio.shared.model;
 import java.util.Comparator;
 import java.util.Date;
 
-public class ScaffoldingCellSupportDeviceBean {
+public class CommonFormBean {
    
    private String id;
    private String name;
@@ -35,15 +35,15 @@ public class ScaffoldingCellSupportDeviceBean {
    static {
     beanComparator = new Comparator() {
          public int compare(Object o1, Object o2) {
-                return ((ScaffoldingCellSupportDeviceBean)o1).getName().toLowerCase().compareTo(
-                      ((ScaffoldingCellSupportDeviceBean)o2).getName().toLowerCase());
+                return ((CommonFormBean)o1).getName().toLowerCase().compareTo(
+                      ((CommonFormBean)o2).getName().toLowerCase());
          }
         };
    }
    
-   public ScaffoldingCellSupportDeviceBean() {}
+   public CommonFormBean() {}
    
-   public ScaffoldingCellSupportDeviceBean(String id, String name, String type, String owner, Date modifiedDate) {
+   public CommonFormBean(String id, String name, String type, String owner, Date modifiedDate) {
       this.id = id;
       this.name = name;
       this.type = type;
