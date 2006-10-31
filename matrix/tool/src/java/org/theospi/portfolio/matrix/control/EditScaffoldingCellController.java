@@ -45,6 +45,7 @@ import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.shared.model.ScaffoldingCellSupportDeviceBean;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
@@ -358,6 +359,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
                   sad.getOwner().getName(), sad.getModified()));
       }
       
+      Collections.sort(retForms, ScaffoldingCellSupportDeviceBean.beanComparator);
       return retForms;
    }
    
@@ -374,6 +376,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
                wizard.getOwner().getName(), wizard.getModified() ));
       }
       
+      Collections.sort(retWizards, ScaffoldingCellSupportDeviceBean.beanComparator);
       return retWizards;
    }
    

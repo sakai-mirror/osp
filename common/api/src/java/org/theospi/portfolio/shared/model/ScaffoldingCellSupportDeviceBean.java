@@ -18,8 +18,9 @@
 * limitations under the License.
 *
 **********************************************************************************/
-package org.theospi.portfolio.matrix.control;
+package org.theospi.portfolio.shared.model;
 
+import java.util.Comparator;
 import java.util.Date;
 
 public class ScaffoldingCellSupportDeviceBean {
@@ -29,6 +30,16 @@ public class ScaffoldingCellSupportDeviceBean {
    private String type;
    private String owner;
    private Date modifiedDate;
+   
+   public static Comparator beanComparator;
+   static {
+    beanComparator = new Comparator() {
+         public int compare(Object o1, Object o2) {
+                return ((ScaffoldingCellSupportDeviceBean)o1).getName().toLowerCase().compareTo(
+                      ((ScaffoldingCellSupportDeviceBean)o2).getName().toLowerCase());
+         }
+        };
+   }
    
    public ScaffoldingCellSupportDeviceBean() {}
    

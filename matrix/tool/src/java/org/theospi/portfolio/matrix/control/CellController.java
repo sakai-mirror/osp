@@ -48,6 +48,7 @@ import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.shared.model.ScaffoldingCellSupportDeviceBean;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.security.AuthorizationFacade;
 

@@ -40,32 +40,22 @@
             <a href="javascript:document.forms[0].pickerField.value='<c:out value="${TEMPLATE_RENDERER}"/>';javascript:document.forms[0]._target4.value='picker';document.forms[0].validate.value='false';document.forms[0].submit();">
             <fmt:message key="action_pickFile"/> </a>
     </spring:bind>
-
-    <spring:bind path="template.propertyPage">
-        <p class="shorttext">
-            <label><fmt:message key="label_outlineOptions"/></label>
-            <input type="text" id="propertyPageName" disabled="true"
-                value="<c:out value="${propertyPageName}"/>" />
-            <input type="hidden" name="propertyPage" id="propertyPage"
-                value="<c:out value="${status.value}"/>" />
-            <a href="javascript:document.forms[0].pickerField.value='<c:out value="${TEMPLATE_PROPERTYFILE}"/>';javascript:document.forms[0]._target4.value='picker';document.forms[0].validate.value='false';document.forms[0].submit();">
-                <fmt:message key="action_pickFile"/> </a>
-        </p>
-    </spring:bind>
-
-    <spring:bind path="template.documentRoot">
-        <p class="shorttext">
-            <label><fmt:message key="label_outlineOptionsFileElement"/></label>
-            <select name="<c:out value="${status.expression}" />"
-                id="<c:out value="${status.expression}" />">
-                <c:forEach var="element" items="${elements}"
-                    varStatus="status">
-                    <option value="<c:out value="${element}"/>"><c:out
-                        value="${element}" /></option>
-                </c:forEach>
-            </select>
-        </p>
-    </spring:bind>
+  
+     <spring:bind path="template.propertyFormType">  
+         <c:if test="${status.error}">
+             <div class="validation"><c:out value="${status.errorMessage}"/></div>
+         </c:if>
+       <p class="shorttext">
+         <label><fmt:message key="label_outlineOptionsFormType"/></label>    
+            <select name="<c:out value="${status.expression}"/>" <c:out value="${localDisabledText}"/>>
+                     <option value=""><fmt:message key="select_form_text" /></option>
+                  <c:forEach var="formType" items="${propertyFormTypes}">
+                     <option  
+                        value="<c:out value="${formType.id}"/>" <c:if test="${status.value==formType.id}"> selected</c:if>><c:out value="${formType.name}"/></option>
+                  </c:forEach>
+               </select>
+       </p>
+     </spring:bind>
 
 
     <c:set var="suppress_submit" value="true" />

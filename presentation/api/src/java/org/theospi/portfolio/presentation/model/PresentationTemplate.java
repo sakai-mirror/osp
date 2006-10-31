@@ -49,6 +49,7 @@ public class PresentationTemplate extends IdentifiableObject implements Serializ
    private boolean published = false;
    private String markup;
    private String siteId;
+   private Id propertyFormType;
    transient private Set deletedItems = new HashSet();
    transient private boolean validate = true;
    transient private boolean newObject = false;
@@ -288,5 +289,19 @@ public class PresentationTemplate extends IdentifiableObject implements Serializ
 
    public void setNewObject(boolean newObject) {
       this.newObject = newObject;
+   }
+
+   /**
+    * @return the propertyFormType
+    */
+   public Id getPropertyFormType() {
+      return propertyFormType;
+   }
+
+   /**
+    * @param propertyFormType the propertyFormType to set
+    */
+   public void setPropertyFormType(Id propertyFormType) {
+      this.propertyFormType = propertyFormType;
    }
 }
