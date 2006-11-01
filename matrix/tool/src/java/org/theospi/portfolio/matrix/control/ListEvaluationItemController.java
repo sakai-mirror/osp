@@ -119,7 +119,11 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
                      
                      model.put(param.getKey(), param.getValue());
                   }
+                  
+                  //Clear out the hier page if there is one & clear the set of seq pages
                   session.remove(WizardPageHelper.WIZARD_PAGE);
+                  session.remove(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES);
+                  
                   session.put("is_eval_page_id", id);
                   break;
                }
