@@ -77,7 +77,7 @@ public class DecoratedCategory extends DecoratedCategoryChild {
     */
    public String getDescription() {
       String desc = base.getDescription();
-      if(desc.length() > 100)
+      if(desc != null && desc.length() > 100)
          return desc.substring(0, 100) + "...";
       return desc;
    }
