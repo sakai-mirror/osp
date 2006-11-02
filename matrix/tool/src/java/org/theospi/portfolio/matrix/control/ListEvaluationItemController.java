@@ -111,7 +111,7 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
             for(Iterator i = list.iterator(); i.hasNext(); ) {
                EvaluationContentWrapper wrapper = (EvaluationContentWrapper)i.next();
                
-               if(id.equals(wrapper.getId().getValue())) {
+               if(id.equals(wrapper.getId().getValue() + "_" + wrapper.getOwner().getId())) {
                   view = wrapper.getUrl();
                   
                   for(Iterator params = wrapper.getUrlParams().iterator(); params.hasNext(); ) {

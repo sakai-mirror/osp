@@ -170,7 +170,7 @@
                     <td>
                     <div align="left">
                     		<c:if test="${permCheck}">
-                        <a href="#" onClick="document.getElementById('action').value='open';document.getElementById('eval_id').value='<c:out value="${item.id.value}" />';document.getElementById('evalList').submit();">
+                        <a href="#" onClick="document.getElementById('action').value='open';document.getElementById('eval_id').value='<c:out value="${item.id.value}" />_<c:out value="${item.owner.id}" />';document.getElementById('evalList').submit();">
                         <c:out value="${item.title}" />
                         </a>
                         </c:if>
