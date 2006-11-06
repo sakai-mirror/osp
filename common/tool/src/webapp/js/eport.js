@@ -152,14 +152,44 @@ function osp_dateselectionwidgetpopup(yearselect_id, monthselect_id, dayselect_i
 
 
 /**
- * sets drop down in date picker to first value, this allows date to not be required on pages
+ * sets drop down in date picker to current date value, this allows date to not be required on pages
  * once a user selects
  */
 function osp_dateselection_init(year, month, day){
    if (getSelectedValue(year) == "" || getSelectedValue(month) == "" || getSelectedValue(day) == ""){
-      ospUpdateSelect(ospGetElementById(year), ospGetElementById(year).options[1].value);
-      ospUpdateSelect(ospGetElementById(day), ospGetElementById(day).options[1].value);
-      ospUpdateSelect(ospGetElementById(month), ospGetElementById(month).options[1].value);
+      
+      var today = new Date();
+      var tDay = today.getDate();
+      var tMonth = today.getMonth() + 1;
+      var tYear = today.getFullYear();
+
+      for (var i = 0; i < ospGetElementById(year).options.length; ++i) {
+        if (ospGetElementById(year).options[i].value == tYear) {
+	      ospUpdateSelect(ospGetElementById(year), ospGetElementById(year).options[i].value);
+	      break;
+        } else {
+	      ospUpdateSelect(ospGetElementById(year), ospGetElementById(year).options[1].value);
+        }
+      }
+	
+      for (var i = 0; i < ospGetElementById(month).options.length; ++i) {
+        if (ospGetElementById(month).options[i].value == tMonth) {
+	      ospUpdateSelect(ospGetElementById(month), ospGetElementById(month).options[i].value);
+	      break;
+        } else {
+	      ospUpdateSelect(ospGetElementById(month), ospGetElementById(month).options[1].value);
+        }
+      }
+
+      for (var i = 0; i < ospGetElementById(day).options.length; ++i) {
+        if (ospGetElementById(day).options[i].value == tDay) {
+	      ospUpdateSelect(ospGetElementById(day), ospGetElementById(day).options[i].value);
+	      break;
+        } else {
+	      ospUpdateSelect(ospGetElementById(day), ospGetElementById(day).options[1].value);
+        }
+      }
+      
    }
 }
 
