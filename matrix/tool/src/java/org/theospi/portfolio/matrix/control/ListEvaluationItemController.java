@@ -124,7 +124,7 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
                   session.remove(WizardPageHelper.WIZARD_PAGE);
                   session.remove(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES);
                   
-                  session.put("is_eval_page_id", id);
+                  session.put("is_eval_page_id", wrapper.getId().getValue());
                   break;
                }
             }
