@@ -101,7 +101,7 @@ public class EvaluationContentComparator implements Comparator {
                      .getOwner()
                      .getSortName());
       }
-      else if (criteria.equals(SORT_OWNER))
+      else if (criteria.equals(SORT_TYPE))
       {
          // sorted by the owner
          result =
