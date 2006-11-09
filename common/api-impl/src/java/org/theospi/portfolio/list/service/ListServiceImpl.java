@@ -69,6 +69,10 @@ public class ListServiceImpl  extends HibernateDaoSupport implements ListService
 
       return null;
    }
+   
+   public String getDefaultSortColumn() {
+      return getCurrentGenerator().getDefaultSortColumn();
+   }
 
    public List getList() {
       return getCurrentGenerator().getObjects();

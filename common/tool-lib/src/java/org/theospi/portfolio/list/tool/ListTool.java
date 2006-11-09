@@ -90,11 +90,14 @@ public class ListTool extends ToolBase implements ListItemUtils {
     
    protected void sort(List list) {
       ToolSession session = SessionManager.getCurrentToolSession();
-      String sortField = null;
+      String sortField = getDefaultSortColumn();
       int sortDir = SORT_ASC;
       try {
-         sortField = (String)session.getAttribute(SORT_FIELD);
-         sortDir = ((Integer)session.getAttribute(SORT_DIR)).intValue();
+         if (session.getAttribute(SORT_FIELD) != null)
+            sortField = (String)session.getAttribute(SORT_FIELD);
+         
+         if (session.getAttribute(SORT_DIR) != null)
+            sortDir = ((Integer)session.getAttribute(SORT_DIR)).intValue();
       }
       catch(Exception e) {
          logger.debug("Exception getting sorting details. Use the defaults instead.");
@@ -108,7 +111,11 @@ public class ListTool extends ToolBase implements ListItemUtils {
    
    public boolean isCurrentSortField(String field) {
       ToolSession session = SessionManager.getCurrentToolSession();
-      return field.equals((String)session.getAttribute(SORT_FIELD));
+      String sortField = getDefaultSortColumn();
+      if (session.getAttribute(SORT_FIELD) != null)
+         sortField = (String)session.getAttribute(SORT_FIELD);
+      
+      return field.equals(sortField);
    }
    
    public int getCurrentSortDir() {
@@ -149,6 +156,10 @@ public class ListTool extends ToolBase implements ListItemUtils {
    
    public List getSortableColumns() {
       return getListService().getSortableColumns();
+   }
+   
+   private String getDefaultSortColumn() {
+      return getListService().getDefaultSortColumn();
    }
 
    public ListService getListService() {

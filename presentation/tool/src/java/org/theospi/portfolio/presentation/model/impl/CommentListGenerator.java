@@ -32,15 +32,15 @@ import org.sakaiproject.metaobj.shared.control.servlet.SakaiComponentDispatchSer
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.ToolConfiguration;
+import org.theospi.portfolio.list.impl.BaseListGenerator;
 import org.theospi.portfolio.list.intf.ActionableListGenerator;
-import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
 import org.theospi.portfolio.presentation.CommentSortBy;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationComment;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 
-public class CommentListGenerator implements ActionableListGenerator, CustomLinkListGenerator {
+public class CommentListGenerator extends BaseListGenerator implements ActionableListGenerator {
    private PresentationManager presentationManager;
    private static final String TOOL_ID_PARAM = "toolId";
    private static final String COMMENT_ID_PARAM = "commentId";
@@ -132,38 +132,6 @@ public class CommentListGenerator implements ActionableListGenerator, CustomLink
       if (!internalWindow(comment.getPresentation())) {
          return comment.getPresentation().getExternalUri();
       }
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.theospi.portfolio.list.intf.ListGenerator#getColumnConfig()
-    */
-   public List getColumnConfig() {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.theospi.portfolio.list.intf.ListGenerator#getColumns()
-    */
-   public List getColumns() {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.theospi.portfolio.list.intf.ListGenerator#getDefaultColumns()
-    */
-   public List getDefaultColumns() {
-      // TODO Auto-generated method stub
-      return null;
-   }
-
-   /* (non-Javadoc)
-    * @see org.theospi.portfolio.list.intf.ListGenerator#getSortableColumns()
-    */
-   public List getSortableColumns() {
-      // TODO Auto-generated method stub
       return null;
    }
 }

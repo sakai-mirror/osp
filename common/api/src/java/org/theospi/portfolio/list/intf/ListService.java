@@ -32,6 +32,8 @@ public interface ListService {
    public String getEntryLink(Object entry);
 
    public List getCurrentDisplayColumns();
+   
+   public String getDefaultSortColumn();
 
    public List getSortableColumns();
    

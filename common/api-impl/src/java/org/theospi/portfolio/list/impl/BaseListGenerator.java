@@ -105,6 +105,18 @@ public abstract class BaseListGenerator implements CustomLinkListGenerator {
        return sortableColumns;
     }
     
+    public String getDefaultSortColumn() {
+       String retCol = null;
+       for (Iterator i = getColumnConfig().iterator(); i.hasNext();) {
+          ColumnConfig config = (ColumnConfig) i.next();
+          if (config.isSortable() && config.isDefaultSort()) {
+             retCol = config.getColumnName();
+             break;
+          }
+       }
+       return retCol;
+    }
+    
    /**
     * @return the columnConfig
     */

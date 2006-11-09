@@ -48,6 +48,12 @@ public interface ListGenerator {
    
    /**
     * 
+    * @return The column name that is the default sort
+    */
+   public String getDefaultSortColumn();
+   
+   /**
+    * 
     * @return The list of ColumnConfigs that were defined
     */
    public List getColumnConfig();
