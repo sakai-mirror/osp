@@ -65,7 +65,8 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       logger.debug("isAuthorized?(...) invoked in MatrixAuthorizer");
          
       if (MatrixFunctionConstants.EVALUATE_MATRIX.equals(function) ||
-            MatrixFunctionConstants.REVIEW_MATRIX.equals(function)) {
+            MatrixFunctionConstants.REVIEW_MATRIX.equals(function) ||
+            MatrixFunctionConstants.USE_SCAFFOLDING.equals(function)) {
          return new Boolean(facade.isAuthorized(function,id));
       }
       else if (MatrixFunctionConstants.DELETE_SCAFFOLDING.equals(function)) {

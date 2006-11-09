@@ -96,6 +96,7 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    Scaffolding getScaffolding(Id scaffoldingId);
    List findScaffolding(String siteId, String userId);
+   List findPublishedScaffolding(List sites);
    
    ScaffoldingCell getNextScaffoldingCell(ScaffoldingCell scaffoldingCell, 
          int progressionOption);

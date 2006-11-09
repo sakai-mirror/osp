@@ -194,6 +194,19 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
 
    /**
+    * 
+    * @param sites A list of site Ids (Ids)
+    * @return
+    */
+   public List findPublishedScaffolding(List sites) {
+      String[] paramNames = new String[] {"siteIds", "published"};
+      Object[] params = new Object[]{sites, new Boolean(true)};
+      return getHibernateTemplate().findByNamedParam("from Scaffolding s where s.worksiteId in ( :siteIds ) " +
+            "and s.published=:published",
+            paramNames, params);
+   }
+   
+   /**
     * Gets all the scaffolding for the data warehouse.  It preloads all the cells, levels, criterion.
     * It sets the back trace from the level and criterion back to the scaffolding and sets the sequence 
     * index number for ordering.  
