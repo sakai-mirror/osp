@@ -203,7 +203,12 @@ public class DecoratedCategory extends DecoratedCategoryChild {
       parentCategory.resequenceCategories();
       if(getBase().getId() != null)
          getParent().getDeletedItems().add(getBase());
-      return null;
+      return "continue";
+   }
+   
+   public String processActionConfirmDelete() {
+      getParent().setCurrentCategory(this);
+      return "confirmDeleteCategory";
    }
 
    public String moveUp() {
