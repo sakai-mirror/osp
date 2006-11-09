@@ -23,8 +23,10 @@ package org.theospi.portfolio.list.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -137,6 +139,19 @@ public class ListConfig {
             return FAKE_COLUMN;
          }
       }
+
+      /* (non-Javadoc)
+       * @see java.util.HashMap#entrySet()
+       */
+      public Set entrySet() {
+         Set entries = new HashSet();
+         for (int i=0; i<this.selectedColumns.size(); i++) {
+            entries.add((Column)get(i));
+         }
+         return entries;
+      }
+      
+      
 
    }
 

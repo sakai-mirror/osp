@@ -63,17 +63,21 @@
       <property name="worksiteManager">
          <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
       </property>
-      <property name="columns">
-         <list>
-            <value>title</value>
-            <value>type</value>
-            <value>description</value>
-         </list>
-      </property>
-      <property name="defaultColumns">
-         <list>
-            <value>title</value>
-         </list>
+      <property name="columnConfig">
+      	<list>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>title</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>type</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>description</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      		</bean>
+      	</list>
       </property>
    </bean>
    
@@ -82,24 +86,28 @@
       <property name="worksiteManager">
          <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
       </property>
-      <property name="columns">
-         <list>
-            <value>title</value>
-            <value>type</value>
-            <value>description</value>
-         </list>
-      </property>
-      <property name="defaultColumns">
-         <list>
-            <value>title</value>
-         </list>
-      </property>
-      <property name="siteTypes">
+      <property name="columnConfig">
       	<list>
-      		<value>portfolio</value>
-			<value>portfolioAdmin</value>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>title</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>type</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>description</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      		</bean>
       	</list>
       </property>
+		<property name="siteTypes">
+			<list>
+				<value>portfolio</value>
+				<value>portfolioAdmin</value>
+			</list>
+		</property>
    </bean>
 
    <bean id="explicitAuthz" class="org.theospi.portfolio.security.impl.sakai.WorksiteAwareAuthorizationFacade" >

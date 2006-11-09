@@ -41,34 +41,11 @@ public class WorksiteListGenerator extends WorksiteBaseGenerator implements List
    private static final String SITE_ID_PARAM = "selectedSiteId";
 
    private WorksiteManager worksiteManager;
-   private List columns;
-   private List defaultColumns;
    private List siteTypes;
    
    public void init(){
       logger.info("init()");
        super.init();
-   }
-   /**
-    * @return array of coluimn names (should be bean names)
-    */
-   public List getColumns() {
-      return columns;
-   }
-
-   /**
-    * @return array of columns a user has by default
-    */
-   public List getDefaultColumns() {
-      return defaultColumns;
-   }
-
-   public void setColumns(List columns) {
-      this.columns = columns;
-   }
-
-   public void setDefaultColumns(List defaultColumns) {
-      this.defaultColumns = defaultColumns;
    }
 
    /**

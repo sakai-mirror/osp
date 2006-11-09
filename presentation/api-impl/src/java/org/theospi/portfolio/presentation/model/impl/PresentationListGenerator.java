@@ -42,8 +42,6 @@ public class PresentationListGenerator extends BaseListGenerator implements Acti
    private static final String PRESENTATION_ID_PARAM = "presentationId";
 
    private WorksiteManager worksiteManager;
-   private List columns;
-   private List defaultColumns;
    private AuthenticationManager authnManager;
 
    public void init(){
@@ -74,21 +72,6 @@ public class PresentationListGenerator extends BaseListGenerator implements Acti
       this.presentationManager = presentationManager;
    }
 
-   public List getColumns() {
-      return columns;
-   }
-
-   public void setColumns(List columns) {
-      this.columns = columns;
-   }
-
-   public List getDefaultColumns() {
-      return defaultColumns;
-   }
-
-   public void setDefaultColumns(List defaultColumns) {
-      this.defaultColumns = defaultColumns;
-   }
    public List getObjects() {
 
       List presentations = new ArrayList();

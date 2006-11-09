@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2006 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -19,29 +19,34 @@
 *
 **********************************************************************************/
 
-package org.theospi.portfolio.list.intf;
+/**
+ * 
+ */
+package org.theospi.portfolio.list.tool;
 
-import java.util.List;
+import org.theospi.portfolio.shared.model.SortableListObjectComparator;
 
-import org.theospi.portfolio.list.model.ListConfig;
+/**
+ * @author chrismaurer
+ *
+ */
+public class DecoratedEntryComparator extends SortableListObjectComparator {
 
-public interface ListService {
+   /**
+    * @param criteria
+    * @param asc
+    */
+   public DecoratedEntryComparator(String criteria, int asc) {
+      super(criteria, asc);
+   }
 
-   public List getList();
-
-   public String getEntryLink(Object entry);
-
-   public List getCurrentDisplayColumns();
-
-   public List getSortableColumns();
+   /* (non-Javadoc)
+    * @see org.theospi.portfolio.shared.model.SortableListObjectComparator#compare(java.lang.Object, java.lang.Object)
+    */
+   public int compare(Object o1, Object o2) {
+      return super.compare(((DecoratedEntry)o1).getEntry(), ((DecoratedEntry)o2).getEntry());
+   }
    
-   public ListGenerator getListGenerator(String name);
+   
 
-   public ListConfig getCurrentConfig();
-
-   public void saveOptions(ListConfig currentConfig);
-
-   public boolean isNewWindow(Object entry);
-
-   public void register(String id, ListGenerator listGenerator); 
 }

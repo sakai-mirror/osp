@@ -20,11 +20,16 @@
 **********************************************************************************/
 package org.theospi.portfolio.list.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
 import org.theospi.portfolio.list.intf.ListGenerator;
 import org.theospi.portfolio.list.intf.ListService;
+import org.theospi.portfolio.list.model.ColumnConfig;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,6 +42,7 @@ public abstract class BaseListGenerator implements CustomLinkListGenerator {
    private String listGeneratorId;
    private ListService listService;
    private ListGenerator listGenerator;
+   private List columnConfig;
    
    protected final Log logger = LogFactory.getLog(getClass());
 
@@ -69,4 +75,47 @@ public abstract class BaseListGenerator implements CustomLinkListGenerator {
     public void setListGenerator(ListGenerator listGenerator) {
         this.listGenerator = listGenerator;
     }
+    
+    public List getColumns() {
+       List columns = new ArrayList();
+       for (Iterator i = getColumnConfig().iterator(); i.hasNext();) {
+          ColumnConfig config = (ColumnConfig) i.next();
+          columns.add(config.getColumnName());
+       }
+       return columns;
+    }
+    
+    public List getDefaultColumns() {
+       List defaultColumns = new ArrayList();
+       for (Iterator i = getColumnConfig().iterator(); i.hasNext();) {
+          ColumnConfig config = (ColumnConfig) i.next();
+          if (config.isDefaultSelected())
+             defaultColumns.add(config.getColumnName());
+       }
+       return defaultColumns;
+    }
+    
+    public List getSortableColumns() {
+       List sortableColumns = new ArrayList();
+       for (Iterator i = getColumnConfig().iterator(); i.hasNext();) {
+          ColumnConfig config = (ColumnConfig) i.next();
+          if (config.isSortable())
+             sortableColumns.add(config.getColumnName());
+       }
+       return sortableColumns;
+    }
+    
+   /**
+    * @return the columnConfig
+    */
+   public List getColumnConfig() {
+      return columnConfig;
+   }
+
+   /**
+    * @param columnConfig the columnConfig to set
+    */
+   public void setColumnConfig(List columnConfig) {
+      this.columnConfig = columnConfig;
+   }
 }

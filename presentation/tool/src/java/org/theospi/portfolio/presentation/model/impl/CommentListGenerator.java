@@ -47,8 +47,6 @@ public class CommentListGenerator implements ActionableListGenerator, CustomLink
    private static final String PRESENTATION_ID_PARAM = "presentationId";
 
    private WorksiteManager worksiteManager;
-   private List columns;
-   private List defaultColumns;
    private AuthenticationManager authnManager;
 
    public WorksiteManager getWorksiteManager() {
@@ -73,22 +71,6 @@ public class CommentListGenerator implements ActionableListGenerator, CustomLink
 
    public void setPresentationManager(PresentationManager presentationManager) {
       this.presentationManager = presentationManager;
-   }
-
-   public List getColumns() {
-      return columns;
-   }
-
-   public void setColumns(List columns) {
-      this.columns = columns;
-   }
-
-   public List getDefaultColumns() {
-      return defaultColumns;
-   }
-
-   public void setDefaultColumns(List defaultColumns) {
-      this.defaultColumns = defaultColumns;
    }
 
    public List getObjects() {
@@ -150,6 +132,38 @@ public class CommentListGenerator implements ActionableListGenerator, CustomLink
       if (!internalWindow(comment.getPresentation())) {
          return comment.getPresentation().getExternalUri();
       }
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.theospi.portfolio.list.intf.ListGenerator#getColumnConfig()
+    */
+   public List getColumnConfig() {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.theospi.portfolio.list.intf.ListGenerator#getColumns()
+    */
+   public List getColumns() {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.theospi.portfolio.list.intf.ListGenerator#getDefaultColumns()
+    */
+   public List getDefaultColumns() {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.theospi.portfolio.list.intf.ListGenerator#getSortableColumns()
+    */
+   public List getSortableColumns() {
+      // TODO Auto-generated method stub
       return null;
    }
 }

@@ -22,14 +22,20 @@
 package org.theospi.portfolio.list.tool;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.portfolio.list.intf.DecoratedListItem;
 import org.theospi.portfolio.list.intf.ListItemUtils;
 import org.theospi.portfolio.list.intf.ListService;
+import org.theospi.portfolio.list.model.Column;
 import org.theospi.portfolio.list.model.ListConfig;
 import org.theospi.portfolio.shared.tool.ToolBase;
 
@@ -40,6 +46,13 @@ public class ListTool extends ToolBase implements ListItemUtils {
    private DecoratedEntry currentEntry;
 
    private ListConfig currentConfig;
+   private String sortCol;
+   private int sortDir = SORT_ASC;
+   
+   public static final int SORT_ASC = 1;
+   public static final int SORT_DESC = -1;
+   public static final String SORT_FIELD = "org.theospi.portfolio.list.sortField";
+   public static final String SORT_DIR = "org.theospi.portfolio.list.sortDir";
 
 
    public ListTool() {
@@ -65,15 +78,77 @@ public class ListTool extends ToolBase implements ListItemUtils {
            count++;
          if (getCurrentConfig().getRows() > 0 &&
             count == getCurrentConfig().getRows()) {
-            return returned;
+            //sort(returned);
+            break;
+            //return returned;
          }
       }
 
+      sort(returned);
       return returned;
+   }
+    
+   protected void sort(List list) {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      String sortField = null;
+      int sortDir = SORT_ASC;
+      try {
+         sortField = (String)session.getAttribute(SORT_FIELD);
+         sortDir = ((Integer)session.getAttribute(SORT_DIR)).intValue();
+      }
+      catch(Exception e) {
+         logger.debug("Exception getting sorting details. Use the defaults instead.");
+      }
+      
+      if (sortField != null && !sortField.equals("")) {
+         Collections.sort(list, new DecoratedEntryComparator(
+               sortField, sortDir));
+      }
+   }
+   
+   public boolean isCurrentSortField(String field) {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      return field.equals((String)session.getAttribute(SORT_FIELD));
+   }
+   
+   public int getCurrentSortDir() {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      int sortDir = SORT_ASC;
+      try {
+       sortDir = ((Integer)session.getAttribute(SORT_DIR)).intValue();
+      }
+      catch (Exception e) {
+         logger.debug("Exception getting sorting details. Use the defaults instead.");
+      }
+      return sortDir;
    }
 
    public List getDisplayColumns() {
-      return getListService().getCurrentDisplayColumns();
+      List columns = getListService().getCurrentDisplayColumns();
+      List decoratedColumns = new ArrayList(columns.size());
+      for (Iterator i = columns.iterator(); i.hasNext();) {
+         Column column = (Column)i.next();
+         decoratedColumns.add(new DecoratedColumn(column, this));
+      }
+      return decoratedColumns;
+   }
+   
+   public String getServerUrl() {
+      return ServerConfigurationService.getServerUrl();
+   }
+   
+   public List getSelectedColumns() {
+      Map selected = getCurrentConfig().getSelected();
+      List decoratedColumns = new ArrayList(selected.size());
+      for (int i=0; i< selected.entrySet().size(); i++) {
+         Column column = (Column)selected.get(i);
+         decoratedColumns.add(new DecoratedColumn(column, this));
+      }
+      return decoratedColumns;
+   }
+   
+   public List getSortableColumns() {
+      return getListService().getSortableColumns();
    }
 
    public ListService getListService() {
@@ -89,6 +164,14 @@ public class ListTool extends ToolBase implements ListItemUtils {
       setCurrentConfig(getListService().getCurrentConfig());
 
       return "options";
+   }
+   
+   public String processActionSort(DecoratedColumn column, int dir) {
+      ToolSession session = SessionManager.getCurrentToolSession();
+      session.setAttribute(SORT_FIELD, column.getBase().getName());
+      session.setAttribute(SORT_DIR,dir);
+
+      return "main";
    }
 
    public String processMain() {
@@ -114,6 +197,34 @@ public class ListTool extends ToolBase implements ListItemUtils {
 
    public void setCurrentConfig(ListConfig currentConfig) {
       this.currentConfig = currentConfig;
+   }
+
+   /**
+    * @return the sortCol
+    */
+   public String getSortCol() {
+      return sortCol;
+   }
+
+   /**
+    * @param sortCol the sortCol to set
+    */
+   public void setSortCol(String sortCol) {
+      this.sortCol = sortCol;
+   }
+
+   /**
+    * @return the sortDir
+    */
+   public int getSortDir() {
+      return sortDir;
+   }
+
+   /**
+    * @param sortDir the sortDir to set
+    */
+   public void setSortDir(int sortDir) {
+      this.sortDir = sortDir;
    }
 
 }

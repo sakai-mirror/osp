@@ -564,24 +564,29 @@
          <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
       </property>
       <property name="listService"><ref bean="org.theospi.portfolio.list.intf.ListService"/></property>
-      <property name="columns">
-         <list>
-            <value>name</value>
-            <value>description</value>
-            <value>owner.displayName</value>
-            <value>siteName</value>
-             <value>modified</value>
-
-         </list>
-      </property>
-      <property name="defaultColumns">
-         <list>
-            <value>name</value>
-            <value>description</value>
-            <value>owner.displayName</value>
-            <value>siteName</value>
-             <value>modified</value>
-         </list>
+      <property name="columnConfig">
+      	<list>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>name</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>description</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>owner.displayName</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>siteName</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>modified</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      		</bean>
+      	</list>
       </property>
    </bean>
    
