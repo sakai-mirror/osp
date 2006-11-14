@@ -179,7 +179,10 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    }
    
    protected String getGuidanceTitle() {
-      return "Guidance for Cell";
+      ResourceBundle myResources = 
+         ResourceBundle.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
+      return myResources.getString("cell_guidance_title");
+      //return "Guidance for Cell";
    }
    
    protected String getStyleReturnView() {
