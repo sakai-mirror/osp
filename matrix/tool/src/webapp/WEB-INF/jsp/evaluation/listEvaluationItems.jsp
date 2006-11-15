@@ -111,7 +111,7 @@
                      </c:if>
                   </c:if>
                   <a href="<osp:url value="listEvaluationItems.osp"/>&sortByColumn=date&direction=<c:out value="${sortDir}" />">
-                     Date Received 
+                     <fmt:message key="eval_dateReceived"/>
                      <c:if test="${sortByColumn == 'date'}">
                      <img src="/library/image/sakai/sort<c:out value="${sortDirectionText}" />.gif?panel=Main" border="0"
                              <c:if test="${sortDirectionText == 'ascending'}">
@@ -132,7 +132,7 @@
                      </c:if>
                   </c:if>
                   <a href="<osp:url value="listEvaluationItems.osp"/>&sortByColumn=type&direction=<c:out value="${sortDir}" />">
-                     Type 
+                     <fmt:message key="eval_type"/>
                      <c:if test="${sortByColumn == 'type'}">
                      <img src="/library/image/sakai/sort<c:out value="${sortDirectionText}" />.gif?panel=Main" border="0"
                              <c:if test="${sortDirectionText == 'ascending'}">
