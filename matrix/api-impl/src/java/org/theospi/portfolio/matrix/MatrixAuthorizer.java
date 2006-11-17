@@ -130,6 +130,9 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       else if (function.equals(MatrixFunctionConstants.EVALUATE_SPECIFIC_MATRIXCELL)) {
          WizardPage page = getMatrixManager().getWizardPage(id);
          Id siteId = idManager.getId(page.getPageDefinition().getSiteId());
+//       make sure that the target site gets tested
+         
+         facade.pushAuthzGroups(siteId.getValue());
          return new Boolean(facade.isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, siteId));
       }
             

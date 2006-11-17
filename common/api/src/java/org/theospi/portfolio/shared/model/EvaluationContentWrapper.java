@@ -25,8 +25,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
@@ -40,20 +43,22 @@ public abstract class EvaluationContentWrapper {
    private String evalType;
    private String url;
    private Set urlParams = new HashSet();
+   private String siteTitle;
    
    public EvaluationContentWrapper() {;}
    
    public EvaluationContentWrapper(Id id, String title, Agent owner, 
-         Date submittedDate) throws UserNotDefinedException {
+         Date submittedDate, String siteId) throws UserNotDefinedException {
       this.id = id;
       this.title = title;
       this.submittedDate = submittedDate;
       
       this.owner = UserDirectoryService.getUser(owner.getId().getValue());
+      this.siteTitle = fetchSiteName(siteId);
    }
    
    public EvaluationContentWrapper(Id id, String title, Agent owner, 
-         Date submittedDate, String type) throws UserNotDefinedException {
+         Date submittedDate, String type, String siteType, String siteId) throws UserNotDefinedException {
       
       this.id = id;
       this.title = title;
@@ -61,6 +66,8 @@ public abstract class EvaluationContentWrapper {
       
       this.owner = UserDirectoryService.getUser(owner.getId().getValue());
       this.evalType = type;
+      this.siteTitle = fetchSiteName(siteId);
+
    }
    
    public EvaluationContentWrapper(Id id, String title, User owner, Date submittedDate) {
@@ -108,6 +115,19 @@ public abstract class EvaluationContentWrapper {
          this.value = value;
       }
       
+   }
+   
+   
+   public String fetchSiteName(String siteId) {
+      String title = null;
+      try {
+         Site site = SiteService.getSite(siteId);
+         title = site.getTitle();
+      } catch (IdUnusedException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+      }
+      return title;
    }
    
    /**
@@ -200,5 +220,19 @@ public abstract class EvaluationContentWrapper {
     */
    public void setUrlParams(Set urlParams) {
       this.urlParams = urlParams;
+   }
+
+   /**
+    * @return the siteTitle
+    */
+   public String getSiteTitle() {
+      return siteTitle;
+   }
+
+   /**
+    * @param siteTitle the siteTitle to set
+    */
+   public void setSiteTitle(String siteTitle) {
+      this.siteTitle = siteTitle;
    }
 }

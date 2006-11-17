@@ -34,19 +34,25 @@ import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 public class EvaluationContentWrapperForWizard extends EvaluationContentWrapper {
 
    public EvaluationContentWrapperForWizard(Id id, 
-         String title, Agent owner, Date submittedDate) throws UserNotDefinedException {
+         String title, Agent owner, Date submittedDate, String siteId) throws UserNotDefinedException {
+      
+      Set params = new HashSet();     
+      
       setId(id);
       setTitle(title);
       setSubmittedDate(submittedDate);
+      setSiteTitle(super.fetchSiteName(siteId));
       
-      setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
+      if (owner != null) {
+         setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
+         params.add(new ParamBean("session.WIZARD_USER_ID", getOwner().getId()));
+         setUrl("openEvaluationWizardRedirect");
+      }
+      
       setEvalType(CompletedWizard.TYPE);
       
-      setUrl("openEvaluationWizardRedirect");
-      
-      Set params = new HashSet();      
       params.add(new ParamBean("session.CURRENT_WIZARD_ID", getId().getValue()));
-      params.add(new ParamBean("session.WIZARD_USER_ID", getOwner().getId()));
+      
       setUrlParams(params);  
    }
    

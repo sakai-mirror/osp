@@ -39,21 +39,28 @@ import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
  */
 public class EvaluationContentWrapperForMatrixCell extends EvaluationContentWrapper{
    
-   public EvaluationContentWrapperForMatrixCell(Id id, String title, Agent owner, Date submittedDate) throws UserNotDefinedException {
+   public EvaluationContentWrapperForMatrixCell(Id id, String title, Agent owner, 
+         Date submittedDate, String siteId) throws UserNotDefinedException {
+
+      Set params = new HashSet();
+      
       setId(id);
       setTitle(title);
       setSubmittedDate(submittedDate);
+      setSiteTitle(super.fetchSiteName(siteId));
       
-      setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
+      
+      if (owner != null) {
+         setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
+         params.add(new ParamBean("view_user", owner.getId().getValue()));
+         setUrl("openEvaluationCellRedirect");
+      }
+      
       setEvalType(Cell.TYPE);
-      
-      setUrl("openEvaluationCellRedirect");
-      
-      Set params = new HashSet();
       
       params.add(new ParamBean("page_id", getId().getValue()));
       params.add(new ParamBean("readOnlyMatrix", "true"));
-      params.add(new ParamBean("view_user", owner.getId().getValue()));
+      
       setUrlParams(params);      
    }
 }

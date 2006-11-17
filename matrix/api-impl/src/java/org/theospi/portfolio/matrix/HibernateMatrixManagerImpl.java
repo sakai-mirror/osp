@@ -1062,7 +1062,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             "org.theospi.portfolio.matrix.model.EvaluationContentWrapperForMatrixCell(" +
             "wp.id, " +
             "wp.pageDefinition.title, c.matrix.owner, " +
-            "c.wizardPage.modified) " +
+            "c.wizardPage.modified, wp.pageDefinition.siteId) " +
             "from WizardPage wp, Authorization auth, Cell c " +
             "where wp.pageDefinition.id = auth.qualifier " +
             "and wp.id = c.wizardPage.id " +
@@ -1083,7 +1083,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             "cwp.wizardPage.id, " +
             "cwp.wizardPage.pageDefinition.title, cwp.category.wizard.owner, " +
             "cwp.wizardPage.modified, " +
-            "cwp.category.wizard.wizard.type) " +
+            "cwp.category.wizard.wizard.type, cwp.wizardPage.pageDefinition.siteId) " +
             "from CompletedWizardPage cwp, " +
             "Authorization auth " +
             "where cwp.wizardPage.pageDefinition.id = auth.qualifier " +
@@ -1104,7 +1104,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizard(" +
             "cw.wizard.id, " +
             "cw.wizard.name, cw.owner, " +
-            "cw.created) " +
+            "cw.created, cw.wizard.siteId) " +
             "from CompletedWizard cw, " +
             "Authorization auth " +
             "where cw.wizard.id = auth.qualifier " +
@@ -1118,17 +1118,26 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return wizards;
    }
    
+   public List getEvaluatableItems(Agent agent) {
+      //get all sites
+      List allEvals = new ArrayList();
+      List sites = getWorksiteManager().getUserSites();
+      for (Iterator i = sites.iterator(); i.hasNext();) {
+         Site site = (Site) i.next();
+         allEvals.addAll(getEvaluatableItems(agent, idManager.getId(site.getId())));
+      }
+      
+      return allEvals;
+   }
+   
    /**
-    * This gets all the submitted cell, wizard pages, and wizards that need to be evaluated
-    * 
-    * @param agent Agent who is looking for evaluatable items
-    * @param worksiteId Id of the worksite containing evaluatable items
-    * @return List of 
+    *  {@inheritDoc}
     */
    public List getEvaluatableItems(Agent agent, Id worksiteId) {
       List roles = agent.getWorksiteRoles(worksiteId.getValue());
-      Agent role = (Agent)roles.get(0);
-//CWM add the ability to get all sites
+      Agent role = null;
+      if (roles.size() > 0)
+         role= (Agent)roles.get(0);
       
       List returned = getEvaluatableCells(agent, role, worksiteId);
       List wizardPages = getEvaluatableWizardPages(agent, role, worksiteId);

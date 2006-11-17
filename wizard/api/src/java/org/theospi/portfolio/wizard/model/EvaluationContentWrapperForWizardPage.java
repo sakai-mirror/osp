@@ -38,14 +38,22 @@ public class EvaluationContentWrapperForWizardPage extends
       EvaluationContentWrapper {
 
    
-   public EvaluationContentWrapperForWizardPage(Id id, 
-         String title, Agent owner, Date submittedDate, String wizardType) throws UserNotDefinedException {
+   public EvaluationContentWrapperForWizardPage(Id id, String title, Agent owner, 
+         Date submittedDate, String wizardType, String siteId) throws UserNotDefinedException {
      
       setId(id);
       setTitle(title);
       setSubmittedDate(submittedDate);
+      setSiteTitle(super.fetchSiteName(siteId));
       
-      setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
+      if (owner != null) {
+         setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
+         if (wizardType.equals(Wizard.WIZARD_TYPE_SEQUENTIAL)) {
+            setUrl("openEvaluationPageSeqRedirect");         
+         } else {
+            setUrl("openEvaluationPageHierRedirect");
+         }
+      }
       setEvalType(WizardPage.TYPE);
       
       Set params = new HashSet();
@@ -53,12 +61,6 @@ public class EvaluationContentWrapperForWizardPage extends
       params.add(new ParamBean("page_id", getId().getValue()));
       params.add(new ParamBean("readOnlyMatrix", "true"));
       params.add(new ParamBean("session." + WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, null));
-      
-      if (wizardType.equals(Wizard.WIZARD_TYPE_SEQUENTIAL)) {
-         setUrl("openEvaluationPageSeqRedirect");         
-      } else {
-         setUrl("openEvaluationPageHierRedirect");
-      }
       
       setUrlParams(params);
    }
