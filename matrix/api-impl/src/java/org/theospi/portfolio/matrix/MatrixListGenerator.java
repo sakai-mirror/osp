@@ -135,7 +135,10 @@ public class MatrixListGenerator extends BaseListGenerator implements Actionable
       ToolConfiguration toolConfig = obj.getSite().getToolForCommonId("osp.matrix");
       String placement = toolConfig.getId();
       
-      return ServerConfigurationService.getPortalUrl() + "/site/" + toolConfig.getSiteId() + "/page/" + toolConfig.getPageId() + "/tool/" + placement + urlEnd;
+      //String url = ServerConfigurationService.getPortalUrl() + "/site/" + toolConfig.getSiteId() + "/page/" + toolConfig.getPageId() + "/tool/" + placement + urlEnd;
+      String url = ServerConfigurationService.getPortalUrl() + "/directtool/" + placement + urlEnd;
+      
+      return url;
       //<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />
       //http://localhost:8080/portal/tool/bce2c347-d9c1-4fcd-8052-f8aaf9432e5e/viewMatrix.osp?1=1&scaffolding_id=A45C4EFD67AB6E514F0127D025163E5D
       //http://localhost:8080/portal/tool/bce2c347-d9c1-4fcd-8052-f8aaf9432e5e/viewMatrix.osp?1=1&scaffolding_id=A45C4EFD67AB6E514F0127D025163E5D
