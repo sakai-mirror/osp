@@ -731,7 +731,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			String []columnNames = new String[columns];
 
 			for(int i = 0; i < columns; i++) {
-				columnNames[i] = rs.getMetaData().getColumnName(i+1);
+				columnNames[i] = rs.getMetaData().getColumnLabel(i+1);
 			}
 			
 			  
