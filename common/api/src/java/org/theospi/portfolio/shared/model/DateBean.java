@@ -24,6 +24,7 @@ import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -122,6 +123,10 @@ public class DateBean implements FieldValueWrapper {
 
    public Object getValue() {
       return getDate();
+   }
+
+   public void validate(List errors) {
+      
    }
 
    public void validate(Errors errors) {
