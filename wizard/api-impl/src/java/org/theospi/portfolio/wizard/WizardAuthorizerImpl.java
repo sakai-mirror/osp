@@ -133,17 +133,26 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
 
          for (Iterator iter=pages.iterator(); iter.hasNext();) {
             CompletedWizardPage cwp = (CompletedWizardPage)iter.next();
-            returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.EVALUATE_WIZARD, cwp.getId()));
+            // why are we trying to get a wizard permission on a completed wizard page id?
+            // returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.EVALUATE_WIZARD, cwp.getId()));
+            returned = isWizardAuthForEval(facade, agent, cwp.getCategory().getWizard().getWizard().getId());
+            
             if (returned == null || !returned.booleanValue()) {
-               returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.REVIEW_WIZARD, cwp.getId()));
+               // again, why review wizard permission on the completed wizard page id
+               //returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.REVIEW_WIZARD, cwp.getId()));
+               returned = isWizardAuthForReview(facade, agent, cwp.getCategory().getWizard().getWizard().getId());
             }
             if (returned == null || !returned.booleanValue()) {
+               // if the user is the owner of the completed wizard
                returned = Boolean.valueOf(cwp.getCategory().getWizard().getOwner().equals(agent));
             }
             if (returned == null || !returned.booleanValue()) {
-               returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.VIEW_WIZARD,id));
+               // Again, with the cwp instead of the wizard
+               //returned = Boolean.valueOf(facade.isAuthorized(agent, WizardFunctionConstants.VIEW_WIZARD,id));
+               returned = isWizardViewAuth(facade, agent, cwp.getCategory().getWizard().getWizard().getId(), true);
             }
             if (returned == null || !returned.booleanValue()) {
+               // if the user is the owner of the actual wizard
                returned = Boolean.valueOf(cwp.getCategory().getWizard().getWizard().getOwner().equals(agent));
             }
             if (returned.booleanValue())
@@ -179,7 +188,7 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
    /**
     * This method checks for permission "function" of wizard "qualifier" with the given Agent.
     * @param facade AuthorizationFacade
-    * @param qualifier Id
+    * @param qualifier Id -- for this function it's the wizard id
     * @param agent Agent
     * @param function String
     * @return Boolean
@@ -207,7 +216,7 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
     * THis handles the authority for the view permission on a wizard
     * @param facade
     * @param agent
-    * @param id
+    * @param id -- for this function it's the wizard id
     * @param allowAnonymous
     * @return
     */
@@ -227,7 +236,7 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
     * Checks an agents ability to view the given wizard.  It also check the wizard's
     * tool for permission to access the wizard as view is a tool wide permission.  
     * Anonymous is not recognized in this function yet
-    * @param wizard        Wizard
+    * @param wizardId      Id of the wizard we are checkingWizard
     * @param facade        AuthorizationFacade
     * @param agent         Agent
     * @param id            Id
