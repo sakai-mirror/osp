@@ -320,4 +320,156 @@
          </list>
       </property>
    </bean>
+   
+   <bean id="org.theospi.portfolio.list.intf.ListGenerator.wizards"
+      class="org.theospi.portfolio.wizard.WizardListGenerator" init-method="init">
+      <property name="wizardManager">
+         <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager"/>
+      </property>
+      <property name="listGeneratorId"><value>wizards</value></property>
+      <property name="authnManager"><ref bean="authManager"/></property>
+      <property name="listGenerator"><ref bean="org.theospi.portfolio.list.intf.ListGenerator.wizards"/></property>
+      <property name="worksiteManager">
+         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+      </property>
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="authzManager"><ref bean="authzManager"/></property>
+      <property name="listService"><ref bean="org.theospi.portfolio.list.intf.ListService"/></property>
+      <property name="displayTypes">
+      	<list>
+      		<value>wizards</value>
+      	</list>
+      </property>
+      <property name="columnConfig">
+      	<list>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>title</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
+      			<property name="defaultSort"><value>true</value></property>
+      			<property name="defaultSortDirection"><value>1</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>description</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>false</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>owner.displayName</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>site.title</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
+      		</bean>
+      	</list>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.list.intf.ListGenerator.matrices"
+      class="org.theospi.portfolio.wizard.WizardListGenerator" init-method="init">
+      <property name="matrixManager">
+         <ref bean="matrixManager"/>
+      </property>
+      <property name="listGeneratorId"><value>matrices</value></property>
+      <property name="authnManager"><ref bean="authManager"/></property>
+      <property name="listGenerator"><ref bean="org.theospi.portfolio.list.intf.ListGenerator.matrices"/></property>
+      <property name="worksiteManager">
+         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+      </property>
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="authzManager"><ref bean="authzManager"/></property>
+      <property name="listService"><ref bean="org.theospi.portfolio.list.intf.ListService"/></property>
+      <property name="displayTypes">
+      	<list>
+      		<value>matrices</value>
+      	</list>
+      </property>
+      <property name="columnConfig">
+      	<list>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>title</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
+      			<property name="defaultSort"><value>true</value></property>
+      			<property name="defaultSortDirection"><value>1</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>description</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>false</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>owner.displayName</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>site.title</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
+      		</bean>
+      	</list>
+      </property>
+   </bean>
+   
+   <bean id="org.theospi.portfolio.list.intf.ListGenerator.matrixAndWizard"
+      class="org.theospi.portfolio.wizard.WizardListGenerator" init-method="init">
+      <property name="wizardManager">
+         <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager"/>
+      </property>
+      <property name="matrixManager">
+         <ref bean="matrixManager"/>
+      </property>
+      <property name="listGeneratorId"><value>matrixAndWizard</value></property>
+      <property name="authnManager"><ref bean="authManager"/></property>
+      <property name="listGenerator"><ref bean="org.theospi.portfolio.list.intf.ListGenerator.matrixAndWizard"/></property>
+      <property name="worksiteManager">
+         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+      </property>
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="authzManager"><ref bean="authzManager"/></property>
+      <property name="listService"><ref bean="org.theospi.portfolio.list.intf.ListService"/></property>
+      <property name="displayTypes">
+      	<list>
+      		<value>wizards</value>
+      		<value>matrices</value>
+      	</list>
+      </property>
+      <property name="columnConfig">
+      	<list>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>title</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
+      			<property name="defaultSort"><value>true</value></property>
+      			<property name="defaultSortDirection"><value>1</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>description</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>false</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>owner.displayName</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>site.title</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
+      		</bean>
+      		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
+      			<property name="columnName"><value>type</value></property>
+      			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
+      			<property name="lookupInBundle"><value>true</value></property>
+      		</bean>
+      	</list>
+      </property>
+   </bean>
+
 </beans>

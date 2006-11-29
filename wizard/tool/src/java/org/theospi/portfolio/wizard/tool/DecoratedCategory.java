@@ -29,6 +29,7 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardCategory;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
@@ -138,7 +139,7 @@ public class DecoratedCategory extends DecoratedCategoryChild {
    }
 
    protected List addCategoriesPages(List categoryPages) {
-      if (getParent().getCurrent().getBase().getType().equals(Wizard.WIZARD_TYPE_HIERARCHICAL)) {
+      if (getParent().getCurrent().getBase().getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL)) {
          if(parentCategory == null)
             categoryPages.add(getParent().getCurrent());
          for (Iterator i=getBase().getChildCategories().iterator();i.hasNext();) {

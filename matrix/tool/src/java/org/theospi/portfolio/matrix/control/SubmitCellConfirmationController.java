@@ -34,6 +34,7 @@ import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.wizard.model.Wizard;
@@ -79,7 +80,7 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
       } else {
          WizardPageSequence seq = wizardManager.getWizardPageSeqByDef(page.getPageDefinition().getId());
          
-         if(seq.getCategory().getWizard().getType().equals(Wizard.WIZARD_TYPE_HIERARCHICAL))
+         if(seq.getCategory().getWizard().getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL))
             view = "continueHier";
       }
       String submitAction = (String)request.get("submit");

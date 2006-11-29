@@ -114,6 +114,13 @@ public interface WizardManager extends WorkflowEnabledManager {
    public List listWizardsByType(String owner, String siteId, String type);
    public List findWizardsByOwner(String ownerId, String siteId);
    public List findPublishedWizards(String siteId);
+   
+   /**
+    * 
+    * @param sites A list of site Ids (Strings)
+    * @return
+    */
+   public List findPublishedWizards(List sites);
 
    /**
     * changes the settings on the wizard to make it available to the users of the site

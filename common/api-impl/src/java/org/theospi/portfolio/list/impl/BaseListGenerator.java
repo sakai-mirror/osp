@@ -117,6 +117,17 @@ public abstract class BaseListGenerator implements CustomLinkListGenerator {
        return retCol;
     }
     
+    public List getBundleLookupColumns() {
+       List lookupColumns = new ArrayList();
+       for (Iterator i = getColumnConfig().iterator(); i.hasNext();) {
+          ColumnConfig config = (ColumnConfig) i.next();
+          if (config.isLookupInBundle()) {
+             lookupColumns.add(config.getColumnName());
+          }
+       }
+       return lookupColumns;
+    }
+    
    /**
     * @return the columnConfig
     */

@@ -118,6 +118,10 @@ public class ListTool extends ToolBase implements ListItemUtils {
       return field.equals(sortField);
    }
    
+   public boolean lookupInBundle(String field) {
+      return getBundleLookupColumns().contains(field);
+   }
+   
    public int getCurrentSortDir() {
       ToolSession session = SessionManager.getCurrentToolSession();
       int sortDir = SORT_ASC;
@@ -156,6 +160,10 @@ public class ListTool extends ToolBase implements ListItemUtils {
    
    public List getSortableColumns() {
       return getListService().getSortableColumns();
+   }
+   
+   public List getBundleLookupColumns() {
+      return getListService().getBundleLookupColumns();
    }
    
    private String getDefaultSortColumn() {

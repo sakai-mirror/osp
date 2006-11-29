@@ -27,6 +27,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.style.model.Style;
+import org.theospi.portfolio.wizard.WizardFunctionConstants;
 
 /**
  * The super class has the evaluation, reflection and review
@@ -34,9 +35,6 @@ import org.theospi.portfolio.style.model.Style;
  */
 
 public class Wizard extends ObjectWithWorkflow {
-
-   public final static String WIZARD_TYPE_SEQUENTIAL = "org.theospi.portfolio.wizard.model.Wizard.sequential";
-   public final static String WIZARD_TYPE_HIERARCHICAL = "org.theospi.portfolio.wizard.model.Wizard.hierarchical";
 
    public final static String ROOT_TITLE = "root";
    
@@ -48,7 +46,7 @@ public class Wizard extends ObjectWithWorkflow {
    private transient Agent owner;
    private Id guidanceId;
    private boolean published = false;
-   private String type = WIZARD_TYPE_SEQUENTIAL;
+   private String type = WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL;
    private String exposedPageId;
    private transient Boolean exposeAsTool = null;
    

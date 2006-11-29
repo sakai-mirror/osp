@@ -209,7 +209,10 @@ public class WizardTool extends BuilderTool {
    public DecoratedWizard getCurrent() {
       ToolSession session = SessionManager.getCurrentToolSession();
 
-      if (current == null)
+      //WIZARD_RESET_CURRENT gets set in the WizardListGenerator
+      String resetCurrent = (String)session.getAttribute("WIZARD_RESET_CURRENT");
+      
+      if (current == null  || (resetCurrent != null && resetCurrent.equals("true")))
       {
          //This should have come from the eval tool...
          String id = (String)session.getAttribute("CURRENT_WIZARD_ID");
@@ -218,6 +221,7 @@ public class WizardTool extends BuilderTool {
             userId = (String)session.getAttribute("WIZARD_USER_ID");   
             session.removeAttribute("WIZARD_USER_ID");
             session.removeAttribute("CURRENT_WIZARD_ID");
+            session.removeAttribute("WIZARD_RESET_CURRENT");
             this.setCurrentUserId(userId);
          }
          else {
@@ -384,7 +388,7 @@ public class WizardTool extends BuilderTool {
 
    protected void processActionSave(String currentView) {
       clearInterface();
-      if (currentView.equals(EDIT_PAGE) && getCurrent().getBase().getType().equals(Wizard.WIZARD_TYPE_SEQUENTIAL)) {
+      if (currentView.equals(EDIT_PAGE) && getCurrent().getBase().getType().equals(WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL)) {
          boolean foundOne = false;
          List pageList = getCurrent().getRootCategory().getBase().getChildPages();
          List decoratedPageList = getCurrent().getRootCategory().getCategoryPageList();
@@ -522,7 +526,7 @@ public class WizardTool extends BuilderTool {
          session.setAttribute("readOnlyMatrix", "true");
       session.setAttribute(WizardPageHelper.WIZARD_OWNER, getCurrent().getRunningWizard().getBase().getOwner());
 
-      if (Wizard.WIZARD_TYPE_SEQUENTIAL.equals(
+      if (WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL.equals(
             getCurrent().getBase().getType())) {
          redirectAddress = "osp.wizard.page.helper/sequentialWizardPage.osp";
       }
@@ -569,7 +573,7 @@ public class WizardTool extends BuilderTool {
          map = new HashMap();
       }
 
-      if (Wizard.WIZARD_TYPE_SEQUENTIAL.equals(
+      if (WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL.equals(
             getCurrent().getBase().getType())) {
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES, pages);
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP,
@@ -1196,12 +1200,12 @@ public class WizardTool extends BuilderTool {
    public List getWizardTypes() {
       if (wizardTypes == null) {
          wizardTypes = new ArrayList();
-         wizardTypes.add(createSelect(Wizard.WIZARD_TYPE_SEQUENTIAL,
-               getMessageFromBundle(Wizard.WIZARD_TYPE_SEQUENTIAL) + 
-               getMessageFromBundle(Wizard.WIZARD_TYPE_SEQUENTIAL+"_additional")));
-         wizardTypes.add(createSelect(Wizard.WIZARD_TYPE_HIERARCHICAL,
-               getMessageFromBundle(Wizard.WIZARD_TYPE_HIERARCHICAL)+
-               getMessageFromBundle(Wizard.WIZARD_TYPE_HIERARCHICAL+"_additional")));
+         wizardTypes.add(createSelect(WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL,
+               getMessageFromBundle(WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL) + 
+               getMessageFromBundle(WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL+"_additional")));
+         wizardTypes.add(createSelect(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL,
+               getMessageFromBundle(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL)+
+               getMessageFromBundle(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL+"_additional")));
       }
       return wizardTypes;
    }
