@@ -82,7 +82,6 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
 
    public List getObjects() {
 
-      List wizards = new ArrayList();
       List userSites = getWorksiteManager().getUserSites(null, getSiteTypes());
       List siteIds = new ArrayList(userSites.size());
       List siteStrIds = new ArrayList(userSites.size());
@@ -101,14 +100,10 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
       List tempMatrixList = new ArrayList();
       if (getDisplayTypes().contains("matrices")) tempMatrixList = getMatrixManager().findPublishedScaffolding(siteStrIds);
       
-      //Need to make sure the current user can actually have one of their own here, 
-      // so only check if they can "use"
       List objects = new ArrayList();
       
       objects.addAll(verifyWizards(tempWizardList, siteMap));
-      
-      objects.addAll(verifyMatrices(tempMatrixList, siteMap));
-      
+      objects.addAll(verifyMatrices(tempMatrixList, siteMap));      
 
       return objects;
    }
@@ -121,14 +116,16 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
          //make sure that the target site gets tested
          getAuthzManager().pushAuthzGroups(wizard.getSiteId());
          
+         //Need to make sure the current user can actually have one of their own here, 
+         // so only check if they can "use"
          if (getAuthzManager().isAuthorized(WizardFunctionConstants.VIEW_WIZARD, 
                idManager.getId(wizard.getSiteId()))) {
             Site site = (Site)siteMap.get(wizard.getSiteId());
             SortableListObject wiz;
             try {
-               wiz = new SortableListObject(wizard.getId(), 
+               wiz = new SortableListObject(wizard.getId().getValue(), 
                      wizard.getName(), wizard.getDescription(), 
-                     wizard.getOwner(), site, wizard.getType());
+                     wizard.getOwner(), site, wizard.getType(), wizard.getModified());
                retWizards.add(wiz);
             } catch (UserNotDefinedException e) {
                logger.warn("User with id " + wizard.getOwner().getId() + " does not exist.");
@@ -146,15 +143,17 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
          
          //make sure that the target site gets tested
          getAuthzManager().pushAuthzGroups(scaffolding.getWorksiteId().getValue());
-         
+
+         //Need to make sure the current user can actually have one of their own here, 
+         // so only check if they can "use"
          if (getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING, 
                scaffolding.getWorksiteId())) {
             Site site = (Site)siteMap.get(scaffolding.getWorksiteId().getValue());
             SortableListObject scaff;
             try {
-               scaff = new SortableListObject(scaffolding.getId(), 
+               scaff = new SortableListObject(scaffolding.getId().getValue(), 
                      scaffolding.getTitle(), scaffolding.getDescription(), 
-                     scaffolding.getOwner(), site, MatrixFunctionConstants.SCAFFOLDING_PREFIX);
+                     scaffolding.getOwner(), site, MatrixFunctionConstants.SCAFFOLDING_PREFIX, null);
                retMatrices.add(scaff);
             } catch (UserNotDefinedException e) {
                logger.warn("User with id " + scaffolding.getOwner().getId() + " does not exist.");
@@ -184,14 +183,14 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
       if (obj.getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL) || 
             obj.getType().equals(WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL)) {
          urlEnd = "/osp.wizard.run.helper/runWizardGuidance?session.CURRENT_WIZARD_ID=" + 
-            obj.getId().getValue() + "&session.WIZARD_USER_ID=" + SessionManager.getCurrentSessionUserId() +
+            obj.getId() + "&session.WIZARD_USER_ID=" + SessionManager.getCurrentSessionUserId() +
             "&session.WIZARD_RESET_CURRENT=true";
       
          ToolConfiguration toolConfig = obj.getSite().getToolForCommonId("osp.wizard");
          placement = toolConfig.getId();
       }
       else if (obj.getType().equals(MatrixFunctionConstants.SCAFFOLDING_PREFIX)) {
-         urlEnd = "/viewMatrix.osp?1=1&scaffolding_id=" + obj.getId().getValue();
+         urlEnd = "/viewMatrix.osp?1=1&scaffolding_id=" + obj.getId();
          
          ToolConfiguration toolConfig = obj.getSite().getToolForCommonId("osp.matrix");
          placement = toolConfig.getId();

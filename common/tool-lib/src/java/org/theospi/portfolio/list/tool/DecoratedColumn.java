@@ -61,10 +61,6 @@ public class DecoratedColumn {
    public boolean isCurrentSortField() {
       return parent.isCurrentSortField(base.getName());
    }
-   
-   public boolean isLookupInBundle() {
-      return parent.lookupInBundle(base.getName());
-   }
 
    
    /**

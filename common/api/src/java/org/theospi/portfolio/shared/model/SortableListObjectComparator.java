@@ -22,6 +22,7 @@
 package org.theospi.portfolio.shared.model;
 
 import java.util.Comparator;
+import java.util.Date;
 
 public class SortableListObjectComparator implements Comparator {
 
@@ -30,6 +31,7 @@ public class SortableListObjectComparator implements Comparator {
    public static final String SORT_OWNER = "owner.displayName";
    public static final String SORT_SITE = "site.title";
    public static final String SORT_TYPE = "type";
+   public static final String SORT_MODIFIED = "modified";
 
    
    // the criteria
@@ -59,64 +61,129 @@ public class SortableListObjectComparator implements Comparator {
    public int compare(Object o1, Object o2)
    {
       int result = -1;
-
-      if (criteria.equals(SORT_TITLE))
-      {
-         // sorted by the discussion message subject
-         result =
-            ((SortableListObject) o1)
-               .getTitle()
-               .compareToIgnoreCase(
-                  ((SortableListObject) o2)
-                     .getTitle());
-      }
       
-      else if (criteria.equals(SORT_DESCRIPTION))
-      {
-         // sorted by the description
-         result =
-            ((SortableListObject) o1)
-               .getDescription()
-               .compareToIgnoreCase(
-                  ((SortableListObject) o2)
-                     .getDescription());
+      try {
+
+         if (criteria.equals(SORT_TITLE))
+         {
+            // sorted by the title
+            result =
+               leftCheck(((SortableListObject) o1)
+                  .getTitle())
+                  .compareToIgnoreCase(
+                        rightCheck(((SortableListObject) o2)
+                        .getTitle()));
+         }
+         
+         else if (criteria.equals(SORT_DESCRIPTION))
+         {
+            // sorted by the description
+            result =
+               leftCheck(((SortableListObject) o1)
+                  .getDescription())
+                  .compareToIgnoreCase(
+                        rightCheck(((SortableListObject) o2)
+                        .getDescription()));
+         }
+         else if (criteria.equals(SORT_OWNER))
+         {
+            // sorted by the owner
+            result =
+               leftCheck(((SortableListObject) o1)
+                  .getOwner()
+                  .getSortName())
+                  .compareToIgnoreCase(
+                        rightCheck(((SortableListObject) o2)
+                        .getOwner()
+                        .getSortName()));
+         }
+         else if (criteria.equals(SORT_TYPE))
+         {
+            // sorted by the type
+            result =
+               leftCheck(((SortableListObject) o1)
+                  .getType())
+                  .compareToIgnoreCase(
+                        rightCheck(((SortableListObject) o2)
+                        .getType()));
+         }
+         else if (criteria.equals(SORT_SITE))
+         {
+            // sorted by the site title
+            result =
+               leftCheck(((SortableListObject) o1)
+                  .getSite().getTitle())
+                  .compareToIgnoreCase(
+                        rightCheck(((SortableListObject) o2)
+                        .getSite().getTitle()));
+         }
+         else if (criteria.equals(SORT_MODIFIED))
+         {
+            // sorted by the modified date
+            result =
+               leftCheck(((SortableListObject) o1)
+                  .getModifiedRaw())
+                  .compareTo(
+                        rightCheck(((SortableListObject) o2)
+                        .getModifiedRaw()));
+         }
       }
-      else if (criteria.equals(SORT_OWNER))
-      {
-         // sorted by the owner
-         result =
-            ((SortableListObject) o1)
-               .getOwner()
-               .getSortName()
-               .compareToIgnoreCase(
-                  ((SortableListObject) o2)
-                     .getOwner()
-                     .getSortName());
+      catch (LeftSideNullPointerException lnpe) {
+         //Don't worry about it...just return -1
+         result = -1;
       }
-      else if (criteria.equals(SORT_TYPE))
-      {
-         // sorted by the type
-         result =
-            ((SortableListObject) o1)
-               .getType()
-               .compareToIgnoreCase(
-                  ((SortableListObject) o2)
-                     .getType());
-      }
-      else if (criteria.equals(SORT_SITE))
-      {
-         // sorted by the site title
-         result =
-            ((SortableListObject) o1)
-               .getSite().getTitle()
-               .compareToIgnoreCase(
-                  ((SortableListObject) o2)
-                     .getSite().getTitle());
+      catch (RightSideNullPointerException rnpe) {
+         //Don't worry about it...just return 1
+         result = 1;
       }
 
       // sort ascending or descending
       return result * asc;
 
    } // compare
+   
+   protected String leftCheck(String value) throws LeftSideNullPointerException {
+      if (value == null) throw new LeftSideNullPointerException("Left side of comparator is null");
+      return value;
+   }
+   
+   protected String rightCheck(String value) throws RightSideNullPointerException {
+      if (value == null) throw new RightSideNullPointerException("Right side of comparator is null");
+      return value;
+   }
+   
+   protected Date leftCheck(Date value) throws LeftSideNullPointerException {
+      if (value == null) throw new LeftSideNullPointerException("Left side of comparator is null");
+      return value;
+   }
+   
+   protected Date rightCheck(Date value) throws RightSideNullPointerException {
+      if (value == null) throw new RightSideNullPointerException("Right side of comparator is null");
+      return value;
+   }
+   
+   
+   public class LeftSideNullPointerException extends NullPointerException {
+      LeftSideNullPointerException() {
+         super();
+      }
+      
+      LeftSideNullPointerException(String message) {
+         super(message);
+      }
+      
+   }
+   
+   public class RightSideNullPointerException extends NullPointerException {
+      RightSideNullPointerException() {
+         super();
+      }
+      
+      RightSideNullPointerException(String message) {
+         super(message);
+      }
+      
+   }
+   
    
 }

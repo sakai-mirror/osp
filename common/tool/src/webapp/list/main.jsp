@@ -52,16 +52,10 @@
 					</f:subview>
 				</f:facet>
 				<h:outputLink rendered="#{!co.newWindow}" value="#{co.redirectUrl}" target="_top" >
-					<h:outputText rendered="#{!ListTool.selectedColumns[0].lookupInBundle}"
-						value="#{co.columnValues['0']}"/>
-					<h:outputText rendered="#{ListTool.selectedColumns[0].lookupInBundle}" 
-						value="#{common_msgs[co.columnValues['0']]}" />
+					<h:outputText value="#{co.columnValues['0']}"/>
 				</h:outputLink>
 				<h:outputLink rendered="#{co.newWindow}" value="#{co.redirectUrl}" target="_new" >
-					<h:outputText rendered="#{!ListTool.selectedColumns[0].lookupInBundle}"
-						value="#{co.columnValues['0']}"/>
-					<h:outputText rendered="#{ListTool.selectedColumns[0].lookupInBundle}" 
-						value="#{common_msgs[co.columnValues['0']]}" />
+					<h:outputText value="#{co.columnValues['0']}"/>
 				</h:outputLink>
 			</h:column>
 			<h:column rendered="#{ListTool.selectedColumns['1'].base.selected}">
@@ -85,11 +79,7 @@
 							value="#{common_msgs[ListTool.selectedColumns[1].base.name]}" />
 					</f:subview>
 				</f:facet>
-				<h:outputText rendered="#{!ListTool.selectedColumns[1].lookupInBundle}"
-					value="#{co.columnValues['1']}"/>
-				<h:outputText rendered="#{ListTool.selectedColumns[1].lookupInBundle}" 
-					value="#{common_msgs[co.columnValues['1']]}" />
-				
+				<h:outputText value="#{co.columnValues['1']}"/>
 			</h:column>
 			<h:column rendered="#{ListTool.selectedColumns['2'].base.selected}">
 				<f:facet name="header">
@@ -112,10 +102,7 @@
 							value="#{common_msgs[ListTool.selectedColumns[2].base.name]}" />
 					</f:subview>
 				</f:facet>
-				<h:outputText rendered="#{!ListTool.selectedColumns[2].lookupInBundle}"
-					value="#{co.columnValues['2']}"/>
-				<h:outputText rendered="#{ListTool.selectedColumns[2].lookupInBundle}" 
-					value="#{common_msgs[co.columnValues['2']]}" />
+				<h:outputText value="#{co.columnValues['2']}"/>
 			</h:column>
 			<h:column rendered="#{ListTool.selectedColumns['3'].base.selected}">
 				<f:facet name="header">
@@ -138,10 +125,7 @@
 							value="#{common_msgs[ListTool.selectedColumns[3].base.name]}" />
 					</f:subview>
 				</f:facet>
-				<h:outputText rendered="#{!ListTool.selectedColumns[3].lookupInBundle}"
-					value="#{co.columnValues['3']}"/>
-				<h:outputText rendered="#{ListTool.selectedColumns[3].lookupInBundle}" 
-					value="#{common_msgs[co.columnValues['3']]}" />
+				<h:outputText value="#{co.columnValues['3']}"/>
 			</h:column>
 			<h:column rendered="#{ListTool.selectedColumns['4'].base.selected}">
 				<f:facet name="header">
@@ -164,10 +148,7 @@
 							value="#{common_msgs[ListTool.selectedColumns[4].base.name]}" />
 					</f:subview>
 				</f:facet>
-				<h:outputText rendered="#{!ListTool.selectedColumns[4].lookupInBundle}"
-					value="#{co.columnValues['4']}"/>
-				<h:outputText rendered="#{ListTool.selectedColumns[4].lookupInBundle}" 
-					value="#{common_msgs[co.columnValues['4']]}" />
+				<h:outputText value="#{co.columnValues['4']}"/>
 			</h:column>
 			<h:column rendered="#{ListTool.selectedColumns['5'].base.selected}">
 				<f:facet name="header">
@@ -190,10 +171,7 @@
 							value="#{common_msgs[ListTool.selectedColumns[5].base.name]}" />
 					</f:subview>
 				</f:facet>
-				<h:outputText rendered="#{!ListTool.selectedColumns[5].lookupInBundle}"
-					value="#{co.columnValues['5']}"/>
-				<h:outputText rendered="#{ListTool.selectedColumns[5].lookupInBundle}" 
-					value="#{common_msgs[co.columnValues['5']]}" />
+				<h:outputText value="#{co.columnValues['5']}"/>
 			</h:column>
 			<h:column rendered="#{ListTool.selectedColumns['6'].base.selected}">
 				<f:facet name="header">
@@ -216,10 +194,7 @@
 							value="#{common_msgs[ListTool.selectedColumns[6].base.name]}" />
 					</f:subview>
 				</f:facet>
-				<h:outputText rendered="#{!ListTool.selectedColumns[6].lookupInBundle}"
-					value="#{co.columnValues['6']}"/>
-				<h:outputText rendered="#{ListTool.selectedColumns[6].lookupInBundle}" 
-					value="#{common_msgs[co.columnValues['6']]}" />
+				<h:outputText value="#{co.columnValues['6']}"/>
 			</h:column>
 			<h:column rendered="#{ListTool.selectedColumns['7'].base.selected}">
 				<f:facet name="header">
@@ -242,10 +217,7 @@
 							value="#{common_msgs[ListTool.selectedColumns[7].base.name]}" />
 					</f:subview>
 				</f:facet>
-				<h:outputText rendered="#{!ListTool.selectedColumns[7].lookupInBundle}"
-					value="#{co.columnValues['7']}"/>
-				<h:outputText rendered="#{ListTool.selectedColumns[7].lookupInBundle}" 
-					value="#{common_msgs[co.columnValues['7']]}" />
+				<h:outputText value="#{co.columnValues['7']}"/>
 			</h:column>
 			<h:column rendered="#{ListTool.selectedColumns['8'].base.selected}">
 				<f:facet name="header">
@@ -266,10 +238,7 @@
 						<h:outputText rendered="#{!ListTool.selectedColumns[8].sortable}" 
 							value="#{common_msgs[ListTool.selectedColumns[8].base.name]}" />
 				</f:facet>
-				<h:outputText rendered="#{!ListTool.selectedColumns[8].lookupInBundle}"
-					value="#{co.columnValues['8']}"/>
-				<h:outputText rendered="#{ListTool.selectedColumns[8].lookupInBundle}" 
-					value="#{common_msgs[co.columnValues['8']]}" />
+				<h:outputText value="#{co.columnValues['8']}"/>
 			</h:column>
 			<h:column rendered="#{ListTool.selectedColumns['9'].base.selected}">
 				<f:facet name="header">
@@ -290,10 +259,7 @@
 						<h:outputText rendered="#{!ListTool.selectedColumns[9].sortable}" 
 							value="#{common_msgs[ListTool.selectedColumns[9].base.name]}" />
 				</f:facet>
-				<h:outputText rendered="#{!ListTool.selectedColumns[9].lookupInBundle}"
-					value="#{co.columnValues['9']}"/>
-				<h:outputText rendered="#{ListTool.selectedColumns[9].lookupInBundle}" 
-					value="#{common_msgs[co.columnValues['9']]}" />
+				<h:outputText value="#{co.columnValues['9']}"/>
 			</h:column>
 		</sakai:flat_list>
 

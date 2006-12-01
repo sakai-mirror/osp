@@ -118,7 +118,7 @@ public class ListTool extends ToolBase implements ListItemUtils {
       return field.equals(sortField);
    }
    
-   public boolean lookupInBundle(String field) {
+   public boolean lookUpInBundle(String field) {
       return getBundleLookupColumns().contains(field);
    }
    

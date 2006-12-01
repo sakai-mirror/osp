@@ -21,6 +21,8 @@
 
 package org.theospi.portfolio.worksite.mgt.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -28,12 +30,16 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.user.api.UserNotDefinedException;
 import org.theospi.portfolio.list.impl.WorksiteBaseGenerator;
 import org.theospi.portfolio.list.intf.ListGenerator;
+import org.theospi.portfolio.shared.model.SortableListObject;
 
 public class WorksiteListGenerator extends WorksiteBaseGenerator implements ListGenerator {
    protected final transient Log logger = LogFactory.getLog(getClass());
@@ -53,7 +59,24 @@ public class WorksiteListGenerator extends WorksiteBaseGenerator implements List
     *         (whatever that means to the implentation)
     */
    public List getObjects() {
-      return getWorksiteManager().getUserSites(null, siteTypes);
+      
+      List sites = getWorksiteManager().getUserSites(null, siteTypes);
+      List sortableSites = new ArrayList(sites.size());
+      
+      for (Iterator i = sites.iterator(); i.hasNext();) {
+         Site site = (Site)i.next();
+         Agent owner = new AgentImpl(getIdManager().getId(site.getCreatedBy().getId()));
+         try {
+            SortableListObject obj = new SortableListObject(site.getId(), 
+                        site.getTitle(), site.getDescription(), 
+                        owner, site, site.getType(), new Date(site.getModifiedTime().getTime()));
+            sortableSites.add(obj);
+         } catch (UserNotDefinedException e) {
+            logger.warn("User with id " + site.getCreatedBy().getId() + " does not exist.");
+         }
+      }
+      
+      return sortableSites;
    }
 
    public ToolConfiguration getToolInfo(Map request) {
@@ -80,7 +103,7 @@ public class WorksiteListGenerator extends WorksiteBaseGenerator implements List
     * @return
     */
    public Map getToolParams(Object entry) {
-      Site site = (Site)entry;
+      SortableListObject site = (SortableListObject)entry;
       Map model = new HashMap();
 
       model.put(SITE_ID_PARAM, site.getId());
@@ -97,12 +120,13 @@ public class WorksiteListGenerator extends WorksiteBaseGenerator implements List
    }
 
    protected String getSiteId(Object entity) {
-      Site site = (Site) entity;
+      SortableListObject site = (SortableListObject) entity;
       return site.getId();
    }
 
    protected String getPageId(Object entity) {
-      Site site = (Site) entity;
+      SortableListObject obj = (SortableListObject) entity;
+      Site site = getWorksiteManager().getSite(obj.getId());
       List pages = site.getPages();
       if (pages.size() > 0) {
          return ((SitePage)pages.get(0)).getId();

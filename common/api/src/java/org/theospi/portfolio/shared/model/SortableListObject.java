@@ -24,46 +24,54 @@
  */
 package org.theospi.portfolio.shared.model;
 
+import java.util.Date;
+
 import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.theospi.portfolio.list.intf.DecoratedListItem;
+import org.theospi.portfolio.list.intf.ListItemUtils;
 
 
-public class SortableListObject {
+public class SortableListObject implements DecoratedListItem {
 
-   private Id id;
+   private String id;
    private String title;
    private String description;
    private User owner;
    private Site site;
    private String type;
+   private String typeRaw;
+   private String modified;
+   private Date modifiedRaw;
+   private ListItemUtils listItemUtils;
    
    public SortableListObject() {}
    
-   public SortableListObject(Id id, String title, String description, Agent owner,
-         Site site, String type) throws UserNotDefinedException {
+   public SortableListObject(String id, String title, String description, Agent owner,
+         Site site, String typeRaw, Date modifiedRaw) throws UserNotDefinedException {
       this.id = id;
       this.title = title;
       this.description = description;
       this.owner = UserDirectoryService.getUser(owner.getId().getValue());
       this.site = site;
-      this.type = type;
+      this.typeRaw = typeRaw;
+      this.modifiedRaw = modifiedRaw;
    }
    
    /**
     * @return the id
     */
-   public Id getId() {
+   public String getId() {
       return id;
    }
 
    /**
     * @param id the id to set
     */
-   public void setId(Id id) {
+   public void setId(String id) {
       this.id = id;
    }
 
@@ -119,8 +127,27 @@ public class SortableListObject {
    /**
     * @return the type
     */
+   public String getTypeRaw() {
+      return typeRaw;
+   }
+
+   /**
+    * @param type the type to set
+    */
+   public void setTypeRaw(String typeRaw) {
+      this.typeRaw = typeRaw;
+   }
+   
+   /**
+    * @return the type
+    */
    public String getType() {
-      return type;
+      //return type;
+      String retValue = getTypeRaw();
+      if (listItemUtils.lookUpInBundle("type"))
+         retValue = listItemUtils.formatMessage(ensureNotNull(getTypeRaw()), new Object[]{});
+      
+      return retValue;
    }
 
    /**
@@ -129,6 +156,43 @@ public class SortableListObject {
    public void setType(String type) {
       this.type = type;
    }
+
+   /**
+    * @return the modified
+    */
+   public Date getModifiedRaw() {
+      return modifiedRaw;
+   }
+
+   /**
+    * @param modified the modified to set
+    */
+   public void setModifiedRaw(Date modifiedRaw) {
+      this.modifiedRaw = modifiedRaw;
+   }
    
+   
+   public String getModified() {
+      return listItemUtils.formatMessage("date_format", new Object[]{getModifiedRaw()});
+   }
+   
+   /**
+    * @param modified the modified to set
+    */
+   public void setModified(String modified) {
+      this.modified = modified;
+   }
+   
+   public ListItemUtils getListItemUtils() {
+      return listItemUtils;
+  }
+
+  public void setListItemUtils(ListItemUtils listItemUtils) {
+      this.listItemUtils = listItemUtils;
+  }
+  
+  protected String ensureNotNull(String value) {
+     return (value == null) ? "" : value;
+  }
    
 }

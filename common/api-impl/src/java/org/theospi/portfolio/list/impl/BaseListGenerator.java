@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
 import org.theospi.portfolio.list.intf.ListGenerator;
 import org.theospi.portfolio.list.intf.ListService;
@@ -43,6 +44,7 @@ public abstract class BaseListGenerator implements CustomLinkListGenerator {
    private ListService listService;
    private ListGenerator listGenerator;
    private List columnConfig;
+   private IdManager idManager;
    
    protected final Log logger = LogFactory.getLog(getClass());
 
@@ -140,5 +142,19 @@ public abstract class BaseListGenerator implements CustomLinkListGenerator {
     */
    public void setColumnConfig(List columnConfig) {
       this.columnConfig = columnConfig;
+   }
+
+   /**
+    * @return the idManager
+    */
+   public IdManager getIdManager() {
+      return idManager;
+   }
+
+   /**
+    * @param idManager the idManager to set
+    */
+   public void setIdManager(IdManager idManager) {
+      this.idManager = idManager;
    }
 }
