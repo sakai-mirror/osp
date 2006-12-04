@@ -180,8 +180,8 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
       String urlEnd = "";
       String placement = "";
       
-      if (obj.getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL) || 
-            obj.getType().equals(WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL)) {
+      if (obj.getTypeRaw().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL) || 
+            obj.getTypeRaw().equals(WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL)) {
          urlEnd = "/osp.wizard.run.helper/runWizardGuidance?session.CURRENT_WIZARD_ID=" + 
             obj.getId() + "&session.WIZARD_USER_ID=" + SessionManager.getCurrentSessionUserId() +
             "&session.WIZARD_RESET_CURRENT=true";
@@ -189,7 +189,7 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
          ToolConfiguration toolConfig = obj.getSite().getToolForCommonId("osp.wizard");
          placement = toolConfig.getId();
       }
-      else if (obj.getType().equals(MatrixFunctionConstants.SCAFFOLDING_PREFIX)) {
+      else if (obj.getTypeRaw().equals(MatrixFunctionConstants.SCAFFOLDING_PREFIX)) {
          urlEnd = "/viewMatrix.osp?1=1&scaffolding_id=" + obj.getId();
          
          ToolConfiguration toolConfig = obj.getSite().getToolForCommonId("osp.matrix");
@@ -205,10 +205,11 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
       Map params = new HashMap();
       SortableListObject obj = (SortableListObject) entry;      
       
-      if (obj.getType().equals(WizardFunctionConstants.WIZARD_PREFIX)) {
+      if (obj.getTypeRaw().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL) || 
+            obj.getTypeRaw().equals(WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL)) {
          params.put(WIZARD_ID_PARAM, obj.getId());
       }
-      else if (obj.getType().equals(MatrixFunctionConstants.SCAFFOLDING_PREFIX)) {
+      else if (obj.getTypeRaw().equals(MatrixFunctionConstants.SCAFFOLDING_PREFIX)) {
          params.put(MATRIX_ID_PARAM, obj.getId());
       }
       
