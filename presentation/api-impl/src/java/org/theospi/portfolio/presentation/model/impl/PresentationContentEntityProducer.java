@@ -59,7 +59,7 @@ public class PresentationContentEntityProducer extends EntityProducerBase implem
    }
 
    /**
-    * @inheritDoc
+    * {@inheritDoc}
     */
    public String[] myToolIds() {
       String[] toolIds = { "osp.presTemplate" };
