@@ -54,6 +54,10 @@ public class ListServiceImpl  extends HibernateDaoSupport implements ListService
    public List getCurrentDisplayColumns() {
       return getCurrentGenerator().getColumns();
    }
+   
+   public List getSortableColumns() {
+      return ((CustomLinkListGenerator)getCurrentGenerator()).getSortableColumns();
+   }
 
    public String getEntryLink(Object entry) {
       if (getCurrentGenerator() instanceof CustomLinkListGenerator) {
@@ -64,6 +68,10 @@ public class ListServiceImpl  extends HibernateDaoSupport implements ListService
       }
 
       return null;
+   }
+   
+   public String getDefaultSortColumn() {
+      return getCurrentGenerator().getDefaultSortColumn();
    }
 
    public List getList() {

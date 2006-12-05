@@ -1392,6 +1392,12 @@ public class WizardTool extends BuilderTool {
       thepage.add(currentPage);
       return thepage;
    }
+   
+   public List getCurrentCategoryList() {
+      List thecategory = new ArrayList();
+      thecategory.add(currentCategory);
+      return thecategory;
+   }
 
    public void setCurrentPage(DecoratedWizardPage currentPage) {
       this.currentPage = currentPage;

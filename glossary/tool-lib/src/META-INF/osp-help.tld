@@ -30,7 +30,7 @@
          using the firstOnly attribute.  If set to true then only the first
          occurance will be linked to the glossary.
 
-         &lt;script language="JavaScript" src="../js/eport.js"&gt;&lt;/script&gt;
+         &lt;script language="JavaScript" src="/osp-common-tool/js/eport.js"&gt;&lt;/script&gt;
          &lt;div id="tooltip" style="position:absolute;visibility:hidden;border:1px solid black;font-size:10px;layer-background-color:lightyellow;background-color:lightyellow;padding:1px"&gt;&lt;/div&gt;
 
 		</description>

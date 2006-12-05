@@ -42,6 +42,7 @@ public class GuidanceEntityProducer extends EntityProducerBase {
    }
 
    public void init() {
+      logger.info("init()");
       try {
          getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + GUIDANCE_PRODUCER);
       }

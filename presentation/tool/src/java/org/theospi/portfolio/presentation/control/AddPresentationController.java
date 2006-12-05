@@ -30,12 +30,18 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.api.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentCollectionEdit;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.content.api.ResourceEditingHelper;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.shared.model.ElementBean;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.Config;
 import org.sakaiproject.metaobj.utils.mvc.impl.servlet.ServletRequestBeanDataBinder;
@@ -62,6 +68,7 @@ import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationItem;
 import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
+import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.AuthorizationFacade;
@@ -91,6 +98,7 @@ public class AddPresentationController extends AbstractWizardFormController {
    private WorksiteManager worksiteManager;
    private ListScrollIndexer listScrollIndexer;
    private ServerConfigurationService serverConfigurationService;
+   private ContentHostingService contentHosting = null;
    private int initialPage = 0;
 
    public Object formBackingObject(HttpServletRequest request) throws Exception {
@@ -217,14 +225,37 @@ public class AddPresentationController extends AbstractWizardFormController {
          PresentationTemplate template = getPresentationManager().getPresentationTemplate(presentation.getTemplate().getId());
          presentation.setTemplate(template);
 
-         SchemaNode schema = loadSchema(presentation.getTemplate().getPropertyPage(), model).getChild(presentation.getTemplate().getDocumentRoot());
+         String formTypeId = template.getPropertyFormType().getValue();
+         HttpSession session = request.getSession();
 
-         //make sure schema for properties is set correctly for both add, or edit
-         if (presentation.getProperties() == null) {
-            presentation.setProperties(new ElementBean(presentation.getTemplate().getDocumentRoot(),
-                  schema));
+         session.setAttribute(ResourceEditingHelper.CREATE_TYPE,
+               ResourceEditingHelper.CREATE_TYPE_FORM);
+         
+         if (presentation.getPropertyForm() == null) {
+            String folder = "/user/" + 
+               SessionManager.getCurrentSessionUserId() + 
+               PresentationManager.PRESENTATION_PROPERTIES_FOLDER_PATH;
+            
+            try {
+               ContentCollectionEdit propFolder = getContentHosting().addCollection(folder);
+               propFolder.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, PresentationManager.PRESENTATION_PROPERTIES_FOLDER);
+               propFolder.getPropertiesEdit().addProperty(ResourceProperties.PROP_DESCRIPTION, "Folder for Portfolio Property Forms");
+               getContentHosting().commitCollection(propFolder);
+            }
+            catch (IdUsedException e) {
+               // ignore... it is already there.
+            }
+            catch (Exception e) {
+               throw new RuntimeException(e);
+            }
+            
+            session.setAttribute(ResourceEditingHelper.CREATE_PARENT, folder);
+            session.setAttribute(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
+            session.removeAttribute(ResourceEditingHelper.ATTACHMENT_ID);
+            
          } else {
-            presentation.getProperties().setCurrentSchema(schema);
+            Node propFormNode = getPresentationManager().getNode(presentation.getPropertyForm());
+            session.setAttribute(ResourceEditingHelper.ATTACHMENT_ID, propFormNode.getResource().getId());
          }
       }
       if (page == PRESETATION_FREE_FORM_PAGES) {
@@ -311,6 +342,11 @@ public class AddPresentationController extends AbstractWizardFormController {
    }
 
    protected int getTargetPage(HttpServletRequest request, Object command, Errors errors, int currentPage) {
+      final String SESSION_PAGE_PROP_ENTRY = "portfolio.pageProp.entry";
+      final String SESSION_PAGE_PROP_DIRECTION = "portfolio.pageProp.direction";
+      final int PAGE_DIRECTION_FORWARD = 1;
+      final int PAGE_DIRECTION_BACKWARD = -1;
+      
       if (logger.isDebugEnabled()) {
          logger.debug("getTargetPage()");
       }
@@ -352,12 +388,48 @@ public class AddPresentationController extends AbstractWizardFormController {
       }
 
       if (target == PROPERTY_PAGE) {
+         HttpSession session = request.getSession();
          boolean hasProperties = hasProperties(presentation);
 
          if (!hasProperties && currentPage == INITIAL_PAGE && target > currentPage)
             return target + 1;
          if (!hasProperties && currentPage == PRESENTATION_ITEMS && target < currentPage)
             return target - 1;
+         if (hasProperties && session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
+            List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+            if (refs.size() == 1) {
+               Reference ref = (Reference)refs.get(0);
+               Node node = getPresentationManager().getNode(ref);
+               presentation.setPropertyForm(node.getId());
+            }
+            session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+            session.removeAttribute(SESSION_PAGE_PROP_ENTRY);
+            return target + 1;
+         }
+         if (hasProperties && (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) != null || 
+               session.getAttribute(SESSION_PAGE_PROP_ENTRY) != null)) {
+            session.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
+            session.removeAttribute(SESSION_PAGE_PROP_ENTRY);
+            int direction = PAGE_DIRECTION_FORWARD;
+            try {
+               direction = ((Integer)session.getAttribute(SESSION_PAGE_PROP_DIRECTION)).intValue();
+            }
+            catch (Exception e) {
+               logger.warn("Couldn't get direction.  Moving to target: " + (target + direction));
+               return target + direction;
+            }
+            session.removeAttribute(SESSION_PAGE_PROP_DIRECTION);
+            return target + direction;
+         }
+                  
+         //I think if we get here, we just wnt to go to the prop page...
+         session.setAttribute(SESSION_PAGE_PROP_ENTRY, "true");
+         if (currentPage < target) {
+            session.setAttribute(SESSION_PAGE_PROP_DIRECTION, new Integer(PAGE_DIRECTION_FORWARD));
+         }
+         else if (currentPage > target) {
+            session.setAttribute(SESSION_PAGE_PROP_DIRECTION, new Integer(PAGE_DIRECTION_BACKWARD));
+         }
       }
 
       return target;
@@ -365,7 +437,7 @@ public class AddPresentationController extends AbstractWizardFormController {
 
    protected boolean hasProperties(Presentation presentation) {
       Id templateId = presentation.getTemplate().getId();
-      Id propId = presentationManager.getPresentationTemplate(templateId).getPropertyPage();
+      Id propId = presentationManager.getPresentationTemplate(templateId).getPropertyFormType();
       boolean hasProperties = propId != null;
       return hasProperties;
    }
@@ -706,5 +778,19 @@ public class AddPresentationController extends AbstractWizardFormController {
     private void setInitialPage(int page){
         initialPage = page;
     }
+
+   /**
+    * @return the contentHosting
+    */
+   public ContentHostingService getContentHosting() {
+      return contentHosting;
+   }
+
+   /**
+    * @param contentHosting the contentHosting to set
+    */
+   public void setContentHosting(ContentHostingService contentHosting) {
+      this.contentHosting = contentHosting;
+   }
 }
 

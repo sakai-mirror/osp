@@ -72,6 +72,9 @@
         <property name="contentHosting">
             <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
         </property>
+        <property name="structuredArtifactDefinitionManager">
+        		<ref bean="structuredArtifactDefinitionManager"/>
+        </property>
         <property name="pages">
             <list>
                 <value>addTemplate1</value>
@@ -347,12 +350,14 @@
         <property name="ospConfig">
             <ref bean="ospConfig"/>
         </property>
-        <!-- <property name="repositoryManager"><ref bean="repositoryManager"/></property> -->
         <property name="listScrollIndexer">
             <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
         </property>
         <property name="serverConfigurationService">
             <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
+        </property>
+        <property name="contentHosting">
+            <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
         </property>
         <property name="customTypedEditors">
             <list>

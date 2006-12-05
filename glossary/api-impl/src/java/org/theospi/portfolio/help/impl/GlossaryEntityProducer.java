@@ -40,6 +40,7 @@ public class GlossaryEntityProducer extends EntityProducerBase implements Entity
    }
 
    public void init() {
+      logger.info("init()");
       try {
          getEntityManager().registerEntityProducer(this, GLOSSARY_PRODUCER);
       }

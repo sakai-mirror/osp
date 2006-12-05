@@ -18,7 +18,7 @@
           rel="stylesheet"
           media="all" />
     <meta http-equiv="Content-Style-Type" content="text/css" />
-    <title><%= (String)request.getAttribute("_title")%></title>
+    <title><%= org.sakaiproject.tool.cover.ToolManager.getCurrentTool().getTitle()%></title>
     <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js">
     </script>
     <script language="JavaScript" src="/osp-common-tool/js/eport.js"></script>

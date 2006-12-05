@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.AuthzGroupService;
 import org.sakaiproject.authz.api.AuthzPermissionException;
@@ -49,8 +51,11 @@ public class SakaiDefaultPermsManager {
    private AuthzGroupService authzGroupService;
    private String prefix;
    private List realmManagers;
+   
+   protected final transient Log logger = LogFactory.getLog(getClass());
 
    public void init() {
+      logger.info("init()");
       // need to register functions... set defaults on the ones that are not there
       Session sakaiSession = SessionManager.getCurrentSession();
       String userId = sakaiSession.getUserId();

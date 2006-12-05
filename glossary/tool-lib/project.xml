@@ -17,6 +17,11 @@
   </properties>
 
   <dependencies>
+   <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-jsf-widgets</artifactId>
+      <version>${sakai.version}</version>
+   </dependency>
   
   		<dependency>
 			<groupId>sakaiproject</groupId>

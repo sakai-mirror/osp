@@ -16,6 +16,7 @@
       <property name="renderer" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="renderer"/>
       <property name="markup" length="4000" type="string" column="markup"/>
       <property name="propertyPage" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="propertyPage"/>
+      <property name="propertyFormType" length="36" type="org.sakaiproject.metaobj.shared.IdType" column="propertyFormType" />
       <property name="documentRoot" type="string" column="documentRoot"/>
       <set name="items" cascade="all-delete-orphan" inverse="true" lazy="false">
          <key column="template_id"/>
@@ -80,6 +81,7 @@
       <property name="siteId" type="string" update="false" length="99" column="site_id" not-null="true"/>
       <property name="properties" type="org.theospi.portfolio.presentation.model.impl.HibernatePresentationProperties"
          not-null="false" column="properties"/>
+      <property name="propertyForm" type="org.sakaiproject.metaobj.shared.IdType" length="36" column="property_form" />
 
       <many-to-one name="style" column="style_id" not-null="false" class="org.theospi.portfolio.style.model.Style"/>
       <property name="advancedNavigation" column="advanced_navigation" type="boolean" not-null="false" />
@@ -269,6 +271,14 @@
       
    <query name="findPortfoliosByStyle">
 		from Presentation p where p.style.id=? 
+   </query>
+   
+   <query name="findTemplatesForConversion">
+   	from PresentationTemplate t where t.propertyPage != null and t.propertyFormType = null 
+   </query>
+   
+   <query name="findPortfoliosForConversion">
+   	from Presentation p where p.properties != null and p.propertyForm = null 
    </query>
    
 </hibernate-mapping>

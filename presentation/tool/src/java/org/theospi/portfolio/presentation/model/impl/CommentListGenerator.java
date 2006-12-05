@@ -32,23 +32,21 @@ import org.sakaiproject.metaobj.shared.control.servlet.SakaiComponentDispatchSer
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.ToolConfiguration;
+import org.theospi.portfolio.list.impl.BaseListGenerator;
 import org.theospi.portfolio.list.intf.ActionableListGenerator;
-import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
 import org.theospi.portfolio.presentation.CommentSortBy;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationComment;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 
-public class CommentListGenerator implements ActionableListGenerator, CustomLinkListGenerator {
+public class CommentListGenerator extends BaseListGenerator implements ActionableListGenerator {
    private PresentationManager presentationManager;
    private static final String TOOL_ID_PARAM = "toolId";
    private static final String COMMENT_ID_PARAM = "commentId";
    private static final String PRESENTATION_ID_PARAM = "presentationId";
 
    private WorksiteManager worksiteManager;
-   private List columns;
-   private List defaultColumns;
    private AuthenticationManager authnManager;
 
    public WorksiteManager getWorksiteManager() {
@@ -73,22 +71,6 @@ public class CommentListGenerator implements ActionableListGenerator, CustomLink
 
    public void setPresentationManager(PresentationManager presentationManager) {
       this.presentationManager = presentationManager;
-   }
-
-   public List getColumns() {
-      return columns;
-   }
-
-   public void setColumns(List columns) {
-      this.columns = columns;
-   }
-
-   public List getDefaultColumns() {
-      return defaultColumns;
-   }
-
-   public void setDefaultColumns(List defaultColumns) {
-      this.defaultColumns = defaultColumns;
    }
 
    public List getObjects() {

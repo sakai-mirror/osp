@@ -84,7 +84,7 @@ public class PortalManagerImpl implements PortalManager {
          }
       }
       else {
-         return createGatewayMap(typeMap);
+         return createGatewayMap(typeMap, siteId);
       }
 
       List types = getSiteService().getSiteTypes();
@@ -156,8 +156,12 @@ public class PortalManagerImpl implements PortalManager {
       Collections.sort(sites, new SiteTitleComparator());
    }
 
-   protected Map createGatewayMap(Map typeMap) {
+   protected Map createGatewayMap(Map typeMap, String siteId) {
       String gatewayId = ServerConfigurationService.getGatewaySiteId();
+      
+      //If I'm passing a site, I want to override the configured gateway
+      if (siteId != null) gatewayId = siteId;
+      
       try {
          Site gateway = getSiteService().getSite(gatewayId);
          List sites = new ArrayList();

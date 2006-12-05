@@ -46,6 +46,7 @@ public class WizardEntityProducer extends EntityProducerBase implements EntityTr
    }
 
    public void init() {
+      logger.info("init()");
       try {
          getEntityManager().registerEntityProducer(this, WIZARD_PRODUCER);
       }

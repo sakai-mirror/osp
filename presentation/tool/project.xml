@@ -124,6 +124,12 @@
       <version>${sakai.version}</version>
     </dependency>
     
+    <dependency>
+      <groupId>osp</groupId>
+      <artifactId>osp-common-impl</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    
      <dependency>
         <groupId>sakaiproject</groupId>
         <artifactId>sakai-metaobj-api</artifactId>

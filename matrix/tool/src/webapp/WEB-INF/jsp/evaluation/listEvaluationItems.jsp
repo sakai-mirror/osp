@@ -8,6 +8,7 @@
 
 <div class="navIntraTool">
     <c:if test="${isMaintainer}">
+    	<c:set var="hasFirstAction" value="true" />
         <a href="<osp:url value="osp.permissions.helper/editPermissions">
         <osp:param name="message"><fmt:message key="action_message_setPermission">
         <fmt:param><c:out value="${tool.title}"/></fmt:param>
@@ -21,6 +22,15 @@
             title="<fmt:message key="action_permissions_title"/>" >
             <fmt:message key="action_permissions"/>
         </a>
+    </c:if>
+    <c:if test="${!isUserSite}" >
+	    <c:if test="${hasFirstAction}" > | </c:if>
+	    <c:if test="${currentSiteEvalsKey == evalType}">
+		    <a href="<osp:url value="listEvaluationItems.osp"/>&action=evalType&evalTypeKey=<c:out value="${allEvalsKey}" />"><fmt:message key="show_all_evals"/></a>
+	   </c:if>
+	   <c:if test="${allEvalsKey == evalType}">
+	    	<a href="<osp:url value="listEvaluationItems.osp"/>&action=evalType&evalTypeKey=<c:out value="${currentSiteEvalsKey}" />"><fmt:message key="show_site_evals"/></a>
+	    </c:if>
     </c:if>
 </div>
 
@@ -47,6 +57,15 @@
         <div class="validation"><c:out value="${errorMessage}" /></div>
         <br />
     </c:if>
+
+	<p class="instructions">
+		<c:if test="${allEvalsKey == evalType}">
+			<fmt:message key="all_evals_message"/>
+		</c:if>
+		<c:if test="${currentSiteEvalsKey == evalType}">
+			<fmt:message key="site_evals_message"/>
+		</c:if>
+	</p>
 
     <p class="instructions">
         <fmt:message key="eval_sortTitleMessage"/>
@@ -111,7 +130,7 @@
                      </c:if>
                   </c:if>
                   <a href="<osp:url value="listEvaluationItems.osp"/>&sortByColumn=date&direction=<c:out value="${sortDir}" />">
-                     Date Received 
+                     <fmt:message key="eval_dateReceived"/>
                      <c:if test="${sortByColumn == 'date'}">
                      <img src="/library/image/sakai/sort<c:out value="${sortDirectionText}" />.gif?panel=Main" border="0"
                              <c:if test="${sortDirectionText == 'ascending'}">
@@ -124,6 +143,27 @@
                      </c:if>
                   </a>
                 </th>
+                <th title='<fmt:message key="eval_sortbysite"/>'>
+                  <c:if test="${sortByColumn == 'site'}">
+                     <c:if test="${direction == 'asc'}">
+                        <c:set var="sortDir" value="desc" />
+                        <c:set var="sortDirectionText" value="ascending" />
+                     </c:if>
+                  </c:if>
+                  <a href="<osp:url value="listEvaluationItems.osp"/>&sortByColumn=site&direction=<c:out value="${sortDir}" />">
+                     <fmt:message key="eval_site"/>
+                     <c:if test="${sortByColumn == 'site'}">
+                     <img src="/library/image/sakai/sort<c:out value="${sortDirectionText}" />.gif?panel=Main" border="0"
+                             <c:if test="${sortDirectionText == 'ascending'}">
+                                alt ='<fmt:message key="eval_sortbysiteasc"/>'
+                             </c:if>
+                             <c:if test="${sortDirectionText == 'descending'}">
+                                alt ='<fmt:message key="eval_sortbysitedesc"/>'
+                             </c:if>
+                          />
+                     </c:if>
+                  </a>
+                </th>
                 <th title='<fmt:message key="eval_sortbytype"/>'>
                   <c:if test="${sortByColumn == 'type'}">
                      <c:if test="${direction == 'asc'}">
@@ -132,7 +172,7 @@
                      </c:if>
                   </c:if>
                   <a href="<osp:url value="listEvaluationItems.osp"/>&sortByColumn=type&direction=<c:out value="${sortDir}" />">
-                     Type 
+                     <fmt:message key="eval_type"/>
                      <c:if test="${sortByColumn == 'type'}">
                      <img src="/library/image/sakai/sort<c:out value="${sortDirectionText}" />.gif?panel=Main" border="0"
                              <c:if test="${sortDirectionText == 'ascending'}">
@@ -149,7 +189,7 @@
         </thead>
         <tbody>
             <c:forEach var="item" items="${reviewerItems}" varStatus="loopCount">
-
+					<c:if test="${item.url != null}">
 					<c:choose>
 						<c:when test="${item.evalType == 'matrix_cell_type'}">
 							<osp-c:authZMap prefix="osp.matrix." var="canEvalCell" qualifier="${item.id}"/>
@@ -164,7 +204,6 @@
 							<c:set var="permCheck" value="${canEvalPage.evaluateSpecificWizardPage}" />
 						</c:when>
 					</c:choose>
-
 
                 <tr>
                     <td>
@@ -191,9 +230,14 @@
                     </td>
                     <td>
                      <div align="left">
+                      <c:out value="${item.siteTitle}" /></div>
+                    </td>
+                    <td>
+                     <div align="left">
                       <c:out value="${item.evalType}" /></div>
                     </td>
                 </tr>
+                </c:if>
             </c:forEach>
         </tbody>
     </table>

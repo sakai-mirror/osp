@@ -35,7 +35,7 @@ public class DefaultRealmManagerImpl implements DefaultRealmManager {
    private boolean recreate = false;
 
    public void init() {
-
+      logger.info("init()");
       Session sakaiSession = SessionManager.getCurrentSession();
       String userId = sakaiSession.getUserId();
       try {

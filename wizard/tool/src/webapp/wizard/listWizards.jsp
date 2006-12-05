@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 <%@ taglib uri="http://www.theospi.org/jsf/osp" prefix="ospx" %>
+<%@ taglib uri="http://www.theospi.org/help/jsf" prefix="help" %>
 
 <%
       response.setContentType("text/html; charset=UTF-8");
@@ -90,7 +91,7 @@
          <f:facet name="header">
             <h:outputText value="#{msgs.wizard_description}" />
          </f:facet>
-         <h:outputText value="#{wizardItem.concatDescription}"/>
+         <help:glossary link="true" hover="false"><h:outputText value="#{wizardItem.concatDescription}"/></help:glossary>
       </h:column>
     <%--  <h:column>
          <f:facet name="header">

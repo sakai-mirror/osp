@@ -217,14 +217,25 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
 
       for (Iterator i=orig.iterator();i.hasNext();) {
          GlossaryEntry entry = (GlossaryEntry)i.next();
+         
+         entry.setLongDescriptionObject(loadDescription(entry.getId()));
+         
          getHibernateTemplate().evict(entry);
+         getHibernateTemplate().evict(entry.getLongDescriptionObject());
+         
          entry.setWorksiteId(toContext);
          entry.setId(null);
          getHibernateTemplate().save(entry);
+         
+         entry.getLongDescriptionObject().setEntryId(entry.getId());
+         entry.getLongDescriptionObject().setId(null);
+         getHibernateTemplate().save(entry.getLongDescriptionObject());
+         addUpdateTermCache(entry);
       }
    }
 
    public void init() {
+      logger.info("init()");
       Collection terms = findAll();
 
       for (Iterator i=terms.iterator();i.hasNext();) {
@@ -261,6 +272,8 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
     * application calls an <tt>Observable</tt> object's
     * <code>notifyObservers</code> method to have all the object's
     * observers notified of the change.
+    * 
+    * This operates within its own Thread so normal rules and conditions don't apply
     *
     * @param o   the observable object.
     * @param arg an argument passed to the <code>notifyObservers</code>
@@ -270,7 +283,13 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
       if (arg instanceof Event) {
          Event event = (Event)arg;
          if (event.getEvent().equals(EVENT_UPDATE_ADD)) {
+           //  these commented lines might fix the bug: http://bugs.sakaiproject.org/jira/browse/SAK-5437
+           // boolean isOpen = getSession().isOpen();
+            
             addUpdateTermCache(load(getIdManager().getId(event.getResource()), false));
+            
+           // if(!isOpen)
+           //    getSession().close();
          }
          else if (event.getEvent().equals(EVENT_DELETE)) {
             removeCachedEntry(getIdManager().getId(event.getResource()));

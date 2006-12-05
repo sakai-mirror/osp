@@ -102,6 +102,12 @@ public class SubmitCellConfirmationController implements LoadObjectController, C
          return new ModelAndView(view, "page_id", page.getId().getValue());
       }
       if (cancelAction != null) {
+         // the current page is set to the next page after the submitted page for confirmation.
+         //    So the current step needs to be rolled back
+         Object stepObj = (Object) session.get(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP);
+         if (stepObj != null && stepObj instanceof Integer && !isLast(session)) {
+            session.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, new Integer(((Integer)stepObj).intValue() - 1) );
+         }
          return new ModelAndView(view, "page_id", page.getId().getValue());
       }
       return new ModelAndView("success", "page", page);

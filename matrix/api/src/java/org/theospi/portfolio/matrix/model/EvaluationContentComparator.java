@@ -33,6 +33,7 @@ public class EvaluationContentComparator implements Comparator {
    public static final String SORT_OWNER = "owner";
    public static final String SORT_TITLE = "title";
    public static final String SORT_TYPE = "type";
+   public static final String SORT_SITE = "site";
    
    // the criteria
    private String criteria = null;
@@ -101,7 +102,7 @@ public class EvaluationContentComparator implements Comparator {
                      .getOwner()
                      .getSortName());
       }
-      else if (criteria.equals(SORT_OWNER))
+      else if (criteria.equals(SORT_TYPE))
       {
          // sorted by the owner
          result =
@@ -111,7 +112,16 @@ public class EvaluationContentComparator implements Comparator {
                   ((EvaluationContentWrapper) o2)
                      .getEvalType());
       }
-      
+      else if (criteria.equals(SORT_SITE))
+      {
+         // sorted by the site
+         result =
+            ((EvaluationContentWrapper) o1)
+               .getSiteTitle()
+               .compareToIgnoreCase(
+                  ((EvaluationContentWrapper) o2)
+                     .getSiteTitle());
+      }
 
       // sort ascending or descending
       if (!asc)

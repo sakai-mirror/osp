@@ -86,6 +86,7 @@ public abstract class BaseWarehouseTask implements WarehouseTask {
     * Children are singletons where there bean init function is this method.
     */
    public void init() {
+      logger.info("init()");
       Connection connection = null;
       try {
          InputStream tableDdl = getTableDdl();

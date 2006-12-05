@@ -52,6 +52,10 @@ import org.theospi.portfolio.shared.model.Node;
 
 public interface PresentationManager extends CleanupableService {
 
+   public static final String PRESENTATION_PROPERTIES_FOLDER = "portfolioPropertyForms";
+   public static final String PRESENTATION_PROPERTIES_FOLDER_PATH = "/" + PRESENTATION_PROPERTIES_FOLDER + "/";
+
+   
    public PresentationTemplate storeTemplate(PresentationTemplate template);
    public PresentationTemplate storeTemplate(PresentationTemplate template, boolean checkAuthz, boolean updateDates);
    

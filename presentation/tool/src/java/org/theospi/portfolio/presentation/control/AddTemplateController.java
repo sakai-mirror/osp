@@ -36,13 +36,16 @@ import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaInvalidException;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.ToolManager;
@@ -59,6 +62,7 @@ import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.model.TemplateFileRef;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.shared.model.CommonFormBean;
 
 public class AddTemplateController extends AbstractWizardFormController {
    final public static int DESCRIBE_PAGE = 0;
@@ -85,6 +89,8 @@ public class AddTemplateController extends AbstractWizardFormController {
    private SessionManager sessionManager;
    private ContentHostingService contentHosting;
    private EntityManager entityManager;
+   private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
+   
    public static Comparator worksiteHomesComparator;
    static {
     worksiteHomesComparator = new Comparator() {
@@ -195,6 +201,27 @@ public class AddTemplateController extends AbstractWizardFormController {
             break;
       }
    }
+   
+   protected Collection getFormsForSelect(String type) {
+      Placement placement = ToolManager.getCurrentPlacement();
+      String currentSiteId = placement.getContext();
+      Collection commentForms = getAvailableForms(currentSiteId, type);
+      
+      List retForms = new ArrayList();
+      for(Iterator iter = commentForms.iterator(); iter.hasNext();) {
+         StructuredArtifactDefinitionBean sad = (StructuredArtifactDefinitionBean) iter.next(); 
+         retForms.add(new CommonFormBean(sad.getId().getValue(), sad.getDecoratedDescription(), "form",
+                  sad.getOwner().getName(), sad.getModified()));
+      }
+      
+      Collections.sort(retForms, CommonFormBean.beanComparator);
+      return retForms;
+   }
+   
+   protected Collection getAvailableForms(String siteId, String type) {
+      return getStructuredArtifactDefinitionManager().findHomes(
+            getIdManager().getId(siteId));      
+   }
 
    protected Map referenceData(HttpServletRequest request,
                                Object command,
@@ -266,6 +293,8 @@ public class AddTemplateController extends AbstractWizardFormController {
                   errors.rejectValue("propertyPage", errorMessage, errorMessage);
                }
             }
+            
+            model.put("propertyFormTypes", getFormsForSelect(null));
             break;
          case CONTENT_PAGE :
             Collection mimeTypes = getMimeTypes();
@@ -535,6 +564,21 @@ public class AddTemplateController extends AbstractWizardFormController {
 
    public void setEntityManager(EntityManager entityManager) {
       this.entityManager = entityManager;
+   }
+
+   /**
+    * @return the structuredArtifactDefinitionManager
+    */
+   public StructuredArtifactDefinitionManager getStructuredArtifactDefinitionManager() {
+      return structuredArtifactDefinitionManager;
+   }
+
+   /**
+    * @param structuredArtifactDefinitionManager the structuredArtifactDefinitionManager to set
+    */
+   public void setStructuredArtifactDefinitionManager(
+         StructuredArtifactDefinitionManager structuredArtifactDefinitionManager) {
+      this.structuredArtifactDefinitionManager = structuredArtifactDefinitionManager;
    }
 }
 

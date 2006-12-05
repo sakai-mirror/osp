@@ -96,6 +96,7 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    Scaffolding getScaffolding(Id scaffoldingId);
    List findScaffolding(String siteId, String userId);
+   List findPublishedScaffolding(List sites);
    
    ScaffoldingCell getNextScaffoldingCell(ScaffoldingCell scaffoldingCell, 
          int progressionOption);
@@ -122,6 +123,12 @@ public interface MatrixManager extends WorkflowEnabledManager {
     */
    List getEvaluatableItems(Agent agent, Id worksiteId);
 
+   /**
+    * gets all the cells, pages, and wizards that this user can evaluate within all worksites they are a member of
+    * @param agent Agent 
+    * @return List of org.theospi.portfolio.shared.model.EvaluationContentWrapper
+    */
+   List getEvaluatableItems(Agent agent);
 
    /**
     * @return Returns the idManager.

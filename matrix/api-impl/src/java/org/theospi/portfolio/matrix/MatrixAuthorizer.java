@@ -65,7 +65,8 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       logger.debug("isAuthorized?(...) invoked in MatrixAuthorizer");
          
       if (MatrixFunctionConstants.EVALUATE_MATRIX.equals(function) ||
-            MatrixFunctionConstants.REVIEW_MATRIX.equals(function)) {
+            MatrixFunctionConstants.REVIEW_MATRIX.equals(function) ||
+            MatrixFunctionConstants.USE_SCAFFOLDING.equals(function)) {
          return new Boolean(facade.isAuthorized(function,id));
       }
       else if (MatrixFunctionConstants.DELETE_SCAFFOLDING.equals(function)) {
@@ -129,6 +130,9 @@ public class MatrixAuthorizer implements ApplicationAuthorizer {
       else if (function.equals(MatrixFunctionConstants.EVALUATE_SPECIFIC_MATRIXCELL)) {
          WizardPage page = getMatrixManager().getWizardPage(id);
          Id siteId = idManager.getId(page.getPageDefinition().getSiteId());
+//       make sure that the target site gets tested
+         
+         facade.pushAuthzGroups(siteId.getValue());
          return new Boolean(facade.isAuthorized(agent, MatrixFunctionConstants.EVALUATE_MATRIX, siteId));
       }
             

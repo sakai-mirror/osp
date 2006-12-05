@@ -32,7 +32,11 @@ public interface ListService {
    public String getEntryLink(Object entry);
 
    public List getCurrentDisplayColumns();
+   
+   public String getDefaultSortColumn();
 
+   public List getSortableColumns();
+   
    public ListGenerator getListGenerator(String name);
 
    public ListConfig getCurrentConfig();

@@ -46,6 +46,7 @@ public class PresentationContentEntityProducer extends EntityProducerBase implem
    }
 
    public void init() {
+      logger.info("init()");
       try {
          getEntityManager().registerEntityProducer(this, Entity.SEPARATOR + PRODUCER_NAME);
       }

@@ -27,6 +27,9 @@ import org.hibernate.Session;
 import org.jdom.CDATA;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.XMLOutputter;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.content.api.*;
 import org.sakaiproject.entity.api.Reference;
@@ -106,7 +109,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private static final String TEMPLATE_ID_TAG = "templateId";
    private static final String PRESENTATION_ID_TAG = "presentationId";
    private static final String SYSTEM_COLLECTION_ID = "/system/";
-
+   
+   
    public PresentationTemplate storeTemplate(final PresentationTemplate template) {
       return storeTemplate(template, true, true);
    }
@@ -222,6 +226,16 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          logger.debug(e);
          return null;
       }
+   }
+
+   protected List getTemplatesForConversion() {
+      
+      return getHibernateTemplate().findByNamedQuery("findTemplatesForConversion");
+   }
+   
+   protected List getPortfoliosForConversion() {
+      
+      return getHibernateTemplate().findByNamedQuery("findPortfoliosForConversion");
    }
 
     public void reassignOwner(PresentationTemplate templateId)
@@ -441,6 +455,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             Presentation presentation =
                (Presentation) session.load(Presentation.class, id);
 
+            if (presentation.getPropertyForm() != null) {
+               deleteResource(presentation.getId(), presentation.getPropertyForm());
+            }
+            
             // delete viewer authz
             deleteViewers(id);
 
@@ -586,6 +604,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
                   presentation.getId());
          getHibernateTemplate().merge(presentation);
+      }
+      
+      if (presentation.getPropertyForm() != null) {
+         getLockManager().lockObject(presentation.getPropertyForm().getValue(), 
+               presentation.getId().getValue(),
+               "Locking property form for this portfolio", true);
       }
 
       storePresentationPages(presentation.getPages(), presentation.getId());
@@ -1720,11 +1744,29 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
 
       if (presentation.getProperties() != null) {
-         Element presProperties = new Element("presentationProperties");
+         Element presProperties = new Element("deprecatedPresentationProperties");
          presProperties.addContent((Element) presentation.getProperties().currentElement().clone());
          root.addContent(presProperties);
       }
 
+      if (presentation.getPropertyForm() != null) {
+         Element presProperties = new Element("presentationProperties");
+         Node propNode = getNode(presentation.getPropertyForm());
+         Document doc = new Document();
+         SAXBuilder saxBuilder = new SAXBuilder();
+         try {
+            doc = saxBuilder.build(propNode.getInputStream());
+         } catch (JDOMException e) {
+            throw new OspException(e);
+         } catch (IOException e) {
+            throw new OspException(e);
+         }
+         
+         
+         presProperties.addContent((Element)doc.getRootElement().clone());
+         root.addContent(presProperties);
+      }
+      
       if (presentation.getTemplate().getFiles() != null) {
          Element presFiles = new Element("presentationFiles");
          root.addContent(presFiles);
@@ -2493,6 +2535,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    public void init() {
+      logger.info("init()");
       try {
          initFreeFormTemplate();
          initGlobalLayouts();
@@ -2500,6 +2543,33 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       catch (Exception e) {
          logger.warn("Temporarily catching all exceptions in osp.PresentationManagerImpl.init()", e);
       }
+      
+      //make it cluster safe
+      
+      final String convertProperty = "osp.portfolio.propertyConversion";
+      String inited = System.getProperty(convertProperty);
+      if (inited == null) {
+         System.setProperty(convertProperty, "true");
+         try {
+            // do conversion for template property form types
+            List templates = getTemplatesForConversion();
+            logger.debug("There are " + templates.size() + " templates needing conversion");
+            convertPortfolioTemplates(templates);
+         }
+         catch (Exception e) {
+            logger.warn("Error converting portfolio template property form types", e);
+         }
+         try {
+            // do conversion for portfolio property form data
+            List portfolios = getPortfoliosForConversion();
+            logger.debug("There are " + portfolios.size() + " portfolios needing conversion");
+            convertPortfolios(portfolios);
+         }
+         catch (Exception e) {
+            logger.warn("Error converting portfolio property form data", e);
+         }
+      }
+      
    }
 
    protected void initGlobalLayouts() {
@@ -2757,6 +2827,215 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
       String uuid = getContentHosting().getUuid(resource.getId());
       return getIdManager().getId(uuid);
+   }
+   
+   /**
+    * 
+    * @param portfolios A list of Presentation objects
+    */
+   protected void convertPortfolios(List portfolios) {
+      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+      String userId = sakaiSession.getUserId();
+      String userEid = sakaiSession.getUserEid();
+      try {
+         sakaiSession.setUserId("admin");
+         sakaiSession.setUserEid("admin");
+      
+      
+         for (Iterator i = portfolios.iterator(); i.hasNext();) {
+            Presentation presentation = (Presentation) i.next();
+            byte[] formData = convertFormData(presentation.getProperties());
+            Id propForm = saveForm(presentation.getOwner().getId().getValue(), 
+                  presentation.getName() + " Properties", 
+                  formData, presentation.getTemplate().getPropertyFormType().getValue());
+            presentation.setPropertyForm(propForm);
+            storePresentation(presentation, false, true);
+            
+            logger.info("OSP Portfolio Conversion: For Portfolio with id " + presentation.getId().getValue() + ": Creating new Form Resource with id of " + propForm.getValue());
+   
+         }
+      } catch (Exception e) {
+         logger.warn("Unexpected error occurred in PresentationManagerImpl.convertPortfolios()", e);
+      } finally {
+         sakaiSession.setUserEid(userEid);
+         sakaiSession.setUserId(userId);
+      }
+   }
+   
+   private byte[] convertFormData(ElementBean elementBean) {
+      Document doc = new Document();
+      Element rootElement = elementBean.getBaseElement();
+      rootElement.detach();
+      doc.setRootElement(rootElement);
+      ByteArrayOutputStream out = new ByteArrayOutputStream();
+      XMLOutputter xmlOutputter = new XMLOutputter();
+      try {
+         xmlOutputter.output(doc, out);
+      } catch (IOException e) {
+         throw new HibernateException(e);
+      }
+      return out.toByteArray();
+   }
+   
+   /**
+    * 
+    * @param templates A list of PresentationTemplate objects
+    */
+   protected void convertPortfolioTemplates(List templates) {
+      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+      String userId = sakaiSession.getUserId();
+      String userEid = sakaiSession.getUserEid();
+      try {
+         sakaiSession.setUserId("admin");
+         sakaiSession.setUserEid("admin");
+      
+      
+         for (Iterator i = templates.iterator(); i.hasNext();) {
+            PresentationTemplate template = (PresentationTemplate) i.next();
+            Id fileId = template.getPropertyPage();
+            StructuredArtifactDefinitionBean tempFormDef = null;
+            
+            logger.info("OSP Portfolio Template Conversion: For Template with id " + template.getId().getValue() + ": Attempting to locate a Form using a File id of " + fileId.getValue());
+   
+            //Doing this to make sure the file is setup in the security stack
+            Node node = getNode(fileId);
+   
+            List formDefs = structuredArtifactDefinitionManager.findBySchema(node.getResource());
+            if (formDefs == null || formDefs.isEmpty()) {
+               //create a new form
+               tempFormDef = new StructuredArtifactDefinitionBean();
+               //tempFormDef.setSchemaFile(fileId);
+               tempFormDef.setSchema(node.getResource().getContent());
+               tempFormDef.setDocumentRoot(template.getDocumentRoot());
+               tempFormDef.setDescription("Portfolio Properties");
+               tempFormDef.setOwner(template.getOwner());
+               tempFormDef.setSiteId(template.getSiteId());
+               if (template.isPublished())
+                  tempFormDef.setSiteState(StructuredArtifactDefinitionBean.STATE_PUBLISHED);
+               structuredArtifactDefinitionManager.save(tempFormDef);
+               logger.info("OSP Portfolio Template Conversion: Template with id " + template.getId().getValue() + " needs to create a new Form object.");
+            }
+            else {
+               int counter = 0;
+               while (tempFormDef == null && counter < 3) {
+                  tempFormDef = findUsableFormDef(formDefs, counter, template.getSiteId());
+                  counter ++;
+               }
+            }
+            template.setPropertyFormType(tempFormDef.getId());
+            storeTemplate(template, false);
+            logger.info("OSP Portfolio Template Conversion: Template with id " + template.getId().getValue() + " is being updated to use form with id " + tempFormDef.getId().getValue());
+         }
+      } catch (Exception e) {
+         logger.warn("Unexpected error occurred in PresentationManagerImpl.convertPortfolioTemplates()", e);
+      } finally {
+         sakaiSession.setUserEid(userEid);
+         sakaiSession.setUserId(userId);
+      }
+   }
+   
+   /**
+    * 
+    * @param formDefs A List of StructuredArtifactDefinitionBean objects to search through
+    * @param caseSwitch 0 for global published, 1 for site published, 2 for any in site
+    * @param siteId The id of site to search in
+    * @return The StructuredArtifactDefinitionBean object that was found, null of none found
+    */
+   protected StructuredArtifactDefinitionBean findUsableFormDef(List formDefs, int caseSwitch, String siteId) {
+      StructuredArtifactDefinitionBean retVal = null;
+      switch (caseSwitch) {
+      case 0:
+         for (Iterator i=formDefs.iterator(); i.hasNext();) {
+            StructuredArtifactDefinitionBean iterVal = (StructuredArtifactDefinitionBean) i.next();
+            if (iterVal.getGlobalState() == StructuredArtifactDefinitionBean.STATE_PUBLISHED)
+            {
+               retVal = iterVal;
+               break;
+            }            
+         }
+         break;
+      case 1:
+         for (Iterator i=formDefs.iterator(); i.hasNext();) {
+            StructuredArtifactDefinitionBean iterVal = (StructuredArtifactDefinitionBean) i.next();
+            if (iterVal.getSiteState() == StructuredArtifactDefinitionBean.STATE_PUBLISHED && iterVal.getSiteId().equals(siteId))
+            {
+               retVal = iterVal;
+               break;
+            }            
+         }
+         break;
+      case 2:
+         for (Iterator i=formDefs.iterator(); i.hasNext();) {
+            StructuredArtifactDefinitionBean iterVal = (StructuredArtifactDefinitionBean) i.next();
+            if (iterVal.getSiteId().equals(siteId))
+            {
+               retVal = iterVal;
+               break;
+            }            
+         }
+         break;
+      }
+      return retVal;
+   }
+   
+   private Id saveForm(String owner, String name, byte[] fileContent, String formType) {
+      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+
+      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+      String userId = sakaiSession.getUserId();
+      sakaiSession.setUserId(owner);
+      sakaiSession.setUserEid(owner);
+      
+      String description = "";
+      String folder = "/user/" + owner;
+      String type = "application/x-osp";
+
+      try {
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection(folder);
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, owner);
+         getContentHosting().commitCollection(groupCollection);
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
+      folder = "/user/" + owner + PRESENTATION_PROPERTIES_FOLDER_PATH;
+      
+      try {
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection(folder);
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, PRESENTATION_PROPERTIES_FOLDER);
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DESCRIPTION, "Folder for Portfolio Property Forms");
+         getContentHosting().commitCollection(groupCollection);
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+      
+      try {
+         ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
+         resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
+         resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
+         resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
+         resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, formType);
+         resourceProperties.addProperty(ContentHostingService.PROP_ALTERNATE_REFERENCE, MetaobjEntityManager.METAOBJ_ENTITY_PREFIX);
+         
+         ContentResource resource = getContentHosting().addResource(name, folder, 0, type,
+               fileContent, resourceProperties, NotificationService.NOTI_NONE);
+         return idManager.getId(getContentHosting().getUuid(resource.getId()));
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      } finally {
+         getSecurityService().popAdvisor();
+         sakaiSession.setUserEid(userId);
+         sakaiSession.setUserId(userId);
+      }
    }
 
    public Id getFreeFormTemplateId() {

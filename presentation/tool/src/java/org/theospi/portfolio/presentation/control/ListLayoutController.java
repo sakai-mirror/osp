@@ -21,9 +21,11 @@
 package org.theospi.portfolio.presentation.control;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,17 +51,19 @@ public class ListLayoutController extends AbstractPresentationController {
       Agent agent = getAuthManager().getAgent();
       String selectable = (String)session.get(PresentationLayoutHelper.LAYOUT_SELECTABLE);
       
-      List layouts = new ArrayList(
+      Set layoutSet = new HashSet(
          getPresentationManager().findLayoutsByOwner(agent, ToolManager.getCurrentPlacement().getContext()));
-      layouts.addAll(getPresentationManager().findPublishedLayouts(ToolManager.getCurrentPlacement().getContext()));
+      layoutSet.addAll(getPresentationManager().findPublishedLayouts(ToolManager.getCurrentPlacement().getContext()));
       
       if (selectable != null) {
          model.put("selectableLayout", selectable);
-         layouts.addAll(getPresentationManager().findMyGlobalLayouts());
+         layoutSet.addAll(getPresentationManager().findMyGlobalLayouts());
       }
       else if (global) {
-         layouts.addAll(getPresentationManager().findAllGlobalLayouts());
+         layoutSet.addAll(getPresentationManager().findAllGlobalLayouts());
       }
+      
+      List layouts = new ArrayList(layoutSet);
       
       model.put("layoutCount", String.valueOf(layouts.size()));
 

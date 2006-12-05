@@ -161,11 +161,13 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       else if (function.equals(WizardFunctionConstants.EVALUATE_SPECIFIC_WIZARD)) {
          Wizard wizard = wizardManager.getWizard(id);
          Id siteId = idManager.getId(wizard.getSiteId());
+         facade.pushAuthzGroups(siteId.getValue());
          return isWizardAuthForEval(facade, agent, siteId);
       }
       else if (function.equals(WizardFunctionConstants.EVALUATE_SPECIFIC_WIZARDPAGE)) {
          Wizard wizard = wizardManager.getCompletedWizardByPage(id).getWizard();
          Id siteId = idManager.getId(wizard.getSiteId());
+         facade.pushAuthzGroups(siteId.getValue());
          return isWizardAuthForEval(facade, agent, siteId);
       }
       

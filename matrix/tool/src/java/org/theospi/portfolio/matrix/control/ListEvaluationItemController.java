@@ -29,6 +29,11 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.exception.InUseException;
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -37,7 +42,11 @@ import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.user.api.Preferences;
+import org.sakaiproject.user.api.PreferencesEdit;
+import org.sakaiproject.user.cover.PreferencesService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
@@ -60,15 +69,29 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
    private AgentManager agentManager = null;
    private ListScrollIndexer listScrollIndexer;
    private ToolManager toolManager;
-
+  
+   private final static String EVAL_PLACEMENT_PREF = "org.theospi.portfolio.evaluation.placement.";
+   private final static String CURRENT_SITE_EVALS = "org.theospi.portfolio.evaluation.currentSite";
+   private final static String ALL_EVALS = "org.theospi.portfolio.evaluation.allSites";
+   private final static String EVAL_SITE_FETCH = "org.theospi.portfolio.evaluation.siteEvals";
+   
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.LoadObjectController#fillBackingObject(java.lang.Object, java.util.Map, java.util.Map, java.util.Map)
     */
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
-      //List list = (List) incomingModel;
-      //list = matrixManager.getEvaluatableItems(authManager.getAgent(), worksiteManager.getCurrentWorksiteId());
-      //Set sortedSet = new TreeSet(new EvaluationContentComparator(
-      //      EvaluationContentComparator.SORT_TITLE, true));
+      
+      List list = new ArrayList();
+      
+      String evalType = (String)request.get("evalTypeKey");
+      if (evalType != null)
+         setUserEvalProperty(evalType);
+      
+      if (ALL_EVALS.equals(getUserEvalProperty()))         
+         list = matrixManager.getEvaluatableItems(authManager.getAgent());
+      else
+         list = matrixManager.getEvaluatableItems(authManager.getAgent(), worksiteManager.getCurrentWorksiteId());
+      
+      
       
       String sortColumn = (String)request.get("sortByColumn");
       if (sortColumn == null)
@@ -78,7 +101,7 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       if (strAsc != null)
          asc = strAsc.equalsIgnoreCase("asc");
 
-      List list = matrixManager.getEvaluatableItems(authManager.getAgent(), worksiteManager.getCurrentWorksiteId());
+      
       Collections.sort(list, new EvaluationContentComparator(
             sortColumn, asc));
       list = getListScrollIndexer().indexList(request, request, list);
@@ -111,16 +134,20 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
             for(Iterator i = list.iterator(); i.hasNext(); ) {
                EvaluationContentWrapper wrapper = (EvaluationContentWrapper)i.next();
                
-               if(id.equals(wrapper.getId().getValue())) {
+               if(id.equals(wrapper.getId().getValue() + "_" + wrapper.getOwner().getId())) {
                   view = wrapper.getUrl();
-                  
+                  if (view == null) break;
                   for(Iterator params = wrapper.getUrlParams().iterator(); params.hasNext(); ) {
                      EvaluationContentWrapper.ParamBean param = (EvaluationContentWrapper.ParamBean)params.next();
                      
                      model.put(param.getKey(), param.getValue());
                   }
+                  
+                  //Clear out the hier page if there is one & clear the set of seq pages
                   session.remove(WizardPageHelper.WIZARD_PAGE);
-                  session.put("is_eval_page_id", id);
+                  session.remove(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES);
+                  
+                  session.put("is_eval_page_id", wrapper.getId().getValue());
                   break;
                }
             }
@@ -149,10 +176,70 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       if (sortColumn == null)
          sortColumn = EvaluationContentComparator.SORT_TITLE;
       model.put("sortByColumn", sortColumn);
+      model.put("evalType", getUserEvalProperty());
+      model.put("currentSiteEvalsKey", CURRENT_SITE_EVALS);
+      model.put("allEvalsKey", ALL_EVALS);
+      
+      boolean userSite = SiteService.isUserSite(getWorksiteManager().getCurrentWorksiteId().getValue());
+      model.put("isUserSite", userSite);
       
       return model;
    }
+   
+   private String getUserEvalProperty() {
+      String prop = CURRENT_SITE_EVALS;
+      
+      //If the site is a my workapace site, default to all sites
+      //Site site = getWorksiteManager().getSite(getWorksiteManager().getCurrentWorksiteId().getValue());
+      boolean userSite = SiteService.isUserSite(getWorksiteManager().getCurrentWorksiteId().getValue());
+      if (userSite) prop = ALL_EVALS;
+      
+      try {
+         Preferences userPreferences = PreferencesService.getPreferences(authManager.getAgent().getId().getValue());
+         ResourceProperties evalPrefs = userPreferences.getProperties(EVAL_PLACEMENT_PREF + getToolManager().getCurrentPlacement().getId());
+         String tmpProp = evalPrefs.getProperty(EVAL_SITE_FETCH);
+         if (tmpProp != null) prop = tmpProp;
+      }
+      catch (Exception e) {
+         logger.debug("Couldn't get user prefs for the eval tool.  Using defaults.");
+      }
+      return prop;
+   }
 
+   private void setUserEvalProperty(String evalType) {
+      PreferencesEdit prefEdit = null;
+      try {
+         prefEdit = (PreferencesEdit) PreferencesService.add(authManager.getAgent().getId().getValue());
+      } catch (PermissionException e) {
+         logger.warn("Problem saving preferences for site evals in setUserEvalProperty().", e);
+      } catch (IdUsedException e) {
+         // Preferences already exist, just edit
+         try {
+            prefEdit = (PreferencesEdit) PreferencesService.edit(authManager.getAgent().getId().getValue());
+         } catch (PermissionException e1) {
+            logger.warn("Problem saving preferences for site evals in setUserEvalProperty().", e1);
+         } catch (InUseException e1) {
+            logger.warn("Problem saving preferences for site evals in setUserEvalProperty().", e1);
+         } catch (IdUnusedException e1) {
+            // This should be safe to ignore since we got here because it existed
+            logger.warn("Problem saving preferences for site evals in setUserEvalProperty().", e1);
+         }
+      }
+      if (prefEdit != null) {
+         ResourceProperties propEdit = prefEdit.getPropertiesEdit(EVAL_PLACEMENT_PREF + getToolManager().getCurrentPlacement().getId());
+         if (evalType.equals(CURRENT_SITE_EVALS))
+            propEdit.removeProperty(EVAL_SITE_FETCH);
+         else
+            propEdit.addProperty(EVAL_SITE_FETCH, evalType);
+         try {
+            PreferencesService.commit(prefEdit);
+         }
+         catch (Exception e) {
+            logger.warn("Problem saving preferences for site evals in setUserEvalProperty().", e);
+         }
+      }
+   }
+   
    private Boolean isMaintainer() {
       return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
             getIdManager().getId(getToolManager().getCurrentPlacement().getContext())));

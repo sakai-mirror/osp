@@ -39,6 +39,24 @@ public interface ListGenerator {
     * @return array of columns a user has by default
     */
    public List getDefaultColumns();
+   
+   /**
+    * 
+    * @return The list of columns that are sortable
+    */
+   public List getSortableColumns();
+   
+   /**
+    * 
+    * @return The column name that is the default sort
+    */
+   public String getDefaultSortColumn();
+   
+   /**
+    * 
+    * @return The list of ColumnConfigs that were defined
+    */
+   public List getColumnConfig();
 
    /**
     *

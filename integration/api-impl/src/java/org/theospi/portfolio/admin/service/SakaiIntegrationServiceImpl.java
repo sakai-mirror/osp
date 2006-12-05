@@ -59,6 +59,7 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService, Ini
    }
 
    public void afterPropertiesSet() throws Exception {
+      logger.info("afterPropertiesSet()");
       // go through each integration plugin and execute it...
       Session sakaiSession = SessionManager.getCurrentSession();
       String userId = sakaiSession.getUserId();
@@ -73,7 +74,7 @@ public class SakaiIntegrationServiceImpl implements SakaiIntegrationService, Ini
             executePlugin(plugin);
          }
       } catch (Exception e) {
-         logger.warn("Temporarily catching all exceptions in osp.SakaiIntegrationServiceImpl.init()", e);
+         logger.warn("Temporarily catching all exceptions in osp.SakaiIntegrationServiceImpl.afterPropertiesSet()", e);
       } finally {
          sakaiSession.setUserEid(userId);
          sakaiSession.setUserId(userId);
