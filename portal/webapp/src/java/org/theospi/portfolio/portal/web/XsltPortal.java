@@ -797,7 +797,14 @@ public class XsltPortal extends CharonPortal {
 
       Element siteTypeUrl = doc.createElement("url");
       // /portal/site_type/<key>
-      safeAppendTextNode(doc, siteTypeUrl, getContext() + "/" + SITE_TYPE + "/" + type.getKey(), true);
+      
+      try {
+         Site site = getPortalManager().getSite(type.getKey());
+         safeAppendTextNode(doc, siteTypeUrl, getContext() + "/site/" + type.getKey(), true);
+      }
+      catch (RuntimeException e) {
+         safeAppendTextNode(doc, siteTypeUrl, getContext() + "/" + SITE_TYPE + "/" + type.getKey(), true);
+      }
       siteTypeElement.appendChild(siteTypeUrl);
 
       Element siteTypeHelperUrl = doc.createElement("helperUrl");

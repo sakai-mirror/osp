@@ -166,6 +166,10 @@ public class WizardManagerImpl extends HibernateDaoSupport
       */
    }
 
+   
+   /**
+    * {@inheritDoc}
+    */
    public Wizard createNew() {
       Placement placement = ToolManager.getCurrentPlacement();
       String currentSite = placement.getContext();
@@ -187,10 +191,18 @@ public class WizardManagerImpl extends HibernateDaoSupport
       this.getHibernateTemplate().clear();
    }
 
+   
+   /**
+    * {@inheritDoc}
+    */
    public Wizard getWizard(Id wizardId) {
       return getWizard(wizardId, WIZARD_OPERATE_CHECK);
    }
    
+   
+   /**
+    * {@inheritDoc}
+    */
    public Wizard getWizard(Id wizardId, int checkAuthz) {
       Wizard wizard = (Wizard)getHibernateTemplate().get(Wizard.class, wizardId);
 
@@ -232,12 +244,16 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return wizard;
    }
    
+   
+   /**
+    * {@inheritDoc}
+    */
    public Wizard getWizard(String id, int checkAuthz) {
       return getWizard(getIdManager().getId(id), checkAuthz);
    }
-
+   
    public Wizard getWizard(String id) {
-      return getWizard(id, WIZARD_VIEW_CHECK);
+      return getWizard(id, WIZARD_OPERATE_CHECK);
    }
    
    public Node getNode(Id artifactId) {
@@ -285,7 +301,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
          }
       }
    }
-
+   
+   
+   /**
+    * {@inheritDoc}
+    */
    public Wizard saveWizard(Wizard wizard) {
       Date now = new Date(System.currentTimeMillis());
       wizard.setModified(now);
@@ -367,7 +387,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
          logger.error("", e);
       }
    }
-
+   
+   
+   /**
+    * {@inheritDoc}
+    */
    public void deleteWizard(Wizard wizard) {
       //This shouldn't be necessary since a user can't fill it out if it hasn't been 
       //published and you can't delete if it has been published
@@ -521,7 +545,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
       
       return cw;      
    }
-
+   
+   
+   /**
+    * {@inheritDoc}
+    */
    public CompletedWizard saveWizard(CompletedWizard wizard) {
       getHibernateTemplate().saveOrUpdate(wizard);
       return wizard;
@@ -920,6 +948,17 @@ public class WizardManagerImpl extends HibernateDaoSupport
                         getIdManager().getId(worksiteId));
                } else if(currentEntry.getName().startsWith("guidance/")) {
                   guidanceMap = processMatrixGuidance(fileParent, worksiteId, zis);
+
+                  for(Iterator i = guidanceMap.values().iterator(); i.hasNext(); ) {
+                     Guidance g = (Guidance) i.next();
+                     
+                     // hack for:  
+                     //    This will only be for wizards exported before r13782
+                     if(g.getSecurityViewFunction().equals(WizardFunctionConstants.VIEW_WIZARD))
+                        g.setSecurityViewFunction(WizardFunctionConstants.OPERATE_WIZARD);
+                  }
+                  
+                  
                   gotFile = true;
                } else if(currentEntry.getName().startsWith("style/")) {
                   styleMap = processMatrixStyle(fileParent, worksiteId, zis);
@@ -1011,6 +1050,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       }
    }
 
+   
    /**
     * gets the current user's resource collection
     * 

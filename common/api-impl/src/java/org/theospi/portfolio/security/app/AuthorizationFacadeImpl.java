@@ -70,9 +70,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade, AppAuthFaca
    }
 
    /**
-    * @param function
-    * @param id
-    * @return
+    * {@inheritDoc}
     */
    public boolean isAuthorized(String function, Id id) {
       return isAuthorized(authManager.getAgent(), function, id);
@@ -104,10 +102,7 @@ public class AuthorizationFacadeImpl implements AuthorizationFacade, AppAuthFaca
    }
 
    /**
-    * @param agent
-    * @param function
-    * @param id
-    * @return
+    * {@inheritDoc}
     */
    public boolean isAuthorized(Agent agent, String function, Id id) {
 

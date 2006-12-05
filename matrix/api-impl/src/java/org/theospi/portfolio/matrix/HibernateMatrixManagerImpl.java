@@ -128,6 +128,8 @@ import org.theospi.utils.zip.UncloseableZipInputStream;
 public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    implements MatrixManager, ReadableObjectHome, ArtifactFinder, DownloadableManager,
    PresentableObjectHome, DuplicatableToolService, StyleConsumer {
+   
+   static final private String   IMPORT_BASE_FOLDER_ID = "importedMatrices";
 
    private IdManager idManager;
    private AuthenticationManager authnManager = null;
@@ -148,8 +150,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    private EntityContextFinder contentFinder = null;
+   private String importFolderName;
 
-   
    public Scaffolding createDefaultScaffolding() {
       return getDefaultScaffoldingBean().createDefaultScaffolding();
    }
@@ -1581,6 +1583,15 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       }
    }
 
+
+   /**
+    * gets the current user's resource collection
+    * 
+    * @return ContentCollection
+    * @throws TypeException
+    * @throws IdUnusedException
+    * @throws PermissionException
+    */
    protected ContentCollection getUserCollection() throws TypeException, IdUnusedException, PermissionException {
       User user = UserDirectoryService.getCurrentUser();
       String userId = user.getId();
@@ -1589,11 +1600,48 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
       return collection;
    }
-
-
+   
+   /**
+    * This gets the directory in which the import places files into.
+    * 
+    * This method gets the current users base collection, creates an imported directory,
+    * then uses the param to create a new directory.
+    * 
+    * this uses the bean property importFolderName to name the
+    * 
+    * @param origName String
+    * @return ContentCollectionEdit
+    * @throws InconsistentException
+    * @throws PermissionException
+    * @throws IdUsedException
+    * @throws IdInvalidException
+    * @throws IdUnusedException
+    * @throws TypeException
+    */
    protected ContentCollectionEdit getFileDir(String origName) throws InconsistentException,
          PermissionException, IdUsedException, IdInvalidException, IdUnusedException, TypeException {
-      ContentCollection collection = getUserCollection();
+      ContentCollection userCollection = getUserCollection();
+      
+      try {
+         //TODO use the bean org.theospi.portfolio.admin.model.IntegrationOption.siteOption 
+         // in common/components to get the name and id for this site.
+         
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID);
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, getImportFolderName());
+         getContentHosting().commitCollection(groupCollection);
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+          if (logger.isDebugEnabled()) {
+              logger.debug(e);
+          } 
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+      
+      ContentCollection collection = getContentHosting().getCollection(userCollection.getId() + IMPORT_BASE_FOLDER_ID + "/");
+      
       String childId = collection.getId() + origName;
       return getContentHosting().addCollection(childId);
    }
@@ -2274,5 +2322,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public void setStyleManager(StyleManager styleManager) {
       this.styleManager = styleManager;
+   }
+   
+   public String getImportFolderName() {
+      return importFolderName;
+   }
+
+   public void setImportFolderName(String importFolderName) {
+      this.importFolderName = importFolderName;
    }
 }

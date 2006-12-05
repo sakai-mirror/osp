@@ -45,10 +45,14 @@ public interface WizardManager extends WorkflowEnabledManager {
 	   public static final String WIZARD_PARAM_ID = "wizardId";
       public static final String EXPOSED_WIZARD_KEY = "osp.exposedwizard.wizard.id";
 	
+   /**
+    * creates a new Wizard in the current site owned by the current user
+    * @return Wizard
+    */
    public Wizard createNew();
 
    /**
-    * Gets a wizard given its id.  This performs a check on the view permission
+    * Gets a wizard given its id.  This performs a check on the operate permission
     * @param Id wizardId
     * @return Wizard
     */
@@ -71,17 +75,28 @@ public interface WizardManager extends WorkflowEnabledManager {
    public Wizard getWizard(String id);
    
    /**
-    * gets a wizard given its id.  it may perform a check on the view permission
-    * if the checkAuthz is true
+    * gets a wizard given its id.  it performs a check on the permission
+    * specified in checkAuthz:   WIZARD_NO_CHECK, WIZARD_OPERATE_CHECK, WIZARD_VIEW_CHECK
+    * WIZARD_EDIT_CHECK, WIZARD_EXPORT_CHECK, WIZARD_DELETE_CHECK
     * @param String wizardId
     * @param boolean checkAuthz
     * @return
     */
    public Wizard getWizard(String id, int checkAuthz);
 
+   /**
+    * Saves a Wizard to storage.  It returns an updated wizard
+    * @param wizard
+    * @return Wizard
+    */
    public Wizard saveWizard(Wizard wizard);
    
+   /**
+    * Removes a wizard from storage
+    * @param wizard
+    */
    public void deleteWizard(Wizard wizard);
+   
    
    public Reference decorateReference(Wizard wizard, String reference);
    
@@ -100,7 +115,10 @@ public interface WizardManager extends WorkflowEnabledManager {
    public List findWizardsByOwner(String ownerId, String siteId);
    public List findPublishedWizards(String siteId);
 
-   
+   /**
+    * changes the settings on the wizard to make it available to the users of the site
+    * @param wizard
+    */
    public void publishWizard(Wizard wizard);
    
    public Collection getAvailableForms(String siteId, String type);
@@ -113,6 +131,11 @@ public interface WizardManager extends WorkflowEnabledManager {
    public CompletedWizard getCompletedWizard(Wizard wizard, String userId);
    public CompletedWizard getCompletedWizard(Wizard wizard, String userId, boolean create);
 
+   /**
+    * Saves a completed wizard into storage
+    * @param wizard CompletedWizard
+    * @return CompletedWizard
+    */
    public CompletedWizard saveWizard(CompletedWizard wizard);
 
    public boolean importResource(Id worksite, String reference) throws UnsupportedFileTypeException, ImportException;

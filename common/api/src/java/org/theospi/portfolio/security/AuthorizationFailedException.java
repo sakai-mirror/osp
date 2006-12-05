@@ -41,6 +41,7 @@ public class AuthorizationFailedException extends OspException {
     *
     */
    public AuthorizationFailedException(String function, Id qualifier) {
+      super("Authorizing (" + function + ", " + qualifier.toString() + ")");
       this.function = function;
       this.qualifier = qualifier;
    }
@@ -49,6 +50,7 @@ public class AuthorizationFailedException extends OspException {
     *
     */
    public AuthorizationFailedException(Agent agent, String function, Id qualifier) {
+      super("Authorizing (" + agent.toString() + ", " + function + ", " + qualifier.toString() + ")");
       this.agent = agent;
       this.function = function;
       this.qualifier = qualifier;

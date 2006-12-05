@@ -41,7 +41,7 @@ public interface WizardFunctionConstants {
    /** This is when the client user fills in a completed wizard */
    public static final String VIEW_WIZARD = WIZARD_PREFIX + "view";
    
-   /** The view permission is a campasite permission of complete, review, evaluate.
+   /** The operate permission is a campasite permission of complete (view), review, evaluate.
     * it has no hooks into the interface.
     */
    public static final String OPERATE_WIZARD = WIZARD_PREFIX + "operate";

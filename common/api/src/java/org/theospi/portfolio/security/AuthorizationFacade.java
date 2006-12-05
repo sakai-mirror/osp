@@ -40,13 +40,15 @@ public interface AuthorizationFacade {
    public void checkPermission(Agent agent, String function, Id id) throws AuthorizationFailedException;
 
    /**
+    * Checks if the current user is authorized to do the function with the given id.
     * @param function
     * @param id
-    * @return
+    * @return boolean if the user is authorized
     */
    public boolean isAuthorized(String function, Id id);
 
    /**
+    * Checks if the agent is authorized to do the function with the given id
     * @param agent
     * @param function
     * @param id

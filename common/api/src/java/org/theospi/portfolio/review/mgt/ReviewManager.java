@@ -49,6 +49,27 @@ public interface ReviewManager {
    
    public List getReviews();
    public List getReviewsByParent(String parentId);
+   
+   /**
+    * the top function for getting the reviews.  This pushes these review content 
+    * into the security advisor.
+    * 
+    * @param parentId
+    * @param siteId
+    * @param producer
+    * @return List of Review
+    */
    public List getReviewsByParent(String parentId, String siteId, String producer);
+   
+   /**
+    * the top function for getting the reviews.  This pushes these review content 
+    * into the security advisor.
+    * 
+    * @param parentId
+    * @param type
+    * @param siteId
+    * @param producer
+    * @return List of Review
+    */
    public List getReviewsByParentAndType(String parentId, int type, String siteId, String producer);
 }
