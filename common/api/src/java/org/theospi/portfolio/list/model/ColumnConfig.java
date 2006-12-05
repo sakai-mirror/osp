@@ -35,6 +35,7 @@ public class ColumnConfig {
    private boolean sortable;
    private boolean defaultSort;
    private int defaultSortDirection;
+   private boolean lookupInBundle;
    
    /**
     * @return the columnName
@@ -95,6 +96,18 @@ public class ColumnConfig {
     */
    public void setSortable(boolean sortable) {
       this.sortable = sortable;
+   }
+   /**
+    * @return the lookupInBundle
+    */
+   public boolean isLookupInBundle() {
+      return lookupInBundle;
+   }
+   /**
+    * @param lookupInBundle the lookupInBundle to set
+    */
+   public void setLookupInBundle(boolean lookupInBundle) {
+      this.lookupInBundle = lookupInBundle;
    }
    
    

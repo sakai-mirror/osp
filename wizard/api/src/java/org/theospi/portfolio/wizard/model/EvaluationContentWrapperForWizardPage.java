@@ -32,6 +32,7 @@ import org.sakaiproject.user.cover.UserDirectoryService;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
+import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.model.Wizard;
 
 public class EvaluationContentWrapperForWizardPage extends
@@ -48,7 +49,7 @@ public class EvaluationContentWrapperForWizardPage extends
       
       if (owner != null) {
          setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
-         if (wizardType.equals(Wizard.WIZARD_TYPE_SEQUENTIAL)) {
+         if (wizardType.equals(WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL)) {
             setUrl("openEvaluationPageSeqRedirect");         
          } else {
             setUrl("openEvaluationPageHierRedirect");

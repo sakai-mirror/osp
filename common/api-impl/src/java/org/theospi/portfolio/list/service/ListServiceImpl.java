@@ -59,6 +59,10 @@ public class ListServiceImpl  extends HibernateDaoSupport implements ListService
       return ((CustomLinkListGenerator)getCurrentGenerator()).getSortableColumns();
    }
 
+   public List getBundleLookupColumns() {
+      return ((CustomLinkListGenerator)getCurrentGenerator()).getBundleLookupColumns();
+   }
+   
    public String getEntryLink(Object entry) {
       if (getCurrentGenerator() instanceof CustomLinkListGenerator) {
          String uri = ((CustomLinkListGenerator)getCurrentGenerator()).getCustomLink(entry);

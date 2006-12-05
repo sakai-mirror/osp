@@ -63,15 +63,20 @@
       <property name="worksiteManager">
          <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
       </property>
+      <property name="idManager"><ref bean="idManager"/></property>
       <property name="columnConfig">
       	<list>
       		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
       			<property name="columnName"><value>title</value></property>
       			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
+      			<property name="defaultSort"><value>true</value></property>
+      			<property name="defaultSortDirection"><value>1</value></property>
       		</bean>
       		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
       			<property name="columnName"><value>type</value></property>
       			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
       		</bean>
       		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
       			<property name="columnName"><value>description</value></property>
@@ -86,15 +91,20 @@
       <property name="worksiteManager">
          <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
       </property>
+      <property name="idManager"><ref bean="idManager"/></property>
       <property name="columnConfig">
       	<list>
       		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
       			<property name="columnName"><value>title</value></property>
       			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
+      			<property name="defaultSort"><value>true</value></property>
+      			<property name="defaultSortDirection"><value>1</value></property>
       		</bean>
       		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
       			<property name="columnName"><value>type</value></property>
       			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
       		</bean>
       		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
       			<property name="columnName"><value>description</value></property>

@@ -1,11 +1,9 @@
 package org.theospi.portfolio.presentation.model.impl;
 
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.theospi.portfolio.list.intf.DecoratedListItem;
-import org.theospi.portfolio.list.intf.ListItemUtils;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.user.api.UserNotDefinedException;
 import org.theospi.portfolio.presentation.model.Presentation;
-import org.theospi.portfolio.presentation.model.PresentationTemplate;
+import org.theospi.portfolio.shared.model.SortableListObject;
 
 /**
  * Created by IntelliJ IDEA.
@@ -14,56 +12,32 @@ import org.theospi.portfolio.presentation.model.PresentationTemplate;
  * Time: 2:13:20 PM
  * To change this template use File | Settings | File Templates.
  */
-public class DecoratedPresentation implements DecoratedListItem {
+public class DecoratedPresentation extends SortableListObject {
 
-    private ListItemUtils listItemUtils;
-    private Presentation presentation;
-    private WorksiteManager worksiteManager;
+   private Presentation presentation;
 
-    public DecoratedPresentation(Presentation presentation, WorksiteManager worksiteManager) {
-        this.presentation = presentation;
-        this.worksiteManager = worksiteManager;
-    }
+   public DecoratedPresentation(Presentation pres, Site site) throws UserNotDefinedException {
+      super(pres.getId().getValue(), pres.getName(), 
+            pres.getDescription(), 
+            pres.getOwner(), site, pres.getPresentationType(), 
+            pres.getModified());
+      
+      this.presentation = pres;
+   }
 
-    public ListItemUtils getListItemUtils() {
-        return listItemUtils;
-    }
+   /**
+    * @return the presentation
+    */
+   public Presentation getPresentation() {
+      return presentation;
+   }
 
-    public void setListItemUtils(ListItemUtils listItemUtils) {
-        this.listItemUtils = listItemUtils;
-    }
-
-    public String getSiteName() {
-        return worksiteManager.getSite(presentation.getSiteId()).getTitle();
-    }
-
-    public String getName() {
-        return presentation.getName();
-    }
-
-    public Agent getOwner() {
-        return presentation.getOwner();
-    }
-
-    public String getDescription() {
-        return presentation.getDescription();
-    }
-
-    public Presentation getPresentation() {
-        return presentation;
-    }
-
-    public String getModified() {
-        return listItemUtils.formatMessage("date_format", new Object[]{presentation.getModified()});
-    }
-
-    public PresentationTemplate getTemplate () {
-        return presentation.getTemplate();
-    }
-
-    public String getExternalUri(){
-        return presentation.getExternalUri();
-    }
+   /**
+    * @param presentation the presentation to set
+    */
+   public void setPresentation(Presentation presentation) {
+      this.presentation = presentation;
+   }
 
 
 }

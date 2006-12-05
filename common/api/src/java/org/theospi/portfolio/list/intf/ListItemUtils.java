@@ -10,5 +10,7 @@ package org.theospi.portfolio.list.intf;
 public interface ListItemUtils {
 
     public String formatMessage(String key, Object[] args); 
+    
+    public boolean lookUpInBundle(String field);
 
 }

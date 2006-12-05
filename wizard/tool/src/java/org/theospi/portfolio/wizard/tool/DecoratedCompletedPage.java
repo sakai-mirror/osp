@@ -32,6 +32,7 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
 
@@ -96,7 +97,7 @@ public class DecoratedCompletedPage {
          session.setAttribute("readOnlyMatrix", "true");
       session.setAttribute(WizardPageHelper.WIZARD_OWNER, parent.getCurrent().getRunningWizard().getBase().getOwner());
 
-      if (Wizard.WIZARD_TYPE_SEQUENTIAL.equals(
+      if (WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL.equals(
             getBase().getCategory().getWizard().getWizard().getType())) {
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES, getPageList());
          session.setAttribute(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP,

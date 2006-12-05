@@ -37,6 +37,8 @@ public interface ListService {
 
    public List getSortableColumns();
    
+   public List getBundleLookupColumns();
+   
    public ListGenerator getListGenerator(String name);
 
    public ListConfig getCurrentConfig();

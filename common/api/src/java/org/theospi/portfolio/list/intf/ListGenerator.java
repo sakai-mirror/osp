@@ -54,6 +54,12 @@ public interface ListGenerator {
    
    /**
     * 
+    * @return The list of columns that need to have values looked up in the message bundle
+    */
+   public List getBundleLookupColumns();
+   
+   /**
+    * 
     * @return The list of ColumnConfigs that were defined
     */
    public List getColumnConfig();

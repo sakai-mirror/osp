@@ -375,7 +375,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       for(Iterator iter = wizards.iterator(); iter.hasNext();) {
          Wizard wizard = (Wizard)iter.next();
          retWizards.add(new CommonFormBean(wizard.getId().getValue(),
-               wizard.getName(), Wizard.WIZARD_TYPE_SEQUENTIAL,
+               wizard.getName(), WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL,
                wizard.getOwner().getName(), wizard.getModified() ));
       }
       

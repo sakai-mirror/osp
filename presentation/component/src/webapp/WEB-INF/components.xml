@@ -567,8 +567,11 @@
       <property name="columnConfig">
       	<list>
       		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
-      			<property name="columnName"><value>name</value></property>
+      			<property name="columnName"><value>title</value></property>
       			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
+      			<property name="defaultSort"><value>true</value></property>
+      			<property name="defaultSortDirection"><value>1</value></property>
       		</bean>
       		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
       			<property name="columnName"><value>description</value></property>
@@ -577,14 +580,17 @@
       		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
       			<property name="columnName"><value>owner.displayName</value></property>
       			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
       		</bean>
       		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
-      			<property name="columnName"><value>siteName</value></property>
+      			<property name="columnName"><value>site.title</value></property>
       			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
       		</bean>
       		<bean class="org.theospi.portfolio.list.model.ColumnConfig">
       			<property name="columnName"><value>modified</value></property>
       			<property name="defaultSelected"><value>true</value></property>
+      			<property name="sortable"><value>true</value></property>
       		</bean>
       	</list>
       </property>

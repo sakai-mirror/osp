@@ -54,5 +54,8 @@ public interface WizardFunctionConstants {
    
    public static final String EVALUATE_SPECIFIC_WIZARD = WIZARD_PREFIX + "evaluateSpecificWizard";
    public static final String EVALUATE_SPECIFIC_WIZARDPAGE = WIZARD_PREFIX + "evaluateSpecificWizardPage";
+   
+   public final static String WIZARD_TYPE_SEQUENTIAL = "org.theospi.portfolio.wizard.model.Wizard.sequential";
+   public final static String WIZARD_TYPE_HIERARCHICAL = "org.theospi.portfolio.wizard.model.Wizard.hierarchical";
 }
 

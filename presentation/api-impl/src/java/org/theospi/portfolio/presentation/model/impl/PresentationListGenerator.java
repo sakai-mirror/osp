@@ -26,9 +26,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.user.api.UserNotDefinedException;
 import org.theospi.portfolio.list.impl.BaseListGenerator;
 import org.theospi.portfolio.list.intf.ActionableListGenerator;
 import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
@@ -83,7 +87,18 @@ public class PresentationListGenerator extends BaseListGenerator implements Acti
 
           while (iter.hasNext())
           {
-            presentations.add(new DecoratedPresentation((Presentation) iter.next(), worksiteManager));
+             Presentation pres = (Presentation) iter.next();
+             
+             try {
+                Site site = SiteService.getSite(pres.getSiteId());
+                DecoratedPresentation decoPres = new DecoratedPresentation(pres, site);
+                presentations.add(decoPres);
+             }
+             catch (IdUnusedException e) {
+                logger.warn("Site with id " + pres.getSiteId() + " does not exist.");
+            } catch (UserNotDefinedException e) {
+               logger.warn("User with id " + pres.getOwner().getId() + " does not exist.");
+            }
           }
         }
       }
@@ -104,15 +119,15 @@ public class PresentationListGenerator extends BaseListGenerator implements Acti
     * @return link to use or null to use normal redirect link
     */
    public String getCustomLink(Object entry) {
-      DecoratedPresentation pres = (DecoratedPresentation)entry;
-      if (!internalWindow(pres)) {
-         return pres.getExternalUri();
+      DecoratedPresentation decoPres = (DecoratedPresentation)entry;
+      if (!internalWindow(decoPres)) {
+         return decoPres.getPresentation().getExternalUri();
       }
       return null;
    }
 
    protected boolean internalWindow(DecoratedPresentation pres) {
-      PresentationTemplate template = pres.getTemplate();
+      PresentationTemplate template = pres.getPresentation().getTemplate();
 
       if (!template.isIncludeHeaderAndFooter()) {
          return false;
@@ -120,13 +135,13 @@ public class PresentationListGenerator extends BaseListGenerator implements Acti
 
       WorksiteManager manager = getWorksiteManager();
 
-      return manager.isUserInSite(pres.getTemplate().getSiteId());
+      return manager.isUserInSite(pres.getPresentation().getTemplate().getSiteId());
    }
       public Map getToolParams(Object entry) {
       Map params = new HashMap();
-      Presentation presentation = (Presentation) entry;
+      DecoratedPresentation presentation = (DecoratedPresentation) entry;
       params.put(PRESENTATION_ID_PARAM, presentation.getId());
-      params.put(TOOL_ID_PARAM, presentation.getToolId());
+      params.put(TOOL_ID_PARAM, presentation.getPresentation().getToolId());
       return params;
         }
 

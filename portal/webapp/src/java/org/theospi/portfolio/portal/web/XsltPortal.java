@@ -32,6 +32,7 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.portal.charon.CharonPortal;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.*;
 import org.sakaiproject.tool.cover.ActiveToolManager;
@@ -165,6 +166,23 @@ public class XsltPortal extends CharonPortal {
       }
    }
 
+   protected void forwardPortal(ActiveTool tool, HttpServletRequest req,
+         HttpServletResponse res, ToolConfiguration p, String skin,
+         String toolContextPath, String toolPathInfo) throws ToolException,
+         IOException
+   {
+
+      // if there is a stored request state, and path, extract that from the
+      // session and
+      // reinstance it
+
+      // generate the forward to the tool page placement
+      String portalPlacementUrl = "/osp-portal" + super.getPortalPageUrl(p);
+      res.sendRedirect(portalPlacementUrl);
+      return;
+
+   }
+   
    protected void doCategoryHelper(HttpServletRequest req, HttpServletResponse res, Session session,
                                    String siteId, String categoryKey, boolean returning) throws ToolException, IOException {
       if (session.getUserId() == null) {

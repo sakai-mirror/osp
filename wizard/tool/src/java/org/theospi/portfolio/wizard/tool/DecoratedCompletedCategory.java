@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.model.CompletedWizardCategory;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
@@ -89,7 +90,7 @@ public class DecoratedCompletedCategory {
    }
 
    protected List addCategoriesPages(List categoryPages) {
-      if (getParent().getCurrent().getBase().getType().equals(Wizard.WIZARD_TYPE_HIERARCHICAL)) {
+      if (getParent().getCurrent().getBase().getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL)) {
          for (Iterator i=getBase().getChildCategories().iterator();i.hasNext();) {
             CompletedWizardCategory category = (CompletedWizardCategory) i.next();
             DecoratedCategory decoratedCategory = new DecoratedCategory(
