@@ -38,7 +38,11 @@
          <xsl:value-of select="' '"/>
       </script>
    </head>
-<body class="portalBody" onload="document.forms[0].eid.focus();">
+<body class="portalBody">
+	<xsl:if test="loginInfo/topLogin = 'true' and not(currentUser)">
+		<xsl:attribute name="onload">document.forms[0].eid.focus();</xsl:attribute>
+	</xsl:if>
+
    <a href="#tocontent"  class="skip" accesskey="c">
    <xsl:attribute name="title">
       <xsl:value-of select="$externalized/entry[@key='sit.jumpcontent']"/>
@@ -276,11 +280,65 @@ your browser doesn't support iframes
                     <xsl:value-of select="config/logout"/>
                  </xsl:attribute>
                  <xsl:attribute name="title">
-                    <xsl:value-of select="$externalized/entry[@key='sit.log']"/>
+                    <xsl:value-of select="loginInfo/logoutText"/>
                  </xsl:attribute>
-                 <xsl:value-of select="$externalized/entry[@key='sit.log']"/>
+                 <xsl:value-of select="loginInfo/logoutText"/>
               </a>
            </div>
+        </xsl:when>
+        <xsl:when test="loginInfo/topLogin != 'true'">
+        		<!-- use links instead of form fields -->
+        		<div id="loginLinks">
+			<a target="_parent">
+				<xsl:attribute name="href">
+                    <xsl:value-of select="loginInfo/logInOutUrl"/>
+                 </xsl:attribute>
+                 <xsl:attribute name="title">
+                    <xsl:value-of select="loginInfo/loginText"/>
+                 </xsl:attribute>
+				<xsl:choose>
+					<xsl:when test="loginInfo/image1">
+						<img>
+							<xsl:attribute name="src">
+                    <xsl:value-of select="loginInfo/image1"/>
+                 </xsl:attribute>
+                 <xsl:attribute name="alt">
+                    <xsl:value-of select="loginInfo/loginText"/>
+                 </xsl:attribute>
+						</img>
+					</xsl:when>
+					<xsl:otherwise><xsl:value-of select="loginInfo/loginText"/></xsl:otherwise>			
+			</xsl:choose>
+			</a>
+			<xsl:if test="loginInfo/logInOutUrl2">
+				<a target="_parent">
+				<xsl:attribute name="href">
+                    <xsl:value-of select="loginInfo/logInOutUrl2"/>
+                 </xsl:attribute>
+                 <xsl:attribute name="title">
+                    <xsl:value-of select="loginInfo/loginText2"/>
+                 </xsl:attribute>
+				<xsl:choose>
+					<xsl:when test="loginInfo/image2">
+						<img>
+							<xsl:attribute name="src">
+                    <xsl:value-of select="loginInfo/image2"/>
+                 </xsl:attribute>
+                  <xsl:attribute name="alt">
+                    <xsl:value-of select="loginInfo/loginText2"/>
+                 </xsl:attribute>
+						</img>
+					</xsl:when>
+					<xsl:otherwise><xsl:value-of select="loginInfo/loginText2"/></xsl:otherwise>		
+					</xsl:choose>
+					</a>
+			</xsl:if>
+			
+			
+			</div>
+        		
+        		
+        		
         </xsl:when>
         <xsl:otherwise>
 <form method="post" action="/osp-portal/xlogin" enctype="application/x-www-form-urlencoded" target="_parent">

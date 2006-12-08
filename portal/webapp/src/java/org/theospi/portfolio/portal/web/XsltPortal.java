@@ -41,6 +41,7 @@ import org.sakaiproject.user.api.Preferences;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.PreferencesService;
 import org.sakaiproject.util.ResourceLoader;
+import org.sakaiproject.util.StringUtil;
 import org.sakaiproject.util.Web;
 import org.theospi.portfolio.portal.intf.PortalManager;
 import org.theospi.portfolio.portal.model.SitePageWrapper;
@@ -177,10 +178,14 @@ public class XsltPortal extends CharonPortal {
       // reinstance it
 
       // generate the forward to the tool page placement
-      String portalPlacementUrl = "/osp-portal" + super.getPortalPageUrl(p);
+      String portalPlacementUrl = getPortalString() + super.getPortalPageUrl(p);
       res.sendRedirect(portalPlacementUrl);
       return;
 
+   }
+   
+   protected String getPortalString() {
+      return "/osp-portal";
    }
    
    protected void doCategoryHelper(HttpServletRequest req, HttpServletResponse res, Session session,
@@ -291,7 +296,7 @@ public class XsltPortal extends CharonPortal {
       if (siteId == null) {
          return;
       }
-      Document doc = createPortalDocument(null, siteId, categoryKey, pageId);
+      Document doc = createPortalDocument(null, siteId, categoryKey, pageId, req);
       outputDocument(req, res, session, doc);
    }
 
@@ -301,7 +306,7 @@ public class XsltPortal extends CharonPortal {
          doLogin(req, res, session, req.getPathInfo(), false);
          return;
       }
-      Document doc = createPortalDocument(siteTypeKey, null, null, null);
+      Document doc = createPortalDocument(siteTypeKey, null, null, null, req);
       outputDocument(req, res, session, doc);
    }
 
@@ -339,7 +344,7 @@ public class XsltPortal extends CharonPortal {
          return;
       }
 
-      Document doc = createPortalDocument(null, siteId, null, pageId);
+      Document doc = createPortalDocument(null, siteId, null, pageId, req);
       outputDocument(req, res, session, doc);
    }
 
@@ -349,7 +354,7 @@ public class XsltPortal extends CharonPortal {
       if (siteId == null) {
          return;
       }
-      Document doc = createPortalDocument(null, siteId, null, pageId);
+      Document doc = createPortalDocument(null, siteId, null, pageId, req);
       outputDocument(req, res, session, doc);
    }
 
@@ -365,7 +370,7 @@ public class XsltPortal extends CharonPortal {
       if (siteId == null) {
          return;
       }
-      Document doc = createPortalDocument(null, siteId, getPortalManager().getPageCategory(siteId, pageId), pageId);
+      Document doc = createPortalDocument(null, siteId, getPortalManager().getPageCategory(siteId, pageId), pageId, req);
       outputDocument(req, res, session, doc);
    }
 
@@ -374,7 +379,7 @@ public class XsltPortal extends CharonPortal {
       super.postLogin(req, res, session, loginPath);
    }
 
-   protected Document createPortalDocument(String siteTypeKey, String siteId, String toolCategoryKey, String pageId) {
+   protected Document createPortalDocument(String siteTypeKey, String siteId, String toolCategoryKey, String pageId, HttpServletRequest req) {
       Document doc = getDocumentBuilder().newDocument();
 
       Element root = doc.createElement("portal");
@@ -386,6 +391,8 @@ public class XsltPortal extends CharonPortal {
          root.appendChild(createUserXml(doc, currentUser));
          loggedIn = true;
       }
+      
+      root.appendChild(createLoginXml(doc, req));
 
       Map siteTypesMap = getPortalManager().getSitesByType(siteId);
       Site site = null;
@@ -1015,6 +1022,77 @@ public class XsltPortal extends CharonPortal {
       appendTextElementNode(doc, "email", current.getEmail(), user);
 
       return user;
+   }
+   
+   protected Element createLoginXml(Document doc, HttpServletRequest req) {
+      Element login = doc.createElement("loginInfo");
+      
+      String logInOutUrl = Web.serverUrl(req);
+      String loginText = null;
+      String logoutText = null;
+      String image1 = null;
+
+      // for a possible second link
+      String logInOutUrl2 = null;
+      String loginText2 = null;
+      String image2 = null;
+      
+      boolean topLogin = Boolean.TRUE.toString().equalsIgnoreCase(
+            ServerConfigurationService.getString("top.login"));
+      boolean containerLogin = Boolean.TRUE.toString().equalsIgnoreCase(
+            ServerConfigurationService.getString("container.login"));
+      if (containerLogin) topLogin = false;
+      
+      
+      if (!topLogin)
+      {
+         logInOutUrl += getPortalString() + "/login";
+         
+         // let the login url be overridden by configuration
+         String overrideLoginUrl = StringUtil
+               .trimToNull(ServerConfigurationService
+                     .getString("login.url"));
+         if (overrideLoginUrl != null) logInOutUrl = overrideLoginUrl;
+   
+         // check for a login text override
+         loginText = StringUtil.trimToNull(ServerConfigurationService
+               .getString("login.text"));
+         if (loginText == null) loginText = rbsitenav.getString("log.login");
+   
+         // check for an image for the login
+         image1 = StringUtil.trimToNull(ServerConfigurationService
+               .getString("login.icon"));
+         
+   //    check for a possible second, xlogin link
+         if (Boolean.TRUE.toString().equalsIgnoreCase(
+               ServerConfigurationService.getString("xlogin.enabled")))
+         {
+            // get the text and image as configured
+            loginText2 = StringUtil.trimToNull(ServerConfigurationService
+                  .getString("xlogin.text"));
+            image2 = StringUtil.trimToNull(ServerConfigurationService
+                  .getString("xlogin.icon"));
+            logInOutUrl2 = ServerConfigurationService
+                  .getString("portalPath")
+                  + "/xlogin";
+         }
+      }
+      
+      // check for a logout text override
+      logoutText = StringUtil.trimToNull(ServerConfigurationService
+            .getString("logout.text"));
+      if (logoutText == null) logoutText = rbsitenav.getString("sit.log");
+      
+      appendTextElementNode(doc, "topLogin", Boolean.toString(topLogin), login);
+      appendTextElementNode(doc, "logInOutUrl", logInOutUrl, login);
+      appendTextElementNode(doc, "loginText", loginText, login);
+      appendTextElementNode(doc, "logoutText", logoutText, login);
+      appendTextElementNode(doc, "image1", image1, login);
+      appendTextElementNode(doc, "logInOutUrl2", logInOutUrl2, login);
+      appendTextElementNode(doc, "loginText2", loginText2, login);
+      appendTextElementNode(doc, "image2", image2, login);
+
+      return login;
    }
 
    protected String checkVisitSite(String siteId, Session session,
