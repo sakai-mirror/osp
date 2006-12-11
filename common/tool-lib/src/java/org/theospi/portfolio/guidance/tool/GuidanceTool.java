@@ -32,12 +32,21 @@ import javax.faces.context.FacesContext;
 
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
+import org.sakaiproject.content.api.ContentCollection;
+import org.sakaiproject.content.cover.ContentHostingService;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.cover.EntityManager;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.metaobj.shared.FormHelper;
+import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.site.cover.SiteService;
 import org.theospi.portfolio.guidance.mgt.GuidanceHelper;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
@@ -396,12 +405,19 @@ public class GuidanceTool extends HelperToolBase {
       session.setAttribute(ResourceEditingHelper.CREATE_TYPE,
             ResourceEditingHelper.CREATE_TYPE_FORM);
       session.setAttribute(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
-      session.setAttribute(ResourceEditingHelper.CREATE_PARENT, "/");
 
       try {
+         session.setAttribute(FormHelper.PARENT_ID_TAG,
+            getUserCollection().getId());
          context.redirect("sakai.metaobj.form.helper/formHelper");
       }
       catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      } catch (IdUnusedException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      } catch (TypeException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      } catch (PermissionException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
       }
 
@@ -419,7 +435,7 @@ public class GuidanceTool extends HelperToolBase {
       session.setAttribute(ResourceEditingHelper.ATTACHMENT_ID, getFormId());
 
       try {
-         context.redirect("sakai.resource.helper.helper/tool");
+         context.redirect("sakai.metaobj.form.helper/formEditHelper");
       }
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
@@ -462,6 +478,15 @@ public class GuidanceTool extends HelperToolBase {
 
    public void setFormId(String formId) {
       this.formId = formId;
+   }
+
+   protected ContentCollection getUserCollection() throws TypeException, IdUnusedException, PermissionException {
+      User user = UserDirectoryService.getCurrentUser();
+      String userId = user.getId();
+      String wsId = SiteService.getUserSiteId(userId);
+      String wsCollectionId = ContentHostingService.getSiteCollection(wsId);
+      ContentCollection collection = ContentHostingService.getCollection(wsCollectionId);
+      return collection;
    }
 
 }
