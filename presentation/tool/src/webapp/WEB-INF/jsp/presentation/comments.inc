@@ -6,7 +6,6 @@
 -->
 </script>
 
-
    <a name="comments"></a>
    <h3><fmt:message key="title_comments"/></h3>
 
@@ -94,7 +93,7 @@
       <h4><fmt:message key="comments_noComments"/></h4>
    </c:if>
 
-   <c:if test="${!empty currentAgent && currentAgent.displayName != 'anonymous'}">
+   <c:if test="${!empty currentAgent && currentAgent.displayName != 'anonymous' && allowComments}">
    <br /><br />
     <h3><fmt:message key="comments_addComment"/></h3>
     
