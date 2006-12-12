@@ -53,8 +53,11 @@ public class ReportDefinition
 	/** the exportXsl for the report definition */
 	private String exportXsl;
 
-	/** the link to the report parameters for the report definition */
-	private List reportDefinitionParams;
+   /** the link to the report parameters for the report definition */
+   private List reportDefinitionParams;
+
+   /** whether or not this report uses the datawarehouse, defaults to true */
+   private Boolean usesWarehouse = Boolean.TRUE;
 
 	/** the defaultXsl for the report definition */
 	private List xsls;
@@ -360,6 +363,24 @@ public class ReportDefinition
             return xslInfo;
       }
       return null;
+   }
+
+
+   /**
+    * Specifies whether or not this report is keyed on the data warehouse tables
+    * @return
+    */
+   public Boolean getUsesWarehouse() {
+      return usesWarehouse;
+   }
+
+
+   /**
+    * sets whether or not this report is keyed on the data warehouse tables
+    * @param usesWarehouse
+    */
+   public void setUsesWarehouse(Boolean usesWarehouse) {
+      this.usesWarehouse = usesWarehouse;
    }
 
 }

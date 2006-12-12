@@ -36,8 +36,18 @@
                <property name="authzManager">
                   <ref bean="org.sakaiproject.metaobj.security.AuthorizationFacade"/>
                </property>
+               <!-- leave the dataSource blank and it will automatically default to the Data warehouse data source. -->
+               <!-- by filling in the dataSource it will use that for the alternative dataSource. -->
+               <!-- if the datawarehouse isn't being deployed, then either this needs to be filled in or
+               			it the dataSource is null thus defaulting to the DW datasource which isn't there
+               			which then the code will default to the sakai data source -->
+               <!--
                 <property name="dataSource">
-                    <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+   			        <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+                </property>
+                -->
+                <property name="sakaiDataSource">
+   			        <ref bean="javax.sql.DataSource"/>
                 </property>
             </bean>
         </property>
@@ -68,9 +78,6 @@
 
    <bean id="org.theospi.portfolio.reports.model.ResultProcessor.defaultArtifactLoader"
       class="org.theospi.portfolio.reports.model.impl.LoadArtifactResultProcessor">
-      <property name="dataSource">
-         <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
-      </property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="artifactFinderManager">
          <ref bean="org.sakaiproject.metaobj.shared.ArtifactFinderManager.reports" />

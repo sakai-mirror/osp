@@ -23,6 +23,8 @@ package org.theospi.portfolio.reports.model;
 import java.util.List;
 import java.util.Map;
 
+import javax.sql.DataSource;
+
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 
 public interface ReportsManager extends DownloadableManager
@@ -30,35 +32,192 @@ public interface ReportsManager extends DownloadableManager
    public static final String RESULTS_ID = "reportResultsId";
    public static final String EXPORT_XSL_ID = "reportExportId";
 
+   
+   /**
+    * Sets the list of ReportDefinitions.  It also iterates through the list
+    * and tells the report definition to complete it's loading.
+    * @param reportDefinitions List of reportDefinitions
+    */
 	public void setReportDefinitions(List reportdefs);
+   
+   
 	public void addReportDefinitions(List reportDefinitions);
+
+
+   /**
+    * Returns the ReportDefinitions.  The list returned is filtered
+    * for the worksite type against the report types
+    * @return List of ReportDefinitions
+    */
 	public List getReportDefinitions();	
 
+   
+   /**
+    * Creates parameters in the report linked to the parameters in the report definition
+    * 
+    * @param report a Collection of ReportParam
+    */
 	public void createReportParameters(Report report);
+   
+
+   /**
+    * Creates a new blank Report based on a report definition
+    * 
+    * @param reportDefinition a Collection of ReportParam
+    */
 	public Report createReport(ReportDefinition reportDefinition);
+   
+
+   /**
+    * runs a report and creates a ReportResult.  The parameters were
+    * verified on the creation of this report object.
+    * @return ReportResult
+    */
 	public ReportResult generateResults(Report report);
 
+   
+   /**
+    * Replaces the the system value proxy with the values.
+    * The list of system value proxies(without quote characters):
+    * "{userid}", "{userdisplayname}", "{useremail}", 
+    * "{userfirstname}", "{userlastname}", "{worksiteid}", 
+    * "{toolid}", 
+    * @param inString
+    * @return String with replaced values
+    */
 	public String replaceSystemValues(String inString);
-	public String generateSQLParameterValue(ReportParam reportParam);
+   
+   
+   /**
+    * gathers the data for dropdown/list box.  It runs the query defined in the report param
+    * ane creates a string in the format "[value1, value2, value3, ...]" or 
+    * "[(value1; title1), (value2; title2), (value3; title3), ...]"
+    * @return String
+    */
+   public String generateSQLParameterValue(ReportParam reportParam);
 
-	public String transform(ReportResult result, ReportXsl reportXsl);
 
-    public void saveReportResult(ReportResult result);
-    public void saveReport(Report result);
-    
-    public List getCurrentUserResults();
-    public ReportResult loadResult(ReportResult result);
+   /**
+    * Takes a report result and an xsl and transforms the results
+    * @param reportResult ReportResult
+    * @param xslFile String to xsl resource
+    * @return String
+    */
+   public String transform(ReportResult result, ReportXsl reportXsl);
 
+
+   /**
+    * saves the report into the database
+    * @param result
+    */
+   public void saveReport(Report report);
+   
+   
+   /**
+    * saves the embedded report and then saves the report result
+    * @param result
+    */
+   public void saveReportResult(ReportResult result);
+
+   
+   /**
+    * this gets the list of report results that a user can view.
+    * If the user has permissions to run or view reports, 
+    *   then this grabs the ReportResults
+    * If the user has permissions to run reports,
+    *   then this grabs the Live Reports
+    * 
+    * @return List of ReportResult objects
+    */
+   public List getCurrentUserResults();
+   
+   
+   /**
+    * Reloads a ReportResult.  During the loading process it loads the
+    * report from which the ReportResult is derived, It links the report to
+    * the report definition, and sets the report in the report result.
+    * @param ReportResult result
+    * @return ReportResult
+    */
+   public ReportResult loadResult(ReportResult result);
+
+
+   /**
+    * Generates a unique id for a reference
+    * @param result
+    * @param ref
+    * @return
+    */
    public String getReportResultKey(ReportResult result, String ref);
+   
+
+   /**
+    * checks the id against the generated unique id of the reference.
+    * It throws an AuthorizationFailedException if the ids don't match.
+    * Otherwise it adds the AllowAllSecurityAdvisor to the securityService
+    * @param id
+    * @param ref
+    */
    public void checkReportAccess(String id, String ref);
+   
+   /**
+    * Checks for edit report permission
+    *
+    */
    public void checkEditAccess();
 
+
+   /**
+    * Puts the ReportResult into the session
+    * @param result
+    */
    public void setCurrentResult(ReportResult result);
    
+   /**
+    * Deletes a ReportResult and the associated report
+    * @param result
+    */
    public void deleteReportResult(ReportResult result);
+   
+   
+   /**
+    * if we are deleting a report that is not live, then delete the results associated with it
+    * because they become invalid.  If a report is live, then we need to check how many results
+    * are linked to the report.  If there are no results then we can delete it, otherwise we need to
+    * just disable the report from showing in the interface given the parameter option.  
+    * aka, if a report is live and has results associated, the parameter decides if we should deactivate 
+    * the report.
+    * 
+    * @param report Report
+    */
    public void deleteReport(Report report, boolean deactivate);
 
+   
+   /**
+    * 
+    * @return Map
+    */
    public Map getAuthorizationsMap();
 
+   /**
+    * 
+    * @return boolean
+    */
    public boolean isMaintaner();
+
+   /**
+    * 
+    * This gets the datasource that the report manager is configured to use.
+    * it may be ambiguous if the data source is set to 3 (aka. both DW reports and live reports)
+    * @return
+    */
+   //public DataSource getDataSource();
+
+   
+   /**
+    * returns the data source based on if the calling code is using the warehouse or not
+    * @param useWarehouse boolean
+    * @return
+    */
+   public DataSource getDataSourceUseWarehouse(boolean useWarehouse);
 }
