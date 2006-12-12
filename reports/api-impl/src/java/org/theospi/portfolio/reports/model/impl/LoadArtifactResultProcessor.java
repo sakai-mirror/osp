@@ -58,7 +58,6 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
 
    private IdManager idManager;
    private String columnNamePattern = ".*_artifact$";
-   private DataSource dataSource;
    private ArtifactFinderManager artifactFinderManager;
    private SecurityService securityService;
    private ReportsManager reportsManager;
@@ -270,12 +269,13 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
       this.idManager = idManager;
    }
 
+   /**
+    * Because the resources are not stored in the data warehouse, we want to
+    * use the non-data warehouse dataSource.
+    * @return
+    */
    public DataSource getDataSource() {
-      return dataSource;
-   }
-
-   public void setDataSource(DataSource dataSource) {
-      this.dataSource = dataSource;
+      return reportsManager.getDataSourceUseWarehouse(false);
    }
 
    public ArtifactFinderManager getArtifactFinderManager() {

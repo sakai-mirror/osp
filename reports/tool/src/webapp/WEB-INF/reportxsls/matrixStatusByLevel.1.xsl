@@ -17,6 +17,8 @@
        
        <xsl:for-each select="//datarow">
           <xsl:sort select="element[@name='userId']/." />
+          <xsl:variable name = "varUserName" select = "element[@colName='userId']" />
+          <xsl:value-of select="element[@colName='userId']"/>
           <xsl:if test="not(preceding-sibling::datarow[element[@colName='level_sequence'] = 
                         current()/element[@colName='level_sequence']])">
              <xsl:variable name = "varLevel" select = "element[@colName='level_sequence']" />

@@ -161,6 +161,10 @@ public class ViewPresentationControl extends AbstractPresentationController impl
 
          model.put("comments", getPresentationManager().getPresentationComments(pres.getId(),
                getAuthManager().getAgent()));
+               
+         boolean allowComments = getAuthzManager().isAuthorized( PresentationFunctionConstants.COMMENT_PRESENTATION,
+                                                                 pres.getId() );
+         model.put("allowComments", allowComments );
 
          if (request.get(BindException.ERROR_KEY_PREFIX + "newComment") == null) {
             request.put(BindException.ERROR_KEY_PREFIX + "newComment",
@@ -171,8 +175,8 @@ public class ViewPresentationControl extends AbstractPresentationController impl
          logger.error("",e);
          throw new OspException(e);
       } catch (IdUnusedException e) {
-                  logger.error("", e);
-               }
+         logger.error("", e);
+      }
 
 
       boolean headers = pres.getTemplate().isIncludeHeaderAndFooter();

@@ -21,6 +21,7 @@
                 <!--  <ref bean="matrixStatusByLevel" />
                 <ref bean="matrixScoreByReviewer" /> -->
                 <ref bean="testreport1" />
+                <ref bean="matrixStatusByLevelDirectDB" />
             <!--    <ref bean="testreport2" />
                 <ref bean="artifactTest" />
                 <ref bean="testreport4" />

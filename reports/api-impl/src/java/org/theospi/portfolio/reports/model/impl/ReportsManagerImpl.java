@@ -59,7 +59,8 @@ import org.jdom.transform.JDOMResult;
 import org.jdom.transform.JDOMSource;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.authz.cover.FunctionManager;
-import org.sakaiproject.component.api.ComponentManager;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
@@ -83,6 +84,19 @@ import org.theospi.portfolio.shared.model.OspException;
  * This class is a singleton that manages the reports on a general basis
  * 
  * 
+ * When getting the reports a user can run this class checks the 
+ * "osp.reports.useWarehouse" sakai.properties property.  0 is no reports. 1 is
+ * the warehouse reports. 2 is live data reports.  and 3 is both warehouse and 
+ * live data reports.  The default is 1.  The default report has a setting of 
+ * operating on the warehouse.
+ * 
+ * The dataSource is for the data warehouse data source.  If it is set then that
+ * source is used.  If it is not set then the code tries to load in the data warehouse
+ * dataSource.  It does this because that is the default dw dataSource.  The 
+ * data warehouse is not deployed then the dw dataSource won't exist.  If it is referenced
+ * in the components.xml then there would be errors at startup.  Thus we don't reference
+ * it there and programmatically pull it.  This way it could be null (when dw is not 
+ * deployed) and then the dataSource falls back to the sakai dataSource.
  * 
  * @author andersjb
  *
@@ -101,8 +115,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	/** the sakai class that manages permissions */
    private AuthorizationFacade authzManager;
 
-   /** The class that generates the database connection.  it is pulled from the datawarehouse */
-	private DataSource	dataSource = null;
+   /** The class that generates the database connection.  it is the data warehouse data source */
+   private DataSource   dataSource = null;
+
+   /** The class that generates the database connection.  it is the sakai data source */
+   private DataSource   sakaiDataSource = null;
 	
 	/** an internal variable for whether or not the database connection should be closed after its use */
 	private boolean		canCloseConnection = true;
@@ -140,15 +157,13 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
     }
    
    
-   
+
    /**
-	 * Sets the list of ReportDefinitions.  It also iterates through the list
-	 * and tells the report definition to complete it's loading.
-	 * @param reportDefinitions List of reportDefinitions
-	 */
+    * {@inheritDoc}
+    */
 	public void setReportDefinitions(List reportDefinitions)
 	{
-        addReportDefinitions(reportDefinitions);
+      addReportDefinitions(reportDefinitions);
 		this.reportDefinitions = reportDefinitions;
 		
 		Iterator iter = reportDefinitions.iterator();
@@ -158,7 +173,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			rd.finishLoading();
 		}
 	}
-	
+
+
+   /**
+    * {@inheritDoc}
+    */
     public void addReportDefinitions(List reportDefinitions) {
 
         if (this.reportDefinitions == null) {
@@ -177,13 +196,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
 
     }
-
-
-    /**
-	 * Returns the ReportDefinitions.  The list returned is filtered
-	 * for the worksite type against the report types
-	 * @return List of ReportDefinitions
-	 */
+    
+    
+   /**
+    * {@inheritDoc}
+    */
 	public List getReportDefinitions()
 	{
 		
@@ -197,7 +214,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			ReportDefinition rd = (ReportDefinition)iter.next();
 			
 
-            if (isValidWorksiteType(rd.getType()) && isValidRole(rd.getRole())) {
+            if (isValidWorksiteType(rd.getType()) && isValidRole(rd.getRole()) && hasWarehouseSetting(rd.getUsesWarehouse())) {
 
                 reportsDefs.add(rd);
 
@@ -242,6 +259,39 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
         return false;
 
     }
+    
+    /**
+     * Given the param of whether or not the report is using the warehouse, should it be displayed is returned.
+     * This works off the "osp.reports.useWarehouse" sakai.properties property.  If there is no property
+     * then we will only show the warehouse reports.
+     * 
+     * If the input is null, then we automatically assume that it is using the warehouse (set to true).
+     * 
+     * If the property is 0 then we don't show any report.  If bit 0 of the property is set then show 
+     * the data warehouse reports.  If bit 1 of the property is set then show the direct reports.  aka.
+     * 0=no reports, 1= warehouse reports, 2= live data reports, 3= warehouse and live data reports
+     * @param usesWarehouse
+     * @return
+     */
+    protected boolean hasWarehouseSetting(Boolean usesWarehouse)
+    {
+       int warehousePref = ServerConfigurationService.getInt("osp.reports.useWarehouse", 1);
+
+       if(warehousePref == 0)
+          return false;
+       
+       if(usesWarehouse == null)
+          usesWarehouse = Boolean.TRUE;
+       
+       // if bit 0 is set, show warehouse reports
+       if((warehousePref & 1) != 0 && usesWarehouse.booleanValue() == true)
+          return true;
+       
+       if((warehousePref & 2) != 0 && usesWarehouse.booleanValue() == false)
+          return true;
+       
+       return false;
+    }
 	
 	/**
 	 * This is the setter for the idManager
@@ -269,27 +319,65 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	{
 		this.dataSource = dataSource;
 	}
-	
-	
-	/**
-	 * This is the getter for the idManager
-	 * @return IdManager
-	 */
-	public DataSource getDataSource()
-	{
-		return dataSource;
-	}
-	
-	
-	/**
-	 * this gets the list of report results that a user can view.
-	 * If the user has permissions to run or view reports, 
-	 *   then this grabs the ReportResults
-	 * If the user has permissions to run reports,
-	 *   then this grabs the Live Reports
-	 * 
-	 * @return List of ReportResult objects
-	 */
+    
+    
+   /**
+    * {@inheritDoc}
+    */
+   public DataSource getDataSource()
+   {
+      configureDataSource();
+      
+      int warehousePref = ServerConfigurationService.getInt("osp.reports.useWarehouse", 1);
+      
+      if(warehousePref == 1)
+         return dataSource;
+      else if(warehousePref == 2)
+         return sakaiDataSource;
+      
+      throw new RuntimeException("Tried to get the report data source but the source was ambiguous.");
+   }
+   
+   
+   /**
+    * {@inheritDoc}
+    */
+   public DataSource getDataSourceUseWarehouse(boolean useWarehouse)
+   {
+      configureDataSource();
+      
+      if(useWarehouse)
+         return dataSource;
+      else
+         return sakaiDataSource;
+   }
+   
+   
+   /**
+    * This function sets up the data warehouse data source.  If the dataSource exists then nothing changes.
+    * Thus if the dataSource is set in the components.xml then it will use that for the data warehouse 
+    * data source.  Also if the dataSource has already been set up then this is skipped.
+    * 
+    * So, if there is no dataSource set in the components.xml then we will default to the data warehouse 
+    * defined data source.  This is needed because the data warehouse may not be loaded and thus the dataSource 
+    * bean wouldn't be defined.  If we reference the dw dataSource when it doesn't exist then problems can 
+    * happen during startup.  Thus we load the dw dataSource dynamically.  If the dw dataSource doesn't
+    * exist then we skip to the sakai dataSource.
+    *
+    */
+   private void configureDataSource()
+   {
+      if(dataSource == null) {
+         dataSource = (DataSource)ComponentManager.get("org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource");
+         if(dataSource == null)
+            dataSource = sakaiDataSource;
+      }
+   }
+    
+    
+   /**
+    * {@inheritDoc}
+    */
 	public List getCurrentUserResults()
 	{
 		Session s = SessionManager.getCurrentSession();
@@ -342,14 +430,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		
 		isDBLoaded = true;
 	}
-	
-	/**
-	 * Reloads a ReportResult.  During the loading process it loads the
-	 * report from which the ReportResult is derived, It links the report to
-	 * the report definition, and sets the report in the report result.
-	 * @param ReportResult result
-	 * @return ReportResult
-	 */
+    
+    
+   /**
+    * {@inheritDoc}
+    */
     public ReportResult loadResult(ReportResult result)
     {
     	ReportResult reportResult =
@@ -380,25 +465,20 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
     	//give back the result
     	return reportResult;
     }
-
+    
+    
     /**
-     * Generates a unique id for a reference
-     * @param result
-     * @param ref
-     * @return
+     * {@inheritDoc}
      */
    public String getReportResultKey(ReportResult result, String ref) {
       String hashCode = DigestUtils.md5Hex(ref + getSecretKey());
 
       return hashCode;
    }
-
+   
+   
    /**
-    * checks the id against the generated unique id of the reference.
-    * It throws an AuthorizationFailedException if the ids don't match.
-    * Otherwise it adds the AllowAllSecurityAdvisor to the securityService
-    * @param id
-    * @param ref
+    * {@inheritDoc}
     */
    public void checkReportAccess(String id, String ref) {
       String hashCode = DigestUtils.md5Hex(ref + getSecretKey());
@@ -409,11 +489,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
    }
-
-   /**
-    * Puts the ReportResult into the session
-    * @param result
-    */
    public void setCurrentResult(ReportResult result) {
       ToolSession session = SessionManager.getCurrentToolSession();
       session.setAttribute(CURRENT_RESULTS_TAG, result);
@@ -449,11 +524,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	//	*************************************************************************
 	//			The process functions (non-getter/setter)
 
-	/**
-	 * Creates parameters in the report linked to the parameters in the report definition
-	 * 
-	 * @param report a Collection of ReportParam
-	 */
+   
+   /**
+    * {@inheritDoc}
+    */
 	public void createReportParameters(Report report)
 	{
 		List reportDefParams = report.getReportDefinition().getReportDefinitionParams();
@@ -488,11 +562,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		return true;
 	}
 
-	/**
-	 * Creates a new blank Report based on a report definition
-	 * 
-	 * @param reportDefinition a Collection of ReportParam
-	 */
+   
+   /**
+    * {@inheritDoc}
+    */
 	public Report createReport(ReportDefinition reportDefinition)
 	{
 		getAuthzManager().checkPermission(ReportFunctions.REPORT_FUNCTION_CREATE,
@@ -511,16 +584,22 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	}
 	
 	/**
-	 * This function generates the data warehouse sql connection.
-	 * If the datawarehouse connection fails then we want to fail over to
-	 * the hibernate session connection.
+	 * This function generates the sql connection.
+	 * If the dataSource connection fails then we want to fail over to
+	 * the hibernate session connection.  If the usesWarehouse param is null then
+    * the connection should default to use the warehouse
 	 * @return Connection
 	 * @throws HibernateException
 	 * @throws SQLException
 	 */
-	public Connection getWarehouseConnection() throws HibernateException, SQLException
+	public Connection getConnection(Boolean useWarehouse) throws HibernateException, SQLException
 	{
-		Connection con = dataSource.getConnection();
+		Connection con = null;
+      
+      if(useWarehouse == null)
+         con = getDataSourceUseWarehouse(true).getConnection();
+      else
+         con = getDataSourceUseWarehouse(useWarehouse.booleanValue()).getConnection();
 		
 		canCloseConnection = true;
 		
@@ -545,7 +624,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 	 * @param connection
 	 * @throws SQLException
 	 */
-	public void closeWarehouseConnection(Connection connection) throws SQLException
+	public void closeConnection(Connection connection) throws SQLException
 	{
 		if(canCloseConnection)
 			connection.close();
@@ -564,7 +643,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		String				results = "[]";
 		StringBuffer		strbuffer = new StringBuffer();
 		try {
-			connection = getWarehouseConnection();
+			connection = getConnection(reportParam.getReportDefinitionParam().getReportDefinition().getUsesWarehouse());
 			stmt = connection
 					.prepareStatement(replaceSystemValues(reportParam.getReportDefinitionParam().getValue()));
 			
@@ -615,7 +694,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 			}
 			if (connection != null) {
 				try {
-					closeWarehouseConnection(connection);
+					closeConnection(connection);
 				} catch (Exception e) {
 					if (logger.isDebugEnabled()) {
 						logger.error("", e);
@@ -655,11 +734,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
    }
 
-	/**
-	 * runs a report and creates a ReportResult.  The parameters were
-	 * verified on the creation of this report object.
-	 * @return ReportResult
-	 */
+   
+   /**
+    * {@inheritDoc}
+    */
 	public ReportResult generateResults(Report report) throws ReportExecutionException
 	{
 		ReportResult		rr = new ReportResult();
@@ -670,7 +748,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		try {
 			ReportDefinition rd = report.getReportDefinition();
 			
-			connection = getWarehouseConnection();
+			connection = getConnection(report.getReportDefinition().getUsesWarehouse());
 
             StringBuffer query = new StringBuffer(replaceSystemValues((String) rd.getQuery().get(0)));
 			//	get the query from the Definition and replace the values
@@ -848,7 +926,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 				logger.error("", e);
 			}
 			try {
-				closeWarehouseConnection(connection);
+				closeConnection(connection);
 			} catch (Exception e) {
 				logger.error("", e);
 			}
@@ -906,15 +984,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
         }
         return inQuery;
     }
-   /**
-    * Replaces the the system value proxy with the values.
-    * The list of system value proxies(without quote characters):
-    * "{userid}", "{userdisplayname}", "{useremail}", 
-    * "{userfirstname}", "{userlastname}", "{worksiteid}", 
-    * "{toolid}", 
-    * @param inString
-    * @return String with replaced values
-    */
+
+    
+    /**
+     * {@inheritDoc}
+     */
    public String replaceSystemValues(String inString)
 	{
 		UserDirectoryService dirServ = org.sakaiproject.user.cover.UserDirectoryService.getInstance();
@@ -957,12 +1031,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		return str.toString();
 	}
 
-	/**
-	 * 
-	 * @param reportResult ReportResult
-	 * @param xslFile String to xsl resource
-	 * @return
-	 */
+   
+   /**
+    * {@inheritDoc}
+    */
 	public String transform(ReportResult reportResult, ReportXsl reportXsl)
 	{
 		try {
@@ -1054,9 +1126,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
     	response.setHeader("Pragma", "public");	// Override old-style cache control
     	response.setHeader("Cache-Control", "public, must-revalidate, post-check=0, pre-check=0, max-age=0");	// New-style
     }
-	
+
     
-    
+    /**
+     * {@inheritDoc}
+     */
     public void saveReportResult(ReportResult result)
     {
         getHibernateTemplate().saveOrUpdate(result.getReport());
@@ -1066,9 +1140,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
         result.getReport().setIsSaved(true);
         result.setIsSaved(true);
     }
-	
+
     
-    
+    /**
+     * {@inheritDoc}
+     */
     public void saveReport(Report report)
     {
         getHibernateTemplate().saveOrUpdate(report);
@@ -1076,9 +1152,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
         //	the user can't save reports that have already been saved
         report.setIsSaved(true);
     }
-	
+
     
-    
+    /**
+     * {@inheritDoc}
+     */
     public void deleteReportResult(ReportResult result)
     {
 
@@ -1088,17 +1166,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
        
        deleteReport(result.getReport(), false);
     }
-   
+
     
     /**
-     * if we are deleting a report that is not live, then delete the results associated with it
-     * because they become invalid.  If a report is live, then we need to check how many results
-     * are linked to the report.  If there are no results then we can delete it, otherwise we need to
-     * just disable the report from showing in the interface given the parameter option.  
-     * aka, if a report is live and has results associated, the parameter decides if we should deactivate 
-     * the report.
-     * 
-     * @param report Report
+     * {@inheritDoc}
      */
     public void deleteReport(Report report, boolean deactivate)
     {
@@ -1178,6 +1249,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
       getAuthzManager().checkPermission(function, getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
    }
 
+   
+   /**
+    * {@inheritDoc}
+    */
    public Map getAuthorizationsMap() {
       return new AuthZMap(getAuthzManager(), ReportFunctions.REPORT_FUNCTION_PREFIX,
             getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
@@ -1188,14 +1263,34 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
             getIdManager().getId(ToolManager.getCurrentPlacement().getId()))).booleanValue();
    }
 
+   
+   /**
+    * {@inheritDoc}
+    */
    public boolean isMaintaner() {
       return new Boolean(getAuthzManager().isAuthorized(WorksiteManager.WORKSITE_MAINTAIN,
             getIdManager().getId(ToolManager.getCurrentPlacement().getContext()))).booleanValue();
    }
+
    
+   /**
+    * {@inheritDoc}
+    */
    public void checkEditAccess()
    {
       checkPermission(ReportFunctions.REPORT_FUNCTION_EDIT);
+   }
+
+
+
+   public DataSource getSakaiDataSource() {
+      return sakaiDataSource;
+   }
+
+
+
+   public void setSakaiDataSource(DataSource sakaiDataSource) {
+      this.sakaiDataSource = sakaiDataSource;
    }
 
 }

@@ -24,6 +24,12 @@
             <version>${sakai.version}</version>
         </dependency>
 
+     <dependency>
+         <groupId>sakaiproject</groupId>
+         <artifactId>sakai-component-api</artifactId>
+         <version>${sakai.version}</version>
+      </dependency>
+
         <dependency>
             <groupId>osp</groupId>
             <artifactId>osp-common-api</artifactId>
