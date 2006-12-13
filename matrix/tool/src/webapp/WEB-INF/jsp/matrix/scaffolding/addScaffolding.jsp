@@ -107,11 +107,9 @@
 
 
 		<h4><fmt:message key="title_columns"/>
-         <c:if test="${!scaffolding.published}" >
          <a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
             <fmt:message key="action_addColumn"/>
          </a>
-         </c:if>
       </h4>
       <spring:bind path="scaffolding.columnLabel">
             <c:if test="${status.error}">
@@ -155,7 +153,7 @@
                 	      document.forms[0].submit();">
                 		     <fmt:message key="table_action_edit"/>
                 	   </a>
-    				<c:if test="${!scaffolding.published}" >
+                     <c:if test="${!scaffolding.published}" >
                          | <a href="javascript:document.forms[0].dest.value='removeLevCrit';
                 	      document.forms[0].finalDest.value='deleteLevel';
                 	      document.forms[0].label.value=document.forms[0].columnLabel.value;
@@ -166,6 +164,7 @@
                 	      document.forms[0].submit();">
                 		     <fmt:message key="table_action_remove"/>
                 	   </a>
+                     </c:if>
                          | <a href="javascript:document.forms[0].dest.value='moveLevel';
                 	      document.forms[0].submitAction.value='forward';
                 	      document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index-1}"/>';
@@ -180,7 +179,6 @@
                 	      document.forms[0].submit();">
                 		     <fmt:message key="table_action_down"/>
                 	   </a>
-    								     </c:if>
     								 </div>
     							</div>
     						</td>
@@ -195,11 +193,9 @@
 		<br />
 
 		<h4><fmt:message key="title_rows"/>
-         <c:if test="${!scaffolding.published}" >
          <a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
             <fmt:message key="action_addRow"/>
          </a>
-         </c:if>
       </h4>
       <spring:bind path="scaffolding.rowLabel">
             <c:if test="${status.error}">
@@ -242,7 +238,7 @@
                           <fmt:message key="table_action_edit"/>
                       </a>
 
-											<c:if test="${!scaffolding.published}" >
+                     <c:if test="${!scaffolding.published}" >
                       | <a href="javascript:document.forms[0].dest.value='removeLevCrit';
                       document.forms[0].finalDest.value='deleteCriterion';
                       document.forms[0].label.value=document.forms[0].rowLabel.value;
@@ -253,6 +249,7 @@
                       document.forms[0].submit();">
                           <fmt:message key="table_action_remove"/>
                       </a>
+                     </c:if>
                       | <a href="javascript:document.forms[0].dest.value='moveCriterion';
                       document.forms[0].submitAction.value='forward';
                       document.forms[0].params.value='current_index=<c:out value="${itemLoopStatus.index}"/>:dest_index=<c:out value="${itemLoopStatus.index-1}"/>';
@@ -267,7 +264,6 @@
                       document.forms[0].submit();">
                           <fmt:message key="table_action_down"/>
                       </a>
-											</c:if>
 										</div>
 									</div>
 								</td>
@@ -287,7 +283,6 @@
             <div class="checkbox indnt1">
             <input type="radio" id="<c:out value="${token}" />" name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
                <c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
-               <c:out value="${disabledText}"/> />
             <label for="<c:out value="${token}" />"><osp:message key="${token}_progression_label"  />
                <osp:message key="${token}_progression_icon"  var="icon" />
                <c:if test="${not empty icon}" ><img src="<osp:url value="${icon}"/>" /></c:if>

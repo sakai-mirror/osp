@@ -758,11 +758,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    
    public void removeFromSession(Object obj) {
       this.getHibernateTemplate().evict(obj);
-      try {
-         getHibernateTemplate().getSessionFactory().evict(obj.getClass());
-      } catch (HibernateException e) {
-         logger.error(e);
-      }
    }
    
    public void clearSession() {

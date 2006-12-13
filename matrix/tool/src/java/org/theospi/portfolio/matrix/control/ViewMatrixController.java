@@ -136,6 +136,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
             Cell cell = getCell(cells, criterion, level);
             if (cell == null) {
                cell = new Cell();
+               cell.getWizardPage().setOwner(matrix.getOwner());
                cell.setMatrix(matrix);
                ScaffoldingCell scaffoldingCell = getMatrixManager().getScaffoldingCell(criterion, level);
                cell.setScaffoldingCell(scaffoldingCell);

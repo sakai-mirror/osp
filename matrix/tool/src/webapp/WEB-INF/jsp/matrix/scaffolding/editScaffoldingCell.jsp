@@ -119,13 +119,12 @@
    
    <!-- ************* Additional Forms Area Start ************* -->   
         
-      <c:if test="${not empty selectedAdditionalFormDevices or empty localDisabledText}">
+      <c:if test="${not empty selectedAdditionalFormDevices}">
          <h4><fmt:message key="title_additionalForms"/></h4>
 	     <div class="instruction"> 
 	        <fmt:message key="addForms_instructions" />
 	     </div>
       </c:if>
-      <c:if test="${empty localDisabledText}">
       <p class="shorttext">
          <label><fmt:message key="label_selectForm"/></label>    
          <select name="selectAdditionalFormId" >
@@ -139,7 +138,6 @@
             <input type="submit" name="addForm" value="<fmt:message key="button_add"/>" onclick="javascript:document.forms[0].validate.value='false';" />
          </span>
       </p>
-      </c:if>
       
       <c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
          <img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />
@@ -276,9 +274,11 @@
             <c:if test="${status.error}">
                 <div class="validation"><c:out value="${status.errorMessage}"/></div>
             </c:if>
-          <p class="shorttext">
+            
+          <p class="shorttext"> 
             <label><fmt:message key="label_selectReflectionDevice"/></label>    
-               <select name="<c:out value="${status.expression}"/>" <c:out value="${localDisabledText}"/>>
+               <select name="<c:out value="${status.expression}"/>" 
+                     <c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
                      <option onclick="document.forms[0].reflectionDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
                   <c:forEach var="refDev" items="${reflectionDevices}" varStatus="loopCount">
                      <option onclick="document.forms[0].reflectionDeviceType.value='<c:out value="${refDev.type}"/>';" 
@@ -297,7 +297,8 @@
          </c:if>
        <p class="shorttext">
          <label><fmt:message key="label_selectReviewDevice"/></label>    
-            <select name="<c:out value="${status.expression}"/>" <c:out value="${localDisabledText}"/>>
+            <select name="<c:out value="${status.expression}"/>"
+                     <c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
                      <option onclick="document.forms[0].reviewDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
                   <c:forEach var="reviewDev" items="${reviewDevices}" varStatus="loopCount">
                      <option onclick="document.forms[0].reviewDeviceType.value='<c:out value="${reviewDev.type}"/>';" 
@@ -325,7 +326,8 @@
          </c:if>
        <p class="shorttext">
          <label><fmt:message key="label_selectEvaluationDevice"/></label>    
-            <select name="<c:out value="${status.expression}"/>" <c:out value="${localDisabledText}"/>>
+            <select name="<c:out value="${status.expression}"/>"
+                     <c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
                      <option onclick="document.forms[0].evaluationDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
                   <c:forEach var="evalDev" items="${evaluationDevices}" varStatus="loopCount">
                      <option onclick="document.forms[0].evaluationDeviceType.value='<c:out value="${evalDev.type}"/>';" 
