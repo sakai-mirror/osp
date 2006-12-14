@@ -1925,6 +1925,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          page.setReflections(reflections);
          page.setEvaluations(evaluations);
          page.setFeedback(feedback);
+         page.getAttachments().size();
+         page.getPageForms().size();
+         
+         //Make sure that the attachments and forms have been added to the security advisor
+         getPageContents(page);
+         getPageForms(page);
       }
    }
 
