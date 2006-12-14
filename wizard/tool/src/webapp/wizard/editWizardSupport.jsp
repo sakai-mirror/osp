@@ -126,25 +126,22 @@
 	      <h:outputLabel for="reflectionItems" id="reflectionLabel" value="#{msgs.reflection_item}" />
 	      <h:panelGroup>
 	         <h:selectOneMenu id="reflectionItems"
-	            immediate="true" disabled="#{wizard.current.base.published}"
+	            immediate="true" 
+               disabled="#{not empty wizard.reflectionItem && wizard.current.base.published}"
 	            value="#{wizard.reflectionItem}">
 	            <f:selectItem itemLabel="#{msgs.choose_reflection_item}" itemValue=""/>
-	           <%-- <f:selectItem itemLabel="#{msgs.choose_form}" itemValue="1"/> --%>
 	            <f:selectItems value="#{wizard.reflectionFormsForSelect}"/>
-	         <% /*   <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue="2"/>
-	            <f:selectItems value="#{wizard.reflectionWizardsForSelect}"/> */ %>
 	         </h:selectOneMenu>
 	      </h:panelGroup>
+         
 	      <h:outputLabel for="commentItems" id="commentLabel" value="#{msgs.comment_item}" />
 	      <h:panelGroup>
 	         <h:selectOneMenu id="commentItems"
-	            immediate="true" disabled="#{wizard.current.base.published}"
+	            immediate="true" 
+               disabled="#{not empty wizard.commentItem && wizard.current.base.published}"
 	            value="#{wizard.commentItem}">
 	            <f:selectItem itemLabel="#{msgs.choose_comment_item}" itemValue=""/>
-	          <%--  <f:selectItem itemLabel="#{msgs.choose_form}" itemValue="1"/> --%>
 	            <f:selectItems value="#{wizard.commentFormsForSelect}"/>
-	          <% /*  <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue="2"/>
-	            <f:selectItems value="#{wizard.commentWizardsForSelect}"/> */ %>
 	         </h:selectOneMenu>
 	      </h:panelGroup>
    </sakai:panel_edit>
@@ -163,13 +160,11 @@
 	      <h:outputLabel for="evaluationItems" id="evaluationLabel" value="#{msgs.evaluation_item}" />
 	      <h:panelGroup>
 	         <h:selectOneMenu id="evaluationItems"
-	            immediate="true" disabled="#{wizard.current.base.published}"
+	            immediate="true" 
+               disabled="#{not empty wizard.evaluationItem && wizard.current.base.published}"
 	            value="#{wizard.evaluationItem}">
 	            <f:selectItem itemLabel="#{msgs.choose_evaluation_item}" itemValue=""/>
-	          <%--  <f:selectItem itemLabel="#{msgs.choose_form}" itemValue="1"/> --%>
 	            <f:selectItems value="#{wizard.evaluationFormsForSelect}"/>
-	          <%-- <f:selectItem itemLabel="#{msgs.choose_wizard}" itemValue=""/>
-	            <f:selectItems value="#{wizard.evaluationWizardsForSelect}"/>  --%>
 	         </h:selectOneMenu>
 	      </h:panelGroup>
 	   </sakai:panel_edit>
