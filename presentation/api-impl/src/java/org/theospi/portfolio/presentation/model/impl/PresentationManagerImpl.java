@@ -606,11 +606,12 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          getHibernateTemplate().merge(presentation);
       }
       
-      if (presentation.getPropertyForm() != null) {
-         getLockManager().lockObject(presentation.getPropertyForm().getValue(), 
-               presentation.getId().getValue(),
-               "Locking property form for this portfolio", true);
-      }
+      //locking the prop form prohibits editing...this is bad!
+      //if (presentation.getPropertyForm() != null) {
+      //   getLockManager().lockObject(presentation.getPropertyForm().getValue(), 
+      //         presentation.getId().getValue(),
+      //         "Locking property form for this portfolio", true);
+      //}
 
       storePresentationPages(presentation.getPages(), presentation.getId());
 
@@ -1749,9 +1750,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          root.addContent(presProperties);
       }
 
-      if (presentation.getPropertyForm() != null) {
+      Node propNode = getNode(presentation.getPropertyForm());
+      if (presentation.getPropertyForm() != null && propNode != null) {
          Element presProperties = new Element("presentationProperties");
-         Node propNode = getNode(presentation.getPropertyForm());
+         
          Document doc = new Document();
          SAXBuilder saxBuilder = new SAXBuilder();
          try {
