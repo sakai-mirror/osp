@@ -95,7 +95,9 @@
 	<c:if test="${cell.status != 'READY'}">
 		<div class="validation">
 		   <fmt:message key="status_warning">
-            <fmt:param value="${cell.status}"/>
+            <fmt:param>
+            	<fmt:message key="${cell.status}"/>
+            </fmt:param>
            </fmt:message>
 		</div>
 	</c:if>
