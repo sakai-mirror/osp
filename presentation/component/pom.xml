@@ -69,12 +69,6 @@
       <artifactId>websphinx</artifactId>
       <version>0.5</version>
     </dependency>
-    <dependency>
-      
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-util</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
   </dependencies>
   <build>
     

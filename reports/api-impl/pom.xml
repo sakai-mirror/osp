@@ -60,18 +60,21 @@
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-impl</artifactId>
       <version>${sakai.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-util</artifactId>
       <version>${sakai.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-util</artifactId>
       <version>${sakai.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       
@@ -162,6 +165,7 @@
       <groupId>commons-digester</groupId>
       <artifactId>commons-digester</artifactId>
       <version>1.6</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       
@@ -196,12 +200,14 @@
       <groupId>jsf</groupId>
       <artifactId>jsf-api</artifactId>
       <version>1.1.01</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       
       <groupId>jsf</groupId>
       <artifactId>jsf-impl</artifactId>
       <version>1.1.01</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       

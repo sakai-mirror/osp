@@ -145,6 +145,7 @@
       <groupId>jsf</groupId>
       <artifactId>jsf-api</artifactId>
       <version>1.1.01</version>
+      <scope>provided</scope>
 <!--url: http://java.sun.com/j2ee/javaserverfaces/ -->
     </dependency>
     <dependency>
@@ -152,6 +153,7 @@
       <groupId>jsf</groupId>
       <artifactId>jsf-impl</artifactId>
       <version>1.1.01</version>
+      <scope>provided</scope>
 <!--url: http://java.sun.com/j2ee/javaserverfaces/ -->
     </dependency>
     <dependency>
@@ -159,6 +161,7 @@
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-jsf-tool</artifactId>
       <version>${sakai.version}</version>
+      <scope>provided</scope>
 <!--url: http://sakaiproject.org/ -->
     </dependency>
 <!-- Sakai tag library -->
@@ -167,6 +170,7 @@
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-jsf-widgets</artifactId>
       <version>${sakai.version}</version>
+      <scope>provided</scope>
 <!--url: http://sakaiproject.org/ -->
     </dependency>
 <!-- Adaptor to use tag library with Sun's RI -->
@@ -175,6 +179,7 @@
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-jsf-widgets-sun</artifactId>
       <version>${sakai.version}</version>
+      <scope>provided</scope>
 <!--url: http://sakaiproject.org/ -->
     </dependency>
     <dependency>
@@ -203,6 +208,7 @@
       <groupId>commons-beanutils</groupId>
       <artifactId>commons-beanutils</artifactId>
       <version>1.7.0</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       
@@ -223,6 +229,7 @@
       <groupId>commons-digester</groupId>
       <artifactId>commons-digester</artifactId>
       <version>1.6</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       
@@ -264,6 +271,7 @@
       <groupId>jdom</groupId>
       <artifactId>jdom</artifactId>
       <version>1.0</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       
@@ -277,12 +285,14 @@
       <groupId>jsf</groupId>
       <artifactId>jsf-impl</artifactId>
       <version>1.1.01</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       
       <groupId>jsf</groupId>
       <artifactId>jsf-api</artifactId>
       <version>1.1.01</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       
@@ -303,6 +313,7 @@
       <groupId>portlet-api</groupId>
       <artifactId>portlet-api</artifactId>
       <version>1.0.1</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       
@@ -330,12 +341,14 @@
       <groupId>taglibs</groupId>
       <artifactId>standard</artifactId>
       <version>1.1.2</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       
       <groupId>velocity</groupId>
       <artifactId>velocity</artifactId>
       <version>1.3.1</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>
