@@ -20,9 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.web;
 
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
+import com.sun.org.apache.xml.internal.serialize.OutputFormat;
+import com.sun.org.apache.xml.internal.serialize.Serializer;
+import com.sun.org.apache.xml.internal.serialize.SerializerFactory;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.component.cover.ServerConfigurationService;
