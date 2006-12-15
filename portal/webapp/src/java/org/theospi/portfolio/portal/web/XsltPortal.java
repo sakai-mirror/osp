@@ -1075,6 +1075,10 @@ public class XsltPortal extends CharonPortal {
             logInOutUrl2 = ServerConfigurationService
                   .getString("portalPath")
                   + "/xlogin";
+            
+            appendTextElementNode(doc, "logInOutUrl2", logInOutUrl2, login);
+            appendTextElementNode(doc, "loginText2", loginText2, login);
+            appendTextElementNode(doc, "image2", image2, login);
          }
       }
       
@@ -1087,10 +1091,7 @@ public class XsltPortal extends CharonPortal {
       appendTextElementNode(doc, "logInOutUrl", logInOutUrl, login);
       appendTextElementNode(doc, "loginText", loginText, login);
       appendTextElementNode(doc, "logoutText", logoutText, login);
-      appendTextElementNode(doc, "image1", image1, login);
-      appendTextElementNode(doc, "logInOutUrl2", logInOutUrl2, login);
-      appendTextElementNode(doc, "loginText2", loginText2, login);
-      appendTextElementNode(doc, "image2", image2, login);
+      appendTextElementNode(doc, "image1", image1, login);      
 
       return login;
    }
