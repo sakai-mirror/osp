@@ -8,7 +8,9 @@
    
 <div class="validation">
    <fmt:message key="validation_statusWarning">
-     <fmt:param><c:out value="${newStatus}" /></fmt:param>
+     <fmt:param>
+			<fmt:message key="${newStatus}"/>
+		</fmt:param>
    </fmt:message>
 </div>
 
@@ -16,7 +18,9 @@
 
    <fieldset>
       <legend class="radio"><fmt:message key="legend_changeStatusTo">
-                              <fmt:param><c:out value="${newStatus}" /></fmt:param>
+                              <fmt:param>
+                              	<fmt:message key="${newStatus}"/>
+                              </fmt:param>
                             </fmt:message></legend>
       <div class="checkbox indnt1">
          <input type="radio" id="changeUserOnly" name="changeUserOnly" value="true" />
