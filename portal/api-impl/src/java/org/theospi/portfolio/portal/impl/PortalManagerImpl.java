@@ -94,22 +94,25 @@ public class PortalManagerImpl implements PortalManager {
 
       for (Iterator i=types.iterator();i.hasNext();) {
          String type = (String) i.next();
-         List sites = getSiteService().getSites(SiteService.SelectionType.ACCESS, type, null,
-				null, SiteService.SortType.TITLE_ASC, null);
          SiteType siteType = (SiteType) getSiteTypes().get(type);
 
          if (siteType == null) {
             siteType = SiteType.OTHER;
          }
-
-         addSpecialSites(siteType.getSpecialSites(), sites, allUserSites);
-
-         if (sites.size() > 0) {
-            if (addSite) {
-               addSite = !checkSites(siteId, sites);
+         
+         if (!siteType.isHidden()) {
+            List sites = getSiteService().getSites(SiteService.SelectionType.ACCESS, type, null,
+                  null, SiteService.SortType.TITLE_ASC, null);
+   
+            addSpecialSites(siteType.getSpecialSites(), sites, allUserSites);
+   
+            if (sites.size() > 0) {
+               if (addSite) {
+                  addSite = !checkSites(siteId, sites);
+               }
+   
+               typeMap.put(siteType, sites);
             }
-
-            typeMap.put(siteType, sites);
          }
       }
 
