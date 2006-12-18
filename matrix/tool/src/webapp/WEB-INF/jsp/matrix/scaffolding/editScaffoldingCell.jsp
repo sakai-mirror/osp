@@ -78,8 +78,8 @@
             <span class="reqStar">*</span>
             <label><fmt:message key="label_initialStatus"/></label>     
                <select name="<c:out value="${status.expression}"/>" >
-                  <option value="READY" <c:if test="${status.value=='READY'}"> selected</c:if>>Ready</option>
-                  <option value="LOCKED" <c:if test="${status.value=='LOCKED'}"> selected</c:if>>Locked</option>
+                  <option value="READY" <c:if test="${status.value=='READY'}"> selected</c:if>><fmt:message key="matrix_legend_ready"/></option>
+                  <option value="LOCKED" <c:if test="${status.value=='LOCKED'}"> selected</c:if>><fmt:message key="matrix_legend_locked"/></option>
                </select>
           </p>
          </spring:bind>

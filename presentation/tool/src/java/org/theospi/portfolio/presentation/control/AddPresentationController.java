@@ -231,7 +231,9 @@ public class AddPresentationController extends AbstractWizardFormController {
          session.setAttribute(ResourceEditingHelper.CREATE_TYPE,
                ResourceEditingHelper.CREATE_TYPE_FORM);
          
-         if (presentation.getPropertyForm() == null) {
+         Node propFormNode = getPresentationManager().getNode(presentation.getPropertyForm());
+         
+         if (presentation.getPropertyForm() == null || propFormNode == null) {
             String folder = "/user/" + 
                SessionManager.getCurrentSessionUserId() + 
                PresentationManager.PRESENTATION_PROPERTIES_FOLDER_PATH;
@@ -253,8 +255,7 @@ public class AddPresentationController extends AbstractWizardFormController {
             session.setAttribute(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
             session.removeAttribute(ResourceEditingHelper.ATTACHMENT_ID);
             
-         } else {
-            Node propFormNode = getPresentationManager().getNode(presentation.getPropertyForm());
+         } else {            
             session.setAttribute(ResourceEditingHelper.ATTACHMENT_ID, propFormNode.getResource().getId());
          }
       }
