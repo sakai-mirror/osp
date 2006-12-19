@@ -20,6 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +33,7 @@ import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
+import org.theospi.portfolio.workflow.model.Workflow;
 
 public class ReviewPostProcessor  implements Controller {
    
@@ -49,11 +52,23 @@ public class ReviewPostProcessor  implements Controller {
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = new HashMap();
       List workflows = (List)request.get("workflows");
+      
+      Collections.sort(workflows, new WorkflowComparator());
+      
       model.put("workflows", workflows);
       model.put("obj_id", request.get("obj_id"));
       model.put("manager", request.get("manager"));
       return model;
    }
+   
+   
+   public class WorkflowComparator implements Comparator {
+      public int compare(Object o1, Object o2) {
+         return ((Workflow)o1).getTitle().toLowerCase().compareTo(
+               ((Workflow)o2).getTitle().toLowerCase());
+      }
+   }   
+   
 
    /**
     * @return Returns the idManager.
