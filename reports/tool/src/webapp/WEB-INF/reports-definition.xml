@@ -894,13 +894,13 @@
            <list>
               <value><![CDATA[
                     select osp_scaffolding.title, osp_scaffolding.readyColor, osp_scaffolding.pendingColor, osp_scaffolding.lockedColor, osp_scaffolding.completedColor,
-                        if(?, 'true', 'false') AS `random`, eid AS `userId`, osp_matrix.owner AS `matrix_userId`, `status`, 
-                        osp_scaffolding_criteria.seq_num AS `criterion_sequence`,
-                            crit_label.description AS `criterion_description`,
-                        osp_scaffolding_levels.seq_num AS `level_sequence`,
-                            level_label.description AS `level_description`, 
+                        ? random, eid userId, osp_matrix.owner matrix_userId, status, 
+                        osp_scaffolding_criteria.seq_num criterion_sequence,
+                            crit_label.description criterion_description,
+                        osp_scaffolding_levels.seq_num level_sequence,
+                            level_label.description level_description, 
                         osp_scaffolding_cell.rootcriterion_id,
-                        osp_review.review_content_id AS `review_artifact`
+                        osp_review.review_content_id review_artifact
                     FROM osp_scaffolding 
                     JOIN sakai_site_user ON osp_scaffolding.worksiteId = sakai_site_user.site_id 
                     JOIN sakai_user_id_map ON sakai_site_user.user_id=sakai_user_id_map.USER_ID
@@ -910,14 +910,14 @@
                     LEFT JOIN osp_scaffolding_cell ON osp_matrix_cell.scaffolding_cell_id = osp_scaffolding_cell.id
 
                     LEFT JOIN osp_scaffolding_criteria ON osp_scaffolding_cell.rootcriterion_id = osp_scaffolding_criteria.elt
-                    LEFT JOIN osp_matrix_label as `crit_label` ON osp_scaffolding_criteria.elt=crit_label.id
+                    LEFT JOIN osp_matrix_label crit_label ON osp_scaffolding_criteria.elt=crit_label.id
                     LEFT JOIN osp_scaffolding_levels ON osp_scaffolding_cell.level_id = osp_scaffolding_levels.elt
-                    LEFT JOIN osp_matrix_label as `level_label` ON osp_scaffolding_levels.elt=level_label.id
+                    LEFT JOIN osp_matrix_label level_label ON osp_scaffolding_levels.elt=level_label.id
 
                     LEFT JOIN osp_review ON osp_matrix_cell.wizard_page_id = osp_review.id
                                 where osp_scaffolding.id=?
                 
-                    ORDER BY `userId`, `level_sequence`, `criterion_sequence`
+                    ORDER BY userId, level_sequence, criterion_sequence
                     ]]>
               </value>
            </list>
