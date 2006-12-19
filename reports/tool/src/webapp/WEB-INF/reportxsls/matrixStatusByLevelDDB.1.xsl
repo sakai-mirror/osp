@@ -8,7 +8,7 @@
     <h5>Matrix Cell Completion Status</h5>
     
     Matrix: <xsl:value-of select="//datarow[1]/element[@colName='title']/." />
-    
+   
     <div class="instruction">This data is only up to the date of the last data warehouse synchronization.</div>
     
     <h5>Users</h5>
@@ -21,10 +21,10 @@
              
                    <tr class="exclude">
                       <td>
-                         <xsl:if test="element[@colName='random'] = 'true'" >
+                         <xsl:if test="//parameters/parameter[@name='anonymize'] = '1'" >
                             Anonymous User
                          </xsl:if>
-                         <xsl:if test="element[@colName='random'] != 'true'" >
+                         <xsl:if test="//parameters/parameter[@name='anonymize'] = '0'" >
                             <B><xsl:value-of select="$varUserName"/></B>
                          </xsl:if>
                       </td>
