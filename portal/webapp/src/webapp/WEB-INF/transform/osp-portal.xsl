@@ -852,10 +852,7 @@ your browser doesn't support iframes
       <xsl:variable name="siteTypeKey" select="siteTypes/siteType[@selected='true']/key"/>
       <xsl:variable name="toolCategoryKey" select="categories/category[@selected='true']/key"/>
 
-<div class="breadcrumbHolder workspace">
-   <table border="0">
-      <tr><td>
-         <ul id="breadcrumbNavigation">
+<div class="breadcrumb breadcrumbHolder workspace">
             <!--Active link/breadcrum li gets the class selectedCrumb-->
             <xsl:if test="siteTypes/siteType[@selected='true']">
                <xsl:if test="siteTypes/siteType[@selected='true' and key!='org.theospi.portfolio.portal.myWorkspace']">
@@ -888,9 +885,6 @@ your browser doesn't support iframes
                   </xsl:if>
                </xsl:if>
             </xsl:if>
-         </ul>
-      </td></tr>
-   </table>
 </div>
    </xsl:template>
 
@@ -903,12 +897,10 @@ your browser doesn't support iframes
       <xsl:param name="node"/>
       <xsl:param name="title"/>
       <xsl:param name="last"/>
-      <li>
-         <xsl:if test="$last = 'true'">
-            <xsl:attribute name="class">selectedCrumb</xsl:attribute>
-         </xsl:if>
-         <span class="breadcrumbNavigation">
             <a>
+               <xsl:if test="$last = 'true'">
+                  <xsl:attribute name="class">selectedCrumb</xsl:attribute>
+               </xsl:if>
                <xsl:attribute name="href">
                   <xsl:value-of select="$node/url"/>
                </xsl:attribute>
@@ -920,8 +912,6 @@ your browser doesn't support iframes
             <xsl:if test="$last != 'true'">
                &gt;
             </xsl:if>
-         </span>
-      </li>
    </xsl:template>
 
    <!--
