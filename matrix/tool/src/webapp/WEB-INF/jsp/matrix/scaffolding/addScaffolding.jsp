@@ -153,7 +153,7 @@
                 	      document.forms[0].submit();">
                 		     <fmt:message key="table_action_edit"/>
                 	   </a>
-                     <c:if test="${!scaffolding.published}" >
+                     <c:if test="${!isMatrixUsed}" >
                          | <a href="javascript:document.forms[0].dest.value='removeLevCrit';
                 	      document.forms[0].finalDest.value='deleteLevel';
                 	      document.forms[0].label.value=document.forms[0].columnLabel.value;
@@ -238,7 +238,7 @@
                           <fmt:message key="table_action_edit"/>
                       </a>
 
-                     <c:if test="${!scaffolding.published}" >
+                     <c:if test="${!isMatrixUsed}" >
                       | <a href="javascript:document.forms[0].dest.value='removeLevCrit';
                       document.forms[0].finalDest.value='deleteCriterion';
                       document.forms[0].label.value=document.forms[0].rowLabel.value;

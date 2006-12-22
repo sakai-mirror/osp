@@ -32,7 +32,6 @@ import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
@@ -44,7 +43,6 @@ public class DeleteLevelController implements Controller {
 
    protected final Log logger = LogFactory.getLog(getClass());
    
-   private MatrixManager matrixManager;
    private LockManager lockManager;
    
    /* (non-Javadoc)
@@ -88,12 +86,6 @@ public class DeleteLevelController implements Controller {
       return new ModelAndView("success", model);
    }
    
-   public MatrixManager getMatrixManager() {
-      return matrixManager;
-   }
-   public void setMatrixManager(MatrixManager matrixManager) {
-      this.matrixManager = matrixManager;
-   }
    public LockManager getLockManager() {
       return lockManager;
    }

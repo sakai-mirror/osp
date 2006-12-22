@@ -583,7 +583,11 @@
 
    <bean id="deleteLevelController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
-         <bean class="org.theospi.portfolio.matrix.control.DeleteLevelController"/>
+         <bean class="org.theospi.portfolio.matrix.control.DeleteLevelController">
+            <property name="lockManager">
+               <ref bean="org.sakaiproject.content.api.LockManager"/>
+            </property>
+         </bean>
       </property>
       <property name="screenMappings">
          <props>
@@ -640,7 +644,11 @@
 
    <bean id="deleteCriterionController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
-         <bean class="org.theospi.portfolio.matrix.control.DeleteCriterionController"/>
+         <bean class="org.theospi.portfolio.matrix.control.DeleteCriterionController">
+            <property name="lockManager">
+               <ref bean="org.sakaiproject.content.api.LockManager"/>
+            </property>
+         </bean>
       </property>
       <property name="screenMappings">
          <props>

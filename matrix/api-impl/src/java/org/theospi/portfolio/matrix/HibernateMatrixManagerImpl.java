@@ -251,7 +251,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public List getMatrices(Id scaffoldingId) {
       List matrices = getHibernateTemplate().find(
-            "from Matrix matrix where matrix.scaffolding_id = ?", new Object[]{scaffoldingId});
+            "from Matrix matrix where matrix.scaffolding.id = ?", new Object[]{scaffoldingId});
 
       return matrices;
    }

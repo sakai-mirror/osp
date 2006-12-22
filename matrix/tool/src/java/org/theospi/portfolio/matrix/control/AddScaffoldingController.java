@@ -24,6 +24,8 @@ package org.theospi.portfolio.matrix.control;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,6 +41,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.Matrix;
+import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.matrix.model.Cell;
 
 
 /**
@@ -62,6 +67,15 @@ public class AddScaffoldingController extends BaseScaffoldingController
       Map model = new HashMap();
 
       model.put("isInSession", EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
+      
+      Scaffolding scaffolding = null;
+      if ( command instanceof Scaffolding )
+         scaffolding = (Scaffolding)command;
+      
+      if ( scaffolding != null )
+         model.put("isMatrixUsed", scaffolding.isPublished() && isMatrixUsed( scaffolding.getId() ) );
+      else
+         model.put("isMatrixUsed", false );
       
       return model;
    }
@@ -199,5 +213,32 @@ public class AddScaffoldingController extends BaseScaffoldingController
 
    public void setEntityManager(EntityManager entityManager) {
       this.entityManager = entityManager;
+   }
+   
+   /**
+    ** Determine if any matrix with the specified scaffoldingId has been 'used'
+    ** (containing reflections and/or added form items)
+    **/
+   private boolean isMatrixUsed( Id scaffoldingId ) 
+   {
+      List matrices = getMatrixManager().getMatrices(scaffoldingId);
+   
+      for (Iterator matrixIt = matrices.iterator(); matrixIt.hasNext();) 
+      {
+         Matrix matrix = (Matrix)matrixIt.next();
+         Set cells = matrix.getCells();
+       
+         for (Iterator cellIt=cells.iterator(); cellIt.hasNext();) 
+         {
+            Cell cell = (Cell)cellIt.next();
+            WizardPage wizardPage = cell.getWizardPage();
+            if ( wizardPage.getReflections() != null && wizardPage.getReflections().size() > 0 )
+               return true;
+            if ( wizardPage.getPageForms() != null && wizardPage.getPageForms().size() > 0 )
+               return true;
+         }
+      }
+      
+      return false;
    }
 }
