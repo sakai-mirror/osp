@@ -220,7 +220,7 @@ public class AddTemplateController extends AbstractWizardFormController {
    
    protected Collection getAvailableForms(String siteId, String type) {
       return getStructuredArtifactDefinitionManager().findHomes(
-            getIdManager().getId(siteId));      
+            getIdManager().getId(siteId), true);
    }
 
    protected Map referenceData(HttpServletRequest request,
@@ -379,7 +379,7 @@ public class AddTemplateController extends AbstractWizardFormController {
    protected Collection getHomes() {
       ArrayList list = new ArrayList();
       Map homeMap =  getHomeFactory().getWorksiteHomes(
-         getWorksiteManager().getCurrentWorksiteId());
+         getWorksiteManager().getCurrentWorksiteId(), true);
       for (Iterator i = homeMap.values().iterator(); i.hasNext();){
            list.add(i.next());
       }

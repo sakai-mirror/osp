@@ -347,7 +347,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    
    protected Collection getAvailableForms(String siteId, String type) {
       return getStructuredArtifactDefinitionManager().findHomes(
-            getIdManager().getId(siteId));      
+            getIdManager().getId(siteId), true);      
    }
    
    protected Collection getFormsForSelect(String type) {

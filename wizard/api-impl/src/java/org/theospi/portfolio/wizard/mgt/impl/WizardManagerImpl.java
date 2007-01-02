@@ -487,7 +487,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    
    public Collection getAvailableForms(String siteId, String type) {
       return getStructuredArtifactDefinitionManager().findHomes(
-            getIdManager().getId(siteId));
+            getIdManager().getId(siteId), true);
    }
 
    public void deleteObjects(List deletedItems) {
