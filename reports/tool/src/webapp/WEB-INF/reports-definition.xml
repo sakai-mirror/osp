@@ -20,15 +20,35 @@
         <property name="usesWarehouse"><value>false</value></property>
         <property name="title">
             <value>
-                Report Variable Type Test
+                Report Variable Type Test = artifact loading too
             </value>
+        </property> <!-- 
+        <property name="query">
+            <list>
+               <value>
+                  select id `RESOURCE_ID_artifact` from dw_resource where 1 IN (1, ?, ?, ?, ?, ?, ?, ?)
+               </value>
+            </list>
+        </property> -->
+        <property name="query">
+            <list>
+               <value>
+                  select RESOURCE_UUID `RESOURCE_ID_artifact` from content_resource where 1 IN (1, ?, ?, ?, ?, ?, ?, ?)
+               </value>
+            </list>
         </property>
+        <!--  
         <property name="query">
             <list>
                <value>
                 select * from SAKAI_SITE where CREATEDBY IN (?, ?, ?, ?, ?, ?, ?)
                </value>
             </list>
+        </property> -->
+        <property name="resultProcessors">
+           <list>
+              <ref bean="org.theospi.portfolio.reports.model.ResultProcessor.defaultArtifactLoader" />
+           </list>
         </property>
         <property name="keywords">
             <value>CIG user portfolio etc</value>
@@ -924,7 +944,7 @@
         </property>
         <property name="resultProcessors">
            <list>
-              <ref bean="org.theospi.portfolio.reports.model.ResultsPostProcessor.rowcolumn" />
+              <ref bean="org.theospi.portfolio.reports.model.ResultsPostProcessor.rowcolumnupper" />
            </list>
         </property>
         <property name="keywords">

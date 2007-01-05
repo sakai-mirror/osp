@@ -39,7 +39,7 @@
                <!-- leave the dataSource blank and it will automatically default to the Data warehouse data source. -->
                <!-- by filling in the dataSource it will use that for the alternative dataSource. -->
                <!-- if the datawarehouse isn't being deployed, then either this needs to be filled in or
-               			it the dataSource is null thus defaulting to the DW datasource which isn't there
+               			if the dataSource is null thus defaulting to the DW datasource which isn't there
                			which then the code will default to the sakai data source -->
                <!--
                 <property name="dataSource">
@@ -48,6 +48,10 @@
                 -->
                 <property name="sakaiDataSource">
    			        <ref bean="javax.sql.DataSource"/>
+                </property>
+                <property name="forceColumnLabelUppercase">
+                	<value>true</value>
+                	<!-- <value>false</value> -->
                 </property>
             </bean>
         </property>
@@ -132,6 +136,27 @@
                           <value>level_sequence</value>
                           <value>userId</value>
                           <value>evaluators</value>
+                       </list>
+                    </property>
+              </bean>
+              <bean id="org.theospi.portfolio.reports.model.ResultsPostProcessor.rowcolumnupper"
+                 class="org.theospi.portfolio.reports.model.impl.GroupingResultProcessor">
+                    <property name="grouping">
+                       <list>
+                          <value>CRITERION_SEQUENCE</value>
+                          <value>LEVEL_SEQUENCE</value>
+                          <value>USERID</value>
+                       </list>
+                    </property>
+              </bean>
+              <bean id="org.theospi.portfolio.reports.model.ResultsPostProcessor.rowcolumnevalupper"
+                 class="org.theospi.portfolio.reports.model.impl.GroupingResultProcessor">
+                    <property name="grouping">
+                       <list>
+                          <value>CRITERION_SEQUENCE</value>
+                          <value>LEVEL_SEQUENCE</value>
+                          <value>USERID</value>
+                          <value>EVALUATORS</value>
                        </list>
                     </property>
               </bean>

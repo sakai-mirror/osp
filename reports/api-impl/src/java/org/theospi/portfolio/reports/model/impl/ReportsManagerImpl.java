@@ -98,6 +98,12 @@ import org.theospi.portfolio.shared.model.OspException;
  * it there and programmatically pull it.  This way it could be null (when dw is not 
  * deployed) and then the dataSource falls back to the sakai dataSource.
  * 
+ * the sakai.properties property "osp.reports.forceColumnLabelUppercase" is used to standardize
+ * the column label.  MySQL will keep the column titles exactly as specified in the query.
+ * Oracle on the other hand seems to make all the column labels uppercase.  This makes writing
+ * a query and an xsl that works in both databases more difficult.  This defaults to 1 (otherwise know as true)
+ * Set this property to 0 and the column titles will pass through like the old behavior
+ * 
  * @author andersjb
  *
  */
@@ -129,6 +135,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
    /** used to allow artifacts to be downloaded (through adding an advisor)  */
    private SecurityService securityService;
+   
+   /** This is used to standardize the case of the column labels. This is helpful because
+    * MySQL uses the same case as determined by the query.  Oracle makes them all uppercase.
+    * This makes it easier to write the xsl in a database agnostic way */
+   private Boolean forceColumnLabelUppercase;
 
    /** convert between the user formatted date and the database formatted date */
 	private static SimpleDateFormat userDateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -803,6 +814,14 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 		
 		
 			rs = stmt.executeQuery();
+         
+			boolean makeUppercase = true;
+         if(forceColumnLabelUppercase != null)
+            makeUppercase = forceColumnLabelUppercase.booleanValue();
+         
+         String forceProperty = ServerConfigurationService.getString("osp.reports.forceColumnLabelUppercase");
+         if(forceProperty != null && forceProperty.length() > 0)
+            makeUppercase = Integer.parseInt(forceProperty) == 1;
 			
 			int columns = rs.getMetaData().getColumnCount();
 			
@@ -810,6 +829,8 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
 			for(int i = 0; i < columns; i++) {
 				columnNames[i] = rs.getMetaData().getColumnLabel(i+1);
+            if(makeUppercase)
+               columnNames[i] = columnNames[i].toUpperCase();
 			}
 			
 			  
@@ -830,10 +851,24 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 				attr = new Element("keywords");
 				attr.setText(report.getKeywords());
 				reportElement.addContent(attr);
-				
-				attr = new Element("runDate");
-				attr.setText(rr.getCreationDate().toString());
-				reportElement.addContent(attr);
+            
+            attr = new Element("runDate");
+            attr.setText(rr.getCreationDate().toString());
+            reportElement.addContent(attr);
+            
+            attr = new Element("isWarehouseReport");
+            attr.setText(report.getReportDefinition().getUsesWarehouse().toString());
+            reportElement.addContent(attr);
+            
+            attr = new Element("isLiveReport");
+            attr.setText(Boolean.toString(report.getIsLive()));
+            reportElement.addContent(attr);
+            
+            attr = new Element("isSavedReport");
+            attr.setText(Boolean.toString(report.getIsSaved()));
+            reportElement.addContent(attr);
+            
+            
 			}
 			reportElement.addContent(docAttrNode);
 			
@@ -1183,7 +1218,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
             );
        
        List results = getHibernateTemplate().findByNamedQuery("findResultsByReport", 
-                report.getReportId().getValue());
+                report);
        
        if(report.getIsLive()) {
           if(results.size() == 0)
@@ -1291,6 +1326,18 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
 
    public void setSakaiDataSource(DataSource sakaiDataSource) {
       this.sakaiDataSource = sakaiDataSource;
+   }
+
+
+
+   public Boolean getForceColumnLabelUppercase() {
+      return forceColumnLabelUppercase;
+   }
+
+
+
+   public void setForceColumnLabelUppercase(Boolean forceColumnLabelUppercase) {
+      this.forceColumnLabelUppercase = forceColumnLabelUppercase;
    }
 
 }
