@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -92,6 +92,7 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
+import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.review.mgt.ReviewManager;
@@ -139,6 +140,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    private PresentableObjectHome xmlRenderer;
    private ReviewManager reviewManager;
    private StyleManager styleManager;
+   private MatrixManager matrixManager;
    
    private static String SITE_CACHE_NAME = "wizardSiteCache";
    private Cache siteCache = null;
@@ -153,17 +155,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       Cache memoryOnlyCache = new Cache(SITE_CACHE_NAME, 500, false, false, 60, 10);
       cacheManager.addCache(memoryOnlyCache);
       siteCache = cacheManager.getCache(SITE_CACHE_NAME);
-      
-      /*
-      FunctionManager.registerFunction(WizardFunctionConstants.CREATE_WIZARD);
-      FunctionManager.registerFunction(WizardFunctionConstants.EDIT_WIZARD);
-      FunctionManager.registerFunction(WizardFunctionConstants.DELETE_WIZARD);
-      FunctionManager.registerFunction(WizardFunctionConstants.PUBLISH_WIZARD);
-      FunctionManager.registerFunction(WizardFunctionConstants.REVIEW_WIZARD);
-      FunctionManager.registerFunction(WizardFunctionConstants.EVALUATE_WIZARD);
-      FunctionManager.registerFunction(WizardFunctionConstants.VIEW_WIZARD);
-      FunctionManager.registerFunction(WizardFunctionConstants.EXPORT_WIZARD);
-      */
+
    }
 
    
@@ -2062,6 +2054,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
          page.setReflections(reflections);
          page.setEvaluations(evaluations);
          page.setFeedback(feedback);
+         
+         page.getAttachments().size();
+         page.getPageForms().size();
+         
+         //Make sure that the attachments and forms have been added to the security advisor
+         getMatrixManager().getPageContents(page);
+         getMatrixManager().getPageForms(page);
+         
       }
       
       for (Iterator i = category.getChildCategories().iterator(); i.hasNext();) {
@@ -2212,5 +2212,21 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public void setImportFolderName(String importFolderName) {
       this.importFolderName = importFolderName;
+   }
+
+
+   /**
+    * @return the matrixManager
+    */
+   public MatrixManager getMatrixManager() {
+      return matrixManager;
+   }
+
+
+   /**
+    * @param matrixManager the matrixManager to set
+    */
+   public void setMatrixManager(MatrixManager matrixManager) {
+      this.matrixManager = matrixManager;
    }
 }
