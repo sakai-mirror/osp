@@ -20,9 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.web;
 
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.Serializer;
-import com.sun.org.apache.xml.internal.serialize.SerializerFactory;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.OutputKeys;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.component.cover.ServerConfigurationService;
@@ -49,6 +48,7 @@ import org.theospi.portfolio.portal.model.SiteType;
 import org.theospi.portfolio.portal.model.ToolCategory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -326,7 +326,7 @@ public class XsltPortal extends CharonPortal {
       res.addHeader("Pragma", "no-cache");
 
       PrintWriter out = res.getWriter();
-
+		
       try {
          StreamResult outputTarget = new StreamResult(out);
          transformer.transform(new DOMSource(doc), outputTarget);
@@ -1246,15 +1246,16 @@ public class XsltPortal extends CharonPortal {
       this.servletResolver = servletResolver;
    }
 
-   protected void dumpDocument(Element element) throws IOException {
-      OutputFormat format = new OutputFormat();
-
-      format.setIndent(3);
-      format.setIndenting(true);
-      format.setPreserveSpace(true);
-
-      Serializer serializer = SerializerFactory.getSerializerFactory("xml").makeSerializer(System.out, format);
-      serializer.asDOMSerializer().serialize(element);
+   protected void dumpDocument(Node node) {
+	   try {
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.setOutputProperty( OutputKeys.INDENT, "yes" );
+			transformer.transform( new DOMSource(node), new StreamResult(System.out) );
+		}
+		catch ( Exception e )
+		{
+		   e.printStackTrace();
+		}
    }
 
 }
