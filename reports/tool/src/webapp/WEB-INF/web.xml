@@ -25,6 +25,7 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
+            /WEB-INF/matrix-reports.xml
             /WEB-INF/reports-definition.xml
             /WEB-INF/reports-config.xml
         </param-value>

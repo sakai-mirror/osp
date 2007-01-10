@@ -1199,7 +1199,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
        
        getHibernateTemplate().delete(result);
        
-       deleteReport(result.getReport(), false);
+       // if we are deleting the result, then if the report it came from is not on display then delete the report too
+       if(!result.getReport().getDisplay() || !result.getReport().getIsLive())
+          deleteReport(result.getReport(), false);
     }
 
     
@@ -1225,15 +1227,16 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
              deleteAction = true;
           else if(deactivate)
              deactivateAction = true;
-       } else {
+       } else { //the report is not live so delete any report results
+          for(Iterator i = results.iterator(); i.hasNext();) {
+             getHibernateTemplate().delete(i.next());
+          }
           deleteAction = true;
        }
        
        if(deleteAction) {
           getHibernateTemplate().delete(report);
-       }
-       
-       if(deactivateAction) {
+       } else if(deactivateAction) {
           report.setDisplay(false);
           getHibernateTemplate().saveOrUpdate(report);
        }

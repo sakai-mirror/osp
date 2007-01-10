@@ -174,18 +174,19 @@ public interface ReportsManager extends DownloadableManager
    public void setCurrentResult(ReportResult result);
    
    /**
-    * Deletes a ReportResult and the associated report
+    * Deletes a ReportResult. If the report that this result came from in not on display
+    * then we should try to delete the report too because the user can't do anything with it
     * @param result
     */
    public void deleteReportResult(ReportResult result);
    
    
    /**
-    * if we are deleting a report that is not live, then delete the results associated with it
-    * because they become invalid.  If a report is live, then we need to check how many results
+    * if we are deleting a report that is not live, then delete the result associated with it
+    * because it will become invalid.  If a report is live, then we need to check how many results
     * are linked to the report.  If there are no results then we can delete it, otherwise we need to
-    * just disable the report from showing in the interface given the parameter option.  
-    * aka, if a report is live and has results associated, the parameter decides if we should deactivate 
+    * just disable the report from showing in the interface given the display parameter option.  
+    * aka, if a report is live and has results associated, the  display parameter decides if we should deactivated 
     * the report.
     * 
     * @param report Report

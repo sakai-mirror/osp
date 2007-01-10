@@ -19,7 +19,10 @@
                         action="#{ReportsTool.processSaveReport}"
                         value="#{msgs.saveLiveReport}" 
                         rendered="#{!ReportsTool.workingReport.isSaved && ReportsTool.workingResult.isLive}"/>
+				  <f:subview id="spacer_" 
+				  	rendered="#{ReportsTool.workingResult.exportable}">
                      <sakai:tool_bar_spacer />
+                     </f:subview>
                      <h:selectOneMenu value="#{ReportsTool.workingResult.currentExportXsl}"
                         valueChangeListener="#{ReportsTool.workingResult.changeExportXsl}"
                         onchange="this.form.submit();"
