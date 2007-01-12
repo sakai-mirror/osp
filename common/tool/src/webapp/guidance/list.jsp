@@ -35,6 +35,7 @@
    <sakai:instruction_message value="#{guidance.lastSavedId}" />
    <sakai:messages />
 
+   <h:inputText value="#{guidance.formDisplayName}" />
    <h:inputText value="#{guidance.formTypeId}" />
    <h:commandButton value="test resource helper" action="#{guidance.processTestResourceHelper}" />
 
