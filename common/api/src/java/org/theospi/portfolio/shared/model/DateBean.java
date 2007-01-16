@@ -202,4 +202,13 @@ public class DateBean implements FieldValueWrapper {
    protected void checkFlag(String value) {
       nullFlag = (value == null || value.length() == 0);
    }
+
+   public Object clone() {
+      try {
+         return super.clone();
+      } catch (CloneNotSupportedException e) {
+         throw new RuntimeException(e);
+      }
+   }
+   
 }
