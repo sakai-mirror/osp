@@ -15,6 +15,7 @@
         </property>
         <property name="reports">
             <list>
+            	<ref bean="matrixPendingDirectDB" />
                  <ref bean="matrixCellCompletionStatusByUser" />
                 <ref bean="matrixStatusByUser" />
                 <ref bean="matrixStatusByOwner" />

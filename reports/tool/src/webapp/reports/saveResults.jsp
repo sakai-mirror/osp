@@ -5,7 +5,10 @@
 <f:view>
     <sakai:view title="#{msgs.title_save_report_results}">
             <h:form>
+                <sakai:view_title value="#{msgs.title_save_report_results}" indent="1" />
                 
+				<sakai:instruction_message value="#{msgs.save_report_results_instructions}" />
+   
                 <sakai:button_bar>
                     <sakai:button_bar_item
                         action="#{ReportsTool.processSaveResultsToDB}"
