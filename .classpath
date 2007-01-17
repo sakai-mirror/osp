@@ -117,5 +117,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/tomcat/jars/catalina-tomcat-5.5.17.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/metaobj-impl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/metaobj-util"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/assignment-api"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
