@@ -16,10 +16,15 @@
           <fmt:message key="${pageInstructionsKey}"/>
           <fmt:message key="instructions_requiredFields"/> 
           <br/><br/>
-	      <c:if test="${scaffoldingCell.scaffolding.published}">
-			  <fmt:message key="instructions_hasBeenPublished"/>
-		      <c:set var="localDisabledText" value="disabled=\"disabled\""/>
-	      </c:if>
+         <c:if test="${scaffoldingCell.scaffolding.published}">
+           <c:if test="${isCellUsed}">
+             <fmt:message key="instructions_hasBeenUsed"/>
+             <c:set var="localDisabledText" value="disabled=\"disabled\""/>
+           </c:if>
+           <c:if test="${!isCellUsed}">
+             <fmt:message key="instructions_hasBeenPublished"/>
+           </c:if>
+         </c:if>
 	      <c:if test="${wizardPublished}">
 			  <fmt:message key="instructions_wizardHasBeenPublished"/>
 		      <c:set var="localDisabledText" value="disabled=\"disabled\""/>

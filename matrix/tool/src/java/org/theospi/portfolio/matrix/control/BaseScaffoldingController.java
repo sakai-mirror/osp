@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -39,6 +41,8 @@ import org.theospi.portfolio.security.AuthorizationFacade;
 
 public class BaseScaffoldingController {
    
+   protected final Log logger = LogFactory.getLog(getClass());
+	
    private AuthorizationFacade authzManager;
    private MatrixManager matrixManager;
    private IdManager idManager;
@@ -99,7 +103,20 @@ public class BaseScaffoldingController {
 
    protected Scaffolding saveScaffolding(Scaffolding scaffolding) {
       boolean isDirty = isDirtyProgression(scaffolding);
-      scaffolding = getMatrixManager().storeScaffolding(scaffolding);
+
+      // Check for Hibernate error, which could happen if:
+      // (1) admin starts to revises published but unused matrix
+      // (2) user 'uses' matrix by adding forms/reflections
+      // (3) admin now tries to save changes
+      try
+      {
+         scaffolding = getMatrixManager().storeScaffolding(scaffolding);
+      }
+      catch ( Exception e )
+      {
+         logger.error( e.toString() );
+         // tbd how to report error back to admin user?
+      }
       
       //getMatrixManager().refresh(scaffolding);
       

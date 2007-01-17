@@ -49,6 +49,9 @@ import org.theospi.portfolio.shared.model.CommonFormBean;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.matrix.model.Matrix;
+import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.WizardPage;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -88,6 +91,11 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       model.put("pageInstructionsKey", "instructions_cellSettings");
       model.put("styleReturnView", getStyleReturnView());
       
+      if ( sCell != null && sCell.getScaffolding() != null )
+         model.put("isCellUsed", sCell.getScaffolding().isPublished() && isCellUsed( sCell ) );
+      else
+         model.put("isCellUsed", false );
+         
       return model;
    }
    /* (non-Javadoc)
@@ -470,4 +478,36 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       this.authzManager = authzManager;
    }
 
+   /**
+    ** Determine if any matrix cell with the specified scaffoldingCell has been 'used'
+    ** (containing reflections and/or added form items)
+    **/
+   private boolean isCellUsed( ScaffoldingCell scaffoldingCell ) 
+   {
+      Id scaffoldingId = scaffoldingCell.getScaffolding().getId();
+      List matrices = getMatrixManager().getMatrices(scaffoldingId);
+   
+      for (Iterator matrixIt = matrices.iterator(); matrixIt.hasNext();) 
+      {
+         Matrix matrix = (Matrix)matrixIt.next();
+         Set cells = matrix.getCells();
+       
+         for (Iterator cellIt=cells.iterator(); cellIt.hasNext();) 
+         {
+            Cell cell = (Cell)cellIt.next();
+            
+            if ( cell.getScaffoldingCell().equals( scaffoldingCell ) )
+            {
+               WizardPage wizardPage = cell.getWizardPage();
+               if ( wizardPage.getReflections() != null && wizardPage.getReflections().size() > 0 )
+                  return true;
+               else if ( wizardPage.getPageForms() != null && wizardPage.getPageForms().size() > 0 )
+                  return true;
+            }
+         }
+      }
+      
+      return false;
+   }
+      
 }

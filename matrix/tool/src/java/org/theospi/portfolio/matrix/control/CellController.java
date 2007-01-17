@@ -73,6 +73,28 @@ public class CellController implements FormController, LoadObjectController {
       
       CellFormBean cell = (CellFormBean) command;
       Map model = new HashMap();
+      
+      model.put("isMatrix", "true");
+      model.put("currentUser", SessionManager.getCurrentSessionUserId());
+      model.put("CURRENT_GUIDANCE_ID_KEY", "session." + GuidanceManager.CURRENT_GUIDANCE_ID);
+      
+      model.put("isEvaluation", "false");
+      
+      // This is the tool session so evaluation tool gets "is_eval_page_id" and the matrix/wizard does not
+      if(session.getAttribute("is_eval_page_id") != null) {
+         String eval_page_id = (String)session.getAttribute("is_eval_page_id");
+         model.put("isEvaluation", "true");
+      }
+      
+      model.put("pageTitleKey", "view_cell");
+     
+      // Check for cell being deleted while user was attempting to view 
+      if ( cell == null || cell.getCell() == null )
+      {
+         clearSession(session);
+         return model;
+      }
+      
       String pageId = cell.getCell().getWizardPage().getId().getValue();
       String siteId = 
          cell.getCell().getWizardPage().getPageDefinition().getSiteId();
@@ -92,18 +114,13 @@ public class CellController implements FormController, LoadObjectController {
       
       model.put("cellForms", getMatrixManager().getPageForms(cell.getCell().getWizardPage()));
       
-      model.put("currentUser", SessionManager.getCurrentSessionUserId());
-      model.put("CURRENT_GUIDANCE_ID_KEY", "session." + GuidanceManager.CURRENT_GUIDANCE_ID);
-      
       Boolean readOnly = new Boolean(false);
       
       if (cell.getCell().getMatrix() != null) {
          Agent owner = cell.getCell().getMatrix().getOwner();
          readOnly = isReadOnly(owner, cell.getCell().getMatrix().getScaffolding().getWorksiteId());
-
       }
       model.put("readOnlyMatrix", readOnly);
-      model.put("isMatrix", "true");
       
       Style style = cell.getCell().getWizardPage().getPageDefinition().getStyle();
       
@@ -120,16 +137,6 @@ public class CellController implements FormController, LoadObjectController {
          model.put("defaultStyleUrl", node.getExternalUri());
       }
 
-      model.put("isEvaluation", "false");
-      
-      // This is the tool session so evaluation tool gets "is_eval_page_id" and the matrix/wizard does not
-      if(session.getAttribute("is_eval_page_id") != null) {
-         String eval_page_id = (String)session.getAttribute("is_eval_page_id");
-         model.put("isEvaluation", "true");
-      }
-      
-      model.put("pageTitleKey", "view_cell");
-      
       clearSession(session);
       return model;
    }
@@ -162,15 +169,28 @@ public class CellController implements FormController, LoadObjectController {
       }
       Cell cell;
       Id id = getIdManager().getId(strId);
-      cell = matrixManager.getCellFromPage(id);
-
-      cellBean.setCell(cell);
-
-      List nodeList = new ArrayList(matrixManager.getPageContents(cell.getWizardPage()));
-      cellBean.setNodes(nodeList);
       
-      if (request.get("view_user") != null)
-         session.put("view_user", cell.getWizardPage().getOwner().getId().getValue());
+      // Check if the cell has been removed, which can happen if:
+      // (1) user views matrix
+      // (2) owner removes column or row (the code verifies that no one has modified the matrix)
+      // (3) user selects a cell that has just been removed with the column or row
+      try
+      {
+         cell = matrixManager.getCellFromPage(id);
+
+         cellBean.setCell(cell);
+
+         List nodeList = new ArrayList(matrixManager.getPageContents(cell.getWizardPage()));
+         cellBean.setNodes(nodeList);
+      
+         if (request.get("view_user") != null)
+            session.put("view_user", cell.getWizardPage().getOwner().getId().getValue());
+      }
+      catch ( Exception e )
+      {
+         logger.error( "Error with cell: " + strId + " " + e.toString());
+         // tbd how to report error back to user?
+      }
       
       clearSession(SessionManager.getCurrentToolSession());
       return cellBean;
@@ -193,6 +213,10 @@ public class CellController implements FormController, LoadObjectController {
       CellFormBean cellBean = (CellFormBean) requestModel;
       Cell cell = cellBean.getCell();
 
+      // Check for cell being deleted while user was attempting to view 
+      if ( cell == null )
+         return new ModelAndView("matrixError");
+         
       //String action = (String)request.get("action");
       String submitAction = (String)request.get("submit");
       String matrixAction = (String)request.get("matrix");

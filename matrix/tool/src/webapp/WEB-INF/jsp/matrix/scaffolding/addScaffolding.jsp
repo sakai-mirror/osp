@@ -41,7 +41,12 @@
       </div>
 
 	  <c:if test="${scaffolding.published}">
-		  <fmt:message key="instructions_scaffoldingPublisched"/>
+        <c:if test="${isMatrixUsed}" >
+          <fmt:message key="instructions_hasBeenUsed"/>
+        </c:if>
+        <c:if test="${!isMatrixUsed}" >
+          <fmt:message key="instructions_hasBeenPublished"/>
+        </c:if>
 		  <c:set var="disabledText" value="disabled=\"disabled\""/>
 	  </c:if>
 

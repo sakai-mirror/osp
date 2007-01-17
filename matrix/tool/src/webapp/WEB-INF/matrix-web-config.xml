@@ -161,6 +161,7 @@
          <props>
             <prop key="success">viewCell</prop>
             <prop key="cancel">matrixRedirect</prop>
+            <prop key="matrixError">listScaffoldingRedirect</prop>
             <prop key="cancelEvaluation">evaluationRedirect</prop>
             <prop key="confirm">submitCellConfirmationRedirect</prop>
             <prop key="guidance">viewGuidance</prop>

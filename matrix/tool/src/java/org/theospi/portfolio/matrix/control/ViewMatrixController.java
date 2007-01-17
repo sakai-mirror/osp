@@ -241,7 +241,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
                Member member = (Member) memb.next();
                users.add(UserDirectoryService.getUser(member.getUserId()));
             } catch (UserNotDefinedException e) {
-               logger.error("Unable to find user: " + e.getId(), e);
+               logger.error("Unable to find user: " + e.getId() + " " + e.toString());
             }            
          }
       } catch (IdUnusedException e) {
