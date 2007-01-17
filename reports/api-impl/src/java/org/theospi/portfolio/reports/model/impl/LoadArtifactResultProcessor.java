@@ -35,6 +35,10 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -48,6 +52,30 @@ import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.shared.intf.EntityContextFinder;
 
 /**
+ * To use this class you need to place the resource UUID into a column of the report query.
+ * The column needs to be then labeled with the ending "_ARTIFACT".  Then include this class
+ * as a post processor for a report.  The result of this post processing class is to place 
+ * the xml for the structured artifact (form) data instance into the internal xml format 
+ * element that contains the uuid of the resource thus replacing the uuid with the xml data.  
+ * For regular files it will put the file info into the node.
+ * 
+ * The type of report (warehouse or direct db) is placed into the internal xml.  This reads 
+ * that and will load resources based on this.
+ * 
+ * For warehouse reports you need to get this data in this example column label
+ *                select id `SOMELABEL_artifact` from dw_resource
+ *                
+ * For direct db reports you need to get this data in this example column label
+ *                select RESOURCE_UUID `UUID_ARTIFACT` from content_resource
+ * 
+ * (These examples are for you to figure out which columns you can pull to make this class work)
+ * (When linking to resources in other tools these are the fields you need)
+ *                
+ * Keep in mind the case of the column labels.  the default behavior is to uppercase the 
+ * labels to standardize labels between various databases.  Thus if you turn off the forcing
+ * of upper case then the "_artifact" label ending needs to be either all lowercase or 
+ * all uppercase.
+ * 
  * Created by IntelliJ IDEA.
  * User: John Ellis
  * Date: Dec 22, 2005
@@ -57,7 +85,7 @@ import org.theospi.portfolio.shared.intf.EntityContextFinder;
 public class LoadArtifactResultProcessor extends BaseResultProcessor {
 
    private IdManager idManager;
-   private String columnNamePattern = ".*_artifact$";
+   private String columnNamePattern = ".*_(artifact|ARTIFACT)$";
    private ArtifactFinderManager artifactFinderManager;
    private SecurityService securityService;
    private ReportsManager reportsManager;
@@ -71,15 +99,20 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
 
       List data = rootDoc.getRootElement().getChild("data").getChildren("datarow");
 
+      Element isWarehouseReportElement = rootDoc.getRootElement().getChild("isWarehouseReport");
+      
+      boolean isWarehouseReport = Boolean.valueOf(isWarehouseReportElement.getText());
+      
       for (Iterator i=data.iterator();i.hasNext();) {
          Element dataRow = (Element)i.next();
          processRow(dataRow, artifactsToLoad);
       }
 
-      loadArtifactTypes(artifactsToLoad);
-
+      // open the security to access all resources so we can get the types and the data
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
 
+      loadArtifactTypes(artifactsToLoad, isWarehouseReport);
+      
       for (Iterator i=artifactsToLoad.values().iterator();i.hasNext();) {
          ArtifactHolder holder = (ArtifactHolder) i.next();
          loadArtifact(result, holder);
@@ -128,40 +161,76 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
     * ERROR: the list of artifact Ids can only be 1000 elements in size, restriction of Oracle
     * @param artifactsToLoad
     */
-   protected void loadArtifactTypes(Map artifactsToLoad) {
+   protected void loadArtifactTypes(Map artifactsToLoad, boolean useWarehouse) {
       String artifactIds = "";
       int numFound = 0;
-
-      for (Iterator i=artifactsToLoad.values().iterator();i.hasNext();) {
-         ArtifactHolder holder = (ArtifactHolder) i.next();
-         if (holder.artifactType == null) {
-            if (numFound != 0) {
-               artifactIds += ",";
-            }
-            numFound++;
-            artifactIds += "'" + holder.artifactId.getValue() + "'";
-            
-            if(numFound >= 100) {
-               loadArtifactTypes(artifactIds, artifactsToLoad);
-               numFound = 0;
-               artifactIds = "";
+      if(useWarehouse) {
+         for (Iterator i=artifactsToLoad.values().iterator();i.hasNext();) {
+            ArtifactHolder holder = (ArtifactHolder) i.next();
+            if (holder.artifactType == null) {
+               if (numFound != 0) {
+                  artifactIds += ",";
+               }
+               numFound++;
+               artifactIds += "'" + holder.artifactId.getValue() + "'";
+               
+               if(numFound >= 100) {
+                  loadArtifactTypes(artifactIds, artifactsToLoad);
+                  numFound = 0;
+                  artifactIds = "";
+               }
             }
          }
-      }
+   
+         if (numFound > 0) {
+            loadArtifactTypes(artifactIds, artifactsToLoad);
+         }
+      } else {
+         for (Iterator i=artifactsToLoad.values().iterator();i.hasNext();) {
+            ArtifactHolder holder = (ArtifactHolder) i.next();
+            if (holder.artifactType == null) {
+               
+               //String uri = ContentHostingService.resolveUuid(holder.artifactId.getValue());
+               try {
+                  ContentResource resource = ContentHostingService.getResource(holder.artifactId.getValue());
+                  
+                  // this code comes from the ResourceTypePropertyAccess.getPropertyValue
+                  String propName = resource.getProperties().getNamePropStructObjType();
+                  String saType = resource.getProperties().getProperty(propName);
+                  if (saType != null) {
+                     holder.artifactType = saType;
+                  }else {
+                     holder.artifactType = "fileArtifact";
+                  }
 
-      if (numFound > 0) {
-         loadArtifactTypes(artifactIds, artifactsToLoad);
+               } catch (PermissionException e) {
+                  logger.error("", e);
+               } catch (IdUnusedException e) {
+                  logger.error("", e);
+               } catch (TypeException e) {
+                  logger.error("", e);
+               }
+               
+               
+            }
+         }
+         
+         
       }
+      
+      
    }
 
    
    protected void loadArtifact(ReportResult results, ArtifactHolder holder) {
+      
       ArtifactFinder finder = getArtifactFinderManager().getArtifactFinderByType(holder.artifactType);
 
       Artifact art;
 
       if (finder instanceof EntityContextFinder) {
          String uri = ContentHostingService.resolveUuid(holder.artifactId.getValue());
+
          String hash = getReportsManager().getReportResultKey(
                results, ContentHostingService.getReference(uri));
          art = ((EntityContextFinder)finder).loadInContext(holder.artifactId,
@@ -171,17 +240,21 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
       else {
          art = finder.load(holder.artifactId);
       }
-
-      PresentableObjectHome home = (PresentableObjectHome)art.getHome();
-      Element xml = home.getArtifactAsXml(art);
-
-      for (Iterator i=holder.reportElements.iterator();i.hasNext();) {
-         Element element = (Element) i.next();
-         element.removeContent();
-         element.addContent(xml);
-         
-         // each element can only have one parent
-         xml = (Element)xml.clone();
+      if(art != null) {
+         PresentableObjectHome home = (PresentableObjectHome)art.getHome();
+         Element xml = home.getArtifactAsXml(art);
+   
+         // replace the artifact uuid with the actual xml
+         for (Iterator i=holder.reportElements.iterator();i.hasNext();) {
+            Element element = (Element) i.next();
+            element.removeContent();
+            element.addContent(xml);
+            
+            // each element can only have one parent
+            //xml = (Element)xml.clone();
+         }
+      } else {
+         logger.debug("Artifact '" + holder.artifactId.toString() + "' of type '" + holder.artifactType + "' was not loaded");
       }
    }
 
