@@ -26,6 +26,7 @@ import java.io.StringReader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
+import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
@@ -65,6 +66,10 @@ public abstract class BaseResultProcessor implements ResultProcessor {
    protected ReportResult setResult(ReportResult result, Document doc) {
       result.setXml((new XMLOutputter()).outputString(doc));
       return result;
+   }
+
+   protected boolean isColumnNull(Element data) {
+      return new Boolean(data.getAttributeValue("isNull", "false")).booleanValue();
    }
 
 }

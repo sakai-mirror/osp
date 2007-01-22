@@ -868,6 +868,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport  implements ReportsM
             attr.setText(Boolean.toString(report.getIsSaved()));
             reportElement.addContent(attr);
             
+            attr = new Element("accessUrl");
+            attr.setText(ServerConfigurationService.getAccessUrl());
+            reportElement.addContent(attr);
+            
             
 			}
 			reportElement.addContent(docAttrNode);

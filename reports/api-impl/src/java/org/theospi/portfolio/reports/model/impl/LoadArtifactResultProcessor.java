@@ -85,7 +85,7 @@ import org.theospi.portfolio.shared.intf.EntityContextFinder;
 public class LoadArtifactResultProcessor extends BaseResultProcessor {
 
    private IdManager idManager;
-   private String columnNamePattern = ".*_(artifact|ARTIFACT)$";
+   private String columnNamePattern = ".*_artifact$";
    private ArtifactFinderManager artifactFinderManager;
    private SecurityService securityService;
    private ReportsManager reportsManager;
@@ -246,6 +246,7 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
    
          // replace the artifact uuid with the actual xml
          for (Iterator i=holder.reportElements.iterator();i.hasNext();) {
+            xml = (Element)xml.clone();
             Element element = (Element) i.next();
             element.removeContent();
             element.addContent(xml);
@@ -315,10 +316,6 @@ public class LoadArtifactResultProcessor extends BaseResultProcessor {
 
    protected String getColumnData(Element data) {
       return data.getTextNormalize();
-   }
-
-   protected boolean isColumnNull(Element data) {
-      return new Boolean(data.getAttributeValue("isNull", "false")).booleanValue();
    }
 
    protected boolean isArtifactColumn(Element data) {
