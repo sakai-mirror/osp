@@ -103,12 +103,6 @@
                     <property name="isExport"><value>false</value></property>
                     <property name="title"><value>Pending Evaluation</value></property>
                 </bean>
-          
-                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>WEB-INF/reportxsls/internalXML.xsl</value></property>
-                    <property name="isExport"><value>false</value></property>
-                    <property name="title"><value>Internal</value></property>
-                </bean>
             </list>
         </property>
 
@@ -211,12 +205,6 @@
                     <property name="xslLink"><value>WEB-INF/reportxsls/osp/matrix/UserSubmissionsDDB.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                     <property name="title"><value>User Submissions</value></property>
-                </bean>
-                
-                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>WEB-INF/reportxsls/internalXML.xsl</value></property>
-                    <property name="isExport"><value>false</value></property>
-                    <property name="title"><value>Internal</value></property>
                 </bean>
             </list>
         </property>
@@ -332,12 +320,6 @@
                     <property name="xslLink"><value>WEB-INF/reportxsls/osp/matrix/evaluationResultsDDB.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                     <property name="title"><value>User Submissions</value></property>
-                </bean>
-                
-                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>WEB-INF/reportxsls/internalXML.xsl</value></property>
-                    <property name="isExport"><value>false</value></property>
-                    <property name="title"><value>Internal</value></property>
                 </bean>
             </list>
         </property>
