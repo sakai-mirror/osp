@@ -40,6 +40,7 @@ public class SiteType implements Comparable {
    private List specialSites;
    private String name;
    private boolean hidden = false;
+   private boolean displayTab = true;
    public static final SiteType OTHER = new SiteType("org.theospi.portfolio.portal.other", "other", Integer.MAX_VALUE);
    public static final SiteType MY_WORKSPACE = new SiteType("org.theospi.portfolio.portal.myWorkspace", "workspace", 0);
    public static final SiteType GATEWAY = new SiteType("org.theospi.portfolio.portal.gateway", "gateway", 0);
@@ -135,6 +136,14 @@ public class SiteType implements Comparable {
     */
    public void setHidden(boolean hidden) {
       this.hidden = hidden;
+   }
+
+   public boolean isDisplayTab() {
+      return displayTab;
+   }
+
+   public void setDisplayTab(boolean displayTab) {
+      this.displayTab = displayTab;
    }
 
 }

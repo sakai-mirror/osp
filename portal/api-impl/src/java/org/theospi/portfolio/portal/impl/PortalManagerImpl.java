@@ -106,7 +106,7 @@ public class PortalManagerImpl implements PortalManager {
    
             addSpecialSites(siteType.getSpecialSites(), sites, allUserSites);
    
-            if (sites.size() > 0) {
+            if (sites.size() > 0 && siteType.isDisplayTab()) {
                if (addSite) {
                   addSite = !checkSites(siteId, sites);
                }
