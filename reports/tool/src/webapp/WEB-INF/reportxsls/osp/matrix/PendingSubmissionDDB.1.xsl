@@ -10,7 +10,9 @@
     
     Matrix: <xsl:value-of select="//datarow[1]/element[@colName='title']/." />
    
-    <div class="instruction">This report shows you the users who have open cells that can submit for evaluation when completed.</div>
+    <div class="instruction">
+    	This report shows you the users who have open cells that can submitted for evaluation when completed.
+    </div>
     
 	
 	<table border="1" width="80%" align="center">
@@ -22,6 +24,7 @@
 			</td>
 			
 			<xsl:for-each select="//group[@by='LEVEL_SEQUENCE']/datarow[not(element[@colName='LEVEL_SEQUENCE']/@isNull)]">
+			  <xsl:sort select="element[@colName='LEVEL_SEQUENCE']" data-type="number" />
 				<td width="50%">
 					<xsl:attribute name = "width" > 
 						<xsl:value-of select = "100 div (count(//group[@by='LEVEL_SEQUENCE']/datarow[not(element[@colName='LEVEL_SEQUENCE']/@isNull)]) + 1)" />%
@@ -32,7 +35,7 @@
 		</tr>
 		
 	<xsl:for-each select="//group[@by='CRITERION_SEQUENCE']/datarow[not(element[@colName='CRITERION_SEQUENCE']/@isNull)]">
-
+		<xsl:sort select="element[@colName='CRITERION_SEQUENCE']" data-type="number" />
 		<xsl:variable name = "varCriterion" select = "element[@colName='CRITERION_SEQUENCE']" />
 	 
 		 <tr>
@@ -46,6 +49,7 @@
 
 
 		   <xsl:for-each select="//group[@by='LEVEL_SEQUENCE']/datarow[not(element[@colName='LEVEL_SEQUENCE']/@isNull)]">
+			  <xsl:sort select="element[@colName='LEVEL_SEQUENCE']" data-type="number" />
 			  <xsl:variable name = "varLevel" select = "element[@colName='LEVEL_SEQUENCE']" />
 			  <td align="center">
 				
@@ -53,9 +57,9 @@
 						<xsl:value-of select = "element[@colName='READYCOLOR']" />
 					</xsl:attribute> 
 					
-				   <xsl:for-each select="//data/datarow[element[@colName='LEVEL_SEQUENCE'] = $varLevel and 
-														element[@colName='CRITERION_SEQUENCE'] = $varCriterion and
-														element[@colName='STATUS'] = 'READY']">
+				   <xsl:for-each select="//data/datarow[(element[@colName='LEVEL_SEQUENCE'] = $varLevel or element[@colName='LEVEL_SEQUENCE']/@isNull) and 
+														(element[@colName='CRITERION_SEQUENCE'] = $varCriterion or element[@colName='CRITERION_SEQUENCE']/@isNull) and
+														(element[@colName='STATUS'] = 'READY' or element[@colName='STATUS']/@isNull)]">
 														 
 						
                          <xsl:if test="not(element[@colName='LAST_NAME']/@isNull = 'true')" >
