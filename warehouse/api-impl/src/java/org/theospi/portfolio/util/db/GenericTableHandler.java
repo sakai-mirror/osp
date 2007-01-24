@@ -47,8 +47,8 @@ public class GenericTableHandler implements ContentHandler{
    private static int mode = UNSET;
    private static StringBuffer stmtBuffer;
    private int treeLevel;
-   private String tmpType;
-   private String tmpParm; 
+   private String tmpType = "";
+   private String tmpParm = ""; 
    private DbLoader loader;
    
    protected final Log logger = LogFactory.getLog(getClass());
@@ -177,10 +177,14 @@ public class GenericTableHandler implements ContentHandler{
 		 stmtBuffer.append(ch, start, length);
 	  else
 		 if(treeLevel == 1)
-			tmpType =  new String(ch, start, length);
+			tmpType +=  new String(ch, start, length);
 		 else
 			if(treeLevel == 2)
-			   tmpParm =  new String(ch, start, length);	
+			   tmpParm +=  new String(ch, start, length);	
+		//chmaurer 1/24/06
+		//Changed the tmpType and tmpParm to do a += due to some strange
+		// buffering issues.  We were seeing data types being truncated 
+		// if they fell at the end of the ch[] and were cut off.
    }
 
    protected void parseParamToDatabase(){
