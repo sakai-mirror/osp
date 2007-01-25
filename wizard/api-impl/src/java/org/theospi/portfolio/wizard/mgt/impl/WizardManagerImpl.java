@@ -33,10 +33,13 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.CacheException;
 
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Query;
 import org.hibernate.Hibernate;
+import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Restrictions;
 import org.jdom.CDATA;
 import org.jdom.DataConversionException;
@@ -476,6 +479,28 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return getHibernateTemplate().findByNamedParam("from Wizard w where w.published=:published " +
             "and w.siteId in ( :siteIds ) order by seq_num", 
             paramNames, params);
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   public List findPublishedWizards(List sites, boolean lazy) {
+      if (lazy) 
+         return findPublishedWizardsLazy(sites);
+      else
+         return findPublishedWizards(sites);
+   }
+   
+   
+   protected List findPublishedWizardsLazy(List sites) {
+      Criteria c = this.getSession().createCriteria(Wizard.class);
+      Criteria rootCat = c.createCriteria("rootCategory");
+      rootCat.setFetchMode("childPages", FetchMode.SELECT);
+      rootCat.setFetchMode("childCategories", FetchMode.SELECT);
+      c.add(Expression.eq("published", new Boolean(true)));
+      c.add(Expression.in("siteId", sites));
+      
+      return new ArrayList(c.list());
    }
    
    public List findPublishedWizards(String siteId) {

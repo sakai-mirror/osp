@@ -90,6 +90,8 @@ public interface WizardManager extends WorkflowEnabledManager {
 	public List findPublishedWizards(List sites);
 
 	public List findPublishedWizards(String siteId);
+   
+   public List findPublishedWizards(List sites, boolean lazy);
 
 	/**
 	 * Method to get each wizard page definition for the site identified by the
