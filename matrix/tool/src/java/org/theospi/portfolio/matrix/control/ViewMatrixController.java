@@ -81,6 +81,12 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       
       Id scaffoldingId = getIdManager().getId(strScaffoldingId);
       Scaffolding scaffolding = getMatrixManager().getScaffolding(scaffoldingId);
+      // Check for invalid scaffolding (could happen if scaffolding is deleted)
+      if (scaffolding == null )
+      {
+         logger.warn("Unable to find scaffolding: " + scaffoldingId );
+         return incomingModel;
+      }
 
       Agent currentAgent = getAuthManager().getAgent();
       boolean createAuthz = false;
@@ -189,8 +195,9 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       model.put("matrixOwner", owner);      
       model.put("readOnlyMatrix", readOnly);
       
-      if (getCurrentSitePageId().equals(
-            grid.getScaffolding().getExposedPageId())) {
+      if (grid.getScaffolding() != null &&
+          getCurrentSitePageId().equals(grid.getScaffolding().getExposedPageId())) 
+      {
          model.put("isExposedPage", Boolean.valueOf(true));
       }
       
@@ -241,7 +248,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
                Member member = (Member) memb.next();
                users.add(UserDirectoryService.getUser(member.getUserId()));
             } catch (UserNotDefinedException e) {
-               logger.error("Unable to find user: " + e.getId() + " " + e.toString());
+               logger.warn("Unable to find user: " + e.getId() + " " + e.toString());
             }            
          }
       } catch (IdUnusedException e) {

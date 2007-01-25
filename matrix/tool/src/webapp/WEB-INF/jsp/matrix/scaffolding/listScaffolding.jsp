@@ -79,11 +79,10 @@
                 <a href="<osp:url value="viewScaffolding.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_edit"/></a>
              </c:if>
              
-             <c:if test="${can.delete && scaffold.published == false}">
+             <c:if test="${can.delete}">
                 <c:if test="${hasFirstAction}" > | </c:if>
                 <c:set var="hasFirstAction" value="true" />
-             <a onclick="return confirmDeletion();"
-                   href="<osp:url value="deleteScaffolding.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_delete"/></a>
+             <a href="<osp:url value="deleteScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_delete"/></a>
              </c:if>
     
              <c:if test="${can.export}">

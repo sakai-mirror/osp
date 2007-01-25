@@ -92,6 +92,8 @@ public class CellFormPickerController extends CellController implements FormCont
          pageId = (String)session.get("page_id");
       }
       WizardPage page = getMatrixManager().getWizardPage(getIdManager().getId(pageId));
+      if ( page == null ) // error should already be logged
+         return null;
       
       if (session.get(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
             session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
