@@ -282,6 +282,23 @@
       </property>
    </bean>
    
+   <bean id="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer"
+      class="org.theospi.portfolio.wizard.taggable.impl.WizardActivityProducerImpl"
+      singleton="true" init-method="init" >
+      <property name="idManager">
+         <ref bean="idManager"/>
+      </property>
+      <property name="matrixManager">
+         <ref bean="matrixManager"/>
+      </property>
+      <property name="wizardManager">
+         <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager"/>
+      </property>
+      <property name="taggingManager">
+        <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+      </property>
+   </bean>
+
    <bean id="org.theospi.portfolio.style.mgt.AdditionalStyleConsumer.wizard"
       class="org.theospi.portfolio.style.mgt.AdditionalStyleConsumer"
       init-method="init" singleton="true">

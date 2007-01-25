@@ -9,6 +9,17 @@
 
 <form method="POST">
   
+    <c:if test="${taggable && !(empty helperInfoList)}">
+      <div class="navIntraTool">
+        <input type="hidden" name="providerType" value=""/>
+        <c:forEach var="helperInfo" items="${helperInfoList}">
+          <a href="javascript:document.forms[0].submitAction.value='tagActivity';document.forms[0].providerType.value='<c:out value="${helperInfo.provider.type}"/>';document.forms[0].onsubmit();document.forms[0].submit();"
+             title="<c:out value="${helperInfo.title}"/>">
+            <c:out value="${helperInfo.text}"/>
+          </a>
+        </c:forEach>
+      </div>
+    </c:if>
 
     <h3><fmt:message key="${pageTitleKey}" /></h3>
 

@@ -37,6 +37,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Query;
 import org.hibernate.Hibernate;
+import org.hibernate.criterion.Restrictions;
 import org.jdom.CDATA;
 import org.jdom.DataConversionException;
 import org.jdom.Document;
@@ -126,6 +127,11 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    static final private String   DOWNLOAD_WIZARD_ID_PARAM = "wizardId";
    static final private String   IMPORT_BASE_FOLDER_ID = "importedWizards";
+   
+   /**
+	 * property name for site identifier
+	 */
+	private static final String SITE_ID = "siteId";
 
    private AuthorizationFacade authorizationFacade;
    private SecurityService securityService;
@@ -476,6 +482,27 @@ public class WizardManagerImpl extends HibernateDaoSupport
       Object[] params = new Object[]{new Boolean(true), siteId};
       return getHibernateTemplate().find("from Wizard w where w.published=? and w.siteId=? order by seq_num", params);
    }
+   
+   public List<WizardPageDefinition> findWizardPageDefs(final String siteId) {
+	   return findWizardPageDefs(siteId, false);
+	}
+
+   public List<WizardPageDefinition> findWizardPageDefs(final String siteId,
+			final boolean deep) {
+		return (List) getHibernateTemplate().execute(new HibernateCallback() {
+			public Object doInHibernate(Session session) {
+				List<WizardPageDefinition> defs = (List) session
+						.createCriteria(WizardPageDefinition.class).add(
+								Restrictions.eq(SITE_ID, siteId)).list();
+				if (deep) {
+					for (WizardPageDefinition def : defs) {
+						Hibernate.initialize(def.getPages());
+					}
+				}
+				return defs;
+			}
+		});
+	}
    
    public Collection getAvailableForms(String siteId, String type) {
       return getStructuredArtifactDefinitionManager().findHomes(
@@ -1838,6 +1865,25 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return wps;
    }
    
+   public WizardPageDefinition getWizardPageDefinition(Id id) {
+		return getWizardPageDefinition(id, false);
+	}
+
+	public WizardPageDefinition getWizardPageDefinition(final Id id,
+			final boolean deep) {
+		return (WizardPageDefinition) getHibernateTemplate().execute(
+				new HibernateCallback() {
+					public Object doInHibernate(Session session) {
+						WizardPageDefinition def = (WizardPageDefinition) session
+								.get(WizardPageDefinition.class, id);
+						if (deep) {
+							Hibernate.initialize(def.getPages());
+						}
+						return def;
+					}
+				});
+	}
+  
    public List getCompletedWizardPagesByPageDef(Id id) {
       Object[] params = new Object[]{id};
       return getHibernateTemplate().find("from CompletedWizardPage w where w.wizardPageDefinition.wizardPageDefinition.id=?", params);

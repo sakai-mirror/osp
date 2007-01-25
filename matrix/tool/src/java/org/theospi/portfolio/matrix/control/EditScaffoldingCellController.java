@@ -23,6 +23,10 @@ package org.theospi.portfolio.matrix.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment.taggable.api.TaggableActivity;
+import org.sakaiproject.assignment.taggable.api.TaggingHelperInfo;
+import org.sakaiproject.assignment.taggable.api.TaggingManager;
+import org.sakaiproject.assignment.taggable.api.TaggingProvider;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -36,6 +40,7 @@ import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 import org.theospi.portfolio.guidance.mgt.GuidanceHelper;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
@@ -49,6 +54,7 @@ import org.theospi.portfolio.shared.model.CommonFormBean;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPage;
@@ -67,7 +73,8 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    private AgentManager agentManager;
    private WizardManager wizardManager;
    private AuthorizationFacade authzManager = null;
-   
+   private TaggingManager taggingManager;
+   private WizardActivityProducer wizardActivityProducer;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    
 // TODO move this constant somewhere where I can get to them from here and in WizardTool
@@ -81,6 +88,14 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       
       Map model = new HashMap();
 
+      TaggableActivity activity = wizardActivityProducer
+		.getActivity(sCell.getWizardPageDefinition());
+      
+      if (taggingManager.isTaggable() && (activity != null)) {
+			model.put("taggable", "true");
+			model.put("helperInfoList", getHelperInfo(activity));
+		}
+    
       model.put("reflectionDevices", getReflectionDevices());
       model.put("evaluationDevices", getEvaluationDevices());
       model.put("reviewDevices", getReviewDevices());
@@ -164,6 +179,27 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
             model.putAll(forwardModel);
             return new ModelAndView(forwardView, model);
          }
+         else if (action.equals("tagActivity")) {
+				EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage) session
+						.get(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
+				sessionBean.setScaffoldingCell(scaffoldingCell);
+				session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
+						"true");
+				// Get appropriate helperInfo
+				for (TaggingHelperInfo info : getHelperInfo(wizardActivityProducer
+						.getActivity(scaffoldingCell.getWizardPageDefinition()))) {
+					if (info.getProvider().getType().equals(
+							request.get("providerType"))) {
+						// Add parameters to session
+						for (String key : info.getParameterMap().keySet()) {
+							session.put(key, info.getParameterMap().get(key));
+						}
+						return new ModelAndView(new RedirectView(info
+								.getHelperId()
+								+ ".helper"));
+					}
+				}
+			}
          prepareModelWithScaffoldingId(model, scaffoldingCell);
          return new ModelAndView("return", model);
       }
@@ -478,6 +514,23 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       this.authzManager = authzManager;
    }
 
+	public TaggingManager getTaggingManager() {
+		return taggingManager;
+	}
+
+	public void setTaggingManager(TaggingManager taggingManager) {
+		this.taggingManager = taggingManager;
+	}
+
+	public WizardActivityProducer getWizardActivityProducer() {
+		return wizardActivityProducer;
+	}
+
+	public void setWizardActivityProducer(
+			WizardActivityProducer wizardActivityProducer) {
+		this.wizardActivityProducer = wizardActivityProducer;
+	}
+
    /**
     ** Determine if any matrix cell with the specified scaffoldingCell has been 'used'
     ** (containing reflections and/or added form items)
@@ -510,4 +563,16 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
       return false;
    }
       
+   protected List<TaggingHelperInfo> getHelperInfo(TaggableActivity activity) {
+		List<TaggingHelperInfo> infoList = new ArrayList<TaggingHelperInfo>();
+		if (taggingManager.isTaggable()) {
+			for (TaggingProvider provider : taggingManager.getProviders()) {
+				TaggingHelperInfo info = provider.getActivityHelperInfo(activity.getReference());
+				if (info != null) {
+					infoList.add(info);
+				}
+			}
+		}
+		return infoList;
+	}
 }
