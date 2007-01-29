@@ -184,6 +184,11 @@
 							 <a href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
 										<osp:param name="createFormAction" value="${cellFormDef.id}" />
+										<osp:param name="isMatrix" value="${isMatrix}" />
+										<osp:param name="isWizard" value="${isWizard}" />
+										<osp:param name="objectId" value="${objectId}" />
+										<osp:param name="objectTitle" value="${objectTitle}" />
+										<osp:param name="objectDesc" value="${objectDesc}" />
 										</osp:url>" onclick="javascript:stopEvents(event)">
 									 <fmt:message key="action_createForm"/></a>
 							 | 
@@ -325,6 +330,11 @@
                <osp:param name="page_id" value="${cell.wizardPage.id}" />
                <osp:param name="org_theospi_portfolio_review_type" value="0" />
                <osp:param name="process_type_key" value="page_id" />
+               <osp:param name="isMatrix" value="${isMatrix}" />
+					<osp:param name="isWizard" value="${isWizard}" />
+					<osp:param name="objectId" value="${objectId}" />
+					<osp:param name="objectTitle" value="${objectTitle}" />
+					<osp:param name="objectDesc" value="${objectDesc}" />
                </osp:url>">
                      <osp:message key="reflection_create"/></a>
       </c:if>
@@ -398,6 +408,10 @@
 						   <osp:param name="page_id" value="${cell.wizardPage.id}" />
 						<osp:param name="org_theospi_portfolio_review_type" value="2" />
 						<osp:param name="process_type_key" value="page_id" />
+					<osp:param name="isWizard" value="${isWizard}" />
+					<osp:param name="objectId" value="${objectId}" />
+					<osp:param name="objectTitle" value="${objectTitle}" />
+					<osp:param name="objectDesc" value="${objectDesc}" />
 						</osp:url>">
 							  <osp:message key="review"/></a>
 				  </c:if> 
@@ -444,6 +458,10 @@
 						   <osp:param name="page_id" value="${cell.wizardPage.id}" />
 						<osp:param name="org_theospi_portfolio_review_type" value="1" />
 						<osp:param name="process_type_key" value="page_id" />
+					<osp:param name="isWizard" value="${isWizard}" />
+					<osp:param name="objectId" value="${objectId}" />
+					<osp:param name="objectTitle" value="${objectTitle}" />
+					<osp:param name="objectDesc" value="${objectDesc}" />
 						</osp:url>">
 							  <osp:message key="add_evaluation"/></a>
 				  </c:if> 

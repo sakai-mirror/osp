@@ -272,6 +272,9 @@
             <property name="securityService">
                <ref bean="org.sakaiproject.authz.api.SecurityService" />
             </property>
+            <property name="structuredArtifactDefinitionManager">
+               <ref bean="structuredArtifactDefinitionManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -373,11 +376,15 @@
 	        <property name="lockManager">
 	           <ref bean="org.sakaiproject.content.api.LockManager"/>
 	        </property>
+	        <property name="contentHosting">
+               <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
          <props>
-            <prop key="success">formCreator</prop>
+            <prop key="formCreator">formCreator</prop>
+            <prop key="formEditor">formEditor</prop>
             <prop key="return">helperDone</prop>
             <prop key="postProcessor">postProcessorWorkflow</prop>
          </props>

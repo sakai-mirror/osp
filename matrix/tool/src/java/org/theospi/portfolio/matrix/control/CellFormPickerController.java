@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -28,21 +28,35 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.content.api.ContentCollection;
+import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageForm;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
+import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.tool.BaseFormResourceFilter;
 
 public class CellFormPickerController extends CellController implements FormController, LoadObjectController {
@@ -55,7 +69,8 @@ public class CellFormPickerController extends CellController implements FormCont
    
    public static final String HELPER_CREATOR = "filepicker.helper.creator";
    public static final String HELPER_PICKER = "filepicker.helper.picker";
-   
+
+   /*   
    public Map referenceData(Map request, Object command, Errors errors) {
       
 
@@ -83,7 +98,8 @@ public class CellFormPickerController extends CellController implements FormCont
       }
       return null;
    }
-
+*/
+   
    public Object fillBackingObject(Object incomingModel, Map request,
          Map session, Map application) throws Exception {
       
@@ -95,30 +111,44 @@ public class CellFormPickerController extends CellController implements FormCont
       if ( page == null ) // error should already be logged
          return null;
       
-      if (session.get(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
-            session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
-         // here is where we setup the id
-         List refs = (List)session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-         //if (session.get(WHICH_HELPER_KEY).equals(HELPER_PICKER))
-         if (HELPER_PICKER.equals((String)session.get(WHICH_HELPER_KEY)) &&
-               !"true".equals((String)session.get(KEEP_HELPER_LIST)))
-            page.getPageForms().clear();
+      if ((session.get(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
+            session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) || 
+            (FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)) && 
+            session.get(FormHelper.RETURN_REFERENCE_TAG) != null)) {
          
-         for (Iterator iter = refs.iterator(); iter.hasNext();) {
-            Reference ref = (Reference) iter.next();
-            Id id = getMatrixManager().getNode(ref).getId();
-            WizardPageForm wpf = new WizardPageForm();
-            wpf.setArtifactId(id);
-            wpf.setFormType(ref.getProperties().getProperty(
-                  ref.getProperties().getNamePropStructObjType()));
-            wpf.setWizardPage(page);
-            wpf.setNewId(getIdManager().createId());
-            page.getPageForms().add(wpf);
+      
+         if (session.get(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
+               session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
+            // here is where we setup the id
+            List refs = (List)session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+            //if (session.get(WHICH_HELPER_KEY).equals(HELPER_PICKER))
+            if (HELPER_PICKER.equals((String)session.get(WHICH_HELPER_KEY)) &&
+                  !"true".equals((String)session.get(KEEP_HELPER_LIST)))
+               page.getPageForms().clear();
+            
+            for (Iterator iter = refs.iterator(); iter.hasNext();) {
+               Reference ref = (Reference) iter.next();
+               Node node = getMatrixManager().getNode(ref);
+               processPageForm(node, page);
+            }
+            //getMatrixManager().storePage(page);
+            
+            session.remove(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+            session.remove(FilePickerHelper.FILE_PICKER_CANCEL);
+            
+         }
+         if (FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)) && 
+               session.get(FormHelper.RETURN_REFERENCE_TAG) != null) {
+            String artifactId = (String)session.get(FormHelper.RETURN_REFERENCE_TAG);
+            Node node = getMatrixManager().getNode(getIdManager().getId(artifactId));
+            processPageForm(node, page);
+            
+            session.remove(FormHelper.RETURN_REFERENCE_TAG);
+            session.remove(FormHelper.RETURN_ACTION_TAG);
+            
+            
          }
          getMatrixManager().storePage(page);
-         
-         session.remove(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-         session.remove(FilePickerHelper.FILE_PICKER_CANCEL);
          session.remove(ResourceEditingHelper.CREATE_TYPE);
          
          session.remove(ResourceEditingHelper.CREATE_PARENT);
@@ -128,6 +158,17 @@ public class CellFormPickerController extends CellController implements FormCont
          session.remove(KEEP_HELPER_LIST);
       }
       return null;
+   }
+   
+   protected void processPageForm(Node node, WizardPage page) {
+      Id id = node.getId();
+      WizardPageForm wpf = new WizardPageForm();
+      wpf.setArtifactId(id);
+      wpf.setFormType(node.getResource().getProperties().getProperty(
+            node.getResource().getProperties().getNamePropStructObjType()));
+      wpf.setWizardPage(page);
+      wpf.setNewId(getIdManager().createId());
+      page.getPageForms().add(wpf);
    }
    
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
@@ -140,13 +181,14 @@ public class CellFormPickerController extends CellController implements FormCont
          session.remove("page_id");
       }
       WizardPage page = getMatrixManager().getWizardPage(getIdManager().getId(pageId));
+      String pageTitle = page.getPageDefinition().getTitle();
       
       if (attachFormAction != null) {
          //session.setAttribute(TEMPLATE_PICKER, request.getParameter("pickerField"));
          //session.setAttribute("SessionPresentationTemplate", template);
          //session.setAttribute(STARTING_PAGE, request.getParameter("returnPage"));
          
-         List files = new ArrayList();
+         List<Reference> files = new ArrayList<Reference>();
          
          //String pickField = (String)request.get("formType");
          String id = "";
@@ -170,12 +212,12 @@ public class CellFormPickerController extends CellController implements FormCont
          
       }
       else if (createFormAction != null) {
-         setupSessionInfo(request, session, pageId, createFormAction);
+         String view = setupSessionInfo(request, session, pageId, pageTitle, createFormAction);
          session.put(WHICH_HELPER_KEY, HELPER_CREATOR);
-         return new ModelAndView("formCreator");
+         return new ModelAndView(view);
       }
       else if (viewFormAction != null) {
-         setupSessionInfo(request, session, pageId, viewFormAction);
+         setupSessionInfo(request, session, pageId, pageTitle, viewFormAction);
          getSecurityService().pushAdvisor(new AllowMapSecurityAdvisor(
                ContentHostingService.EVENT_RESOURCE_READ,
                (String)request.get("current_form_id")));
@@ -185,21 +227,97 @@ public class CellFormPickerController extends CellController implements FormCont
       return new ModelAndView("page", "page_id", pageId);
    }
    
-   protected void setupSessionInfo(Map request, Map session, String pageId, String formId) {
-      session.put(ResourceEditingHelper.CREATE_TYPE,
-            ResourceEditingHelper.CREATE_TYPE_FORM);
+   protected String setupSessionInfo(Map request, Map<String, Object> session, 
+         String pageId, String pageTitle, String formTypeId) {
+      String retView = "formCreator";
+      //session.put(ResourceEditingHelper.CREATE_TYPE,
+      //      ResourceEditingHelper.CREATE_TYPE_FORM);
       session.put("page_id", pageId);
       
-      
       if (request.get("current_form_id") == null) {
-//       CWM fix the parent path
-         session.put(ResourceEditingHelper.CREATE_PARENT, "/user/" + 
-               getSessionManager().getCurrentSessionUserId() + "/");
-         session.put(ResourceEditingHelper.CREATE_SUB_TYPE, formId);
          session.remove(ResourceEditingHelper.ATTACHMENT_ID);
+         session.put(ResourceEditingHelper.CREATE_TYPE,
+               ResourceEditingHelper.CREATE_TYPE_FORM);
+         session.put(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
+         
+         String objectId = (String)request.get("objectId");
+         String objectTitle = (String)request.get("objectTitle");
+         String objectDesc = (String)request.get("objectDesc");
+         
+         StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager().loadHome(formTypeId);
+         
+         try {
+            String folderBase = getUserCollection().getId();
+            
+            Placement placement = ToolManager.getCurrentPlacement();
+            String currentSite = placement.getContext();
+            
+            String folderPath = createFolder(folderBase, "portfolio-interaction", "Portfolio Interaction", "Folder to store forms uesd when interacting with Portfolio tools");
+            folderPath = createFolder(folderPath, currentSite, SiteService.getSiteDisplay(currentSite), null);
+            folderPath = createFolder(folderPath, objectId, objectTitle, objectDesc);
+            folderPath = createFolder(folderPath, formTypeId, bean.getDescription(), null);
+            
+            session.put(FormHelper.PARENT_ID_TAG, folderPath);
+         } catch (TypeException e) {
+            throw new RuntimeException("Failed to redirect to helper", e);
+         } catch (IdUnusedException e) {
+            throw new RuntimeException("Failed to redirect to helper", e);
+         } catch (PermissionException e) {
+            throw new RuntimeException("Failed to redirect to helper", e);
+         }
+         
+         //CWM OSP-UI-09 - for auto naming
+         session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(pageTitle, objectTitle, bean.getDescription()));
       } else {
+         //session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_form_id"));
+         session.remove(ResourceEditingHelper.CREATE_TYPE);
+         session.remove(ResourceEditingHelper.CREATE_SUB_TYPE);
+         session.remove(ResourceEditingHelper.CREATE_PARENT);
+         session.put(ResourceEditingHelper.CREATE_TYPE,
+            ResourceEditingHelper.CREATE_TYPE_FORM);
          session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_form_id"));
+         retView = "formEditor";
       }
+      return retView;
+   }
+   
+   protected String getFormDisplayName(String pageTitle, String objectTitle, String formTypeName) {
+      String includePageTitle = "";
+      if (pageTitle != null && pageTitle.length() > 0)
+         includePageTitle = pageTitle + "-";
+      
+      return objectTitle + "-" + includePageTitle + formTypeName;
+   }
+   
+   protected String createFolder(String base, String append, String appendDisplay, String appendDescription) {
+      //String folder = "/user/" + 
+      //SessionManager.getCurrentSessionUserId() + 
+      //PresentationManager.PRESENTATION_PROPERTIES_FOLDER_PATH;
+      String folder = base + append + "/";
+
+      try {
+         ContentCollectionEdit propFolder = getContentHosting().addCollection(folder);
+         propFolder.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, appendDisplay);
+         propFolder.getPropertiesEdit().addProperty(ResourceProperties.PROP_DESCRIPTION, appendDescription);
+         getContentHosting().commitCollection(propFolder);
+         return propFolder.getId();
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+      return folder;
+   }
+   
+   protected ContentCollection getUserCollection() throws TypeException, IdUnusedException, PermissionException {
+      User user = UserDirectoryService.getCurrentUser();
+      String userId = user.getId();
+      String wsId = SiteService.getUserSiteId(userId);
+      String wsCollectionId = getContentHosting().getSiteCollection(wsId);
+      ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
+      return collection;
    }
 
    /**

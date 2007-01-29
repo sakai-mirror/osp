@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -87,10 +87,16 @@ public class WizardPageForm extends IdentifiableObject {
     * @see java.lang.Object#hashCode()
     */
    public int hashCode() {
-      //TODO need better hashcode
+      String compositeId = "";
       Id id = this.getVirtualId();
-      if (id == null) return 0;
-      return id.getValue().hashCode();
+      try {
+         compositeId = getArtifactId().getValue() + getFormType() + 
+            getWizardPage().getId();
+      }      
+      catch (Exception e) {
+         compositeId = id.getValue();
+      }
+      return compositeId.hashCode();
    }
 /*      
    public String toString() {

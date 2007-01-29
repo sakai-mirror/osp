@@ -3,7 +3,7 @@
 * $Id:WizardPageController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
+import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 
 /**
@@ -82,10 +83,30 @@ public class WizardPageController extends CellController {
       return model;
    }
 
+   /**
+    *  {@inheritDoc}
+    */
    protected Style getDefaultStyle(Id pageId) {
       //Get the wizard default style
       CompletedWizard cw = getWizardManager().getCompletedWizardByPage(pageId);
       return cw.getWizard().getStyle();
+   }
+   
+   /**
+    *  {@inheritDoc}
+    */
+   protected String[] getObjectMetadata(String pageId, Map request) {
+      String[] objectMetadata = new String[3];
+      
+      WizardPage page = getMatrixManager().getWizardPage(getIdManager().getId(pageId));
+      WizardPageSequence seq = wizardManager.getWizardPageSeqByDef(page.getPageDefinition().getId());
+      Wizard wizard = seq.getCategory().getWizard();
+      //Cell cell = getMatrixManager().getCellFromPage(getIdManager().getId(pageId));
+      //Scaffolding scaffolding = cell.getMatrix().getScaffolding();
+      objectMetadata[METADATA_ID_INDEX] = wizard.getId().getValue();
+      objectMetadata[METADATA_TITLE_INDEX] = wizard.getName();
+      objectMetadata[METADATA_DESC_INDEX] = wizard.getDescription();
+      return objectMetadata;
    }
 
    /**
@@ -119,6 +140,7 @@ public class WizardPageController extends CellController {
       else
          request.put("categoryTitle", "");
 
+      request.put("wizardId", seq.getCategory().getWizard().getId().getValue());
       request.put("wizardTitle", seq.getCategory().getWizard().getName());
       request.put("wizardDescription", seq.getCategory().getWizard().getDescription());
 

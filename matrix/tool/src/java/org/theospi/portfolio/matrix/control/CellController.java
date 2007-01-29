@@ -3,7 +3,7 @@
 * $Id:CellController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
@@ -66,6 +67,10 @@ public class CellController implements FormController, LoadObjectController {
 
    public static final String WHICH_HELPER_KEY = "filepicker.helper.key";
    public static final String KEEP_HELPER_LIST = "filepicker.helper.keeplist";
+   
+   protected static final int METADATA_ID_INDEX = 0;
+   protected static final int METADATA_TITLE_INDEX = 1;
+   protected static final int METADATA_DESC_INDEX = 2;
 
 
    public Map referenceData(Map request, Object command, Errors errors) {
@@ -122,6 +127,11 @@ public class CellController implements FormController, LoadObjectController {
       }
       model.put("readOnlyMatrix", readOnly);
       
+      String[] objectMetadata = getObjectMetadata(pageId, request);
+      model.put("objectId", objectMetadata[METADATA_ID_INDEX]);
+      model.put("objectTitle", objectMetadata[METADATA_TITLE_INDEX]);
+      model.put("objectDesc", objectMetadata[METADATA_DESC_INDEX]);
+      
       Style style = cell.getCell().getWizardPage().getPageDefinition().getStyle();
       
       if (style != null) {
@@ -141,6 +151,11 @@ public class CellController implements FormController, LoadObjectController {
       return model;
    }
    
+   /**
+    * 
+    * @param pageId Id representation of the wizard page id
+    * @return The Style object used on the wizard page with the passed id.
+    */
    protected Style getDefaultStyle(Id pageId) {
       //Get the scaffolding default style
       WizardPage wp = getMatrixManager().getWizardPage(pageId);
@@ -157,6 +172,23 @@ public class CellController implements FormController, LoadObjectController {
           (id == null || getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING, id)))
           return new Boolean(false);
       return new Boolean(true);
+   }
+   
+   /**
+    * 
+    * @param pageId String representation of the wizard page id
+    * @param request Map containing all of the request variables
+    * @return String[] containing the id, title, and description of the object (matrix or wizard)
+    */
+   protected String[] getObjectMetadata(String pageId, Map request) {
+      String[] objectMetadata = new String[3];
+      
+      Cell cell = getMatrixManager().getCellFromPage(getIdManager().getId(pageId));
+      Scaffolding scaffolding = cell.getMatrix().getScaffolding();
+      objectMetadata[METADATA_ID_INDEX] = scaffolding.getId().getValue();
+      objectMetadata[METADATA_TITLE_INDEX] = scaffolding.getTitle();
+      objectMetadata[METADATA_DESC_INDEX] = scaffolding.getDescription();
+      return objectMetadata;
    }
    
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {

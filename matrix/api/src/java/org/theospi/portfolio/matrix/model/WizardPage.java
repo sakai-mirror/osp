@@ -3,7 +3,7 @@
 * $Id:WizardPage.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public class WizardPage extends IdentifiableObject {
    private Set attachments = new HashSet();
    private String status;
    private WizardPageDefinition pageDefinition;
-   private Set pageForms = new HashSet();
+   private Set<WizardPageForm> pageForms = new HashSet<WizardPageForm>();
    private Date modified;
    
    private Agent owner;
@@ -132,14 +132,14 @@ public class WizardPage extends IdentifiableObject {
    /**
     * @return Returns the Set of class WizardPageForm.
     */
-   public Set getPageForms() {
+   public Set<WizardPageForm> getPageForms() {
       return pageForms;
    }
 
    /**
     * @param pageForms A set of class WizardPageForm.
     */
-   public void setPageForms(Set pageForms) {
+   public void setPageForms(Set<WizardPageForm> pageForms) {
       this.pageForms = pageForms;
    }
 

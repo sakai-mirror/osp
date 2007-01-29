@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -76,6 +76,7 @@ import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
@@ -658,13 +659,17 @@ public class WizardTool extends BuilderTool {
             current.getRunningWizard().getBase().getId().getValue());
       session.setAttribute(ReviewHelper.REVIEW_TYPE_KEY,
             Integer.toString(type));
-
+      Wizard wiz = current.getBase();
+       
       // we want to have this reload when we come back
       current.setRunningWizard(null);
       loadCompletedWizard = true;
       
+      String urlParams = "?objectId=" + wiz.getId() + "&objectTitle=" + 
+               wiz.getName() + "&objectDesc=" + wiz.getDescription();
+      
       try {
-         context.redirect("osp.review.processor.helper/reviewHelper.osp");
+         context.redirect("osp.review.processor.helper/reviewHelper.osp" + urlParams);
       }
       catch (IOException e) {
          throw new RuntimeException("Failed to redirect to helper", e);
