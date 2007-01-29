@@ -17,7 +17,7 @@
             <list>
             	<ref bean="matrixPendingDirectDB" />
             	<ref bean="matrixAttachmentsDirectDB" />
-            	<!-- <ref bean="matrixAttachmentsAndEvalResultsDirectDB" /> --> <!-- this is an example report that requires a specific form -->
+            	<ref bean="matrixAttachmentsAndEvalResultsDirectDB" /> <!-- this is an example report that requires a specific form -->
                  <ref bean="matrixCellCompletionStatusByUser" />
                 <ref bean="matrixStatusByUser" />
                 <ref bean="matrixStatusByOwner" />
