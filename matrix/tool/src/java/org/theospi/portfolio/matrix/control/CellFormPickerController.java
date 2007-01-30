@@ -208,6 +208,13 @@ public class CellFormPickerController extends CellController implements FormCont
          session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
          session.put(WHICH_HELPER_KEY, HELPER_PICKER);
          session.put(KEEP_HELPER_LIST, "false");
+         
+         //Start in user's resources area
+         //osp-ui-05
+         String siteId = SiteService.getUserSiteId(getSessionManager().getCurrentSessionUserId());
+         String collectionId = getContentHosting().getSiteCollection(siteId);
+         session.put(FilePickerHelper.DEFAULT_COLLECTION_ID, collectionId);
+         
          return new ModelAndView("formPicker");
          
       }

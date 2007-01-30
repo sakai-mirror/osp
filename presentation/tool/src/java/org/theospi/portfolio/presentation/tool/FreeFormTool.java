@@ -33,10 +33,12 @@ import javax.faces.event.ActionEvent;
 import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.cover.EntityManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.theospi.jsf.intf.XmlTagFactory;
@@ -63,6 +65,7 @@ public class FreeFormTool extends HelperToolBase {
    private PresentationManager presentationManager;
    private IdManager idManager;
    private XmlTagFactory factory;
+   private ContentHostingService contentHosting;
 
    private Presentation presentation = null;
 
@@ -207,6 +210,12 @@ public class FreeFormTool extends HelperToolBase {
       }
 
       session.setAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS, attachmentRefs);
+      
+      //Start in user's resources area
+      //osp-ui-05
+      String siteId = SiteService.getUserSiteId(SessionManager.getCurrentSessionUserId());
+      String collectionId = getContentHosting().getSiteCollection(siteId);
+      session.setAttribute(FilePickerHelper.DEFAULT_COLLECTION_ID, collectionId);
 
       try {
          context.redirect("sakai.filepicker.helper/tool");
@@ -431,6 +440,20 @@ public class FreeFormTool extends HelperToolBase {
           return presentation.getStyle().getName();
        return "";
     }
+
+   /**
+    * @return the contentHosting
+    */
+   public ContentHostingService getContentHosting() {
+      return contentHosting;
+   }
+
+   /**
+    * @param contentHosting the contentHosting to set
+    */
+   public void setContentHosting(ContentHostingService contentHosting) {
+      this.contentHosting = contentHosting;
+   }
 
 
 }

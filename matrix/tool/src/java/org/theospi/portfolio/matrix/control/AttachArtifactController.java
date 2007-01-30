@@ -38,6 +38,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
@@ -77,6 +78,11 @@ public class AttachArtifactController implements Controller, LoadObjectControlle
          
          session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
          
+         //Start in user's resources area
+         //osp-ui-05
+         String siteId = SiteService.getUserSiteId(getSessionManager().getCurrentSessionUserId());
+         String collectionId = getContentHosting().getSiteCollection(siteId);
+         session.put(FilePickerHelper.DEFAULT_COLLECTION_ID, collectionId);
       }
       else {
          form = (CellAndNodeForm)session.get(

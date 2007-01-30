@@ -56,6 +56,12 @@
          <property-name>factory</property-name>
          <value>#{Components["org.theospi.jsf.intf.XmlTagFactory.freeFormPresentation"]}</value>
       </managed-property>
+      
+      <managed-property>
+         <description>Service Dependency: contentHosting</description>
+         <property-name>contentHosting</property-name>
+         <value>#{Components["org.sakaiproject.content.api.ContentHostingService"]}</value>
+      </managed-property>
    </managed-bean>
 
    <navigation-rule>
