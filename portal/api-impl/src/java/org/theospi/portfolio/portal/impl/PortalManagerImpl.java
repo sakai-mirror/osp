@@ -275,9 +275,11 @@ public class PortalManagerImpl implements PortalManager {
 
       if (tools.size() == 1) {
          ToolConfiguration toolConfig = (ToolConfiguration) tools.get(0);
-         String toolId = toolConfig.getTool().getId();
-         if (toolOrder.contains(toolId)) {
-            return toolOrder.indexOf(toolId);
+         if (toolConfig.getTool() != null) {
+            String toolId = toolConfig.getTool().getId();
+            if (toolOrder.contains(toolId)) {
+               return toolOrder.indexOf(toolId);
+            }
          }
       }
 
@@ -307,21 +309,23 @@ public class PortalManagerImpl implements PortalManager {
       Placement tool = (Placement) tools.get(0);
 
       boolean foundCategory = false;
-
-      String toolId = tool.getTool().getId();
       List toolCategories = new ArrayList();
-      if (siteType != null && siteType.getToolCategories() != null) {
-         for (Iterator i=siteType.getToolCategories().iterator();i.hasNext();){
-            ToolCategory category = (ToolCategory) i.next();
-            if (category.getTools().containsKey(toolId)) {
-               foundCategory = true;
-               Object key = category.getTools().get(toolId);
-               if (key instanceof String) {
-                  // no functions or authz to check here...
-                  toolCategories.add(new ToolCategory(category));
-               }
-               else if (hasAccess(page, tool, (ToolType)category.getTools().get(toolId))) {
-                  toolCategories.add(new ToolCategory(category));
+      
+      if (tool.getTool() != null) {
+         String toolId = tool.getTool().getId();
+         if (siteType != null && siteType.getToolCategories() != null) {
+            for (Iterator i=siteType.getToolCategories().iterator();i.hasNext();){
+               ToolCategory category = (ToolCategory) i.next();
+               if (category.getTools().containsKey(toolId)) {
+                  foundCategory = true;
+                  Object key = category.getTools().get(toolId);
+                  if (key instanceof String) {
+                     // no functions or authz to check here...
+                     toolCategories.add(new ToolCategory(category));
+                  }
+                  else if (hasAccess(page, tool, (ToolType)category.getTools().get(toolId))) {
+                     toolCategories.add(new ToolCategory(category));
+                  }
                }
             }
          }

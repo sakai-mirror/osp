@@ -743,7 +743,8 @@ public class XsltPortal extends CharonPortal {
 
       if (tools.size() > 0) {
          Placement placement = (Placement) tools.get(0);
-         return placement.getTool().getId();
+         if (placement.getTool() != null)
+            return placement.getTool().getId();
       }
 
       return "";
@@ -754,7 +755,8 @@ public class XsltPortal extends CharonPortal {
 
       for (Iterator i=tools.iterator();i.hasNext();) {
          Placement placement = (Placement) i.next();
-         toolsElement.appendChild(createToolXml(doc, placement, page));
+         if (placement.getTool() != null)
+            toolsElement.appendChild(createToolXml(doc, placement, page));
       }
 
       return toolsElement;
