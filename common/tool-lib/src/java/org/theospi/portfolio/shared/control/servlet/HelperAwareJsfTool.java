@@ -87,7 +87,7 @@ public class HelperAwareJsfTool extends JsfTool {
       {
          ToolSession session = SessionManager.getCurrentToolSession();
 
-         if (target == null || "/".equals(target))
+         if (target == null || "/".equals(target) || target.length() == 0)
          {
             if (!m_defaultToLastView) {
                // make sure tool session is clean
