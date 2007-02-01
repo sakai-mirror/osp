@@ -511,6 +511,9 @@
             <property name="contentHosting">
                <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
             </property>
+            <property name="reviewManager">
+               <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
+            </property>
          </bean>
       </property>
       <property name="customTypedEditors">
@@ -787,6 +790,9 @@
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
+            </property>
+            <property name="reviewManager">
+               <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
             </property>
          </bean>
       </property>

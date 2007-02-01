@@ -58,6 +58,8 @@ import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
+import org.theospi.portfolio.review.mgt.ReviewManager;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -76,6 +78,7 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
    private TaggingManager taggingManager;
    private WizardActivityProducer wizardActivityProducer;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
+   private ReviewManager reviewManager;
    
 // TODO move this constant somewhere where I can get to them from here and in WizardTool
    public final static String FORM_TYPE = "form";
@@ -169,7 +172,6 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
             String formDefId = (String)parmModel.get("id");
             scaffoldingCell.getWizardPageDefinition().getAdditionalForms().remove(formDefId);
             session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
-            //model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
             model.put("scaffoldingCell", scaffoldingCell);
             return new ModelAndView("success", model);
          }
@@ -532,6 +534,20 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
 	}
 
    /**
+    * @return Returns the reviewManager.
+    */
+   public ReviewManager getReviewManager() {
+      return reviewManager;
+   }
+
+   /**
+    * @param reviewManager The reviewManager to set.
+    */
+   public void setReviewManager(ReviewManager reviewManager) {
+      this.reviewManager = reviewManager;
+   }
+
+   /**
     ** Determine if any matrix cell with the specified scaffoldingCell has been 'used'
     ** (containing reflections and/or added form items)
     **/
@@ -552,10 +568,18 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
             if ( cell.getScaffoldingCell().equals( scaffoldingCell ) )
             {
                WizardPage wizardPage = cell.getWizardPage();
+					String pageId = wizardPage.getId().getValue();
                if ( wizardPage.getReflections() != null && wizardPage.getReflections().size() > 0 )
                   return true;
-               else if ( wizardPage.getPageForms() != null && wizardPage.getPageForms().size() > 0 )
+               if ( wizardPage.getPageForms() != null && wizardPage.getPageForms().size() > 0 )
                   return true;
+					if ( wizardPage.getFeedback() != null && wizardPage.getFeedback().size() > 0 )
+						return true;
+					if ( wizardPage.getAttachments() != null && wizardPage.getAttachments().size() > 0 )
+						return true;
+					if ( reviewManager.getReviewsByParent(pageId) != null && reviewManager.getReviewsByParent(pageId).size() > 0 )
+						return true;
+					// note: wizardPage.[get|set]Feedback() does not appear to be used
             }
          }
       }

@@ -44,6 +44,8 @@ import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
+import org.theospi.portfolio.review.mgt.ReviewManager;
 
 
 /**
@@ -58,6 +60,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
    private SessionManager sessionManager;
    private ContentHostingService contentHosting;
    private EntityManager entityManager;
+   private ReviewManager reviewManager;
 
 
    /* (non-Javadoc)
@@ -216,8 +219,22 @@ public class AddScaffoldingController extends BaseScaffoldingController
    }
    
    /**
+    * @return Returns the reviewManager.
+    */
+   public ReviewManager getReviewManager() {
+      return reviewManager;
+   }
+
+   /**
+    * @param reviewManager The reviewManager to set.
+    */
+   public void setReviewManager(ReviewManager reviewManager) {
+      this.reviewManager = reviewManager;
+   }
+
+   /**
     ** Determine if any matrix with the specified scaffoldingId has been 'used'
-    ** (containing reflections and/or added form items)
+    ** (e.g. containing reflections and/or added form items)
     **/
    private boolean isMatrixUsed( Id scaffoldingId ) 
    {
@@ -232,10 +249,16 @@ public class AddScaffoldingController extends BaseScaffoldingController
          {
             Cell cell = (Cell)cellIt.next();
             WizardPage wizardPage = cell.getWizardPage();
+				String pageId = wizardPage.getId().getValue();
             if ( wizardPage.getReflections() != null && wizardPage.getReflections().size() > 0 )
                return true;
             if ( wizardPage.getPageForms() != null && wizardPage.getPageForms().size() > 0 )
                return true;
+            if ( wizardPage.getAttachments() != null && wizardPage.getAttachments().size() > 0 )
+               return true;
+				if ( reviewManager.getReviewsByParent(pageId) != null && reviewManager.getReviewsByParent(pageId).size() > 0 )
+					return true;
+				// note: wizardPage.[get|set]Feedback() does not appear to be used
          }
       }
       
