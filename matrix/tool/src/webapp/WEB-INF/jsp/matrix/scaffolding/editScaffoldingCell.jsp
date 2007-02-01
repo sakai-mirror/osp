@@ -14,8 +14,8 @@
         <input type="hidden" name="providerType" value=""/>
         <c:forEach var="helperInfo" items="${helperInfoList}">
           <a href="javascript:document.forms[0].submitAction.value='tagActivity';document.forms[0].providerType.value='<c:out value="${helperInfo.provider.type}"/>';document.forms[0].onsubmit();document.forms[0].submit();"
-             title="<c:out value="${helperInfo.title}"/>">
-            <c:out value="${helperInfo.text}"/>
+             title="<c:out value="${helperInfo.description}"/>">
+            <c:out value="${helperInfo.name}"/>
           </a>
         </c:forEach>
       </div>
