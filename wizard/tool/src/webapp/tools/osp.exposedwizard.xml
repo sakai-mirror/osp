@@ -6,10 +6,9 @@
       
       <keyword name="wizard" />
        <keyword name="help"/>
-<!-- 
-       <configuration name="theospi.resetUrl"
-            value="/listWizard.osp" />
-       -->
+
+       <configuration name="osp.exposedwizard.wizard.id"
+            value="" />
 	</tool>
 
 </registration>

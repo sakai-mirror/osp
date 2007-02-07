@@ -6,10 +6,10 @@
       
       <keyword name="matrix" />
        <keyword name="help"/>
-<!-- 
-       <configuration name="theospi.resetUrl"
-            value="/listWizard.osp" />
-       -->
+       
+       <configuration name="osp.exposedmatrix.scaffolding.id"
+            value="" />
+
 	</tool>
 
 </registration>
