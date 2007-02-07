@@ -3,7 +3,7 @@
 * $Id:AddPresentationController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -30,14 +30,17 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.api.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
-import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -51,10 +54,14 @@ import org.sakaiproject.metaobj.utils.mvc.intf.TypedPropertyEditor;
 import org.sakaiproject.metaobj.utils.xml.SchemaFactory;
 import org.sakaiproject.metaobj.utils.xml.SchemaNode;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -68,7 +75,6 @@ import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationItem;
 import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
-import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.AuthorizationFacade;
@@ -85,6 +91,11 @@ public class AddPresentationController extends AbstractWizardFormController {
    final public static int PRESETATION_FREE_FORM_PAGES = 4;
    final public static int PRESENTATION_AUTHORIZATIONS = 5;
    final public static int PRESENTATION_NOTIFICATIONS = 6;
+   
+   final public static String SESSION_PAGE_PROP_ENTRY = "portfolio.pageProp.entry";
+   final public static String SESSION_PAGE_PROP_DIRECTION = "portfolio.pageProp.direction";
+   final public static int PAGE_DIRECTION_FORWARD = 1;
+   final public static int PAGE_DIRECTION_BACKWARD = -1;
 
    private IdManager idManager;
    private List customTypedEditors = new ArrayList();
@@ -233,30 +244,9 @@ public class AddPresentationController extends AbstractWizardFormController {
          
          Node propFormNode = getPresentationManager().getNode(presentation.getPropertyForm());
          
-         if (presentation.getPropertyForm() == null || propFormNode == null) {
-            String folder = "/user/" + 
-               SessionManager.getCurrentSessionUserId() + 
-               PresentationManager.PRESENTATION_PROPERTIES_FOLDER_PATH;
-            
-            try {
-               ContentCollectionEdit propFolder = getContentHosting().addCollection(folder);
-               propFolder.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, PresentationManager.PRESENTATION_PROPERTIES_FOLDER);
-               propFolder.getPropertiesEdit().addProperty(ResourceProperties.PROP_DESCRIPTION, "Folder for Portfolio Property Forms");
-               getContentHosting().commitCollection(propFolder);
-            }
-            catch (IdUsedException e) {
-               // ignore... it is already there.
-            }
-            catch (Exception e) {
-               throw new RuntimeException(e);
-            }
-            
-            session.setAttribute(ResourceEditingHelper.CREATE_PARENT, folder);
-            session.setAttribute(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
-            session.removeAttribute(ResourceEditingHelper.ATTACHMENT_ID);
-            
-         } else {            
-            session.setAttribute(ResourceEditingHelper.ATTACHMENT_ID, propFormNode.getResource().getId());
+         if (template.getPropertyFormType() != null) {
+            String nodeId = propFormNode == null ? null : propFormNode.getResource().getId();
+            setupSessionInfoForPropertyForm(session, presentation.getName(), formTypeId, nodeId);
          }
       }
       if (page == PRESETATION_FREE_FORM_PAGES) {
@@ -310,6 +300,97 @@ public class AddPresentationController extends AbstractWizardFormController {
 
       return model;
  }
+   
+   protected void setupSessionInfoForPropertyForm(HttpSession session, String presentationTitle, 
+         String formTypeId, String currentFormId) {
+      
+      if (currentFormId == null) {
+         session.removeAttribute(ResourceEditingHelper.ATTACHMENT_ID);
+         session.setAttribute(ResourceEditingHelper.CREATE_TYPE,
+               ResourceEditingHelper.CREATE_TYPE_FORM);
+         session.setAttribute(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
+
+         ResourceBundle myResources =
+            ResourceBundle.getBundle(PresentationManager.PRESENTATION_MESSAGE_BUNDLE);
+         
+         String propFormText = myResources.getString("propertyForm");
+         
+         try {
+            String folderBase = getUserCollection().getId();
+            
+            Placement placement = ToolManager.getCurrentPlacement();
+            String currentSite = placement.getContext();
+            
+            String rootDisplayName = myResources.getString(PresentationManager.PORTFOLIO_INTERACTION_FOLDER_DISPNAME);
+            String rootDescription = myResources.getString(PresentationManager.PORTFOLIO_INTERACTION_FOLDER_DESC);
+            
+            String folderPath = createFolder(folderBase, "portfolio-interaction", rootDisplayName, rootDescription);
+            folderPath = createFolder(folderPath, currentSite, SiteService.getSiteDisplay(currentSite), null);
+            
+            String dispName = 
+               myResources.getString(PresentationManager.PRESENTATION_PROPERTIES_FOLDER_DISPNAME);
+            String desc = myResources.getString(PresentationManager.PRESENTATION_PROPERTIES_FOLDER_DESC);
+            
+            folderPath = createFolder(folderPath, 
+                  PresentationManager.PRESENTATION_PROPERTIES_FOLDER, 
+                  dispName, desc);
+            
+            session.setAttribute(FormHelper.PARENT_ID_TAG, folderPath);
+         } catch (TypeException e) {
+            throw new RuntimeException("Failed to redirect to helper", e);
+         } catch (IdUnusedException e) {
+            throw new RuntimeException("Failed to redirect to helper", e);
+         } catch (PermissionException e) {
+            throw new RuntimeException("Failed to redirect to helper", e);
+         }
+         
+         //CWM OSP-UI-09 - for auto naming
+         session.setAttribute(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(presentationTitle, propFormText));
+      } else {
+         //session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_form_id"));
+         session.removeAttribute(ResourceEditingHelper.CREATE_TYPE);
+         session.removeAttribute(ResourceEditingHelper.CREATE_SUB_TYPE);
+         session.removeAttribute(ResourceEditingHelper.CREATE_PARENT);
+         session.setAttribute(ResourceEditingHelper.CREATE_TYPE,
+            ResourceEditingHelper.CREATE_TYPE_FORM);
+         session.setAttribute(ResourceEditingHelper.ATTACHMENT_ID, currentFormId);
+      }
+   }
+   
+   protected String getFormDisplayName(String objectTitle, String formTypeName) {
+      return objectTitle + "-" + formTypeName;
+   }
+   
+   protected String createFolder(String base, String append, String appendDisplay, String appendDescription) {
+      //String folder = "/user/" + 
+      //SessionManager.getCurrentSessionUserId() + 
+      //PresentationManager.PRESENTATION_PROPERTIES_FOLDER_PATH;
+      String folder = base + append + "/";
+
+      try {
+         ContentCollectionEdit propFolder = getContentHosting().addCollection(folder);
+         propFolder.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, appendDisplay);
+         propFolder.getPropertiesEdit().addProperty(ResourceProperties.PROP_DESCRIPTION, appendDescription);
+         getContentHosting().commitCollection(propFolder);
+         return propFolder.getId();
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+      return folder;
+   }
+   
+   protected ContentCollection getUserCollection() throws TypeException, IdUnusedException, PermissionException {
+      User user = UserDirectoryService.getCurrentUser();
+      String userId = user.getId();
+      String wsId = SiteService.getUserSiteId(userId);
+      String wsCollectionId = getContentHosting().getSiteCollection(wsId);
+      ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
+      return collection;
+   }
 
    protected Integer getTotalPages(Presentation presentation, int page) {
       if (presentation.getTemplate().getPropertyPage() == null) {
@@ -343,11 +424,6 @@ public class AddPresentationController extends AbstractWizardFormController {
    }
 
    protected int getTargetPage(HttpServletRequest request, Object command, Errors errors, int currentPage) {
-      final String SESSION_PAGE_PROP_ENTRY = "portfolio.pageProp.entry";
-      final String SESSION_PAGE_PROP_DIRECTION = "portfolio.pageProp.direction";
-      final int PAGE_DIRECTION_FORWARD = 1;
-      final int PAGE_DIRECTION_BACKWARD = -1;
-      
       if (logger.isDebugEnabled()) {
          logger.debug("getTargetPage()");
       }
@@ -396,34 +472,29 @@ public class AddPresentationController extends AbstractWizardFormController {
             return target + 1;
          if (!hasProperties && currentPage == PRESENTATION_ITEMS && target < currentPage)
             return target - 1;
-         if (hasProperties && session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
-            List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-            if (refs.size() == 1) {
-               Reference ref = (Reference)refs.get(0);
-               Node node = getPresentationManager().getNode(ref);
-               presentation.setPropertyForm(node.getId());
-            }
-            session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
+         if (hasProperties && 
+               FormHelper.RETURN_ACTION_SAVE.equals((String)session.getAttribute(FormHelper.RETURN_ACTION_TAG)) && 
+               session.getAttribute(FormHelper.RETURN_REFERENCE_TAG) != null) {
+            String artifactId = (String)session.getAttribute(FormHelper.RETURN_REFERENCE_TAG);
+            
+            Node node = getPresentationManager().getNode(getIdManager().getId(artifactId));
+            presentation.setPropertyForm(node.getId());
+            
+            session.removeAttribute(FormHelper.RETURN_REFERENCE_TAG);
+            session.removeAttribute(FormHelper.RETURN_ACTION_TAG);
             session.removeAttribute(SESSION_PAGE_PROP_ENTRY);
-            return target + 1;
+            return getDirection(session, target, false);
          }
-         if (hasProperties && (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) != null || 
-               session.getAttribute(SESSION_PAGE_PROP_ENTRY) != null)) {
-            session.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
+         
+         if (hasProperties && 
+               (FormHelper.RETURN_ACTION_CANCEL.equals((String)session.getAttribute(FormHelper.RETURN_ACTION_TAG)) || 
+                     session.getAttribute(SESSION_PAGE_PROP_ENTRY) != null)) {
+            session.removeAttribute(FormHelper.RETURN_ACTION_TAG);
             session.removeAttribute(SESSION_PAGE_PROP_ENTRY);
-            int direction = PAGE_DIRECTION_FORWARD;
-            try {
-               direction = ((Integer)session.getAttribute(SESSION_PAGE_PROP_DIRECTION)).intValue();
-            }
-            catch (Exception e) {
-               logger.warn("Couldn't get direction.  Moving to target: " + (target + direction));
-               return target + direction;
-            }
-            session.removeAttribute(SESSION_PAGE_PROP_DIRECTION);
-            return target + direction;
+            return getDirection(session, target, true);
          }
-                  
-         //I think if we get here, we just wnt to go to the prop page...
+         
+         //I think if we get here, we just want to go to the prop page...
          session.setAttribute(SESSION_PAGE_PROP_ENTRY, "true");
          if (currentPage < target) {
             session.setAttribute(SESSION_PAGE_PROP_DIRECTION, new Integer(PAGE_DIRECTION_FORWARD));
@@ -434,6 +505,20 @@ public class AddPresentationController extends AbstractWizardFormController {
       }
 
       return target;
+   }
+   
+   protected int getDirection(HttpSession session, int target, boolean cancelSwitch) {
+      int cancelSwitcher = cancelSwitch ? -1 : 1;
+      int direction = PAGE_DIRECTION_FORWARD;
+      try {
+         direction = ((Integer)session.getAttribute(SESSION_PAGE_PROP_DIRECTION)).intValue();
+      }
+      catch (Exception e) {
+         logger.warn("Couldn't get direction.  Moving to target: " + (target + (direction * cancelSwitcher)));
+         //return target + (direction * cancelSwitcher);
+      }
+      session.removeAttribute(SESSION_PAGE_PROP_DIRECTION);
+      return target + (direction * cancelSwitcher);
    }
 
    protected boolean hasProperties(Presentation presentation) {
@@ -510,6 +595,14 @@ public class AddPresentationController extends AbstractWizardFormController {
             return true;
          }
       }
+      
+      //This is if the form helper was a cancel...
+      if (FormHelper.RETURN_ACTION_CANCEL.equals((String)session.getAttribute(FormHelper.RETURN_ACTION_TAG))) {
+         session.removeAttribute(FormHelper.RETURN_ACTION_TAG);
+         session.removeAttribute(SESSION_PAGE_PROP_ENTRY);
+         return true;
+      }
+      
       return super.isCancelRequest(request);
    }
 
@@ -637,7 +730,7 @@ public class AddPresentationController extends AbstractWizardFormController {
       url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
 
       ResourceBundle myResources =
-         ResourceBundle.getBundle("org.theospi.portfolio.presentation.bundle.Messages");
+         ResourceBundle.getBundle(PresentationManager.PRESENTATION_MESSAGE_BUNDLE);
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, "osp.presentation.view");
 
       String id = pres.getId()!=null ? pres.getId().getValue() : pres.getNewId().getValue();

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -252,14 +253,18 @@ public class CellFormPickerController extends CellController implements FormCont
          String objectDesc = (String)request.get("objectDesc");
          
          StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager().loadHome(formTypeId);
-         
+         ResourceBundle myResources = 
+            ResourceBundle.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
          try {
             String folderBase = getUserCollection().getId();
             
             Placement placement = ToolManager.getCurrentPlacement();
             String currentSite = placement.getContext();
             
-            String folderPath = createFolder(folderBase, "portfolio-interaction", "Portfolio Interaction", "Folder to store forms uesd when interacting with Portfolio tools");
+            String rootDisplayName = myResources.getString("portfolioInteraction.displayName");
+            String rootDescription = myResources.getString("portfolioInteraction.description");
+            
+            String folderPath = createFolder(folderBase, "portfolio-interaction", rootDisplayName, rootDescription);
             folderPath = createFolder(folderPath, currentSite, SiteService.getSiteDisplay(currentSite), null);
             folderPath = createFolder(folderPath, objectId, objectTitle, objectDesc);
             folderPath = createFolder(folderPath, formTypeId, bean.getDescription(), null);

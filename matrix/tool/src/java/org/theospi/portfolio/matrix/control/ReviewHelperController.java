@@ -284,7 +284,10 @@ public class ReviewHelperController implements Controller {
             Placement placement = ToolManager.getCurrentPlacement();
             String currentSite = placement.getContext();
             
-            String folderPath = createFolder(folderBase, "portfolio-interaction", "Portfolio Interaction", "Folder to store forms uesd when interacting with Portfolio tools");
+            String rootDisplayName = myResources.getString("portfolioInteraction.displayName");
+            String rootDescription = myResources.getString("portfolioInteraction.description");
+            
+            String folderPath = createFolder(folderBase, "portfolio-interaction", rootDisplayName, rootDescription);
             folderPath = createFolder(folderPath, currentSite, SiteService.getSiteDisplay(currentSite), null);
             folderPath = createFolder(folderPath, objectId, objectTitle, objectDesc);
             folderPath = createFolder(folderPath, formTypeId, formTypeTitle, null);

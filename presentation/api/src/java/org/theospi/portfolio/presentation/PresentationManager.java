@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -53,7 +53,12 @@ import org.theospi.portfolio.shared.model.Node;
 public interface PresentationManager extends CleanupableService {
 
    public static final String PRESENTATION_PROPERTIES_FOLDER = "portfolioPropertyForms";
+   public static final String PRESENTATION_PROPERTIES_FOLDER_DISPNAME = "portfolioPropertyForms.displayName";
+   public static final String PRESENTATION_PROPERTIES_FOLDER_DESC = "portfolioPropertyForms.description";
+   public static final String PORTFOLIO_INTERACTION_FOLDER_DISPNAME = "portfolioInteraction.displayName";
+   public static final String PORTFOLIO_INTERACTION_FOLDER_DESC = "portfolioInteraction.description";
    public static final String PRESENTATION_PROPERTIES_FOLDER_PATH = "/" + PRESENTATION_PROPERTIES_FOLDER + "/";
+   public static final String PRESENTATION_MESSAGE_BUNDLE = "org.theospi.portfolio.presentation.bundle.Messages";
 
    
    public PresentationTemplate storeTemplate(PresentationTemplate template);
