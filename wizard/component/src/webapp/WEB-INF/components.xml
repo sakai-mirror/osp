@@ -297,6 +297,14 @@
       <property name="taggingManager">
         <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
       </property>
+      <property name="authzManager">
+        <ref bean="authzManager"/>
+      </property>
+      <property name="ratingProviderIds">
+        <list>
+          <value>org.sakaiproject.gmt.tagging.api.GmtTaggingProvider</value>
+        </list>
+      </property>
    </bean>
 
    <bean id="org.theospi.portfolio.style.mgt.AdditionalStyleConsumer.wizard"

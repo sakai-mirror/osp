@@ -21,14 +21,8 @@
 
 package org.theospi.portfolio.wizard.taggable.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.sakaiproject.assignment.taggable.api.TaggableActivity;
 import org.sakaiproject.assignment.taggable.api.TaggableActivityProducer;
-import org.sakaiproject.assignment.taggable.api.TaggableItem;
-import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 
 public class WizardActivityImpl implements TaggableActivity {
@@ -47,31 +41,16 @@ public class WizardActivityImpl implements TaggableActivity {
 				.toString());
 	}
 
+	public Object getObject() {
+		return def;
+	}
+
 	public String getContext() {
 		return def.getSiteId();
 	}
 
 	public String getDescription() {
 		return def.getDescription();
-	}
-
-	public List<TaggableItem> getItems() {
-		List<TaggableItem> items = new ArrayList<TaggableItem>();
-		for (Iterator<WizardPage> i = def.getPages().iterator(); i.hasNext();) {
-			items.add(new WizardItemImpl(i.next(), this));
-		}
-		return items;
-	}
-
-	public List<TaggableItem> getItems(String userId) {
-		List<TaggableItem> items = new ArrayList<TaggableItem>();
-		for (Iterator<WizardPage> i = def.getPages().iterator(); i.hasNext();) {
-			WizardPage page = i.next();
-			if (page.getOwner().getId().getValue().equals(userId)) {
-				items.add(new WizardItemImpl(page, this));
-			}
-		}
-		return items;
 	}
 
 	public TaggableActivityProducer getProducer() {
@@ -85,5 +64,4 @@ public class WizardActivityImpl implements TaggableActivity {
 	public String getTitle() {
 		return def.getTitle();
 	}
-
 }

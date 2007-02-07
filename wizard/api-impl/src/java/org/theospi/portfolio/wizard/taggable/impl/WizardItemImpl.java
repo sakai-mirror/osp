@@ -41,6 +41,10 @@ public class WizardItemImpl implements TaggableItem {
 				.toString());
 	}
 
+	public Object getObject() {
+		return page;
+	}
+
 	public TaggableActivity getActivity() {
 		return activity;
 	}

@@ -1,10 +1,9 @@
-
 /**********************************************************************************
 * $URL:https://source.sakaiproject.org/svn/osp/trunk/matrix/tool/src/java/org/theospi/portfolio/matrix/control/EditScaffoldingCellController.java $
 * $Id:EditScaffoldingCellController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -19,6 +18,7 @@
 * limitations under the License.
 *
 **********************************************************************************/
+
 package org.theospi.portfolio.matrix.control;
 
 import org.apache.commons.logging.Log;
@@ -58,7 +58,6 @@ import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPage;
-import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 
 import java.text.MessageFormat;
@@ -190,8 +189,8 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
 				// Get appropriate helperInfo
 				for (TaggingHelperInfo info : getHelperInfo(wizardActivityProducer
 						.getActivity(scaffoldingCell.getWizardPageDefinition()))) {
-					if (info.getProvider().getType().equals(
-							request.get("providerType"))) {
+					if (info.getProvider().getId().equals(
+							request.get("providerId"))) {
 						// Add parameters to session
 						for (String key : info.getParameterMap().keySet()) {
 							session.put(key, info.getParameterMap().get(key));

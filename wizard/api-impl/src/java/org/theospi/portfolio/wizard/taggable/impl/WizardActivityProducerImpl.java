@@ -22,6 +22,7 @@
 package org.theospi.portfolio.wizard.taggable.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -29,11 +30,14 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment.taggable.api.TaggableActivity;
 import org.sakaiproject.assignment.taggable.api.TaggableItem;
 import org.sakaiproject.assignment.taggable.api.TaggingManager;
+import org.sakaiproject.assignment.taggable.api.TaggingProvider;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.util.ResourceLoader;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 
@@ -47,6 +51,10 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 
 	TaggingManager taggingManager;
 
+	AuthorizationFacade authzManager;
+
+	List<String> ratingProviderIds;
+
 	private static final Log logger = LogFactory
 			.getLog(WizardActivityProducerImpl.class);
 
@@ -54,7 +62,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 			"org.theospi.portfolio.wizard.bundle.Messages");
 
 	public void init() {
-		logger.info(this + ".init()");
+		logger.info("init()");
 
 		taggingManager.registerProducer(this);
 	}
@@ -87,21 +95,39 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		return taggingManager;
 	}
 
+	public AuthorizationFacade getAuthzManager() {
+		return authzManager;
+	}
+
+	public void setAuthzManager(AuthorizationFacade authzManager) {
+		this.authzManager = authzManager;
+	}
+
 	public void setTaggingManager(TaggingManager taggingManager) {
 		this.taggingManager = taggingManager;
+	}
+
+	public List<String> getRatingProviderIds() {
+		return ratingProviderIds;
+	}
+
+	public void setRatingProviderIds(List<String> ratingProviderIds) {
+		this.ratingProviderIds = ratingProviderIds;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * Each reference to an activity or item produced by this service must start
-	 * with {@link WizardActivityProducer#REF_ROOT}.
+	 * Checks that this can be returned as a valid instance of
+	 * {@link WizardReference}.
 	 */
 	public boolean checkReference(String ref) {
 		return (WizardReference.getReference(ref) != null ? true : false);
 	}
 
-	public List<TaggableActivity> getActivities(String context) {
+	public List<TaggableActivity> getActivities(String context,
+			TaggingProvider provider) {
+		// We aren't picky about the provider, so ignore that argument.
 		List<TaggableActivity> activities = new ArrayList<TaggableActivity>();
 		for (WizardPageDefinition def : wizardManager.findWizardPageDefs(
 				context, true)) {
@@ -110,13 +136,19 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		return activities;
 	}
 
-	public TaggableActivity getActivity(String activityRef) {
+	public TaggableActivity getActivity(String activityRef,
+			TaggingProvider provider) {
+		// We aren't picky about the provider, so ignore that argument.
 		TaggableActivity activity = null;
-		WizardReference reference = WizardReference.getReference(activityRef);
-		if (reference != null) {
-			WizardPageDefinition def = wizardManager.getWizardPageDefinition(
-					idManager.getId(reference.getId()), true);
-			activity = getActivity(def);
+		if (checkReference(activityRef)) {
+			WizardReference reference = WizardReference
+					.getReference(activityRef);
+			if (reference != null) {
+				WizardPageDefinition def = wizardManager
+						.getWizardPageDefinition(idManager.getId(reference
+								.getId()), true);
+				activity = getActivity(def);
+			}
 		}
 		return activity;
 	}
@@ -137,25 +169,104 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		return context;
 	}
 
-	public TaggableItem getItem(String itemRef) {
+	public TaggableItem getItem(String itemRef, TaggingProvider provider) {
 		TaggableItem item = null;
-		WizardReference reference = WizardReference.getReference(itemRef);
-		if (reference != null) {
-			WizardPage page = matrixManager.getWizardPage(idManager
-					.getId(reference.getId()));
-			if (page != null) {
-				item = getItem(page);
+		if (checkReference(itemRef)) {
+			// Only return item to a specified rating (evalutation) provider
+			if (ratingProviderIds.contains(provider.getId())) {
+				WizardReference reference = WizardReference
+						.getReference(itemRef);
+				if (reference != null) {
+					WizardPage page = matrixManager.getWizardPage(idManager
+							.getId(reference.getId()));
+					if (page != null) {
+						// Make sure this page is evaluatable by the current
+						// user
+						if (page.getStatus().equals(
+								MatrixFunctionConstants.PENDING_STATUS)
+								&& getAuthzManager()
+										.isAuthorized(
+												MatrixFunctionConstants.EVALUATE_MATRIX,
+												page.getPageDefinition()
+														.getId())) {
+							item = getItem(page);
+						}
+					}
+				}
+			} else {
+				// Notify other tagging providers that they aren't accepted here
+				// yet
+				logger.warn(this + ".getItem(): Provider with id "
+						+ provider.getId() + " not allowed!");
 			}
 		}
 		return item;
+	}
+
+	public List<TaggableItem> getItems(TaggableActivity activity,
+			TaggingProvider provider) {
+		List<TaggableItem> items = new ArrayList<TaggableItem>();
+		// Only return items to a specified rating provider
+		if (ratingProviderIds.contains(provider.getId())) {
+			WizardPageDefinition def = (WizardPageDefinition) activity
+					.getObject();
+			for (Iterator<WizardPage> i = def.getPages().iterator(); i
+					.hasNext();) {
+				// Make sure this page is evaluatable by the current
+				// user
+				WizardPage page = i.next();
+				if (page.getStatus().equals(
+						MatrixFunctionConstants.PENDING_STATUS)
+						&& getAuthzManager().isAuthorized(
+								MatrixFunctionConstants.EVALUATE_MATRIX,
+								page.getPageDefinition().getId())) {
+					items.add(getItem(page));
+				}
+			}
+		} else {
+			// Notify other tagging providers that they aren't accepted here yet
+			logger.warn(this + ".getItems(): Provider with id "
+					+ provider.getId() + " not allowed!");
+		}
+		return items;
+	}
+
+	public List<TaggableItem> getItems(TaggableActivity activity,
+			String userId, TaggingProvider provider) {
+		List<TaggableItem> items = new ArrayList<TaggableItem>();
+		// Return custom list of items to rating providers. This
+		// list should match that seen in the evaluation item list (?)
+		if (ratingProviderIds.contains(provider.getId())) {
+			WizardPageDefinition def = (WizardPageDefinition) activity
+					.getObject();
+			for (Iterator<WizardPage> i = def.getPages().iterator(); i
+					.hasNext();) {
+				// Make sure this page is evaluatable by the current
+				// user and that it is owned by the specified user id
+				WizardPage page = i.next();
+				if (page.getStatus().equals(
+						MatrixFunctionConstants.PENDING_STATUS)
+						&& getAuthzManager().isAuthorized(
+								MatrixFunctionConstants.EVALUATE_MATRIX,
+								page.getPageDefinition().getId())
+						&& page.getOwner().getId().getValue().equals(userId)) {
+					items.add(getItem(page));
+				}
+			}
+		} else {
+			// Notify other tagging providers that they aren't accepted here yet
+			logger.warn(this + ".getItems() 2: Provider with id "
+					+ provider.getId() + " not allowed!");
+		}
+		return items;
 	}
 
 	public String getName() {
 		return messages.getString("service_name");
 	}
 
-	public String getType() {
-		return WizardActivityProducer.TYPE_NAME;
+	public String getId() {
+		return WizardActivityProducer.PRODUCER_ID;
 	}
 
 	public TaggableActivity getActivity(WizardPageDefinition wizardPageDef) {

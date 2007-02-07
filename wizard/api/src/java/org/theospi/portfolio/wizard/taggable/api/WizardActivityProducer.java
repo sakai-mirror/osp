@@ -35,9 +35,9 @@ import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 public interface WizardActivityProducer extends TaggableActivityProducer {
 
 	/**
-	 * The type name of this producer.
+	 * The identifier of this producer.
 	 */
-	public static final String TYPE_NAME = WizardActivityProducer.class
+	public static final String PRODUCER_ID = WizardActivityProducer.class
 			.getName();
 
 	/**
