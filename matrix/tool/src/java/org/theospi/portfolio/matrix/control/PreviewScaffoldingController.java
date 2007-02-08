@@ -1,7 +1,7 @@
 
 /**********************************************************************************
-* $URL$
-* $Id$
+* $URL: https://source.sakaiproject.org/svn/osp/trunk/matrix/tool/src/java/org/theospi/portfolio/matrix/control/PublishScaffoldingConfirmationController.java $
+* $Id: PublishScaffoldingConfirmationController.java 10835 2006-06-17 03:25:03Z lance@indiana.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2005, 2006 The Sakai Foundation.
@@ -21,9 +21,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -32,7 +34,7 @@ import org.theospi.portfolio.matrix.MatrixManager;
 /**
  * @author chmaurer
  */
-public class PublishScaffoldingController implements Controller {
+public class PreviewScaffoldingController implements Controller {
 
    MatrixManager matrixManager = null;
    IdManager idManager = null;
@@ -40,10 +42,17 @@ public class PublishScaffoldingController implements Controller {
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.Controller#handleRequest(java.lang.Object, java.util.Map, java.util.Map, java.util.Map, org.springframework.validation.Errors)
     */
+   
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-      String strId = (String)request.get("scaffolding_id");
-      matrixManager.publishScaffolding(idManager.getId(strId));
-      return new ModelAndView("success", "scaffolding_id", strId);
+      String viewName = "success";
+      Id id = idManager.getId((String)request.get("scaffolding_id"));
+      
+      Map model = new HashMap();
+      model.put("scaffolding_id", id);
+      
+      matrixManager.previewScaffolding(id);
+
+      return new ModelAndView("success", model);
    }
 
 

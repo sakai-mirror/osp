@@ -57,18 +57,23 @@
   <c:forEach var="scaffold" items="${scaffolding}">
     <TR>
       <TD nowrap>
-         <c:if test="${scaffold.published == true && (scaffold.owner == osp_agent || can.use || matrixCan.review || matrixCan.evaluate)}">
+         <c:if test="${(scaffold.published || scaffold.preview) && (scaffold.owner == osp_agent || can.use || matrixCan.review || matrixCan.evaluate)}">
             <a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />" title="<fmt:message key="scaffolding_link_title">
                <fmt:param><c:out value="${scaffold.title}"/></fmt:param>
                </fmt:message>">
          </c:if>
          <c:out value="${scaffold.title}" />
-         <c:if test="${scaffold.published == true && (scaffold.owner == osp_agent || can.use || matrixCan.review || matrixCan.evaluate)}">
+         <c:if test="${(scaffold.published || scaffold.preview) && (scaffold.owner == osp_agent || can.use || matrixCan.review || matrixCan.evaluate)}">
             </a>
          </c:if>
          <c:set var="hasFirstAction" value="false" />
          <div class="itemAction">
-             <c:if test="${can.publish && scaffold.published == false}">
+             <c:if test="${can.publish && !scaffold.preview && !scaffold.published}">
+                <c:set var="hasFirstAction" value="true" />
+                <a href="<osp:url value="previewScaffolding.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="action_preview"/></a>
+             </c:if>
+				 
+             <c:if test="${can.publish && !scaffold.published && scaffold.preview}">
                 <c:set var="hasFirstAction" value="true" />
                 <a href="<osp:url value="publishScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="action_publish"/></a>
              </c:if>
@@ -110,9 +115,22 @@
              
          </div>
       </TD>
+		
       <TD><c:out value="${scaffold.description}" escapeXml="false"/></TD>
+		
       <TD><c:out value="${scaffold.owner.displayName}" /></TD>
-      <td><fmt:message key="scaffolding_published_${scaffold.published}"/></TD>
+		
+      <TD>
+         <c:if test="${scaffold.published}">
+            <fmt:message key="scaffolding_published_true"/>
+         </c:if>
+         <c:if test="${scaffold.preview}">
+            <fmt:message key="scaffolding_published_preview"/>
+         </c:if>
+         <c:if test="${!scaffold.published && !scaffold.preview}">
+            <fmt:message key="scaffolding_published_false"/>
+         </c:if>
+		</TD>
     </TR>
 
   </c:forEach>

@@ -108,7 +108,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
          if (currentAgent != null && !currentAgent.equals("")) {
             //Don't create a matrix unless the scaffolding has been published 
             // and the user has permission to use a matrix.
-            if (scaffolding.isPublished()) {
+            if (scaffolding.isPublished() || scaffolding.isPreview()) {
                matrix = getMatrixManager().createMatrix(currentAgent, scaffolding);
             }
             else {

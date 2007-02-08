@@ -33,7 +33,7 @@
         <many-to-one name="wizardPage" class="WizardPage" column="wizard_page_id"
            cascade="all" unique="true" />
         <many-to-one name="scaffoldingCell" column="scaffolding_cell_id"
-            class="ScaffoldingCell" cascade="delete" />
+            class="ScaffoldingCell" cascade="none" />
 
     </class>
 
@@ -55,7 +55,7 @@
        </set>
 
        <many-to-one name="pageDefinition" column="wiz_page_def_id"
-           class="WizardPageDefinition" cascade="delete" lazy="false" />
+           class="WizardPageDefinition" cascade="none" lazy="false" />
 
        <set name="pageForms" cascade="all-delete-orphan"
            inverse="true" lazy="false">
@@ -139,6 +139,7 @@
             <one-to-many class="ScaffoldingCell" />
         </set>
         
+        <property name="preview" type="boolean" />
         <property name="published" type="boolean" />
         <property name="publishedBy" type="org.sakaiproject.metaobj.shared.mgt.AgentUserType" />
         <property name="publishedDate" type="java.util.Date" />

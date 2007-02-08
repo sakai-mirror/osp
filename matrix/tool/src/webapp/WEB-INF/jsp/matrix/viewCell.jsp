@@ -45,6 +45,11 @@
       </c:if>
 	</div>
 
+   <c:if test="${cell.scaffoldingCell.scaffolding.preview}">
+      <div class="validation">
+         <fmt:message key="title_cellPreview"/>
+      </div>
+   </c:if>
 
 	<c:if test="${isWizard == 'true'}">
 		<osp-h:glossary link="true" hover="true">

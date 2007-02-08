@@ -852,9 +852,9 @@
       <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellAndNodeForm</value></property>
    </bean>  
    
-   <bean id="publishScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+   <bean id="previewScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
-         <bean class="org.theospi.portfolio.matrix.control.PublishScaffoldingController">
+         <bean class="org.theospi.portfolio.matrix.control.PreviewScaffoldingController">
 				<property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
          </bean>
@@ -867,7 +867,7 @@
       <property name="commandName"><value>scaffolding</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Scaffolding</value></property>
    </bean>
-   
+	
    <bean id="publishScaffoldingConfirmationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.PublishScaffoldingConfirmationController">

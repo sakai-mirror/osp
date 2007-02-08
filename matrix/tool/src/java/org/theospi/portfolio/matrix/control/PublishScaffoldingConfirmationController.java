@@ -23,6 +23,8 @@ package org.theospi.portfolio.matrix.control;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.Iterator;
 
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -30,6 +32,7 @@ import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.model.Matrix;
 
 /**
  * @author chmaurer
@@ -57,7 +60,16 @@ public class PublishScaffoldingConfirmationController implements Controller {
       }
       else if (next != null) {
          viewName = "publish";
-         matrixManager.publishScaffolding(idManager.getId(id.getValue()));
+         
+         // First delete any associated matrix data from 'preview' mode
+         List matrices = getMatrixManager().getMatrices(id);
+         for (Iterator matrixIt = matrices.iterator(); matrixIt.hasNext();) 
+         {
+            Matrix matrix = (Matrix)matrixIt.next();
+            getMatrixManager().deleteMatrix(matrix.getId());
+         }
+         
+         matrixManager.publishScaffolding(id);
       }
 
       return new ModelAndView(viewName, model);

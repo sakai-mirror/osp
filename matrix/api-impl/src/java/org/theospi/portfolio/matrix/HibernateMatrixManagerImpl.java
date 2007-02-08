@@ -427,9 +427,16 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public void publishScaffolding(Id scaffoldingId) {
       Scaffolding scaffolding = this.getScaffolding(scaffoldingId);
+      scaffolding.setPreview(false);
       scaffolding.setPublished(true);
       scaffolding.setPublishedBy(authnManager.getAgent());
       scaffolding.setPublishedDate(new Date(System.currentTimeMillis()));
+      this.storeScaffolding(scaffolding);
+
+   }
+   public void previewScaffolding(Id scaffoldingId) {
+      Scaffolding scaffolding = this.getScaffolding(scaffoldingId);
+      scaffolding.setPreview(true);
       this.storeScaffolding(scaffolding);
 
    }

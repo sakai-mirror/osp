@@ -74,6 +74,8 @@ public interface MatrixManager extends WorkflowEnabledManager {
    Id storeScaffoldingCell(ScaffoldingCell scaffoldingCell);
    
    void publishScaffolding(Id scaffoldingId);
+	
+   void previewScaffolding(Id scaffoldingId);
 
    Object store(Object obj);
    Object save(Object obj);

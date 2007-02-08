@@ -122,7 +122,7 @@
 
               <prop key="/removeLevCrit.osp">removeLevCritConfirmationController</prop>
               <prop key="/removeExpectation.osp">removeExpectationConfirmationController</prop> 
-				<prop key="/publishScaffolding.osp">publishScaffoldingController</prop>
+            <prop key="/previewScaffolding.osp">previewScaffoldingController</prop>
             <prop key="/publishScaffoldingConfirmation.osp">publishScaffoldingConfirmationController</prop>
             <prop key="/editScaffoldingConfirm.osp">editScaffoldingConfirmController</prop>
             <prop key="/editScaffoldingCellConfirm.osp">editScaffoldingCellConfirmController</prop>

@@ -22,7 +22,16 @@ function hrefViewCell(pageId) {
    </div>
    </c:if>
 
-   <h3><fmt:message key="title_matrixManager"/></h3>
+      <c:if test="${matrixContents.scaffolding.published}">
+         <h3>
+            <fmt:message key="title_matrixManager"/>
+         </h3>
+      </c:if>
+      <c:if test="${matrixContents.scaffolding.preview}">
+         <div class="validation">
+            <fmt:message key="title_matrixPreview"/>
+         </div>
+      </c:if>
     
    <c:if test="${not empty matrixContents.scaffolding.description}">
       <p class="instruction">
@@ -32,7 +41,7 @@ function hrefViewCell(pageId) {
       </p>
    </c:if>
 
-    <c:if test="${(not empty matrixContents.scaffolding) && matrixContents.scaffolding.published}">
+    <c:if test="${(not empty matrixContents.scaffolding)}">
         <c:if test="${(matrixCan.evaluate || matrixCan.review) && not empty members}">
             <form method="GET" action="<osp:url value="viewMatrix.osp"/>">
                 <osp:form/>
@@ -56,7 +65,7 @@ function hrefViewCell(pageId) {
         </c:if>
     
     </c:if>
-    <c:if test="${not empty matrixContents.columnLabels && matrixContents.scaffolding.published}">
+    <c:if test="${not empty matrixContents.columnLabels}">
         <p class="instruction">
            <fmt:message key="instructions_clickOnaCellToEdit"/>
         </p>

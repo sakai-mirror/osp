@@ -70,6 +70,8 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    private String description;
    private Id worksiteId;
    
+   private boolean preview = false;
+	
    private boolean published = false;
    private Agent publishedBy;
    private Date publishedDate;
@@ -254,6 +256,12 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
     */
    public void setValidate(boolean validate) {
       this.validate = validate;
+   }
+   public boolean isPreview() {
+      return preview;
+   }
+   public void setPreview(boolean preview) {
+      this.preview = preview;
    }
    public boolean isPublished() {
       return published;
