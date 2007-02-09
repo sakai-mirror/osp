@@ -29,6 +29,7 @@ import java.util.Map;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
@@ -83,9 +84,9 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
    public List getObjects() {
 
       List userSites = getWorksiteManager().getUserSites(null, getSiteTypes());
-      List siteIds = new ArrayList(userSites.size());
-      List siteStrIds = new ArrayList(userSites.size());
-      Map siteMap = new HashMap();
+      List<String> siteIds = new ArrayList<String>(userSites.size());
+      List<Id> siteStrIds = new ArrayList<Id>(userSites.size());
+      Map<String, Site> siteMap = new HashMap<String, Site>();
       
       for (Iterator i = userSites.iterator(); i.hasNext();) {
          Site site = (Site) i.next();
@@ -100,7 +101,7 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
       List tempMatrixList = new ArrayList();
       if (getDisplayTypes().contains("matrices")) tempMatrixList = getMatrixManager().findPublishedScaffolding(siteStrIds);
       
-      List objects = new ArrayList();
+      List<SortableListObject> objects = new ArrayList<SortableListObject>();
       
       objects.addAll(verifyWizards(tempWizardList, siteMap));
       objects.addAll(verifyMatrices(tempMatrixList, siteMap));      
@@ -108,22 +109,30 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
       return objects;
    }
    
-   protected List verifyWizards(List allWizards, Map siteMap) {
-      List retWizards = new ArrayList();
+   protected List<SortableListObject> verifyWizards(List allWizards, Map siteMap) {
+      List<SortableListObject> retWizards = new ArrayList<SortableListObject>();
+      Map<String, Boolean> sitePermCache = new HashMap<String, Boolean>();
+      
       for (Iterator i = allWizards.iterator(); i.hasNext();) {
          Wizard wizard = (Wizard)i.next();
-         
+         String siteId = wizard.getSiteId();
          //make sure that the target site gets tested
-         getAuthzManager().pushAuthzGroups(wizard.getSiteId());
+         getAuthzManager().pushAuthzGroups(siteId);
          
          //Need to make sure the current user can actually have one of their own here, 
          // so only check if they can "use"
-         if (getAuthzManager().isAuthorized(WizardFunctionConstants.VIEW_WIZARD, 
-               idManager.getId(wizard.getSiteId()))) {
-            Site site = (Site)siteMap.get(wizard.getSiteId());
-            SortableListObject wiz;
+         // But check from the cache first
+         Boolean authzCheck = sitePermCache.get(siteId);
+         if (authzCheck == null) {
+            authzCheck = getAuthzManager().isAuthorized(WizardFunctionConstants.VIEW_WIZARD, 
+                  idManager.getId(siteId));
+            sitePermCache.put(siteId, authzCheck);
+            logger.debug("Pushing site into cache for WizardListGenerator (wizards): " + siteId);
+         }
+         if (authzCheck) {
+            Site site = (Site)siteMap.get(siteId);
             try {
-               wiz = new SortableListObject(wizard.getId().getValue(), 
+               SortableListObject wiz = new SortableListObject(wizard.getId().getValue(), 
                      wizard.getName(), wizard.getDescription(), 
                      wizard.getOwner(), site, wizard.getType(), wizard.getModified());
                retWizards.add(wiz);
@@ -136,22 +145,30 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
       return retWizards;
    }
 
-   protected List verifyMatrices(List allMatrices, Map siteMap) {
-      List retMatrices = new ArrayList();
+   protected List<SortableListObject> verifyMatrices(List allMatrices, Map siteMap) {
+      List<SortableListObject> retMatrices = new ArrayList<SortableListObject>();
+      Map<String, Boolean> sitePermCache = new HashMap<String, Boolean>();
+      
       for (Iterator i = allMatrices.iterator(); i.hasNext();) {
          Scaffolding scaffolding = (Scaffolding)i.next();
-         
+         Id siteId = scaffolding.getWorksiteId();
          //make sure that the target site gets tested
-         getAuthzManager().pushAuthzGroups(scaffolding.getWorksiteId().getValue());
+         getAuthzManager().pushAuthzGroups(siteId.getValue());
 
          //Need to make sure the current user can actually have one of their own here, 
          // so only check if they can "use"
-         if (getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING, 
-               scaffolding.getWorksiteId())) {
-            Site site = (Site)siteMap.get(scaffolding.getWorksiteId().getValue());
-            SortableListObject scaff;
+//       But check from the cache first
+         Boolean authzCheck = sitePermCache.get(siteId.getValue());
+         if (authzCheck == null) {
+            authzCheck = getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING, 
+                  siteId);
+            sitePermCache.put(siteId.getValue(), authzCheck);
+            logger.debug("Pushing site into cache for WizardListGenerator (matrices): " + siteId);
+         }
+         if (authzCheck) {
+            Site site = (Site)siteMap.get(siteId.getValue());
             try {
-               scaff = new SortableListObject(scaffolding.getId().getValue(), 
+               SortableListObject scaff = new SortableListObject(scaffolding.getId().getValue(), 
                      scaffolding.getTitle(), scaffolding.getDescription(), 
                      scaffolding.getOwner(), site, MatrixFunctionConstants.SCAFFOLDING_PREFIX, null);
                retMatrices.add(scaff);
@@ -202,7 +219,7 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
    }
    
    public Map getToolParams(Object entry) {
-      Map params = new HashMap();
+      Map<String, Object> params = new HashMap<String, Object>();
       SortableListObject obj = (SortableListObject) entry;      
       
       if (obj.getTypeRaw().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL) || 
