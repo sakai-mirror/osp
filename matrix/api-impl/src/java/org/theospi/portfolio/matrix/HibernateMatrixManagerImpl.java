@@ -1017,6 +1017,39 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     * @see org.theospi.portfolio.matrix.model.hibernate.impl.MatrixManager#deleteMatrix(org.theospi.portfolio.shared.model.Id)
     */
    public void deleteMatrix(Id matrixId) {
+      Matrix matrix = getMatrix( matrixId );
+      Set cells = matrix.getCells();
+       
+      // first unlock all resources associated with this matrix
+      for (Iterator cellIt=cells.iterator(); cellIt.hasNext();) 
+      {
+         Cell cell = (Cell)cellIt.next();
+         WizardPage page = cell.getWizardPage();
+         
+         for (Iterator iter = page.getAttachments().iterator(); iter.hasNext();) {
+            Attachment att = (Attachment)iter.next();
+            getLockManager().removeLock(att.getArtifactId().getValue(), 
+                     page.getId().getValue());
+         }
+      
+         for (Iterator iter = page.getPageForms().iterator(); iter.hasNext();) {
+            WizardPageForm pageForm = (WizardPageForm)iter.next();
+            getLockManager().removeLock(pageForm.getArtifactId().getValue(), 
+                     page.getId().getValue());
+         }
+
+         List reviews = getReviewManager().getReviewsByParent(
+               page.getId().getValue(), 
+               page.getPageDefinition().getSiteId(),
+               MatrixContentEntityProducer.MATRIX_PRODUCER);
+         for (Iterator iter = reviews.iterator(); iter.hasNext();) {
+            Review review = (Review)iter.next();
+            getLockManager().removeLock(review.getReviewContent().getValue(), 
+                     page.getId().getValue());
+         } 
+      }
+      
+      // Now delete matrix
       this.getHibernateTemplate().delete(getMatrix(matrixId));
    }
 
