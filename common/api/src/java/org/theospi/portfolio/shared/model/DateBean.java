@@ -125,7 +125,7 @@ public class DateBean implements FieldValueWrapper {
       return getDate();
    }
 
-   public void validate(List errors) {
+   public void validate(String fieldName, List errors, String label) {
       
    }
 
