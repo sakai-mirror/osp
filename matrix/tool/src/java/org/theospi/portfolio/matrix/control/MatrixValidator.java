@@ -109,25 +109,25 @@ public class MatrixValidator extends ValidatorBase {
          errors.rejectValue("initialStatus", "error.required", "required");
       }
       if (scaffoldingCell.getTitle() == null ||
-            scaffoldingCell.getTitle().equals("")) {
+            scaffoldingCell.getTitle().trim().equals("")) {
          errors.rejectValue("title", "error.required", "required");
       }
    }
 
    protected void validateCriterion(CriterionTransport criterion, Errors errors) {
-      if (criterion.getDescription() == null || criterion.getDescription().equals("")) {
+      if (criterion.getDescription() == null || criterion.getDescription().trim().equals("")) {
          errors.rejectValue("description", "error.required", "required");
       }
    }
 
    protected void validateLevel(LevelTransport level, Errors errors) {
-      if (level.getDescription() == null || level.getDescription().equals("")) {
+      if (level.getDescription() == null || level.getDescription().trim().equals("")) {
          errors.rejectValue("description", "error.required", "required");
       }
    }
    
    protected void validateScaffolding(Scaffolding scaffolding, Errors errors) {
-      if (scaffolding.getTitle() == null || scaffolding.getTitle().equals("")) {
+      if (scaffolding.getTitle() == null || scaffolding.getTitle().trim().equals("")) {
          errors.rejectValue("title", "error.required", "required");
       }
       if (scaffolding.getLevels() == null || scaffolding.getLevels().size() == 0) {
