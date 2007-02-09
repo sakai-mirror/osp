@@ -86,38 +86,44 @@ public class EditScaffoldingCellController extends BaseScaffoldingCellController
     * @see org.theospi.utils.mvc.intf.FormController#referenceData(java.util.Map, java.lang.Object, org.springframework.validation.Errors)
     */
    public Map referenceData(Map request, Object command, Errors errors) {
-      ScaffoldingCell sCell = (ScaffoldingCell) command;
-      
-      Map model = new HashMap();
+		ScaffoldingCell sCell = (ScaffoldingCell) command;
 
-      TaggableActivity activity = wizardActivityProducer
-		.getActivity(sCell.getWizardPageDefinition());
-      
-      if (taggingManager.isTaggable() && (activity != null)) {
-			model.put("taggable", "true");
-			model.put("helperInfoList", getHelperInfo(activity));
+		Map model = new HashMap();
+
+		WizardPageDefinition def = sCell.getWizardPageDefinition();
+		if (def != null && def.getId() != null) {
+			TaggableActivity activity = wizardActivityProducer.getActivity(def);
+			if (taggingManager.isTaggable()) {
+				model.put("taggable", "true");
+				model.put("helperInfoList", getHelperInfo(activity));
+			}
 		}
-    
-      model.put("reflectionDevices", getReflectionDevices());
-      model.put("evaluationDevices", getEvaluationDevices());
-      model.put("reviewDevices", getReviewDevices());
-      model.put("additionalFormDevices", getAdditionalFormDevices());
-      model.put("selectedAdditionalFormDevices", getSelectedAdditionalFormDevices(sCell));
-      model.put("evaluators", getEvaluators(sCell.getWizardPageDefinition()));
-      model.put("pageTitleKey", "title_editCell");
-      model.put("pageInstructionsKey", "instructions_cellSettings");
-      model.put("styleReturnView", getStyleReturnView());
-      
-      if ( sCell != null && sCell.getScaffolding() != null )
-         model.put("isCellUsed", sCell.getScaffolding().isPublished() && isCellUsed( sCell ) );
-      else
-         model.put("isCellUsed", false );
-         
-      return model;
-   }
-   /* (non-Javadoc)
-    * @see org.theospi.utils.mvc.intf.CustomCommandController#formBackingObject(java.util.Map, java.util.Map, java.util.Map)
-    */
+		
+		model.put("reflectionDevices", getReflectionDevices());
+		model.put("evaluationDevices", getEvaluationDevices());
+		model.put("reviewDevices", getReviewDevices());
+		model.put("additionalFormDevices", getAdditionalFormDevices());
+		model.put("selectedAdditionalFormDevices",
+				getSelectedAdditionalFormDevices(sCell));
+		model.put("evaluators", getEvaluators(sCell.getWizardPageDefinition()));
+		model.put("pageTitleKey", "title_editCell");
+		model.put("pageInstructionsKey", "instructions_cellSettings");
+		model.put("styleReturnView", getStyleReturnView());
+
+		if (sCell != null && sCell.getScaffolding() != null)
+			model.put("isCellUsed", sCell.getScaffolding().isPublished()
+					&& isCellUsed(sCell));
+		else
+			model.put("isCellUsed", false);
+
+		return model;
+	}
+   /*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.theospi.utils.mvc.intf.CustomCommandController#formBackingObject(java.util.Map,
+	 *      java.util.Map, java.util.Map)
+	 */
    //public Object formBackingObject(Map request, Map session, Map application) {
    //   return new ScaffoldingCell();
    //}

@@ -38,7 +38,9 @@ import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
+import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 
 public class WizardActivityProducerImpl implements WizardActivityProducer {
@@ -169,6 +171,28 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		return context;
 	}
 
+	private boolean canEvaluate(WizardPage page) {
+		boolean allowed = false;
+		if (page.getStatus().equals(MatrixFunctionConstants.PENDING_STATUS)) {
+			CompletedWizard cw = wizardManager.getCompletedWizardByPage(page
+					.getId());
+			if (cw != null) {
+				if (getAuthzManager().isAuthorized(
+						WizardFunctionConstants.EVALUATE_SPECIFIC_WIZARDPAGE,
+						page.getId())) {
+					allowed = true;
+				}
+			} else {
+				if (getAuthzManager().isAuthorized(
+						MatrixFunctionConstants.EVALUATE_SPECIFIC_MATRIXCELL,
+						page.getId())) {
+					allowed = true;
+				}
+			}
+		}
+		return allowed;
+	}
+
 	public TaggableItem getItem(String itemRef, TaggingProvider provider) {
 		TaggableItem item = null;
 		if (checkReference(itemRef)) {
@@ -182,13 +206,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 					if (page != null) {
 						// Make sure this page is evaluatable by the current
 						// user
-						if (page.getStatus().equals(
-								MatrixFunctionConstants.PENDING_STATUS)
-								&& getAuthzManager()
-										.isAuthorized(
-												MatrixFunctionConstants.EVALUATE_MATRIX,
-												page.getPageDefinition()
-														.getId())) {
+						if (canEvaluate(page)) {
 							item = getItem(page);
 						}
 					}
@@ -215,11 +233,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 				// Make sure this page is evaluatable by the current
 				// user
 				WizardPage page = i.next();
-				if (page.getStatus().equals(
-						MatrixFunctionConstants.PENDING_STATUS)
-						&& getAuthzManager().isAuthorized(
-								MatrixFunctionConstants.EVALUATE_MATRIX,
-								page.getPageDefinition().getId())) {
+				if (canEvaluate(page)) {
 					items.add(getItem(page));
 				}
 			}
@@ -242,13 +256,9 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 			for (Iterator<WizardPage> i = def.getPages().iterator(); i
 					.hasNext();) {
 				// Make sure this page is evaluatable by the current
-				// user and that it is owned by the specified user id
+				// user
 				WizardPage page = i.next();
-				if (page.getStatus().equals(
-						MatrixFunctionConstants.PENDING_STATUS)
-						&& getAuthzManager().isAuthorized(
-								MatrixFunctionConstants.EVALUATE_MATRIX,
-								page.getPageDefinition().getId())
+				if (canEvaluate(page)
 						&& page.getOwner().getId().getValue().equals(userId)) {
 					items.add(getItem(page));
 				}
@@ -270,11 +280,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	}
 
 	public TaggableActivity getActivity(WizardPageDefinition wizardPageDef) {
-		TaggableActivity activity = null;
-		if (wizardPageDef != null && wizardPageDef.getId() != null) {
-			activity = new WizardActivityImpl(wizardPageDef, this);
-		}
-		return activity;
+		return new WizardActivityImpl(wizardPageDef, this);
 	}
 
 	public TaggableItem getItem(WizardPage wizardPage) {

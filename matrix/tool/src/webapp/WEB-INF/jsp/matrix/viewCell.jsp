@@ -43,6 +43,15 @@
             <osp:param name="readOnlyMatrix" value="${readOnlyMatrix}" />
             </osp:url>"><osp:message key="manage_cell_status"/></a>
       </c:if>
+      <c:if test="${taggable && !(empty helperInfoList) && cell.status == 'PENDING'}">
+        <input type="hidden" name="providerId" value=""/>
+        <c:forEach var="helperInfo" items="${helperInfoList}">
+          <a title="<c:out value="${helperInfo.description}"/>"
+             href="javascript:document.form.submitAction.value='tagItem';document.form.providerId.value='<c:out value="${helperInfo.provider.id}"/>';document.form.submit();">
+            <c:out value="${helperInfo.name}"/>
+          </a>
+        </c:forEach>
+      </c:if>
 	</div>
 
    <c:if test="${cell.scaffoldingCell.scaffolding.preview}">

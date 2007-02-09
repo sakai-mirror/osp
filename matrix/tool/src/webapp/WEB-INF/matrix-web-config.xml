@@ -125,6 +125,17 @@
             <property name="structuredArtifactDefinitionManager">
                <ref bean="structuredArtifactDefinitionManager"/>
             </property>
+            <property name="taggingManager">
+               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+            </property>
+            <property name="wizardActivityProducer">
+               <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
+            </property>
+            <property name="ratingProviderIds">
+              <list>
+                <value>org.sakaiproject.gmt.tagging.api.GmtTaggingProvider</value>
+              </list>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -166,6 +177,17 @@
             </property>
             <property name="sessionManager">
                <ref bean="org.sakaiproject.tool.api.SessionManager" />
+            </property>
+            <property name="taggingManager">
+               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+            </property>
+            <property name="wizardActivityProducer">
+               <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
+            </property>
+            <property name="ratingProviderIds">
+              <list>
+                <value>org.sakaiproject.gmt.tagging.api.GmtTaggingProvider</value>
+              </list>
             </property>
          </bean>
       </property>
@@ -219,6 +241,17 @@
             </property>
             <property name="sessionManager">
                <ref bean="org.sakaiproject.tool.api.SessionManager" />
+            </property>
+            <property name="taggingManager">
+               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+            </property>
+            <property name="wizardActivityProducer">
+               <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
+            </property>
+            <property name="ratingProviderIds">
+              <list>
+                <value>org.sakaiproject.gmt.tagging.api.GmtTaggingProvider</value>
+              </list>
             </property>
          </bean>
       </property>
