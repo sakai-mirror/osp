@@ -83,6 +83,13 @@ public class GuidanceItemAttachment extends IdentifiableObject {
    public String getDisplayName() {
       ContentResource resource = (ContentResource)baseReference.getBase().getEntity();
 
+      if(resource == null)
+         throw new NullPointerException("the content resource is null for " 
+                                        + baseReference.toString());
+      if(resource.getProperties() == null)
+         throw new NullPointerException("the content resource properties are null for " 
+                                        + baseReference.toString());
+      
       String displayNameProp = resource.getProperties().getNamePropDisplayName();
       return resource.getProperties().getProperty(displayNameProp);
    }
@@ -91,9 +98,11 @@ public class GuidanceItemAttachment extends IdentifiableObject {
       ContentResource resource = (ContentResource)baseReference.getBase().getEntity();
 
       if(resource == null)
-         throw new NullPointerException("the content resource is null");
+         throw new NullPointerException("the content resource is null for " 
+                                        + baseReference.toString());
       if(resource.getProperties() == null)
-         throw new NullPointerException("the content resource properties are null");
+         throw new NullPointerException("the content resource properties are null for " 
+                                        + baseReference.toString());
       
       String contentTypeProp = resource.getProperties().getNamePropContentType();
       return new MimeType(resource.getProperties().getProperty(contentTypeProp));
