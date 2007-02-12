@@ -422,6 +422,8 @@ public class XsltPortal extends CharonPortal {
       if (siteId != null) {
          Map pageCateogries = getPortalManager().getPagesByCategory(siteId);
 
+         checkToolPermissions(pageCateogries);
+
          if (pageId == null && toolCategoryKey == null) {
             // need to pick first page or category
             ToolCategory category = findFirstCategory(pageCateogries);
@@ -445,6 +447,46 @@ public class XsltPortal extends CharonPortal {
       root.appendChild(createExternalizedXml(doc));
 
       return doc;
+   }
+
+   protected void checkToolPermissions(Map pages) {
+      List emptyCategories = new ArrayList();
+      for (Iterator<ToolCategory> i=pages.keySet().iterator();i.hasNext();) {
+         ToolCategory category = i.next();
+         List categoryPages = (List) pages.get(category);
+         checkPagesAccess(categoryPages);
+         if (categoryPages.isEmpty()) {
+            emptyCategories.add(category);
+         }
+      }
+
+      for (Iterator<ToolCategory> i = emptyCategories.iterator();i.hasNext();) {
+         ToolCategory category = i.next();
+         pages.remove(category);
+      }
+   }
+
+   protected void checkPagesAccess(List categoryPages) {
+      for (Iterator<SitePageWrapper> i=categoryPages.iterator();i.hasNext();) {
+         SitePageWrapper page = i.next();
+         List pageTools = page.getPage().getTools();
+         if (!checkToolsAccess(page.getPage().getContainingSite(), pageTools)) {
+            i.remove();
+         }
+      }
+   }
+
+   protected boolean checkToolsAccess(Site site, List pageTools) {
+      boolean retVal = false;
+
+      for (Iterator<Placement> i = pageTools.iterator();i.hasNext();) {
+         Placement tool = i.next();
+         if (allowTool(site, tool)) {
+            retVal = true;
+         }
+      }
+
+      return retVal;
    }
 
    protected String findFirstPage(List pages) {
