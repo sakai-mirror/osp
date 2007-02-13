@@ -51,6 +51,9 @@
       </property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="url"><value>/osp-glossary-tool/glossary.osp</value></property>
+      <property name="schedulerManager">
+         <ref bean="org.sakaiproject.api.app.scheduler.SchedulerManager"/>
+      </property>
    </bean>
 
    <bean id="helpManager"

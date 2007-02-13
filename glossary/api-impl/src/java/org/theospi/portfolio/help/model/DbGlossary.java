@@ -20,15 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.help.model;
 
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,14 +29,23 @@ import org.sakaiproject.event.api.Event;
 import org.sakaiproject.event.cover.EventTrackingService;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.api.app.scheduler.SchedulerManager;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.quartz.JobDetail;
+import org.quartz.SimpleTrigger;
+import org.quartz.SchedulerException;
+import org.quartz.Trigger;
 
 public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observer {
    protected final transient Log logger = LogFactory.getLog(getClass());
    private Map worksiteGlossary = new Hashtable();
    private IdManager idManager;
+   private List dirtyAddUpdate = new ArrayList();
+   private List dirtyRemove = new ArrayList();
+   private SchedulerManager schedulerManager;
+   private int cacheInterval = 1000 * 10;
 
    private String url;
 
@@ -68,6 +69,14 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
          logger.warn("", e);
          return null;
       }
+   }
+
+   protected GlossaryEntry find(Id id) {
+      List entries = getHibernateTemplate().find("from GlossaryEntry where id = ?", id);
+      if (entries.size() > 0) {
+         return (GlossaryEntry)entries.get(0);
+      }
+      return null;
    }
 
    protected GlossaryDescription loadDescription(Id entryId) {
@@ -114,7 +123,7 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
     *
     * @return
     */
-   
+
    public Collection findAll(String keyword, String worksite) {
       return getHibernateTemplate().findByNamedQuery("findTerms", new Object[]{keyword, worksite});
    }
@@ -194,6 +203,27 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
       return sortedSet;
    }
 
+   public void checkCache() {
+
+      synchronized(dirtyAddUpdate) {
+         for (Iterator<Id> i=dirtyAddUpdate.iterator();i.hasNext();) {
+            GlossaryEntry entry = find(i.next());
+            if (entry != null) {
+               addUpdateTermCache(entry);
+            }
+         }
+         dirtyAddUpdate.clear();
+      }
+
+      synchronized(dirtyRemove) {
+         for (Iterator<Id> i=dirtyRemove.iterator();i.hasNext();) {
+            removeCachedEntry(i.next());
+         }
+         dirtyRemove.clear();
+      }
+
+   }
+
    public boolean isPhraseStart(String phraseFragment, String worksite) {
       phraseFragment += "%";
       Collection entries = getHibernateTemplate().findByNamedQuery("findByPhrase", new Object[]{phraseFragment, worksite});
@@ -211,22 +241,22 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
    public void setUrl(String url) {
       this.url = url;
    }
-   
+
    public void importResources(String fromContext, String toContext, List resourceIds) {
       Collection orig = findAll(fromContext);
 
       for (Iterator i=orig.iterator();i.hasNext();) {
          GlossaryEntry entry = (GlossaryEntry)i.next();
-         
+
          entry.setLongDescriptionObject(loadDescription(entry.getId()));
-         
+
          getHibernateTemplate().evict(entry);
          getHibernateTemplate().evict(entry.getLongDescriptionObject());
-         
+
          entry.setWorksiteId(toContext);
          entry.setId(null);
          getHibernateTemplate().save(entry);
-         
+
          entry.getLongDescriptionObject().setEntryId(entry.getId());
          entry.getLongDescriptionObject().setId(null);
          getHibernateTemplate().save(entry.getLongDescriptionObject());
@@ -244,6 +274,24 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
       }
 
       EventTrackingService.addObserver(this);
+
+      try {
+         startCacheJob();
+      } catch (SchedulerException e) {
+         logger.error("failed to schedule glossary cache polling job", e);
+      }
+   }
+
+   protected void startCacheJob() throws SchedulerException {
+      JobDetail detail = new JobDetail("org.theospi.portfolio.help.model.DbGlossary.cache",
+         "org.theospi.portfolio.help.model.DbGlossary", GlossaryCacheJob.class);
+
+      Trigger trigger = new SimpleTrigger("org.theospi.portfolio.help.model.DbGlossary.cache",
+         "org.theospi.portfolio.help.model.DbGlossary", SimpleTrigger.REPEAT_INDEFINITELY,
+         getCacheInterval());
+
+      getSchedulerManager().getScheduler().unscheduleJob(trigger.getName(), trigger.getGroup());
+      getSchedulerManager().getScheduler().scheduleJob(detail, trigger);
    }
 
    protected void addUpdateTermCache(GlossaryEntry entry) {
@@ -283,16 +331,14 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
       if (arg instanceof Event) {
          Event event = (Event)arg;
          if (event.getEvent().equals(EVENT_UPDATE_ADD)) {
-           //  these commented lines might fix the bug: http://bugs.sakaiproject.org/jira/browse/SAK-5437
-           // boolean isOpen = getSession().isOpen();
-            
-            addUpdateTermCache(load(getIdManager().getId(event.getResource()), false));
-            
-           // if(!isOpen)
-           //    getSession().close();
+            synchronized(dirtyAddUpdate) {
+               dirtyAddUpdate.add(getIdManager().getId(event.getResource()));
+            }
          }
          else if (event.getEvent().equals(EVENT_DELETE)) {
-            removeCachedEntry(getIdManager().getId(event.getResource()));
+            synchronized(dirtyRemove) {
+               dirtyRemove.add(getIdManager().getId(event.getResource()));
+            }
          }
       }
    }
@@ -335,5 +381,21 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
       public void setEntry(GlossaryEntry entry) {
          this.entry = entry;
       }
+   }
+
+   public SchedulerManager getSchedulerManager() {
+      return schedulerManager;
+   }
+
+   public void setSchedulerManager(SchedulerManager schedulerManager) {
+      this.schedulerManager = schedulerManager;
+   }
+
+   public int getCacheInterval() {
+      return cacheInterval;
+   }
+
+   public void setCacheInterval(int cacheInterval) {
+      this.cacheInterval = cacheInterval;
    }
 }

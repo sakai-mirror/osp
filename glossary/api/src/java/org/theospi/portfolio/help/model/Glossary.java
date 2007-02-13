@@ -63,4 +63,6 @@ public interface Glossary extends DuplicatableToolService {
    public boolean isPhraseStart(String phraseFragment, String worksite);
 
    public Set getSortedWorksiteTerms(String siteId);
+
+   public void checkCache();
 }
