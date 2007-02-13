@@ -78,4 +78,5 @@ public interface PortalManager {
 
    public List getRoles(String siteId);
 
+   public boolean isDisplaySiteTypes();
 }

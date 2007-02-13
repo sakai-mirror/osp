@@ -363,23 +363,33 @@ your browser doesn't support iframes
          <xsl:value-of select="siteTypes/siteType[@selected='true']/name"/>
       </xsl:attribute>
 
-      <div id="siteNav">
-         <xsl:if test="currentUser">
-         <div id="linkNav">
-            <a id="sitetabs" class="skip" name="sitetabs"></a>
-            <h1 class="skip">Worksites begin here</h1>
-            <ul id="siteLinkList">
-               <xsl:for-each select="siteTypes/siteType">
-                  <xsl:sort select="@order" data-type="number"/>
-                  <xsl:apply-templates select="." >
-                     <xsl:with-param name="extra" select="'false'" />
-                  </xsl:apply-templates>
-               </xsl:for-each>
-               <li style="display:none;border-width:0" class="fixTabsIE"><a href="javascript:void(0);">#x20;</a></li>
-            </ul>
-         </div>
-         </xsl:if>
-      </div>
+         <xsl:choose>
+            <xsl:when test="currentUser and siteTabs/div[@id='blank']/div/div[@id='siteNav']">
+               <xsl:comment>reverting to charon portal site navigation</xsl:comment>
+               <xsl:copy-of select="siteTabs/div[@id='blank']/div/div[@id='siteNav']"/>
+            </xsl:when>
+            <xsl:when test="currentUser">
+               <div id="siteNav">
+                  <div id="linkNav">
+                     <a id="sitetabs" class="skip" name="sitetabs"></a>
+                     <h1 class="skip">Worksites begin here</h1>
+                     <ul id="siteLinkList">
+                        <xsl:for-each select="siteTypes/siteType">
+                           <xsl:sort select="@order" data-type="number"/>
+                           <xsl:apply-templates select="." >
+                              <xsl:with-param name="extra" select="'false'" />
+                           </xsl:apply-templates>
+                        </xsl:for-each>
+                        <li style="display:none;border-width:0" class="fixTabsIE"><a href="javascript:void(0);">#x20;</a></li>
+                     </ul>
+                  </div>
+               </div>
+            </xsl:when>
+            <xsl:otherwise>
+               <div id="siteNav">
+               </div>
+            </xsl:otherwise>
+         </xsl:choose>
       <div class="divColor" id="tabBottom">
       <br/>
       </div>
@@ -855,7 +865,8 @@ your browser doesn't support iframes
 <div class="breadcrumb breadcrumbHolder workspace">
             <!--Active link/breadcrum li gets the class selectedCrumb-->
             <xsl:if test="siteTypes/siteType[@selected='true']">
-               <xsl:if test="siteTypes/siteType[@selected='true' and key!='org.theospi.portfolio.portal.myWorkspace']">
+               <xsl:if test="siteTypes/siteType[@selected='true' and key!='org.theospi.portfolio.portal.myWorkspace'
+                             and not(//portal/siteTabs/div[@id='blank']/div/div[@id='siteNav'])]">
                   <xsl:call-template name="breadcrumb_entry">
                      <xsl:with-param name="node" select="siteTypes/siteType[@selected='true']"/>
                      <xsl:with-param name="title" select="$externalized/entry[@key=$siteTypeKey]"/>

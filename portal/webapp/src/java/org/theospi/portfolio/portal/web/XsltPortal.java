@@ -49,6 +49,8 @@ import org.theospi.portfolio.portal.model.ToolCategory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -61,9 +63,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -296,7 +296,7 @@ public class XsltPortal extends CharonPortal {
       if (siteId == null) {
          return;
       }
-      Document doc = createPortalDocument(null, siteId, categoryKey, pageId, req);
+      Document doc = createPortalDocument(session, null, siteId, categoryKey, pageId, req);
       outputDocument(req, res, session, doc);
    }
 
@@ -306,7 +306,7 @@ public class XsltPortal extends CharonPortal {
          doLogin(req, res, session, req.getPathInfo(), false);
          return;
       }
-      Document doc = createPortalDocument(siteTypeKey, null, null, null, req);
+      Document doc = createPortalDocument(session, siteTypeKey, null, null, null, req);
       outputDocument(req, res, session, doc);
    }
 
@@ -344,7 +344,7 @@ public class XsltPortal extends CharonPortal {
          return;
       }
 
-      Document doc = createPortalDocument(null, siteId, null, pageId, req);
+      Document doc = createPortalDocument(session, null, siteId, null, pageId, req);
       outputDocument(req, res, session, doc);
    }
 
@@ -354,7 +354,7 @@ public class XsltPortal extends CharonPortal {
       if (siteId == null) {
          return;
       }
-      Document doc = createPortalDocument(null, siteId, null, pageId, req);
+      Document doc = createPortalDocument(session, null, siteId, null, pageId, req);
       outputDocument(req, res, session, doc);
    }
 
@@ -370,7 +370,7 @@ public class XsltPortal extends CharonPortal {
       if (siteId == null) {
          return;
       }
-      Document doc = createPortalDocument(null, siteId, getPortalManager().getPageCategory(siteId, pageId), pageId, req);
+      Document doc = createPortalDocument(session, null, siteId, getPortalManager().getPageCategory(siteId, pageId), pageId, req);
       outputDocument(req, res, session, doc);
    }
 
@@ -379,7 +379,8 @@ public class XsltPortal extends CharonPortal {
       super.postLogin(req, res, session, loginPath);
    }
 
-   protected Document createPortalDocument(String siteTypeKey, String siteId, String toolCategoryKey, String pageId, HttpServletRequest req) {
+   protected Document createPortalDocument(Session session, String siteTypeKey, String siteId,
+                                           String toolCategoryKey, String pageId, HttpServletRequest req) throws IOException, ToolException {
       Document doc = getDocumentBuilder().newDocument();
 
       Element root = doc.createElement("portal");
@@ -391,7 +392,7 @@ public class XsltPortal extends CharonPortal {
          root.appendChild(createUserXml(doc, currentUser));
          loggedIn = true;
       }
-      
+
       root.appendChild(createLoginXml(doc, req));
 
       Map siteTypesMap = getPortalManager().getSitesByType(siteId);
@@ -442,6 +443,14 @@ public class XsltPortal extends CharonPortal {
       if (siteId != null) {
          Element rolesElement = createRolesXml(doc, siteId);
          root.appendChild(rolesElement);
+      }
+
+      if (!getPortalManager().isDisplaySiteTypes()) {
+         try {
+            root.appendChild(createSitesTabArea(session, siteId, doc, req));
+         } catch (SAXException e) {
+            throw new ToolException(e);
+         }
       }
 
       root.appendChild(createExternalizedXml(doc));
@@ -522,6 +531,18 @@ public class XsltPortal extends CharonPortal {
       }
 
       return null;
+   }
+
+   private Element createSitesTabArea(Session session, String siteId,
+                                      Document doc, HttpServletRequest req) throws IOException, SAXException {
+      Element siteTabs = doc.createElement("siteTabs");
+      CharArrayWriter writer = new CharArrayWriter();
+      PrintWriter printWriter = new PrintWriter(writer);
+      printWriter.write("<div id=\"blank\">");
+      includeTabs(printWriter, req, session, siteId, "site", false);
+      Document tabs = getDocumentBuilder().parse(new InputSource(new CharArrayReader(writer.toCharArray())));
+      siteTabs.appendChild(doc.importNode(tabs.getDocumentElement(), true));
+      return siteTabs;
    }
 
    protected Element createExternalizedXml(Document doc) {
