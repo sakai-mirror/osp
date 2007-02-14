@@ -237,7 +237,7 @@
      </dependency>
 
      <dependency>
-        <groupId>sakaiproject</groupId>
+        <groupId>org.sakaiproject</groupId>
         <artifactId>sakai-scheduler-api</artifactId>
         <version>${sakai.version}</version>
      </dependency>
