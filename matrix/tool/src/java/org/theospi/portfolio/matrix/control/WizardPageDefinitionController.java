@@ -128,9 +128,13 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
       return cancel.equals("true");
    }
 
-   public ModelAndView processCancel(Map request, Map session, Map application, Object command, Errors errors) throws Exception {
-      return new ModelAndView("return", WizardPageHelper.CANCELED, "true");
-   }
+   public ModelAndView processCancel(Map request, Map session,
+			Map application, Object command, Errors errors) throws Exception {
+		if (getTaggingManager().isTaggable()) {
+			session.remove(PROVIDERS_PARAM);
+		}
+		return new ModelAndView("return", WizardPageHelper.CANCELED, "true");
+	}
    
    protected String getGuidanceViewPermission() {
       return WizardFunctionConstants.VIEW_WIZARDPAGE_GUIDANCE;

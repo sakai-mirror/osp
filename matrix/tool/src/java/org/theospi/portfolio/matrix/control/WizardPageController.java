@@ -28,7 +28,6 @@ import java.util.Map;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.control.ToolFinishedView;
-import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -52,8 +51,6 @@ import org.theospi.portfolio.wizard.model.WizardPageSequence;
 public class WizardPageController extends CellController {
 
 	private WizardManager wizardManager;
-
-	private SessionManager sessionManager;
 
 	/*
 	 * (non-Javadoc)
@@ -210,13 +207,4 @@ public class WizardPageController extends CellController {
 	public void setWizardManager(WizardManager wizardManager) {
 		this.wizardManager = wizardManager;
 	}
-
-	public SessionManager getSessionManager() {
-		return sessionManager;
-	}
-
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
-	}
-
 }

@@ -7,11 +7,10 @@
 <link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" src="/osp-jsf-resource/xheader/xheader.js"></script>
 
-<form method="POST">
+<form name="form" method="POST">
   
     <c:if test="${taggable && !(empty helperInfoList)}">
       <div class="navIntraTool">
-        <input type="hidden" name="providerId" value=""/>
         <c:forEach var="helperInfo" items="${helperInfoList}">
           <a href="javascript:document.forms[0].submitAction.value='tagActivity';document.forms[0].providerId.value='<c:out value="${helperInfo.provider.id}"/>';document.forms[0].onsubmit();document.forms[0].submit();"
              title="<c:out value="${helperInfo.description}"/>">
@@ -380,12 +379,16 @@
 		<span class="error_message"><c:out value="${status.errorMessage}"/></span>
 	</spring:bind>
 
+    <c:if test="${taggable}">
+      <%@ include file="../tagLists.jspf" %>
+    </c:if>
+
 	<div class="act">
 		<input type="submit" name="saveAction" value="<osp:message key="save"/>" class="active" onclick="javascript:document.forms[0].validate.value='true';" />
 
       <c:if test="${empty helperPage}">
          <input type="button" name="action" value="<osp:message key="cancel"/>"
-            onclick="window.document.location='<osp:url value="viewScaffolding.osp?scaffolding_id=${scaffoldingCell.scaffolding.id}"/>'"/>
+                onclick="javascript:document.form.submitAction.value='cancel';document.form.submit();" />
       </c:if>
       <c:if test="${not empty helperPage}">
    		<input type="button" name="action" value="<osp:message key="cancel"/>"

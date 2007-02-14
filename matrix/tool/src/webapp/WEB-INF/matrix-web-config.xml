@@ -131,6 +131,9 @@
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
             </property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.tool.api.SessionManager" />
+            </property>
             <property name="ratingProviderIds">
               <list>
                 <value>org.sakaiproject.gmt.tagging.api.GmtTaggingProvider</value>
@@ -148,6 +151,7 @@
             <prop key="guidance">viewGuidance</prop>
             <prop key="review">formCreator</prop>
             <prop key="formPicker">formPicker</prop>
+            <prop key="tagItem">tagItemRedirect</prop>
          </props>
       </property>
       <property name="customTypedEditors">
@@ -707,6 +711,12 @@
             <property name="guidanceManager">
                <ref bean="org.theospi.portfolio.guidance.mgt.GuidanceManager" />
             </property>
+            <property name="taggingManager">
+               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+            </property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.tool.api.SessionManager" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -775,6 +785,9 @@
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
             </property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.tool.api.SessionManager" />
+            </property>
          </bean>
       </property>
       <property name="customTypedEditors">
@@ -824,6 +837,9 @@
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
             </property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.tool.api.SessionManager" />
+            </property>
             <property name="reviewManager">
                <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
             </property>
@@ -839,7 +855,7 @@
          <props>
             <prop key="success">editScaffoldingCellRedirect</prop>
             <prop key="loadReviewers">editScaffoldingCellRedirect</prop>
-				<prop key="return">viewScaffoldingRedirect</prop>
+			<prop key="return">viewScaffoldingRedirect</prop>
             <prop key="editScaffoldingCellConfirm">editScaffoldingCellConfirmRedirect</prop>
             <prop key="selectEvaluators">selectCellEvaluators</prop>
             <prop key="createGuidance">createGuidance</prop>

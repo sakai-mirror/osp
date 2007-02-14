@@ -23,6 +23,7 @@ package org.theospi.portfolio.matrix.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment.taggable.api.TaggableActivity;
 import org.sakaiproject.assignment.taggable.api.TaggableItem;
 import org.sakaiproject.assignment.taggable.api.TaggingHelperInfo;
 import org.sakaiproject.assignment.taggable.api.TaggingManager;
@@ -37,8 +38,8 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.SessionManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -51,6 +52,9 @@ import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
+import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider;
+import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Pager;
+import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Sort;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
@@ -82,6 +86,8 @@ public class CellController implements FormController, LoadObjectController {
 
 	private WizardActivityProducer wizardActivityProducer;
 
+	private SessionManager sessionManager;
+
 	private List<String> ratingProviderIds;
 
 	public static final String WHICH_HELPER_KEY = "filepicker.helper.key";
@@ -94,14 +100,16 @@ public class CellController implements FormController, LoadObjectController {
 
 	protected static final int METADATA_DESC_INDEX = 2;
 
+	protected static final String PROVIDERS_PARAM = "providers";
+
 	public Map referenceData(Map request, Object command, Errors errors) {
-		ToolSession session = SessionManager.getCurrentToolSession();
+		ToolSession session = getSessionManager().getCurrentToolSession();
 
 		CellFormBean cell = (CellFormBean) command;
 		Map model = new HashMap();
 
 		model.put("isMatrix", "true");
-		model.put("currentUser", SessionManager.getCurrentSessionUserId());
+		model.put("currentUser", getSessionManager().getCurrentSessionUserId());
 		model.put("CURRENT_GUIDANCE_ID_KEY", "session."
 				+ GuidanceManager.CURRENT_GUIDANCE_ID);
 
@@ -170,11 +178,20 @@ public class CellController implements FormController, LoadObjectController {
 			model.put("defaultStyleUrl", node.getExternalUri());
 		}
 
-		TaggableItem item = wizardActivityProducer.getItem(cell.getCell()
-				.getWizardPage());
-
-		if (taggingManager.isTaggable() && (item != null)) {
+		if (taggingManager.isTaggable()) {
+			TaggableItem item = wizardActivityProducer.getItem(cell.getCell()
+					.getWizardPage());
 			model.put("taggable", "true");
+			ToolSession toolSession = getSessionManager()
+					.getCurrentToolSession();
+			List<DecoratedTaggingProvider> providers = (List) toolSession
+					.getAttribute(PROVIDERS_PARAM);
+			if (providers == null) {
+				providers = getDecoratedProviders(item.getActivity());
+				toolSession.setAttribute(PROVIDERS_PARAM, providers);
+			}
+			model.put("helperInfoList", getHelperInfo(item));
+			model.put("providers", providers);
 			model.put("helperInfoList", getHelperInfo(item));
 		}
 
@@ -234,15 +251,15 @@ public class CellController implements FormController, LoadObjectController {
 			Map session, Map application) throws Exception {
 		// coming from matrix cell, not helper
 		session.remove(WizardPageHelper.WIZARD_PAGE);
-		
+
 		CellFormBean cellBean = (CellFormBean) incomingModel;
-		
+
 		String strId = (String) request.get("page_id");
 		if (strId == null) {
 			strId = (String) session.get("page_id");
 			session.remove("page_id");
 		}
-		
+
 		Cell cell;
 		Id id = getIdManager().getId(strId);
 
@@ -269,7 +286,7 @@ public class CellController implements FormController, LoadObjectController {
 			// tbd how to report error back to user?
 		}
 
-		clearSession(SessionManager.getCurrentToolSession());
+		clearSession(getSessionManager().getCurrentToolSession());
 		return cellBean;
 	}
 
@@ -300,21 +317,12 @@ public class CellController implements FormController, LoadObjectController {
 		String matrixAction = (String) request.get("matrix");
 		String submitAction = (String) request.get("submitAction");
 
-		if (submitAction != null && submitAction.equals("tagItem")) {
-			// Get appropriate helperInfo
-			for (TaggingHelperInfo info : getHelperInfo(wizardActivityProducer
-					.getItem(cell.getWizardPage()))) {
-				if (info.getProvider().getId()
-						.equals(request.get("providerId"))) {
-					// Add parameters to session
-					for (String key : info.getParameterMap().keySet()) {
-						session.put(key, info.getParameterMap().get(key));
-					}
-					session.put("page_id", (String) request.get("page_id"));
-					return new ModelAndView(new RedirectView(info.getHelperId()
-							+ ".helper"));
-				}
-			}
+		if ("tagItem".equals(submitAction)) {
+			return tagItem(cell, request, session);
+		} else if ("sortList".equals(submitAction)) {
+			return sortList(request, session);
+		} else if ("pageList".equals(submitAction)) {
+			return pageList(request, session);
 		}
 
 		if (submit != null) {
@@ -329,6 +337,11 @@ public class CellController implements FormController, LoadObjectController {
 
 		if (matrixAction != null) {
 			String scaffId = "";
+
+			if (getTaggingManager().isTaggable()) {
+				session.remove(PROVIDERS_PARAM);
+			}
+
 			if (cell.getMatrix() != null)
 				scaffId = cell.getMatrix().getScaffolding().getId().getValue();
 
@@ -343,6 +356,78 @@ public class CellController implements FormController, LoadObjectController {
 		}
 
 		return new ModelAndView("success", "cellBean", cellBean);
+	}
+
+	protected ModelAndView tagItem(Cell cell, Map request, Map session) {
+		ModelAndView view = null;
+		// Get appropriate helperInfo
+		for (TaggingHelperInfo info : getHelperInfo(wizardActivityProducer
+				.getItem(cell.getWizardPage()))) {
+			if (info.getProvider().getId().equals(request.get("providerId"))) {
+				// Add parameters to session
+				for (String key : info.getParameterMap().keySet()) {
+					session.put(key, info.getParameterMap().get(key));
+				}
+				session.put("page_id", (String) request.get("page_id"));
+				view = new ModelAndView(new RedirectView(info.getHelperId()
+						+ ".helper"));
+				break;
+			}
+		}
+		return view;
+	}
+
+	protected ModelAndView sortList(Map request, Map session) {
+		String providerId = (String) request.get("providerId");
+		String criteria = (String) request.get("criteria");
+
+		List<DecoratedTaggingProvider> providers = (List) getSessionManager()
+				.getCurrentToolSession().getAttribute(PROVIDERS_PARAM);
+		for (DecoratedTaggingProvider dtp : providers) {
+			if (dtp.getProvider().getId().equals(providerId)) {
+				Sort sort = dtp.getSort();
+				if (sort.getSort().equals(criteria)) {
+					sort.setAscending(sort.isAscending() ? false : true);
+				} else {
+					sort.setSort(criteria);
+					sort.setAscending(true);
+				}
+				break;
+			}
+		}
+		session.put("page_id", (String) request.get("page_id"));
+		return new ModelAndView(new RedirectView((String) request.get("view")));
+	}
+
+	protected ModelAndView pageList(Map request, Map session) {
+		String page = (String) request.get("page");
+		String pageSize = (String) request.get("pageSize");
+		String providerId = (String) request.get("providerId");
+
+		List<DecoratedTaggingProvider> providers = (List) getSessionManager()
+				.getCurrentToolSession().getAttribute(PROVIDERS_PARAM);
+		for (DecoratedTaggingProvider dtp : providers) {
+			if (dtp.getProvider().getId().equals(providerId)) {
+				Pager pager = dtp.getPager();
+				pager.setPageSize(Integer.valueOf(pageSize));
+				if (Pager.FIRST.equals(page)) {
+					pager.setFirstItem(0);
+				} else if (Pager.PREVIOUS.equals(page)) {
+					pager.setFirstItem(pager.getFirstItem()
+							- pager.getPageSize());
+				} else if (Pager.NEXT.equals(page)) {
+					pager.setFirstItem(pager.getFirstItem()
+							+ pager.getPageSize());
+				} else if (Pager.LAST.equals(page)) {
+					pager.setFirstItem((pager.getTotalItems() / pager
+							.getPageSize())
+							* pager.getPageSize());
+				}
+				break;
+			}
+		}
+		session.put("page_id", (String) request.get("page_id"));
+		return new ModelAndView(new RedirectView((String) request.get("view")));
 	}
 
 	protected List processAdditionalForms(List formTypes) {
@@ -393,6 +478,15 @@ public class CellController implements FormController, LoadObjectController {
 			}
 		}
 		return infoList;
+	}
+
+	protected List<DecoratedTaggingProvider> getDecoratedProviders(
+			TaggableActivity activity) {
+		List<DecoratedTaggingProvider> providers = new ArrayList<DecoratedTaggingProvider>();
+		for (TaggingProvider provider : getTaggingManager().getProviders()) {
+			providers.add(new DecoratedTaggingProvider(activity, provider));
+		}
+		return providers;
 	}
 
 	/**
@@ -500,5 +594,13 @@ public class CellController implements FormController, LoadObjectController {
 
 	public void setRatingProviderIds(List<String> ratingProviderIds) {
 		this.ratingProviderIds = ratingProviderIds;
+	}
+
+	public SessionManager getSessionManager() {
+		return sessionManager;
+	}
+
+	public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
 	}
 }

@@ -127,6 +127,11 @@ public class SequentialWizardPageController extends WizardPageController {
    public ModelAndView handleRequest(Object requestModel, Map request, Map session,
                                      Map application, Errors errors) {
       if (request.get("matrix") != null) {
+    	  
+			if (getTaggingManager().isTaggable()) {
+				session.remove(PROVIDERS_PARAM);
+			}
+			
          session.put(ToolFinishedView.ALTERNATE_DONE_URL, "finishSeqWizard");
          return new ModelAndView("confirmWizard", "", "");
       }

@@ -48,7 +48,6 @@ import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.Placement;
-import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
@@ -65,7 +64,6 @@ public class CellFormPickerController extends CellController implements FormCont
    protected final Log logger = LogFactory.getLog(getClass());
    private ContentHostingService contentHosting;
    private EntityManager entityManager;
-   private SessionManager sessionManager;
    private SecurityService securityService = null;
    
    public static final String HELPER_CREATOR = "filepicker.helper.creator";
@@ -358,20 +356,6 @@ public class CellFormPickerController extends CellController implements FormCont
     */
    public void setEntityManager(EntityManager entityManager) {
       this.entityManager = entityManager;
-   }
-
-   /**
-    * @return Returns the sessionManager.
-    */
-   public SessionManager getSessionManager() {
-      return sessionManager;
-   }
-
-   /**
-    * @param sessionManager The sessionManager to set.
-    */
-   public void setSessionManager(SessionManager sessionManager) {
-      this.sessionManager = sessionManager;
    }
 
    public SecurityService getSecurityService() {
