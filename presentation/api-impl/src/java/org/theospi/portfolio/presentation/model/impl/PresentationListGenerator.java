@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
@@ -36,9 +37,11 @@ import org.sakaiproject.user.api.UserNotDefinedException;
 import org.theospi.portfolio.list.impl.BaseListGenerator;
 import org.theospi.portfolio.list.intf.ActionableListGenerator;
 import org.theospi.portfolio.list.intf.CustomLinkListGenerator;
+import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
+import org.theospi.portfolio.security.AuthorizationFacade;
 
 public class PresentationListGenerator extends BaseListGenerator implements ActionableListGenerator, CustomLinkListGenerator {
    private PresentationManager presentationManager;
@@ -47,6 +50,7 @@ public class PresentationListGenerator extends BaseListGenerator implements Acti
 
    private WorksiteManager worksiteManager;
    private AuthenticationManager authnManager;
+   private AuthorizationFacade authzManager;
 
    public void init(){
       logger.info("init()"); 
@@ -78,8 +82,9 @@ public class PresentationListGenerator extends BaseListGenerator implements Acti
 
    public List getObjects() {
 
-      List presentations = new ArrayList();
-      List tempPresentationList = new ArrayList(getPresentationManager().findPresentationsByViewer(getAuthnManager().getAgent()));
+      List<DecoratedPresentation> presentations = new ArrayList<DecoratedPresentation>();
+      Agent viewer = getAuthnManager().getAgent();
+      List tempPresentationList = new ArrayList(getPresentationManager().findPresentationsByViewer(viewer));
       {
         if (tempPresentationList.size() > 0)
         {
@@ -90,9 +95,12 @@ public class PresentationListGenerator extends BaseListGenerator implements Acti
              Presentation pres = (Presentation) iter.next();
              
              try {
-                Site site = SiteService.getSite(pres.getSiteId());
-                DecoratedPresentation decoPres = new DecoratedPresentation(pres, site);
-                presentations.add(decoPres);
+                if (!getAuthzManager().isAuthorized(viewer, 
+                      PresentationFunctionConstants.HIDE_PRESENTATION, pres.getId())) {
+                   Site site = SiteService.getSite(pres.getSiteId());
+                   DecoratedPresentation decoPres = new DecoratedPresentation(pres, site);
+                   presentations.add(decoPres);
+                }
              }
              catch (IdUnusedException e) {
                 logger.warn("Site with id " + pres.getSiteId() + " does not exist.");
@@ -138,7 +146,7 @@ public class PresentationListGenerator extends BaseListGenerator implements Acti
       return manager.isUserInSite(pres.getPresentation().getTemplate().getSiteId());
    }
       public Map getToolParams(Object entry) {
-      Map params = new HashMap();
+      Map<String, Object> params = new HashMap<String, Object>();
       DecoratedPresentation presentation = (DecoratedPresentation) entry;
       params.put(PRESENTATION_ID_PARAM, presentation.getId());
       params.put(TOOL_ID_PARAM, presentation.getPresentation().getToolId());
@@ -152,4 +160,16 @@ public class PresentationListGenerator extends BaseListGenerator implements Acti
     public void setToolState(String toolId, Map request) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
+   /**
+    * @return the authzManager
+    */
+   public AuthorizationFacade getAuthzManager() {
+      return authzManager;
+   }
+   /**
+    * @param authzManager the authzManager to set
+    */
+   public void setAuthzManager(AuthorizationFacade authzManager) {
+      this.authzManager = authzManager;
+   }
 }

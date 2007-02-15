@@ -156,9 +156,19 @@ public interface PresentationManager extends CleanupableService {
     * returns a list of all presentations agent can view within the given tool</br>
     *
     * @param viewer
+    * @param toolId
     * @return
     */
    public Collection findPresentationsByViewer(Agent viewer, String toolId);
+   
+   /**
+    * 
+    * @param viewer
+    * @param toolId
+    * @param showHidden
+    * @return
+    */
+   public Collection findPresentationsByViewer(Agent viewer, String toolId, boolean showHidden);
 
    public void createComment(PresentationComment comment);
    public void createComment(PresentationComment comment, boolean checkAuthz, boolean updateDates);

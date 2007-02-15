@@ -35,6 +35,13 @@
                 </osp:url>"
             title="<fmt:message key="action_permissions_title"/>"> <fmt:message key="action_permissions"/> </a>
     </c:if>
+    
+    <c:if test="${showHidden}">
+		    <a href="<osp:url value="listPresentation.osp"/>&action=showHidden&showHiddenKey=false"><fmt:message key="action_remove_hidden"/></a>
+	 </c:if>
+	 <c:if test="${!showHidden}">
+	    	<a href="<osp:url value="listPresentation.osp"/>&action=showHidden&showHiddenKey=true"><fmt:message key="action_show_all_presentations"/></a>
+	 </c:if>
 </div>
 
 <c:forEach var="presentation" items="${presentations}" varStatus="presentationStatus">
@@ -60,6 +67,7 @@
     <tbody>
   <c:forEach var="presentation" items="${presentations}">
     <c:set var="isAuthorizedTo" value="${presentation.authz}" />
+    <osp-c:authZMap prefix="osp.presentation." var="presCan" qualifier="${presentation.id}"/>
 
     <TR>
       <TD nowrap>
@@ -103,6 +111,19 @@
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
                  <a onclick="return confirmDeletion();" href="<osp:url value="deletePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_delete"/></a>
+             </c:if>
+             
+				 <c:if test="${!presCan.hide}">
+					
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url value="hidePresentation.osp"/>&hideAction=hide&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_hide"/></a>
+             </c:if>
+             <c:if test="${presCan.hide}">
+					<!-- This means it is already hidden because the "permission" is set to hide this id for this user -->
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                 <a href="<osp:url value="hidePresentation.osp"/>&hideAction=show&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_show"/></a>
              </c:if>
          </div>
 

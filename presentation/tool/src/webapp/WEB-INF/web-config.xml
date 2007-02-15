@@ -109,6 +109,7 @@
                <prop key="/editItemDefinition.osp">editItemDefinitionController</prop>
                <prop key="/addPresentation.osp">addPresentationController</prop>
                <prop key="/deletePresentation.osp">deletePresentationController</prop>
+					<prop key="/hidePresentation.osp">hidePresentationController</prop>
                <prop key="/addViewer.osp">addViewerController</prop>
                <prop key="/deleteViewer.osp">deleteViewerController</prop>
                <prop key="/addComment.osp">addCommentController</prop>

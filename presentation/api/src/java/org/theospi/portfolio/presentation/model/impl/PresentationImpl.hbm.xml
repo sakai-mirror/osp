@@ -281,4 +281,8 @@
    	from Presentation p where p.properties != null and p.propertyForm = null 
    </query>
    
+   <query name="findPortfoliosByToolWithAuthzNoHidden">
+   	from Presentation p where p.toolId=:toolId and p.id in ( :id ) and p.id not in ( :hiddenId )
+   </query>
+   
 </hibernate-mapping>

@@ -749,11 +749,24 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       return returned;
    }
-
+   
+   /**
+    * {@inheritDoc}
+    */
    public Collection findPresentationsByViewer(Agent viewer, String toolId) {
+      return findPresentationsByViewer(viewer, toolId, true);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   public Collection findPresentationsByViewer(Agent viewer, String toolId, boolean showHidden) {
 
       Collection presentationAuthzs = getAuthzManager().getAuthorizations(viewer,
             PresentationFunctionConstants.VIEW_PRESENTATION,  null);
+      
+      Collection hiddenAuths = getAuthzManager().getAuthorizations(viewer, 
+            PresentationFunctionConstants.HIDE_PRESENTATION, null);
 
       Collection returned = findPresentationsByOwner(viewer, toolId);
 
@@ -761,12 +774,19 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          Presentation pres = (Presentation)i.next();
          pres.setAuthz(new PresentationAuthzMap(viewer, pres));
       }
-
-      String query = "from Presentation where tool_id=? and id in (" +
-         buildPresList(presentationAuthzs) + ")";
-
-      Collection authzPres = getHibernateTemplate().find(query,
-            new Object[]{toolId});
+      
+      List<Id> hiddenIds = new ArrayList<Id>();
+      hiddenIds.add(getIdManager().getId("last"));
+      if (!showHidden) {
+         hiddenIds = buildPresList(hiddenAuths);
+      }
+      
+      String[] paramNames = new String[] {"toolId", "id", "hiddenId"};
+      Object[] params = new Object[]{toolId, buildPresList(presentationAuthzs), 
+            hiddenIds};
+      
+      Collection authzPres = getHibernateTemplate().findByNamedQueryAndNamedParam(
+            "findPortfoliosByToolWithAuthzNoHidden", paramNames, params);
 
       for (Iterator i=authzPres.iterator();i.hasNext();) {
          Presentation pres = (Presentation)i.next();
@@ -779,23 +799,31 @@ public class PresentationManagerImpl extends HibernateDaoSupport
              getHibernateTemplate().evict(pres);
          }
       }
+      
+      //Remove the regular ones that are hidden
+      for (Iterator j=returned.iterator(); j.hasNext();) {
+         Presentation pres = (Presentation)j.next();
+         if (hiddenIds.contains(pres.getId())) {
+            j.remove();
+         }
+      }
 
       return returned;
    }
 
-   protected String buildPresList(Collection presentationAuthzs) {
-      String presIdList = "";
+   protected List<Id> buildPresList(Collection presentationAuthzs) {
+      List<Id> presIdList = new ArrayList<Id>();
 
       for (Iterator i=presentationAuthzs.iterator();i.hasNext();) {
          Authorization authz = (Authorization)i.next();
-         presIdList += "'" + authz.getQualifier() + "',";
+         presIdList.add(authz.getQualifier());
       }
 
-      presIdList += "'last'";
+      //presIdList += "'last'";
 
       return presIdList;
    }
-
+   
    public void createComment(PresentationComment comment) {
       createComment(comment, true, true);
    }

@@ -559,6 +559,7 @@
       </property>
       <property name="listGeneratorId"><value>portfolios</value></property>
       <property name="authnManager"><ref bean="authManager"/></property>
+      <property name="authzManager"><ref bean="authzManager"/></property>
       <property name="listGenerator"><ref bean="org.theospi.portfolio.list.intf.ListGenerator.portfolios"/></property>
       <property name="worksiteManager">
          <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>

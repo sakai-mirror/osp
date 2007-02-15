@@ -472,6 +472,53 @@
         </property>
     </bean>
 
+	<bean id="hidePresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+        <property name="controller">
+            <bean class="org.theospi.portfolio.presentation.control.HidePresentationController">
+                <property name="presentationManager">
+                    <ref bean="presentationManager"/>
+                </property>
+                <property name="authManager">
+                    <ref bean="authManager"/>
+                </property>
+                <property name="authzManager">
+                    <ref bean="authzManager"/>
+                </property>
+                <property name="agentManager">
+                    <ref bean="agentManager"/>
+                </property>
+                <property name="idManager">
+                    <ref bean="idManager"/>
+                </property>
+                <property name="listScrollIndexer">
+                    <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
+                </property>
+                <property name="serverConfigurationService">
+                    <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
+                </property>
+                <property name="worksiteManager">
+                    <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+                </property>
+            </bean>
+        </property>
+        <property name="customTypedEditors">
+            <list>
+                <ref bean="idCustomEditor"/>
+            </list>
+        </property>
+        <property name="screenMappings">
+            <props>
+                <prop key="success">listPresentationRedirect</prop>
+            </props>
+        </property>
+        <property name="commandName">
+            <value>presentations</value>
+        </property>
+        <property name="commandClass">
+            <value>org.theospi.portfolio.presentation.model.Presentation</value>
+        </property>
+    </bean>
+
     <bean id="addViewerController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
         <property name="controller">
             <bean class="org.theospi.portfolio.presentation.control.AddViewerController">
