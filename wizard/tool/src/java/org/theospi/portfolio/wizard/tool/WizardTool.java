@@ -285,7 +285,7 @@ public class WizardTool extends BuilderTool {
             currentUserId : SessionManager.getCurrentSessionUserId();
       setCurrentUserId(user);
 
-      List wizards = getWizardManager().listAllWizards(currentSiteId);
+      List wizards = getWizardManager().listAllWizardsByOwner(user, currentSiteId);
 
       DecoratedWizard lastWizard = null;
 

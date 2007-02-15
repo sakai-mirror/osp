@@ -261,8 +261,6 @@ public interface WizardManager extends WorkflowEnabledManager {
 	public boolean importResource(Id worksite, String reference)
 			throws UnsupportedFileTypeException, ImportException;
 
-	public List listAllWizards(String siteId);
-
 	public List listAllWizardsByOwner(String owner, String siteId);
 
 	public List listWizardsByType(String owner, String siteId, String type);

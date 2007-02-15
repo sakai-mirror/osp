@@ -457,17 +457,12 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    public List listAllWizardsByOwner(String owner, String siteId) {
-      Object[] params = new Object[]{owner, new Boolean(true), siteId};
+      Agent ownerAgent = getAgentManager().getAgent(owner);
+      Object[] params = new Object[]{ownerAgent, new Boolean(true), siteId};
       return getHibernateTemplate().find("from Wizard w where " +
             "(w.owner=? or w.published=?) and w.siteId=? order by seq_num", params);
    }
 
-   public List listAllWizards(String siteId) {
-      Object[] params = new Object[]{siteId};
-      return getHibernateTemplate().find("from Wizard w where " +
-            " w.siteId=? order by seq_num", params);
-   }
-   
    public List findWizardsByOwner(String ownerId, String siteId) {
       Object[] params = new Object[]{getAgentManager().getAgent(ownerId), siteId};
       return getHibernateTemplate().find("from Wizard w where w.owner=? and w.siteId=? order by seq_num", params);
@@ -773,6 +768,19 @@ public class WizardManagerImpl extends HibernateDaoSupport
             query.setParameter(0, wizardId.getValue(), Hibernate.STRING);
 
             String results = (String) query.uniqueResult();
+            
+            /*
+				//CWM just testing out some different hibernate options...
+            Criteria c = session.createCriteria(Wizard.class);
+            Criteria rootCat = c.createCriteria("rootCategory");
+            rootCat.setFetchMode("childPages", FetchMode.SELECT);
+            rootCat.setFetchMode("childCategories", FetchMode.SELECT);
+            c.add(Expression.eq("id", wizardId));
+            Wizard wiz = (Wizard) c.uniqueResult();
+            if (wiz == null) return null;
+            String results = wiz.getSiteId();
+            */
+            
             return results;
          }
       };
