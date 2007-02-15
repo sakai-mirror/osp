@@ -37,6 +37,11 @@ import org.theospi.portfolio.matrix.model.Criterion;
 import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.WizardPageForm;
+import org.theospi.portfolio.matrix.model.Attachment;
+import org.theospi.portfolio.matrix.model.Matrix;
+import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.security.AuthorizationFacade;
 
 public class BaseScaffoldingController {
@@ -118,14 +123,63 @@ public class BaseScaffoldingController {
          // tbd how to report error back to admin user?
       }
       
-      //getMatrixManager().refresh(scaffolding);
-      
       //regen the cells
-      regenerateCells(scaffolding, isDirty);
+      regenerateScaffoldingCells(scaffolding, isDirty);
+      
+      if (isDirty)
+         regenerateMatrixCellStatus( scaffolding );
+      
       return scaffolding;
    }
    
-   protected void regenerateCells(Scaffolding scaffolding, boolean dirtyProgression) {
+   /**
+    ** Update the status of all matrix cells to match the initial status 
+    ** defined for the corresponding scaffolding cell.
+    **/
+   protected void regenerateMatrixCellStatus( Scaffolding scaffolding )
+   {
+      List matrices = getMatrixManager().getMatrices(scaffolding.getId());
+
+      for (Iterator matrixIt = matrices.iterator(); matrixIt.hasNext();) 
+      {
+         Matrix matrix = (Matrix)matrixIt.next();
+         Set cells = matrix.getCells();
+       
+         for (Iterator cellIt=cells.iterator(); cellIt.hasNext();) 
+         {
+            Cell cell = (Cell)cellIt.next();
+            WizardPage page = cell.getWizardPage();
+            String status = page.getStatus();
+            String initialStatus = cell.getScaffoldingCell().getInitialStatus();
+            
+            if ( status != initialStatus )
+            {
+               page.setStatus( initialStatus );
+               getMatrixManager().storePage( page );
+               
+               // If status was locked and is now ready, then unlock resources
+               if ( initialStatus.equals(MatrixFunctionConstants.READY_STATUS) &&
+                    status.equals(MatrixFunctionConstants.LOCKED_STATUS) )
+               {
+                  for (Iterator iter = page.getAttachments().iterator(); iter.hasNext();) 
+                  {
+                     Attachment att = (Attachment) iter.next();
+                     lockManager.removeLock(att.getArtifactId().getValue(),
+                           page.getId().getValue());
+                  }
+                  for (Iterator iter2 = page.getPageForms().iterator(); iter2.hasNext();) 
+                  {
+                     WizardPageForm form = (WizardPageForm) iter2.next();
+                     lockManager.removeLock(form.getArtifactId().getValue(),
+                           page.getId().getValue());
+                  }
+               }
+            }
+         }
+      }
+   }
+   
+   protected void regenerateScaffoldingCells(Scaffolding scaffolding, boolean dirtyProgression) {
       List levels = scaffolding.getLevels();
       List criteria = scaffolding.getCriteria();
       Criterion criterion = new Criterion();

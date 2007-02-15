@@ -288,6 +288,7 @@
             <div class="checkbox indnt1">
             <input type="radio" id="<c:out value="${token}" />" name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
                <c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
+					<c:if test="${isMatrixUsed}"><c:out value="${disabledText}"/></c:if>
             <label for="<c:out value="${token}" />"><osp:message key="${token}_progression_label"  />
                <osp:message key="${token}_progression_icon"  var="icon" />
                <c:if test="${not empty icon}" ><img src="<osp:url value="${icon}"/>" /></c:if>
