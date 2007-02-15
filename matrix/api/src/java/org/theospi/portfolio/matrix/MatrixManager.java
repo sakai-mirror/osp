@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.matrix.model.Attachment;
@@ -97,7 +96,15 @@ public interface MatrixManager extends WorkflowEnabledManager {
    public List getMatricesForWarehousing();
 
    Scaffolding getScaffolding(Id scaffoldingId);
-   List findScaffolding(String siteId, String userId);
+   
+   /**
+    * 
+    * @param siteIdStr
+    * @param userId
+    * @return
+    */
+   public List findAvailableScaffolding(String siteIdStr, Agent user);
+   
    List findPublishedScaffolding(List sites);
    
    ScaffoldingCell getNextScaffoldingCell(ScaffoldingCell scaffoldingCell, 
@@ -131,16 +138,6 @@ public interface MatrixManager extends WorkflowEnabledManager {
     * @return List of org.theospi.portfolio.shared.model.EvaluationContentWrapper
     */
    List getEvaluatableItems(Agent agent);
-
-   /**
-    * @return Returns the idManager.
-    */
-   IdManager getIdManager();
-
-   /**
-    * @param idManager The idManager to set.
-    */
-   void setIdManager(IdManager idManager);
 
    /**
     * @param matrixId
