@@ -1618,7 +1618,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             }
             Agent agent = this.getAgentFromId(id);
 
-            if (agent != null) {
+            if (agent != null  && agent.getId() != null) {
                this.getAuthzManager().createAuthorization(agent, 
                      MatrixFunctionConstants.EVALUATE_MATRIX, sCell.getWizardPageDefinition().getId());
             }
