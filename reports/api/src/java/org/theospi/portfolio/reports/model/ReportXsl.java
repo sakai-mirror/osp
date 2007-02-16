@@ -25,29 +25,32 @@ import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
+import java.util.List;
+import java.util.Iterator;
+
 public class ReportXsl implements ResourceLoaderAware
 {
 
    /** The primary key */
-	private Id	reportXslId = null;
+    private Id	reportXslId = null;
 
-	/** the link to the report definition */
-	private ReportDefinition reportDefinition = null;
+    /** the link to the report definition */
+    private ReportDefinition reportDefinition = null;
 
-	/** whether or not this xsl is for export or view */
-	private boolean isExport = false;
+    /** whether or not this xsl is for export or view */
+    private boolean isExport = false;
 
-	/** the xsl location */
-	private String xslLink;
+    /** the xsl location */
+    private String xslLink;
 
-	/** the title */
-	private String title;
+    /** the title */
+    private String title;
 
-	/** the contentType */
-	private String contentType;
+    /** the contentType */
+    private String contentType;
 
-	/** the extension */
-	private String extension;
+    /** the extension */
+    private String extension;
 
    private ResultsPostProcessor resultsPostProcessor;
 
@@ -55,148 +58,148 @@ public class ReportXsl implements ResourceLoaderAware
 
    private Resource resource;
 
-	/**
-	 * the getter for the reportId property
-	 */
-	public ReportXsl()
-	{
-		
-	}
+    /**
+     * the getter for the reportId property
+     */
+    public ReportXsl()
+    {
 
-	public Id getReportXslId()
-	{
-		return reportXslId;
-	}
+    }
 
-	public void setReportXslId(Id reportXslId)
-	{
-		this.reportXslId = reportXslId;
-	}
+    public Id getReportXslId()
+    {
+        return reportXslId;
+    }
 
-	/**
-	 * the getter for the reportDefinition property
-	 * @return ReportDefinition the unique identifier
-	 */
-	public ReportDefinition getReportDefinition()
-	{
-		return reportDefinition;
-	}
-	
-	
-	/**
-	 * the setter for the reportDefinition property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param reportDefinition String
-	 */
-	public void setReportDefinition(ReportDefinition reportDefinition)
-	{
-		this.reportDefinition = reportDefinition;
-	}
-	
-	
-	/**
-	 * the getter for the isExport property
-	 * @return boolean the isExport
-	 */
-	public boolean getIsExport()
-	{
-		return isExport;
-	}
-	
-	
-	/**
-	 * the setter for the isExport property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param isExport boolean
-	 */
-	public void setIsExport(boolean isExport)
-	{
-		this.isExport = isExport;
-	}
-	
-	
-	/**
-	 * the getter for the xslLink property
-	 * @return String the xslLink
-	 */
-	public String getXslLink()
-	{
-		return xslLink;
-	}
-	
-	
-	/**
-	 * the setter for the xslLink property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param xslLink String
-	 */
-	public void setXslLink(String xslLink)
-	{
-		this.xslLink = xslLink;
-	}
-	
-	
-	/**
-	 * the getter for the title property
-	 * @return String the title
-	 */
-	public String getTitle()
-	{
-		return title;
-	}
-	
-	
-	/**
-	 * the setter for the title property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param title String
-	 */
-	public void setTitle(String title)
-	{
-		this.title = title;
-	}
-	
-	
-	/**
-	 * the getter for the contentType property
-	 * @return String the contentType
-	 */
-	public String getContentType()
-	{
-		return contentType;
-	}
-	
-	
-	/**
-	 * the setter for the contentType property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param contentType String
-	 */
-	public void setContentType(String contentType)
-	{
-		this.contentType = contentType;
-	}
-	
-	
-	/**
-	 * the getter for the extension property
-	 * @return String the extension
-	 */
-	public String getExtension()
-	{
-		return extension;
-	}
-	
-	
-	/**
-	 * the setter for the extension property.  This is set by the bean 
-	 * and by hibernate.
-	 * @param extension String
-	 */
-	public void setExtension(String extension)
-	{
-		this.extension = extension;
-	}
+    public void setReportXslId(Id reportXslId)
+    {
+        this.reportXslId = reportXslId;
+    }
+
+    /**
+     * the getter for the reportDefinition property
+     * @return ReportDefinition the unique identifier
+     */
+    public ReportDefinition getReportDefinition()
+    {
+        return reportDefinition;
+    }
+
+
+    /**
+     * the setter for the reportDefinition property.  This is set by the bean
+     * and by hibernate.
+     * @param reportDefinition String
+     */
+    public void setReportDefinition(ReportDefinition reportDefinition)
+    {
+        this.reportDefinition = reportDefinition;
+    }
+
+
+    /**
+     * the getter for the isExport property
+     * @return boolean the isExport
+     */
+    public boolean getIsExport()
+    {
+        return isExport;
+    }
+
+
+    /**
+     * the setter for the isExport property.  This is set by the bean
+     * and by hibernate.
+     * @param isExport boolean
+     */
+    public void setIsExport(boolean isExport)
+    {
+        this.isExport = isExport;
+    }
+
+
+    /**
+     * the getter for the xslLink property
+     * @return String the xslLink
+     */
+    public String getXslLink()
+    {
+        return xslLink;
+    }
+
+
+    /**
+     * the setter for the xslLink property.  This is set by the bean
+     * and by hibernate.
+     * @param xslLink String
+     */
+    public void setXslLink(String xslLink)
+    {
+        this.xslLink = xslLink;
+    }
+
+
+    /**
+     * the getter for the title property
+     * @return String the title
+     */
+    public String getTitle()
+    {
+        return title;
+    }
+
+
+    /**
+     * the setter for the title property.  This is set by the bean
+     * and by hibernate.
+     * @param title String
+     */
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
+
+    /**
+     * the getter for the contentType property
+     * @return String the contentType
+     */
+    public String getContentType()
+    {
+        return contentType;
+    }
+
+
+    /**
+     * the setter for the contentType property.  This is set by the bean
+     * and by hibernate.
+     * @param contentType String
+     */
+    public void setContentType(String contentType)
+    {
+        this.contentType = contentType;
+    }
+
+
+    /**
+     * the getter for the extension property
+     * @return String the extension
+     */
+    public String getExtension()
+    {
+        return extension;
+    }
+
+
+    /**
+     * the setter for the extension property.  This is set by the bean
+     * and by hibernate.
+     * @param extension String
+     */
+    public void setExtension(String extension)
+    {
+        this.extension = extension;
+    }
 
    public ResultsPostProcessor getResultsPostProcessor() {
       return resultsPostProcessor;
@@ -228,7 +231,7 @@ public class ReportXsl implements ResourceLoaderAware
    }
 
    public void setResourceLoader(ResourceLoader resourceLoader) {
-      setResource(resourceLoader.getResource(getXslLink()));
+      setResource(resourceLoader.getResource(getXslLink()));      
    }
 
 }

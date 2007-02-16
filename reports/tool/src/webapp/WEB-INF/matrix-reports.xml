@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
-<!-- 
+<!--
 	Notes:
 	
 	Each report MUST have a different idString.  This is how saved reports are
 	linked back to the report definition
     
 -->
-<beans>
-
-    
+<beans>    
     <bean id="matrixPendingDirectDB"
         class="org.theospi.portfolio.reports.model.ReportDefinition">
 
@@ -68,7 +66,7 @@
                 Matrix, student, criteria, level, status, one of reviewers defined for cell
             </value>
         </property>
-        <property name="type">
+        <property name="siteType">
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
@@ -176,7 +174,7 @@
                 Matrix, student, criteria, level, status, one of reviewers defined for cell
             </value>
         </property>
-        <property name="type">
+        <property name="siteType">
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
@@ -291,7 +289,7 @@
                 Matrix, student, criteria, level, status, one of reviewers defined for cell
             </value>
         </property>
-        <property name="type">
+        <property name="siteType">
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">

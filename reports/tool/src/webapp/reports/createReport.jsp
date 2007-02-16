@@ -4,59 +4,54 @@
 <% response.setContentType("text/html; charset=UTF-8"); %>
 <f:view>
     <sakai:view title="#{msgs.title_create_report}">
-            <h:form>
-                
-                <sakai:view_title value="#{msgs.title_create_report}" indent="1" />
-                
-                The report is: 
-                <h:outputText value="#{ReportsTool.workingReportDefinition.reportDefinition.title}" />
-                
-                
-                <sakai:group_box>
-                    
-                    <sakai:panel_edit>
-                        <sakai:doc_section>
-                            <h:outputText value="*" style="color: red"/>
-                            <h:outputText value="#{msgs.report_title}"/>
-                        </sakai:doc_section>
-                        <sakai:doc_section>
-                            <h:inputText value="#{ReportsTool.workingReport.report.title}" id="title"/>
-                            <h:outputText value="#{msgs.empty_title_validate}" style="color: red" 
-                                rendered="#{ReportsTool.workingReport.invalidTitle}"/>
-                        </sakai:doc_section>
-                        
-                        <sakai:doc_section>
-                            <h:outputText value="#{msgs.report_live_checkbox}"/>
-                        </sakai:doc_section>
-                        <sakai:doc_section>
-                            <h:selectBooleanCheckbox value="#{ReportsTool.workingReport.report.isLive}"/>
-                        </sakai:doc_section>
-                        
-                        <sakai:doc_section>
-                            <h:outputText value="#{msgs.report_keywords}"/>
-                        </sakai:doc_section>
-                        <sakai:doc_section>
-                            <h:inputText value="#{ReportsTool.workingReport.report.keywords}" id="keywords"/>
-                        </sakai:doc_section>
-                        
-                        <h:outputText value="#{msgs.report_description}"/>
-                        <sakai:rich_text_area value="#{ReportsTool.workingReport.report.description}" rows="10" columns="70"/>
-                        
-                    </sakai:panel_edit>
-                </sakai:group_box>
-                
-                
-                <sakai:button_bar>
-                    <sakai:button_bar_item
+        <h:form>
+
+            <sakai:view_title value="#{msgs.title_create_report}" indent="1"/>
+
+            The report is:
+            <h:outputText value="#{ReportsTool.workingReportDefinition.reportDefinition.title}"/>
+
+
+            <sakai:group_box>
+
+                <sakai:panel_edit>
+                    <sakai:doc_section>
+                        <h:outputText value="*" style="color: red"/>
+                        <h:outputText value="#{msgs.report_title}"/>
+                    </sakai:doc_section>
+                    <sakai:doc_section>
+                        <h:inputText value="#{ReportsTool.workingReport.report.title}" id="title"/>
+                        <h:outputText value="#{msgs.empty_title_validate}" style="color: red"
+                                      rendered="#{ReportsTool.workingReport.invalidTitle}"/>
+                    </sakai:doc_section>
+
+                    <sakai:doc_section>
+                        <h:outputText value="#{msgs.report_live_checkbox}"/>
+                    </sakai:doc_section>
+                    <sakai:doc_section>
+                        <h:selectBooleanCheckbox value="#{ReportsTool.workingReport.report.isLive}"/>
+                    </sakai:doc_section>
+
+
+                    <h:outputText value="#{msgs.report_description}"/>
+                    <h:inputTextarea value="#{ReportsTool.workingReport.report.description}" rows="10"
+                                          cols="70"/>
+
+                </sakai:panel_edit>
+            </sakai:group_box>
+
+
+            <sakai:button_bar>
+                <sakai:button_bar_item
                         action="#{ReportsTool.processReportBaseProperties}"
-                        value="#{msgs.continue}" />
-                    <sakai:button_bar_item
+                        value="#{msgs.continue}"/>
+                <sakai:button_bar_item
                         action="#{ReportsTool.processCancelReport}"
-                        value="#{msgs.cancel}" />
-                </sakai:button_bar>
-                
-                <h:messages />
-                
-            </h:form>
+                        value="#{msgs.cancel}"/>
+            </sakai:button_bar>
+
+            <h:messages/>
+
+        </h:form>
     </sakai:view>
 </f:view>

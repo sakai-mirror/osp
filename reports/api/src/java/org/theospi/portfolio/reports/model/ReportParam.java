@@ -142,10 +142,13 @@ public class ReportParam
 	 * the getter for the value property
 	 * @return String the value
 	 */
-	public String getValue()
-	{
-		return value;
-	}
+    public String getValue()
+    {
+        if (value == null && getListValue() != null){
+            value = getListValue().toString();
+        }
+        return value;
+    }
 	
 	
 	/**
@@ -180,11 +183,25 @@ public class ReportParam
     }
 
     public List getListValue() {
+        if (listValue == null && this.value != null){
+            initListValue(this.value);
+        }
         return listValue;
     }
 
     public void setListValue(List listValue) {
         this.listValue = listValue;
         validated = false;
+    }
+    public void initListValue(String value){
+    	if(value==null || ((value.indexOf("[")<0) || (value.indexOf("]")<0)))
+    		return;
+        String strSet = value.substring(value.indexOf("[")+1, value.indexOf("]"));
+	    String[] set = strSet.split(",");
+		List valueList = new ArrayList();
+			for(int i = 0; i < set.length; i++) {
+				valueList.add(set[i].trim());
+            }
+        setListValue(valueList);
     }
 }

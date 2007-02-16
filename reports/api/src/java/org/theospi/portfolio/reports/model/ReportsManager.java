@@ -26,22 +26,25 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.sakaiproject.metaobj.shared.DownloadableManager;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.exception.UnsupportedFileTypeException;
+import org.sakaiproject.exception.ImportException;
 
 public interface ReportsManager extends DownloadableManager
 {
    public static final String RESULTS_ID = "reportResultsId";
    public static final String EXPORT_XSL_ID = "reportExportId";
 
-   
+
    /**
     * Sets the list of ReportDefinitions.  It also iterates through the list
     * and tells the report definition to complete it's loading.
     * @param reportDefinitions List of reportDefinitions
     */
-	public void setReportDefinitions(List reportdefs);
-   
-   
-	public void addReportDefinitions(List reportDefinitions);
+    public void setReportDefinitions(List reportdefs);
+
+
+    public void addReportDefinitions(List reportDefinitions);
 
 
    /**
@@ -49,33 +52,33 @@ public interface ReportsManager extends DownloadableManager
     * for the worksite type against the report types
     * @return List of ReportDefinitions
     */
-	public List getReportDefinitions();	
+    public List getReportDefinitions();
 
-   
+
    /**
     * Creates parameters in the report linked to the parameters in the report definition
     * 
     * @param report a Collection of ReportParam
     */
-	public void createReportParameters(Report report);
-   
+    public void createReportParameters(Report report);
+
 
    /**
     * Creates a new blank Report based on a report definition
     * 
     * @param reportDefinition a Collection of ReportParam
     */
-	public Report createReport(ReportDefinition reportDefinition);
-   
+    public Report createReport(ReportDefinition reportDefinition);
+
 
    /**
     * runs a report and creates a ReportResult.  The parameters were
     * verified on the creation of this report object.
     * @return ReportResult
     */
-	public ReportResult generateResults(Report report);
+    public ReportResult generateResults(Report report);
 
-   
+
    /**
     * Replaces the the system value proxy with the values.
     * The list of system value proxies(without quote characters):
@@ -85,9 +88,9 @@ public interface ReportsManager extends DownloadableManager
     * @param inString
     * @return String with replaced values
     */
-	public String replaceSystemValues(String inString);
-   
-   
+    public String replaceSystemValues(String inString);
+
+
    /**
     * gathers the data for dropdown/list box.  It runs the query defined in the report param
     * ane creates a string in the format "[value1, value2, value3, ...]" or 
@@ -111,15 +114,15 @@ public interface ReportsManager extends DownloadableManager
     * @param result
     */
    public void saveReport(Report report);
-   
-   
+
+
    /**
     * saves the embedded report and then saves the report result
     * @param result
     */
    public void saveReportResult(ReportResult result);
 
-   
+
    /**
     * this gets the list of report results that a user can view.
     * If the user has permissions to run or view reports, 
@@ -130,8 +133,8 @@ public interface ReportsManager extends DownloadableManager
     * @return List of ReportResult objects
     */
    public List getCurrentUserResults();
-   
-   
+
+
    /**
     * Reloads a ReportResult.  During the loading process it loads the
     * report from which the ReportResult is derived, It links the report to
@@ -149,7 +152,7 @@ public interface ReportsManager extends DownloadableManager
     * @return
     */
    public String getReportResultKey(ReportResult result, String ref);
-   
+
 
    /**
     * checks the id against the generated unique id of the reference.
@@ -159,7 +162,7 @@ public interface ReportsManager extends DownloadableManager
     * @param ref
     */
    public void checkReportAccess(String id, String ref);
-   
+
    /**
     * Checks for edit report permission
     *
@@ -172,15 +175,15 @@ public interface ReportsManager extends DownloadableManager
     * @param result
     */
    public void setCurrentResult(ReportResult result);
-   
+
    /**
     * Deletes a ReportResult. If the report that this result came from in not on display
     * then we should try to delete the report too because the user can't do anything with it
     * @param result
     */
    public void deleteReportResult(ReportResult result);
-   
-   
+
+
    /**
     * if we are deleting a report that is not live, then delete the result associated with it
     * because it will become invalid.  If a report is live, then we need to check how many results
@@ -193,7 +196,7 @@ public interface ReportsManager extends DownloadableManager
     */
    public void deleteReport(Report report, boolean deactivate);
 
-   
+
    /**
     * 
     * @return Map
@@ -214,11 +217,16 @@ public interface ReportsManager extends DownloadableManager
     */
    //public DataSource getDataSource();
 
-   
+
    /**
     * returns the data source based on if the calling code is using the warehouse or not
     * @param useWarehouse boolean
     * @return
     */
    public DataSource getDataSourceUseWarehouse(boolean useWarehouse);
+
+    public boolean importResource(Id worksite, String reference)
+            throws UnsupportedFileTypeException, ImportException;
+
+     public void deleteReportDefXmlFile(ReportDefinition reportDef);
 }

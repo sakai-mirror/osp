@@ -33,7 +33,7 @@
         <property name="query">
             <list>
                <value>
-                  select RESOURCE_UUID `RESOURCE_ID_artifact` from content_resource where 1 IN (1, ?, ?, ?, ?, ?, ?, ?)
+                  select RESOURCE_UUID `RESOURCE_ID_artifact` from content_resource where 1 IN (?, ?, ?, (?), ?, (?), ?)
                </value>
             </list>
         </property>
@@ -58,7 +58,7 @@
                 Tests each of the parameter variable types
             </value>
         </property>
-        <property name="type"><!-- some acceptable values: admin,course,project,cig  -->
+        <property name="siteType"><!-- some acceptable values: admin,course,project,cig  -->
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
 
@@ -233,7 +233,7 @@
                 This report is to view the portfolio performance
             </value>
         </property>
-        <property name="type">
+        <property name="siteType">
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
@@ -311,7 +311,7 @@
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>
-        <property name="type">
+        <property name="siteType">
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
 
@@ -374,7 +374,7 @@
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>
-        <property name="type">
+        <property name="siteType">
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
 
@@ -461,7 +461,7 @@
                 as an artifact
             </value>
         </property>
-        <property name="type">
+        <property name="siteType">
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
@@ -563,7 +563,7 @@
                 Matrix, student, criteria, level, status, one of reviewers defined for cell
             </value>
         </property>
-        <property name="type">
+        <property name="siteType">
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
@@ -649,7 +649,7 @@
                 Matrix, student, criteria, level, status, one of reviewers defined for cell
             </value>
         </property>
-        <property name="type">
+        <property name="siteType">
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
@@ -764,7 +764,7 @@
                 Matrix, student, criteria, level, status, one of reviewers defined for cell
             </value>
         </property>
-        <property name="type">
+        <property name="siteType">
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
@@ -856,7 +856,7 @@
                 Matrix, student, criteria, level, status, one of reviewers defined for cell
             </value>
         </property>
-        <property name="type">
+        <property name="siteType">
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
@@ -955,7 +955,7 @@
                 Matrix, student, criteria, level, status, one of reviewers defined for cell
             </value>
         </property>
-        <property name="type">
+        <property name="siteType">
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
@@ -1059,7 +1059,7 @@
                 This report lists out each Reviewer.  Then for each reviewer
             </value>
         </property>
-        <property name="type">
+        <property name="siteType">
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">

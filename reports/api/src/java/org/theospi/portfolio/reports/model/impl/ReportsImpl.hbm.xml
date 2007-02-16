@@ -75,7 +75,23 @@
         <property name="extension" type="java.lang.String" />
     </class>
     -->
-    
+    <class name="ReportDefinitionXmlFile"
+           table="osp_report_def_xml" >
+
+        <id name="reportDefId" length="36" type="java.lang.String" column="reportDefId"/>
+        <property name="xmlFile" column="xmlFile" type="binary" not-null="true" length="2147483647"/>
+
+
+    </class>
+     <class name="ReportXslFile"
+           table="osp_report_xsl">
+
+         <id name="reportXslFileRef" length="72" type="java.lang.String" column="reportXslFileRef"/>
+
+         <property name="reportDefId" column="reportDefId" type="java.lang.String" length="36"/>
+
+         <property name="xslFile" column="xslFile" type="binary" not-null="true" length="2147483647"/>
+    </class>
     <class
         name="Report"
         table="osp_reports">
@@ -154,6 +170,12 @@
     
     <query name="findResultsByReport">
 		from ReportResult rr WHERE rr.report=?
+   </query>
+    <query name="findReportDefinitionFiles">
+		from ReportDefinitionXmlFile
+   </query>
+    <query name="findReportXsl">
+		from ReportXslFile r WHERE r.reportXslFileRef=? AND r.reportDefId =?
    </query>
     
 </hibernate-mapping>

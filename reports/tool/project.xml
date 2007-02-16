@@ -12,7 +12,6 @@
         <url>http://theospi.org/</url>
     </organization>
     <inceptionYear>2004</inceptionYear>
-
     <properties>
         <deploy.type>war</deploy.type>
     </properties>
@@ -23,19 +22,19 @@
             <artifactId>osp-reports-api</artifactId>
             <version>${sakai.version}</version>
         </dependency>
-      
-       <dependency>
-           <groupId>osp</groupId>
-           <artifactId>osp-common-api</artifactId>
-           <version>${sakai.version}</version>
-       </dependency>
 
-     <dependency>
-       <groupId>sakaiproject</groupId>
-       <artifactId>sakai-metaobj-api</artifactId>
-       <version>${sakai.version}</version>
-     </dependency>
-       
+        <dependency>
+            <groupId>osp</groupId>
+            <artifactId>osp-common-api</artifactId>
+            <version>${sakai.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-metaobj-api</artifactId>
+            <version>${sakai.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>sakaiproject</groupId>
             <artifactId>sakai-metaobj-tool-lib</artifactId>
@@ -45,23 +44,23 @@
             </properties>
         </dependency>
 
-       <dependency>
-         <groupId>sakaiproject</groupId>
-         <artifactId>sakai-util</artifactId>
-         <version>${sakai.version}</version>
-         <properties>
-           <war.bundle>true</war.bundle>
-         </properties>
-       </dependency>
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-util</artifactId>
+            <version>${sakai.version}</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
 
-       <dependency>
-           <groupId>osp</groupId>
-           <artifactId>osp-common-tool-lib</artifactId>
-           <version>${sakai.version}</version>
-           <properties>
-              <war.bundle>true</war.bundle>
-           </properties>
-       </dependency>
+        <dependency>
+            <groupId>osp</groupId>
+            <artifactId>osp-common-tool-lib</artifactId>
+            <version>${sakai.version}</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
 
         <dependency>
             <groupId>sakaiproject</groupId>
@@ -69,46 +68,50 @@
             <version>${sakai.version}</version>
         </dependency>
 
-       <dependency>
-           <groupId>sakaiproject</groupId>
-           <artifactId>sakai-authz-api</artifactId>
-           <version>${sakai.version}</version>
-       </dependency>
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-authz-api</artifactId>
+            <version>${sakai.version}</version>
+        </dependency>
 
-       <dependency>
-           <groupId>sakaiproject</groupId>
-           <artifactId>sakai-site-api</artifactId>
-           <version>${sakai.version}</version>
-       </dependency>
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-site-api</artifactId>
+            <version>${sakai.version}</version>
+        </dependency>
 
-       <dependency>
-           <groupId>sakaiproject</groupId>
-           <artifactId>sakai-tool-api</artifactId>
-           <version>${sakai.version}</version>
-       </dependency>
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-tool-api</artifactId>
+            <version>${sakai.version}</version>
+        </dependency>
 
-       <dependency>
-           <groupId>sakaiproject</groupId>
-           <artifactId>sakai-entity-api</artifactId>
-           <version>${sakai.version}</version>
-       </dependency>
-
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-entity-api</artifactId>
+            <version>${sakai.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>sakaiproject</groupId>
+            <artifactId>sakai-content-api</artifactId>
+            <version>${sakai.version}</version>
+        </dependency>
         <dependency>
             <groupId>jsf</groupId>
             <artifactId>jsf-api</artifactId>
             <version>1.1.01</version>
-        <properties>
-            <war.bundle>true</war.bundle>
-        </properties>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
-    
+
         <dependency>
             <groupId>jsf</groupId>
             <artifactId>jsf-impl</artifactId>
             <version>1.1.01</version>
-        <properties>
-            <war.bundle>true</war.bundle>
-        </properties>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
         </dependency>
 
         <dependency>
@@ -116,7 +119,7 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.1.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>jspapi</groupId>
             <artifactId>jsp-api</artifactId>
@@ -128,20 +131,20 @@
             <artifactId>servletapi</artifactId>
             <version>2.4</version>
         </dependency>
-        
+
         <dependency>
             <groupId>jstl</groupId>
             <artifactId>jstl</artifactId>
             <version>1.0.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>sakaiproject</groupId>
             <artifactId>sakai-jsf-tool</artifactId>
             <version>${sakai.version}</version>
             <properties>
                 <war.bundle>true</war.bundle>
-            </properties>        
+            </properties>
         </dependency>
 
         <dependency>
@@ -150,7 +153,7 @@
             <version>${sakai.version}</version>
             <properties>
                 <war.bundle>true</war.bundle>
-            </properties>        
+            </properties>
         </dependency>
         <dependency>
             <groupId>sakaiproject</groupId>
@@ -164,7 +167,7 @@
             <version>${sakai.version}</version>
             <properties>
                 <war.bundle>true</war.bundle>
-            </properties>        
+            </properties>
         </dependency>
 
         <dependency>
@@ -173,7 +176,7 @@
             <version>${sakai.version}</version>
             <properties>
                 <war.bundle>true</war.bundle>
-            </properties>        
+            </properties>
         </dependency>
 
         <dependency>
@@ -181,7 +184,7 @@
             <artifactId>commons-logging</artifactId>
             <version>1.0.4</version>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
@@ -196,14 +199,14 @@
             <artifactId>commons-collections</artifactId>
             <version>3.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
             <version>1.7.0</version>
             <properties>
                 <war.bundle>true</war.bundle>
-            </properties>        
+            </properties>
         </dependency>
 
         <dependency>
@@ -212,7 +215,7 @@
             <version>1.0.4</version>
             <properties>
                 <war.bundle>true</war.bundle>
-            </properties>        
+            </properties>
         </dependency>
 
     </dependencies>
@@ -235,7 +238,7 @@
                 </includes>
             </resource>
         </resources>
-    
+
     </build>
-    
+
 </project>

@@ -20,7 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.tool;
 
+import org.theospi.portfolio.reports.model.Report;
 import org.theospi.portfolio.reports.model.ReportDefinition;
+import org.theospi.portfolio.reports.model.ReportResult;
 
 /**
  * This class allows the ReportDefinition to interact with
@@ -52,9 +54,39 @@ public class DecoratedReportDefinition {
 	public String selectReportDefinition()
 	{
 		reportsTool.setWorkingReportDefinition(this);
+		Report report = reportsTool.getReportsManager().createReport(reportDefinition);
 		
 		reportsTool.setWorkingReport(new DecoratedReport( reportsTool.getReportsManager().createReport(reportDefinition), reportsTool ));
 		
+		if(!reportDefinition.isUsesWizard()){
+			
+			//run the report and then send to results page
+			reportsTool.getWorkingReport();
+			
+			report.setTitle(reportDefinition.getTitle());
+			report.setDescription(reportDefinition.getDescription());
+			report.setIsLive(true);
+			
+			ReportResult result = reportsTool.getReportsManager().generateResults(report);
+			reportsTool.setWorkingResult(new DecoratedReportResult(result, reportsTool));
+			
+			//result.setResultId();
+			//result = reportsTool.getReportsManager().loadResult(result);
+			
+			//result.setDescription(reportDefinition.getDescription());
+			//result.setTitle(reportDefinition.getTitle());
+			result.setIsSaved(false);
+			
+			//	make it the working result
+			
+			
+			return ReportsTool.reportResultsPage;
+		}
 		return ReportsTool.createReportPage;
 	}
+
+   public String processDelete()
+   {
+      return reportsTool.processDeleteReportDef(this.getReportDefinition());
+   }
 }

@@ -12,6 +12,15 @@
                             <h:outputText
                                 value="#{msgs.permissions_link}" />
                         </h:commandLink>
+
+                    |
+                    <h:commandLink rendered="#{ReportsTool.maintainer}"
+                            action="#{ReportsTool.processImportDefinition}">
+                            <h:outputText
+                                value="#{msgs.import_report_def}" />
+                        </h:commandLink>
+
+
                 </sakai:tool_bar>
 
                 <sakai:view_title value="#{msgs.title_main}" indent="1" />
@@ -28,6 +37,15 @@
                             <h:outputText
                                 value="#{report.reportDefinition.title}" />
                         </h:commandLink>
+                    </h:column>
+                    <h:column>
+
+
+                           <h:commandLink action="#{report.processDelete}"
+                                    rendered="#{ReportsTool.maintainer  &&
+                                                report.reportDefinition.dbLoaded}">
+                              <h:outputText value="#{msgs.delete_report}" />
+                           </h:commandLink>
                     </h:column>
                 </h:dataTable>
                 <h:outputText value="<br/><br/>#{msgs.report_results}" escape="false"/>

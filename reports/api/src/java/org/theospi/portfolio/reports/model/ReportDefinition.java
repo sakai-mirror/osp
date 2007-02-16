@@ -28,13 +28,14 @@ import org.sakaiproject.metaobj.shared.model.Id;
 public class ReportDefinition
 {
 	private static final String DEFAULT_VIEW_LINK = "/reportxsls/default.xsl";
-	
+
 	/** the unique identifier for the report definition */
 	private Id reportDefId = null;
-	
+
 	/** the unique identifier for the report definition */
 	private String idString = null;
 
+	private boolean usesWizard = true;
 	/** the title of the report definition */
 	private String title;
 
@@ -63,7 +64,9 @@ public class ReportDefinition
 	private List xsls;
 
 	/** the type of report defining who can view the report definition and derived data */
-	private String type;
+	private String siteType;
+
+	private List userRoles;
 
    /** list of any special result processors this report needs.
     * These should be of type ResultProcessor
@@ -71,8 +74,10 @@ public class ReportDefinition
     */
 	private List resultProcessors;
     private String role;
-	
-	/**
+
+    private boolean dbLoaded = false;
+
+    /**
 	 * when the report is finished loading the link in the report parameters
 	 * needs to be set to the owning report definition
 	 *
@@ -82,15 +87,15 @@ public class ReportDefinition
 		if(reportDefinitionParams == null)
 			return;
 		Iterator iter = reportDefinitionParams.iterator();
-		
+
 		while(iter.hasNext()) {
 			ReportDefinitionParam rdp = (ReportDefinitionParam) iter.next();
-			
+
 			rdp.setReportDefinition(this);
 		}
 	}
-	
-	
+
+
 	/**
 	 * the getter for the reportDefId property
 	 * @return String the unique identifier
@@ -99,10 +104,10 @@ public class ReportDefinition
 	{
 		return reportDefId;
 	}
-	
-	
+
+
 	/**
-	 * the setter for the reportDefId property.  This is set by the bean 
+	 * the setter for the reportDefId property.  This is set by the bean
 	 * and by hibernate.
 	 * @param reportDefId String
 	 */
@@ -110,7 +115,7 @@ public class ReportDefinition
 	{
 		this.reportDefId = reportDefId;
 	}
-	
+
 	/**
 	 * return the id as a string.  return the actual id if there is one then
 	 * the configured definition id if not
@@ -126,8 +131,8 @@ public class ReportDefinition
 	{
 		this.idString = idString;
 	}
-	
-	
+
+
 	/**
 	 * the getter for the title property
 	 * @return String the title
@@ -136,10 +141,10 @@ public class ReportDefinition
 	{
 		return title;
 	}
-	
-	
+
+
 	/**
-	 * the setter for the title property.  This is set by the bean 
+	 * the setter for the title property.  This is set by the bean
 	 * and by hibernate.
 	 * @param reportDefId String
 	 */
@@ -147,8 +152,8 @@ public class ReportDefinition
 	{
 		this.title = title;
 	}
-	
-	
+
+
 	/**
 	 * the getter for the query property
 	 * @return String the query
@@ -157,10 +162,10 @@ public class ReportDefinition
 	{
 		return query;
 	}
-	
-	
+
+
 	/**
-	 * the setter for the query property.  This is set by the bean 
+	 * the setter for the query property.  This is set by the bean
 	 * and by hibernate.
 	 * @param query String
 	 */
@@ -168,8 +173,8 @@ public class ReportDefinition
 	{
 		this.query = query;
 	}
-	
-	
+
+
 	/**
 	 * the getter for the keywords property
 	 * @return String the keywords
@@ -178,10 +183,10 @@ public class ReportDefinition
 	{
 		return keywords;
 	}
-	
-	
+
+
 	/**
-	 * the setter for the keywords property.  This is set by the bean 
+	 * the setter for the keywords property.  This is set by the bean
 	 * and by hibernate.
 	 * @param keywords String
 	 */
@@ -189,8 +194,8 @@ public class ReportDefinition
 	{
 		this.keywords = keywords;
 	}
-	
-	
+
+
 	/**
 	 * the getter for the description property
 	 * @return String the description
@@ -199,10 +204,10 @@ public class ReportDefinition
 	{
 		return description;
 	}
-	
-	
+
+
 	/**
-	 * the setter for the description property.  This is set by the bean 
+	 * the setter for the description property.  This is set by the bean
 	 * and by hibernate.
 	 * @param description String
 	 */
@@ -210,8 +215,8 @@ public class ReportDefinition
 	{
 		this.description = description;
 	}
-	
-	
+
+
 	/**
 	 * the getter for the defaultXsl property
 	 * @return ReportXsl the defaultXsl
@@ -226,10 +231,10 @@ public class ReportDefinition
 		}
 		return defaultXsl;
 	}
-	
-	
+
+
 	/**
-	 * the setter for the defaultXsl property.  This is set by the bean 
+	 * the setter for the defaultXsl property.  This is set by the bean
 	 * and by hibernate.
 	 * @param defaultXsl ReportXsl
 	 */
@@ -237,8 +242,8 @@ public class ReportDefinition
 	{
 		this.defaultXsl = defaultXsl;
 	}
-	
-	
+
+
 	/**
 	 * the getter for the exportXsl property
 	 * @return String the exportXsl
@@ -247,10 +252,10 @@ public class ReportDefinition
 	{
 		return exportXsl;
 	}
-	
-	
+
+
 	/**
-	 * the setter for the exportXsl property.  This is set by the bean 
+	 * the setter for the exportXsl property.  This is set by the bean
 	 * and by hibernate.
 	 * @param exportXsl List
 	 */
@@ -258,8 +263,8 @@ public class ReportDefinition
 	{
 		this.exportXsl = exportXsl;
 	}
-	
-	
+
+
 	/**
 	 * the getter for the reportDefinitionParams property
 	 * @return List of ReportDefinitionParam
@@ -268,10 +273,10 @@ public class ReportDefinition
 	{
 		return reportDefinitionParams;
 	}
-	
-	
+
+
 	/**
-	 * the setter for the reportDefinitionParams property.  This is set by the bean 
+	 * the setter for the reportDefinitionParams property.  This is set by the bean
 	 * and by hibernate.
 	 * @param reportDefinitionParams List
 	 */
@@ -279,8 +284,8 @@ public class ReportDefinition
 	{
 		this.reportDefinitionParams = reportDefinitionParams;
 	}
-	
-	
+
+
 	/**
 	 * the getter for the xsls property
 	 * @return List the xsls
@@ -289,10 +294,10 @@ public class ReportDefinition
 	{
 		return xsls;
 	}
-	
-	
+
+
 	/**
-	 * the setter for the xsl property.  This is set by the bean 
+	 * the setter for the xsl property.  This is set by the bean
 	 * and by hibernate.
 	 * @param xsl List
 	 */
@@ -300,26 +305,26 @@ public class ReportDefinition
 	{
 		this.xsls = xsls;
 	}
-	
-	
+
+
 	/**
 	 * the getter for the type property
 	 * @return String the type
 	 */
-	public String getType()
+	public String getSiteType()
 	{
-		return type;
+		return siteType;
 	}
-	
-	
+
+
 	/**
-	 * the setter for the type property.  This is set by the bean 
+	 * the setter for the type property.  This is set by the bean
 	 * and by hibernate.
 	 * @param keywords String
 	 */
-	public void setType(String type)
+	public void setSiteType(String type)
 	{
-		this.type = type;
+		this.siteType = type;
 	}
 
    /** list of any special result processors this report needs.
@@ -365,6 +370,25 @@ public class ReportDefinition
       return null;
    }
 
+public List getUserRoles() {
+	return userRoles;
+}
+
+
+public void setUserRoles(List userRoles) {
+	this.userRoles = userRoles;
+}
+
+public boolean isUsesWizard() {
+	return usesWizard;
+}
+
+
+public void setUsesWizard(boolean usesWizard) {
+	this.usesWizard = usesWizard;
+}
+
+
 
    /**
     * Specifies whether or not this report is keyed on the data warehouse tables
@@ -383,4 +407,11 @@ public class ReportDefinition
       this.usesWarehouse = usesWarehouse;
    }
 
+    public boolean isDbLoaded() {
+        return dbLoaded;
+    }
+
+    public void setDbLoaded(boolean dbLoaded) {
+        this.dbLoaded = dbLoaded;
+    }
 }

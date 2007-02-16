@@ -33,6 +33,9 @@
                <property name="idManager">
                    <ref bean="idManager" />
                </property>
+                 <property name="contentHosting">
+                   <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
+                </property>
                <property name="authzManager">
                   <ref bean="org.sakaiproject.metaobj.security.AuthorizationFacade"/>
                </property>
@@ -255,6 +258,37 @@
       </property>
    </bean>
 
+     <bean id="org.sakaiproject.content.api.ContentResourceFilter.reportImportFile"
+      parent="org.sakaiproject.content.api.ContentResourceFilter.base">
+      <property name="viewAll"><value>true</value></property>
+      <property name="mimeTypes">
+         <list>
+           <value>text/xml</value>
+           <value>application/xml</value>
+         </list>
+      </property>
+      <property name="acceptedExtensions">
+         <list>
+            <value>xml</value>
+         </list>
+      </property>
+   </bean>
+  <bean id="org.sakaiproject.content.api.ContentResourceFilter.reportXslFile"
+      parent="org.sakaiproject.content.api.ContentResourceFilter.base">
+      <property name="viewAll">
+         <value>true</value>
+      </property>
+      <property name="mimeTypes">
+         <list>
+            <value>text/xml</value>
+         </list>
+      </property>
+      <property name="acceptedExtensions">
+         <list>
+            <value>xsl</value>
+         </list>
+      </property>
+   </bean>
 </beans
 
 >

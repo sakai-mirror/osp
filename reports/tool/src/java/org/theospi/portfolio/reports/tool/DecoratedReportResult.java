@@ -209,7 +209,7 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 	 */
 	public String getCurrentViewResults()
 	{
-		//use the getter for the currentViewXsl so we handle null correctly
+        //use the getter for the currentViewXsl so we handle null correctly
 		return reportsTool.getReportsManager().transform(reportResult, getCurrentView());		
 	}
 

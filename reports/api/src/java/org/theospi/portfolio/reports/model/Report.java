@@ -43,7 +43,9 @@ public class Report
 	/** the link to the report definition */
 	private ReportDefinition reportDefinition = null;
 
-	/** the database link to the report definition */
+
+    private ReportDefinitionXmlFile reportDefitionXmlFile = null;
+    /** the database link to the report definition */
 	private String	reportDefIdMark = null;
 
 	/** the owner of the report */
@@ -95,9 +97,16 @@ public class Report
 	{
 		setReportDefinition(reportDefinition);
 	}
-	
 
-	/**
+    public ReportDefinitionXmlFile getReportDefitionXmlFile() {
+        return reportDefitionXmlFile;
+    }
+
+    public void setReportDefitionXmlFile(ReportDefinitionXmlFile reportDefitionXmlFile) {
+        this.reportDefitionXmlFile = reportDefitionXmlFile;
+    }
+
+    /**
 	 * the getter for the reportId property
 	 * @return String the unique identifier
 	 */
@@ -137,7 +146,7 @@ public class Report
 			throw new OspException("A report cannot change it's report definition");
 		
 		this.reportDefinition = reportDefinition;
-		type = reportDefinition.getType();
+		type = reportDefinition.getSiteType();
 	}
 	
 	
