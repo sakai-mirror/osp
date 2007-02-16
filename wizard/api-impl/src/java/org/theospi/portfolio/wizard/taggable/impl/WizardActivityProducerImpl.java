@@ -287,4 +287,12 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		return new WizardItemImpl(wizardPage, getActivity(wizardPage
 				.getPageDefinition()));
 	}
+
+	public boolean allowRemoveTags(TaggableActivity activity) {
+		return false;
+	}
+
+	public boolean allowRemoveTags(TaggableItem item) {
+		return false;
+	}
 }
