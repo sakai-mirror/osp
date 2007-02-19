@@ -980,6 +980,9 @@
             <property name="lockManager">
                <ref bean="org.sakaiproject.content.api.LockManager"/>
             </property>
+            <property name="reviewManager">
+               <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
