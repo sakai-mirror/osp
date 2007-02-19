@@ -37,12 +37,16 @@ import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Attachment;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageForm;
+import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
+import org.theospi.portfolio.review.mgt.ReviewManager;
+import org.theospi.portfolio.review.model.Review;
 
 public class ManageCellStatusController implements Controller {
 
    private MatrixManager matrixManager = null;
    private IdManager idManager = null;
    private LockManager lockManager = null;
+   private ReviewManager reviewManager = null;
    
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.Controller#handleRequest(java.lang.Object, java.util.Map, java.util.Map, java.util.Map, org.springframework.validation.Errors)
@@ -52,7 +56,7 @@ public class ManageCellStatusController implements Controller {
       String viewName = "success";
       Id id = idManager.getId((String)request.get("page_id"));
       
-      Map model = new HashMap();
+      Map<String, Object> model = new HashMap<String, Object>();
       model.put("page_id", id);
       //Cell cell = getMatrixManager().getCellFromPage(id);
       WizardPage page = getMatrixManager().getWizardPage(id);
@@ -104,7 +108,14 @@ public class ManageCellStatusController implements Controller {
                getLockManager().removeLock(form.getArtifactId().getValue(), 
                      page.getId().getValue());
             }
-            //TODO unlock reflection form too - OSP-1519
+            //unlock reflection form too 
+            List reflections = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId(),
+                  MatrixContentEntityProducer.MATRIX_PRODUCER);
+            for (Iterator iter3 = reflections.iterator(); iter3.hasNext();) {
+               Review review = (Review)iter3.next();
+               getLockManager().removeLock(review.getReviewContent().getValue(), 
+                     page.getId().getValue());
+            }
          }
       }
    }
@@ -139,5 +150,19 @@ public class ManageCellStatusController implements Controller {
    }
    public void setLockManager(LockManager lockManager) {
       this.lockManager = lockManager;
+   }
+
+   /**
+    * @return the reviewManager
+    */
+   public ReviewManager getReviewManager() {
+      return reviewManager;
+   }
+
+   /**
+    * @param reviewManager the reviewManager to set
+    */
+   public void setReviewManager(ReviewManager reviewManager) {
+      this.reviewManager = reviewManager;
    }
 }
