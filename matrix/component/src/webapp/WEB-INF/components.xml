@@ -128,6 +128,7 @@
 
    <bean id="matrixManagerTarget" class="org.theospi.portfolio.matrix.HibernateMatrixManagerImpl">
       <property name="importFolderName"><value>Imported Matrices' Files</value></property>
+      <property name="useExperimentalMatrix"><value>false</value></property>
       <property name="idManager"><ref bean="idManager"/></property>
       <property name="sessionFactory">
          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>

@@ -578,6 +578,59 @@
       <property name="commandClass"><value>org.theospi.portfolio.matrix.model.Scaffolding</value></property>
       <property name="formView"><value>addScaffolding</value></property>
    </bean>
+   
+   <bean id="prettyScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.PrettyScaffoldingController">
+            <property name="worksiteManager">
+         		<ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+		      </property>
+            <property name="entityManager">
+               <ref bean="org.sakaiproject.entity.api.EntityManager"/>
+            </property>
+		      <property name="matrixManager"><ref bean="matrixManager"/></property>
+		      <property name="idManager"><ref bean="idManager"/></property>
+		      <property name="authzManager"><ref bean="authzManager"/></property>
+		      <property name="sessionManager">
+               <ref bean="org.sakaiproject.tool.api.SessionManager"/>
+            </property>
+		      <property name="authManager"><ref bean="authManager"/></property>
+		      <property name="lockManager">
+		         <ref bean="org.sakaiproject.content.api.LockManager"/>
+      		</property>
+            <property name="contentHosting">
+               <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
+            </property>
+            <property name="reviewManager">
+               <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
+            </property>
+         </bean>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">prettyScaffoldingRedirect</prop>
+            <prop key="view">viewScaffoldingRedirect</prop>
+            <prop key="return">listScaffoldingRedirect</prop>
+            <prop key="addLevel">addLevelRedirect</prop>
+            <prop key="addCriterion">addCriterionRedirect</prop>
+            <prop key="deleteLevel">deleteLevelRedirect</prop>
+            <prop key="deleteCriterion">deleteCriterionRedirect</prop>
+            <prop key="moveLevel">moveLevelRedirect</prop>
+            <prop key="moveCriterion">moveCriterionRedirect</prop>
+            <prop key="removeLevCrit">removeLevCritRedirect</prop>
+            <prop key="editScaffoldingConfirm">editScaffoldingConfirmRedirect</prop>
+         </props>
+      </property>
+      <property name="validator"><ref bean="matrixValidator"/></property>
+		<property name="commandName"><value>matrixContents</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.MatrixGridBean</value></property>
+      <property name="formView"><value>prettyScaffolding</value></property>
+   </bean>
 
    <bean id="addLevelController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">

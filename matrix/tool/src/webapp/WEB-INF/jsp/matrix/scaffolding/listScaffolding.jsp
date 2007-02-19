@@ -78,10 +78,15 @@
                 <a href="<osp:url value="publishScaffoldingConfirmation.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="action_publish"/></a>
              </c:if>
              
-             <c:if test="${can.edit}">
+             <c:if test="${can.edit && !useExperimentalMatrix}">
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
                 <a href="<osp:url value="viewScaffolding.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_edit"/></a>
+             </c:if>
+             <c:if test="${can.edit && useExperimentalMatrix}">
+                 <c:if test="${hasFirstAction}" > | </c:if>
+                 <c:set var="hasFirstAction" value="true" />
+                <a href="<osp:url value="prettyScaffolding.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />"><fmt:message key="table_action_edit"/></a>
              </c:if>
              
              <c:if test="${can.delete}">

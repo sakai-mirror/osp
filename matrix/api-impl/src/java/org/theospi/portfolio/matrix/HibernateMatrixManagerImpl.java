@@ -151,6 +151,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    private EntityContextFinder contentFinder = null;
    private String importFolderName;
+   private boolean useExperimentalMatrix = false;
 
    public Scaffolding createDefaultScaffolding() {
       return getDefaultScaffoldingBean().createDefaultScaffolding();
@@ -2379,5 +2380,19 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public void setImportFolderName(String importFolderName) {
       this.importFolderName = importFolderName;
+   }
+
+   /**
+    * @return the useExperimentalMatrix
+    */
+   public boolean isUseExperimentalMatrix() {
+      return useExperimentalMatrix;
+   }
+
+   /**
+    * @param useExperimentalMatrix the useExperimentalMatrix to set
+    */
+   public void setUseExperimentalMatrix(boolean useExperimentalMatrix) {
+      this.useExperimentalMatrix = useExperimentalMatrix;
    }
 }

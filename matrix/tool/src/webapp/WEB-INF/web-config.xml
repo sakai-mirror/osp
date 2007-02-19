@@ -116,6 +116,10 @@
               <prop key="/deleteCriterion.osp">deleteCriterionController</prop>
               <prop key="/moveCriterion.osp">moveCriterionController</prop>
               <prop key="/viewScaffolding.osp">viewScaffoldingController</prop>
+              
+              <!-- pretty is an alternate matrix editing view -->
+              <prop key="/prettyScaffolding.osp">prettyScaffoldingController</prop>
+              
               <prop key="/editScaffoldingCell.osp">editScaffoldingCellController</prop>
               <prop key="/deleteScaffolding.osp">deleteScaffoldingController</prop>
               <prop key="/deleteScaffoldingConfirmation.osp">deleteScaffoldingConfirmationController</prop>

@@ -3,7 +3,7 @@
 * $Id:ListScaffoldingController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
-* Copyright (c) 2006 The Sakai Foundation.
+* Copyright (c) 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public class ListScaffoldingController extends AbstractMatrixController {
    private ListScrollIndexer listScrollIndexer;
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-      Hashtable model = new Hashtable();
+      Hashtable<String, Object> model = new Hashtable<String, Object>();
       Agent currentAgent = getAuthManager().getAgent();
       String currentToolId = ToolManager.getCurrentPlacement().getId();
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
@@ -58,6 +58,9 @@ public class ListScaffoldingController extends AbstractMatrixController {
       model.put("tool", getWorksiteManager().getTool(currentToolId));
       model.put("isMaintainer", isMaintainer());
       model.put("osp_agent", currentAgent);
+      
+      model.put("useExperimentalMatrix", getMatrixManager().isUseExperimentalMatrix());
+      
       return new ModelAndView("success", model);
    }
 

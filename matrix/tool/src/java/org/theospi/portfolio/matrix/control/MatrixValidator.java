@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -54,6 +54,7 @@ public class MatrixValidator extends ValidatorBase {
       else if (LevelTransport.class.isAssignableFrom(clazz)) return true;
       else if (CriterionTransport.class.isAssignableFrom(clazz)) return true;
       else if (CellAndNodeForm.class.isAssignableFrom(clazz)) return true;
+      else if (MatrixGridBean.class.isAssignableFrom(clazz)) return true;
       else return false;
    }
 
@@ -84,6 +85,8 @@ public class MatrixValidator extends ValidatorBase {
       }
       else if (obj instanceof CellAndNodeForm)
          validateCellAttachment((CellAndNodeForm)obj, errors);
+      else if (obj instanceof MatrixGridBean)
+         validateScaffolding(((MatrixGridBean)obj).getScaffolding(), errors);
    }
   /* 
    private void validateScaffoldingImport(ScaffoldingUploadForm obj, Errors errors) {
@@ -138,10 +141,11 @@ public class MatrixValidator extends ValidatorBase {
       }
    }
    
+   /*
    private String stripHtml(String input) {
       return input.replaceAll("<[\\w/]+[^<>]*>", "");     
    }
-
+*/
    /**
     * @return Returns the authManager.
     */
