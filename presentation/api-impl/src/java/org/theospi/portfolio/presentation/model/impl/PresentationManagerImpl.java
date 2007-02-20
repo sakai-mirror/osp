@@ -819,7 +819,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          presIdList.add(authz.getQualifier());
       }
 
-      //presIdList += "'last'";
+      //hibernate seems to be unhappy when the list is empty.
+      presIdList.add(getIdManager().getId("last"));
 
       return presIdList;
    }
