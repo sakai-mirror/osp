@@ -74,7 +74,7 @@ import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.InputStreamResource;
 import org.theospi.portfolio.reports.model.*;
@@ -202,7 +202,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         Iterator iter = reportDefinitions.iterator();
         while (iter.hasNext()) {
             ReportDefinition rd = (ReportDefinition) iter.next();
-
             rd.finishLoading();
         }
     }
@@ -222,12 +221,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
             ReportDefinition rd = (ReportDefinition) iter.next();
             rd.finishLoading();
-
             this.reportDefinitions.add(rd);
 
         }
-
-
     }
 
 
@@ -239,21 +235,14 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         //load any reportDefinitions in the database
         List reportsDefs = loadReportsFromDB();
 
-
         Iterator iter = reportDefinitions.iterator();
         while (iter.hasNext()) {
             ReportDefinition rd = (ReportDefinition) iter.next();
-
-
             if (isValidWorksiteType(rd.getSiteType()) && isValidRole(rd.getRole()) && hasWarehouseSetting(rd.getUsesWarehouse()))
             {
-
                 reportsDefs.add(rd);
-
-
             }
         }
-
         return reportsDefs;
     }
 
@@ -454,15 +443,12 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             for (Iterator i = reportDefs.iterator(); i.hasNext();) {
                 ReportDefinitionXmlFile xmlFile = (ReportDefinitionXmlFile) i.next();
 
-                BeanFactory beanFactory = new XmlBeanFactory(new InputStreamResource(new ByteArrayInputStream(xmlFile.getXmlFile())));
-                ReportDefinition repDef = getReportDefBean(xmlFile.getXml(), beanFactory);
+                ListableBeanFactory beanFactory = new XmlBeanFactory(new InputStreamResource(new ByteArrayInputStream(xmlFile.getXmlFile())));
+                ReportDefinition repDef = getReportDefBean(beanFactory);
                 repDef.finishLoading();
                 repDef.setDbLoaded(true);
                 reportDefArray.add(repDef);
-                
             }
-
-
         }
         return reportDefArray;
 
@@ -1104,10 +1090,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             JDOMResult result = new JDOMResult();
             SAXBuilder builder = new SAXBuilder();
             StreamSource xsltSource;
-            if (reportXsl.getResource() == null){
+            if (reportXsl.getResource() == null) {
                 xsltSource = new StreamSource(loadXslFromDB(reportXsl));
-            }
-            else {
+            } else {
                 xsltSource = new StreamSource(reportXsl.getResource().getInputStream());
             }
             Transformer transformer = TransformerFactory.newInstance()
@@ -1128,20 +1113,16 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         }
     }
 
-    public InputStream loadXslFromDB(ReportXsl reportXsl){
-       List param = new ArrayList();
+    public InputStream loadXslFromDB(ReportXsl reportXsl) {
         ByteArrayInputStream inputStream = null;
-       param.add(reportXsl.getXslLink());
-       param.add(reportXsl.getReportDefinition().getIdString());
-       List xsls = getHibernateTemplate().findByNamedQuery("findReportXsl", param);
-
-            for (Iterator i = xsls.iterator(); i.hasNext();) {
-                ReportXslFile xslFile = (ReportXslFile) i.next();
-                inputStream = new ByteArrayInputStream(xslFile.getXslFile());
-
-            }
+        List xsls = getHibernateTemplate().findByNamedQuery("findReportXsl", new Object[]{reportXsl.getXslLink(), reportXsl.getReportDefinition().getIdString()});
+        for (Iterator i = xsls.iterator(); i.hasNext();) {
+            ReportXslFile xslFile = (ReportXslFile) i.next();
+            inputStream = new ByteArrayInputStream(xslFile.getXslFile());
+        }
         return inputStream;
-   }
+    }
+
     private String getResourceFrom(String file) {
         String componentsRoot = System.getProperty(ComponentManager.SAKAI_COMPONENTS_ROOT_SYS_PROP);
 
@@ -1407,7 +1388,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
             if (mimeType.equals(new MimeType("application/xml")) ||
                     mimeType.equals(new MimeType("text/xml"))) {
-                BeanFactory beanFactory = new XmlBeanFactory(new InputStreamResource(resource.streamContent()));
+                ListableBeanFactory beanFactory = new XmlBeanFactory(new InputStreamResource(resource.streamContent()));
                 ReportDefinitionXmlFile bean = importReport(resource);
                 if (bean != null) {
                     saveReportDef(bean, beanFactory);
@@ -1430,9 +1411,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         return false;
     }
 
-    public void saveReportDef(ReportDefinitionXmlFile xmlFile, BeanFactory beanFactory) throws OspException {
+    public void saveReportDef(ReportDefinitionXmlFile xmlFile, ListableBeanFactory beanFactory) throws OspException {
 
-        ReportDefinition reportDef = getReportDefBean(xmlFile.getXml(), beanFactory);
+        ReportDefinition reportDef = getReportDefBean(beanFactory);
         List reportDefList = new ArrayList();
         reportDefList.add(reportDef);
         xmlFile.setReportDefId(reportDef.getIdString());
@@ -1445,7 +1426,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         } else {
             throw new OspException("Default xsl file must be defined.");
         }
-        addReportDefinitions(reportDefList);
     }
 
     public List processXSLFiles(ReportDefinition reportDef) throws OspException {
@@ -1455,7 +1435,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         if (defaultXsl == null) {
             return xslsList;
         } else {
-            xslsList.add(new ReportXslFile(defaultXsl, getContentHosting(), reportDef.getIdString()));
             List xsls = reportDef.getXsls();
             for (Iterator i = xsls.iterator(); i.hasNext();) {
                 ReportXsl xslFile = (ReportXsl) i.next();
@@ -1479,11 +1458,12 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         }
     }
 
-    public ReportDefinition getReportDefBean(Document xmlFile, BeanFactory beanFactory) {
-        Element root = xmlFile.getRootElement();
-        String myBean = root.getChild("bean").getAttribute("id").getValue();
-
-        return (ReportDefinition) beanFactory.getBean(myBean);
+    public ReportDefinition getReportDefBean(ListableBeanFactory beanFactory) {
+        Map beanMap = beanFactory.getBeansOfType(ReportDefinition.class);
+        for (Iterator i = beanMap.values().iterator(); i.hasNext();) {
+            return (ReportDefinition) i.next();
+        }
+        return null;
     }
 
     public void saveXslFile(ReportXslFile reportXslFile) {

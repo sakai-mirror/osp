@@ -32,6 +32,12 @@ public class ReportXslFile
     /**
      * the getter for the reportId property
      */
+    public ReportXslFile(){
+        
+    }
+
+
+
     public ReportXslFile(ReportXsl reportXsl, ContentHostingService contentHosting, String reportDefId)
     {
        try { String id = reportXsl.getXslLink();

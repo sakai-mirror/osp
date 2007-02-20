@@ -80,6 +80,11 @@
       <to-view-id>/reports/importReportDef.jsp</to-view-id>
       <redirect/>
     </navigation-case>
+      <navigation-case>
+      <from-outcome>main</from-outcome>
+      <to-view-id>/reports/main.jsp</to-view-id>
+      <redirect/>
+    </navigation-case>
   </navigation-rule>
   
   <navigation-rule>
@@ -95,7 +100,14 @@
       <redirect/>
     </navigation-case>
   </navigation-rule>
-  
+  <navigation-rule>
+    <from-view-id>/reports/importReportDef.jsp</from-view-id>
+      <navigation-case>
+      <from-outcome>main</from-outcome>
+      <to-view-id>/reports/main.jsp</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
   <navigation-rule>
     <from-view-id>/reports/createReportParams.jsp</from-view-id>
     <navigation-case>

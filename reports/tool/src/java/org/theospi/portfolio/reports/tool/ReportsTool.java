@@ -264,16 +264,13 @@ public class ReportsTool extends ToolBase {
      * @return List of DecoratedReportDefinition
      */
     public List getReports() {
-        if (decoratedReportDefinition == null) {
-            List reportDefinitions = reportsManager.getReportDefinitions();
-            decoratedReportDefinition = new ArrayList();
+        List reportDefinitions = reportsManager.getReportDefinitions();
+        decoratedReportDefinition = new ArrayList();
 
-            Iterator iter = reportDefinitions.iterator();
-            while (iter.hasNext()) {
-                ReportDefinition reportDef = (ReportDefinition) iter.next();
-
-                decoratedReportDefinition.add(new DecoratedReportDefinition(reportDef, this));
-            }
+        Iterator iter = reportDefinitions.iterator();
+        while (iter.hasNext()) {
+            ReportDefinition reportDef = (ReportDefinition) iter.next();
+            decoratedReportDefinition.add(new DecoratedReportDefinition(reportDef, this));
         }
         return decoratedReportDefinition;
     }
@@ -523,17 +520,23 @@ public class ReportsTool extends ToolBase {
         reportsManager.deleteReport(report.getReport(), true);
         return "";
     }
-     public String processDeleteReportDef(ReportDefinition reportDef) {
+
+    public String processDeleteReportDef(ReportDefinition reportDef) {
         reportsManager.deleteReportDefXmlFile(reportDef);
-        return "";
+        return ReportsTool.mainPage;
     }
+
+    public String processActionCancel() {
+        setImportFilesString(null);
+        return ReportsTool.mainPage;
+    }
+
     /**
      * @param report
      * @return String the next page
      */
     public String processEditLiveReport(DecoratedReport report) {
         getReportsManager().checkEditAccess();
-
         setWorkingReport(report);
         return createReportParamsPage;
     }
@@ -556,7 +559,7 @@ public class ReportsTool extends ToolBase {
     public String processImportDefinition() {
         return ReportsTool.importReportDef;
     }
-    
+
 
     public String processPickImportFiles() {
         ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
@@ -658,8 +661,8 @@ public class ReportsTool extends ToolBase {
                 this.setInvalidImport(true);
             } catch (UnsupportedFileTypeException ufte) {
                 this.setInvalidImport(true);
-            } catch (Exception ie){
-                if (ie.getCause().toString().equals("org.sakaiproject.metaobj.shared.model.OspException"));
+            } catch (Exception ie) {
+                if (ie.getCause().toString().equals("org.sakaiproject.metaobj.shared.model.OspException")) ;
                 this.setInvalidImportMessage(invalidImportMessage + " " + ie.getMessage());
                 this.setInvalidImport(true);
             }
@@ -668,13 +671,13 @@ public class ReportsTool extends ToolBase {
 
         return ReportsTool.mainPage;
     }
-    
+
     public ContentHostingService getContentHosting() {
         return contentHosting;
     }
 
     public void setContentHosting(ContentHostingService contentHosting) {
         this.contentHosting = contentHosting;
-   }
+    }
 
 }

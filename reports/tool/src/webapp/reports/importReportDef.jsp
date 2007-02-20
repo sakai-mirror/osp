@@ -3,7 +3,7 @@
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 <% response.setContentType("text/html; charset=UTF-8"); %>
 <f:view>
-    <sakai:view title="#{msgs.title_load_report_def}">
+    <sakai:view title="#{msgs.title_import_report_def}">
         <h:form>
 
             <sakai:view_title value="#{msgs.title_import_report_def}" indent="1"/>
@@ -13,7 +13,7 @@
             <h:outputText value="#{ReportsTool.invalidImportMessage}" style="color: red"
                                       rendered="#{ReportsTool.invalidImport}"/>
    <sakai:panel_edit>
-      <h:outputLabel for="name" id="nameLabel" value="#{msgs.import_xml_file}" />
+      <h:outputLabel for="files" id="filesLabel" value="#{msgs.import_xml_file}" />
 
 
       <h:panelGroup>

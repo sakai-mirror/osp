@@ -233,6 +233,7 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 
          if(!xsl.getIsExport())
             if(xsl.getXslLink().equals(link))
+               xsl.setReportDefinition(rdef);
                return xsl;
       }
       return null;
