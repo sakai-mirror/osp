@@ -1072,7 +1072,7 @@ public class WizardTool extends BuilderTool {
    
    public boolean getCanDelete(Wizard wizard) {
       if (wizard.getOwner() == null) return false;
-      return !wizard.isPublished() && (getAuthzManager().isAuthorized(WizardFunctionConstants.DELETE_WIZARD, 
+      return (getAuthzManager().isAuthorized(WizardFunctionConstants.DELETE_WIZARD, 
             wizard.getId()) || SessionManager.getCurrentSessionUserId().equalsIgnoreCase(
                   wizard.getOwner().getId().getValue()));
    }

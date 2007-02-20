@@ -92,7 +92,14 @@ public interface WizardManager extends WorkflowEnabledManager {
 	public List findPublishedWizards(String siteId);
    
    public List findPublishedWizards(List sites, boolean lazy);
-
+   
+   /**
+    ** Find all WizardPageSequence objects associated with this wizard
+    ** (e.g. useful for unlocking associated resources prior 
+    ** to deleting wizard).
+    **/
+   public List findPagesByWizard(Id wizardId);
+   
 	/**
 	 * Method to get each wizard page definition for the site identified by the
 	 * given site identifier. The wizard page definitions are not loaded with

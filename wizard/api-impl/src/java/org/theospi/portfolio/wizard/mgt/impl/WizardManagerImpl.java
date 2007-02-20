@@ -48,6 +48,7 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -99,6 +100,8 @@ import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.matrix.model.Attachment;
+import org.theospi.portfolio.matrix.model.WizardPageForm;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
@@ -150,6 +153,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    private ReviewManager reviewManager;
    private StyleManager styleManager;
    private MatrixManager matrixManager;
+   private LockManager lockManager;
    
    private static String SITE_CACHE_NAME = "wizardSiteCache";
    private Cache siteCache = null;
@@ -394,15 +398,52 @@ public class WizardManagerImpl extends HibernateDaoSupport
     * {@inheritDoc}
     */
    public void deleteWizard(Wizard wizard) {
-      //This shouldn't be necessary since a user can't fill it out if it hasn't been 
-      //published and you can't delete if it has been published
-      //But I'm leaving it here just in case...don't want foreign key errors when deleting
+   
+      // Unlock resources associated with wizard pages
+      List wpsList = findPagesByWizard( wizard.getId() );
+      for (Iterator wpsIt=wpsList.iterator(); wpsIt.hasNext();) 
+      {
+         WizardPageSequence wps = (WizardPageSequence)wpsIt.next();
+         
+         Id defId = wps.getWizardPageDefinition().getId();
+         List pageList = matrixManager.getPagesByPageDef(defId);
+         
+         for ( Iterator pageIt=pageList.iterator(); pageIt.hasNext(); )
+         {
+            WizardPage page = (WizardPage)pageIt.next();
+            
+            for (Iterator iter = page.getAttachments().iterator(); iter.hasNext();) {
+               Attachment att = (Attachment)iter.next();
+               getLockManager().removeLock(att.getArtifactId().getValue(), 
+                        page.getId().getValue());
+            }
+      
+            for (Iterator iter = page.getPageForms().iterator(); iter.hasNext();) {
+               WizardPageForm pageForm = (WizardPageForm)iter.next();
+               getLockManager().removeLock(pageForm.getArtifactId().getValue(), 
+                        page.getId().getValue());
+            }
+
+            List reviews = getReviewManager().getReviewsByParent(
+                  page.getId().getValue(), 
+                  page.getPageDefinition().getSiteId(),
+                  WizardEntityProducer.WIZARD_PRODUCER);
+            for (Iterator iter = reviews.iterator(); iter.hasNext();) {
+               Review review = (Review)iter.next();
+               getLockManager().removeLock(review.getReviewContent().getValue(), 
+                        page.getId().getValue());
+            }
+         } 
+      }
+      
+      // Delete completed wizards
       Wizard wiz = this.getWizard(wizard.getId(), WIZARD_DELETE_CHECK);
       List completedWizards = getCompletedWizards(wiz);
       for (Iterator i = completedWizards.iterator(); i.hasNext();) {
          CompletedWizard cw = (CompletedWizard)i.next();
          deleteCompletedWizard(cw);
       }
+      
       //remove the tool from the menu
       if (wiz.getExposedPageId() != null)
          removeTool(wiz);
@@ -410,6 +451,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
    
    protected void deleteCompletedWizard(CompletedWizard cw) {
+      // Unlock resources associated with this completed wizard
+      List reviews = getReviewManager().getReviewsByParent( cw.getId().getValue() );
+      for (Iterator iter = reviews.iterator(); iter.hasNext();) {
+         Review review = (Review)iter.next();
+         getLockManager().removeLock(review.getReviewContent().getValue(), 
+                  cw.getId().getValue());
+      }
+      
       getHibernateTemplate().delete(cw);
    }
    
@@ -523,6 +572,24 @@ public class WizardManagerImpl extends HibernateDaoSupport
 			}
 		});
 	}
+   
+   public List<WizardPageSequence> findPagesByWizard(final Id wizardId)
+   {
+      HibernateCallback hcb = new HibernateCallback() {
+         public Object doInHibernate(Session session) throws HibernateException, SQLException  {
+            String queryString = "select page from WizardPageSequence page, WizardCategory category " +
+               "where page.category = category.id and category.wizard = ?";
+
+            Query query = session.createQuery(queryString);
+
+            query.setParameter(0, wizardId.getValue(), Hibernate.STRING);
+
+            return query.list();
+         }
+      };
+
+      return (List)getHibernateTemplate().execute(hcb);
+   }
    
    public Collection getAvailableForms(String siteId, String type) {
       return getStructuredArtifactDefinitionManager().findHomes(
@@ -2308,4 +2375,12 @@ public class WizardManagerImpl extends HibernateDaoSupport
    public void setMatrixManager(MatrixManager matrixManager) {
       this.matrixManager = matrixManager;
    }
+   
+   public LockManager getLockManager() {
+      return lockManager;
+   }
+   public void setLockManager(LockManager lockManager) {
+      this.lockManager = lockManager;
+   }
+
 }
