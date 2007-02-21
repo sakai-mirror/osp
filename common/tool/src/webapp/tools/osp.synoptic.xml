@@ -11,6 +11,7 @@
        <keyword name="dashboard"/>
 
       <configuration name="listGenId" value="worksites" />
+      <configuration name="siteTypeList" value="" />
 
 	</tool>
 

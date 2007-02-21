@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -47,7 +47,6 @@ public class WorksiteListGenerator extends WorksiteBaseGenerator implements List
    private static final String SITE_ID_PARAM = "selectedSiteId";
 
    private WorksiteManager worksiteManager;
-   private List siteTypes;
    
    public void init(){
       logger.info("init()");
@@ -60,8 +59,8 @@ public class WorksiteListGenerator extends WorksiteBaseGenerator implements List
     */
    public List getObjects() {
       
-      List sites = getWorksiteManager().getUserSites(null, siteTypes);
-      List sortableSites = new ArrayList(sites.size());
+      List sites = getWorksiteManager().getUserSites(null, getListService().getSiteTypeList());
+      List<SortableListObject> sortableSites = new ArrayList<SortableListObject>(sites.size());
       
       for (Iterator i = sites.iterator(); i.hasNext();) {
          Site site = (Site)i.next();
@@ -104,7 +103,7 @@ public class WorksiteListGenerator extends WorksiteBaseGenerator implements List
     */
    public Map getToolParams(Object entry) {
       SortableListObject site = (SortableListObject)entry;
-      Map model = new HashMap();
+      Map<String, String> model = new HashMap<String, String>();
 
       model.put(SITE_ID_PARAM, site.getId());
 
@@ -133,17 +132,5 @@ public class WorksiteListGenerator extends WorksiteBaseGenerator implements List
 
       }
       return null;
-   }
-   /**
-    * @return the siteTypes
-    */
-   public List getSiteTypes() {
-      return siteTypes;
-   }
-   /**
-    * @param siteTypes the siteTypes to set
-    */
-   public void setSiteTypes(List siteTypes) {
-      this.siteTypes = siteTypes;
    }
 }

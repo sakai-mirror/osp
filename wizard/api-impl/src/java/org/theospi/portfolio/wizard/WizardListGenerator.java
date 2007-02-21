@@ -58,7 +58,6 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
    private AuthenticationManager authnManager;
    private IdManager idManager;
    private AuthorizationFacade authzManager;
-   private List siteTypes;
    private List displayTypes;
 
    public void init(){
@@ -82,8 +81,7 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
    }
 
    public List getObjects() {
-
-      List userSites = getWorksiteManager().getUserSites(null, getSiteTypes());
+      List userSites = getWorksiteManager().getUserSites(null, getListService().getSiteTypeList());
       List<String> siteIds = new ArrayList<String>(userSites.size());
       List<Id> siteStrIds = new ArrayList<Id>(userSites.size());
       Map<String, Site> siteMap = new HashMap<String, Site>();
@@ -252,18 +250,6 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
     */
    public void setWizardManager(WizardManager wizardManager) {
       this.wizardManager = wizardManager;
-   }
-   /**
-    * @return the siteTypes
-    */
-   public List getSiteTypes() {
-      return siteTypes;
-   }
-   /**
-    * @param siteTypes the siteTypes to set
-    */
-   public void setSiteTypes(List siteTypes) {
-      this.siteTypes = siteTypes;
    }
    /**
     * @return the idManager

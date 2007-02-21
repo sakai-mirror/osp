@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@
 package org.theospi.portfolio.list.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +46,7 @@ import org.theospi.portfolio.list.model.ListConfig;
 public class ListServiceImpl  extends HibernateDaoSupport implements ListService {
    protected final transient Log logger = LogFactory.getLog(getClass());
    public final static String LIST_GEN_ID_TAG = "listGenId";
+   public final static String SITE_TYPE_LIST_TAG = "siteTypeList";
 
    private Map listGenerators;
    private IdManager idManager;
@@ -171,6 +173,17 @@ public class ListServiceImpl  extends HibernateDaoSupport implements ListService
    public void register(String id, ListGenerator listGenerator)
    {
        listGenerators.put(id, listGenerator);
+   }
+   
+   public List getSiteTypeList() {
+      Placement current = getCurrentTool();
+
+      String types = current.getPlacementConfig().getProperty(SITE_TYPE_LIST_TAG);
+      if (types != null && types.length() > 0) {
+         String siteTypes[] = types.split(",");
+         return Arrays.asList(siteTypes);
+      }
+      return new ArrayList();
    }
 
    public Map getListGenerators() {
