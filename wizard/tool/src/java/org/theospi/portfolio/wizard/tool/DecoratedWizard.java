@@ -30,6 +30,7 @@ import org.theospi.portfolio.style.StyleHelper;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.wizard.model.CompletedWizard;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -38,6 +39,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -518,4 +520,20 @@ public class DecoratedWizard implements DecoratedListInterface {
       this.totalPages = totalPages;
    }
 
+   public boolean getIsWizardUsed()
+   {
+      String wizardId = base.getId().getValue();
+      List completedWizards = parent.getWizardManager().getCompletedWizardsByWizardId(wizardId);
+      for (Iterator i = completedWizards.iterator(); i.hasNext();) 
+      {
+         CompletedWizard cw = (CompletedWizard)i.next();
+
+         List reviews = parent.getReviewManager().getReviewsByParent( cw.getId().getValue() );
+         if ( reviews.size() > 0 )
+            return true;
+         else
+            return false;
+      }
+      return false;
+   }
 }

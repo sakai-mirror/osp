@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
 
 import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
 import org.sakaiproject.tool.cover.ToolManager;
@@ -31,6 +32,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
@@ -65,6 +67,7 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
          }
       
       model.put("wizardPublished", new Boolean(wizardPublished));
+      model.put("isPageUsed", isPageUsed(sCell.getWizardPageDefinition()));
       model.put("helperPage", "true");
       model.put("isWizard", "true");
       model.put("pageTitleKey", "title_editWizardPage");
@@ -107,6 +110,40 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
    }
 
    protected boolean isPublished(ScaffoldingCell scaffoldingCell) {
+      return false;
+   }
+   
+	/**
+	 ** Determine if any completed wizard page has been 'used'
+	 ** (containing reflections,feedback,evaluations and/or added form items)
+	 */
+   protected boolean isPageUsed( WizardPageDefinition pagedef )
+   {
+      if ( pagedef == null )
+         return false;
+         
+      List pageList = getMatrixManager().getPagesByPageDef(pagedef.getId());
+      for (Iterator pageIt = pageList.iterator(); pageIt.hasNext();) 
+      {
+         WizardPage wizardPage = (WizardPage)pageIt.next();
+         String pageId = wizardPage.getId().getValue();
+         
+         if (wizardPage.getReflections() != null
+               && wizardPage.getReflections().size() > 0)
+            return true;
+         if (wizardPage.getPageForms() != null
+               && wizardPage.getPageForms().size() > 0)
+            return true;
+         if (wizardPage.getFeedback() != null
+               && wizardPage.getFeedback().size() > 0)
+            return true;
+         if (wizardPage.getAttachments() != null
+               && wizardPage.getAttachments().size() > 0)
+            return true;
+         if (getReviewManager().getReviewsByParent(pageId) != null
+               && getReviewManager().getReviewsByParent(pageId).size() > 0)
+            return true;
+      }
       return false;
    }
 

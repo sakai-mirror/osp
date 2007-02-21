@@ -36,8 +36,13 @@
            </c:if>
          </c:if>
 	      <c:if test="${wizardPublished}">
-			  <fmt:message key="instructions_wizardHasBeenPublished"/>
-		      <c:set var="localDisabledText" value="disabled=\"disabled\""/>
+           <c:if test="${isPageUsed}">
+             <fmt:message key="instructions_hasBeenUsed"/>
+             <c:set var="localDisabledText" value="disabled=\"disabled\""/>
+           </c:if>
+           <c:if test="${!isPageUsed}">
+             <fmt:message key="instructions_wizardHasBeenPublished"/>
+           </c:if>
 	      </c:if>
 	      
 	</div>

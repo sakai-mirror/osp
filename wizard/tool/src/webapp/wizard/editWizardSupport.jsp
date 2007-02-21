@@ -127,7 +127,7 @@
 	      <h:panelGroup>
 	         <h:selectOneMenu id="reflectionItems"
 	            immediate="true" 
-               disabled="#{not empty wizard.reflectionItem && wizard.current.base.published}"
+               disabled="#{not empty wizard.reflectionItem && wizard.current.isWizardUsed}"
 	            value="#{wizard.reflectionItem}">
 	            <f:selectItem itemLabel="#{msgs.choose_reflection_item}" itemValue=""/>
 	            <f:selectItems value="#{wizard.reflectionFormsForSelect}"/>
@@ -138,7 +138,7 @@
 	      <h:panelGroup>
 	         <h:selectOneMenu id="commentItems"
 	            immediate="true" 
-               disabled="#{not empty wizard.commentItem && wizard.current.base.published}"
+               disabled="#{not empty wizard.commentItem && wizard.current.isWizardUsed}"
 	            value="#{wizard.commentItem}">
 	            <f:selectItem itemLabel="#{msgs.choose_comment_item}" itemValue=""/>
 	            <f:selectItems value="#{wizard.commentFormsForSelect}"/>
@@ -161,7 +161,7 @@
 	      <h:panelGroup>
 	         <h:selectOneMenu id="evaluationItems"
 	            immediate="true" 
-               disabled="#{not empty wizard.evaluationItem && wizard.current.base.published}"
+               disabled="#{not empty wizard.evaluationItem && wizard.current.isWizardUsed}"
 	            value="#{wizard.evaluationItem}">
 	            <f:selectItem itemLabel="#{msgs.choose_evaluation_item}" itemValue=""/>
 	            <f:selectItems value="#{wizard.evaluationFormsForSelect}"/>

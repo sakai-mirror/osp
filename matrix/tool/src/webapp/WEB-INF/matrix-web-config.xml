@@ -841,6 +841,9 @@
             <property name="sessionManager">
                <ref bean="org.sakaiproject.tool.api.SessionManager" />
             </property>
+            <property name="reviewManager">
+               <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
+            </property>
          </bean>
       </property>
       <property name="customTypedEditors">
