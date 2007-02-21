@@ -44,11 +44,16 @@
     
        return values[key];
     }
+    
+    <c:if test="${preview == true}">
+      window.open('<osp:url value="/viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />');
+    </c:if>
 </script>
 
 <h3><fmt:message key="title_addPresentation2"/></h3>
 
 <c:set var="targetPrevious" value="_target2" />
+<c:set var="targetPreview" value="_target3"/>
 <c:set var="targetNext" value="_target4"/>
 <c:set var="begin_state" value="current_state"/>
 <c:set var="design_state" value="next_state"/>
@@ -60,6 +65,7 @@
 <form method="POST" name="wizardform" action="addPresentation.osp"
     onsubmit="updateItems();"><input type="hidden" name="direction"
     value="" />
+    <input type="hidden" name="preview" value="" />
     
     <osp:form />
     
@@ -225,6 +231,6 @@
         </table>
     </spring:bind>
     <c:set var="suppress_submit" value="true" />
-    
+    <c:set var="previewPres" value="true" />
     <%@ include file="/WEB-INF/jsp/presentation/wizardFooter.inc"%>
 </form>

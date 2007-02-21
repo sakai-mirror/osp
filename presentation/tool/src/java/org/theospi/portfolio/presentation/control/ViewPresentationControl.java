@@ -88,11 +88,20 @@ public class ViewPresentationControl extends AbstractPresentationController impl
          presentation.setSecretExportKey(secretExportKey);
          return presentation;
       }
-      else{
-          return getPresentationManager().getLightweightPresentation(presentation.getId());
+      else {
+         // if it exists, get the presentation from memory that is being edited
+         Presentation previewPres = (Presentation) session.get("presentation");
+         if (previewPres != null && previewPres.getId().getValue().equals(presentation.getId().getValue())) {
 
+            //side step any authz issues as the presentation only exists in the users session
+            previewPres.setIsPublic(true);
+            previewPres.setIsPreview(true);
+
+            return previewPres;
+    	 }
+
+         return getPresentationManager().getLightweightPresentation(presentation.getId());
       }
-
    }
 
    public ModelAndView handleRequest(Object requestModel, Map request,
@@ -121,7 +130,7 @@ public class ViewPresentationControl extends AbstractPresentationController impl
             }
             else {
 
-            getAuthzManager().checkPermission(PresentationFunctionConstants.VIEW_PRESENTATION, pres.getId());
+               getAuthzManager().checkPermission(PresentationFunctionConstants.VIEW_PRESENTATION, pres.getId());
             }
          }
 
@@ -131,18 +140,26 @@ public class ViewPresentationControl extends AbstractPresentationController impl
          }
       }
 
-      logViewedPresentation(pres);
-
+      if (!pres.isPreview()) {
+         logViewedPresentation(pres);
+      }
+      
       Hashtable model = new Hashtable();
 
       try {
          model.put("presentation", pres);
          Document doc = null;
+         
          if (pres.getPresentationType().equals(Presentation.TEMPLATE_TYPE))
             doc = getPresentationManager().createDocument(pres);
          else {
             String page = (String)request.get("page");
-            doc = getPresentationManager().getPresentationLayoutAsXml(pres, page);
+            if (pres.isPreview()) {
+               doc = getPresentationManager().getPresentationPreviewLayoutAsXml(pres, page);
+            }
+            else {
+               doc = getPresentationManager().getPresentationLayoutAsXml(pres, page);
+            }
          }
          Site site = SiteService.getSite(pres.getSiteId());
          ToolConfiguration toolConfig = site.getToolForCommonId(PresentationFunctionConstants.PRES_TOOL_ID);
@@ -159,13 +176,18 @@ public class ViewPresentationControl extends AbstractPresentationController impl
             model.put("currentAgent", getAuthManager().getAgent());
          }
 
-         model.put("comments", getPresentationManager().getPresentationComments(pres.getId(),
-               getAuthManager().getAgent()));
-               
-         boolean allowComments = getAuthzManager().isAuthorized( PresentationFunctionConstants.COMMENT_PRESENTATION,
-                                                                 pres.getId() );
-         model.put("allowComments", allowComments );
+         if (!pres.isPreview()) {
+            model.put("comments", getPresentationManager().getPresentationComments(pres.getId(),
+                getAuthManager().getAgent()));
 
+            boolean allowComments = getAuthzManager().isAuthorized( 
+                PresentationFunctionConstants.COMMENT_PRESENTATION, pres.getId() );
+            model.put("allowComments", allowComments );
+         }
+         else {
+            model.put("allowComments", pres.isAllowComments());
+         }
+	         
          if (request.get(BindException.ERROR_KEY_PREFIX + "newComment") == null) {
             request.put(BindException.ERROR_KEY_PREFIX + "newComment",
                   new BindException(new PresentationComment(), "newComment"));

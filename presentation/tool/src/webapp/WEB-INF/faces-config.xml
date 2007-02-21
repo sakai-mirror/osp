@@ -86,6 +86,20 @@
          <to-view-id>/freeForm/confirm.jsp</to-view-id>
          <redirect/>
       </navigation-case>
+      <navigation-case>
+         <from-outcome>preview</from-outcome>
+         <to-view-id>/freeForm/preview.jsp</to-view-id>
+         <redirect/>
+      </navigation-case>
+   </navigation-rule>
+
+   <navigation-rule>
+     <from-view-id>/freeForm/preview.jsp</from-view-id>
+     <navigation-case>
+       <from-outcome>main</from-outcome>
+       <to-view-id>/freeForm/tool.jsp</to-view-id>
+       <redirect/>
+     </navigation-case>
    </navigation-rule>
 
    <navigation-rule>

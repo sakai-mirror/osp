@@ -143,6 +143,16 @@ public interface PresentationManager extends CleanupableService {
    public List getPresentationPagesByPresentation(Id presentationId);
    public PresentationPage getPresentationPage(Id id);
    public Document getPresentationLayoutAsXml(Presentation presentation, String pageId);
+   
+   /**
+    * Creates an xml document represenation of the requested page from the 
+    * presentation passed in.
+    * 
+    * @param presentation
+    * @param pageId
+    * @return xml representation of the requested page or null
+    */
+   public Document getPresentationPreviewLayoutAsXml(Presentation presentation, String pageId);
 
    /**
     * returns a list of all presentations agent can view </br>

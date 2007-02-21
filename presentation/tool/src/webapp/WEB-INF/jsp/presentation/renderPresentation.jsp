@@ -10,5 +10,13 @@
 
 
 <c:if test="${presentation.allowComments}">
- <%@ include file="/WEB-INF/jsp/presentation/comments.inc" %>
+  <c:choose>
+    <c:when test="${presentation.preview}">
+      <br />
+      <h3><fmt:message key="comments_placeholder" /></h3>
+    </c:when>
+    <c:otherwise>
+      <%@ include file="/WEB-INF/jsp/presentation/comments.inc" %>
+    </c:otherwise>
+  </c:choose>
 </c:if>

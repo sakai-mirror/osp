@@ -63,6 +63,7 @@ public class Presentation extends IdentifiableObject {
    private String styleName;
    private boolean allowComments = false;
    private Id propertyForm;
+   private boolean preview = false;
 
    public final static String FREEFORM_TYPE = "osp.presentation.type.freeForm";
    public final static String TEMPLATE_TYPE = "osp.presentation.type.template";
@@ -295,6 +296,14 @@ public class Presentation extends IdentifiableObject {
     */
    public void setPropertyForm(Id propertyForm) {
       this.propertyForm = propertyForm;
+   }
+
+   public void setIsPreview(boolean preview) {
+      this.preview = preview;
+   }
+   
+   public boolean isPreview() {
+      return preview;
    }
 
 

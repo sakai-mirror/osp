@@ -2,6 +2,8 @@
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 <%@ taglib uri="http://www.theospi.org/jsf/osp" prefix="ospx" %>
+<%@ taglib uri="http://www.theospi.org" prefix="osp" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 
 <%
     response.setContentType("text/html; charset=UTF-8");
@@ -88,7 +90,6 @@
 
                </h:panelGroup>
             </h:panelGrid>
-            
             <f:subview id="navigation">
                 <%@ include file="navigation.jspf" %>
             </f:subview>

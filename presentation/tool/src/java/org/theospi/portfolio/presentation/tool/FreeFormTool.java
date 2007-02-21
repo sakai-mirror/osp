@@ -39,8 +39,10 @@ import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.cover.EntityManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.theospi.jsf.intf.XmlTagFactory;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.intf.FreeFormHelper;
@@ -453,6 +455,17 @@ public class FreeFormTool extends HelperToolBase {
     */
    public void setContentHosting(ContentHostingService contentHosting) {
       this.contentHosting = contentHosting;
+   }
+
+   /**
+    * @return The url (String) to the portfolio preivew
+    */
+   public String getPreviewUrl() {
+      Tool tool = ToolManager.getCurrentTool();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      // Making a significant assumption here... is there a better way to get the url for this?
+      return (String) session.getAttribute(
+            tool.getId() + Tool.HELPER_DONE_URL) + "/../viewPresentation.osp";
    }
 
 

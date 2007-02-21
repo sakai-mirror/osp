@@ -3,6 +3,9 @@
       value="#{msgs.continue}"/>
    <sakai:button_bar_item action="#{freeForm.processActionBack}"
       value="#{msgs.back}"/>
+   <c:if test="${freeForm.pageCount > 0}">
+      <sakai:button_bar_item id="preview_button" action="preview" value="#{msgs.button_preview}" />
+   </c:if>
    <sakai:button_bar_item action="#{freeForm.processActionSave}"
       value="#{msgs.save}"/>
    <sakai:button_bar_item action="#{freeForm.processActionCancel}"

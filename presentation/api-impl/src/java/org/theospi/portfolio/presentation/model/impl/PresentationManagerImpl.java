@@ -1874,13 +1874,24 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
       }
 
-      String id = getContentHosting().resolveUuid(presentation.getTemplate().getRenderer().getValue());
+      String id = null;
+      if (presentation.getTemplate() == null || presentation.getTemplate().getRenderer() == null)
+         setupPresItemDefinition(presentation);
+      	
+      id = getContentHosting().resolveUuid(presentation.getTemplate().getRenderer().getValue());
+
       if (id != null) {
          readableFiles.add(getContentHosting().getReference(id));
       }
       
       //Files related to layouts
-      List pages = getPresentationPagesByPresentation(presentation.getId());
+      List pages = null;
+      if (presentation.getPages() != null) {
+         pages = presentation.getPages();
+      }
+      else {
+         pages = getPresentationPagesByPresentation(presentation.getId());
+      }
       for (Iterator pagesIter = pages.iterator(); pagesIter.hasNext();) {
          PresentationPage page = (PresentationPage) pagesIter.next();
          String xhtmlFileId = getContentHosting().resolveUuid(page.getLayout().getXhtmlFileId().getValue());
@@ -2388,33 +2399,70 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          return null;
       return getPresentationLayoutAsXml(page.getId());
    }
+
    
-   
+   /**
+    * Create an xml document represenation of the requested page from the 
+    * presentation passed in.
+    * 
+    * @param presentation
+    * @param pageId
+    * @return xml representation of the requested page or null
+    */
+   public Document getPresentationPreviewLayoutAsXml(Presentation presentation, String pageId) {
+      viewingPresentation(presentation);
+      PresentationPage page = null;
+      List pages = presentation.getPages();
+      if (pageId == null || pageId.equals("")) {
+         page = (PresentationPage) pages.get(0);
+      }
+      else {
+         for (Iterator i = pages.iterator(); i.hasNext();) {
+            PresentationPage iterPage = (PresentationPage)i.next();
+            if (iterPage != null && iterPage.getId() != null 
+                      && pageId.equals(iterPage.getId().toString())) {
+               page = iterPage;
+            }
+         }
+      }
+
+      if(page == null)
+         return null;
+
+      page.setPresentation(presentation);      
+      return getPresentationPageLayoutAsXml(page);
+   }
+	   
+	   
    protected Document getPresentationLayoutAsXml(Id pageId) {
+    
+      PresentationPage page = getPresentationPage(pageId);
+      return getPresentationPageLayoutAsXml(page);
+   }
+ 
+   
+   protected Document getPresentationPageLayoutAsXml(PresentationPage page) {
 
       Element root = new Element("ospiPresentation");
       Element pageStyleElement = new Element("pageStyle");
       Element layoutElement = new Element("layout");
       Element regionsElement = new Element("regions");
-      
-      PresentationPage page = getPresentationPage(pageId);
-      
+	      
       Id fileId = page.getLayout().getXhtmlFileId();
       Artifact art = getPresentationItem("fileArtifact", fileId, page.getPresentation());
 
       PresentableObjectHome home = (PresentableObjectHome) art.getHome();
       layoutElement.addContent(home.getArtifactAsXml(art));
-      
-      
-         Style pageStyle = page.getStyle() != null ? page.getStyle() : page.getPresentation().getStyle();
-         if (pageStyle != null && pageStyle.getStyleFile() != null) {
+
+      Style pageStyle = page.getStyle() != null ? page.getStyle() : page.getPresentation().getStyle();
+      if (pageStyle != null && pageStyle.getStyleFile() != null) {
          Id cssFileId = pageStyle.getStyleFile();
          Artifact cssArt = getPresentationItem("fileArtifact", cssFileId, page.getPresentation());
          PresentableObjectHome cssHome = (PresentableObjectHome) cssArt.getHome();
          pageStyleElement.addContent(cssHome.getArtifactAsXml(cssArt));
          root.addContent(pageStyleElement);
       }
-      
+
       for (Iterator regions = page.getRegions().iterator(); regions.hasNext();) {
          PresentationPageRegion region = (PresentationPageRegion) regions.next();
          int itemSeq = 0;
@@ -2427,11 +2475,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             regionElement.setAttribute("type", item.getType());
             Element itemPropertiesElement = new Element("itemProperties");
             String contentType = "";
-            for (Iterator properties = item.getProperties().iterator(); properties.hasNext();) {
-               PresentationItemProperty prop = (PresentationItemProperty) properties.next();
-               itemPropertiesElement.addContent(createElementNode(prop.getKey(), prop.getValue()));
-               if (prop.getKey().equals(PresentationItemProperty.CONTENT_TYPE))
-                  contentType = prop.getValue();
+               if (item.getProperties() != null) {
+               for (Iterator properties = item.getProperties().iterator(); properties.hasNext();) {
+                  PresentationItemProperty prop = (PresentationItemProperty) properties.next();
+                  itemPropertiesElement.addContent(createElementNode(prop.getKey(), prop.getValue()));
+                  if (prop.getKey().equals(PresentationItemProperty.CONTENT_TYPE))
+                     contentType = prop.getValue();
+               }
             }
             regionElement.addContent(itemPropertiesElement);
             regionElement.addContent(outputTypedContent(item.getType(), 
@@ -2446,6 +2496,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       root.addContent(regionsElement);
       return new Document(root);
    }
+	   
    
    protected Element outputTypedContent(String type, String value, 
          Presentation presentation, String contentType) {
@@ -2477,7 +2528,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       
       Artifact art;
 
-      if (finder instanceof EntityContextFinder) {
+      if (finder instanceof EntityContextFinder && !presentation.isPreview()) {
          art = ((EntityContextFinder)finder).loadInContext(itemId,
                PresentationContentEntityProducer.PRODUCER_NAME, 
                presentation.getSiteId(),
@@ -2529,7 +2580,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       boolean isAdvancedNavigation = page.getPresentation().isAdvancedNavigation();
 
       if (isAdvancedNavigation) {
-         List pages = getPresentationPagesByPresentation(page.getPresentation().getId());
+         List pages = null;
+         if (page.getPresentation().isPreview())
+            pages = page.getPresentation().getPages();
+         else
+            pages = getPresentationPagesByPresentation(page.getPresentation().getId());
          PresentationPage lastNavPage = null;
          PresentationPage nextNavPage = null;
          boolean foundCurrent = false;

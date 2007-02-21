@@ -225,6 +225,9 @@ public class AddPresentationController extends AbstractWizardFormController {
       model.put("totalPages", getTotalPages(presentation,  page));
       model.put("allowGuests", Config.getInstance().getProperties().getProperty("allowGuests"));
 
+      if ("true".equals(request.getParameter("preview")))
+         model.put("preview", true);
+      
       if (page == ADD_PAGE) {
          Agent agent = getAuthManager().getAgent();
          model.put("templates", getPresentationManager().findTemplatesByOwner(agent, ToolManager.getCurrentPlacement().getContext()));

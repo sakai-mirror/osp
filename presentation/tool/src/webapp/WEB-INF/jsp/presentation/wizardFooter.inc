@@ -5,6 +5,9 @@
     <c:if test="${!suppress_previous and suppress_submit and !suppress_next}">
         <input type="submit" name="<c:out value="${targetPrevious}"/>" value="<fmt:message key="button_back"/>"/>
     </c:if>
+    <c:if test="${previewPres}">
+        <input type="submit" name="<c:out value="${targetPreview}"/>" value="<fmt:message key="button_preview"/>" onClick="document.wizardform.preview.value = true;" />
+    </c:if>
     <c:if test="${updateSeq}">
         <input type="submit" name="<c:out value="${target}"/>" value="<fmt:message key="button_update"/>"/>
     </c:if>
