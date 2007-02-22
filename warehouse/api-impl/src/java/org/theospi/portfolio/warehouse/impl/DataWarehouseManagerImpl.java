@@ -38,6 +38,7 @@ import org.theospi.portfolio.warehouse.intf.WarehouseTask;
  * To change this template use File | Settings | File Templates.
  */
 public class DataWarehouseManagerImpl implements DataWarehouseManager {
+   protected final Log logger = LogFactory.getLog(DataWarehouseManagerImpl.class);
 
    private List tasks;
    private SecurityService securityService;
@@ -52,7 +53,11 @@ public class DataWarehouseManagerImpl implements DataWarehouseManager {
       getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
       for (Iterator i=getTasks().iterator();i.hasNext();) {
          WarehouseTask task = (WarehouseTask)i.next();
-         task.execute();
+         try {
+           task.execute();
+         } catch (Exception e) {
+             logger.error("problem running dw warehouse task:" + e.getMessage(), e);
+         }
       }
       getSecurityService().popAdvisor();
    }
