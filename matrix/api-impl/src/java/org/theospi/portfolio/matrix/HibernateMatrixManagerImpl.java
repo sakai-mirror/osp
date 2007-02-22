@@ -1540,7 +1540,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       try {
          //we want the bean even if it exists already
          bean = getStructuredArtifactDefinitionManager().importSad(
-            worksite, zis, true, true, false);
+            worksite, zis, true, false, false);
       } catch(ImportException ie) {
          throw new RuntimeException("the structured artifact failed to import", ie);
       }
