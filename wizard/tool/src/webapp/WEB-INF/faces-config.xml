@@ -72,6 +72,16 @@
          <property-name>contentHosting</property-name>
          <value>#{Components["org.sakaiproject.content.api.ContentHostingService"]}</value>
       </managed-property>
+      <managed-property>
+         <description>Service Dependency: taggingManager</description>
+         <property-name>taggingManager</property-name>
+         <value>#{Components["org.sakaiproject.assignment.taggable.api.TaggingManager"]}</value>
+      </managed-property>
+      <managed-property>
+         <description>Service Dependency: wizardActivityProducer</description>
+         <property-name>wizardActivityProducer</property-name>
+         <value>#{Components["org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer"]}</value>
+      </managed-property>
    </managed-bean>
 
   <navigation-rule>

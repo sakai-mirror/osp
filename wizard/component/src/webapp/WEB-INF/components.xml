@@ -303,6 +303,9 @@
       <property name="authzManager">
         <ref bean="authzManager"/>
       </property>
+      <property name="sessionManager">
+        <ref bean="org.sakaiproject.tool.api.SessionManager"/>
+      </property>
       <property name="ratingProviderIds">
         <list>
           <value>org.sakaiproject.gmt.tagging.api.GmtTaggingProvider</value>

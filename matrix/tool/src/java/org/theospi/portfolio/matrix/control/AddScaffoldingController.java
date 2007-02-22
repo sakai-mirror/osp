@@ -27,8 +27,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
@@ -44,7 +42,6 @@ import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 
 
@@ -54,7 +51,6 @@ import org.theospi.portfolio.review.mgt.ReviewManager;
 public class AddScaffoldingController extends BaseScaffoldingController 
    implements FormController, CustomCommandController {
 
-   protected final Log logger = LogFactory.getLog(getClass());
    private WorksiteManager worksiteManager = null;
    private AuthenticationManager authManager = null;
    private SessionManager sessionManager;

@@ -128,6 +128,12 @@
       <version>${sakai.version}</version>
     </dependency>
 
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-assignment-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+
      <dependency>
         <groupId>sakaiproject</groupId>
         <artifactId>sakai-metaobj-tool-lib</artifactId>

@@ -22,6 +22,9 @@ package org.theospi.portfolio.wizard.tool;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment.taggable.api.TaggableActivity;
+import org.sakaiproject.assignment.taggable.api.TaggingManager;
+import org.sakaiproject.assignment.taggable.api.TaggingProvider;
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -72,6 +75,7 @@ import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
+import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 
 import javax.faces.context.ExternalContext;
@@ -96,6 +100,8 @@ public class WizardTool extends BuilderTool {
    private WorkflowManager workflowManager;
    private ContentHostingService contentHosting;
    private ReviewManager reviewManager;
+   private TaggingManager taggingManager;
+   private WizardActivityProducer wizardActivityProducer;
 
    private IdManager idManager;
    private DecoratedWizard current = null;
@@ -332,6 +338,15 @@ public class WizardTool extends BuilderTool {
 
    public String processActionDelete(Wizard wizard) {
       clearInterface();
+      
+      if (getTaggingManager().isTaggable()) {
+			List<WizardPageSequence> pages = wizard.getRootCategory()
+					.getChildPages();
+			for (WizardPageSequence page : pages) {
+				removeTags(page);
+			}
+		}
+      
       getWizardManager().deleteWizard(wizard);
       current = null;
       return LIST_PAGE;
@@ -405,6 +420,17 @@ public class WizardTool extends BuilderTool {
             getCurrent().getRootCategory().resequencePages();
          }
       }
+      
+      if (getTaggingManager().isTaggable()) {
+  		Iterator i = deletedItems.iterator();
+		while (i.hasNext()) {
+			Object obj = i.next();
+			if (obj instanceof WizardPageSequence) {
+				removeTags((WizardPageSequence) obj);
+			}
+		}
+      }
+      
       getWizardManager().deleteObjects(deletedItems);
       deletedItems.clear();
       Wizard wizard = getCurrent().getBase();
@@ -412,6 +438,18 @@ public class WizardTool extends BuilderTool {
 
       getWizardManager().saveWizard(wizard);
    }
+   
+   protected void removeTags(WizardPageSequence ps) {
+		for (TaggingProvider provider : getTaggingManager().getProviders()) {
+			TaggableActivity activity = getWizardActivityProducer()
+					.getActivity(ps.getWizardPageDefinition());
+			try {
+				provider.removeTags(activity);
+			} catch (PermissionException pe) {
+				logger.error(pe.getMessage(), pe);
+			}
+		}
+	}
 
    public String processActionNew() {
       clearInterface();
@@ -1338,6 +1376,23 @@ public class WizardTool extends BuilderTool {
       authManager = manager;
    }
 
+   public TaggingManager getTaggingManager() {
+		return taggingManager;
+	}
+
+	public void setTaggingManager(TaggingManager taggingManager) {
+		this.taggingManager = taggingManager;
+	}
+
+	public WizardActivityProducer getWizardActivityProducer() {
+		return wizardActivityProducer;
+	}
+
+	public void setWizardActivityProducer(
+			WizardActivityProducer wizardActivityProducer) {
+		this.wizardActivityProducer = wizardActivityProducer;
+	}
+	
    public String getLastSaveWizard() {
       return lastSaveWizard;
    }

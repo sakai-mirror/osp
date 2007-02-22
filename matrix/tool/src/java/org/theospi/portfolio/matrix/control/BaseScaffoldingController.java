@@ -1,10 +1,9 @@
-
 /**********************************************************************************
 * $URL$
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -19,6 +18,7 @@
 * limitations under the License.
 *
 **********************************************************************************/
+
 package org.theospi.portfolio.matrix.control;
 
 import java.util.Iterator;
@@ -28,6 +28,9 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment.taggable.api.TaggableActivity;
+import org.sakaiproject.assignment.taggable.api.TaggingManager;
+import org.sakaiproject.assignment.taggable.api.TaggingProvider;
 import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -43,6 +46,7 @@ import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 
 public class BaseScaffoldingController {
    
@@ -52,6 +56,8 @@ public class BaseScaffoldingController {
    private MatrixManager matrixManager;
    private IdManager idManager;
    private LockManager lockManager = null;
+   private TaggingManager taggingManager;
+   private WizardActivityProducer wizardActivityProducer;
    
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.CustomCommandController#formBackingObject(java.util.Map, java.util.Map, java.util.Map)
@@ -115,6 +121,24 @@ public class BaseScaffoldingController {
       // (3) admin now tries to save changes
       try
       {
+    	  // if taggable, remove tags for any page defs that have been removed
+			if (getTaggingManager().isTaggable() && scaffolding.getId() != null) {
+				Scaffolding origScaffolding = getMatrixManager()
+						.getScaffolding(scaffolding.getId());
+				Set<ScaffoldingCell> storedCells = origScaffolding
+						.getScaffoldingCells();
+				for (ScaffoldingCell cell : storedCells) {
+					if (!scaffolding.getScaffoldingCells().contains(cell)) {
+						for (TaggingProvider provider : getTaggingManager()
+								.getProviders()) {
+							TaggableActivity activity = getWizardActivityProducer()
+									.getActivity(cell.getWizardPageDefinition());
+							provider.removeTags(activity);
+						}
+					}
+				}
+			}
+    	  
          scaffolding = getMatrixManager().storeScaffolding(scaffolding);
       }
       catch ( Exception e )
@@ -266,4 +290,21 @@ public class BaseScaffoldingController {
    public void setLockManager(LockManager lockManager) {
       this.lockManager = lockManager;
    }
+
+	public TaggingManager getTaggingManager() {
+		return taggingManager;
+	}
+
+	public void setTaggingManager(TaggingManager taggingManager) {
+		this.taggingManager = taggingManager;
+	}
+
+	public WizardActivityProducer getWizardActivityProducer() {
+		return wizardActivityProducer;
+	}
+
+	public void setWizardActivityProducer(
+			WizardActivityProducer wizardActivityProducer) {
+		this.wizardActivityProducer = wizardActivityProducer;
+	}
 }

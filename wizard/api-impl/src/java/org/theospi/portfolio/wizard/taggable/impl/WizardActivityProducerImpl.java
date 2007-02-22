@@ -32,15 +32,19 @@ import org.sakaiproject.assignment.taggable.api.TaggableItem;
 import org.sakaiproject.assignment.taggable.api.TaggingManager;
 import org.sakaiproject.assignment.taggable.api.TaggingProvider;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.util.ResourceLoader;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
+import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 
 public class WizardActivityProducerImpl implements WizardActivityProducer {
@@ -54,6 +58,8 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	TaggingManager taggingManager;
 
 	AuthorizationFacade authzManager;
+
+	SessionManager sessionManager;
 
 	List<String> ratingProviderIds;
 
@@ -107,6 +113,14 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 
 	public void setTaggingManager(TaggingManager taggingManager) {
 		this.taggingManager = taggingManager;
+	}
+
+	public SessionManager getSessionManager() {
+		return sessionManager;
+	}
+
+	public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
 	}
 
 	public List<String> getRatingProviderIds() {
@@ -289,10 +303,46 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	}
 
 	public boolean allowRemoveTags(TaggableActivity activity) {
-		return false;
+		WizardPageDefinition pageDef = (WizardPageDefinition) activity
+				.getObject();
+		// Try to get a wizard page sequence
+		WizardPageSequence ps = getWizardManager().getWizardPageSeqByDef(
+				pageDef.getId());
+		boolean authorized = false;
+		if (ps != null) {
+			Wizard wizard = ps.getCategory().getWizard();
+			/*
+			 * If you own the wizard, or if you can delete wizards, or if you
+			 * can revise wizards, then you are able to delete page definitions
+			 * and can, therefore, remove tags.
+			 */
+			authorized = getSessionManager().getCurrentSessionUserId()
+					.equalsIgnoreCase(wizard.getOwner().getId().getValue())
+					|| getAuthzManager()
+							.isAuthorized(WizardFunctionConstants.EDIT_WIZARD,
+									wizard.getId())
+					|| getAuthzManager().isAuthorized(
+							WizardFunctionConstants.DELETE_WIZARD,
+							wizard.getId());
+		} else {
+			ScaffoldingCell cell = getMatrixManager()
+					.getScaffoldingCellByWizardPageDef(pageDef.getId());
+			/*
+			 * If you can create or delete scaffolding, then you are able to
+			 * delete scaffolding cells and can, therefore, remove tags.
+			 */
+			authorized = getAuthzManager().isAuthorized(
+					MatrixFunctionConstants.CREATE_SCAFFOLDING,
+					cell.getScaffolding().getId())
+					|| getAuthzManager().isAuthorized(
+							MatrixFunctionConstants.DELETE_SCAFFOLDING,
+							cell.getScaffolding().getId());
+		}
+		return authorized;
 	}
 
 	public boolean allowRemoveTags(TaggableItem item) {
+		// It doesn't appear that you can remove individual items (pages)
 		return false;
 	}
 }
