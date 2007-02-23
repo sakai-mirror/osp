@@ -745,6 +745,9 @@
             <property name="lockManager">
                <ref bean="org.sakaiproject.content.api.LockManager"/>
             </property>
+            <property name="taggingManager">
+               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
