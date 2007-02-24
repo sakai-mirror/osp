@@ -3,9 +3,23 @@
 
 <beans default-lazy-init="false">
 
+   <!-- org/theospi/portfolio/portal/model/portal.hbm.xml -->
+
+   <bean id="ospPortalHibernateMappings"
+      class="org.sakaiproject.springframework.orm.hibernate.impl.AdditionalHibernateMappingsImpl">
+      <property name="mappingResources">
+         <list>
+            <value>org/theospi/portfolio/portal/model/portal.hbm.xml</value>
+         </list>
+		</property>
+   </bean>
+
    <bean id="org.theospi.portfolio.portal.intf.PortalManager"
       class="org.theospi.portfolio.portal.impl.PortalManagerImpl"
-      singleton="true">
+      singleton="true" init-method="init">
+      <property name="sessionFactory">
+         <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
+      </property>
       <property name="userDirectoryService" ref="org.sakaiproject.user.api.UserDirectoryService"/>
       <property name="siteService" ref="org.sakaiproject.site.api.SiteService"/>
       <property name="idManager" ref="idManager"/>
@@ -20,6 +34,22 @@
             <entry key="project" value-ref="org.theospi.portfolio.portal.model.SiteType.project"/>
             <entry key="course" value-ref="org.theospi.portfolio.portal.model.SiteType.course"/>
          </map>
+      </property>
+   </bean>
+
+   <bean id="org.theospi.portfolio.portal.intf.PortalManager.tx"
+      class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+      singleton="true">
+      <property name="transactionManager">
+        <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
+      </property>
+      <property name="target">
+         <ref bean="org.theospi.portfolio.portal.intf.PortalManager"/>
+      </property>
+      <property name="transactionAttributes">
+         <props>
+            <prop key="*">PROPAGATION_REQUIRED</prop>
+         </props>
       </property>
    </bean>
 

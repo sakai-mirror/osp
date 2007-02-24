@@ -54,6 +54,7 @@ import org.xml.sax.SAXException;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
@@ -719,7 +720,13 @@ public class XsltPortal extends CharonPortal {
       categoryElement.appendChild(categoryEscapedKeyElement);
       categoryElement.appendChild(categoryUrlElement);
       categoryElement.appendChild(categoryHelperUrlElement);
-      appendTextElementNode(doc, "layoutFile", getCategoryHomePagePath(category.getHomePagePath()), categoryElement);
+
+      if (portalManager.isUseDb()) {
+         appendTextElementNode(doc, "layoutFile", category.getKey(), categoryElement);
+      }
+      else {
+         appendTextElementNode(doc, "layoutFile", getCategoryHomePagePath(category.getHomePagePath()), categoryElement);
+      }
 
       Element pagesElement = doc.createElement("pages");
 
@@ -1180,7 +1187,7 @@ public class XsltPortal extends CharonPortal {
       Site site = null;
       try
       {
-         site = SiteService.getSiteVisit(siteId);
+         site = getSiteVisit(siteId);
       }
       catch (IdUnusedException e)
       {
@@ -1201,12 +1208,12 @@ public class XsltPortal extends CharonPortal {
          return null;
       }
 
-      return siteId;
+      return site.getId();
    }
 
    public void init(ServletConfig config) throws ServletException {
       super.init(config);
-      setPortalManager((PortalManager) ComponentManager.get(PortalManager.class));
+      setPortalManager((PortalManager) ComponentManager.get(PortalManager.class.getName() + ".tx"));
       try {
          setDocumentBuilder(DocumentBuilderFactory.newInstance().newDocumentBuilder());
          String transformPath = config.getInitParameter("transform");
@@ -1215,12 +1222,23 @@ public class XsltPortal extends CharonPortal {
 
          String transformToolCategoryPath = config.getInitParameter("transformToolCategory");
          Templates templatesToolCategory = createTemplate(config, transformToolCategoryPath);
-         setServletResolver(new ServletResourceUriResolver(config.getServletContext()));
+         setServletResolver(new PortalResourceUriResolver(getPortalManager(), config.getServletContext()));
          setToolCategoryTemplates(templatesToolCategory);
 
          categoryBasePath = config.getInitParameter("categoryBasePath");
          if (categoryBasePath == null || categoryBasePath.length() == 0) {
             categoryBasePath = "/WEB-INF/category";
+         }
+
+         Collection categoriesNeedingLoading =
+            getPortalManager().getCategoriesInNeedOfFiles();
+
+         if (categoriesNeedingLoading != null) {
+            for (Iterator<ToolCategory> i=categoriesNeedingLoading.iterator();i.hasNext();) {
+               processCategoryFiles(i.next(), config.getServletContext());
+            }
+
+            getPortalManager().saveToolCategories(categoriesNeedingLoading);
          }
       }
       catch (ParserConfigurationException e) {
@@ -1231,7 +1249,45 @@ public class XsltPortal extends CharonPortal {
       }
       catch (MalformedURLException e) {
          throw new ServletException(e);
+      } catch (IOException e) {
+         throw new ServletException(e);
       }
+   }
+
+   protected void processCategoryFiles(ToolCategory toolCategory, ServletContext context)
+      throws IOException {
+      File base = new File(categoryBasePath);
+      String parentPath = base.getParent();
+
+      Set paths = context.getResourcePaths(parentPath);
+
+      for (Iterator<String> i=paths.iterator();i.hasNext();) {
+         String path = i.next();
+         if (path.startsWith(categoryBasePath)) {
+            path += toolCategory.getHomePagePath();
+            if (context.getResource(path) != null) {
+               processCategoryFile(toolCategory, path, context.getResourceAsStream(path));
+            }
+         }
+      }
+   }
+
+   protected void processCategoryFile(ToolCategory toolCategory, String path, InputStream is) throws IOException {
+      String locale = path.substring(categoryBasePath.length());
+      locale = locale.substring(0, locale.length() - toolCategory.getHomePagePath().length() - 1);
+
+      if (locale.startsWith("_")) {
+         locale = locale.substring(1);
+      }
+
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      int c = is.read();
+      while (c != -1) {
+         bos.write(c);
+         c = is.read();
+      }
+      bos.flush();
+      toolCategory.getPages().put(locale, bos.toByteArray());
    }
 
    private Templates createTemplate(ServletConfig config, String transformPath) throws MalformedURLException, TransformerConfigurationException {

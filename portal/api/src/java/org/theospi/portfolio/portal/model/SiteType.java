@@ -20,6 +20,8 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.model;
 
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+
 import java.util.List;
 
 /**
@@ -29,9 +31,11 @@ import java.util.List;
  * Time: 2:31:03 PM
  * To change this template use File | Settings | File Templates.
  */
-public class SiteType implements Comparable {
+public class
+   SiteType extends IdentifiableObject implements Comparable {
 
    private String key;
+   private String description;
    private String skin;
    private int order;
    private int firstCategory = 0;
@@ -144,6 +148,40 @@ public class SiteType implements Comparable {
 
    public void setDisplayTab(boolean displayTab) {
       this.displayTab = displayTab;
+   }
+
+   public String getDescription() {
+      return description;
+   }
+
+   public void setDescription(String description) {
+      this.description = description;
+   }
+
+   public boolean equals(Object o) {
+      if (this == o) {
+         return true;
+      }
+      if (o == null || getClass() != o.getClass()) {
+         return false;
+      }
+      if (!super.equals(o)) {
+         return false;
+      }
+
+      final SiteType siteType = (SiteType) o;
+
+      if (!key.equals(siteType.key)) {
+         return false;
+      }
+
+      return true;
+   }
+
+   public int hashCode() {
+      int result = super.hashCode();
+      result = 29 * result + key.hashCode();
+      return result;
    }
 
 }

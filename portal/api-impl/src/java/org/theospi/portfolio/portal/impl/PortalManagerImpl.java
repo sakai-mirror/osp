@@ -32,11 +32,13 @@ import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.util.ResourceLoader;
 import org.theospi.portfolio.portal.intf.PortalManager;
 import org.theospi.portfolio.portal.model.SitePageWrapper;
 import org.theospi.portfolio.portal.model.SiteType;
 import org.theospi.portfolio.portal.model.ToolCategory;
 import org.theospi.portfolio.portal.model.ToolType;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import java.util.*;
 
@@ -47,7 +49,7 @@ import java.util.*;
  * Time: 8:38:52 AM
  * To change this template use File | Settings | File Templates.
  */
-public class PortalManagerImpl implements PortalManager {
+public class PortalManagerImpl extends HibernateDaoSupport implements PortalManager {
 
    private UserDirectoryService userDirectoryService;
    private SiteService siteService;
@@ -56,9 +58,71 @@ public class PortalManagerImpl implements PortalManager {
    private org.theospi.portfolio.security.AuthorizationFacade ospAuthzManager;
    private boolean displayToolCategories = true;
    private boolean displaySiteTypes = true;
+   private boolean useDb = false;
+   private boolean reloadDb = false;
+   private boolean cleanedDb = false;
 
    private Map siteTypes;
    private static final String TYPE_PREFIX = "org.theospi.portfolio.portal.";
+   private ResourceLoader rl = new ResourceLoader();
+
+   public void init() {
+
+      if (isUseDb()) {
+         Map<String, SiteType> siteTypesTempMap = loadDbSiteTypes();
+         if (siteTypesTempMap.size() == 0 || isReloadDb()) {
+            siteTypesTempMap = storeComponentsSiteTypes(siteTypes);
+            cleanedDb = true;
+         }
+         else {
+            setSiteTypes(new HashMap(siteTypesTempMap));
+         }
+      }
+   }
+
+   public Map<String, SiteType> storeComponentsSiteTypes(Map siteTypes) {
+      Map<String, SiteType> siteTypesTempMap = loadDbSiteTypes();
+      getHibernateTemplate().deleteAll(siteTypesTempMap.values());
+      getHibernateTemplate().flush();
+      Map<String, SiteType> returned = new Hashtable<String, SiteType>();
+      Collection<SiteType> siteTypesCol = siteTypes.values();
+      for (Iterator<SiteType> i=siteTypesCol.iterator();i.hasNext();) {
+         SiteType type = i.next();
+         storeComponentsSiteType(type);
+         returned.put(type.getName(), type);
+      }
+      setSiteTypes(new HashMap(siteTypesTempMap));
+      return returned;
+   }
+
+   protected void storeComponentsSiteType(SiteType type) {
+      List<ToolCategory> toolCategories = type.getToolCategories();
+      for (Iterator<ToolCategory> i=toolCategories.iterator();i.hasNext();) {
+         fixComponentsToolCategory(i.next());
+      }
+      getHibernateTemplate().save(type);
+   }
+
+   protected void fixComponentsToolCategory(ToolCategory toolCategory) {
+      for (Iterator<Map.Entry> i=toolCategory.getTools().entrySet().iterator();i.hasNext();) {
+         Map.Entry entry = i.next();
+         if (entry.getValue() instanceof String) {
+            entry.setValue(new ToolType());
+         }
+      }
+
+      //todo load i18n pages
+   }
+
+   protected Map<String, SiteType> loadDbSiteTypes() {
+      Map<String, SiteType> returned = new Hashtable<String, SiteType>();
+      List<SiteType> siteTypesList = getHibernateTemplate().loadAll(SiteType.class);
+      for (Iterator<SiteType> i=siteTypesList.iterator();i.hasNext();) {
+         SiteType type = i.next();
+         returned.put(type.getName(), type);
+      }
+      return returned;
+   }
 
    public User getCurrentUser() {
       return getUserDirectoryService().getCurrentUser();
@@ -163,7 +227,9 @@ public class PortalManagerImpl implements PortalManager {
       String gatewayId = ServerConfigurationService.getGatewaySiteId();
       
       //If I'm passing a site, I want to override the configured gateway
-      if (siteId != null) gatewayId = siteId;
+      if (siteId != null) {
+         gatewayId = siteId;
+      }
       
       try {
          Site gateway = getSiteService().getSite(gatewayId);
@@ -550,6 +616,27 @@ public class PortalManagerImpl implements PortalManager {
       return displaySiteTypes;
    }
 
+   public Collection getCategoriesInNeedOfFiles() {
+      if (isCleanedDb()) {
+         return loadPages(getHibernateTemplate().loadAll(ToolCategory.class));
+      }
+      else {
+         return null;
+      }
+   }
+
+   protected Collection loadPages(List list) {
+      for (Iterator<ToolCategory> i = list.iterator();i.hasNext();) {
+         i.next().getPages().size();
+      }
+
+      return list;
+   }
+
+   public void saveToolCategories(Collection toolCategories) {
+      getHibernateTemplate().saveOrUpdateAll(toolCategories);
+   }
+
    public void setDisplaySiteTypes(boolean displaySiteTypes) {
       this.displaySiteTypes = displaySiteTypes;
    }
@@ -562,4 +649,51 @@ public class PortalManagerImpl implements PortalManager {
       this.idManager = idManager;
    }
 
+   public boolean isUseDb() {
+      return useDb;
+   }
+
+   public byte[] getCategoryPage(String href) {
+      List categories = (List) getHibernateTemplate().find(" from ToolCategory where type_key=?", href);
+
+      if (categories.size() > 0) {
+         ToolCategory cat = (ToolCategory) categories.get(0);
+
+         String localeStr = rl.getLocale().toString();
+
+         if (cat.getPages().get(localeStr) != null) {
+            return (byte[]) cat.getPages().get(localeStr);
+         }
+
+         localeStr = localeStr.replaceFirst("_.*","");
+
+         if (cat.getPages().get(localeStr) != null) {
+            return (byte[]) cat.getPages().get(localeStr);
+         }
+
+         return (byte[]) cat.getPages().get("");
+      }
+
+      return new byte[0];
+   }
+
+   public void setUseDb(boolean useDb) {
+      this.useDb = useDb;
+   }
+
+   public boolean isReloadDb() {
+      return reloadDb;
+   }
+
+   public void setReloadDb(boolean reloadDb) {
+      this.reloadDb = reloadDb;
+   }
+
+   public boolean isCleanedDb() {
+      return cleanedDb;
+   }
+
+   public void setCleanedDb(boolean cleanedDb) {
+      this.cleanedDb = cleanedDb;
+   }
 }

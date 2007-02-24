@@ -27,12 +27,18 @@
                 <type>pom</type>
         </dependency>
 
-    <dependency>
-      
-      <groupId>org.sakaiproject.osp</groupId>
-      <artifactId>osp-portal-impl</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
+     <dependency>
+
+       <groupId>org.sakaiproject.osp</groupId>
+       <artifactId>osp-portal-impl</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+     <dependency>
+
+       <groupId>org.sakaiproject</groupId>
+       <artifactId>sakai-util</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
     <dependency>
       
       <groupId>${sakai.spring.groupId}</groupId>

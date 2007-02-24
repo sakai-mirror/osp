@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL:https://source.sakaiproject.org/svn/osp/trunk/portal/webapp/src/java/org/theospi/portfolio/portal/web/ServletResourceUriResolver.java $
-* $Id:ServletResourceUriResolver.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
+* $URL:https://source.sakaiproject.org/svn/osp/trunk/portal/webapp/src/java/org/theospi/portfolio/portal/web/PortalResourceUriResolver.java $
+* $Id:PortalResourceUriResolver.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
 * Copyright (c) 2006 The Sakai Foundation.
@@ -20,11 +20,14 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.web;
 
+import org.theospi.portfolio.portal.intf.PortalManager;
+
 import javax.servlet.ServletContext;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayInputStream;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,15 +36,21 @@ import javax.xml.transform.stream.StreamSource;
  * Time: 10:08:45 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ServletResourceUriResolver implements URIResolver {
+public class PortalResourceUriResolver implements URIResolver {
 
    private ServletContext context;
+   private PortalManager manager;
 
-   public ServletResourceUriResolver(ServletContext context) {
+   public PortalResourceUriResolver(PortalManager manager, ServletContext context) {
+      this.manager = manager;
       this.context = context;
    }
 
    public Source resolve(String href, String base) throws TransformerException {
+      if (manager.isUseDb()) {
+         return new StreamSource(new ByteArrayInputStream(manager.getCategoryPage(href)));
+      }
+
       return new StreamSource(context.getResourceAsStream(href));
    }
 }

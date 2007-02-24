@@ -22,6 +22,7 @@ package org.theospi.portfolio.portal.intf;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 import org.sakaiproject.javax.PagingPosition;
 import org.sakaiproject.site.api.Site;
@@ -79,4 +80,14 @@ public interface PortalManager {
    public List getRoles(String siteId);
 
    public boolean isDisplaySiteTypes();
+
+   public Collection getCategoriesInNeedOfFiles();
+
+   public void saveToolCategories(Collection toolCategories);
+
+   public boolean isUseDb();
+
+   public byte[] getCategoryPage(String href);
+
+   public Map<String, SiteType> storeComponentsSiteTypes(Map siteTypes);
 }

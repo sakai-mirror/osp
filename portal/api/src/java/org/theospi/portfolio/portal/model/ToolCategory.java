@@ -20,7 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.portal.model;
 
+import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+
 import java.util.Map;
+import java.util.Hashtable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -29,18 +32,21 @@ import java.util.Map;
  * Time: 8:24:08 AM
  * To change this template use File | Settings | File Templates.
  */
-public class ToolCategory implements Comparable, Cloneable {
+public class ToolCategory extends IdentifiableObject implements Comparable, Cloneable {
 
    public static final String UNCATEGORIZED_KEY = "org.theospi.portfolio.portal.model.ToolCategory.uncategorized";
 
    public static final ToolCategory UNCATEGORIZED = new ToolCategory(UNCATEGORIZED_KEY);
 
    private String key;
+   private String description;
    private int order;
    private String homePagePath;
+   private Map pages;
    private Map tools;
 
    public ToolCategory() {
+      pages = new Hashtable();
    }
 
    public ToolCategory(ToolCategory copy) {
@@ -126,5 +132,20 @@ public class ToolCategory implements Comparable, Cloneable {
       return result;
    }
 
+   public Map getPages() {
+      return pages;
+   }
 
+   public void setPages(Map pages) {
+      this.pages = pages;
+   }
+
+   public String getDescription() {
+      return description;
+   }
+
+   public void setDescription(String description) {
+      this.description = description;
+   }
+   
 }

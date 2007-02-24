@@ -48,6 +48,12 @@
 
      <dependency>
        <groupId>sakaiproject</groupId>
+       <artifactId>sakai-metaobj-api</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
        <artifactId>sakai-authz-api</artifactId>
        <version>${sakai.version}</version>
      </dependency>

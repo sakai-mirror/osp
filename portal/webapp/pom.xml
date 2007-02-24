@@ -45,13 +45,20 @@
       <version>2.4</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-tool-api</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
-    </dependency>
+     <dependency>
+
+       <groupId>org.sakaiproject</groupId>
+       <artifactId>sakai-tool-api</artifactId>
+       <version>${sakai.version}</version>
+       <scope>provided</scope>
+     </dependency>
+     <dependency>
+
+       <groupId>org.sakaiproject</groupId>
+       <artifactId>sakai-metaobj-api</artifactId>
+       <version>${sakai.version}</version>
+       <scope>provided</scope>
+     </dependency>
     <dependency>
       
       <groupId>org.sakaiproject</groupId>
