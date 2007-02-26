@@ -761,23 +761,66 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
      * {@inheritDoc}
      */
     public ReportResult generateResults(Report report) throws ReportExecutionException {
-        ReportResult rr = new ReportResult();
+      ReportResult rr = new ReportResult();
 
-        Connection connection = null;
-        PreparedStatement stmt = null;
+      ReportDefinition rd = report.getReportDefinition();
+      rr.setCreationDate(new Date());
+      Element reportElement = new Element("reportResult");
+      Document document = new Document(reportElement);
 
-        try {
-            ReportDefinition rd = report.getReportDefinition();
+      //	replace the parameters with the values
+      List reportParams = report.getReportParams();
 
+      int index = -1;
+      for (Iterator i=rd.getQuery().iterator(); i.hasNext(); ){
+         StringBuffer nextQuery = new StringBuffer(replaceSystemValues((String) i.next()));
+         if (index > -1) {
+            // <extraReportResult index="0">, <extraReportResult index="1"> etc.
+            Element currentReportResult = new Element("extraReportResult");
+            currentReportResult.setAttribute("index", String.valueOf(index));
+            reportElement.addContent(currentReportResult);
+            executeQuery(nextQuery, reportParams, report, currentReportResult, rr, rd, false);
+         }
+         else {
+            executeQuery(nextQuery, reportParams, report, reportElement, rr, rd, true);
+         }
+         index++;
+      }
+
+      rr.setCreationDate(new Date());
+      rr.setReport(report);
+      rr.setTitle(report.getTitle());
+      rr.setKeywords(report.getKeywords());
+      rr.setDescription(report.getDescription());
+      rr.setUserId(report.getUserId());
+      rr.setXml((new XMLOutputter()).outputString(document));
+
+      rr = postProcessResult(rd, rr);
+
+      return rr;
+
+    }
+
+   /**
+   * executes the query converting the results into xml and updating the report
+   * @param query
+   * @param reportParams
+   * @param report
+   * @param reportElement
+   * @param rr
+   * @param rd
+   * @param isFirstResult - true if this is the first sql query in the report, otherwise this should be false
+   */
+   protected void executeQuery(StringBuffer query, List reportParams, Report report, Element reportElement,
+                               ReportResult rr, ReportDefinition rd, boolean isFirstResult)  {
+      //     get the query from the Definition and replace the values
+      //     no should be able to put in a system parameter into a report parameter and have it work
+      //             so replace the system values before processing the report parameters
+      Connection connection = null;
+      PreparedStatement stmt = null;
+
+      try  {
             connection = getConnection(report.getReportDefinition().getUsesWarehouse());
-
-            StringBuffer query = new StringBuffer(replaceSystemValues((String) rd.getQuery().get(0)));
-            //	get the query from the Definition and replace the values
-            //	no should be able to put in a system parameter into a report parameter and have it work
-            //		so replace the system values before processing the report parameters
-
-            //	replace the parameters with the values
-            List reportParams = report.getReportParams();
 
             query = replaceForMultiSet(query, reportParams);
             stmt = connection.prepareStatement(query.toString());
@@ -816,8 +859,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
                 }
             }
 
-            rr.setCreationDate(new Date());
-
             // run the query
             ResultSet rs = null;
             int resultSetIndex = 0;
@@ -843,48 +884,41 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
                     columnNames[i] = columnNames[i].toUpperCase();
             }
 
+            if (isFirstResult) {
+               Element docAttrNode = new Element("attributes");
+               Element attr = new Element("title");
+               attr.setText(report.getTitle());
+               reportElement.addContent(attr);
 
-            Element reportElement = new Element("reportResult");
+               attr = new Element("description");
+               attr.setText(report.getDescription());
+               reportElement.addContent(attr);
 
-            Document document = new Document(reportElement);
+               attr = new Element("keywords");
+               attr.setText(report.getKeywords());
+               reportElement.addContent(attr);
 
-            Element docAttrNode = new Element("attributes");
-            {
-                Element attr = new Element("title");
-                attr.setText(report.getTitle());
-                reportElement.addContent(attr);
+               attr = new Element("runDate");
+               attr.setText(rr.getCreationDate().toString());
+               reportElement.addContent(attr);
 
-                attr = new Element("description");
-                attr.setText(report.getDescription());
-                reportElement.addContent(attr);
+               attr = new Element("isWarehouseReport");
+               attr.setText(report.getReportDefinition().getUsesWarehouse().toString());
+               reportElement.addContent(attr);
 
-                attr = new Element("keywords");
-                attr.setText(report.getKeywords());
-                reportElement.addContent(attr);
+               attr = new Element("isLiveReport");
+               attr.setText(Boolean.toString(report.getIsLive()));
+               reportElement.addContent(attr);
 
-                attr = new Element("runDate");
-                attr.setText(rr.getCreationDate().toString());
-                reportElement.addContent(attr);
+               attr = new Element("isSavedReport");
+               attr.setText(Boolean.toString(report.getIsSaved()));
+               reportElement.addContent(attr);
 
-                attr = new Element("isWarehouseReport");
-                attr.setText(report.getReportDefinition().getUsesWarehouse().toString());
-                reportElement.addContent(attr);
-
-                attr = new Element("isLiveReport");
-                attr.setText(Boolean.toString(report.getIsLive()));
-                reportElement.addContent(attr);
-
-                attr = new Element("isSavedReport");
-                attr.setText(Boolean.toString(report.getIsSaved()));
-                reportElement.addContent(attr);
-
-                attr = new Element("accessUrl");
-                attr.setText(ServerConfigurationService.getAccessUrl());
-                reportElement.addContent(attr);
-
-
+               attr = new Element("accessUrl");
+               attr.setText(ServerConfigurationService.getAccessUrl());
+               reportElement.addContent(attr);
+               reportElement.addContent(docAttrNode);
             }
-            reportElement.addContent(docAttrNode);
 
             Element paramsNode = new Element("parameters");
 
@@ -950,15 +984,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             }
             reportElement.addContent(datarowsNode);
 
-            rr.setReport(report);
-            rr.setTitle(report.getTitle());
-            rr.setKeywords(report.getKeywords());
-            rr.setDescription(report.getDescription());
-            rr.setUserId(report.getUserId());
-            rr.setXml((new XMLOutputter()).outputString(document));
-
-            rr = postProcessResult(rd, rr);
-
         } catch (SQLException e) {
             logger.error("", e);
             throw new OspException(e);
@@ -981,9 +1006,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             }
         }
 
-        // create an xml string with the data
-        // any xml file links are pulled and entered into the xml in turn
-        return rr;
     }
 
     /**
@@ -991,7 +1013,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
      *
      * @param rd
      * @param rr
-     * @return
+     * @return results
      */
     protected ReportResult postProcessResult(ReportDefinition rd, ReportResult rr) {
         List resultProcessors = rd.getResultProcessors();

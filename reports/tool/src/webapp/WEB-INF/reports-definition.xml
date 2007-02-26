@@ -436,13 +436,16 @@
         <property name="usesWarehouse"><value>false</value></property>
         <property name="title">
             <value>
-                Date into sql test
+                Date into sql test (multiple queries)
             </value>
         </property>
         <property name="query">
            <list>
               <value>
                 select * from SAKAI_SESSION where SESSION_START &lt; ?
+              </value>
+              <value>
+                select count(*) from SAKAI_SESSION where SESSION_START &lt; ?
               </value>
            </list>
         </property>
@@ -466,7 +469,7 @@
         </property>
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>WEB-INF/reportxsls/report1.1.xsl</value></property>
+                    <property name="xslLink"><value>WEB-INF/reportxsls/report5.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>
@@ -486,14 +489,9 @@
         <property name="xsls">
             <list>
                 <bean id="reportXsl5.1" class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>WEB-INF/reportxsls/report1.1.xsl</value></property>
+                    <property name="xslLink"><value>WEB-INF/reportxsls/report5.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
-                    <property name="title"><value>Report Result View X</value></property>
-                </bean>
-                <bean id="reportXsl5.2" class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>WEB-INF/reportxsls/report1.2.xsl</value></property>
-                    <property name="isExport"><value>false</value></property>
-                    <property name="title"><value>Report Result View Y</value></property>
+                    <property name="title"><value>Sessions before a date</value></property>
                 </bean>
             </list>
         </property>
