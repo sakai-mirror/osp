@@ -96,7 +96,7 @@
 <!-- MyFaces JSF dependencies -->
 <!-- 
       <dependency>
-			<groupId>myfaces</groupId>
+			<groupId>org.apache.myfaces.core</groupId>
 			<artifactId>myfaces</artifactId>
 			<version>1.0.9</version>
 			<url>http://myfaces.apache.org/</url>
