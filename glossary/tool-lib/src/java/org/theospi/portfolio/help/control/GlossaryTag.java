@@ -62,6 +62,8 @@ public class GlossaryTag extends BodyTagSupport {
    private String glossaryLink;
    protected final Log logger = LogFactory.getLog(getClass());
 
+   private static final String TERMS_TAG = "org.theospi.portfolio.help.control.GlossaryTag.terms";
+
    /**
     * Default processing of the start tag returning EVAL_BODY_BUFFERED.
     *
@@ -88,7 +90,7 @@ public class GlossaryTag extends BodyTagSupport {
       BodyContent body = getBodyContent();
       JspWriter out = body.getEnclosingWriter();
       Reader reader = body.getReader();
-      Set termSet = getHelpManager().getSortedWorksiteTerms();
+      Set termSet = getTerms();
       GlossaryEntry[] terms = new GlossaryEntry[termSet.size()];
       terms = (GlossaryEntry[]) termSet.toArray(terms);
 
@@ -101,6 +103,15 @@ public class GlossaryTag extends BodyTagSupport {
          body.clearBody(); // Clear for next evaluation
       }
       return (SKIP_BODY);
+   }
+
+   protected Set getTerms() {
+      if (pageContext.getAttribute(TERMS_TAG) != null) {
+         return (Set)pageContext.getAttribute(TERMS_TAG);
+      }
+      Set returned = getHelpManager().getSortedWorksiteTerms();
+      pageContext.setAttribute(TERMS_TAG, returned);
+      return returned;
    }
 
    public HelpManager getHelpManager() {

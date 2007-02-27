@@ -44,7 +44,8 @@
       </property>
    </bean>
 
-   <bean id="glossaryTarget" class="org.theospi.portfolio.help.model.DbGlossary"
+   <bean id="org.theospi.portfolio.help.model.GlossaryTarget"
+      class="org.theospi.portfolio.help.model.DbGlossary"
       init-method="init" lazy-init="false">
       <property name="sessionFactory">
          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
@@ -79,7 +80,7 @@
         <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager"/>
       </property>
       <property name="target">
-         <ref bean="glossaryTarget"/>
+         <ref bean="org.theospi.portfolio.help.model.GlossaryTarget"/>
       </property>
       <property name="transactionAttributes">
          <props>

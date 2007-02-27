@@ -46,6 +46,7 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
    private List dirtyRemove = new ArrayList();
    private SchedulerManager schedulerManager;
    private int cacheInterval = 1000 * 10;
+   private boolean useCache = true;
 
    private String url;
 
@@ -170,26 +171,28 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
    }
 
    protected void updateCache(GlossaryEntry entry, boolean remove) {
-      GlossaryTxSync txSync = new GlossaryTxSync(entry, remove);
+      if (useCache) {
+         GlossaryTxSync txSync = new GlossaryTxSync(entry, remove);
 
-      if (TransactionSynchronizationManager.isSynchronizationActive()) {
-         TransactionSynchronizationManager.registerSynchronization(txSync);
-      }
-      else {
-         txSync.afterCompletion(GlossaryTxSync.STATUS_COMMITTED);
+         if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(txSync);
+         }
+         else {
+            txSync.afterCompletion(GlossaryTxSync.STATUS_COMMITTED);
+         }
       }
    }
 
    public Set getSortedWorksiteTerms(String worksiteId) {
       Set sortedSet = new TreeSet(new TermComparator());
 
-      Map worksiteTerms = (Map)worksiteGlossary.get(worksiteId);
+      Map worksiteTerms = getWorksiteGlossary(worksiteId);
       if (worksiteTerms != null) {
          sortedSet.addAll(worksiteTerms.values());
       }
 
       String globalId = null;
-      Map globalTerms = (Map)worksiteGlossary.get(globalId + "");
+      Map globalTerms = getWorksiteGlossary(globalId + "");
 
       if (globalTerms != null) {
          for (Iterator i=globalTerms.values().iterator();i.hasNext();) {
@@ -201,6 +204,28 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
       }
 
       return sortedSet;
+   }
+
+   protected Map getWorksiteGlossary(String worksiteId) {
+      if (!useCache) {
+         logger.warn("using glossary without cache, this could slow down osp tool page loads");
+         Map terms = new Hashtable();
+         Collection<GlossaryEntry> entries;
+         if (worksiteId.equals(null + "")) {
+            entries = findAllGlobal();
+         }
+         else {
+            entries = findAll(worksiteId);
+         }
+         for (Iterator<GlossaryEntry> i = entries.iterator();i.hasNext();) {
+            GlossaryEntry entry = i.next();
+            terms.put(entry.getId(), entry);
+         }
+         return terms;
+      }
+      else {
+         return (Map)worksiteGlossary.get(worksiteId);
+      }
    }
 
    public void checkCache() {
@@ -265,20 +290,22 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
    }
 
    public void init() {
-      logger.info("init()");
-      Collection terms = findAll();
+      if (isUseCache()) {
+         logger.info("init()");
+         Collection terms = findAll();
 
-      for (Iterator i=terms.iterator();i.hasNext();) {
-         GlossaryEntry entry = (GlossaryEntry)i.next();
-         addUpdateTermCache(entry);
-      }
+         for (Iterator i=terms.iterator();i.hasNext();) {
+            GlossaryEntry entry = (GlossaryEntry)i.next();
+            addUpdateTermCache(entry);
+         }
 
-      EventTrackingService.addObserver(this);
+         EventTrackingService.addObserver(this);
 
-      try {
-         startCacheJob();
-      } catch (SchedulerException e) {
-         logger.error("failed to schedule glossary cache polling job", e);
+         try {
+            startCacheJob();
+         } catch (SchedulerException e) {
+            logger.error("failed to schedule glossary cache polling job", e);
+         }
       }
    }
 
@@ -296,11 +323,11 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
 
    protected void addUpdateTermCache(GlossaryEntry entry) {
       String worksiteId = entry.getWorksiteId() + "";
-      Map worksiteMap = (Map) worksiteGlossary.get(worksiteId);
+      Map worksiteMap = getWorksiteGlossary(worksiteId);
 
       if (worksiteMap == null) {
          worksiteGlossary.put(worksiteId, new Hashtable());
-         worksiteMap = (Map) worksiteGlossary.get(worksiteId);
+         worksiteMap = getWorksiteGlossary(worksiteId);
       }
       worksiteMap.put(entry.getId(), entry);
    }
@@ -397,5 +424,13 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
 
    public void setCacheInterval(int cacheInterval) {
       this.cacheInterval = cacheInterval;
+   }
+
+   public boolean isUseCache() {
+      return useCache;
+   }
+
+   public void setUseCache(boolean useCache) {
+      this.useCache = useCache;
    }
 }

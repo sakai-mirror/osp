@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.StringReader;
 import java.util.Set;
+import java.util.Map;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIOutput;
@@ -46,8 +47,9 @@ public class GlossaryRenderer extends Renderer
 {
    ResponseWriter originalWriter = null;
    StringWriter   tempWriter = null;
+   private static final String TERM_TAG = "org.theospi.portfolio.help.jsf.renderer.GlossaryRenderer.terms";
    
-	public boolean supportsComponentType(UIComponent component)
+   public boolean supportsComponentType(UIComponent component)
 	{
 		return (component instanceof UIOutput);
 	}
@@ -104,7 +106,7 @@ public class GlossaryRenderer extends Renderer
       String content = tempWriter.toString();
       StringReader strReader = new StringReader(content);
 
-      Set termSet = HelpTagHelper.getHelpManager().getSortedWorksiteTerms();
+      Set termSet = getTerms(context.getExternalContext().getRequestMap());
       GlossaryEntry[] terms = new GlossaryEntry[termSet.size()];
       terms = (GlossaryEntry[]) termSet.toArray(terms);
       
@@ -113,6 +115,15 @@ public class GlossaryRenderer extends Renderer
       
       //originalWriter.writeText("--" + tempWriter.toString()+"--", null);
 	}
+
+   protected Set getTerms(Map requestMap) {
+      if (requestMap.containsKey(TERM_TAG)) {
+         return (Set)requestMap.get(TERM_TAG);
+      }
+      Set returned = HelpTagHelper.getHelpManager().getSortedWorksiteTerms();
+      requestMap.put(TERM_TAG, returned);
+      return returned;
+   }
 }
 
 
