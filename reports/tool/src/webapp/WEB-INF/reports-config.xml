@@ -15,16 +15,16 @@
         </property>
         <property name="reports">
             <list>
-            	<ref bean="matrixPendingDirectDB" />
-            	<ref bean="matrixAttachmentsDirectDB" />
-            	<ref bean="matrixAttachmentsAndEvalResultsDirectDB" /> <!-- this is an example report that requires a specific form -->
-                 <ref bean="matrixCellCompletionStatusByUser" />
+            <!--	<ref bean="matrixPendingDirectDB" />
+            	<ref bean="matrixAttachmentsDirectDB" />         -->
+          <!--  	<ref bean="matrixAttachmentsAndEvalResultsDirectDB" /> --> <!-- this is an example report that requires a specific form -->
+         <!--        <ref bean="matrixCellCompletionStatusByUser" />
                 <ref bean="matrixStatusByUser" />
                 <ref bean="matrixStatusByOwner" />
-                <!--  <ref bean="matrixStatusByLevel" />
+                 <ref bean="matrixStatusByLevel" />
                 <ref bean="matrixScoreByReviewer" /> -->
-                <ref bean="testreport1" />
-                <ref bean="matrixStatusByLevelDirectDB" />
+           <!--     <ref bean="testreport1" />    -->
+         <!--       <ref bean="matrixStatusByLevelDirectDB" />         -->
                 <ref bean="testreport5" />
             <!--    <ref bean="testreport2" />
                 <ref bean="artifactTest" />

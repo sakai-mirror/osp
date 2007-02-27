@@ -24,6 +24,7 @@
             <version>${sakai.version}</version>
         </dependency>
 
+        
      <dependency>
          <groupId>sakaiproject</groupId>
          <artifactId>sakai-component-api</artifactId>
@@ -212,6 +213,12 @@
                 <include>**/*.properties</include>
               </includes>
           </resource>
+          <resource>
+         <directory>${basedir}/src/resources</directory>
+         <includes>
+            <include>**/*</include>
+         </includes>
+      </resource>
 
           <resource>
             <directory>src/java</directory>

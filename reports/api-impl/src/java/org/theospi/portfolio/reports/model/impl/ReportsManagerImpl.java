@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.beans.beancontext.BeanContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -75,7 +76,10 @@ import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.core.io.InputStreamResource;
 import org.theospi.portfolio.reports.model.*;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
@@ -107,7 +111,7 @@ import org.theospi.portfolio.shared.model.OspException;
  *
  * @author andersjb
  */
-public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsManager {
+public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsManager, BeanFactoryAware {
     /** Enebles logging */
 
 
@@ -158,6 +162,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
      */
     private Boolean forceColumnLabelUppercase;
 
+    protected BeanFactory beanFactory;
+	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+		this.beanFactory = beanFactory;
+	}
+
     /**
      * convert between the user formatted date and the database formatted date
      */
@@ -170,6 +179,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
     private boolean isDBLoaded = false;
     private ContentHostingService contentHosting;
 
+    public List definedDefintions;
     /**
      * the name of key in the session into which the result is saved into
      */
@@ -182,15 +192,23 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
      * @throws Exception
      */
     protected void init() throws Exception {
-        logger.info("init()");
+        logger.info("init() ReportsManagerImpl");
         // register functions
         FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_CREATE);
         FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_RUN);
         FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_VIEW);
         FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_EDIT);
         FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_DELETE);
+        initDefinedReportDefinitions();
     }
 
+    public BeanFactory getBeanFactory() {
+        return beanFactory;
+    }
+
+    public void setParentBeanFactory(BeanFactory beanFactory) {
+        this.beanFactory = beanFactory;
+    }
 
     /**
      * {@inheritDoc}
@@ -443,7 +461,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             for (Iterator i = reportDefs.iterator(); i.hasNext();) {
                 ReportDefinitionXmlFile xmlFile = (ReportDefinitionXmlFile) i.next();
 
-                ListableBeanFactory beanFactory = new XmlBeanFactory(new InputStreamResource(new ByteArrayInputStream(xmlFile.getXmlFile())));
+                ListableBeanFactory beanFactory = new XmlBeanFactory(new InputStreamResource(new ByteArrayInputStream(xmlFile.getXmlFile())), getBeanFactory());
                 ReportDefinition repDef = getReportDefBean(beanFactory);
                 repDef.finishLoading();
                 repDef.setDbLoaded(true);
@@ -1401,6 +1419,13 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         this.contentHosting = contentHosting;
     }
 
+    public List getDefinedDefintions() {
+        return definedDefintions;
+    }
+
+    public void setDefinedDefintions(List definedDefintions) {
+        this.definedDefintions = definedDefintions;
+    }
     public boolean importResource(Id worksiteId, String nodeId) throws UnsupportedFileTypeException, ImportException, OspException {
 
         String id = getContentHosting().resolveUuid(nodeId);
@@ -1492,5 +1517,78 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         getHibernateTemplate().saveOrUpdate(reportXslFile);
     }
 
+    protected void initDefinedReportDefinitions() {
+        getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+
+        org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+        String userId = sakaiSession.getUserId();
+        sakaiSession.setUserId("admin");
+        sakaiSession.setUserEid("admin");
+        List definitions = new ArrayList();
+
+        try {
+            for (Iterator i = getDefinedDefintions().iterator(); i.hasNext();) {
+                definitions.add(processDefinedDefinition((ReportsDefinitionWrapper) i.next()));
+            }
+
+        } finally {
+            getSecurityService().popAdvisor();
+            sakaiSession.setUserEid(userId);
+            sakaiSession.setUserId(userId);
+        }
+
+    }
+
+    protected ReportDefinitionXmlFile processDefinedDefinition(ReportsDefinitionWrapper wrapper) {
+        ReportDefinitionXmlFile definition = getReportDefinition(wrapper.getIdValue());
+
+        if (definition == null) {
+            definition = new ReportDefinitionXmlFile();
+            definition.setReportDefId(wrapper.getIdValue());
+        }
+
+        updateDefinition(wrapper, definition);
+        return definition;
+    }
+
+    protected void updateDefinition(ReportsDefinitionWrapper wrapper, ReportDefinitionXmlFile def) {
+        try {
+            def.setXmlFile(readStreamToBytes(getClass().getResourceAsStream(wrapper.getDefinitionFileLocation())));
+            getHibernateTemplate().saveOrUpdate(def);
+            ListableBeanFactory beanFactory = new XmlBeanFactory(new InputStreamResource(getClass().getResourceAsStream(wrapper.getDefinitionFileLocation())), getBeanFactory());
+            ReportDefinition repDef = getReportDefBean(beanFactory);
+            List xsls = repDef.getXsls();
+            for (Iterator i = xsls.iterator(); i.hasNext();) {
+                ReportXsl xsl = (ReportXsl) i.next();
+                ReportXslFile xslFile = new ReportXslFile();
+                xslFile.setXslFile(readStreamToBytes(getClass().getResourceAsStream(xsl.getXslLink())));
+                xslFile.setReportDefId(repDef.getIdString());
+                xslFile.setReportXslFileRef(xsl.getXslLink());
+                getHibernateTemplate().saveOrUpdate(xslFile);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public ReportDefinitionXmlFile getReportDefinition(String id) {
+        return (ReportDefinitionXmlFile) getHibernateTemplate().get(ReportDefinitionXmlFile.class, id);
+    }
+
+    private byte[] readStreamToBytes(InputStream inStream) throws IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        byte data[] = new byte[10 * 1024];
+
+        int count;
+        while ((count = inStream.read(data, 0, 10 * 1024)) != -1) {
+            bytes.write(data, 0, count);
+        }
+        byte[] tmp = bytes.toByteArray();
+        bytes.close();
+        return tmp;
+    }
 }
 

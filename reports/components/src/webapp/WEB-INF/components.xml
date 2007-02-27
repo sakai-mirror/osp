@@ -22,7 +22,7 @@
             <bean
                 class="org.theospi.portfolio.reports.model.impl.ReportsManagerImpl"
                 singleton="true" init-method="init">
-                
+
                 <property name="sessionFactory">
                     <ref
                         bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory" />
@@ -55,6 +55,32 @@
                 <property name="forceColumnLabelUppercase">
                 	<value>true</value>
                 	<!-- <value>false</value> -->
+                </property>
+                <property name="definedDefintions">
+                    <list>
+                        <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
+                            <property name="idValue">
+                                <value>11112222-3333-4444-5551-666697779193</value>
+                            </property>
+                            <property name="beanId">
+                                <value>matrixPendingDirectDB1</value>
+                            </property>
+                            <property name="definitionFileLocation">
+                                <value>/org/theospi/portfolio/reports/definition/matrix-report-1.xml</value>
+                            </property>
+                         </bean>
+                        <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
+                            <property name="idValue">
+                                <value>11112222-3333-4444-5551-666697788192</value>
+                            </property>
+                            <property name="beanId">
+                                <value>matrixAttachmentsDirectDB</value>
+                            </property>
+                            <property name="definitionFileLocation">
+                                <value>/org/theospi/portfolio/reports/definition/matrix-report-2.xml</value>
+                            </property>
+                         </bean>
+                    </list>
                 </property>
             </bean>
         </property>
@@ -133,7 +159,7 @@
 
    <bean id="org.theospi.portfolio.reports.model.ResultsPostProcessor.csv"
       class="org.theospi.portfolio.reports.model.impl.CsvResultPostProcessor" />
-      
+
               <bean id="org.theospi.portfolio.reports.model.ResultsPostProcessor.rowcolumn"
                  class="org.theospi.portfolio.reports.model.impl.GroupingResultProcessor">
                     <property name="grouping">
@@ -260,7 +286,9 @@
 
      <bean id="org.sakaiproject.content.api.ContentResourceFilter.reportImportFile"
       parent="org.sakaiproject.content.api.ContentResourceFilter.base">
-      <property name="viewAll"><value>true</value></property>
+        <property name="viewAll">
+            <value>true</value>
+        </property>
       <property name="mimeTypes">
          <list>
            <value>text/xml</value>

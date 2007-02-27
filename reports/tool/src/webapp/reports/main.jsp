@@ -31,7 +31,9 @@
             <h:outputText value="#{report.reportDefinition.title}"/>
         </h:commandLink>
     </h:column>
-
+    <h:column>
+        <h:outputText value="#{report.reportDefinition.description}"/>
+    </h:column>
     <h:column>
         <h:commandLink action="#{report.processDelete}"
                        rendered="#{ReportsTool.maintainer  && report.reportDefinition.dbLoaded}">

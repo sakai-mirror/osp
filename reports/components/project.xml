@@ -23,7 +23,7 @@
             <artifactId>osp-reports-api</artifactId>
             <version>${sakai.version}</version>
         </dependency>
-      
+        
         <dependency>
             <groupId>osp</groupId>
             <artifactId>osp-reports-component-shared</artifactId>
