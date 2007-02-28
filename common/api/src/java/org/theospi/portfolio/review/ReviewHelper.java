@@ -40,4 +40,7 @@ public interface ReviewHelper {
    public static final String REVIEW_TYPE_KEY = 
       "org_theospi_portfolio_review_type";
    
+   public static final String REVIEW_ITEM_ID = 
+      "org_theospi_portfolio_review_item";
+
 }

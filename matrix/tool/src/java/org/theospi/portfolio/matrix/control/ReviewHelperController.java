@@ -63,7 +63,7 @@ public class ReviewHelperController implements Controller {
    private WizardManager wizardManager;
    private LockManager lockManager;
    private ContentHostingService contentHosting;
-
+   
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String strId = null;
       String lookupId = null;
@@ -91,10 +91,16 @@ public class ReviewHelperController implements Controller {
       if (strId==null) {
          strId = (String) session.get(lookupId);
       }
+      
+      // 
+      // If this is the second pass, 
+      // then we are creating a new [feedback | evaluation | reflection] review
+      //
       String secondPass = (String)session.get("secondPass");
       if (secondPass != null) {
          strId = (String)session.get(lookupId);
          String formType = (String)session.get(ResourceEditingHelper.CREATE_SUB_TYPE);
+         String itemId = (String)session.get(ReviewHelper.REVIEW_ITEM_ID);
          
          Map model = new HashMap();
          model.put(lookupId, strId);
@@ -106,6 +112,7 @@ public class ReviewHelperController implements Controller {
                "New Review", currentSite);
          review.setDeviceId(formType);
          review.setParent(strId);
+         review.setItemId(itemId);
          String strType = (String)session.get(ReviewHelper.REVIEW_TYPE);
          review.setType(Integer.parseInt(strType));
          
@@ -113,6 +120,7 @@ public class ReviewHelperController implements Controller {
          session.remove(ResourceEditingHelper.CREATE_SUB_TYPE);
          session.remove(ReviewHelper.REVIEW_TYPE);
          session.remove(ResourceEditingHelper.CREATE_PARENT);
+         session.remove(ReviewHelper.REVIEW_ITEM_ID);
          session.remove(lookupId);
          //session.remove("process_type_key");
          session.remove("secondPass");
@@ -140,42 +148,14 @@ public class ReviewHelperController implements Controller {
                return new ModelAndView("postProcessor", model);
             }   
          }
-         /*
-         if (session.get(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
-               session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
-            // here is where we setup the id
-            List refs = (List)session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-            if (refs.size() == 1) {
-               Reference ref = (Reference)refs.get(0);
-//               ref.getReference()
-               Node node = getMatrixManager().getNode(ref);
-               review.setReviewContentNode(node);
-               review.setReviewContent(node.getId());
-               getReviewManager().saveReview(review);
-
-               if(review.getType() == Review.EVALUATION_TYPE || review.getType() == Review.FEEDBACK_TYPE)
-                  getLockManager().lockObject(review.getReviewContent().getValue(), 
-                     strId, "evals and review always locked", true);
-            }
-            else {
-               review.setReviewContent(null);
-            }
-            session.remove(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-            session.remove(FilePickerHelper.FILE_PICKER_CANCEL);
-         
-            if (session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS) != null) {
-               model.put("workflows", session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS));
-               model.put("manager", manager);
-               model.put("obj_id", strId);
-               return new ModelAndView("postProcessor", model);
-            }         
-         }        
-         */
-         //session.remove(FilePickerHelper.FILE_PICKER_CANCEL);
          session.remove(FormHelper.RETURN_ACTION_TAG);
          return new ModelAndView(returnView, model);
       }
       
+      //
+      // This is the first pass, 
+      // so we are presenting the form to create a new [feedback | evaluation | reflection] review
+      //
       String ownerEid = null;
       String pageTitle = null;
       Id id = getIdManager().getId(strId);
@@ -227,18 +207,6 @@ public class ReviewHelperController implements Controller {
       
       
       formView = setupSessionInfo(request, session, pageTitle, formTypeId, formTypeTitleKey, ownerEid);
-      /*
-      if (request.get("current_review_id") == null) {
-//       CWM OSP-UI-07 - fix the parent path
-         session.put(ResourceEditingHelper.CREATE_PARENT, "/user/" + 
-               SessionManager.getCurrentSessionUserId() + "/");
-         session.put(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
-         session.remove(ResourceEditingHelper.ATTACHMENT_ID);
-         
-      } else {
-         session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_review_id"));
-      }
-      */
       session.put("page_id", strId);
       session.put("secondPass", "true");
       return new ModelAndView(formView);
@@ -258,8 +226,6 @@ public class ReviewHelperController implements Controller {
    protected String setupSessionInfo(Map request, Map<String, Object> session, 
          String pageTitle, String formTypeId, String formTypeTitleKey, String ownerEid) {
       String retView = "formCreator";
-      //session.put(ResourceEditingHelper.CREATE_TYPE,
-      //      ResourceEditingHelper.CREATE_TYPE_FORM);
       
       
       if (request.get("current_review_id") == null) {
@@ -272,7 +238,8 @@ public class ReviewHelperController implements Controller {
          String objectTitle = (String)request.get("objectTitle");
          String objectDesc = (String)request.get("objectDesc");
          
-         //StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager().loadHome(formTypeId);
+         String itemId = (String)request.get("itemId");
+         session.put(ReviewHelper.REVIEW_ITEM_ID, itemId);
          
          ResourceBundle myResources = 
             ResourceBundle.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
@@ -304,7 +271,6 @@ public class ReviewHelperController implements Controller {
          //CWM OSP-UI-09 - for auto naming
          session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(objectTitle, pageTitle, formTypeTitle, ownerEid));
       } else {
-         //session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_form_id"));
          session.remove(ResourceEditingHelper.CREATE_TYPE);
          session.remove(ResourceEditingHelper.CREATE_SUB_TYPE);
          session.remove(ResourceEditingHelper.CREATE_PARENT);

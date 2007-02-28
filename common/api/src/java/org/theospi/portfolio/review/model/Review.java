@@ -30,10 +30,11 @@ public class Review extends IdentifiableObject {
    public static final int EVALUATION_TYPE = 1;
    public static final int FEEDBACK_TYPE = 2;
 
-   private String siteId;
-   private String parent;
-   private String deviceId;
-   private int type;
+   private String siteId; 
+   private String parent; // e.g. pageId
+   private String deviceId; // e.g. form type
+   private String itemId; // (optional) review related to a specific item
+   private int type;  // reflection, evaluation or feedback
    private Id reviewContent;
    transient private Node reviewContentNode;
    
@@ -113,6 +114,22 @@ public class Review extends IdentifiableObject {
     */
    public void setDeviceId(String deviceId) {
       this.deviceId = deviceId;
+   }
+
+   /**
+    * @return Returns the itemId 
+    * (e.g. feedback may be related to specific item)
+    */
+   public String getItemId() {
+      return itemId;
+   }
+
+   /**
+    * @param itemId The itemId to set.
+    * (e.g. feedback may be related to specific item)
+    */
+   public void setItemId(String itemId) {
+      this.itemId = itemId;
    }
 
    /**

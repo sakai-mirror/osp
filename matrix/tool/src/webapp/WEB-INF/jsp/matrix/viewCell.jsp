@@ -227,7 +227,8 @@
 				<td><%-- <c:out value="${cellFormDef.owner}" /> --%></td>
 				<td><%-- <fmt:formatDate value="${cellFormDef.modifiedDate}" type="date" pattern="${date_format}" /> --%></td>
 			</tr>
-	      <!-- ***** the filled out forms ***** -->
+         
+	      <!-- ***** Filled-out Forms ***** -->
 	      <c:forEach var="node" items="${cellForms}" varStatus="loopStatus">
 	      
             <c:if test="${node.fileType == cellFormDef.id or allowedNodeType == ''}" >
@@ -236,32 +237,83 @@
             <tr>
                <td colspan="2">
 				  <div class="indnt2">
-               
-                     
                                   
                   <c:if test="${not (cell.status == 'READY' and readOnlyMatrix != 'true')}">
                   <a href='<c:out value="${node.externalUri}"/>' target="_blank" >
                   </c:if>
-                     <img border="0" src="/library/image/sakai/generic.gif"/><c:out value="${node.name}"/>
+                  <img border="0" src="/library/image/sakai/generic.gif"/><c:out value="${node.name}"/>
                   <c:if test="${not (cell.status == 'READY' and readOnlyMatrix != 'true')}">
                   </a>
                   </c:if>
-                  <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
-                      <div class="itemAction indent2">
-                          &nbsp; &nbsp; &nbsp;<a href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
-                              <osp:param name="page_id" value="${cell.wizardPage.id}" />
-                              <osp:param name="createFormAction" value="${cellFormDef.id}" />
-                              <osp:param name="current_form_id" value="${node.resource.id}" />
-                              </osp:url>"><fmt:message key="edit"/></a>
-                          |
-                          <a href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
-                              <osp:param name="page_id" value="${cell.wizardPage.id}" />
-                              <osp:param name="formDefId" value="${cellFormDef.id}" />
-                              <osp:param name="current_form_id" value="${node.id}" />
-                              <osp:param name="submit" value="delete" />
-                              </osp:url>"><fmt:message key="delete"/></a>
-                      </div>
-                  </c:if>
+                  
+                  <div class="itemAction indent2">
+                     &nbsp; &nbsp; &nbsp;
+                     <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+                        <a href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
+                            <osp:param name="page_id" value="${cell.wizardPage.id}" />
+                            <osp:param name="createFormAction" value="${cellFormDef.id}" />
+                            <osp:param name="current_form_id" value="${node.resource.id}" />
+                            </osp:url>"><fmt:message key="edit"/></a>
+                        |
+                        <a href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
+                            <osp:param name="page_id" value="${cell.wizardPage.id}" />
+                            <osp:param name="formDefId" value="${cellFormDef.id}" />
+                            <osp:param name="current_form_id" value="${node.id}" />
+                            <osp:param name="submit" value="delete" />
+                            </osp:url>"><fmt:message key="delete"/></a>
+                        <c:if test="${(matrixCan.review || wizardCan.review) && cell.scaffoldingCell.reviewDevice != null}">
+                        |
+                        </c:if>
+                     </c:if>
+                     <c:if test="${(matrixCan.review || wizardCan.review) && cell.scaffoldingCell.reviewDevice != null}">
+                        <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
+                          <osp:param name="page_id" value="${cell.wizardPage.id}" />
+                          <osp:param name="org_theospi_portfolio_review_type" value="2" />
+                          <osp:param name="process_type_key" value="page_id" />
+                          <osp:param name="isWizard" value="${isWizard}" />
+                          <osp:param name="objectId" value="${objectId}" />
+                          <osp:param name="objectTitle" value="${objectTitle}" />
+                          <osp:param name="objectDesc" value="${objectDesc}" />
+                          <osp:param name="itemId" value="${node.id}" />
+                          </osp:url>"><osp:message key="review"/></a>
+                     </c:if> 
+                  </div>
+                  
+<!-- ************* Item-specific Review (Feedback) Area Start ************* -->
+   <c:set var="feedbackHeader" value="false"/>
+   <table class="listHier lines">
+      <c:forEach var="object" items="${reviews}" varStatus="loopStatus">
+		  <c:if test="${object.itemId == node.id}">
+        
+         <c:if test="${not feedbackHeader}">
+           <c:set var="feedbackHeader" value="true"/>
+           <tr>
+               <td width="32"><img border="0" src="/library/image/sakai/dir_openminus.gif"/></td>
+               <td><osp:message key="reviews_section_header"/></td>
+               <td>&nbsp;</td>
+               <td>&nbsp;</td>
+            </tr>
+         </c:if>
+      
+         <tr>
+            <td />
+            <td>
+               <a href='<c:out value="${object.reviewContentNode.externalUri}"/>' target="_blank" >
+               <img src = '/library/image/sakai/generic.gif' border= '0' hspace='0' />
+               <c:out value="${object.reviewContentNode.displayName}"/></a>            
+            </td>
+            <td>
+               <c:out value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
+            </td>
+            <td>
+               <fmt:formatDate value="${object.reviewContentNode.technicalMetadata.creation}" pattern="${date_format}" />
+            </td>
+         </tr>
+		  </c:if>
+      </c:forEach>
+   </table>
+	
+<!-- ************* Item-specific Review (Feedback) Area End ************* -->
                   </div>
                </td>
                <td>
@@ -415,10 +467,10 @@
    
    
 
-<!-- ************* Review Area Start ************* -->
+<!-- ************* General Review (Feedback) Area Start ************* -->
    <table class="listHier lines">
 		<tr>
-			<th colspan="2"><osp:message key="reviews_section_header"/></th>
+			<th colspan="2"><osp:message key="reviews_section_general"/></th>
 			<th><osp:message key="table_header_owner"/></th>
 			<th><fmt:message key="table_header_creationDate"/></th>
 		</tr>
@@ -429,13 +481,13 @@
 				 
 				  <c:if test="${(matrixCan.review || wizardCan.review) && cell.scaffoldingCell.reviewDevice != null}">
 					 <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
-						   <osp:param name="page_id" value="${cell.wizardPage.id}" />
+						<osp:param name="page_id" value="${cell.wizardPage.id}" />
 						<osp:param name="org_theospi_portfolio_review_type" value="2" />
 						<osp:param name="process_type_key" value="page_id" />
-					<osp:param name="isWizard" value="${isWizard}" />
-					<osp:param name="objectId" value="${objectId}" />
-					<osp:param name="objectTitle" value="${objectTitle}" />
-					<osp:param name="objectDesc" value="${objectDesc}" />
+						<osp:param name="isWizard" value="${isWizard}" />
+						<osp:param name="objectId" value="${objectId}" />
+						<osp:param name="objectTitle" value="${objectTitle}" />
+						<osp:param name="objectDesc" value="${objectDesc}" />
 						</osp:url>">
 							  <osp:message key="review"/></a>
 				  </c:if> 
@@ -445,6 +497,7 @@
 			<td>&nbsp;</td>
 		</tr>
       <c:forEach var="object" items="${reviews}" varStatus="loopStatus">
+		  <c:if test="${empty object.itemId}">
          <tr>
             <td />
             <td>
@@ -459,10 +512,11 @@
                <fmt:formatDate value="${object.reviewContentNode.technicalMetadata.creation}" pattern="${date_format}" />
             </td>
          </tr>
+		  </c:if>
       </c:forEach>
    </table>
 	
-<!-- ************* Review Area End ************* -->
+<!-- ************* General Review (Feedback) Area End ************* -->
 <!-- ************* Evaluation Area Start ************* -->
 
    <c:if test="${((matrixCan.evaluate || wizardCan.evaluate) && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING') || not empty evaluations}">
