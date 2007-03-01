@@ -304,12 +304,20 @@ public class AudienceTool extends HelperToolBase {
     }
 
     public boolean isPortfolioWizard() {
-        return getAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD) != null;
+        if ("true".equals(getAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD))){
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
     public boolean isPortfolioWizardNotify() {
-        return getAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD) != null ||
-               getAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD_NOTIFY) != null;
+        if (isPortfolioWizard() || "true".equals(getAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD))){
+            return true;
+        }else{
+            return false;
+        }           
     }
 
     public boolean isPublicCapable() {
