@@ -39,6 +39,10 @@
                <property name="authzManager">
                   <ref bean="org.sakaiproject.metaobj.security.AuthorizationFacade"/>
                </property>
+                <property name="ospAuthzManager">
+                  <ref bean="authzManager"/>
+               </property>
+               <property name="authnManager"><ref bean="authManager"/></property>
                <!-- leave the dataSource blank and it will automatically default to the Data warehouse data source. -->
                <!-- by filling in the dataSource it will use that for the alternative dataSource. -->
                <!-- if the datawarehouse isn't being deployed, then either this needs to be filled in or

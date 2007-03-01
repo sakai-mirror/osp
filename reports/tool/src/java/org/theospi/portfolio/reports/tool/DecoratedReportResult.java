@@ -52,12 +52,12 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 	private String currentViewXsl = null;
 	private String currentExportXsl = null;
 
-	public DecoratedReportResult(ReportResult reportResult, ReportsTool reportsTool)
+    public DecoratedReportResult(ReportResult reportResult, ReportsTool reportsTool)
 	{
 		this.reportResult = reportResult;
 		this.reportsTool = reportsTool;
 		this.report = reportResult.getReport();
-      getExportXslSeletionList();
+        getExportXslSeletionList();
 	}
 	
 	public Report getReport()
@@ -190,7 +190,11 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 	{
 		return reportsTool.processSelectReportResult(this);
 	}
-   
+    public void processShareReportResult()
+	{
+		reportsTool.processActionAudienceHelper(this);
+	}
+
    
    /**
     * this function deletes the full report result and the report
@@ -258,4 +262,13 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 	{
 		return report.getIsLive() && !reportResult.getIsSaved();
 	}
+    public boolean getIsOwner() {
+        return reportResult.isOwner();          
+
+    }
+
+    public String processSaveResultToResources(ReportResult reportResult){
+        return null;
+    }
+
 }

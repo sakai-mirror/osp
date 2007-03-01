@@ -48,8 +48,10 @@ public class DecoratedReport implements DecoratedAbstractResult {
 	
 	/** informs the interface if the title is not proper */
 	private boolean	invalidTitle = false;
-	
-	public DecoratedReport(Report report, ReportsTool reportsTool)
+
+    private boolean isOwner = true;
+
+    public DecoratedReport(Report report, ReportsTool reportsTool)
 	{
 		this.report = report;
 		this.reportsTool = reportsTool;
@@ -176,4 +178,12 @@ public class DecoratedReport implements DecoratedAbstractResult {
 	{
 		return paramErrorMsgs;
 	}
+
+    public boolean getIsOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
+    }
 }

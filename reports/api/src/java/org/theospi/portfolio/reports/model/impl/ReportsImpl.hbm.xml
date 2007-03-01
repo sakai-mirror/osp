@@ -157,13 +157,15 @@
         <property name="keywords" type="java.lang.String" />
         <property name="description" type="java.lang.String" />
         <property name="creationDate" type="java.util.Date" />
-        <property name="xml" type="text" />
+        <property name="xml" type="text" length="16777215" />
     </class>
     
     <query name="findResultsByUser">
 		from ReportResult r WHERE r.userId=?
    </query>
-    
+    <query name="findResultsById">
+		from ReportResult r WHERE r.resultId=?
+   </query>
     <query name="findReportsByUser">
 		from Report r WHERE r.userId=? AND r.isLive=1 AND r.display=1
    </query>

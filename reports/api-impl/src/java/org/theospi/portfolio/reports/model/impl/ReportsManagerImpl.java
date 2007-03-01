@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.beans.beancontext.BeanContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -59,10 +58,12 @@ import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.model.AuthZMap;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
@@ -83,7 +84,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.core.io.InputStreamResource;
 import org.theospi.portfolio.reports.model.*;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
+import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.shared.model.OspException;
+
 
 /**
  * This class is a singleton that manages the reports on a general basis
@@ -114,7 +117,7 @@ import org.theospi.portfolio.shared.model.OspException;
 public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsManager, BeanFactoryAware {
     /** Enebles logging */
 
-
+   private AuthenticationManager authnManager;
     /**
      * The global list of reports
      */
@@ -162,10 +165,12 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
      */
     private Boolean forceColumnLabelUppercase;
 
+    private org.theospi.portfolio.security.AuthorizationFacade ospAuthzManager;
+
     protected BeanFactory beanFactory;
-	public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-		this.beanFactory = beanFactory;
-	}
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
 
     /**
      * convert between the user formatted date and the database formatted date
@@ -199,15 +204,30 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_VIEW);
         FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_EDIT);
         FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_DELETE);
+        FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_SHARE);
         initDefinedReportDefinitions();
     }
+    public AuthenticationManager getAuthnManager() {
+      return authnManager;
+   }
 
+   public void setAuthnManager(AuthenticationManager authnManager) {
+      this.authnManager = authnManager;
+   }
     public BeanFactory getBeanFactory() {
         return beanFactory;
     }
 
     public void setParentBeanFactory(BeanFactory beanFactory) {
         this.beanFactory = beanFactory;
+    }
+
+    public org.theospi.portfolio.security.AuthorizationFacade getOspAuthzManager() {
+        return ospAuthzManager;
+    }
+
+    public void setOspAuthzManager(org.theospi.portfolio.security.AuthorizationFacade ospAuthzManager) {
+        this.ospAuthzManager = ospAuthzManager;
     }
 
     /**
@@ -425,6 +445,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
                 ReportResult r = (ReportResult) iter.next();
 
                 r.setIsSaved(true);
+                r.setOwner(true);
             }
             returned.addAll(results);
         }
@@ -1590,5 +1611,40 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         bytes.close();
         return tmp;
     }
+    public List getReportsByViewer() {
+     Agent viewer = getAuthnManager().getAgent();
+      Collection reportAuthzs = getOspAuthzManager().getAuthorizations(viewer,
+         ReportFunctions.REPORT_FUNCTION_VIEW, null);
+
+      List results = new ArrayList();
+      for (Iterator i = reportAuthzs.iterator(); i.hasNext();) {
+         Id resultId = ((Authorization) i.next()).getQualifier();
+         List result = getReportResults(resultId);
+         for (Iterator iter = result.iterator(); iter.hasNext();){
+             results.add(iter.next());
+         }
+      }
+      return results;
+   }
+
+   List getReportResults (Id resultId){
+
+        boolean viewReports = can(ReportFunctions.REPORT_FUNCTION_VIEW);
+
+        List returned = new ArrayList();
+
+        if (viewReports) {
+            List results = getHibernateTemplate().findByNamedQuery("findResultsById", resultId);
+
+            Iterator iter = results.iterator();
+            while (iter.hasNext()) {
+                ReportResult r = (ReportResult) iter.next();
+
+                r.setIsSaved(true);
+            }
+            returned.addAll(results);
+        }
+       return returned;
+   }
 }
 

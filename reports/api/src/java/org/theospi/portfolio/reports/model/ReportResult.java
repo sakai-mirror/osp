@@ -52,8 +52,8 @@ public class ReportResult
 
 	/** tells whether or not the result has been saved to the database */
 	private boolean isSaved = false;
-	
 
+    private boolean isOwner = false;
 
 	/**
 	 * the getter for the resultId property
@@ -242,4 +242,12 @@ public class ReportResult
 	{
 		this.isSaved = isSaved;
 	}
+
+    public boolean isOwner() {
+        return isOwner;
+    }
+
+    public void setOwner(boolean owner) {
+        isOwner = owner;
+    }
 }

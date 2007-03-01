@@ -11,7 +11,8 @@
                    action="#{ReportsTool.processPermissions}">
         <h:outputText value="#{msgs.permissions_link}"/>
     </h:commandLink>
-    |
+     <h:outputText value="#{' &nbsp; | &nbsp; '}" escape="false"
+                      rendered="#{ReportsTool.maintainer}"/>
     <h:commandLink rendered="#{ReportsTool.maintainer}"
                    action="#{ReportsTool.processImportDefinition}">
         <h:outputText value="#{msgs.import_report_def}"/>
@@ -41,13 +42,14 @@
         </h:commandLink>
     </h:column>
 </h:dataTable>
+
 <h:outputText value="<br/><br/>#{msgs.report_results}" escape="false"/>
 <h:dataTable var="result" styleClass="listHier"
              value="#{ReportsTool.results}"
              rendered="#{ReportsTool.userCan.run ||
-                                    ReportsTool.userCan.view ||
-                                    ReportsTool.userCan.edit ||
-                                    ReportsTool.userCan.delete}">
+                         ReportsTool.userCan.view ||
+                         ReportsTool.userCan.edit ||
+                         ReportsTool.userCan.delete}">
     <h:column>
         <f:facet name="header">
             <h:outputText value="#{msgs.title}"/>
@@ -61,6 +63,15 @@
         <f:verbatim escape="false">
             <div class="itemAction">
         </f:verbatim>
+
+        <h:commandLink action="#{result.processShareReportResult}"
+                       rendered="#{!result.isLive && ReportsTool.userCan.share && result.isOwner}">
+            <h:outputText value="#{msgs.share_report}"/>
+        </h:commandLink>
+
+         <h:outputText value="#{' &nbsp; | &nbsp; '}" escape="false"
+                      rendered="#{!result.isLive && ReportsTool.userCan.share &&
+                                               ReportsTool.userCan.view && result.isOwner}"/>
         <h:commandLink action="#{result.processSelectReportResult}"
                        rendered="#{!result.isLive && ReportsTool.userCan.view}">
             <h:outputText value="#{msgs.view_report}"/>
@@ -73,7 +84,7 @@
 
         <h:outputText value="#{' &nbsp; | &nbsp; '}" escape="false"
                       rendered="#{result.isLive && ReportsTool.userCan.run &&
-                                                result.isLive && ReportsTool.userCan.edit}"/>
+                                  ReportsTool.userCan.edit}"/>
         <h:commandLink action="#{result.processEditReport}"
                        rendered="#{result.isLive && ReportsTool.userCan.edit}">
             <h:outputText value="#{msgs.edit_report}"/>
@@ -81,12 +92,22 @@
 
         <h:outputText value="#{' &nbsp; | &nbsp; '}" escape="false"
                       rendered="#{ReportsTool.userCan.delete &&
-                                ((!result.isLive && ReportsTool.userCan.view) ||
+                                ((!result.isLive && ReportsTool.userCan.view && result.isOwner) ||
                                  (result.isLive && ReportsTool.userCan.run) ||
                                  (result.isLive && ReportsTool.userCan.edit))}"/>
         <h:commandLink action="#{result.processDelete}"
-                       rendered="#{ReportsTool.userCan.delete}">
+                       rendered="#{ReportsTool.userCan.delete &&
+                                ((!result.isLive && ReportsTool.userCan.view && result.isOwner) ||
+                                 (result.isLive && ReportsTool.userCan.run) ||
+                                 (result.isLive && ReportsTool.userCan.edit))}">
             <h:outputText value="#{msgs.delete_report}"/>
+        </h:commandLink>
+
+        <h:outputText value="#{' &nbsp; | &nbsp; '}" escape="false"
+                      rendered="#{(!result.isLive && ReportsTool.userCan.edit && result.isOwner)}"/>
+        <h:commandLink action="#{result.processSaveToResources}"
+                       rendered="#{(!result.isLive && ReportsTool.userCan.edit && result.isOwner)}">
+              <h:outputText value="#{msgs.save_to_resouces}"/>
         </h:commandLink>
         <f:verbatim escape="false">
             </div>

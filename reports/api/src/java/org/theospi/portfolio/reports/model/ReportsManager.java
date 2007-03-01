@@ -22,11 +22,13 @@ package org.theospi.portfolio.reports.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 import javax.sql.DataSource;
 
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.exception.UnsupportedFileTypeException;
 import org.sakaiproject.exception.ImportException;
 
@@ -34,6 +36,8 @@ public interface ReportsManager extends DownloadableManager
 {
    public static final String RESULTS_ID = "reportResultsId";
    public static final String EXPORT_XSL_ID = "reportExportId";
+
+   public static final String REPORTS_MESSAGE_BUNDLE = "org.theospi.portfolio.reports.bundle.Messages";
 
 
    /**
@@ -229,4 +233,6 @@ public interface ReportsManager extends DownloadableManager
             throws UnsupportedFileTypeException, ImportException;
 
      public void deleteReportDefXmlFile(ReportDefinition reportDef);
+
+    public List getReportsByViewer();
 }

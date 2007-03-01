@@ -41,4 +41,5 @@ public interface ReportFunctions {
    public static final String REPORT_FUNCTION_VIEW = REPORT_FUNCTION_PREFIX + "view";
    public static final String REPORT_FUNCTION_EDIT = REPORT_FUNCTION_PREFIX + "edit";
    public static final String REPORT_FUNCTION_DELETE = REPORT_FUNCTION_PREFIX + "delete";
+   public static final String REPORT_FUNCTION_SHARE = REPORT_FUNCTION_PREFIX + "share";
 }

@@ -32,6 +32,7 @@ import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.OspException;
@@ -44,10 +45,7 @@ import org.apache.commons.logging.LogFactory;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -109,6 +107,7 @@ public class ReportsTool extends ToolBase {
     protected static final String reportResultsPage = "showReportResults";
     protected static final String saveResultsPage = "saveReportResults";
     protected static final String importReportDef = "importReportDef";
+    protected static final String shareReportResult = "shareReportResult";
 
 
     //	import variables
@@ -123,7 +122,7 @@ public class ReportsTool extends ToolBase {
     private boolean invalidImport = false;
     private boolean invalidXslFile = false;
     private String invalidImportMessage = "Invalid Report Definition XML File";
-
+    
     public String getInvalidImportMessage() {
         return invalidImportMessage;
     }
@@ -280,6 +279,7 @@ public class ReportsTool extends ToolBase {
 
         List results = reportsManager.getCurrentUserResults();
 
+        List tempResults = reportsManager.getReportsByViewer();
 
         Iterator iter = results.iterator();
         while (iter.hasNext()) {
@@ -289,6 +289,11 @@ public class ReportsTool extends ToolBase {
                 decoratedResults.add(new DecoratedReportResult((ReportResult) rr, this));
             else if (rr instanceof Report)
                 decoratedResults.add(new DecoratedReport((Report) rr, this));
+        }
+
+        for (Iterator i = tempResults.iterator(); i.hasNext();){
+            decoratedResults.add( new DecoratedReportResult((ReportResult) i.next(), this));
+
         }
         return decoratedResults;
     }
@@ -555,6 +560,52 @@ public class ReportsTool extends ToolBase {
     public boolean isMaintainer() {
         return getReportsManager().isMaintaner();
     }
+     public void processActionAudienceHelper(DecoratedReportResult reportResult) {
+      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+      //Tool tool = ToolManager.getCurrentTool();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      ServerConfigurationService configService =
+		org.sakaiproject.component.cover.ServerConfigurationService.getInstance();
+      String baseUrl = configService.getServerUrl();
+      String url =  baseUrl + "/osp-reports-tool/viewReportResults.osp?id=" + reportResult.getReportResult().getResultId();
+      url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
+
+      ResourceBundle myResources =
+         ResourceBundle.getBundle(ReportsManager.REPORTS_MESSAGE_BUNDLE);
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, "osp.reports.view");
+
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD, "false");
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER, reportResult.getReportResult().getResultId().getValue());
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE, myResources.getString("title_share_report"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS,
+            myResources.getString("instructions_addViewersToPresentation"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE,
+            myResources.getString("instructions_publishToGroup"));
+
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE,
+            myResources.getString("instructions_publishToIndividual"));
+
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG,  "false");
+     // session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, myResources.getString("instructions_publishToInternet"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE,
+            myResources.getString("instructions_selectedAudience"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS,
+            myResources.getString("instructions_selectFilterUserList"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, "true");
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "false");
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_INSTRUCTIONS,
+              myResources.getString("publish_message"));
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_URL,  url);
+
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL,
+            myResources.getString("audience_browse_individual"));
+       try {
+         context.redirect("osp.audience.helper/tool.jsf?panel=Main");
+      }
+      catch (IOException e) {
+         throw new RuntimeException("Failed to redirect to helper", e);
+      }  
+   }
 
     public String processImportDefinition() {
         return ReportsTool.importReportDef;
