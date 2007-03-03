@@ -49,6 +49,12 @@ import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 
 public class WizardActivityProducerImpl implements WizardActivityProducer {
 
+	private static final Log logger = LogFactory
+			.getLog(WizardActivityProducerImpl.class);
+
+	protected static ResourceLoader messages = new ResourceLoader(
+			"org.theospi.portfolio.wizard.bundle.Messages");
+
 	MatrixManager matrixManager;
 
 	WizardManager wizardManager;
@@ -63,72 +69,74 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 
 	List<String> ratingProviderIds;
 
-	private static final Log logger = LogFactory
-			.getLog(WizardActivityProducerImpl.class);
-
-	protected static ResourceLoader messages = new ResourceLoader(
-			"org.theospi.portfolio.wizard.bundle.Messages");
-
-	public void init() {
-		logger.info("init()");
-
-		taggingManager.registerProducer(this);
+	public boolean allowRemoveTags(TaggableActivity activity) {
+		WizardPageDefinition pageDef = (WizardPageDefinition) activity
+				.getObject();
+		// Try to get a wizard page sequence
+		WizardPageSequence ps = wizardManager.getWizardPageSeqByDef(pageDef
+				.getId());
+		boolean authorized = false;
+		if (ps != null) {
+			Wizard wizard = ps.getCategory().getWizard();
+			/*
+			 * If you own the wizard, or if you can delete wizards, or if you
+			 * can revise wizards, then you are able to delete page definitions
+			 * and can, therefore, remove tags.
+			 */
+			authorized = sessionManager.getCurrentSessionUserId()
+					.equalsIgnoreCase(wizard.getOwner().getId().getValue())
+					|| authzManager
+							.isAuthorized(WizardFunctionConstants.EDIT_WIZARD,
+									wizard.getId())
+					|| authzManager.isAuthorized(
+							WizardFunctionConstants.DELETE_WIZARD, wizard
+									.getId());
+		} else {
+			ScaffoldingCell cell = matrixManager
+					.getScaffoldingCellByWizardPageDef(pageDef.getId());
+			/*
+			 * If you can create or delete scaffolding, then you are able to
+			 * delete scaffolding cells and can, therefore, remove tags.
+			 */
+			authorized = authzManager.isAuthorized(
+					MatrixFunctionConstants.CREATE_SCAFFOLDING, cell
+							.getScaffolding().getId())
+					|| authzManager.isAuthorized(
+							MatrixFunctionConstants.DELETE_SCAFFOLDING, cell
+									.getScaffolding().getId());
+		}
+		return authorized;
 	}
 
-	public IdManager getIdManager() {
-		return idManager;
+	public boolean allowRemoveTags(TaggableItem item) {
+		// It doesn't appear that you can remove individual items (pages)
+		return false;
 	}
 
-	public void setIdManager(IdManager idManager) {
-		this.idManager = idManager;
+	public boolean allowTransferCopyTags(TaggableActivity activity) {
+		return false;
 	}
 
-	public WizardManager getWizardManager() {
-		return wizardManager;
-	}
-
-	public void setWizardManager(WizardManager wizardManager) {
-		this.wizardManager = wizardManager;
-	}
-
-	public MatrixManager getMatrixManager() {
-		return matrixManager;
-	}
-
-	public void setMatrixManager(MatrixManager matrixManager) {
-		this.matrixManager = matrixManager;
-	}
-
-	public TaggingManager getTaggingManager() {
-		return taggingManager;
-	}
-
-	public AuthorizationFacade getAuthzManager() {
-		return authzManager;
-	}
-
-	public void setAuthzManager(AuthorizationFacade authzManager) {
-		this.authzManager = authzManager;
-	}
-
-	public void setTaggingManager(TaggingManager taggingManager) {
-		this.taggingManager = taggingManager;
-	}
-
-	public SessionManager getSessionManager() {
-		return sessionManager;
-	}
-
-	public void setSessionManager(SessionManager sessionManager) {
-		this.sessionManager = sessionManager;
-	}
-
-	public List<String> getRatingProviderIds() {
-		return ratingProviderIds;
-	}
-
-	public void setRatingProviderIds(List<String> ratingProviderIds) {
-		this.ratingProviderIds = ratingProviderIds;
+	private boolean canEvaluate(WizardPage page) {
+		boolean allowed = false;
+		if (page.getStatus().equals(MatrixFunctionConstants.PENDING_STATUS)) {
+			CompletedWizard cw = wizardManager.getCompletedWizardByPage(page
+					.getId());
+			if (cw != null) {
+				if (authzManager.isAuthorized(
+						WizardFunctionConstants.EVALUATE_SPECIFIC_WIZARDPAGE,
+						page.getId())) {
+					allowed = true;
+				}
+			} else {
+				if (authzManager.isAuthorized(
+						MatrixFunctionConstants.EVALUATE_SPECIFIC_MATRIXCELL,
+						page.getId())) {
+					allowed = true;
+				}
+			}
+		}
+		return allowed;
 	}
 
 	/**
@@ -169,6 +177,10 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		return activity;
 	}
 
+	public TaggableActivity getActivity(WizardPageDefinition wizardPageDef) {
+		return new WizardActivityImpl(wizardPageDef, this);
+	}
+
 	public String getContext(String ref) {
 		String context = null;
 		WizardReference reference = WizardReference.getReference(ref);
@@ -185,26 +197,8 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		return context;
 	}
 
-	private boolean canEvaluate(WizardPage page) {
-		boolean allowed = false;
-		if (page.getStatus().equals(MatrixFunctionConstants.PENDING_STATUS)) {
-			CompletedWizard cw = wizardManager.getCompletedWizardByPage(page
-					.getId());
-			if (cw != null) {
-				if (getAuthzManager().isAuthorized(
-						WizardFunctionConstants.EVALUATE_SPECIFIC_WIZARDPAGE,
-						page.getId())) {
-					allowed = true;
-				}
-			} else {
-				if (getAuthzManager().isAuthorized(
-						MatrixFunctionConstants.EVALUATE_SPECIFIC_MATRIXCELL,
-						page.getId())) {
-					allowed = true;
-				}
-			}
-		}
-		return allowed;
+	public String getId() {
+		return WizardActivityProducer.PRODUCER_ID;
 	}
 
 	public TaggableItem getItem(String itemRef, TaggingProvider provider) {
@@ -235,28 +229,9 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		return item;
 	}
 
-	public List<TaggableItem> getItems(TaggableActivity activity,
-			TaggingProvider provider) {
-		List<TaggableItem> items = new ArrayList<TaggableItem>();
-		// Only return items to a specified rating provider
-		if (ratingProviderIds.contains(provider.getId())) {
-			WizardPageDefinition def = (WizardPageDefinition) activity
-					.getObject();
-			for (Iterator<WizardPage> i = def.getPages().iterator(); i
-					.hasNext();) {
-				// Make sure this page is evaluatable by the current
-				// user
-				WizardPage page = i.next();
-				if (canEvaluate(page)) {
-					items.add(getItem(page));
-				}
-			}
-		} else {
-			// Notify other tagging providers that they aren't accepted here yet
-			logger.warn(this + ".getItems(): Provider with id "
-					+ provider.getId() + " not allowed!");
-		}
-		return items;
+	public TaggableItem getItem(WizardPage wizardPage) {
+		return new WizardItemImpl(wizardPage, getActivity(wizardPage
+				.getPageDefinition()));
 	}
 
 	public List<TaggableItem> getItems(TaggableActivity activity,
@@ -285,64 +260,69 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		return items;
 	}
 
+	public List<TaggableItem> getItems(TaggableActivity activity,
+			TaggingProvider provider) {
+		List<TaggableItem> items = new ArrayList<TaggableItem>();
+		// Only return items to a specified rating provider
+		if (ratingProviderIds.contains(provider.getId())) {
+			WizardPageDefinition def = (WizardPageDefinition) activity
+					.getObject();
+			for (Iterator<WizardPage> i = def.getPages().iterator(); i
+					.hasNext();) {
+				// Make sure this page is evaluatable by the current
+				// user
+				WizardPage page = i.next();
+				if (canEvaluate(page)) {
+					items.add(getItem(page));
+				}
+			}
+		} else {
+			// Notify other tagging providers that they aren't accepted here yet
+			logger.warn(this + ".getItems(): Provider with id "
+					+ provider.getId() + " not allowed!");
+		}
+		return items;
+	}
+
 	public String getName() {
 		return messages.getString("service_name");
 	}
 
-	public String getId() {
-		return WizardActivityProducer.PRODUCER_ID;
+	public List<String> getRatingProviderIds() {
+		return ratingProviderIds;
 	}
 
-	public TaggableActivity getActivity(WizardPageDefinition wizardPageDef) {
-		return new WizardActivityImpl(wizardPageDef, this);
+	public void init() {
+		logger.info("init()");
+
+		taggingManager.registerProducer(this);
 	}
 
-	public TaggableItem getItem(WizardPage wizardPage) {
-		return new WizardItemImpl(wizardPage, getActivity(wizardPage
-				.getPageDefinition()));
+	public void setAuthzManager(AuthorizationFacade authzManager) {
+		this.authzManager = authzManager;
 	}
 
-	public boolean allowRemoveTags(TaggableActivity activity) {
-		WizardPageDefinition pageDef = (WizardPageDefinition) activity
-				.getObject();
-		// Try to get a wizard page sequence
-		WizardPageSequence ps = getWizardManager().getWizardPageSeqByDef(
-				pageDef.getId());
-		boolean authorized = false;
-		if (ps != null) {
-			Wizard wizard = ps.getCategory().getWizard();
-			/*
-			 * If you own the wizard, or if you can delete wizards, or if you
-			 * can revise wizards, then you are able to delete page definitions
-			 * and can, therefore, remove tags.
-			 */
-			authorized = getSessionManager().getCurrentSessionUserId()
-					.equalsIgnoreCase(wizard.getOwner().getId().getValue())
-					|| getAuthzManager()
-							.isAuthorized(WizardFunctionConstants.EDIT_WIZARD,
-									wizard.getId())
-					|| getAuthzManager().isAuthorized(
-							WizardFunctionConstants.DELETE_WIZARD,
-							wizard.getId());
-		} else {
-			ScaffoldingCell cell = getMatrixManager()
-					.getScaffoldingCellByWizardPageDef(pageDef.getId());
-			/*
-			 * If you can create or delete scaffolding, then you are able to
-			 * delete scaffolding cells and can, therefore, remove tags.
-			 */
-			authorized = getAuthzManager().isAuthorized(
-					MatrixFunctionConstants.CREATE_SCAFFOLDING,
-					cell.getScaffolding().getId())
-					|| getAuthzManager().isAuthorized(
-							MatrixFunctionConstants.DELETE_SCAFFOLDING,
-							cell.getScaffolding().getId());
-		}
-		return authorized;
+	public void setIdManager(IdManager idManager) {
+		this.idManager = idManager;
 	}
 
-	public boolean allowRemoveTags(TaggableItem item) {
-		// It doesn't appear that you can remove individual items (pages)
-		return false;
+	public void setMatrixManager(MatrixManager matrixManager) {
+		this.matrixManager = matrixManager;
+	}
+
+	public void setRatingProviderIds(List<String> ratingProviderIds) {
+		this.ratingProviderIds = ratingProviderIds;
+	}
+
+	public void setSessionManager(SessionManager sessionManager) {
+		this.sessionManager = sessionManager;
+	}
+
+	public void setTaggingManager(TaggingManager taggingManager) {
+		this.taggingManager = taggingManager;
+	}
+
+	public void setWizardManager(WizardManager wizardManager) {
+		this.wizardManager = wizardManager;
 	}
 }
