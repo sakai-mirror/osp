@@ -462,6 +462,10 @@ public class ReportsTool extends ToolBase {
         return reportResultsPage;
     }
 
+    public String processSaveResultsToResources(ReportResult reportResult) throws IOException {
+        reportsManager.processSaveResultsToResources(reportResult);
+        return ReportsTool.mainPage;
+    }
     public String processSaveReport() {
         reportsManager.saveReport(getWorkingResult().getReportResult().getReport());
         savedLiveReport = true;

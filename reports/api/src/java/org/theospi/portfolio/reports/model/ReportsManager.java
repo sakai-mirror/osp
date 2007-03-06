@@ -23,6 +23,7 @@ package org.theospi.portfolio.reports.model;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
+import java.io.IOException;
 
 import javax.sql.DataSource;
 
@@ -235,4 +236,6 @@ public interface ReportsManager extends DownloadableManager
      public void deleteReportDefXmlFile(ReportDefinition reportDef);
 
     public List getReportsByViewer();
+
+     public void processSaveResultsToResources(ReportResult reportResult) throws IOException;
 }

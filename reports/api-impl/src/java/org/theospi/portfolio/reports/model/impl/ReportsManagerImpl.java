@@ -61,6 +61,7 @@ import org.sakaiproject.metaobj.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.model.AuthZMap;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.MetaobjEntityManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -75,6 +76,11 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentCollectionEdit;
+import org.sakaiproject.content.api.ContentCollection;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
+import org.sakaiproject.event.cover.NotificationService;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -1645,6 +1651,163 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             returned.addAll(results);
         }
        return returned;
+   }
+
+   private Id saveResult(String owner, String name, byte[] fileContent) {
+      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+
+      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+      String userId = sakaiSession.getUserId();
+      sakaiSession.setUserId(owner);
+      sakaiSession.setUserEid(owner);
+
+      String description = "";
+      String folder = "/user/" + owner;
+      String type = "application/x-osp";
+
+      try {
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection(folder);
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, owner);
+         getContentHosting().commitCollection(groupCollection);
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
+      folder = "/user/" + owner + "savedReports";
+
+      try {
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection(folder);
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "savedReports");
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DESCRIPTION, "Folder for Saved Report Results");
+         getContentHosting().commitCollection(groupCollection);
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
+      try {
+         ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
+         resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
+         resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
+         resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
+         resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, "text/html");
+         resourceProperties.addProperty(ContentHostingService.PROP_ALTERNATE_REFERENCE, MetaobjEntityManager.METAOBJ_ENTITY_PREFIX);
+
+         ContentResource resource = getContentHosting().addResource(name, folder, 0, type,
+               fileContent, resourceProperties, NotificationService.NOTI_NONE);
+         return idManager.getId(getContentHosting().getUuid(resource.getId()));
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      } finally {
+         getSecurityService().popAdvisor();
+         sakaiSession.setUserEid(userId);
+         sakaiSession.setUserId(userId);
+      }
+   }
+    protected Id createResource(ByteArrayOutputStream bos,
+                               String name, String description, String type) {
+      ContentResource resource;
+      ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
+      resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
+      resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
+      resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
+
+      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+
+      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+      String userId = sakaiSession.getUserId();
+      sakaiSession.setUserId(userId);
+      sakaiSession.setUserEid(userId);
+
+
+
+
+      try {
+
+         ContentCollectionEdit groupCollection = getContentHosting().addCollection(getUserCollection().getId() + "savedReports/");
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "savedReports");
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DESCRIPTION, "Folder for Saved Report Results");
+         getContentHosting().commitCollection(groupCollection);
+      }
+      catch (IdUsedException e) {
+         // ignore... it is already there.
+          if (logger.isDebugEnabled()) {
+              logger.debug(e);
+          }
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+
+
+      try {
+         String id = getUserCollection().getId() + "savedReports/" + name;
+         getContentHosting().removeResource(id);
+      }
+      catch (TypeException e) {
+         // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         }
+      }
+      catch (IdUnusedException e) {
+         // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         }
+      }
+      catch (PermissionException e) {
+         // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         }
+      }
+      catch (InUseException e) {
+         // ignore, must be new
+         if (logger.isDebugEnabled()) {
+             logger.debug(e);
+         }
+      }
+
+      try {
+         resource = getContentHosting().addResource(name, getUserCollection().getId() + "savedReports/", 100, type,
+                     bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
+      }
+      catch (Exception e) {
+         throw new RuntimeException(e);
+      }
+      String uuid = getContentHosting().getUuid(resource.getId());
+      return getIdManager().getId(uuid);
+   }
+
+   public void processSaveResultsToResources(ReportResult reportResult) throws IOException{
+       ByteArrayOutputStream bos = new ByteArrayOutputStream();
+       ReportXsl xslt = reportResult.getReport().getReportDefinition().getDefaultXsl();
+       String fileData = transform(reportResult, reportResult.getReport().getReportDefinition().getDefaultXsl());
+
+        if (xslt.getResultsPostProcessor() != null) {
+            bos.write(xslt.getResultsPostProcessor().postProcess(fileData));
+        } else {
+            bos.write(fileData.getBytes());
+        }
+        createResource(bos, reportResult.getTitle() + ".html", reportResult.getTitle(), "text/html");
+   }
+
+   protected ContentCollection getUserCollection() throws TypeException, IdUnusedException, PermissionException {
+      User user = org.sakaiproject.user.cover.UserDirectoryService.getCurrentUser();
+      String userId = user.getId();
+      String wsId = SiteService.getUserSiteId(userId);
+      String wsCollectionId = getContentHosting().getSiteCollection(wsId);
+      ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
+      return collection;
    }
 }
 

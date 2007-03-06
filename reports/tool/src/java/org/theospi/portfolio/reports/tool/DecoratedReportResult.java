@@ -21,6 +21,7 @@
 package org.theospi.portfolio.reports.tool;
 
 import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -267,8 +268,8 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 
     }
 
-    public String processSaveResultToResources(ReportResult reportResult){
-        return null;
+    public String processSaveResultToResources() throws IOException{
+        return reportsTool.processSaveResultsToResources(this.getReportResult()) ;
     }
 
 }

@@ -33,9 +33,16 @@
         </h:commandLink>
     </h:column>
     <h:column>
+         <f:facet name="header">
+            <h:outputText value="#{msgs.description}"/>
+        </f:facet>
+
         <h:outputText value="#{report.reportDefinition.description}"/>
     </h:column>
     <h:column>
+         <f:facet name="header">
+            <h:outputText value="#{msgs.delete}"/>
+        </f:facet>
         <h:commandLink action="#{report.processDelete}"
                        rendered="#{ReportsTool.maintainer  && report.reportDefinition.dbLoaded}">
             <h:outputText value="#{msgs.delete_report}"/>
@@ -105,10 +112,20 @@
 
         <h:outputText value="#{' &nbsp; | &nbsp; '}" escape="false"
                       rendered="#{(!result.isLive && ReportsTool.userCan.edit && result.isOwner)}"/>
-        <h:commandLink action="#{result.processSaveToResources}"
+        <h:commandLink action="#{result.processSaveResultToResources}"
                        rendered="#{(!result.isLive && ReportsTool.userCan.edit && result.isOwner)}">
               <h:outputText value="#{msgs.save_to_resouces}"/>
         </h:commandLink>
+
+        <h:outputText value="#{' &nbsp; | &nbsp; '}" escape="false"
+                      rendered="#{result.isLive && ReportsTool.userCan.run &&
+                                  ReportsTool.userCan.edit}"/>
+        <h:commandLink action="#{result.processScheduleReport}"
+                       rendered="#{result.isLive && ReportsTool.userCan.run}">
+            <h:outputText value="#{msgs.schedule_report}"/>
+        </h:commandLink>
+
+
         <f:verbatim escape="false">
             </div>
         </f:verbatim>
