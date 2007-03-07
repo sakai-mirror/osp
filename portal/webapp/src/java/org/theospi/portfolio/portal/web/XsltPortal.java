@@ -1157,7 +1157,7 @@ public class XsltPortal extends CharonPortal {
       // check for a logout text override
       logoutText = StringUtil.trimToNull(ServerConfigurationService
             .getString("logout.text"));
-      if (logoutText == null) logoutText = rbsitenav.getString("sit.log");
+      if (logoutText == null) logoutText = rbsitenav.getString("sit_log");
       
       appendTextElementNode(doc, "topLogin", Boolean.toString(topLogin), login);
       appendTextElementNode(doc, "logInOutUrl", logInOutUrl, login);
