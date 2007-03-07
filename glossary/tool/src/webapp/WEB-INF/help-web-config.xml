@@ -168,14 +168,6 @@
    </bean>
    
       
-   <bean id="glossaryEntryValidator" class="org.theospi.utils.mvc.impl.SimpleValidator">
-      <property name="requiredFields">
-         <list>
-            <value>term</value>
-            <value>description</value>
-            <value>longDescription</value>
-         </list>
-      </property>
-   </bean>
+   <bean id="glossaryEntryValidator" class="org.theospi.portfolio.help.control.GlossaryEntryValidator" />
 
 </beans>
