@@ -269,7 +269,7 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
     }
 
     public String processSaveResultToResources() throws IOException{
-        return reportsTool.processSaveResultsToResources(this.getReportResult()) ;
+        return reportsTool.processSaveResultsToResources(this) ;
     }
 
 }

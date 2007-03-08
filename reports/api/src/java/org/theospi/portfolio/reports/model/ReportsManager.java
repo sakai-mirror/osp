@@ -237,5 +237,5 @@ public interface ReportsManager extends DownloadableManager
 
     public List getReportsByViewer();
 
-     public void processSaveResultsToResources(ReportResult reportResult) throws IOException;
+     public String processSaveResultsToResources(ReportResult reportResult) throws IOException;
 }

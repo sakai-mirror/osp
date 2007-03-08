@@ -1597,8 +1597,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     public ReportDefinitionXmlFile getReportDefinition(String id) {
@@ -1653,68 +1651,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
        return returned;
    }
 
-   private Id saveResult(String owner, String name, byte[] fileContent) {
-      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
 
-      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
-      String userId = sakaiSession.getUserId();
-      sakaiSession.setUserId(owner);
-      sakaiSession.setUserEid(owner);
-
-      String description = "";
-      String folder = "/user/" + owner;
-      String type = "application/x-osp";
-
-      try {
-         ContentCollectionEdit groupCollection = getContentHosting().addCollection(folder);
-         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, owner);
-         getContentHosting().commitCollection(groupCollection);
-      }
-      catch (IdUsedException e) {
-         // ignore... it is already there.
-      }
-      catch (Exception e) {
-         throw new RuntimeException(e);
-      }
-
-      folder = "/user/" + owner + "savedReports";
-
-      try {
-         ContentCollectionEdit groupCollection = getContentHosting().addCollection(folder);
-         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "savedReports");
-         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DESCRIPTION, "Folder for Saved Report Results");
-         getContentHosting().commitCollection(groupCollection);
-      }
-      catch (IdUsedException e) {
-         // ignore... it is already there.
-      }
-      catch (Exception e) {
-         throw new RuntimeException(e);
-      }
-
-      try {
-         ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
-         resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
-         resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
-         resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
-         resourceProperties.addProperty(ResourceProperties.PROP_STRUCTOBJ_TYPE, "text/html");
-         resourceProperties.addProperty(ContentHostingService.PROP_ALTERNATE_REFERENCE, MetaobjEntityManager.METAOBJ_ENTITY_PREFIX);
-
-         ContentResource resource = getContentHosting().addResource(name, folder, 0, type,
-               fileContent, resourceProperties, NotificationService.NOTI_NONE);
-         return idManager.getId(getContentHosting().getUuid(resource.getId()));
-      }
-      catch (Exception e) {
-         throw new RuntimeException(e);
-      } finally {
-         getSecurityService().popAdvisor();
-         sakaiSession.setUserEid(userId);
-         sakaiSession.setUserId(userId);
-      }
-   }
-    protected Id createResource(ByteArrayOutputStream bos,
+    protected String createResource(ByteArrayOutputStream bos,
                                String name, String description, String type) {
-      ContentResource resource;
+
+      ContentResource resource = null;
       ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
       resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
       resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
@@ -1727,13 +1668,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
       sakaiSession.setUserId(userId);
       sakaiSession.setUserEid(userId);
 
-
-
-
       try {
 
          ContentCollectionEdit groupCollection = getContentHosting().addCollection(getUserCollection().getId() + "savedReports/");
-         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "savedReports");
+         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "Saved Reports");
          groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DESCRIPTION, "Folder for Saved Report Results");
          getContentHosting().commitCollection(groupCollection);
       }
@@ -1749,7 +1687,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
 
       try {
-         String id = getUserCollection().getId() + "savedReports/" + name;
+         String id = getUserCollection().getId() + "Saved Reports/" + name;
          getContentHosting().removeResource(id);
       }
       catch (TypeException e) {
@@ -1784,11 +1722,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
       catch (Exception e) {
          throw new RuntimeException(e);
       }
-      String uuid = getContentHosting().getUuid(resource.getId());
-      return getIdManager().getId(uuid);
+
+      return "savedReports/" + name;
    }
 
-   public void processSaveResultsToResources(ReportResult reportResult) throws IOException{
+   public String processSaveResultsToResources(ReportResult reportResult) throws IOException{
        ByteArrayOutputStream bos = new ByteArrayOutputStream();
        ReportXsl xslt = reportResult.getReport().getReportDefinition().getDefaultXsl();
        String fileData = transform(reportResult, reportResult.getReport().getReportDefinition().getDefaultXsl());
@@ -1798,7 +1736,8 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         } else {
             bos.write(fileData.getBytes());
         }
-        createResource(bos, reportResult.getTitle() + ".html", reportResult.getTitle(), "text/html");
+        return createResource(bos, reportResult.getTitle() + ".html", reportResult.getTitle(), "text/html");
+
    }
 
    protected ContentCollection getUserCollection() throws TypeException, IdUnusedException, PermissionException {

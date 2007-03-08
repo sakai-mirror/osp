@@ -44,6 +44,7 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.application.FacesMessage;
 import java.io.IOException;
 import java.util.*;
 
@@ -462,14 +463,17 @@ public class ReportsTool extends ToolBase {
         return reportResultsPage;
     }
 
-    public String processSaveResultsToResources(ReportResult reportResult) throws IOException {
-        reportsManager.processSaveResultsToResources(reportResult);
+    public String processSaveResultsToResources(DecoratedReportResult reportResult) throws IOException {
+        ReportResult result = reportsManager.loadResult(reportResult.getReportResult());
+        String fileName = reportsManager.processSaveResultsToResources(result);
+        if (fileName.length() > 0){
+            FacesContext.getCurrentInstance().addMessage(null, getFacesMessageFromBundle("resource_saved", new Object[]{fileName}));
+        }
         return ReportsTool.mainPage;
     }
     public String processSaveReport() {
         reportsManager.saveReport(getWorkingResult().getReportResult().getReport());
         savedLiveReport = true;
-
         return reportResultsPage;
     }
 

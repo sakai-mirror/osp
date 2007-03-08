@@ -51,6 +51,7 @@
 </h:dataTable>
 
 <h:outputText value="<br/><br/>#{msgs.report_results}" escape="false"/>
+<h:messages  infoClass = "success"/>
 <h:dataTable var="result" styleClass="listHier"
              value="#{ReportsTool.results}"
              rendered="#{ReportsTool.userCan.run ||
@@ -116,6 +117,8 @@
                        rendered="#{(!result.isLive && ReportsTool.userCan.edit && result.isOwner)}">
               <h:outputText value="#{msgs.save_to_resouces}"/>
         </h:commandLink>
+
+
 
         <h:outputText value="#{' &nbsp; | &nbsp; '}" escape="false"
                       rendered="#{result.isLive && ReportsTool.userCan.run &&
