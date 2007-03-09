@@ -335,7 +335,6 @@ public class WizardManagerImpl extends HibernateDaoSupport
          wizard.getRootCategory().setCreated(now);
          wizard.getRootCategory().setModified(now);
          wizard.getRootCategory().setWizard(null);
-         //getHibernateTemplate().save(wizard, wizard.getId());
          getHibernateTemplate().save(wizard);
          wizard.getRootCategory().setWizard(wizard);
          wizard.setNewObject(false);
@@ -393,13 +392,10 @@ public class WizardManagerImpl extends HibernateDaoSupport
       }
    }
    
-   
-   /**
-    * {@inheritDoc}
+   /** 
+    * unlock all resources associated with wizard pages (in preparation for delete)
     */
-   public void deleteWizard(Wizard wizard) {
-   
-      // Unlock resources associated with wizard pages
+   protected void unlockWizardResources( Wizard wizard ) {
       List wpsList = findPagesByWizard( wizard.getId() );
       for (Iterator wpsIt=wpsList.iterator(); wpsIt.hasNext();) 
       {
@@ -435,6 +431,31 @@ public class WizardManagerImpl extends HibernateDaoSupport
             }
          } 
       }
+   }
+   
+   /**
+    * Unlock resources and delete completed wizards from a preview wizard
+    */
+   public void deletePreviewWizardData( Wizard wizard ) {
+   
+       // Unlock resources associated with wizard pages
+      unlockWizardResources(wizard);
+      
+      // Delete completed wizards
+      List completedWizards = getCompletedWizards(wizard);
+      for (Iterator i = completedWizards.iterator(); i.hasNext();) {
+         CompletedWizard cw = (CompletedWizard)i.next();
+         deleteCompletedWizard(cw);
+      }
+  }
+   
+   /**
+    * {@inheritDoc}
+    */
+   public void deleteWizard(Wizard wizard) {
+   
+      // Unlock resources associated with wizard pages
+      unlockWizardResources(wizard);
       
       // Delete completed wizards
       Wizard wiz = this.getWizard(wizard.getId(), WIZARD_DELETE_CHECK);
@@ -447,6 +468,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       //remove the tool from the menu
       if (wiz.getExposedPageId() != null)
          removeTool(wiz);
+         
       getHibernateTemplate().delete(wiz);
    }
    
@@ -464,6 +486,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
    
    public void publishWizard(Wizard wizard) {
       wizard.setPublished(true);
+      wizard.setPreview(false);
+      wizard.setModified(new Date(System.currentTimeMillis()));
+      this.saveWizard(wizard);
+   }
+   
+   public void previewWizard(Wizard wizard) {
+      wizard.setPreview(true);
       wizard.setModified(new Date(System.currentTimeMillis()));
       this.saveWizard(wizard);
    }
@@ -1109,11 +1138,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          }
          // the wizard needs to be saved so it has an id
          // the id is needed because guidance needs the security qualifier
-         //wizard = saveWizard(wizard);
-         
          replaceIds(wizard, guidanceMap, formsMap, styleMap);
-         
-         // save the wizard
          wizard = saveWizard(wizard);
 
          // set the wizard evaluators

@@ -324,7 +324,15 @@ public class WizardTool extends BuilderTool {
 
    public String processActionPublish(Wizard wizard) {
       clearInterface();
+      getWizardManager().deletePreviewWizardData(wizard);
       getWizardManager().publishWizard(wizard);
+      current = null;
+      return LIST_PAGE;
+   }
+   
+   public String processActionPreview(Wizard wizard) {
+      clearInterface();
+      getWizardManager().previewWizard(wizard);
       current = null;
       return LIST_PAGE;
    }

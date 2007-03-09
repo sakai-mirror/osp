@@ -19,6 +19,8 @@
          type="org.sakaiproject.metaobj.shared.IdType"/>
 
       <property name="published" type="boolean" column="published" not-null="false"/>
+      <property name="preview" type="boolean" column="preview" not-null="false"/>
+      
       <property name="type" type="string" column="wizard_type" not-null="false"/>
       <many-to-one name="style" column="style_id" not-null="false" class="org.theospi.portfolio.style.model.Style"/>
       <property name="exposedPageId" type="string" length="36" column="exposed_page_id" not-null="false"/>

@@ -134,7 +134,7 @@ public class DecoratedWizard implements DecoratedListInterface {
 
    public boolean getCanOperateOnWizardInstance() {
    	boolean rethrow = false;
-      boolean isPublished = getBase().isPublished();
+      boolean isPublishedOrPreview = getBase().isPublished() || getBase().isPreview();
       Exception exc = null;
       
       boolean canOperate = false;
@@ -147,7 +147,7 @@ public class DecoratedWizard implements DecoratedListInterface {
       
       boolean isOwner = parent.getCurrentUserId().equals(base.getOwner().getId().getValue());
       
-      boolean can = getBase().isPublished() && (canOperate || isOwner);
+      boolean can = (isPublishedOrPreview) && (canOperate || isOwner);
       
       if(!can && rethrow && exc != null)
          throw new RuntimeException("couldn't authorize", exc);
@@ -182,6 +182,10 @@ public class DecoratedWizard implements DecoratedListInterface {
    
    public String processActionPublish() {
       return parent.processActionPublish(base);
+   }
+   
+   public String processActionPreview() {
+      return parent.processActionPreview(base);
    }
    
    public String getStyleName() {
@@ -522,6 +526,10 @@ public class DecoratedWizard implements DecoratedListInterface {
 
    public boolean getIsWizardUsed()
    {
+	   // preview mode is never considered 'in use' (edits should not be prohibited)
+	   if ( base.isPreview() )
+		   return false;
+			
       String wizardId = base.getId().getValue();
       List completedWizards = parent.getWizardManager().getCompletedWizardsByWizardId(wizardId);
       for (Iterator i = completedWizards.iterator(); i.hasNext();) 

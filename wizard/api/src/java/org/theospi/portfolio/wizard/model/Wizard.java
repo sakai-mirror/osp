@@ -46,6 +46,7 @@ public class Wizard extends ObjectWithWorkflow {
    private transient Agent owner;
    private Id guidanceId;
    private boolean published = false;
+   private boolean preview = false;
    private String type = WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL;
    private String exposedPageId;
    private transient Boolean exposeAsTool = null;
@@ -141,6 +142,14 @@ public class Wizard extends ObjectWithWorkflow {
 
    public void setGuidanceId(Id guidanceId) {
       this.guidanceId = guidanceId;
+   }
+
+   public boolean isPreview() {
+      return preview;
+   }
+   
+   public void setPreview(boolean preview) {
+      this.preview = preview;
    }
 
    public boolean isPublished() {

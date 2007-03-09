@@ -62,6 +62,7 @@ public class WizardPageController extends CellController {
 		ToolSession session = getSessionManager().getCurrentToolSession();
 
 		Map model = super.referenceData(request, command, errors);
+		Boolean wizardPreview = Boolean.valueOf( (String)request.get("wizardPreview") );
 
 		Agent owner = (Agent) request.get(WizardPageHelper.WIZARD_OWNER);
 
@@ -71,7 +72,6 @@ public class WizardPageController extends CellController {
 		session.setAttribute(WizardPageHelper.WIZARD_OWNER, owner);
 
 		model.put("readOnlyMatrix", super.isReadOnly(owner, null));
-		// session.removeAttribute("readOnlyMatrix");
 		model.put("pageTitleKey", "view_wizardPage");
 		model.put("helperPage", "true");
 		model.put("isWizard", "true");
@@ -103,9 +103,7 @@ public class WizardPageController extends CellController {
 		WizardPageSequence seq = wizardManager.getWizardPageSeqByDef(page
 				.getPageDefinition().getId());
 		Wizard wizard = seq.getCategory().getWizard();
-		// Cell cell =
-		// getMatrixManager().getCellFromPage(getIdManager().getId(pageId));
-		// Scaffolding scaffolding = cell.getMatrix().getScaffolding();
+      
 		objectMetadata[METADATA_ID_INDEX] = wizard.getId().getValue();
 		objectMetadata[METADATA_TITLE_INDEX] = wizard.getName();
 		objectMetadata[METADATA_DESC_INDEX] = wizard.getDescription();
@@ -147,8 +145,7 @@ public class WizardPageController extends CellController {
 		else
 			request.put("categoryTitle", "");
 
-		request.put("wizardId", seq.getCategory().getWizard().getId()
-				.getValue());
+		request.put("wizardPreview", Boolean.toString(seq.getCategory().getWizard().isPreview()));
 		request.put("wizardTitle", seq.getCategory().getWizard().getName());
 		request.put("wizardDescription", seq.getCategory().getWizard()
 				.getDescription());

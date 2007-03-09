@@ -71,6 +71,13 @@
    </c:if>
 
 	<c:if test="${isWizard == 'true'}">
+   
+      <c:if test="${wizardPreview}">
+         <div class="validation">
+            <fmt:message key="title_wizPreview"/>
+         </div>
+      </c:if>
+   
 		<osp-h:glossary link="true" hover="true">
 			<h3><c:out value="${wizardTitle}" /></h3>
 

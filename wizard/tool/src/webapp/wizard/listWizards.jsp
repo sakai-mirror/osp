@@ -65,7 +65,12 @@
             </h:commandLink>
          </f:subview>
 	     <ospx:separatedList id="wizActionList" separator=" | " styleClass="itemAction">
-	           <f:subview id="publishLink" rendered="#{wizardItem.canPublish && wizardItem.base.hasPages}">
+	           <f:subview id="previewLink" rendered="#{wizardItem.canPublish && wizardItem.base.hasPages && !wizardItem.base.preview && !wizardItem.base.published}">
+	                 <h:commandLink action="#{wizardItem.processActionPreview}">
+	                 <h:outputText value="#{msgs.preview}" />
+	              </h:commandLink>
+	           </f:subview>
+	           <f:subview id="publishLink" rendered="#{wizardItem.canPublish && wizardItem.base.hasPages && wizardItem.base.preview}">
 	                 <h:commandLink action="#{wizardItem.processActionPublish}">
 	                 <h:outputText value="#{msgs.publish}" />
 	              </h:commandLink>
@@ -117,8 +122,9 @@
          <f:facet name="header">
             <h:outputText value="#{msgs.published_title}" />
          </f:facet>
+         <h:outputText value="#{msgs.preview}" rendered="#{wizardItem.base.preview}"/>
          <h:outputText value="#{msgs.published}" rendered="#{wizardItem.base.published}"/>
-         <h:outputText value="#{msgs.unpublished}" rendered="#{!wizardItem.base.published}"/>
+         <h:outputText value="#{msgs.unpublished}" rendered="#{!wizardItem.base.preview && !wizardItem.base.published}"/>
       </h:column>
       <h:column>
          <f:facet name="header">

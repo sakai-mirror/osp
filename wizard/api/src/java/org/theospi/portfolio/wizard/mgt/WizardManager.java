@@ -81,6 +81,11 @@ public interface WizardManager extends WorkflowEnabledManager {
 	 */
 	public void deleteWizard(Wizard wizard);
 
+   /**
+    * Unlock resources and delete completed wizards from a preview wizard
+    */
+   public void deletePreviewWizardData( Wizard wizard );
+   
 	/**
 	 * 
 	 * @param sites
@@ -271,6 +276,15 @@ public interface WizardManager extends WorkflowEnabledManager {
 	public List listAllWizardsByOwner(String owner, String siteId);
 
 	public List listWizardsByType(String owner, String siteId, String type);
+	
+	/**
+    * changes the settings on the wizard to make it available for preview
+    * to the users the site
+    * 
+    * @param wizard
+    */
+   public void previewWizard(Wizard wizard);
+
 
 	/**
 	 * changes the settings on the wizard to make it available to the users of
