@@ -334,7 +334,9 @@
 	      </c:forEach>
 	      
 	   </c:forEach>
+      
 	   <!-- ***** show the attached resources ***** -->
+      
          <c:forEach var="node" items="${cellBean.nodes}">
             <c:set var="canReflect" value="true"/>
 
@@ -348,17 +350,26 @@
                                   />"/><c:out value="${node.name}"/>
                   </a>
                   <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
-                      <div class="itemAction indnt2">
-                   <%--       <a name="linkNew" href="<osp:url value="attachToCell.osp">
-						 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
-						 </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="edit"/></a>
-						 |   --%>
-                          <a name="linkNew" href="<osp:url value="osp.wizard.page.contents.helper/resourceDelete.osp">
-						 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
-						 <osp:param name="resource_id" value="${node.id}"/>
-						 <osp:param name="submit" value="delete"/>
-						 </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="delete"/></a>
-                      </div>
+                   <div class="itemAction indnt2">
+                   <a name="linkNew" href="<osp:url value="osp.wizard.page.contents.helper/resourceDelete.osp">
+						   <osp:param name="page_id" value="${cell.wizardPage.id}"/>
+						   <osp:param name="resource_id" value="${node.id}"/>
+						   <osp:param name="submit" value="delete"/>
+						   </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="delete"/></a>
+                   <c:if test="${(matrixCan.review || wizardCan.review) && cell.scaffoldingCell.reviewDevice != null}">
+                        | <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
+                          <osp:param name="page_id" value="${cell.wizardPage.id}" />
+                          <osp:param name="org_theospi_portfolio_review_type" value="2" />
+                          <osp:param name="process_type_key" value="page_id" />
+                          <osp:param name="isWizard" value="${isWizard}" />
+                          <osp:param name="objectId" value="${objectId}" />
+                          <osp:param name="objectTitle" value="${objectTitle}" />
+                          <osp:param name="objectDesc" value="${objectDesc}" />
+                          <osp:param name="itemId" value="${node.id}" />
+                          </osp:url>"><osp:message key="review"/></a>
+                   </c:if> 
+                   
+                   </div>
                   </c:if>
                </td><td>
                   <c:choose>
@@ -380,6 +391,44 @@
                   <fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="${date_format}" />
                </td>
             </tr>
+            <tr>
+            
+<!-- ************* Attached Resources Review (Feedback) Area Start ************* -->
+   <c:set var="feedbackHeader" value="false"/>
+   <table class="listHier lines">
+      <c:forEach var="object" items="${reviews}" varStatus="loopStatus">
+		  <c:if test="${object.itemId == node.id}">
+        
+         <c:if test="${not feedbackHeader}">
+           <c:set var="feedbackHeader" value="true"/>
+           <tr>
+               <td width="32"><img border="0" src="/library/image/sakai/dir_openminus.gif"/></td>
+               <td><osp:message key="reviews_section_header"/></td>
+               <td>&nbsp;</td>
+               <td>&nbsp;</td>
+            </tr>
+         </c:if>
+      
+         <tr>
+            <td />
+            <td>
+               <a href='<c:out value="${object.reviewContentNode.externalUri}"/>' target="_blank" >
+               <img src = '/library/image/sakai/generic.gif' border= '0' hspace='0' />
+               <c:out value="${object.reviewContentNode.displayName}"/></a>            
+            </td>
+            <td>
+               <c:out value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
+            </td>
+            <td>
+               <fmt:formatDate value="${object.reviewContentNode.technicalMetadata.creation}" pattern="${date_format}" />
+            </td>
+         </tr>
+		  </c:if>
+      </c:forEach>
+   </table>
+	
+<!-- ************* Attached Resources Review (Feedback) Area End ************* -->
+            </tr>
          </c:forEach>
    </table>
    
@@ -388,11 +437,7 @@
          <input type="submit" name="manageAttachments" value="<fmt:message key="action_manageItems"/>"
          	onclick="javascript:stopEvents(event); document.form.method='GET';document.form.action='<osp:url value="osp.wizard.page.contents.helper/attachToCell.osp">
         	 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
-        	 </osp:url>'" /> <!--
-      <a name="linkNew" id="linkNew" href="<osp:url value="attachToCell.osp">
-         <osp:param name="page_id" value="${cell.wizardPage.id}"/>
-         </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="action_manageItems"/></a>
-       --> 
+        	 </osp:url>'" />
       </div>
    </c:if>
    
