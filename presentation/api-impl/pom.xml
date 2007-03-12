@@ -5,7 +5,7 @@
     <artifactId>master</artifactId>
     <groupId>org.sakaiproject</groupId>
     <version>M2</version>
-    <relativePath>../../../../master/pom.xml</relativePath>
+    <relativePath>../../../master/pom.xml</relativePath>
   </parent>
   <artifactId>osp-presentation-impl</artifactId>
   <groupId>org.sakaiproject.osp</groupId>
