@@ -780,6 +780,12 @@ public class WizardManagerImpl extends HibernateDaoSupport
    public void checkWizardAccess(Id id) {
       CompletedWizard cw = getCompletedWizard(id);
       
+      if (cw == null)
+      {
+         logger.error("checkWizardAccess: No such wizard " + id.toString());
+         return;
+      }
+      
       boolean canEval = getAuthorizationFacade().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
             cw.getWizard().getId());
       boolean canReview = getAuthorizationFacade().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
