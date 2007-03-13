@@ -899,8 +899,8 @@ public class ReportsTool extends ToolBase {
             return "error";
         }
         try {
-            Trigger trigger = new CronTrigger(triggerName, ReportsManager.reportGroup),
-                    getJobDetail().getName(), ReportsManager.reportGroup), triggerExpression);
+            Trigger trigger = new CronTrigger(triggerName, ReportsManager.reportGroup,
+                    getJobDetail().getName(), ReportsManager.reportGroup, triggerExpression);
             scheduler.scheduleJob(trigger);
             TriggerWrapper tempTriggerWrapper = new TriggerWrapperImpl();
             tempTriggerWrapper.setTrigger(trigger);
