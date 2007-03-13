@@ -79,12 +79,11 @@ function hrefViewCell(pageId) {
                     </osp-h:glossary>
                 </th>
                 <c:forEach var="head" items="${columnHeading}">
-                    <th class="matrix-column-heading" width="10%" 
-                        bgcolor="<c:out value="${head.color}"/>">
+                    <th class="matrix-column-heading matrixColumnDefault" width="10%" 
+                        bgcolor="<c:out value="${head.color}"/>"
+                        style="color: <c:if test="${not empty head.textColor}" ><c:out value="${head.textColor}"/></c:if>">
                         <osp-h:glossary link="true" hover="true">
-                        	<font color="<c:out value="${head.textColor}"/>">
                               <c:out value="${head.description}"/>
-                           </font>
                         </osp-h:glossary>
                     </th>
                 </c:forEach>
@@ -92,10 +91,9 @@ function hrefViewCell(pageId) {
             <c:forEach var="rowLabel" items="${matrixContents.rowLabels}" varStatus="loopStatus" >
               <tr>
                  <osp-h:glossary link="true" hover="true">
-                    <th class="matrix-row-heading" bgcolor="<c:out value="${rowLabel.color}"/>" >
-                        <font color="<c:out value="${rowLabel.textColor}"/>">
+                    <th class="matrix-row-heading matrixRowDefault" bgcolor="<c:out value="${rowLabel.color}"/>" 
+                    		style="color: <c:if test="${not empty rowLabel.textColor}" ><c:out value="${rowLabel.textColor}"/></c:if>">
                            <c:out value="${rowLabel.description}"/>
-                        </font>
                     </th>
                  </osp-h:glossary>
                  <c:forEach var="cellBean" items="${matrixContents.matrixContents[loopStatus.index]}">

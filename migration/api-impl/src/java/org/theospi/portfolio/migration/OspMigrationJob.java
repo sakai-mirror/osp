@@ -620,10 +620,10 @@ public class OspMigrationJob implements Job {
 
                String columnLabel = defaultScaffoldingBean.getColumnLabel(); //rs.getString("columnLabel");
                String rowLabel = defaultScaffoldingBean.getRowLabel(); //rs.getString("rowLabel");
-               String readyColor = defaultScaffoldingBean.getReadyColor(); //rs.getString("readyColor");
-               String pendingColor = defaultScaffoldingBean.getPendingColor(); //rs.getString("pendingColor");
-               String completedColor = defaultScaffoldingBean.getCompletedColor(); //rs.getString("completedColor");
-               String lockColor = defaultScaffoldingBean.getLockedColor(); //rs.getString("lockColor");
+               String readyColor = "";//defaultScaffoldingBean.getReadyColor(); //rs.getString("readyColor");
+               String pendingColor = "";//defaultScaffoldingBean.getPendingColor(); //rs.getString("pendingColor");
+               String completedColor = "";//defaultScaffoldingBean.getCompletedColor(); //rs.getString("completedColor");
+               String lockColor = "";//defaultScaffoldingBean.getLockedColor(); //rs.getString("lockColor");
                int    workflowOption = Scaffolding.HORIZONTAL_PROGRESSION; //rs.getInt("workflowOption");
                String exposed_page_id = ""; //rs.getString("exposed_page_id");
                String style_id = ""; //rs.getString("style_id");

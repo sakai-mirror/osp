@@ -172,10 +172,6 @@
    <bean id="defaultScaffoldingBean" class="org.theospi.portfolio.matrix.DefaultScaffoldingBean">
       <property name="columnLabel"><value>Column</value></property>
       <property name="rowLabel"><value>Row</value></property>
-      <property name="readyColor"><value>#86F283</value></property>
-      <property name="pendingColor"><value>#F7EF84</value></property>
-      <property name="completedColor"><value>#A6C7EA</value></property>
-      <property name="lockedColor"><value>#AC326B</value></property>
    </bean>
 
    <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactMatrix"

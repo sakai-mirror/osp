@@ -77,7 +77,9 @@
 				<td><textarea name="<c:out value="${status.expression}"/>" id="descriptionTextArea" rows="5" cols="80">
                <c:out value="${status.value}"/></textarea></td>
                 </tr></table>
-				<font color="red"><c:out value="${status.errorMessage}"/></font>
+				<c:if test="${status.error}">
+                <div class="validation"><c:out value="${status.errorMessage}"/></div>
+            </c:if>
 			</spring:bind>
 		</p>
 
@@ -145,7 +147,9 @@
     					<tr>
                         <td>
     							<div class="tier0">
-    								<font color="<c:out value="${level.textColor}"/>"><c:out value="${level.description}"/></font>
+    								<span class="matrixColumnDefault" style="color: <c:if test="${not empty level.textColor}" ><c:out value="${level.textColor}"/></c:if>">
+    									<c:out value="${level.description}"/>
+    								</span>
 										<c:if test="${not empty level.color}">
 											<input class="colorBox" disabled="disabled" value="" size="2" style="background-color: <c:out value="${level.color}"/>" type="text">
 										</c:if>
@@ -229,7 +233,9 @@
 							<tr>
 								<td>
 									<div class="tier0">
-										<font color="<c:out value="${criterion.textColor}"/>"><c:out value="${criterion.description}"/></font>
+										<span class="matrixRowDefault" style="color: <c:if test="${not empty criterion.textColor}" ><c:out value="${criterion.textColor}"/></c:if>">
+    										<c:out value="${criterion.description}"/>
+    									</span>
 										<c:if test="${not empty criterion.color}">
 											<input class="colorBox" disabled="disabled" value="" size="2" style="background-color: <c:out value="${criterion.color}"/>" type="text">
 										</c:if>
@@ -289,6 +295,7 @@
             <input type="radio" id="<c:out value="${token}" />" name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
                <c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
 					<c:if test="${isMatrixUsed}"><c:out value="${disabledText}"/></c:if>
+				/>
             <label for="<c:out value="${token}" />"><osp:message key="${token}_progression_label"  />
                <osp:message key="${token}_progression_icon"  var="icon" />
                <c:if test="${not empty icon}" ><img src="<osp:url value="${icon}"/>" /></c:if>
@@ -308,13 +315,31 @@
                </c:if>
             <p class="shorttext">
                <span class="reqStar">*</span><label><osp:message key="${status.expression}_label"  /></label>
-               <input type="text" disabled="disabled" value="" size="2"
+               
+               <c:choose>
+               		<c:when test="${status.expression == 'readyColor'}">
+               			<c:set var="styleColor" value="matrix-READY" />
+               		</c:when>
+               		<c:when test="${status.expression == 'pendingColor'}">
+               			<c:set var="styleColor" value="matrix-PENDING" />
+               		</c:when>
+               		<c:when test="${status.expression == 'completedColor'}">
+               			<c:set var="styleColor" value="matrix-COMPLETE" />
+               		</c:when>
+               		<c:when test="${status.expression == 'lockedColor'}">
+               			<c:set var="styleColor" value="matrix-LOCKED" />
+               		</c:when>
+               </c:choose>
+               <input type="text" disabled="disabled" value="" size="2" class="<c:out value="${styleColor}"/>"
                         name="<c:out value="${status.expression}"/>_sample"
-                        style="background-color: <c:out value="${status.value}"/>" />
+                        <c:if test="${status.value != ''}">
+                        style="background-color: <c:out value="${status.value}"/>" 
+                        </c:if>
+                        />
                <input type="text" name="<c:out value="${status.expression}"/>"
                         value="<c:out value="${status.value}"/>"
                      size="25" maxlength="25"
-                     onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value">
+                     onchange="resetColor(document.forms[0].elements['<c:out value="${status.expression}"/>_sample'], document.forms[0].elements['<c:out value="${status.expression}"/>'].value);"/>
                <!--
                   Put icon by the input control.
                   Make it the link calling picker popup.
@@ -347,3 +372,13 @@
    <osp:richTextWrapper textAreaId="descriptionTextArea" />
 
 </form>
+
+<script language="JavaScript">
+
+function resetColor(element, value) {
+	if (value != '')
+		element.style.backgroundColor=value;
+
+}
+
+</script>

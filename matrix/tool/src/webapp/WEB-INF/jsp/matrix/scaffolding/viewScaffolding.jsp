@@ -37,22 +37,7 @@ function hrefViewCell(cellId) {
 		<p class="instruction"><fmt:message key="instructions_clickEdittosetup"/></p>
 	</c:if>
 	<c:if test="${not empty matrixContents.columnLabels}">
-		<p class="instruction"><fmt:message key="instructions_clickOnaCelltoEdit"/></p>
-<!--
-  <table width="800" border="0" height="33" bgcolor="#FFFFB8">
-    <tr bgcolor="#FFFFB8"> 
-      <td height="36" width="100" align="left">
-        &nbsp;
-      </td>
-      <td height="36" align="left">
-        <font face="Verdana, Arial, Helvetica, sans-serif" size="2">
-           <fmt:message key="instructions_clickOnaCelltoEdit"/>
-        </font>
-      </td>
-    </tr>
-  </table>
-  <br/>
- -->  
+		<p class="instruction"><fmt:message key="instructions_clickOnaCelltoEdit"/></p>  
 
 		<c:set var="columnHeading" value="${matrixContents.columnLabels}" />
 		<table cellspacing="0" width="100%">
@@ -63,23 +48,21 @@ function hrefViewCell(cellId) {
                </osp-h:glossary>
 				</th>
 				<c:forEach var="head" items="${columnHeading}">
-					<th class="matrix-column-heading" width="10%" 
-                  bgcolor="<c:out value="${head.color}"/>">
+					<th class="matrix-column-heading matriColumnDefault" width="10%" 
+                  bgcolor="<c:out value="${head.color}"/>" 
+                  style="color: <c:if test="${not empty head.textColor}" ><c:out value="${head.textColor}"/></c:if>">
                   <osp-h:glossary link="true" hover="true">
-                     <font color="<c:out value="${head.textColor}"/>">
-   						   <c:out value="${head.description}"/>
-                     </font>
+                     <c:out value="${head.description}"/>
                   </osp-h:glossary>
 					</th>
 				</c:forEach>
 			</tr>   
 			<c:forEach var="rowLabel" items="${matrixContents.rowLabels}" varStatus="loopStatus" >
 				<tr>
-					<th class="matrix-row-heading" bgcolor="<c:out value="${rowLabel.color}"/>" >
+					<th class="matrix-row-heading matriRowDefault" bgcolor="<c:out value="${rowLabel.color}"/>" 
+						style="color: <c:if test="${not empty rowLabel.textColor}" ><c:out value="${rowLabel.textColor}"/></c:if>">
                   <osp-h:glossary link="true" hover="true">
-                     <font color="<c:out value="${rowLabel.textColor}"/>">
                         <c:out value="${rowLabel.description}"/>
-                     </font>
                   </osp-h:glossary>
 					</th>
 	    

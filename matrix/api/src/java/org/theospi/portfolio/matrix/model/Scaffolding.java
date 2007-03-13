@@ -92,14 +92,9 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
 
    public Scaffolding() {}
    
-   public Scaffolding (String columnLabel, String rowLabel, String readyColor,
-         String pendingColor, String completedColor, String lockedColor) {
+   public Scaffolding (String columnLabel, String rowLabel) {
       this.columnLabel = columnLabel;
       this.rowLabel = rowLabel;
-      this.readyColor = readyColor;
-      this.pendingColor = pendingColor;
-      this.completedColor = completedColor;
-      this.lockedColor = lockedColor;
    }
    
    /* (non-Javadoc)

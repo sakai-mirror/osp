@@ -1,8 +1,15 @@
 <style>
 
-   TD.matrix-COMPLETE{ background-color: <c:out value="${matrixContents.scaffolding.completedColor}" />;}
-   TD.matrix-PENDING{ background-color: <c:out value="${matrixContents.scaffolding.pendingColor}" />;}
-   TD.matrix-READY{ background-color: <c:out value="${matrixContents.scaffolding.readyColor}" />;}
-   TD.matrix-LOCKED{ background-color: <c:out value="${matrixContents.scaffolding.lockedColor}" />;}
-
+	<c:if test="${matrixContents.scaffolding.completedColor != ''}">
+   TD.matrix-COMPLETE, INPUT.matrix-COMPLETE { background-color: <c:out value="${matrixContents.scaffolding.completedColor}" />;}
+	</c:if>
+	<c:if test="${matrixContents.scaffolding.pendingColor != ''}">
+   TD.matrix-PENDING, INPUT.matrix-PENDING { background-color: <c:out value="${matrixContents.scaffolding.pendingColor}" />;}
+	</c:if>
+	<c:if test="${matrixContents.scaffolding.readyColor != ''}">
+   TD.matrix-READY, INPUT.matrix-READY { background-color: <c:out value="${matrixContents.scaffolding.readyColor}" />;}
+	</c:if>
+	<c:if test="${matrixContents.scaffolding.lockedColor != ''}">
+   TD.matrix-LOCKED, INPUT.matrix-LOCKED { background-color: <c:out value="${matrixContents.scaffolding.lockedColor}" />;}
+	</c:if>
 </style>

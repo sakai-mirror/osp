@@ -33,6 +33,7 @@
          <label><fmt:message key="label_bgColor"/></label>   
          <input type="text" disabled="disabled" value="" size="2" 
                         name="<c:out value="${status.expression}"/>_sample"
+                        class="matrixColumnDefault"
                         style="background-color: <c:out value="${status.value}"/>" />   
                         
          <input type="Text" name="<c:out value="${status.expression}"/>" 
@@ -52,6 +53,7 @@
          <label><fmt:message key="label_fontColor"/></label>
          <input type="text" disabled="disabled" value="" size="2" 
                         name="<c:out value="${status.expression}"/>_sample"
+                        class="matrixColumnFontAsBGDefault"
                         style="background-color: <c:out value="${status.value}"/>" />   
       
          <input type="Text" name="<c:out value="${status.expression}"/>" 

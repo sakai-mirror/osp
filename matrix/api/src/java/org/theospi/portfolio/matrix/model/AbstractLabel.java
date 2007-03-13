@@ -32,7 +32,7 @@ public abstract class AbstractLabel extends IdentifiableObject implements Serial
    Id id;
    String description;
    String color;
-   String textColor = "#000000";
+   String textColor;
    private int sequenceNumber = 0;
    private Scaffolding scaffolding;
 

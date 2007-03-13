@@ -61,10 +61,10 @@ TD.matrix-cell-border{
       border-bottom: 2px solid black;
       border-left: 2px solid black;}
 
-TD.matrix-COMPLETE{ background-color: #a6c7ea;}
-TD.matrix-PENDING{ background-color: #f7ef84;}
-TD.matrix-READY{ background-color: #86f283;}
-TD.matrix-LOCKED{ background-color: #ac326b;}
+TD.matrix-COMPLETE, INPUT.matrix-COMPLETE { background-color: #a6c7ea;}
+TD.matrix-PENDING, INPUT.matrix-PENDING { background-color: #f7ef84;}
+TD.matrix-READY, INPUT.matrix-READY { background-color: #86f283;}
+TD.matrix-LOCKED, INPUT.matrix-LOCKED { background-color: #ac326b;}
 
 TD.matrixLegend-border{ border: 1px solid black;}
 
@@ -77,6 +77,15 @@ TH.reviewer-heading { background-color: #ffff99; font-weight: bold; text-decorat
    border-color: #000000; border-spacing: 2px; border-width: 1px; border-style: solid;
    height: 35px; vertical-align: bottom; padding: 5px;}
 
+
+.matrixColumnDefault { color: #000000; }
+.matrixRowDefault { color: #000000; }
+
+/* These should be the same as the above font colors, this class is used when 
+ * displaying the color swatch for the color picker
+ */
+.matrixColumnFontAsBGDefault { background-color: #000000; }
+.matrixRowFontAsBGDefault { background-color: #000000; }
 
 IMG.middle-aligned { vertical-align: middle }
 
