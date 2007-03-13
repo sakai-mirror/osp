@@ -13,7 +13,7 @@
 <form method="POST">
 
 	<div class="act">
-      <input name="continue" type="submit" value="<osp:message key="button_continue"/>"/>
-      <input name="cancel" type="submit" value="<osp:message key="button_cancel"/>"/>
+      <input name="continue" type="submit" value="<osp:message key="button_continue"/>" accesskey="s" class="active"/>
+      <input name="cancel" type="submit" value="<osp:message key="button_cancel"/>"  accesskey="x" />
 	</div>
 </form>

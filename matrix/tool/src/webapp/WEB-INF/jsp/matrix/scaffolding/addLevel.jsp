@@ -7,7 +7,6 @@
 
 	<h3><fmt:message key="title_edit_ScaffColumn"/></h3>
 	
-	
 	<div class="instruction">
 		<fmt:message key="instructions_scaffColumn"/>
 		<fmt:message key="instructions_requiredFields"/>
@@ -23,20 +22,20 @@
              <div class="validation"><c:out value="${status.errorMessage}"/></div>
           </c:if>
 		  <p class="shorttext indnt2">
-				<span class="reqStar">*</span><label><fmt:message key="label_columnName"/></label> 
-				<input type="text" name="<c:out value="${status.expression}"/>" 
+				<span class="reqStar">*</span><label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_columnName"/></label> 
+				<input type="text" name="<c:out value="${status.expression}"/>"  id="<c:out value="${status.expression}"/>-id" 
 					   value="<c:out value="${status.displayValue}"/>"/>
 		    </p>
         </spring:bind>
         <p class="shorttext indnt2">
       <spring:bind path="level.color">
-         <label><fmt:message key="label_bgColor"/></label>   
+         <label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_bgColor"/></label>   
          <input type="text" disabled="disabled" value="" size="2" 
                         name="<c:out value="${status.expression}"/>_sample"
                         class="matrixColumnDefault"
                         style="background-color: <c:out value="${status.value}"/>" />   
                         
-         <input type="Text" name="<c:out value="${status.expression}"/>" 
+         <input type="text" name="<c:out value="${status.expression}"/>"  id="<c:out value="${status.expression}"/>-id" 
                value="<c:out value="${status.displayValue}"/>"
                onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value"/>
          <span class="error_message"><c:out value="${status.errorMessage}"/></span>
@@ -45,18 +44,18 @@
             Make it the link calling picker popup.
             Specify input object reference as first parameter to the function and palete selection as second.
          -->
-         <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])"><img width="15" height="13" border="0" alt="Click Here to Pick up the color" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
+         <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])" title="<fmt:message key="color_picker_back_linktitle"/>"><img width="15" height="13" border="0" alt="<fmt:message key="color_picker_back_linktitle"/>" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
       </spring:bind>
    </p>
            <p class="shorttext indnt2">
       <spring:bind path="level.textColor">
-         <label><fmt:message key="label_fontColor"/></label>
+         <label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_fontColor"/></label>
          <input type="text" disabled="disabled" value="" size="2" 
                         name="<c:out value="${status.expression}"/>_sample"
                         class="matrixColumnFontAsBGDefault"
                         style="background-color: <c:out value="${status.value}"/>" />   
       
-         <input type="Text" name="<c:out value="${status.expression}"/>" 
+         <input type="text" name="<c:out value="${status.expression}"/>"  id="<c:out value="${status.expression}"/>-id" 
                value="<c:out value="${status.displayValue}"/>"
                onchange="document.forms[0].elements['<c:out value="${status.expression}"/>_sample'].style.backgroundColor='' + document.forms[0].elements['<c:out value="${status.expression}"/>'].value"/>
          <span class="error_message"><c:out value="${status.errorMessage}"/></span>
@@ -65,7 +64,7 @@
             Make it the link calling picker popup.
             Specify input object reference as first parameter to the function and palete selection as second.
          -->
-         <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])"><img width="15" height="13" border="0" alt="Click Here to Pick up the color" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
+         <a href="javascript:TCP.popup(document.forms[0].elements['<c:out value="${status.expression}"/>'])" title="<fmt:message key="color_picker_fore_linktitle"/>"><img width="15" height="13" border="0" alt="<fmt:message key="color_picker_fore_linktitle"/>" src="<osp:url value="/js/colorPicker/img/sel.gif"/>"></a>
       </spring:bind>
    </p>
 		
@@ -74,8 +73,8 @@
 				<input type="hidden" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.displayValue}"/>"/>
 				<span class="error_message"><c:out value="${status.errorMessage}"/></span>
 			</spring:bind>
-			<input type="submit" name="updateAction" class="active" value="<osp:message key="button_update" />"/>
-			<input type="button" name="action" value="<osp:message key="button_cancel" />" onclick="javascript:doCancel()"/>
+			<input type="submit" name="updateAction" class="active" value="<osp:message key="button_update" />" accesskey="s" />
+			<input type="button" name="action" value="<osp:message key="button_cancel" />" onclick="javascript:doCancel()" accesskey="x"/>
 		</div>
 		
 	</form>

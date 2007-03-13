@@ -14,7 +14,7 @@
 <f:view>
 <f:loadBundle basename="org.theospi.portfolio.common.bundle.Messages" var="msgs"/>
 
-<sakai:view>
+<sakai:view>	
 <sakai:view_title value="#{audience.globalTitle}"/>
 <f:subview rendered="#{audience.portfolioWizard}" id="steps">
     <%@ include file="steps.jspf" %>
@@ -142,17 +142,16 @@
             </ospx:xheader>
         </ospx:splitsection>
     </ospx:splitarea>
-
     <sakai:button_bar>
         <sakai:button_bar_item id="save_button" action="#{audience.processActionSave}"
-                               value="#{common_msgs.save_audience}"/>
+                               value="#{common_msgs.save_audience}" styleClass="active" accesskey="s" />
         <sakai:button_bar_item id="saveNotify_button" action="#{audience.processActionSaveNotify}"
                                value="#{common_msgs.save_notify_audience}" rendered="#{audience.portfolioWizardNotify}"/>
         <sakai:button_bar_item id="back_button" action="#{audience.processActionBack}"
                                rendered="#{audience.portfolioWizard}"
                                value="#{common_msgs.back_audience}"/>
         <sakai:button_bar_item id="_target1" action="#{audience.processActionCancel}"
-                               value="#{common_msgs.cancel_audience}"/>
+                               value="#{common_msgs.cancel_audience}" accesskey="x" />
     </sakai:button_bar>
 </h:form>
 

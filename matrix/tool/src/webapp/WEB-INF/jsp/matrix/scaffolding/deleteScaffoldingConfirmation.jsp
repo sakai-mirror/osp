@@ -17,7 +17,7 @@
 
 <form method="POST">
    <div class="act">
-      <input name="continue" type="submit" value="<fmt:message key="button_continue" />"/>
-      <input name="cancel" type="submit" value="<fmt:message key="button_cancel" />"/>
+      <input name="continue" type="submit" value="<fmt:message key="button_continue" />" class="active" accesskey="s" />
+      <input name="cancel" type="submit" value="<fmt:message key="button_cancel" />"  accesskey="x"/>
    </div>
 </form>

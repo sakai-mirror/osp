@@ -22,7 +22,6 @@ function hrefViewCell(cellId) {
 			</c:if>
          <a href="<osp:url value="listScaffolding.osp"/>"><fmt:message key="action_list"/></a>
 		</div>
-
 	<h3><fmt:message key="title_matrixScaffolding"/></h3>
    
    <c:if test="${not empty matrixContents.scaffolding.description}">

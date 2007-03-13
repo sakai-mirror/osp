@@ -7,7 +7,7 @@
 <form method="POST" action="<osp:url value="reviewPostProcessor.osp"/>">
    <osp:form/>
    
-   <h4><osp:message key="title_pogression" bundle="${msgs}" /></h4>
+   <h3><osp:message key="title_pogression" bundle="${msgs}" /></h3>
    <fieldset>
       <legend class="radio"><osp:message key="legend_workflowOptions" bundle="${msgs}" /></legend>
       <c:forEach var="option" items="${workflows}" varStatus="loopStatus">
@@ -31,7 +31,7 @@
    </fieldset>
    
    <p class="act">      
-      <input type="submit" name="submit" class="active" value="<osp:message key="submit" bundle="${msgs}" />"/>
+      <input type="submit" name="submit" class="active" value="<osp:message key="submit" bundle="${msgs}" />" accesskey="s" />
       <input type="hidden" name="objId" value="<c:out value="${obj_id}"/>"/>
       <input type="hidden" name="manager" value="<c:out value="${manager}"/>"/>
    </p>

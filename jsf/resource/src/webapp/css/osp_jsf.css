@@ -1,10 +1,13 @@
 /* Styles for the xheader */    
 .xheader {
-     background-color:#808080;
-     color:#FFFFFF;
-     font-size: 17px;
+/*  background-color:#eee;
+*/  color:#EE8800;
+font-weight: bold;
+		
+	font-size:1.2em;
      vertical-align: middle;
-     height: 23px;
+	  padding:.3em 0;	
+
  }
  .xhItalics {
      background-color:#808080;
@@ -53,4 +56,12 @@
  
  .osp_required_field {
    color:#FF0000;
+ }
+ .drawerBorder {
+	margin:0;
+	padding:0;
+	
+ }
+ .drawerBorder table {
+	margin:0;
  }

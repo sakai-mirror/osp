@@ -12,80 +12,66 @@
 %>
 
 <f:view>
-
 <sakai:view>
    <sakai:view_title value="#{common_msgs.guidance_title}"/>
    <sakai:messages />
 
 <h:form>
-    <sakai:panel_titled title="#{common_msgs.instruction_title}" >
-       <ospx:splitarea direction="horizontal" width="100%">
-          <ospx:splitsection size="475" valign="top">
-            <h:outputText value="#{guidance.current.instruction.base.text}" escape="false" />
-          </ospx:splitsection>
-          <ospx:splitsection valign="top">
-            <sakai:flat_list value="#{guidance.current.instruction.attachments}" var="material">
-               <h:column>
-                  <f:facet name="header">
-                     <h:outputText value="#{common_msgs.attachments}"/>
-                  </f:facet>
-                  <h:outputLink title="#{material.displayName}"
-                     value="#{material.fullReference.base.url}" target="_new">
-                     <sakai:contentTypeMap fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
-                     <h:graphicImage id="instrFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
-                     <h:outputText value="#{material.displayName}"/>
-                  </h:outputLink>
-               </h:column>
-            </sakai:flat_list>
-          </ospx:splitsection>
-      </ospx:splitarea>
-    </sakai:panel_titled>
-    <sakai:panel_titled title="#{common_msgs.example_title}" >
-       <ospx:splitarea direction="horizontal" width="100%">
-          <ospx:splitsection size="475" valign="top">
-            <h:outputText value="#{guidance.current.example.base.text}" escape="false" />
-          </ospx:splitsection>
-          <ospx:splitsection valign="top">
-            <sakai:flat_list value="#{guidance.current.example.attachments}" var="material">
-               <h:column>
-                  <f:facet name="header">
-                     <h:outputText value="#{common_msgs.attachments}"/>
-                  </f:facet>
-                  <h:outputLink title="#{material.displayName}"
-                     value="#{material.fullReference.base.url}" target="_new">
-                     <sakai:contentTypeMap fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
-                     <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
-                     <h:outputText value="#{material.displayName}"/>
-                  </h:outputLink>
-               </h:column>
-            </sakai:flat_list>
-          </ospx:splitsection>
-      </ospx:splitarea>
-    </sakai:panel_titled>
-    <sakai:panel_titled title="#{common_msgs.rationale_title}" >
-       <ospx:splitarea direction="horizontal" width="100%">
-          <ospx:splitsection size="475" valign="top">
-            <h:outputText value="#{guidance.current.rationale.base.text}" escape="false" />
-          </ospx:splitsection>
-          <ospx:splitsection valign="top">
-            <sakai:flat_list value="#{guidance.current.rationale.attachments}" var="material">
-               <h:column>
-                  <f:facet name="header">
-                     <h:outputText value="#{common_msgs.attachments}"/>
-                  </f:facet>
-                  <h:outputLink title="#{material.displayName}"
-                     value="#{material.fullReference.base.url}" target="_new">
-                     <sakai:contentTypeMap fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
-                     <h:graphicImage id="rationaleFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
-                     <h:outputText value="#{material.displayName}"/>
-                  </h:outputLink>
-               </h:column>
-            </sakai:flat_list>
-          </ospx:splitsection>
-      </ospx:splitarea>
-    </sakai:panel_titled>
+	<h4>
+    	<h:outputText value="#{common_msgs.instruction_title}" />
+	</h4>
+	<div class="textPanel">
+		<h:outputText value="#{guidance.current.instruction.base.text}" escape="false" />
+	</div>	
+	<sakai:flat_list value="#{guidance.current.instruction.attachments}" var="material" summary="">
+	   <h:column>
+		  <h:outputLink title="#{material.displayName}" styleClass="indnt1"
+			 value="#{material.fullReference.base.url}" target="_blank">
+			 <sakai:contentTypeMap fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+			 <h:graphicImage id="instrFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
+			 <h:outputText value="#{material.displayName}"/>
+		  </h:outputLink>
+	   </h:column>
+	</sakai:flat_list>
 
-	<h:commandButton id="cancel" value="#{common_msgs.back_guidance}" action="#{guidance.processActionCancel}" />
+	<h4>
+		<%--TODO need a rendered attribute below checking for example content --%>
+		<h:outputText value="#{common_msgs.example_title}" />
+	</h4>
+	<div class="textPanel">	
+		<h:outputText value="#{guidance.current.example.base.text}" escape="false" />
+		<sakai:flat_list value="#{guidance.current.example.attachments}" var="material"  summary="">
+		   <h:column>
+			  <h:outputLink title="#{material.displayName}" styleClass="indnt1"
+				 value="#{material.fullReference.base.url}" target="_blank">
+				 <sakai:contentTypeMap fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+				 <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
+				 <h:outputText value="#{material.displayName}"/>
+			  </h:outputLink>
+		   </h:column>
+		</sakai:flat_list>
+		</div>		
+	<h4>
+	<%--TODO need a rendered attribute below checking for rationale content --%>
+		<h:outputText value="#{common_msgs.rationale_title}" />
+	</h4>
+	<div class="textPanel">	
+		<h:outputText value="#{guidance.current.rationale.base.text}" escape="false" />
+	</div>	
+	<sakai:flat_list value="#{guidance.current.rationale.attachments}" var="material"  summary="">
+	   <h:column>
+		  <h:outputLink title="#{material.displayName}" styleClass="indnt1"
+			 value="#{material.fullReference.base.url}" target="_blank">
+			 <sakai:contentTypeMap fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+			 <h:graphicImage id="rationaleFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
+			 <h:outputText value="#{material.displayName}"/>
+		  </h:outputLink>
+	   </h:column>
+	</sakai:flat_list>
+
+	<div class="act">
+		<h:commandButton id="cancel" value="#{common_msgs.back_guidance}" action="#{guidance.processActionCancel}" accesskey="x" styleClass="active"/>
+	</div>
 
 </h:form>
 </sakai:view>

@@ -57,6 +57,12 @@ TD.header-info { COLOR: #ffffff; font-size:12pt; font-family: Verdana, Verdana, 
 TD.header-item { COLOR: #000000; font-weight: bold; font-size:.8em; font-family: Verdana, Verdana, Verdana, sans-serif;}
 TD.reviewer-cell { border-color: #000000; border-spacing: 2px; border-width: 1px; border-style: solid; padding: 5px;}
 
+.matrixLegendTable{
+	width:auto;
+}
+.matrixLegendTable td{
+	width:2em;
+}
 TD.matrix-cell-border{
       border-bottom: 2px solid black;
       border-left: 2px solid black;}
@@ -123,4 +129,7 @@ INPUT.colorBox {
 	margin-left:20px;
 }
 
-
+/*give some boxes in matrix/wizards some definition*/
+.bordered-l{
+ 	border:1px solid #bbb
+ }

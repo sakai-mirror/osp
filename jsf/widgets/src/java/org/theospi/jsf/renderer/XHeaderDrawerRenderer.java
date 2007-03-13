@@ -63,9 +63,10 @@ public class XHeaderDrawerRenderer extends Renderer
       RendererUtil.writeAttr(writer, "class", cssclass);
       RendererUtil.writeAttr(writer, "id", component.getDivId());
 		if(!initiallyexpanded)
-         RendererUtil.writeAttr(writer, "style", "display:none;padding:3%");
-      else
-         RendererUtil.writeAttr(writer, "style", "display:block;;padding:3%");
+//removed padding - let the css deal with that
+			RendererUtil.writeAttr(writer, "style", "display:none;");
+		else
+			RendererUtil.writeAttr(writer, "style", "display:block;");
 		writer.write(">");
 	}
 

@@ -43,20 +43,18 @@
 <osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
 
 <h3><fmt:message key="title_matrixManager"/></h3>
-
-<table class="listHier" cellspacing="0" >
+<table class="listHier lines nolines" cellspacing="0"  border="0" summary="<fmt:message key="list_matrix_summary"/>">
    <thead>
       <tr>
          <th scope="col"><fmt:message key="table_header_name"/></th>
-         <th scope="col"><fmt:message key="table_header_description"/></th>
          <th scope="col"><fmt:message key="table_header_owner"/></th>
          <th scope="col"><fmt:message key="table_header_published"/></th>
       </tr>
    </thead>
    <tbody>
   <c:forEach var="scaffold" items="${scaffolding}">
-    <TR>
-      <TD nowrap>
+    <tr>
+      <td style="white-space: nowrap">
          <c:if test="${(scaffold.published || scaffold.preview) && (scaffold.owner == osp_agent || can.use || matrixCan.review || matrixCan.evaluate)}">
             <a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />" title="<fmt:message key="scaffolding_link_title">
                <fmt:param><c:out value="${scaffold.title}"/></fmt:param>
@@ -119,13 +117,9 @@
        --%>     
              
          </div>
-      </TD>
-		
-      <TD><c:out value="${scaffold.description}" escapeXml="false"/></TD>
-		
-      <TD><c:out value="${scaffold.owner.displayName}" /></TD>
-		
-      <TD>
+      </td>
+     <td><c:out value="${scaffold.owner.displayName}" /></td>
+      <td>
          <c:if test="${scaffold.published}">
             <fmt:message key="scaffolding_published_true"/>
          </c:if>
@@ -135,8 +129,14 @@
          <c:if test="${!scaffold.published && !scaffold.preview}">
             <fmt:message key="scaffolding_published_false"/>
          </c:if>
-		</TD>
-    </TR>
+		</td>
+    </tr>
+	<tr class="exclude">
+			
+      <td colspan="4"><div class="textPanel indnt1 instruction"><c:out value="${scaffold.description}" escapeXml="false"/></div></td>
+		
+
+	</tr>
 
   </c:forEach>
   

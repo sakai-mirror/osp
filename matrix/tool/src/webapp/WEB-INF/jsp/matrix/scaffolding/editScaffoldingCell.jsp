@@ -21,7 +21,10 @@
     </c:if>
 
     <h3><fmt:message key="${pageTitleKey}" /></h3>
-
+		<c:if test="${empty helperPage}">
+			(<c:out value="${scaffoldingCell.scaffolding.rowLabel}"/>: <span class="highlight"><c:out value="${scaffoldingCell.rootCriterion.description}"/></span>; <c:out value="${scaffoldingCell.scaffolding.columnLabel}"/>: <span class="highlight"><span class="highlight"><c:out value="${scaffoldingCell.level.description}"/></span>) </h3>
+		</span
+			</c:if>
 	<div class="instruction"> 
           <fmt:message key="${pageInstructionsKey}"/>
           <fmt:message key="instructions_requiredFields"/> 
@@ -56,27 +59,19 @@
 	<input type="hidden" name="displayText" value="" /> 
 	<input type="hidden" name="finalDest" value="" /> 
     <input type="hidden" name="validate" value="false" />
-    
-
-      <c:if test="${empty helperPage}">
-          <table class="itemSummary" cellspacing="0">
-             <tr><th><c:out value="${scaffoldingCell.scaffolding.columnLabel}"/>: </th><td><c:out value="${scaffoldingCell.level.description}"/></td></tr>
-             <tr><th><c:out value="${scaffoldingCell.scaffolding.rowLabel}"/>: </th><td><c:out value="${scaffoldingCell.rootCriterion.description}"/></td></tr>
-          </table>
-      </c:if>
 
         <spring:bind path="scaffoldingCell.title">
           <c:if test="${status.error}">
              <div class="validation"><c:out value="${status.errorMessage}"/></div>
           </c:if>
 		  <p class="shorttext">
-				<span class="reqStar">*</span><label><fmt:message key="label_cellTitle"/></label>
+				<span class="reqStar">*</span><label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_cellTitle"/></label>
 				<input type="text" name="<c:out value="${status.expression}"/>"
-					   value="<c:out value="${status.displayValue}"/>" size="40"/>
+					   value="<c:out value="${status.displayValue}"/>" size="40" id="<c:out value="${status.expression}"/>-id"/>
 		    </p>
         </spring:bind>
         
-        <p class="longtext">
+        <div class="longtext">
             <label class="block"><fmt:message key="label_cellDescription"/></label>
             <spring:bind path="scaffoldingCell.wizardPageDefinition.description">
                      <table><tr>
@@ -87,8 +82,7 @@
                <div class="validation"><c:out value="${status.errorMessage}"/></div>
                </c:if>
             </spring:bind>
-      </p>
-      
+      </div>
       <c:if test="${isWizard != 'true'}">
          <spring:bind path="scaffoldingCell.initialStatus">  
             <c:if test="${status.error}">
@@ -96,8 +90,8 @@
             </c:if>
           <p class="shorttext">
             <span class="reqStar">*</span>
-            <label><fmt:message key="label_initialStatus"/></label>     
-               <select name="<c:out value="${status.expression}"/>" >
+            <label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_initialStatus"/></label>     
+               <select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>-id">
                   <option value="READY" <c:if test="${status.value=='READY'}"> selected</c:if>><fmt:message key="matrix_legend_ready"/></option>
                   <option value="LOCKED" <c:if test="${status.value=='LOCKED'}"> selected</c:if>><fmt:message key="matrix_legend_locked"/></option>
                </select>
@@ -112,11 +106,11 @@
       
      <!-- ************* Style Area Start ************* -->
          <p class="shorttext">
-            <label><fmt:message key="style_section_header"/></label>    
+            <label for="styleName"><fmt:message key="style_section_header"/></label>    
 
       
          <c:if test="${empty scaffoldingCell.wizardPageDefinition.style}">
-            <input name="styleName" value="<c:out value="" />" />
+            <input name="styleName" value="<c:out value="" />" id="styleName" type="text" />
             <a href="javascript:document.forms[0].dest.value='stylePickerAction';
             document.forms[0].submitAction.value='forward';
             document.forms[0].params.value='stylePickerAction=true:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:styleReturnView=<c:out value="${styleReturnView}" />';
@@ -126,7 +120,7 @@
          </c:if>
          <c:if test="${not empty scaffoldingCell.wizardPageDefinition.style}">
             <c:set value="${scaffoldingCell.wizardPageDefinition.style}" var="style" />
-            <input name="styleName" value="<c:out value="${style.name}" />" />
+            <input name="styleName" value="<c:out value="${style.name}" />" id="styleName" type="text" />
             <a href="javascript:document.forms[0].dest.value='stylePickerAction';
             document.forms[0].submitAction.value='forward';
             document.forms[0].params.value='stylePickerAction=true:currentStyleId=<c:out value="${style.id}"/>:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:styleReturnView=<c:out value="${styleReturnView}" />';
@@ -145,115 +139,159 @@
 	        <fmt:message key="addForms_instructions" />
 	     </div>
       </c:if>
-      <p class="shorttext">
-         <label><fmt:message key="label_selectForm"/></label>    
-         <select name="selectAdditionalFormId" >
+	  <p class="shorttext">
+         <label for="selectAdditionalFormId" ><fmt:message key="label_selectForm"/></label>    
+         <select name="selectAdditionalFormId"  id="selectAdditionalFormId" 
             <option value="" selected><fmt:message key="select_form_text" /></option>
             <c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
                <option value="<c:out value="${addtlForm.id}"/>">
                   <c:out value="${addtlForm.name}"/></option>
             </c:forEach>
          </select>
-         <span class="act">
-            <input type="submit" name="addForm" value="<fmt:message key="button_add"/>" onclick="javascript:document.forms[0].validate.value='false';" />
-         </span>
-      </p>
-      
-      <c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
-         <img src = '/library/image/sakai/generic.gif' border= '0' alt ='' hspace='0' />
-         <c:out value="${chosenForm.name}" />
-         <c:if test="${empty localDisabledText}">
-            <div class="itemAction">
-               <a href="javascript:document.forms[0].submitAction.value='removeFormDef';
-                  document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
-                  document.forms[0].onsubmit();
-                  document.forms[0].submit();">
-                    <osp:message key="remove"/>
-               </a>
-            </div>
-         </c:if>
-         <br />
-      
-      </c:forEach>
-        
+			 <span class="act">
+				<input type="submit" name="addForm" value="<fmt:message key="button_add"/>" onclick="javascript:document.forms[0].validate.value='false';" />
+			 </span>
+		</p>	 
+	  <table class="listHier lines nolines" cellpadding="0" cellspacing="0" summary="" style="width:50%">
+		  <c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
+		  <tr>
+			  <td>
+			  	<span class="indnt1">
+				<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' />
+				<c:out value="${chosenForm.name}" />
+				</span>
+			</td>
+			<td>
+				<c:if test="${empty localDisabledText}">
+					<div class="itemAction">
+						<a href="javascript:document.forms[0].submitAction.value='removeFormDef';
+						  document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
+						  document.forms[0].onsubmit();
+						  document.forms[0].submit();">
+							<osp:message key="remove"/>
+					   </a>
+					</div>
+				</c:if>
+			</td>
+			</tr>
+		  </c:forEach>
+	 </table>
       <!-- ************* Additional Forms Area End ************* -->   
 
    <!-- ************* Guidance Area Start ************* -->        
       <h4><osp:message key="guidance_header"/></h4>
-      <table class="itemSummary">
+      <table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" style="width:50%" summary="<osp:message key="guidance_table_summary"/>">
          <tr>
-            <th><osp:message key="instructions"/></th>
-            <td>
-      		   <c:if test="${not empty scaffoldingCell.guidance.instruction.limitedText}">
-                  <c:out value="${scaffoldingCell.guidance.instruction.limitedText}" escapeXml="false" />
-                  <br />
-      		   </c:if>
-               <c:forEach var="attachment" items="${scaffoldingCell.guidance.instruction.attachments}" varStatus="loopStatus">
-               		<img border="0" title="<c:out value="${attachment.displayName}" />"
-                                  alt="<c:out value="${attachment.displayName}"/>" 
-                                  src="/library/image/<osp-c:contentTypeMap 
-                                  fileType="${attachment.mimeType}" mapType="image" 
-                                  />"/>
-                     <a title="<c:out value="${attachment.displayName}" />"
-                        href="<c:out value="${attachment.fullReference.base.url}" />" target="_new">
-                        <c:out value="${attachment.displayName}"/>
-                     </a>
-                        <c:out value=" (${attachment.contentLength})"/>
-                        <br />
-               </c:forEach>
-               <div class="act">
-      			  <c:if test="${empty scaffoldingCell.guidance.instruction.limitedText}">
-		   	         <input type="button" name="selEval" value="<osp:message key="addInstructions"/>" 
-		                onclick="javascript:document.forms[0].dest.value='editInstructions';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" />
-                  </c:if>
-      			  <c:if test="${not empty scaffoldingCell.guidance.instruction.limitedText}">
-		   	         <input type="button" name="selEval" value="<osp:message key="reviseInstructions"/>" 
-		                onclick="javascript:document.forms[0].dest.value='editInstructions';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" />
-		          </c:if>
-		       </div>
+            <th><h5><osp:message key="instructions"/></h5></th>                     
+			<th style="text-align:right"  class="specialLink itemAction">
+			  <c:if test="${empty scaffoldingCell.guidance.instruction.limitedText}">
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='editInstructions';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+					<osp:message key="addInstructions"/>
+				</a>
+			  </c:if>
+			  <c:if test="${not empty scaffoldingCell.guidance.instruction.limitedText}">
+				 <a href="#" 
+					onclick="javascript:document.forms[0].dest.value='editInstructions';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+					<osp:message key="reviseInstructions"/>
+				</a>	
+			  </c:if>
+			 </th>
+			</tr>
+			<tr class="exclude">
+			<td colspan="2">
+				<div class="textPanel">
+				   <c:if test="${not empty scaffoldingCell.guidance.instruction.limitedText}">
+					  <c:out value="${scaffoldingCell.guidance.instruction.limitedText}" escapeXml="false" />
+				   </c:if>
+				   <ul class="attachList indnt1">
+					   <c:forEach var="attachment" items="${scaffoldingCell.guidance.instruction.attachments}" varStatus="loopStatus">
+							<li><img border="0" title="<c:out value="${attachment.displayName}" />"
+										  alt="<c:out value="${attachment.displayName}"/>" 
+										  src="/library/image/<osp-c:contentTypeMap 
+										  fileType="${attachment.mimeType}" mapType="image" 
+										  />"/>
+							 <a title="<c:out value="${attachment.displayName}" />"
+								href="<c:out value="${attachment.fullReference.base.url}" />" target="_blank">
+								<c:out value="${attachment.displayName}"/>
+							 </a>
+								<c:out value=" (${attachment.contentLength})"/>
+							</li>
+					   </c:forEach>
+					   <li><!--TODO empty list item placeholder - remove when list can be omitted because empty--></li>
+					</ul>   
+				 </div>  
             </td>
          </tr>
+		 </table>
+		   <table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" style="width:50%"  summary="<osp:message key="rationale_table_summary"/>">
          <tr>
-            <th><osp:message key="raiontale"/></th>
-            <td>
-      		   <c:if test="${not empty scaffoldingCell.guidance.rationale.limitedText}">
-                  <c:out value="${scaffoldingCell.guidance.rationale.limitedText}" escapeXml="false" />
-                  <br />
-      		   </c:if>
-               <c:forEach var="attachment" items="${scaffoldingCell.guidance.rationale.attachments}" varStatus="loopStatus">
-               		<img border="0" title="<c:out value="${attachment.displayName}" />"
-                                  alt="<c:out value="${attachment.displayName}"/>" 
-                                  src="/library/image/<osp-c:contentTypeMap 
-                                  fileType="${attachment.mimeType}" mapType="image" 
-                                  />"/>
-                     <a title="<c:out value="${attachment.displayName}" />"
-                        href="<c:out value="${attachment.fullReference.base.url}" />" target="_new">
-                        <c:out value="${attachment.displayName}"/>
-                     </a>
-                        <c:out value=" (${attachment.contentLength})"/>
-                        <br />
-               </c:forEach>
-               <div class="act">
-      			  <c:if test="${empty scaffoldingCell.guidance.rationale.limitedText}">
-		   	         <input type="button" name="selEval" value="<osp:message key="addRationale"/>" "
-		                onclick="javascript:document.forms[0].dest.value='editRationale';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" />
-                  </c:if>
-      			  <c:if test="${not empty scaffoldingCell.guidance.rationale.limitedText}">
-		   	         <input type="button" name="selEval" value="<osp:message key="reviseRationale"/>" 
-		                onclick="javascript:document.forms[0].dest.value='editRationale';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" />
-		          </c:if>
-		       </div>
+            <th><h5><osp:message key="rationale"/></h5></th>
+			<th style="text-align:right" class="specialLink itemAction">
+				<c:if test="${empty scaffoldingCell.guidance.rationale.limitedText}">
+					<a href="#" onclick="javascript:document.forms[0].dest.value='editRationale';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+						 <osp:message key="addRationale"/>
+					 </a>
+				</c:if>
+			  <c:if test="${not empty scaffoldingCell.guidance.rationale.limitedText}">
+				 <a href="#" 
+					onclick="javascript:document.forms[0].dest.value='editRationale';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+				<osp:message key="reviseRationale"/>
+				</a>
+			  </c:if>
+		  </th>
+		</tr>	
+      	<tr class="exclude">
+			<td colspan="2">
+				<div class="textPanel">
+					<c:if test="${not empty scaffoldingCell.guidance.rationale.limitedText}">
+					  <c:out value="${scaffoldingCell.guidance.rationale.limitedText}" escapeXml="false" />
+				   </c:if>
+				   <ul class="attachList indnt1">
+					   <c:forEach var="attachment" items="${scaffoldingCell.guidance.rationale.attachments}" varStatus="loopStatus">
+							<li><img border="0" title="<c:out value="${attachment.displayName}" />"
+										  alt="<c:out value="${attachment.displayName}"/>" 
+										  src="/library/image/<osp-c:contentTypeMap 
+										  fileType="${attachment.mimeType}" mapType="image" 
+										  />"/>
+							 <a title="<c:out value="${attachment.displayName}" />"
+								href="<c:out value="${attachment.fullReference.base.url}" />" target="_blank">
+								<c:out value="${attachment.displayName}"/>
+							 </a>
+								<c:out value=" (${attachment.contentLength})"/>
+								</li>
+					   </c:forEach>
+					   <li><!--TODO empty list item placeholder - remove when list can be omitted because empty--></li>
+				   </ul>	   
+				 </div>  
             </td>
          </tr>
+		</table>
+		  <table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" style="width:50%"  summary="<osp:message key="examples_table_summary"/>">
          <tr>
-            <th><osp:message key="examples"/></th>
-            <td>
-      		   <c:if test="${not empty scaffoldingCell.guidance.example.limitedText}">
+            <th><h5><osp:message key="examples"/></h5></th>
+            <th style="text-align:right" class="itemAction specialLink">
+			  <c:if test="${empty scaffoldingCell.guidance.example.limitedText}">
+					<a href="#" onclick="javascript:document.forms[0].dest.value='editExamples';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+					<osp:message key="addExamples"/>
+				</a>	
+			  </c:if>
+			  <c:if test="${not empty scaffoldingCell.guidance.example.limitedText}"> 
+					<a href="#"  onclick="javascript:document.forms[0].dest.value='editExamples';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+						<osp:message key="reviseExamples"/>
+					</a>	
+			  </c:if>
+			 </th>
+			 </tr>
+			 <tr class="exclude">
+			 <td colspan="2">
+			 	<div class="textPanel">
+				<c:if test="${not empty scaffoldingCell.guidance.example.limitedText}">
                   <c:out value="${scaffoldingCell.guidance.example.limitedText}" escapeXml="false" />
                   <br />
       		   </c:if>
+			   <ul class="attachList indnt1">
                <c:forEach var="attachment" items="${scaffoldingCell.guidance.example.attachments}" varStatus="loopStatus">
-               		<img border="0" title="<c:out value="${attachment.displayName}" />"
+               		<li><img border="0" title="<c:out value="${attachment.displayName}" />"
                                   alt="<c:out value="${attachment.displayName}"/>" 
                                   src="/library/image/<osp-c:contentTypeMap 
                                   fileType="${attachment.mimeType}" mapType="image" 
@@ -263,18 +301,11 @@
                         <c:out value="${attachment.displayName}"/>
                      </a>
                         <c:out value=" (${attachment.contentLength})"/>
-                        <br />
+					</li>	
                </c:forEach>
-               <div class="act">
-      			  <c:if test="${empty scaffoldingCell.guidance.example.limitedText}">
-		   	         <input type="button" name="selEval" value="<osp:message key="addExamples"/>" 
-		                onclick="javascript:document.forms[0].dest.value='editExamples';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" />
-                  </c:if>
-      			  <c:if test="${not empty scaffoldingCell.guidance.example.limitedText}">
-		   	         <input type="button" name="selEval" value="<osp:message key="reviseExamples"/>" 
-		                onclick="javascript:document.forms[0].dest.value='editExamples';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" />
-		          </c:if>
-		       </div>
+			      <li><!--TODO empty list item placeholder - remove when list can be omitted because empty--></li>
+				   </ul>	   
+				 </div>
             </td>
          </tr>
       </table>
@@ -282,8 +313,7 @@
       
       
    <!-- ************* Guidance and reflection Area Start ************* -->   
-      <h4><osp:message key="reflection_header"/></h4>
-	<div class="instruction"><fmt:message key="reflection_instructinos"/></div>
+     
       
             <spring:bind path="scaffoldingCell.reflectionDeviceType">  
             <input type="hidden" name="<c:out value="${status.expression}"/>"
@@ -294,10 +324,11 @@
             <c:if test="${status.error}">
                 <div class="validation"><c:out value="${status.errorMessage}"/></div>
             </c:if>
-            
+           <h4><osp:message key="label_selectReflectionDevice"/></h4>
+	<div class="instruction"><fmt:message key="reflection_select_instructions"/></div> 
           <p class="shorttext"> 
-            <label><fmt:message key="label_selectReflectionDevice"/></label>    
-               <select name="<c:out value="${status.expression}"/>" 
+            <label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectReflectionDevice"/></label>    
+               <select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>" 
                      <c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
                      <option onclick="document.forms[0].reflectionDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
                   <c:forEach var="refDev" items="${reflectionDevices}" varStatus="loopCount">
@@ -307,7 +338,7 @@
                </select>
           </p>
         </spring:bind>
-   <spring:bind path="scaffoldingCell.reviewDeviceType">  
+		<spring:bind path="scaffoldingCell.reviewDeviceType">  
             <input type="hidden" name="<c:out value="${status.expression}"/>"
                value="<c:out value="${status.value}"/>" />
         </spring:bind>   
@@ -315,9 +346,11 @@
          <c:if test="${status.error}">
              <div class="validation"><c:out value="${status.errorMessage}"/></div>
          </c:if>
+		<h4> <osp:message key="label_selectReviewDevice"/></h4>
+		<div class="instruction"><fmt:message key="feedback_select_instructions"/></div> 
        <p class="shorttext">
-         <label><fmt:message key="label_selectReviewDevice"/></label>    
-            <select name="<c:out value="${status.expression}"/>"
+         <label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectReviewDevice"/></label>    
+            <select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>"
                      <c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
                      <option onclick="document.forms[0].reviewDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
                   <c:forEach var="reviewDev" items="${reviewDevices}" varStatus="loopCount">
@@ -338,15 +371,15 @@
 		
    <h4><fmt:message key="header_Evaluators"/></h4>
    <div id="evaluatorsDiv">  
-	<div class="instruction"><fmt:message key="evaluation_instructions"/></div>
+	<div class="instruction"><fmt:message key="evaluation_select_instructions"/></div>
    
      <spring:bind path="scaffoldingCell.evaluationDevice">  
          <c:if test="${status.error}">
              <div class="validation"><c:out value="${status.errorMessage}"/></div>
          </c:if>
        <p class="shorttext">
-         <label><fmt:message key="label_selectEvaluationDevice"/></label>    
-            <select name="<c:out value="${status.expression}"/>"
+         <label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectEvaluationDevice"/></label>    
+            <select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>"
                      <c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
                      <option onclick="document.forms[0].evaluationDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
                   <c:forEach var="evalDev" items="${evaluationDevices}" varStatus="loopCount">
@@ -360,21 +393,20 @@
       <!-- ************* Review and Evaluation Area End ************* -->
    
 
-      <!-- ************* Evaluators List Start ************* -->
+      <!-- ************* Evaluators List Start ************* -->            
    <h4><fmt:message key="label_evaluators"/></h4>
-    <p class="longtext">
+    	<ol>
       <c:forEach var="eval" items="${evaluators}">
-         <div class="indnt4"><c:out value="${eval}" /></div>
+         <li><c:out value="${eval}" /></li>
       </c:forEach>
+      </ol>
       <c:if test="${empty evaluators}">
-         <div class="indnt4"><fmt:message key="no_evaluators"/></div>
+         <fmt:message key="no_evaluators"/>
       </c:if>
         <div class="act">
    		   <input type="button" name="selEval" value="<osp:message key="select_evaluators"/>"
               onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" />
         </div>
-	 
-      </p>
       <!-- ************* Evaluators List End ************* -->
    
       
@@ -389,15 +421,15 @@
     </c:if>
 
 	<div class="act">
-		<input type="submit" name="saveAction" value="<osp:message key="save"/>" class="active" onclick="javascript:document.forms[0].validate.value='true';" />
+		<input type="submit" name="saveAction" value="<osp:message key="save"/>" class="active" onclick="javascript:document.forms[0].validate.value='true';" accesskey="s" />
 
       <c:if test="${empty helperPage}">
          <input type="button" name="action" value="<osp:message key="cancel"/>"
-                onclick="javascript:document.form.submitAction.value='cancel';document.form.submit();" />
+                onclick="javascript:document.form.submitAction.value='cancel';document.form.submit();" accesskey="x"/>
       </c:if>
       <c:if test="${not empty helperPage}">
    		<input type="button" name="action" value="<osp:message key="cancel"/>"
-            onclick="javascript:doCancel()" />
+            onclick="javascript:doCancel()"  accesskey="x"/>
          <input type="hidden" name="canceling" value="" />
       </c:if>
 

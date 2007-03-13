@@ -15,7 +15,7 @@
            <div class="validation"><c:out value="${status.errorMessage}"/></div>
         </c:if>
 		<p class="shorttext">
-            <label><fmt:message key="label_importFile"/></label>
+            <label for="name"><fmt:message key="label_importFile"/></label>
 			<input type="text" id="name" disabled="true" value="<c:out value="${uploadForm.scaffoldingFileName}"/>"/>
 			<input type="hidden" name="uploadedScaffolding" id="uploadedScaffolding" value="<c:out value="${status.value}"/>" />
          <a href="javascript:document.forms[0].formAction.value='filePicker';document.forms[0].submit();"
@@ -29,8 +29,8 @@
 	<br/>
 
 	<div class="act">
-		<input class="active" type="submit" value="<osp:message key="button_importScaffolding"  />"> 
-      <input type="button" value="<osp:message key="button_cancel"/>" onclick="window.document.location='<osp:url value="listScaffolding.osp"/>'">
+		<input class="active" type="submit" value="<osp:message key="button_importScaffolding"  />" accesskey="s" /> 
+      <input type="button" value="<osp:message key="button_cancel"/>" onclick="window.document.location='<osp:url value="listScaffolding.osp"/>'" accesskey="x"  />
 	</div>
 
 </form>

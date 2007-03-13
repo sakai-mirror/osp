@@ -32,7 +32,6 @@ function hrefViewCell(pageId) {
             <fmt:message key="title_matrixPreview"/>
          </div>
       </c:if>
-    
    <c:if test="${not empty matrixContents.scaffolding.description}">
       <p class="instruction">
          <osp-h:glossary link="true" hover="true">
