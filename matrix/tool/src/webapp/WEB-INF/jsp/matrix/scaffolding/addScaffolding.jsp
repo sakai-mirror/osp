@@ -134,13 +134,14 @@
 			<table class="listHier lines nolines" cellspacing="0" border="0" style="width:50%" summary="<fmt:message key="table_summary_cols"/>">
     			<thead>
     				<tr>
-    					<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
-						<th scope="col" style="text-align:right">		<span class="itemAction">
-		<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-            <fmt:message key="action_addColumn"/>
-         </a>
-		 </span>
-</th>
+    					<th scope="col"><fmt:message key="table_header_name"/></th>
+						<th scope="col" style="text-align:right">
+							<span class="itemAction">
+								<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+									<fmt:message key="action_addColumn"/>
+								</a>
+							</span>
+						</th>
     				</tr>
     			</thead>
     			<tbody>
@@ -148,14 +149,15 @@
     				<c:forEach var="level" items="${scaffolding.levels}" varStatus="itemLoopStatus">
     					<tr>
                         <td>
-							<div class="tier0">
 							<span class="matrixColumnDefault" style="color: <c:if test="${not empty level.textColor}" ><c:out value="${level.textColor}"/></c:if>">
     							<c:out value="${level.description}"/>
     						</span>
+						</td>
+						<td>
 								<c:if test="${not empty level.color}">
 									<input class="colorBox" disabled="disabled" value="" size="2" style="background-color: <c:out value="${level.color}"/>" type="text">
 								</c:if>
-    							<div class="itemAction">
+    							<span class="itemAction">
 								 <a href="javascript:document.forms[0].dest.value='addLevel';
 								  document.forms[0].submitAction.value='forward';
 								  document.forms[0].params.value='index=<c:out value="${itemLoopStatus.index}"/>';
@@ -189,9 +191,7 @@
 								  document.forms[0].submit();">
 									 <fmt:message key="table_action_down"/>
 							   </a>
-
-   							</div>
-    							</div>
+   							</span>
    						</td>
    				    </tr>
    			    </c:forEach>
@@ -223,7 +223,7 @@
     		    		<table class="listHier lines nolines" cellspacing="0" border="0" style="width:50%" summary="<fmt:message key="table_summary_rows"/>">
     			<thead>
     				<tr>
-    					<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
+    					<th scope="col"><fmt:message key="table_header_name"/></th>
 						<th style="text-align:right"><span class="itemAction"> <a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
             <fmt:message key="action_addRow"/>
          </a></span></th>
@@ -233,14 +233,15 @@
 					<c:forEach var="criterion" items="${scaffolding.criteria}" varStatus="itemLoopStatus">
 						<tr>
 							<td>
-								<div class="tier0">
 									<span class="matrixRowDefault" style="color: <c:if test="${not empty criterion.textColor}" ><c:out value="${criterion.textColor}"/></c:if>">
     									<c:out value="${criterion.description}"/>
     								</span>
+							</td>
+							<td>
 									<c:if test="${not empty criterion.color}">
 										<input class="colorBox" disabled="disabled" value="" size="2" style="background-color: <c:out value="${criterion.color}"/>" type="text">
 									</c:if>
-								<div class="itemAction">
+								<span class="itemAction">
 									  <a href="javascript:document.forms[0].dest.value='addCriterion';
 									  document.forms[0].submitAction.value='forward';
 									  document.forms[0].params.value='index=<c:out value="${itemLoopStatus.index}"/>:path=';
@@ -275,8 +276,7 @@
 									  document.forms[0].submit();">
 										  <fmt:message key="table_action_down"/>
 									  </a>
-									</div>
-								</div>
+									</span>
 								</td>
 							</tr>
 					</c:forEach>
