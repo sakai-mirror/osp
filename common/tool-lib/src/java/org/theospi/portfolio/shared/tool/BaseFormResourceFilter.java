@@ -22,9 +22,12 @@ package org.theospi.portfolio.shared.tool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentResourceFilter;
+import org.sakaiproject.content.api.ResourceToolAction;
+import org.sakaiproject.content.api.ResourceType;
 import org.sakaiproject.entity.api.ResourceProperties;
 
 /**
@@ -84,4 +87,19 @@ public class BaseFormResourceFilter implements ContentResourceFilter {
    public void setViewAll(boolean viewAll) {
       this.viewAll = viewAll;
    }
+
+	/* (non-Javadoc)
+	 * @see org.sakaiproject.content.api.ContentResourceFilter#filterAllowedActions(java.util.List)
+	 */
+	public List<ResourceToolAction> filterAllowedActions(List<ResourceToolAction> actions) {
+		List<ResourceToolAction> allowed = new Vector<ResourceToolAction>();
+		for(ResourceToolAction action : actions)
+		{
+			if(ResourceType.TYPE_METAOBJ.equals(action.getTypeId()))
+			{
+				allowed.add(action);
+			}
+		}
+		return allowed;
+	}
 }
