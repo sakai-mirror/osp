@@ -1153,7 +1153,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
                userId = userId.replaceAll(agentValues[2], worksiteId);
             }
             Agent agent = agentManager.getAgent(idManager.getId(userId));
-            if(agent != null)
+            if (agent != null  && agent.getId() != null)
                authorizationFacade.createAuthorization(agent,
                   WizardFunctionConstants.EVALUATE_WIZARD, wizard.getId());
          }
@@ -1195,7 +1195,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
             }
             Agent agent = agentManager.getAgent(idManager.getId(strId));
 
-            if(agent != null)
+            if (agent != null  && agent.getId() != null)
                authorizationFacade.createAuthorization(agent,
                   MatrixFunctionConstants.EVALUATE_MATRIX, pageDef.getId());
          }
