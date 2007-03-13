@@ -82,7 +82,8 @@ import java.util.*;
 import java.util.zip.*;
 
 public class PresentationManagerImpl extends HibernateDaoSupport
-   implements PresentationManager, DuplicatableToolService, DownloadableManager, StyleConsumer {
+   implements PresentationManager, DuplicatableToolService, DownloadableManager,
+   StyleConsumer, FormConsumer {
 
    private List definedLayouts;
    private AgentManager agentManager;
@@ -3203,4 +3204,20 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       this.importFolderName = importFolderName;
    }
 
+   public boolean checkFormConsumption(Id formId) {
+      Collection objectsWithForms = getHibernateTemplate().find(
+         "from PresentationTemplate where propertyFormType = ?", 
+         new Object[] {formId});
+
+      if (objectsWithForms.size() > 0) {
+         return true;
+      }
+
+      String queryString = "from PresentationItemDefinition where " +
+         "type = ?";
+      Collection additionalForms = getHibernateTemplate().find(queryString,
+         new Object[] {formId.getValue()});
+
+      return additionalForms.size() > 0;
+   }
 }

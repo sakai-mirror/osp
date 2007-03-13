@@ -109,7 +109,18 @@
          </list>
       </property>
    </bean>
-   
+
+   <bean id="org.sakaiproject.metaobj.shared.mgt.AdditionalFormConsumers.matrix"
+      class="org.sakaiproject.metaobj.shared.mgt.AdditionalFormConsumers"
+      init-method="init" singleton="true">
+      <property name="manager"><ref bean="structuredArtifactDefinitionManager"/></property>
+      <property name="additionalConsumers">
+         <list>
+            <ref bean="matrixManager" />
+         </list>
+      </property>
+   </bean>
+
    <bean id="matrixManager"
       class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
       singleton="true">

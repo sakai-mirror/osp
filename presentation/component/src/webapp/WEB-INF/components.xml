@@ -134,6 +134,17 @@
       </property>
    </bean>
 
+   <bean id="org.sakaiproject.metaobj.shared.mgt.AdditionalFormConsumers.presentation"
+      class="org.sakaiproject.metaobj.shared.mgt.AdditionalFormConsumers"
+      init-method="init" singleton="true">
+      <property name="manager"><ref bean="structuredArtifactDefinitionManager"/></property>
+      <property name="additionalConsumers">
+         <list>
+            <ref bean="presentationManager" />
+         </list>
+      </property>
+   </bean>
+
    <bean id="presentationManagerTarget"
       class="org.theospi.portfolio.presentation.model.impl.PresentationManagerImpl"
       singleton="true" init-method="init">

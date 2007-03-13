@@ -75,13 +75,7 @@ import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
-import org.sakaiproject.metaobj.shared.mgt.AgentManager;
-import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
-import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
-import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
+import org.sakaiproject.metaobj.shared.mgt.*;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.FinderException;
@@ -127,7 +121,7 @@ import org.theospi.utils.zip.UncloseableZipInputStream;
  */
 public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    implements MatrixManager, ReadableObjectHome, ArtifactFinder, DownloadableManager,
-   PresentableObjectHome, DuplicatableToolService, StyleConsumer {
+   PresentableObjectHome, DuplicatableToolService, StyleConsumer, FormConsumer {
    
    static final private String   IMPORT_BASE_FOLDER_ID = "importedMatrices";
 
@@ -2394,5 +2388,22 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     */
    public void setUseExperimentalMatrix(boolean useExperimentalMatrix) {
       this.useExperimentalMatrix = useExperimentalMatrix;
+   }
+
+   public boolean checkFormConsumption(Id formId) {
+      Collection objectsWithForms = getHibernateTemplate().find("from ObjectWithWorkflow where " +
+         "reflection_device_id = ? or evaluation_device_id = ? or review_device_id = ?",
+         new Object[] {formId.getValue(), formId.getValue(), formId.getValue()});
+
+      if (objectsWithForms.size() > 0) {
+         return true;
+      }
+
+      String queryString = "from WizardPageDefinition as wpd left join wpd.additionalForms as af where " +
+         "af = ?";
+      Collection additionalForms = getHibernateTemplate().find(queryString,
+         new Object[] {formId.getValue()});
+
+      return additionalForms.size() > 0;
    }
 }
