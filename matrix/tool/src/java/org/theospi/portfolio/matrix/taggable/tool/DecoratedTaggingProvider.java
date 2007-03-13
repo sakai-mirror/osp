@@ -70,7 +70,7 @@ public class DecoratedTaggingProvider {
 	}
 
 	public boolean getAllowViewTags() {
-		return provider.allowViewTags();
+		return provider.allowViewTags(activity.getContext());
 	}
 
 	public TaggingProvider getProvider() {
