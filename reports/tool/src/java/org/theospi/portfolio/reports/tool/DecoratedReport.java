@@ -20,13 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.tool;
 
+import org.theospi.portfolio.reports.model.Report;
+import org.theospi.portfolio.reports.model.ReportParam;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import org.theospi.portfolio.reports.model.Report;
-import org.theospi.portfolio.reports.model.ReportParam;
 
 /**
  * This class allows the Report to interact with the view
@@ -112,7 +112,9 @@ public class DecoratedReport implements DecoratedAbstractResult {
    {
       return reportsTool.processSelectLiveReport(this);
    }
-   
+    public String processScheduleReport(){
+        return reportsTool.processScheduleReport(this);
+    }
    
    /**
     * this function deletes the full report result and the report
@@ -186,4 +188,5 @@ public class DecoratedReport implements DecoratedAbstractResult {
     public void setOwner(boolean owner) {
         isOwner = owner;
     }
+    
 }

@@ -60,6 +60,12 @@
                 	<value>true</value>
                 	<!-- <value>false</value> -->
                 </property>
+                <property name="schedulerManager">
+                    <ref bean="org.sakaiproject.api.app.scheduler.SchedulerManager"/>
+                </property>
+                <property name="jobBeanWrapper">
+                    <ref bean="org.sakaiproject.api.app.scheduler.JobBeanWrapper.reports"/>
+                </property>
                 <property name="definedDefintions">
                     <list>
                         <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
@@ -321,6 +327,20 @@
          </list>
       </property>
    </bean>
+
+    <bean id="org.sakaiproject.api.app.scheduler.JobBeanWrapper.reports"
+          class="org.sakaiproject.component.app.scheduler.jobs.SpringJobBeanWrapper"
+          singleton="true">
+        <property name="beanId">
+            <value>org.theospi.portfolio.reports.model.ReportsManager</value>
+        </property>
+        <property name="jobName">
+            <value>Report</value>
+        </property>
+        <property name="schedulerManager">
+            <ref bean="org.sakaiproject.api.app.scheduler.SchedulerManager"/>
+        </property>
+    </bean>
 </beans
 
 >

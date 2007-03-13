@@ -101,6 +101,17 @@
             <artifactId>sakai-content-api</artifactId>
             <version>${sakai.version}</version>
         </dependency>
+          <dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-comp-shared-scheduler</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-scheduler-api</artifactId>
+        <version>${sakai.version}</version>
+     </dependency>
+
         <dependency>
             <groupId>jsf</groupId>
             <artifactId>jsf-api</artifactId>
@@ -109,7 +120,11 @@
                 <war.bundle>true</war.bundle>
             </properties>
         </dependency>
-
+          <dependency>
+        <groupId>quartz</groupId>
+        <artifactId>quartz</artifactId>
+        <version>1.5.2</version>
+     </dependency>
         <dependency>
             <groupId>jsf</groupId>
             <artifactId>jsf-impl</artifactId>

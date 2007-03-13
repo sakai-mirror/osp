@@ -20,28 +20,6 @@
  **********************************************************************************/
 package org.theospi.portfolio.reports.model.impl;
 
-import java.io.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.HibernateException;
 import org.jdom.CDATA;
@@ -51,20 +29,31 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
 import org.jdom.transform.JDOMResult;
 import org.jdom.transform.JDOMSource;
+import org.quartz.*;
+import org.sakaiproject.api.app.scheduler.JobBeanWrapper;
+import org.sakaiproject.api.app.scheduler.SchedulerManager;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.authz.cover.FunctionManager;
+import org.sakaiproject.component.app.scheduler.jobs.SpringJobBeanWrapper;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.content.api.ContentCollection;
+import org.sakaiproject.content.api.ContentCollectionEdit;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.ResourceProperties;
+import org.sakaiproject.entity.api.ResourcePropertiesEdit;
+import org.sakaiproject.event.cover.NotificationService;
 import org.sakaiproject.exception.*;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AuthorizationFacade;
 import org.sakaiproject.metaobj.security.AuthorizationFailedException;
-import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.model.AuthZMap;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.MetaobjEntityManager;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.IdImpl;
+import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
@@ -74,24 +63,33 @@ import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
-import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.ContentCollectionEdit;
-import org.sakaiproject.content.api.ContentCollection;
-import org.sakaiproject.entity.api.ResourceProperties;
-import org.sakaiproject.entity.api.ResourcePropertiesEdit;
-import org.sakaiproject.event.cover.NotificationService;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.reports.model.*;
-import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.security.Authorization;
+import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
 import org.theospi.portfolio.shared.model.OspException;
+
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 /**
@@ -121,9 +119,11 @@ import org.theospi.portfolio.shared.model.OspException;
  * @author andersjb
  */
 public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsManager, BeanFactoryAware {
-    /** Enebles logging */
+    /**
+     * Enebles logging
+     */
 
-   private AuthenticationManager authnManager;
+    private AuthenticationManager authnManager;
     /**
      * The global list of reports
      */
@@ -164,6 +164,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
      */
     private SecurityService securityService;
 
+    private JobBeanWrapper jobBeanWrapper = null;
     /**
      * This is used to standardize the case of the column labels. This is helpful because
      * MySQL uses the same case as determined by the query.  Oracle makes them all uppercase.
@@ -171,9 +172,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
      */
     private Boolean forceColumnLabelUppercase;
 
+    private SchedulerManager schedulerManager;
     private org.theospi.portfolio.security.AuthorizationFacade ospAuthzManager;
 
     protected BeanFactory beanFactory;
+
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
@@ -213,13 +216,15 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_SHARE);
         initDefinedReportDefinitions();
     }
-    public AuthenticationManager getAuthnManager() {
-      return authnManager;
-   }
 
-   public void setAuthnManager(AuthenticationManager authnManager) {
-      this.authnManager = authnManager;
-   }
+    public AuthenticationManager getAuthnManager() {
+        return authnManager;
+    }
+
+    public void setAuthnManager(AuthenticationManager authnManager) {
+        this.authnManager = authnManager;
+    }
+
     public BeanFactory getBeanFactory() {
         return beanFactory;
     }
@@ -806,65 +811,65 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
      * {@inheritDoc}
      */
     public ReportResult generateResults(Report report) throws ReportExecutionException {
-      ReportResult rr = new ReportResult();
+        ReportResult rr = new ReportResult();
 
-      ReportDefinition rd = report.getReportDefinition();
-      rr.setCreationDate(new Date());
-      Element reportElement = new Element("reportResult");
-      Document document = new Document(reportElement);
+        ReportDefinition rd = report.getReportDefinition();
+        rr.setCreationDate(new Date());
+        Element reportElement = new Element("reportResult");
+        Document document = new Document(reportElement);
 
-      //	replace the parameters with the values
-      List reportParams = report.getReportParams();
+        //	replace the parameters with the values
+        List reportParams = report.getReportParams();
 
-      int index = -1;
-      for (Iterator i=rd.getQuery().iterator(); i.hasNext(); ){
-         StringBuffer nextQuery = new StringBuffer(replaceSystemValues((String) i.next()));
-         if (index > -1) {
-            // <extraReportResult index="0">, <extraReportResult index="1"> etc.
-            Element currentReportResult = new Element("extraReportResult");
-            currentReportResult.setAttribute("index", String.valueOf(index));
-            reportElement.addContent(currentReportResult);
-            executeQuery(nextQuery, reportParams, report, currentReportResult, rr, rd, false);
-         }
-         else {
-            executeQuery(nextQuery, reportParams, report, reportElement, rr, rd, true);
-         }
-         index++;
-      }
+        int index = -1;
+        for (Iterator i = rd.getQuery().iterator(); i.hasNext();) {
+                StringBuffer nextQuery = new StringBuffer(replaceSystemValues((String) i.next()));
+            if (index > -1) {
+                // <extraReportResult index="0">, <extraReportResult index="1"> etc.
+                Element currentReportResult = new Element("extraReportResult");
+                currentReportResult.setAttribute("index", String.valueOf(index));
+                reportElement.addContent(currentReportResult);
+                executeQuery(nextQuery, reportParams, report, currentReportResult, rr, rd, false);
+            } else {
+                executeQuery(nextQuery, reportParams, report, reportElement, rr, rd, true);
+            }
+            index++;
+        }
 
-      rr.setCreationDate(new Date());
-      rr.setReport(report);
-      rr.setTitle(report.getTitle());
-      rr.setKeywords(report.getKeywords());
-      rr.setDescription(report.getDescription());
-      rr.setUserId(report.getUserId());
-      rr.setXml((new XMLOutputter()).outputString(document));
+        rr.setCreationDate(new Date());
+        rr.setReport(report);
+        rr.setTitle(report.getTitle());
+        rr.setKeywords(report.getKeywords());
+        rr.setDescription(report.getDescription());
+        rr.setUserId(report.getUserId());
+        rr.setXml((new XMLOutputter()).outputString(document));
 
-      rr = postProcessResult(rd, rr);
+        rr = postProcessResult(rd, rr);
 
-      return rr;
+        return rr;
 
     }
 
-   /**
-   * executes the query converting the results into xml and updating the report
-   * @param query
-   * @param reportParams
-   * @param report
-   * @param reportElement
-   * @param rr
-   * @param rd
-   * @param isFirstResult - true if this is the first sql query in the report, otherwise this should be false
-   */
-   protected void executeQuery(StringBuffer query, List reportParams, Report report, Element reportElement,
-                               ReportResult rr, ReportDefinition rd, boolean isFirstResult)  {
-      //     get the query from the Definition and replace the values
-      //     no should be able to put in a system parameter into a report parameter and have it work
-      //             so replace the system values before processing the report parameters
-      Connection connection = null;
-      PreparedStatement stmt = null;
+    /**
+     * executes the query converting the results into xml and updating the report
+     *
+     * @param query
+     * @param reportParams
+     * @param report
+     * @param reportElement
+     * @param rr
+     * @param rd
+     * @param isFirstResult - true if this is the first sql query in the report, otherwise this should be false
+     */
+    protected void executeQuery(StringBuffer query, List reportParams, Report report, Element reportElement,
+                                ReportResult rr, ReportDefinition rd, boolean isFirstResult) {
+        //     get the query from the Definition and replace the values
+        //     no should be able to put in a system parameter into a report parameter and have it work
+        //             so replace the system values before processing the report parameters
+        Connection connection = null;
+        PreparedStatement stmt = null;
 
-      try  {
+        try {
             connection = getConnection(report.getReportDefinition().getUsesWarehouse());
 
             query = replaceForMultiSet(query, reportParams);
@@ -930,39 +935,39 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             }
 
             if (isFirstResult) {
-               Element docAttrNode = new Element("attributes");
-               Element attr = new Element("title");
-               attr.setText(report.getTitle());
-               reportElement.addContent(attr);
+                Element docAttrNode = new Element("attributes");
+                Element attr = new Element("title");
+                attr.setText(report.getTitle());
+                reportElement.addContent(attr);
 
-               attr = new Element("description");
-               attr.setText(report.getDescription());
-               reportElement.addContent(attr);
+                attr = new Element("description");
+                attr.setText(report.getDescription());
+                reportElement.addContent(attr);
 
-               attr = new Element("keywords");
-               attr.setText(report.getKeywords());
-               reportElement.addContent(attr);
+                attr = new Element("keywords");
+                attr.setText(report.getKeywords());
+                reportElement.addContent(attr);
 
-               attr = new Element("runDate");
-               attr.setText(rr.getCreationDate().toString());
-               reportElement.addContent(attr);
+                attr = new Element("runDate");
+                attr.setText(rr.getCreationDate().toString());
+                reportElement.addContent(attr);
 
-               attr = new Element("isWarehouseReport");
-               attr.setText(report.getReportDefinition().getUsesWarehouse().toString());
-               reportElement.addContent(attr);
+                attr = new Element("isWarehouseReport");
+                attr.setText(report.getReportDefinition().getUsesWarehouse().toString());
+                reportElement.addContent(attr);
 
-               attr = new Element("isLiveReport");
-               attr.setText(Boolean.toString(report.getIsLive()));
-               reportElement.addContent(attr);
+                attr = new Element("isLiveReport");
+                attr.setText(Boolean.toString(report.getIsLive()));
+                reportElement.addContent(attr);
 
-               attr = new Element("isSavedReport");
-               attr.setText(Boolean.toString(report.getIsSaved()));
-               reportElement.addContent(attr);
+                attr = new Element("isSavedReport");
+                attr.setText(Boolean.toString(report.getIsSaved()));
+                reportElement.addContent(attr);
 
-               attr = new Element("accessUrl");
-               attr.setText(ServerConfigurationService.getAccessUrl());
-               reportElement.addContent(attr);
-               reportElement.addContent(docAttrNode);
+                attr = new Element("accessUrl");
+                attr.setText(ServerConfigurationService.getAccessUrl());
+                reportElement.addContent(attr);
+                reportElement.addContent(docAttrNode);
             }
 
             Element paramsNode = new Element("parameters");
@@ -1107,19 +1112,30 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
      * {@inheritDoc}
      */
     public String replaceSystemValues(String inString) {
-        UserDirectoryService dirServ = org.sakaiproject.user.cover.UserDirectoryService.getInstance();
-        User u = dirServ.getCurrentUser();
+
         Session s = SessionManager.getCurrentSession();
 
         Map map = new HashMap();
-
         map.put("{userid}", s.getUserId());
-        map.put("{userdisplayname}", u.getDisplayName());
-        map.put("{useremail}", u.getEmail());
-        map.put("{userfirstname}", u.getFirstName());
-        map.put("{userlastname}", u.getLastName());
-        map.put("{worksiteid}", ToolManager.getCurrentPlacement().getContext());
-        map.put("{toolid}", ToolManager.getCurrentPlacement().getId());
+        //system values are stored in session if report is scheduled through quartz
+        if (s.getAttribute("toolid") == null){
+            UserDirectoryService dirServ = org.sakaiproject.user.cover.UserDirectoryService.getInstance();
+            User u = dirServ.getCurrentUser();
+            map.put("{userdisplayname}", u.getDisplayName());
+            map.put("{useremail}", u.getEmail());
+            map.put("{userfirstname}", u.getFirstName());
+            map.put("{userlastname}", u.getLastName());
+            map.put("{worksiteid}", ToolManager.getCurrentPlacement().getContext());
+            map.put("{toolid}", ToolManager.getCurrentPlacement().getId());
+        }
+        else {
+            map.put("{userdisplayname}", s.getAttribute("userdisplayname"));
+            map.put("{useremail}", s.getAttribute("useremail"));
+            map.put("{userfirstname}", s.getAttribute("userfirstname"));
+            map.put("{userlastname}", s.getAttribute("userlastname"));
+            map.put("{worksiteid}", s.getAttribute("worksiteid"));
+            map.put("{toolid}", s.getAttribute("toolid"));
+        }
 
         Iterator iter = map.keySet().iterator();
         StringBuffer str = new StringBuffer(inString);
@@ -1453,6 +1469,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
     public void setDefinedDefintions(List definedDefintions) {
         this.definedDefintions = definedDefintions;
     }
+
     public boolean importResource(Id worksiteId, String nodeId) throws UnsupportedFileTypeException, ImportException, OspException {
 
         String id = getContentHosting().resolveUuid(nodeId);
@@ -1603,6 +1620,12 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         return (ReportDefinitionXmlFile) getHibernateTemplate().get(ReportDefinitionXmlFile.class, id);
     }
 
+    public Report getReportById(String id) {
+        Report report = (Report) getHibernateTemplate().get(Report.class, new IdImpl(id, null));
+        report.connectToDefinition(reportDefinitions);
+        return report;
+    }
+
     private byte[] readStreamToBytes(InputStream inStream) throws IOException {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         byte data[] = new byte[10 * 1024];
@@ -1615,23 +1638,24 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         bytes.close();
         return tmp;
     }
+
     public List getReportsByViewer() {
-     Agent viewer = getAuthnManager().getAgent();
-      Collection reportAuthzs = getOspAuthzManager().getAuthorizations(viewer,
-         ReportFunctions.REPORT_FUNCTION_VIEW, null);
+        Agent viewer = getAuthnManager().getAgent();
+        Collection reportAuthzs = getOspAuthzManager().getAuthorizations(viewer,
+                ReportFunctions.REPORT_FUNCTION_VIEW, null);
 
-      List results = new ArrayList();
-      for (Iterator i = reportAuthzs.iterator(); i.hasNext();) {
-         Id resultId = ((Authorization) i.next()).getQualifier();
-         List result = getReportResults(resultId);
-         for (Iterator iter = result.iterator(); iter.hasNext();){
-             results.add(iter.next());
-         }
-      }
-      return results;
-   }
+        List results = new ArrayList();
+        for (Iterator i = reportAuthzs.iterator(); i.hasNext();) {
+            Id resultId = ((Authorization) i.next()).getQualifier();
+            List result = getReportResults(resultId);
+            for (Iterator iter = result.iterator(); iter.hasNext();) {
+                results.add(iter.next());
+            }
+        }
+        return results;
+    }
 
-   List getReportResults (Id resultId){
+    List getReportResults(Id resultId) {
 
         boolean viewReports = can(ReportFunctions.REPORT_FUNCTION_VIEW);
 
@@ -1648,88 +1672,88 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             }
             returned.addAll(results);
         }
-       return returned;
-   }
+        return returned;
+    }
 
 
     protected String createResource(ByteArrayOutputStream bos,
-                               String name, String description, String type) {
+                                    String name, String description, String type) {
 
-      ContentResource resource = null;
-      ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
-      resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, name);
-      resourceProperties.addProperty (ResourceProperties.PROP_DESCRIPTION, description);
-      resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
+        ContentResource resource = null;
+        ResourcePropertiesEdit resourceProperties = getContentHosting().newResourceProperties();
+        resourceProperties.addProperty(ResourceProperties.PROP_DISPLAY_NAME, name);
+        resourceProperties.addProperty(ResourceProperties.PROP_DESCRIPTION, description);
+        resourceProperties.addProperty(ResourceProperties.PROP_CONTENT_ENCODING, "UTF-8");
 
-      getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+        getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
 
-      org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
-      String userId = sakaiSession.getUserId();
-      sakaiSession.setUserId(userId);
-      sakaiSession.setUserEid(userId);
+        org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+        String userId = sakaiSession.getUserId();
+        sakaiSession.setUserId(userId);
+        sakaiSession.setUserEid(userId);
 
-      try {
+        try {
 
-         ContentCollectionEdit groupCollection = getContentHosting().addCollection(getUserCollection().getId() + "savedReports/");
-         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "Saved Reports");
-         groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DESCRIPTION, "Folder for Saved Report Results");
-         getContentHosting().commitCollection(groupCollection);
-      }
-      catch (IdUsedException e) {
-         // ignore... it is already there.
-          if (logger.isDebugEnabled()) {
-              logger.debug(e);
-          }
-      }
-      catch (Exception e) {
-         throw new RuntimeException(e);
-      }
+            ContentCollectionEdit groupCollection = getContentHosting().addCollection(getUserCollection().getId() + "savedReports/");
+            groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DISPLAY_NAME, "Saved Reports");
+            groupCollection.getPropertiesEdit().addProperty(ResourceProperties.PROP_DESCRIPTION, "Folder for Saved Report Results");
+            getContentHosting().commitCollection(groupCollection);
+        }
+        catch (IdUsedException e) {
+            // ignore... it is already there.
+            if (logger.isDebugEnabled()) {
+                logger.debug(e);
+            }
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
 
-      try {
-         String id = getUserCollection().getId() + "Saved Reports/" + name;
-         getContentHosting().removeResource(id);
-      }
-      catch (TypeException e) {
-         // ignore, must be new
-         if (logger.isDebugEnabled()) {
-             logger.debug(e);
-         }
-      }
-      catch (IdUnusedException e) {
-         // ignore, must be new
-         if (logger.isDebugEnabled()) {
-             logger.debug(e);
-         }
-      }
-      catch (PermissionException e) {
-         // ignore, must be new
-         if (logger.isDebugEnabled()) {
-             logger.debug(e);
-         }
-      }
-      catch (InUseException e) {
-         // ignore, must be new
-         if (logger.isDebugEnabled()) {
-             logger.debug(e);
-         }
-      }
+        try {
+            String id = getUserCollection().getId() + "Saved Reports/" + name;
+            getContentHosting().removeResource(id);
+        }
+        catch (TypeException e) {
+            // ignore, must be new
+            if (logger.isDebugEnabled()) {
+                logger.debug(e);
+            }
+        }
+        catch (IdUnusedException e) {
+            // ignore, must be new
+            if (logger.isDebugEnabled()) {
+                logger.debug(e);
+            }
+        }
+        catch (PermissionException e) {
+            // ignore, must be new
+            if (logger.isDebugEnabled()) {
+                logger.debug(e);
+            }
+        }
+        catch (InUseException e) {
+            // ignore, must be new
+            if (logger.isDebugEnabled()) {
+                logger.debug(e);
+            }
+        }
 
-      try {
-         resource = getContentHosting().addResource(name, getUserCollection().getId() + "savedReports/", 100, type,
-                     bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
-      }
-      catch (Exception e) {
-         throw new RuntimeException(e);
-      }
+        try {
+            resource = getContentHosting().addResource(name, getUserCollection().getId() + "savedReports/", 100, type,
+                    bos.toByteArray(), resourceProperties, NotificationService.NOTI_NONE);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-      return "savedReports/" + name;
-   }
+        return "savedReports/" + name;
+    }
 
-   public String processSaveResultsToResources(ReportResult reportResult) throws IOException{
-       ByteArrayOutputStream bos = new ByteArrayOutputStream();
-       ReportXsl xslt = reportResult.getReport().getReportDefinition().getDefaultXsl();
-       String fileData = transform(reportResult, reportResult.getReport().getReportDefinition().getDefaultXsl());
+    public String processSaveResultsToResources(ReportResult reportResult) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ReportXsl xslt = reportResult.getReport().getReportDefinition().getDefaultXsl();
+        String fileData = transform(reportResult, reportResult.getReport().getReportDefinition().getDefaultXsl());
 
         if (xslt.getResultsPostProcessor() != null) {
             bos.write(xslt.getResultsPostProcessor().postProcess(fileData));
@@ -1738,15 +1762,123 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         }
         return createResource(bos, reportResult.getTitle() + ".html", reportResult.getTitle(), "text/html");
 
-   }
+    }
 
-   protected ContentCollection getUserCollection() throws TypeException, IdUnusedException, PermissionException {
-      User user = org.sakaiproject.user.cover.UserDirectoryService.getCurrentUser();
-      String userId = user.getId();
-      String wsId = SiteService.getUserSiteId(userId);
-      String wsCollectionId = getContentHosting().getSiteCollection(wsId);
-      ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
-      return collection;
-   }
+    protected ContentCollection getUserCollection() throws TypeException, IdUnusedException, PermissionException {
+        User user = org.sakaiproject.user.cover.UserDirectoryService.getCurrentUser();
+        String userId = user.getId();
+        String wsId = SiteService.getUserSiteId(userId);
+        String wsCollectionId = getContentHosting().getSiteCollection(wsId);
+        ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
+        return collection;
+    }
+
+    public SchedulerManager getSchedulerManager() {
+        return schedulerManager;
+    }
+
+    public void setSchedulerManager(SchedulerManager schedulerManager) {
+        this.schedulerManager = schedulerManager;
+    }
+
+    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        getSecurityService().pushAdvisor(new AllowAllSecurityAdvisor());
+        org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+        String sessionUserId = sakaiSession.getUserId();
+        try {
+            Map details = jobExecutionContext.getJobDetail().getJobDataMap();
+            String reportId = (String) details.get("reportId");
+            String userId = (String) details.get("userId");
+            sakaiSession.setAttribute("userdisplayname", (String) details.get("userdisplayname"));
+            sakaiSession.setAttribute("useremail", (String) details.get("useremail"));
+            sakaiSession.setAttribute("userfirstname", (String) details.get("userfirstname"));
+            sakaiSession.setAttribute("userlastname", (String) details.get("userlastname"));
+            sakaiSession.setAttribute("worksiteid", (String) details.get("worksiteid"));
+            sakaiSession.setAttribute("toolid", (String) details.get("toolid"));
+            sakaiSession.setUserId(userId);
+            sakaiSession.setUserEid(userId);
+            Report report = getReportById(reportId);
+            if (report != null) {
+
+                ReportResult result = generateResults(report);
+                result.setIsSaved(true);
+                processSaveResultsToResources(result);
+                result.setTitle(result.getTitle() + " - " + result.getCreationDate());
+                saveReportResult(result);
+            } else {
+                schedulerManager.getScheduler().deleteJob(jobExecutionContext.getJobDetail().getName(), reportGroup);
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        finally {
+            getSecurityService().popAdvisor();
+            sakaiSession.setUserEid(sessionUserId);
+            sakaiSession.setUserId(sessionUserId);
+        }
+
+    }
+
+    public void processDeleteJobs(JobDetail jobDetail) {
+        try {
+            schedulerManager.getScheduler().deleteJob(
+                    jobDetail.getName(), reportGroup);
+        }
+        catch (SchedulerException e) {
+            logger.error("Scheduler Down");
+        }
+     }
+
+    public JobDetail processCreateJob(Report report) {
+        Scheduler scheduler = getSchedulerManager().getScheduler();
+        UserDirectoryService dirServ = org.sakaiproject.user.cover.UserDirectoryService.getInstance();
+        User u = dirServ.getCurrentUser();
+        if (scheduler == null) {
+            logger.error("Scheduler is down!");
+        }
+        JobDetail jd = null;
+        try {
+
+            JobBeanWrapper job = getJobBeanWrapper();
+            if (job != null) {
+
+                jd = scheduler.getJobDetail(report.getReportId().toString(), reportGroup);
+                if (jd == null) {
+                    jd = new JobDetail(report.getReportId().toString(), reportGroup,
+                            job.getJobClass(), false, true, true);
+                    jd.getJobDataMap().put(JobBeanWrapper.SPRING_BEAN_NAME, job.getBeanId());
+                    jd.getJobDataMap().put(JobBeanWrapper.JOB_TYPE, job.getJobType());
+                    jd.getJobDataMap().put("reportId", report.getReportId().getValue());
+                    jd.getJobDataMap().put("userId", SessionManager.getCurrentSessionUserId());
+                    jd.getJobDataMap().put("userdisplayname", u.getDisplayName());
+                    jd.getJobDataMap().put("useremail", u.getEmail());
+                    jd.getJobDataMap().put("userfirstname", u.getFirstName());
+                    jd.getJobDataMap().put("userlastname", u.getLastName());
+                    jd.getJobDataMap().put("worksiteid", ToolManager.getCurrentPlacement().getContext());
+                    jd.getJobDataMap().put("toolid", ToolManager.getCurrentPlacement().getId());
+
+                    scheduler.addJob(jd, false);
+                }
+            } else {
+                jd = new JobDetail(report.getReportId().toString(), reportGroup,
+                        SpringJobBeanWrapper.class, false, true, true);
+                scheduler.addJob(jd, false);
+            }
+        }
+        catch (Exception e) {
+            logger.error("Failed to create job");
+        }
+        return jd;
+    }
+
+    public JobBeanWrapper getJobBeanWrapper() {
+        return jobBeanWrapper;
+    }
+
+    public void setJobBeanWrapper(JobBeanWrapper jobBeanWrapper) {
+        this.jobBeanWrapper = jobBeanWrapper;
+    }
+
 }
 

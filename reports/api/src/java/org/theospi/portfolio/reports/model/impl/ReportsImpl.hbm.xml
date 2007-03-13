@@ -173,6 +173,9 @@
     <query name="findResultsByReport">
 		from ReportResult rr WHERE rr.report=?
    </query>
+   <query name="findReportById">
+		from Report r WHERE reportId=?
+   </query>
     <query name="findReportDefinitionFiles">
 		from ReportDefinitionXmlFile
    </query>

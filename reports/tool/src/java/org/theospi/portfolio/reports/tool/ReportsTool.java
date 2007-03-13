@@ -20,32 +20,41 @@
  **********************************************************************************/
 package org.theospi.portfolio.reports.tool;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.quartz.*;
+import org.sakaiproject.api.app.scheduler.JobDetailWrapper;
+import org.sakaiproject.api.app.scheduler.SchedulerManager;
+import org.sakaiproject.api.app.scheduler.TriggerWrapper;
 import org.sakaiproject.authz.api.PermissionsHelper;
+import org.sakaiproject.component.api.ServerConfigurationService;
+import org.sakaiproject.component.app.scheduler.JobDetailWrapperImpl;
+import org.sakaiproject.component.app.scheduler.TriggerWrapperImpl;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.FilePickerHelper;
+import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.exception.*;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.OspException;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
-import org.sakaiproject.content.api.FilePickerHelper;
-import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.component.cover.ComponentManager;
-import org.sakaiproject.component.api.ServerConfigurationService;
-import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.OspException;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.theospi.portfolio.reports.model.*;
-import org.theospi.portfolio.shared.tool.ToolBase;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.theospi.portfolio.shared.tool.ToolBase;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.faces.application.FacesMessage;
+import javax.faces.validator.ValidatorException;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 
 
@@ -72,11 +81,18 @@ import java.util.*;
 
 public class ReportsTool extends ToolBase {
 
+    private String jobName;
+    private String triggerName;
+    private String triggerExpression;
+    private JobDetail jobDetail = null;
+    private JobDetailWrapper jobDetailWrapper = new JobDetailWrapperImpl();
+    private boolean isSelectAllTriggersSelected = false;
+    private List filteredTriggersWrapperList;
     /**
      * A singlton manager for reports
      */
     private ReportsManager reportsManager = null;
-
+    private SchedulerManager schedulerManager;
     /**
      * The reports to which the user has access
      */
@@ -109,8 +125,12 @@ public class ReportsTool extends ToolBase {
     protected static final String saveResultsPage = "saveReportResults";
     protected static final String importReportDef = "importReportDef";
     protected static final String shareReportResult = "shareReportResult";
+    protected static final String scheduleReport = "scheduleReport";
+    protected static final String createTrigger = "createTrigger";
+    protected static final String deleteTriggers = "deleteTriggers";
 
-
+    private static final String CRON_CHECK_ASTERISK = "**";
+    private static final String CRON_CHECK_QUESTION_MARK = "??";
     //	import variables
     private String importFilesString = "";
     private List importFiles = new ArrayList();
@@ -123,7 +143,15 @@ public class ReportsTool extends ToolBase {
     private boolean invalidImport = false;
     private boolean invalidXslFile = false;
     private String invalidImportMessage = "Invalid Report Definition XML File";
-    
+
+    public SchedulerManager getSchedulerManager() {
+        return schedulerManager;
+    }
+
+    public void setSchedulerManager(SchedulerManager schedulerManager) {
+        this.schedulerManager = schedulerManager;
+    }
+
     public String getInvalidImportMessage() {
         return invalidImportMessage;
     }
@@ -292,8 +320,8 @@ public class ReportsTool extends ToolBase {
                 decoratedResults.add(new DecoratedReport((Report) rr, this));
         }
 
-        for (Iterator i = tempResults.iterator(); i.hasNext();){
-            decoratedResults.add( new DecoratedReportResult((ReportResult) i.next(), this));
+        for (Iterator i = tempResults.iterator(); i.hasNext();) {
+            decoratedResults.add(new DecoratedReportResult((ReportResult) i.next(), this));
 
         }
         return decoratedResults;
@@ -466,11 +494,12 @@ public class ReportsTool extends ToolBase {
     public String processSaveResultsToResources(DecoratedReportResult reportResult) throws IOException {
         ReportResult result = reportsManager.loadResult(reportResult.getReportResult());
         String fileName = reportsManager.processSaveResultsToResources(result);
-        if (fileName.length() > 0){
+        if (fileName.length() > 0) {
             FacesContext.getCurrentInstance().addMessage(null, getFacesMessageFromBundle("resource_saved", new Object[]{fileName}));
         }
         return ReportsTool.mainPage;
     }
+
     public String processSaveReport() {
         reportsManager.saveReport(getWorkingResult().getReportResult().getReport());
         savedLiveReport = true;
@@ -568,52 +597,53 @@ public class ReportsTool extends ToolBase {
     public boolean isMaintainer() {
         return getReportsManager().isMaintaner();
     }
-     public void processActionAudienceHelper(DecoratedReportResult reportResult) {
-      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      //Tool tool = ToolManager.getCurrentTool();
-      ToolSession session = SessionManager.getCurrentToolSession();
-      ServerConfigurationService configService =
-		org.sakaiproject.component.cover.ServerConfigurationService.getInstance();
-      String baseUrl = configService.getServerUrl();
-      String url =  baseUrl + "/osp-reports-tool/viewReportResults.osp?id=" + reportResult.getReportResult().getResultId();
-      url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
 
-      ResourceBundle myResources =
-         ResourceBundle.getBundle(ReportsManager.REPORTS_MESSAGE_BUNDLE);
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, "osp.reports.view");
+    public void processActionAudienceHelper(DecoratedReportResult reportResult) {
+        ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+        //Tool tool = ToolManager.getCurrentTool();
+        ToolSession session = SessionManager.getCurrentToolSession();
+        ServerConfigurationService configService =
+                org.sakaiproject.component.cover.ServerConfigurationService.getInstance();
+        String baseUrl = configService.getServerUrl();
+        String url = baseUrl + "/osp-reports-tool/viewReportResults.osp?id=" + reportResult.getReportResult().getResultId();
+        url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
 
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD, "false");
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER, reportResult.getReportResult().getResultId().getValue());
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE, myResources.getString("title_share_report"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS,
-            myResources.getString("instructions_addViewersToPresentation"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE,
-            myResources.getString("instructions_publishToGroup"));
+        ResourceBundle myResources =
+                ResourceBundle.getBundle(ReportsManager.REPORTS_MESSAGE_BUNDLE);
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, "osp.reports.view");
 
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE,
-            myResources.getString("instructions_publishToIndividual"));
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD, "false");
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER, reportResult.getReportResult().getResultId().getValue());
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE, myResources.getString("title_share_report"));
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS,
+                myResources.getString("instructions_addViewersToPresentation"));
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE,
+                myResources.getString("instructions_publishToGroup"));
 
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG,  "false");
-     // session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, myResources.getString("instructions_publishToInternet"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE,
-            myResources.getString("instructions_selectedAudience"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS,
-            myResources.getString("instructions_selectFilterUserList"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, "true");
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "false");
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_INSTRUCTIONS,
-              myResources.getString("publish_message"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_URL,  url);
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE,
+                myResources.getString("instructions_publishToIndividual"));
 
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL,
-            myResources.getString("audience_browse_individual"));
-       try {
-         context.redirect("osp.audience.helper/tool.jsf?panel=Main");
-      }
-      catch (IOException e) {
-         throw new RuntimeException("Failed to redirect to helper", e);
-      }  
-   }
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, "false");
+        // session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, myResources.getString("instructions_publishToInternet"));
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE,
+                myResources.getString("instructions_selectedAudience"));
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS,
+                myResources.getString("instructions_selectFilterUserList"));
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, "true");
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "false");
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_INSTRUCTIONS,
+                myResources.getString("publish_message"));
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_URL, url);
+
+        session.setAttribute(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL,
+                myResources.getString("audience_browse_individual"));
+        try {
+            context.redirect("osp.audience.helper/tool.jsf?panel=Main");
+        }
+        catch (IOException e) {
+            throw new RuntimeException("Failed to redirect to helper", e);
+        }
+    }
 
     public String processImportDefinition() {
         return ReportsTool.importReportDef;
@@ -739,4 +769,212 @@ public class ReportsTool extends ToolBase {
         this.contentHosting = contentHosting;
     }
 
+    public String processScheduleReport(DecoratedReport report) {
+        setJobDetail(reportsManager.processCreateJob(report.getReport()));
+        jobDetailWrapper.setJobDetail(getJobDetail());
+        jobDetailWrapper.setTriggerWrapperList(getJobTriggerList(getJobDetail()));
+        return ReportsTool.scheduleReport;
+    }
+
+    public String getTriggerExpression() {
+        return triggerExpression;
+    }
+
+    public void setTriggerExpression(String triggerExpression) {
+        this.triggerExpression = triggerExpression;
+    }
+
+    public void validateTriggerExpression(FacesContext context,
+                                          UIComponent component, Object value) {
+        if (value != null) {
+            try {
+                String expression = (String) value;
+                CronTrigger trigger = new CronTrigger();
+                trigger.setCronExpression(expression);
+
+                // additional checks
+                // quartz does not check for more than 7 tokens in expression
+                String[] arr = expression.split("\\s");
+                if (arr.length > 7) {
+                    throw new ParseException("Expression has more than 7 tokens", 7);
+                }
+
+                //(check that last 2 entries are not both * or ?
+                String trimmed_expression = expression.replaceAll("\\s", ""); // remove whitespace
+                if (trimmed_expression.endsWith(CRON_CHECK_ASTERISK)
+                        || trimmed_expression.endsWith(CRON_CHECK_QUESTION_MARK)) {
+                    throw new ParseException("Cannot End in * * or ? ?", 1);
+                }
+            }
+            catch (ParseException e) {
+                // not giving a detailed message to prevent line wraps
+                FacesMessage message = new FacesMessage("Parse Exception");
+                message.setSeverity(FacesMessage.SEVERITY_WARN);
+                throw new ValidatorException(message);
+            }
+        }
+
+    }
+
+    public void validateTriggerName(FacesContext context, UIComponent component,
+                                    Object value) {
+        if (value != null) {
+            try {
+                Trigger trigger = schedulerManager.getScheduler().getTrigger(
+                        (String) value, Scheduler.DEFAULT_GROUP);
+                if (trigger != null) {
+                    FacesMessage message = new FacesMessage("Existing Trigger Name");
+                    message.setSeverity(FacesMessage.SEVERITY_WARN);
+                    throw new ValidatorException(message);
+                }
+            }
+            catch (SchedulerException e) {
+                logger.error("Scheduler down!");
+            }
+        }
+    }
+
+    public JobDetail getJobDetail() {
+        return jobDetail;
+    }
+
+    public void setJobDetail(JobDetail jobDetail) {
+        this.jobDetail = jobDetail;
+    }
+
+    public List setJobTriggers(JobDetail jobDetail) {
+        return getJobTriggerList(jobDetail);
+    }
+
+    public List getJobTriggerList(JobDetail jobDetail) {
+        List triggerWrapperList = new ArrayList();
+        try {
+
+            jobDetailWrapper.setJobDetail(jobDetail);
+            Trigger[] triggerArr = getSchedulerManager().getScheduler().getTriggersOfJob(jobDetail.getName(), ReportsManager.reportGroup);
+
+            TriggerWrapper tw;
+            for (int j = 0; j < triggerArr.length; j++) {
+                tw = new TriggerWrapperImpl();
+                tw.setTrigger(triggerArr[j]);
+                triggerWrapperList.add(tw);
+            }
+            jobDetailWrapper.setTriggerWrapperList(triggerWrapperList);
+
+        }
+        catch (SchedulerException e) {
+            logger.error("scheduler error while getting job detail");
+        }
+        return triggerWrapperList;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public String getTriggerName() {
+        return triggerName;
+    }
+
+    public void setTriggerName(String triggerName) {
+        this.triggerName = triggerName;
+    }
+
+    public JobDetailWrapper getJobDetailWrapper() {
+        return jobDetailWrapper;
+    }
+
+    public void setJobDetailWrapper(JobDetailWrapper jobDetailWrapper) {
+        this.jobDetailWrapper = jobDetailWrapper;
+    }
+
+    public String processCreateTrigger() {
+        Scheduler scheduler = schedulerManager.getScheduler();
+        if (scheduler == null) {
+            logger.error("Scheduler is down!");
+            return "error";
+        }
+        try {
+            Trigger trigger = new CronTrigger(triggerName, ReportsManager.reportGroup),
+                    getJobDetail().getName(), ReportsManager.reportGroup), triggerExpression);
+            scheduler.scheduleJob(trigger);
+            TriggerWrapper tempTriggerWrapper = new TriggerWrapperImpl();
+            tempTriggerWrapper.setTrigger(trigger);
+            getJobDetailWrapper().getTriggerWrapperList().add(tempTriggerWrapper);
+
+
+            triggerName = null;
+            triggerExpression = null;
+            return scheduleReport;
+        }
+        catch (Exception e) {
+            triggerName = null;
+            triggerExpression = null;
+            logger.error("Failed to create trigger");
+            return "error";
+        }
+    }
+     public String processSelectAllTriggers()
+  {
+
+    isSelectAllTriggersSelected = !isSelectAllTriggersSelected;
+    for (Iterator i = getJobDetailWrapper().getTriggerWrapperList().iterator(); i.hasNext();)
+    {
+      if (isSelectAllTriggersSelected)
+      {
+        ((TriggerWrapper) i.next()).setIsSelected(true);
+      }
+      else
+      {
+        ((TriggerWrapper) i.next()).setIsSelected(false);
+      }
+    }
+    return scheduleReport;
+  }
+
+    public List getFilteredTriggersWrapperList() {
+        return filteredTriggersWrapperList;
+    }
+
+    public void setFilteredTriggersWrapperList(List filteredTriggersWrapperList) {
+        this.filteredTriggersWrapperList = filteredTriggersWrapperList;
+    }
+
+    public String processRefreshFilteredTriggers()
+  {
+    filteredTriggersWrapperList = new ArrayList();
+    for (Iterator i = getJobDetailWrapper().getTriggerWrapperList()
+        .iterator(); i.hasNext();)
+    {
+      TriggerWrapper triggerWrapper = (TriggerWrapper) i.next();
+      if (triggerWrapper.getIsSelected())
+      {
+        filteredTriggersWrapperList.add(triggerWrapper);
+      }
+    }
+    return deleteTriggers;
+  }
+     public String processDeleteTriggers()
+  {
+    try
+    {
+      TriggerWrapper triggerWrapper;
+      for (Iterator i = filteredTriggersWrapperList.iterator(); i.hasNext();)
+      {
+        triggerWrapper = (TriggerWrapper) i.next();
+        schedulerManager.getScheduler().unscheduleJob(
+            triggerWrapper.getTrigger().getName(), ReportsManager.reportGroup);
+        getJobDetailWrapper().getTriggerWrapperList().remove(triggerWrapper);
+      }
+    }
+    catch (SchedulerException e)
+    {
+      logger.error("Scheduler Down");
+    }
+    return scheduleReport;
+  }
 }

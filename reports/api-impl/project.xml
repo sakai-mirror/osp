@@ -169,7 +169,21 @@
             <version>${sakai.spring.version}</version>          
         </dependency>
         
-        
+         <dependency>
+        <groupId>quartz</groupId>
+        <artifactId>quartz</artifactId>
+        <version>1.5.2</version>
+     </dependency>
+     <dependency>
+			<groupId>sakaiproject</groupId>
+			<artifactId>sakai-comp-shared-scheduler</artifactId>
+			<version>${sakai.version}</version>
+		</dependency>
+     <dependency>
+        <groupId>sakaiproject</groupId>
+        <artifactId>sakai-scheduler-api</artifactId>
+        <version>${sakai.version}</version>
+     </dependency>
         <dependency>
             <groupId>jspapi</groupId>
             <artifactId>jsp-api</artifactId>

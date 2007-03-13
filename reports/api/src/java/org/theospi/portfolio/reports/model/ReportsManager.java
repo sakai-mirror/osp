@@ -20,23 +20,23 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Collection;
-import java.io.IOException;
-
-import javax.sql.DataSource;
-
+import org.quartz.Job;
+import org.quartz.JobDetail;
+import org.sakaiproject.exception.ImportException;
+import org.sakaiproject.exception.UnsupportedFileTypeException;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.exception.UnsupportedFileTypeException;
-import org.sakaiproject.exception.ImportException;
 
-public interface ReportsManager extends DownloadableManager
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+public interface ReportsManager extends DownloadableManager, Job
 {
    public static final String RESULTS_ID = "reportResultsId";
    public static final String EXPORT_XSL_ID = "reportExportId";
+   public static final String reportGroup = "REPORTS";
 
    public static final String REPORTS_MESSAGE_BUNDLE = "org.theospi.portfolio.reports.bundle.Messages";
 
@@ -238,4 +238,5 @@ public interface ReportsManager extends DownloadableManager
     public List getReportsByViewer();
 
      public String processSaveResultsToResources(ReportResult reportResult) throws IOException;
+     public JobDetail processCreateJob(Report report);
 }

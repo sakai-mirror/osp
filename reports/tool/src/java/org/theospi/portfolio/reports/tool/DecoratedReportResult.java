@@ -20,22 +20,17 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.tool;
 
-import java.io.UnsupportedEncodingException;
+import org.theospi.portfolio.reports.model.*;
+
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.faces.event.ValueChangeEvent;
-import javax.faces.model.SelectItem;
-
-import org.theospi.portfolio.reports.model.Report;
-import org.theospi.portfolio.reports.model.ReportDefinition;
-import org.theospi.portfolio.reports.model.ReportResult;
-import org.theospi.portfolio.reports.model.ReportXsl;
-import org.theospi.portfolio.reports.model.ReportsManager;
 
 /**
  * This class allows the ReportResult to interact with the view
@@ -195,7 +190,7 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 	{
 		reportsTool.processActionAudienceHelper(this);
 	}
-
+   
    
    /**
     * this function deletes the full report result and the report
