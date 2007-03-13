@@ -168,12 +168,10 @@ public class EditScaffoldingCellController extends
 		if (addFormAction != null) {
 
 			String id = (String) request.get("selectAdditionalFormId");
-			if (id != null && !id.equals(""))
+			if ( id != null && !id.equals("") && !scaffoldingCell.getAdditionalForms().contains(id) )
 				scaffoldingCell.getAdditionalForms().add(id);
 			session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
 					"true");
-			// model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
-			// "true");
 			model.put("scaffoldingCell", scaffoldingCell);
 			return new ModelAndView("success", model);
 		}
