@@ -29,7 +29,6 @@
           value="#{msgs.permissions_link}" />
 
    </sakai:tool_bar>
-
    <sakai:view_title value="#{msgs.wizard_title}"/>
    <sakai:instruction_message value="#{msgs.wizard_instruction_message}" />
 <%--   <sakai:instruction_message value=" Last saved: " />
@@ -41,19 +40,20 @@
    <h:outputText value="#{wizard.lastError} #{msgs.wizard_bad_file_type}" styleClass="validation" rendered="#{wizard.lastError == 'badFileType'}" />
    <h:outputText value="#{wizard.lastError} #{msgs.wizard_bad_import}" styleClass="validation" rendered="#{wizard.lastError == 'badImport'}" />
    
-   
+   <%-- TODO moved the select into the button bar so they display in the same line - sanity check --%>
    <f:subview id="viewUsers" rendered="#{wizard.canEvaluateTool || wizard.canReviewTool}">
-      <h:selectOneMenu id="users" immediate="true" value="#{wizard.currentUserId}">
-         <f:selectItems value="#{wizard.userListForSelect}"/>
-      </h:selectOneMenu>
       <sakai:button_bar>
-         <sakai:button_bar_item id="go" value="#{msgs.go}"
+    	  <h:selectOneMenu id="users" immediate="true" value="#{wizard.currentUserId}">
+		  	<f:selectItems value="#{wizard.userListForSelect}"/>
+		</h:selectOneMenu>
+		  <sakai:button_bar_item id="go" value="#{msgs.go}"
             action="#{wizard.processActionChangeUser}" />
       </sakai:button_bar>
    </f:subview>
-   <%@include file="showWizardOwnerMessage.jspf"%>
-   
-   <h:dataTable  value="#{wizard.wizards}" var="wizardItem" styleClass="lines listHier" headerClass="exclude">
+      <%@include file="showWizardOwnerMessage.jspf"%>
+   <%-- TODO this dataTable needs a rendered attribute to hide if there are no items - then the alternate message below gets displayed --%>
+   <%-- <sakai:instruction_message value="#{msgs.no_wizards}"  /> --%>
+   <h:dataTable  value="#{wizard.wizards}" var="wizardItem" styleClass="lines listHier nolines" headerClass="exclude">		
       <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.wizards}" />
@@ -92,13 +92,16 @@
 	           </f:subview>
 	     </ospx:separatedList>
       </h:column>
+<%-- TODO having the description here really throws rendering off -- would be ok as a separate row, but this is JSF  
       <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.wizard_description}" />
          </f:facet>
          <help:glossary link="true" hover="false"><h:outputText value="#{wizardItem.concatDescription}"/></help:glossary>
       </h:column>
-    <%--  <h:column>
+--%>
+	  <%--
+      <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.re_order}" />
          </f:facet>

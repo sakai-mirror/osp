@@ -22,8 +22,9 @@
    
    <sakai:panel_edit>
       <h:outputLabel for="name" id="nameLabel" value="#{msgs.wizard_name}" />
-      <h:panelGroup>
+      <h:panelGroup styleClass="shorttext">
          <h:inputText id="files" value="#{wizard.importFilesString}" disabled="true" />
+		 <h:outputText value=" " />
          <h:commandLink action="#{wizard.processPickImportFiles}">
             <h:outputText value="#{msgs.pick_import_files}"/>
          </h:commandLink>
@@ -33,9 +34,9 @@
    
    <sakai:button_bar>
        <sakai:button_bar_item id="import" value="#{msgs.import_wizard_button}"
-          action="#{wizard.processImportWizards}" />
+          action="#{wizard.processImportWizards}" styleClass="active" accesskey="s" />
        <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard}" 
-          action="#{wizard.processActionCancel}" />
+          action="#{wizard.processActionCancel}" accesskey="x" />
    </sakai:button_bar>
 </h:form>
 </sakai:view>

@@ -17,10 +17,9 @@
 
     <h3><h:outputText value="#{msgs.submit_wizard_for_evaluation}"/></h3>
    
-      <span class="alertMessage"><h:outputText value="#{msgs.complete_wizard_instructions}"/></span>
-      <br />
+      <div class="alertMessage"><h:outputText value="#{msgs.complete_wizard_instructions}"/></div>
 
-	<table class="listHier">
+	<table class="listHier lines nolines" cellpadding="0" cellspacing="0">
 	   <tr>
 	      <th><h:outputText value="#{msgs.wizard_meaning_title}"/></th>
           <th><h:outputText value="#{msgs.wizard_description}"/></th>
@@ -30,13 +29,13 @@
           <td><h:outputText value="#{wizard.current.base.description}" escape="false"/></td>
        </tr>
     </table>
-
 <sakai:button_bar>
    <sakai:button_bar_item id="submit" value="#{msgs.submit_wizard}"
-      action="#{wizard.current.runningWizard.processSubmitWizard}" />
+      action="#{wizard.current.runningWizard.processSubmitWizard}"  styleClass="active" accesskey="s" />
    <sakai:button_bar_item id="cancel" value="#{msgs.cancel_submit_wizard}"
-      action="cancelled" immediate="true" />
+      action="cancelled" immediate="true" accesskey="x" />
 </sakai:button_bar>
+
 
 
 </h:form>

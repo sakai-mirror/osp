@@ -35,47 +35,43 @@
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />
-   <sakai:panel_edit>
-      <h:panelGroup>
-         <h:outputText value="*" style="color: red"/>
+      <h:panelGrid columns="1"  styleClass="jsfFormTable" cellpadding="0">
+      <h:panelGroup styleClass="shorttext">
+         <h:outputText value="*" styleClass="reqStar"/>
          <h:outputLabel for="name" id="nameLabel" value="#{msgs.wizard_name}" />
-      </h:panelGroup>
-      <h:panelGroup>
          <h:inputText id="name" value="#{wizard.current.base.name}" required="true" size="30">
             <f:validateLength minimum="1" maximum="255" />
          </h:inputText>
          <h:message for="name" styleClass="validationEmbedded" />
       </h:panelGroup>
-      <h:outputLabel for="description" id="descriptionLabel" value="#{msgs.wizard_description}" />
-      <h:panelGroup>
-         <h:inputTextarea id="description" value="#{wizard.current.base.description}" cols="60" rows="6">
+      <h:panelGroup styleClass="longtext" style="padding:0;display:block;margin:0">
+	  		<h:outputLabel for="description" id="descriptionLabel" value="#{msgs.wizard_description}" styleClass="block"/>
+			<h:inputTextarea id="description" value="#{wizard.current.base.description}" cols="60" rows="6" >
             <f:validateLength minimum="1" maximum="1024" />
          </h:inputTextarea>
          <h:message for="description" styleClass="validationEmbedded" />
       </h:panelGroup>
-      <h:outputLabel for="keywords" id="keywordsLabel" value="#{msgs.wizard_keywords}" />
-      <h:panelGroup>
-         <h:inputTextarea id="keywords" value="#{wizard.current.base.keywords}" cols="60" rows="6">
+	  <h:panelGroup styleClass="longtext" style="padding:0;display:block;margin:0">
+      <h:outputLabel for="keywords" id="keywordsLabel" value="#{msgs.wizard_keywords}"  styleClass="block"/>
+        <h:inputTextarea id="keywords" value="#{wizard.current.base.keywords}" cols="60" rows="6">
             <f:validateLength minimum="1" maximum="1024" />
          </h:inputTextarea>
          <h:message for="keywords" styleClass="validationEmbedded" />
       </h:panelGroup>
-      <h:outputLabel for="styleFile" id="styleLabel" value="#{msgs.wizard_style}" />
-      <h:panelGroup>
+	  <h:panelGroup styleClass="shorttext">
+	  <h:outputLabel for="styleFile" id="styleLabel" value="#{msgs.wizard_style}" />
          <h:inputText id="styleFile" value="#{wizard.current.styleName}" 
                readonly="true" disabled="true" required="false" />
          <h:commandLink action="#{wizard.current.processActionSelectStyle}" immediate="true">
-            <h:outputText value="#{msgs.select_style}"/>
+            <h:outputText value=" "/><h:outputText value="#{msgs.select_style}"/>
          </h:commandLink>
       </h:panelGroup>
     <%--  <h:panelGroup>
 	   <h:selectBooleanCheckbox id="asTool" value="#{wizard.current.exposeAsTool}" />
 	   <h:outputLabel value="#{msgs.expose_as_tool}" for="asTool" />
       </h:panelGroup> --%>
-   </sakai:panel_edit>
-
+</h:panelGrid>
    <%@include file="builderButtons.jspf"%>
-
 </h:form>
 </sakai:view>
 

@@ -18,7 +18,7 @@
    <sakai:view_title value="#{msgs.delete_wizard_category}"/>
    <sakai:instruction_message value="#{msgs.delete_wizard_category_message}" />
       
-   <h:dataTable value="#{wizard.currentCategoryList}" var="category" styleClass="listHier" headerClass="">
+   <h:dataTable value="#{wizard.currentCategoryList}" var="category" styleClass="listHier" headerClass="" cellpadding="0" cellspacing="0">
       <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.delete_wizard_category_title}" />
@@ -35,9 +35,9 @@
 
 <sakai:button_bar>
    <sakai:button_bar_item id="submit" value="#{msgs.submit_delete_wizard_category}"
-      action="#{wizard.currentCategory.processActionDelete}" />
+      action="#{wizard.currentCategory.processActionDelete}" styleClass="active" accesskey="s" />
    <sakai:button_bar_item id="cancel" value="#{msgs.cancel_delete_wizard_category}"
-      action="cancel" immediate="true" />
+      action="cancel" immediate="true" accesskey="x" />
 </sakai:button_bar>
 
 

@@ -29,7 +29,6 @@
 
 <osp:form/>
    <input type="hidden" name="submitAction" value="" />
-   
    <c:if test="${sequential == 'true'}">
      <input type="hidden" name="view" value="sequentialWizardPage.osp" />
    </c:if>
@@ -62,7 +61,6 @@
         </c:forEach>
       </c:if>
 	</div>
-
    <c:if test="${cell.scaffoldingCell.scaffolding.preview}">
       <div class="validation">
          <fmt:message key="title_cellPreview"/>
@@ -229,9 +227,9 @@
 
             <tr>
                <td>
-                  <c:if test="${not (cell.status == 'READY' and readOnlyMatrix != 'true')}">
 				  <img border="0" src="/library/image/silk/application_form.gif" alt=""/>
-                  <a href='<c:out value="${node.externalUri}"/>' target="_blank" >
+                  <c:if test="${not (cell.status == 'READY' and readOnlyMatrix != 'true')}">
+	                  <a href='<c:out value="${node.externalUri}"/>' target="_blank" >
                   </c:if>
                   <c:out value="${node.name}"/>
                   <c:if test="${not (cell.status == 'READY' and readOnlyMatrix != 'true')}">
@@ -346,20 +344,13 @@
 						 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
 						 </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="edit"/></a>
 						 |   --%>
-                          <a name="linkNew" href="<osp:url value="osp.wizard.page.contents.helper/resourceDelete.osp">
-						 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
-						 <osp:param name="resource_id" value="${node.id}"/>
-						 <osp:param name="submit" value="delete"/>
-						 </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="delete"/></a>
-                      </div>
-                   <div class="itemAction indnt2">
-                   <a name="linkNew" href="<osp:url value="osp.wizard.page.contents.helper/resourceDelete.osp">
+                        <a name="linkNew" href="<osp:url value="osp.wizard.page.contents.helper/resourceDelete.osp">
 						   <osp:param name="page_id" value="${cell.wizardPage.id}"/>
 						   <osp:param name="resource_id" value="${node.id}"/>
 						   <osp:param name="submit" value="delete"/>
 						   </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="delete"/></a>
                    <c:if test="${(matrixCan.review || wizardCan.review) && cell.scaffoldingCell.reviewDevice != null}">
-                        | <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
+                        |<a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                           <osp:param name="page_id" value="${cell.wizardPage.id}" />
                           <osp:param name="org_theospi_portfolio_review_type" value="2" />
                           <osp:param name="process_type_key" value="page_id" />
@@ -372,7 +363,7 @@
                    </c:if> 
            
                   </c:if>
-			   <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
+			  | <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                           <osp:param name="page_id" value="${cell.wizardPage.id}" />
                           <osp:param name="org_theospi_portfolio_review_type" value="2" />
                           <osp:param name="process_type_key" value="page_id" />
@@ -439,58 +430,62 @@
    
    <!-- ************* Reflection Area Start ************* -->
    <c:if test="${cell.scaffoldingCell.reflectionDevice != null}">
-   	<br />
       <table class="listHier lines nolines bordered-l" cellpadding="0" cellspacing="0"   summary="">
 		<tr>
-			<th><osp:message key="reflection_section_header"/></th>
+			<th colspan="2"><osp:message key="reflection_section_header"/></th>
 		</tr>
-	<tr>	
-      <td>
 	      <c:if test="${empty reflections}">
-		  	<span class="instruction"><osp:message key="reflection_section_empty"/></span>
-		  </c:if>
-
-      <c:if test="${empty reflections && cell.status == 'READY' and readOnlyMatrix != 'true'}">
-         <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
-               <osp:param name="page_id" value="${cell.wizardPage.id}" />
-               <osp:param name="org_theospi_portfolio_review_type" value="0" />
-               <osp:param name="process_type_key" value="page_id" />
-               <osp:param name="isMatrix" value="${isMatrix}" />
-					<osp:param name="isWizard" value="${isWizard}" />
-					<osp:param name="objectId" value="${objectId}" />
-					<osp:param name="objectTitle" value="${objectTitle}" />
-					<osp:param name="objectDesc" value="${objectDesc}" />
-               </osp:url>">
-                     <osp:message key="reflection_create"/></a>
-      </c:if>
+		<tr>	
+			<td>
+				<span class="instruction"><osp:message key="reflection_section_empty"/></span>
+				<c:if test="${empty reflections && cell.status == 'READY' and readOnlyMatrix != 'true'}">
+					<span class="itemAction">
+						<a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
+					   <osp:param name="page_id" value="${cell.wizardPage.id}" />
+					   <osp:param name="org_theospi_portfolio_review_type" value="0" />
+					   <osp:param name="process_type_key" value="page_id" />
+					   <osp:param name="isMatrix" value="${isMatrix}" />
+							<osp:param name="isWizard" value="${isWizard}" />
+							<osp:param name="objectId" value="${objectId}" />
+							<osp:param name="objectTitle" value="${objectTitle}" />
+							<osp:param name="objectDesc" value="${objectDesc}" />
+					   </osp:url>">
+							 <osp:message key="reflection_create"/></a>
+					</span>		 
+				 </c:if>
+			</td>
+		</tr>
+	  </c:if>
       <c:if test="${not empty reflections}">
-         <c:set var="canReflect" value="true"/>
-         <c:if test="${cell.status != 'READY' or readOnlyMatrix == 'true'}">
-		 	<img src = '/library/image/silk/application_form.gif' border= '0' hspace='0' alt=""/>
-			<a href='<c:out value="${reflections[0].reviewContentNode.externalUri}"/>' target="_blank" >
-               <c:out value="${reflections[0].reviewContentNode.displayName}"/>
-            </a>
-         </c:if>
-         <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
-           <img src = '/library/image/silk/application_form.gif' border= '0' hspace='0' alt=""/>
-                     
-           <c:out value="${reflections[0].reviewContentNode.displayName}" />
-           <span class="itemAction indnt2">
-             <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
-               <osp:param name="page_id" value="${cell.wizardPage.id}" />
-               <osp:param name="org_theospi_portfolio_review_type" value="0" />
-               <osp:param name="current_review_id" value="${reflections[0].reviewContentNode.resource.id}" />
-               <osp:param name="process_type_key" value="page_id" />
-               </osp:url>">
-                     <osp:message key="reflection_edit"/></a>
-           </span>
-         </c:if>
+	  	<tr>
+			<td>
+				 <c:set var="canReflect" value="true"/>
+				 <c:if test="${cell.status != 'READY' or readOnlyMatrix == 'true'}">
+					<img src = '/library/image/silk/application_form.gif' border= '0' hspace='0' alt=""/>
+					<a href='<c:out value="${reflections[0].reviewContentNode.externalUri}"/>' target="_blank" >
+					   <c:out value="${reflections[0].reviewContentNode.displayName}"/>
+					</a>
+				 </c:if>
+				 <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+				   <img src = '/library/image/silk/application_form.gif' border= '0' hspace='0' alt=""/>
+				   <c:out value="${reflections[0].reviewContentNode.displayName}" />
+			  </c:if> 
+				<span class="itemAction">
+					 <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
+					   <osp:param name="page_id" value="${cell.wizardPage.id}" />
+					   <osp:param name="org_theospi_portfolio_review_type" value="0" />
+					   <osp:param name="current_review_id" value="${reflections[0].reviewContentNode.resource.id}" />
+					   <osp:param name="process_type_key" value="page_id" />
+					   </osp:url>">
+							 <osp:message key="reflection_edit"/></a>
+					 </span>
       </c:if>
 	  </td>
 	 </tr>
 	 </table>
    </c:if>
-	<!-- if status is ready -->
+   	<!-- if status is ready -->
+	<%-- TODO omit the following block if the items inside it are not rendered --%>
     	<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
 		    <p class="act">
     		<c:if test="${canReflect == 'true'}">
@@ -511,11 +506,10 @@
     		<c:if test="${canReflect == 'true' && currentStep == (totalSteps) && sequential == 'true'}">
     			<input type="submit" name="submitWizard" value="<osp:message key="submit_wizard_for_evaluation"/>"/>
     		</c:if>
-</p>
+			</p>
 	</c:if>
     	<input type="hidden" name="page_id" value="<c:out value="${cell.wizardPage.id}"/>"/>
-    
-   <!-- ************* Reflection Area End ************* -->
+       <!-- ************* Reflection Area End ************* -->
    
    
 
@@ -524,7 +518,7 @@
 	 I cannot give feedback & no feedback present = hide
 	 I can read feedback &  there is feedback = show
 --%>
-   <br />
+
 	<table class="listHier lines nolines bordered-l" cellpadding="0" cellspacing="0" border="0"   summary="">
 		<tr>
 			<th><osp:message key="reviews_section_general"/></th>

@@ -16,14 +16,16 @@
 <h:form>
 
    <sakai:view_title value="#{msgs.delete_wizard}"/>
+   <h:outputText value="#{wizard.current.deleteMessage}" styleClass="alertMessage"/>
+   <%--
    <sakai:instruction_message value="#{wizard.current.deleteMessage}" />
-      
+     --%> 
 
 <sakai:button_bar>
    <sakai:button_bar_item id="submit" value="#{msgs.submit_delete_wizard}"
-      action="#{wizard.current.processActionDelete}" />
+      action="#{wizard.current.processActionDelete}" accesskey="s" styleClass="active" />
    <sakai:button_bar_item id="cancel" value="#{msgs.cancel_delete_wizard}"
-      action="listWizards" immediate="true" />
+      action="listWizards" immediate="true" accesskey="x" />
 </sakai:button_bar>
 
 

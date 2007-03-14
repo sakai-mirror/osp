@@ -18,26 +18,26 @@
    <sakai:view_title value="#{msgs.delete_wizard_page}"/>
    <sakai:instruction_message value="#{msgs.delete_wizard_page_message}" />
       
-   <h:dataTable value="#{wizard.currentPageList}" var="page" styleClass="listHier" headerClass="">
+   <h:dataTable value="#{wizard.currentPageList}" var="page" styleClass="listHier lines nolines" cellpadding="0" cellspacing="0">
       <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.delete_wizard_page_title}" />
-         </f:facet>
-         <h:outputText value="#{page.title}" />
+			</f:facet>
+			<h:outputText value="#{page.title}" />
       </h:column>
       <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.delete_wizard_page_description}" />
          </f:facet>
-         <h:outputText value="#{page.description}" />
+         <h:outputText value="#{page.description}" escape="false" />
       </h:column>
    </h:dataTable>
 
 <sakai:button_bar>
    <sakai:button_bar_item id="submit" value="#{msgs.submit_delete_wizard_page}"
-      action="#{wizard.currentPage.processActionDelete}" />
+      action="#{wizard.currentPage.processActionDelete}" accesskey="s" styleClass="active"/>
    <sakai:button_bar_item id="cancel" value="#{msgs.cancel_delete_wizard_page}"
-      action="cancel" immediate="true" />
+      action="cancel" immediate="true" accesskey="x" />
 </sakai:button_bar>
 
 

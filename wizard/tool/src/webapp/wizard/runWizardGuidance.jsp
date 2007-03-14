@@ -14,14 +14,14 @@
 <f:view>
 <sakai:view>
 <h:form>
-   <c:if test="${wizard.current.base.preview}">
+   <c:if test="${wizard.current.base.preview}">	
       <div class="validation">
          <h:outputText value="#{msgs.wizard_preview_title}"/>
       </div>
    </c:if>
 
    <sakai:view_title value="#{wizard.current.base.name}"/>
-   
+
    <sakai:messages />
    
    <h:outputText value="#{wizard.lastSavePage} #{msgs.page_was_submitted}" styleClass="success" rendered="#{wizard.lastSavePage != ''}" />
@@ -29,62 +29,52 @@
    
    <sakai:instruction_message value="#{wizard.current.base.description}" />
    
-   <h:outputText value="<b>#{msgs.guidance_instructions}</b><br><br>" escape="false" />
-   <h:outputText value="#{wizard.current.instruction.text}" escape="false" />
-   <h:outputText value="<br><br>" escape="false" />
-   <sakai:flat_list value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment">
+   <h4 class="xheader"><h:outputText value="#{msgs.guidance_instructions}" escape="false" /></h4>
+   <div class="textPanel"><h:outputText value="#{wizard.current.instruction.text}" escape="false" /></div>
+   <h:dataTable value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment"  rendered="#{not empty wizard.current.instruction.attachments}" border="0" styleClass="indnt1" style="width:50%">
       <h:column>
       <sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
       <h:graphicImage id="instrFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
-      <h:outputLink title="#{attachment.displayName}"
-         value="#{attachment.fullReference.base.url}" target="_new">
-         <h:outputText value="#{attachment.displayName}"/>
+         <h:outputText value=" "/><h:outputLink title="#{attachment.displayName}"
+         value="#{attachment.fullReference.base.url}" target="_blank">
+		 <h:outputText value="#{attachment.displayName}"/>
       </h:outputLink>
-      <h:outputText value=" (#{attachment.contentLength})"/>
+      <h:outputText value=" (#{attachment.contentLength})" styleClass="textPanelFooter"/>
       </h:column>
-   </sakai:flat_list>
-   <h:outputText value="<br><br>" escape="false" rendered="#{not empty wizard.current.instruction.attachments}" />
+   </h:dataTable>
    
    
-   
-   <h:outputText value="<b>#{msgs.guidance_rationale}</b><br><br>" escape="false" />
-   <h:outputText value="#{wizard.current.rationale.text}" escape="false" />
-   <h:outputText value="<br><br>" escape="false" />
-   <sakai:flat_list value="#{wizard.current.guidanceRationaleAttachments}" var="attachment">
+   <h4 class="xheader"><h:outputText value="#{msgs.guidance_rationale}" escape="false" /></h4>
+   <div class="textPanel"><h:outputText value="#{wizard.current.rationale.text}" escape="false" /></div>
+   <h:dataTable value="#{wizard.current.guidanceRationaleAttachments}" var="attachment"  rendered="#{not empty wizard.current.rationale.attachments}"  border="0" styleClass="indnt1" style="width:50%">
       <h:column>
       <sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
       <h:graphicImage id="rationaleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
-      <h:outputLink title="#{attachment.displayName}"
-         value="#{attachment.fullReference.base.url}" target="_new">
+      <h:outputText value=" "/><h:outputLink title="#{attachment.displayName}"
+         value="#{attachment.fullReference.base.url}" target="_blank">
          <h:outputText value="#{attachment.displayName}"/>
       </h:outputLink>
-      <h:outputText value=" (#{attachment.contentLength})"/>
+      <h:outputText value=" (#{attachment.contentLength})"  styleClass="textPanelFooter"/>
       </h:column>
-   </sakai:flat_list>
-   <h:outputText value="<br><br>" escape="false" rendered="#{not empty wizard.current.rationale.attachments}" />
+   </h:dataTable>
    
-   
-   
-   
-   <h:outputText value="<b>#{msgs.guidance_examples}</b><br><br>" escape="false" />
-   <h:outputText value="#{wizard.current.example.text}" escape="false" />
-   <h:outputText value="<br><br>" escape="false" />
-   <sakai:flat_list value="#{wizard.current.guidanceExamplesAttachments}" var="attachment">
+      <h4 class="xheader"><h:outputText value="#{msgs.guidance_examples}" escape="false" /></h4>
+   <div class="textPanel"><h:outputText value="#{wizard.current.example.text}" escape="false" /></div>
+   <h:dataTable value="#{wizard.current.guidanceExamplesAttachments}" var="attachment" border="0" styleClass="indnt1" style="width:50%" rendered="#{not empty wizard.current.example.attachments}" >
       <h:column>
       <sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
       <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
-      <h:outputLink title="#{attachment.displayName}"
-         value="#{attachment.fullReference.base.url}" target="_new">
+      <h:outputText value=" "/><h:outputLink title="#{attachment.displayName}"
+         value="#{attachment.fullReference.base.url}" target="_blank">
          <h:outputText value="#{attachment.displayName}"/>
       </h:outputLink>
-      <h:outputText value=" (#{attachment.contentLength})"/>
+      <h:outputText value=" (#{attachment.contentLength})"  styleClass="textPanelFooter"/>
       </h:column>
-   </sakai:flat_list>
-   <h:outputText value="<br><br>" escape="false" rendered="#{not empty wizard.current.example.attachments}" />
+   </h:dataTable>
    
-   
+ 
    <f:subview id="thePagesCat"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}" >
-   <h:dataTable value="#{wizard.current.rootCategory.categoryPageList}" var="item" styleClass="listHier lines" headerClass="exclude">
+   <h:dataTable value="#{wizard.current.rootCategory.categoryPageList}" var="item" styleClass="listHier lines nolines" headerClass="exclude">
      
       <h:column>
          <f:facet name="header">
@@ -111,7 +101,8 @@
       
       
       
-      
+      <%-- TODO given that the description could be just about anything (markup wise) the value of having it here should be
+	  		balanced with the certain malformed layout and possible  invalid/unbalanced markup (if the trimming is just on chars) --%>
       <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.wizard_description}" />
@@ -124,76 +115,82 @@
    </f:subview>
    
     <!-- ****************** reflection ****************** -->
+	<%--TODO  this layout should match the one in matrix cells --%>
     <f:subview id="reflectionArea" rendered="#{wizard.current.base.reflectionDevice != null && 
       				wizard.current.base.reflectionDevice.value != ''}">
-      <h:outputText value="<br><br>" escape="false" rendered="#{wizard.current.base.reflectionDevice != null && 
-      				wizard.current.base.reflectionDevice.value != ''}" />
+<%--      <h:outputText value="<br><br>" escape="false" rendered="#{wizard.current.base.reflectionDevice != null && 
+      				wizard.current.base.reflectionDevice.value != ''}" /> --%>
       <ospx:xheader rendered="#{wizard.current.base.reflectionDevice != null || 
       				wizard.current.base.reflectionDevice.value != ''}">
          <ospx:xheadertitle id="reflectiontitleheader" value="#{msgs.reflection_section_header}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
+		  <f:verbatim>
+			  <div class=" indnt2">
+		   </f:verbatim>
       
       <f:subview id="noReflection" 
       	rendered="#{empty wizard.current.runningWizard.reflections && wizard.current.runningWizard.base.status == 'READY' &&
       		not wizard.current.runningWizard.isReadOnly}">
+		  <f:verbatim>
+			  <div class="itemAction indnt2">
+		   </f:verbatim>
+
          <h:commandLink action="#{wizard.processActionReflection}">
          	<h:outputText value="#{msgs.reflection_create}"/>
          </h:commandLink>
-      </f:subview>
-      
-      <f:subview id="showReflection" rendered="#{not empty wizard.current.runningWizard.reflections}">
-      
-         <f:subview id="displayReflection" rendered="#{wizard.current.runningWizard.base.status != 'READY' ||
-         		wizard.current.runningWizard.isReadOnly}">
-            <h:outputLink value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.fixedExternalUri}" target="_blank">
-               <f:verbatim>
-                  <img src = '/library/image/sakai/generic.gif' border= '0' hspace='0' />
-               </f:verbatim>
-               <h:outputText value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.displayName}"/>
-            </h:outputLink>
-         </f:subview>
-         <f:subview id="editReflection" rendered="#{wizard.current.runningWizard.base.status == 'READY' && 
-         	not wizard.current.runningWizard.isReadOnly}">
-           <f:verbatim>
-              <img src = '/library/image/sakai/generic.gif' border= '0' hspace='0' />
-           </f:verbatim>
-                     
-           <h:outputText value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.displayName}" />
-           <f:verbatim>
-              <div class="itemAction indnt2">
-           </f:verbatim>
-              <h:commandLink action="#{wizard.processEditReflection}">
-                 <h:outputText value="#{msgs.reflection_edit}"/>
-              </h:commandLink>
-           <f:verbatim>
-              </div>
-           </f:verbatim>
-         </f:subview>
-         
-      </f:subview>
+		  <f:verbatim>
+			  </div>
+		   </f:verbatim>
+
+		 </f:subview>
+	  	<f:subview id="showReflection" rendered="#{not empty wizard.current.runningWizard.reflections}">
+			<f:subview id="displayReflection" rendered="#{wizard.current.runningWizard.base.status != 'READY' ||
+				wizard.current.runningWizard.isReadOnly}">
+					<f:verbatim>
+						<img src = '/library/image/silk/application_form.gif' border= '0' hspace='0' />
+					</f:verbatim>
+					<h:outputText value=" " />
+				<h:outputLink value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.fixedExternalUri}" target="_blank">
+					<h:outputText value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.displayName}"/>
+				</h:outputLink>
+			</f:subview>
+			<f:subview id="editReflection" rendered="#{wizard.current.runningWizard.base.status == 'READY' && 
+				not wizard.current.runningWizard.isReadOnly}">
+				<f:verbatim>
+					<img src = '/library/image/silk/application_form.gif' border= '0' hspace='0' />
+				</f:verbatim>
+				<h:outputText value=" " />
+				<h:outputText value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.displayName}" />
+				<f:verbatim>
+					<div class="itemAction indnt2">
+				</f:verbatim>
+				<h:commandLink action="#{wizard.processEditReflection}">
+					<h:outputText value="#{msgs.reflection_edit}"/>
+				</h:commandLink>
+				<f:verbatim>
+					</div>
+				</f:verbatim>
+			</f:subview>
+		</f:subview>
+		  <f:verbatim>
+			  </div>
+		   </f:verbatim>
+
       </ospx:xheaderdrawer>
    </ospx:xheader>
-   <h:outputText value="<br><br>" escape="false" />
    </f:subview>
-      
    <!-- ****************** feedback ****************** -->
    <ospx:xheader rendered="#{not empty wizard.current.runningWizard.reviews || 
    			(wizard.canReview && wizard.current.base.reviewDevice != null &&
 				  		wizard.current.base.reviewDevice.value != '')}">
       <ospx:xheadertitle id="wizardReviews" value="#{msgs.wizard_reviews}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-
-           <f:verbatim>
-			  <img border="0" src="/library/image/sakai/dir_openminus.gif"/>
-           </f:verbatim>
-			<h:outputText value="#{msgs.wizard_reviews}"/>
                <f:verbatim>
-			      <div class="itemAction">
+			      <div class="itemAction indnt4" style="margin-bottom:1em;padding-top:0">
                </f:verbatim>
 				  <f:subview id="feedbackAdd" 
 				  	rendered="#{wizard.canReview && wizard.current.base.reviewDevice != null &&
 				  		wizard.current.base.reviewDevice.value != ''}">
-				  	
                     <h:commandLink action="#{wizard.processActionReview}">
                        <h:outputText value="#{msgs.review_add}"/>
                     </h:commandLink>
@@ -201,15 +198,19 @@
               <f:verbatim>
                  </div>
               </f:verbatim>
-			   
+		<%-- TODO  need a rendered attribute on this list - omit if no items --%>	   
          <sakai:flat_list value="#{wizard.current.runningWizard.reviews}" var="review">
             <h:column>
                <f:facet name="header">
                   <h:outputText value="#{msgs.wizard_eval_name}" />
                </f:facet>
+		<%-- TODO Dupe? --%>	   
                <f:facet name="header">
                   <h:outputText value="#{msgs.wizard_eval_name}" />
                </f:facet>
+			   		<f:verbatim>
+					<img src = '/library/image/silk/comment.gif' border= '0' hspace='0' /><h:outputText value=" " />
+				</f:verbatim>
                <h:outputLink value="#{review.reviewContentNode.fixedExternalUri}" target="_blank">
                   <h:outputText value="#{review.reviewContentNode.displayName}" />
                </h:outputLink>               
@@ -238,13 +239,8 @@
    			  wizard.current.runningWizard.base.status == 'PENDING')}">
       <ospx:xheadertitle id="wizardEvals" value="#{msgs.wizard_evals}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-
-           <f:verbatim>
-			  <img border="0" src="/library/image/sakai/dir_openminus.gif"/>
-           </f:verbatim>
-			<h:outputText value="#{msgs.wizard_evals}"/>
                <f:verbatim>
-			      <div class="itemAction">
+			      <div class="itemAction indnt4" style="margin-bottom:1em">
                </f:verbatim>
 				  <f:subview id="evaluationAdd" 
 				  	rendered="#{wizard.canEvaluate && wizard.current.base.evaluationDevice != null &&
@@ -264,6 +260,9 @@
                <f:facet name="header">
                   <h:outputText value="#{msgs.wizard_eval_name}" />
                </f:facet>
+			   <f:verbatim>
+					<img src = '/library/image/silk/comments.gif' border= '0' hspace='0' /><h:outputText value=" " />
+				</f:verbatim>
                <h:outputLink value="#{eval.reviewContentNode.fixedExternalUri}" target="_blank">
                   <h:outputText value="#{eval.reviewContentNode.displayName}" />
                </h:outputLink>
@@ -284,15 +283,14 @@
       </ospx:xheaderdrawer>
   </ospx:xheader>
       
-   
    <sakai:button_bar>
 		<f:subview id="seqWizardButtons"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.sequential'}" >
        	<sakai:button_bar_item id="submitContinue" value="#{msgs.save_continue_wizard}"
-	      	 action="#{wizard.processExecPages}" />
+	      	 action="#{wizard.processExecPages}" accesskey="s" styleClass="active" />
 		</f:subview>
 
     <sakai:button_bar_item id="returnToList" value="#{msgs.wizard_list}"
-       action="#{wizard.processActionCancelRun}" rendered="#{!wizard.fromEvaluation}" />
+       action="#{wizard.processActionCancelRun}" rendered="#{!wizard.fromEvaluation}"  accesskey="l"/>
     <sakai:button_bar_item id="returnToEvaluations" value="#{msgs.evaluation_list}"
        action="#{wizard.processActionCancelRun}" rendered="#{wizard.fromEvaluation}" />
        

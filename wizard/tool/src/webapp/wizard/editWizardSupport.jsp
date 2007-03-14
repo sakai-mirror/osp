@@ -42,12 +42,23 @@
       	<h:outputText value="#{msgs.guidance_title}"/>
       </ospx:xheadertitle>
    </ospx:xheader>
-
-   <sakai:panel_edit>
+   <table class="listHier" cellpadding="0" cellspacing="0"  border="0" summary="" style="width:50%">
+   	<tr>
+		<th>
 	     <h:outputLabel id="editInstructionsLabel" value="#{msgs.guidance_instructions}" />
-	     
-	     <h:panelGroup>
-	     	<h:outputText value="#{wizard.current.instruction.text}" escape="false" />
+		</th>
+		<th style="text-align: right;" class="specialLink itemAction">
+			<h:commandLink id="addInstructions" value="#{msgs.guidance_instructions_add}"
+    	 	      action="#{wizard.current.processActionEditInstructions}" rendered="#{empty wizard.current.guidanceInstructions}" />
+ 	           <h:commandLink id="editInstructions" value="#{msgs.guidance_instructions_revise}"
+     	 	      action="#{wizard.current.processActionEditInstructions}" rendered="#{not empty wizard.current.guidanceInstructions}"/>
+		</th>
+	</tr>
+	<tr class="exclude">
+	<td colspan="2">
+			<div class="textPanel">	
+	     		<h:outputText value="#{wizard.current.instruction.text}" escape="false" />
+			</div>	
             <sakai:flat_list value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment">
                <h:column>
                		<sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
@@ -59,17 +70,27 @@
                         <h:outputText value=" (#{attachment.contentLength})"/>
                </h:column>
             </sakai:flat_list>
-            <sakai:button_bar>
- 	           <sakai:button_bar_item id="addInstructions" value="#{msgs.guidance_instructions_add}"
-     	 	      action="#{wizard.current.processActionEditInstructions}" rendered="#{empty wizard.current.guidanceInstructions}" />
- 	           <sakai:button_bar_item id="editInstructions" value="#{msgs.guidance_instructions_revise}"
-     	 	      action="#{wizard.current.processActionEditInstructions}" rendered="#{not empty wizard.current.guidanceInstructions}"/>
-     	    </sakai:button_bar>
-	     </h:panelGroup>
-	     
-	     <h:outputLabel id="editRationaleLabel" value="#{msgs.guidance_rationale}" />
-	     <h:panelGroup>
-	     	<h:outputText value="#{wizard.current.rationale.text}" escape="false"/>
+	</td>
+	</tr>
+	</table>
+	
+	<table class="listHier"  cellpadding="0" cellspacing="0" border="0" summary="" style="width:50%">
+   		<tr>
+			<th>
+			     <h:outputLabel id="editRationaleLabel" value="#{msgs.guidance_rationale}" />
+			</th>
+			<th style="text-align: right;" class="specialLink itemAction">
+				<h:commandLink  id="addRationale" value="#{msgs.guidance_rationale_add}"
+     	 	      action="#{wizard.current.processActionEditRationale}" rendered="#{empty wizard.current.guidanceRationale}" />
+				<h:commandLink id="editRationale" value="#{msgs.guidance_rationale_revise}"
+     	 	      action="#{wizard.current.processActionEditRationale}" rendered="#{not empty wizard.current.guidanceRationale}" />
+			</th>
+		</tr>
+		<tr class="exclude">
+			<td colspan="2">
+				<div class="textPanel">
+					<h:outputText value="#{wizard.current.rationale.text}" escape="false"/>
+				</div>	
             <sakai:flat_list value="#{wizard.current.guidanceRationaleAttachments}" var="attachment">
                <h:column>
                		<sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
@@ -81,37 +102,47 @@
                         <h:outputText value=" (#{attachment.contentLength})"/>
                </h:column>
             </sakai:flat_list>
-            <sakai:button_bar>
- 	           <sakai:button_bar_item id="addRationale" value="#{msgs.guidance_rationale_add}"
-     	 	      action="#{wizard.current.processActionEditRationale}" rendered="#{empty wizard.current.guidanceRationale}" />
- 	           <sakai:button_bar_item id="editRationale" value="#{msgs.guidance_rationale_revise}"
-     	 	      action="#{wizard.current.processActionEditRationale}" rendered="#{not empty wizard.current.guidanceRationale}" />
-     	    </sakai:button_bar>
-	     </h:panelGroup>
+	     </td>
+			</tr>
+			</table>
+			
+
+
+		<table class="listHier"  cellpadding="0" cellspacing="0" border="0" summary="" style="width:50%">		     
+			<tr>
+				<th>
+					<h:outputLabel id="editExamplesLabel" value="#{msgs.guidance_examples}" />
+				</th>
+				<th style="text-align: right;" class="specialLink itemAction">
+				   <h:commandLink   id="addExamples" value="#{msgs.guidance_examples_add}"
+					  action="#{wizard.current.processActionEditExamples}" rendered="#{empty wizard.current.guidanceExamples}" />
+				   <h:commandLink   id="editExamples" value="#{msgs.guidance_examples_revise}"
+					  action="#{wizard.current.processActionEditExamples}" rendered="#{not empty wizard.current.guidanceExamples}" />
+				</th>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<div class="textPanel">
+						<h:outputText value="#{wizard.current.example.text}" escape="false"/>
+					</div>	
+					<sakai:flat_list value="#{wizard.current.guidanceExamplesAttachments}" var="attachment">
+					   <h:column>
+							<sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+							 <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
+							 <h:outputLink title="#{attachment.displayName}"
+								value="#{attachment.fullReference.base.url}" target="_new">
+								<h:outputText value="#{attachment.displayName}"/>
+							 </h:outputLink>
+								<h:outputText value=" (#{attachment.contentLength})"/>
+					   </h:column>
+					</sakai:flat_list>
+				</td>
+			</tr>
+		</table>
 	     
-	     <h:outputLabel id="editExamplesLabel" value="#{msgs.guidance_examples}" />
-	     <h:panelGroup>
-	     	<h:outputText value="#{wizard.current.example.text}" escape="false"/>
-            <sakai:flat_list value="#{wizard.current.guidanceExamplesAttachments}" var="attachment">
-               <h:column>
-               		<sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
-                     <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
-                     <h:outputLink title="#{attachment.displayName}"
-                        value="#{attachment.fullReference.base.url}" target="_new">
-                        <h:outputText value="#{attachment.displayName}"/>
-                     </h:outputLink>
-                        <h:outputText value=" (#{attachment.contentLength})"/>
-               </h:column>
-            </sakai:flat_list>
-            <sakai:button_bar>
- 	           <sakai:button_bar_item id="addExamples" value="#{msgs.guidance_examples_add}"
-     	 	      action="#{wizard.current.processActionEditExamples}" rendered="#{empty wizard.current.guidanceExamples}" />
- 	           <sakai:button_bar_item id="editExamples" value="#{msgs.guidance_examples_revise}"
-     	 	      action="#{wizard.current.processActionEditExamples}" rendered="#{not empty wizard.current.guidanceExamples}" />
-     	    </sakai:button_bar>
-	     </h:panelGroup>
 	     
-   </sakai:panel_edit>
+   <h:panelGrid columns="1">
+   <h:column>
    
    <ospx:xheader>
       <ospx:xheadertitle id="comRefTitle">
@@ -120,22 +151,26 @@
    </ospx:xheader>
          
    <sakai:instruction_message value="#{msgs.com_ref_instruction}" />
-
-   <sakai:group_box>
-   <sakai:panel_edit>
-	      <h:outputLabel for="reflectionItems" id="reflectionLabel" value="#{msgs.reflection_item}" />
-	      <h:panelGroup>
-	         <h:selectOneMenu id="reflectionItems"
-	            immediate="true" 
-               disabled="#{not empty wizard.reflectionItem && wizard.current.isWizardUsed}"
-	            value="#{wizard.reflectionItem}">
-	            <f:selectItem itemLabel="#{msgs.choose_reflection_item}" itemValue=""/>
-	            <f:selectItems value="#{wizard.reflectionFormsForSelect}"/>
-	         </h:selectOneMenu>
-	      </h:panelGroup>
+   <h:panelGroup styleClass="shorttext">
+         <h:outputLabel for="reflectionItems" id="reflectionLabel" value="#{msgs.reflection_item}" />
+         <h:selectOneMenu id="reflectionItems"
+			immediate="true" 
+		   disabled="#{not empty wizard.reflectionItem && wizard.current.isWizardUsed}"
+			value="#{wizard.reflectionItem}">
+			<f:selectItem itemLabel="#{msgs.choose_reflection_item}" itemValue=""/>
+			<f:selectItems value="#{wizard.reflectionFormsForSelect}"/>
+		 </h:selectOneMenu>
+	 </h:panelGroup>
+   <ospx:xheader>
+      <ospx:xheadertitle id="comFeedTitle">
+      	<h:outputText value="#{msgs.com_feedb_title}"/>
+      </ospx:xheadertitle>
+   </ospx:xheader>
          
+   <sakai:instruction_message value="#{msgs.com_feedb_instruction}" />
+
+   	<h:panelGroup styleClass="shorttext">
 	      <h:outputLabel for="commentItems" id="commentLabel" value="#{msgs.comment_item}" />
-	      <h:panelGroup>
 	         <h:selectOneMenu id="commentItems"
 	            immediate="true" 
                disabled="#{not empty wizard.commentItem && wizard.current.isWizardUsed}"
@@ -143,11 +178,8 @@
 	            <f:selectItem itemLabel="#{msgs.choose_comment_item}" itemValue=""/>
 	            <f:selectItems value="#{wizard.commentFormsForSelect}"/>
 	         </h:selectOneMenu>
-	      </h:panelGroup>
-   </sakai:panel_edit>
-   </sakai:group_box>
-   <h:outputText value="<br><br>" escape="false" />
-   
+	</h:panelGroup>	 
+	
    
    <ospx:xheader>
       <ospx:xheadertitle id="evalTitle">
@@ -155,30 +187,24 @@
       </ospx:xheadertitle>
    </ospx:xheader>
    <sakai:instruction_message value="#{msgs.eval_instruction}" />
-   <sakai:group_box>
-	   <sakai:panel_edit>
-	      <h:outputLabel for="evaluationItems" id="evaluationLabel" value="#{msgs.evaluation_item}" />
-	      <h:panelGroup>
-	         <h:selectOneMenu id="evaluationItems"
-	            immediate="true" 
-               disabled="#{not empty wizard.evaluationItem && wizard.current.isWizardUsed}"
-	            value="#{wizard.evaluationItem}">
-	            <f:selectItem itemLabel="#{msgs.choose_evaluation_item}" itemValue=""/>
-	            <f:selectItems value="#{wizard.evaluationFormsForSelect}"/>
-	         </h:selectOneMenu>
-	      </h:panelGroup>
-	   </sakai:panel_edit>
-   </sakai:group_box>
-   <h:outputText value="<br><br>" escape="false" />
-   
+      <h:panelGroup styleClass="shorttext">
+		<h:outputLabel for="evaluationItems" id="evaluationLabel" value="#{msgs.evaluation_item}" />
+		 <h:selectOneMenu id="evaluationItems"
+			immediate="true" 
+		   disabled="#{not empty wizard.evaluationItem && wizard.current.isWizardUsed}"
+			value="#{wizard.evaluationItem}">
+			<f:selectItem itemLabel="#{msgs.choose_evaluation_item}" itemValue=""/>
+			<f:selectItems value="#{wizard.evaluationFormsForSelect}"/>
+		 </h:selectOneMenu>
+	</h:panelGroup>	
+	</h:column>
+   </h:panelGrid>
    <ospx:xheader>
       <ospx:xheadertitle id="evaluatorsTitle">
       	<h:outputText value="#{msgs.audience_title}"/>
       </ospx:xheadertitle>
    </ospx:xheader>
    
-   <sakai:panel_edit>
-      <h:panelGroup>
             <sakai:flat_list value="#{wizard.current.evaluators}" var="evaluator">
                <h:column>
                		<h:outputText value="#{evaluator}" />
@@ -191,8 +217,6 @@
  	        <sakai:button_bar_item id="selectEvaluators" value="#{msgs.select_reviewers}"
      	 	   action="#{wizard.processActionAudienceHelper}" />
      	 </sakai:button_bar>
-      </h:panelGroup>
-   </sakai:panel_edit>
 	   
    <%@include file="builderButtons.jspf"%>
    

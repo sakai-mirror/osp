@@ -30,12 +30,11 @@
          </h:selectOneRadio>
       </h:panelGroup>
    </sakai:panel_edit>
-
    <sakai:button_bar>
 	   <sakai:button_bar_item id="submitNext" value="#{msgs.save_continue_wizard}"
-	      action="#{wizard.processActionNewSteps}" />
+	      action="#{wizard.processActionNewSteps}" accesskey="s" styleClass="active" />
 	   <sakai:button_bar_item id="cancel" value="#{msgs.cancel_wizard}" action="#{wizard.processActionCancel}"
-	      immediate="true" />
+	      immediate="true" accesskey="x" />
    </sakai:button_bar>
 
 </h:form>
