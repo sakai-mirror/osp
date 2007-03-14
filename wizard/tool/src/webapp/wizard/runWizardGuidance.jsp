@@ -14,11 +14,7 @@
 <f:view>
 <sakai:view>
 <h:form>
-   <c:if test="${wizard.current.base.preview}">	
-      <div class="validation">
-         <h:outputText value="#{msgs.wizard_preview_title}"/>
-      </div>
-   </c:if>
+   <h:outputText value="#{msgs.wizard_preview_title}" styleClass="validation" rendered="#{wizard.current.base.preview}"/>
 
    <sakai:view_title value="#{wizard.current.base.name}"/>
 
