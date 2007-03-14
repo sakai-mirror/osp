@@ -12,7 +12,9 @@
 %>
 
 <f:view>
-<f:loadBundle basename="org.theospi.portfolio.common.bundle.Messages" var="msgs"/>
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="session">
+   <jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.common.bundle.Messages"/>
+</jsp:useBean>
 
 <sakai:view>	
 <sakai:view_title value="#{audience.globalTitle}"/>

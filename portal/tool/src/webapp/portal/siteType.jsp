@@ -12,7 +12,10 @@
 %>
 
 <f:view>
-<f:loadBundle basename="org.theospi.portfolio.portal.messages" var="msgs"/>
+<jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="session">
+   <jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.common.bundle.Messages"/>
+</jsp:useBean>
+
 <sakai:view>
 <h:form styleClass="#{siteType.siteTypeClass}">
 
