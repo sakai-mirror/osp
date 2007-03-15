@@ -33,7 +33,7 @@
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/dom4j/jars/dom4j-1.6.jar">
   </classpathentry>
-  <classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-1.1.jar">
+  <classpathentry kind="var" path="MAVEN_REPO/net.sf.ehcache/jars/ehcache-1.2.4.jar">
   </classpathentry>
   <classpathentry kind="var" path="MAVEN_REPO/hibernate/jars/hibernate-2.1.8.jar">
   </classpathentry>

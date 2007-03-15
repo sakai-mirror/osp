@@ -82,7 +82,7 @@
 	<classpathentry kind="var" path="MAVEN_REPO/aopalliance/jars/aopalliance-1.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/cglib/jars/cglib-full-2.0.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/dom4j/jars/dom4j-1.6.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/ehcache/jars/ehcache-1.1.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/net.sf.ehcache/jars/ehcache-1.2.4.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/hsqldb/jars/hsqldb-1.7.3.3.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jstl/jars/jstl-1.1.2.jar"/>
