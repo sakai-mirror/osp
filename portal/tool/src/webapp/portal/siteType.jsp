@@ -13,7 +13,7 @@
 
 <f:view>
 <jsp:useBean id="msgs" class="org.sakaiproject.util.ResourceLoader" scope="session">
-   <jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.common.bundle.Messages"/>
+   <jsp:setProperty name="msgs" property="baseName" value="org.theospi.portfolio.portal.messages"/>
 </jsp:useBean>
 
 <sakai:view>
