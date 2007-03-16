@@ -149,13 +149,13 @@
     				<c:forEach var="level" items="${scaffolding.levels}" varStatus="itemLoopStatus">
     					<tr>
                         <td>
-							<span class="matrixColumnDefault" style="color: <c:if test="${not empty level.textColor}" ><c:out value="${level.textColor}"/></c:if>">
+							<span class="matrixColumnDefault">
     							<c:out value="${level.description}"/>
     						</span>
 						</td>
 						<td>
 								<c:if test="${not empty level.color}">
-									<input class="colorBox" disabled="disabled" value="" size="2" style="background-color: <c:out value="${level.color}"/>" type="text">
+									<input class="colorBox" disabled="disabled" value="abc" size="2" style="background-color: <c:out value="${level.color}"/>;color: <c:if test="${not empty level.textColor}" ><c:out value="${level.textColor}"/></c:if>;padding:.2em" type="text" />
 								</c:if>
     							<span class="itemAction">
 								 <a href="javascript:document.forms[0].dest.value='addLevel';
@@ -233,13 +233,13 @@
 					<c:forEach var="criterion" items="${scaffolding.criteria}" varStatus="itemLoopStatus">
 						<tr>
 							<td>
-									<span class="matrixRowDefault" style="color: <c:if test="${not empty criterion.textColor}" ><c:out value="${criterion.textColor}"/></c:if>">
+									<span class="matrixRowDefault">
     									<c:out value="${criterion.description}"/>
     								</span>
 							</td>
 							<td>
 									<c:if test="${not empty criterion.color}">
-										<input class="colorBox" disabled="disabled" value="" size="2" style="background-color: <c:out value="${criterion.color}"/>" type="text">
+										<input class="colorBox" disabled="disabled" value="abc" size="2" style="background-color: <c:out value="${criterion.color}"/>;color: <c:if test="${not empty criterion.textColor}" ><c:out value="${criterion.textColor}"/></c:if>;padding:.2em" type="text" />
 									</c:if>
 								<span class="itemAction">
 									  <a href="javascript:document.forms[0].dest.value='addCriterion';
