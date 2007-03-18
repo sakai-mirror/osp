@@ -534,6 +534,45 @@
          </property>
    </bean>
    
-   
-
+   <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.wizard"
+       class="org.theospi.portfolio.warehouse.osp.wizard.WizardWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="tableDdlResource">
+           <value>/org/theospi/portfolio/warehouse/osp/wizard.xml</value>
+       </property>
+       <property name="wizardManager">
+           <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard" />
+       </property>
+   </bean>
+    <bean
+           id="org.theospi.portfolio.warehouse.intf.WarehouseTask.wizardPage"
+           class="org.theospi.portfolio.warehouse.osp.matrix.WizardPageWarehouseTask"
+           init-method="init" singleton="true">
+           <property name="dataSource">
+               <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+           </property>
+           <property name="dataWarehouseManager">
+               <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+           </property>
+           <property name="tableDdlResource">
+               <value>/org/theospi/portfolio/warehouse/osp/matrix.xml</value>
+           </property>
+           <property name="matrixManager">
+               <ref bean="matrixManager" />
+           </property>
+           <property name="task">
+               <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix.wizardpage" />
+           </property>
+       </bean>
+      
 </beans>

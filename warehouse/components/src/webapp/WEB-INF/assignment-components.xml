@@ -3,11 +3,6 @@
 
 <beans default-lazy-init="false">
 
-    <!--
-         HERE we are defining the beans for the reporting specific to rinet
-         -->
-
-
     <bean id="org.theospi.portfolio.warehouse.sakai.assignment.AssignmentWarehouseService"
           class="org.theospi.portfolio.warehouse.sakai.assignment.AssignmentWarehouseService">
         <property name="siteService">

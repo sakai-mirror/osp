@@ -20,6 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.sakai.resource;
 
+import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.cover.ContentHostingService;
 import org.theospi.portfolio.warehouse.intf.PropertyAccess;
@@ -34,7 +35,16 @@ import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 public class ResourceUuidPropertyAccess implements PropertyAccess {
 
    public Object getPropertyValue(Object source) throws Exception {
-      ContentResource resource = (ContentResource) source;
-      return ContentHostingService.getUuid(resource.getId());
+      String id = null;
+      if (source instanceof ContentResource) {
+         ContentResource resource = (ContentResource) source;
+         id = resource.getId();
+      }
+      else if (source instanceof ContentCollection) {
+           ContentCollection collection = (ContentCollection) source;
+         id = collection.getId();
+       }
+
+      return ContentHostingService.getUuid(id);
    }
 }

@@ -210,7 +210,26 @@
       </property>
    </bean>
    
-   
+   <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.matrix"
+       class="org.theospi.portfolio.warehouse.osp.matrix.MatrixWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="tableDdlResource">
+           <value>/org/theospi/portfolio/warehouse/osp/matrix.xml</value>
+       </property>
+       <property name="matrixManager">
+           <ref bean="matrixManager" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.matrix"/>
+       </property>
+   </bean>
    
 
 </beans>

@@ -613,5 +613,63 @@
          </list>
       </property>
    </bean>
-   
+    <bean
+          id="org.theospi.portfolio.warehouse.intf.WarehouseTask.presentationTemplate"
+          class="org.theospi.portfolio.warehouse.osp.presentation.PresentationTemplateWarehouseTask"
+          init-method="init" singleton="true">
+          <property name="dataSource">
+              <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+          </property>
+          <property name="dataWarehouseManager">
+              <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+          </property>
+          <property name="presentationManager">
+              <ref bean="presentationManager" />
+          </property>
+          <property name="task">
+              <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.template" />
+          </property>
+      </bean>
+
+       <bean
+              id="org.theospi.portfolio.warehouse.intf.WarehouseTask.presentationLayout"
+              class="org.theospi.portfolio.warehouse.osp.presentation.PresentationLayoutWarehouseTask"
+              init-method="init" singleton="true">
+              <property name="dataSource">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+              </property>
+              <property name="dataWarehouseManager">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+              </property>
+              <property name="presentationManager">
+                  <ref bean="presentationManager" />
+              </property>
+              <property name="task">
+                  <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation.layout" />
+              </property>
+          </bean>
+
+
+    <bean
+           id="org.theospi.portfolio.warehouse.intf.WarehouseTask.presentation"
+           class="org.theospi.portfolio.warehouse.osp.presentation.PresentationWarehouseTask"
+           init-method="init" singleton="true">
+           <property name="dataSource">
+               <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+           </property>
+           <property name="dataWarehouseManager">
+               <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+           </property>
+           <property name="tableDdlResource">
+               <value>/org/theospi/portfolio/warehouse/osp/presentation.xml</value>
+           </property>
+           <property name="presentationManager">
+               <ref bean="presentationManager" />
+           </property>
+           <property name="task">
+               <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.presentation" />
+           </property>
+       </bean>
+
+
 </beans>

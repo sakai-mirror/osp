@@ -150,6 +150,11 @@
             <type>VARCHAR</type>
             <param>36</param>
          </column>
+           <column>
+            <name>URI</name>
+            <type>VARCHAR</type>
+            <param>255</param>
+         </column>
          <column>
             <name>PARENT_COLLECTION</name>
             <type>VARCHAR</type>
@@ -177,6 +182,14 @@
             <name>DISPLAY_NAME</name>
             <type>VARCHAR</type>
             <param>255</param>
+         </column>
+          <column>
+            <name>SPACE_USED</name>
+            <type>INTEGER</type>
+         </column>
+          <column>
+            <name>SPACE_AVAILABLE</name>
+            <type>INTEGER</type>
          </column>
       </columns>
       <not-null>ID</not-null>

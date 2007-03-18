@@ -46,7 +46,7 @@
           <name>user_id</name>
           <type>VARCHAR</type>
           <param>99</param>
-        </column>
+        </column>          
         <column>
           <name>permission</name>
           <type>INTEGER</type>
@@ -56,6 +56,8 @@
      <primary-key>site_id</primary-key>
      <primary-key>user_id</primary-key>
    </table>
+
+
 
 <!--  Don't think we need this index as that column is a PK
    <index>

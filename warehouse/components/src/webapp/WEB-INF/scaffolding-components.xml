@@ -241,7 +241,27 @@
       </property>           
    </bean> 
    
-   
+    <bean
+          id="org.theospi.portfolio.warehouse.intf.WarehouseTask.scaffolding"
+          class="org.theospi.portfolio.warehouse.osp.matrix.ScaffoldingWarehouseTask"
+          init-method="init" singleton="true">
+          <property name="dataSource">
+              <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+          </property>
+          <property name="dataWarehouseManager">
+              <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+          </property>
+          <property name="tableDdlResource">
+              <value>/org/theospi/portfolio/warehouse/osp/scaffolding.xml</value>
+          </property>
+          <property name="matrixManager">
+              <ref bean="matrixManager" />
+          </property>
+          <property name="task">
+              <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding" />
+          </property>
+      </bean>
+
    
    
    

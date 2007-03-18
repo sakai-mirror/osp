@@ -20,10 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.sakai.resource;
 
-import java.util.Date;
-
+import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.time.api.Time;
+
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,8 +37,14 @@ public class DateResourcePropertyAccess extends ResourcePropertyPropertyAccess {
 
    public Object getPropertyValue(Object source) throws Exception {
       String propName = (String) super.getPropertyValue(source);
-      Time time = ((ContentResource)source).getProperties().getTimeProperty(propName);
-      if (time == null) {
+      Time time = null;
+      if (source instanceof ContentResource) {
+         time = ((ContentResource)source).getProperties().getTimeProperty(propName);
+      }
+      else if (source instanceof ContentCollection) {
+          time = ((ContentCollection)source).getProperties().getTimeProperty(propName);
+       }
+       if (time == null) {
          return null;
       }
 

@@ -25,7 +25,11 @@
 			<version>${sakai.plugin.version}</version>
 			<type>plugin</type>
 		</dependency>
-
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-util-api</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
      <dependency>
        <groupId>aopalliance</groupId>
        <artifactId>aopalliance</artifactId>

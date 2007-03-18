@@ -28,5 +28,22 @@
        <value>delete from dw_help_glossary</value>
     </property>
    </bean>
-
+   <!-- TODO: make this Task -->
+   <!--  <bean
+       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.help.glossary"
+       class="org.theospi.portfolio.warehouse.osp.presentation.PresentationTemplateWarehouseTask"
+       init-method="init" singleton="true">
+       <property name="dataSource">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+       </property>
+       <property name="dataWarehouseManager">
+           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+       </property>
+       <property name="presentationManager">
+           <ref bean="presentationManager" />
+       </property>
+       <property name="task">
+           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.help.glossary" />
+       </property>
+   </bean> -->
 </beans>

@@ -20,6 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.warehouse.sakai.resource;
 
+import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentResource;
 import org.theospi.portfolio.warehouse.impl.BeanPropertyAccess;
 
@@ -33,8 +34,14 @@ import org.theospi.portfolio.warehouse.impl.BeanPropertyAccess;
 public class ResourcePropertyPropertyAccess extends BeanPropertyAccess {
 
    public Object getPropertyValue(Object source) throws Exception {
-      ContentResource resource = (ContentResource) source;
-      return super.getPropertyValue(resource.getProperties());
+        if (source instanceof ContentResource) {
+            ContentResource resource = (ContentResource) source;
+            return super.getPropertyValue(resource.getProperties());
+        } else if (source instanceof ContentCollection) {
+            ContentCollection collection = (ContentCollection) source;
+            return super.getPropertyValue(collection.getProperties());
+        }
+        return null;       
    }
 
 }
