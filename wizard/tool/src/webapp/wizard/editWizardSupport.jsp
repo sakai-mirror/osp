@@ -13,12 +13,6 @@
 <f:view>
 <sakai:view>
 
-<f:verbatim escape="false">
-   <style>
-   .chefLabel { width:150px;}
-   </style>
-</f:verbatim>
-
 <h:form>
 
    <sakai:view_title value="#{msgs.add_wizard} #{msgs.org_theospi_portfolio_wizard_model_Wizard_hierarchical}" rendered="#{wizard.current.base.type ==
@@ -59,12 +53,12 @@
 			<div class="textPanel">	
 	     		<h:outputText value="#{wizard.current.instruction.text}" escape="false" />
 			</div>	
-            <sakai:flat_list value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment">
+            <sakai:flat_list value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment" summary="">
                <h:column>
                		<sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
                      <h:graphicImage id="instrFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
                      <h:outputLink title="#{attachment.displayName}"
-                        value="#{attachment.fullReference.base.url}" target="_new">
+                        value="#{attachment.fullReference.base.url}" target="_blank">
                         <h:outputText value="#{attachment.displayName}"/>
                      </h:outputLink>
                         <h:outputText value=" (#{attachment.contentLength})"/>
@@ -91,7 +85,7 @@
 				<div class="textPanel">
 					<h:outputText value="#{wizard.current.rationale.text}" escape="false"/>
 				</div>	
-            <sakai:flat_list value="#{wizard.current.guidanceRationaleAttachments}" var="attachment">
+            <sakai:flat_list value="#{wizard.current.guidanceRationaleAttachments}" var="attachment" summary="">
                <h:column>
                		<sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
                      <h:graphicImage id="rationaleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
@@ -125,7 +119,7 @@
 					<div class="textPanel">
 						<h:outputText value="#{wizard.current.example.text}" escape="false"/>
 					</div>	
-					<sakai:flat_list value="#{wizard.current.guidanceExamplesAttachments}" var="attachment">
+					<sakai:flat_list value="#{wizard.current.guidanceExamplesAttachments}" var="attachment" summary="">
 					   <h:column>
 							<sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
 							 <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
@@ -205,7 +199,7 @@
       </ospx:xheadertitle>
    </ospx:xheader>
    
-            <sakai:flat_list value="#{wizard.current.evaluators}" var="evaluator">
+            <sakai:flat_list value="#{wizard.current.evaluators}" var="evaluator" summary="">
                <h:column>
                		<h:outputText value="#{evaluator}" />
                </h:column>

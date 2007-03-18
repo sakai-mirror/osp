@@ -53,7 +53,7 @@
       <%@include file="showWizardOwnerMessage.jspf"%>
    <%-- TODO this dataTable needs a rendered attribute to hide if there are no items - then the alternate message below gets displayed --%>
    <%-- <sakai:instruction_message value="#{msgs.no_wizards}"  /> --%>
-   <h:dataTable  value="#{wizard.wizards}" var="wizardItem" styleClass="lines listHier nolines" headerClass="exclude">		
+   <h:dataTable  value="#{wizard.wizards}" var="wizardItem" styleClass="lines listHier nolines" headerClass="exclude" summary="">		
       <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.wizards}" />

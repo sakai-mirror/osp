@@ -21,15 +21,15 @@
     
    <sakai:instruction_message value="#{msgs.wizard_type_instructions}" />
    <sakai:messages />
-   <sakai:panel_edit>
-
-      <h:outputLabel for="type" id="typeLabel" value="#{msgs.wizard_type}" />
+      <h:panelGrid columns="1" styleClass="jsfFormTable" summary="">
+<%--      <h:outputLabel for="type" id="typeLabel" value="#{msgs.wizard_type}" /> --%>
       <h:panelGroup>
          <h:selectOneRadio layout="pageDirection" id="type" value="#{wizard.current.base.type}" disabled="#{wizard.current.base.published}">
             <f:selectItems value="#{wizard.wizardTypes}"/>
          </h:selectOneRadio>
       </h:panelGroup>
-   </sakai:panel_edit>
+   </h:panelGrid>
+   
    <sakai:button_bar>
 	   <sakai:button_bar_item id="submitNext" value="#{msgs.save_continue_wizard}"
 	      action="#{wizard.processActionNewSteps}" accesskey="s" styleClass="active" />
