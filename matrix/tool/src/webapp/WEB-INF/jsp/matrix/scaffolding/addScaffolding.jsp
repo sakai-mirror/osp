@@ -134,7 +134,7 @@
 			<table class="listHier lines nolines" cellspacing="0" border="0" style="width:50%" summary="<fmt:message key="table_summary_cols"/>">
     			<thead>
     				<tr>
-    					<th scope="col"><fmt:message key="table_header_name"/></th>
+    					<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
 						<th scope="col" style="text-align:right">
 							<span class="itemAction">
 								<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
@@ -157,6 +157,8 @@
 								<c:if test="${not empty level.color}">
 									<input class="colorBox" disabled="disabled" value="abc" size="2" style="background-color: <c:out value="${level.color}"/>;color: <c:if test="${not empty level.textColor}" ><c:out value="${level.textColor}"/></c:if>;padding:.2em" type="text" />
 								</c:if>
+						</td>
+						<td>
     							<span class="itemAction">
 								 <a href="javascript:document.forms[0].dest.value='addLevel';
 								  document.forms[0].submitAction.value='forward';
@@ -200,9 +202,6 @@
        </spring:bind>
 
 
-
-		<br />
-
 		<h4><fmt:message key="title_rows"/></h4>
       <spring:bind path="scaffolding.rowLabel">
             <c:if test="${status.error}">
@@ -223,7 +222,7 @@
     		    		<table class="listHier lines nolines" cellspacing="0" border="0" style="width:50%" summary="<fmt:message key="table_summary_rows"/>">
     			<thead>
     				<tr>
-    					<th scope="col"><fmt:message key="table_header_name"/></th>
+    					<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
 						<th style="text-align:right"><span class="itemAction"> <a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
             <fmt:message key="action_addRow"/>
          </a></span></th>
@@ -241,6 +240,8 @@
 									<c:if test="${not empty criterion.color}">
 										<input class="colorBox" disabled="disabled" value="abc" size="2" style="background-color: <c:out value="${criterion.color}"/>;color: <c:if test="${not empty criterion.textColor}" ><c:out value="${criterion.textColor}"/></c:if>;padding:.2em" type="text" />
 									</c:if>
+							</td>
+							<td>
 								<span class="itemAction">
 									  <a href="javascript:document.forms[0].dest.value='addCriterion';
 									  document.forms[0].submitAction.value='forward';

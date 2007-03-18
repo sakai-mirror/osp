@@ -126,7 +126,7 @@
    <!-- ************* Guidance Area Start, we want to keep an order ************* -->   
    <c:if test="${not empty cell.scaffoldingCell.guidance}">
    <%--TODO - this is  distracting - if there *is* guidance, read it. Do not need this front matter, but leaving in comments in case. 
-<h4><osp:message key="guidance_header"/></h4>
+   <h4><osp:message key="guidance_header"/></h4>
       
       
       <div class="instruction">
@@ -227,6 +227,7 @@
 
             <tr>
                <td>
+			   	<span class="indnt1">
 				  <img border="0" src="/library/image/silk/application_form.gif" alt=""/>
                   <c:if test="${not (cell.status == 'READY' and readOnlyMatrix != 'true')}">
 	                  <a href='<c:out value="${node.externalUri}"/>' target="_blank" >
@@ -235,6 +236,7 @@
                   <c:if test="${not (cell.status == 'READY' and readOnlyMatrix != 'true')}">
                   </a>
                   </c:if>
+				  </span>
 				</td>
 				<td>
 					<div  class="itemAction">
@@ -282,7 +284,7 @@
 	  <c:if test="${object.itemId == node.id}">
 		  <tr>
 			<td>
-			<span class="indnt1">
+			<span class="indnt2">
 			  <c:if test="${object.itemId == node.id}">
 				<img src = '/library/image/silk/comment.gif' border= '0' hspace='0' alt=""/>   
 				<a href='<c:out value="${object.reviewContentNode.externalUri}"/>' target="_blank" >
@@ -291,9 +293,6 @@
 			 </span> 
 			</td>
 			<td>
-			<div class="itemAction">
-			   <osp:message key="reviews_section_header"/>
-			 </div>  
 			</td>
 			<td>
 				 <c:out value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
@@ -315,6 +314,7 @@
 
             <tr>
                <td>
+			   <span class="indnt0">
 				<img border="0" title="<c:out value="${hover}" />"
 				  alt="<c:out value="${node.name}"/>" 
 				  src="/library/image/<osp-c:contentTypeMap 
@@ -336,6 +336,7 @@
                      </c:when>
                   </c:choose>
 				  )</span>
+				  </span>
 				  </td>
 				<td>
 				                      <div class="itemAction">
@@ -349,8 +350,9 @@
 						   <osp:param name="resource_id" value="${node.id}"/>
 						   <osp:param name="submit" value="delete"/>
 						   </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="delete"/></a>
-                   <c:if test="${(matrixCan.review || wizardCan.review) && cell.scaffoldingCell.reviewDevice != null}">
-                        |<a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
+                  </c:if>
+				  	<c:if test="${(matrixCan.review || wizardCan.review) && cell.scaffoldingCell.reviewDevice != null}">
+                        <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                           <osp:param name="page_id" value="${cell.wizardPage.id}" />
                           <osp:param name="org_theospi_portfolio_review_type" value="2" />
                           <osp:param name="process_type_key" value="page_id" />
@@ -361,18 +363,7 @@
                           <osp:param name="itemId" value="${node.id}" />
                           </osp:url>"><osp:message key="review"/></a>
                    </c:if> 
-           
-                  </c:if>
-			  | <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
-                          <osp:param name="page_id" value="${cell.wizardPage.id}" />
-                          <osp:param name="org_theospi_portfolio_review_type" value="2" />
-                          <osp:param name="process_type_key" value="page_id" />
-                          <osp:param name="isWizard" value="${isWizard}" />
-                          <osp:param name="objectId" value="${objectId}" />
-                          <osp:param name="objectTitle" value="${objectTitle}" />
-                          <osp:param name="objectDesc" value="${objectDesc}" />
-                          <osp:param name="itemId" value="${node.id}" />
-                          </osp:url>"><osp:message key="review"/></a>
+
                    </div>
 				  </td>
                <td>
@@ -396,10 +387,6 @@
 			   </span>
             </td>
 			<td>
-            	<div class="itemAction">
-			   <osp:message key="reviews_section_header"/>
-			 </div>  
-			
 			</td>
 			<td>
                <c:out value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
@@ -460,6 +447,7 @@
 	  	<tr>
 			<td>
 				 <c:set var="canReflect" value="true"/>
+				 
 				 <c:if test="${cell.status != 'READY' or readOnlyMatrix == 'true'}">
 					<img src = '/library/image/silk/application_form.gif' border= '0' hspace='0' alt=""/>
 					<a href='<c:out value="${reflections[0].reviewContentNode.externalUri}"/>' target="_blank" >
@@ -469,17 +457,17 @@
 				 <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
 				   <img src = '/library/image/silk/application_form.gif' border= '0' hspace='0' alt=""/>
 				   <c:out value="${reflections[0].reviewContentNode.displayName}" />
-			  </c:if> 
-				<span class="itemAction">
+				   <span class="itemAction">
 					 <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 					   <osp:param name="page_id" value="${cell.wizardPage.id}" />
 					   <osp:param name="org_theospi_portfolio_review_type" value="0" />
 					   <osp:param name="current_review_id" value="${reflections[0].reviewContentNode.resource.id}" />
 					   <osp:param name="process_type_key" value="page_id" />
 					   </osp:url>">
-							 <osp:message key="reflection_edit"/></a>
+						 <osp:message key="reflection_edit"/></a>
 					 </span>
-      </c:if>
+					 </c:if> 
+			   </c:if>
 	  </td>
 	 </tr>
 	 </table>
@@ -517,6 +505,8 @@
 <%--TODO need to wrap this whole table in a check
 	 I cannot give feedback & no feedback present = hide
 	 I can read feedback &  there is feedback = show
+	 I can give  feedback = show
+	 There is no feedback form set=hide
 --%>
 
 	<table class="listHier lines nolines bordered-l" cellpadding="0" cellspacing="0" border="0"   summary="">
@@ -583,9 +573,7 @@
 	
 <!-- ************* General Review (Feedback) Area End ************* -->
 <!-- ************* Evaluation Area Start ************* -->
-
    <c:if test="${((matrixCan.evaluate || wizardCan.evaluate) && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING') || not empty evaluations}">
-   <br />
       <table class="listHier lines nolines bordered-l" cellpadding="0" cellspacing="0" border="0"   summary="">
 		<tr>
 			<th><osp:message key="evals_section_header"/></th>

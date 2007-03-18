@@ -287,7 +287,6 @@
 			 	<div class="textPanel">
 				<c:if test="${not empty scaffoldingCell.guidance.example.limitedText}">
                   <c:out value="${scaffoldingCell.guidance.example.limitedText}" escapeXml="false" />
-                  <br />
       		   </c:if>
 			   <ul class="attachList indnt1">
                <c:forEach var="attachment" items="${scaffoldingCell.guidance.example.attachments}" varStatus="loopStatus">
