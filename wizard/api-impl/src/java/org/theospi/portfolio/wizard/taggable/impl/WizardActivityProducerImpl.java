@@ -69,6 +69,12 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 
 	List<String> ratingProviderIds;
 
+	public boolean allowGetItems(TaggableActivity activity,
+			TaggingProvider provider) {
+		// FIXME http://bugs.sakaiproject.org/jira/browse/GM-84
+		return !getItems(activity, provider).isEmpty();
+	}
+
 	public boolean allowRemoveTags(TaggableActivity activity) {
 		WizardPageDefinition pageDef = (WizardPageDefinition) activity
 				.getObject();
