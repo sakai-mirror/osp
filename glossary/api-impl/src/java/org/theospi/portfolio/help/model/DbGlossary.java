@@ -207,6 +207,10 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
    }
 
    protected Map getWorksiteGlossary(String worksiteId) {
+      return getWorksiteGlossary(worksiteId, true);
+   }
+   
+   protected Map getWorksiteGlossary(String worksiteId, boolean checkCache) {
       if (!useCache) {
          logger.warn("using glossary without cache, this could slow down osp tool page loads");
          Map terms = new Hashtable();
@@ -224,6 +228,9 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
          return terms;
       }
       else {
+         if (checkCache) {
+            checkCache();
+         }
          return (Map)worksiteGlossary.get(worksiteId);
       }
    }
@@ -301,33 +308,16 @@ public class DbGlossary  extends HibernateDaoSupport implements Glossary, Observ
 
          EventTrackingService.addObserver(this);
 
-         try {
-            startCacheJob();
-         } catch (SchedulerException e) {
-            logger.error("failed to schedule glossary cache polling job", e);
-         }
       }
-   }
-
-   protected void startCacheJob() throws SchedulerException {
-      JobDetail detail = new JobDetail("org.theospi.portfolio.help.model.DbGlossary.cache",
-         "org.theospi.portfolio.help.model.DbGlossary", GlossaryCacheJob.class);
-
-      Trigger trigger = new SimpleTrigger("org.theospi.portfolio.help.model.DbGlossary.cache",
-         "org.theospi.portfolio.help.model.DbGlossary", SimpleTrigger.REPEAT_INDEFINITELY,
-         getCacheInterval());
-
-      getSchedulerManager().getScheduler().unscheduleJob(trigger.getName(), trigger.getGroup());
-      getSchedulerManager().getScheduler().scheduleJob(detail, trigger);
    }
 
    protected void addUpdateTermCache(GlossaryEntry entry) {
       String worksiteId = entry.getWorksiteId() + "";
-      Map worksiteMap = getWorksiteGlossary(worksiteId);
+      Map worksiteMap = getWorksiteGlossary(worksiteId, false);
 
       if (worksiteMap == null) {
          worksiteGlossary.put(worksiteId, new Hashtable());
-         worksiteMap = getWorksiteGlossary(worksiteId);
+         worksiteMap = getWorksiteGlossary(worksiteId, false);
       }
       worksiteMap.put(entry.getId(), entry);
    }
