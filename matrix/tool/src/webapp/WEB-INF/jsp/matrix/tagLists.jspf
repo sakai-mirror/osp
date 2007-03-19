@@ -114,7 +114,7 @@
           <c:forEach var="tag" items="${provider.tags}">
             <tr>
               <c:forEach var="field" items="${tag.fields}">
-                <td><c:out value="${field}"/></td>
+                <td><c:out escapeXml="false" value="${field}"/></td>
               </c:forEach>
             </tr>
           </c:forEach>
