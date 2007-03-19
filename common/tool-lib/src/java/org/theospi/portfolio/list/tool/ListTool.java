@@ -53,6 +53,7 @@ public class ListTool extends ToolBase implements ListItemUtils {
    public static final int SORT_DESC = -1;
    public static final String SORT_FIELD = "org.theospi.portfolio.list.sortField";
    public static final String SORT_DIR = "org.theospi.portfolio.list.sortDir";
+   public static final int TOTAL_COLUMNS = 10;
 
 
    public ListTool() {
@@ -150,8 +151,8 @@ public class ListTool extends ToolBase implements ListItemUtils {
    
    public List getSelectedColumns() {
       Map selected = getCurrentConfig().getSelected();
-      List decoratedColumns = new ArrayList(selected.size());
-      for (int i=0; i< selected.entrySet().size(); i++) {
+      List decoratedColumns = new ArrayList(TOTAL_COLUMNS);
+      for (int i=0; i< TOTAL_COLUMNS; i++) {
          Column column = (Column)selected.get(i);
          decoratedColumns.add(new DecoratedColumn(column, this));
       }
