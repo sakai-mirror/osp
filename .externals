@@ -61,4 +61,4 @@ util			-r22956   https://source.sakaiproject.org/svn/util/trunk
 velocity		-r22956   https://source.sakaiproject.org/svn/velocity/trunk
 web			-r22956   https://source.sakaiproject.org/svn/web/trunk
 webservices		-r22956   https://source.sakaiproject.org/svn/webservices/trunk
-gmt			-r4321    https://source.sakaiproject.org/contrib/syracuse/gmt	  
+gmt			-r4321    https://source.sakaiproject.org/contrib/syracuse/gmt/trunk	  
