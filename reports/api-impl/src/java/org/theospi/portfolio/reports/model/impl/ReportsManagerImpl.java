@@ -175,6 +175,8 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
     private SchedulerManager schedulerManager;
     private org.theospi.portfolio.security.AuthorizationFacade ospAuthzManager;
 
+   private boolean autoDdl = true;
+   
     protected BeanFactory beanFactory;
 
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
@@ -214,7 +216,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_EDIT);
         FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_DELETE);
         FunctionManager.registerFunction(ReportFunctions.REPORT_FUNCTION_SHARE);
-        initDefinedReportDefinitions();
+       
+        if (isAutoDdl()) {
+           initDefinedReportDefinitions();
+        }
     }
 
     public AuthenticationManager getAuthnManager() {
@@ -345,18 +350,22 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
     protected boolean hasWarehouseSetting(Boolean usesWarehouse) {
         int warehousePref = ServerConfigurationService.getInt("osp.reports.useWarehouse", 1);
 
-        if (warehousePref == 0)
-            return false;
+       if (warehousePref == 0) {
+          return false;
+       }
 
-        if (usesWarehouse == null)
-            usesWarehouse = Boolean.TRUE;
+       if (usesWarehouse == null) {
+          usesWarehouse = Boolean.TRUE;
+       }
 
         // if bit 0 is set, show warehouse reports
-        if ((warehousePref & 1) != 0 && usesWarehouse.booleanValue() == true)
-            return true;
+       if ((warehousePref & 1) != 0 && usesWarehouse.booleanValue() == true) {
+          return true;
+       }
 
-        if ((warehousePref & 2) != 0 && usesWarehouse.booleanValue() == false)
-            return true;
+       if ((warehousePref & 2) != 0 && usesWarehouse.booleanValue() == false) {
+          return true;
+       }
 
         return false;
     }
@@ -395,10 +404,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
         int warehousePref = ServerConfigurationService.getInt("osp.reports.useWarehouse", 1);
 
-        if (warehousePref == 1)
-            return dataSource;
-        else if (warehousePref == 2)
-            return sakaiDataSource;
+       if (warehousePref == 1) {
+          return dataSource;
+       } else if (warehousePref == 2) {
+          return sakaiDataSource;
+       }
 
         throw new RuntimeException("Tried to get the report data source but the source was ambiguous.");
     }
@@ -410,10 +420,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
     public DataSource getDataSourceUseWarehouse(boolean useWarehouse) {
         configureDataSource();
 
-        if (useWarehouse)
-            return dataSource;
-        else
-            return sakaiDataSource;
+       if (useWarehouse) {
+          return dataSource;
+       } else {
+          return sakaiDataSource;
+       }
     }
 
 
@@ -431,8 +442,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
     private void configureDataSource() {
         if (dataSource == null) {
             dataSource = (DataSource) ComponentManager.get("org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource");
-            if (dataSource == null)
-                dataSource = sakaiDataSource;
+           if (dataSource == null) {
+              dataSource = sakaiDataSource;
+           }
         }
     }
 
@@ -589,8 +601,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
         while (iter.hasNext()) {
             ReportDefinition rd = (ReportDefinition) iter.next();
-            if (rd.getIdString().equals(Id))
-                return rd;
+           if (rd.getIdString().equals(Id)) {
+              return rd;
+           }
         }
         return null;
     }
@@ -618,8 +631,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             rp.setReport(report);
 
             //	if the parameter is static then copy the value, otherwise it is filled by user
-            if (rdp.getValueType().equals(ReportDefinitionParam.VALUE_TYPE_STATIC))
-                rp.setValue(replaceSystemValues(rdp.getValue()));
+           if (rdp.getValueType().equals(ReportDefinitionParam.VALUE_TYPE_STATIC)) {
+              rp.setValue(replaceSystemValues(rdp.getValue()));
+           }
             reportParams.add(rp);
         }
         report.setReportParams(reportParams);
@@ -669,10 +683,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
     public Connection getConnection(Boolean useWarehouse) throws HibernateException, SQLException {
         Connection con = null;
 
-        if (useWarehouse == null)
-            con = getDataSourceUseWarehouse(true).getConnection();
-        else
-            con = getDataSourceUseWarehouse(useWarehouse.booleanValue()).getConnection();
+       if (useWarehouse == null) {
+          con = getDataSourceUseWarehouse(true).getConnection();
+       } else {
+          con = getDataSourceUseWarehouse(useWarehouse.booleanValue()).getConnection();
+       }
 
         canCloseConnection = true;
 
@@ -699,8 +714,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
      * @deprecated ? should this method even be used now that both sources require connections to be closed?
      */
     public void closeConnection(Connection connection) throws SQLException {
-        if (canCloseConnection)
-            connection.close();
+       if (canCloseConnection) {
+          connection.close();
+       }
     }
 
 
@@ -724,10 +740,12 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             strbuffer.append("[");
             int columns = rs.getMetaData().getColumnCount();
             while (rs.next()) {
-                if (columns >= 2)
-                    strbuffer.append("(");
-                if (columns >= 1)
-                    strbuffer.append(rs.getString(1));
+               if (columns >= 2) {
+                  strbuffer.append("(");
+               }
+               if (columns >= 1) {
+                  strbuffer.append(rs.getString(1));
+               }
                 if (columns >= 2) {
                     strbuffer.append(";");
                     strbuffer.append(rs.getString(2));
@@ -917,12 +935,14 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             rs = stmt.executeQuery();
 
             boolean makeUppercase = true;
-            if (forceColumnLabelUppercase != null)
-                makeUppercase = forceColumnLabelUppercase.booleanValue();
+           if (forceColumnLabelUppercase != null) {
+              makeUppercase = forceColumnLabelUppercase.booleanValue();
+           }
 
             String forceProperty = ServerConfigurationService.getString("osp.reports.forceColumnLabelUppercase");
-            if (forceProperty != null && forceProperty.length() > 0)
-                makeUppercase = Integer.parseInt(forceProperty) == 1;
+           if (forceProperty != null && forceProperty.length() > 0) {
+              makeUppercase = Integer.parseInt(forceProperty) == 1;
+           }
 
             int columns = rs.getMetaData().getColumnCount();
 
@@ -930,8 +950,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
             for (int i = 0; i < columns; i++) {
                 columnNames[i] = rs.getMetaData().getColumnLabel(i + 1);
-                if (makeUppercase)
-                    columnNames[i] = columnNames[i].toUpperCase();
+               if (makeUppercase) {
+                  columnNames[i] = columnNames[i].toUpperCase();
+               }
             }
 
             if (isFirstResult) {
@@ -1228,7 +1249,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             e.printStackTrace();
         } finally {
             try {
-                if (out != null) out.close();
+               if (out != null) {
+                  out.close();
+               }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1304,8 +1327,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         getHibernateTemplate().delete(result);
 
         // if we are deleting the result, then if the report it came from is not on display then delete the report too
-        if (!result.getReport().getDisplay() || !result.getReport().getIsLive())
-            deleteReport(result.getReport(), false);
+       if (!result.getReport().getDisplay() || !result.getReport().getIsLive()) {
+          deleteReport(result.getReport(), false);
+       }
     }
 
 
@@ -1326,10 +1350,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
                 report);
 
         if (report.getIsLive()) {
-            if (results.size() == 0)
-                deleteAction = true;
-            else if (deactivate)
-                deactivateAction = true;
+           if (results.size() == 0) {
+              deleteAction = true;
+           } else if (deactivate) {
+              deactivateAction = true;
+           }
         } else { //the report is not live so delete any report results
             for (Iterator i = results.iterator(); i.hasNext();) {
                 getHibernateTemplate().delete(i.next());
@@ -1879,6 +1904,14 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
     public void setJobBeanWrapper(JobBeanWrapper jobBeanWrapper) {
         this.jobBeanWrapper = jobBeanWrapper;
     }
+
+   public boolean isAutoDdl() {
+      return autoDdl;
+   }
+
+   public void setAutoDdl(boolean autoDdl) {
+      this.autoDdl = autoDdl;
+   }
 
 }
 

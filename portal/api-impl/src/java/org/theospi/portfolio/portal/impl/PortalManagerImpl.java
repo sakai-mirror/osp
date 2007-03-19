@@ -61,6 +61,7 @@ public class PortalManagerImpl extends HibernateDaoSupport implements PortalMana
    private boolean useDb = false;
    private boolean reloadDb = false;
    private boolean cleanedDb = false;
+   private boolean autoDdl = true;
 
    private Map siteTypes;
    private static final String TYPE_PREFIX = "org.theospi.portfolio.portal.";
@@ -68,7 +69,7 @@ public class PortalManagerImpl extends HibernateDaoSupport implements PortalMana
 
    public void init() {
 
-      if (isUseDb()) {
+      if (isUseDb() && isAutoDdl()) {
          Map<String, SiteType> siteTypesTempMap = loadDbSiteTypes();
          if (siteTypesTempMap.size() == 0 || isReloadDb()) {
             siteTypesTempMap = storeComponentsSiteTypes(siteTypes);
@@ -695,5 +696,13 @@ public class PortalManagerImpl extends HibernateDaoSupport implements PortalMana
 
    public void setCleanedDb(boolean cleanedDb) {
       this.cleanedDb = cleanedDb;
+   }
+
+   public boolean isAutoDdl() {
+      return autoDdl;
+   }
+
+   public void setAutoDdl(boolean autoDdl) {
+      this.autoDdl = autoDdl;
    }
 }

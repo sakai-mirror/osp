@@ -51,6 +51,7 @@ public class SakaiDefaultPermsManager {
    private AuthzGroupService authzGroupService;
    private String prefix;
    private List realmManagers;
+   private boolean autoDdl = true;
    
    protected final transient Log logger = LogFactory.getLog(getClass());
 
@@ -78,10 +79,12 @@ public class SakaiDefaultPermsManager {
             }
          }
 
-         // set the defaults for anything in functions
-         for (Iterator i=getDefaultPermissions().entrySet().iterator();i.hasNext();){
-            Map.Entry entry = (Map.Entry) i.next();
-            processRealm((String)entry.getKey(), (Map)entry.getValue());
+         if (isAutoDdl()) {
+            // set the defaults for anything in functions
+            for (Iterator i=getDefaultPermissions().entrySet().iterator();i.hasNext();){
+               Map.Entry entry = (Map.Entry) i.next();
+               processRealm((String)entry.getKey(), (Map)entry.getValue());
+            }
          }
    } finally {
       sakaiSession.setUserEid(userId);
@@ -175,5 +178,13 @@ public class SakaiDefaultPermsManager {
 
    public void setRealmManagers(List realmManagers) {
       this.realmManagers = realmManagers;
+   }
+
+   public boolean isAutoDdl() {
+      return autoDdl;
+   }
+
+   public void setAutoDdl(boolean autoDdl) {
+      this.autoDdl = autoDdl;
    }
 }

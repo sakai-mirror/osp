@@ -101,6 +101,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
    private List globalSites;
    private List globalSiteTypes;
    private List consumers;
+   private boolean autoDdl = false;
 
    
    public Style storeStyle(Style style) {
@@ -120,8 +121,9 @@ public class StyleManagerImpl extends HibernateDaoSupport
    }
    
    public Style mergeStyle (Style style, boolean checkAuthz) {
-      if(style.getId() == null)
-            return storeStyle(style, checkAuthz);
+      if (style.getId() == null) {
+         return storeStyle(style, checkAuthz);
+      }
       updateFields(style, checkAuthz);
       getHibernateTemplate().merge(style);
       lockStyleFiles(style);
@@ -294,8 +296,9 @@ public class StyleManagerImpl extends HibernateDaoSupport
    protected boolean checkStyleConsumption(Id styleId) {
       for (Iterator i = getConsumers().iterator(); i.hasNext();) {
          StyleConsumer sc = (StyleConsumer) i.next();
-         if (sc.checkStyleConsumption(styleId))
+         if (sc.checkStyleConsumption(styleId)) {
             return true;
+         }
       }
       return false;
    }
@@ -449,9 +452,9 @@ public class StyleManagerImpl extends HibernateDaoSupport
          String key = (String) i.next();
          Style style = (Style)styleMap.get(key);
          Style found = findMatchingStyle(style);
-         if (found == null)
+         if (found == null) {
             storeStyle(style, false);
-         else {
+         } else {
             removeFromSession(style);
             removeFromSession(found);
             styleMap.put(key, found);
@@ -568,14 +571,14 @@ public class StyleManagerImpl extends HibernateDaoSupport
    protected void postProcessStyleFile(Style style, Map attachmentMap) {
       int nodeHash = style.getNodeRef().hashCode();
       String id = (String)attachmentMap.get("" + nodeHash);
-      
+
       if (id != null) {
          String nodeId = getContentHosting().getUuid(id);
          style.setStyleFile(getIdManager().getId(nodeId));
          style.setStyleHash(calculateStyleHash(style));
-      }
-      else
+      } else {
          style.setStyleFile(null);
+      }
    }
    
    /**
@@ -611,11 +614,14 @@ public class StyleManagerImpl extends HibernateDaoSupport
    
    public void init() {
       logger.info("init()");
-      try {
-         updateStyleHash();
-      }
-      catch (Exception e) {
-         logger.error("Error in StyleManager.init()", e);
+      
+      if (isAutoDdl()) {
+         try {
+            updateStyleHash();
+         }
+         catch (Exception e) {
+            logger.error("Error in StyleManager.init()", e);
+         }
       }
    }
    
@@ -729,5 +735,13 @@ public class StyleManagerImpl extends HibernateDaoSupport
     */
    public void setSecurityService(SecurityService securityService) {
       this.securityService = securityService;
+   }
+
+   public boolean isAutoDdl() {
+      return autoDdl;
+   }
+
+   public void setAutoDdl(boolean autoDdl) {
+      this.autoDdl = autoDdl;
    }
 }

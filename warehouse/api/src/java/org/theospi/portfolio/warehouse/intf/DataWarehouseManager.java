@@ -32,6 +32,8 @@ import org.quartz.Job;
 public interface DataWarehouseManager extends Job {
 
    public void registerTask(WarehouseTask task);
+   
+   public boolean isAutoDdl();
 
 }
 

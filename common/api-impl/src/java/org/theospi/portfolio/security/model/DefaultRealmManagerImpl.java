@@ -33,55 +33,58 @@ public class DefaultRealmManagerImpl implements DefaultRealmManager {
    private List roles;
    private boolean newlyCreated;
    private boolean recreate = false;
+   private boolean autoDdl = true;
 
    public void init() {
       logger.info("init()");
-      Session sakaiSession = SessionManager.getCurrentSession();
-      String userId = sakaiSession.getUserId();
-      try {
-         sakaiSession.setUserId("admin");
-         sakaiSession.setUserEid("admin");
+      
+      if (isAutoDdl()) {
+         Session sakaiSession = SessionManager.getCurrentSession();
+         String userId = sakaiSession.getUserId();
          try {
-            AuthzGroup group = getAuthzGroupService().getAuthzGroup(newRealmName);
-            if (group != null) {
-               if (recreate){
-                  getAuthzGroupService().removeAuthzGroup(group);
+            sakaiSession.setUserId("admin");
+            sakaiSession.setUserEid("admin");
+            try {
+               AuthzGroup group = getAuthzGroupService().getAuthzGroup(newRealmName);
+               if (group != null) {
+                  if (recreate){
+                     getAuthzGroupService().removeAuthzGroup(group);
+                  }
+                  else {
+                     newlyCreated = false;
+                     return;
+                  }
                }
-               else {
-                  newlyCreated = false;
-                  return;
-               }
+            } catch (GroupNotDefinedException e) {
+               // no worries... must not be created yet.
+            } catch (AuthzPermissionException e) {
+               logger.error("Failed to recreate realm.", e);
+               newlyCreated = false;
+               return;
             }
-         } catch (GroupNotDefinedException e) {
-            // no worries... must not be created yet.
-         } catch (AuthzPermissionException e) {
-            logger.error("Failed to recreate realm.", e);
-            newlyCreated = false;
-            return;
+   
+            newlyCreated = true;
+   
+            try {
+               AuthzGroup newRealm = getAuthzGroupService().addAuthzGroup(newRealmName);
+               addRoles(newRealm);
+               getAuthzGroupService().save(newRealm);
+            } catch (GroupNotDefinedException e) {
+               throw new RuntimeException(e);
+            } catch (AuthzPermissionException e) {
+               throw new RuntimeException(e);
+            } catch (GroupAlreadyDefinedException e) {
+               throw new RuntimeException(e);
+            } catch (GroupIdInvalidException e) {
+               throw new RuntimeException(e);
+            } catch (RoleAlreadyDefinedException e) {
+                 throw new RuntimeException(e);
          }
-
-         newlyCreated = true;
-
-         try {
-            AuthzGroup newRealm = getAuthzGroupService().addAuthzGroup(newRealmName);
-            addRoles(newRealm);
-            getAuthzGroupService().save(newRealm);
-         } catch (GroupNotDefinedException e) {
-            throw new RuntimeException(e);
-         } catch (AuthzPermissionException e) {
-            throw new RuntimeException(e);
-         } catch (GroupAlreadyDefinedException e) {
-            throw new RuntimeException(e);
-         } catch (GroupIdInvalidException e) {
-            throw new RuntimeException(e);
-         } catch (RoleAlreadyDefinedException e) {
-              throw new RuntimeException(e);
+         } finally {
+            sakaiSession.setUserId(userId);
+            sakaiSession.setUserEid(userId);
+         }
       }
-      } finally {
-         sakaiSession.setUserId(userId);
-         sakaiSession.setUserEid(userId);
-      }
-
    }
 
    protected void addRoles(AuthzGroup newRealm) throws RoleAlreadyDefinedException {
@@ -138,6 +141,14 @@ public class DefaultRealmManagerImpl implements DefaultRealmManager {
 
    public void setRecreate(boolean recreate) {
       this.recreate = recreate;
+   }
+
+   public boolean isAutoDdl() {
+      return autoDdl;
+   }
+
+   public void setAutoDdl(boolean autoDdl) {
+      this.autoDdl = autoDdl;
    }
 }
 

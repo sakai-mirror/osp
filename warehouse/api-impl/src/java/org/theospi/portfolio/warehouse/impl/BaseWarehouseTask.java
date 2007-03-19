@@ -89,12 +89,14 @@ public abstract class BaseWarehouseTask implements WarehouseTask {
       logger.info("init()");
       Connection connection = null;
       try {
-         InputStream tableDdl = getTableDdl();
-         if (tableDdl != null) {
-            connection = getDataSource().getConnection();
-            connection.setAutoCommit(true);
-            DbLoader loader = new DbLoader(connection);
-            loader.runLoader(tableDdl);
+         if (getDataWarehouseManager().isAutoDdl()) {
+            InputStream tableDdl = getTableDdl();
+            if (tableDdl != null) {
+               connection = getDataSource().getConnection();
+               connection.setAutoCommit(true);
+               DbLoader loader = new DbLoader(connection);
+               loader.runLoader(tableDdl);
+            }
          }
          getDataWarehouseManager().registerTask(this);
       }

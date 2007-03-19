@@ -45,6 +45,7 @@ public class DataWarehouseManagerImpl implements DataWarehouseManager {
 
    private List tasks;
    private SecurityService securityService;
+   private boolean autoDdl = true;
 
    public void registerTask(WarehouseTask task) {
       getTasks().add(task);
@@ -79,5 +80,13 @@ public class DataWarehouseManagerImpl implements DataWarehouseManager {
 
    public void setSecurityService(SecurityService securityService) {
       this.securityService = securityService;
+   }
+
+   public boolean isAutoDdl() {
+      return autoDdl;
+   }
+
+   public void setAutoDdl(boolean autoDdl) {
+      this.autoDdl = autoDdl;
    }
 }

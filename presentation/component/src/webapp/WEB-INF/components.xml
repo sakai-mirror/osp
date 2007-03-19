@@ -231,6 +231,7 @@
          <list>
          </list>
       </property>
+      <property name="autoDdl"><value>${auto.ddl}</value></property>
    </bean>
 
    <bean id="presentationAuthz" class="org.theospi.portfolio.presentation.PresentationAuthorizerImpl">

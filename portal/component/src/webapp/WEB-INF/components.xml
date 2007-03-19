@@ -35,6 +35,7 @@
             <entry key="course" value-ref="org.theospi.portfolio.portal.model.SiteType.course"/>
          </map>
       </property>
+      <property name="autoDdl"><value>${auto.ddl}</value></property>
    </bean>
 
    <bean id="org.theospi.portfolio.portal.intf.PortalManager.tx"

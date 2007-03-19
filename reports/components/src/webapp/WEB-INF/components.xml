@@ -92,6 +92,7 @@
                          </bean>
                     </list>
                 </property>
+               <property name="autoDdl"><value>${auto.ddl}</value></property>
             </bean>
         </property>
         <property name="transactionAttributes">
