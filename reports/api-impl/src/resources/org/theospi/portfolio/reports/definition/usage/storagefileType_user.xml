@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<!--
+	Notes:
+
+	Each report MUST have a different idString.  This is how saved reports are
+	linked back to the report definition
+
+    ALL YOUR BASE ARE BELONG TO US!
+-->
+<beans>
+
+
+    <bean id="storageFileType_user"
+        class="org.theospi.portfolio.reports.model.ReportDefinition">
+
+        <property name="idString">
+            <value>storageFileType_user-000-111-222</value>
+        </property>
+        <property name="usesWarehouse"><value>true</value></property>
+        <property name="title">
+            <value>
+                File Type usage report for current user
+            </value>
+        </property>
+       <property name="query">
+            <list>
+               <value>
+                  select * from dw_resource where sub_mime_type = ? and created_by='{userid}'
+               </value>
+                <value>
+                 select avg(content_length) from dw_resource where sub_mime_type = ? and created_by='{userid}'
+               </value>
+            </list>
+        </property>
+        <property name="description">
+            <value>
+                File type usage report  for current user
+            </value>
+        </property>
+        <property name="siteType"><!-- some acceptable values: admin,course,project,cig  -->
+            <value>admin,project,course,portfolioAdmin,portfolio</value>
+        </property>
+        <property name="role">
+            <value>student, instructor, admin</value>
+        </property>
+        <property name="reportDefinitionParams">
+            <list>
+                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
+                    <property name="title"><value>Choose file type</value></property>
+                    <property name="paramName"><value>File Type</value></property>
+                    <property name="description"><value>Choose File Type</value></property>
+                    <property name="type"><value>string</value></property>
+                    <property name="valueType"><value>sql</value></property>
+                    <property name="value"><value>SELECT DISTINCT sub_mime_type from dw_resource</value></property>
+                </bean>
+            </list>
+        </property>
+
+        <property name="xsls">
+            <list>
+                <bean id="reportXsl1.1" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/default.xsl</value></property>
+                    <property name="title"><value>Report Result View 1</value></property>
+                    <property name="isExport"><value>false</value></property>
+                </bean>
+            </list>
+           
+        </property>
+
+        <property name="defaultXsl">
+                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/default.xsl</value></property>
+                    <property name="isExport"><value>false</value></property>
+                </bean>
+        </property>
+
+    </bean>
+    </beans>
