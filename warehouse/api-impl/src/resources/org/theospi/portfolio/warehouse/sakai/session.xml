@@ -24,7 +24,7 @@
           <param>99</param>
         </column>
         <column>
-          <name>user</name>
+          <name>userId</name>
           <type>VARCHAR</type>
           <param>99</param>
         </column>
@@ -39,11 +39,11 @@
           <param>99</param>
         </column>
         <column>
-          <name>start</name>
+          <name>startTime</name>
           <type>TIMESTAMP</type>
         </column>
           <column>
-          <name>end</name>
+          <name>endTime</name>
           <type>TIMESTAMP</type>
         </column>
      </columns>

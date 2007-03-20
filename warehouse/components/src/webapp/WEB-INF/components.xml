@@ -281,12 +281,12 @@
             </list>
         </property>
         <property name="insertStmt">
-            <value>insert into dw_session (id, server, user, ip, user_agent, start, end)
+            <value>insert into dw_session (id, server, userId, ip, user_agent, startTime, endTime)
                 values (?, ?, ?, ?, ?, ?, ?)
             </value>
         </property>
         <property name="clearStmt">
-            <value>delete from dw_sites</value>
+            <value>delete from dw_session</value>
         </property>
 
     </bean>
