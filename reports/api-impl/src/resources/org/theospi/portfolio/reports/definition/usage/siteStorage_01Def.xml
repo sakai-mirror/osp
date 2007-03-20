@@ -11,32 +11,33 @@
 <beans>
 
 
-    <bean id="sessionAdminReport"
+    <bean id="siteStorage-01"
         class="org.theospi.portfolio.reports.model.ReportDefinition">
 
         <property name="idString">
-            <value>sessionAdmin-000-111-222</value>
+            <value>siteStorage-01</value>
         </property>
         <property name="usesWarehouse"><value>true</value></property>
         <property name="title">
             <value>
-                Session
+                Sites close to limit
             </value>
         </property>
        <property name="query">
             <list>
                <value>
-                  select * from dw_session where startTime between ? and ?
+                  select * from dw_resource_collection where parent_collection = '/group/'
+                   AND space_used > ?
                </value>
             </list>
         </property>
         <property name="description">
             <value>
-                Session report
+                Allows you to specify size and view sites who have used more than that amount of space
             </value>
         </property>
         <property name="siteType"><!-- some acceptable values: admin,course,project,cig  -->
-            <value>admin, portfolioAdmin</value>
+            <value>admin,portfolioAdmin</value>
         </property>
         <property name="role">
             <value>admin, Program Admin</value>
@@ -44,20 +45,15 @@
         <property name="reportDefinitionParams">
             <list>
                 <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
-                    <property name="title"><value>startDate</value></property>
-                    <property name="paramName"><value>startdate</value></property>
-                    <property name="description"><value>start date range</value></property>
-                    <property name="type"><value>date</value></property>
+                    <property name="title"><value>Size in KB</value></property>
+                    <property name="paramName"><value>size</value></property>
+                    <property name="description"><value>Select sites who have used more than specified KB</value></property>
+                    <property name="type"><value>int</value></property>
+                                    <!-- int/float/date/string -->
                     <property name="valueType"><value>fillin</value></property>
+                                    <!-- fillin/set/multiset/sql/multisql/static -->
                     <property name="value"><value></value></property>
-                </bean>
-                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
-                    <property name="title"><value>endDate</value></property>
-                    <property name="paramName"><value>enddate</value></property>
-                    <property name="description"><value>end date range</value></property>
-                    <property name="type"><value>date</value></property>
-                    <property name="valueType"><value>fillin</value></property>
-                    <property name="value"><value></value></property>
+                           
                 </bean>
             </list>
         </property>

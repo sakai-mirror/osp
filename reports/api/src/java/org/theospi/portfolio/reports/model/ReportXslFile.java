@@ -1,22 +1,18 @@
 package org.theospi.portfolio.reports.model;
 
-import org.springframework.context.ResourceLoaderAware;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.content.api.ContentResource;
-import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.exception.IdUnusedException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
+import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.shared.model.OspException;
 
-import java.io.InputStream;
-import java.io.IOException;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 public class ReportXslFile
@@ -28,6 +24,7 @@ public class ReportXslFile
 
     private String reportXslFileRef = null;
 
+    private Id reportXslFileId;
    private byte[] xslFile;
     /**
      * the getter for the reportId property
@@ -101,4 +98,12 @@ public class ReportXslFile
       bytes.close();
       return tmp;
    }
+
+    public Id getReportXslFileId() {
+        return reportXslFileId;
+    }
+
+    public void setReportXslFileId(Id reportXslFileId) {
+        this.reportXslFileId = reportXslFileId;
+    }
 }

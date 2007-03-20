@@ -354,7 +354,12 @@ public class ReportsTool extends ToolBase {
         if (getWorkingReport().testInvalidateTitle())
             nextPage = "";
 
-        return nextPage;
+        if (getWorkingReport().getReportParams().size() > 0){
+            return nextPage;
+        }else {
+            return processEditParamsContinue();
+        }
+
     }
 
     /**
@@ -580,7 +585,12 @@ public class ReportsTool extends ToolBase {
     public String processEditLiveReport(DecoratedReport report) {
         getReportsManager().checkEditAccess();
         setWorkingReport(report);
-        return createReportParamsPage;
+        if (report.getReportParams().size() > 0){
+              return createReportParamsPage;
+        }
+        else {
+            return reportResultsPage;
+        }
     }
 
     public Map getUserCan() {

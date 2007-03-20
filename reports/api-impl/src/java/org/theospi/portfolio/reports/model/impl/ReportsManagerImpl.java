@@ -509,7 +509,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
                 ReportDefinition repDef = getReportDefBean(beanFactory);
                 repDef.finishLoading();
                 repDef.setDbLoaded(true);
-                reportDefArray.add(repDef);
+                if (isValidWorksiteType(repDef.getSiteType()) && isValidRole(repDef.getRole()) && hasWarehouseSetting(repDef.getUsesWarehouse()))
+                {
+                    reportDefArray.add(repDef);
+                }
+
             }
         }
         return reportDefArray;
@@ -832,6 +836,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         ReportResult rr = new ReportResult();
 
         ReportDefinition rd = report.getReportDefinition();
+        if (rd == null){
+            report.connectToDefinition(reportDefinitions);
+        }
         rr.setCreationDate(new Date());
         Element reportElement = new Element("reportResult");
         Document document = new Document(reportElement);
@@ -1827,8 +1834,8 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
                 ReportResult result = generateResults(report);
                 result.setIsSaved(true);
-                processSaveResultsToResources(result);
                 result.setTitle(result.getTitle() + " - " + result.getCreationDate());
+                processSaveResultsToResources(result);
                 saveReportResult(result);
             } else {
                 schedulerManager.getScheduler().deleteJob(jobExecutionContext.getJobDetail().getName(), reportGroup);

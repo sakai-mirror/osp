@@ -19,7 +19,15 @@
             <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalTransactionManager" />
         </property>
         <property name="target">
-            <bean
+             <ref bean="org.theospi.portfolio.reports.model.impl.ReportsManagerImpl" />
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+    <bean       id ="org.theospi.portfolio.reports.model.impl.ReportsManagerImpl"
                 class="org.theospi.portfolio.reports.model.impl.ReportsManagerImpl"
                 singleton="true" init-method="init">
 
@@ -68,7 +76,7 @@
                 </property>
                 <property name="definedDefintions">
                     <list>
-                        <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
+             <!--           <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
                             <property name="idValue">
                                 <value>11112222-3333-4444-5551-666697779193</value>
                             </property>
@@ -89,19 +97,99 @@
                             <property name="definitionFileLocation">
                                 <value>/org/theospi/portfolio/reports/definition/matrix-report-2.xml</value>
                             </property>
+                         </bean>            -->
+                 <!--        <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
+                            <property name="idValue">
+                                <value>storageAdminReport-000-111-222</value>
+                            </property>
+                            <property name="beanId">
+                                <value>storageAdminReport</value>
+                            </property>
+                            <property name="definitionFileLocation">
+                                <value>/org/theospi/portfolio/reports/definition/usage/storage_admin.xml</value>
+                            </property>
+                         </bean>                            -->
+                        <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
+                            <property name="idValue">
+                                <value>totalStorageReport-01</value>
+                            </property>
+                            <property name="beanId">
+                                <value>totalStorageReport-01</value>
+                            </property>
+                            <property name="definitionFileLocation">
+                                <value>/org/theospi/portfolio/reports/definition/usage/totalStorageReportDef.xml</value>
+                            </property>
                          </bean>
+                        <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
+                            <property name="idValue">
+                                <value>userStorage-01</value>
+                            </property>
+                            <property name="beanId">
+                                <value>userStorage-01</value>
+                            </property>
+                            <property name="definitionFileLocation">
+                                <value>/org/theospi/portfolio/reports/definition/usage/userStorage_01Def.xml</value>
+                            </property>
+                         </bean>
+                       <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
+                            <property name="idValue">
+                                <value>userStorageByUserId-01</value>
+                            </property>
+                            <property name="beanId">
+                                <value>userStorageByUserId-01</value>
+                            </property>
+                            <property name="definitionFileLocation">
+                                <value>/org/theospi/portfolio/reports/definition/usage/userStorageByUserId.xml</value>
+                            </property>
+                         </bean>
+                         <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
+                            <property name="idValue">
+                                <value>siteStorage-01</value>
+                            </property>
+                            <property name="beanId">
+                                <value>siteStorage-01</value>
+                            </property>
+                            <property name="definitionFileLocation">
+                                <value>/org/theospi/portfolio/reports/definition/usage/siteStorage_01Def.xml</value>
+                            </property>
+                         </bean>
+                       <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
+                            <property name="idValue">
+                                <value>siteStorageBySiteId-01</value>
+                            </property>
+                            <property name="beanId">
+                                <value>siteStorageBySiteId-01</value>
+                            </property>
+                            <property name="definitionFileLocation">
+                                <value>/org/theospi/portfolio/reports/definition/usage/siteStorageBySiteId.xml</value>
+                            </property>
+                         </bean>
+                         <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
+                            <property name="idValue">
+                                <value>sessionUserReport-000-111-222</value>
+                            </property>
+                            <property name="beanId">
+                                <value>sessionUserReport</value>
+                            </property>
+                            <property name="definitionFileLocation">
+                                <value>/org/theospi/portfolio/reports/definition/usage/session_user.xml</value>
+                            </property>
+                         </bean>
+                         <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
+                            <property name="idValue">
+                                <value>sessionAdminReport-000-111-222</value>
+                            </property>
+                            <property name="beanId">
+                                <value>sessionAdminReport</value>
+                            </property>
+                            <property name="definitionFileLocation">
+                                <value>/org/theospi/portfolio/reports/definition/usage/session_admin.xml</value>
+                            </property>
+                         </bean>           
                     </list>
                 </property>
                <property name="autoDdl"><value>${auto.ddl}</value></property>
             </bean>
-        </property>
-        <property name="transactionAttributes">
-            <props>
-                <prop key="*">PROPAGATION_REQUIRED</prop>
-            </props>
-        </property>
-    </bean>
-
    <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactReports"
       parent="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifact"
       class="org.theospi.portfolio.shared.mgt.ContentWrappedArtifactFinder" />

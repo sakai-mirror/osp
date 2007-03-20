@@ -11,39 +11,49 @@
 <beans>
 
 
-    <bean id="storageUserReport"
+    <bean id="userStorageByUserId-01"
         class="org.theospi.portfolio.reports.model.ReportDefinition">
 
         <property name="idString">
-            <value>storageUserReport-000-111-222</value>
+            <value>userStorageByUserId-01</value>
         </property>
         <property name="usesWarehouse"><value>true</value></property>
         <property name="title">
             <value>
-                Reports on storage used by current user
+                User Id Storage Report
             </value>
         </property>
        <property name="query">
             <list>
                <value>
-                  select * from dw_resource_collection where parent_collection = '/user/' and created_by='{userid}'
+                  select * from dw_resource where created_by = ?
                </value>
             </list>
         </property>
         <property name="description">
             <value>
-                Reports on storage consumed by users
+                View space used by specified user id
             </value>
         </property>
         <property name="siteType"><!-- some acceptable values: admin,course,project,cig  -->
-            <value>admin,project,course,portfolioAdmin,portfolio</value>
+            <value>admin,portfolioAdmin</value>
         </property>
         <property name="role">
-            <value>admin</value>
+            <value>admin, Program Admin</value>
         </property>
         <property name="reportDefinitionParams">
             <list>
+               <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
+                    <property name="title"><value>User Id</value></property>
+                    <property name="paramName"><value>userId</value></property>
+                    <property name="description"><value>User Id</value></property>
+                    <property name="type"><value>string</value></property>
+                                    <!-- int/float/date/string -->
+                    <property name="valueType"><value>fillin</value></property>
+                                    <!-- fillin/set/multiset/sql/multisql/static -->
+                    <property name="value"><value></value></property>
 
+                </bean>
             </list>
         </property>
 

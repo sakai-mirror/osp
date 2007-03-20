@@ -11,28 +11,34 @@
 <beans>
 
 
-    <bean id="sessionAdminReport"
+    <bean id="totalStorageReport"
         class="org.theospi.portfolio.reports.model.ReportDefinition">
 
         <property name="idString">
-            <value>sessionAdmin-000-111-222</value>
+            <value>totalStorageReport-01</value>
         </property>
         <property name="usesWarehouse"><value>true</value></property>
         <property name="title">
             <value>
-                Session
+                Current storage in system
             </value>
         </property>
        <property name="query">
             <list>
                <value>
-                  select * from dw_session where startTime between ? and ?
+                  select * from dw_resource_collection where uri = '/'
+               </value>
+                <value>
+                  select * from dw_resource_collection where parent_collection = '/'
+               </value>
+               <value>
+                  select * from dw_resource_collection where parent_collection IN (select uri  from dw_resource_collection where parent_collection = '/')
                </value>
             </list>
         </property>
         <property name="description">
             <value>
-                Session report
+                Reports on space used for resource collections
             </value>
         </property>
         <property name="siteType"><!-- some acceptable values: admin,course,project,cig  -->
@@ -43,22 +49,7 @@
         </property>
         <property name="reportDefinitionParams">
             <list>
-                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
-                    <property name="title"><value>startDate</value></property>
-                    <property name="paramName"><value>startdate</value></property>
-                    <property name="description"><value>start date range</value></property>
-                    <property name="type"><value>date</value></property>
-                    <property name="valueType"><value>fillin</value></property>
-                    <property name="value"><value></value></property>
-                </bean>
-                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
-                    <property name="title"><value>endDate</value></property>
-                    <property name="paramName"><value>enddate</value></property>
-                    <property name="description"><value>end date range</value></property>
-                    <property name="type"><value>date</value></property>
-                    <property name="valueType"><value>fillin</value></property>
-                    <property name="value"><value></value></property>
-                </bean>
+
             </list>
         </property>
 

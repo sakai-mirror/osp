@@ -85,8 +85,11 @@
     </class>
      <class name="ReportXslFile"
            table="osp_report_xsl">
-
-         <id name="reportXslFileRef" length="72" type="java.lang.String" column="reportXslFileRef"/>
+          <id name="reportXslFileId" length="36"
+            type="org.sakaiproject.metaobj.shared.IdType" column="reportXslFileId">
+            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
+        </id>
+         <property name="reportXslFileRef" length="255" type="java.lang.String" column="reportXslFileRef"/>
 
          <property name="reportDefId" column="reportDefId" type="java.lang.String" length="36"/>
 
