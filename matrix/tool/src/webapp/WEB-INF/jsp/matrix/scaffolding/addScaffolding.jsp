@@ -155,8 +155,11 @@
 						</td>
 						<td>
 								<c:if test="${not empty level.color}">
-									<input class="colorBox" disabled="disabled" value="abc" size="2" style="background-color: <c:out value="${level.color}"/>;color: <c:if test="${not empty level.textColor}" ><c:out value="${level.textColor}"/></c:if>;padding:.2em" type="text" />
+									<div class="colorBox"  style="background-color: <c:out value="${level.color}"/>;color: <c:if test="${not empty level.textColor}" ><c:out value="${level.textColor}"/></c:if>"><fmt:message key="swatch_text"/></div>
 								</c:if>
+								<c:if test="${ empty level.color}">
+									<div class="colorBoxNone"><fmt:message key="swatch_text_none"/></div>
+								</c:if>				
 						</td>
 						<td>
     							<span class="itemAction">
@@ -236,11 +239,19 @@
     									<c:out value="${criterion.description}"/>
     								</span>
 							</td>
-							<td>
+							<td>	
 									<c:if test="${not empty criterion.color}">
-										<input class="colorBox" disabled="disabled" value="abc" size="2" style="background-color: <c:out value="${criterion.color}"/>;color: <c:if test="${not empty criterion.textColor}" ><c:out value="${criterion.textColor}"/></c:if>;padding:.2em" type="text" />
+										<div class="colorBox"
+												style="background-color: <c:out value="${criterion.color}"/>;
+												color: <c:if test="${not empty criterion.textColor}" >
+													<c:out value="${criterion.textColor}"/>
+												</c:if>"><fmt:message key="swatch_text"/></div>
 									</c:if>
-							</td>
+									<c:if test="${ empty criterion.color}">
+										<div class="colorBoxNone"><fmt:message key="swatch_text_none"/></div>
+									</c:if>
+
+									</td>
 							<td>
 								<span class="itemAction">
 									  <a href="javascript:document.forms[0].dest.value='addCriterion';

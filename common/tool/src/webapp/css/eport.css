@@ -129,6 +129,20 @@ INPUT.colorBox {
 	margin-left:20px;
 }
 
+.colorBox {
+	width:8em;
+	border: 1px solid black;
+	padding:.1em .5em
+	}
+.colorBoxNone {
+	width:8em;
+	border: 1px solid black;
+	padding:.1em 1.5em;
+	background:#eee url(../img/inact.gif) top left repeat-x;
+	color:#000;
+	padding:.1em .5em
+}
+
 /*give some boxes in matrix/wizards some definition*/
 .bordered-l{
  	border:1px solid #bbb
