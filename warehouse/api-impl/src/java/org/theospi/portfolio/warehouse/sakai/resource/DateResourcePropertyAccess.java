@@ -22,6 +22,7 @@ package org.theospi.portfolio.warehouse.sakai.resource;
 
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.entity.api.EntityPropertyNotDefinedException;
 import org.sakaiproject.time.api.Time;
 
 import java.sql.Date;
@@ -39,17 +40,23 @@ public class DateResourcePropertyAccess extends ResourcePropertyPropertyAccess {
       String propName = (String) super.getPropertyValue(source);
       Time time = null;
      
-      if (source instanceof ContentResource) {
-         time = ((ContentResource)source).getProperties().getTimeProperty(propName);
+       try {
+            if (source instanceof ContentResource) {
+                time = ((ContentResource)source).getProperties().getTimeProperty(propName);
 
-      }
-      else if (source instanceof ContentCollection) {
-          time = ((ContentCollection)source).getProperties().getTimeProperty(propName);
+            }
+            else if (source instanceof ContentCollection) {
+                time = ((ContentCollection)source).getProperties().getTimeProperty(propName);
 
+            }
+            if (time != null){
+                return new Date(time.getTime());
+            }
        }
-       if (time != null){
-          return new Date(time.getTime());
-         }
+       catch (EntityPropertyNotDefinedException e){
+            //e.printStackTrace();
+
+   }
        return null;
    }
 }
