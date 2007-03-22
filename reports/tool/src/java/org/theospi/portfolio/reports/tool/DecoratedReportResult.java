@@ -53,6 +53,7 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 		this.reportResult = reportResult;
 		this.reportsTool = reportsTool;
 		this.report = reportResult.getReport();
+        this.report.connectToDefinition(reportsTool.getReportsManager().getReportDefinitions());
         getExportXslSeletionList();
 	}
 	
