@@ -1629,6 +1629,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
     protected void updateDefinition(ReportsDefinitionWrapper wrapper, ReportDefinitionXmlFile def) {
         try {
+
+            InputStream stream =  getClass().getResourceAsStream(wrapper.getDefinitionFileLocation());
+            if (stream== null) {
+                new RuntimeException ("Loaded Report Definition failed: " + wrapper.getDefinitionFileLocation());
+            }
             def.setXmlFile(readStreamToBytes(getClass().getResourceAsStream(wrapper.getDefinitionFileLocation())));
             getHibernateTemplate().saveOrUpdate(def);
             ListableBeanFactory beanFactory = new XmlBeanFactory(new InputStreamResource(getClass().getResourceAsStream(wrapper.getDefinitionFileLocation())), getBeanFactory());
