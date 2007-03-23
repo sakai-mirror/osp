@@ -376,7 +376,10 @@ public class XsltPortal extends CharonPortal {
    }
 
    protected void postLogin(HttpServletRequest req, HttpServletResponse res, Session session, String loginPath) throws ToolException {
-      session.setAttribute(Tool.HELPER_DONE_URL, Web.returnUrl(req, null));
+      if (session.getAttribute(Tool.HELPER_DONE_URL) == null) {
+         session.setAttribute(Tool.HELPER_DONE_URL, Web.returnUrl(req, null));
+      }
+      
       super.postLogin(req, res, session, loginPath);
    }
 
