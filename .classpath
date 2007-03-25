@@ -110,7 +110,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/util-util"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/portal-impl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/tool-util"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/scheduler"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.hibernate/jars/hibernate-3.1.3.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/org.springframework/jars/spring-1.2.8.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/servletapi/jars/servletapi-2.4.jar"/>
@@ -118,5 +117,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/metaobj-impl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/metaobj-util"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/assignment-api"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/jobscheduler"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
