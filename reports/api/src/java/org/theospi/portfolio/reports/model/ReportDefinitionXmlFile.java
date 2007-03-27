@@ -1,21 +1,22 @@
 package org.theospi.portfolio.reports.model;
 
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.content.api.ContentResource;
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
+import org.sakaiproject.content.api.ContentResource;
 
-import java.io.InputStream;
-import java.io.IOException;
-import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Set;
 
 
 public class ReportDefinitionXmlFile {
     private String reportDefId = null;
     private byte[] xmlFile;
+    private Set reportXslFiles;
     Document xml;
-  
+
 
     public ReportDefinitionXmlFile() {
     }
@@ -91,4 +92,12 @@ public class ReportDefinitionXmlFile {
             bytes.close();
             return tmp;
         }
+
+    public Set getReportXslFiles() {
+        return reportXslFiles;
     }
+
+    public void setReportXslFiles(Set reportXslFiles) {
+        this.reportXslFiles = reportXslFiles;
+    }
+}

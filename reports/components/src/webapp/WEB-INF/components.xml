@@ -142,42 +142,10 @@
                                 <value>/org/theospi/portfolio/reports/definition/usage/userStorageByUserId.xml</value>
                             </property>
                          </bean>
+                         
                          <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
                             <property name="idValue">
-                                <value>siteStorage-01</value>
-                            </property>
-                            <property name="beanId">
-                                <value>siteStorage-01</value>
-                            </property>
-                            <property name="definitionFileLocation">
-                                <value>/org/theospi/portfolio/reports/definition/usage/siteStorage_01Def.xml</value>
-                            </property>
-                         </bean>
-                       <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
-                            <property name="idValue">
-                                <value>siteStorageBySiteId-01</value>
-                            </property>
-                            <property name="beanId">
-                                <value>siteStorageBySiteId-01</value>
-                            </property>
-                            <property name="definitionFileLocation">
-                                <value>/org/theospi/portfolio/reports/definition/usage/siteStorageBySiteId.xml</value>
-                            </property>
-                         </bean>
-                         <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
-                            <property name="idValue">
-                                <value>sessionUserReport-000-111-222</value>
-                            </property>
-                            <property name="beanId">
-                                <value>sessionUserReport</value>
-                            </property>
-                            <property name="definitionFileLocation">
-                                <value>/org/theospi/portfolio/reports/definition/usage/session_user.xml</value>
-                            </property>
-                         </bean>
-                         <bean class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper">
-                            <property name="idValue">
-                                <value>sessionAdminReport-000-111-222</value>
+                                <value>sessionAdmin-000-111-222</value>
                             </property>
                             <property name="beanId">
                                 <value>sessionAdminReport</value>

@@ -20,13 +20,22 @@
         <property name="usesWarehouse"><value>true</value></property>
         <property name="title">
             <value>
-                Session
+                Session Report
             </value>
         </property>
        <property name="query">
             <list>
                <value>
-                  select * from dw_session where startTime between ? and ?
+                  select count(*) 'totalVisits' from dw_session where startTime between ? and ?
+               </value>
+                 <value>
+                  select count(distinct userId) 'uniqueVisits' from dw_session  where startTime between ? and ?
+               </value>
+               <value>
+                   select avg(endTime - startTime) 'avgSessionInSeconds'  from dw_session  where startTime between ? and ?
+               </value>
+               <value>
+                   select Distinct(user_eid), first_name, last_name from dw_users where user_id not  in (select distinct userId from dw_session where startTime between ? and ?)
                </value>
             </list>
         </property>
@@ -44,17 +53,17 @@
         <property name="reportDefinitionParams">
             <list>
                 <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
-                    <property name="title"><value>startDate</value></property>
+                    <property name="title"><value>Start Date:</value></property>
                     <property name="paramName"><value>startdate</value></property>
-                    <property name="description"><value>start date range</value></property>
+                    <property name="description"><value></value></property>
                     <property name="type"><value>date</value></property>
                     <property name="valueType"><value>fillin</value></property>
                     <property name="value"><value></value></property>
                 </bean>
                 <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
-                    <property name="title"><value>endDate</value></property>
+                    <property name="title"><value>End Date:</value></property>
                     <property name="paramName"><value>enddate</value></property>
-                    <property name="description"><value>end date range</value></property>
+                    <property name="description"><value></value></property>
                     <property name="type"><value>date</value></property>
                     <property name="valueType"><value>fillin</value></property>
                     <property name="value"><value></value></property>
@@ -64,6 +73,11 @@
 
         <property name="xsls">
             <list>
+                <bean id="internalXML" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/internalXML.xsl</value></property>
+                    <property name="title"><value>xml</value></property>
+                    <property name="isExport"><value>false</value></property>
+                </bean>
                 <bean id="reportXsl1.1" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/default.xsl</value></property>
                     <property name="title"><value>Report Result View 1</value></property>
@@ -75,7 +89,7 @@
 
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/default.xsl</value></property>
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/internalXML.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>

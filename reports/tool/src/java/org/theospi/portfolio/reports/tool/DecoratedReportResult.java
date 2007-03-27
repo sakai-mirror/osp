@@ -3,7 +3,7 @@
 * $Id:DecoratedReportResult.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -135,6 +135,9 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
    }
 
    public ReportXsl getExportXsl() {
+        if (report.getReportDefinition() == null) {
+                report.connectToDefinition(reportsTool.getReportsManager().getReportDefinitions());
+            }
       ReportXsl xsl = getReport().getReportDefinition().findReportXslByRuntimeId(getCurrentExportXsl());
       return xsl;
    }
@@ -152,7 +155,10 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
    public String getCurrentViewXsl()
 	{
 		if(currentViewXsl == null) {
-			return report.getReportDefinition().getDefaultXsl().getXslLink();
+            if (report.getReportDefinition() == null) {
+                report.connectToDefinition(reportsTool.getReportsManager().getReportDefinitions());
+            }
+            return report.getReportDefinition().getDefaultXsl().getXslLink();
 		}
 		return currentViewXsl;
 	}
@@ -231,11 +237,12 @@ public class DecoratedReportResult implements DecoratedAbstractResult {
 
       while(iter.hasNext()) {
          ReportXsl xsl = (ReportXsl)iter.next();
-
+         xsl.setReportDefinition(rdef);
          if(!xsl.getIsExport())
-            if(xsl.getXslLink().equals(link))
+            if(xsl.getXslLink().equals(link)){
                xsl.setReportDefinition(rdef);
                return xsl;
+            }
       }
       return null;
    }

@@ -26,19 +26,20 @@
        <property name="query">
             <list>
                <value>
-                  select * from dw_resource_collection where uri = '/'
+                  select avg(file_count),  avg(avg_size), avg(avg_space)
+                   from ( select  created_by, avg(content_length) as avg_size from dw_resource group by created_by) as avg_size,
+                   ( select  created_by, sum(content_length) as avg_space from dw_resource group by created_by) as avg_space,
+                   ( select  created_by, count(*) as file_count  from dw_resource group by created_by) as file_count
                </value>
-                <value>
-                  select * from dw_resource_collection where parent_collection = '/'
-               </value>
+
                <value>
-                  select * from dw_resource_collection where parent_collection IN (select uri  from dw_resource_collection where parent_collection = '/')
+                 select sub_mime_type 'file_type', count(*) 'total_files' , avg(content_length) 'avg_size' , sum(content_length) 'total_size'    from dw_resource  group by sub_mime_type
                </value>
             </list>
         </property>
         <property name="description">
             <value>
-                Reports on space used for resource collections
+                Reports on current storage in system
             </value>
         </property>
         <property name="siteType"><!-- some acceptable values: admin,course,project,cig  -->
@@ -53,20 +54,25 @@
             </list>
         </property>
 
-        <property name="xsls">
+         <property name="xsls">
             <list>
+                <bean id="internalXML" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/internalXML.xsl</value></property>
+                    <property name="title"><value>xml</value></property>
+                    <property name="isExport"><value>false</value></property>
+                </bean>
                 <bean id="reportXsl1.1" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/default.xsl</value></property>
                     <property name="title"><value>Report Result View 1</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
             </list>
-           
+
         </property>
 
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/default.xsl</value></property>
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/internalXML.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>

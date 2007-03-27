@@ -20,10 +20,9 @@ public class ReportXslFile
 
       protected final transient Log logger = LogFactory.getLog(getClass());
     /** the link to the report definition */
-    private String reportDefId = null;
-
+    private ReportDefinitionXmlFile reportDef;
     private String reportXslFileRef = null;
-
+    private String reportDefId;
     private Id reportXslFileId;
    private byte[] xslFile;
     /**
@@ -33,15 +32,21 @@ public class ReportXslFile
         
     }
 
+    public String getReportDefId() {
+        return reportDefId;
+    }
 
+    public void setReportDefId(String reportDefId) {
+        this.reportDefId = reportDefId;
+    }
 
-    public ReportXslFile(ReportXsl reportXsl, ContentHostingService contentHosting, String reportDefId)
+    public ReportXslFile(ReportXsl reportXsl, ContentHostingService contentHosting)
     {
        try { String id = reportXsl.getXslLink();
         ContentResource resource = contentHosting.getResource(id);
         setXslFile(readStreamToBytes(resource.streamContent()));
         setReportXslFileRef(reportXsl.getXslLink());
-           setReportDefId(reportDefId);
+
 
        }
         catch(PermissionException pe) {
@@ -58,16 +63,6 @@ public class ReportXslFile
             e.printStackTrace();
             throw new OspException("Error loading the following xsl file:" + reportXsl.getXslLink());
         }
-    }
-
-
-
-    public String getReportDefId() {
-        return reportDefId;
-    }
-
-    public void setReportDefId(String reportDefId) {
-        this.reportDefId = reportDefId;
     }
 
     public String getReportXslFileRef() {
@@ -99,6 +94,14 @@ public class ReportXslFile
       return tmp;
    }
 
+    public ReportDefinitionXmlFile getReportDef() {
+        return reportDef;
+    }
+
+    public void setReportDef(ReportDefinitionXmlFile reportDef) {
+        this.reportDef = reportDef;
+    }
+
     public Id getReportXslFileId() {
         return reportXslFileId;
     }
@@ -106,4 +109,5 @@ public class ReportXslFile
     public void setReportXslFileId(Id reportXslFileId) {
         this.reportXslFileId = reportXslFileId;
     }
+
 }

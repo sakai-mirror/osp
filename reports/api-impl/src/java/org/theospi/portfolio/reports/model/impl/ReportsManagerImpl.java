@@ -1226,7 +1226,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
     public InputStream loadXslFromDB(ReportXsl reportXsl) {
         ByteArrayInputStream inputStream = null;
-        List xsls = getHibernateTemplate().findByNamedQuery("findReportXsl", new Object[]{reportXsl.getXslLink(), reportXsl.getReportDefinition().getIdString()});
+        List xsls = getHibernateTemplate().find("from ReportXslFile r where reportDefId = ? and reportXslFileRef = ?", new Object[]{reportXsl.getReportDefinition().getIdString(), reportXsl.getXslLink()});
         for (Iterator i = xsls.iterator(); i.hasNext();) {
             ReportXslFile xslFile = (ReportXslFile) i.next();
             inputStream = new ByteArrayInputStream(xslFile.getXslFile());
@@ -1561,7 +1561,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             List xsls = reportDef.getXsls();
             for (Iterator i = xsls.iterator(); i.hasNext();) {
                 ReportXsl xslFile = (ReportXsl) i.next();
-                xslsList.add(new ReportXslFile(xslFile, getContentHosting(), reportDef.getIdString()));
+                xslsList.add(new ReportXslFile(xslFile, getContentHosting()));
             }
 
         }
@@ -1634,8 +1634,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             if (stream== null) {
                 new RuntimeException ("Loaded Report Definition failed: " + wrapper.getDefinitionFileLocation());
             }
+            Set xslFiles = new HashSet(); 
             def.setXmlFile(readStreamToBytes(getClass().getResourceAsStream(wrapper.getDefinitionFileLocation())));
-            getHibernateTemplate().saveOrUpdate(def);
+
             ListableBeanFactory beanFactory = new XmlBeanFactory(new InputStreamResource(getClass().getResourceAsStream(wrapper.getDefinitionFileLocation())), getBeanFactory());
             ReportDefinition repDef = getReportDefBean(beanFactory);
             List xsls = repDef.getXsls();
@@ -1645,8 +1646,12 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
                 xslFile.setXslFile(readStreamToBytes(getClass().getResourceAsStream(xsl.getXslLink())));
                 xslFile.setReportDefId(repDef.getIdString());
                 xslFile.setReportXslFileRef(xsl.getXslLink());
-                getHibernateTemplate().saveOrUpdate(xslFile);
+                xslFile.setReportDef(def);
+                xslFiles.add(xslFile);
+
             }
+            def.setReportXslFiles(xslFiles);
+            getHibernateTemplate().saveOrUpdate(def);
         }
         catch (Exception e) {
             e.printStackTrace();

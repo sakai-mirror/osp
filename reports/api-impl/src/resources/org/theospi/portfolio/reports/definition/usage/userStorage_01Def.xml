@@ -20,14 +20,17 @@
         <property name="usesWarehouse"><value>true</value></property>
         <property name="title">
             <value>
-                Individual User close to limit
+                User Storage Report
             </value>
         </property>
        <property name="query">
             <list>
                <value>
-                  select * from dw_resource_collection where parent_collection = '/user/'
-                   AND space_used > ?
+                  select DW_USERS.USER_EID,  DW_USERS.FIRST_NAME, DW_USERS.LAST_NAME, CREATED_BY, WORK_SPACE_USED, SITE_SPACE_USED, (WORK_SPACE_USED +  SITE_SPACE_USED)
+                   FROM (SELECT CREATED_BY, SPACE_USED as WORK_SPACE_USED  from DW_RESOURCE_COLLECTION where PARENT_COLLECTION = '/user/' group by CREATED_BY) as WORK_SPACE,
+                   (SELECT sum(SPACE_USED) as SITE_SPACE_USED  from DW_RESOURCE_COLLECTION where PARENT_COLLECTION = '/group/' group by CREATED_BY) as SITE_SPACE,
+                   DW_USERS
+                   where DW_USERS.USER_ID = CREATED_BY and WORK_SPACE_USED + SITE_SPACE_USED > ?
                </value>
             </list>
         </property>
@@ -45,9 +48,9 @@
         <property name="reportDefinitionParams">
             <list>
                 <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
-                    <property name="title"><value>Size in KB</value></property>
+                    <property name="title"><value>MB</value></property>
                     <property name="paramName"><value>size</value></property>
-                    <property name="description"><value>Select users who have used more than specified KB</value></property>
+                    <property name="description"><value>Finds users storing more than specified amount.  May be large report.</value></property>
                     <property name="type"><value>int</value></property>
                                     <!-- int/float/date/string -->
                     <property name="valueType"><value>fillin</value></property>
@@ -60,18 +63,23 @@
 
         <property name="xsls">
             <list>
+                <bean id="internalXML" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/internalXML.xsl</value></property>
+                    <property name="title"><value>xml</value></property>
+                    <property name="isExport"><value>false</value></property>
+                </bean>
                 <bean id="reportXsl1.1" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/default.xsl</value></property>
                     <property name="title"><value>Report Result View 1</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
             </list>
-           
+
         </property>
 
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/default.xsl</value></property>
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/internalXML.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>
