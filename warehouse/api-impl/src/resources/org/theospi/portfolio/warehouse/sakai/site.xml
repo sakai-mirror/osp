@@ -46,7 +46,22 @@
           <name>user_id</name>
           <type>VARCHAR</type>
           <param>99</param>
-        </column>          
+        </column>
+          <column>
+          <name>user_eid</name>
+          <type>VARCHAR</type>
+          <param>99</param>
+        </column>
+          <column>
+          <name>user_display_id</name>
+          <type>VARCHAR</type>
+          <param>99</param>
+        </column>
+          <column>
+          <name>role</name>
+          <type>VARCHAR</type>
+          <param>99</param>
+        </column>
         <column>
           <name>permission</name>
           <type>INTEGER</type>

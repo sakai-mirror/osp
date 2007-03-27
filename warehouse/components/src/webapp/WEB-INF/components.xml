@@ -175,12 +175,27 @@
                         <value>userId</value>
                     </property>
                 </bean>
+                <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                    <property name="propertyName">
+                        <value>userEid</value>
+                    </property>
+                </bean>
+                <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                    <property name="propertyName">
+                        <value>userDisplayId</value>
+                    </property>
+                </bean>
+                <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                    <property name="propertyName">
+                        <value>role</value>
+                    </property>
+                </bean>
             </list>
         </property>
         <property name="insertStmt">
             <value>insert into dw_site_users
-                (site_id, user_id)
-                values (?, ?)
+                (site_id, user_id, user_eid, user_display_id, role)
+                values (?, ?, ?, ?, ?)
             </value>
         </property>
         <property name="clearStmt">
@@ -408,7 +423,62 @@
     </bean>
 
 
+       <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.user"
+          class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+        <property name="fields">
+            <list>
 
+                <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                    <property name="propertyName">
+                        <value>userId</value>
+                    </property>
+                </bean>
+                <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                    <property name="propertyName">
+                        <value>userEid</value>
+                    </property>
+                </bean>
+                <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                    <property name="propertyName">
+                        <value>email</value>
+                    </property>
+                </bean>
+                <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                    <property name="propertyName">
+                        <value>emailLc</value>
+                    </property>
+                </bean>
+                <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                    <property name="propertyName">
+                        <value>firstName</value>
+                    </property>
+                </bean>
+                <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                    <property name="propertyName">
+                        <value>lastName</value>
+                    </property>
+                </bean>
+                <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                    <property name="propertyName">
+                        <value>type</value>
+                    </property>
+                </bean>
+            </list>
+        </property>
+        <property name="insertStmt">
+            <value>insert into dw_users
+                (user_id, user_eid, email, email_lc, first_name, last_name, type)
+                values (?, ?, ?, ?, ?, ?, ?)
+            </value>
+        </property>
+        <property name="clearStmt">
+            <value>delete from dw_users</value>
+        </property>
+        <property name="complexFields">
+            <list>
+            </list>
+        </property>
+    </bean>
     <!--  **************************************************************************
     ********************************************************************************
          - list of users and names and such
@@ -508,5 +578,22 @@
             <ref bean="org.sakaiproject.api.app.scheduler.SchedulerManager"/>
         </property>
     </bean>
-
+   <bean
+            id="org.theospi.portfolio.warehouse.intf.WarehouseTask.user"
+            class="org.theospi.portfolio.warehouse.sakai.user.UserWarehouseTask"
+            init-method="init" singleton="true">
+        <property name="dataSource">
+            <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource"/>
+        </property>
+        <property name="dataWarehouseManager">
+            <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager"/>
+        </property>
+        <property name="tableDdlResource">
+            <value>/org/theospi/portfolio/warehouse/sakai/users.xml</value>
+        </property>
+        <property name="sqlService"><ref bean="org.sakaiproject.db.api.SqlService"/></property>
+        <property name="task">
+            <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.user"/>
+        </property>
+    </bean>
 </beans>

@@ -92,7 +92,7 @@
             <name>PARENT_COLLECTION</name>
             <type>VARCHAR</type>
             <param>255</param>
-         </column>
+         </column>         
          <column>
             <name>CREATED_BY</name>
             <type>VARCHAR</type>
