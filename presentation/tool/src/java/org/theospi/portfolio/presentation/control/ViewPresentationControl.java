@@ -162,6 +162,7 @@ public class ViewPresentationControl extends AbstractPresentationController impl
             }
          }
          Site site = SiteService.getSite(pres.getSiteId());
+         getAuthzManager().pushAuthzGroups(site.getId());
          ToolConfiguration toolConfig = site.getToolForCommonId(PresentationFunctionConstants.PRES_TOOL_ID);
          String placement = toolConfig.getId();
          model.put("placementId", placement); 

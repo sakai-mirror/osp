@@ -27,6 +27,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.PresentationComment;
+import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AuthorizationFacade;
 
 /**
@@ -56,6 +57,8 @@ public class AddCommentController extends AbstractPresentationController {
          errors);
 
       if (!errors.hasErrors()) {
+         Presentation pres = getPresentationManager().getPresentation(comment.getPresentationId());
+         getAuthzManager().pushAuthzGroups(pres.getSiteId());
          getPresentationManager().createComment((PresentationComment) requestModel);
       }
        Hashtable model = new Hashtable();
