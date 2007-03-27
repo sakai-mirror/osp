@@ -34,7 +34,7 @@
 						action="#{ReportsTool.processCreateTrigger}"
 						value="#{msgs.bar_post}" />					
 					<sakai:button_bar_item immediate="true"
-						action="edit_triggers"
+						action="scheduleReport"
 						value="#{msgs.cancel}" />
 				</sakai:button_bar>
 

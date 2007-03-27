@@ -188,6 +188,11 @@
             <to-view-id>/reports/deleteTriggers.jsp</to-view-id>
             <redirect/>
         </navigation-case>
+         <navigation-case>
+            <from-outcome>main</from-outcome>
+            <to-view-id>/reports/main.jsp</to-view-id>
+            <redirect/>
+        </navigation-case>
     </navigation-rule>
     <navigation-rule>
         <from-view-id>/reports/createTrigger.jsp</from-view-id>
