@@ -206,6 +206,11 @@ public class PresentationValidator extends ValidatorBase {
       if (presentation.getExpiresOnBean() != null){
          presentation.setExpiresOn(presentation.getExpiresOnBean().getDate());
       }
+      
+      if (presentation.getDescription() != null && presentation.getDescription().length() > 255) {
+         errors.rejectValue("description", "error.lengthExceded", new Object[]{"255"}, "Value must be less than {0} characters");
+      }
+      
    }
 
    protected void validatePresentationSecondPage(Object obj, Errors errors) {
