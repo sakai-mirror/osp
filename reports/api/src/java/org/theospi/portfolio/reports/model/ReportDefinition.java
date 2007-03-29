@@ -20,10 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model;
 
+import org.sakaiproject.metaobj.shared.model.Id;
+
 import java.util.Iterator;
 import java.util.List;
-
-import org.sakaiproject.metaobj.shared.model.Id;
 
 public class ReportDefinition
 {
@@ -76,6 +76,10 @@ public class ReportDefinition
     private String role;
 
     private boolean dbLoaded = false;
+
+    private String paramTitle;
+
+    private String paramInstruction;
 
     /**
 	 * when the report is finished loading the link in the report parameters
@@ -413,5 +417,21 @@ public void setUsesWizard(boolean usesWizard) {
 
     public void setDbLoaded(boolean dbLoaded) {
         this.dbLoaded = dbLoaded;
+    }
+
+    public String getParamTitle() {
+        return paramTitle;
+    }
+
+    public void setParamTitle(String paramTitle) {
+        this.paramTitle = paramTitle;
+    }
+
+    public String getParamInstruction() {
+        return paramInstruction;
+    }
+
+    public void setParamInstruction(String paramInstruction) {
+        this.paramInstruction = paramInstruction;
     }
 }

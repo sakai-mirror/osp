@@ -50,6 +50,12 @@
         <property name="role">
             <value>admin, Program Admin</value>
         </property>
+         <property name="paramTitle">
+            <value>
+                Select the following options:
+            </value>
+        </property>
+
         <property name="reportDefinitionParams">
             <list>
                 <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
@@ -73,23 +79,36 @@
 
         <property name="xsls">
             <list>
-                <bean id="internalXML" class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/internalXML.xsl</value></property>
-                    <property name="title"><value>xml</value></property>
+                <bean id="sessionReport" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/usage/sessionReport.xsl</value></property>
+                    <property name="title"><value>Session Report</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
-                <bean id="reportXsl1.1" class="org.theospi.portfolio.reports.model.ReportXsl">
+                 <bean id="defaultExport" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="title"><value>CSV</value></property>
                     <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/default.xsl</value></property>
-                    <property name="title"><value>Report Result View 1</value></property>
-                    <property name="isExport"><value>false</value></property>
+                    <property name="isExport"><value>true</value></property>
+                    <property name="extension"><value>csv</value></property>
+                    <property name="target"><value>_self</value></property>
+                    <property name="contentType"><value>application/x-csv</value></property>
+                    <property name="resultsPostProcessor">
+                        <ref bean="org.theospi.portfolio.reports.model.ResultsPostProcessor.csv"/>
+                    </property>
                 </bean>
+                <bean id="exportHTML" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/usage/sessionReport.xsl</value></property>
+                    <property name="title"><value>HTML</value></property>
+                    <property name="isExport"><value>true</value></property>
+                    <property name="contentType"><value>text/html</value></property>
+                </bean>
+
             </list>
            
         </property>
 
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/internalXML.xsl</value></property>
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/usage/sessionReport.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>

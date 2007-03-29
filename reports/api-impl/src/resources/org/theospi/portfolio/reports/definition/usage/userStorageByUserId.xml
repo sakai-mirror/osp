@@ -31,13 +31,19 @@
                <value>
                  select sub_mime_type 'file_type', count(*) 'total_files' , avg(content_length) 'avg_size' , sum(content_length) 'total_size'
                    from dw_resource where created_by = (select DW_USERS.user_id from DW_USERS
-                   where DW_USERS.user_eid = ? ) and parent_collection  like '/group/%'  group by sub_mime_type
+                   where DW_USERS.user_eid = ? ) and parent_collection  like '/user/%'  group by sub_mime_type
                </value>
                 <value>
                   select sub_mime_type 'file_type', count(*) 'total_files' , avg(content_length) 'avg_size' , sum(content_length) 'total_size'
                     from dw_resource where created_by = (select DW_USERS.user_id from DW_USERS
                     where DW_USERS.user_eid = ? ) and parent_collection  like '/group/%'  group by sub_mime_type
                </value>
+                <value>
+                    select space_available  'workspaceTotalAllocatedSpace' from dw_resource_collection where  created_by=?  and uri= '/user/'
+                </value>
+                <value>
+                    select sum(space_available)  'siteTotalAllocatedSpace' from dw_resource_collection where uri in (select distinct parent_collection from dw_resource  where created_by = ?)
+                </value>
             </list>
         </property>
         <property name="description">
@@ -51,6 +57,12 @@
         <property name="role">
             <value>admin, Program Admin</value>
         </property>
+         <property name="paramTitle">
+            <value>
+                Specify a User ID:
+            </value>
+        </property>
+        
         <property name="reportDefinitionParams">
             <list>
                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
@@ -69,15 +81,27 @@
 
          <property name="xsls">
             <list>
-                <bean id="internalXML" class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/internalXML.xsl</value></property>
-                    <property name="title"><value>xml</value></property>
+                <bean id="userStorageDetails" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/usage/userStorageDetails.xsl</value></property>
+                    <property name="title"><value>User Storage Details</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
-                <bean id="reportXsl1.1" class="org.theospi.portfolio.reports.model.ReportXsl">
+                 <bean id="defaultExport" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="title"><value>CSV</value></property>
                     <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/default.xsl</value></property>
-                    <property name="title"><value>Report Result View 1</value></property>
-                    <property name="isExport"><value>false</value></property>
+                    <property name="isExport"><value>true</value></property>
+                    <property name="extension"><value>csv</value></property>
+                    <property name="target"><value>_self</value></property>
+                    <property name="contentType"><value>application/x-csv</value></property>
+                    <property name="resultsPostProcessor">
+                        <ref bean="org.theospi.portfolio.reports.model.ResultsPostProcessor.csv"/>
+                    </property>
+                </bean>
+                <bean id="exportHTML" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/usage/userStorageDetails.xsl</value></property>
+                    <property name="title"><value>HTML</value></property>
+                    <property name="isExport"><value>true</value></property>
+                    <property name="contentType"><value>text/html</value></property>
                 </bean>
             </list>
 
@@ -85,7 +109,7 @@
 
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/internalXML.xsl</value></property>
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/usage/userStorageDetails.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>

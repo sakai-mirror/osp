@@ -20,16 +20,15 @@
             <h:dataTable var="decoratedReportParam" id="paramsTable"
                     value="#{ReportsTool.workingReport.reportParams}">
                     <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{msgs.th_param_name}" />
-                        </f:facet>
 
                         <h:outputText value="#{decoratedReportParam.reportDefinitionParam.title}" />
+
+                        <f:facet name="header">
+                            <h:outputText value="#{ReportsTool.workingReportDefinition.reportDefinition.paramTitle}"/>
+                        </f:facet>
                     </h:column>
                     <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="#{msgs.th_value}" />
-                        </f:facet>
+
                         <h:inputText value="#{decoratedReportParam.textValue}" id="fillin" 
                             rendered="#{decoratedReportParam.isFillIn && !decoratedReportParam.isDate}"/>
 
@@ -62,7 +61,9 @@
                                   rendered="#{decoratedReportParam.isStatic}"/>
                 </h:column>
             </h:dataTable>
-                
+
+                 <sakai:instruction_message value="#{ReportsTool.workingReportDefinition.reportDefinition.paramInstruction}"/>
+
                 <sakai:button_bar>
                     <sakai:button_bar_item
                         action="#{ReportsTool.processEditParamsBack}"

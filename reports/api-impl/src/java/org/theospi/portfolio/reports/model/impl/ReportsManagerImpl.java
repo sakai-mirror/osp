@@ -815,6 +815,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
         String exportResultsId = ((String[]) params.get(EXPORT_XSL_ID))[0];
         ReportXsl xslt = result.getReport().getReportDefinition().findReportXslByRuntimeId(exportResultsId);
+        xslt.setReportDefinition(result.getReport().getReportDefinition());
         String fileData = transform(result, xslt);
 
         if (xslt.getResultsPostProcessor() != null) {

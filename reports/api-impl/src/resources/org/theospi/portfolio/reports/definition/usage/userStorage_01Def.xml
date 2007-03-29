@@ -30,7 +30,7 @@
                    FROM (SELECT CREATED_BY, SPACE_USED as WORK_SPACE_USED  from DW_RESOURCE_COLLECTION where PARENT_COLLECTION = '/user/' group by CREATED_BY) as WORK_SPACE,
                    (SELECT sum(SPACE_USED) as SITE_SPACE_USED  from DW_RESOURCE_COLLECTION where PARENT_COLLECTION = '/group/' group by CREATED_BY) as SITE_SPACE,
                    DW_USERS
-                   where DW_USERS.USER_ID = CREATED_BY and WORK_SPACE_USED + SITE_SPACE_USED > ?
+                   where DW_USERS.USER_ID = CREATED_BY and ((WORK_SPACE_USED + SITE_SPACE_USED) /1024) > ?
                </value>
             </list>
         </property>
@@ -44,6 +44,16 @@
         </property>
         <property name="role">
             <value>admin, Program Admin</value>
+        </property>
+         <property name="paramTitle">
+            <value>
+                Find users storing more than:
+            </value>
+        </property>
+        <property name="paramInstruction">
+            <value>
+                Warning! This may be a large report that will require a lengthy download period.
+            </value>
         </property>
         <property name="reportDefinitionParams">
             <list>
@@ -63,15 +73,27 @@
 
         <property name="xsls">
             <list>
-                <bean id="internalXML" class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/internalXML.xsl</value></property>
-                    <property name="title"><value>xml</value></property>
+                <bean id="userStorage" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/usage/userStorage.xsl</value></property>
+                    <property name="title"><value>User Storage</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
-                <bean id="reportXsl1.1" class="org.theospi.portfolio.reports.model.ReportXsl">
+                 <bean id="defaultExport" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="title"><value>CSV</value></property>
                     <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/default.xsl</value></property>
-                    <property name="title"><value>Report Result View 1</value></property>
-                    <property name="isExport"><value>false</value></property>
+                    <property name="isExport"><value>true</value></property>
+                    <property name="extension"><value>csv</value></property>
+                    <property name="target"><value>_self</value></property>
+                    <property name="contentType"><value>application/x-csv</value></property>
+                    <property name="resultsPostProcessor">
+                        <ref bean="org.theospi.portfolio.reports.model.ResultsPostProcessor.csv"/>
+                    </property>
+                </bean>
+                <bean id="exportHTML" class="org.theospi.portfolio.reports.model.ReportXsl">
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/usage/userStorage.xsl</value></property>
+                    <property name="title"><value>HTML</value></property>
+                    <property name="isExport"><value>true</value></property>
+                    <property name="contentType"><value>text/html</value></property>
                 </bean>
             </list>
 
@@ -79,7 +101,7 @@
 
         <property name="defaultXsl">
                 <bean class="org.theospi.portfolio.reports.model.ReportXsl">
-                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/internalXML.xsl</value></property>
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/usage/userStorage.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                 </bean>
         </property>
