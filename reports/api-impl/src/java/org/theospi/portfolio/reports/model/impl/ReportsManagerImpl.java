@@ -1644,7 +1644,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             for (Iterator i = xsls.iterator(); i.hasNext();) {
                 ReportXsl xsl = (ReportXsl) i.next();
                 ReportXslFile xslFile = new ReportXslFile();
-                xslFile.setXslFile(readStreamToBytes(getClass().getResourceAsStream(xsl.getXslLink())));
+                if (getClass().getResourceAsStream(xsl.getXslLink()) != null){
+                    xslFile.setXslFile(readStreamToBytes(getClass().getResourceAsStream(xsl.getXslLink())));
+                }
                 xslFile.setReportDefId(repDef.getIdString());
                 xslFile.setReportXslFileRef(xsl.getXslLink());
                 xslFile.setReportDef(def);
