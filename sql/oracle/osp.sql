@@ -24,6 +24,8 @@ drop table osp_presentation_page_item cascade constraints;
 drop table osp_presentation_page_region cascade constraints;
 drop table osp_presentation_template cascade constraints;
 drop table osp_reports cascade constraints;
+drop table osp_report_def_xml cascade constraints;
+drop table osp_report_xsl cascade constraints;
 drop table osp_reports_params cascade constraints;
 drop table osp_reports_results cascade constraints;
 drop table osp_review cascade constraints;
@@ -71,6 +73,8 @@ create table osp_presentation_page_item (id varchar2(36 char) not null, presenta
 create table osp_presentation_page_region (id varchar2(36 char) not null, presentation_page_id varchar2(36 char) not null, region_id varchar2(255 char) not null, type varchar2(255 char), help_text varchar2(255 char), primary key (id));
 create table osp_presentation_template (id varchar2(36 char) not null, name varchar2(255 char), description varchar2(255 char), includeHeaderAndFooter number(1,0), published number(1,0), owner_id varchar2(255 char) not null, renderer varchar2(36 char), markup varchar2(4000 char), propertyPage varchar2(36 char), documentRoot varchar2(255 char), created timestamp not null, modified timestamp not null, site_id varchar2(36 char) not null, primary key (id));
 create table osp_reports (reportId varchar2(36 char) not null, reportDefIdMark varchar2(255 char), userId varchar2(255 char), title varchar2(255 char), keywords varchar2(255 char), description varchar2(255 char), isLive number(1,0), creationDate timestamp, type varchar2(255 char), display number(1,0), primary key (reportId));
+create table osp_report_def_xml (reportDefId varchar2(36 char) not null, xmlFile clob not null, primary key  (reportDefId));
+create table osp_report_xsl (reportXslFileId varchar2(36 char) not null, reportXslFileRef varchar2(255 char), reportDefId varchar2(36 char), xslFile clob not null, primary key(reportXslFileId));
 create table osp_reports_params (paramId varchar2(36 char) not null, reportId varchar2(36 char), reportDefParamIdMark varchar2(255 char), value varchar2(255 char), primary key (paramId));
 create table osp_reports_results (resultId varchar2(36 char) not null, reportId varchar2(36 char), userId varchar2(255 char), title varchar2(255 char), keywords varchar2(255 char), description varchar2(255 char), creationDate timestamp, xml clob, primary key (resultId));
 create table osp_review (id varchar2(36 char) not null, review_content_id varchar2(36 char), site_id varchar2(36 char) not null, parent_id varchar2(36 char), review_device_id varchar2(36 char), review_item_id varchar2(36 char), review_type number(10,0) not null, primary key (id));
@@ -121,6 +125,7 @@ alter table osp_presentation_page add constraint FK2FCEA21FAEA67E8 foreign key (
 alter table osp_presentation_page add constraint FK2FCEA21533F283D foreign key (layout_id) references osp_presentation_layout;
 alter table osp_presentation_page_item add constraint FK6417671954DB801 foreign key (presentation_page_region_id) references osp_presentation_page_region;
 alter table osp_presentation_page_region add constraint FK8A46C2D215C572B8 foreign key (presentation_page_id) references osp_presentation_page;
+alter table osp_report_xsl add constraint FK25C0A259BE381194 foreign key (reportDefId)	references osp_report_def_xml (reportDefId);
 alter table osp_reports_params add constraint FK231D4599C8A69327 foreign key (reportId) references osp_reports;
 alter table osp_reports_results add constraint FKB1427243C8A69327 foreign key (reportId) references osp_reports;
 alter table osp_scaffolding add constraint FK65135779FAEA67E8 foreign key (style_id) references osp_style;
