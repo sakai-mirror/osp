@@ -145,10 +145,10 @@
         <property name="publishedDate" type="java.util.Date" />
         <property name="columnLabel" type="java.lang.String" not-null="true" />
         <property name="rowLabel" type="java.lang.String" not-null="true" />
-        <property name="readyColor" type="java.lang.String" not-null="true" length="7"/>
-        <property name="pendingColor" type="java.lang.String" not-null="true" length="7"/>
-        <property name="completedColor" type="java.lang.String" not-null="true" length="7"/>
-        <property name="lockedColor" type="java.lang.String" not-null="true" length="7"/>
+        <property name="readyColor" type="java.lang.String" not-null="false" length="7"/>
+        <property name="pendingColor" type="java.lang.String" not-null="false" length="7"/>
+        <property name="completedColor" type="java.lang.String" not-null="false" length="7"/>
+        <property name="lockedColor" type="java.lang.String" not-null="false" length="7"/>
         <property name="workflowOption" type="int" not-null="true" />
         
         <set name="matrix" cascade="all-delete-orphan" inverse="true"
