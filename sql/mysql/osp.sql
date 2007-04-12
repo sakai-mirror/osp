@@ -206,5 +206,5 @@ alter table osp_wizard_page_sequence add index FKA5A702F06EA23D5D (category_id),
 alter table osp_wizard_page_sequence add index FKA5A702F0754F20BD (wiz_page_def_id), add constraint FKA5A702F0754F20BD foreign key (wiz_page_def_id) references osp_wizard_page_def (id);
 alter table osp_workflow add index FK2065879242A62872 (parent_id), add constraint FK2065879242A62872 foreign key (parent_id) references osp_workflow_parent (id);
 alter table osp_workflow_item add index FKB38697A091A4BC5E (workflow_id), add constraint FKB38697A091A4BC5E foreign key (workflow_id) references osp_workflow (id);
-CREATE TABLE osp_report_def_xml (reportDefId varchar(36) NOT NULL default , xmlFile longblob NOT NULL, PRIMARY KEY  (reportDefId));
+CREATE TABLE osp_report_def_xml (reportDefId varchar(36) NOT NULL, xmlFile longblob NOT NULL, PRIMARY KEY  (reportDefId));
 CREATE TABLE osp_report_xsl ( reportXslFileId varchar(36) NOT NULL default '', reportXslFileRef varchar(255) default NULL, reportDefId varchar(36) default NULL, xslFile longblob NOT NULL, PRIMARY KEY  (reportXslFileId), KEY FK25C0A259BE381194 (reportDefId), CONSTRAINT FK25C0A259BE381194 FOREIGN KEY (reportDefId) REFERENCES osp_report_def_xml (reportDefId));
