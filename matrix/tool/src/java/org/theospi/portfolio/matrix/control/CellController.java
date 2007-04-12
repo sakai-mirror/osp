@@ -192,7 +192,6 @@ public class CellController implements FormController, LoadObjectController {
 			}
 			model.put("helperInfoList", getHelperInfo(item));
 			model.put("providers", providers);
-			model.put("helperInfoList", getHelperInfo(item));
 		}
 
 		clearSession(session);

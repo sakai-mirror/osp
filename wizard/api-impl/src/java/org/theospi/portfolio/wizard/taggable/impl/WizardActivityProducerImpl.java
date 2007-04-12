@@ -125,23 +125,13 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 
 	private boolean canEvaluate(WizardPage page) {
 		boolean allowed = false;
-		if (page.getStatus().equals(MatrixFunctionConstants.PENDING_STATUS)) {
-			CompletedWizard cw = wizardManager.getCompletedWizardByPage(page
-					.getId());
-			if (cw != null) {
-				if (authzManager.isAuthorized(
-						WizardFunctionConstants.EVALUATE_SPECIFIC_WIZARDPAGE,
-						page.getId())) {
-					allowed = true;
-				}
-			} else {
-				if (authzManager.isAuthorized(
-						MatrixFunctionConstants.EVALUATE_SPECIFIC_MATRIXCELL,
-						page.getId())) {
-					allowed = true;
-				}
-			}
-		}
+		CompletedWizard cw = wizardManager.getCompletedWizardByPage(page
+				.getId());
+		allowed = authzManager
+				.isAuthorized(
+						(cw != null) ? WizardFunctionConstants.EVALUATE_SPECIFIC_WIZARDPAGE
+								: MatrixFunctionConstants.EVALUATE_SPECIFIC_MATRIXCELL,
+						page.getId());
 		return allowed;
 	}
 
@@ -217,12 +207,15 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 				if (reference != null) {
 					WizardPage page = matrixManager.getWizardPage(idManager
 							.getId(reference.getId()));
-					if (page != null) {
-						// Make sure this page is evaluatable by the current
-						// user
-						if (canEvaluate(page)) {
-							item = getItem(page);
-						}
+					if (page != null
+							&& (page.getStatus().equals(
+									MatrixFunctionConstants.PENDING_STATUS) || page
+									.getStatus()
+									.equals(
+											MatrixFunctionConstants.COMPLETE_STATUS))
+							&& (page.getOwner().getId().getValue().equals(
+									sessionManager.getCurrentSessionUserId()) || canEvaluate(page))) {
+						item = getItem(page);
 					}
 				}
 			} else {
@@ -253,9 +246,16 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 				// Make sure this page is evaluatable by the current
 				// user
 				WizardPage page = i.next();
-				if (canEvaluate(page)
-						&& page.getOwner().getId().getValue().equals(userId)) {
+				if (page != null
+						&& (page.getStatus().equals(
+								MatrixFunctionConstants.PENDING_STATUS) || page
+								.getStatus()
+								.equals(MatrixFunctionConstants.COMPLETE_STATUS))
+						&& (page.getOwner().getId().getValue().equals(userId) || canEvaluate(page))) {
 					items.add(getItem(page));
+					// There is only one submitted page per definition, so break
+					// here
+					break;
 				}
 			}
 		} else {
@@ -278,7 +278,12 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 				// Make sure this page is evaluatable by the current
 				// user
 				WizardPage page = i.next();
-				if (canEvaluate(page)) {
+				if (page != null
+						&& (page.getStatus().equals(
+								MatrixFunctionConstants.PENDING_STATUS) || page
+								.getStatus()
+								.equals(MatrixFunctionConstants.COMPLETE_STATUS))
+						&& canEvaluate(page)) {
 					items.add(getItem(page));
 				}
 			}
