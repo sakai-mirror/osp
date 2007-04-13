@@ -1205,7 +1205,21 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       List existingEntries = new ArrayList();
       storeTemplateFile(zos, oldTemplate.getRenderer(), existingEntries);
       storeTemplateFile(zos, oldTemplate.getPropertyPage(), existingEntries);
-
+      
+      Collection exportedFormIds = new ArrayList();
+      
+      if (oldTemplate.getPropertyFormType() != null) {
+         ReadableObjectHome propFormHome =
+            (ReadableObjectHome)getHomeFactory().getHome(oldTemplate.getPropertyFormType().getValue());
+   
+         if (propFormHome instanceof StructuredArtifactHomeInterface &&
+               !exportedFormIds.contains(propFormHome.getType().getId().getValue())) {
+            // need to store the form
+            storeFormInZip(zos, propFormHome);
+            exportedFormIds.add(propFormHome.getType().getId().getValue());
+         }
+      }
+      
       // go through each associated file... store them...
       if (files != null) {
          for (Iterator i=files.iterator();i.hasNext();) {
@@ -1214,8 +1228,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
          oldTemplate.setFiles(new HashSet(files));
       }
-
-      Collection exportedFormIds = new ArrayList();
 
       if (items != null) {
          oldTemplate.setItems(new HashSet(items));
@@ -1295,8 +1307,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       ZipInputStream zis = new UncloseableZipInputStream(zipFileStream);
 
       ZipEntry currentEntry = zis.getNextEntry();
-      Hashtable fileMap = new Hashtable();
-      Hashtable formMap = new Hashtable();
+      Hashtable<Id, Id> fileMap = new Hashtable<Id, Id>();
+      Hashtable<String, String> formMap = new Hashtable<String, String>();
       PresentationTemplate template = null;
 
       String tempDirName = getIdManager().createId().getValue();
@@ -1349,6 +1361,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          template.setId(null);
          template.setOwner(getAuthnManager().getAgent());
          template.setRenderer((Id)fileMap.get(template.getRenderer()));
+         
+         if (template.getPropertyFormType() != null)
+            template.setPropertyFormType(getIdManager().getId((String)formMap.get(template.getPropertyFormType().getValue())));
+         
+         
          //template.setToolId(toolConfiguration.getId());
          template.setSiteId(toContext);
          template.setPublished(false);
