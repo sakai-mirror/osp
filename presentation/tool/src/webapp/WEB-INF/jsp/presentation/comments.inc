@@ -32,7 +32,7 @@
          <c:out value="${comment.creator.displayName}"/>
       </c:otherwise>
       </c:choose>
-      &nbsp;&nbsp;(<c:out value="${comment.created}"/>)
+      &nbsp;&nbsp;(<c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${comment.created}" pattern="${dateFormat}"/>)
 
       <c:set var="firstAction" value="false" />
 
