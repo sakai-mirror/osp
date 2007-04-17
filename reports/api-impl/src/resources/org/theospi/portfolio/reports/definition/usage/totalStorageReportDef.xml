@@ -66,7 +66,7 @@
                 </bean>
                  <bean id="defaultExport" class="org.theospi.portfolio.reports.model.ReportXsl">
                     <property name="title"><value>CSV</value></property>
-                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/default.xsl</value></property>
+                    <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/shared/defaultExport.xsl</value></property>
                     <property name="isExport"><value>true</value></property>
                     <property name="extension"><value>csv</value></property>
                     <property name="target"><value>_self</value></property>
