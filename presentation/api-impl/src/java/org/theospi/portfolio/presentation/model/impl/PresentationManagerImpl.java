@@ -2120,7 +2120,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       String secretExportKey = getIdManager().createId().getValue();
       String url = presentation.getExternalUri() + "&secretExportKey=" + secretExportKey;
-      url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
+      
+      //This should come from the above presentation.getExternalUri() call;
+      //url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
+      
       File tempDirectory = new File(tempDir, secretExportKey);
 
       PresentationExport export = new PresentationExport(
