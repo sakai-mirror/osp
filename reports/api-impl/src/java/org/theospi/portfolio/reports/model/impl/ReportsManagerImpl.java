@@ -192,7 +192,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
     /**
      * Tells us if the global database reportDefinitions was loaded
      */
-    private boolean isDBLoaded = false;
     private ContentHostingService contentHosting;
 
     public List definedDefintions;
@@ -250,54 +249,23 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
      * {@inheritDoc}
      */
     public void setReportDefinitions(List reportDefinitions) {
-        addReportDefinitions(reportDefinitions);
-        this.reportDefinitions = reportDefinitions;
-
+        List reportDefs = new ArrayList();
         Iterator iter = reportDefinitions.iterator();
         while (iter.hasNext()) {
             ReportDefinition rd = (ReportDefinition) iter.next();
             rd.finishLoading();
+            reportDefs.add(rd);
         }
+        this.reportDefinitions = reportDefs;
     }
 
 
-    /**
-     * {@inheritDoc}
-     */
-    public void addReportDefinitions(List reportDefinitions) {
-
-        if (this.reportDefinitions == null) {
-            this.reportDefinitions = new ArrayList();
-        }
-
-        Iterator iter = reportDefinitions.iterator();
-        while (iter.hasNext()) {
-
-            ReportDefinition rd = (ReportDefinition) iter.next();
-            rd.finishLoading();
-            this.reportDefinitions.add(rd);
-
-        }
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
     public List getReportDefinitions() {
 
         //load any reportDefinitions in the database
         List reportsDefs = loadReportsFromDB();
-
-        Iterator iter = reportDefinitions.iterator();
-        while (iter.hasNext()) {
-            ReportDefinition rd = (ReportDefinition) iter.next();
-            if (isValidWorksiteType(rd.getSiteType()) && isValidRole(rd.getRole()) && hasWarehouseSetting(rd.getUsesWarehouse()))
-            {
-                reportsDefs.add(rd);
-            }
-        }
-        return reportsDefs;
+        setReportDefinitions(reportsDefs);
+        return this.reportDefinitions;
     }
 
     public boolean isValidRole(String roleStr) {
@@ -482,7 +450,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
                 r.getReportParams().size();
 
-                r.connectToDefinition(reportDefinitions);
+                r.connectToDefinition(getReportDefinitions());
                 r.setIsSaved(true);
             }
 
@@ -499,7 +467,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
      */
     private List loadReportsFromDB() {
         List reportDefArray = new ArrayList();
-        if (isDBLoaded == false) {
             List reportDefs = getHibernateTemplate().findByNamedQuery("findReportDefinitionFiles");
 
             for (Iterator i = reportDefs.iterator(); i.hasNext();) {
@@ -513,9 +480,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
                 {
                     reportDefArray.add(repDef);
                 }
-
             }
-        }
         return reportDefArray;
 
 
@@ -546,7 +511,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         report.setIsSaved(true);
 
         //link the report deinition
-        report.connectToDefinition(reportDefinitions);
+        report.connectToDefinition(getReportDefinitions());
 
 
         reportResult.setReport(report);
@@ -601,7 +566,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
      * @return ReportDefinition
      */
     public ReportDefinition findReportDefinition(String Id) {
-        Iterator iter = reportDefinitions.iterator();
+        Iterator iter = getReportDefinitions().iterator();
 
         while (iter.hasNext()) {
             ReportDefinition rd = (ReportDefinition) iter.next();
@@ -838,7 +803,8 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
         ReportDefinition rd = report.getReportDefinition();
         if (rd == null){
-            report.connectToDefinition(reportDefinitions);
+            report.connectToDefinition(getReportDefinitions());
+            rd = report.getReportDefinition();
         }
         rr.setCreationDate(new Date());
         Element reportElement = new Element("reportResult");
@@ -1396,7 +1362,13 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
     private Site getCurrentSite() {
         try {
-            return SiteService.getSite(ToolManager.getCurrentPlacement().getContext());
+            if (ToolManager.getCurrentPlacement() != null) {
+                return SiteService.getSite(ToolManager.getCurrentPlacement().getContext());
+            }
+            //if this job is running because of scheduler
+            org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+            return SiteService.getSite((String)sakaiSession.getAttribute("worksiteid"));
+
         } catch (IdUnusedException iue) {
             return null;
         }
@@ -1562,6 +1534,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             List xsls = reportDef.getXsls();
             for (Iterator i = xsls.iterator(); i.hasNext();) {
                 ReportXsl xslFile = (ReportXsl) i.next();
+                xslFile.setReportDefinition(reportDef);
                 xslsList.add(new ReportXslFile(xslFile, getContentHosting()));
             }
 
@@ -1667,7 +1640,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
     public Report getReportById(String id) {
         Report report = (Report) getHibernateTemplate().get(Report.class, new IdImpl(id, null));
-        report.connectToDefinition(reportDefinitions);
+        report.connectToDefinition(getReportDefinitions());
         return report;
     }
 
@@ -1797,8 +1770,11 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
     public String processSaveResultsToResources(ReportResult reportResult) throws IOException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ReportXsl xslt = reportResult.getReport().getReportDefinition().getDefaultXsl();
-        String fileData = transform(reportResult, reportResult.getReport().getReportDefinition().getDefaultXsl());
+        Report report = reportResult.getReport();
+        report.connectToDefinition(getReportDefinitions());
+        ReportXsl xslt = report.getReportDefinition().getDefaultXsl();
+        xslt.setReportDefinition(report.getReportDefinition());
+        String fileData = transform(reportResult, xslt);
 
         if (xslt.getResultsPostProcessor() != null) {
             bos.write(xslt.getResultsPostProcessor().postProcess(fileData));
@@ -1844,7 +1820,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             sakaiSession.setUserEid(userId);
             Report report = getReportById(reportId);
             if (report != null) {
-
                 ReportResult result = generateResults(report);
                 result.setIsSaved(true);
                 result.setTitle(result.getTitle() + " - " + result.getCreationDate());
