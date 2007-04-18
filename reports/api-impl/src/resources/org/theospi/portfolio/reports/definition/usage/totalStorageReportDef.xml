@@ -26,17 +26,23 @@
        <property name="query">
             <list>
                <value>
-                  select avg(file_count),  avg(avg_size), avg(avg_space)
+                  <![CDATA[select avg(file_count),  avg(avg_size), avg(avg_space)
                    from ( select  created_by, avg(content_length/1024) as avg_size from dw_resource group by created_by) as avg_size,
                    ( select  created_by, sum(content_length/2024) as avg_space from dw_resource group by created_by) as avg_space,
                    ( select  created_by, count(*) as file_count  from dw_resource group by created_by) as file_count
+                    ]]>
                </value>
 
                <value>
-                 select sub_mime_type 'file_type', count(*) 'total_files' , avg(content_length/1024) 'avg_size' , sum(content_length/1024) 'total_size'    from dw_resource  group by sub_mime_type
+                 <![CDATA[select sub_mime_type "file_type", count(*) "total_files" ,
+                 avg(content_length/1024) "avg_size" , sum(content_length/1024) "total_size'
+                 from dw_resource  group by sub_mime_type
+                  ]]>
                </value>
                <value>
-                   select sum(space_available) 'totalAlocatedSpace' from dw_resource_collection where parent_collection = '/'
+                   <![CDATA[select sum(space_available) "totalAlocatedSpace"
+                   from dw_resource_collection where parent_collection = '/'
+                    ]]>
                </value>
             </list>
         </property>

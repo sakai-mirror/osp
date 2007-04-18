@@ -26,16 +26,18 @@
        <property name="query">
             <list>
                <value>
-                  select count(*) 'totalVisits' from dw_session where startTime between ? and ?
+                  <![CDATA[select count(*) "totalVisits" from dw_session where startTime between ? and ?  ]]>
                </value>
                  <value>
-                  select count(distinct userId) 'uniqueVisits' from dw_session  where startTime between ? and ?
+                  <![CDATA[select count(distinct userId) "uniqueVisits" from dw_session  where startTime between ? and ?    ]]>
                </value>
                <value>
-                   select avg(endTime - startTime) 'avgSessionInSeconds'  from dw_session  where startTime between ? and ?
+                   <![CDATA[select avg(endTime - startTime) "avgSessionInSeconds"  from dw_session  where startTime between ? and ?  ]]>
                </value>
                <value>
-                   select Distinct(user_eid), first_name, last_name from dw_users where user_id not  in (select distinct userId from dw_session where startTime between ? and ?)
+                   <![CDATA[select Distinct(user_eid), first_name, last_name from dw_users 
+                   where user_id not  in (select distinct userId from dw_session where startTime between ? and ?)
+                    ]]>
                </value>
             </list>
         </property>

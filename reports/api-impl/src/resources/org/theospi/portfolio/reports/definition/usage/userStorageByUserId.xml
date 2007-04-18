@@ -26,23 +26,35 @@
        <property name="query">
             <list>
                 <value>
+                    <![CDATA[
                  select user_eid, first_name, last_name from dw_users where user_eid = ?
+                    ]]>
                 </value>
                <value>
-                 select sub_mime_type 'file_type', count(*) 'total_files' , avg(content_length) 'avg_size' , sum(content_length) 'total_size'
+                   <![CDATA[
+                 select sub_mime_type "file_type", count(*) "total_files" , avg(content_length) "avg_size" , sum(content_length) "total_size"
                    from dw_resource where created_by = (select DW_USERS.user_id from DW_USERS
                    where DW_USERS.user_eid = ? ) and parent_collection  like '/user/%'  group by sub_mime_type
+                   ]]>
                </value>
                 <value>
-                  select sub_mime_type 'file_type', count(*) 'total_files' , avg(content_length) 'avg_size' , sum(content_length) 'total_size'
+                    <![CDATA[
+                  select sub_mime_type "file_type", count(*) "total_files" , avg(content_length) "avg_size" , sum(content_length) "total_size"
                     from dw_resource where created_by = (select DW_USERS.user_id from DW_USERS
-                    where DW_USERS.user_eid = ? ) and parent_collection  like '/group/%'  group by sub_mime_type
+                    where DW_USERS.user_eid = ? ) and parent_collection  like "/group/%"  group by sub_mime_type
+                    ]]>
                </value>
                 <value>
-                    select space_available  'workspaceTotalAllocatedSpace' from dw_resource_collection where  created_by=?  and uri= '/user/'
+                    <![CDATA[
+                    select space_available  "workspaceTotalAllocatedSpace" from dw_resource_collection
+                    where  created_by=?  and uri= '/user/'
+                    ]]>
                 </value>
                 <value>
-                    select sum(space_available)  'siteTotalAllocatedSpace' from dw_resource_collection where uri in (select distinct parent_collection from dw_resource  where created_by = ?)
+                    <![CDATA[
+                    select sum(space_available)  "siteTotalAllocatedSpace" from dw_resource_collection
+                    where uri in (select distinct parent_collection from dw_resource  where created_by = ?)
+                    ]]>
                 </value>
             </list>
         </property>
