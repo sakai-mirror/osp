@@ -244,12 +244,12 @@ public class DbLoader {
         driverName = dbMetaData.getDriverName();
         driverVersion = dbMetaData.getDriverVersion();
 
-        logger.info("Starting DbLoader...");
-        logger.info("Database name: '" + dbName + "'");
-        logger.info("Database version: '" + dbVersion + "'");
-        logger.info("Driver name: '" + driverName + "'");
-        logger.info("Driver version: '" + driverVersion + "'");
-        logger.info("Database url: '" + dbMetaData.getURL() + "'");
+        logger.debug("Starting DbLoader...");
+        logger.debug("Database name: '" + dbName + "'");
+        logger.debug("Database version: '" + dbVersion + "'");
+        logger.debug("Driver name: '" + driverName + "'");
+        logger.debug("Driver version: '" + driverVersion + "'");
+        logger.debug("Database url: '" + dbMetaData.getURL() + "'");
     }
 
     protected void initTableScript() throws java.io.IOException {
