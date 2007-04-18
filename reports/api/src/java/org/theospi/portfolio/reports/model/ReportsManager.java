@@ -49,9 +49,6 @@ public interface ReportsManager extends DownloadableManager, Job
     public void setReportDefinitions(List reportdefs);
 
 
-    public void addReportDefinitions(List reportDefinitions);
-
-
    /**
     * Returns the ReportDefinitions.  The list returned is filtered
     * for the worksite type against the report types
