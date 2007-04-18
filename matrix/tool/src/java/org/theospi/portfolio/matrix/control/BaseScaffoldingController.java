@@ -122,21 +122,27 @@ public class BaseScaffoldingController {
       try
       {
     	  // if taggable, remove tags for any page defs that have been removed
-			if (getTaggingManager().isTaggable() && scaffolding.getId() != null) {
-				Scaffolding origScaffolding = getMatrixManager()
-						.getScaffolding(scaffolding.getId());
-				Set<ScaffoldingCell> storedCells = origScaffolding
-						.getScaffoldingCells();
-				for (ScaffoldingCell cell : storedCells) {
-					if (!scaffolding.getScaffoldingCells().contains(cell)) {
-						for (TaggingProvider provider : getTaggingManager()
-								.getProviders()) {
-							TaggableActivity activity = getWizardActivityProducer()
-									.getActivity(cell.getWizardPageDefinition());
-							provider.removeTags(activity);
-						}
-					}
-				}
+         if (getTaggingManager().isTaggable() && 
+             scaffolding.getId() != null && 
+             wizardActivityProducer != null) 
+         {
+            Scaffolding origScaffolding = getMatrixManager()
+                  .getScaffolding(scaffolding.getId());
+            Set<ScaffoldingCell> storedCells = origScaffolding
+                  .getScaffoldingCells();
+            for (ScaffoldingCell cell : storedCells) 
+            {
+               if (!scaffolding.getScaffoldingCells().contains(cell)) 
+               {
+                  for (TaggingProvider provider : getTaggingManager()
+                        .getProviders()) 
+                  {
+                     TaggableActivity activity = wizardActivityProducer
+                           .getActivity(cell.getWizardPageDefinition());
+                     provider.removeTags(activity);
+                  }
+               }
+            }
 			}
     	  
          scaffolding = getMatrixManager().storeScaffolding(scaffolding);
