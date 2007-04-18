@@ -95,7 +95,7 @@
                 <p><c:out value="${comment.title}" /></p>
                 </td>
                 <td>
-                <p><c:out value="${comment.created}" /></p>
+                <p><c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${comment.created}" pattern="${dateFormat}"/></p>
                 </td>
                 <td>
                 <P><c:out
