@@ -443,6 +443,7 @@
       </property>
       <property name="screenMappings">
          <props>
+         	<prop key="enter">postProcessorWorkflow</prop>
             <prop key="success">helperDone</prop>
          </props>
       </property>

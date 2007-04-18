@@ -20,9 +20,13 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
@@ -54,6 +58,7 @@ import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
+import org.theospi.portfolio.workflow.model.Workflow;
 
 public class ReviewHelperController implements Controller {
    
@@ -102,12 +107,12 @@ public class ReviewHelperController implements Controller {
          String formType = (String)session.get(ResourceEditingHelper.CREATE_SUB_TYPE);
          String itemId = (String)session.get(ReviewHelper.REVIEW_ITEM_ID);
          
-         Map model = new HashMap();
+         Map<String, Object> model = new HashMap<String, Object>();
          model.put(lookupId, strId);
          
          Placement placement = ToolManager.getCurrentPlacement();
          String currentSite = placement.getContext();
-         //cwm add security stuff for review
+
          Review review = getReviewManager().createNew( 
                "New Review", currentSite);
          review.setDeviceId(formType);
@@ -142,7 +147,10 @@ public class ReviewHelperController implements Controller {
                   strId, "evals and review always locked", true);
             
             if (session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS) != null) {
-               model.put("workflows", session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS));
+               Set workflows = (Set)session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
+               List wfList = Arrays.asList(workflows.toArray());
+               Collections.sort(wfList, Workflow.getComparator());
+               model.put("workflows", wfList);
                model.put("manager", manager);
                model.put("obj_id", strId);
                return new ModelAndView("postProcessor", model);

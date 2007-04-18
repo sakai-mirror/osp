@@ -20,11 +20,12 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -32,44 +33,39 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
 import org.theospi.portfolio.workflow.model.Workflow;
 
 public class ReviewPostProcessor  implements Controller {
    
-   //private MatrixManager matrixManager;
    private IdManager idManager = null;
-   //private WorkflowEnabledManager theManager;
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-      Id id = idManager.getId((String)request.get("workflowId"));
+      Map<String, Object> model = new HashMap<String, Object>();
+      String strId = (String)request.get("workflowId");
       Id objId = idManager.getId((String)request.get("objId"));
-      String manager = (String)request.get("manager");
-      getWorkflowEnabledManager(manager).processWorkflow(id, objId);
-      return new ModelAndView("success", "page_id", objId);
-   }
-
-   public Map referenceData(Map request, Object command, Errors errors) {
-      Map model = new HashMap();
-      List workflows = (List)request.get("workflows");
-      
-      Collections.sort(workflows, new WorkflowComparator());
-      
-      model.put("workflows", workflows);
-      model.put("obj_id", request.get("obj_id"));
-      model.put("manager", request.get("manager"));
-      return model;
-   }
-   
-   
-   public class WorkflowComparator implements Comparator {
-      public int compare(Object o1, Object o2) {
-         return ((Workflow)o1).getTitle().toLowerCase().compareTo(
-               ((Workflow)o2).getTitle().toLowerCase());
+      String view = "success";
+      if (strId != null) {
+         Id id = idManager.getId(strId);
+         String manager = (String)request.get("manager");
+         getWorkflowEnabledManager(manager).processWorkflow(id, objId);
+         model.put("page_id", objId);
       }
-   }   
-   
+      else {
+         Set workflows = (Set)session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
+         List wfList = Arrays.asList(workflows.toArray());
+         Collections.sort(wfList, Workflow.getComparator());
+         
+         model.put("workflows", wfList);
+         model.put("obj_id", objId);
+         model.put("manager", request.get("manager"));
+         view="enter";
+      }
+      return new ModelAndView(view, model);
+   }
 
+   
    /**
     * @return Returns the idManager.
     */

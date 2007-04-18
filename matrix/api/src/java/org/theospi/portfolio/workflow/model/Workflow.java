@@ -20,6 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.workflow.model;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,11 +30,12 @@ import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 public class Workflow extends IdentifiableObject {
 
    private String title;
-   private Set items = new HashSet();
+   private Set<WorkflowItem> items = new HashSet<WorkflowItem>();
    private boolean newObject = false;
    private ObjectWithWorkflow parentObject;
    
-   public Workflow() {;}
+   public Workflow() {      
+   }
    
    public Workflow(String title, ObjectWithWorkflow parentObject) {
       this.title = title;
@@ -55,13 +57,13 @@ public class Workflow extends IdentifiableObject {
    /**
     * @return Returns the items.
     */
-   public Set getItems() {
+   public Set<WorkflowItem> getItems() {
       return items;
    }
    /**
     * @param items The items to set.
     */
-   public void setItems(Set items) {
+   public void setItems(Set<WorkflowItem> items) {
       this.items = items;
    }
    /**
@@ -116,5 +118,15 @@ public class Workflow extends IdentifiableObject {
    }
    
    
+   public static class WorkflowComparator implements Comparator {
+      public int compare(Object o1, Object o2) {
+         return ((Workflow)o1).getTitle().toLowerCase().compareTo(
+               ((Workflow)o2).getTitle().toLowerCase());
+      }
+   }
    
+   public static WorkflowComparator getComparator() {
+      return new WorkflowComparator();
+   }
+
 }
