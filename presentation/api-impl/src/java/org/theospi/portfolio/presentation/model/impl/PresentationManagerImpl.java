@@ -104,6 +104,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private List globalSiteTypes;
    private List initializedServices;
    private boolean autoDdl = true;
+   private boolean portfolioPropertyFormConversion = true;
 
    static final private String   IMPORT_BASE_FOLDER_ID = "importedPresentations";
    private String importFolderName;
@@ -2679,29 +2680,29 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
       }
       
-      //make it cluster safe
-      
-      final String convertProperty = "osp.portfolio.propertyConversion";
-      String inited = System.getProperty(convertProperty);
-      if (inited == null) {
-         System.setProperty(convertProperty, "true");
-         try {
-            // do conversion for template property form types
-            List templates = getTemplatesForConversion();
-            logger.debug("There are " + templates.size() + " templates needing conversion");
-            convertPortfolioTemplates(templates);
-         }
-         catch (Exception e) {
-            logger.warn("Error converting portfolio template property form types", e);
-         }
-         try {
-            // do conversion for portfolio property form data
-            List portfolios = getPortfoliosForConversion();
-            logger.debug("There are " + portfolios.size() + " portfolios needing conversion");
-            convertPortfolios(portfolios);
-         }
-         catch (Exception e) {
-            logger.warn("Error converting portfolio property form data", e);
+      if (isPortfolioPropertyFormConversion()) {
+         final String convertProperty = "osp.portfolio.propertyConversion";
+         String inited = System.getProperty(convertProperty);
+         if (inited == null) {
+            System.setProperty(convertProperty, "true");
+            try {
+               // do conversion for template property form types
+               List templates = getTemplatesForConversion();
+               logger.debug("There are " + templates.size() + " templates needing conversion");
+               convertPortfolioTemplates(templates);
+            }
+            catch (Exception e) {
+               logger.warn("Error converting portfolio template property form types", e);
+            }
+            try {
+               // do conversion for portfolio property form data
+               List portfolios = getPortfoliosForConversion();
+               logger.debug("There are " + portfolios.size() + " portfolios needing conversion");
+               convertPortfolios(portfolios);
+            }
+            catch (Exception e) {
+               logger.warn("Error converting portfolio property form data", e);
+            }
          }
       }
       
@@ -3275,5 +3276,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public void setAutoDdl(boolean autoDdl) {
       this.autoDdl = autoDdl;
+   }
+
+   public boolean isPortfolioPropertyFormConversion() {
+      return portfolioPropertyFormConversion;
+   }
+
+   public void setPortfolioPropertyFormConversion(
+         boolean portfolioPropertyFormConversion) {
+      this.portfolioPropertyFormConversion = portfolioPropertyFormConversion;
    }
 }
