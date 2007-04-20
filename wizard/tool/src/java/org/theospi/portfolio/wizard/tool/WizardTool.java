@@ -52,6 +52,7 @@ import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.util.ResourceLoader;
 import org.theospi.portfolio.guidance.mgt.GuidanceHelper;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
@@ -141,6 +142,8 @@ public class WizardTool extends BuilderTool {
    public final static String CONFIRM_DELETE_PAGE = "confirmDeleteWizard";
    public final static String CANCEL_RUN_WIZARD_PAGE = "runWizardEnd";
 
+	private static ResourceLoader myResources = new ResourceLoader("org.theospi.portfolio.wizard.bundle.Messages");
+   
    private BuilderScreen[] screens = {
      // new BuilderScreen(EDIT_PAGE_TYPE),
       new BuilderScreen(EDIT_PAGE),
@@ -930,9 +933,6 @@ public class WizardTool extends BuilderTool {
     * @return List
     */
    protected List getEvaluators(Wizard wizard) {
-      ResourceBundle myResources = 
-         ResourceBundle.getBundle("org.theospi.portfolio.wizard.bundle.Messages");
-
       List evalList = new ArrayList();
       Id id = wizard.getId() == null ? wizard.getNewId() : wizard.getId();
       

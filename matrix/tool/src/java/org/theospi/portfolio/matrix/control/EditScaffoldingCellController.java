@@ -37,6 +37,7 @@ import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.util.ResourceLoader;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -88,6 +89,8 @@ public class EditScaffoldingCellController extends
 
 	private ReviewManager reviewManager;
 
+	private static ResourceLoader myResources = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
+   
 	// TODO move this constant somewhere where I can get to them from here and
 	// in WizardTool
 	public final static String FORM_TYPE = "form";
@@ -346,8 +349,6 @@ public class EditScaffoldingCellController extends
 	}
 
 	protected String getGuidanceTitle() {
-		ResourceBundle myResources = ResourceBundle
-				.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
 		return myResources.getString("cell_guidance_title");
 		// return "Guidance for Cell";
 	}
@@ -446,9 +447,6 @@ public class EditScaffoldingCellController extends
 	}
 
 	protected List getEvaluators(WizardPageDefinition wpd) {
-		ResourceBundle myResources = ResourceBundle
-				.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
-
 		List evalList = new ArrayList();
 		Id id = wpd.getId() == null ? wpd.getNewId() : wpd.getId();
 
@@ -475,9 +473,6 @@ public class EditScaffoldingCellController extends
 
 	protected void setAudienceSelectionVariables(Map session,
 			WizardPageDefinition wpd) {
-		ResourceBundle myResources = ResourceBundle
-				.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
-
 		session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION,
 				MatrixFunctionConstants.EVALUATE_MATRIX);
 
