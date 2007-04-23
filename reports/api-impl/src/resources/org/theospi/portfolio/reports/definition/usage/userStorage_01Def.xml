@@ -26,11 +26,11 @@
        <property name="query">
             <list>
                <value>
-                  <![CDATA[select DW_USERS.USER_EID,  DW_USERS.FIRST_NAME, DW_USERS.LAST_NAME, CREATED_BY, WORK_SPACE_USED, SITE_SPACE_USED, (WORK_SPACE_USED +  SITE_SPACE_USED)
-                   FROM (SELECT CREATED_BY, SPACE_USED as WORK_SPACE_USED  from DW_RESOURCE_COLLECTION where PARENT_COLLECTION = '/user/' )  WORK_SPACE,
-                   (SELECT sum(SPACE_USED) as SITE_SPACE_USED  from DW_RESOURCE_COLLECTION where PARENT_COLLECTION = '/group/' )  SITE_SPACE,
-                   DW_USERS
-                   where DW_USERS.USER_ID = CREATED_BY and ((WORK_SPACE_USED + SITE_SPACE_USED) /1024) > ?
+                  <![CDATA[select dw_users.user_eid,  dw_users.first_name, dw_users.last_name, created_by, work_space_used, site_space_used, (work_space_used +  site_space_used)
+                   FROM (SELECT created_by, space_used as work_space_used  from dw_resource_collection where parent_collection = '/user/' )  work_space,
+                   (SELECT sum(space_used) as site_space_used  from dw_resource_collection where parent_collection = '/group/' )  site_space,
+                   dw_users
+                   where dw_users.user_id = created_by and ((work_space_used + site_space_used) /1024) > ?
                    ]]>
                </value>
             </list>
