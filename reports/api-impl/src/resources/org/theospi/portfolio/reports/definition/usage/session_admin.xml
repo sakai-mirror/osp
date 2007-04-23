@@ -32,14 +32,36 @@
                   <![CDATA[select count(distinct userId) "uniqueVisits" from dw_session  where startTime between ? and ?    ]]>
                </value>
                <value>
-                   <![CDATA[select avg(endTime - startTime) "avgSessionInSeconds"  from dw_session  where startTime between ? and ?  ]]>
+                   <![CDATA[select avg(durationSeconds) "avgSessionInSeconds"  from dw_session  where startTime between ? and ?  ]]>
                </value>
                <value>
-                   <![CDATA[select Distinct(user_eid), first_name, last_name from dw_users 
+                   <![CDATA[select Distinct(user_eid), first_name, last_name from dw_users
                    where user_id not  in (select distinct userId from dw_session where startTime between ? and ?)
                     ]]>
                </value>
             </list>
+        </property>
+        <property name="vendorQuery">
+             <map>
+                <entry key="oracle">
+                    <list>
+               <value>
+                  <![CDATA[select count(*) "totalVisits" from dw_session where startTime between to_date(?) and to_date(?)  ]]>
+               </value>
+                 <value>
+                  <![CDATA[select count(distinct userId) "uniqueVisits" from dw_session  where startTime between to_date(?) and to_date(?)    ]]>
+               </value>
+               <value>
+                   <![CDATA[select avg(durationSeconds) "avgSessionInSeconds"  from dw_session  where startTime between to_date(?) and to_date(?)  ]]>
+               </value>
+               <value>
+                   <![CDATA[select Distinct(user_eid), first_name, last_name from dw_users
+                   where user_id not  in (select distinct userId from dw_session where startTime between to_date(?) and to_date(?))
+                    ]]>
+               </value>
+                    </list>
+                </entry>
+            </map>
         </property>
         <property name="description">
             <value>

@@ -178,7 +178,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
    private boolean autoDdl = true;
    
     protected BeanFactory beanFactory;
-
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }
@@ -244,7 +243,6 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
     public void setOspAuthzManager(org.theospi.portfolio.security.AuthorizationFacade ospAuthzManager) {
         this.ospAuthzManager = ospAuthzManager;
     }
-
     /**
      * {@inheritDoc}
      */
@@ -893,6 +891,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
                         //	Dates need to be formatted from user format to database format
                         if (ReportDefinitionParam.TYPE_DATE.equals(rdp.getType())) {
                             value = dbDateFormat.format(userDateFormat.parse(rp.getValue()));
+                            if ("oracle".equals(rd.getVendor())){
+                            SimpleDateFormat oracleFormat = new SimpleDateFormat("dd-MMM-yyyy");
+                            value = oracleFormat.format(userDateFormat.parse(rp.getValue()));
+                        }
                         }
                         stmt.setString(paramIndex + 1, value);
                         paramIndex++;
