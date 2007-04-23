@@ -76,16 +76,6 @@
 			</div>
 		</osp-h:glossary>
 
-		<c:if test="${sequential != 'true'}">
-			<h3>
-				<c:out value="${categoryTitle}" />
-				<c:if test="${categoryTitle != ''}">:
-          
-          </c:if>
-
-				<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
-			</h3>
-		</c:if>
 		<c:if test="${sequential == 'true'}">
 			<p class="step">
 				<fmt:message key="seq_pages_step">
@@ -102,6 +92,13 @@
 
 	<osp-h:glossary link="true" hover="true">
 		<h3>
+			<c:if test="${isWizard == 'true' and sequential != 'true'}">
+				<c:out value="${categoryTitle}" />
+				<c:if test="${categoryTitle != ''}">:
+          
+          </c:if>
+          </c:if>
+			
 			<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
 		</h3>
 
