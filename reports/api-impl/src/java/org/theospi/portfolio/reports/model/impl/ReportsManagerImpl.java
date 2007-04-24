@@ -1515,33 +1515,32 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
         List reportDefList = new ArrayList();
         reportDefList.add(reportDef);
         xmlFile.setReportDefId(reportDef.getIdString());
-        List xslsFiles = processXSLFiles(reportDef);
+        xmlFile.setReportXslFiles(processXSLFiles(reportDef, xmlFile));
         getHibernateTemplate().saveOrUpdate(xmlFile);
-        if (xslsFiles.size() > 0) {
-            for (Iterator i = xslsFiles.iterator(); i.hasNext();) {
-                saveXslFile((ReportXslFile) i.next());
-            }
-        } else {
-            throw new OspException("Default xsl file must be defined.");
-        }
     }
 
-    public List processXSLFiles(ReportDefinition reportDef) throws OspException {
+    public Set processXSLFiles(ReportDefinition reportDef, ReportDefinitionXmlFile xmlFile) throws OspException {
+        Set xslsList = new HashSet();
 
         ReportXsl defaultXsl = reportDef.getDefaultXsl();
-        List xslsList = new ArrayList();
+
         if (defaultXsl == null) {
             return xslsList;
         } else {
             List xsls = reportDef.getXsls();
             for (Iterator i = xsls.iterator(); i.hasNext();) {
-                ReportXsl xslFile = (ReportXsl) i.next();
-                xslFile.setReportDefinition(reportDef);
-                xslsList.add(new ReportXslFile(xslFile, getContentHosting()));
+                ReportXsl xsl = (ReportXsl) i.next();
+                ReportXslFile xslFile = new ReportXslFile(xsl, getContentHosting());
+                xslFile.setReportDefId(reportDef.getIdString());
+                xslFile.setReportXslFileRef(xsl.getXslLink());
+                xslFile.setReportDef(xmlFile);
+                xslsList.add(xslFile);
             }
 
         }
+
         return xslsList;
+
     }
 
     public void deleteReportDefXmlFile(ReportDefinition reportDef) {

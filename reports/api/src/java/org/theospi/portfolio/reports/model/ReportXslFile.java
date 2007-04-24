@@ -45,7 +45,6 @@ public class ReportXslFile
        try { String id = reportXsl.getXslLink();
         ContentResource resource = contentHosting.getResource(id);
         setXslFile(readStreamToBytes(resource.streamContent()));
-        setReportDefId(reportXsl.getReportDefinition().getIdString());
         setReportXslFileRef(reportXsl.getXslLink());
        }
         catch(PermissionException pe) {
