@@ -250,11 +250,11 @@
                             <osp:param name="current_form_id" value="${node.id}" />
                             <osp:param name="submit" value="delete" />
                             </osp:url>"><fmt:message key="delete"/></a>
-                        <c:if test="${(matrixCan.review || wizardCan.review) && cell.scaffoldingCell.reviewDevice != null}">
+                        <c:if test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null}">
                         |
                         </c:if>
                      </c:if>
-                     <c:if test="${(matrixCan.review || wizardCan.review) && cell.scaffoldingCell.reviewDevice != null}">
+                     <c:if test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null}">
                         <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                           <osp:param name="page_id" value="${cell.wizardPage.id}" />
                           <osp:param name="org_theospi_portfolio_review_type" value="2" />
@@ -348,7 +348,7 @@
 						   <osp:param name="submit" value="delete"/>
 						   </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="delete"/></a>
                   </c:if>
-				  	<c:if test="${(matrixCan.review || wizardCan.review) && cell.scaffoldingCell.reviewDevice != null}">
+				  	<c:if test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null}">
                         <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                           <osp:param name="page_id" value="${cell.wizardPage.id}" />
                           <osp:param name="org_theospi_portfolio_review_type" value="2" />
@@ -499,13 +499,7 @@
    
 
 <!-- ************* General Review (Feedback) Area Start ************* -->
-<%--TODO need to wrap this whole table in a check
-	 I cannot give feedback & no feedback present = hide
-	 I can read feedback &  there is feedback = show
-	 I can give  feedback = show
-	 There is no feedback form set=hide
---%>
-
+<c:if test="${(((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null) || not empty reviews}">
 	<table class="listHier lines nolines bordered-l" cellpadding="0" cellspacing="0" border="0"   summary="">
 		<tr>
 			<th><osp:message key="reviews_section_general"/></th>
@@ -518,7 +512,7 @@
 			</td>
 			<td>
 			   <div class="itemAction">
-				  <c:if test="${(matrixCan.review || wizardCan.review) && cell.scaffoldingCell.reviewDevice != null}">
+				  <c:if test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null}">
 					 <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 						<osp:param name="page_id" value="${cell.wizardPage.id}" />
 						<osp:param name="org_theospi_portfolio_review_type" value="2" />
@@ -567,10 +561,11 @@
 		  </c:if>
       </c:forEach>
    </table>
+</c:if>
 	
 <!-- ************* General Review (Feedback) Area End ************* -->
 <!-- ************* Evaluation Area Start ************* -->
-   <c:if test="${((matrixCan.evaluate || wizardCan.evaluate) && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING') || not empty evaluations}">
+   <c:if test="${(((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING') || not empty evaluations}">
       <table class="listHier lines nolines bordered-l" cellpadding="0" cellspacing="0" border="0"   summary="">
 		<tr>
 			<th><osp:message key="evals_section_header"/></th>
@@ -582,7 +577,7 @@
 			<td><osp:message key="evals_section_header"/></td>
 				<td>
 			   <div class="itemAction">
-      			  <c:if test="${(matrixCan.evaluate || wizardCan.evaluate) && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING'}">
+      			  <c:if test="${((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING'}">
 					 <a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 						   <osp:param name="page_id" value="${cell.wizardPage.id}" />
 						<osp:param name="org_theospi_portfolio_review_type" value="1" />
