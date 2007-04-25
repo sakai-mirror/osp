@@ -3046,9 +3046,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                //tempFormDef.setSchemaFile(fileId);
                tempFormDef.setSchema(node.getResource().getContent());
                tempFormDef.setDocumentRoot(template.getDocumentRoot());
-               tempFormDef.setDescription("Portfolio Properties");
+               tempFormDef.setDescription("Portfolio Properties for " + template.getName());
                tempFormDef.setOwner(template.getOwner());
                tempFormDef.setSiteId(template.getSiteId());
+               tempFormDef.setSystemOnly(true);
                if (template.isPublished()) {
                   tempFormDef.setSiteState(StructuredArtifactDefinitionBean.STATE_PUBLISHED);
                }
