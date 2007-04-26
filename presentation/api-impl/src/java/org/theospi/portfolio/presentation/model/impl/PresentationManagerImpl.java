@@ -50,7 +50,6 @@ import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.orm.hibernate3.HibernateCallback;
@@ -1789,6 +1788,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       Collection items = presentation.getItems();
 
       Element root = new Element("ospiPresentation");
+      
+      Element description = new Element("description");
+      description.setText(presentation.getDescription());
+      root.addContent(description);
 
       for (Iterator i = items.iterator(); i.hasNext();) {
          PresentationItem item = (PresentationItem) i.next();
