@@ -24,6 +24,8 @@ public class SessionBean {
 
     Timestamp end;
 
+    long duration;
+
     public SessionBean(String id, String server, String user, String address, String agent, Timestamp start, Timestamp end)
             {
                 setId(id);
@@ -90,4 +92,10 @@ public class SessionBean {
     public void setEnd(Timestamp end) {
         this.end = end;
     }
+
+    public long getDuration() {
+        return getEnd().getTime() - getStart().getTime();
+    }
+
+
 }

@@ -46,6 +46,10 @@
           <name>endTime</name>
           <type>TIMESTAMP</type>
         </column>
+         <column>
+          <name>durationSeconds</name>
+          <type>INTEGER</type>
+        </column>
      </columns>
    </table>
 </tables>

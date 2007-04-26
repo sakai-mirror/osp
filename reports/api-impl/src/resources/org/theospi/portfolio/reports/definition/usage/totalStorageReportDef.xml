@@ -27,15 +27,15 @@
             <list>
                <value>
                   <![CDATA[select avg(file_count),  avg(avg_size), avg(avg_space)
-                   from ( select  created_by, avg(content_length/1024) as avg_size from dw_resource group by created_by) as avg_size,
-                   ( select  created_by, sum(content_length/2024) as avg_space from dw_resource group by created_by) as avg_space,
-                   ( select  created_by, count(*) as file_count  from dw_resource group by created_by) as file_count
+                   from ( select  created_by, avg(content_length/1024) as avg_size from dw_resource group by created_by) avg_size,
+                   ( select  created_by, sum(content_length/2024) as avg_space from dw_resource group by created_by) avg_space,
+                   ( select  created_by, count(*) as file_count  from dw_resource group by created_by) file_count
                     ]]>
                </value>
 
                <value>
                  <![CDATA[select sub_mime_type "file_type", count(*) "total_files" ,
-                 avg(content_length/1024) "avg_size" , sum(content_length/1024) "total_size'
+                 avg(content_length/1024) "avg_size" , sum(content_length/1024) "total_size"
                  from dw_resource  group by sub_mime_type
                   ]]>
                </value>

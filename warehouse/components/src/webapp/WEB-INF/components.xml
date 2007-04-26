@@ -185,17 +185,13 @@
                         <value>userDisplayId</value>
                     </property>
                 </bean>
-                <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
-                    <property name="propertyName">
-                        <value>role</value>
-                    </property>
-                </bean>
+                <!-- need to   add Role back in and create custom property access to get teh Role.id -->
             </list>
         </property>
         <property name="insertStmt">
             <value>insert into dw_site_users
-                (site_id, user_id, user_eid, user_display_id, role)
-                values (?, ?, ?, ?, ?)
+                (site_id, user_id, user_eid, user_display_id)
+                values (?, ?, ?, ?)
             </value>
         </property>
         <property name="clearStmt">
@@ -293,11 +289,16 @@
                         <value>end</value>
                     </property>
                 </bean>
+                 <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                    <property name="propertyName">
+                        <value>duration</value>
+                    </property>
+                </bean>
             </list>
         </property>
         <property name="insertStmt">
-            <value>insert into dw_session (id, server, userId, ip, user_agent, startTime, endTime)
-                values (?, ?, ?, ?, ?, ?, ?)
+            <value>insert into dw_session (id, server, userId, ip, user_agent, startTime, endTime, durationSeconds)
+                values (?, ?, ?, ?, ?, ?, ?, ?)
             </value>
         </property>
         <property name="clearStmt">
