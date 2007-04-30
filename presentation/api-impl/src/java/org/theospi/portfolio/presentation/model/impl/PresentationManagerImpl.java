@@ -1789,6 +1789,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       Element root = new Element("ospiPresentation");
       
+      Element name = new Element("name");
+      name.setText(presentation.getName());
+      root.addContent(name);
+      
       Element description = new Element("description");
       description.setText(presentation.getDescription());
       root.addContent(description);
