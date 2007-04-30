@@ -20,17 +20,16 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.export;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import websphinx.Access;
+import websphinx.Link;
+import websphinx.Page;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import websphinx.Access;
-import websphinx.Link;
-import websphinx.Page;
 
 public class StreamedPage extends Page {
    protected final transient Log logger = LogFactory.getLog(getClass());
@@ -72,7 +71,12 @@ public class StreamedPage extends Page {
     * @return the URL of the link that was used to download this page
     */
    public URL getURL() {
-      return getOrigin().getURL();
+       try {
+       return new URL(PortfolioMirror.escapeUrl(getOrigin().getURL().toString()));
+       }
+       catch (IOException e)
+       {
+           return getOrigin().getURL();
+       }
    }
-
 }

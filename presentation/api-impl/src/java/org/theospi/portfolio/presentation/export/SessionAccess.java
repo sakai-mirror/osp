@@ -20,18 +20,19 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.export;
 
+import websphinx.Access;
+import websphinx.DownloadParameters;
+import websphinx.Link;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
-
-import websphinx.Access;
-import websphinx.DownloadParameters;
-import websphinx.Link;
 
 /**
  * Created by IntelliJ IDEA.
@@ -52,17 +53,22 @@ public class SessionAccess extends Access {
 
    public URLConnection openConnection (Link link) throws IOException {
        // get the URL
+
        int method = link.getMethod();
        URL url;
+       try {
        switch (method) {
            case Link.GET:
-               url = link.getPageURL();
+               url = new URL(PortfolioMirror.escapeUrl(link.getPageURL().toString()));
                break;
            case Link.POST:
-               url = link.getServiceURL();
+               url = new URL(PortfolioMirror.escapeUrl(link.getServiceURL().toString()));
                break;
            default:
                throw new IOException ("Unknown HTTP method " + link.getMethod());
+       }
+       }catch (MalformedURLException e){
+           throw new IOException ("URL error ");
        }
 
        // open a connection to the URL
