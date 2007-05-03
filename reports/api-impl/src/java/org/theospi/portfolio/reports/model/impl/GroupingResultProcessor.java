@@ -20,20 +20,15 @@
 **********************************************************************************/
 package org.theospi.portfolio.reports.model.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
 import org.jdom.Document;
 import org.jdom.Element;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
 import org.theospi.portfolio.reports.model.ReportResult;
 import org.theospi.portfolio.reports.model.ReportsManager;
+
+import javax.sql.DataSource;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,7 +63,7 @@ public class GroupingResultProcessor extends BaseResultProcessor {
          String theGrouping = (String)i.next();
          String groups[] = theGrouping.split(",");
          List elements = processGroup(rootDoc, theGrouping);
-         Element group = new Element("group");
+         Element group = new Element("grouping");
          
          group.setAttribute("by", groups[0]);
          for(Iterator ii = elements.iterator(); ii.hasNext(); ) {
@@ -120,9 +115,15 @@ public class GroupingResultProcessor extends BaseResultProcessor {
       List matchingElements = new ArrayList();
       for(Iterator i = groupHash.keySet().iterator(); i.hasNext(); ) {
          String key = (String)i.next();
-         
-         // Get the first Element for each unique group value
-         matchingElements.add(  ((List)(groupHash.get(key))).get(0)  );
+         Element group = new Element("group");
+         group.setAttribute("value", key);
+         for (Iterator itr = ((List) groupHash.get(key)).iterator(); itr.hasNext();) {
+
+            Element element = (Element)itr.next();
+            group.addContent((Element)element.clone());
+
+         }
+         matchingElements.add(group);
       }
        
       return matchingElements;
