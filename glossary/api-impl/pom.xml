@@ -234,12 +234,14 @@
         <groupId>quartz</groupId>
         <artifactId>quartz</artifactId>
         <version>1.5.2</version>
+        <scope>provided</scope>
      </dependency>
 
      <dependency>
         <groupId>org.sakaiproject</groupId>
         <artifactId>sakai-scheduler-api</artifactId>
         <version>${sakai.version}</version>
+        <scope>provided</scope>
      </dependency>
 
   </dependencies>
