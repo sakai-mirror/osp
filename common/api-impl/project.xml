@@ -175,6 +175,13 @@
          <version>${sakai.version}</version>
       </dependency>
 
+    <!-- SAK-9990 -->
+    <dependency>
+      <groupId>sakaiproject</groupId>
+      <artifactId>sakai-assignment-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    
      <dependency>
          <groupId>sakaiproject</groupId>
          <artifactId>sakai-entity-api</artifactId>
