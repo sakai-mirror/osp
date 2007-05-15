@@ -65,3 +65,4 @@ webservices		-r30584   https://source.sakaiproject.org/svn/webservices/tags/saka
 mailtool		-r30584   https://source.sakaiproject.org/svn/mailtool/tags/sakai_2-4-0_QA_017
 usermembership		-r30584   https://source.sakaiproject.org/svn/usermembership/tags/sakai_2-4-0_QA_017
 polls                 	-r30584   https://source.sakaiproject.org/svn/polls/tags/sakai_2-4-0_QA_017
+gmt			-r9471    https://source.sakaiproject.org/contrib/syracuse/gmt/branches/2.4.x
