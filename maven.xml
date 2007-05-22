@@ -8,7 +8,7 @@
       <j:set var="maven.hibernate.properties" value="ddl.properties" />
       <j:set var="maven.hibernate.text" value="true" />
       <j:set var="maven.hibernate.delimiter" value=";" />
-      <j:set var="maven.hibernate.input.dir" value="common,glossary,integration,jsf,matrix,migration,portal,presentation,reports,warehouse,wizard" />
+      <j:set var="maven.hibernate.input.dir" value="common,glossary,integration,jsf,matrix,portal,presentation,reports,warehouse,wizard" />
       <j:set var="maven.hibernate.input.includes" value="**/target/**/*.hbm.xml" />
       
       <j:set var="schemaexport.noDatabaseOverwrite" value="yes"/>
@@ -25,7 +25,7 @@
 		<j:set var="hibernate.hbm2ddl.auto" value="create" />
 		<j:set var="maven.hibernate.delimiter" value=";" />
 		<j:set var="maven.hibernate.quiet" value="false" />
-		<j:set var="maven.hibernate.input.dir" value="common,glossary,integration,jsf,matrix,migration,portal,presentation,reports,warehouse,wizard" />
+		<j:set var="maven.hibernate.input.dir" value="common,glossary,integration,jsf,matrix,portal,presentation,reports,warehouse,wizard" />
 		<j:set var="maven.hibernate.input.includes" value="**/target/**/*.hbm.xml" />
 		
 		<j:set var="schemaexport.noDatabaseOverwrite" value="yes"/>

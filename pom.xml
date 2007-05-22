@@ -18,7 +18,6 @@
     <module>integration</module>
     <module>jsf</module>
     <module>matrix</module>
-    <module>migration</module>
     <module>portal</module>
     <module>presentation</module>
     <module>reports</module>
