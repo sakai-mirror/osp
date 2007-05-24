@@ -2,7 +2,7 @@
 
 <!DOCTYPE faces-config PUBLIC
   "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
-  "WEB-INF/dtd/web-facesconfig_1_1.dtd">
+  "dtd/web-facesconfig_1_1.dtd">
 
 <!-- =========== FACES CONFIGURATION FILE ================================== -->
 
