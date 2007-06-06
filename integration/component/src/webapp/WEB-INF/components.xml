@@ -170,13 +170,13 @@
    <bean id="org.theospi.portfolio.admin.model.IntegrationOption.adminLayout"
       class="org.theospi.portfolio.admin.service.PageOption">
       <property name="label">
-         <value>Portfolio Layout</value>
+         <value>Portfolio Layouts</value>
       </property>
       <property name="worksiteId">
          <value>PortfolioAdmin</value>
       </property>
       <property name="pageName">
-         <value>Portfolio Layout</value>
+         <value>Portfolio Layouts</value>
       </property>
       <property name="layout">
          <value>0</value>
