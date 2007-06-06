@@ -46,7 +46,7 @@
 
    <%-- TODO - need to see if user gets any of these abilities, if not omit whole toolbar --%>
 	<div class="navIntraTool">
-		<c:if test="${can.create}">
+		<c:if test="${(isWizard != 'true' && can.create) || (isWizard == 'true' && wizardCan.create)}">
          <a name="linkManageCellStatus" id="linkManageCellStatus" href="<osp:url value="manageCellStatus.osp">
             <osp:param name="page_id" value="${cell.wizardPage.id}"/>
             <osp:param name="readOnlyMatrix" value="${readOnlyMatrix}" />
