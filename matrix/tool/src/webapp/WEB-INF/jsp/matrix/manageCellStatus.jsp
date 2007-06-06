@@ -23,11 +23,11 @@
                               </fmt:param>
                             </fmt:message></legend>
       <div class="checkbox indnt1">
-         <input type="radio" id="changeUserOnly" name="changeUserOnly" value="true" />
+         <input type="radio" id="changeUserOnly" name="changeOption" value="changeUserOnly" />
          <label for="changeUserOnly"><fmt:message key="label_forThisUserOnly"/></label>
       </div>
       <div class="checkbox indnt1">
-         <input type="radio" id="changeAll" name="changeAll" value="true" />
+         <input type="radio" id="changeAll" name="changeOption" value="changeAll" />
          <label for="changeAll"><fmt:message key="label_forAllMatrixUsers"/></label>
       </div>
    </fieldset>

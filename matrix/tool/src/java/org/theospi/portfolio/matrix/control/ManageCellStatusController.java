@@ -66,17 +66,20 @@ public class ManageCellStatusController implements Controller {
       
       String cancel = (String)request.get("cancel");
       String next = (String)request.get("continue");
-      String setSingle = (String)request.get("changeUserOnly");
-      String setAll = (String)request.get("changeAll");
+      
+      String changeOption = (String)request.get("changeOption");
+      
+      boolean setSingle = "changeUserOnly".equalsIgnoreCase(changeOption) ? true : false;
+      boolean setAll = "changeAll".equalsIgnoreCase(changeOption) ? true : false;
       
       if (cancel != null) {
          viewName = "done";
       }
-      else if (next != null && setSingle != null) {
+      else if (next != null && setSingle) {
          viewName = "done";
          setPageStatus(page, newStatus);
       }
-      else if (next != null && setAll != null) {
+      else if (next != null && setAll) {
          //Set allCells = cell.getScaffoldingCell().getCells();
          List allPages = getMatrixManager().getPagesByPageDef(page.getPageDefinition().getId());
          //cell.getWizardPage().getPageDefinition().get
