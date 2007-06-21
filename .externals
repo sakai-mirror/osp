@@ -2,8 +2,7 @@ access			   https://source.sakaiproject.org/svn/access/tags/sakai_2-4-0
 alias			   https://source.sakaiproject.org/svn/alias/tags/sakai_2-4-0
 announcement		   https://source.sakaiproject.org/svn/announcement/tags/sakai_2-4-0
 archive			   https://source.sakaiproject.org/svn/archive/tags/sakai_2-4-0
-assignment		   https://source.sakaiproject.org/svn/assignment/tags/sakai_2-4-0
-assignment/assignment-api/api/src/java/org/sakaiproject/assignment/taggable			https://source.sakaiproject.org/svn/assignment/tags/taggable_sakai_2-4-0
+assignment		   https://source.sakaiproject.org/svn/assignment/tags/pre_2-5-0_QA_001
 authz			   https://source.sakaiproject.org/svn/authz/tags/sakai_2-4-0
 blog			   https://source.sakaiproject.org/svn/blog/tags/sakai_2-4-0
 calendar		   https://source.sakaiproject.org/svn/calendar/tags/sakai_2-4-0
@@ -34,7 +33,7 @@ message			   https://source.sakaiproject.org/svn/message/tags/sakai_2-4-0
 metaobj			   https://source.sakaiproject.org/svn/metaobj/tags/sakai_2-4-0
 msgcntr			   https://source.sakaiproject.org/svn/msgcntr/tags/sakai_2-4-0
 osid			   https://source.sakaiproject.org/svn/osid/tags/sakai_2-4-0
-osp			   https://source.sakaiproject.org/svn/osp/tags/sakai_2-4-0
+osp			   https://source.sakaiproject.org/svn/osp/tags/pre_2-5-0_QA_001
 podcasts		   https://source.sakaiproject.org/svn/podcasts/tags/sakai_2-4-0
 portal			   https://source.sakaiproject.org/svn/portal/tags/sakai_2-4-0
 postem			   https://source.sakaiproject.org/svn/postem/tags/sakai_2-4-0
@@ -65,3 +64,4 @@ webservices		   https://source.sakaiproject.org/svn/webservices/tags/sakai_2-4-0
 mailtool		   https://source.sakaiproject.org/svn/mailtool/tags/sakai_2-4-0
 usermembership		   https://source.sakaiproject.org/svn/usermembership/tags/sakai_2-4-0
 polls                 	   https://source.sakaiproject.org/svn/polls/tags/sakai_2-4-0
+gmt			   https://source.sakaiproject.org/contrib/syracuse/gmt/branches/post-2.4.x
