@@ -69,6 +69,7 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.reports.model.*;
 import org.theospi.portfolio.security.Authorization;
@@ -470,7 +471,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             for (Iterator i = reportDefs.iterator(); i.hasNext();) {
                 ReportDefinitionXmlFile xmlFile = (ReportDefinitionXmlFile) i.next();
 
-                ListableBeanFactory beanFactory = new XmlBeanFactory(new InputStreamResource(new ByteArrayInputStream(xmlFile.getXmlFile())), getBeanFactory());
+                ListableBeanFactory beanFactory = new XmlBeanFactory(new ByteArrayResource(xmlFile.getXmlFile()), getBeanFactory());
                 ReportDefinition repDef = getReportDefBean(beanFactory);
                 repDef.finishLoading();
                 repDef.setDbLoaded(true);
@@ -1486,7 +1487,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
 
             if (mimeType.equals(new MimeType("application/xml")) ||
                     mimeType.equals(new MimeType("text/xml"))) {
-                ListableBeanFactory beanFactory = new XmlBeanFactory(new InputStreamResource(resource.streamContent()));
+                ListableBeanFactory beanFactory = new XmlBeanFactory(new ByteArrayResource(resource.getContent()));
                 ReportDefinitionXmlFile bean = importReport(resource);
                 if (bean != null) {
                     saveReportDef(bean, beanFactory);
@@ -1612,7 +1613,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             Set xslFiles = new HashSet(); 
             def.setXmlFile(readStreamToBytes(getClass().getResourceAsStream(wrapper.getDefinitionFileLocation())));
 
-            ListableBeanFactory beanFactory = new XmlBeanFactory(new InputStreamResource(getClass().getResourceAsStream(wrapper.getDefinitionFileLocation())), getBeanFactory());
+            ListableBeanFactory beanFactory = new XmlBeanFactory(new ByteArrayResource(readStreamToBytes(getClass().getResourceAsStream(wrapper.getDefinitionFileLocation()))), getBeanFactory());
             ReportDefinition repDef = getReportDefBean(beanFactory);
             List xsls = repDef.getXsls();
             for (Iterator i = xsls.iterator(); i.hasNext();) {

@@ -67,7 +67,7 @@
    <bean id="commonModelController" class="org.sakaiproject.metaobj.utils.mvc.impl.CommonModelControllerImpl" >
    </bean>
 
-    <bean id="urlMapping" class="org.sakaiproject.metaobj.utils.mvc.impl.beans.AddableUrlHandlerMapping">
+    <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="lazyInitHandlers">
            <value>true</value>
         </property>

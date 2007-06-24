@@ -228,8 +228,9 @@ public class AddPresentationController extends AbstractWizardFormController {
       model.put("totalPages", getTotalPages(presentation,  page));
       model.put("allowGuests", Config.getInstance().getProperties().getProperty("allowGuests"));
 
-      if ("true".equals(request.getParameter("preview")))
+      if ("true".equals(request.getParameter("preview"))) {
          model.put("preview", true);
+      }
       
       if (page == ADD_PAGE) {
          Agent agent = getAuthManager().getAgent();
@@ -460,10 +461,12 @@ public class AddPresentationController extends AbstractWizardFormController {
          }
          else {
             // skip free form
-            if (target > currentPage)
+            if (target > currentPage) {
                return target + 1;
-            if (target < currentPage)
+            }
+            if (target < currentPage) {
                return target - 1;
+            }
          }
       }
 
@@ -471,10 +474,12 @@ public class AddPresentationController extends AbstractWizardFormController {
          HttpSession session = request.getSession();
          boolean hasProperties = hasProperties(presentation);
 
-         if (!hasProperties && currentPage == INITIAL_PAGE && target > currentPage)
+         if (!hasProperties && currentPage == INITIAL_PAGE && target > currentPage) {
             return target + 1;
-         if (!hasProperties && currentPage == PRESENTATION_ITEMS && target < currentPage)
+         }
+         if (!hasProperties && currentPage == PRESENTATION_ITEMS && target < currentPage) {
             return target - 1;
+         }
          if (hasProperties && 
                FormHelper.RETURN_ACTION_SAVE.equals((String)session.getAttribute(FormHelper.RETURN_ACTION_TAG)) && 
                session.getAttribute(FormHelper.RETURN_REFERENCE_TAG) != null) {
@@ -540,7 +545,7 @@ public class AddPresentationController extends AbstractWizardFormController {
          return false;
       }
 
-      if (isFinish(request) || isNext(request) ||
+      if (isFinishRequest(request) || isNext(request) ||
             WebUtils.hasSubmitParameter(request, PARAM_CANCEL)) {
          return true;
       }
@@ -574,7 +579,7 @@ public class AddPresentationController extends AbstractWizardFormController {
       return false;
    }
 
-   protected boolean isFinish(HttpServletRequest request) {
+   protected boolean isFinishRequest(HttpServletRequest request) {
       ToolSession session = SessionManager.getCurrentToolSession();
       String action = (String) session.getAttribute(FreeFormHelper.FREE_FORM_ACTION);
 
