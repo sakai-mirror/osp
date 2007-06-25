@@ -48,9 +48,6 @@ public class GlossaryListController extends HelpController {
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", toolManager.getCurrentPlacement());
       model.put("global", new Boolean(getHelpManager().isGlobal()));
-      if (getHelpManager().isGlobal()) {
-         model.put("globalQualifier", getIdManager().getId(HelpManager.GLOBAL_GLOSSARY_QUALIFIER));
-      }
 
       List terms = new ArrayList(getHelpManager().getWorksiteTerms());
 

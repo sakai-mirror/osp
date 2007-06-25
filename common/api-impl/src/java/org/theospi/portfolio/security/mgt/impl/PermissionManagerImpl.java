@@ -20,22 +20,22 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.mgt.impl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.GroupNotDefinedException;
 import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.AuthzPermissionException;
 import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.OspRole;
 import org.sakaiproject.site.api.Site;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.cover.EntityManager;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.mgt.PermissionManager;
@@ -53,17 +53,11 @@ public class PermissionManagerImpl implements PermissionManager {
    private Map tools;
 
    public List getWorksiteRoles(PermissionsEdit edit) {
-      try {
-
-    	 Set roles = AuthzGroupService.getInstance().getAuthzGroup("/site/" +
-    	            edit.getSiteId()).getRoles();
-         List returned = new ArrayList();
-         returned.addAll(roles);
-         return returned;
-      } catch (GroupNotDefinedException e) {
-         logger.error("", e);
-         throw new OspException(e);
-      }
+      AuthzGroup authzGroup = getAuthzGroup(edit);
+      Set roles = authzGroup.getRoles();
+      List returned = new ArrayList();
+      returned.addAll(roles);
+      return returned;
    }
 
    public PermissionsEdit fillPermissions(PermissionsEdit edit) {
@@ -85,31 +79,47 @@ public class PermissionManagerImpl implements PermissionManager {
    protected PermissionsEdit fillPermissionsInternal(
       PermissionsEdit edit, Id qualifier, boolean readOnly) {
 
-      try {
-         /*Realm siteRealm = RealmService.getRealm("/site/" +
-            edit.getSiteId());
+      /*Realm siteRealm = RealmService.getRealm("/site/" +
+         edit.getSiteId());
 
-         Set roles = siteRealm.getRoles();
-         */
-    	 Set roles = AuthzGroupService.getInstance().getAuthzGroup("/site/" +
-    	            edit.getSiteId()).getRoles();
+      Set roles = siteRealm.getRoles();
+      */
+      AuthzGroup authzGroup = getAuthzGroup(edit);
+      
+      if (authzGroup == null) {
+         return edit;
+      }
+      
+      Set roles = authzGroup.getRoles();
 
-         List functions = getAppFunctions(edit);
+      Reference ref = EntityManager.newReference(authzGroup.getId());
+      Collection realms = ref.getAuthzGroups();
 
-         for (Iterator i=roles.iterator();i.hasNext();) {
-            Role role = (Role)i.next();
-            Agent currentRole = getAgentManager().getWorksiteRole(role.getId(), edit.getSiteId());
-            List authzs = getAuthzManager().getAuthorizations(currentRole, null, qualifier);
+      List functions = getAppFunctions(edit);
 
-            for (Iterator j=authzs.iterator();j.hasNext();) {
-               Authorization authz = (Authorization)j.next();
+      for (Iterator i=roles.iterator();i.hasNext();) {
+         Role role = (Role)i.next();
+         Agent currentRole = getAgentManager().getWorksiteRole(role.getId(), edit.getSiteId());
+         
+         Set abilities = AuthzGroupService.getAllowedFunctions(role.getId(), realms);
+         
+         for (Iterator j=functions.iterator();j.hasNext();) {
+            String func = (String) j.next();
 
-               if (functions.contains(authz.getFunction())) {
-                  edit.getPermissions().add(
-                     new Permission(currentRole, authz.getFunction(), readOnly));
-               }
+            if (abilities.contains(func)) {
+               edit.getPermissions().add(
+                  new Permission(currentRole, func, readOnly));
             }
          }
+      }
+
+      return edit;
+   }
+
+   protected AuthzGroup getAuthzGroup(PermissionsEdit edit) {
+      try {
+         return AuthzGroupService.getInstance().getAuthzGroup("/site/" +
+            edit.getSiteId());
       } catch (GroupNotDefinedException e) {
          //This should be an okay exception to swallow.  If we can't find the realm, just skip it.
          // This came up when using the sites tool to create a site.  Since there wasn't 
@@ -117,8 +127,7 @@ public class PermissionManagerImpl implements PermissionManager {
          logger.warn("Cannot find realm corresponding to site: " + e.getId() + ".  Skipping it for setting permissions.", e);
          //throw new OspException(e);
       }
-
-      return edit;
+      return null;
    }
 
    public void updatePermissions(PermissionsEdit edit) {
@@ -128,6 +137,7 @@ public class PermissionManagerImpl implements PermissionManager {
       PermissionsEdit orig = (PermissionsEdit)edit.clone();
       orig = fillPermissions(orig);
       origPermissions = orig.getPermissions();
+      AuthzGroup currentGroup = getAuthzGroup(edit);
 
       for (Iterator i=edit.getPermissions().iterator();i.hasNext();) {
          Permission perm = (Permission)i.next();
@@ -136,16 +146,32 @@ public class PermissionManagerImpl implements PermissionManager {
             origPermissions.remove(perm);
          }
          else if (!perm.isReadOnly()) {
-            manager.createAuthorization(perm.getAgent(), perm.getFunction(), edit.getQualifier());
+            Role currentRole = getRole(currentGroup, perm);
+            currentRole.allowFunction(perm.getFunction());
          }
       }
 
       for (Iterator i=origPermissions.iterator();i.hasNext();) {
          Permission perm = (Permission)i.next();
-
-         manager.deleteAuthorization(perm.getAgent(), perm.getFunction(), edit.getQualifier());
+         Role currentRole = getRole(currentGroup, perm);
+         currentRole.disallowFunction(perm.getFunction());
       }
 
+      try {
+         AuthzGroupService.save(currentGroup);
+      } catch (GroupNotDefinedException e) {
+         throw new OspException(e);
+      } catch (AuthzPermissionException e) {
+         throw new OspException(e);
+      }
+
+   }
+
+   protected Role getRole(AuthzGroup currentGroup, Permission perm) {
+      if (perm.getAgent() instanceof OspRole) {
+         return currentGroup.getRole(((OspRole)perm.getAgent()).getRoleName());
+      }
+      return null;
    }
 
    public void duplicatePermissions(Id srcQualifier, Id targetQualifier, Site newSite) {

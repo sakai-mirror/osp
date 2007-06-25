@@ -38,9 +38,6 @@ import org.theospi.portfolio.shared.model.Node;
  */
 public interface HelpManager {
 
-   public final static String TOOL_GLOBAL_GLOSSARY = "theospi.help.glossary.global";
-   public final static String GLOBAL_GLOSSARY_QUALIFIER = "theospi.help.glossary.global";
-
    /**
     * searches the glossary for the keyword.
     * Returns a GlossaryEntry for this keyword if found,

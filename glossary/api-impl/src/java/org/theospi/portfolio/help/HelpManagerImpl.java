@@ -182,17 +182,14 @@ public class HelpManagerImpl extends HibernateDaoSupport
    }
 
    public GlossaryEntry addEntry(GlossaryEntry newEntry) {
+      getAuthzManager().checkPermission(ADD_TERM,
+         getToolId());
 		if (isGlobal()) {
 			//Prepare for Global add
-			 getAuthzManager().checkPermission(ADD_TERM,
-			    idManager.getId(GLOBAL_GLOSSARY_QUALIFIER));
-			 newEntry.setWorksiteId(null);
+			newEntry.setWorksiteId(null);
 		} else {
 			//Prepare for Local add
-			 getAuthzManager().checkPermission(ADD_TERM,
-			    getToolId());
-			
-			 newEntry.setWorksiteId(getWorksiteManager().getCurrentWorksiteId().getValue());
+         newEntry.setWorksiteId(getWorksiteManager().getCurrentWorksiteId().getValue());
 		}
 
       if (entryExists(newEntry)) {
@@ -204,15 +201,12 @@ public class HelpManagerImpl extends HibernateDaoSupport
    }
 
    public void removeEntry(GlossaryEntry entry) {
+      getAuthzManager().checkPermission(DELETE_TERM,
+         getToolId());
       if (isGlobal()) {
-         getAuthzManager().checkPermission(DELETE_TERM,
-            idManager.getId(GLOBAL_GLOSSARY_QUALIFIER));
          getGlossary().removeEntry(entry);
       }
       else {
-         getAuthzManager().checkPermission(DELETE_TERM,
-            getToolId());
-
          if (entry.getWorksiteId().equals(getWorksiteManager().getCurrentWorksiteId().getValue())) {
             getGlossary().removeEntry(entry);
          }
@@ -223,15 +217,12 @@ public class HelpManagerImpl extends HibernateDaoSupport
    }
 
    public void updateEntry(GlossaryEntry entry) {
+      getAuthzManager().checkPermission(EDIT_TERM,
+         getToolId());
       if (isGlobal()) {
-         getAuthzManager().checkPermission(EDIT_TERM,
-            idManager.getId(GLOBAL_GLOSSARY_QUALIFIER));
          entry.setWorksiteId(null);
       }
       else {
-         getAuthzManager().checkPermission(EDIT_TERM,
-            getToolId());
-
          if (!entry.getWorksiteId().equals(getWorksiteManager().getCurrentWorksiteId().getValue())) {
             throw new AuthorizationFailedException("Unable to update from another worksite");
          }
@@ -310,14 +301,9 @@ public class HelpManagerImpl extends HibernateDaoSupport
    
    public void packageGlossaryForExport(Id worksiteId, OutputStream os)
 			throws IOException {
-      if (isGlobal()) {
-         getAuthzManager().checkPermission(HelpFunctionConstants.EXPORT_TERMS,
-            idManager.getId(GLOBAL_GLOSSARY_QUALIFIER));
-      }
-      else {
-         getAuthzManager().checkPermission(HelpFunctionConstants.EXPORT_TERMS, 
-               getToolId());
-      }
+      getAuthzManager().checkPermission(HelpFunctionConstants.EXPORT_TERMS, 
+            getToolId());
+
 		CheckedOutputStream checksum = new CheckedOutputStream(os,
 				new Adler32());
 		ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(

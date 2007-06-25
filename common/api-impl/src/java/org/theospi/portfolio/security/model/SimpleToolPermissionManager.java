@@ -38,6 +38,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.authz.cover.FunctionManager;
 import org.theospi.portfolio.security.mgt.PermissionManager;
 import org.theospi.portfolio.security.mgt.ToolPermissionManager;
 import org.theospi.portfolio.worksite.intf.ToolEventListener;
@@ -102,9 +103,16 @@ public class SimpleToolPermissionManager implements ToolEventListener, ToolPermi
             
          }
       }
+      
+      registerFunctions();
    }
-   
-   
+
+   protected void registerFunctions() {
+      for (Iterator<String> i=functions.iterator();i.hasNext();) {
+         FunctionManager.registerFunction(i.next());
+      }
+   }
+
    /**
     * sets up the default perms for a tool.  Use's the tool id as the qualifier.
     * Assumes that if no perms exist for the tool, the perms should be set to the defaults.
@@ -153,9 +161,9 @@ public class SimpleToolPermissionManager implements ToolEventListener, ToolPermi
    }
 
    protected void createDefaultPermissions(String worksiteId, Id qualifier, String siteType) {
-      PermissionsEdit edit = setupPermissions(worksiteId, qualifier, siteType);
-      edit.setName(getPermissionEditName());
-      getPermissionManager().updatePermissions(edit);
+//      PermissionsEdit edit = setupPermissions(worksiteId, qualifier, siteType);
+//      edit.setName(getPermissionEditName());
+//      getPermissionManager().updatePermissions(edit);
    }
 
    protected PermissionsEdit setupPermissions(String worksiteId, Id qualifier, String siteType) {

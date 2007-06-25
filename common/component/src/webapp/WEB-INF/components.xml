@@ -83,7 +83,8 @@
       </property>
    </bean>
 
-   <bean id="explicitAuthz" class="org.theospi.portfolio.security.impl.sakai.WorksiteAwareAuthorizationFacade" >
+   <bean id="explicitAuthz" init-method="init" 
+         class="org.theospi.portfolio.security.impl.sakai.WorksiteAwareAuthorizationFacade" >
       <property name="sessionFactory">
          <ref bean="org.sakaiproject.springframework.orm.hibernate.GlobalSessionFactory"/>
       </property>
@@ -91,6 +92,9 @@
       <property name="agentManager"><ref bean="agentManager"/></property>
       <property name="threadLocalManager">
          <ref bean="org.sakaiproject.thread_local.api.ThreadLocalManager" />
+      </property>
+      <property name="shim">
+         <ref bean="org.sakaiproject.metaobj.security.AuthorizationFacade"/>
       </property>
       <property name="sakaiSecurityBase">
          <bean id="org.sakaiproject.metaobj.security.impl.sakai.SecurityBase"
@@ -645,6 +649,48 @@
                         <value>site.upd</value>
                         <value>site.visit</value>
                         <value>site.visit.unp</value>
+                        <!-- osp perms -->
+                        <value>osp.style.globalPublish</value>
+                        <value>osp.style.publish</value>
+                        <value>osp.style.delete</value>
+                        <value>osp.style.create</value>
+                        <value>osp.style.edit</value>
+                        <value>osp.style.suggestGlobalPublish</value>
+                        <value>osp.help.glossary.delete</value>
+                        <value>osp.help.glossary.add</value>
+                        <value>osp.help.glossary.edit</value>
+                        <value>osp.help.glossary.export</value>
+                        <value>osp.matrix.review</value>
+                        <value>osp.matrix.scaffolding.create</value>
+                        <value>osp.matrix.scaffolding.edit</value>
+                        <value>osp.matrix.scaffolding.delete</value>
+                        <value>osp.matrix.scaffolding.publish</value>
+                        <value>osp.matrix.scaffolding.export</value>
+                        <value>osp.matrix.evaluate</value>
+                        <value>osp.matrix.viewOwner</value>
+                        <value>osp.matrix.review</value>
+                        <value>osp.presentation.create</value>
+                        <value>osp.presentation.edit</value>
+                        <value>osp.presentation.delete</value>
+                        <value>osp.presentation.copy</value>
+                        <value>osp.presentation.comment</value>
+                        <value>osp.presentation.template.copy</value>
+                        <value>osp.presentation.template.publish</value>
+                        <value>osp.presentation.template.delete</value>
+                        <value>osp.presentation.template.create</value>
+                        <value>osp.presentation.template.edit</value>
+                        <value>osp.presentation.template.export</value>
+                        <value>osp.presentation.layout.publish</value>
+                        <value>osp.presentation.layout.delete</value>
+                        <value>osp.presentation.layout.create</value>
+                        <value>osp.presentation.layout.edit</value>
+                        <value>osp.presentation.layout.suggestPublish</value>
+                        <value>osp.wizard.publish</value>
+                        <value>osp.wizard.delete</value>
+                        <value>osp.wizard.create</value>
+                        <value>osp.wizard.edit</value>
+                        <value>osp.wizard.review</value>
+                        <value>osp.wizard.export</value>
                      </list>
                   </entry>
                   <entry key="CIG Participant">
@@ -670,6 +716,16 @@
                         <value>rwiki.update</value>
                         <value>section.role.student</value>
                         <value>site.visit</value>
+                        <!-- osp perms -->
+                        <value>osp.style.create</value>
+                        <value>osp.matrix.scaffolding.use</value>
+                        <value>osp.presentation.create</value>
+                        <value>osp.presentation.copy</value>
+                        <value>osp.presentation.comment</value>
+                        <value>osp.presentation.layout.create</value>
+                        <value>osp.presentation.layout.delete</value>
+                        <value>osp.presentation.layout.edit</value>
+                        <value>osp.wizard.view</value>
                      </list>
                   </entry>
                   <entry key="Reviewer">
@@ -695,6 +751,10 @@
                         <value>rwiki.update</value>
                         <value>section.role.student</value>
                         <value>site.visit</value>
+                        <value>osp.matrix.review</value>
+                        <value>osp.presentation.copy</value>
+                        <value>osp.presentation.comment</value>
+                        <value>osp.wizard.review</value>
                      </list>
                   </entry>
                   <entry key="Evaluator">
@@ -720,6 +780,11 @@
                         <value>rwiki.update</value>
                         <value>section.role.student</value>
                         <value>site.visit</value>
+                        <value>osp.matrix.evaluate</value>
+                        <value>osp.matrix.viewOwner</value>
+                        <value>osp.presentation.copy</value>
+                        <value>osp.presentation.comment</value>
+                        <value>osp.wizard.evaluate</value>
                      </list>
                   </entry>
                </map>
@@ -799,6 +864,48 @@
                         <value>site.upd</value>
                         <value>site.visit</value>
                         <value>site.visit.unp</value>
+                        <!-- osp perms -->
+                        <value>osp.style.globalPublish</value>
+                        <value>osp.style.publish</value>
+                        <value>osp.style.delete</value>
+                        <value>osp.style.create</value>
+                        <value>osp.style.edit</value>
+                        <value>osp.style.suggestGlobalPublish</value>
+                        <value>osp.help.glossary.delete</value>
+                        <value>osp.help.glossary.add</value>
+                        <value>osp.help.glossary.edit</value>
+                        <value>osp.help.glossary.export</value>
+                        <value>osp.matrix.review</value>
+                        <value>osp.matrix.scaffolding.create</value>
+                        <value>osp.matrix.scaffolding.edit</value>
+                        <value>osp.matrix.scaffolding.delete</value>
+                        <value>osp.matrix.scaffolding.publish</value>
+                        <value>osp.matrix.scaffolding.export</value>
+                        <value>osp.matrix.evaluate</value>
+                        <value>osp.matrix.viewOwner</value>
+                        <value>osp.matrix.review</value>
+                        <value>osp.presentation.create</value>
+                        <value>osp.presentation.edit</value>
+                        <value>osp.presentation.delete</value>
+                        <value>osp.presentation.copy</value>
+                        <value>osp.presentation.comment</value>
+                        <value>osp.presentation.template.copy</value>
+                        <value>osp.presentation.template.publish</value>
+                        <value>osp.presentation.template.delete</value>
+                        <value>osp.presentation.template.create</value>
+                        <value>osp.presentation.template.edit</value>
+                        <value>osp.presentation.template.export</value>
+                        <value>osp.presentation.layout.publish</value>
+                        <value>osp.presentation.layout.delete</value>
+                        <value>osp.presentation.layout.create</value>
+                        <value>osp.presentation.layout.edit</value>
+                        <value>osp.presentation.layout.suggestPublish</value>
+                        <value>osp.wizard.publish</value>
+                        <value>osp.wizard.delete</value>
+                        <value>osp.wizard.create</value>
+                        <value>osp.wizard.edit</value>
+                        <value>osp.wizard.review</value>
+                        <value>osp.wizard.export</value>
                      </list>
                   </entry>
                   <entry key="CIG Participant">
@@ -824,6 +931,16 @@
                         <value>rwiki.update</value>
                         <value>section.role.student</value>
                         <value>site.visit</value>
+                        <!-- osp perms -->
+                        <value>osp.style.create</value>
+                        <value>osp.matrix.scaffolding.use</value>
+                        <value>osp.presentation.create</value>
+                        <value>osp.presentation.copy</value>
+                        <value>osp.presentation.comment</value>
+                        <value>osp.presentation.layout.create</value>
+                        <value>osp.presentation.layout.delete</value>
+                        <value>osp.presentation.layout.edit</value>
+                        <value>osp.wizard.view</value>
                      </list>
                   </entry>
                   <entry key="Reviewer">
@@ -849,6 +966,10 @@
                         <value>rwiki.update</value>
                         <value>section.role.student</value>
                         <value>site.visit</value>
+                        <value>osp.matrix.review</value>
+                        <value>osp.presentation.copy</value>
+                        <value>osp.presentation.comment</value>
+                        <value>osp.wizard.review</value>
                      </list>
                   </entry>
                   <entry key="Evaluator">
@@ -874,6 +995,11 @@
                         <value>rwiki.update</value>
                         <value>section.role.student</value>
                         <value>site.visit</value>
+                        <value>osp.matrix.evaluate</value>
+                        <value>osp.matrix.viewOwner</value>
+                        <value>osp.presentation.copy</value>
+                        <value>osp.presentation.comment</value>
+                        <value>osp.wizard.evaluate</value>
                      </list>
                   </entry>
                </map>
@@ -953,6 +1079,48 @@
                         <value>site.upd</value>
                         <value>site.visit</value>
                         <value>site.visit.unp</value>
+                        <!-- osp perms -->
+                        <value>osp.style.globalPublish</value>
+                        <value>osp.style.publish</value>
+                        <value>osp.style.delete</value>
+                        <value>osp.style.create</value>
+                        <value>osp.style.edit</value>
+                        <value>osp.style.suggestGlobalPublish</value>
+                        <value>osp.help.glossary.delete</value>
+                        <value>osp.help.glossary.add</value>
+                        <value>osp.help.glossary.edit</value>
+                        <value>osp.help.glossary.export</value>
+                        <value>osp.matrix.review</value>
+                        <value>osp.matrix.scaffolding.create</value>
+                        <value>osp.matrix.scaffolding.edit</value>
+                        <value>osp.matrix.scaffolding.delete</value>
+                        <value>osp.matrix.scaffolding.publish</value>
+                        <value>osp.matrix.scaffolding.export</value>
+                        <value>osp.matrix.evaluate</value>
+                        <value>osp.matrix.viewOwner</value>
+                        <value>osp.matrix.review</value>
+                        <value>osp.presentation.create</value>
+                        <value>osp.presentation.edit</value>
+                        <value>osp.presentation.delete</value>
+                        <value>osp.presentation.copy</value>
+                        <value>osp.presentation.comment</value>
+                        <value>osp.presentation.template.copy</value>
+                        <value>osp.presentation.template.publish</value>
+                        <value>osp.presentation.template.delete</value>
+                        <value>osp.presentation.template.create</value>
+                        <value>osp.presentation.template.edit</value>
+                        <value>osp.presentation.template.export</value>
+                        <value>osp.presentation.layout.publish</value>
+                        <value>osp.presentation.layout.delete</value>
+                        <value>osp.presentation.layout.create</value>
+                        <value>osp.presentation.layout.edit</value>
+                        <value>osp.presentation.layout.suggestPublish</value>
+                        <value>osp.wizard.publish</value>
+                        <value>osp.wizard.delete</value>
+                        <value>osp.wizard.create</value>
+                        <value>osp.wizard.edit</value>
+                        <value>osp.wizard.review</value>
+                        <value>osp.wizard.export</value>
                      </list>
                   </entry>
                   <entry key="Program Coordinator">
@@ -1028,6 +1196,48 @@
                         <value>site.upd</value>
                         <value>site.visit</value>
                         <value>site.visit.unp</value>
+                        <!-- osp perms -->
+                        <value>osp.style.globalPublish</value>
+                        <value>osp.style.publish</value>
+                        <value>osp.style.delete</value>
+                        <value>osp.style.create</value>
+                        <value>osp.style.edit</value>
+                        <value>osp.style.suggestGlobalPublish</value>
+                        <value>osp.help.glossary.delete</value>
+                        <value>osp.help.glossary.add</value>
+                        <value>osp.help.glossary.edit</value>
+                        <value>osp.help.glossary.export</value>
+                        <value>osp.matrix.review</value>
+                        <value>osp.matrix.scaffolding.create</value>
+                        <value>osp.matrix.scaffolding.edit</value>
+                        <value>osp.matrix.scaffolding.delete</value>
+                        <value>osp.matrix.scaffolding.publish</value>
+                        <value>osp.matrix.scaffolding.export</value>
+                        <value>osp.matrix.evaluate</value>
+                        <value>osp.matrix.viewOwner</value>
+                        <value>osp.matrix.review</value>
+                        <value>osp.presentation.create</value>
+                        <value>osp.presentation.edit</value>
+                        <value>osp.presentation.delete</value>
+                        <value>osp.presentation.copy</value>
+                        <value>osp.presentation.comment</value>
+                        <value>osp.presentation.template.copy</value>
+                        <value>osp.presentation.template.publish</value>
+                        <value>osp.presentation.template.delete</value>
+                        <value>osp.presentation.template.create</value>
+                        <value>osp.presentation.template.edit</value>
+                        <value>osp.presentation.template.export</value>
+                        <value>osp.presentation.layout.publish</value>
+                        <value>osp.presentation.layout.delete</value>
+                        <value>osp.presentation.layout.create</value>
+                        <value>osp.presentation.layout.edit</value>
+                        <value>osp.presentation.layout.suggestPublish</value>
+                        <value>osp.wizard.publish</value>
+                        <value>osp.wizard.delete</value>
+                        <value>osp.wizard.create</value>
+                        <value>osp.wizard.edit</value>
+                        <value>osp.wizard.review</value>
+                        <value>osp.wizard.export</value>
                      </list>
                   </entry>
                </map>

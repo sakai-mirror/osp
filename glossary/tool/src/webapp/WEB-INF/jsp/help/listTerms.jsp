@@ -3,13 +3,7 @@
 
 <!-- GUID=<c:out value="${newTermId}" /> -->
 
-<c:if test="${!global}">
-    <osp-c:authZMap prefix="osp.help.glossary." var="can" />
-</c:if>
-<c:if test="${global}">
-    <osp-c:authZMap prefix="osp.help.glossary." var="can"
-        qualifier="${globalQualifier}" />
-</c:if>
+<osp-c:authZMap prefix="osp.help.glossary." var="can" />
 
 <osp-c:authZMap prefix="" var="canWorksite" useSite="true" />
 
@@ -41,12 +35,7 @@
                     </fmt:message>
                     </osp:param>
                     <osp:param name="name" value="glossary"/>
-                    <c:if test="${!global}">
-                        <osp:param name="qualifier" value="${tool.id}"/>
-                    </c:if>
-                    <c:if test="${global}">
-                        <osp:param name="qualifier" value="theospi.help.glossary.global"/>
-                    </c:if>
+                    <osp:param name="qualifier" value="${tool.id}"/>
                     <osp:param name="returnView" value="glossaryListRedirect"/>
                 </osp:url>"
             title="<fmt:message key="action_permissions_title"/>">

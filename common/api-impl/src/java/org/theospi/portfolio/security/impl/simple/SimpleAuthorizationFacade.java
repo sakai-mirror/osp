@@ -20,14 +20,24 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.impl.simple;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.OspRole;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.security.Authorization;
@@ -46,6 +56,93 @@ import org.theospi.portfolio.shared.model.OspException;
 public class SimpleAuthorizationFacade extends HibernateDaoSupport implements AuthorizationFacade {
 
    private AuthenticationManager authManager = null;
+   private org.sakaiproject.metaobj.security.AuthorizationFacade shim;
+   private boolean upgradeTo24 = false;
+   
+   public void init() {
+      if (isUpgradeTo24()) {
+         org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
+         String userId = sakaiSession.getUserId();
+         sakaiSession.setUserId("admin");
+         sakaiSession.setUserEid("admin");
+         try {
+            processUpgradeTo24();
+         }
+         finally {
+            sakaiSession.setUserEid(userId);
+            sakaiSession.setUserId(userId);
+         }
+      }
+   }
+
+   protected void processUpgradeTo24() {
+      List authzList = getHibernateTemplate().loadAll(Authorization.class);
+      Map<String, List<Authorization>> qualifierAuthz = new Hashtable<String, List<Authorization>>();
+      
+      for (Iterator<Authorization> i = authzList.iterator();i.hasNext();) {
+         Authorization authz = i.next();
+         List<Authorization> current = qualifierAuthz.get(authz.getQualifier().getValue());
+         if (current == null) {
+            current = new ArrayList<Authorization>();
+            qualifierAuthz.put(authz.getQualifier().getValue(), current);
+         }
+         current.add(authz);
+      }
+      
+      for (Iterator<Map.Entry<String,List<Authorization>>> i=
+         qualifierAuthz.entrySet().iterator();i.hasNext();) {
+         Map.Entry<String,List<Authorization>> entry = i.next();
+         processUpgradeTo24Qualifier(entry.getKey(), entry.getValue());
+      }
+   }
+
+   protected void processUpgradeTo24Qualifier(String qualifier, List<Authorization> authorizations) {
+      try {
+         Site site = SiteService.getSite(qualifier);
+         processUpgradeTo24Site(site, authorizations);
+         return;
+      } catch (IdUnusedException e) {
+         // ignore, this just isn't a site
+      }
+      
+      // check if this is a placement
+      ToolConfiguration tool = SiteService.findTool(qualifier);
+      
+      if (tool != null) {
+         processUpgradeTo24Site(tool.getContainingPage().getContainingSite(), authorizations);
+      }
+   }
+
+   protected void processUpgradeTo24Site(Site site, List<Authorization> authorizations) {
+      try {
+         processUpgradeTo24Group(AuthzGroupService.getAuthzGroup(site.getReference()), authorizations);
+      } catch (GroupNotDefinedException e) {
+         throw new OspException(e);
+      }
+   }
+   
+   protected void processUpgradeTo24Group(AuthzGroup group, List<Authorization> authorizations) {
+      
+      for (Iterator<Authorization> i=authorizations.iterator();i.hasNext();) {
+         Authorization authz = i.next();
+         if (authz.getAgent() instanceof OspRole) {
+            Role role = group.getRole(((OspRole)authz.getAgent()).getRoleName());
+            role.allowFunction(authz.getFunction());
+         }
+         else {
+            i.remove();
+         }
+      }
+
+      try {
+         AuthzGroupService.save(group);
+         getHibernateTemplate().deleteAll(authorizations);
+      } catch (org.sakaiproject.authz.api.AuthzPermissionException e) {
+         throw new OspException(e);
+      } catch (org.sakaiproject.authz.api.GroupNotDefinedException e) {
+         throw new OspException(e);
+      }
+   }
 
    public void checkPermission(String function, Id id) throws AuthorizationFailedException {
       if (!isAuthorized(function, id)) {
@@ -84,11 +181,52 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
     * @jira OSP-323 PostgreSQL Table Creation
     */
    protected Authorization getAuthorization(Agent agent, String function, Id id) {
+      if (id == null) {
+         throw new NullPointerException("The id was null while getting the authorization");
+      }
+      if (agent == null || agent.getId() == null) {
+         throw new NullPointerException("The agent was null while getting the authorization");
+      }
+
+      if (id.getValue() == null) {
+         return null;
+      }
+      
+      Placement placement = ToolManager.getCurrentPlacement();
+      
+      if (placement != null && 
+         (placement.getContext().equals(id.getValue()) || placement.getId().equals(id.getValue()))) {
+         if (shim.isAuthorized(agent, function, id)) {
+            return new Authorization(agent, function, id);
+         }
+         else {
+            return null;
+         }
+      }
+      
+      Site site = findSite(id.getValue());
+      if (site != null) {
+         if (site.isAllowed(agent.getId().getValue(), function)) {
+            return new Authorization(agent, function, id);
+         }
+         else {
+            return null;
+         }
+      }
+      
+      ToolConfiguration toolConfig = SiteService.findTool(id.getValue());
+      
+      if (toolConfig != null) {
+         site = toolConfig.getContainingPage().getContainingSite();
+         if (site.isAllowed(agent.getId().getValue(), function)) {
+            return new Authorization(agent, function, id);
+         }
+         else {
+            return null;
+         }
+      }
+      
       try {
-         if(id == null)
-            throw new NullPointerException("The id was null while getting the authorization");
-         if(agent == null || agent.getId() == null)
-            throw new NullPointerException("The agent was null while getting the authorization");
          getHibernateTemplate().setCacheQueries(true);
          return (Authorization) safePopList(getHibernateTemplate().findByNamedQuery("getAuthorization",
             new Object[]{agent.getId().getValue(), function, id.getValue()}));
@@ -98,9 +236,22 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
       }
    }
 
+   protected Site findSite(String siteId) {
+      try {
+         return SiteService.getSite(siteId);
+      } catch (IdUnusedException e) {
+         // ignore... the id must not be a site...
+         return null;
+      }
+   }    
+
    protected Object safePopList(List list) {
-      if (list == null) return null;
-      if (list.size() == 0) return null;
+      if (list == null) {
+         return null;
+      }
+      if (list.size() == 0) {
+         return null;
+      }
       return list.get(0);
    }
 
@@ -249,5 +400,21 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
 
    public void setAuthManager(AuthenticationManager authManager) {
       this.authManager = authManager;
+   }
+
+   public org.sakaiproject.metaobj.security.AuthorizationFacade getShim() {
+      return shim;
+   }
+
+   public void setShim(org.sakaiproject.metaobj.security.AuthorizationFacade shim) {
+      this.shim = shim;
+   }
+
+   public boolean isUpgradeTo24() {
+      return upgradeTo24;
+   }
+
+   public void setUpgradeTo24(boolean upgradeTo24) {
+      this.upgradeTo24 = upgradeTo24;
    }
 }
