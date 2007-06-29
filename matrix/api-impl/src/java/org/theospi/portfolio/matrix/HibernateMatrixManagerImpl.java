@@ -160,9 +160,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     */
    public List findAvailableScaffolding(String siteIdStr, Agent user) {
       
-      Object[] params = new Object[]{getIdManager().getId(siteIdStr), user, new Boolean(true)};
+      Object[] params = new Object[]{getIdManager().getId(siteIdStr), user, new Boolean(true), new Boolean(true)};
       return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
-            "and (s.owner=? or s.published=?) ", params);
+            "and (s.owner=? or s.published=? or s.preview=?) ", params);
    }
    
    /**
@@ -170,9 +170,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     */
    public List findAvailableScaffolding(List sites, Agent user) {
       
-      String[] paramNames = new String[] {"siteIds", "owner", "published"};
+      String[] paramNames = new String[] {"siteIds", "owner", "true"};
       Object[] params = new Object[]{sites, user, new Boolean(true)};
-      return getHibernateTemplate().findByNamedParam("from Scaffolding s where s.worksiteId in ( :siteIds ) and ( s.owner = :owner or s.published=:published )",
+      return getHibernateTemplate().findByNamedParam("from Scaffolding s where s.worksiteId in ( :siteIds ) and ( s.owner = :owner or s.published=:true or s.preview=:true)",
             paramNames, params);
    }
    

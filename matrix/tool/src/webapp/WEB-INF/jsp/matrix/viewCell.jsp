@@ -40,9 +40,9 @@
    </c:if>
 
 	<c:set var="cell" value="${cellBean.cell}"/>
-   <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" useSite="true"/>
-   <osp-c:authZMap prefix="osp.matrix." var="matrixCan" useSite="true"/>
-   <osp-c:authZMap prefix="osp.wizard." var="wizardCan" useSite="true"/>
+   <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" qualifier="${cell.scaffoldingCell.scaffolding.worksiteId}"/>
+   <osp-c:authZMap prefix="osp.matrix." var="matrixCan" qualifier="${cell.scaffoldingCell.scaffolding.worksiteId}"/>
+   <osp-c:authZMap prefix="osp.wizard." var="wizardCan" qualifier="${cell.scaffoldingCell.scaffolding.worksiteId}"/>
 
    <%-- TODO - need to see if user gets any of these abilities, if not omit whole toolbar --%>
 	<div class="navIntraTool">

@@ -4,10 +4,10 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
-<!-- GUID=<c:out value="${newScaffoldingId}"/> -->
-
-<osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" useSite="true"/>
-<osp-c:authZMap prefix="osp.matrix." var="matrixCan" useSite="true"/>
+<c:if test="${!myworkspace}">
+  <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" useSite="true"/>
+  <osp-c:authZMap prefix="osp.matrix." var="matrixCan" useSite="true"/>
+</c:if>
 
 <c:if test="${!myworkspace && (can.create || isMaintainer)}">
    <div class="navIntraTool">
@@ -49,10 +49,17 @@
          <th scope="col"><fmt:message key="table_header_name"/></th>
          <th scope="col"><fmt:message key="table_header_owner"/></th>
          <th scope="col"><fmt:message key="table_header_published"/></th>
+         <c:if test="${myworkspace}">
+           <th scope="col"><fmt:message key="table_header_worksite"/></th>
+			</c:if>
       </tr>
    </thead>
    <tbody>
   <c:forEach var="scaffold" items="${scaffolding}">
+    <c:if test="${myworkspace}">
+      <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" qualifier="${scaffold.worksiteId}"/>
+      <osp-c:authZMap prefix="osp.matrix." var="matrixCan" qualifier="${scaffold.worksiteId}"/>
+    </c:if>
     <tr>
       <td style="white-space: nowrap">
          <c:if test="${(scaffold.published || scaffold.preview) && (scaffold.owner == osp_agent || can.use || matrixCan.review || matrixCan.evaluate)}">
@@ -130,6 +137,11 @@
             <fmt:message key="scaffolding_published_false"/>
          </c:if>
 		</td>
+      <c:if test="${myworkspace}">
+         <td>
+            <c:out value="${scaffold.worksiteName}" />
+         </td>
+      </c:if>
     </tr>
 	<tr class="exclude">
 			

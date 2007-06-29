@@ -174,23 +174,22 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
     */
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = new HashMap();
-      String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
-
-      model.put("worksite", getWorksiteManager().getSite(worksiteId));
-      model.put("tool", getToolManager().getCurrentPlacement());
-      model.put("isMaintainer", isMaintainer());      
+      MatrixGridBean grid = (MatrixGridBean) command;      
+      Agent owner = grid.getMatrixOwner();
+      Boolean readOnly = Boolean.valueOf(false);
+      String worksiteId = grid.getScaffolding().getWorksiteId().getValue();
 
       List userList = new ArrayList(getUserList(worksiteId));
       Collections.sort(userList);
       model.put("members", userList);
       
-      MatrixGridBean grid = (MatrixGridBean) command;      
-      Agent owner = grid.getMatrixOwner();
-      Boolean readOnly = Boolean.valueOf(false);
-
       if ((owner != null && !owner.equals(getAuthManager().getAgent())) ||
            !getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING,getWorksiteManager().getCurrentWorksiteId()))
          readOnly = Boolean.valueOf(true);
+
+      model.put("worksite", worksiteId );
+      model.put("tool", getToolManager().getCurrentPlacement());
+      model.put("isMaintainer", isMaintainer());      
 
       model.put("matrixOwner", owner);      
       model.put("readOnlyMatrix", readOnly);

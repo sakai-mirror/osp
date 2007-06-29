@@ -31,6 +31,9 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.theospi.portfolio.style.model.Style;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.exception.IdUnusedException;
 
 /**
  * I. Communication
@@ -226,6 +229,25 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
       this.description = description;
    }
   
+   /**
+    * @return Returns the worksiteId.
+    */
+   public String getWorksiteName() {
+	   String worksiteName = "";
+		
+      try
+      {
+         Site site = SiteService.getSite(worksiteId.getValue());
+			worksiteName = site.getTitle();
+      }
+      catch (IdUnusedException e)
+      {
+         // tbd
+      }
+
+      return worksiteName;
+   }
+	
    /**
     * @return Returns the worksiteId.
     */

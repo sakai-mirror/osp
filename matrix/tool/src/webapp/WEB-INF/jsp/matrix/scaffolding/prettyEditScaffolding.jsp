@@ -101,7 +101,7 @@ function hrefViewCell(cellId) {
       }
     </script>
 
-<osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" useSite="true"/>
+<osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" qualifier="${matrixConetnts.scaffolding.worksiteId}"/>
 
 
 		<div class="navIntraTool">
