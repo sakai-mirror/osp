@@ -25,28 +25,44 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SiteService;
 
 public class ListScaffoldingController extends AbstractMatrixController {
 
    protected final Log logger = LogFactory.getLog(getClass());
    private ListScrollIndexer listScrollIndexer;
+   private SiteService siteService;
+	private IdManager idManager;
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Hashtable<String, Object> model = new Hashtable<String, Object>();
       Agent currentAgent = getAuthManager().getAgent();
       String currentToolId = ToolManager.getCurrentPlacement().getId();
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
+		List scaffolding = null;
 
-      List scaffolding = new ArrayList(getMatrixManager().findAvailableScaffolding(
-            worksiteId, currentAgent));
+		if ( isOnWorkspaceTab() )
+		{
+			scaffolding = 
+				new ArrayList(getMatrixManager().findAvailableScaffolding(getUserWorksites(), currentAgent));
+		}
+		else
+		{
+			scaffolding = 
+				new ArrayList(getMatrixManager().findAvailableScaffolding(worksiteId, currentAgent));
+		}
       
       // When selecting a matrix the user should start with a fresh user
       session.remove(ViewMatrixController.VIEW_USER);
@@ -58,6 +74,7 @@ public class ListScaffoldingController extends AbstractMatrixController {
       model.put("tool", getWorksiteManager().getTool(currentToolId));
       model.put("isMaintainer", isMaintainer());
       model.put("osp_agent", currentAgent);
+		model.put("myworkspace", isOnWorkspaceTab() );
       
       model.put("useExperimentalMatrix", getMatrixManager().isUseExperimentalMatrix());
       
@@ -71,4 +88,53 @@ public class ListScaffoldingController extends AbstractMatrixController {
    public void setListScrollIndexer(ListScrollIndexer listScrollIndexer) {
       this.listScrollIndexer = listScrollIndexer;
    }
+	
+   public SiteService getSiteService() {
+      return siteService;
+   }
+
+   public void setSiteService(SiteService siteService) {
+      this.siteService = siteService;
+   }
+	
+   /**
+    * @return the idManager
+    */
+   public IdManager getIdManager() {
+      return idManager;
+   }
+   /**
+    * @param idManager the idManager to set
+    */
+   public void setIdManager(IdManager idManager) {
+      this.idManager = idManager;
+   }
+	
+   /**
+    * See if the current tab is the workspace tab.
+    * @return true if we are currently on the "My Workspace" tab.
+    */
+   private boolean isOnWorkspaceTab()
+   {
+      return siteService.isUserSite(ToolManager.getCurrentPlacement().getContext());
+   }
+	
+	/**
+	 ** Return list of worksite Ids for current user
+	 **/
+	private List getUserWorksites()
+	{		 
+		List siteList = siteService.getSites(SiteService.SelectionType.ACCESS,
+														 null, null, null, 
+														 SiteService.SortType.TITLE_ASC, null);
+      List siteStrIds = new ArrayList(siteList.size());
+		for (Iterator it = siteList.iterator(); it.hasNext();) 
+		{
+			Site site = (Site) it.next();
+         String siteId = site.getId();
+			siteStrIds.add( idManager.getId(siteId) );
+		}
+		
+		return siteStrIds;
+	}
 }

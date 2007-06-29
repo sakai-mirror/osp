@@ -9,7 +9,7 @@
 <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" useSite="true"/>
 <osp-c:authZMap prefix="osp.matrix." var="matrixCan" useSite="true"/>
 
-<c:if test="${can.create || isMaintainer}">
+<c:if test="${!myworkspace && (can.create || isMaintainer)}">
    <div class="navIntraTool">
         <c:if test="${can.create}">
             <a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_create"/></a>

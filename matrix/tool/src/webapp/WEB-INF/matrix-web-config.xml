@@ -42,6 +42,9 @@
             <property name="listScrollIndexer">
                <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
             </property>
+            <property name="siteService">
+               <ref bean="org.sakaiproject.site.api.SiteService" />
+            </property>
          </bean>
       </property>
       <property name="customTypedEditors">

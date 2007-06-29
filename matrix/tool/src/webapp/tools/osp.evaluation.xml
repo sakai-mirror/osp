@@ -4,10 +4,11 @@
 
 	<tool id="osp.evaluation" title="Evaluations" description="OSP Evaluations">
 
-       <category name="sakai.main" />
+      <category name="sakai.main" />
       <category name="project" />
       <category name="course" />
       <category name="portfolio" />
+      <category name="myworkspace" />
 
        <keyword name="matrix" />
        <keyword name="evaluate" />

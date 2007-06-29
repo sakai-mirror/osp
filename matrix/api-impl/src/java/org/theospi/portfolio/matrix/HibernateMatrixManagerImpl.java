@@ -166,6 +166,17 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
    
    /**
+    *  {@inheritDoc}
+    */
+   public List findAvailableScaffolding(List sites, Agent user) {
+      
+      String[] paramNames = new String[] {"siteIds", "owner", "published"};
+      Object[] params = new Object[]{sites, user, new Boolean(true)};
+      return getHibernateTemplate().findByNamedParam("from Scaffolding s where s.worksiteId in ( :siteIds ) and ( s.owner = :owner or s.published=:published )",
+            paramNames, params);
+   }
+   
+   /**
     * gathers all the published scaffolding from the given site (id)
     * @param siteId String
     * @return List of Scaffolding
@@ -180,7 +191,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    /**
     * 
     * @param sites A list of site Ids (Ids)
-    * @return
+    * @return list of all published scaffolding within specified sites
     */
    public List findPublishedScaffolding(List sites) {
       String[] paramNames = new String[] {"siteIds", "published"};
