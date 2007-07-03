@@ -23,6 +23,7 @@ package org.theospi.portfolio.reports.model;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.shared.model.OspException;
@@ -183,7 +184,9 @@ public class Report
 	 */
 	public void connectToDefinition(List reportDefs)
 	{
-		reportParams.size();
+        List paramList = new ArrayList();
+
+        reportParams.size();
 		if(reportDefIdMark != null && reportDefinition == null) {
 			Iterator iter = reportDefs.iterator();
 			
@@ -195,22 +198,24 @@ public class Report
 				}
 			}
 			if(reportDefinition != null) {
-				iter = this.getReportParams().iterator();
+				iter = reportDefinition.getReportDefinitionParams().iterator();
 				while(iter.hasNext()) {
-					ReportParam rp = (ReportParam)iter.next();
-					
-					Iterator defIter = reportDefinition.getReportDefinitionParams().iterator();
-					while(defIter.hasNext()) {
-						ReportDefinitionParam rdp = (ReportDefinitionParam)defIter.next();
+                    ReportDefinitionParam rdp = (ReportDefinitionParam)iter.next();
+
+					Iterator paramIter = this.getReportParams().iterator();
+					while(paramIter.hasNext()) {
+                        ReportParam rp = (ReportParam)paramIter.next();
 						if(rp.getReportDefParamIdMark().equals(rdp.getIdString())) {
 							rp.setReportDefinitionParam(rdp);
 							rp.setReport(this);
-							break;
+                            paramList.add(rp);
 						}
 					}
-				}// end while(looping through report params)
+				}// end while(looping through report defs)
 			}
-		}
+            // re-ordering params to match the order of the report def
+            reportParams = paramList;
+        }
 	}
 	
 	
@@ -378,7 +383,7 @@ public class Report
 	public void setReportParams(List reportParams)
 	{
 		this.reportParams = reportParams;
-	}
+    }
 	
 	
 	/**

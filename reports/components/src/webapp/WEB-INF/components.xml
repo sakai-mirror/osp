@@ -154,6 +154,11 @@
                                 <value>/org/theospi/portfolio/reports/definition/usage/session_admin.xml</value>
                             </property>
                          </bean>           
+                         <bean abstract="false" autowire="default" class="org.theospi.portfolio.reports.model.impl.ReportsDefinitionWrapper" dependency-check="default" lazy-init="default" singleton="true">
+                            <property name="idValue"> <value>matrixStatusReport-123</value> </property>
+                            <property name="beanId">  <value>matrixStatusReport-123</value> </property>
+                            <property name="definitionFileLocation"> <value>/org/theospi/portfolio/reports/definition/matrixcomp-status.xml</value> </property>
+                         </bean>
                     </list>
                 </property>
                <property name="autoDdl"><value>${auto.ddl}</value></property>

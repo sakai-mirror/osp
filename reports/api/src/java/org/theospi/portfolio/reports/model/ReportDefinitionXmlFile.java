@@ -100,4 +100,20 @@ public class ReportDefinitionXmlFile {
     public void setReportXslFiles(Set reportXslFiles) {
         this.reportXslFiles = reportXslFiles;
     }
+
+    public int hashCode() { 
+        return getReportDefId().hashCode(); 
+    } 
+ 
+    public boolean equals(Object object) { 
+        if (this != null && object != null && object instanceof ReportDefinitionXmlFile) { 
+            ReportDefinitionXmlFile that = (ReportDefinitionXmlFile) object; 
+            if (that.getReportDefId() != null && that.getReportDefId().equals(getReportDefId())) { 
+                return true; 
+ 
+            } 
+        } 
+        return false; 
+    } 
+   
 }

@@ -1098,7 +1098,7 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
                     }
                     tempString.delete(tempString.length() - 1, tempString.length());
                     tempString.append(") ");
-                    inQuery.insert(index + 2, tempString);
+                    inQuery.insert(index, tempString);
                 }
             }
         }
@@ -1195,13 +1195,19 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
     }
 
     public InputStream loadXslFromDB(ReportXsl reportXsl) {
+        ReportDefinitionXmlFile reportDef = getReportDefinition(reportXsl.getReportDefinition().getIdString());
+
         ByteArrayInputStream inputStream = null;
-        List xsls = getHibernateTemplate().find("from ReportXslFile r where reportDefId = ? and reportXslFileRef = ?", new Object[]{reportXsl.getReportDefinition().getIdString(), reportXsl.getXslLink()});
-        for (Iterator i = xsls.iterator(); i.hasNext();) {
+        for (Iterator i = reportDef.getReportXslFiles().iterator(); i.hasNext();) {
             ReportXslFile xslFile = (ReportXslFile) i.next();
-            inputStream = new ByteArrayInputStream(xslFile.getXslFile());
+            if (xslFile.getReportXslFileRef().equals(reportXsl.getXslLink())) {
+                inputStream = new ByteArrayInputStream(xslFile.getXslFile());
+                return inputStream;
+            }
         }
-        return inputStream;
+        throw new RuntimeException("can't find report xslfile: reportDef=[" +
+                reportXsl.getReportDefinition().getReportDefId().toString() +
+                "], xslLink=[" + reportXsl.getXslLink() + "]");
     }
 
     private String getResourceFrom(String file) {
@@ -1532,9 +1538,9 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
             for (Iterator i = xsls.iterator(); i.hasNext();) {
                 ReportXsl xsl = (ReportXsl) i.next();
                 ReportXslFile xslFile = new ReportXslFile(xsl, getContentHosting());
-                xslFile.setReportDefId(reportDef.getIdString());
                 xslFile.setReportXslFileRef(xsl.getXslLink());
-                xslFile.setReportDef(xmlFile);
+                xslFile.setXslFileHash(DigestUtils.md5Hex(xslFile.getXslFile()));
+
                 xslsList.add(xslFile);
             }
 
@@ -1621,10 +1627,10 @@ public class ReportsManagerImpl extends HibernateDaoSupport implements ReportsMa
                 ReportXslFile xslFile = new ReportXslFile();
                 if (getClass().getResourceAsStream(xsl.getXslLink()) != null){
                     xslFile.setXslFile(readStreamToBytes(getClass().getResourceAsStream(xsl.getXslLink())));
+                    xslFile.setXslFileHash(DigestUtils.md5Hex(xslFile.getXslFile()));
                 }
-                xslFile.setReportDefId(repDef.getIdString());
+                //xslFile.setReportDefId(repDef.getIdString());
                 xslFile.setReportXslFileRef(xsl.getXslLink());
-                xslFile.setReportDef(def);
                 xslFiles.add(xslFile);
 
             }

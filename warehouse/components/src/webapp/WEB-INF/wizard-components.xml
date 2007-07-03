@@ -321,7 +321,6 @@
       </property>
    </bean>
    
-   
    <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.category"
         class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
       <property name="fields">
@@ -343,15 +342,15 @@
             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                <property name="propertyName"><value>modified</value></property>
             </bean>
-            <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
-
+            <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+               <property name="propertyName"><value>wizard</value></property>
+            </bean>
             <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
                <property name="propertyName"><value>parentCategory</value></property>
             </bean>
             <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
                <property name="propertyName"><value>sequence</value></property>
             </bean>
-
          </list>
       </property>
       <property name="insertStmt">

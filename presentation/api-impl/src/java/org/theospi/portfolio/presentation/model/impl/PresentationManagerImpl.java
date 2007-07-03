@@ -1903,7 +1903,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          String id = getContentHosting().resolveUuid(item.getArtifactId().getValue());
          if (id != null) {
             readableFiles.add(getContentHosting().getReference(id));
-         }
+         }              
       }
 
       if (presentation.getTemplate().getFiles() != null) {

@@ -80,23 +80,16 @@
 
         <id name="reportDefId" length="36" type="java.lang.String" column="reportDefId"/>
         <property name="xmlFile" column="xmlFile" type="binary" not-null="true" length="2147483647"/>
-        <set name="reportXslFiles" cascade="all" inverse="true">
+        <set name="reportXslFiles" table="osp_report_xsl">
             <key column="reportDefId" />
-            <one-to-many class="ReportXslFile" />
+            <composite-element class="ReportXslFile">
+             <property name="reportXslFileRef" length="255" type="java.lang.String" column="reportXslFileRef"/>
+             <property name="xslFile" column="xslFile" type="binary" length="2147483647"/>
+             <property name="xslFileHash" column="xslFileHash" type="java.lang.String" not-null="true" length="255" />
+            </composite-element>
         </set>
+    </class>
 
-    </class>
-     <class name="ReportXslFile"
-           table="osp_report_xsl">
-         <id name="reportXslFileId" length="36"
-            type="org.sakaiproject.metaobj.shared.IdType" column="reportXslFileId">
-            <generator class="org.sakaiproject.metaobj.shared.IdGenerator" />
-        </id>
-         <property name="reportXslFileRef" length="255" type="java.lang.String" column="reportXslFileRef"/>
-         <many-to-one name="reportDef" column="reportDefId"
-            class="ReportDefinitionXmlFile" cascade="delete" />
-         <property name="xslFile" column="xslFile" type="binary" not-null="true" length="2147483647"/>
-    </class>
     <class
         name="Report"
         table="osp_reports">
@@ -119,11 +112,10 @@
         <property name="type" type="java.lang.String" />
         <property name="display" type="boolean" />
         
-        <list name="reportParams" cascade="all" inverse="true">
+        <bag name="reportParams" cascade="all" inverse="true">
             <key column="reportId" />
-            <index column="reportDefParamIdMark" />
             <one-to-many class="ReportParam" />
-        </list>
+        </bag>
     </class>
     
     <class

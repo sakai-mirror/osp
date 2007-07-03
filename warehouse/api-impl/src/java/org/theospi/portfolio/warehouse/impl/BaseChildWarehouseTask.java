@@ -47,7 +47,7 @@ public class BaseChildWarehouseTask implements ChildWarehouseTask {
    private String insertStmt;
    private String clearStmt;
    private List complexFields;
-   private int batchSize = 100;
+   private int batchSize = 1000;
    private boolean isPrepared = false;
    
    /**
