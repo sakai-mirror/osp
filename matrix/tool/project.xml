@@ -114,7 +114,7 @@
 
     <dependency>
       <groupId>sakaiproject</groupId>
-      <artifactId>sakai-assignment-api</artifactId>
+      <artifactId>sakai-taggable-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
 

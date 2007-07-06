@@ -86,7 +86,7 @@
     <dependency>
       
       <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-assignment-api</artifactId>
+      <artifactId>sakai-taggable-api</artifactId>
       <version>${sakai.version}</version>
       <scope>provided</scope>
     </dependency>
