@@ -709,8 +709,8 @@
                         <value>disc.revise.own</value>
                         <value>dropbox.own</value>
                         <value>mail.read</value>
-                        <value>osp.reports.runReport</value>
-                        <value>osp.reports.viewReport</value>
+                        <value>reports.runReport</value>
+                        <value>reports.viewReport</value>
                         <value>rwiki.create</value>
                         <value>rwiki.read</value>
                         <value>rwiki.update</value>
@@ -744,8 +744,8 @@
                         <value>disc.revise.own</value>
                         <value>dropbox.own</value>
                         <value>mail.read</value>
-                        <value>osp.reports.runReport</value>
-                        <value>osp.reports.viewReport</value>
+                        <value>reports.runReport</value>
+                        <value>reports.viewReport</value>
                         <value>rwiki.create</value>
                         <value>rwiki.read</value>
                         <value>rwiki.update</value>
@@ -773,8 +773,8 @@
                         <value>disc.revise.own</value>
                         <value>dropbox.own</value>
                         <value>mail.read</value>
-                        <value>osp.reports.runReport</value>
-                        <value>osp.reports.viewReport</value>
+                        <value>reports.runReport</value>
+                        <value>reports.viewReport</value>
                         <value>rwiki.create</value>
                         <value>rwiki.read</value>
                         <value>rwiki.update</value>
@@ -924,8 +924,8 @@
                         <value>disc.revise.own</value>
                         <value>dropbox.own</value>
                         <value>mail.read</value>
-                        <value>osp.reports.runReport</value>
-                        <value>osp.reports.viewReport</value>
+                        <value>reports.runReport</value>
+                        <value>reports.viewReport</value>
                         <value>rwiki.create</value>
                         <value>rwiki.read</value>
                         <value>rwiki.update</value>
@@ -959,8 +959,8 @@
                         <value>disc.revise.own</value>
                         <value>dropbox.own</value>
                         <value>mail.read</value>
-                        <value>osp.reports.runReport</value>
-                        <value>osp.reports.viewReport</value>
+                        <value>reports.runReport</value>
+                        <value>reports.viewReport</value>
                         <value>rwiki.create</value>
                         <value>rwiki.read</value>
                         <value>rwiki.update</value>
@@ -988,8 +988,8 @@
                         <value>disc.revise.own</value>
                         <value>dropbox.own</value>
                         <value>mail.read</value>
-                        <value>osp.reports.runReport</value>
-                        <value>osp.reports.viewReport</value>
+                        <value>reports.runReport</value>
+                        <value>reports.viewReport</value>
                         <value>rwiki.create</value>
                         <value>rwiki.read</value>
                         <value>rwiki.update</value>
