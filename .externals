@@ -61,6 +61,9 @@ util			https://source.sakaiproject.org/svn/util/trunk
 velocity		https://source.sakaiproject.org/svn/velocity/trunk
 web			https://source.sakaiproject.org/svn/web/trunk
 webservices		https://source.sakaiproject.org/svn/webservices/trunk
+reports			https://source.sakaiproject.org/svn/reports/trunk
+warehouse		https://source.sakaiproject.org/svn/warehouse/trunk
 gmt			https://source.sakaiproject.org/contrib/syracuse/gmt/trunk
 datapoint		https://source.sakaiproject.org/contrib/syracuse/datapoint/trunk
 xsdWeaver		https://source.sakaiproject.org/contrib/ucf/Xsdweaver/trunk
+
