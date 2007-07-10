@@ -117,8 +117,14 @@
      </dependency>
 
      <dependency>
-       <groupId>osp</groupId>
-       <artifactId>osp-warehouse-api</artifactId>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-warehouse-api</artifactId>
+       <version>${sakai.version}</version>
+     </dependency>
+
+     <dependency>
+       <groupId>sakaiproject</groupId>
+       <artifactId>sakai-warehouse-impl</artifactId>
        <version>${sakai.version}</version>
      </dependency>
 

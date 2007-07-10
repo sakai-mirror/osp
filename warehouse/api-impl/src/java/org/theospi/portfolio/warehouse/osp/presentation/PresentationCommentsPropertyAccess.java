@@ -22,7 +22,7 @@ package org.theospi.portfolio.warehouse.osp.presentation;
 
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
-import org.theospi.portfolio.warehouse.intf.PropertyAccess;
+import org.sakaiproject.warehouse.service.PropertyAccess;
 
 /**
  * Created by IntelliJ IDEA.

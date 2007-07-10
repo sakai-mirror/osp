@@ -45,10 +45,10 @@ import org.sakaiproject.exception.IdUnusedException;
  * III. Integration & Application of Knowledge
  * IV. Values & Ethics
  *
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>documentRoot</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.IdPropertyAccess">
               <property name="propertyName"><value>privacyXsdId</value></property>
            </bean> 
           

@@ -187,10 +187,10 @@
 
    <bean id="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifactMatrix"
       parent="org.sakaiproject.metaobj.shared.ArtifactFinder.fileArtifact"
-      class="org.theospi.portfolio.shared.mgt.ContentWrappedArtifactFinder" />
+      class="org.sakaiproject.metaobj.shared.mgt.ContentWrappedArtifactFinder" />
 
    <bean id="org.sakaiproject.metaobj.shared.ArtifactFinderManager.matrix"
-      class="org.theospi.portfolio.shared.mgt.WrappedArtifactFinderManager">
+      class="org.sakaiproject.metaobj.shared.mgt.WrappedArtifactFinderManager">
       <property name="base">
          <ref bean="artifactFinderManager"/>
       </property>

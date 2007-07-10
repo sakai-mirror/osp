@@ -23,7 +23,7 @@ package org.theospi.portfolio.warehouse.osp.style;
 import java.util.Collection;
 
 import org.theospi.portfolio.style.mgt.StyleManager;
-import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
+import org.sakaiproject.warehouse.impl.BaseWarehouseTask;
 
 /**
  * Created by IntelliJ IDEA.

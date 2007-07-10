@@ -20,7 +20,6 @@
     <module>matrix</module>
     <module>portal</module>
     <module>presentation</module>
-    <module>reports</module>
     <module>warehouse</module>
     <module>wizard</module>
   </modules>

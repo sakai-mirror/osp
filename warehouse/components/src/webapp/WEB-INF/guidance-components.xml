@@ -4,22 +4,22 @@
 <beans default-lazy-init="false">
 
 	  
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.guidance.item.file"
-        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+   <bean id="org.sakaiproject.warehouse.service.ChildWarehouseTask.guidance.item.file"
+        class="org.sakaiproject.warehouse.impl.BaseChildWarehouseTask">
         <property name="fields">
            <list>
-              <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+              <ref bean="org.sakaiproject.warehouse.service.PropertyAccess.id" />
               
-              <bean class="org.theospi.portfolio.warehouse.impl.ReferenceHolderPropertyAccess">
+              <bean class="org.sakaiproject.warehouse.impl.ReferenceHolderPropertyAccess">
                  <property name="propertyName"><value>baseReference</value></property>
               </bean>
               
-              <bean class="org.theospi.portfolio.warehouse.impl.ReferenceHolderPropertyAccess">
+              <bean class="org.sakaiproject.warehouse.impl.ReferenceHolderPropertyAccess">
                  <property name="propertyName"><value>fullReference</value></property>
               </bean>
               
                          
-              <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <bean class="org.sakaiproject.warehouse.impl.IdentifiableObjectPropertyAccess">
                  <property name="propertyName"><value>item</value></property>
               </bean>
                
@@ -37,21 +37,21 @@
    </bean>
     
    
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.guidance.item"
-        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+   <bean id="org.sakaiproject.warehouse.service.ChildWarehouseTask.guidance.item"
+        class="org.sakaiproject.warehouse.impl.BaseChildWarehouseTask">
         <property name="fields">
            <list>
-              <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <ref bean="org.sakaiproject.warehouse.service.PropertyAccess.id" />
+              <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
                  <property name="propertyName"><value>type</value></property>
               </bean>
               <!-- field:text goes here , its of type TEXT
-              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
                  <property name="propertyName"><value>siteId</value></property>
               </bean>
               -->
                          
-              <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+              <bean class="org.sakaiproject.warehouse.impl.IdentifiableObjectPropertyAccess">
                  <property name="propertyName"><value>guidance</value></property>
               </bean>
                
@@ -68,14 +68,14 @@
         </property>
         <property name="complexFields" >
             <list>       
-               <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <bean class="org.sakaiproject.warehouse.impl.ChildFieldWrapper">            
                   <property name="propertyAccess">               
-                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
                         <property name="propertyName"><value>attachments</value></property>
                      </bean>
                   </property>
                   <property name="task">
-                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.guidance.item.file"/>
+                     <ref bean="org.sakaiproject.warehouse.service.ChildWarehouseTask.guidance.item.file"/>
                   </property>
                </bean>                  
             </list>
@@ -83,24 +83,24 @@
    </bean>
    
    
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.guidance"
-        class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+   <bean id="org.sakaiproject.warehouse.service.ChildWarehouseTask.guidance"
+        class="org.sakaiproject.warehouse.impl.BaseChildWarehouseTask">
         <property name="fields">
            <list>
-              <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <ref bean="org.sakaiproject.warehouse.service.PropertyAccess.id" />
+              <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
                  <property name="propertyName"><value>description</value></property>
               </bean>
-              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
                  <property name="propertyName"><value>siteId</value></property>
               </bean>
-              <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+              <bean class="org.sakaiproject.warehouse.impl.IdPropertyAccess">
                  <property name="propertyName"><value>securityQualifier</value></property>
               </bean>
-              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
                  <property name="propertyName"><value>securityViewFunction</value></property>
               </bean>
-              <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+              <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
                  <property name="propertyName"><value>securityEditFunction</value></property>
               </bean>
             </list>
@@ -117,14 +117,14 @@
         </property>
         <property name="complexFields" >
             <list>
-               <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+               <bean class="org.sakaiproject.warehouse.impl.ChildFieldWrapper">            
                   <property name="propertyAccess">               
-                     <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                     <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
                         <property name="propertyName"><value>items</value></property>
                      </bean>
                   </property>
                   <property name="task">
-                     <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.guidance.item"/>
+                     <ref bean="org.sakaiproject.warehouse.service.ChildWarehouseTask.guidance.item"/>
                   </property>
                </bean>
             </list>
@@ -132,14 +132,14 @@
    </bean>
    
 	<bean
-       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.guidance"
+       id="org.sakaiproject.warehouse.service.WarehouseTask.guidance"
        class="org.theospi.portfolio.warehouse.osp.presentation.GuidanceWarehouseTask"
        init-method="init" singleton="true">
        <property name="dataSource">
-           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+           <ref bean="org.sakaiproject.warehouse.service.DataWarehouseManager.dataSource" />
        </property>
        <property name="dataWarehouseManager">
-           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+           <ref bean="org.sakaiproject.warehouse.service.DataWarehouseManager" />
        </property>
        <property name="tableDdlResource">
            <value>/org/theospi/portfolio/warehouse/osp/common.xml</value>
@@ -148,7 +148,7 @@
            <ref bean="org.theospi.portfolio.guidance.mgt.GuidanceManager" />
        </property>
        <property name="task">
-           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.guidance" />
+           <ref bean="org.sakaiproject.warehouse.service.ChildWarehouseTask.guidance" />
        </property>
    </bean>
 

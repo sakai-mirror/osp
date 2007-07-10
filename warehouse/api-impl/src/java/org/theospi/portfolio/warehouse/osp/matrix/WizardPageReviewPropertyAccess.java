@@ -21,8 +21,8 @@
 package org.theospi.portfolio.warehouse.osp.matrix;
 
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.sakaiproject.warehouse.service.PropertyAccess;
 import org.theospi.portfolio.review.mgt.ReviewManager;
-import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,17 +34,17 @@ import org.theospi.portfolio.warehouse.intf.PropertyAccess;
 public class WizardPageReviewPropertyAccess implements PropertyAccess {
 
    private ReviewManager reviewManager;
-   
+
    public Object getPropertyValue(Object source) throws Exception {
       IdentifiableObject identifiableObj = (IdentifiableObject)source;
       return reviewManager.getReviewsByParent(identifiableObj.getId().getValue());
    }
-   
+
    public ReviewManager getReviewManager()
    {
       return reviewManager;
    }
-   
+
    public void setReviewManager(ReviewManager reviewManager)
    {
       this.reviewManager = reviewManager;

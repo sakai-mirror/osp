@@ -3,18 +3,18 @@
 
 <beans default-lazy-init="false">
 
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.help.glossary"
-   class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+   <bean id="org.sakaiproject.warehouse.service.ChildWarehouseTask.help.glossary"
+   class="org.sakaiproject.warehouse.impl.BaseChildWarehouseTask">
     <property name="fields">
        <list>
-          <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-          <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+          <ref bean="org.sakaiproject.warehouse.service.PropertyAccess.id" />
+          <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
         <property name="propertyName"><value>worksiteId</value></property>
           </bean>
-          <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+          <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
         <property name="propertyName"><value>term</value></property>
           </bean>
-          <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+          <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
          <property name="propertyName"><value>description</value></property>
           </bean>
         </list>
@@ -30,20 +30,20 @@
    </bean>
    <!-- TODO: make this Task -->
    <!--  <bean
-       id="org.theospi.portfolio.warehouse.intf.WarehouseTask.help.glossary"
+       id="org.sakaiproject.warehouse.service.WarehouseTask.help.glossary"
        class="org.theospi.portfolio.warehouse.osp.presentation.PresentationTemplateWarehouseTask"
        init-method="init" singleton="true">
        <property name="dataSource">
-           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+           <ref bean="org.sakaiproject.warehouse.service.DataWarehouseManager.dataSource" />
        </property>
        <property name="dataWarehouseManager">
-           <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+           <ref bean="org.sakaiproject.warehouse.service.DataWarehouseManager" />
        </property>
        <property name="presentationManager">
            <ref bean="presentationManager" />
        </property>
        <property name="task">
-           <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.help.glossary" />
+           <ref bean="org.sakaiproject.warehouse.service.ChildWarehouseTask.help.glossary" />
        </property>
    </bean> -->
 </beans>
