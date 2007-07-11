@@ -62,6 +62,7 @@ import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.util.ResourceLoader;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -97,6 +98,8 @@ public class AddPresentationController extends AbstractWizardFormController {
    final public static int PAGE_DIRECTION_FORWARD = 1;
    final public static int PAGE_DIRECTION_BACKWARD = -1;
 
+	private static ResourceLoader myResources = new ResourceLoader(PresentationManager.PRESENTATION_MESSAGE_BUNDLE);
+   
    private IdManager idManager;
    private List customTypedEditors = new ArrayList();
    private AgentManager agentManager;
@@ -313,9 +316,6 @@ public class AddPresentationController extends AbstractWizardFormController {
                ResourceEditingHelper.CREATE_TYPE_FORM);
          session.setAttribute(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
 
-         ResourceBundle myResources =
-            ResourceBundle.getBundle(PresentationManager.PRESENTATION_MESSAGE_BUNDLE);
-         
          String propFormText = myResources.getString("propertyForm");
          
          try {
@@ -732,8 +732,6 @@ public class AddPresentationController extends AbstractWizardFormController {
       String url =  baseUrl + "/osp-presentation-tool/viewPresentation.osp?id=" + pres.getId().getValue();
       url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
 
-      ResourceBundle myResources =
-         ResourceBundle.getBundle(PresentationManager.PRESENTATION_MESSAGE_BUNDLE);
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, "osp.presentation.view");
 
       String id = pres.getId()!=null ? pres.getId().getValue() : pres.getNewId().getValue();
