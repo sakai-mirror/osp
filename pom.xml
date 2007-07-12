@@ -78,5 +78,7 @@
         <module>webservices</module>
         <module>warehouse</module>
         <module>reports</module>
+	<module>gmt</module>
+	<module>datapoint</module>
   </modules>
 </project>
