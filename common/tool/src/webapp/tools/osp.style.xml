@@ -14,6 +14,7 @@
       
       <configuration name="theospi.toolListenerId"
             value="org.theospi.portfolio.security.mgt.ToolPermissionManager.style" /> 
+      <configuration name="functions.require" value="osp.style.create" /> 
             
    </tool>
 
