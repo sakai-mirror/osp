@@ -2,33 +2,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>master</artifactId>
+    <artifactId>base</artifactId>
     <groupId>org.sakaiproject</groupId>
     <version>M2</version>
-    <relativePath>../master/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <name>Sakai OSP Project</name>
   <groupId>org.sakaiproject.osp</groupId>
   <artifactId>osp-base</artifactId>
   <packaging>pom</packaging>
   <modules>
-    <module>master</module>
     <module>common</module>
     <module>glossary</module>
     <module>integration</module>
     <module>jsf</module>
+    <module>master</module>
     <module>matrix</module>
     <module>portal</module>
     <module>presentation</module>
     <module>warehouse</module>
     <module>wizard</module>
   </modules>
-  <dependencies>
-	<dependency>
- 		<groupId>org.sakaiproject.osp</groupId>
-                <artifactId>osp-master</artifactId>
-		<version>${sakai.version}</version>
-                <type>pom</type>
-	</dependency>
-  </dependencies>
 </project>

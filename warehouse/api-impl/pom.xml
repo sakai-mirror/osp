@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>master</artifactId>
-    <groupId>org.sakaiproject</groupId>
+    <artifactId>osp-warehouse</artifactId>
+    <groupId>org.sakaiproject.osp</groupId>
     <version>M2</version>
-    <relativePath>../../../master/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>osp-warehouse-impl</artifactId>
   <groupId>org.sakaiproject.osp</groupId>
@@ -20,254 +20,178 @@
     <deploy.target/>
   </properties>
   <dependencies>
-        <dependency>
-                <groupId>org.sakaiproject.osp</groupId>
-                <artifactId>osp-warehouse</artifactId>
-                <version>${sakai.version}</version>
-                <type>pom</type>
-        </dependency>
-     <dependency>
-         <groupId>org.sakaiproject</groupId>
-         <artifactId>sakai-assignment-api</artifactId>
-         <version>${sakai.version}</version>
-      <scope>provided</scope>
-      </dependency>
-
     <dependency>
-      
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-assignment-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-component</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-content-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-component-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-component</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>org.sakaiproject</groupId>
-       <artifactId>sakai-content-api</artifactId>
-       <version>${sakai.version}</version>
-      <scope>provided</scope>
-     </dependency>
-
-     <dependency>
+      <artifactId>sakai-content-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.sakaiproject</groupId>
-       <artifactId>sakai-component-api</artifactId>
-       <version>${sakai.version}</version>
-      <scope>provided</scope>
-     </dependency>
-     
-
+      <artifactId>sakai-component-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-site-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-authz-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-entity-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-util-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-user-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-impl</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
-
-     <dependency>
-			<groupId>org.sakaiproject</groupId>
-			<artifactId>sakai-db-api</artifactId>
-			<version>${sakai.version}</version>
-            <scope>provided</scope>
-		</dependency>
     <dependency>
-      
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-db-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
       <version>1.2</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>quartz</groupId>
       <artifactId>quartz</artifactId>
       <version>1.5.2</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-warehouse-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
-     <dependency>
-       <groupId>org.sakaiproject</groupId>
-       <artifactId>sakai-warehouse-impl</artifactId>
-       <version>${sakai.version}</version>
-     </dependency>
     <dependency>
-      
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-warehouse-impl</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-presentation-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-matrix-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-wizard-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>aopalliance</groupId>
       <artifactId>aopalliance</artifactId>
       <version>1.0</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>cglib</groupId>
       <artifactId>cglib-full</artifactId>
       <version>2.0.2</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.0.4</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
       <version>3.1</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>commons-dbcp</groupId>
       <artifactId>commons-dbcp</artifactId>
       <version>1.2</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>commons-pool</groupId>
       <artifactId>commons-pool</artifactId>
       <version>1.2</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>1.6</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
-<groupId>${sakai.ehcache.groupId}</groupId>
+      <groupId>${sakai.ehcache.groupId}</groupId>
       <artifactId>${sakai.ehcache.artifactId}</artifactId>
       <version>${sakai.ehcache.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>${sakai.hibernate.groupId}</groupId>
       <artifactId>${sakai.hibernate.artifactId}</artifactId>
       <version>${sakai.hibernate.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <version>1.7.3.3</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>${sakai.spring.groupId}</groupId>
       <artifactId>${sakai.spring.artifactId}</artifactId>
       <version>${sakai.spring.version}</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>
-    
-    
-    
-    
-    
     <resources>
       <resource>
         <directory>src/bundle</directory>
@@ -290,7 +214,6 @@
       </resource>
     </resources>
 <!-- java source -->
-    
     <testSourceDirectory>src/test/java</testSourceDirectory>
     <testResources>
       <testResource>

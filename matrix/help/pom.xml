@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>master</artifactId>
-    <groupId>org.sakaiproject</groupId>
+    <artifactId>osp-matrix</artifactId>
+    <groupId>org.sakaiproject.osp</groupId>
     <version>M2</version>
-    <relativePath>../../master/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <name>OSP Matrix Help</name>
   <artifactId>osp-matrix-help</artifactId>
@@ -14,12 +14,6 @@
     <deploy.target>shared</deploy.target>
   </properties>
   <build>
-    
-    
-    
-    
-    
-    
     <resources>
       <resource>
         <directory>src</directory>
