@@ -20,6 +20,8 @@
     <module>example</module>
     <module>resource</module>
     <module>widgets</module>
+    <module>depend-widgets-sun</module>
+    <module>depend-widgets-myfaces</module>
   </modules>
   <build>
     <resources/>

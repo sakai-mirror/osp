@@ -120,17 +120,12 @@
 <!--url: http://sakaiproject.org/ -->
     </dependency>
 <!-- Sakai tag library -->
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jsf-widgets</artifactId>
-      <version>${sakai.version}</version>
-<!--url: http://sakaiproject.org/ -->
-    </dependency>
 <!-- Adaptor to use tag library with Sun's RI -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jsf-widgets-sun</artifactId>
+      <artifactId>sakai-depend-jsf-widgets-sun</artifactId>
       <version>${sakai.version}</version>
+      <type>pom</type>
 <!--url: http://sakaiproject.org/ -->
     </dependency>
     <dependency>

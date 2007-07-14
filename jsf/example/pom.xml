@@ -95,38 +95,20 @@
 <!--url: http://java.sun.com/j2ee/javaserverfaces/ -->
     </dependency>
 <!-- Sakai tag library -->
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jsf-widgets</artifactId>
-      <version>${sakai.version}</version>
-<!--url: http://sakaiproject.org/ -->
-    </dependency>
 <!-- OSP tag library -->
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
-      <artifactId>osp-jsf-widgets</artifactId>
+      <artifactId>osp-depend-jsf-widgets-sun</artifactId>
       <version>${sakai.version}</version>
-<!--url: http://www.theospi.org/jsf/osp -->
+      <type>pom</type>
     </dependency>
 <!-- Adaptor to use tag library with Sun's RI -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jsf-widgets-sun</artifactId>
+      <artifactId>sakai-depend-jsf-widgets-sun</artifactId>
       <version>${sakai.version}</version>
-<!--url: http://sakaiproject.org/ -->
+      <type>pom</type>
     </dependency>
-<!-- Adaptor to use tag library with MyFaces -->
-<!-- 
-      <dependency>
-			<groupId>org.sakaiproject</groupId>
-			<artifactId>sakai-jsf-widgets-myfaces</artifactId>
-			<version>${sakai.version}</version>
-			<url>http://sakaiproject.org/</url>
-			<properties>
-				<war.bundle>true</war.bundle>
-			</properties>
-		</dependency>
-      -->
     <dependency>
       <groupId>commons-digester</groupId>
       <artifactId>commons-digester</artifactId>

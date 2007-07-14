@@ -60,19 +60,15 @@
 <!-- OSP tag library -->
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
-      <artifactId>osp-jsf-widgets</artifactId>
+      <artifactId>osp-depend-jsf-widgets-sun</artifactId>
       <version>${sakai.version}</version>
-<!--url: http://www.theospi.org/jsf/osp -->
+      <type>pom</type>
     </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jsf-widgets</artifactId>
+      <artifactId>sakai-depend-jsf-widgets-sun</artifactId>
       <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-jsf-widgets-sun</artifactId>
-      <version>${sakai.version}</version>
+      <type>pom</type>
     </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
