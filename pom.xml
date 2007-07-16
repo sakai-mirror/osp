@@ -13,7 +13,6 @@
   <packaging>pom</packaging>
   <modules>
         <module>master</module>
-        <module>master/jsf-sun-tool</module>
         <module>access</module>
         <module>alias</module>
         <module>announcement</module>
