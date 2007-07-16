@@ -56,7 +56,6 @@
    </thead>
    <tbody>
   <c:forEach var="style" items="${styles}">
-    <osp-c:authZMap prefix="osp.style." qualifier="${style.id}" var="isAuthorizedTo" />
     <TR>
       <td>&nbsp;
          <c:if test="${selectedStyle == style.id}">
@@ -67,27 +66,25 @@
          <c:out value="${style.name}" />
          <c:set var="hasFirstAction" value="false" />
          <div class="itemAction">
-             <!-- Used the regular can.globalPublish instead of the isAuthorizedTo 
-               because the style may have come from a different site -->
              <c:if test="${can.globalPublish && (style.globalState == 0 || style.globalState == 1) && isGlobal}">
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
                  <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=global"><fmt:message key="table_action_publish"/></a>
              </c:if>
              
-             <c:if test="${selectableStyle != 'true' && isAuthorizedTo.suggestGlobalPublish && style.globalState == 0 && !isGlobal}">
+             <c:if test="${selectableStyle != 'true' && can.suggestGlobalPublish && style.globalState == 0 && !isGlobal}">
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
                  <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=suggestGlobal"><fmt:message key="table_action_suggest_global_publish"/></a>
              </c:if>
              
-             <c:if test="${isAuthorizedTo.edit}">
+             <c:if test="${can.edit}">
                <c:if test="${hasFirstAction}" > | </c:if>
                <a href="<osp:url value="editStyle.osp"/>&style_id=<c:out value="${style.id.value}" />"><fmt:message key="table_action_edit"/></a>
                <c:set var="hasFirstAction" value="true" />
              </c:if>
     
-             <c:if test="${isAuthorizedTo.delete}">
+             <c:if test="${can.delete}">
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
                  <a onclick="return confirmDeletion();"
