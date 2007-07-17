@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>master</artifactId>
-    <groupId>org.sakaiproject</groupId>
+    <artifactId>osp-jsf</artifactId>
+    <groupId>org.sakaiproject.osp</groupId>
     <version>M2</version>
-    <relativePath>../../../master/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <name>OSP JSF Widgets - Resource</name>
   <groupId>org.sakaiproject.osp</groupId>
@@ -23,22 +23,7 @@
 		Web applications that use the Sakai JSF components will also need this webapp deployed.	
 	</description>
   <packaging>war</packaging>
-  <dependencies>
-        <dependency>
-                <groupId>org.sakaiproject.osp</groupId>
-                <artifactId>osp-jsf</artifactId>
-                <version>${sakai.version}</version>
-                <type>pom</type>
-        </dependency>
-  </dependencies>
-
   <build>
-    
-    
-    
-    
-    
-    
     <resources>
       <resource>
         <directory>${basedir}/webapp</directory>
@@ -47,6 +32,5 @@
         </includes>
       </resource>
     </resources>
-    
   </build>
 </project>

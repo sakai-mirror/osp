@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>master</artifactId>
-    <groupId>org.sakaiproject</groupId>
+    <artifactId>osp-common</artifactId>
+    <groupId>org.sakaiproject.osp</groupId>
     <version>M2</version>
-    <relativePath>../../../master/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>osp-common-component</artifactId>
   <groupId>org.sakaiproject.osp</groupId>
@@ -20,169 +20,77 @@
     <deploy.target>components</deploy.target>
   </properties>
   <dependencies>
-        <dependency>
-                <groupId>org.sakaiproject.osp</groupId>
-                <artifactId>osp-common</artifactId>
-                <version>${sakai.version}</version>
-                <type>pom</type>
-        </dependency>
-
     <dependency>
-      
-      <groupId>org.sakaiproject.osp</groupId>
-      <artifactId>osp-common-api</artifactId>
-      <version>${sakai.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-impl</artifactId>
       <version>${sakai.version}</version>
+      <exclusions>
+      	<exclusion>
+      		<groupId>aopalliance</groupId>
+      		<artifactId>aopalliance</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>cglib</groupId>
+      		<artifactId>cglib-full</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>javax.transaction</groupId>
+      		<artifactId>jta</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>portlet-api</groupId>
+      		<artifactId>portlet-api</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-impl</artifactId>
       <version>${sakai.version}</version>
+      <exclusions>
+      	<exclusion>
+      		<groupId>aopalliance</groupId>
+      		<artifactId>aopalliance</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>cglib</groupId>
+      		<artifactId>cglib-full</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>javax.transaction</groupId>
+      		<artifactId>jta</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>portlet-api</groupId>
+      		<artifactId>portlet-api</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
-      
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-util</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-tool-lib</artifactId>
       <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      
-      <groupId>aopalliance</groupId>
-      <artifactId>aopalliance</artifactId>
-      <version>1.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>cglib</groupId>
-      <artifactId>cglib-full</artifactId>
-      <version>2.0.2</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.0.4</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>commons-codec</groupId>
-      <artifactId>commons-codec</artifactId>
-      <version>1.2</version>
-    </dependency>
-    <dependency>
-      
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-      <version>3.1</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>commons-dbcp</groupId>
-      <artifactId>commons-dbcp</artifactId>
-      <version>1.2</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>commons-pool</groupId>
-      <artifactId>commons-pool</artifactId>
-      <version>1.2</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>dom4j</groupId>
-      <artifactId>dom4j</artifactId>
-      <version>1.6</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-<groupId>${sakai.ehcache.groupId}</groupId>
-      <artifactId>${sakai.ehcache.artifactId}</artifactId>
-      <version>${sakai.ehcache.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>${sakai.hibernate.groupId}</groupId>
-      <artifactId>${sakai.hibernate.artifactId}</artifactId>
-      <version>${sakai.hibernate.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <version>1.7.3.3</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>jdom</groupId>
-      <artifactId>jdom</artifactId>
-      <version>1.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>jta</groupId>
-      <artifactId>jta</artifactId>
-      <version>1.0.1b</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>portlet-api</groupId>
-      <artifactId>portlet-api</artifactId>
-      <version>1.0.1</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>${sakai.servletapi.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      
-      <groupId>${sakai.spring.groupId}</groupId>
-      <artifactId>${sakai.spring.artifactId}</artifactId>
-      <version>${sakai.spring.version}</version>
-      <scope>provided</scope>
+      <exclusions>
+      	<exclusion>
+      		<groupId>aopalliance</groupId>
+      		<artifactId>aopalliance</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>cglib</groupId>
+      		<artifactId>cglib-full</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>javax.transaction</groupId>
+      		<artifactId>jta</artifactId>
+      	</exclusion>
+      	<exclusion>
+      		<groupId>portlet-api</groupId>
+      		<artifactId>portlet-api</artifactId>
+      	</exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
   <build>
-    
-    
-    
-    
-    
     <resources>
       <resource>
         <directory>src/bundle</directory>
@@ -204,7 +112,6 @@
       </resource>
     </resources>
 <!-- java source -->
-    
     <testSourceDirectory>src/test/java</testSourceDirectory>
     <testResources>
       <testResource>

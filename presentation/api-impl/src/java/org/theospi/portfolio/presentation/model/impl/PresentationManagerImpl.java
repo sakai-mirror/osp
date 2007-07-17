@@ -65,7 +65,7 @@ import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
-import org.theospi.portfolio.shared.intf.EntityContextFinder;
+import org.sakaiproject.metaobj.shared.EntityContextFinder;
 import org.theospi.portfolio.shared.model.ItemDefinitionMimeType;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;

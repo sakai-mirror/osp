@@ -9,7 +9,7 @@
 -->
 <beans>    
     <bean id="matrixPendingDirectDB"
-        class="org.theospi.portfolio.reports.model.ReportDefinition">
+        class="org.sakaiproject.reports.model.ReportDefinition">
 
         <property name="idString">
             <value>11112222-3333-4444-5551-666697779193</value>
@@ -55,7 +55,7 @@
         </property>
         <property name="resultProcessors">
            <list>
-              <ref bean="org.theospi.portfolio.reports.model.ResultsPostProcessor.rowcolumnupper" />
+              <ref bean="org.sakaiproject.reports.service.ResultsPostProcessor.rowcolumnupper" />
            </list>
         </property>
         <property name="keywords">
@@ -70,7 +70,7 @@
             <value>admin,project,course,portfolioAdmin,portfolio</value>
         </property>
         <property name="defaultXsl">
-                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
+                <bean class="org.sakaiproject.reports.model.ReportXsl">
                     <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/osp/matrix/PendingSubmissionDDB.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                     <property name="title"><value>Pending Submission</value></property>
@@ -79,7 +79,7 @@
 
         <property name="reportDefinitionParams">
             <list>
-                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
+                <bean class="org.sakaiproject.reports.model.ReportDefinitionParam">
                     <property name="title"><value>Choose a Matrix</value></property>
                     <property name="paramName"><value>matrixId</value></property>
                     <property name="description"><value>To choose a matrix</value></property>
@@ -91,12 +91,12 @@
         </property>
         <property name="xsls">
             <list>
-                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
+                <bean class="org.sakaiproject.reports.model.ReportXsl">
                     <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/osp/matrix/PendingSubmissionDDB.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                     <property name="title"><value>Pending Submission</value></property>
                 </bean>
-                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
+                <bean class="org.sakaiproject.reports.model.ReportXsl">
                     <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/osp/matrix/PendingEvaluationDDB.1.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                     <property name="title"><value>Pending Evaluation</value></property>

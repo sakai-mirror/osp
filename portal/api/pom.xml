@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>master</artifactId>
-    <groupId>org.sakaiproject</groupId>
+    <artifactId>osp-portal-base</artifactId>
+    <groupId>org.sakaiproject.osp</groupId>
     <version>M2</version>
-    <relativePath>../../../master/pom.xml</relativePath>
+    <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>osp-portal-api</artifactId>
   <groupId>org.sakaiproject.osp</groupId>
@@ -20,76 +20,48 @@
     <deploy.target>shared</deploy.target>
   </properties>
   <dependencies>
-        <dependency>
-                <groupId>org.sakaiproject.osp</groupId>
-                <artifactId>osp-portal-base</artifactId>
-                <version>${sakai.version}</version>
-                <type>pom</type>
-        </dependency>
-
     <dependency>
-      
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
-     <dependency>
-
-       <groupId>org.sakaiproject</groupId>
-       <artifactId>sakai-util-api</artifactId>
-       <version>${sakai.version}</version>
-       <scope>provided</scope>
-     </dependency>
-     <dependency>
-
-       <groupId>org.sakaiproject</groupId>
-       <artifactId>sakai-metaobj-api</artifactId>
-       <version>${sakai.version}</version>
-       <scope>provided</scope>
-     </dependency>
     <dependency>
-      
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-util-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-metaobj-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-site-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-user-api</artifactId>
       <version>${sakai.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
-<groupId>${sakai.ehcache.groupId}</groupId>
+      <groupId>${sakai.ehcache.groupId}</groupId>
       <artifactId>${sakai.ehcache.artifactId}</artifactId>
       <version>${sakai.ehcache.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>${sakai.hibernate.groupId}</groupId>
       <artifactId>${sakai.hibernate.artifactId}</artifactId>
       <version>${sakai.hibernate.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      
       <groupId>${sakai.spring.groupId}</groupId>
       <artifactId>${sakai.spring.artifactId}</artifactId>
       <version>${sakai.spring.version}</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>
-    
-    
-    
-    
-    
     <resources>
       <resource>
         <directory>src/bundle</directory>
@@ -105,7 +77,6 @@
       </resource>
     </resources>
 <!-- java source -->
-    
     <testSourceDirectory>src/test/java</testSourceDirectory>
     <testResources>
       <testResource>

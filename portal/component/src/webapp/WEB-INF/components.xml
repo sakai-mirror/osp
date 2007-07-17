@@ -200,7 +200,7 @@
       <property name="homePagePath" value="analyzeReport.xhtml"/>
       <property name="tools">
          <map>
-            <entry key="osp.reports" value="osp.reports"/>
+            <entry key="sakai.reports" value="sakai.reports"/>
          </map>
       </property>
    </bean>

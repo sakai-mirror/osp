@@ -8,7 +8,7 @@
     
 -->
 <beans>    
-    <bean id="matrixStatusReport-123" class="org.theospi.portfolio.reports.model.ReportDefinition">
+    <bean id="matrixStatusReport-123" class="org.sakaiproject.reports.model.ReportDefinition">
 
         <property name="idString">
             <value>matrixStatusReport-123</value>
@@ -73,7 +73,7 @@ order by scaffolding_id, sequenceNumber
         </property>
         <property name="resultProcessors">
            <list>
-              <ref bean="org.theospi.portfolio.reports.model.ResultsPostProcessor.rowcolumnupper" />
+              <ref bean="org.sakaiproject.reports.service.ResultsPostProcessor.rowcolumnupper" />
            </list>
         </property>
         <property name="keywords">
@@ -94,7 +94,7 @@ order by scaffolding_id, sequenceNumber
   			</list>
   		</property>
         <property name="defaultXsl">
-                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
+                <bean class="org.sakaiproject.reports.model.ReportXsl">
                     <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/osp/MatrixCompStatus.2.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                     <property name="title"><value>Presentation Report</value></property>
@@ -102,7 +102,7 @@ order by scaffolding_id, sequenceNumber
         </property>
         <property name="reportDefinitionParams">
             <list>
-                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
+                <bean class="org.sakaiproject.reports.model.ReportDefinitionParam">
                     <property name="title"><value>Choose Role</value></property>
                     <property name="paramName"><value>roleId</value></property>
                     <property name="description"><value>Choose role for this site.</value></property>
@@ -110,7 +110,7 @@ order by scaffolding_id, sequenceNumber
                     <property name="valueType"><value>multisql</value></property>
                     <property name="value"><value>SELECT DISTINCT realm_function.role_key, realm_role.role_name FROM sakai_realm_rl_fn as realm_function, sakai_realm_role as realm_role WHERE realm_role.role_key = realm_function.role_key and realm_function.realm_key in (select sakai_realm.realm_key from sakai_realm where  sakai_realm.realm_id = concat('/site/', '{worksiteid}')) order by realm_role.role_name</value></property>
                 </bean>
-                <bean class="org.theospi.portfolio.reports.model.ReportDefinitionParam">
+                <bean class="org.sakaiproject.reports.model.ReportDefinitionParam">
                     <property name="title"><value>Choose Matrix</value></property>
                     <property name="paramName"><value>matrixId</value></property>
                     <property name="description"><value>Choose a matrix for this site.</value></property>
@@ -122,12 +122,12 @@ order by scaffolding_id, sequenceNumber
         </property>
         <property name="xsls">
             <list>
-                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
+                <bean class="org.sakaiproject.reports.model.ReportXsl">
                     <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/osp/MatrixCompStatus.2.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                     <property name="title"><value>Matrix Status Report</value></property>
                 </bean>
-                <bean class="org.theospi.portfolio.reports.model.ReportXsl">
+                <bean class="org.sakaiproject.reports.model.ReportXsl">
                     <property name="xslLink"><value>/org/theospi/portfolio/reports/xsl/osp/Passthrough.xsl</value></property>
                     <property name="isExport"><value>false</value></property>
                     <property name="title"><value>Passthrough</value></property>

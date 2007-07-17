@@ -23,7 +23,7 @@ package org.theospi.portfolio.warehouse.osp.presentation;
 import java.util.Collection;
 
 import org.theospi.portfolio.presentation.PresentationManager;
-import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
+import org.sakaiproject.warehouse.impl.BaseWarehouseTask;
 
 /**
  * Created by IntelliJ IDEA.

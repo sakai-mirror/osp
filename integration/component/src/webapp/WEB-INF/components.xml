@@ -506,7 +506,7 @@
    <bean id="org.theospi.portfolio.admin.service.ToolOption.adminReport"
       class="org.theospi.portfolio.admin.service.ToolOption">
       <property name="toolId">
-         <value>osp.reports</value>
+         <value>sakai.reports</value>
       </property>
       <property name="title">
          <value>Reports</value>

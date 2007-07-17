@@ -27,7 +27,7 @@ package org.theospi.portfolio.warehouse.osp.matrix;
 import java.util.Collection;
 
 import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
+import org.sakaiproject.warehouse.impl.BaseWarehouseTask;
 
 /**
  * @author chrismaurer

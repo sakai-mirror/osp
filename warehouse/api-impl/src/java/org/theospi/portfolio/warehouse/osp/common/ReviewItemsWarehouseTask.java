@@ -27,7 +27,7 @@ package org.theospi.portfolio.warehouse.osp.common;
 import java.util.Collection;
 
 import org.theospi.portfolio.review.mgt.ReviewManager;
-import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
+import org.sakaiproject.warehouse.impl.BaseWarehouseTask;
 
 /**
  * @author chrismaurer

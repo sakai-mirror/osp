@@ -22,7 +22,7 @@ package org.theospi.portfolio.warehouse.osp.wizard;
 
 import java.util.Collection;
 
-import org.theospi.portfolio.warehouse.impl.BaseWarehouseTask;
+import org.sakaiproject.warehouse.impl.BaseWarehouseTask;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 
 class WizardWarehouseTask extends BaseWarehouseTask {

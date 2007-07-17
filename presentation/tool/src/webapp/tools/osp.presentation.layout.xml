@@ -19,6 +19,7 @@
             value="/listLayout.osp" />
        <configuration name="theospi.toolListenerId"
             value="org.theospi.portfolio.security.mgt.ToolPermissionManager.presentationLayout" /> 
+       <configuration name="functions.require" value="osp.presentation.layout.create" /> 
 
    </tool>
 

@@ -4,12 +4,12 @@
 <beans default-lazy-init="false">
 
 	
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.cell.evaluators"
-     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+   <bean id="org.sakaiproject.warehouse.service.ChildWarehouseTask.scaffolding.cell.evaluators"
+     class="org.sakaiproject.warehouse.impl.BaseChildWarehouseTask">
      <property name="fields">
         <list>
-           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.parentId" />
-           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
+           <ref bean="org.sakaiproject.warehouse.service.PropertyAccess.parentId" />
+           <ref bean="org.sakaiproject.warehouse.service.PropertyAccess.id" />
         </list>
      </property>
      <property name="insertStmt">
@@ -22,24 +22,24 @@
      </property>
    </bean>  
    
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.levels"
-     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+   <bean id="org.sakaiproject.warehouse.service.ChildWarehouseTask.scaffolding.levels"
+     class="org.sakaiproject.warehouse.impl.BaseChildWarehouseTask">
      <property name="fields">
         <list>
-           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+           <ref bean="org.sakaiproject.warehouse.service.PropertyAccess.id" />
+           <bean class="org.sakaiproject.warehouse.impl.IdentifiableObjectPropertyAccess">
               <property name="propertyName"><value>scaffolding</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>sequenceNumber</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>description</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>color</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>textColor</value></property>
            </bean>
         </list>
@@ -57,24 +57,24 @@
    </bean>  
    
    
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.critria"
-     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+   <bean id="org.sakaiproject.warehouse.service.ChildWarehouseTask.scaffolding.critria"
+     class="org.sakaiproject.warehouse.impl.BaseChildWarehouseTask">
      <property name="fields">
          <list>
-           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+           <ref bean="org.sakaiproject.warehouse.service.PropertyAccess.id" />
+           <bean class="org.sakaiproject.warehouse.impl.IdentifiableObjectPropertyAccess">
               <property name="propertyName"><value>scaffolding</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>sequenceNumber</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>description</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>color</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>textColor</value></property>
            </bean>
            
@@ -93,21 +93,21 @@
    </bean>
    
    
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.cell"
-     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+   <bean id="org.sakaiproject.warehouse.service.ChildWarehouseTask.scaffolding.cell"
+     class="org.sakaiproject.warehouse.impl.BaseChildWarehouseTask">
      <property name="fields">
         <list>
-           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+           <ref bean="org.sakaiproject.warehouse.service.PropertyAccess.id" />
+           <bean class="org.sakaiproject.warehouse.impl.IdentifiableObjectPropertyAccess">
               <property name="propertyName"><value>rootCriterion</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.IdentifiableObjectPropertyAccess">
               <property name="propertyName"><value>level</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.IdentifiableObjectPropertyAccess">
               <property name="propertyName"><value>scaffolding</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.IdentifiableObjectPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.IdentifiableObjectPropertyAccess">
               <property name="propertyName"><value>wizardPageDefinition</value></property>
            </bean>
         </list>
@@ -123,24 +123,24 @@
      </property>     
      <property name="complexFields" >
          <list>
-            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+            <bean class="org.sakaiproject.warehouse.impl.ChildFieldWrapper">
                 <property name="propertyAccess">
-                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                  <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
                      <property name="propertyName"><value>evaluators</value></property>
                   </bean>
                </property>
                <property name="task">
-                    <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.cell.evaluators" />
+                    <ref bean="org.sakaiproject.warehouse.service.ChildWarehouseTask.scaffolding.cell.evaluators" />
                </property> 
             </bean>
-            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+            <bean class="org.sakaiproject.warehouse.impl.ChildFieldWrapper">            
                <property name="propertyAccess">               
-                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                  <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
                      <property name="propertyName"><value>wizardPageDefinition</value></property>
                   </bean>
                </property>
                <property name="task">
-                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.wizard.page.definition"/>
+                   <ref bean="org.sakaiproject.warehouse.service.ChildWarehouseTask.wizard.page.definition"/>
                </property>
             </bean>
          </list>
@@ -148,48 +148,48 @@
    </bean>
    
    
-   <bean id="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding"
-     class="org.theospi.portfolio.warehouse.impl.BaseChildWarehouseTask">
+   <bean id="org.sakaiproject.warehouse.service.ChildWarehouseTask.scaffolding"
+     class="org.sakaiproject.warehouse.impl.BaseChildWarehouseTask">
      <property name="fields">
         <list>
-           <ref bean="org.theospi.portfolio.warehouse.intf.PropertyAccess.id" />
-           <bean class="org.theospi.portfolio.warehouse.impl.AgentPropertyAccess">
+           <ref bean="org.sakaiproject.warehouse.service.PropertyAccess.id" />
+           <bean class="org.sakaiproject.warehouse.impl.AgentPropertyAccess">
               <property name="propertyName"><value>owner</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>title</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>description</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.IdPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.IdPropertyAccess">
               <property name="propertyName"><value>worksiteId</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>published</value></property>
            </bean> 
-           <bean class="org.theospi.portfolio.warehouse.impl.AgentPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.AgentPropertyAccess">
               <property name="propertyName"><value>publishedBy</value></property>
            </bean>            
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>publishedDate</value></property>
            </bean>                   
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>columnLabel</value></property>
            </bean>
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>rowLabel</value></property>
            </bean>             
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>readyColor</value></property>
            </bean>            
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>pendingColor</value></property>
            </bean> 
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>completedColor</value></property>
            </bean> 
-           <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
               <property name="propertyName"><value>lockedColor</value></property>
            </bean>          
         </list>
@@ -207,34 +207,34 @@
      </property>
     <property name="complexFields" >
          <list> 
-            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">
+            <bean class="org.sakaiproject.warehouse.impl.ChildFieldWrapper">
                 <property name="propertyAccess">
-                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                  <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
                      <property name="propertyName"><value>scaffoldingCells</value></property>
                   </bean>
                </property>
                <property name="task">
-                    <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.cell" />
+                    <ref bean="org.sakaiproject.warehouse.service.ChildWarehouseTask.scaffolding.cell" />
                </property> 
             </bean>
-            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+            <bean class="org.sakaiproject.warehouse.impl.ChildFieldWrapper">            
                <property name="propertyAccess">               
-                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                  <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
                      <property name="propertyName"><value>levels</value></property>
                   </bean>
                </property>
                <property name="task">
-                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.levels"/>
+                   <ref bean="org.sakaiproject.warehouse.service.ChildWarehouseTask.scaffolding.levels"/>
                </property>
             </bean>
-            <bean class="org.theospi.portfolio.warehouse.impl.ChildFieldWrapper">            
+            <bean class="org.sakaiproject.warehouse.impl.ChildFieldWrapper">            
                <property name="propertyAccess">               
-                  <bean class="org.theospi.portfolio.warehouse.impl.BeanPropertyAccess">
+                  <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
                      <property name="propertyName"><value>criteria</value></property>
                   </bean>
                </property>
                <property name="task">
-                   <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding.critria"/>
+                   <ref bean="org.sakaiproject.warehouse.service.ChildWarehouseTask.scaffolding.critria"/>
                </property>
             </bean>
          </list>
@@ -242,14 +242,14 @@
    </bean> 
    
     <bean
-          id="org.theospi.portfolio.warehouse.intf.WarehouseTask.scaffolding"
+          id="org.sakaiproject.warehouse.service.WarehouseTask.scaffolding"
           class="org.theospi.portfolio.warehouse.osp.matrix.ScaffoldingWarehouseTask"
           init-method="init" singleton="true">
           <property name="dataSource">
-              <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager.dataSource" />
+              <ref bean="org.sakaiproject.warehouse.service.DataWarehouseManager.dataSource" />
           </property>
           <property name="dataWarehouseManager">
-              <ref bean="org.theospi.portfolio.warehouse.intf.DataWarehouseManager" />
+              <ref bean="org.sakaiproject.warehouse.service.DataWarehouseManager" />
           </property>
           <property name="tableDdlResource">
               <value>/org/theospi/portfolio/warehouse/osp/scaffolding.xml</value>
@@ -258,7 +258,7 @@
               <ref bean="matrixManager" />
           </property>
           <property name="task">
-              <ref bean="org.theospi.portfolio.warehouse.intf.ChildWarehouseTask.scaffolding" />
+              <ref bean="org.sakaiproject.warehouse.service.ChildWarehouseTask.scaffolding" />
           </property>
       </bean>
 

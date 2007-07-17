@@ -21,6 +21,9 @@
        <configuration name="theospi.toolListenerId"
             value="org.theospi.portfolio.security.mgt.ToolPermissionManager.scaffolding" /> 
             
+      <configuration name="functions.require" 
+                     value="osp.matrix.scaffolding.create|osp.matrix.scaffolding.use|osp.matrix.review|osp.matrix.evaluate" /> 
+            
 	</tool>
 
 </registration>
