@@ -35,6 +35,7 @@ import org.sakaiproject.exception.InUseException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.api.Tool;
@@ -64,8 +65,16 @@ public class ListPresentationController extends AbstractPresentationController {
       if (showHiddenKey != null)
          showHidden = setUserPresHiddenProperty(showHiddenKey);
       
-      List presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(currentAgent,
-         currentToolId, showHidden));
+      List presentations = null;
+		if ( isOnWorkspaceTab() )
+      {
+         presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(currentAgent, showHidden));
+      }
+      else
+      {
+         presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(currentAgent,
+                                                                                          currentToolId, showHidden));
+      }
 
       model.put("presentations",
          getListScrollIndexer().indexList(request, model, presentations));
@@ -80,6 +89,7 @@ public class ListPresentationController extends AbstractPresentationController {
       model.put("isMaintainer", isMaintainer());
       model.put("osp_agent", currentAgent);
       model.put("showHidden", showHidden);
+      model.put("myworkspace", isOnWorkspaceTab() );
       return new ModelAndView("success", model);
    }
    
@@ -142,6 +152,15 @@ public class ListPresentationController extends AbstractPresentationController {
 
    }
 
+   /**
+    * See if the current tab is the workspace tab.
+    * @return true if we are currently on the "My Workspace" tab.
+    */
+   private boolean isOnWorkspaceTab()
+   {
+      return SiteService.isUserSite(ToolManager.getCurrentPlacement().getContext());
+   }
+	
    public ListScrollIndexer getListScrollIndexer() {
       return listScrollIndexer;
    }
@@ -157,5 +176,5 @@ public class ListPresentationController extends AbstractPresentationController {
          ServerConfigurationService serverConfigurationService) {
       this.serverConfigurationService = serverConfigurationService;
    }
-
+	
 }

@@ -34,6 +34,10 @@ import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.thread_local.api.ThreadLocalManager;
+import org.sakaiproject.site.api.SiteService.SelectionType;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.tool.cover.ToolManager;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.impl.simple.SimpleAuthorizationFacade;
 
@@ -161,7 +165,23 @@ public class WorksiteAwareAuthorizationFacade extends SimpleAuthorizationFacade 
          agentRoles.addAll(agent.getWorksiteRoles(site));
       }
 
-      agentRoles.addAll(agent.getWorksiteRoles());
+      // If this is a user's My Workspace, aggregate roles from all member sites
+      if ( SiteService.isUserSite(ToolManager.getCurrentPlacement().getContext()) ) {
+         List allSites = SiteService.getSites(SelectionType.ACCESS, null, null,
+                                            null, null, null);
+         allSites.addAll ( SiteService.getSites(SelectionType.UPDATE, null, null,
+                                            null, null, null) );
+         for (Iterator it = allSites.iterator();it.hasNext();) {
+            Site site = (Site)it.next();
+            agentRoles.addAll(agent.getWorksiteRoles( site.getId() ));
+         }
+      }
+
+      // Otherwise just get roles from current worksite
+      else  {
+         agentRoles.addAll(agent.getWorksiteRoles());
+      }
+         
       return agentRoles;
    }
 

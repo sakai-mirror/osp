@@ -155,7 +155,7 @@ public interface PresentationManager extends CleanupableService {
    public Document getPresentationPreviewLayoutAsXml(Presentation presentation, String pageId);
 
    /**
-    * returns a list of all presentations agent can view </br>
+    * returns a list of all presentations owned by agent </br>
     *
     * @param viewer
     * @return
@@ -173,12 +173,23 @@ public interface PresentationManager extends CleanupableService {
    
    /**
     * 
+    * returns a list of all presentations agent can view within the given tool, optionally showing hidden presentations</br>
+    * 
     * @param viewer
     * @param toolId
     * @param showHidden
     * @return
     */
    public Collection findPresentationsByViewer(Agent viewer, String toolId, boolean showHidden);
+
+   /**
+    * returns a list of all presentations agent can view, optionally showing hidden presentations</br>
+    * 
+    * @param viewer
+    * @param showHidden
+    * @return
+    */
+   public Collection findPresentationsByViewer(Agent viewer, boolean showHidden);
 
    public void createComment(PresentationComment comment);
    public void createComment(PresentationComment comment, boolean checkAuthz, boolean updateDates);
