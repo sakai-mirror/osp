@@ -50,13 +50,8 @@
   <classpathentry kind="src" path="presentation/tool/src/java"/>
   <classpathentry kind="src" path="presentation/tool/src/webapp"/>
   <classpathentry kind="src" path="presentation/tool-lib/src/java"/>
-  <classpathentry kind="src" path="reports/api/src/java"/>
   <classpathentry kind="src" path="reports/api-impl/src/java"/>
   <classpathentry kind="src" path="reports/components/src/webapp"/>
-  <classpathentry kind="src" path="reports/tool/src/bundle"/>
-  <classpathentry kind="src" path="reports/tool/src/java"/>
-  <classpathentry kind="src" path="reports/tool/src/webapp"/>
-  <classpathentry kind="src" path="warehouse/api/src/java"/>
   <classpathentry kind="src" path="warehouse/api-impl/src/java"/>
   <classpathentry kind="src" path="warehouse/components/src/webapp"/>
   <classpathentry kind="src" path="wizard/api/src/java"/>
