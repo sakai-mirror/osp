@@ -55,7 +55,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageForm;
-import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
+import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.tool.BaseFormResourceFilter;
 

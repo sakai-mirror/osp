@@ -39,24 +39,21 @@ import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.ServerOverloadException;
-import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
+import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.guidance.model.GuidanceItem;
 import org.theospi.portfolio.guidance.model.GuidanceItemAttachment;
-import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.AuthorizationFacade;
 
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
-import java.net.URLEncoder;
 
 /**
  * Created by IntelliJ IDEA.
@@ -68,7 +65,7 @@ import java.net.URLEncoder;
 public class GuidanceManagerImpl extends HibernateDaoSupport implements GuidanceManager {
 
    protected final Log logger = LogFactory.getLog(getClass());
-   
+
    private AuthorizationFacade authorizationFacade;
    private SecurityService securityService;
    private EntityManager entityManager;
@@ -91,7 +88,7 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
 
       return guidance;
    }
-   
+
    public Guidance getGuidance(Id guidanceId) {
       return getGuidance(guidanceId, true);
    }
@@ -148,7 +145,7 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
                      }
                   } while(fileLocation > 0);
                   item.setText(guidanceText);
-               
+
                changed = true;
             }
          }
@@ -207,7 +204,7 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
    public Guidance getGuidance(String id) {
       return getGuidance(id, true);
    }
-   
+
    public Guidance getGuidance(String id, boolean checkAuthz) {
       return getGuidance(getIdManager().getId(id), checkAuthz);
    }
@@ -440,7 +437,7 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
             bos.write(c);
             c = zis.read();
          }
-         
+
          String fileId = fileParent.getId() + file.getName();
          ContentResource rez = null;
          try {
@@ -528,8 +525,8 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
       return new AttachmentImportWrapper(element.getChildText("ref"),
             element.getChildText("url"));
    }
-   
-   
+
+
    /**
     * Pulls all Guidance
     * @return List of Guidance
@@ -537,11 +534,11 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
    public List getGuidanceForWarehousing()
    {
       List guidance = getHibernateTemplate().findByNamedQuery("listGuidances");
-      
+
       for(Iterator i = guidance.iterator(); i.hasNext(); ) {
          Guidance w = (Guidance)i.next();
       }
-      
+
       return guidance;
    }
 
