@@ -11,6 +11,14 @@
   <groupId>org.sakaiproject</groupId>
   <artifactId>base</artifactId>
   <packaging>pom</packaging>
+  <profiles>
+    <profile>
+    <id>pack-demo</id>
+    <modules>
+      <module>pack-demo</module>
+    </modules>
+  </profile>
+  </profiles>
   <modules>
         <module>master</module>
         <module>access</module>
