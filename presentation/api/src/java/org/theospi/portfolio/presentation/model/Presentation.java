@@ -34,6 +34,8 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdImpl;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.exception.IdUnusedException;
 import org.theospi.portfolio.shared.model.DateBean;
 import org.theospi.portfolio.style.model.Style;
 
@@ -237,6 +239,24 @@ public class Presentation extends IdentifiableObject {
       this.pages = pages;
    }
 
+   /**
+    * @return Returns the worksite name
+    */
+   public String getWorksiteName() {
+	   String worksiteName = "";
+		
+      try
+      {
+         worksiteName = SiteService.getSite(siteId).getTitle();
+      }
+      catch (IdUnusedException e)
+      {
+         // tbd
+      }
+
+      return worksiteName;
+   }
+	
    public String getSiteId() {
       return siteId;
    }

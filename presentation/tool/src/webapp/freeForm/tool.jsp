@@ -86,6 +86,7 @@
 
                    <h:outputLabel for="advancedNavigation" id="advancedNavigationLabel"
                                value="#{msgs.advanced_navigation}" />
+                   <h:outputText value=" "/>
                    <h:outputText id="advancedNavInstr" value="#{msgs.advanced_navigation_disclaimer}" styleClass="instruction"/>
 
                </h:panelGroup>

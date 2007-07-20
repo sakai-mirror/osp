@@ -90,7 +90,7 @@ public class WorksiteAwareAuthorizationFacade extends SimpleAuthorizationFacade 
          for (Iterator i=roles.iterator();i.hasNext();) {
             Agent roleAgent = (Agent)i.next();
             if (roleAgent != null) {
-               Authorization authz = getAuthorization(roleAgent, function, id);
+               Authorization authz = super.getAuthorization(roleAgent, function, id);
                if (authz != null) {
                   return authz;
                }

@@ -63,6 +63,9 @@
          <th scope="col"><fmt:message key="table_header_dateModified"/></th>
          <th scope="col"><fmt:message key="table_header_template"/></th>
          <th scope="col"><fmt:message key="table_header_owner"/></th>
+         <c:if test="${myworkspace}">
+           <th scope="col"><fmt:message key="table_header_worksite"/></th>
+         </c:if>
          <th scope="col"><fmt:message key="table_header_expired"/></th>
       </tr>
    </thead>
@@ -133,6 +136,9 @@
       <TD><c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${presentation.modified}" pattern="${dateFormat}"/></TD> 
       <TD><c:out value="${presentation.template.name}" /></TD>
       <TD><c:out value="${presentation.owner.displayName}" /></TD>
+      <c:if test="${myworkspace}">
+         <TD><c:out value="${presentation.worksiteName}" /></TD>
+      </c:if>
       <TD style="text-align: center;">
          <c:if test="${presentation.expired}">
             <img alt="<fmt:message key="linktitle_presentationExpired"/>"  src="<osp:url value="/img/checkon.gif"/>" border="0"/>
