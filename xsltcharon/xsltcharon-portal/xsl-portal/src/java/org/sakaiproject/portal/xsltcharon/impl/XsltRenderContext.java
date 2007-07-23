@@ -36,7 +36,8 @@ import java.util.Iterator;
 public class XsltRenderContext implements PortalRenderContext {
 
    private static final Log log = LogFactory.getLog(XsltRenderEngine.class);
-      
+   private static final String ALT_TEMPLATE = "xsltUseTemplate";
+   
    /** messages. */
    private static ResourceLoader rb = new ResourceLoader("org/sakaiproject/portal/xsltcharon/messages");
 
@@ -511,6 +512,18 @@ public class XsltRenderContext implements PortalRenderContext {
       }
 
       parent.appendChild(topNode);
+   }
+
+   public String getAlternateTemplate() {
+      if (request.getParameter(ALT_TEMPLATE) != null) {
+         return request.getParameter(ALT_TEMPLATE);
+      }
+      
+      if (request.getAttribute(ALT_TEMPLATE) != null) {
+         return request.getAttribute(ALT_TEMPLATE).toString();
+      }
+      
+      return null;
    }
 
 }

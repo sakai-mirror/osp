@@ -13,7 +13,6 @@ import org.w3c.dom.Document;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletConfig;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.dom.DOMSource;
@@ -22,6 +21,9 @@ import java.io.Writer;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
+import java.util.Iterator;
+import java.util.Hashtable;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,12 +40,15 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
 
    /** injected **/
    private PortalService portalService;
-   private String transformerPath;
+   private String defaultTransformerPath;
 
    private ServletContext servletContext;
 
-   private Templates templates;
+   private Templates defaultTemplates;
    private URIResolver servletResolver;
+
+   private Map<String, Templates> templates = new Hashtable<String, Templates>();
+   private Map<String, String> transformerPaths;
 
    public XsltRenderEngine() {
    }
@@ -64,14 +69,23 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
    public void springInit() {
       getPortalService().addRenderEngine(XSLT_CONTEXT, this);
       try {
-         setTemplates(createTemplate());
+         setDefaultTemplates(createTemplate());
+         setupTemplates();
       } catch (MalformedURLException e) {
          log.error("unable to init portal transformation", e);
       } catch (TransformerConfigurationException e) {
          log.error("unable to init portal transformation", e);
       }
-      
+
       setServletResolver(new ServletResourceUriResolver(getServletContext()));
+   }
+
+   protected void setupTemplates() throws MalformedURLException, TransformerConfigurationException {
+      for (Iterator<Map.Entry<String, String>> i=getTransformerPaths().entrySet().iterator();
+           i.hasNext();) {
+         Map.Entry<String, String> entry = i.next();
+         getTemplates().put(entry.getKey(), createTemplate(entry.getValue()));
+      }
    }
 
    public void destroy() {
@@ -106,17 +120,19 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
 
       if (template.equals("site")) {
          Document doc = xrc.produceDocument();
-         writeDocument(doc, out);
+         writeDocument(doc, out, xrc.getAlternateTemplate());
       }
       else {
          xrc.getBaseContext().getRenderEngine().render(template, xrc.getBaseContext(), out);
       }
    }
 
-   protected void writeDocument(Document doc, Writer out) {
+   protected void writeDocument(Document doc, Writer out, String altTemplate) {
       try {
          StreamResult outputTarget = new StreamResult(out);
-         getTransformer().transform(new DOMSource(doc), outputTarget);
+
+         Transformer transformer = getTransformer(altTemplate);
+         transformer.transform(new DOMSource(doc), outputTarget);
       }
       catch (TransformerException e) {
          throw new RuntimeException(e);
@@ -124,9 +140,20 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
 
    }
 
-   public Transformer getTransformer() {
+   public Transformer getTransformer(String altTemplate) {
       try {
-         Transformer trans = getTemplates().newTransformer();
+         Templates templates = null;
+         
+         if (altTemplate != null) {
+            templates = getTemplates().get(altTemplate);
+         }
+         
+         // test seperately in case the param wasnt' correct
+         if (templates == null) {
+            templates = getDefaultTemplates();
+         }
+         
+         Transformer trans = templates.newTransformer();
          trans.setURIResolver(getServletResolver());
          return trans;
       }
@@ -135,12 +162,12 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
       }
    }
 
-   public Templates getTemplates() {
-      return templates;
+   public Templates getDefaultTemplates() {
+      return defaultTemplates;
    }
 
-   public void setTemplates(Templates templates) {
-      this.templates = templates;
+   public void setDefaultTemplates(Templates defaultTemplates) {
+      this.defaultTemplates = defaultTemplates;
    }
 
    public URIResolver getServletResolver() {
@@ -180,11 +207,16 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
       this.servletContext = servletContext;
    }
 
-   protected Templates createTemplate() 
+   protected Templates createTemplate()
       throws MalformedURLException, TransformerConfigurationException {
+      String transformerPath = getDefaultTransformerPath();
+      return createTemplate(transformerPath);
+   }
+
+   protected Templates createTemplate(String transformerPath) throws MalformedURLException, TransformerConfigurationException {
       InputStream stream = getServletContext().getResourceAsStream(
-            getTransformerPath());
-      URL url = getServletContext().getResource(getTransformerPath());
+            transformerPath);
+      URL url = getServletContext().getResource(transformerPath);
       String urlPath = url.toString();
       String systemId = urlPath.substring(0, urlPath.lastIndexOf('/') + 1);
       Templates templates = TransformerFactory.newInstance().newTemplates(
@@ -192,11 +224,27 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
       return templates;
    }
 
-   public String getTransformerPath() {
-      return transformerPath;
+   public String getDefaultTransformerPath() {
+      return defaultTransformerPath;
    }
 
-   public void setTransformerPath(String transformerPath) {
-      this.transformerPath = transformerPath;
+   public void setDefaultTransformerPath(String defaultTransformerPath) {
+      this.defaultTransformerPath = defaultTransformerPath;
+   }
+
+   public Map<String, Templates> getTemplates() {
+      return templates;
+   }
+
+   public void setTemplates(Map<String, Templates> templates) {
+      this.templates = templates;
+   }
+
+   public Map<String, String> getTransformerPaths() {
+      return transformerPaths;
+   }
+
+   public void setTransformerPaths(Map<String, String> transformerPaths) {
+      this.transformerPaths = transformerPaths;
    }
 }
