@@ -64,7 +64,7 @@
                <h:outputText value="#{wizardItem.base.name}"/>
             </h:commandLink>
          </f:subview>
-	     <ospx:separatedList id="wizActionList" separator=" | " styleClass="itemAction">
+	     <sakai:separatedList id="wizActionList" separator=" | " styleClass="itemAction">
 	           <f:subview id="previewLink" rendered="#{wizardItem.canPublish && wizardItem.base.hasPages && !wizardItem.base.preview && !wizardItem.base.published}">
 	                 <h:commandLink action="#{wizardItem.processActionPreview}">
 	                 <h:outputText value="#{msgs.preview}" />
@@ -90,7 +90,7 @@
 	                  <h:outputText value="#{msgs.export}"/>
 	              </h:outputLink>
 	           </f:subview>
-	     </ospx:separatedList>
+	     </sakai:separatedList>
       </h:column>
 <%-- TODO having the description here really throws rendering off -- would be ok as a separate row, but this is JSF  
       <h:column>
