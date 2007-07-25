@@ -87,5 +87,6 @@
         <module>reports</module>
 	<module>gmt</module>
 	<module>datapoint</module>
+        <module>xsdweaver</module>
   </modules>
 </project>
