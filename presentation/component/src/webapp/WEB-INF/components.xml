@@ -203,7 +203,7 @@
                   <value>/org/theospi/portfolio/presentation/layouts/contentOverText.jpg</value>
                </property>
                <property name="previewFileName"><value>contentOverText.jpg</value></property>
-               <property name="previewFileType"><value>image/jpg</value></property>
+               <property name="previewFileType"><value>image/jpeg</value></property>
             </bean>
             <bean class="org.theospi.portfolio.presentation.model.impl.PresentationLayoutWrapper">
                <property name="idValue"><value>twoColumn</value></property>
@@ -216,7 +216,20 @@
                   <value>/org/theospi/portfolio/presentation/layouts/2column.jpg</value>
                </property>
                <property name="previewFileName"><value>2column.jpg</value></property>
-               <property name="previewFileType"><value>image/jpg</value></property>
+               <property name="previewFileType"><value>image/jpeg</value></property>
+            </bean>
+            <bean class="org.theospi.portfolio.presentation.model.impl.PresentationLayoutWrapper">
+               <property name="idValue"><value>simpleRichText</value></property>
+               <property name="name"><value>Simple HTML</value></property>
+               <property name="description"><value>Single HTML Layout File</value></property>
+               <property name="layoutFileLocation">
+                  <value>/org/theospi/portfolio/presentation/layouts/simple800x600.xhtml</value>
+               </property>
+               <property name="previewFileLocation">
+                  <value>/org/theospi/portfolio/presentation/layouts/Simplehtml.jpg</value>
+               </property>
+               <property name="previewFileName"><value>Simplehtml.jpg</value></property>
+               <property name="previewFileType"><value>image/jpeg</value></property>
             </bean>
          </list>
       </property>
