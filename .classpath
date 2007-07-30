@@ -110,5 +110,7 @@
   <classpathentry combineaccessrules="false" kind="src" path="/metaobj-util"/>
   <classpathentry combineaccessrules="false" kind="src" path="/assignment-api"/>
   <classpathentry combineaccessrules="false" kind="src" path="/jobscheduler"/>
+  <classpathentry combineaccessrules="false" kind="src" path="/warehouse-api"/>
+  <classpathentry combineaccessrules="false" kind="src" path="/warehouse-impl"/>
   <classpathentry kind="output" path="bin"/>
 </classpath>
