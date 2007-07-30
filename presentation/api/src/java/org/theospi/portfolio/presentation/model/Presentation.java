@@ -63,6 +63,8 @@ public class Presentation extends IdentifiableObject {
    private boolean advancedNavigation = false;
    private Style style;
    private String styleName;
+   private PresentationLayout layout;
+   private String layoutName;
    private boolean allowComments = false;
    private Id propertyForm;
    private boolean preview = false;
@@ -288,10 +290,25 @@ public class Presentation extends IdentifiableObject {
     public void setStyle(Style style) {
         this.style = style;
     }
+    
+    public PresentationLayout getLayout() {
+        return layout;
+    }
+
+    public void setLayout(PresentationLayout layout) {
+        this.layout = layout;
+    }
 
     public String getStyleName() {
         if (getStyle() != null){
             return getStyle().getName();
+        }
+        return null;
+    }
+    
+    public String getLayoutName() {
+        if (getLayout() != null){
+            return getLayout().getName();
         }
         return null;
     }

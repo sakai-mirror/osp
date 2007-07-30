@@ -66,6 +66,11 @@ public class DecoratedPage implements Comparable {
    public DecoratedPage(PresentationPage base, FreeFormTool parent) {
       this.base = base;
       this.parent = parent;
+      
+      if(base.getPresentation().getLayout() != null && base.getLayout() == null){
+    	  base.setLayout(base.getPresentation().getLayout());
+      }
+      
       initLayout();
    }
 

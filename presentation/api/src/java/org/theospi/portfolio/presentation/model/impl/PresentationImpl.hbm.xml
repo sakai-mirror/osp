@@ -83,6 +83,7 @@
          not-null="false" column="properties"/>
       <property name="propertyForm" type="org.sakaiproject.metaobj.shared.IdType" length="36" column="property_form" />
 
+	  <many-to-one name="layout" column="layout_id" not-null="false" class="PresentationLayout"/>
       <many-to-one name="style" column="style_id" not-null="false" class="org.theospi.portfolio.style.model.Style"/>
       <property name="advancedNavigation" column="advanced_navigation" type="boolean" not-null="false" />
       <set name="items" table="osp_presentation_item" lazy="false" >

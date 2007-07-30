@@ -44,10 +44,12 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.theospi.jsf.intf.XmlTagFactory;
+import org.theospi.portfolio.presentation.PresentationLayoutHelper;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationItem;
+import org.theospi.portfolio.presentation.model.PresentationLayout;
 import org.theospi.portfolio.presentation.model.PresentationPage;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.tool.HelperToolBase;
@@ -395,29 +397,51 @@ public class FreeFormTool extends HelperToolBase {
       }
       return "arrange";
    }
- public String processActionSelectStyle() {
+   public String processActionSelectStyle() {
 
-      ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      ToolSession session = SessionManager.getCurrentToolSession();
-      session.removeAttribute(StyleHelper.CURRENT_STYLE);
-      session.removeAttribute(StyleHelper.CURRENT_STYLE_ID);
+	   ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+	   ToolSession session = SessionManager.getCurrentToolSession();
+	   session.removeAttribute(StyleHelper.CURRENT_STYLE);
+	   session.removeAttribute(StyleHelper.CURRENT_STYLE_ID);
 
-      session.setAttribute(StyleHelper.STYLE_SELECTABLE, "true");
-      if (presentation.getStyle() != null)
-         session.setAttribute(StyleHelper.CURRENT_STYLE_ID, presentation.getStyle().getId().getValue());
+	   session.setAttribute(StyleHelper.STYLE_SELECTABLE, "true");
+	   if (presentation.getStyle() != null)
+		   session.setAttribute(StyleHelper.CURRENT_STYLE_ID, presentation.getStyle().getId().getValue());
 
-      try {
-         context.redirect("osp.style.helper/listStyle");
-      }
-      catch (IOException e) {
-         throw new RuntimeException("Failed to redirect to helper", e);
-      }
-      return null;
+	   try {
+		   context.redirect("osp.style.helper/listStyle");
+	   }
+	   catch (IOException e) {
+		   throw new RuntimeException("Failed to redirect to helper", e);
+	   }
+	   return null;
    }
-    public int getStep(){
-        return step;
-    }
-    public String getStepString() {
+
+   public String processActionSelectLayout() {
+	   ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+	   ToolSession session = SessionManager.getCurrentToolSession();
+	   session.removeAttribute(PresentationLayoutHelper.CURRENT_LAYOUT);
+	   session.removeAttribute(PresentationLayoutHelper.CURRENT_LAYOUT_ID);
+
+	   session.setAttribute(PresentationLayoutHelper.LAYOUT_SELECTABLE, "true");
+	   if (presentation.getLayout() != null)
+		   session.setAttribute(PresentationLayoutHelper.CURRENT_LAYOUT_ID, presentation.getLayout().getId().getValue());
+
+	   try {
+		   context.redirect("osp.presLayout.helper/listLayout");
+	   }
+	   catch (IOException e) {
+		   throw new RuntimeException("Failed to redirect to helper", e);
+	   }
+	   return null;
+   }
+   
+
+
+   public int getStep(){
+	   return step;
+   }
+   public String getStepString() {
         return "" + (step);
     }
 
@@ -442,6 +466,43 @@ public class FreeFormTool extends HelperToolBase {
           return presentation.getStyle().getName();
        return "";
     }
+    
+    
+    public String getLayoutName() {
+        ToolSession session = SessionManager.getCurrentToolSession();
+        if (session.getAttribute(PresentationLayoutHelper.CURRENT_LAYOUT) != null) {
+        	PresentationLayout layout = (PresentationLayout)session.getAttribute(PresentationLayoutHelper.CURRENT_LAYOUT);
+           presentation.setLayout(layout);
+           session.removeAttribute(PresentationLayoutHelper.CURRENT_LAYOUT);
+        }
+        else if (session.getAttribute(PresentationLayoutHelper.UNSELECTED_LAYOUT) != null) {
+           presentation.setLayout(null);
+           session.removeAttribute(PresentationLayoutHelper.UNSELECTED_LAYOUT);
+           return "";
+        }
+        
+        if (presentation.getLayout() != null)
+           return presentation.getLayout().getName();
+        return "";
+     }
+
+    public Node getPreviewImage() {
+        if (presentation.getLayout() == null || presentation.getLayout().getPreviewImageId() == null) {
+           return null;
+        }
+        return getPresentationManager().getNode(presentation.getLayout().getPreviewImageId(), presentation.getLayout());
+     }
+    
+    public boolean islayoutSelected() {
+        return (presentation.getLayout() != null);
+     }
+
+     public boolean isLayoutPreviewImage() {
+         if (islayoutSelected() && (getPreviewImage() != null)) {
+             return true;
+         }
+         return false;
+     }
 
    /**
     * @return the contentHosting
