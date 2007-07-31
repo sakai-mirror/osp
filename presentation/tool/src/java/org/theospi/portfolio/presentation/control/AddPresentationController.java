@@ -119,8 +119,6 @@ public class AddPresentationController extends AbstractWizardFormController {
       Presentation presentation = new Presentation();
       presentation.setTemplate(new PresentationTemplate());
 
-      presentation.setToolId(ToolManager.getCurrentPlacement().getId());
-      
       // this is an edit, load model
       if (request.getParameter("id") != null) {
          int page = parseTarget(request.getParameter("target"));
@@ -136,6 +134,7 @@ public class AddPresentationController extends AbstractWizardFormController {
          presentation.setId(getIdManager().createId());
          presentation.setNewObject(true);
          presentation.setSiteId(ToolManager.getCurrentPlacement().getContext());
+         presentation.setToolId(ToolManager.getCurrentPlacement().getId());
       }
 
       if (request.getParameter("templateId") != null) {
@@ -663,12 +662,12 @@ public class AddPresentationController extends AbstractWizardFormController {
       //don't do this for an edit
       if (presentation.getId() == null){
          presentation.setOwner(agent);
+         presentation.setToolId(ToolManager.getCurrentPlacement().getId());
       }
 
       if (presentation.getTemplate().getPropertyPage() == null){
          presentation.setProperties(null);
       }
-      presentation.setToolId(ToolManager.getCurrentPlacement().getId());
       getPresentationManager().storePresentation(presentation);
 
       httpServletRequest.getSession().removeAttribute(getCommandName());

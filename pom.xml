@@ -21,6 +21,7 @@
     <module>portal</module>
     <module>presentation</module>
     <module>warehouse</module>
-    <module>wizard</module>
+     <module>wizard</module>
+     <module>xsltcharon</module>
   </modules>
 </project>

@@ -158,12 +158,12 @@ public class TextTypeTagHandler extends LayoutPageHandlerBase {
       
       if (sizeAttributeMap.get(ATTR_WIDTH) != null) {
          String width = (String)sizeAttributeMap.get(ATTR_WIDTH);
-         RendererUtil.setAttribute(context, input, ATTR_WIDTH, width);
+         RendererUtil.setAttribute(context, input, ATTR_WIDTH, Integer.valueOf(width));
       }
       
       if (sizeAttributeMap.get(ATTR_HEIGHT) != null) {
          String height = (String)sizeAttributeMap.get(ATTR_HEIGHT);
-         RendererUtil.setAttribute(context, input, ATTR_HEIGHT, height);
+         RendererUtil.setAttribute(context, input, ATTR_HEIGHT, Integer.valueOf(height));
       }
       
       parent.getComponent().getChildren().add(input);

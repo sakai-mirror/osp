@@ -37,10 +37,10 @@ import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
-import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.Node;
 

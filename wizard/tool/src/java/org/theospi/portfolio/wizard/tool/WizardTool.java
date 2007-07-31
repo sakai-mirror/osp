@@ -81,6 +81,7 @@ import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -983,7 +984,7 @@ public class WizardTool extends BuilderTool {
    public List getUserListForSelect() {
       Placement placement = ToolManager.getCurrentPlacement();
       String currentSiteId = placement.getContext();
-      List theList = new ArrayList(getUserList(currentSiteId));
+      List theList = getUserList(currentSiteId);
       
       String user = currentUserId!=null ? 
             currentUserId : SessionManager.getCurrentSessionUserId();
@@ -992,9 +993,20 @@ public class WizardTool extends BuilderTool {
       return theList;
    }
    
-   private Set getUserList(String worksiteId) {
+   /**
+    * Static comparator class for comparing items in a SelectItem list
+    *
+    */
+   public static class UserSelectListComparator implements Comparator {
+      public int compare(Object o1, Object o2) {
+         return ((SelectItem)o1).getLabel().toLowerCase().compareTo(
+               ((SelectItem)o2).getLabel().toLowerCase());
+      }
+   }
+   
+   private List getUserList(String worksiteId) {
       Set members = new HashSet();
-      Set users = new HashSet();
+      List users = new ArrayList();
       
       try {
          Site site = SiteService.getSite(worksiteId);
@@ -1010,8 +1022,6 @@ public class WizardTool extends BuilderTool {
             members.addAll(site.getMembers());
          }
          
-         Collections.sort(new ArrayList(members));
-         
          for (Iterator memb = members.iterator(); memb.hasNext();) {
             try {
                Member member = (Member) memb.next();
@@ -1023,6 +1033,7 @@ public class WizardTool extends BuilderTool {
                logger.warn("User " + e.getId() + " cannot be found");
             }
          }
+         Collections.sort(users, new UserSelectListComparator());
       }
       catch (IdUnusedException e) {
          throw new OspException(e);

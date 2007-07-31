@@ -68,8 +68,27 @@
 			      </h:panelGroup>
 		       </h:panelGrid>
             </f:subview>
-
-             <h:panelGrid columns="3" cellspacing="1">
+                                      
+               <h:panelGrid columns="3" cellspacing="1">
+               <h:outputLabel for="layoutFile" id="layoutLabel" value="#{msgs.page_layout}"/>
+               <h:inputText id="layoutFile" value="#{freeForm.layoutName}"
+                             readonly="true" required="false"/>
+               <h:commandLink action="#{freeForm.processActionSelectLayout}" immediate="true">
+                  <h:outputText value="#{msgs.select_layout}"/>
+               </h:commandLink>
+            </h:panelGrid>
+                        <h:outputLabel id="blank" value=""/>
+            
+            <h:panelGroup>
+            <h:graphicImage id="defaultLayoutImage" height="125" width="100"
+                    value="/img/page-nopreview.png"
+                    rendered="#{!freeForm.layoutPreviewImage and freeForm.layoutSelected}"/>
+            <h:graphicImage id="selectedLayoutImage" height="125" width="100"
+                                          value="#{freeForm.previewImage.externalUri}"
+                                          rendered="#{freeForm.layoutPreviewImage}"
+                    /></h:panelGroup>
+                                
+               <h:panelGrid columns="3" cellspacing="1">
                <h:outputLabel for="styleFile" id="styleLabel" value="#{msgs.page_style}"/>
                <h:inputText id="styleFile" value="#{freeForm.styleName}"
                              readonly="true" required="false"/>
@@ -86,6 +105,7 @@
 
                    <h:outputLabel for="advancedNavigation" id="advancedNavigationLabel"
                                value="#{msgs.advanced_navigation}" />
+                   <h:outputText value=" "/>
                    <h:outputText id="advancedNavInstr" value="#{msgs.advanced_navigation_disclaimer}" styleClass="instruction"/>
 
                </h:panelGroup>

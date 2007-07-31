@@ -4,12 +4,14 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
 
-<osp-c:authZMap prefix="osp.presentation." var="can" />
+<c:if test="${!myworkspace}">
+   <osp-c:authZMap prefix="osp.presentation." var="can" />
+</c:if>
 
 <!-- GUID=<c:out value="${newPresentationId}"/> -->
 
 <div class="navIntraTool">
-    <c:if test="${can.create}">
+    <c:if test="${!myworkspace && can.create}">
         <a href="<osp:url value="addPresentation.osp"/>&resetForm=true"
             title="<fmt:message key="action_new_title"/>"> <fmt:message key="action_new"/> </a>
     </c:if>
@@ -24,7 +26,7 @@
             </osp:url>"
         title="<fmt:message key="action_commentsOthers_title"/>"> <fmt:message key="action_commentsOthers"/> </a>
 
-    <c:if test="${isMaintainer}">
+    <c:if test="${!myworkspace && isMaintainer}">
         <a href="<osp:url value="osp.permissions.helper/editPermissions">
                 <osp:param name="message"><fmt:message key="message_permissionsEdit">
 	          <fmt:param><c:out value="${tool.title}"/></fmt:param>
@@ -61,6 +63,9 @@
          <th scope="col"><fmt:message key="table_header_dateModified"/></th>
          <th scope="col"><fmt:message key="table_header_template"/></th>
          <th scope="col"><fmt:message key="table_header_owner"/></th>
+         <c:if test="${myworkspace}">
+           <th scope="col"><fmt:message key="table_header_worksite"/></th>
+         </c:if>
          <th scope="col"><fmt:message key="table_header_expired"/></th>
       </tr>
    </thead>
@@ -131,6 +136,9 @@
       <TD><c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${presentation.modified}" pattern="${dateFormat}"/></TD> 
       <TD><c:out value="${presentation.template.name}" /></TD>
       <TD><c:out value="${presentation.owner.displayName}" /></TD>
+      <c:if test="${myworkspace}">
+         <TD><c:out value="${presentation.worksiteName}" /></TD>
+      </c:if>
       <TD style="text-align: center;">
          <c:if test="${presentation.expired}">
             <img alt="<fmt:message key="linktitle_presentationExpired"/>"  src="<osp:url value="/img/checkon.gif"/>" border="0"/>

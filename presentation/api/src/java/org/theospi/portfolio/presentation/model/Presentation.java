@@ -34,6 +34,8 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdImpl;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
 import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.exception.IdUnusedException;
 import org.theospi.portfolio.shared.model.DateBean;
 import org.theospi.portfolio.style.model.Style;
 
@@ -61,6 +63,8 @@ public class Presentation extends IdentifiableObject {
    private boolean advancedNavigation = false;
    private Style style;
    private String styleName;
+   private PresentationLayout layout;
+   private String layoutName;
    private boolean allowComments = false;
    private Id propertyForm;
    private boolean preview = false;
@@ -237,6 +241,24 @@ public class Presentation extends IdentifiableObject {
       this.pages = pages;
    }
 
+   /**
+    * @return Returns the worksite name
+    */
+   public String getWorksiteName() {
+	   String worksiteName = "";
+		
+      try
+      {
+         worksiteName = SiteService.getSite(siteId).getTitle();
+      }
+      catch (IdUnusedException e)
+      {
+         // tbd
+      }
+
+      return worksiteName;
+   }
+	
    public String getSiteId() {
       return siteId;
    }
@@ -268,10 +290,25 @@ public class Presentation extends IdentifiableObject {
     public void setStyle(Style style) {
         this.style = style;
     }
+    
+    public PresentationLayout getLayout() {
+        return layout;
+    }
+
+    public void setLayout(PresentationLayout layout) {
+        this.layout = layout;
+    }
 
     public String getStyleName() {
         if (getStyle() != null){
             return getStyle().getName();
+        }
+        return null;
+    }
+    
+    public String getLayoutName() {
+        if (getLayout() != null){
+            return getLayout().getName();
         }
         return null;
     }

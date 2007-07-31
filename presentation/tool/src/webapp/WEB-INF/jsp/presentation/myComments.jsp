@@ -121,3 +121,8 @@
     </tbody>
 </table>
 
+<p/>
+<form method="POST" action="listPresentation.osp">
+   <input type="submit" name="_cancel" value="<fmt:message key="button_back"/>"/>
+</form>
+

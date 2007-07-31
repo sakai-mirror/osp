@@ -38,6 +38,7 @@ import org.sakaiproject.entity.api.ResourcePropertiesEdit;
 import org.sakaiproject.event.cover.NotificationService;
 import org.sakaiproject.exception.*;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
@@ -60,7 +61,6 @@ import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.export.PresentationExport;
 import org.theospi.portfolio.presentation.model.*;
-import org.theospi.portfolio.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.AuthorizationFailedException;
@@ -824,6 +824,63 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return returned;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   public Collection findPresentationsByViewer(Agent viewer, boolean showHidden) {
+      
+      Collection presentationAuthzs = getAuthzManager().getAuthorizations(viewer,
+            PresentationFunctionConstants.VIEW_PRESENTATION,  null);
+      
+      Collection hiddenAuths = getAuthzManager().getAuthorizations(viewer, 
+            PresentationFunctionConstants.HIDE_PRESENTATION, null);
+
+      // Get all presentations owned by user
+      Collection returned = findPresentationsByOwner(viewer);
+
+      for (Iterator i=returned.iterator();i.hasNext();) {
+         Presentation pres = (Presentation)i.next();
+         pres.setAuthz(new PresentationAuthzMap(viewer, pres));
+      }
+      
+      // Build list of hidden Authzs ('last' ensures list not empty)
+      List<Id> hiddenIds = new ArrayList<Id>();
+      hiddenIds.add(getIdManager().getId("last"));
+      if (!showHidden) {
+         hiddenIds = buildPresList(hiddenAuths);
+      }
+      
+      // Get all presentations that are not hidden and add to list if valid
+      String[] paramNames = new String[] {"id", "hiddenId"};
+      Object[] params = new Object[]{buildPresList(presentationAuthzs), 
+            hiddenIds};
+      
+      Collection authzPres = getHibernateTemplate().findByNamedQueryAndNamedParam(
+            "findPortfoliosWithAuthzNoHidden", paramNames, params);
+
+      for (Iterator i=authzPres.iterator();i.hasNext();) {
+         Presentation pres = (Presentation)i.next();
+
+         if (!returned.contains(pres) && !pres.isExpired() && (pres.getOwner() != null)) {
+            pres.setAuthz(new PresentationAuthzMap(viewer, pres));
+            returned.add(pres);
+         }
+          else{
+             getHibernateTemplate().evict(pres);
+         }
+      }
+      
+      // Remove any presentations that are hidden
+      for (Iterator j=returned.iterator(); j.hasNext();) {
+         Presentation pres = (Presentation)j.next();
+         if (hiddenIds.contains(pres.getId())) {
+            j.remove();
+         }
+      }
+
+      return returned;
+   }
+
    protected List<Id> buildPresList(Collection presentationAuthzs) {
       List<Id> presIdList = new ArrayList<Id>();
 
@@ -979,18 +1036,26 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          includeOwnerCondition = " ) and ( creator_id != :ownerId )";
       }
 
-      SQLQuery query = session.createSQLQuery("SELECT {osp_presentation_comment.*} " +
+      StringBuffer queryBuf = new StringBuffer( "SELECT {osp_presentation_comment.*} " +
          " FROM osp_presentation_comment {osp_presentation_comment}, osp_presentation p " +
-         " WHERE {osp_presentation_comment}.presentation_id = p.id and " +
-         " p.tool_id = :toolId and " +
-         " (visibility = " + PresentationComment.VISABILITY_PUBLIC + " or " +
-         "  visibility = " + PresentationComment.VISABILITY_SHARED +
-         includeOwnerCondition + " and " +
-         "  p.owner_id = :ownerId " +
-         " ORDER BY " + orderBy + " " + sortBy.getDirection());
+         " WHERE {osp_presentation_comment}.presentation_id = p.id and " );
+                                              
+      if ( ! isOnWorkspaceTab() ) {
+         queryBuf.append( " p.tool_id = :toolId and " );
+      }
+      
+      queryBuf.append( " (visibility = " + PresentationComment.VISABILITY_PUBLIC + " or " );
+      queryBuf.append( "  visibility = " + PresentationComment.VISABILITY_SHARED );
+      queryBuf.append( includeOwnerCondition + " and " );
+      queryBuf.append( "  p.owner_id = :ownerId " );
+      queryBuf.append( " ORDER BY " + orderBy + " " + sortBy.getDirection() );
+         
+      SQLQuery query = session.createSQLQuery( queryBuf.toString() );
 
       query.addEntity("osp_presentation_comment", PresentationComment.class);
-      query.setString("toolId", toolId);
+      if ( ! isOnWorkspaceTab() ) {
+         query.setString("toolId", toolId);
+      }
       query.setString("ownerId", owner.getId().getValue());
 
       try {
@@ -1053,19 +1118,24 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          orderBy = "{osp_presentation_comment}." + orderBy;
       }
 
-      String queryString = "SELECT {osp_presentation_comment.*} " +
+      StringBuffer queryBuf = new StringBuffer( "SELECT {osp_presentation_comment.*} " +
          " FROM osp_presentation_comment {osp_presentation_comment}, osp_presentation p " +
-         " WHERE {osp_presentation_comment}.presentation_id = p.id and " +
-         " tool_id = :toolId and" +
-         " creator_id = :creatorId" +
-         " ORDER BY " + orderBy + " " + sortBy.getDirection();
+            " WHERE {osp_presentation_comment}.presentation_id = p.id and " );
+            
+      if ( !isOnWorkspaceTab() ) {
+         queryBuf.append( " tool_id = :toolId and" );
+      }
+      queryBuf.append( " creator_id = :creatorId" );
+      queryBuf.append( " ORDER BY " + orderBy + " " + sortBy.getDirection() );;
 
       Session session = getSession();
 
-      SQLQuery query = session.createSQLQuery(queryString);
+      SQLQuery query = session.createSQLQuery( queryBuf.toString() );
       
       query.addEntity("osp_presentation_comment", PresentationComment.class);
-      query.setString("toolId", toolId);
+      if ( !isOnWorkspaceTab() ) {
+         query.setString("toolId", toolId);
+      }
       query.setString("creatorId", creator.getId().getValue());
 
       try {
@@ -1711,6 +1781,15 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return collection;
    }
 
+   /**
+    * See if the current tab is the workspace tab.
+    * @return true if we are currently on the "My Workspace" tab.
+    */
+   private boolean isOnWorkspaceTab()
+   {
+      return SiteService.isUserSite(ToolManager.getCurrentPlacement().getContext());
+   }
+	
    
    /**
     * This gets the directory in which the import places files into.

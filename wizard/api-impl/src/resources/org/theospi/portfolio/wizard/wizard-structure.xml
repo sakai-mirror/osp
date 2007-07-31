@@ -49,6 +49,38 @@ matrix/api-impl/src/resources/org/theospi/portfolio/matrix/matrix-structure.xml 
       <childCategories type="collection" class="org.theospi.portfolio.wizard.model.CompletedWizardCategory" isNested="true">
          <category class="org.theospi.portfolio.wizard.model.WizardCategory">
          </category>
+          <childPages type="collection" class="org.theospi.portfolio.wizard.model.CompletedWizardPage">
+            <wizardPage class="org.theospi.portfolio.matrix.model.WizardPage">
+            <attachments type="collection" class="org.theospi.portfolio.matrix.model.Attachment">
+               <artifactId type="artifact" class="org.sakaiproject.metaobj.shared.model.Id">
+               </artifactId>
+            </attachments>
+            <pageForms type="collection" class="org.theospi.portfolio.matrix.model.WizardPageForm">
+               <artifactId type="artifact" class="org.sakaiproject.metaobj.shared.model.Id">
+               </artifactId>
+            </pageForms>
+            <pageDefinition class="org.theospi.portfolio.matrix.model.WizardPageDefinition">
+               <guidance class="org.theospi.portfolio.guidance.model.Guidance">
+                  <items type="collection" class="org.theospi.portfolio.guidance.model.GuidanceItem">
+                     <attachments type="collection" class="org.theospi.portfolio.guidance.model.GuidanceItemAttachment">
+                     </attachments>
+                  </items>
+               </guidance>
+            </pageDefinition>
+               <reflections type="collection" class="org.theospi.portfolio.review.model.Review">
+                  <reviewContent type="artifact" class="org.sakaiproject.metaobj.shared.model.Id">
+                  </reviewContent>
+               </reflections>
+               <evaluations type="collection" class="org.theospi.portfolio.review.model.Review">
+                  <reviewContent type="artifact" class="org.sakaiproject.metaobj.shared.model.Id">
+                  </reviewContent>
+               </evaluations>
+               <feedback type="collection" class="org.theospi.portfolio.review.model.Review">
+                  <reviewContent type="artifact" class="org.sakaiproject.metaobj.shared.model.Id">
+                  </reviewContent>
+               </feedback>
+         </wizardPage>
+      </childPages>
       </childCategories>
    </rootCategory>
    <owner class="org.sakaiproject.metaobj.shared.model.Agent"></owner>
