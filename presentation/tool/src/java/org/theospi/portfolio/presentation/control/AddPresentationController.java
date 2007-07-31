@@ -587,6 +587,18 @@ public class AddPresentationController extends AbstractWizardFormController {
             return true;
          }
       }
+      
+      //Since allow comments checkbox saves a "false" (uncheck) as null value,
+      //a session variable allowComments keeps track of true and false.  
+      //Only set it if this value hasn't been set yet.
+      if(session.getAttribute("allowComments") == null){
+    	  if (request.getParameter("allowComments") == null || request.getParameter("allowComments").equals("false")) {
+    		  session.setAttribute("allowComments", "false");
+    	  }else{
+    		  session.setAttribute("allowComments", "true");
+    	  }
+      }
+    	  
 
     return WebUtils.hasSubmitParameter(request, PARAM_FINISH) ||
             WebUtils.hasSubmitParameter(request, PARAM_FINISH_AND_NOTIFY);
@@ -668,6 +680,20 @@ public class AddPresentationController extends AbstractWizardFormController {
       if (presentation.getTemplate().getPropertyPage() == null){
          presentation.setProperties(null);
       }
+
+      //Since allow comments checkbox saves a "false" (uncheck) as null value,
+      //a session variable allowComments keeps track of true and false (set in
+      //isFinishedRequest)
+      
+      if(session.getAttribute("allowComments") != null){
+    	  if(session.getAttribute("allowComments").equals("true")){
+    		  presentation.setAllowComments(true);
+    	  }else{
+    		  presentation.setAllowComments(false);  
+    	  }
+    	  session.removeAttribute("allowComments");
+      }
+
       getPresentationManager().storePresentation(presentation);
 
       httpServletRequest.getSession().removeAttribute(getCommandName());
