@@ -157,11 +157,6 @@
     </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-taggable-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-tool-lib</artifactId>
       <version>${sakai.version}</version>
       <exclusions>
@@ -187,6 +182,11 @@
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-util</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-taggable-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
     <dependency>
