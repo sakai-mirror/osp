@@ -474,46 +474,12 @@ public class EditScaffoldingCellController extends
 	protected void setAudienceSelectionVariables(Map session,
 			WizardPageDefinition wpd) {
 		session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION,
-				MatrixFunctionConstants.EVALUATE_MATRIX);
+						AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX);
 
 		String id = wpd.getId() != null ? wpd.getId().getValue() : wpd
 				.getNewId().getValue();
 
 		session.put(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
-		session.put(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS, myResources
-				.getString("eval_audience_instructions"));
-		session.put(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE, myResources
-				.getString("eval_audience_global_title"));
-		session.put(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE,
-				myResources.getString("eval_audience_individual_title"));
-		session.put(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE, myResources
-				.getString("eval_audience_group_title"));
-		session.put(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, "false");
-		session.put(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, null);
-		session.put(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE,
-				myResources.getString("eval_audience_selected_title"));
-		session.put(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS,
-				myResources.getString("eval_audience_filter_instructions"));
-		session.put(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, null);
-		session.put(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "true");
-		session.put(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL,
-				myResources.getString("eval_audience_browse_individual"));
-	}
-
-	protected void clearAudienceSelectionVariables(Map session) {
-		session.remove(AudienceSelectionHelper.AUDIENCE_FUNCTION);
-		session.remove(AudienceSelectionHelper.AUDIENCE_QUALIFIER);
-		session.remove(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS);
-		session.remove(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE);
-		session.remove(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE);
-		session.remove(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE);
-		session.remove(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG);
-		session.remove(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE);
-		session.remove(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE);
-		session.remove(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS);
-		session.remove(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL);
-		session.remove(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED);
-		session.remove(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL);
 	}
 
 	protected Collection getAvailableForms(String siteId, String type) {

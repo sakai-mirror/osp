@@ -11,7 +11,7 @@
 <!-- GUID=<c:out value="${newPresentationId}"/> -->
 
 <div class="navIntraTool">
-    <c:if test="${!myworkspace && can.create}">
+    <c:if test="${myworkspace || can.create}">
         <a href="<osp:url value="addPresentation.osp"/>&resetForm=true"
             title="<fmt:message key="action_new_title"/>"> <fmt:message key="action_new"/> </a>
     </c:if>

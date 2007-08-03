@@ -1,5 +1,14 @@
 <h:panelGrid columns="1">
-   <sakai:view_title value="#{audience.selectedTitle}" />
+   <c:if test="${audience.wizardAudience}">
+      <sakai:view_title value="#{common_msgs.audience_selected_evaluators}" />
+   </c:if>
+   <c:if test="${audience.matrixAudience}">
+      <sakai:view_title value="#{common_msgs.audience_selected_evaluators}" />
+   </c:if>
+   <c:if test="${audience.portfolioAudience}">
+      <sakai:view_title value="#{common_msgs.audience_selected_audience}" />
+   </c:if>
+   
    <sakai:button_bar>
       <sakai:button_bar_item id="remove_user_button" 
          action="#{audience.processActionRemove}"

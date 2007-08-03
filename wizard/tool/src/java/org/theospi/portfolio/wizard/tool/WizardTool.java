@@ -728,45 +728,14 @@ public class WizardTool extends BuilderTool {
 
    public void processActionAudienceHelper() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      //Tool tool = ToolManager.getCurrentTool();
       ToolSession session = SessionManager.getCurrentToolSession();
 
-      //Placement placement = ToolManager.getCurrentPlacement();
-      //String currentSite = placement.getContext();
       Wizard wizard = getCurrent().getBase();
 
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION,
-            WizardFunctionConstants.EVALUATE_WIZARD);
+            AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD);
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER,
             wizard.getId().getValue());
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS,
-            getMessageFromBundle("audience_instructions"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE,
-            getMessageFromBundle("audience_global_title"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE,
-            getMessageFromBundle("audience_individual_title"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE,
-            getMessageFromBundle("audience_group_title"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, "false");
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE,
-            null);
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE,
-            getMessageFromBundle("audience_selected_title"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS,
-            getMessageFromBundle("audience_filter_instructions"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, null);
-      
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "true");
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL,
-            getMessageFromBundle("audience_browse_individual"));
-
-      //Guidance guidance = wizard.getGuidance();
-      //if (guidance == null) {
-      //   guidance = getGuidanceManager().createNew(wizard.getName() + " Guidance", currentSite, null, "", "");
-      //}
-
-      //session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
-
       try {
          context.redirect("osp.audience.helper/tool.jsf?panel=Main");
       }

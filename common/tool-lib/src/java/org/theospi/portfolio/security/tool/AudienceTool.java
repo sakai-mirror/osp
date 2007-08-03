@@ -20,6 +20,7 @@
  **********************************************************************************/
 package org.theospi.portfolio.security.tool;
 
+import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.cover.ServerConfigurationService;
@@ -59,6 +60,9 @@ import java.util.regex.Pattern;
  */
 public class AudienceTool extends HelperToolBase {
 
+    // Resource bundle using current language locale
+    private static ResourceLoader rb = new ResourceLoader("org.theospi.portfolio.common.bundle.Messages");
+    
     private AuthorizationFacade authzManager;
     private IdManager idManager;
     private SiteService siteService;
@@ -88,8 +92,10 @@ public class AudienceTool extends HelperToolBase {
      * **********************************
      */
 
-    private List selectedRolesFilter;
-    private List selectedGroupsFilter;
+    private String PRESENTATION_VIEWERS = "PRESENTATION_VIEWERS";
+
+    private List selectedRolesFilter = null;
+    private List selectedGroupsFilter = null;
     private PagingList browseUsers = null;
     private String stepString = "2";
     private String function;
@@ -130,7 +136,6 @@ public class AudienceTool extends HelperToolBase {
 
 
 
-
     /*************************************************************************/
 
 
@@ -154,10 +159,10 @@ public class AudienceTool extends HelperToolBase {
     }
 
     public List getSelectedMembers() {
-        if (getAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION) != null) {
+        if (getAttribute(PRESENTATION_VIEWERS) == null) {
             selectedMembers = fillMemberList();
+            setAttribute(PRESENTATION_VIEWERS, selectedMembers);
         }
-        setAttribute("PRESENTATION_VIEWERS", selectedMembers);
 
         if (selectedMembers == null)
             selectedMembers = new ArrayList();
@@ -180,9 +185,6 @@ public class AudienceTool extends HelperToolBase {
             returned.add(new DecoratedMember(this, authz.getAgent()));
             originalMembers.add(authz.getAgent());
         }
-
-        removeAttributes(
-                new String[]{AudienceSelectionHelper.AUDIENCE_FUNCTION, AudienceSelectionHelper.AUDIENCE_QUALIFIER});
 
         return returned;
     }
@@ -264,68 +266,33 @@ public class AudienceTool extends HelperToolBase {
         this.idManager = idManager;
     }
 
-    public String getInstructions() {
-        return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS);
+    public String getAudienceFunction() {
+        return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_FUNCTION);
     }
-    public String getBrowseUserInstructions() {
-        return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL);
-    }
-
-    public String getPublicInstructions() {
-        return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_PUBLIC_INSTRUCTIONS);
-    }
-
+    
     public String getPublicURL() {
         return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_PUBLIC_URL);
     }
 
-    public String getFilterTitle() {
-        return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS);
+    public boolean isPortfolioAudience() {
+        if ( getAudienceFunction().equals(AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO) )
+           return true;
+        else
+           return false;
     }
 
-    public String getGlobalTitle() {
-        return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE);
+    public boolean isWizardAudience() {
+        if ( getAudienceFunction().equals(AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD) )
+           return true;
+        else
+           return false;
     }
 
-    public String getIndividualTitle() {
-        return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE);
-    }
-
-    public String getGroupTitle() {
-        return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE);
-    }
-
-    public String getPublicTitle() {
-        return (String) getAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE);
-    }
-
-    public String getSelectedTitle() {
-        return (String) getAttributeOrDefault(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE);
-    }
-
-    public boolean isPortfolioWizard() {
-        if ("true".equals(getAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD))){
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    public boolean isPortfolioWizardNotify() {
-        if (isPortfolioWizard() || "true".equals(getAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD))){
-            return true;
-        }else{
-            return false;
-        }           
-    }
-
-    public boolean isPublicCapable() {
-        return getAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE) != null;
-    }
-
-    public boolean isEmailCapable() {
-        return getAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL) != null;
+    public boolean isMatrixAudience() {
+        if ( getAudienceFunction().equals(AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX) )
+           return true;
+        else
+           return false;
     }
 
     public boolean isPublicAudience() {
@@ -336,14 +303,6 @@ public class AudienceTool extends HelperToolBase {
         }
         return publicAudience;
     }
-
-    public boolean isWorksiteLimited() {
-        if (getAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED) != null) {
-            return "true".equalsIgnoreCase((String) getAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED));
-        }
-        return false;
-    }
-
 
     public void setPublicAudience(boolean publicAudience) {
         this.publicAudience = publicAudience;
@@ -373,7 +332,7 @@ public class AudienceTool extends HelperToolBase {
 
         for (Iterator i = groups.iterator(); i.hasNext();) {
             Group group = (Group) i.next();
-            returned.add(new SelectItem(group.getId(), group.getDescription(), "group"));
+            returned.add(new SelectItem(group.getId(), group.getTitle(), "group"));
         }
 
         return returned;
@@ -468,7 +427,7 @@ public class AudienceTool extends HelperToolBase {
     } */
 
     public String processActionAddEmail() {
-        boolean worksiteLimited = isWorksiteLimited();
+        boolean worksiteLimited = ! isPortfolioAudience();
         
         String email2add = getSearchEmails();
         
@@ -692,7 +651,7 @@ public class AudienceTool extends HelperToolBase {
 
             Agent agent = getAgentManager().getAgent((member.getUserId()));
             //Check for a null agent since the site.getMembers() will return member records for deleted users
-            if (agent != null && agent.getId() != null) {
+            if (agent != null) {
                DecoratedMember decoratedMember = new DecoratedMember(this, agent);
                memberList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), "member"));
             }
@@ -847,7 +806,7 @@ public class AudienceTool extends HelperToolBase {
     public String processActionAdd() {
         String[] selected = getAvailableRoleMember();
         if (selected.length < 1) {
-            //put in a message that they need to select something from the lsit to add
+            //put in a message that they need to select something from the list to add
             return "main";
         }
 
@@ -920,22 +879,12 @@ public class AudienceTool extends HelperToolBase {
         ToolSession session = SessionManager.getCurrentToolSession();
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION);
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER);
-        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS);
-        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE);
-        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE);
-        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE);
-        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE);
-        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE);
-        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS);
-        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL);
-        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED);
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_BACK_TARGET);
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_CANCEL_TARGET);
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_URL);
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_SAVE_NOTIFY_TARGET);
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_SAVE_TARGET);
-        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD);
-        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL); 
+        session.removeAttribute(PRESENTATION_VIEWERS);
     }
 
     public String getStepString() {
