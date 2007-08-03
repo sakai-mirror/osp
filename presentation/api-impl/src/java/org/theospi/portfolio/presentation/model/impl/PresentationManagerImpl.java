@@ -3335,6 +3335,33 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return false;
    }
 
+   public List getStyles(Id objectId) {
+      PresentationPage page = getPresentationPage(objectId);
+      if (page != null) {
+         Presentation pres = page.getPresentation();
+         List styles = new ArrayList();
+         if (pres.getStyle() != null) {
+            styles.add(pres.getStyle());
+         }
+         if (page.getStyle() != null) {
+            styles.add(page.getStyle());
+         }
+         return styles;
+      }
+
+      Presentation pres = (Presentation) getHibernateTemplate().get(Presentation.class, objectId);
+      if (pres != null) {
+         pres = getPresentation(objectId);
+         List styles = new ArrayList();
+         if (pres.getStyle() != null) {
+            styles.add(pres.getStyle());
+         }
+         return styles;
+      }
+
+      return null;
+   }
+
    public String getImportFolderName() {
       return importFolderName;
    }

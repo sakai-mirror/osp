@@ -9,12 +9,9 @@
 <link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" src="/osp-jsf-resource/xheader/xheader.js"></script>
 
-<c:if test="${not empty defaultStyleUrl}" >
-   <link href="<c:out value="${defaultStyleUrl}"/>" type="text/css" rel="stylesheet" media="all" />
-</c:if>
-<c:if test="${not empty styleUrl}" >
-   <link href="<c:out value="${styleUrl}"/>" type="text/css" rel="stylesheet" media="all" />
-</c:if>
+<c:forEach var="style" items="${styles}">
+   <link href="<c:out value='${style}'/>" type="text/css" rel="stylesheet" media="all" />
+</c:forEach>
 <form name="form" method="POST"
 	<c:if test="${sequential == 'true'}">
       action="<osp:url value="sequentialWizardPage.osp"/>"

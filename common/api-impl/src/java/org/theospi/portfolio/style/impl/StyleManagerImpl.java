@@ -305,7 +305,17 @@ public class StyleManagerImpl extends HibernateDaoSupport
    public List getConsumers() {
       return this.consumers;
    }
-   
+
+   public List getStyles(Id consumerId) {
+      for (Iterator<StyleConsumer> i = consumers.iterator();i.hasNext();) {
+         List returned = i.next().getStyles(consumerId);
+         if (returned != null) {
+            return returned;
+         }
+      }
+      return null;
+   }
+
    public void setConsumers(List consumers) {
       this.consumers = consumers;
    }

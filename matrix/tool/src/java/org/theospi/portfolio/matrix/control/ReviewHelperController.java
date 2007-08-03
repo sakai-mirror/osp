@@ -20,13 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
@@ -59,30 +53,33 @@ import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.workflow.model.Workflow;
+import org.theospi.portfolio.style.mgt.StyleManager;
+import org.theospi.portfolio.style.model.Style;
 
 public class ReviewHelperController implements Controller {
-   
+
    private MatrixManager matrixManager;
    private IdManager idManager = null;
    private ReviewManager reviewManager;
    private WizardManager wizardManager;
    private LockManager lockManager;
    private ContentHostingService contentHosting;
-   
+   private StyleManager styleManager;
+
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String strId = null;
       String lookupId = null;
       String returnView = "return";
       String manager = "";
-      
+
       if (request.get("process_type_key") != null) {
          session.put("process_type_key", request.get("process_type_key"));
          session.put(ReviewHelper.REVIEW_TYPE_KEY, request.get(ReviewHelper.REVIEW_TYPE_KEY));
       }
-      
+
       String processTypeKey = (String)session.get("process_type_key");
-      
-      
+
+
       if (processTypeKey != null && !processTypeKey.equals(WizardPage.PROCESS_TYPE_KEY)) {
          lookupId = processTypeKey;
          returnView = "helperDone";
@@ -96,7 +93,7 @@ public class ReviewHelperController implements Controller {
       if (strId==null) {
          strId = (String) session.get(lookupId);
       }
-      
+
       // 
       // If this is the second pass, 
       // then we are creating a new [feedback | evaluation | reflection] review
@@ -106,21 +103,21 @@ public class ReviewHelperController implements Controller {
          strId = (String)session.get(lookupId);
          String formType = (String)session.get(ResourceEditingHelper.CREATE_SUB_TYPE);
          String itemId = (String)session.get(ReviewHelper.REVIEW_ITEM_ID);
-         
+
          Map<String, Object> model = new HashMap<String, Object>();
          model.put(lookupId, strId);
-         
+
          Placement placement = ToolManager.getCurrentPlacement();
          String currentSite = placement.getContext();
 
-         Review review = getReviewManager().createNew( 
+         Review review = getReviewManager().createNew(
                "New Review", currentSite);
          review.setDeviceId(formType);
          review.setParent(strId);
          review.setItemId(itemId);
          String strType = (String)session.get(ReviewHelper.REVIEW_TYPE);
          review.setType(Integer.parseInt(strType));
-         
+
          session.remove(ResourceEditingHelper.CREATE_TYPE);
          session.remove(ResourceEditingHelper.CREATE_SUB_TYPE);
          session.remove(ReviewHelper.REVIEW_TYPE);
@@ -129,23 +126,24 @@ public class ReviewHelperController implements Controller {
          session.remove(lookupId);
          //session.remove("process_type_key");
          session.remove("secondPass");
-         
-         if (FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)) && 
+
+         if (FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)) &&
                session.get(FormHelper.RETURN_REFERENCE_TAG) != null) {
             String artifactId = (String)session.get(FormHelper.RETURN_REFERENCE_TAG);
             Node node = getMatrixManager().getNode(getIdManager().getId(artifactId));
-            
+
             review.setReviewContentNode(node);
             review.setReviewContent(node.getId());
             getReviewManager().saveReview(review);
-            
+
             session.remove(FormHelper.RETURN_REFERENCE_TAG);
             session.remove(FormHelper.RETURN_ACTION_TAG);
-            
-            if(review.getType() == Review.EVALUATION_TYPE || review.getType() == Review.FEEDBACK_TYPE)
-               getLockManager().lockObject(review.getReviewContent().getValue(), 
+
+            if (review.getType() == Review.EVALUATION_TYPE || review.getType() == Review.FEEDBACK_TYPE) {
+               getLockManager().lockObject(review.getReviewContent().getValue(),
                   strId, "evals and review always locked", true);
-            
+            }
+
             if (session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS) != null) {
                Set workflows = (Set)session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
                List wfList = Arrays.asList(workflows.toArray());
@@ -154,12 +152,12 @@ public class ReviewHelperController implements Controller {
                model.put("manager", manager);
                model.put("obj_id", strId);
                return new ModelAndView("postProcessor", model);
-            }   
+            }
          }
          session.remove(FormHelper.RETURN_ACTION_TAG);
          return new ModelAndView(returnView, model);
       }
-      
+
       //
       // This is the first pass, 
       // so we are presenting the form to create a new [feedback | evaluation | reflection] review
@@ -180,11 +178,11 @@ public class ReviewHelperController implements Controller {
          ownerEid = cw.getOwner().getEid().getValue();
       }
 
-      
+
       String type = (String)session.get(ReviewHelper.REVIEW_TYPE_KEY);
       session.remove(ReviewHelper.REVIEW_TYPE_KEY);
       int intType = Integer.parseInt(type);
-      
+
       String formTypeId = "";
       String formTypeTitleKey = "";
       session.remove(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
@@ -195,7 +193,7 @@ public class ReviewHelperController implements Controller {
             break;
          case Review.EVALUATION_TYPE:
             formTypeId = obj.getEvaluationDevice().getValue();
-            session.put(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS, 
+            session.put(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS,
                   obj.getEvalWorkflows());
             formTypeTitleKey = "osp.reviewType." + Review.EVALUATION_TYPE;
             break;
@@ -205,22 +203,22 @@ public class ReviewHelperController implements Controller {
             ownerEid = null;
             formTypeTitleKey = "osp.reviewType." + Review.REFLECTION_TYPE;
             break;
-      }      
-      
-      
+      }
+
+
       String formView = "formCreator";
       session.put(ReviewHelper.REVIEW_TYPE, type);
       session.put(ResourceEditingHelper.CREATE_TYPE,
             ResourceEditingHelper.CREATE_TYPE_FORM);
-      
-      
-      formView = setupSessionInfo(request, session, pageTitle, formTypeId, formTypeTitleKey, ownerEid);
+
+
+      formView = setupSessionInfo(request, session, pageTitle, formTypeId, formTypeTitleKey, ownerEid, strId);
       session.put("page_id", strId);
       session.put("secondPass", "true");
       return new ModelAndView(formView);
-      
+
    }
-   
+
    /**
     * 
     * @param request
@@ -229,44 +227,46 @@ public class ReviewHelperController implements Controller {
     * @param formTypeId
     * @param formTypeTitleKey
     * @param ownerEid The eid of the user that owns the object in question (wizard or page)
+    * @param pageId the id of the page
     * @return
     */
-   protected String setupSessionInfo(Map request, Map<String, Object> session, 
-         String pageTitle, String formTypeId, String formTypeTitleKey, String ownerEid) {
+   protected String setupSessionInfo(Map request, Map<String, Object> session,
+                                     String pageTitle, String formTypeId, String formTypeTitleKey,
+                                     String ownerEid, String pageId) {
       String retView = "formCreator";
-      
-      
+
+
       if (request.get("current_review_id") == null) {
          session.remove(ResourceEditingHelper.ATTACHMENT_ID);
          session.put(ResourceEditingHelper.CREATE_TYPE,
                ResourceEditingHelper.CREATE_TYPE_FORM);
          session.put(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
-         
+
          String objectId = (String)request.get("objectId");
          String objectTitle = (String)request.get("objectTitle");
          String objectDesc = (String)request.get("objectDesc");
-         
+
          String itemId = (String)request.get("itemId");
          session.put(ReviewHelper.REVIEW_ITEM_ID, itemId);
-         
-         ResourceBundle myResources = 
+
+         ResourceBundle myResources =
             ResourceBundle.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
          String formTypeTitle = myResources.getString(formTypeTitleKey);
-         
+
          try {
             String folderBase = getUserCollection().getId();
-            
+
             Placement placement = ToolManager.getCurrentPlacement();
             String currentSite = placement.getContext();
-            
+
             String rootDisplayName = myResources.getString("portfolioInteraction.displayName");
             String rootDescription = myResources.getString("portfolioInteraction.description");
-            
+
             String folderPath = createFolder(folderBase, "portfolio-interaction", rootDisplayName, rootDescription);
             folderPath = createFolder(folderPath, currentSite, SiteService.getSiteDisplay(currentSite), null);
             folderPath = createFolder(folderPath, objectId, objectTitle, objectDesc);
             folderPath = createFolder(folderPath, formTypeId, formTypeTitle, null);
-            
+
             session.put(FormHelper.PARENT_ID_TAG, folderPath);
          } catch (TypeException e) {
             throw new RuntimeException("Failed to redirect to helper", e);
@@ -275,7 +275,7 @@ public class ReviewHelperController implements Controller {
          } catch (PermissionException e) {
             throw new RuntimeException("Failed to redirect to helper", e);
          }
-         
+
          //CWM OSP-UI-09 - for auto naming
          session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(objectTitle, pageTitle, formTypeTitle, ownerEid));
       } else {
@@ -287,7 +287,24 @@ public class ReviewHelperController implements Controller {
          session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_review_id"));
          retView = "formEditor";
       }
+      session.put(FormHelper.FORM_STYLES,
+         createStylesList(getStyleManager().getStyles(getIdManager().getId(pageId))));
+
       return retView;
+   }
+
+   protected String getStyleUrl(Style style) {
+      Node styleNode = getMatrixManager().getNode(style.getStyleFile());
+      return styleNode.getExternalUri();
+   }
+
+   protected List createStylesList(List styles) {
+      List returned = new ArrayList(styles.size());
+      for (Iterator<Style> i=styles.iterator();i.hasNext();) {
+         returned.add(getStyleUrl(i.next()));
+      }
+
+      return returned;
    }
 
    /**
@@ -301,16 +318,18 @@ public class ReviewHelperController implements Controller {
    protected String getFormDisplayName(String objectTitle, String pageTitle, String formTypeName, String ownerEid) {
       String includePageTitle = "";
       String includeOwner = "";
-      
-      if (pageTitle != null && pageTitle.length() > 0)
+
+      if (pageTitle != null && pageTitle.length() > 0) {
          includePageTitle = pageTitle + "-";
-      
-      if (ownerEid != null && ownerEid.length() > 0)
+      }
+
+      if (ownerEid != null && ownerEid.length() > 0) {
          includeOwner = ownerEid + "-";
-      
+      }
+
       return objectTitle + "-" + includePageTitle + includeOwner + formTypeName;
    }
-   
+
    /**
     * 
     * @param base
@@ -337,7 +356,7 @@ public class ReviewHelperController implements Controller {
       }
       return folder;
    }
-   
+
    /**
     * 
     * @return
@@ -353,7 +372,7 @@ public class ReviewHelperController implements Controller {
       ContentCollection collection = getContentHosting().getCollection(wsCollectionId);
       return collection;
    }
-   
+
    /**
     * @return Returns the idManager.
     */
@@ -409,7 +428,7 @@ public class ReviewHelperController implements Controller {
    public void setWizardManager(WizardManager wizardManager) {
       this.wizardManager = wizardManager;
    }
-   
+
    public LockManager getLockManager() {
       return lockManager;
    }
@@ -430,5 +449,13 @@ public class ReviewHelperController implements Controller {
    public void setContentHosting(ContentHostingService contentHosting) {
       this.contentHosting = contentHosting;
    }
-   
+
+   public StyleManager getStyleManager() {
+      return styleManager;
+   }
+
+   public void setStyleManager(StyleManager styleManager) {
+      this.styleManager = styleManager;
+   }
+
 }

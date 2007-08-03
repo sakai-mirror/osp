@@ -58,6 +58,7 @@ import org.theospi.portfolio.matrix.model.WizardPageForm;
 import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.tool.BaseFormResourceFilter;
+import org.theospi.portfolio.style.model.Style;
 
 public class CellFormPickerController extends CellController implements FormController, LoadObjectController {
 
@@ -65,13 +66,13 @@ public class CellFormPickerController extends CellController implements FormCont
    private ContentHostingService contentHosting;
    private EntityManager entityManager;
    private SecurityService securityService = null;
-   
+
    public static final String HELPER_CREATOR = "filepicker.helper.creator";
    public static final String HELPER_PICKER = "filepicker.helper.picker";
 
-   /*   
+   /*
    public Map referenceData(Map request, Object command, Errors errors) {
-      
+
 
       ToolSession session = getSessionManager().getCurrentToolSession();
       String pageId = (String) request.get("page_id");
@@ -79,7 +80,7 @@ public class CellFormPickerController extends CellController implements FormCont
          pageId = (String)session.getAttribute("page_id");
       }
       WizardPage page = getMatrixManager().getWizardPage(getIdManager().getId(pageId));
-      
+
       if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
             session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
          // here is where we setup the id
@@ -91,17 +92,17 @@ public class CellFormPickerController extends CellController implements FormCont
             page.getPageForms().add(strId);
          }
          getMatrixManager().storePage(page);
-         
+
          session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
          session.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
       }
       return null;
    }
 */
-   
+
    public Object fillBackingObject(Object incomingModel, Map request,
-         Map session, Map application) throws Exception {
-      
+                                   Map session, Map application) throws Exception {
+
       String pageId = (String) request.get("page_id");
       if (pageId == null) {
          pageId = (String)session.get("page_id");
@@ -109,13 +110,13 @@ public class CellFormPickerController extends CellController implements FormCont
       WizardPage page = getMatrixManager().getWizardPage(getIdManager().getId(pageId));
       if ( page == null ) // error should already be logged
          return null;
-      
+
       if ((session.get(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
-            session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) || 
-            (FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)) && 
+            session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) ||
+            (FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)) &&
             session.get(FormHelper.RETURN_REFERENCE_TAG) != null)) {
-         
-      
+
+
          if (session.get(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
                session.get(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
             // here is where we setup the id
@@ -124,32 +125,32 @@ public class CellFormPickerController extends CellController implements FormCont
             if (HELPER_PICKER.equals((String)session.get(WHICH_HELPER_KEY)) &&
                   !"true".equals((String)session.get(KEEP_HELPER_LIST)))
                page.getPageForms().clear();
-            
+
             for (Iterator iter = refs.iterator(); iter.hasNext();) {
                Reference ref = (Reference) iter.next();
                Node node = getMatrixManager().getNode(ref);
                processPageForm(node, page);
             }
             //getMatrixManager().storePage(page);
-            
+
             session.remove(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
             session.remove(FilePickerHelper.FILE_PICKER_CANCEL);
-            
+
          }
-         if (FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)) && 
+         if (FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)) &&
                session.get(FormHelper.RETURN_REFERENCE_TAG) != null) {
             String artifactId = (String)session.get(FormHelper.RETURN_REFERENCE_TAG);
             Node node = getMatrixManager().getNode(getIdManager().getId(artifactId));
             processPageForm(node, page);
-            
+
             session.remove(FormHelper.RETURN_REFERENCE_TAG);
             session.remove(FormHelper.RETURN_ACTION_TAG);
-            
-            
+
+
          }
          getMatrixManager().storePage(page);
          session.remove(ResourceEditingHelper.CREATE_TYPE);
-         
+
          session.remove(ResourceEditingHelper.CREATE_PARENT);
          session.remove(ResourceEditingHelper.CREATE_SUB_TYPE);
          session.remove(ResourceEditingHelper.ATTACHMENT_ID);
@@ -158,7 +159,7 @@ public class CellFormPickerController extends CellController implements FormCont
       }
       return null;
    }
-   
+
    protected void processPageForm(Node node, WizardPage page) {
       Id id = node.getId();
       WizardPageForm wpf = new WizardPageForm();
@@ -169,7 +170,7 @@ public class CellFormPickerController extends CellController implements FormCont
       wpf.setNewId(getIdManager().createId());
       page.getPageForms().add(wpf);
    }
-   
+
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String attachFormAction = (String) request.get("attachFormAction");
       String createFormAction = (String) request.get("createFormAction");
@@ -181,14 +182,14 @@ public class CellFormPickerController extends CellController implements FormCont
       }
       WizardPage page = getMatrixManager().getWizardPage(getIdManager().getId(pageId));
       String pageTitle = page.getPageDefinition().getTitle();
-      
+
       if (attachFormAction != null) {
          //session.setAttribute(TEMPLATE_PICKER, request.getParameter("pickerField"));
          //session.setAttribute("SessionPresentationTemplate", template);
          //session.setAttribute(STARTING_PAGE, request.getParameter("returnPage"));
-         
+
          List<Reference> files = new ArrayList<Reference>();
-         
+
          //String pickField = (String)request.get("formType");
          String id = "";
          for (Iterator iter = page.getPageForms().iterator(); iter.hasNext();) {
@@ -196,26 +197,26 @@ public class CellFormPickerController extends CellController implements FormCont
             if (attachFormAction.equals(wpf.getFormType())) {
                id = getContentHosting().resolveUuid(wpf.getArtifactId().getValue());
                Reference ref = getEntityManager().newReference(getContentHosting().getReference(id));
-               files.add(ref);        
+               files.add(ref);
             }
          }
          BaseFormResourceFilter crf = new BaseFormResourceFilter();
-         
+
          crf.getFormTypes().add(attachFormAction);
          session.put(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER, crf);
          session.put("page_id", pageId);
          session.put(FilePickerHelper.FILE_PICKER_ATTACHMENTS, files);
          session.put(WHICH_HELPER_KEY, HELPER_PICKER);
          session.put(KEEP_HELPER_LIST, "false");
-         
+
          //Start in user's resources area
          //osp-ui-05
          String siteId = SiteService.getUserSiteId(getSessionManager().getCurrentSessionUserId());
          String collectionId = getContentHosting().getSiteCollection(siteId);
          session.put(FilePickerHelper.DEFAULT_COLLECTION_ID, collectionId);
-         
+
          return new ModelAndView("formPicker");
-         
+
       }
       else if (createFormAction != null) {
          String view = setupSessionInfo(request, session, pageId, pageTitle, createFormAction);
@@ -232,41 +233,42 @@ public class CellFormPickerController extends CellController implements FormCont
       session.remove(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER);
       return new ModelAndView("page", "page_id", pageId);
    }
-   
-   protected String setupSessionInfo(Map request, Map<String, Object> session, 
-         String pageId, String pageTitle, String formTypeId) {
+
+   protected String setupSessionInfo(Map request, Map<String, Object> session,
+                                     String pageId, String pageTitle, String formTypeId) {
       String retView = "formCreator";
       //session.put(ResourceEditingHelper.CREATE_TYPE,
       //      ResourceEditingHelper.CREATE_TYPE_FORM);
       session.put("page_id", pageId);
-      
+      session.put(FormHelper.FORM_STYLES, createStylesList(getStyleManager().getStyles(getIdManager().getId(pageId))));
+
       if (request.get("current_form_id") == null) {
          session.remove(ResourceEditingHelper.ATTACHMENT_ID);
          session.put(ResourceEditingHelper.CREATE_TYPE,
                ResourceEditingHelper.CREATE_TYPE_FORM);
          session.put(ResourceEditingHelper.CREATE_SUB_TYPE, formTypeId);
-         
+
          String objectId = (String)request.get("objectId");
          String objectTitle = (String)request.get("objectTitle");
          String objectDesc = (String)request.get("objectDesc");
-         
+
          StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager().loadHome(formTypeId);
-         ResourceBundle myResources = 
+         ResourceBundle myResources =
             ResourceBundle.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
          try {
             String folderBase = getUserCollection().getId();
-            
+
             Placement placement = ToolManager.getCurrentPlacement();
             String currentSite = placement.getContext();
-            
+
             String rootDisplayName = myResources.getString("portfolioInteraction.displayName");
             String rootDescription = myResources.getString("portfolioInteraction.description");
-            
+
             String folderPath = createFolder(folderBase, "portfolio-interaction", rootDisplayName, rootDescription);
             folderPath = createFolder(folderPath, currentSite, SiteService.getSiteDisplay(currentSite), null);
             folderPath = createFolder(folderPath, objectId, objectTitle, objectDesc);
             folderPath = createFolder(folderPath, formTypeId, bean.getDescription(), null);
-            
+
             session.put(FormHelper.PARENT_ID_TAG, folderPath);
          } catch (TypeException e) {
             throw new RuntimeException("Failed to redirect to helper", e);
@@ -275,7 +277,7 @@ public class CellFormPickerController extends CellController implements FormCont
          } catch (PermissionException e) {
             throw new RuntimeException("Failed to redirect to helper", e);
          }
-         
+
          //CWM OSP-UI-09 - for auto naming
          session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(pageTitle, objectTitle, bean.getDescription()));
       } else {
@@ -290,18 +292,18 @@ public class CellFormPickerController extends CellController implements FormCont
       }
       return retView;
    }
-   
+
    protected String getFormDisplayName(String pageTitle, String objectTitle, String formTypeName) {
       String includePageTitle = "";
       if (pageTitle != null && pageTitle.length() > 0)
          includePageTitle = pageTitle + "-";
-      
+
       return objectTitle + "-" + includePageTitle + formTypeName;
    }
-   
+
    protected String createFolder(String base, String append, String appendDisplay, String appendDescription) {
-      //String folder = "/user/" + 
-      //SessionManager.getCurrentSessionUserId() + 
+      //String folder = "/user/" +
+      //SessionManager.getCurrentSessionUserId() +
       //PresentationManager.PRESENTATION_PROPERTIES_FOLDER_PATH;
       String folder = base + append + "/";
 
@@ -320,7 +322,7 @@ public class CellFormPickerController extends CellController implements FormCont
       }
       return folder;
    }
-   
+
    protected ContentCollection getUserCollection() throws TypeException, IdUnusedException, PermissionException {
       User user = UserDirectoryService.getCurrentUser();
       String userId = user.getId();

@@ -23,7 +23,19 @@ package org.theospi.portfolio.style;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 
+import java.util.List;
+
 public interface StyleConsumer {
 
    public boolean checkStyleConsumption(Id styleId);
+
+   /**
+    * gets a list of styles (in order of default first) from
+    * the style consumer if the object presented is owned by the
+    * style consumer
+    * @param objectId
+    * @return a list of Style objects or null if this consumer doesn't own the id
+    */
+   public List getStyles(Id objectId);
+
 }

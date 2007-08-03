@@ -1920,6 +1920,38 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return false;
    }
 
+   public List getStyles(Id objectId) {
+      WizardPage wp = getWizardPage(objectId);
+
+      if (wp != null) {
+         ScaffoldingCell sCell = getScaffoldingCellByWizardPageDef(
+                     wp.getPageDefinition().getId());
+
+         if (sCell != null) {
+            List styles = new ArrayList();
+            if (sCell.getScaffolding().getStyle() != null) {
+               styles.add(sCell.getScaffolding().getStyle());
+            }
+            if (wp.getPageDefinition().getStyle() != null) {
+               styles.add(wp.getPageDefinition().getStyle());
+            }
+            return styles;
+         }
+      }
+
+      Matrix matrix = (Matrix) getHibernateTemplate().get(Matrix.class, objectId);
+
+      if (matrix != null) {
+         List styles = new ArrayList();
+         if (matrix.getScaffolding().getStyle() != null) {
+            styles.add(matrix.getScaffolding().getStyle());
+         }
+         return styles;
+      }
+
+      return null;
+   }
+
    /* (non-Javadoc)
     * @see org.theospi.portfolio.shared.mgt.ReadableObjectHome#getType()
     */

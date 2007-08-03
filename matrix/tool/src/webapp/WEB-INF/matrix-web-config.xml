@@ -137,6 +137,9 @@
             <property name="sessionManager">
                <ref bean="org.sakaiproject.tool.api.SessionManager" />
             </property>
+            <property name="styleManager">
+               <ref bean="org.theospi.portfolio.style.mgt.StyleManager" />
+            </property>
             <property name="ratingProviderIds">
               <list>
                 <value>org.sakaiproject.gmt.tagging.api.GmtTaggingProvider</value>
@@ -190,6 +193,9 @@
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
+            </property>
+            <property name="styleManager">
+               <ref bean="org.theospi.portfolio.style.mgt.StyleManager" />
             </property>
             <property name="ratingProviderIds">
               <list>
@@ -315,6 +321,9 @@
             <property name="structuredArtifactDefinitionManager">
                <ref bean="structuredArtifactDefinitionManager"/>
             </property>
+            <property name="styleManager">
+               <ref bean="org.theospi.portfolio.style.mgt.StyleManager" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -418,6 +427,9 @@
 	        </property>
 	        <property name="contentHosting">
                <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
+            </property>
+            <property name="styleManager">
+               <ref bean="org.theospi.portfolio.style.mgt.StyleManager"/>
             </property>
          </bean>
       </property>
