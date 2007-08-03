@@ -340,8 +340,7 @@ public class AudienceTool extends HelperToolBase {
 
     public Site getSite() {
         if (site == null) {
-            Placement placement = getToolManager().getCurrentPlacement();
-            String currentSiteId = placement.getContext();
+            String currentSiteId = (String) getAttribute(AudienceSelectionHelper.AUDIENCE_SITE);
             try {
                 site = getSiteService().getSite(currentSiteId);
             }

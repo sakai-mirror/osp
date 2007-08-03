@@ -480,6 +480,7 @@ public class EditScaffoldingCellController extends
 				.getNewId().getValue();
 
 		session.put(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
+		session.put(AudienceSelectionHelper.AUDIENCE_SITE, wpd.getSiteId());
 	}
 
 	protected Collection getAvailableForms(String siteId, String type) {

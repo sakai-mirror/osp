@@ -736,6 +736,8 @@ public class WizardTool extends BuilderTool {
             AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD);
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER,
             wizard.getId().getValue());
+		session.setAttribute(AudienceSelectionHelper.AUDIENCE_SITE, wizard.getSiteId());
+      
       try {
          context.redirect("osp.audience.helper/tool.jsf?panel=Main");
       }

@@ -767,6 +767,8 @@ public class AddPresentationController extends AbstractWizardFormController {
 
       String id = pres.getId()!=null ? pres.getId().getValue() : pres.getNewId().getValue();
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
+		session.setAttribute(AudienceSelectionHelper.AUDIENCE_SITE, pres.getSiteId());
+      
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, pres.getIsPublic() ? "true" : "false");
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_URL,  url);
 

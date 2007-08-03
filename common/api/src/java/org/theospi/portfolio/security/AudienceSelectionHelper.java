@@ -64,4 +64,7 @@ public interface AudienceSelectionHelper {
    public static final String AUDIENCE_PRESENTATION_MANAGER =
          "org.theospi.portfolio.security.PresentationManager";
     
+   public static final String AUDIENCE_SITE =
+         "org.theospi.portfolio.security.audienceSite";
+         
 }
