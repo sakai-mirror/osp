@@ -23,6 +23,7 @@ package org.theospi.portfolio.matrix.control;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -66,6 +67,10 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
    
    public static final String VIEW_USER = "view_user";
    
+   public static final String GROUP_FILTER = "group_filter";
+   
+   public static final String GROUP_FILTER_BUTTON = "filter";
+   
    private ToolManager toolManager;
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
@@ -91,18 +96,43 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       Agent currentAgent = getAuthManager().getAgent();
       boolean createAuthz = false;
 
+      String filterButton = (String)request.get(GROUP_FILTER_BUTTON);
+
+      String groupFilterRequest = (String)request.get(GROUP_FILTER);
+      String groupFilterSession = (String)session.get(GROUP_FILTER);
+      if (groupFilterRequest != null && filterButton != null) {
+    	  //TODO: Check that this user can filter on this group
+      }
+      else if (groupFilterSession != null) {
+    	  groupFilterRequest = groupFilterSession;
+    	  //TODO: Check if there is a better way to shuttle this to referenceData without modding the bean
+          request.put(GROUP_FILTER, groupFilterRequest);
+      }
+      session.put(GROUP_FILTER, groupFilterRequest);
+
+      
+      //TODO: Check to make sure that the session user is in the filtered group
+		//If the user is, apply filter and select the user
+	    //If not, apply and select the active user
+        //For right now, we're resetting when filtering
+      
       String userRequest = (String)request.get(VIEW_USER);
       String userSession = (String)session.get(VIEW_USER);
-      if (userRequest != null) {
-         currentAgent = getAgentManager().getAgent(getIdManager().getId(userRequest));
-         createAuthz = true;
-      } else if(userSession != null) {
-         userRequest = userSession;
-         currentAgent = getAgentManager().getAgent(getIdManager().getId(userSession));
-         // The authorize was already created by this point
+      if (groupFilterRequest != null && filterButton != null) {
+    	  userRequest = null;
+      }
+      else {
+	      if (userRequest != null) {
+	         currentAgent = getAgentManager().getAgent(getIdManager().getId(userRequest));
+	         createAuthz = true;
+	      } else if(userSession != null) {
+	         userRequest = userSession;
+	         currentAgent = getAgentManager().getAgent(getIdManager().getId(userSession));
+	         // The authorize was already created by this point
+	      }
       }
       session.put(VIEW_USER, userRequest);
-
+      
       Matrix matrix = getMatrixManager().getMatrix(scaffoldingId, currentAgent.getId());
       if (matrix == null) {
          if (currentAgent != null && !currentAgent.equals("")) {
@@ -179,9 +209,22 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       Boolean readOnly = Boolean.valueOf(false);
       String worksiteId = grid.getScaffolding().getWorksiteId().getValue();
 
-      List userList = new ArrayList(getUserList(worksiteId));
+      String filteredGroup = (String) request.get(GROUP_FILTER);      
+      List<Group> groupList = new ArrayList<Group>(getGroupList(worksiteId));
+      //Collections.sort(groupList);
+      //TODO: Figure out why ClassCastExceptions fire if we do this the obvious way...  The User list sorts fine
+      Collections.sort(groupList, new Comparator<Group>() {
+    	  public int compare(Group arg0, Group arg1) {
+    		  return arg0.getTitle().toLowerCase().compareTo(arg1.getTitle().toLowerCase());
+    	  }});
+      
+      List userList = new ArrayList(getUserList(worksiteId, filteredGroup));
       Collections.sort(userList);
       model.put("members", userList);
+      model.put("userGroups", groupList);
+      model.put("hasGroups", hasGroups(worksiteId));
+      model.put("filteredGroup", request.get(GROUP_FILTER));
+      //TODO: Clean this up for efficiency.. We're going back to the SiteService too much
       
       if ((owner != null && !owner.equals(getAuthManager().getAgent())) ||
            !getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING,getWorksiteManager().getCurrentWorksiteId()))
@@ -223,38 +266,71 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       return null;
 
    } // getCurrentSitePageId
-   
-   private Set getUserList(String worksiteId) {
-      Set members = new HashSet();
-      Set users = new HashSet();
-      
-      try {
-         Site site = SiteService.getSite(worksiteId);
-         if (site.hasGroups()) {
+       
+    private Set getGroupList(String worksiteId) {
+    	try {
+			Site site = SiteService.getSite(worksiteId);
+			return getGroupList(site);
+		} catch (IdUnusedException e) {
+			logger.error("", e);
+		}
+		return new HashSet();
+    }
+    
+    private Set getGroupList(Site site) {
+    	Set groups = new HashSet();
+		if (site.hasGroups()) {
             String currentUser = SessionManager.getCurrentSessionUserId();
-            Collection groups = site.getGroupsWithMember(currentUser);
-            for (Iterator iter = groups.iterator(); iter.hasNext();) {
-               Group group = (Group) iter.next();
-               members.addAll(group.getMembers());
-            }
-         }
-         else {
-            members.addAll(site.getMembers());
-         }
-         
-         for (Iterator memb = members.iterator(); memb.hasNext();) {
-            try {
-               Member member = (Member) memb.next();
-               users.add(UserDirectoryService.getUser(member.getUserId()));
-            } catch (UserNotDefinedException e) {
-               logger.warn("Unable to find user: " + e.getId() + " " + e.toString());
-            }            
-         }
-      } catch (IdUnusedException e) {
-         logger.error("", e);
-      }
-      return users;
-   }
+            groups.addAll(site.getGroupsWithMember(currentUser));
+		}
+		return groups;
+    }
+    
+    private boolean hasGroups(String worksiteId) {
+		try {
+			Site site = SiteService.getSite(worksiteId);
+			return site.hasGroups();
+		} catch (IdUnusedException e) {
+			logger.error("", e);
+		}
+		return false;
+	}
+
+	private Set getUserList(String worksiteId, String filterGroupId) {
+		Set members = new HashSet();
+		Set users = new HashSet();
+
+		try {
+			Site site = SiteService.getSite(worksiteId);
+			if (site.hasGroups()) {
+				String currentUser = SessionManager.getCurrentSessionUserId();
+				Collection groups = site.getGroupsWithMember(currentUser);
+				for (Iterator iter = groups.iterator(); iter.hasNext();) {
+					Group group = (Group) iter.next();
+					// TODO: Determine if Java loop invariants are optimized out
+					if (filterGroupId == null || filterGroupId.equals("")
+							|| filterGroupId.equals(group.getId())) {
+						members.addAll(group.getMembers());
+					}
+				}
+			} else {
+				members.addAll(site.getMembers());
+			}
+
+			for (Iterator memb = members.iterator(); memb.hasNext();) {
+				try {
+					Member member = (Member) memb.next();
+					users.add(UserDirectoryService.getUser(member.getUserId()));
+				} catch (UserNotDefinedException e) {
+					logger.warn("Unable to find user: " + e.getId() + " "
+							+ e.toString());
+				}
+			}
+		} catch (IdUnusedException e) {
+			logger.error("", e);
+		}
+		return users;
+	}
    
    private Cell getCell(Collection cells, Criterion criterion, Level level) {
       for (Iterator iter=cells.iterator(); iter.hasNext();) {
