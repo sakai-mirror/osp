@@ -17,8 +17,6 @@
 
     <sakai:view>
         <h:form>
-            <sakai:view_title value="#{msgs.title_addPresentation1}" rendered="#{freeForm.presentation.newObject}"/>
-            <sakai:view_title value="#{msgs.title_editPresentation1}" rendered="#{!freeForm.presentation.newObject}"/>
              <%@include file="steps.jspf"%>
             <sakai:instruction_message value="#{msgs.instructions_freeForm}"/>
             <sakai:messages/>

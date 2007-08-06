@@ -50,8 +50,6 @@
     </c:if>
 </script>
 
-<h3><fmt:message key="title_addPresentation2"/></h3>
-
 <c:set var="targetPrevious" value="_target2" />
 <c:set var="targetPreview" value="_target3"/>
 <c:set var="targetNext" value="_target4"/>
