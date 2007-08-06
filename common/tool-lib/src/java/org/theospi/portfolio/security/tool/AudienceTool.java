@@ -650,7 +650,7 @@ public class AudienceTool extends HelperToolBase {
 
             Agent agent = getAgentManager().getAgent((member.getUserId()));
             //Check for a null agent since the site.getMembers() will return member records for deleted users
-            if (agent != null) {
+            if (agent != null && agent.getId() != null) {
                DecoratedMember decoratedMember = new DecoratedMember(this, agent);
                memberList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), "member"));
             }
