@@ -50,7 +50,7 @@ function hrefViewCell(pageId) {
 		            <form method="GET" action="<osp:url value="viewMatrix.osp"/>">
 		                <osp:form/>
 		                <div class="act">
-		                	<c:if test="${not empty userGroups}">
+		                	<c:if test="${not empty userGroups && userGroupsCount > 1}">
 			                	<select name="group_filter">
 			                		<option value="" <c:if test="${empty filteredGroup}">selected="selected"</c:if>>
 			                			<fmt:message key="matrix_groups_showall"></fmt:message>

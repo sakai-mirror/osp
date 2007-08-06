@@ -222,6 +222,8 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       Collections.sort(userList);
       model.put("members", userList);
       model.put("userGroups", groupList);
+      //TODO: Address why the fn:length() function can't be loaded or another handy way to pull collection size via EL
+      model.put("userGroupsCount", groupList.size());
       model.put("hasGroups", hasGroups(worksiteId));
       model.put("filteredGroup", request.get(GROUP_FILTER));
       //TODO: Clean this up for efficiency.. We're going back to the SiteService too much
