@@ -43,7 +43,7 @@ public class EvaluationContentWrapperForWizard extends EvaluationContentWrapper 
       setSubmittedDate(submittedDate);
       setSiteTitle(super.fetchSiteName(siteId));
       
-      if (owner != null) {
+      if (owner != null && owner.getId() != null) {
          setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
          params.add(new ParamBean("session.WIZARD_USER_ID", getOwner().getId()));
          setUrl("openEvaluationWizardRedirect");
