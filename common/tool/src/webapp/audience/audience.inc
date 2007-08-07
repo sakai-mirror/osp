@@ -11,7 +11,7 @@
    
    <sakai:button_bar>
       <sakai:button_bar_item id="remove_user_button" 
-         action="#{audience.processActionRemove}"
+         action="#{audience.processActionRemoveBrowseMember}"
          value="#{common_msgs.remove_member}"/>
    </sakai:button_bar>
 </h:panelGrid>
