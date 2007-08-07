@@ -261,6 +261,9 @@
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
             </property>
+            <property name="styleManager">
+               <ref bean="org.theospi.portfolio.style.mgt.StyleManager" />
+            </property>
             <property name="ratingProviderIds">
               <list>
                 <value>org.sakaiproject.gmt.tagging.api.GmtTaggingProvider</value>
