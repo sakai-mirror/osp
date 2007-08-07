@@ -21,8 +21,8 @@
 
 package org.theospi.portfolio.wizard.taggable.impl;
 
-import org.sakaiproject.taggable.api.TaggableActivity;
-import org.sakaiproject.taggable.api.TaggableActivityProducer;
+import org.sakaiproject.taggable.deprecated.api.TaggableActivity;
+import org.sakaiproject.taggable.deprecated.api.TaggableActivityProducer;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 
 public class WizardActivityImpl implements TaggableActivity {

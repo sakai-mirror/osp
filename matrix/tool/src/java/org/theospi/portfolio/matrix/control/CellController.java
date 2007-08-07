@@ -23,11 +23,11 @@ package org.theospi.portfolio.matrix.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.taggable.api.TaggableActivity;
-import org.sakaiproject.taggable.api.TaggableItem;
-import org.sakaiproject.taggable.api.TaggingHelperInfo;
-import org.sakaiproject.taggable.api.TaggingManager;
-import org.sakaiproject.taggable.api.TaggingProvider;
+import org.sakaiproject.taggable.deprecated.api.TaggableActivity;
+import org.sakaiproject.taggable.deprecated.api.TaggableItem;
+import org.sakaiproject.taggable.deprecated.api.TaggingHelperInfo;
+import org.sakaiproject.taggable.deprecated.api.TaggingManager;
+import org.sakaiproject.taggable.deprecated.api.TaggingProvider;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.metaobj.security.AuthenticationManager;

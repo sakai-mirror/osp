@@ -27,10 +27,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.taggable.api.TaggableActivity;
-import org.sakaiproject.taggable.api.TaggableItem;
-import org.sakaiproject.taggable.api.TaggingManager;
-import org.sakaiproject.taggable.api.TaggingProvider;
+import org.sakaiproject.taggable.deprecated.api.TaggableActivity;
+import org.sakaiproject.taggable.deprecated.api.TaggableItem;
+import org.sakaiproject.taggable.deprecated.api.TaggingManager;
+import org.sakaiproject.taggable.deprecated.api.TaggingProvider;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.util.ResourceLoader;

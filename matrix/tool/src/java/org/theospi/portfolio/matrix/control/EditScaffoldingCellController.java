@@ -23,9 +23,9 @@ package org.theospi.portfolio.matrix.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.taggable.api.TaggableActivity;
-import org.sakaiproject.taggable.api.TaggingHelperInfo;
-import org.sakaiproject.taggable.api.TaggingProvider;
+import org.sakaiproject.taggable.deprecated.api.TaggableActivity;
+import org.sakaiproject.taggable.deprecated.api.TaggingHelperInfo;
+import org.sakaiproject.taggable.deprecated.api.TaggingProvider;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
