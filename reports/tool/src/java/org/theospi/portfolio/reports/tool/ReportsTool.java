@@ -575,6 +575,8 @@ public class ReportsTool extends ToolBase {
 
     public String processActionCancel() {
         setImportFilesString(null);
+        setInvalidImportMessage(null);
+        setInvalidImport(false);
         return ReportsTool.mainPage;
     }
 
@@ -758,12 +760,15 @@ public class ReportsTool extends ToolBase {
 
             } catch (ImportException ie) {
                 this.setInvalidImport(true);
+                return "";
             } catch (UnsupportedFileTypeException ufte) {
                 this.setInvalidImport(true);
+                return "";
             } catch (Exception ie) {
                 if (ie.getCause().toString().equals("org.sakaiproject.metaobj.shared.model.OspException")) ;
                 this.setInvalidImportMessage(invalidImportMessage + " " + ie.getMessage());
                 this.setInvalidImport(true);
+                return "";
             }
 
         }
