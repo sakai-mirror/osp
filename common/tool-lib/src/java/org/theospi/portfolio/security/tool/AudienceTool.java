@@ -809,7 +809,8 @@ public class AudienceTool extends HelperToolBase {
                 if (decoratedMember.getBase().isRole()) {
                     description = "role";
                 }
-                selectedRoleMemberList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), description));
+                if (decoratedMember.getBase() != null && decoratedMember.getBase().getId() != null)
+                   selectedRoleMemberList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), description));
             }
 
         return selectedRoleMemberList;
