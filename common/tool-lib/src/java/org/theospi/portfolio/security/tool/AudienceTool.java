@@ -353,7 +353,7 @@ public class AudienceTool extends HelperToolBase {
     /**
      ** Return current site for this portfolio/matrix/wizard
      **/   
-    protected Site getSite() {
+    public Site getSite() {
         if (site == null) {
             String currentSiteId = (String) getAttribute(AudienceSelectionHelper.AUDIENCE_SITE);
             try {
