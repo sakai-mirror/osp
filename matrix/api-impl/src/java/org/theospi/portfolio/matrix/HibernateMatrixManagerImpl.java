@@ -170,6 +170,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     */
    public List findAvailableScaffolding(List sites, Agent user) {
       
+      if ( sites == null || sites.size() == 0 )
+         return new ArrayList();
+      
       String[] paramNames = new String[] {"siteIds", "owner", "true"};
       Object[] params = new Object[]{sites, user, new Boolean(true)};
       return getHibernateTemplate().findByNamedParam("from Scaffolding s where s.worksiteId in ( :siteIds ) and ( s.owner = :owner or s.published=:true or s.preview=:true)",
