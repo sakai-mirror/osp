@@ -103,32 +103,12 @@
                      </h:panelGroup>
                   </h:panelGrid>
                   
-                  <!-- optional message for browse user selection -->
-                  <h:panelGrid  rendered="#{audience.maxList}" columns="1"> 
-                     <h:panelGroup>
-                        <h:outputFormat value = "#{audience.browseMessage}"/>
-                            <h:outputFormat value = " "/>
-                        <h:commandLink id="browse_button" action="browse" value="#{common_msgs.browse_members}"
-                                       style="white-space:nowrap;"/>
-                        <h:outputFormat value = " "/>
-                        <c:if test="${audience.wizardAudience}">
-                           <h:outputFormat value = "#{common_msgs.audience_individual_evaluators}" />
-                        </c:if>
-                        <c:if test="${audience.matrixAudience}">
-                           <h:outputFormat value = "#{common_msgs.audience_individual_evaluators}" />
-                        </c:if>
-                        <c:if test="${audience.portfolioAudience}">
-                           <h:outputFormat value = "#{common_msgs.audience_individual_users}" />
-                        </c:if>
-                     </h:panelGroup>
-                  </h:panelGrid>
-                  
                   <!-- other user and email user option -->
-                  <f:verbatim><h3></f:verbatim>
-                  <h:outputText value="#{common_msgs.audience_portfolio_other_title}" />
-                  <f:verbatim></h3></f:verbatim>
-                  
                   <f:subview id="emailUser" rendered="#{audience.portfolioAudience}">
+                     <f:verbatim><h3></f:verbatim>
+                     <h:outputText value="#{common_msgs.audience_portfolio_other_title}" />
+                     <f:verbatim></h3></f:verbatim>
+                  
                      <f:verbatim><p class='shorttext'></f:verbatim>
                      <c:if test="${! audience.guestUserEnabled}">
                         <h:outputLabel value="#{common_msgs.any_user_label}:" for="emails"/>
@@ -145,6 +125,26 @@
                      <f:verbatim></p></f:verbatim>
                   </f:subview>
 
+                  <!-- optional message for browse user selection -->
+                  <f:subview id="browseUser" rendered="#{audience.maxList}" >
+                     <f:verbatim><p class='shorttext'></f:verbatim>
+                     <h:outputFormat value = "#{audience.browseMessage}"/>
+                         <h:outputFormat value = " "/>
+                     <h:commandLink id="browse_button" action="browse" value="#{common_msgs.browse_members}"
+                                    style="white-space:nowrap;"/>
+                     <h:outputFormat value = " "/>
+                     <c:if test="${audience.wizardAudience}">
+                        <h:outputFormat value = "#{common_msgs.audience_individual_evaluators}" />
+                     </c:if>
+                     <c:if test="${audience.matrixAudience}">
+                        <h:outputFormat value = "#{common_msgs.audience_individual_evaluators}" />
+                     </c:if>
+                     <c:if test="${audience.portfolioAudience}">
+                        <h:outputFormat value = "#{common_msgs.audience_individual_users}" />
+                     </c:if>
+                     <f:verbatim></p></f:verbatim>
+                  </f:subview>
+                  
                </ospx:xheaderdrawer>
             </ospx:xheader>
 
