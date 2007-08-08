@@ -713,7 +713,7 @@ public class AudienceTool extends HelperToolBase {
             selectedUserList = new ArrayList();
             for (Iterator i = getSelectedMembers().iterator(); i.hasNext();) {
                 DecoratedMember decoratedMember = (DecoratedMember) i.next();
-                if ( ! decoratedMember.getBase().isRole() ) 
+                if ( ! decoratedMember.getBase().isRole() && decoratedMember.getBase().getId() != null ) 
                    selectedUserList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), "member"));
             }
 
