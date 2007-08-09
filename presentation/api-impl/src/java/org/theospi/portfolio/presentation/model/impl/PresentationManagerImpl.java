@@ -717,17 +717,30 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    public Collection findGlobalTemplates() {
-      String query =  "from PresentationTemplate where published=? and owner_id!=? and site_id in (" ;
+   
+      StringBuffer query = new StringBuffer( "from PresentationTemplate where published=? and site_id in (" );
 
       for (Iterator i = getGlobalSites().iterator(); i.hasNext();) {
          String site = (String) i.next();
-         query += "'" + site + "'";
-         query += ",";
+         query.append( "'" );
+         query.append( site );
+         query.append( "',");
       }
+      query.append( "'')");
 
-      query += "'') Order by name";
-      return getHibernateTemplate().find(query,
-         new Object[]{new Boolean(true), getAuthnManager().getAgent().getId().getValue()});
+      // if this is a global site, exclude owner's, which are included in findTemplatesByOwner()
+      if ( isGlobal() ) 
+         query.append(" and owner_id!=?");
+
+      query.append( " Order by name");
+
+      Object[] parms = null;      
+      if ( isGlobal() ) 
+         parms = new Object[]{new Boolean(true), getAuthnManager().getAgent().getId().getValue()};
+      else
+         parms = new Object[]{new Boolean(true)};
+         
+      return getHibernateTemplate().find(query.toString(), parms );
    }
 
    protected Collection findPublishedTemplatesBySite(String siteId) {

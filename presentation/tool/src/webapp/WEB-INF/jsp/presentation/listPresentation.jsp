@@ -4,14 +4,12 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
 
-<c:if test="${!myworkspace}">
    <osp-c:authZMap prefix="osp.presentation." var="can" />
-</c:if>
 
 <!-- GUID=<c:out value="${newPresentationId}"/> -->
 
 <div class="navIntraTool">
-    <c:if test="${myworkspace || can.create}">
+    <c:if test="${can.create}">
         <a href="<osp:url value="addPresentation.osp"/>&resetForm=true"
             title="<fmt:message key="action_new_title"/>"> <fmt:message key="action_new"/> </a>
     </c:if>
@@ -26,7 +24,7 @@
             </osp:url>"
         title="<fmt:message key="action_commentsOthers_title"/>"> <fmt:message key="action_commentsOthers"/> </a>
 
-    <c:if test="${!myworkspace && isMaintainer}">
+    <c:if test="${isMaintainer}">
         <a href="<osp:url value="osp.permissions.helper/editPermissions">
                 <osp:param name="message"><fmt:message key="message_permissionsEdit">
 	          <fmt:param><c:out value="${tool.title}"/></fmt:param>
