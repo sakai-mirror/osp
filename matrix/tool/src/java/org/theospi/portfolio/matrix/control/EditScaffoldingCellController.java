@@ -34,9 +34,7 @@ import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.ResourceLoader;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -123,12 +121,12 @@ public class EditScaffoldingCellController extends
 			}
 		}
 
-		model.put("reflectionDevices", getReflectionDevices());
-		model.put("evaluationDevices", getEvaluationDevices());
-		model.put("reviewDevices", getReviewDevices());
-		model.put("additionalFormDevices", getAdditionalFormDevices());
+		model.put("reflectionDevices", getReflectionDevices(def.getSiteId()));
+		model.put("evaluationDevices", getEvaluationDevices(def.getSiteId()));
+		model.put("reviewDevices", getReviewDevices(def.getSiteId()));
+		model.put("additionalFormDevices", getAdditionalFormDevices(def.getSiteId()));
 		model.put("selectedAdditionalFormDevices",
-				getSelectedAdditionalFormDevices(sCell));
+				getSelectedAdditionalFormDevices(sCell,def.getSiteId()));
 		model.put("evaluators", getEvaluators(sCell.getWizardPageDefinition()));
 		model.put("pageTitleKey", "title_editCell");
 		model.put("pageInstructionsKey", "instructions_cellSettings");
@@ -387,8 +385,7 @@ public class EditScaffoldingCellController extends
 					|| forwardView.equals("createGuidance"))
 				session.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, bTrue);
 
-			Placement placement = ToolManager.getCurrentPlacement();
-			String currentSite = placement.getContext();
+			String currentSite = scaffoldingCell.getWizardPageDefinition().getSiteId();
 			session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
 					"true");
 			model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
@@ -488,9 +485,7 @@ public class EditScaffoldingCellController extends
 				getIdManager().getId(siteId), true);
 	}
 
-	protected Collection getFormsForSelect(String type) {
-		Placement placement = ToolManager.getCurrentPlacement();
-		String currentSiteId = placement.getContext();
+	protected Collection getFormsForSelect(String type, String currentSiteId) {
 		Collection commentForms = getAvailableForms(currentSiteId, type);
 
 		List retForms = new ArrayList();
@@ -506,9 +501,7 @@ public class EditScaffoldingCellController extends
 		return retForms;
 	}
 
-	protected Collection getWizardsForSelect(String type) {
-		Placement placement = ToolManager.getCurrentPlacement();
-		String currentSiteId = placement.getContext();
+	protected Collection getWizardsForSelect(String type, String currentSiteId) {
 		List wizards = getWizardManager().listWizardsByType(
 				getSessionManager().getCurrentSessionUserId(), currentSiteId,
 				type);
@@ -524,35 +517,35 @@ public class EditScaffoldingCellController extends
 		return retWizards;
 	}
 
-	protected Collection getReviewDevices() {
-		Collection all = getFormsForSelect(WizardFunctionConstants.COMMENT_TYPE);
-		all.addAll(getWizardsForSelect(WizardFunctionConstants.COMMENT_TYPE));
+	protected Collection getReviewDevices(String siteId) {
+		Collection all = getFormsForSelect(WizardFunctionConstants.COMMENT_TYPE, siteId);
+		all.addAll(getWizardsForSelect(WizardFunctionConstants.COMMENT_TYPE, siteId));
 		return all;
 	}
 
-	protected Collection getReflectionDevices() {
-		Collection all = getFormsForSelect(WizardFunctionConstants.REFLECTION_TYPE);
+	protected Collection getReflectionDevices(String siteId) {
+		Collection all = getFormsForSelect(WizardFunctionConstants.REFLECTION_TYPE, siteId);
 		all
-				.addAll(getWizardsForSelect(WizardFunctionConstants.REFLECTION_TYPE));
+				.addAll(getWizardsForSelect(WizardFunctionConstants.REFLECTION_TYPE, siteId));
 		return all;
 	}
 
-	protected Collection getEvaluationDevices() {
-		Collection all = getFormsForSelect(WizardFunctionConstants.EVALUATION_TYPE);
+	protected Collection getEvaluationDevices(String siteId) {
+		Collection all = getFormsForSelect(WizardFunctionConstants.EVALUATION_TYPE, siteId);
 		all
-				.addAll(getWizardsForSelect(WizardFunctionConstants.EVALUATION_TYPE));
+				.addAll(getWizardsForSelect(WizardFunctionConstants.EVALUATION_TYPE, siteId));
 		return all;
 	}
 
-	protected Collection getAdditionalFormDevices() {
+	protected Collection getAdditionalFormDevices( String siteId ) {
 		// Return all forms
-		return getFormsForSelect(null);
+		return getFormsForSelect(null, siteId);
 	}
 
-	protected Collection getSelectedAdditionalFormDevices(ScaffoldingCell sCell) {
+	protected Collection getSelectedAdditionalFormDevices(ScaffoldingCell sCell, String siteId) {
 		// cwm need to preserve the ordering
 		Collection returnCol = new ArrayList();
-		Collection col = getAdditionalFormDevices();
+		Collection col = getAdditionalFormDevices(siteId);
 		for (Iterator iter = col.iterator(); iter.hasNext();) {
 			CommonFormBean bean = (CommonFormBean) iter.next();
 			if (sCell.getAdditionalForms().contains(bean.getId()))
