@@ -272,7 +272,6 @@
                   <fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="${date_format}" />
                </td>
             </tr>
-            </c:if>
 <!-- ************* Item-specific Review (Feedback) Area Start ************* -->
       <c:forEach var="object" items="${reviews}" varStatus="loopStatus">
 	  <c:if test="${object.itemId == node.id}">
@@ -297,6 +296,7 @@
 			</tr>
 		</c:if>	
       </c:forEach>
+   </c:if>
 
 <!-- ************* Item-specific Review (Feedback) Area End ************* -->
 			</c:forEach>
