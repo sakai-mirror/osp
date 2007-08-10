@@ -77,6 +77,10 @@ public class SequentialWizardPageController extends WizardPageController {
 
       }
       
+      //TODO: Find an appropriate place to delete the session variable being grabbed here.
+      //	  it is bad to delete the session var after setting it in the request here b/c
+      //      when the user goes to a helper page and returns, the session is null (i.e. 
+      //	  selecting an item)
       request.put(WizardPageHelper.EVALUATION_ITEM, session.get(WizardPageHelper.EVALUATION_ITEM));
       
       
