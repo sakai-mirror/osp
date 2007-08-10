@@ -298,10 +298,12 @@
     <sakai:button_bar_item id="returnToEvaluations" value="#{msgs.evaluation_list}"
        action="#{wizard.processActionCancelRun}" rendered="#{wizard.fromEvaluation}" />
        
+   <f:subview id="evalSubmitSV" rendered="#{wizard.evaluationItem != ''}">
     <sakai:button_bar_item id="submitEvalWizard" value="#{msgs.submit_wizard_for_evaluation}" 
        rendered="#{wizard.current.runningWizard.base.status == 'READY' && wizard.current.runningWizard.isReadOnly == 'false'}"
        action="confirmSubmit" immediate="true"
         />
+   </f:subview>
 </sakai:button_bar>
 
 </h:form>

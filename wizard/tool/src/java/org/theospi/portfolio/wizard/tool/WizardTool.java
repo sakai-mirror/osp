@@ -607,7 +607,10 @@ public class WizardTool extends BuilderTool {
          WizardPage page = getMatrixManager().getWizardPage(wizpage.getWizardPage().getId());
          pages.add(page);
       }
-      
+
+
+      session.setAttribute(WizardPageHelper.EVALUATION_ITEM, this.getEvaluationItem());
+
       session.setAttribute(WizardPageHelper.WIZARD_PAGE, pages);
       String redirectAddress = "osp.wizard.page.helper/wizardPage.osp";
       

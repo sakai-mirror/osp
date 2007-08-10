@@ -55,6 +55,7 @@ public class SequentialWizardPageController extends WizardPageController {
          model.put("sequential", "true");
          model.put("currentStep", request.get(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP));
          model.put("totalSteps", request.get(WizardPageHelper.TOTAL_STEPS));
+         model.put("evaluationItem", request.get(WizardPageHelper.EVALUATION_ITEM));
       }
       return model;
    }
@@ -73,7 +74,12 @@ public class SequentialWizardPageController extends WizardPageController {
          session.put(WizardPageHelper.SEQUENTIAL_WIZARD_CURRENT_STEP, getCurrentStepFromList(steps, page));
          session.put(WizardPageHelper.WIZARD_OWNER, cw.getOwner());
          session.put(WizardPageHelper.SEQUENTIAL_WIZARD_PAGES, steps);
+
       }
+      
+      request.put(WizardPageHelper.EVALUATION_ITEM, session.get(WizardPageHelper.EVALUATION_ITEM));
+      
+      
       //TODO: It's probably safe to assume that steps will not be null at this point, 
       // but I'm leaving the check here for the time being.
       if (steps != null) {
