@@ -97,8 +97,8 @@
                      </c:if>
                   </a>
                </th>
-               <th title='<fmt:message key="eval_sortbyowner"/>'>
-                  <c:if test="${can.viewOwner}">
+               <c:if test="${can.viewOwner}">
+	               <th title='<fmt:message key="eval_sortbyowner"/>'>	                  
                      <c:if test="${sortByColumn == 'owner'}">
                         <c:if test="${direction == 'asc'}">
                            <c:set var="sortDir" value="desc" />
@@ -117,11 +117,9 @@
                              </c:if>
                            />
                         </c:if>
-                     </a>
-                  </c:if> 
-                  <c:if test="${!can.viewOwner}">&nbsp</c:if>
-                    
-                </th>
+                     </a>                    
+	                </th>
+                </c:if>
                 <th title='<fmt:message key="eval_sortbydateReceived"/>'>
                   <c:if test="${sortByColumn == 'date'}">
                      <c:if test="${direction == 'asc'}">
@@ -218,12 +216,13 @@
                         </c:if>
                     </div>
                     </td>
-                    <td>
-                    <div align="left"><c:if test="${can.viewOwner}">
-                        <c:out value="${item.owner.sortName}" />
-                    </c:if> <c:if test="${!can.viewOwner}">&nbsp</c:if>
-                    </div>
-                    </td>
+                    <c:if test="${can.viewOwner}">
+	                    <td>
+	                    <div align="left">
+	                        <c:out value="${item.owner.sortName}" />
+	                    </div>
+	                    </td>
+                    </c:if>
                     <td>
                      <div align="left"><c:if test="${item.submittedDate==null}"> &nbsp; </c:if>
                         <c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${item.submittedDate}" pattern="${dateFormat}"/> </div>
