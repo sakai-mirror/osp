@@ -26,14 +26,13 @@
    <sakai:instruction_message value="#{wizard.current.base.description}" />
    
    <f:subview id="instructionSV" rendered="#{(wizard.current.instruction.text != '' and wizard.current.instruction != null) || not empty wizard.current.instruction.attachments}">
-  	   	<h4 class="xheader">
- 	  	<h:outputText value="#{msgs.guidance_instructions}" escape="false" />
-   		</h4>   		   
-   		<!--- the ospx:header is used to include the css header style for the h4 tag above --->
-  		<ospx:xheader>
-   		  <ospx:xheadertitle id="instructionsHeader" value="#{msgs.guidance_instructions}" />
-   		</ospx:xheader>
-  		  		
+ 		     		
+		<ospx:xheader>
+			<ospx:xheadertitle id="instructionsHeader">
+				<h:outputText value="#{msgs.guidance_instructions}" />
+			</ospx:xheadertitle>
+		</ospx:xheader>
+  		 	
    		<div class="textPanel"><h:outputText value="#{wizard.current.instruction.text}" escape="false" /></div>
    </f:subview>
    <h:dataTable value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment"  rendered="#{not empty wizard.current.instruction.attachments}" border="0" styleClass="indnt1" style="width:50%">
@@ -50,13 +49,11 @@
 
    
    <f:subview id="guidanceSV" rendered="#{(wizard.current.rationale.text != '' and wizard.current.rationale != null) || not empty wizard.current.rationale.attachments}">
-  		<h4 class="xheader">
-   		<h:outputText value="#{msgs.guidance_rationale}" escape="false"/>
-   		</h4>
-   		<!--- the ospx:header is used to include the css header style for the h4 tag above --->
-   		<ospx:xheader>
-   		  <ospx:xheadertitle id="rationaleHeader" value="#{msgs.guidance_rationale}" />
-   		</ospx:xheader>
+		<ospx:xheader>
+			<ospx:xheadertitle id="rationaleHeader">
+				<h:outputText value="#{msgs.guidance_rationale}" />
+			</ospx:xheadertitle>
+		</ospx:xheader>
    		<div class="textPanel"><h:outputText value="#{wizard.current.rationale.text}" escape="false" /></div>
   	</f:subview>  
    <h:dataTable value="#{wizard.current.guidanceRationaleAttachments}" var="attachment"  rendered="#{not empty wizard.current.rationale.attachments}"  border="0" styleClass="indnt1" style="width:50%">
@@ -72,13 +69,11 @@
    </h:dataTable>
    
    <f:subview id="exapmleSV" rendered="#{(wizard.current.example.text != '' and wizard.current.example != null) || not empty wizard.current.example.attachments}">
-      <h4 class="xheader">
-      <h:outputText value="#{msgs.guidance_examples}" escape="false" />
-      </h4>
-      <!--- the ospx:header is used to include the css header style for the h4 tag above --->
-      <ospx:xheader>
-   		  <ospx:xheadertitle id="exampleHeader" value="#{msgs.guidance_examples}" />
-   	  </ospx:xheader>
+		<ospx:xheader>
+			<ospx:xheadertitle id="exampleHeader">
+				<h:outputText value="#{msgs.guidance_examples}" />
+			</ospx:xheadertitle>
+		</ospx:xheader>
    	  <div class="textPanel"><h:outputText value="#{wizard.current.example.text}" escape="false" /></div>
    </f:subview> 
    <h:dataTable value="#{wizard.current.guidanceExamplesAttachments}" var="attachment" border="0" styleClass="indnt1" style="width:50%" rendered="#{not empty wizard.current.example.attachments}" >
