@@ -559,7 +559,7 @@ public class WizardTool extends BuilderTool {
          CompletedWizardPage wizpage = (CompletedWizardPage)i.next();
          
          WizardPage wpage = getMatrixManager().getWizardPage(wizpage.getWizardPage().getId());
-         if(currentUser.equalsIgnoreCase(wpage.getOwner().getId().getValue())) {
+         if(wpage.getOwner().getId() != null && currentUser.equalsIgnoreCase(wpage.getOwner().getId().getValue())) {
             page = wpage;
             break;
          }
@@ -917,14 +917,16 @@ public class WizardTool extends BuilderTool {
       for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
          Authorization az = (Authorization) iter.next();
          Agent agent = az.getAgent();
-         String userId = az.getAgent().getEid().getValue();
-         if (agent.isRole()) {
-            evalList.add(MessageFormat.format(myResources.getString("decorated_role_format"), 
-                  new Object[]{agent.getDisplayName()}));
-         }
-         else {
-            evalList.add(MessageFormat.format(myResources.getString("decorated_user_format"),
-                  new Object[]{agent.getDisplayName(), userId}));
+         if (agent.getId() != null) {
+            String userId = az.getAgent().getEid().getValue();
+            if (agent.isRole()) {
+               evalList.add(MessageFormat.format(myResources.getString("decorated_role_format"), 
+                     new Object[]{agent.getDisplayName()}));
+            }
+            else {
+               evalList.add(MessageFormat.format(myResources.getString("decorated_user_format"),
+                     new Object[]{agent.getDisplayName(), userId}));
+            }
          }
       }
       

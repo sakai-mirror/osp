@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -145,7 +145,10 @@ public class DecoratedWizard implements DecoratedListInterface {
          exc = e;
       }
       
-      boolean isOwner = parent.getCurrentUserId().equals(base.getOwner().getId().getValue());
+      boolean isOwner = false;
+      
+      if (base.getOwner() != null && base.getOwner().getId() != null)
+         isOwner = parent.getCurrentUserId().equals(base.getOwner().getId().getValue());
       
       boolean can = (isPublishedOrPreview) && (canOperate || isOwner);
       
@@ -289,11 +292,15 @@ public class DecoratedWizard implements DecoratedListInterface {
    }
    
    public boolean isOwner() {
+      
+      boolean isOwner = false;
+      
       String userId = SessionManager.getCurrentSessionUserId();
-      if (userId != null) {
-         return userId.equals(getBase().getOwner().getId().getValue());
-      }
-      return false;
+      
+      if (userId != null && base.getOwner() != null && base.getOwner().getId() != null)
+         isOwner = userId.equals(getBase().getOwner().getId().getValue());
+      
+      return isOwner;
    }
 
    public String processActionRunWizard() {
