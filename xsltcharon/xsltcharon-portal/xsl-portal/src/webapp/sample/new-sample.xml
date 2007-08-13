@@ -1,221 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <portal>
    <currentUser>
-      <id><![CDATA[admin]]></id>
-      <first><![CDATA[Sakai]]></first>
-      <last><![CDATA[Administrator]]></last>
+      <id>admin</id>
+      <first>Sakai</first>
+      <last>Administrator</last>
       <email></email>
    </currentUser>
    <loginInfo>
-      <topLogin><![CDATA[true]]></topLogin>
-      <logInOutUrl><![CDATA[http://localhost:8080/xsl-portal/logout]]></logInOutUrl>
-      <loginText><![CDATA[Logout]]></loginText>
-      <logoutText><![CDATA[Logout]]></logoutText>
+      <topLogin>true</topLogin>
+      <logInOutUrl>http://localhost:8080/osp-portal/logout</logInOutUrl>
+      <loginText>Logout</loginText>
+      <logoutText>Logout</logoutText>
       <image1/>
    </loginInfo>
-   <pageTitle><![CDATA[Sakai Based Service : Administration Workspace : Home]]></pageTitle>
+   <pageTitle>Sakai Based Service : dsfasdfsadf : Home</pageTitle>
    <skins>
-      <skin order="0"><![CDATA[/library/skin/default/portal.css]]></skin>
+      <skin order="0">/library/skin/default/portal.css</skin>
    </skins>
    <config>
-      <presence include="true"><![CDATA[http://localhost:8080/xsl-portal/presence/!admin]]></presence>
-      <logo><![CDATA[/library/skin/default/images/logo_inst.gif]]></logo>
-      <banner><![CDATA[/library/skin/default/images/banner_inst.gif]]></banner>
-      <logout><![CDATA[http://localhost:8080/xsl-portal/logout]]></logout>
+      <presence include="true">http://localhost:8080/xsl-portal/presence/5fcbd389-7ebc-4fbb-0039-68d12ac5140b</presence>
+      <logo>/library/skin/default/images/logo_inst.gif</logo>
+      <banner>/library/skin/default/images/banner_inst.gif</banner>
+      <logout>http://localhost:8080/osp-portal/logout</logout>
       <copyright/>
-      <service><![CDATA[Sakai Based Service]]></service>
-      <serviceVersion><![CDATA[dev]]></serviceVersion>
-      <sakaiVersion><![CDATA[dev]]></sakaiVersion>
-      <server><![CDATA[john-ellis-computer.local]]></server>
+      <service>Sakai Based Service</service>
+      <serviceVersion>dev</serviceVersion>
+      <sakaiVersion>dev</sakaiVersion>
+      <server>john-ellis-computer.local</server>
       <helpUrl/>
       <bottomNavs>
-         <bottomNav><![CDATA[http://www.javasoft.com]]></bottomNav>
-         <bottomNav><![CDATA[http://www.sakaiproject.org]]></bottomNav>
+         <bottomNav>http://www.javasoft.com</bottomNav>
+         <bottomNav>http://www.sakaiproject.org</bottomNav>
       </bottomNavs>
       <poweredBy>
-         <text><![CDATA[Powered by Sakai]]></text>
-         <image><![CDATA[/library/image/sakai_powered.gif]]></image>
-         <url><![CDATA[http://sakaiproject.org]]></url>
+         <text>Powered by Sakai</text>
+         <image>/library/image/sakai_powered.gif</image>
+         <url>http://sakaiproject.org</url>
       </poweredBy>
       <poweredByUrls>
-         <poweredByUrl><![CDATA[http://sakaiproject.org]]></poweredByUrl>
+         <poweredByUrl>http://sakaiproject.org</poweredByUrl>
       </poweredByUrls>
       <poweredByImages>
-         <poweredByImage><![CDATA[/library/image/sakai_powered.gif]]></poweredByImage>
+         <poweredByImage>/library/image/sakai_powered.gif</poweredByImage>
       </poweredByImages>
       <poweredByAltTexts>
-         <poweredByAltText><![CDATA[Powered by Sakai]]></poweredByAltText>
+         <poweredByAltText>Powered by Sakai</poweredByAltText>
       </poweredByAltTexts>
    </config>
    <sites>
       <tabsSites>
          <site child="false" depth="0" myWorkspace="true" order="0" selected="false">
-            <url><![CDATA[http://localhost:8080/xsl-portal/site/%7Eadmin]]></url>
-            <title><![CDATA[Administration Workspace]]></title>
-            <description><![CDATA[&lt;p&gt;Administration Workspace&lt;/p&gt;]]></description>
+            <url>http://localhost:8080/osp-portal/site/%7Eadmin</url>
+            <title>Administration Workspace</title>
+            <description>Administration Workspace</description>
             <parent/>
          </site>
          <site child="false" depth="0" myWorkspace="false" order="1" selected="false">
-            <url><![CDATA[http://localhost:8080/xsl-portal/site/19a8d4d8-b76c-4fe4-00df-e6f4a34326b6]]></url>
-            <title><![CDATA[a]]></title>
-            <description></description>
-            <parent/>
-         </site>
-         <site child="false" depth="0" myWorkspace="false" order="2" selected="true">
-            <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin]]></url>
-            <title><![CDATA[Administration Workspace]]></title>
-            <description><![CDATA[Administration Workspace]]></description>
-            <parent/>
-         </site>
-         <site child="false" depth="0" myWorkspace="false" order="3" selected="false">
-            <url><![CDATA[http://localhost:8080/xsl-portal/site/fd47b53d-0af7-418a-0032-ceb0671b5252]]></url>
-            <title><![CDATA[b]]></title>
-            <description></description>
-            <parent/>
-         </site>
-      </tabsSites>
-      <tabsMoreSites>
-         <site child="false" depth="0" myWorkspace="false" order="0" selected="false">
-            <url><![CDATA[http://localhost:8080/xsl-portal/site/43916f78-6b04-4534-000f-487e382a30f6]]></url>
-            <title><![CDATA[c]]></title>
-            <description></description>
-            <parent/>
-         </site>
-         <site child="false" depth="0" myWorkspace="false" order="1" selected="false">
-            <url><![CDATA[http://localhost:8080/xsl-portal/site/mercury]]></url>
-            <title><![CDATA[mercury site]]></title>
-            <description></description>
+            <url>http://localhost:8080/osp-portal/site/!admin</url>
+            <title>Administration Workspace</title>
+            <description>Administration Workspace</description>
             <parent/>
          </site>
          <site child="false" depth="0" myWorkspace="false" order="2" selected="false">
-            <url><![CDATA[http://localhost:8080/xsl-portal/site/PortfolioAdmin]]></url>
-            <title><![CDATA[Portfolio Admin]]></title>
-            <description><![CDATA[Site for portfolio administration]]></description>
+            <url>http://localhost:8080/osp-portal/site/40d004ad-754e-419a-008a-fa4087f75148</url>
+            <title>asdfasdfasdf</title>
+            <description>&amp;lt;p&amp;gt;sadfasdf&amp;lt;/p&amp;gt;</description>
             <parent/>
          </site>
-      </tabsMoreSites>
-      <siteTypes>
-         <siteType>
-            <title><![CDATA[OTHER]]></title>
-            <sites>
-               <site child="false" depth="0" myWorkspace="true" order="0" selected="false">
-                  <url><![CDATA[http://localhost:8080/xsl-portal/site/%7Eadmin]]></url>
-                  <title><![CDATA[Administration Workspace]]></title>
-                  <description><![CDATA[&lt;p&gt;Administration Workspace&lt;/p&gt;]]></description>
-                  <parent/>
-               </site>
-               <site child="false" depth="0" myWorkspace="false" order="1" selected="true">
-                  <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin]]></url>
-                  <title><![CDATA[Administration Workspace]]></title>
-                  <description><![CDATA[Administration Workspace]]></description>
-                  <parent/>
-               </site>
-               <site child="false" depth="0" myWorkspace="false" order="2" selected="false">
-                  <url><![CDATA[http://localhost:8080/xsl-portal/site/mercury]]></url>
-                  <title><![CDATA[mercury site]]></title>
-                  <description></description>
-                  <parent/>
-               </site>
-               <site child="false" depth="0" myWorkspace="false" order="3" selected="false">
-                  <url><![CDATA[http://localhost:8080/xsl-portal/site/PortfolioAdmin]]></url>
-                  <title><![CDATA[Portfolio Admin]]></title>
-                  <description><![CDATA[Site for portfolio administration]]></description>
-                  <parent/>
-               </site>
-            </sites>
-         </siteType>
-         <siteType>
-            <title><![CDATA[PROJECTS]]></title>
-            <sites>
-               <site child="false" depth="0" myWorkspace="false" order="0" selected="false">
-                  <url><![CDATA[http://localhost:8080/xsl-portal/site/19a8d4d8-b76c-4fe4-00df-e6f4a34326b6]]></url>
-                  <title><![CDATA[a]]></title>
-                  <description></description>
-                  <parent/>
-               </site>
-               <site child="false" depth="0" myWorkspace="false" order="1" selected="false">
-                  <url><![CDATA[http://localhost:8080/xsl-portal/site/fd47b53d-0af7-418a-0032-ceb0671b5252]]></url>
-                  <title><![CDATA[b]]></title>
-                  <description></description>
-                  <parent/>
-               </site>
-               <site child="false" depth="0" myWorkspace="false" order="2" selected="false">
-                  <url><![CDATA[http://localhost:8080/xsl-portal/site/43916f78-6b04-4534-000f-487e382a30f6]]></url>
-                  <title><![CDATA[c]]></title>
-                  <description></description>
-                  <parent/>
-               </site>
-            </sites>
-         </siteType>
-      </siteTypes>
+         <site child="false" depth="0" myWorkspace="false" order="3" selected="false">
+            <url>http://localhost:8080/osp-portal/site/mercury</url>
+            <title>mercury site</title>
+            <description></description>
+            <parent/>
+         </site>
+         <site child="false" depth="0" myWorkspace="false" order="4" selected="true">
+            <url>http://localhost:8080/osp-portal/site/5fcbd389-7ebc-4fbb-0039-68d12ac5140b</url>
+            <title>dsfasdfsadf</title>
+            <description>&amp;lt;p&amp;gt;asdf&amp;lt;/p&amp;gt;</description>
+            <parent/>
+         </site>
+      </tabsSites>
+      <tabsMoreSites/>
    </sites>
    <categories>
-      <category order="0" selected="true">
+      <category order="0" selected="false">
          <key>org.theospi.portfolio.portal.model.ToolCategory.uncategorized</key>
          <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
          <pages>
-            <page layout="0" order="0" popUp="false" selected="true">
-               <title><![CDATA[Home]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-100]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
-               <columns>
-                  <column index="0">
-                     <tools>
-                        <tool hasHelp="true" hasReset="false" renderResult="true">
-                           <title><![CDATA[Message of the Day]]></title>
-                           <escapedId><![CDATA[Mainxadminx110]]></escapedId>
-                           <toolReset>
-                              <![CDATA[http://localhost:8080/xsl-portal/tool-reset/!admin-110/?panel=Main]]></toolReset>
-                           <toolHelp>
-                              <![CDATA[http://localhost:8080/xslt portal/help/main?help=sakai.announcements]]></toolHelp>
-                           <content>
-                              <iframe class="portletMainIframe" frameborder="0" height="50" id="Mainxadminx110 "
-                                      marginheight="0" marginwidth="0" name="Mainxadminx110" scrolling="auto"
-                                      src="http://localhost:8080/xsl-portal/tool/!admin-110?panel=Main"
-                                      title="Message of the Day " width="100%">
-                              </iframe>
-                           </content>
-                        </tool>
-                        <tool hasHelp="true" hasReset="false" renderResult="true">
-                           <title><![CDATA[My Workspace Information]]></title>
-                           <escapedId><![CDATA[Mainxadminx120]]></escapedId>
-                           <toolReset>
-                              <![CDATA[http://localhost:8080/xsl-portal/tool-reset/!admin-120/?panel=Main]]></toolReset>
-                           <toolHelp>
-                              <![CDATA[http://localhost:8080/xslt portal/help/main?help=sakai.iframe.myworkspace]]></toolHelp>
-                           <content>
-                              <iframe class="portletMainIframe" frameborder="0" height="50" id="Mainxadminx120 "
-                                      marginheight="0" marginwidth="0" name="Mainxadminx120" scrolling="auto"
-                                      src="http://localhost:8080/xsl-portal/tool/!admin-120?panel=Main"
-                                      title="My Workspace Information " width="100%">
-                              </iframe>
-                           </content>
-                        </tool>
-                     </tools>
-                  </column>
-               </columns>
+            <page order="0" popUp="false" selected="false">
+               <title>Schedule</title>
+               <url>
+                  http://localhost:8080/xsl-portal/site/5fcbd389-7ebc-4fbb-0039-68d12ac5140b/page/994a095b-e910-4597-8053-fb0ed5be1682</url>
+               <popUrl>http://localhost:8080/xsl-portal/page/</popUrl>
+               <menuClass>icon-sakai-schedule</menuClass>
             </page>
          </pages>
       </category>
       <category order="1" selected="false">
-         <key>org.theospi.portfolio.portal.model.ToolCategory.uncategorized</key>
-         <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
+         <key>cat 1</key>
+         <escapedKey>catx1</escapedKey>
          <pages>
             <page order="0" popUp="false" selected="false">
-               <title><![CDATA[Users]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-200]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
+               <title>Announcements</title>
+               <url>
+                  http://localhost:8080/xsl-portal/site/5fcbd389-7ebc-4fbb-0039-68d12ac5140b/page/aa0ef310-98d8-4e25-004d-08b0160613d3</url>
+               <popUrl>http://localhost:8080/xsl-portal/page/</popUrl>
+               <menuClass>icon-sakai-announcements</menuClass>
+            </page>
+            <page order="0" popUp="false" selected="false">
+               <title>Resources</title>
+               <url>
+                  http://localhost:8080/xsl-portal/site/5fcbd389-7ebc-4fbb-0039-68d12ac5140b/page/591f57b2-335b-461d-0051-9b7932677a71</url>
+               <popUrl>http://localhost:8080/xsl-portal/page/</popUrl>
+               <menuClass>icon-sakai-resources</menuClass>
             </page>
          </pages>
       </category>
       <category order="2" selected="false">
-         <key>org.theospi.portfolio.portal.model.ToolCategory.uncategorized</key>
-         <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
+         <key>cat 2</key>
+         <escapedKey>catx2</escapedKey>
          <pages>
             <page order="0" popUp="false" selected="false">
-               <title><![CDATA[Aliases]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-250]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
+               <title>Email Archive</title>
+               <url>
+                  http://localhost:8080/xsl-portal/site/5fcbd389-7ebc-4fbb-0039-68d12ac5140b/page/32ba87e3-972a-43b4-00c8-54c17c4bce98</url>
+               <popUrl>http://localhost:8080/xsl-portal/page/</popUrl>
+               <menuClass>icon-sakai-mailbox</menuClass>
             </page>
          </pages>
       </category>
@@ -224,9 +134,11 @@
          <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
          <pages>
             <page order="0" popUp="false" selected="false">
-               <title><![CDATA[Sites]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-300]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
+               <title>Roster</title>
+               <url>
+                  http://localhost:8080/xsl-portal/site/5fcbd389-7ebc-4fbb-0039-68d12ac5140b/page/af0c61e5-4dc6-4e99-80f9-ec298282c5fc</url>
+               <popUrl>http://localhost:8080/xsl-portal/page/</popUrl>
+               <menuClass>icon-sakai-site-roster</menuClass>
             </page>
          </pages>
       </category>
@@ -235,9 +147,11 @@
          <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
          <pages>
             <page order="0" popUp="false" selected="false">
-               <title><![CDATA[Realms]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-350]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
+               <title>Evaluations</title>
+               <url>
+                  http://localhost:8080/xsl-portal/site/5fcbd389-7ebc-4fbb-0039-68d12ac5140b/page/8c22e3d1-9abc-4ecf-8050-555d8fb8a542</url>
+               <popUrl>http://localhost:8080/xsl-portal/page/</popUrl>
+               <menuClass>icon-osp-evaluation</menuClass>
             </page>
          </pages>
       </category>
@@ -246,9 +160,11 @@
          <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
          <pages>
             <page order="0" popUp="false" selected="false">
-               <title><![CDATA[Worksite Setup]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-360]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
+               <title>Glossary</title>
+               <url>
+                  http://localhost:8080/xsl-portal/site/5fcbd389-7ebc-4fbb-0039-68d12ac5140b/page/88523fc1-6135-4bcb-80e5-2eebd90547aa</url>
+               <popUrl>http://localhost:8080/xsl-portal/page/</popUrl>
+               <menuClass>icon-osp-glossary</menuClass>
             </page>
          </pages>
       </category>
@@ -257,9 +173,11 @@
          <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
          <pages>
             <page order="0" popUp="false" selected="false">
-               <title><![CDATA[MOTD]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-400]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
+               <title>Matrices</title>
+               <url>
+                  http://localhost:8080/xsl-portal/site/5fcbd389-7ebc-4fbb-0039-68d12ac5140b/page/f3e7aedb-d1e0-4e4d-80e9-925ccf2c2009</url>
+               <popUrl>http://localhost:8080/xsl-portal/page/</popUrl>
+               <menuClass>icon-osp-matrix</menuClass>
             </page>
          </pages>
       </category>
@@ -268,9 +186,11 @@
          <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
          <pages>
             <page order="0" popUp="false" selected="false">
-               <title><![CDATA[Resources]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-500]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
+               <title>Portfolio Templates</title>
+               <url>
+                  http://localhost:8080/xsl-portal/site/5fcbd389-7ebc-4fbb-0039-68d12ac5140b/page/2a2c8e3a-8389-4a54-8015-199a32403e7c</url>
+               <popUrl>http://localhost:8080/xsl-portal/page/</popUrl>
+               <menuClass>icon-osp-presTemplate</menuClass>
             </page>
          </pages>
       </category>
@@ -279,9 +199,11 @@
          <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
          <pages>
             <page order="0" popUp="false" selected="false">
-               <title><![CDATA[On-Line]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-600]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
+               <title>Reports</title>
+               <url>
+                  http://localhost:8080/xsl-portal/site/5fcbd389-7ebc-4fbb-0039-68d12ac5140b/page/ca790225-4ed2-4a68-80b5-7da603858c5d</url>
+               <popUrl>http://localhost:8080/xsl-portal/page/</popUrl>
+               <menuClass>icon-sakai-reports</menuClass>
             </page>
          </pages>
       </category>
@@ -290,174 +212,132 @@
          <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
          <pages>
             <page order="0" popUp="false" selected="false">
-               <title><![CDATA[Memory]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-700]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
-            </page>
-         </pages>
-      </category>
-      <category order="10" selected="false">
-         <key>org.theospi.portfolio.portal.model.ToolCategory.uncategorized</key>
-         <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
-         <pages>
-            <page order="0" popUp="false" selected="false">
-               <title><![CDATA[Site Archive]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-900]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
-            </page>
-         </pages>
-      </category>
-      <category order="11" selected="false">
-         <key>org.theospi.portfolio.portal.model.ToolCategory.uncategorized</key>
-         <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
-         <pages>
-            <page order="0" popUp="false" selected="false">
-               <title><![CDATA[Job Scheduler]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-1000]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
-            </page>
-         </pages>
-      </category>
-      <category order="12" selected="false">
-         <key>org.theospi.portfolio.portal.model.ToolCategory.uncategorized</key>
-         <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
-         <pages>
-            <page order="0" popUp="false" selected="false">
-               <title><![CDATA[Become User]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-1100]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
-            </page>
-         </pages>
-      </category>
-      <category order="13" selected="false">
-         <key>org.theospi.portfolio.portal.model.ToolCategory.uncategorized</key>
-         <escapedKey>orgxtheospixportfolioxportalxmodelxToolCategoryxuncategorized</escapedKey>
-         <pages>
-            <page order="0" popUp="false" selected="false">
-               <title><![CDATA[User Membership]]></title>
-               <url><![CDATA[http://localhost:8080/xsl-portal/site/!admin/page/!admin-1200]]></url>
-               <popUrl><![CDATA[http://localhost:8080/xsl-portal/page/]]></popUrl>
+               <title>Wizards</title>
+               <url>
+                  http://localhost:8080/xsl-portal/site/5fcbd389-7ebc-4fbb-0039-68d12ac5140b/page/ff37d671-8845-4d92-007c-bb9cd26f50cc</url>
+               <popUrl>http://localhost:8080/xsl-portal/page/</popUrl>
+               <menuClass>icon-osp-wizard</menuClass>
             </page>
          </pages>
       </category>
    </categories>
    <externalized>
       <entry key="org.theospi.portfolio.portal.project">
-         <value><![CDATA[Project]]></value>
+         <value>Project</value>
       </entry>
       <entry key="org.theospi.portfolio.portal.model.designPublish">
-         <value><![CDATA[Design & Publish]]></value>
+         <value>Design &amp; Publish</value>
       </entry>
       <entry key="org.theospi.portfolio.portal.gateway">
-         <value><![CDATA[Gateway]]></value>
+         <value>Gateway</value>
       </entry>
       <entry key="org.theospi.portfolio.portal.portfolioAdmin">
-         <value><![CDATA[Administration]]></value>
+         <value>Administration</value>
       </entry>
       <entry key="org.theospi.portfolio.portal.myWorkspace">
-         <value><![CDATA[My Workspace]]></value>
+         <value>My Workspace</value>
       </entry>
       <entry key="org.theospi.portfolio.portal.model.collectReflect">
-         <value><![CDATA[Collect & Reflect]]></value>
+         <value>Collect &amp; Reflect</value>
       </entry>
       <entry key="org.theospi.portfolio.portal.portfolio">
-         <value><![CDATA[Portfolio]]></value>
+         <value>Portfolio</value>
       </entry>
       <entry key="org.theospi.portfolio.portal.model.analyzeReport">
-         <value><![CDATA[Analyze & Report]]></value>
+         <value>Analyze &amp; Report</value>
       </entry>
       <entry key="org.theospi.portfolio.portal.other">
-         <value><![CDATA[Other]]></value>
+         <value>Other</value>
       </entry>
       <entry key="org.theospi.portfolio.portal.course">
-         <value><![CDATA[Course]]></value>
+         <value>Course</value>
       </entry>
       <entry key="org.theospi.portfolio.portal.model.guide">
-         <value><![CDATA[Guide]]></value>
+         <value>Guide</value>
       </entry>
       <entry key="org.theospi.portfolio.portal.model.reviewEvaluate">
-         <value><![CDATA[Review & Evaluate]]></value>
+         <value>Review &amp; Evaluate</value>
       </entry>
       <entry key="sit_log">
-         <value><![CDATA[Logout]]></value>
+         <value>Logout</value>
       </entry>
       <entry key="sit_accessibility">
-         <value><![CDATA[go to accessibility information page]]></value>
+         <value>go to accessibility information page</value>
       </entry>
       <entry key="log.ple">
-         <value><![CDATA[Please Login]]></value>
+         <value>Please Login</value>
       </entry>
       <entry key="sit_worksites">
-         <value><![CDATA[Worksites]]></value>
+         <value>Worksites</value>
       </entry>
       <entry key="sit_edit">
-         <value><![CDATA[Edit]]></value>
+         <value>Edit</value>
       </entry>
       <entry key="sit_worksiteshead">
-         <value><![CDATA[Worksites begin here]]></value>
+         <value>Worksites begin here</value>
       </entry>
       <entry key="sit_jumpcontent">
-         <value><![CDATA[jump to content]]></value>
+         <value>jump to content</value>
       </entry>
       <entry key="sit_contentporttit">
-         <value><![CDATA[Content]]></value>
+         <value>Content</value>
       </entry>
       <entry key="sit_help">
-         <value><![CDATA[Help]]></value>
+         <value>Help</value>
       </entry>
       <entry key="sit_jumpworksite">
-         <value><![CDATA[jump to worksite list]]></value>
+         <value>jump to worksite list</value>
       </entry>
       <entry key="sit_mywor">
-         <value><![CDATA[My Workspace]]></value>
+         <value>My Workspace</value>
       </entry>
       <entry key="log.pass">
-         <value><![CDATA[password:]]></value>
+         <value>password:</value>
       </entry>
       <entry key="sit_contentshead">
-         <value><![CDATA[Content begins here]]></value>
+         <value>Content begins here</value>
       </entry>
       <entry key="sit_worksite">
-         <value><![CDATA[worksite]]></value>
+         <value>worksite</value>
       </entry>
       <entry key="bread_separator">
-         <value><![CDATA[>]]></value>
+         <value>&gt;</value>
       </entry>
       <entry key="sit_jumptools">
-         <value><![CDATA[jump to tools list]]></value>
+         <value>jump to tools list</value>
       </entry>
       <entry key="sit_presenceiframetit">
-         <value><![CDATA[Users Present in Site]]></value>
+         <value>Users Present in Site</value>
       </entry>
       <entry key="sit_toolshead">
-         <value><![CDATA[Tools begin here]]></value>
+         <value>Tools begin here</value>
       </entry>
       <entry key="site_newwindow">
-         <value><![CDATA[Opens in a new window]]></value>
+         <value>Opens in a new window</value>
       </entry>
       <entry key="log.userid">
-         <value><![CDATA[user id:]]></value>
+         <value>user id:</value>
       </entry>
       <entry key="log.login">
-         <value><![CDATA[Login]]></value>
+         <value>Login</value>
       </entry>
       <entry key="log.email">
-         <value><![CDATA[email]]></value>
+         <value>email</value>
       </entry>
       <entry key="sit_reset">
-         <value><![CDATA[Reset]]></value>
+         <value>Reset</value>
       </entry>
       <entry key="sit_more">
-         <value><![CDATA[- more -]]></value>
+         <value>- more -</value>
       </entry>
       <entry key="log.log">
-         <value><![CDATA[Log in]]></value>
+         <value>Log in</value>
       </entry>
       <entry key="sit_selectmessage">
-         <value><![CDATA[Press alt + up and down arrows to scroll through menu ]]></value>
+         <value>Press alt + up and down arrows to scroll through menu</value>
       </entry>
       <entry key="sit_presencetitle">
-         <value><![CDATA[Users present:]]></value>
+         <value>Users present:</value>
       </entry>
    </externalized>
 </portal>

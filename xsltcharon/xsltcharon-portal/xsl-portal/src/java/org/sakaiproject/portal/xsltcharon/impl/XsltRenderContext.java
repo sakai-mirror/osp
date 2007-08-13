@@ -9,6 +9,7 @@ import org.sakaiproject.util.Web;
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.site.api.SitePage;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -216,15 +217,55 @@ public class XsltRenderContext implements PortalRenderContext {
       Element categories = doc.createElement("categories");
 
       int index = 0;
+      String lastCategory = null;
+      Element lastCategoryElement = null;
       for (Iterator<Map> i = pageTools.iterator();i.hasNext();) {
-         categories.appendChild(createPage(doc, i.next(), index));
-         index++;
+         Map page = i.next();
+         Map pageProps = (Map)page.get("pageProps");
+         String currentCategory = (String) pageProps.get("sitePage.pageCategory");  //todo put the static final here
+         if (currentCategory == null) {
+            lastCategory = null;
+            lastCategoryElement = null;
+            categories.appendChild(createUncategorizedPage(doc, page, index));
+            index++;
+         }
+         else if (currentCategory.equals(lastCategory)) {
+            lastCategoryElement.appendChild(createPageXml(doc, page));
+            if ("true".equalsIgnoreCase(page.get("current").toString())) {
+               ((Element)lastCategoryElement.getParentNode()).setAttribute("selected", "true");
+            }
+         }
+         else {
+            lastCategory = currentCategory;
+            lastCategoryElement = createCategory(doc, categories, page, currentCategory, index);
+            lastCategoryElement.appendChild(createPageXml(doc, page));
+            categories.appendChild(lastCategoryElement.getParentNode());
+            index++;
+         }
       }
 
       return categories;
    }
 
-   protected Element createPage(Document doc, Map page, int index) throws ToolRenderException {
+   protected Element createCategory(Document doc, Element categories, Map page, String name, int index) {
+      Element categoryElement = doc.createElement("category");
+      categoryElement.setAttribute("selected", page.get("current").toString());
+      categoryElement.setAttribute("order", Integer.toString(index));
+      Element categoryKeyElement = doc.createElement("key");
+      safeAppendTextNode(doc, categoryKeyElement, name, true);
+      Element categoryEscapedKeyElement = doc.createElement("escapedKey");
+      safeAppendTextNode(doc, categoryEscapedKeyElement, Web.escapeJavascript(name), false);
+
+      categoryElement.appendChild(categoryKeyElement);
+      categoryElement.appendChild(categoryEscapedKeyElement);
+
+      Element pagesElement = doc.createElement("pages");
+
+      categoryElement.appendChild(pagesElement);
+      return pagesElement;
+   }
+
+   protected Element createUncategorizedPage(Document doc, Map page, int index) throws ToolRenderException {
       Element categoryElement = doc.createElement("category");
       categoryElement.setAttribute("selected", page.get("current").toString());
       categoryElement.setAttribute("order", Integer.toString(index));
