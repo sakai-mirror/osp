@@ -1080,6 +1080,7 @@
             <prop key="success">manageCellStatus</prop>
             <prop key="cancel">wizardPageSeqAndMatrixRedirect</prop>
             <prop key="done">wizardPageSeqAndMatrixRedirect</prop>
+            <prop key="doneHier">wizardPageHierRedirect</prop>
          </props>
       </property>
       <property name="commandName"><value>cell</value></property>

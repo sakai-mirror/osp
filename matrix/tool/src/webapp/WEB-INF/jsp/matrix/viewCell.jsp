@@ -47,6 +47,8 @@
          <a name="linkManageCellStatus" id="linkManageCellStatus" href="<osp:url value="manageCellStatus.osp">
             <osp:param name="page_id" value="${cell.wizardPage.id}"/>
             <osp:param name="readOnlyMatrix" value="${readOnlyMatrix}" />
+            <osp:param name="isWizard" value="${isWizard}" />
+            <osp:param name="sequential" value="${sequential}" />
             </osp:url>"><osp:message key="manage_cell_status"/></a>
       </c:if>
       <c:if test="${taggable && !(empty helperInfoList)}">

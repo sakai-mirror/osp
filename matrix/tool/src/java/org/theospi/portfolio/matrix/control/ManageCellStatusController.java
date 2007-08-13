@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -54,6 +54,7 @@ public class ManageCellStatusController implements Controller {
    
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String viewName = "success";
+      String viewAppend = "";
       Id id = idManager.getId((String)request.get("page_id"));
       
       Map<String, Object> model = new HashMap<String, Object>();
@@ -72,18 +73,34 @@ public class ManageCellStatusController implements Controller {
       boolean setSingle = "changeUserOnly".equalsIgnoreCase(changeOption) ? true : false;
       boolean setAll = "changeAll".equalsIgnoreCase(changeOption) ? true : false;
       
+      String isWizard = (String)request.get("isWizard");
+      String sequential = (String)request.get("sequential");
+      if (isWizard != null) {
+         model.put("isWizard", isWizard);
+      }
+
+      if (sequential == null || sequential.equals("")) {
+         sequential = "false";
+      }
+      if (sequential != null) {
+         model.put("sequential", sequential);
+         if (Boolean.parseBoolean(isWizard) && !Boolean.parseBoolean(sequential)) {
+            viewAppend = "Hier";
+         }
+      }
+      
       if (cancel != null) {
          viewName = "done";
       }
       else if (next != null && setSingle) {
-         viewName = "done";
+         viewName = "done" + viewAppend;
          setPageStatus(page, newStatus);
       }
       else if (next != null && setAll) {
          //Set allCells = cell.getScaffoldingCell().getCells();
          List allPages = getMatrixManager().getPagesByPageDef(page.getPageDefinition().getId());
          //cell.getWizardPage().getPageDefinition().get
-         viewName = "done";
+         viewName = "done" + viewAppend;
          for (Iterator iter = allPages.iterator(); iter.hasNext();) {
             WizardPage iterPage = (WizardPage) iter.next();
             setPageStatus(iterPage, newStatus);
