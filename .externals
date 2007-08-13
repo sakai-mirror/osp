@@ -9,7 +9,7 @@ calendar		https://source.sakaiproject.org/svn/calendar/trunk
 chat			https://source.sakaiproject.org/svn/chat/trunk
 citations               https://source.sakaiproject.org/svn/citations/trunk
 cluster			https://source.sakaiproject.org/svn/cluster/trunk
-component		https://source.sakaiproject.org/svn/component/trunk
+component		https://source.sakaiproject.org/svn/component/branches/SAK-10151	
 content			https://source.sakaiproject.org/svn/content/trunk
 content-review          https://source.sakaiproject.org/svn/content-review/trunk
 courier			https://source.sakaiproject.org/svn/courier/trunk
@@ -50,8 +50,8 @@ sam			https://source.sakaiproject.org/svn/sam/trunk
 samples			https://source.sakaiproject.org/svn/samples/trunk
 search			https://source.sakaiproject.org/svn/search/trunk
 sections		https://source.sakaiproject.org/svn/sections/trunk
-site			https://source.sakaiproject.org/svn/site/trunk
-site-manage		https://source.sakaiproject.org/svn/site-manage/trunk
+site			https://source.sakaiproject.org/svn/site/branches/SAK-10151
+site-manage		https://source.sakaiproject.org/svn/site-manage/branches/SAK-10151	
 syllabus		https://source.sakaiproject.org/svn/syllabus/trunk
 test-harness		https://source.sakaiproject.org/svn/test-harness/trunk
 textarea		https://source.sakaiproject.org/svn/textarea/trunk
