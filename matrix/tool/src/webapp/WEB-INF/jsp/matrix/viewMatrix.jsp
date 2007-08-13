@@ -41,26 +41,47 @@ function hrefViewCell(pageId) {
    </c:if>
 
     <c:if test="${(not empty matrixContents.scaffolding)}">
-        <c:if test="${(matrixCan.evaluate || matrixCan.review) && not empty members}">
-            <form method="GET" action="<osp:url value="viewMatrix.osp"/>">
-                <osp:form/>
-                <div class="act">
-                   <select name="view_user">
-                      <c:forEach var="user" items="${members}">
-                          <option value="<c:out value="${user.id}"/>" <c:if test="${matrixOwner.id.value == user.id}"> selected </c:if>>
-                              <c:out value="${user.sortName}"/>
-                          </option>
-                      </c:forEach>
-                    </select>
-                    <input type="hidden" name="scaffolding_id" value="<c:out value="${matrixContents.scaffolding.id.value}" />" />
-                    <INPUT type="submit" value="<fmt:message key="button_go"/>"/>
-                </div>
-            </form>
-            <c:set var="readOnly_label"><fmt:message key="matrix_readOnly"/></c:set> 
-	        <fmt:message key="matrix_viewing">
-	          <fmt:param><c:if test="${readOnlyMatrix}"><strong><c:out value="${readOnly_label}"/></strong></c:if></fmt:param>
-              <fmt:param><c:out value="${matrixOwner.displayName}" /></fmt:param>
-	        </fmt:message>
+        <c:if test="${(matrixCan.evaluate || matrixCan.review)}">
+        	<c:choose>
+        		<c:when test="${hasGroups && empty userGroups}">
+	        		<p class="instruction"><fmt:message key="matrix_groups_unavailable"></fmt:message></p>
+        		</c:when>
+        		<c:otherwise>
+		            <form method="GET" action="<osp:url value="viewMatrix.osp"/>">
+		                <osp:form/>
+		                <div class="act">
+		                	<c:if test="${not empty userGroups && userGroupsCount > 1}">
+			                	<select name="group_filter">
+			                		<option value="" <c:if test="${empty filteredGroup}">selected="selected"</c:if>>
+			                			<fmt:message key="matrix_groups_showall"></fmt:message>
+			                		</option>
+			                		<c:forEach var="group" items="${userGroups}">
+			                			<option value="<c:out value="${group.id}"/>" <c:if test="${filteredGroup == group.id}">selected="selected"</c:if>>
+			                				<c:out value="${group.title}"></c:out>
+			                			</option>
+			                		</c:forEach>
+			                	</select>
+			                	<input type="submit" name="filter" value="<fmt:message key="button_filter"></fmt:message>"/>
+			                	&nbsp;
+		                	</c:if>
+		                   <select name="view_user">
+		                      <c:forEach var="user" items="${members}">
+		                          <option value="<c:out value="${user.id}"/>" <c:if test="${matrixOwner.id.value == user.id}"> selected="selected" </c:if>>
+		                              <c:out value="${user.sortName}"/>
+		                          </option>
+		                      </c:forEach>
+		                    </select>
+		                    <input type="hidden" name="scaffolding_id" value="<c:out value="${matrixContents.scaffolding.id.value}" />" />
+		                    <input type="submit" value="<fmt:message key="button_go"/>"/>
+		                </div>
+		            </form>
+		            <c:set var="readOnly_label"><fmt:message key="matrix_readOnly"/></c:set> 
+			        <fmt:message key="matrix_viewing">
+			          <fmt:param><c:if test="${readOnlyMatrix}"><strong><c:out value="${readOnly_label}"/></strong></c:if></fmt:param>
+		              <fmt:param><c:out value="${matrixOwner.displayName}" /></fmt:param>
+			        </fmt:message>
+	        	</c:otherwise>
+        	</c:choose>
         </c:if>
     
     </c:if>

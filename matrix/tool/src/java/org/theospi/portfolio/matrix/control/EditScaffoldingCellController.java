@@ -34,9 +34,7 @@ import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
-import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.ResourceLoader;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -123,12 +121,12 @@ public class EditScaffoldingCellController extends
 			}
 		}
 
-		model.put("reflectionDevices", getReflectionDevices());
-		model.put("evaluationDevices", getEvaluationDevices());
-		model.put("reviewDevices", getReviewDevices());
-		model.put("additionalFormDevices", getAdditionalFormDevices());
+		model.put("reflectionDevices", getReflectionDevices(def.getSiteId()));
+		model.put("evaluationDevices", getEvaluationDevices(def.getSiteId()));
+		model.put("reviewDevices", getReviewDevices(def.getSiteId()));
+		model.put("additionalFormDevices", getAdditionalFormDevices(def.getSiteId()));
 		model.put("selectedAdditionalFormDevices",
-				getSelectedAdditionalFormDevices(sCell));
+				getSelectedAdditionalFormDevices(sCell,def.getSiteId()));
 		model.put("evaluators", getEvaluators(sCell.getWizardPageDefinition()));
 		model.put("pageTitleKey", "title_editCell");
 		model.put("pageInstructionsKey", "instructions_cellSettings");
@@ -387,8 +385,7 @@ public class EditScaffoldingCellController extends
 					|| forwardView.equals("createGuidance"))
 				session.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, bTrue);
 
-			Placement placement = ToolManager.getCurrentPlacement();
-			String currentSite = placement.getContext();
+			String currentSite = scaffoldingCell.getWizardPageDefinition().getSiteId();
 			session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
 					"true");
 			model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
@@ -474,46 +471,13 @@ public class EditScaffoldingCellController extends
 	protected void setAudienceSelectionVariables(Map session,
 			WizardPageDefinition wpd) {
 		session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION,
-				MatrixFunctionConstants.EVALUATE_MATRIX);
+						AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX);
 
 		String id = wpd.getId() != null ? wpd.getId().getValue() : wpd
 				.getNewId().getValue();
 
 		session.put(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
-		session.put(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS, myResources
-				.getString("eval_audience_instructions"));
-		session.put(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE, myResources
-				.getString("eval_audience_global_title"));
-		session.put(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE,
-				myResources.getString("eval_audience_individual_title"));
-		session.put(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE, myResources
-				.getString("eval_audience_group_title"));
-		session.put(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, "false");
-		session.put(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, null);
-		session.put(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE,
-				myResources.getString("eval_audience_selected_title"));
-		session.put(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS,
-				myResources.getString("eval_audience_filter_instructions"));
-		session.put(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, null);
-		session.put(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "true");
-		session.put(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL,
-				myResources.getString("eval_audience_browse_individual"));
-	}
-
-	protected void clearAudienceSelectionVariables(Map session) {
-		session.remove(AudienceSelectionHelper.AUDIENCE_FUNCTION);
-		session.remove(AudienceSelectionHelper.AUDIENCE_QUALIFIER);
-		session.remove(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS);
-		session.remove(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE);
-		session.remove(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE);
-		session.remove(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE);
-		session.remove(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG);
-		session.remove(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE);
-		session.remove(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE);
-		session.remove(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS);
-		session.remove(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL);
-		session.remove(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED);
-		session.remove(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL);
+		session.put(AudienceSelectionHelper.AUDIENCE_SITE, wpd.getSiteId());
 	}
 
 	protected Collection getAvailableForms(String siteId, String type) {
@@ -521,9 +485,7 @@ public class EditScaffoldingCellController extends
 				getIdManager().getId(siteId), true);
 	}
 
-	protected Collection getFormsForSelect(String type) {
-		Placement placement = ToolManager.getCurrentPlacement();
-		String currentSiteId = placement.getContext();
+	protected Collection getFormsForSelect(String type, String currentSiteId) {
 		Collection commentForms = getAvailableForms(currentSiteId, type);
 
 		List retForms = new ArrayList();
@@ -539,9 +501,7 @@ public class EditScaffoldingCellController extends
 		return retForms;
 	}
 
-	protected Collection getWizardsForSelect(String type) {
-		Placement placement = ToolManager.getCurrentPlacement();
-		String currentSiteId = placement.getContext();
+	protected Collection getWizardsForSelect(String type, String currentSiteId) {
 		List wizards = getWizardManager().listWizardsByType(
 				getSessionManager().getCurrentSessionUserId(), currentSiteId,
 				type);
@@ -557,35 +517,35 @@ public class EditScaffoldingCellController extends
 		return retWizards;
 	}
 
-	protected Collection getReviewDevices() {
-		Collection all = getFormsForSelect(WizardFunctionConstants.COMMENT_TYPE);
-		all.addAll(getWizardsForSelect(WizardFunctionConstants.COMMENT_TYPE));
+	protected Collection getReviewDevices(String siteId) {
+		Collection all = getFormsForSelect(WizardFunctionConstants.COMMENT_TYPE, siteId);
+		all.addAll(getWizardsForSelect(WizardFunctionConstants.COMMENT_TYPE, siteId));
 		return all;
 	}
 
-	protected Collection getReflectionDevices() {
-		Collection all = getFormsForSelect(WizardFunctionConstants.REFLECTION_TYPE);
+	protected Collection getReflectionDevices(String siteId) {
+		Collection all = getFormsForSelect(WizardFunctionConstants.REFLECTION_TYPE, siteId);
 		all
-				.addAll(getWizardsForSelect(WizardFunctionConstants.REFLECTION_TYPE));
+				.addAll(getWizardsForSelect(WizardFunctionConstants.REFLECTION_TYPE, siteId));
 		return all;
 	}
 
-	protected Collection getEvaluationDevices() {
-		Collection all = getFormsForSelect(WizardFunctionConstants.EVALUATION_TYPE);
+	protected Collection getEvaluationDevices(String siteId) {
+		Collection all = getFormsForSelect(WizardFunctionConstants.EVALUATION_TYPE, siteId);
 		all
-				.addAll(getWizardsForSelect(WizardFunctionConstants.EVALUATION_TYPE));
+				.addAll(getWizardsForSelect(WizardFunctionConstants.EVALUATION_TYPE, siteId));
 		return all;
 	}
 
-	protected Collection getAdditionalFormDevices() {
+	protected Collection getAdditionalFormDevices( String siteId ) {
 		// Return all forms
-		return getFormsForSelect(null);
+		return getFormsForSelect(null, siteId);
 	}
 
-	protected Collection getSelectedAdditionalFormDevices(ScaffoldingCell sCell) {
+	protected Collection getSelectedAdditionalFormDevices(ScaffoldingCell sCell, String siteId) {
 		// cwm need to preserve the ordering
 		Collection returnCol = new ArrayList();
-		Collection col = getAdditionalFormDevices();
+		Collection col = getAdditionalFormDevices(siteId);
 		for (Iterator iter = col.iterator(); iter.hasNext();) {
 			CommonFormBean bean = (CommonFormBean) iter.next();
 			if (sCell.getAdditionalForms().contains(bean.getId()))

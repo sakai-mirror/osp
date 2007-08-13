@@ -2350,24 +2350,54 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return false;
    }
 
+   public List getStyles(Id objectId) {
+      CompletedWizard wizard = getCompletedWizardByPage(objectId);
+
+      if (wizard != null) {
+         List styles = new ArrayList();
+         if (wizard.getWizard().getStyle() != null) {
+            styles.add(wizard.getWizard().getStyle());
+         }
+
+         WizardPage wp = getMatrixManager().getWizardPage(objectId);
+         if (wp.getPageDefinition().getStyle() != null) {
+            styles.add(wp.getPageDefinition().getStyle());
+         }
+         return styles;
+      }
+
+      wizard = getCompletedWizard(objectId);
+
+      if (wizard != null) {
+         List styles = new ArrayList();
+         if (wizard.getWizard().getStyle() != null) {
+            styles.add(wizard.getWizard().getStyle());
+         }
+
+         return styles;
+      }
+
+      return null;
+   }
+
    public void importResources(String fromContext, String toContext, List resourceIds) {
       try {
          List wizards = this.findPublishedWizards(fromContext);
          if (wizards == null) {
             return;
          }
-         
+
          for (Iterator iter = wizards.iterator(); iter.hasNext();) {
             Wizard wizard = (Wizard)iter.next();
             Id id = wizard.getId();
-   
+
             getHibernateTemplate().evict(wizard);
-   
+
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             //TODO think it's okay to not check permissions here?
             packageWizardForExport(id.getValue(), bos, WIZARD_NO_CHECK);
             ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-            
+
             importWizard(getIdManager().getId(toContext), bis);
             bos.close();
             bis.close();
@@ -2380,7 +2410,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          logger.error("", e);
          throw new OspException(e);
       }
-   
+
    }
 
    public String getImportFolderName() {

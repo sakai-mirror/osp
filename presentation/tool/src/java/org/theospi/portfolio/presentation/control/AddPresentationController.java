@@ -762,31 +762,14 @@ public class AddPresentationController extends AbstractWizardFormController {
       String url =  baseUrl + "/osp-presentation-tool/viewPresentation.osp?id=" + pres.getId().getValue();
       url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
 
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, "osp.presentation.view");
+      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION, 
+                           AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO );
 
       String id = pres.getId()!=null ? pres.getId().getValue() : pres.getNewId().getValue();
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PORTFOLIO_WIZARD, "true");
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE,
-            pres.isNewObject()? myResources.getString("title_addPortfolio") : myResources.getString("title_editPresentation1"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS,
-            myResources.getString("instructions_addViewersToPresentation"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE,
-            myResources.getString("instructions_publishToGroup"));
-
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE,
-            myResources.getString("instructions_publishToIndividual"));
-
+		session.setAttribute(AudienceSelectionHelper.AUDIENCE_SITE, pres.getSiteId());
+      
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, pres.getIsPublic() ? "true" : "false");
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE, myResources.getString("instructions_publishToInternet"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE,
-            myResources.getString("instructions_selectedAudience"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS,
-            myResources.getString("instructions_selectFilterUserList"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, "true");
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "false");
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_INSTRUCTIONS,
-              myResources.getString("publish_message"));
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_URL,  url);
 
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_CANCEL_TARGET, PARAM_CANCEL);
@@ -794,8 +777,6 @@ public class AddPresentationController extends AbstractWizardFormController {
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_SAVE_TARGET, PARAM_FINISH);
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_BACK_TARGET, PARAM_TARGET +
               (pres.getPresentationType().equals(Presentation.FREEFORM_TYPE)?2:3));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL,
-            myResources.getString("audience_browse_individual"));
    }
 
 

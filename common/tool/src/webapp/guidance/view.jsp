@@ -17,9 +17,12 @@
    <sakai:messages />
 
 <h:form>
+	<f:subview id="instructionSV" rendered="#{(guidance.current.instruction.base.text != '' && guidance.current.instruction.base.text != null) || not empty guidance.current.instruction.attachments}">
 	<h4>
     	<h:outputText value="#{common_msgs.instruction_title}" />
 	</h4>
+	
+	
 	<div class="textPanel">
 		<h:outputText value="#{guidance.current.instruction.base.text}" escape="false" />
 	</div>	
@@ -33,11 +36,15 @@
 		  </h:outputLink>
 	   </h:column>
 	</sakai:flat_list>
+	</f:subview>
 
+
+	<f:subview id="exampleSV" rendered="#{(guidance.current.example.base.text != '' && guidance.current.example != null) || not empty guidance.current.example.attachments}">
 	<h4>
 		<%--TODO need a rendered attribute below checking for example content --%>
 		<h:outputText value="#{common_msgs.example_title}" />
 	</h4>
+	
 	<div class="textPanel">	
 		<h:outputText value="#{guidance.current.example.base.text}" escape="false" />
 		<sakai:flat_list value="#{guidance.current.example.attachments}" var="material"  summary="">
@@ -50,11 +57,17 @@
 			  </h:outputLink>
 		   </h:column>
 		</sakai:flat_list>
-		</div>		
+		</div>	
+	</f:subview>
+	
+	
+	<f:subview id="rationaleSV" rendered="#{(guidance.current.rationale.base.text != '' && guidance.current.rationale != null) || not empty guidance.current.rationale.attachments}">
 	<h4>
 	<%--TODO need a rendered attribute below checking for rationale content --%>
 		<h:outputText value="#{common_msgs.rationale_title}" />
 	</h4>
+	
+	
 	<div class="textPanel">	
 		<h:outputText value="#{guidance.current.rationale.base.text}" escape="false" />
 	</div>	
@@ -68,6 +81,7 @@
 		  </h:outputLink>
 	   </h:column>
 	</sakai:flat_list>
+	</f:subview>
 
 	<div class="act">
 		<h:commandButton id="cancel" value="#{common_msgs.back_guidance}" action="#{guidance.processActionCancel}" accesskey="x" styleClass="active"/>

@@ -9,12 +9,9 @@
 <link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" src="/osp-jsf-resource/xheader/xheader.js"></script>
 
-<c:if test="${not empty defaultStyleUrl}" >
-   <link href="<c:out value="${defaultStyleUrl}"/>" type="text/css" rel="stylesheet" media="all" />
-</c:if>
-<c:if test="${not empty styleUrl}" >
-   <link href="<c:out value="${styleUrl}"/>" type="text/css" rel="stylesheet" media="all" />
-</c:if>
+<c:forEach var="style" items="${styles}">
+   <link href="<c:out value='${style}'/>" type="text/css" rel="stylesheet" media="all" />
+</c:forEach>
 <form name="form" method="POST"
 	<c:if test="${sequential == 'true'}">
       action="<osp:url value="sequentialWizardPage.osp"/>"
@@ -89,7 +86,7 @@
 		</c:if>
 
 	</c:if>
-
+    
 	<osp-h:glossary link="true" hover="true">
 		<h3>
 			<c:if test="${isWizard == 'true' and sequential != 'true'}">
@@ -133,10 +130,10 @@
       <c:set value="0" var="guidanceItemCount" />
       		<!-- ** instruction ** -->
       <c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}">
-         <c:if test="${guidanceItem.activeContent}">
+         <c:if test="${guidanceItem.activeContent && guidanceItem.type != 'instruction'}">
 			 <c:set value="${guidanceItemCount+1}" var="guidanceItemCount" />
          </c:if>
-         <c:if test="${guidanceItem.type == 'instruction'}">
+         <c:if test="${guidanceItem.type == 'instruction' && (guidanceItem.text != '' || not empty guidanceItem.attachments)}">
 			 <h4>
 				<osp:message key="instructions"/>
 			 </h4>
@@ -158,7 +155,7 @@
        </c:if>
       </c:forEach>
       
-      <c:if test="${guidanceItemCount > 1}" >
+      <c:if test="${guidanceItemCount > 0}" >
 			<h4><a href="<osp:url value="osp.guidance.helper/view">
 			 <osp:param name="session.page_id" value="${cell.wizardPage.id}"/>
 			 <osp:param name="${CURRENT_GUIDANCE_ID_KEY}" value="${cell.scaffoldingCell.guidance.id}"/>
@@ -274,8 +271,7 @@
                <td>
                   <fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="${date_format}" />
                </td>
-            </tr>
-            </c:if>
+            </tr>   
 <!-- ************* Item-specific Review (Feedback) Area Start ************* -->
       <c:forEach var="object" items="${reviews}" varStatus="loopStatus">
 	  <c:if test="${object.itemId == node.id}">
@@ -300,10 +296,10 @@
 			</tr>
 		</c:if>	
       </c:forEach>
-
+	</c:if>
 <!-- ************* Item-specific Review (Feedback) Area End ************* -->
 			</c:forEach>
-	      
+	  
 	   </c:forEach>
 	   <!-- ***** show the attached resources ***** -->
          <c:forEach var="node" items="${cellBean.nodes}">
@@ -473,7 +469,7 @@
 	<%-- TODO omit the following block if the items inside it are not rendered --%>
     	<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
 		    <p class="act">
-    		<c:if test="${canReflect == 'true'}">
+    		<c:if test="${canReflect == 'true' && cell.scaffoldingCell.evaluationDevice != null}">
     			<input type="submit" name="submit" value="<osp:message key='submit_for_evaluation'/>"
                <c:if test="${sequential == 'true' && currentStep < (totalSteps)}">
                   onclick="document.form._next=true"
@@ -488,7 +484,7 @@
                 </c:if>
              </c:if>
           </c:if>
-    		<c:if test="${canReflect == 'true' && currentStep == (totalSteps) && sequential == 'true'}">
+    		<c:if test="${canReflect == 'true' && currentStep == (totalSteps) && sequential == 'true' && evaluationItem != ''}">
     			<input type="submit" name="submitWizard" value="<osp:message key="submit_wizard_for_evaluation"/>"/>
     		</c:if>
 			</p>
@@ -565,7 +561,7 @@
 	
 <!-- ************* General Review (Feedback) Area End ************* -->
 <!-- ************* Evaluation Area Start ************* -->
-   <c:if test="${(((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING') || not empty evaluations}">
+   <c:if test="${(((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.scaffoldingCell.evaluationDevice != null) || not empty evaluations}">
       <table class="listHier lines nolines bordered-l" cellpadding="0" cellspacing="0" border="0"   summary="">
 		<tr>
 			<th><osp:message key="evals_section_header"/></th>

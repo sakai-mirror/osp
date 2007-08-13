@@ -46,4 +46,5 @@ public interface WizardPageHelper {
 
    public final static String IS_LAST_STEP = "org.theospi.portfolio.matrix.WizardPageHelper.isLast";
 
+   public final static String EVALUATION_ITEM = "org.theospi.portfolio.matrix.WizardPageHelper.evaluationItem";
 }

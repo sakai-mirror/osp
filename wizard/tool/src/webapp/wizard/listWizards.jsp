@@ -65,12 +65,12 @@
             </h:commandLink>
          </f:subview>
 	     <sakai:separatedList id="wizActionList" separator=" | " styleClass="itemAction">
-	           <f:subview id="previewLink" rendered="#{wizardItem.canPublish && wizardItem.base.hasPages && !wizardItem.base.preview && !wizardItem.base.published}">
+	           <f:subview id="previewLink" rendered="#{wizardItem.canPublish && wizardItem.totalPages > 0 && !wizardItem.base.preview && !wizardItem.base.published}">
 	                 <h:commandLink action="#{wizardItem.processActionPreview}">
 	                 <h:outputText value="#{msgs.preview}" />
 	              </h:commandLink>
 	           </f:subview>
-	           <f:subview id="publishLink" rendered="#{wizardItem.canPublish && wizardItem.base.hasPages && wizardItem.base.preview}">
+	           <f:subview id="publishLink" rendered="#{wizardItem.canPublish && wizardItem.totalPages > 0 && wizardItem.base.preview}">
 	                 <h:commandLink action="#{wizardItem.processActionPublish}">
 	                 <h:outputText value="#{msgs.publish}" />
 	              </h:commandLink>

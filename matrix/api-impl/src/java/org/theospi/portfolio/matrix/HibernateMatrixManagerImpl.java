@@ -170,6 +170,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     */
    public List findAvailableScaffolding(List sites, Agent user) {
       
+      if ( sites == null || sites.size() == 0 )
+         return new ArrayList();
+      
       String[] paramNames = new String[] {"siteIds", "owner", "true"};
       Object[] params = new Object[]{sites, user, new Boolean(true)};
       return getHibernateTemplate().findByNamedParam("from Scaffolding s where s.worksiteId in ( :siteIds ) and ( s.owner = :owner or s.published=:true or s.preview=:true)",
@@ -1918,6 +1921,38 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          return true;
       
       return false;
+   }
+
+   public List getStyles(Id objectId) {
+      WizardPage wp = getWizardPage(objectId);
+
+      if (wp != null) {
+         ScaffoldingCell sCell = getScaffoldingCellByWizardPageDef(
+                     wp.getPageDefinition().getId());
+
+         if (sCell != null) {
+            List styles = new ArrayList();
+            if (sCell.getScaffolding().getStyle() != null) {
+               styles.add(sCell.getScaffolding().getStyle());
+            }
+            if (wp.getPageDefinition().getStyle() != null) {
+               styles.add(wp.getPageDefinition().getStyle());
+            }
+            return styles;
+         }
+      }
+
+      Matrix matrix = (Matrix) getHibernateTemplate().get(Matrix.class, objectId);
+
+      if (matrix != null) {
+         List styles = new ArrayList();
+         if (matrix.getScaffolding().getStyle() != null) {
+            styles.add(matrix.getScaffolding().getStyle());
+         }
+         return styles;
+      }
+
+      return null;
    }
 
    /* (non-Javadoc)

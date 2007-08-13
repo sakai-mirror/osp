@@ -27,8 +27,21 @@ import org.sakaiproject.entity.api.EntityPermissionException;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.ReferenceParser;
+import org.sakaiproject.metaobj.shared.FormHelper;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
+import org.theospi.portfolio.style.mgt.StyleManager;
+import org.theospi.portfolio.style.model.Style;
+import org.theospi.portfolio.shared.model.Node;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Collection;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,11 +54,40 @@ public class MatrixHttpAccess extends OspHttpAccessBase {
 
    private IdManager idManager;
    private MatrixManager matrixManager;
+   private StyleManager styleManager;
 
    protected void checkSource(Reference ref, ReferenceParser parser)
          throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
 
       getMatrixManager().checkPageAccess(parser.getId());
+   }
+
+   public void handleAccess(HttpServletRequest req, HttpServletResponse res, Reference ref, Collection copyrightAcceptedRefs) throws EntityPermissionException, EntityNotDefinedException, EntityAccessOverloadException, EntityCopyrightException {
+      ToolSession toolSession = SessionManager.getCurrentToolSession();
+
+      if (toolSession == null) {
+         toolSession = SessionManager.getCurrentSession().getToolSession(req.getSession(true).hashCode() + "");
+         SessionManager.setCurrentToolSession(toolSession);
+      }
+
+      toolSession.setAttribute(FormHelper.FORM_STYLES,
+         createStylesList(getStyleManager().getStyles(getIdManager().getId(createParser(ref).getId()))));
+
+      super.handleAccess(req, res, ref, copyrightAcceptedRefs);
+   }
+
+   protected String getStyleUrl(Style style) {
+      Node styleNode = getMatrixManager().getNode(style.getStyleFile());
+      return styleNode.getExternalUri();
+   }
+
+   protected List createStylesList(List styles) {
+      List returned = new ArrayList(styles.size());
+      for (Iterator<Style> i=styles.iterator();i.hasNext();) {
+         returned.add(getStyleUrl(i.next()));
+      }
+
+      return returned;
    }
 
    public IdManager getIdManager() {
@@ -62,6 +104,14 @@ public class MatrixHttpAccess extends OspHttpAccessBase {
 
    public void setMatrixManager(MatrixManager matrixManager) {
       this.matrixManager = matrixManager;
+   }
+
+   public StyleManager getStyleManager() {
+      return styleManager;
+   }
+
+   public void setStyleManager(StyleManager styleManager) {
+      this.styleManager = styleManager;
    }
 
 }

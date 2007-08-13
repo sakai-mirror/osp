@@ -211,6 +211,9 @@
       <property name="matrixManager">
          <ref bean="matrixManager"/>
       </property>
+      <property name="styleManager">
+         <ref bean="org.theospi.portfolio.style.mgt.StyleManager"/>
+      </property>
       <property name="authzManager"><ref bean="authzManager"/></property>
    </bean>
 

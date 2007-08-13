@@ -49,8 +49,7 @@ public class EvaluationContentWrapperForMatrixCell extends EvaluationContentWrap
       setSubmittedDate(submittedDate);
       setSiteTitle(super.fetchSiteName(siteId));
       
-      
-      if (owner != null) {
+      if (owner != null && owner.getId() != null) {
          setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
          params.add(new ParamBean("view_user", owner.getId().getValue()));
          setUrl("openEvaluationCellRedirect");

@@ -61,6 +61,7 @@ import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.CommonFormBean;
 import org.theospi.portfolio.style.model.Style;
+import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 
@@ -90,7 +91,9 @@ public class CellController implements FormController, LoadObjectController {
 
 	private List<String> ratingProviderIds;
 
-	public static final String WHICH_HELPER_KEY = "filepicker.helper.key";
+   private StyleManager styleManager;
+
+   public static final String WHICH_HELPER_KEY = "filepicker.helper.key";
 
 	public static final String KEEP_HELPER_LIST = "filepicker.helper.keeplist";
 
@@ -162,23 +165,10 @@ public class CellController implements FormController, LoadObjectController {
 		model.put("objectTitle", objectMetadata[METADATA_TITLE_INDEX]);
 		model.put("objectDesc", objectMetadata[METADATA_DESC_INDEX]);
 
-		Style style = cell.getCell().getWizardPage().getPageDefinition()
-				.getStyle();
+      model.put("styles",
+         createStylesList(getStyleManager().getStyles(getIdManager().getId(pageId))));
 
-		if (style != null) {
-			Id fileId = style.getStyleFile();
-			Node node = getMatrixManager().getNode(fileId);
-			model.put("styleUrl", node.getExternalUri());
-		}
-
-		Style defaultStyle = getDefaultStyle(getIdManager().getId(pageId));
-		if (defaultStyle != null) {
-			Id fileId = defaultStyle.getStyleFile();
-			Node node = getMatrixManager().getNode(fileId);
-			model.put("defaultStyleUrl", node.getExternalUri());
-		}
-
-		if (taggingManager.isTaggable()) {
+      if (taggingManager.isTaggable()) {
 			TaggableItem item = wizardActivityProducer.getItem(cell.getCell()
 					.getWizardPage());
 			model.put("taggable", "true");
@@ -198,34 +188,25 @@ public class CellController implements FormController, LoadObjectController {
 		return model;
 	}
 
-	/**
-	 * 
-	 * @param pageId
-	 *            Id representation of the wizard page id
-	 * @return The Style object used on the wizard page with the passed id.
-	 */
-	protected Style getDefaultStyle(Id pageId) {
-		// Get the scaffolding default style
-		WizardPage wp = getMatrixManager().getWizardPage(pageId);
-		ScaffoldingCell sCell = getMatrixManager()
-				.getScaffoldingCellByWizardPageDef(
-						wp.getPageDefinition().getId());
-		return sCell.getScaffolding().getStyle();
-	}
-
 	protected String getEntityProducer() {
 		return MatrixContentEntityProducer.MATRIX_PRODUCER;
 	}
 
 	protected Boolean isReadOnly(Agent owner, Id id) {
-		if ((owner != null && owner.equals(getAuthManager().getAgent()))
-				&& (id == null || getAuthzManager().isAuthorized(
-						MatrixFunctionConstants.USE_SCAFFOLDING, id)))
-			return new Boolean(false);
+      if ((owner != null && owner.equals(getAuthManager().getAgent()))
+         && (id == null || getAuthzManager().isAuthorized(
+         MatrixFunctionConstants.USE_SCAFFOLDING, id))) {
+         return new Boolean(false);
+      }
 		return new Boolean(true);
 	}
 
-	/**
+   protected String getStyleUrl(Style style) {
+      Node styleNode = getMatrixManager().getNode(style.getStyleFile());
+      return styleNode.getExternalUri();
+   }
+
+   /**
 	 * 
 	 * @param pageId
 	 *            String representation of the wizard page id
@@ -277,9 +258,10 @@ public class CellController implements FormController, LoadObjectController {
 					.getWizardPage()));
 			cellBean.setNodes(nodeList);
 
-			if (request.get("view_user") != null)
-				session.put("view_user", cell.getWizardPage().getOwner()
-						.getId().getValue());
+         if (request.get("view_user") != null) {
+            session.put("view_user", cell.getWizardPage().getOwner()
+               .getId().getValue());
+         }
 		} catch (Exception e) {
 			logger.error("Error with cell: " + strId + " " + e.toString());
 			// tbd how to report error back to user?
@@ -293,14 +275,24 @@ public class CellController implements FormController, LoadObjectController {
 		String result = "";
 		if (strArray != null) {
 			for (int i = 0; i < strArray.length; i++) {
-				if (i == 0)
-					result = strArray[i];
-				else
-					result = result.concat(",").concat(strArray[i]);
+            if (i == 0) {
+               result = strArray[i];
+            } else {
+               result = result.concat(",").concat(strArray[i]);
+            }
 			}
 		}
 		return result;
 	}
+
+   protected List createStylesList(List styles) {
+      List returned = new ArrayList(styles.size());
+      for (Iterator<Style> i=styles.iterator();i.hasNext();) {
+         returned.add(getStyleUrl(i.next()));
+      }
+
+      return returned;
+   }
 
 	public ModelAndView handleRequest(Object requestModel, Map request,
 			Map session, Map application, Errors errors) {
@@ -308,8 +300,9 @@ public class CellController implements FormController, LoadObjectController {
 		Cell cell = cellBean.getCell();
 
 		// Check for cell being deleted while user was attempting to view
-		if (cell == null)
-			return new ModelAndView("matrixError");
+      if (cell == null) {
+         return new ModelAndView("matrixError");
+      }
 
 		// String action = (String)request.get("action");
 		String submit = (String) request.get("submit");
@@ -341,14 +334,16 @@ public class CellController implements FormController, LoadObjectController {
 				session.remove(PROVIDERS_PARAM);
 			}
 
-			if (cell.getMatrix() != null)
-				scaffId = cell.getMatrix().getScaffolding().getId().getValue();
+         if (cell.getMatrix() != null) {
+            scaffId = cell.getMatrix().getScaffolding().getId().getValue();
+         }
 
 			if (session.get("is_eval_page_id") != null) {
 				String eval_page_id = (String) session.get("is_eval_page_id");
 				String pageId = cell.getWizardPage().getId().getValue();
-				if (eval_page_id.equals(pageId))
-					return new ModelAndView("cancelEvaluation");
+            if (eval_page_id.equals(pageId)) {
+               return new ModelAndView("cancelEvaluation");
+            }
 			}
 
 			return new ModelAndView("cancel", "scaffolding_id", scaffId);
@@ -602,4 +597,12 @@ public class CellController implements FormController, LoadObjectController {
 	public void setSessionManager(SessionManager sessionManager) {
 		this.sessionManager = sessionManager;
 	}
+
+   public StyleManager getStyleManager() {
+      return styleManager;
+   }
+
+   public void setStyleManager(StyleManager styleManager) {
+      this.styleManager = styleManager;
+   }
 }

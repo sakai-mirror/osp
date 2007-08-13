@@ -3,7 +3,7 @@
 * $Id:WizardCategory.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
+* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
 *
 * Licensed under the Educational Community License, Version 1.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ package org.theospi.portfolio.wizard.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
@@ -168,21 +167,6 @@ public class WizardCategory extends IdentifiableObject {
 
    public void setSequence(int sequence) {
       this.sequence = sequence;
-   }
-   
-   public boolean getHasPages()
-   {
-      if(childPages != null)
-         if(childPages.size() > 0)
-            return true;
-      if(childCategories != null) {
-         for(Iterator i = childCategories.iterator(); i.hasNext();) {
-            WizardCategory c = (WizardCategory)i.next();
-            if(c.getHasPages())
-               return true;
-         }
-      }
-      return false;
    }
 
 }

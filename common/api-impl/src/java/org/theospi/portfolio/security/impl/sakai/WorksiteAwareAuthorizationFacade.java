@@ -175,6 +175,9 @@ public class WorksiteAwareAuthorizationFacade extends SimpleAuthorizationFacade 
             Site site = (Site)it.next();
             agentRoles.addAll(agent.getWorksiteRoles( site.getId() ));
          }
+         
+         // finally, add user agent for user-based aurhorizations
+         agentRoles.add(agent);
       }
 
       // Otherwise just get roles from current worksite

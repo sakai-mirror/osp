@@ -63,4 +63,6 @@ public interface StyleManager {
    public Collection getStylesForWarehouse();
    
    public List getConsumers();
+
+   public List getStyles(Id consumerId);
 }

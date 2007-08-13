@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.impl.AgentImpl;
 import org.sakaiproject.metaobj.utils.Config;
@@ -56,7 +57,7 @@ public class AddViewerController extends AbstractPresentationController {
             }
          }
       } else {
-         viewers = getAgentManager().findByProperty("displayName", viewer.getDisplayName());
+         viewers = getAgentManager().findByProperty(AgentManager.TYPE_DISPLAY_NAME, viewer.getDisplayName());
       }
 
       if (viewers != null && viewers.size() == 1) {

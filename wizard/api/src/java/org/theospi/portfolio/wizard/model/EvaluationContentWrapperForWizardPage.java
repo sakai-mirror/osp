@@ -47,7 +47,7 @@ public class EvaluationContentWrapperForWizardPage extends
       setSubmittedDate(submittedDate);
       setSiteTitle(super.fetchSiteName(siteId));
       
-      if (owner != null) {
+      if (owner != null && owner.getId() != null) {
          setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
          if (wizardType.equals(WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL)) {
             setUrl("openEvaluationPageSeqRedirect");         

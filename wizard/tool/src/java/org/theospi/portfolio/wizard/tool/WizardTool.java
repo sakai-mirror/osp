@@ -559,7 +559,7 @@ public class WizardTool extends BuilderTool {
          CompletedWizardPage wizpage = (CompletedWizardPage)i.next();
          
          WizardPage wpage = getMatrixManager().getWizardPage(wizpage.getWizardPage().getId());
-         if(currentUser.equalsIgnoreCase(wpage.getOwner().getId().getValue())) {
+         if(wpage.getOwner().getId() != null && currentUser.equalsIgnoreCase(wpage.getOwner().getId().getValue())) {
             page = wpage;
             break;
          }
@@ -607,7 +607,10 @@ public class WizardTool extends BuilderTool {
          WizardPage page = getMatrixManager().getWizardPage(wizpage.getWizardPage().getId());
          pages.add(page);
       }
-      
+
+
+      session.setAttribute(WizardPageHelper.EVALUATION_ITEM, this.getEvaluationItem());
+
       session.setAttribute(WizardPageHelper.WIZARD_PAGE, pages);
       String redirectAddress = "osp.wizard.page.helper/wizardPage.osp";
       
@@ -728,45 +731,16 @@ public class WizardTool extends BuilderTool {
 
    public void processActionAudienceHelper() {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-      //Tool tool = ToolManager.getCurrentTool();
       ToolSession session = SessionManager.getCurrentToolSession();
 
-      //Placement placement = ToolManager.getCurrentPlacement();
-      //String currentSite = placement.getContext();
       Wizard wizard = getCurrent().getBase();
 
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION,
-            WizardFunctionConstants.EVALUATE_WIZARD);
+            AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD);
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER,
             wizard.getId().getValue());
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INSTRUCTIONS,
-            getMessageFromBundle("audience_instructions"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GLOBAL_TITLE,
-            getMessageFromBundle("audience_global_title"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_INDIVIDUAL_TITLE,
-            getMessageFromBundle("audience_individual_title"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GROUP_TITLE,
-            getMessageFromBundle("audience_group_title"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_FLAG, "false");
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_TITLE,
-            null);
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_SELECTED_TITLE,
-            getMessageFromBundle("audience_selected_title"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_FILTER_INSTRUCTIONS,
-            getMessageFromBundle("audience_filter_instructions"));
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_GUEST_EMAIL, null);
+		session.setAttribute(AudienceSelectionHelper.AUDIENCE_SITE, wizard.getSiteId());
       
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_WORKSITE_LIMITED, "true");
-      session.setAttribute(AudienceSelectionHelper.AUDIENCE_BROWSE_INDIVIDUAL,
-            getMessageFromBundle("audience_browse_individual"));
-
-      //Guidance guidance = wizard.getGuidance();
-      //if (guidance == null) {
-      //   guidance = getGuidanceManager().createNew(wizard.getName() + " Guidance", currentSite, null, "", "");
-      //}
-
-      //session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
-
       try {
          context.redirect("osp.audience.helper/tool.jsf?panel=Main");
       }
@@ -943,14 +917,16 @@ public class WizardTool extends BuilderTool {
       for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
          Authorization az = (Authorization) iter.next();
          Agent agent = az.getAgent();
-         String userId = az.getAgent().getEid().getValue();
-         if (agent.isRole()) {
-            evalList.add(MessageFormat.format(myResources.getString("decorated_role_format"), 
-                  new Object[]{agent.getDisplayName()}));
-         }
-         else {
-            evalList.add(MessageFormat.format(myResources.getString("decorated_user_format"),
-                  new Object[]{agent.getDisplayName(), userId}));
+         if (agent.getId() != null) {
+            String userId = az.getAgent().getEid().getValue();
+            if (agent.isRole()) {
+               evalList.add(MessageFormat.format(myResources.getString("decorated_role_format"), 
+                     new Object[]{agent.getDisplayName()}));
+            }
+            else {
+               evalList.add(MessageFormat.format(myResources.getString("decorated_user_format"),
+                     new Object[]{agent.getDisplayName(), userId}));
+            }
          }
       }
       

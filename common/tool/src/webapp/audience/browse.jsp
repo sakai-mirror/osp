@@ -1,5 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %>
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 <%@ taglib uri="http://www.theospi.org/jsf/osp" prefix="ospx" %>
 
@@ -12,18 +13,26 @@
 %>
 
 <f:view>
-<f:loadBundle basename="org.theospi.portfolio.common.bundle.Messages" var="msgs"/>
 
+<sakai:view_title rendered="#{not audience.portfolioAudience}" value="#{common_msgs.audience_global_title}"/>
 <sakai:view>
-   <sakai:view_title value="#{audience.globalTitle}"/>
-   <sakai:instruction_message value="#{audience.instructions}" />
+   <c:if test="${audience.wizardAudience}">
+     <sakai:instruction_message value="#{common_msgs.audience_wizard_instructions}"/>
+   </c:if>
+   <c:if test="${audience.matrixAudience}">
+     <sakai:instruction_message value="#{common_msgs.audience_matrix_instructions}"/>
+   </c:if>
+   <c:if test="${audience.portfolioAudience}">
+     <sakai:instruction_message value="#{common_msgs.audience_portfolio_instructions}"/>
+   </c:if>
+   
    <sakai:messages />
 
 <h:form>
    <ospx:splitarea direction="horizontal" width="100%">
       <ospx:splitsection size="75%" valign="top">
          <ospx:xheader>
-            <ospx:xheadertitle id="browseFilter" value="#{audience.filterTitle}  ">
+            <ospx:xheadertitle id="browseFilter" value="#{common_msgs.audience_filter_instructions}  ">
             </ospx:xheadertitle>
              <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
                 <ospx:splitarea direction="vertical" height="85%">
@@ -74,7 +83,6 @@
             </ospx:splitsection>
           </ospx:splitarea>
           <sakai:flat_list value="#{audience.browseUsers.subList}" var="member">
-
             <h:column>
                <f:facet name="header">
                   <h:outputText value="#{common_msgs.user_column_header}" />

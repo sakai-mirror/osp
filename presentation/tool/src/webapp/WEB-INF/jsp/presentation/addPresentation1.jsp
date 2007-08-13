@@ -22,12 +22,6 @@
 
 <c:set var="step" value="1" />
 
-<c:if test="${empty presentation.name}">
-<h3><fmt:message key="title_addPresentation1"/></h3>
-</c:if>
-<c:if test="${not empty presentation.name}">
-<h3><fmt:message key="title_editPresentation1"/></h3>
-</c:if>
  <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc"%>
 
  <div class="instruction">
