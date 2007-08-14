@@ -32,6 +32,7 @@ import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.entity.api.EntityManager;
@@ -255,6 +256,7 @@ public class CellFormPickerController extends CellController implements FormCont
          StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager().loadHome(formTypeId);
          ResourceBundle myResources =
             ResourceBundle.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
+         List contentResourceList = null;
          try {
             String folderBase = getUserCollection().getId();
 
@@ -269,6 +271,8 @@ public class CellFormPickerController extends CellController implements FormCont
             folderPath = createFolder(folderPath, objectId, objectTitle, objectDesc);
             folderPath = createFolder(folderPath, formTypeId, bean.getDescription(), null);
 
+            contentResourceList = this.getContentHosting().getAllResources(folderPath);
+            
             session.put(FormHelper.PARENT_ID_TAG, folderPath);
          } catch (TypeException e) {
             throw new RuntimeException("Failed to redirect to helper", e);
@@ -279,7 +283,7 @@ public class CellFormPickerController extends CellController implements FormCont
          }
 
          //CWM OSP-UI-09 - for auto naming
-         session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(pageTitle, objectTitle, bean.getDescription()));
+         session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(pageTitle, objectTitle, bean.getDescription(), 1, contentResourceList));
       } else {
          //session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_form_id"));
          session.remove(ResourceEditingHelper.CREATE_TYPE);
@@ -293,13 +297,62 @@ public class CellFormPickerController extends CellController implements FormCont
       return retView;
    }
 
-   protected String getFormDisplayName(String pageTitle, String objectTitle, String formTypeName) {
+   /**
+    * 
+    * @param pageTitle
+    * @param objectTitle
+    * @param formTypeName
+    * @param count: this keeps track of the number of times getFormDisplayName is called for naming reasons
+    * @param contentResourceList: a list of the resources for looking up the names to compare to the new name
+    * @return
+    */
+   protected String getFormDisplayName(String pageTitle, String objectTitle, String formTypeName, int count, List contentResourceList) {
       String includePageTitle = "";
+      String name = "";
+      
       if (pageTitle != null && pageTitle.length() > 0)
          includePageTitle = pageTitle + "-";
 
-      return objectTitle + "-" + includePageTitle + formTypeName;
+      name = objectTitle + "-" + includePageTitle + formTypeName;
+      
+      if(count > 1){
+    	  name = name + " (" + count + ")";
+      }
+      
+      count++;
+      
+      return formDisplayNameExists(name, contentResourceList) && contentResourceList != null ? 
+    		  getFormDisplayName(pageTitle, objectTitle, formTypeName, count, contentResourceList) : name;
+
    }
+   
+   
+   /**
+    * 
+    * @param name
+    * @param contentResourceList
+    * @return
+    * 
+    * returns true if the name passed exists in the list of contentResource
+    * otherwise returns false
+    */
+   protected boolean formDisplayNameExists(String name, List contentResourceList){
+	   
+	   
+	   if(contentResourceList != null){
+		   ContentResource cr;
+		   for(int i = 0; i < contentResourceList.size(); i++){
+			   cr = (ContentResource) contentResourceList.get(i);
+			   if(name.equals(cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()).toString())){
+				   return true;
+			   }
+		   }
+	   }
+  
+	   return false;
+   }
+   
+   
 
    protected String createFolder(String base, String append, String appendDisplay, String appendDescription) {
       //String folder = "/user/" +
