@@ -479,6 +479,8 @@ public class WizardTool extends BuilderTool {
    public void processSubmitWizard(CompletedWizard completedWizard)
    {
       clearInterface();
+      //refresh the wizard
+      completedWizard = getWizardManager().getCompletedWizard(completedWizard.getId());
       completedWizard.setStatus(MatrixFunctionConstants.PENDING_STATUS);
       getWizardManager().saveWizard(completedWizard);
       lastSaveWizard = completedWizard.getWizard().getName();
