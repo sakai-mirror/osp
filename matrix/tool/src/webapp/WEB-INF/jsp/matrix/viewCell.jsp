@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
@@ -119,6 +120,10 @@
 		</div>
 	</c:if>
    
+   
+     
+   
+   
    <!-- ************* Guidance Area Start, we want to keep an order ************* -->   
    <c:if test="${not empty cell.scaffoldingCell.guidance}">
    <%--TODO - this is  distracting - if there *is* guidance, read it. Do not need this front matter, but leaving in comments in case. 
@@ -129,17 +134,31 @@
          <osp:message key="guidance_instructions"/>
       </div>
   --%>    
-      <c:set value="0" var="guidanceItemCount" />
+      <c:set value="false" var="oneDisplayed" />
+      <c:set value="0" var="i" />
       		<!-- ** instruction ** -->
       <c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}">
-         <c:if test="${guidanceItem.activeContent && guidanceItem.type != 'instruction'}">
-			 <c:set value="${guidanceItemCount+1}" var="guidanceItemCount" />
-         </c:if>
-         <c:if test="${guidanceItem.type == 'instruction' && (guidanceItem.text != '' || not empty guidanceItem.attachments)}">
-			 <h4>
-				<osp:message key="instructions"/>
+               
+         <c:if test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
+         	
+         	<h4 class="xheader">		
+         		<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif" id="expandImg<c:out value='${i}'/>" alt="" 
+         			onClick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';" <c:if test="${!oneDisplayed}"> style="display:none;" </c:if>>
+         		<img src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" id="collapseImg<c:out value='${i}'/>" alt="" 
+         			onClick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';" <c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+         	 
+         	 	
+				<c:if test="${guidanceItem.type == 'instruction'}">
+         	 		<osp:message key="instructions"/>
+	         	</c:if>
+				<c:if test="${guidanceItem.type == 'example'}">
+         	 		<osp:message key="examples"/>
+	         	</c:if>
+				<c:if test="${guidanceItem.type == 'rationale'}">
+         	 		<osp:message key="rationale"/>
+	         	</c:if>
 			 </h4>
-			 <div class="textPanel">
+			 <div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>" <c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
 			   <c:out value="${guidanceItem.text}" escapeXml="false" />
 			   <ul class="attachList indnt1">
 				   <c:forEach var="guidanceItemAtt" items="${guidanceItem.attachments}" >
@@ -153,8 +172,12 @@
 				   <%-- TODO remove empty placeholder when can omit the list if no items (an <ul> needs one <li> child) --%>
 				   <li></li> 
 				   </ul>
-			   </div>
+			  </div>
+			   
+			  <c:set value="true" var="oneDisplayed" />
+			  <c:set value="${i + 1}" var="i" />
        </c:if>
+
       </c:forEach>
       
       <c:if test="${guidanceItemCount > 0}" >
