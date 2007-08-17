@@ -391,6 +391,7 @@
                   <fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="${date_format}" />
                </td>
             </tr>
+				
 <!-- ************* Attached Resources Review (Feedback) Area Start ************* -->
    <c:set var="feedbackHeader" value="false"/>
          <c:forEach var="object" items="${reviews}" varStatus="loopStatus">
@@ -418,17 +419,44 @@
    	
 <!-- ************* Attached Resources Review (Feedback) Area End ************* -->
          </c:forEach>
-   </table>
-   
+			
+
    <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
-      <div class="act">
+	<tr>
+	<td colspan="4">
          <input type="submit" name="manageAttachments" value="<fmt:message key="action_manageItems"/>"
          	onclick="javascript:stopEvents(event); document.form.method='GET';document.form.action='<osp:url value="osp.wizard.page.contents.helper/attachToCell.osp">
         	 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
         	 </osp:url>'" />
-      </div>
+	</td>
+	</tr>
    </c:if>
+   </table>
    
+<!-- *********** Attached Assignments Area Start ******** -->
+
+<c:if test="${not empty assignments}">
+   <table class="listHier lines nolines bordered-l" cellpadding="0" cellspacing="0" border="0"  summary="">
+      <tr>
+   	  <th><osp:message key="hdr.assignment"/></th>
+   	  <th><osp:message key="hdr.submitted"/></th>
+   	  <th><osp:message key="hdr.status"/></th>
+   	  <th><osp:message key="hdr.grade"/></th>
+      </tr>
+      
+      <c:forEach var="assign" items="${assignments}" varStatus="loopStatus">
+         <tr>
+      	  <td><c:out value="${assign.assignment.title}"/><!-- tbd make a link -->
+      	  <td><c:out value="${assign.timeSubmitted}"/><!-- format date/time -->
+      	  <td><c:out value="${assign.status}"/>
+      	  <td><c:out value="${assign.grade}"/>
+         </tr>
+      </c:forEach>
+   </table>
+</c:if>
+
+<!-- *********** Attached Assignments Area End ******** -->
+
    <!-- ************* Form Area End ************* -->
    
    

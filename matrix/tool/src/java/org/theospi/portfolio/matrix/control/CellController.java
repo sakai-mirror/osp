@@ -138,6 +138,7 @@ public class CellController implements FormController, LoadObjectController {
 		String siteId = cell.getCell().getWizardPage().getPageDefinition()
 				.getSiteId();
 
+		model.put("assignments", null ); // tbd
 		model.put("reviews", getReviewManager().getReviewsByParentAndType(
 				pageId, Review.FEEDBACK_TYPE, siteId, getEntityProducer()));
 		model.put("evaluations", getReviewManager().getReviewsByParentAndType(

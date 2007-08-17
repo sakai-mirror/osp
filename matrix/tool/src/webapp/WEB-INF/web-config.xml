@@ -99,6 +99,7 @@
               <prop key="/attachToCell.osp">attachCellController</prop>
               <prop key="/manageCellStatus.osp">manageCellStatusController</prop>
               <prop key="/cellFormPicker.osp">cellFormPickerController</prop>
+              <prop key="/assignRedirector.osp">assignRedirectorController</prop>
               <prop key="/styleRedirector.osp">styleRedirectorController</prop>
               <prop key="/scaffoldingStyleRedirector.osp">scaffoldingStyleRedirectorController</prop>
               <prop key="/formDelete.osp">formDeleteController</prop>
