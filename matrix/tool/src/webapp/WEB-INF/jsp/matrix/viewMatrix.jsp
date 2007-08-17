@@ -64,7 +64,7 @@ function hrefViewCell(pageId) {
 			                	<input type="submit" name="filter" value="<fmt:message key="button_filter"></fmt:message>"/>
 			                	&nbsp;
 		                	</c:if>
-		                   <select name="view_user">
+		                   <select name="view_user"  onChange="this.form.submit()">
 		                      <c:forEach var="user" items="${members}">
 		                          <option value="<c:out value="${user.id}"/>" <c:if test="${matrixOwner.id.value == user.id}"> selected="selected" </c:if>>
 		                              <c:out value="${user.sortName}"/>
@@ -72,7 +72,7 @@ function hrefViewCell(pageId) {
 		                      </c:forEach>
 		                    </select>
 		                    <input type="hidden" name="scaffolding_id" value="<c:out value="${matrixContents.scaffolding.id.value}" />" />
-		                    <input type="submit" value="<fmt:message key="button_go"/>"/>
+		                    
 		                </div>
 		            </form>
 		            <c:set var="readOnly_label"><fmt:message key="matrix_readOnly"/></c:set> 
