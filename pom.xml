@@ -88,5 +88,6 @@
 	<module>gmt</module>
 	<module>datapoint</module>
         <module>xsdweaver</module>
+        <module>sakai-mock</module>
   </modules>
 </project>
