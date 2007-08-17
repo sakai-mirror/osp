@@ -641,7 +641,7 @@ your browser doesn't support iframes
 </xsl:for-each>
 
          <li>
-				<a  accesskey="h" href="javascript:;">
+				<a  accesskey="h" href="javascript:;" class="icon-sakai-help">
                <xsl:attribute name="onclick">
                   window.open('<xsl:value-of select="config/helpUrl"/>','Help','resizable=yes,toolbar=no,scrollbars=yes, width=800,height=600')
                </xsl:attribute>
