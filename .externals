@@ -65,3 +65,4 @@ webservices		   https://source.sakaiproject.org/svn/webservices/tags/sakai_2-4-1
 mailtool		   https://source.sakaiproject.org/svn/mailtool/tags/sakai_2-4-1_QA_001
 usermembership		   https://source.sakaiproject.org/svn/usermembership/tags/sakai_2-4-1_QA_001
 polls                 	   https://source.sakaiproject.org/svn/polls/tags/sakai_2-4-1_QA_001
+gmt			-r11394    https://source.sakaiproject.org/contrib/syracuse/gmt/tags/2.4.1
