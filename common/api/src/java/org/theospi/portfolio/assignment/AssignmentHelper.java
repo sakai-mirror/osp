@@ -38,6 +38,9 @@ public class AssignmentHelper {
    public static final String WIZARD_PAGE_ASSIGNMENTS =
       "org.theospi.portfolio.assignment.wizPageDefList";
       
+   public static final String WIZARD_PAGE_CONTEXT =
+      "org.theospi.portfolio.assignment.wizPageContext";
+      
    public static final String SEPARATOR = Entity.SEPARATOR;
       
    protected static Log log = LogFactory.getLog("org.theospi.portfolio.assignment.AssignmentHelper");

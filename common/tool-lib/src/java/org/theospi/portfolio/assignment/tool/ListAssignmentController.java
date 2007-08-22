@@ -32,7 +32,6 @@ import org.apache.commons.logging.LogFactory;
 import org.theospi.utils.mvc.impl.servlet.AbstractFormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
-import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.assignment.api.AssignmentService;
 import org.sakaiproject.assignment.api.Assignment;
 import org.theospi.portfolio.assignment.AssignmentHelper;
@@ -49,10 +48,8 @@ public class ListAssignmentController extends AbstractFormController implements 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session,
                                      Map application, Errors errors) 
    {
-      String context = ToolManager.getCurrentPlacement().getContext();
-      // tbd -- check for myworkspace
-         
       Hashtable model = new Hashtable();
+      String context = (String)session.get(AssignmentHelper.WIZARD_PAGE_CONTEXT);
       List allAssignments = assignmentService.getListAssignmentsForContext(context); 
       String doSave = (String)request.get("_save");
       String doCancel = (String)request.get("_cancel");

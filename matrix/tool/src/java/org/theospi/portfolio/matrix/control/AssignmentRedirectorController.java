@@ -52,6 +52,9 @@ public class AssignmentRedirectorController implements LoadObjectController {
          String assignments = AssignmentHelper.joinAssignmentList( assignList );
          session.put(AssignmentHelper.WIZARD_PAGE_ASSIGNMENTS, assignments);
          
+         String context = sCell.getScaffolding().getWorksiteId().getValue();
+         session.put(AssignmentHelper.WIZARD_PAGE_CONTEXT, context);
+      
          session.put("assignReturnView", request.get("assignReturnView"));
          return new ModelAndView("assignRedirector");
       }
@@ -72,6 +75,7 @@ public class AssignmentRedirectorController implements LoadObjectController {
       
       String assignments = (String)session.get(AssignmentHelper.WIZARD_PAGE_ASSIGNMENTS);
       session.remove(AssignmentHelper.WIZARD_PAGE_ASSIGNMENTS);
+      session.remove(AssignmentHelper.WIZARD_PAGE_CONTEXT);
 
       // Save new assignments, if specified      
       if ( assignments != null )
