@@ -45,6 +45,7 @@
         <module>event</module>
         <module>gradebook</module>
         <module>help</module>
+	<module>jcr</module>
         <module>jobscheduler</module>
         <module>jsf</module>
         <module>linktool</module>
