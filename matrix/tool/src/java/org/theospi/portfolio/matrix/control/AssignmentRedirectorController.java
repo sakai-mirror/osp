@@ -1,6 +1,6 @@
 /**********************************************************************************
-* $URL: $
-* $Id: $
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2007 The Sakai Foundation.
@@ -22,68 +22,67 @@
 package org.theospi.portfolio.matrix.control;
 
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
 
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.assignment.api.Assignment;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.matrix.MatrixManager;
-import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.assignment.AssignmentHelper;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
-import org.theospi.portfolio.style.StyleHelper;
-import org.theospi.portfolio.style.model.Style;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 
 public class AssignmentRedirectorController implements LoadObjectController {
 
-   private MatrixManager matrixManager;
-   private IdManager idManager = null;
-
-   public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
+   public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors)
+   {
       String assignPickerAction = (String) request.get("assignPickerAction");
-      String pageId = (String) session.get("pageDef_id");
-      if (pageId == null) {
-         pageId = (String) request.get("pageDef_id");
-         session.put("pageDef_id", pageId);
-      }      
       
-      if (assignPickerAction != null) {
+      // Redirect to Assignment Picker
+      if (assignPickerAction != null) 
+      {
+         EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
+            EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
+         ScaffoldingCell sCell = sessionBean.getScaffoldingCell();
+         WizardPageDefinition pageDef = sCell.getWizardPageDefinition();
+         ArrayList<Assignment> assignList = 
+            AssignmentHelper.getSelectedAssignments(sCell.getWizardPageDefinition().getAttachments());
+            
+         String assignments = AssignmentHelper.joinAssignmentList( assignList );
+         session.put(AssignmentHelper.WIZARD_PAGE_ASSIGNMENTS, assignments);
+         
          session.put("assignReturnView", request.get("assignReturnView"));
          return new ModelAndView("assignRedirector");
       }
 
+      // Return from Assignment Picker
       session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
       String retView = (String)session.get("assignReturnView");
       session.remove("assignReturnView");
       return new ModelAndView(retView);
    }
 
-   public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
-      String pageId = (String) request.get("pageDef_id");
-      if (pageId == null)
-         pageId = (String) session.get("pageDef_id");
-      
+   public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception 
+   {
       EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
             EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
       ScaffoldingCell scaffoldingCell = sessionBean.getScaffoldingCell();
       WizardPageDefinition pageDef = scaffoldingCell.getWizardPageDefinition();
       
+      String assignments = (String)session.get(AssignmentHelper.WIZARD_PAGE_ASSIGNMENTS);
+      session.remove(AssignmentHelper.WIZARD_PAGE_ASSIGNMENTS);
+
+      // Save new assignments, if specified      
+      if ( assignments != null )
+      {
+         ArrayList<String> assignList = AssignmentHelper.splitAssignmentIdList( assignments );
+         for ( int i=0; i<assignList.size(); i++ )
+            assignList.set( i, AssignmentHelper.getReference(assignList.get(i)) );
+         pageDef.setAttachments( assignList );
+      }
+      
       return null;
-   }
-
-   public IdManager getIdManager() {
-      return idManager;
-   }
-
-   public void setIdManager(IdManager idManager) {
-      this.idManager = idManager;
-   }
-
-   public MatrixManager getMatrixManager() {
-      return matrixManager;
-   }
-
-   public void setMatrixManager(MatrixManager matrixManager) {
-      this.matrixManager = matrixManager;
    }
 
 }

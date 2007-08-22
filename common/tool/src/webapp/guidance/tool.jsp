@@ -147,8 +147,8 @@
   </ospx:xheader>
 
    <sakai:button_bar>
-      <sakai:button_bar_item id="submit" value="#{common_msgs.save_guidance}" action="#{guidance.processActionSave}" styleClass="active" accesskey="s"/>
-      <sakai:button_bar_item id="cancel" value="#{common_msgs.cancel_guidance}" action="#{guidance.processActionCancel}" accesskey="x" />
+      <sakai:button_bar_item id="submit" value="#{common_msgs.button_save}" action="#{guidance.processActionSave}" styleClass="active" accesskey="s"/>
+      <sakai:button_bar_item id="cancel" value="#{common_msgs.button_cancel}" action="#{guidance.processActionCancel}" accesskey="x" />
    </sakai:button_bar>
 
 </h:form>

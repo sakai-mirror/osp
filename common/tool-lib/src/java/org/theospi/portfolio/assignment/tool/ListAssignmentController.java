@@ -1,5 +1,6 @@
-/********************************************************************************** $
-* $Id: $
+/********************************************************************************** 
+* $URL$
+* $Id$
 ***********************************************************************************
 *
 * Copyright (c) 2007 The Sakai Foundation.
@@ -22,6 +23,7 @@ package org.theospi.portfolio.assignment.tool;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -29,106 +31,118 @@ import org.apache.commons.logging.LogFactory;
 
 import org.theospi.utils.mvc.impl.servlet.AbstractFormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.mgt.AgentManager;
-import org.sakaiproject.metaobj.security.AuthenticationManager;
-import org.sakaiproject.metaobj.security.AuthorizationFailedException;
-import org.sakaiproject.metaobj.shared.model.Agent;
-import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.assignment.api.AssignmentService;
 import org.sakaiproject.assignment.api.Assignment;
+import org.theospi.portfolio.assignment.AssignmentHelper;
 
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 
-public class ListAssignmentController extends AbstractFormController implements Controller {
-
+public class ListAssignmentController extends AbstractFormController implements Controller 
+{
    protected final Log logger = LogFactory.getLog(getClass());
    private ListScrollIndexer listScrollIndexer;
-   private AgentManager agentManager;
-   private AuthenticationManager authManager;
-   private IdManager idManager;
-   private WorksiteManager worksiteManager;
-	private AssignmentService assignmentService;
+   private AssignmentService assignmentService;
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session,
-                                     Map application, Errors errors) {
-
-      Hashtable model = new Hashtable();
-      Agent agent = getAuthManager().getAgent();
-      List assignments = new ArrayList();
-      String goBack = (String)request.get("goBack");
-		
-		if ( goBack != null && !goBack.equals("") )
-		{
-         return new ModelAndView("done", model);
-		}
-		
-		else
-		{
-			String context = ToolManager.getCurrentPlacement().getContext();
-   		assignments = assignmentService.getListAssignmentsForContext(context); 
-         assignments = getListScrollIndexer().indexList(request, model, assignments);
-         model.put("assignments", assignments);
-   
-         model.put("osp_agent", agent);
-         String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
-         model.put("worksite", getWorksiteManager().getSite(worksiteId));
-         model.put("tool", getWorksiteManager().getTool(ToolManager.getCurrentPlacement().getId()));
+                                     Map application, Errors errors) 
+   {
+      String context = ToolManager.getCurrentPlacement().getContext();
+      // tbd -- check for myworkspace
          
+      Hashtable model = new Hashtable();
+      List allAssignments = assignmentService.getListAssignmentsForContext(context); 
+      String doSave = (String)request.get("_save");
+      String doCancel = (String)request.get("_cancel");
+      
+      String selectAssignments = (String)session.get(AssignmentHelper.WIZARD_PAGE_ASSIGNMENTS);
+      session.remove(AssignmentHelper.WIZARD_PAGE_ASSIGNMENTS);
+      
+      if ( doCancel != null )
+      {
+         return new ModelAndView("done");
+      }
+      else if ( doSave != null )
+      {
+         ArrayList newAssignments = new ArrayList();
+         for ( Iterator it=allAssignments.iterator(); it.hasNext(); ) 
+         {
+            Assignment assign = (Assignment)it.next();
+            if ( request.get(assign.getId()) != null )
+               newAssignments.add( assign.getId() );
+         }
+         session.put(AssignmentHelper.WIZARD_PAGE_ASSIGNMENTS, 
+                     AssignmentHelper.joinAssignmentIdList(newAssignments));
+         return new ModelAndView("done");
+      }
+      else
+      {
+         ArrayList assignBeans = new ArrayList();
+         ArrayList selectAssignList = AssignmentHelper.splitAssignmentIdList( selectAssignments );
+         
+         for ( Iterator it=allAssignments.iterator(); it.hasNext(); ) 
+         {
+            Assignment assign = (Assignment)it.next();
+            boolean selected = false;
+            if ( selectAssignList.contains(assign.getId()) )
+               selected = true;
+            assignBeans.add( new AssignmentBean( assign, selected ) );
+         }
+         
+         model.put("assignments", 
+                   getListScrollIndexer().indexList(request, model, assignBeans) );
+   
          return new ModelAndView("success", model);
-		}
+      }
 
    }
 
-   public ListScrollIndexer getListScrollIndexer() {
+   public ListScrollIndexer getListScrollIndexer() 
+   {
       return listScrollIndexer;
    }
 
-   public void setListScrollIndexer(ListScrollIndexer listScrollIndexer) {
+   public void setListScrollIndexer(ListScrollIndexer listScrollIndexer) 
+   {
       this.listScrollIndexer = listScrollIndexer;
    }
 
-   public WorksiteManager getWorksiteManager() {
-      return worksiteManager;
-   }
-
-   public void setWorksiteManager(WorksiteManager worksiteManager) {
-      this.worksiteManager = worksiteManager;
-   }
-
-   public AuthenticationManager getAuthManager() {
-      return authManager;
-   }
-
-   public void setAuthManager(AuthenticationManager authManager) {
-      this.authManager = authManager;
-   }
-	
-   public AgentManager getAgentManager() {
-      return agentManager;
-   }
-
-   public void setAgentManager(AgentManager agentManager) {
-      this.agentManager = agentManager;
-   }
-
-   public IdManager getIdManager() {
-      return idManager;
-   }
-
-   public void setIdManager(IdManager idManager) {
-      this.idManager = idManager;
-   }
-
-   public AssignmentService getAssignmentService() {
+   public AssignmentService getAssignmentService() 
+   {
       return assignmentService;
    }
 
-   public void setAssignmentService(AssignmentService assignmentService) {
+   public void setAssignmentService(AssignmentService assignmentService) 
+   {
       this.assignmentService = assignmentService;
+   }
+   
+   public class AssignmentBean 
+   {
+      Assignment assignment = null;
+      boolean selected = false;
+   
+      public AssignmentBean( Assignment assignment, boolean selected ) 
+      {
+         this.selected = selected;
+         this.assignment = assignment;
+      }
+      
+      public boolean getSelected() 
+      {
+         return selected;
+      }
+      
+      public void setSelected( boolean selected ) 
+      {
+         this.selected = selected;
+      }
+      
+      public Assignment getAssignment() 
+      {
+         return assignment;
+      }
    }
 }

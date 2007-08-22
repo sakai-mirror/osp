@@ -229,6 +229,13 @@
            <element column="form_def_id" type="string"/>
        </list>
       
+      <list name="attachments" cascade="all-delete-orphan"
+           inverse="false" lazy="false" table="osp_scaffolding_cell_attachments">
+           <key column="wiz_page_def_id" />
+           <index column="seq_num" />
+           <element column="artifact_id" type="string"/>
+       </list>
+      
       <many-to-one name="style" column="style_id" not-null="false" class="org.theospi.portfolio.style.model.Style"/> 
        
    </joined-subclass>

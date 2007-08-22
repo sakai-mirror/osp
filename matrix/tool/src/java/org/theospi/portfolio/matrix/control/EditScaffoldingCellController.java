@@ -23,6 +23,7 @@ package org.theospi.portfolio.matrix.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.assignment.taggable.api.TaggableActivity;
 import org.sakaiproject.assignment.taggable.api.TaggingHelperInfo;
 import org.sakaiproject.assignment.taggable.api.TaggingProvider;
@@ -60,6 +61,7 @@ import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider;
 import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Pager;
 import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Sort;
 import org.theospi.portfolio.review.mgt.ReviewManager;
+import org.theospi.portfolio.assignment.AssignmentHelper;
 
 import java.text.MessageFormat;
 import java.util.*;
@@ -128,11 +130,12 @@ public class EditScaffoldingCellController extends
 		model.put("selectedAdditionalFormDevices",
 				getSelectedAdditionalFormDevices(sCell,def.getSiteId()));
 		model.put("selectedAssignments",
-				getSelectedAssignments(sCell,def.getSiteId()));
+                AssignmentHelper.getSelectedAssignments(sCell.getWizardPageDefinition().getAttachments()) );
 		model.put("evaluators", getEvaluators(sCell.getWizardPageDefinition()));
 		model.put("pageTitleKey", "title_editCell");
 		model.put("pageInstructionsKey", "instructions_cellSettings");
 		model.put("returnView", getReturnView());
+      model.put("enableAssignments", ServerConfigurationService.getBoolean("osp.experimental.assignments",false) );
 
 		if (sCell != null && sCell.getScaffolding() != null)
 			model.put("isCellUsed", sCell.getScaffolding().isPublished()
@@ -555,11 +558,6 @@ public class EditScaffoldingCellController extends
 				returnCol.add(bean);
 		}
 		return returnCol;
-	}
-
-	protected Collection getSelectedAssignments(ScaffoldingCell sCell, String siteId) {
-		// tbd
-		return null;
 	}
 
 	/**

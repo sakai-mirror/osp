@@ -139,12 +139,6 @@
       <property name="controller">
          <bean class="org.theospi.portfolio.assignment.tool.ListAssignmentController">
             <property name="assignmentService"><ref bean="org.sakaiproject.assignment.api.AssignmentService"/></property>
-            <property name="authManager"><ref bean="authManager"/></property>
-            <property name="agentManager"><ref bean="agentManager"/></property>
-            <property name="idManager"><ref bean="idManager"/></property>
-            <property name="worksiteManager">
-               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
-            </property>
             <property name="listScrollIndexer">
                <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
             </property>
@@ -161,8 +155,10 @@
             <prop key="done">helperDone</prop>
          </props>
       </property>
-      <property name="commandName"><value>assignments</value></property>
-      <property name="commandClass"><value>java.util.ArrayList</value></property>
+      <!--
+      <property name="commandName"><value></value></property>
+      <property name="commandClass"><value></value></property>
+      -->
    </bean>
    
 </beans>

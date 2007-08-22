@@ -179,6 +179,7 @@
       <!-- ************* Additional Forms Area End ************* -->   
       
    <!-- *************  Assignments Area Start ************* -->   
+	<c:if test="${enableAssignments}">
       <table cellpadding="0" cellspacing="0" border="0" style="width:50%">
          <tr>
         <th style="text-align:left"><h4><osp:message key="edit.assignments"/></h4></th> 
@@ -201,22 +202,11 @@
 				<c:out value="${assign.title}" />
 				</span>
 			</td>
-			<td>
-				<c:if test="${empty localDisabledText}">
-					<div class="itemAction">
-						<a href="javascript:document.forms[0].submitAction.value='removeAssign';
-						  document.forms[0].params.value='id=<c:out value="${assign.id}"/>';
-						  document.forms[0].onsubmit();
-						  document.forms[0].submit();">
-							<osp:message key="remove"/>
-					   </a>
-					</div>
-				</c:if>
-			</td>
 			</tr>
 		  </c:forEach>
        </table>
 		 <br/>
+	</c:if>
 
    <!-- ************* Assignments Area End ************* -->   
 

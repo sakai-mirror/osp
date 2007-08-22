@@ -9,6 +9,8 @@
 
 <h3><fmt:message key="assign.title.manage"/></h3>
 
+<form method="POST" action="<osp:url value="listAssignment.osp"/>">
+
 <table class="listHier" cellspacing="0" >
    <thead>
       <tr>
@@ -20,22 +22,28 @@
       </tr>
    </thead>
    <tbody>
-     <c:forEach var="assign" items="${assignments}">
+     <c:forEach var="bean" items="${assignments}">
         <tr>
-<%--
-          <td><c:out value="${assign.id}" /></td>
---%>			
-          <td></td>
-          <td><c:out value="${assign.title}" /></td>
-          <td><c:out value="${assign.status}" /></td>
-          <td><c:out value="${assign.openTimeString}" /></td>
-          <td><c:out value="${assign.dueTimeString}" /></td> 
+         <td>
+            <input type="checkbox" 
+                   id="<c:out value='${bean.assignment.id}'/>" 
+                   name="<c:out value='${bean.assignment.id}'/>" 
+                   <c:if test="${bean.selected}">checked='checked'</c:if> 
+                   />
+         </td> <!-- checked -->
+          <td><c:out value="${bean.assignment.title}" /></td>
+          <td><c:out value="${bean.assignment.status}" /></td>
+          <td><c:out value="${bean.assignment.openTimeString}" /></td>
+          <td><c:out value="${bean.assignment.dueTimeString}" /></td> 
         </tr>
      </c:forEach>
     </tbody>
 </table>
-  
+
 <div class="act">
-   <input type="button" name="goBack" class="active" value="<fmt:message key="button_goback"/>"
-        onclick="window.document.location='<osp:url value="listAssignment.osp"/>&goBack=true'"/>
+      <input type="submit" name="_save" value="<fmt:message key="button_save"/>" />
+      <input type="submit" name="_cancel" value="<fmt:message key="button_cancel"/>" />
+
 </div>
+
+</form>

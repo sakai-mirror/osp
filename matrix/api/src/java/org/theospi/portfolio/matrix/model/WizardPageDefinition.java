@@ -56,6 +56,10 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    transient private Id styleId;
 
    private List additionalForms = new ArrayList();
+	
+	private List attachments = new ArrayList();
+	
+	public static String ATTACHMENT_ASSIGNMENT = "assignment";
 
    /**
     * @return Returns the initialStatus.
@@ -153,6 +157,20 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
     */
    public void setAdditionalForms(List additionalForms) {
       this.additionalForms = additionalForms;
+   }
+
+   /**
+    * List of WizardPageDefAttachments
+    * @return Returns the attachments list.
+    */
+   public List getAttachments() {
+      return attachments;
+   }
+   /**
+    * @param additionalForms The attachments to set.
+    */
+   public void setAttachments(List attachments) {
+      this.attachments = attachments;
    }
 
    public String getTitle() {

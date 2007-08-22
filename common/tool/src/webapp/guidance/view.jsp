@@ -84,7 +84,7 @@
 	</f:subview>
 
 	<div class="act">
-		<h:commandButton id="cancel" value="#{common_msgs.back_guidance}" action="#{guidance.processActionCancel}" accesskey="x" styleClass="active"/>
+		<h:commandButton id="cancel" value="#{common_msgs.button_back}" action="#{guidance.processActionCancel}" accesskey="x" styleClass="active"/>
 	</div>
 
 </h:form>

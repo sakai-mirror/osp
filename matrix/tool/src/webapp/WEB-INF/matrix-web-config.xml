@@ -1089,10 +1089,7 @@
    
    <bean id="assignRedirectorController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
-         <bean class="org.theospi.portfolio.matrix.control.AssignmentRedirectorController">
-            <property name="matrixManager"><ref bean="matrixManager"/></property>
-            <property name="idManager"><ref bean="idManager"/></property>
-         </bean>
+         <bean class="org.theospi.portfolio.matrix.control.AssignmentRedirectorController"/>
       </property>
       <property name="screenMappings">
          <props>
