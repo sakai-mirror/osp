@@ -164,7 +164,7 @@ public class DecoratedWizard implements DecoratedListInterface {
 	         return "repository/" + "manager=org.theospi.portfolio.wizard.mgt.WizardManager&" +
 	               WizardManager.WIZARD_PARAM_ID + "=" +
 	               URLEncoder.encode(getBase().getId().getValue(), "UTF-8") + "/" +
-	               URLEncoder.encode(getBase().getName() + " Wizard.zip", "UTF-8");
+	               URLEncoder.encode(getBase().getName() + ".zip", "UTF-8");
 	      }
 	      catch (UnsupportedEncodingException e) {
 	         throw new RuntimeException(e);
