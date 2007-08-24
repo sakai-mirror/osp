@@ -40,7 +40,7 @@ import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.assignment.api.AssignmentService;
+import org.sakaiproject.assignment.cover.AssignmentService;
 import org.sakaiproject.assignment.api.AssignmentSubmission;
 import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.user.api.User;
@@ -101,8 +101,6 @@ public class CellController implements FormController, LoadObjectController {
 
    private StyleManager styleManager;
 
-	private AssignmentService assignmentService;
-   
    public static final String WHICH_HELPER_KEY = "filepicker.helper.key";
 
 	public static final String KEEP_HELPER_LIST = "filepicker.helper.keeplist";
@@ -206,13 +204,14 @@ public class CellController implements FormController, LoadObjectController {
 	protected List getUserAssignments(CellFormBean cell) {
 		ArrayList submissions = new ArrayList();
 		try {
-			User user = UserDirectoryService.getUser(cell.getCell().getMatrix().getOwner().getId().getValue()  );
+			Agent owner = cell.getCell().getWizardPage().getOwner();
+			User user = UserDirectoryService.getUser(owner.getId().getValue());
 			ArrayList assignments = 
 				AssignmentHelper.getSelectedAssignments(cell.getCell().getWizardPage().getPageDefinition().getAttachments());
 			
 			for ( Iterator it=assignments.iterator(); it.hasNext(); ) {
 				Assignment assign = (Assignment)it.next();
-				AssignmentSubmission assignSubmission = assignmentService.getSubmission( assign.getId(),
+				AssignmentSubmission assignSubmission = AssignmentService.getSubmission( assign.getId(),
 																												 user );
 				if (assignSubmission != null)
 					submissions.add(assignSubmission);
@@ -642,12 +641,4 @@ public class CellController implements FormController, LoadObjectController {
    public void setStyleManager(StyleManager styleManager) {
       this.styleManager = styleManager;
    }
-
-	public AssignmentService getAssignmentService() {
-		return assignmentService;
-	}
-
-	public void setAssignmentService(AssignmentService assignmentService) {
-		this.assignmentService = assignmentService;
-	}
 }
