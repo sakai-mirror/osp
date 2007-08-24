@@ -137,6 +137,9 @@
             <property name="sessionManager">
                <ref bean="org.sakaiproject.tool.api.SessionManager" />
             </property>
+            <property name="assignmentService">
+               <ref bean="org.sakaiproject.assignment.api.AssignmentService" />
+            </property>
             <property name="styleManager">
                <ref bean="org.theospi.portfolio.style.mgt.StyleManager" />
             </property>

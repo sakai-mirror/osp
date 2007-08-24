@@ -446,10 +446,12 @@
       
       <c:forEach var="assign" items="${assignments}" varStatus="loopStatus">
          <tr>
-      	  <td><c:out value="${assign.assignment.title}"/><!-- tbd make a link -->
-      	  <td><c:out value="${assign.timeSubmitted}"/><!-- format date/time -->
-      	  <td><c:out value="${assign.status}"/>
-      	  <td><c:out value="${assign.grade}"/>
+      	  <td><c:out value="${assign.assignment.title}"/></td><!-- tbd make a link -->
+      	  <td><c:out value="${assign.timeSubmittedString}"/></td>
+      	  <td><c:out value="${assign.status}"/></td>
+      	  <td>
+              <c:if test="${assign.gradeReleased}"><c:out value="${assign.grade}"/></c:if>
+           </td>
          </tr>
       </c:forEach>
    </table>

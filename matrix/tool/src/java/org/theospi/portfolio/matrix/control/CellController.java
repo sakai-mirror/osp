@@ -40,6 +40,12 @@ import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.assignment.api.AssignmentService;
+import org.sakaiproject.assignment.api.AssignmentSubmission;
+import org.sakaiproject.assignment.api.Assignment;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.cover.UserDirectoryService;
+
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -64,6 +70,8 @@ import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
+
+import org.theospi.portfolio.assignment.AssignmentHelper;
 
 import java.util.*;
 
@@ -93,6 +101,8 @@ public class CellController implements FormController, LoadObjectController {
 
    private StyleManager styleManager;
 
+	private AssignmentService assignmentService;
+   
    public static final String WHICH_HELPER_KEY = "filepicker.helper.key";
 
 	public static final String KEEP_HELPER_LIST = "filepicker.helper.keeplist";
@@ -138,7 +148,7 @@ public class CellController implements FormController, LoadObjectController {
 		String siteId = cell.getCell().getWizardPage().getPageDefinition()
 				.getSiteId();
 
-		model.put("assignments", null ); // tbd
+		model.put("assignments", getUserAssignments(cell)); 
 		model.put("reviews", getReviewManager().getReviewsByParentAndType(
 				pageId, Review.FEEDBACK_TYPE, siteId, getEntityProducer()));
 		model.put("evaluations", getReviewManager().getReviewsByParentAndType(
@@ -189,6 +199,32 @@ public class CellController implements FormController, LoadObjectController {
 		return model;
 	}
 
+	/**
+	 ** Return list of AssignmentSubmissions, associated with this cell
+	 ** for the current user
+	 **/
+	protected List getUserAssignments(CellFormBean cell) {
+		ArrayList submissions = new ArrayList();
+		try {
+			User user = UserDirectoryService.getUser(cell.getCell().getMatrix().getOwner().getId().getValue()  );
+			ArrayList assignments = 
+				AssignmentHelper.getSelectedAssignments(cell.getCell().getWizardPage().getPageDefinition().getAttachments());
+			
+			for ( Iterator it=assignments.iterator(); it.hasNext(); ) {
+				Assignment assign = (Assignment)it.next();
+				AssignmentSubmission assignSubmission = assignmentService.getSubmission( assign.getId(),
+																												 user );
+				if (assignSubmission != null)
+					submissions.add(assignSubmission);
+			}
+		}
+		catch ( Exception e ) {
+			logger.warn(".getUserAssignments: ",  e);
+		}
+		
+		return submissions;
+	}
+
 	protected String getEntityProducer() {
 		return MatrixContentEntityProducer.MATRIX_PRODUCER;
 	}
@@ -201,7 +237,7 @@ public class CellController implements FormController, LoadObjectController {
       }
 		return new Boolean(true);
 	}
-
+   
    protected String getStyleUrl(Style style) {
       Node styleNode = getMatrixManager().getNode(style.getStyleFile());
       return styleNode.getExternalUri();
@@ -606,4 +642,12 @@ public class CellController implements FormController, LoadObjectController {
    public void setStyleManager(StyleManager styleManager) {
       this.styleManager = styleManager;
    }
+
+	public AssignmentService getAssignmentService() {
+		return assignmentService;
+	}
+
+	public void setAssignmentService(AssignmentService assignmentService) {
+		this.assignmentService = assignmentService;
+	}
 }
