@@ -375,6 +375,7 @@ public class WizardTool extends BuilderTool {
       clearInterface();
       setCurrent(null);
       cancelBoundValues();
+      deletedItems.clear();
       return LIST_PAGE;
    }
    
@@ -432,8 +433,7 @@ public class WizardTool extends BuilderTool {
          if (foundOne) {
             getCurrent().getRootCategory().resequencePages();
          }
-      }
-      
+      }      
       if (getTaggingManager().isTaggable()) {
   		Iterator i = deletedItems.iterator();
 		while (i.hasNext()) {
@@ -442,8 +442,30 @@ public class WizardTool extends BuilderTool {
 				removeTags((WizardPageSequence) obj);
 			}
 		}
+      }  
+      //Grab the Completed Wizards created during previewing, and add them to 
+      //the beginning of the deletedItems list.  
+      List tempDeletedItems = new ArrayList();
+      for (Iterator i=deletedItems.iterator();i.hasNext();) {
+    	  try{
+    		  WizardPageSequence wPS = (WizardPageSequence) i.next();
+    		  List addDelList = getWizardManager().getCompletedWizardsByWizardId(wPS.getCategory().getWizard().getId().toString());    
+    		
+    		  for (Iterator j = addDelList.iterator(); j.hasNext();) {
+        		  tempDeletedItems.add(j.next());
+        	  }
+    	  }
+    	  catch(Exception e){
+
+    	  }
       }
-      
+      for(Iterator i=tempDeletedItems.iterator(); i.hasNext();){
+    	  deletedItems.add(0, i.next());
+      }
+
+      tempDeletedItems.clear();
+      ///////////////////////////////////////////////////////////////////////
+	      
       getWizardManager().deleteObjects(deletedItems);
       deletedItems.clear();
       Wizard wizard = getCurrent().getBase();

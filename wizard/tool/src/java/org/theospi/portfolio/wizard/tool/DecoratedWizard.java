@@ -305,6 +305,11 @@ public class DecoratedWizard implements DecoratedListInterface {
 
    public String processActionRunWizard() {
       getParent().clearInterface();
+      
+      if(this.getBase().isPreview()){
+    	  parent.getWizardManager().deletePreviewWizardData(this.getBase());
+      }
+      
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       //ToolSession session = SessionManager.getCurrentToolSession();
       

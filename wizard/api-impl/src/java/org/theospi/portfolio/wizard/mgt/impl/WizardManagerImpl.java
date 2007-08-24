@@ -627,14 +627,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public void deleteObjects(List deletedItems) {
 
-      for (Iterator i=deletedItems.iterator();i.hasNext();) {
-         try {
-            getSession().delete(i.next());
-         }
-         catch (HibernateException e) {
-            throw new OspException(e);
-         }
-      }
+	   for (Iterator i=deletedItems.iterator();i.hasNext();) {
+		   try {
+			   getSession().delete(i.next());
+		   }
+		   catch (HibernateException e) {
+			   throw new OspException(e);
+		   }
+	   }
 
    }
    
