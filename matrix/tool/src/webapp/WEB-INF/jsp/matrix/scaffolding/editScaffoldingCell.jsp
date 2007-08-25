@@ -113,7 +113,7 @@
             <input name="styleName" value="<c:out value="" />" id="styleName" type="text" />
             <a href="javascript:document.forms[0].dest.value='stylePickerAction';
             document.forms[0].submitAction.value='forward';
-            document.forms[0].params.value='stylePickerAction=true:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:styleReturnView=<c:out value="${styleReturnView}" />';
+            document.forms[0].params.value='stylePickerAction=true:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:styleReturnView=<c:out value="${returnView}" />';
             document.forms[0].onsubmit();
             document.forms[0].submit();">
             <osp:message key="select_style" /></a>
@@ -123,7 +123,7 @@
             <input name="styleName" value="<c:out value="${style.name}" />" id="styleName" type="text" />
             <a href="javascript:document.forms[0].dest.value='stylePickerAction';
             document.forms[0].submitAction.value='forward';
-            document.forms[0].params.value='stylePickerAction=true:currentStyleId=<c:out value="${style.id}"/>:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:styleReturnView=<c:out value="${styleReturnView}" />';
+            document.forms[0].params.value='stylePickerAction=true:currentStyleId=<c:out value="${style.id}"/>:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:styleReturnView=<c:out value="${returnView}" />';
             document.forms[0].onsubmit();
             document.forms[0].submit();">
             <osp:message key="change_style" /></a>
@@ -177,6 +177,48 @@
 		  </c:forEach>
 	 </table>
       <!-- ************* Additional Forms Area End ************* -->   
+      
+   <!-- *************  Assignments Area Start ************* -->   
+      <table cellpadding="0" cellspacing="0" border="0" style="width:50%">
+         <tr>
+        <th style="text-align:left"><h4><osp:message key="edit.assignments"/></h4></th> 
+			<th style="text-align:right">
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='assignPickerAction';
+				document.forms[0].submitAction.value='forward';
+            document.forms[0].params.value='assignPickerAction=true:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:assignReturnView=<c:out value="${returnView}" />';
+				document.forms[0].onsubmit();
+				document.forms[0].submit();">
+					<osp:message key="edit.addAssign"/>
+				</a>
+			 </th>
+			</tr>
+         
+		  <c:forEach var="assign" items="${selectedAssignments}">
+		  <tr>
+			  <td>
+			  	<span class="indnt1">
+				<img src = '/library/image/sakai/assignment.gif' border= '0' alt ='' />
+				<c:out value="${assign.title}" />
+				</span>
+			</td>
+			<td>
+				<c:if test="${empty localDisabledText}">
+					<div class="itemAction">
+						<a href="javascript:document.forms[0].submitAction.value='removeAssign';
+						  document.forms[0].params.value='id=<c:out value="${assign.id}"/>';
+						  document.forms[0].onsubmit();
+						  document.forms[0].submit();">
+							<osp:message key="remove"/>
+					   </a>
+					</div>
+				</c:if>
+			</td>
+			</tr>
+		  </c:forEach>
+       </table>
+		 <br/>
+
+   <!-- ************* Assignments Area End ************* -->   
 
    <!-- ************* Guidance Area Start ************* -->        
       <h4><osp:message key="guidance_header"/></h4>

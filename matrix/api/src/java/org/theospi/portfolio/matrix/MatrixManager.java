@@ -112,6 +112,14 @@ public interface MatrixManager extends WorkflowEnabledManager {
          int progressionOption);
    ScaffoldingCell getScaffoldingCell(Criterion criterion, Level level);
    ScaffoldingCell getScaffoldingCell(Id id);
+   
+   /**
+    * Get all scaffolding cells for a given scaffolding
+    * @param scaffoldingId
+    * @return
+    */
+   public Set<ScaffoldingCell> getScaffoldingCells(Id scaffoldingId);
+   
    ScaffoldingCell getScaffoldingCellByWizardPageDef(Id id);
    String getScaffoldingCellsStatus(Id id);
 

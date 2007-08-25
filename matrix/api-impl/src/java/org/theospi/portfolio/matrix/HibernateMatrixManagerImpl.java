@@ -729,6 +729,18 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return scaffoldingCell;
    }
    
+   /**
+    * {@inheritDoc}
+    */
+   public Set<ScaffoldingCell> getScaffoldingCells(Id scaffoldingId) {
+      Object[] params = new Object[]{scaffoldingId};
+      
+      List list = this.getHibernateTemplate().find("from " +
+            "ScaffoldingCell scaffoldingCell where scaffoldingCell.scaffolding.id=?", 
+            params);
+      return new HashSet<ScaffoldingCell>(list);
+   }
+   
    public ScaffoldingCell getScaffoldingCellByWizardPageDef(Id id) {
       ScaffoldingCell scaffoldingCell = null;
       Object[] params = new Object[]{id};

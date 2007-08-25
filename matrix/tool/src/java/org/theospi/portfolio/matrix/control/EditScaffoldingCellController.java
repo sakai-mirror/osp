@@ -127,10 +127,12 @@ public class EditScaffoldingCellController extends
 		model.put("additionalFormDevices", getAdditionalFormDevices(def.getSiteId()));
 		model.put("selectedAdditionalFormDevices",
 				getSelectedAdditionalFormDevices(sCell,def.getSiteId()));
+		model.put("selectedAssignments",
+				getSelectedAssignments(sCell,def.getSiteId()));
 		model.put("evaluators", getEvaluators(sCell.getWizardPageDefinition()));
 		model.put("pageTitleKey", "title_editCell");
 		model.put("pageInstructionsKey", "instructions_cellSettings");
-		model.put("styleReturnView", getStyleReturnView());
+		model.put("returnView", getReturnView());
 
 		if (sCell != null && sCell.getScaffolding() != null)
 			model.put("isCellUsed", sCell.getScaffolding().isPublished()
@@ -351,7 +353,7 @@ public class EditScaffoldingCellController extends
 		// return "Guidance for Cell";
 	}
 
-	protected String getStyleReturnView() {
+	protected String getReturnView() {
 		return "cell";
 	}
 
@@ -416,7 +418,8 @@ public class EditScaffoldingCellController extends
 			if (!params.equals("")) {
 				model.putAll(parseParams(params));
 			}
-		} else {
+		} 
+      else {
 			session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
 					"true");
 			model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
@@ -552,6 +555,11 @@ public class EditScaffoldingCellController extends
 				returnCol.add(bean);
 		}
 		return returnCol;
+	}
+
+	protected Collection getSelectedAssignments(ScaffoldingCell sCell, String siteId) {
+		// tbd
+		return null;
 	}
 
 	/**

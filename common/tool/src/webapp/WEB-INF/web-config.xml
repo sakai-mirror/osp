@@ -86,6 +86,7 @@
                <prop key="/editPermissions.osp">editPermissionsController</prop>
                
                <!-- Style -->
+               <prop key="/listAssignment.osp">listAssignmentController</prop>
                <prop key="/listStyle.osp">listStyleController</prop>
                <prop key="/addStyle.osp">addStyleController</prop>
                <prop key="/editStyle.osp">addStyleController</prop>
@@ -129,15 +130,39 @@
    <bean id="defaultTemplateDef" class="org.sakaiproject.metaobj.utils.mvc.impl.SimpleBeanWrapper" >
       <property name="wrappedBean">
          <props>
-<!--
-            <prop key="_rightMenu">/WEB-INF/jsp/rightMenu.jsp</prop>
-            <prop key="_leftMenu">/WEB-INF/jsp/leftMenu.jsp</prop>
-            <prop key="_header">/WEB-INF/jsp/header.jsp</prop>
-            <prop key="_footer">/WEB-INF/jsp/footer.jsp</prop>
--->
             <prop key="_template">/WEB-INF/jsp/template.jsp</prop>
          </props>
       </property>
    </bean>
 
+   <bean id="listAssignmentController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.assignment.tool.ListAssignmentController">
+            <property name="assignmentService"><ref bean="org.sakaiproject.assignment.api.AssignmentService"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="agentManager"><ref bean="agentManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="worksiteManager">
+               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+            </property>
+            <property name="listScrollIndexer">
+               <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
+            </property>
+         </bean>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">listAssignment</prop>
+            <prop key="done">helperDone</prop>
+         </props>
+      </property>
+      <property name="commandName"><value>assignments</value></property>
+      <property name="commandClass"><value>java.util.ArrayList</value></property>
+   </bean>
+   
 </beans>

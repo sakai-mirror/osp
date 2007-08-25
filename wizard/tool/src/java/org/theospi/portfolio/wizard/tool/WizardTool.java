@@ -81,6 +81,7 @@ import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ValueChangeEvent;
 import javax.faces.model.SelectItem;
 
 import java.io.IOException;
@@ -398,7 +399,7 @@ public class WizardTool extends BuilderTool {
       return "";
    }
 
-   public String processActionChangeUser() {
+   public String processActionChangeUser(ValueChangeEvent e) {
       clearInterface();
       return LIST_PAGE;
    }
@@ -479,6 +480,8 @@ public class WizardTool extends BuilderTool {
    public void processSubmitWizard(CompletedWizard completedWizard)
    {
       clearInterface();
+      //refresh the wizard
+      completedWizard = getWizardManager().getCompletedWizard(completedWizard.getId());
       completedWizard.setStatus(MatrixFunctionConstants.PENDING_STATUS);
       getWizardManager().saveWizard(completedWizard);
       lastSaveWizard = completedWizard.getWizard().getName();

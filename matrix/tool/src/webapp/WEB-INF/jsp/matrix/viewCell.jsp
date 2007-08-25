@@ -1,6 +1,7 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
@@ -47,6 +48,8 @@
          <a name="linkManageCellStatus" id="linkManageCellStatus" href="<osp:url value="manageCellStatus.osp">
             <osp:param name="page_id" value="${cell.wizardPage.id}"/>
             <osp:param name="readOnlyMatrix" value="${readOnlyMatrix}" />
+            <osp:param name="isWizard" value="${isWizard}" />
+            <osp:param name="sequential" value="${sequential}" />
             </osp:url>"><osp:message key="manage_cell_status"/></a>
       </c:if>
       <c:if test="${taggable && !(empty helperInfoList)}">
@@ -117,6 +120,10 @@
 		</div>
 	</c:if>
    
+   
+     
+   
+   
    <!-- ************* Guidance Area Start, we want to keep an order ************* -->   
    <c:if test="${not empty cell.scaffoldingCell.guidance}">
    <%--TODO - this is  distracting - if there *is* guidance, read it. Do not need this front matter, but leaving in comments in case. 
@@ -127,17 +134,31 @@
          <osp:message key="guidance_instructions"/>
       </div>
   --%>    
-      <c:set value="0" var="guidanceItemCount" />
+      <c:set value="false" var="oneDisplayed" />
+      <c:set value="0" var="i" />
       		<!-- ** instruction ** -->
       <c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}">
-         <c:if test="${guidanceItem.activeContent && guidanceItem.type != 'instruction'}">
-			 <c:set value="${guidanceItemCount+1}" var="guidanceItemCount" />
-         </c:if>
-         <c:if test="${guidanceItem.type == 'instruction' && (guidanceItem.text != '' || not empty guidanceItem.attachments)}">
-			 <h4>
-				<osp:message key="instructions"/>
+               
+         <c:if test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
+         	
+         	<h4 class="xheader">		
+         		<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif" id="expandImg<c:out value='${i}'/>" alt="" 
+         			onClick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';" <c:if test="${!oneDisplayed}"> style="display:none;" </c:if>>
+         		<img src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" id="collapseImg<c:out value='${i}'/>" alt="" 
+         			onClick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';" <c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+         	 
+         	 	
+				<c:if test="${guidanceItem.type == 'instruction'}">
+         	 		<osp:message key="instructions"/>
+	         	</c:if>
+				<c:if test="${guidanceItem.type == 'example'}">
+         	 		<osp:message key="examples"/>
+	         	</c:if>
+				<c:if test="${guidanceItem.type == 'rationale'}">
+         	 		<osp:message key="rationale"/>
+	         	</c:if>
 			 </h4>
-			 <div class="textPanel">
+			 <div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>" <c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
 			   <c:out value="${guidanceItem.text}" escapeXml="false" />
 			   <ul class="attachList indnt1">
 				   <c:forEach var="guidanceItemAtt" items="${guidanceItem.attachments}" >
@@ -151,8 +172,12 @@
 				   <%-- TODO remove empty placeholder when can omit the list if no items (an <ul> needs one <li> child) --%>
 				   <li></li> 
 				   </ul>
-			   </div>
+			  </div>
+			   
+			  <c:set value="true" var="oneDisplayed" />
+			  <c:set value="${i + 1}" var="i" />
        </c:if>
+
       </c:forEach>
       
       <c:if test="${guidanceItemCount > 0}" >
@@ -366,6 +391,7 @@
                   <fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="${date_format}" />
                </td>
             </tr>
+				
 <!-- ************* Attached Resources Review (Feedback) Area Start ************* -->
    <c:set var="feedbackHeader" value="false"/>
          <c:forEach var="object" items="${reviews}" varStatus="loopStatus">
@@ -393,17 +419,44 @@
    	
 <!-- ************* Attached Resources Review (Feedback) Area End ************* -->
          </c:forEach>
-   </table>
-   
+			
+
    <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
-      <div class="act">
+	<tr>
+	<td colspan="4">
          <input type="submit" name="manageAttachments" value="<fmt:message key="action_manageItems"/>"
          	onclick="javascript:stopEvents(event); document.form.method='GET';document.form.action='<osp:url value="osp.wizard.page.contents.helper/attachToCell.osp">
         	 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
         	 </osp:url>'" />
-      </div>
+	</td>
+	</tr>
    </c:if>
+   </table>
    
+<!-- *********** Attached Assignments Area Start ******** -->
+
+<c:if test="${not empty assignments}">
+   <table class="listHier lines nolines bordered-l" cellpadding="0" cellspacing="0" border="0"  summary="">
+      <tr>
+   	  <th><osp:message key="hdr.assignment"/></th>
+   	  <th><osp:message key="hdr.submitted"/></th>
+   	  <th><osp:message key="hdr.status"/></th>
+   	  <th><osp:message key="hdr.grade"/></th>
+      </tr>
+      
+      <c:forEach var="assign" items="${assignments}" varStatus="loopStatus">
+         <tr>
+      	  <td><c:out value="${assign.assignment.title}"/><!-- tbd make a link -->
+      	  <td><c:out value="${assign.timeSubmitted}"/><!-- format date/time -->
+      	  <td><c:out value="${assign.status}"/>
+      	  <td><c:out value="${assign.grade}"/>
+         </tr>
+      </c:forEach>
+   </table>
+</c:if>
+
+<!-- *********** Attached Assignments Area End ******** -->
+
    <!-- ************* Form Area End ************* -->
    
    

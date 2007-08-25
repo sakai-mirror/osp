@@ -790,7 +790,7 @@ public class AudienceTool extends HelperToolBase {
    /**
      * Set list of selected roles
      */
-    public void setSelectedRoleList(List selectedRoleMemberList) {
+    public void setSelectedRoleList(List selectedRoleList) {
         this.selectedRoleList = selectedRoleList;
     }
 

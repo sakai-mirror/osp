@@ -153,19 +153,20 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
                  FunctionConstants.READ_MATRIX, matrix.getId());
       }
 
-      List levels = scaffolding.getLevels();
-      List criteria = scaffolding.getCriteria();
+      List<Level> levels = scaffolding.getLevels();
+      List<Criterion> criteria = scaffolding.getCriteria();
       List matrixContents = new ArrayList();
       Criterion criterion = new Criterion();
       Level level = new Level();
       List row = new ArrayList();
       
-      Set cells = matrix.getCells();
+      //Set cells = matrix.getCells();
+      List<Cell> cells = getMatrixManager().getCells(matrix);
        
-      for (Iterator criteriaIterator = criteria.iterator(); criteriaIterator.hasNext();) {
+      for (Iterator<Criterion> criteriaIterator = criteria.iterator(); criteriaIterator.hasNext();) {
          row = new ArrayList();
          criterion = (Criterion) criteriaIterator.next();
-         for (Iterator levelsIterator = levels.iterator(); levelsIterator.hasNext();) {
+         for (Iterator<Level> levelsIterator = levels.iterator(); levelsIterator.hasNext();) {
             level = (Level) levelsIterator.next();
             CellFormBean cellBean = new CellFormBean();
 
@@ -334,8 +335,8 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 		return users;
 	}
    
-   private Cell getCell(Collection cells, Criterion criterion, Level level) {
-      for (Iterator iter=cells.iterator(); iter.hasNext();) {
+   private Cell getCell(Collection<Cell> cells, Criterion criterion, Level level) {
+      for (Iterator<Cell> iter=cells.iterator(); iter.hasNext();) {
          Cell cell = (Cell) iter.next();
          if (cell.getScaffoldingCell().getRootCriterion().getId().getValue().equals(criterion.getId().getValue()) && 
                cell.getScaffoldingCell().getLevel().getId().getValue().equals(level.getId().getValue())) {

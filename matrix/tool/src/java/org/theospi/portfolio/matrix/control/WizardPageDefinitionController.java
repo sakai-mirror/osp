@@ -185,7 +185,7 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
       return "Guidance for Wizard Page";
    }
    
-   protected String getStyleReturnView() {
+   protected String getReturnView() {
       return "page";
    }
 }

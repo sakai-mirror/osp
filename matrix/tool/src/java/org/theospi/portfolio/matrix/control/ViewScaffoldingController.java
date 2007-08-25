@@ -70,19 +70,20 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
       Id sId = getIdManager().getId((String)request.get("scaffolding_id"));
       Scaffolding scaffolding = getMatrixManager().getScaffolding(sId);
       
-      List levels = scaffolding.getLevels();
-      List criteria = scaffolding.getCriteria();
+      List<Level> levels = scaffolding.getLevels();
+      List<Criterion> criteria = scaffolding.getCriteria();
       List matrixContents = new ArrayList();
       Criterion criterion = new Criterion();
       Level level = new Level();
-      List row = new ArrayList();
+      List<ScaffoldingCell> row = new ArrayList<ScaffoldingCell>();
 
-      Set cells = scaffolding.getScaffoldingCells();
+      //Set cells = scaffolding.getScaffoldingCells();
+      Set<ScaffoldingCell> cells = getMatrixManager().getScaffoldingCells(scaffolding.getId());
        
-      for (Iterator criteriaIterator = criteria.iterator(); criteriaIterator.hasNext();) {
-         row = new ArrayList();
+      for (Iterator<Criterion> criteriaIterator = criteria.iterator(); criteriaIterator.hasNext();) {
+         row = new ArrayList<ScaffoldingCell>();
          criterion = (Criterion) criteriaIterator.next();
-         for (Iterator levelsIterator = levels.iterator(); levelsIterator.hasNext();) {
+         for (Iterator<Level> levelsIterator = levels.iterator(); levelsIterator.hasNext();) {
             level = (Level) levelsIterator.next();
             ScaffoldingCell scaffoldingCell = getScaffoldingCell(cells, criterion, level);
 
@@ -125,8 +126,8 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
       return new ModelAndView("success", model);
    }
    
-   private ScaffoldingCell getScaffoldingCell(Set cells, Criterion criterion, Level level) {
-      for (Iterator iter=cells.iterator(); iter.hasNext();) {
+   private ScaffoldingCell getScaffoldingCell(Set<ScaffoldingCell> cells, Criterion criterion, Level level) {
+      for (Iterator<ScaffoldingCell> iter=cells.iterator(); iter.hasNext();) {
          ScaffoldingCell scaffoldingCell = (ScaffoldingCell) iter.next();
          if (scaffoldingCell.getRootCriterion().getId().getValue().equals(criterion.getId().getValue()) && 
                scaffoldingCell.getLevel().getId().getValue().equals(level.getId().getValue())) {

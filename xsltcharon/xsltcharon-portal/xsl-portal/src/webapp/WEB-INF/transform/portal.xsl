@@ -172,54 +172,6 @@ your browser doesn't support iframes
    </xsl:template>
 
    <!--
-   =========match category selected================
-   process a tool category
-   param:content - "true" or "false" if rendering tool content or tool list
-   ================================================
-   -->
-   <xsl:template match="category[@selected='true' and key!='org.theospi.portfolio.portal.model.ToolCategory.uncategorized']">
-      <xsl:param name="content"/>
-      <xsl:if test="$content != 'true'">
-         <xsl:variable name="key" select="key"/>
-         <li>
-            <a accesskey="1" class="selected">
-               <xsl:attribute name="href">
-                  <xsl:value-of select="url"/>
-               </xsl:attribute>            
-               <xsl:attribute name="accesskey">
-                  <xsl:value-of select="@order"/>
-               </xsl:attribute>
-               <xsl:attribute name="title">
-                  <xsl:value-of select="$externalized/entry[@key=$key]"/>
-               </xsl:attribute>
-               <xsl:value-of select="$externalized/entry[@key=$key]"/>
-            </a>
-         </li>
-      </xsl:if>
-      <xsl:if test="$content='true'">
-         <xsl:choose>
-         <xsl:when test="pages/page[@selected='true']">
-            <xsl:for-each select="pages/page" >
-               <xsl:sort select="@order" data-type="number"/>
-               <xsl:apply-templates select=".">
-                  <xsl:with-param name="content" select="$content"/>
-               </xsl:apply-templates>
-            </xsl:for-each>
-         </xsl:when>
-            <xsl:otherwise>
-               <!-- make the tool category here -->
-               <!--xsl:call-template name="portal_tool">
-                  <xsl:with-param name="base" select="."/>
-               </xsl:call-template-->
-               <xsl:call-template name="tool_category">
-                  <xsl:with-param name="category" select="."/>
-               </xsl:call-template>
-            </xsl:otherwise>
-         </xsl:choose>
-      </xsl:if>
-   </xsl:template>
-
-   <!--
    =========match category================
    process a tool category
    param:content - "true" or "false" if rendering tool content or tool list
@@ -230,19 +182,35 @@ your browser doesn't support iframes
       <xsl:if test="$content != 'true'">
          <xsl:variable name="key" select="key"/>
          <li>
-            <a>
-               <xsl:attribute name="href">
-                  <xsl:value-of select="url"/>
-               </xsl:attribute>
-               <xsl:attribute name="accesskey">
-                  <xsl:value-of select="@order" />
-               </xsl:attribute>
-               <xsl:attribute name="title">
-                  <xsl:value-of select="$externalized/entry[@key=$key]"/>
-               </xsl:attribute>
-               <xsl:value-of select="$externalized/entry[@key=$key]"/>
-            </a>
+            <div class="toolSubMenuHolder">
+               <div class="toolSubMenuHolder_top">
+                  <div></div>
+               </div>
+         
+               <div class="toolSubMenuHolder_content">
+         
+                  <div class="toolSubMenuHeading"><xsl:value-of select="$key"/></div>
+                  <div class="toolSubMenuHolder_tools">
+                     <ul id="toolSubMenu" class="toolSubMenu">
+                        <xsl:for-each select="pages/page" >
+                           <xsl:sort select="@order" data-type="number"/>
+                           <xsl:apply-templates select=".">
+                              <xsl:with-param name="content" select="$content"/>
+                           </xsl:apply-templates>
+                        </xsl:for-each>
+                     </ul>
+                  </div>
+               </div>
+            </div>
          </li>
+      </xsl:if>
+      <xsl:if test="$content = 'true'">
+         <xsl:for-each select="pages/page" >
+            <xsl:sort select="@order" data-type="number"/>
+            <xsl:apply-templates select=".">
+               <xsl:with-param name="content" select="$content"/>
+            </xsl:apply-templates>
+         </xsl:for-each>
       </xsl:if>
    </xsl:template>
 
@@ -432,15 +400,10 @@ your browser doesn't support iframes
       </xsl:if>
       <xsl:if test="$content='false'">
          <li class="selectedTool">
-            <a accesskey="1" class="selected" href="#">
-               <xsl:attribute name="accesskey">
-                  <xsl:value-of select="../../@order"/>
-               </xsl:attribute>
-               <span>
-                  <xsl:attribute name="class"><xsl:value-of select="menuClass"/></xsl:attribute>
-                  <xsl:value-of select="title"/>   
-               </span>
-            </a>
+            <span>
+               <xsl:attribute name="class"><xsl:value-of select="menuClass"/></xsl:attribute>
+               <xsl:value-of select="title"/>   
+            </span>
          </li>
       </xsl:if>
    </xsl:template>
@@ -460,15 +423,13 @@ your browser doesn't support iframes
       </xsl:if>
       <xsl:if test="$content='false'">
          <li class="selectedTool">
-            <a accesskey="1" class="selected" href="#">
-               <xsl:attribute name="accesskey">
-                  <xsl:value-of select="../../@order"/>
-               </xsl:attribute>
-               <span>
-                  <xsl:attribute name="class"><xsl:value-of select="menuClass"/></xsl:attribute>
-                  <xsl:value-of select="title"/>   
-               </span>
-            </a>
+            <xsl:attribute name="accesskey">
+               <xsl:value-of select="../../@order"/>
+            </xsl:attribute>
+            <span>
+               <xsl:attribute name="class"><xsl:value-of select="menuClass"/></xsl:attribute>
+               <xsl:value-of select="title"/>   
+            </span>
          </li>
       </xsl:if>
    </xsl:template>
@@ -680,7 +641,7 @@ your browser doesn't support iframes
 </xsl:for-each>
 
          <li>
-				<a  accesskey="h" href="javascript:;">
+				<a  accesskey="h" href="javascript:;" class="icon-sakai-help">
                <xsl:attribute name="onclick">
                   window.open('<xsl:value-of select="config/helpUrl"/>','Help','resizable=yes,toolbar=no,scrollbars=yes, width=800,height=600')
                </xsl:attribute>

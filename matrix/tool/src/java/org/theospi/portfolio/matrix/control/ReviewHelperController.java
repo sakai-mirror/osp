@@ -20,11 +20,20 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
+import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.entity.api.ResourceProperties;
@@ -50,11 +59,11 @@ import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
+import org.theospi.portfolio.style.mgt.StyleManager;
+import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.workflow.model.Workflow;
-import org.theospi.portfolio.style.mgt.StyleManager;
-import org.theospi.portfolio.style.model.Style;
 
 public class ReviewHelperController implements Controller {
 
@@ -137,7 +146,6 @@ public class ReviewHelperController implements Controller {
             getReviewManager().saveReview(review);
 
             session.remove(FormHelper.RETURN_REFERENCE_TAG);
-            session.remove(FormHelper.RETURN_ACTION_TAG);
 
             if (review.getType() == Review.EVALUATION_TYPE || review.getType() == Review.FEEDBACK_TYPE) {
                getLockManager().lockObject(review.getReviewContent().getValue(),
@@ -253,6 +261,7 @@ public class ReviewHelperController implements Controller {
             ResourceBundle.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
          String formTypeTitle = myResources.getString(formTypeTitleKey);
 
+         List contentResourceList = null;
          try {
             String folderBase = getUserCollection().getId();
 
@@ -266,6 +275,8 @@ public class ReviewHelperController implements Controller {
             folderPath = createFolder(folderPath, currentSite, SiteService.getSiteDisplay(currentSite), null);
             folderPath = createFolder(folderPath, objectId, objectTitle, objectDesc);
             folderPath = createFolder(folderPath, formTypeId, formTypeTitle, null);
+           
+            contentResourceList = this.getContentHosting().getAllResources(folderPath);
 
             session.put(FormHelper.PARENT_ID_TAG, folderPath);
          } catch (TypeException e) {
@@ -277,7 +288,7 @@ public class ReviewHelperController implements Controller {
          }
 
          //CWM OSP-UI-09 - for auto naming
-         session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(objectTitle, pageTitle, formTypeTitle, ownerEid));
+         session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(objectTitle, pageTitle, formTypeTitle, ownerEid, 1, contentResourceList));
       } else {
          session.remove(ResourceEditingHelper.CREATE_TYPE);
          session.remove(ResourceEditingHelper.CREATE_SUB_TYPE);
@@ -313,11 +324,14 @@ public class ReviewHelperController implements Controller {
     * @param pageTitle
     * @param formTypeName
     * @param ownerEid
+    * @param count: this keeps track of the number of times getFormDisplayName is called for naming reasons
+    * @param contentResourceList: a list of the resources for looking up the names to compare to the new name
     * @return
     */
-   protected String getFormDisplayName(String objectTitle, String pageTitle, String formTypeName, String ownerEid) {
+   protected String getFormDisplayName(String objectTitle, String pageTitle, String formTypeName, String ownerEid, int count, List contentResourceList) {
       String includePageTitle = "";
       String includeOwner = "";
+      String name = "";
 
       if (pageTitle != null && pageTitle.length() > 0) {
          includePageTitle = pageTitle + "-";
@@ -327,7 +341,42 @@ public class ReviewHelperController implements Controller {
          includeOwner = ownerEid + "-";
       }
 
-      return objectTitle + "-" + includePageTitle + includeOwner + formTypeName;
+      name = objectTitle + "-" + includePageTitle + includeOwner + formTypeName;
+      
+      if(count > 1){
+    	  name = name + " (" + count + ")";
+      }
+      
+      count++;
+      
+      //if the name already exists, then recursively loop through this function untill there is an unique name      
+      return formDisplayNameExists(name, contentResourceList) && contentResourceList != null ? 
+    		  getFormDisplayName(objectTitle, pageTitle, formTypeName, ownerEid, count, contentResourceList) : name;
+   }
+   
+   /**
+    * 
+    * @param name
+    * @param contentResourceList
+    * @return
+    * 
+    * returns true if the name passed exists in the list of contentResource
+    * otherwise returns false
+    */
+   protected boolean formDisplayNameExists(String name, List contentResourceList){
+	   
+	   
+	   if(contentResourceList != null){
+		   ContentResource cr;
+		   for(int i = 0; i < contentResourceList.size(); i++){
+			   cr = (ContentResource) contentResourceList.get(i);
+			   if(name.equals(cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()).toString())){
+				   return true;
+			   }
+		   }
+	   }
+  
+	   return false;
    }
 
    /**
