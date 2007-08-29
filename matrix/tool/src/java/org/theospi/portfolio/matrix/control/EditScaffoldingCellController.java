@@ -176,10 +176,10 @@ public class EditScaffoldingCellController extends
 
 
 	      
-		if(request.get("surpressItems") == null || request.get("surpressItems").toString() == "false"){
-			scaffoldingCell.setSurpressItems(false);
+		if(request.get("suppressItems") == null || request.get("suppressItems").toString() == "false"){
+			scaffoldingCell.setSuppressItems(false);
 		}else{
-			scaffoldingCell.setSurpressItems(true);  
+			scaffoldingCell.setSuppressItems(true);  
 		}
 
 

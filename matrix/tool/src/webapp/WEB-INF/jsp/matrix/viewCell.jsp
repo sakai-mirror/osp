@@ -423,7 +423,7 @@
          </c:forEach>
 			
 
-   <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true' && !cell.scaffoldingCell.surpressItems}">
+   <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true' && !cell.scaffoldingCell.suppressItems}">
 	<tr>
 	<td colspan="4">
          <input type="submit" name="manageAttachments" value="<fmt:message key="action_manageItems"/>"

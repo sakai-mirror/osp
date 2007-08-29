@@ -214,7 +214,7 @@
       <property name="title" type="string" column="name" not-null="false"/>
       <property name="description" type="text" column="description" not-null="false"/>
       
-      <property name="surpressItems" type="boolean" column="SURPRESS_ITEMS" not-null="false"/>
+      <property name="suppressItems" type="boolean" column="SUPPRESS_ITEMS" not-null="false"/>
       
       <!-- property name="guidanceId" column="guidance_id" not-null="false" length="36"
            type="org.sakaiproject.metaobj.shared.IdType"/-->

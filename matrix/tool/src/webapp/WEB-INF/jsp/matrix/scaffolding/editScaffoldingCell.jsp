@@ -131,9 +131,9 @@
          </p>
    
 		<p class="shorttext">
-			<spring:bind path="scaffoldingCell.wizardPageDefinition.surpressItems">  
-				<label for="surpressItems" ><fmt:message key="surpressSelectItems_header"/></label>    
-				<input type="checkbox" name="surpressItems" value="true"  id="surpressItems" 
+			<spring:bind path="scaffoldingCell.wizardPageDefinition.suppressItems">  
+				<label for="suppressItems" ><fmt:message key="suppressSelectItems_header"/></label>    
+				<input type="checkbox" name="suppressItems" value="true"  id="suppressItems" 
 					<c:if test="${status.value}">checked</c:if> />
 			</spring:bind>
 		</p>
