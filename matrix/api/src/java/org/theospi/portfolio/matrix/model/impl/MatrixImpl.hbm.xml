@@ -232,7 +232,7 @@
        </list>
       
       <list name="attachments" cascade="all-delete-orphan"
-           inverse="false" lazy="false" table="osp_scaffolding_cell_attachments">
+           inverse="false" lazy="false" table="osp_wiz_page_def_attachments">
            <key column="wiz_page_def_id" />
            <index column="seq_num" />
            <element column="artifact_id" type="string"/>

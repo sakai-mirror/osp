@@ -32,7 +32,7 @@ drop table osp_review cascade constraints;
 drop table osp_scaffolding cascade constraints;
 drop table osp_scaffolding_cell cascade constraints;
 drop table osp_scaffolding_cell_form_defs cascade constraints;
-drop table osp_scaffolding_cell_attachments cascade constraints;
+drop table osp_wiz_page_def_attachments cascade constraints;
 drop table osp_scaffolding_criteria cascade constraints;
 drop table osp_scaffolding_levels cascade constraints;
 drop table osp_site_tool cascade constraints;
@@ -82,7 +82,7 @@ create table osp_review (id varchar2(36 char) not null, review_content_id varcha
 create table osp_scaffolding (id varchar2(36 char) not null, ownerId varchar2(255 char) not null, title varchar2(255 char), description clob, worksiteId varchar2(255 char), preview number(1,0) not null, published number(1,0), publishedBy varchar2(255 char), publishedDate timestamp, columnLabel varchar2(255 char) not null, rowLabel varchar2(255 char) not null, readyColor varchar2(7 char) not null, pendingColor varchar2(7 char) not null, completedColor varchar2(7 char) not null, lockedColor varchar2(7 char) not null, workflowOption number(10,0) not null, exposed_page_id varchar2(36 char), style_id varchar2(36 char), primary key (id));
 create table osp_scaffolding_cell (id varchar2(36 char) not null, rootcriterion_id varchar2(36 char), level_id varchar2(36 char), scaffolding_id varchar2(36 char) not null, wiz_page_def_id varchar2(36 char) unique, primary key (id));
 create table osp_scaffolding_cell_form_defs (wiz_page_def_id varchar2(36 char) not null, form_def_id varchar2(255 char), seq_num number(10,0) not null, primary key (wiz_page_def_id, seq_num));
-create table osp_scaffolding_cell_attachments  (wiz_page_def_id varchar2(36) not null, artifact_id  varchar2(255), seq_num number(10,0) not null, primary key (wiz_page_def_id, seq_num));
+create table osp_wiz_page_def_attachments  (wiz_page_def_id varchar2(36) not null, artifact_id  varchar2(255), seq_num number(10,0) not null, primary key (wiz_page_def_id, seq_num));
 create table osp_scaffolding_criteria (scaffolding_id varchar2(36 char) not null, elt varchar2(36 char) not null, seq_num number(10,0) not null, primary key (scaffolding_id, seq_num));
 create table osp_scaffolding_levels (scaffolding_id varchar2(36 char) not null, elt varchar2(36 char) not null, seq_num number(10,0) not null, primary key (scaffolding_id, seq_num));
 create table osp_site_tool (id varchar2(40 char) not null, site_id varchar2(36 char), tool_id varchar2(36 char), listener_id varchar2(255 char), primary key (id));
@@ -136,7 +136,7 @@ alter table osp_scaffolding_cell add constraint FK184EAE689FECDBB8 foreign key (
 alter table osp_scaffolding_cell add constraint FK184EAE68754F20BD foreign key (wiz_page_def_id) references osp_wizard_page_def;
 alter table osp_scaffolding_cell add constraint FK184EAE6870EDF97A foreign key (rootcriterion_id) references osp_matrix_label;
 alter table osp_scaffolding_cell_form_defs add constraint FK904DCA92754F20BD foreign key (wiz_page_def_id) references osp_wizard_page_def;
-alter table osp_scaffolding_cell_attachments add constraint FK904DCA92754F20FF foreign key (wiz_page_def_id) references osp_wizard_page_def;
+alter table osp_wiz_page_def_attachments add constraint FK904DCA92754F20FF foreign key (wiz_page_def_id) references osp_wizard_page_def;
 alter table osp_scaffolding_criteria add constraint FK8634116518C870CC foreign key (elt) references osp_matrix_label;
 alter table osp_scaffolding_criteria add constraint FK86341165A6286438 foreign key (scaffolding_id) references osp_scaffolding;
 alter table osp_scaffolding_levels add constraint FK4EBCD0F51EFC6CAF foreign key (elt) references osp_matrix_label;
