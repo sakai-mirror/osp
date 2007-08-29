@@ -43,6 +43,7 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    private String title;
    private String description;
    private String initialStatus = "";
+   private boolean surpressItems = false;
    private Collection evaluators = new HashSet();
    transient private boolean validate;
    private Set pages = new HashSet();
@@ -203,10 +204,22 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
       this.style = style;
    }
    public Id getStyleId() {
-      return styleId;
+	   return styleId;
    }
    public void setStyleId(Id styleId) {
-      this.styleId = styleId;
+	   this.styleId = styleId;
+   }
+   /**
+    * @return the surpressItems
+    */
+   public boolean isSurpressItems() {
+	   return surpressItems;
+   }
+   /**
+    * @param surpressItems the surpressItems to set
+    */
+   public void setSurpressItems(boolean surpressItems) {
+	   this.surpressItems = surpressItems;
    }
 
 }

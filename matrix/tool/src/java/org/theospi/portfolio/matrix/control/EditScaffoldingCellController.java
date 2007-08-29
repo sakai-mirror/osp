@@ -88,6 +88,7 @@ public class EditScaffoldingCellController extends
 	private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
 
 	private ReviewManager reviewManager;
+	
 
 	private static ResourceLoader myResources = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
    
@@ -122,6 +123,7 @@ public class EditScaffoldingCellController extends
 				model.put("providers", providers);
 			}
 		}
+
 
 		model.put("reflectionDevices", getReflectionDevices(def.getSiteId()));
 		model.put("evaluationDevices", getEvaluationDevices(def.getSiteId()));
@@ -171,6 +173,16 @@ public class EditScaffoldingCellController extends
 		String addFormAction = (String) request.get("addForm");
 		String saveAction = (String) request.get("saveAction");
 		Map model = new HashMap();
+
+
+	      
+		if(request.get("surpressItems") == null || request.get("surpressItems").toString() == "false"){
+			scaffoldingCell.setSurpressItems(false);
+		}else{
+			scaffoldingCell.setSurpressItems(true);  
+		}
+
+
 		if (addFormAction != null) {
 
 			String id = (String) request.get("selectAdditionalFormId");

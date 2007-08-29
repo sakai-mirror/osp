@@ -259,4 +259,12 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    public void setWizardPageDefinition(WizardPageDefinition wizardPageDefinition) {
       this.wizardPageDefinition = wizardPageDefinition;
    }
+   
+   public boolean isSurpressItems(){
+	   return wizardPageDefinition.isSurpressItems();
+   }
+   
+   public void setSurpressItems(boolean surpressItems){
+	   wizardPageDefinition.setSurpressItems(surpressItems);
+   }
 }

@@ -191,6 +191,8 @@
    </c:if>
    <!-- ************* Guidance Area End ************* -->
    <!-- ************* Form Area Start ************* -->
+   
+
    <table class="listHier lines nolines bordered-l" cellpadding="0" cellspacing="0" border="0"  summary="">
 		<tr>
 			<th colspan="2"><osp:message key="items"/></th>
@@ -421,7 +423,7 @@
          </c:forEach>
 			
 
-   <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+   <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true' && !cell.scaffoldingCell.surpressItems}">
 	<tr>
 	<td colspan="4">
          <input type="submit" name="manageAttachments" value="<fmt:message key="action_manageItems"/>"
@@ -432,7 +434,7 @@
 	</tr>
    </c:if>
    </table>
-   
+
 <!-- *********** Attached Assignments Area Start ******** -->
 
 <c:if test="${not empty assignments}">

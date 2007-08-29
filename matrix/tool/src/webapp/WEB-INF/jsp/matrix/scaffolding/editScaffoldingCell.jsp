@@ -23,7 +23,7 @@
     <h3><fmt:message key="${pageTitleKey}" /></h3>
 		<c:if test="${empty helperPage}">
 			(<c:out value="${scaffoldingCell.scaffolding.rowLabel}"/>: <span class="highlight"><c:out value="${scaffoldingCell.rootCriterion.description}"/></span>; <c:out value="${scaffoldingCell.scaffolding.columnLabel}"/>: <span class="highlight"><span class="highlight"><c:out value="${scaffoldingCell.level.description}"/></span>) </h3>
-		</span
+		</span>
 			</c:if>
 	<div class="instruction"> 
           <fmt:message key="${pageInstructionsKey}"/>
@@ -129,7 +129,23 @@
             <osp:message key="change_style" /></a>
          </c:if>
          </p>
+   
+		<p class="shorttext">
+			<spring:bind path="scaffoldingCell.wizardPageDefinition.surpressItems">  
+				<label for="surpressItems" ><fmt:message key="surpressSelectItems_header"/></label>    
+				<input type="checkbox" name="surpressItems" value="true"  id="surpressItems" 
+					<c:if test="${status.value}">checked</c:if> />
+			</spring:bind>
+		</p>
+		   
+		   
+   
+   
+   
    <!-- ************* Style Area End ************* -->
+   
+   
+   
    
    <!-- ************* Additional Forms Area Start ************* -->   
         
