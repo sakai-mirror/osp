@@ -223,6 +223,9 @@
       <property name="contentHosting">
          <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
       </property>
+      <property name="eventService">
+      	<ref bean="org.theospi.event.EventService"/>
+      </property>
    </bean>
 
    <bean id="org.theospi.portfolio.review.mgt.ReviewManager"
@@ -282,6 +285,9 @@
       <property name="consumers">
          <list>
          </list>
+      </property>
+      <property name="eventService">
+      	<ref bean="org.theospi.event.EventService"/>
       </property>
    </bean>
 
@@ -1355,10 +1361,11 @@
       </property>
 
        <property name="passwordGenerator"><ref bean="org.sakaiproject.metaobj.security.PasswordGenerator"/></property>
-      
-
    </bean>
 
+   <bean id="org.theospi.event.EventService"
+      class="org.theospi.event.impl.EventServiceImpl">
+   </bean>
 
 </beans>
 

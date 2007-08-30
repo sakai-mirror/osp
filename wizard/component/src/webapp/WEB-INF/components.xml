@@ -267,6 +267,9 @@
       <property name="matrixManager">
          <ref bean="matrixManager"/>
       </property>
+      <property name="eventService">
+      	<ref bean="org.theospi.event.EventService"/>
+      </property>
    </bean>
 
    <bean id="org.theospi.portfolio.wizard.mgt.WizardManager"

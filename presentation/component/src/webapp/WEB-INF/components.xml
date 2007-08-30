@@ -246,6 +246,9 @@
       </property>
       <property name="autoDdl"><value>${auto.ddl}</value></property>
       <property name="portfolioPropertyFormConversion"><value>true</value></property>
+      <property name="eventService">
+      	<ref bean="org.theospi.event.EventService"/>
+      </property>
    </bean>
 
    <bean id="presentationAuthz" class="org.theospi.portfolio.presentation.PresentationAuthorizerImpl">

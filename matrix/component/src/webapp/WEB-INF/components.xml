@@ -178,6 +178,9 @@
       <property name="styleManager">
          <ref bean="org.theospi.portfolio.style.mgt.StyleManager"/>
       </property>
+      <property name="eventService">
+      	<ref bean="org.theospi.event.EventService"/>
+      </property>
    </bean>
 
    <bean id="defaultScaffoldingBean" class="org.theospi.portfolio.matrix.DefaultScaffoldingBean">
