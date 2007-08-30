@@ -1227,7 +1227,10 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          sCell.setCells(new HashSet());
          Collection evaluators = sCell.getEvaluators();
          sCell.setEvaluators(new HashSet(evaluators));
-
+         
+         //TODO: Figure out what to do with attached assignments
+         sCell.getWizardPageDefinition().setAttachments(new ArrayList());
+         
          sCell.getWizardPageDefinition().setPages(new HashSet());
          
          Collection forms = sCell.getWizardPageDefinition().getAdditionalForms();
