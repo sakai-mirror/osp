@@ -88,7 +88,7 @@ public class BaseScaffoldingController {
         //Traversing the collections to un-lazily load
       scaffolding.getLevels().size();
       scaffolding.getCriteria().size();
-      traverseScaffoldingCells(scaffolding);
+      //traverseScaffoldingCells(scaffolding);
       
       return scaffolding;
    }
