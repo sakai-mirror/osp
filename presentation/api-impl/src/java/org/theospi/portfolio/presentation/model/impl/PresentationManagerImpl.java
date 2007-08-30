@@ -56,6 +56,8 @@ import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.theospi.event.EventService;
+import org.theospi.event.EventConstants;
 import org.theospi.portfolio.presentation.CommentSortBy;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.PresentationManager;
@@ -96,6 +98,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private ArtifactFinderManager artifactFinderManager;
    private ContentHostingService contentHosting = null;
    private SecurityService securityService = null;
+   private EventService eventService = null;
    private Map secretExportKeys = new Hashtable();
    private String tempPresDownloadDir;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
@@ -152,9 +155,11 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
          getHibernateTemplate().save(template);
          template.setNewObject(false);
+         eventService.postEvent(EventConstants.EVENT_TEMPLATE_ADD,template.getId().getValue());
       }
       else {
          getHibernateTemplate().merge(template);
+         eventService.postEvent(EventConstants.EVENT_TEMPLATE_REVISE,template.getId().getValue());
       }
 
       lockTemplateFiles(template);
@@ -431,6 +436,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       };
       getHibernateTemplate().execute(callback);
+      eventService.postEvent(EventConstants.EVENT_TEMPLATE_DELETE,template.getId().getValue());
       return true;
 
    }
@@ -475,6 +481,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       };
 
       getHibernateTemplate().execute(callback);
+      eventService.postEvent(EventConstants.EVENT_PORTFOLIO_DELETE,id.getValue());
    }
 
    protected void deleteLogs(final Id presentationId) throws HibernateException {
@@ -611,12 +618,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             presentation.setId(null);
          }
          getHibernateTemplate().save(presentation);
+         eventService.postEvent(EventConstants.EVENT_PORTFOLIO_ADD, presentation.getId().getValue());
       } else {
          if (checkAuthz) {
             getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_PRESENTATION,
                presentation.getId());
          }
          getHibernateTemplate().merge(presentation);
+         eventService.postEvent(EventConstants.EVENT_PORTFOLIO_REVISE, presentation.getId().getValue());
       }
       
       //locking the prop form prohibits editing...this is bad!
@@ -2424,20 +2433,26 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       boolean newLayout = (layout.getId() == null);
 
       if (newLayout) {
-         layout.setCreated(new Date(System.currentTimeMillis()));
+          layout.setCreated(new Date(System.currentTimeMillis()));
 
-         if (checkAuthz) {
-            getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_LAYOUT,
-               getIdManager().getId(layout.getSiteId()));
-         }
-      } else {
-         if (checkAuthz) {
-            getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_LAYOUT,
-                  layout.getId());
-         }
-      }
+          if (checkAuthz) {
+             getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_LAYOUT,
+                getIdManager().getId(layout.getSiteId()));
+          }
+       } else {
+          if (checkAuthz) {
+             getAuthzManager().checkPermission(PresentationFunctionConstants.EDIT_LAYOUT,
+                   layout.getId());
+          }
+       }
       getHibernateTemplate().saveOrUpdate(layout);
       lockLayoutFiles(layout);
+
+      if (newLayout) {
+    	  eventService.postEvent(EventConstants.EVENT_LAYOUT_ADD,layout.getId().getValue());
+      } else {
+    	  eventService.postEvent(EventConstants.EVENT_LAYOUT_REVISE,layout.getId().getValue());
+      }
 
       return layout;
    }
@@ -2500,6 +2515,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
       };
       getHibernateTemplate().execute(callback);
+      eventService.postEvent(EventConstants.EVENT_LAYOUT_DELETE,layout.getId().getValue() );
    }
    
    public PresentationPage getPresentationPage(Id id) {
@@ -3415,5 +3431,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    public void setPortfolioPropertyFormConversion(
          boolean portfolioPropertyFormConversion) {
       this.portfolioPropertyFormConversion = portfolioPropertyFormConversion;
+   }
+
+   public EventService getEventService() {
+	   return eventService;
+   }
+
+   public void setEventService(EventService eventService) {
+	   this.eventService = eventService;
    }
 }

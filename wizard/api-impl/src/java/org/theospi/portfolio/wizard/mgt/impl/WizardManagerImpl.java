@@ -95,6 +95,8 @@ import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.orm.hibernate3.HibernateCallback;
+import org.theospi.event.EventService;
+import org.theospi.event.EventConstants;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
@@ -149,6 +151,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    private GuidanceManager guidanceManager;
    private WorkflowManager workflowManager;
    private ContentHostingService contentHosting;
+   private EventService eventService;
    private PresentableObjectHome xmlRenderer;
    private ReviewManager reviewManager;
    private StyleManager styleManager;
@@ -338,11 +341,12 @@ public class WizardManagerImpl extends HibernateDaoSupport
          getHibernateTemplate().save(wizard);
          wizard.getRootCategory().setWizard(wizard);
          wizard.setNewObject(false);
+         eventService.postEvent(EventConstants.EVENT_WIZARD_ADD, wizard.getId().getValue());
       }
       else {
          getHibernateTemplate().saveOrUpdate(wizard);
+         eventService.postEvent(EventConstants.EVENT_WIZARD_REVISE, wizard.getId().getValue());
       }
-
       return wizard;
    }
 
@@ -470,6 +474,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          removeTool(wiz);
          
       getHibernateTemplate().delete(wiz);
+      eventService.postEvent(EventConstants.EVENT_WIZARD_DELETE, wizard.getId().getValue());
    }
    
    protected void deleteCompletedWizard(CompletedWizard cw) {
@@ -2442,6 +2447,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
    public void setLockManager(LockManager lockManager) {
       this.lockManager = lockManager;
+   }
+
+
+   public EventService getEventService() {
+	   return eventService;
+   }
+   public void setEventService(EventService eventService) {
+	   this.eventService = eventService;
    }
 
 }

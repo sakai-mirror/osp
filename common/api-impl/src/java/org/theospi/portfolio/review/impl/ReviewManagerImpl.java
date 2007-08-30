@@ -39,6 +39,8 @@ import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.theospi.event.EventService;
+import org.theospi.event.EventConstants;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.AuthorizationFacade;
@@ -51,6 +53,7 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
    private EntityManager entityManager;
    private IdManager idManager;
    private ContentHostingService contentHosting = null;
+   private EventService eventService = null;
    private AgentManager agentManager = null;
    
    /**
@@ -129,9 +132,11 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
          review.setId(null);
          getHibernateTemplate().save(review);
          review.setNewObject(false);
+         eventService.postEvent(EventConstants.EVENT_REVIEW_ADD, review.getId().getValue());
       }
       else {
          getHibernateTemplate().saveOrUpdate(review);
+         eventService.postEvent(EventConstants.EVENT_REVIEW_REVISE, review.getId().getValue());
       }    
 
       return review;
@@ -139,6 +144,7 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
 
    public void deleteReview(Review review) {
       getHibernateTemplate().delete(review);
+      eventService.postEvent(EventConstants.EVENT_REVIEW_DELETE, review.getId().getValue());
    }
 
    public List listReviews(String siteId) {
@@ -316,6 +322,14 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
     */
    public void setAgentManager(AgentManager agentManager) {
       this.agentManager = agentManager;
+   }
+
+   public EventService getEventService() {
+	   return eventService;
+   }
+
+   public void setEventService(EventService eventService) {
+	   this.eventService = eventService;
    }
 
 

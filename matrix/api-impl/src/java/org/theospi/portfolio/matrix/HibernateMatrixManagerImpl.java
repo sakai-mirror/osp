@@ -97,6 +97,8 @@ import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.theospi.event.EventService;
+import org.theospi.event.EventConstants;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.model.*;
@@ -135,6 +137,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private boolean loadArtifacts = true;
    private ContentHostingService contentHosting = null;
    private SecurityService securityService;
+   private EventService eventService;
    private DefaultScaffoldingBean defaultScaffoldingBean;
    private WorkflowManager workflowManager;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
@@ -420,6 +423,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public Id storePage(WizardPage page) {
       this.getHibernateTemplate().saveOrUpdate(page);
+      eventService.postEvent(EventConstants.EVENT_FORM_ADD,page.getId().getValue());
       return page.getId();
    }
 
@@ -430,6 +434,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       scaffolding.setPublishedBy(authnManager.getAgent());
       scaffolding.setPublishedDate(new Date(System.currentTimeMillis()));
       this.storeScaffolding(scaffolding);
+      eventService.postEvent(EventConstants.EVENT_SCAFFOLD_PUBLISH,scaffolding.getId().getValue());
 
    }
    public void previewScaffolding(Id scaffoldingId) {
@@ -441,6 +446,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public Scaffolding storeScaffolding(Scaffolding scaffolding) {
       scaffolding = (Scaffolding)this.store(scaffolding);
       getHibernateTemplate().flush();
+      eventService.postEvent(EventConstants.EVENT_SCAFFOLD_ADD_REVISE,scaffolding.getId().getValue());
       return scaffolding;
    }
    public Scaffolding saveNewScaffolding(Scaffolding scaffolding) {
@@ -589,7 +595,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             forms.removeAll(toRemove);
             page.setPageForms(forms);
             
-            session.saveOrUpdate(page);            
+            session.saveOrUpdate(page);  
+            eventService.postEvent(EventConstants.EVENT_FORM_DELETE, pageId.getValue());
             return null;
          }
 
@@ -1065,6 +1072,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
    public void deleteScaffolding(Id scaffoldingId) {
       this.getHibernateTemplate().delete(getScaffolding(scaffoldingId));
+      eventService.postEvent(EventConstants.EVENT_SCAFFOLD_DELETE,scaffoldingId.getValue());
    }
    
    public Cell submitCellForEvaluation(Cell cell) {
@@ -2466,5 +2474,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          new Object[] {formId.getValue()});
 
       return additionalForms.size() > 0;
+   }
+
+   public EventService getEventService() {
+	   return eventService;
+   }
+
+   public void setEventService(EventService eventService) {
+	   this.eventService = eventService;
    }
 }

@@ -79,6 +79,8 @@ import org.sakaiproject.site.cover.SiteService;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.theospi.event.EventService;
+import org.theospi.event.EventConstants;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.style.StyleConsumer;
@@ -97,6 +99,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
    private ContentHostingService contentHosting = null;
    private AgentManager agentManager;
    private SecurityService securityService = null;
+   private EventService eventService = null;
    private List globalSites;
    private List globalSiteTypes;
    private List consumers;
@@ -111,6 +114,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
       updateFields(style, checkAuthz);
       getHibernateTemplate().saveOrUpdate(style);
       lockStyleFiles(style);
+      eventService.postEvent(EventConstants.EVENT_STYLE_ADD,style.getId().getValue());
 
       return style;
    }
@@ -126,6 +130,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
       updateFields(style, checkAuthz);
       getHibernateTemplate().merge(style);
       lockStyleFiles(style);
+      eventService.postEvent(EventConstants.EVENT_STYLE_REVISE,style.getId().getValue());
 
       return style;
    }
@@ -288,6 +293,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
       else {
          return false;
       }
+      eventService.postEvent(EventConstants.EVENT_STYLE_DELETE,style.getId().getValue());
       // If we get here, I think it was deleted
       return true;
    }
@@ -752,5 +758,13 @@ public class StyleManagerImpl extends HibernateDaoSupport
 
    public void setAutoDdl(boolean autoDdl) {
       this.autoDdl = autoDdl;
+   }
+
+   public EventService getEventService() {
+	   return eventService;
+   }
+
+   public void setEventService(EventService eventService) {
+	   this.eventService = eventService;
    }
 }
