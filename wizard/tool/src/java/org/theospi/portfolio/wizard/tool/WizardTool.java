@@ -66,6 +66,7 @@ import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.tool.BuilderScreen;
 import org.theospi.portfolio.shared.tool.BuilderTool;
@@ -385,6 +386,7 @@ public class WizardTool extends BuilderTool {
     * @return String next page, this is null
     */
    public String processActionCancelRun() {
+	  this.setCurrentUserId(SessionManager.getCurrentSessionUserId());
       processActionCancel();
       return returnToCaller();
    }
@@ -400,10 +402,7 @@ public class WizardTool extends BuilderTool {
       return "";
    }
 
-   public String processActionChangeUser(ValueChangeEvent e) {
-      clearInterface();
-      return LIST_PAGE;
-   }
+
 
    protected Id cleanBlankId(String id) {
       if (id.equals("")) return null;
@@ -982,17 +981,7 @@ public class WizardTool extends BuilderTool {
       return null;
    }
    
-   public List getUserListForSelect() {
-      Placement placement = ToolManager.getCurrentPlacement();
-      String currentSiteId = placement.getContext();
-      List theList = getUserList(currentSiteId);
-      
-      String user = currentUserId!=null ? 
-            currentUserId : SessionManager.getCurrentSessionUserId();
-      setCurrentUserId(user);
-      
-      return theList;
-   }
+
    
    /**
     * Static comparator class for comparing items in a SelectItem list
@@ -1005,42 +994,7 @@ public class WizardTool extends BuilderTool {
       }
    }
    
-   private List getUserList(String worksiteId) {
-      Set members = new HashSet();
-      List users = new ArrayList();
-      
-      try {
-         Site site = SiteService.getSite(worksiteId);
-         if (site.hasGroups()) {
-            String currentUser = SessionManager.getCurrentSessionUserId();
-            Collection groups = site.getGroupsWithMember(currentUser);
-            for (Iterator iter = groups.iterator(); iter.hasNext();) {
-               Group group = (Group) iter.next();
-               members.addAll(group.getMembers());
-            }
-         }
-         else {
-            members.addAll(site.getMembers());
-         }
-         
-         for (Iterator memb = members.iterator(); memb.hasNext();) {
-            try {
-               Member member = (Member) memb.next();
-               User user = UserDirectoryService.getUser(member.getUserId());
-               users.add(createSelect(user.getId(), user.getSortName()));
-            }
-            catch (UserNotDefinedException e) {
-               //TODO replace with a message bundle
-               logger.warn("User " + e.getId() + " cannot be found");
-            }
-         }
-         Collections.sort(users, new UserSelectListComparator());
-      }
-      catch (IdUnusedException e) {
-         throw new OspException(e);
-      }
-      return users;
-   }
+
    
    public boolean getCanCreate() {
       return getAuthzManager().isAuthorized(WizardFunctionConstants.CREATE_WIZARD, 

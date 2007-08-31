@@ -40,15 +40,7 @@
    <h:outputText value="#{wizard.lastError} #{msgs.wizard_bad_file_type}" styleClass="validation" rendered="#{wizard.lastError == 'badFileType'}" />
    <h:outputText value="#{wizard.lastError} #{msgs.wizard_bad_import}" styleClass="validation" rendered="#{wizard.lastError == 'badImport'}" />
 
-   <%-- TODO moved the select into the button bar so they display in the same line - sanity check --%>
-   <f:subview id="viewUsers" rendered="#{wizard.canEvaluateTool || wizard.canReviewTool}">
 
-    	  <h:selectOneMenu id="users" immediate="true" value="#{wizard.currentUserId}" valueChangeListener="#{wizard.processActionChangeUser}" onchange="this.form.submit();">
-		  	<f:selectItems value="#{wizard.userListForSelect}"/>
-		</h:selectOneMenu>
-
-   </f:subview>
-      <%@include file="showWizardOwnerMessage.jspf"%>
    <%-- TODO this dataTable needs a rendered attribute to hide if there are no items - then the alternate message below gets displayed --%>
    <%-- <sakai:instruction_message value="#{msgs.no_wizards}"  /> --%>
    <h:dataTable  value="#{wizard.wizards}" var="wizardItem" styleClass="lines listHier nolines" headerClass="exclude" summary="">		

@@ -14,6 +14,9 @@
 <f:view>
 <sakai:view>
 <h:form>
+	   
+
+
    <h:outputText value="#{msgs.wizard_preview_title}" styleClass="validation" rendered="#{wizard.current.base.preview}"/>
 
    <sakai:view_title value="#{wizard.current.base.name}"/>
@@ -24,6 +27,17 @@
    <h:outputText value="#{msgs.changes_saved}" styleClass="success" rendered="#{wizard.pageSaved}" />
    
    <sakai:instruction_message value="#{wizard.current.base.description}" />
+   
+   
+   <f:subview id="viewUsers" rendered="#{(wizard.canEvaluateTool || wizard.canReviewTool) && wizard.current.base.published}">
+
+    	<h:selectOneMenu id="users" immediate="true" value="#{wizard.currentUserId}" valueChangeListener="#{wizard.current.processActionChangeUser}" onchange="this.form.submit();">
+		  	<f:selectItems value="#{wizard.current.userListForSelect}"/>
+		</h:selectOneMenu>
+		<%@include file="showWizardOwnerMessage.jspf"%>
+   </f:subview>
+  
+   
    
    <f:subview id="instructionSV" rendered="#{(wizard.current.instruction.text != '' and wizard.current.instruction != null) || not empty wizard.current.instruction.attachments}">
  		     		
