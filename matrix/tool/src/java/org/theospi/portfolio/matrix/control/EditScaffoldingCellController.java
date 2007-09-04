@@ -668,7 +668,8 @@ public class EditScaffoldingCellController extends
 
 		for (Iterator matrixIt = matrices.iterator(); matrixIt.hasNext();) {
 			Matrix matrix = (Matrix) matrixIt.next();
-			Set cells = matrix.getCells();
+			//Set cells = matrix.getCells();
+			List cells = getMatrixManager().getCells(matrix);
 
 			for (Iterator cellIt = cells.iterator(); cellIt.hasNext();) {
 				Cell cell = (Cell) cellIt.next();
