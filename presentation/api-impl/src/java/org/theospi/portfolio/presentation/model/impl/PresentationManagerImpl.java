@@ -53,6 +53,7 @@ import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.util.ResourceLoader;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateObjectRetrievalFailureException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
@@ -114,6 +115,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private static final String TEMPLATE_ID_TAG = "templateId";
    private static final String PRESENTATION_ID_TAG = "presentationId";
    private static final String SYSTEM_COLLECTION_ID = "/system/";
+   
+   private static ResourceLoader messages = new ResourceLoader(
+         "org.theospi.portfolio.presentation.bundle.Messages");
    
    
    public PresentationTemplate storeTemplate(final PresentationTemplate template) {
@@ -3414,6 +3418,32 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          new Object[] {formId.getValue()});
 
       return additionalForms.size() > 0;
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   public Collection<FormConsumptionDetail> getFormConsumptionDetails(Id formId) {
+      Collection results = new ArrayList();
+      
+      String propFormType = messages.getString("template_property_form");
+      String itemDefType = messages.getString("item_definition");
+      
+      Collection objectsWithForms = getHibernateTemplate().find(
+         "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(t.propertyFormType, t.siteId, '" + propFormType + "', t.name) " +
+         "from PresentationTemplate t where t.propertyFormType = ?", 
+         new Object[] {formId});
+      results.addAll(objectsWithForms);
+
+      String queryString = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(def.type, def.presentationTemplate.siteId, '" + itemDefType + "', def.title, def.presentationTemplate.name) " +
+      		"from PresentationItemDefinition def where " +
+      		"def.type = ?";
+      Collection additionalForms = getHibernateTemplate().find(queryString,
+         new Object[] {formId.getValue()});
+
+      results.addAll(additionalForms);
+
+      return results;
    }
 
    public boolean isAutoDdl() {
