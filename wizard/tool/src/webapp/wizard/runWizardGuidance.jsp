@@ -103,47 +103,60 @@
    </h:dataTable>
    
  
-   <f:subview id="thePagesCat"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}" >
-   <h:dataTable value="#{wizard.current.rootCategory.categoryPageList}" var="item" styleClass="listHier lines nolines" headerClass="exclude">
-     
-      <h:column>
-         <f:facet name="header">
+    <f:subview id="thePagesCat" >
+   <h:dataTable value="#{wizard.current.runningWizard.rootCategory.categoryPageList}" var="item" styleClass="listHier lines nolines" headerClass="exclude">
+   
+     <h:column>
+     	 <f:facet name="header">
             <f:subview id="header">
                <h:outputText value="#{msgs.items}"  />
             </f:subview>
          </f:facet>
-         <h:outputLabel value="#{item.indentString}"
+     	<f:subview id="categoryView" rendered="#{item.classInfo == 'completedCategory'}" >
+         <h:outputLabel value="#{item.category.indentString}"
             rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
 
-         <h:graphicImage value="/img/categoryExpanded.gif" rendered="#{item.category && item.hasChildren}" />
-         <h:graphicImage value="/img/category.gif" rendered="#{item.category && !item.hasChildren}" />
+         <h:graphicImage value="/img/categoryExpanded.gif" rendered="#{item.category.category && item.category.hasChildren}" />
+         <h:graphicImage value="/img/category.gif" rendered="#{item.category.category && !item.category.hasChildren}" />
 
-         <h:graphicImage value="/img/page.gif" rendered="#{!item.category && !item.wizard}" />
-         <!--h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" /-->
+         <h:outputText value="#{item.category.title}" rendered="#{item.category.category || item.category.wizard}" />
+
+       </f:subview>
          
-         <h:outputText value="#{item.title}" rendered="#{item.category || item.wizard}" />
          
-         <h:commandLink action="#{item.processExecPage}" rendered="#{!item.category && !item.wizard}">
-         	<h:outputText value="#{item.title}"/>
+      <f:subview id="pageView" rendered="#{item.classInfo == 'completedPage'}" >
+
+         <h:outputLabel value="#{item.page.indentString}"
+            rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
+
+         <h:graphicImage value="/img/page.gif" rendered="#{!item.page.category && !item.page.wizard}" />
+                  
+         <h:outputText value="#{item.page.title}" rendered="#{item.page.category || item.page.wizard ||  wizard.current.base.type != 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}" />
+         
+         <h:commandLink action="#{item.page.processExecPage}" rendered="#{!item.page.category && !item.page.wizard && wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
+         	<h:outputText value="#{item.page.title}"/>
          </h:commandLink>
-         
+         <h:outputText value=" #{READY_STATUS} (status: #{item.base.wizardPage.status})" rendered="#{item.classInfo == 'completedPage'}" />
+       </f:subview>
       </h:column>
-      
-      
-      
-      <%-- TODO given that the description could be just about anything (markup wise) the value of having it here should be
+   
+   
+         <%-- TODO given that the description could be just about anything (markup wise) the value of having it here should be
 	  		balanced with the certain malformed layout and possible  invalid/unbalanced markup (if the trimming is just on chars) --%>
       <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.wizard_description}" />
          </f:facet>
-         <h:outputText value="#{item.description}" escape="false" />
+         <f:subview id="pageView2" rendered="#{item.classInfo == 'completedPage'}" >
+         	<h:outputText value="#{item.page.description}" escape="false" />
+         </f:subview>
+         <f:subview id="categoryView2" rendered="#{item.classInfo == 'completedCategory'}" >
+         	<h:outputText value="#{item.category.description}" escape="false" />
+         </f:subview>
       </h:column>
-      
-      
+            
    </h:dataTable>
-   </f:subview>
-   
+   </f:subview>   
     <!-- ****************** reflection ****************** -->
 	<%--TODO  this layout should match the one in matrix cells --%>
     <f:subview id="reflectionArea" rendered="#{wizard.current.base.reflectionDevice != null && 

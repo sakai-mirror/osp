@@ -48,6 +48,7 @@ public class DecoratedCompletedPage {
    private WizardTool parent;
    private DecoratedWizardPage page;
    private CompletedWizardPage base;
+   private final String classInfo = "completedPage";
 
    public DecoratedCompletedPage() {
    }
@@ -123,5 +124,9 @@ public class DecoratedCompletedPage {
          pageList.add(page.getWizardPage());
       }
       return pageList;
+   }
+   
+   public String getClassInfo(){
+	   return this.classInfo;
    }
 }

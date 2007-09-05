@@ -28,6 +28,8 @@ import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.model.CompletedWizardCategory;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
 import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.wizard.model.WizardCategory;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,6 +43,7 @@ public class DecoratedCompletedCategory {
    private WizardTool parent;
    private DecoratedCategory category;
    private CompletedWizardCategory base;
+   private final String classInfo = "completedCategory";
 
    private List categoryPageList = null;
 
@@ -78,39 +81,43 @@ public class DecoratedCompletedCategory {
    }
 
    public List getCategoryPageList() {
-      if (categoryPageList == null) {
-         categoryPageList = new ArrayList();
-         addCategoriesPages(categoryPageList);
-      }
+
+	   getParent().getCurrent().processActionRunWizardHelper();
+	   setBase(getParent().getCurrent().getRunningWizard().getBase().getRootCategory());
+
+	   categoryPageList = new ArrayList();
+	   addCategoriesPages(categoryPageList);
+
       return categoryPageList;
    }
 
    public void setCategoryPageList(List categoryPageList) {
-      this.categoryPageList = categoryPageList;
+	   this.categoryPageList = categoryPageList;
    }
 
    protected List addCategoriesPages(List categoryPages) {
-      if (getParent().getCurrent().getBase().getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL)) {
-         for (Iterator i=getBase().getChildCategories().iterator();i.hasNext();) {
-            CompletedWizardCategory category = (CompletedWizardCategory) i.next();
-            DecoratedCategory decoratedCategory = new DecoratedCategory(
-                  this.getCategory(), category.getCategory(), getParent(), getCategory().getIndent()+1);
-            DecoratedCompletedCategory completed = new DecoratedCompletedCategory(getParent(), decoratedCategory, category);
-            categoryPages.add(completed);
-            if (category.isExpanded()) {
-               completed.addCategoriesPages(categoryPages);
-            }
-         }
-      }
 
-      for (Iterator i=getBase().getChildPages().iterator();i.hasNext();) {
-         CompletedWizardPage page = (CompletedWizardPage) i.next();
-         DecoratedWizardPage decoratedPage = new DecoratedWizardPage(this.getCategory(),
-            page.getWizardPageDefinition(), getParent(), getCategory().getIndent()+1);
-         DecoratedCompletedPage completedPage = new DecoratedCompletedPage(getParent(), decoratedPage, page);
-         categoryPages.add(completedPage);
-      }
-      return categoryPages;
+	   if (getParent().getCurrent().getBase().getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL)) {
+		   for (Iterator i=getBase().getChildCategories().iterator();i.hasNext();) {
+			   CompletedWizardCategory category = (CompletedWizardCategory) i.next();
+			   DecoratedCategory decoratedCategory = new DecoratedCategory(
+					   this.getCategory(), category.getCategory(), getParent(), getCategory().getIndent()+1);
+			   DecoratedCompletedCategory completed = new DecoratedCompletedCategory(getParent(), decoratedCategory, category);
+			   categoryPages.add(completed);
+			   completed.addCategoriesPages(categoryPages);
+		   }
+	   }
+
+	   for (Iterator i=getBase().getChildPages().iterator();i.hasNext();) {
+		   CompletedWizardPage page = (CompletedWizardPage) i.next();
+		   DecoratedWizardPage decoratedPage = new DecoratedWizardPage(this.getCategory(),
+				   page.getWizardPageDefinition(), getParent(), getCategory().getIndent()+1);
+		   DecoratedCompletedPage completedPage = new DecoratedCompletedPage(getParent(), decoratedPage, page);
+		   categoryPages.add(completedPage);
+	   }
+	   return categoryPages;
+
+
    }
 
    public DecoratedCategoryChild getCategoryChild() {
@@ -122,4 +129,9 @@ public class DecoratedCompletedCategory {
       getParent().getCurrent().getRunningWizard().getRootCategory().setCategoryPageList(null);
       return null;
    }
+   
+   public String getClassInfo(){
+	   return this.classInfo;
+   }
+   
 }
