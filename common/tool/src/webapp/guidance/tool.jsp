@@ -25,7 +25,7 @@
                <sakai:instruction_message value="#{common_msgs.instruction_message}" />
                <sakai:inputRichText value="#{guidance.current.instruction.base.text}"
                   attachedFiles="#{guidance.current.instruction.attachmentLinks}"
-                  rows="15" cols="60" buttonSet="large" showXPath="false" />
+                  height="200" width="450" buttonSet="large" showXPath="false" />
                <f:subview id="instrItems" rendered="#{not empty guidance.current.instruction.attachments}">
 			  <%--TODO nice to make this list render as an ul with an attachList class --%> 
                <sakai:flat_list value="#{guidance.current.instruction.attachments}" var="material">
@@ -66,7 +66,7 @@
                <sakai:instruction_message value="#{common_msgs.example_message}" />
                <sakai:inputRichText value="#{guidance.current.example.base.text}"
                   attachedFiles="#{guidance.current.example.attachmentLinks}"
-                  rows="15" cols="60" buttonSet="large" showXPath="false" />
+                  height="200" width="450" buttonSet="large" showXPath="false" />
                <f:subview id="exampleItems" rendered="#{not empty guidance.current.example.attachments}">
 			   <%--TODO nice to make this list render as an ul with an attachList class --%>
                <sakai:flat_list value="#{guidance.current.example.attachments}" var="material">
@@ -109,7 +109,7 @@
                <sakai:instruction_message value="#{common_msgs.rationale_message}" />
                <sakai:inputRichText value="#{guidance.current.rationale.base.text}"
                   attachedFiles="#{guidance.current.rationale.attachmentLinks}"
-                  rows="15" cols="60" buttonSet="large" showXPath="false" />
+                  height="200" width="450" buttonSet="large" showXPath="false" />
              <f:subview id="rationaleItems" rendered="#{not empty guidance.current.rationale.attachments}">
 			 <%--TODO nice to make this list render as an ul with an attachList class --%>
 			 	<sakai:flat_list value="#{guidance.current.rationale.attachments}" var="material">
