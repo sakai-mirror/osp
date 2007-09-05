@@ -50,6 +50,11 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.assignment.cover.AssignmentService;
+import org.sakaiproject.assignment.api.AssignmentSubmission;
+import org.sakaiproject.assignment.api.Assignment;
+import org.sakaiproject.user.api.User;
+
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
@@ -60,6 +65,8 @@ import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.assignment.AssignmentHelper;
 
 public class ViewMatrixController extends AbstractMatrixController implements FormController, LoadObjectController {
 
@@ -184,6 +191,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
             nodeList.addAll(getMatrixManager().getPageForms(cell.getWizardPage()));
             cellBean.setCell(cell);
             cellBean.setNodes(nodeList);
+            cellBean.setAssignments(hasAssignments(cell.getWizardPage(), matrix.getOwner()));
             row.add(cellBean);
          }
          matrixContents.add(row);
@@ -249,6 +257,34 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       return model;
    }
    
+	/**
+	 ** Return true if matrix owner has submitted assignments associated with this cell
+	 **/
+	protected boolean hasAssignments(WizardPage wizPage, Agent owner) {
+      boolean hasAssignments = false;
+      
+		try {
+			User user = UserDirectoryService.getUser(owner.getId().getValue());
+			ArrayList assignments = 
+				AssignmentHelper.getSelectedAssignments(wizPage.getPageDefinition().getAttachments());
+			
+			for ( Iterator it=assignments.iterator(); it.hasNext(); ) {
+				Assignment assign = (Assignment)it.next();
+				AssignmentSubmission assignSubmission = AssignmentService.getSubmission( assign.getId(),
+																												 user );
+				if (assignSubmission != null) {
+					hasAssignments = true;
+               break;
+            }
+			}
+		}
+		catch ( Exception e ) {
+			logger.warn(".hasAssignments: ",  e);
+		}
+		
+		return hasAssignments;
+	}
+
    /**
     * Extract the site page id from the current request.
     * 

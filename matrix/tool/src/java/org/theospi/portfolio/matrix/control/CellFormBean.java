@@ -32,6 +32,7 @@ public class CellFormBean {
    private Cell cell;
    private List nodes;
    private String[] selectedArtifacts;
+   private boolean hasAssignments = false;
 
    /**
     * @return
@@ -74,4 +75,19 @@ public class CellFormBean {
     public void setSelectedArtifacts(String[] selectedArtifacts) {
         this.selectedArtifacts = selectedArtifacts;
     }
+    
+   /**
+    * @param boolean
+    */
+   public void setAssignments(boolean hasAssignments) {
+      this.hasAssignments = hasAssignments;
+   }
+
+   /**
+    * @param cell
+    */
+   public boolean getAssignments() {
+      return hasAssignments;
+   }
+    
 }
