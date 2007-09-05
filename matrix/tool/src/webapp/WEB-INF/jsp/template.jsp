@@ -19,9 +19,11 @@
           media="all" />
     <meta http-equiv="Content-Style-Type" content="text/css" />
     <title><%= org.sakaiproject.tool.cover.ToolManager.getCurrentTool().getTitle()%></title>
-    <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js">
+    <script type="text/javascript"  src="/library/js/headscripts.js">
     </script>
-    <script language="JavaScript" src="/osp-common-tool/js/eport.js"></script>
+    <script type="text/javascript" src="/osp-common-tool/js/eport.js"></script>
+    	<script type="text/javascript" language="JavaScript" src="/library/js/jquery-1.1.2.js">
+		</script>
   <%
       String panelId = request.getParameter("panel");
       if (panelId == null) {
@@ -30,7 +32,7 @@
 
   %>
 
-  <script language="javascript">
+  <script type="text/javascript">
    function resetHeight() {
       setMainFrameHeight('<%= org.sakaiproject.util.Validator.escapeJavascript(panelId)%>');
    }
@@ -44,7 +46,6 @@
    }
   </script>
   </head>
-
   <body onload="loaded();">
       <div class="portletBody">
          <c:if test="${not empty requestScope.panelId}"><div class="ospEmbedded"></c:if>
@@ -53,4 +54,3 @@
       </div>
    </body>
 </html>
-
