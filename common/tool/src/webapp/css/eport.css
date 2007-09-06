@@ -158,3 +158,13 @@ font-weight: bold;
 	  padding:.3em 0;	
 
  }
+.fieldsetVis{
+	border:1px solid #ccc;
+	padding:1em
+}
+.fieldsetVis legend{
+	border:1px solid #ccc;
+	font-size: 120%;
+	color:gray;
+	padding:.3em	
+	}

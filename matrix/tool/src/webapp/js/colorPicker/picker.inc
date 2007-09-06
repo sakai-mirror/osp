@@ -1,4 +1,4 @@
-<script>
+<script type="text/javascript">
 // Title: Tigra Color Picker
 // URL: http://www.softcomplex.com/products/tigra_color_picker/
 // Version: 1.1
