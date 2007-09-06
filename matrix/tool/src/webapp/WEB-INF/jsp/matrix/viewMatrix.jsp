@@ -128,8 +128,11 @@ function hrefViewCell(pageId) {
                                	alt="<c:out value="${node.name}"/>" 
                                	src="/library/image/<osp-c:contentTypeMap fileType="${node.mimeType}" mapType="image" />"/>
                         </c:forEach>
-                        <c:if test="${cellBean.assignments}">
-		               		<img src = '/library/image/sakai/assignment.gif' border= '0' alt ='' mapType="image" />
+                        <c:if test="${ !(empty cellBean.assignments)}">
+                          <br/>&nbsp;
+                          <c:forEach var="node" items="${cellBean.assignments}">
+		               	   	<img src = '/library/image/sakai/assignment.gif' border= '0' alt ='' mapType="image" />
+                           </c:forEach>
                         </c:if>
                      </td>
                  </c:forEach>

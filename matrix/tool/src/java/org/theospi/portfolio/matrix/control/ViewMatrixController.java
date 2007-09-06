@@ -191,7 +191,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
             nodeList.addAll(getMatrixManager().getPageForms(cell.getWizardPage()));
             cellBean.setCell(cell);
             cellBean.setNodes(nodeList);
-            cellBean.setAssignments(hasAssignments(cell.getWizardPage(), matrix.getOwner()));
+            cellBean.setAssignments(getAssignments(cell.getWizardPage(), matrix.getOwner()));
             row.add(cellBean);
          }
          matrixContents.add(row);
@@ -260,8 +260,8 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 	/**
 	 ** Return true if matrix owner has submitted assignments associated with this cell
 	 **/
-	protected boolean hasAssignments(WizardPage wizPage, Agent owner) {
-      boolean hasAssignments = false;
+	protected List getAssignments(WizardPage wizPage, Agent owner) {
+      ArrayList submissions = new ArrayList();
       
 		try {
 			User user = UserDirectoryService.getUser(owner.getId().getValue());
@@ -272,17 +272,15 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 				Assignment assign = (Assignment)it.next();
 				AssignmentSubmission assignSubmission = AssignmentService.getSubmission( assign.getId(),
 																												 user );
-				if (assignSubmission != null) {
-					hasAssignments = true;
-               break;
-            }
+				if (assignSubmission != null && assignSubmission.getSubmitted())
+					submissions.add(assignSubmission);
 			}
 		}
 		catch ( Exception e ) {
-			logger.warn(".hasAssignments: ",  e);
+			logger.warn(".getAssignments: ",  e);
 		}
 		
-		return hasAssignments;
+		return submissions;
 	}
 
    /**
