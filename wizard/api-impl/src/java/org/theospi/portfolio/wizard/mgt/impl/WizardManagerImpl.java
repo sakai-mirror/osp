@@ -158,20 +158,12 @@ public class WizardManagerImpl extends HibernateDaoSupport
    private MatrixManager matrixManager;
    private LockManager lockManager;
    
-   private static String SITE_CACHE_NAME = "wizardSiteCache";
    private Cache siteCache = null;
    private String importFolderName;
 
    protected void init() throws Exception {
       
       logger.info("init()");
-      CacheManager cacheManager = CacheManager.create();
-      if (cacheManager.cacheExists(SITE_CACHE_NAME))
-         cacheManager.removeCache(SITE_CACHE_NAME);
-      Cache memoryOnlyCache = new Cache(SITE_CACHE_NAME, 500, false, false, 60, 10);
-      cacheManager.addCache(memoryOnlyCache);
-      siteCache = cacheManager.getCache(SITE_CACHE_NAME);
-
    }
 
    
@@ -2450,11 +2442,29 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
 
+/**
+ * @return the siteCache
+ */
+public Cache getSiteCache()
+{
+	return siteCache;
+}
+
    public EventService getEventService() {
 	   return eventService;
    }
    public void setEventService(EventService eventService) {
 	   this.eventService = eventService;
    }
+
+
+
+/**
+ * @param siteCache the siteCache to set
+ */
+public void setSiteCache(Cache siteCache)
+{
+	this.siteCache = siteCache;
+}
 
 }
