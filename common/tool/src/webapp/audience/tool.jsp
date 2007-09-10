@@ -47,7 +47,7 @@
                   <ospx:xheadertitle id="userTitle" value="#{common_msgs.audience_portfolio_user_title}" />
                </c:if>
                <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-                  <h:panelGrid id="transferUserTable" columns="3" columnClasses="available,transferButtons,selected">
+                  <h:panelGrid id="transferUserTable" columns="3" columnClasses="available,transferButtons,selected" summary="#{common_msgs.name_table_summary}">
 
                      <h:panelGroup>
                         <ospx:splitarea direction="vertical">
@@ -160,8 +160,7 @@
                   <ospx:xheadertitle id="roleTitle" value="#{common_msgs.audience_portfolio_role_title}" />
                </c:if>
                <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-                  <h:panelGrid id="transferRoleTable" columns="3" columnClasses="available,transferButtons,selected">
-
+                  <h:panelGrid id="transferRoleTable" columns="3" columnClasses="available,transferButtons,selected"  summary="#{common_msgs.role_table_summary}">
                      <h:panelGroup>
                         <ospx:splitarea direction="vertical">
                            <ospx:splitsection valign="top">
