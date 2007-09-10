@@ -25,10 +25,9 @@
                <sakai:instruction_message value="#{common_msgs.instruction_message}" />
                <sakai:inputRichText value="#{guidance.current.instruction.base.text}"
                   attachedFiles="#{guidance.current.instruction.attachmentLinks}"
-                  height="200" width="450" buttonSet="large" showXPath="false" />
+                  rows="23"  cols="100"  buttonSet="small" showXPath="false" />
                <f:subview id="instrItems" rendered="#{not empty guidance.current.instruction.attachments}">
-			  <%--TODO nice to make this list render as an ul with an attachList class --%> 
-               <sakai:flat_list value="#{guidance.current.instruction.attachments}" var="material">
+               <sakai:flat_list value="#{guidance.current.instruction.attachments}" var="material" style="margin:1em 1em 0 1em;width:auto" summary="#{common_msgs.item_list_summary}">
                   <h:column>
                      <h:outputLink title="#{material.displayName}"
                         value="#{material.fullReference.base.url}" target="_blank">
@@ -39,23 +38,16 @@
                   </h:column>
                </sakai:flat_list>
 				<sakai:button_bar rendered="true">
-				<%--TODO - change wording to add/drop items --%>
 				<sakai:button_bar_item id="manageInstructionItems" action="#{guidance.current.instruction.processActionManageAttachments}"
-				   value="#{common_msgs.manage_instruction}" />
+				   value="#{common_msgs.manage_instruction_edit}" />
 				</sakai:button_bar>
                </f:subview>
                <f:subview id="instrNoItems" rendered="#{empty guidance.current.instruction.attachments}">
-               <sakai:flat_list value="#{common_msgs.no_items}" var="material">
-                  <h:column>
-                     <h:outputText value="#{material}" />
-                     <f:facet name="footer">
-                        <sakai:button_bar rendered="true">
-                           <sakai:button_bar_item id="manageInstructionItems" action="#{guidance.current.instruction.processActionManageAttachments}"
-                           value="#{common_msgs.manage_instruction}" />
-                        </sakai:button_bar>
-                     </f:facet>
-                  </h:column>
-               </sakai:flat_list>
+				  	<sakai:instruction_message value="#{material}"  />
+					<sakai:button_bar rendered="true">
+					   <sakai:button_bar_item id="manageInstructionItems" action="#{guidance.current.instruction.processActionManageAttachments}"
+					   value="#{common_msgs.manage_instruction_add}" />
+					</sakai:button_bar>
                </f:subview>
       </ospx:xheaderdrawer>
   </ospx:xheader>
@@ -66,10 +58,9 @@
                <sakai:instruction_message value="#{common_msgs.example_message}" />
                <sakai:inputRichText value="#{guidance.current.example.base.text}"
                   attachedFiles="#{guidance.current.example.attachmentLinks}"
-                  height="200" width="450" buttonSet="large" showXPath="false" />
+                  rows="23"  cols="100"  buttonSet="small" showXPath="false" />
                <f:subview id="exampleItems" rendered="#{not empty guidance.current.example.attachments}">
-			   <%--TODO nice to make this list render as an ul with an attachList class --%>
-               <sakai:flat_list value="#{guidance.current.example.attachments}" var="material">
+               <sakai:flat_list value="#{guidance.current.example.attachments}" var="material" style="margin:1em 1em 0 1em;width:auto" summary="#{common_msgs.item_list_summary}">
                   <h:column>
                      <h:outputLink title="#{material.displayName}"
                         value="#{material.fullReference.base.url}" target="_blank">
@@ -77,28 +68,20 @@
                         <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
                         <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
-                     <f:facet name="footer">
-                        <sakai:button_bar rendered="true">
-                           <sakai:button_bar_item id="manageExampleItems" action="#{guidance.current.example.processActionManageAttachments}"
-                           value="#{common_msgs.manage_instruction}" />
-                        </sakai:button_bar>
-                     </f:facet>
                   </h:column>
                </sakai:flat_list>
+			   <sakai:button_bar rendered="true">
+                  <sakai:button_bar_item id="manageExampleItems" action="#{guidance.current.example.processActionManageAttachments}"
+				  	value="#{common_msgs.manage_instruction_edit}" />
+				</sakai:button_bar>
+
                </f:subview>
                <f:subview id="exampleNoItems" rendered="#{empty guidance.current.example.attachments}">
-               <sakai:flat_list value="#{common_msgs.no_items}" var="material">
-                  <h:column>
-                     <h:outputText value="#{material}" />
-					 	<%--TODO - change wording to add/drop items --%>
-                     <f:facet name="footer">
-                        <sakai:button_bar rendered="true">
-                           <sakai:button_bar_item id="manageExampleItems" action="#{guidance.current.example.processActionManageAttachments}"
-                           value="#{common_msgs.manage_instruction}" />
-                        </sakai:button_bar>
-                     </f:facet>
-                  </h:column>
-               </sakai:flat_list>
+				 <sakai:instruction_message value="#{material}"  />
+				<sakai:button_bar rendered="true">
+				   <sakai:button_bar_item id="manageExampleItems" action="#{guidance.current.example.processActionManageAttachments}"
+				   value="#{common_msgs.manage_instruction_add}" />
+				</sakai:button_bar>
                </f:subview>
       </ospx:xheaderdrawer>
   </ospx:xheader>
@@ -109,10 +92,9 @@
                <sakai:instruction_message value="#{common_msgs.rationale_message}" />
                <sakai:inputRichText value="#{guidance.current.rationale.base.text}"
                   attachedFiles="#{guidance.current.rationale.attachmentLinks}"
-                  height="200" width="450" buttonSet="large" showXPath="false" />
+                  rows="23"  cols="100"  buttonSet="small" showXPath="false" />
              <f:subview id="rationaleItems" rendered="#{not empty guidance.current.rationale.attachments}">
-			 <%--TODO nice to make this list render as an ul with an attachList class --%>
-			 	<sakai:flat_list value="#{guidance.current.rationale.attachments}" var="material">
+			 	<sakai:flat_list value="#{guidance.current.rationale.attachments}" var="material"  style="margin:1em 1em 0 1em;width:auto" summary="#{common_msgs.item_list_summary}">
                   <h:column>
                      <h:outputLink title="#{material.displayName}"
                         value="#{material.fullReference.base.url}" target="_blank">
@@ -120,28 +102,19 @@
                         <h:graphicImage id="rationaleFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
                         <h:outputText value="#{material.displayName}"/>
                      </h:outputLink>
-                     <f:facet name="footer">
-                        <sakai:button_bar rendered="true">
-                           <sakai:button_bar_item id="manageRationaleItems" action="#{guidance.current.rationale.processActionManageAttachments}"
-                           value="#{common_msgs.manage_instruction}" />
-                        </sakai:button_bar>
-                     </f:facet>
                   </h:column>
                </sakai:flat_list>
+				<sakai:button_bar rendered="true">
+				   <sakai:button_bar_item id="manageRationaleItems" action="#{guidance.current.rationale.processActionManageAttachments}"
+				   value="#{common_msgs.manage_instruction_edit}" />
+				</sakai:button_bar>
                </f:subview>
                <f:subview id="rationaleNoItems" rendered="#{empty guidance.current.rationale.attachments}">
-               <sakai:flat_list value="#{common_msgs.no_items}" var="material">
-                  <h:column>
-                     <h:outputText value="#{material}" />
-					 <%--TODO - change wording to add/drop items --%>
-                     <f:facet name="footer">
-                        <sakai:button_bar rendered="true">
-                           <sakai:button_bar_item id="manageRationaleItems" action="#{guidance.current.rationale.processActionManageAttachments}"
-                           value="#{common_msgs.manage_instruction}" />
-                        </sakai:button_bar>
-                     </f:facet>
-                  </h:column>
-               </sakai:flat_list>
+				 <sakai:instruction_message value="#{material}"  />
+					<sakai:button_bar rendered="true">
+					   <sakai:button_bar_item id="manageRationaleItems" action="#{guidance.current.rationale.processActionManageAttachments}"
+					   value="#{common_msgs.manage_instruction_add}" />
+					</sakai:button_bar>
                </f:subview>
       </ospx:xheaderdrawer>
   </ospx:xheader>
