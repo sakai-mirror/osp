@@ -34,89 +34,116 @@
 </c:if>
 
 
-
-<osp:url var="listUrl" value="listStyle.osp"/>
-<osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
-
-<h3><fmt:message key="title_styleManager"/></h3>
+<div class="navPanel">
+	<div class="viewNav">
+		<c:if test="${can.create}">
+			<h3><fmt:message key="title_styleManager"/></h3>
+		</c:if>	
+		<c:if test="${!(can.create)}">
+			<h3><fmt:message key="title_styleUser"/></h3>
+		</c:if>
+	</div>
+	<osp:url var="listUrl" value="listStyle.osp"/>
+	<osp:listScroll listUrl="${listUrl}" className="listNav" />
+</div>	
 
 <c:if test="${not empty styleError}">
    <div class="validation"><fmt:message key="${styleError}"/></div>
 </c:if>
 
-<table class="listHier" cellspacing="0" >
-   <thead>
-      <tr>
-         <th scope="col"></th>
-         <th scope="col"><fmt:message key="table_header_name"/></th>
-         <th scope="col"><fmt:message key="table_header_description"/></th>
-         <th scope="col"><fmt:message key="table_header_owner"/></th>
-         <th scope="col"><fmt:message key="table_header_published"/></th>
-      </tr>
-   </thead>
-   <tbody>
-  <c:forEach var="style" items="${styles}">
-    <TR>
-      <td>&nbsp;
-         <c:if test="${selectedStyle == style.id}">
-            <img src="<osp:url value="/img/arrowhere.gif"/>" title="Selected Style" />
-         </c:if>
-      </td>
-      <TD nowrap>
-         <c:out value="${style.name}" />
-         <c:set var="hasFirstAction" value="false" />
-         <div class="itemAction">
-             <c:if test="${can.globalPublish && (style.globalState == 0 || style.globalState == 1) && isGlobal}">
-                 <c:if test="${hasFirstAction}" > | </c:if>
-                 <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=global"><fmt:message key="table_action_publish"/></a>
-             </c:if>
-             
-             <c:if test="${selectableStyle != 'true' && can.suggestGlobalPublish && style.globalState == 0 && !isGlobal}">
-                 <c:if test="${hasFirstAction}" > | </c:if>
-                 <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=suggestGlobal"><fmt:message key="table_action_suggest_global_publish"/></a>
-             </c:if>
-             
-             <c:if test="${can.edit}">
-               <c:if test="${hasFirstAction}" > | </c:if>
-               <a href="<osp:url value="editStyle.osp"/>&style_id=<c:out value="${style.id.value}" />"><fmt:message key="table_action_edit"/></a>
-               <c:set var="hasFirstAction" value="true" />
-             </c:if>
-    
-             <c:if test="${can.delete}">
-                 <c:if test="${hasFirstAction}" > | </c:if>
-                 <c:set var="hasFirstAction" value="true" />
-                 <a onclick="return confirmDeletion();"
-                   href="<osp:url value="deleteStyle.osp"/>&style_id=<c:out value="${style.id.value}" />"><fmt:message key="table_action_delete"/></a>
-             </c:if>
-             
-             <c:if test="${selectableStyle == 'true' and selectedStyle != style.id.value}">
-                 <c:if test="${hasFirstAction}" > | </c:if>
-                 <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="selectStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&selectAction=on"><fmt:message key="table_action_select"/></a>
-             </c:if>
-             
-             <c:if test="${selectableStyle == 'true' and selectedStyle == style.id.value}">
-                 <c:if test="${hasFirstAction}" > | </c:if>
-                 <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="selectStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&selectAction=off"><fmt:message key="table_action_unselect"/></a>
-             </c:if>
-             
-         </div>
-      </TD>
-      <TD><c:out value="${style.description}" /></TD>
-      <TD><c:out value="${style.owner.displayName}" /></TD>
-      <TD><fmt:message key="style_published_status${style.globalState}"/></TD>
-    </TR>
+<c:if test="${ empty styles}">
+	<p class="instruction">
+	<fmt:message key="table_no_items_message"/>
+	<c:if test="${can.create}">
+			<fmt:message key="table_no_items_message_add"/>
+		</c:if>
+	</p>
+</c:if>
 
-  </c:forEach>
-  
-    </tbody>
-  </table>
+
+<c:if test="${not empty styles}">
+	<table class="listHier lines nolines " cellspacing="0"  summary="<fmt:message key="table_summary"/>">
+	   <thead>
+		  <tr>
+			 <th scope="col" class="attach"></th>
+			 <th scope="col"><fmt:message key="table_header_name"/></th>
+			 <th scope="col"></th>
+			 <th scope="col"><fmt:message key="table_header_owner"/></th>
+			<th scope="col"><fmt:message key="table_header_published"/></th>
+		  </tr>
+	   </thead>
+	   <tbody>
+	  <c:forEach var="style" items="${styles}">
+		<tr>
+		  <td class="attach">
+			 <c:if test="${selectedStyle == style.id}">
+				<img src="<osp:url value="/img/arrowhere.gif"/>" title="<fmt:message key="table_selected_indicator"/>" alt="<fmt:message key="table_selected_indicator"/>"/>
+			 </c:if>
+		  </td>
+		  <td>
+			 <c:out value="${style.name}" />
+		</td>
+		<td>
+			 <c:set var="hasFirstAction" value="false" />
+			 <div class="itemAction">
+				 <c:if test="${can.globalPublish && (style.globalState == 0 || style.globalState == 1) && isGlobal}">
+					 <c:if test="${hasFirstAction}" > | </c:if>
+					 <c:set var="hasFirstAction" value="true" />
+					 <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=global"><fmt:message key="table_action_publish"/></a>
+				 </c:if>
+				 
+				 <c:if test="${selectableStyle != 'true' && can.suggestGlobalPublish && style.globalState == 0 && !isGlobal}">
+					 <c:if test="${hasFirstAction}" > | </c:if>
+					 <c:set var="hasFirstAction" value="true" />
+					 <a href="<osp:url value="publishStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&publishTo=suggestGlobal"><fmt:message key="table_action_suggest_global_publish"/></a>
+				 </c:if>
+				 
+				 <c:if test="${can.edit}">
+				   <c:if test="${hasFirstAction}" > | </c:if>
+				   <a href="<osp:url value="editStyle.osp"/>&style_id=<c:out value="${style.id.value}" />"><fmt:message key="table_action_edit"/></a>
+				   <c:set var="hasFirstAction" value="true" />
+				 </c:if>
+		
+				 <c:if test="${can.delete}">
+					 <c:if test="${hasFirstAction}" > | </c:if>
+					 <c:set var="hasFirstAction" value="true" />
+					 <a onclick="return confirmDeletion();"
+					   href="<osp:url value="deleteStyle.osp"/>&style_id=<c:out value="${style.id.value}" />"><fmt:message key="table_action_delete"/></a>
+				 </c:if>
+				 
+				 <c:if test="${selectableStyle == 'true' and selectedStyle != style.id.value}">
+					 <c:if test="${hasFirstAction}" > | </c:if>
+					 <c:set var="hasFirstAction" value="true" />
+					 <a href="<osp:url value="selectStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&selectAction=on"><fmt:message key="table_action_select"/></a>
+				 </c:if>
+				 
+				 <c:if test="${selectableStyle == 'true' and selectedStyle == style.id.value}">
+					 <c:if test="${hasFirstAction}" > | </c:if>
+					 <c:set var="hasFirstAction" value="true" />
+					 <a href="<osp:url value="selectStyle.osp"/>&style_id=<c:out value="${style.id.value}" />&selectAction=off"><fmt:message key="table_action_unselect"/></a>
+				 </c:if>
+			 </div>
+		  </td>
+		  <td><c:out value="${style.owner.displayName}" /></td>
+		<td><fmt:message key="style_published_status${style.globalState}"/></td>
+		</tr>
+		<c:if test="${!(empty style.description)}">
+			<tr  class="exclude">
+				  <td colspan="5">
+					<div class="instruction indnt2 textPanelFooter">
+						<c:out value="${style.description}" />		
+						</div>
+				  </td>
+			</tr>	  
+		</c:if>
+	  </c:forEach>
+	  
+		</tbody>
+	  </table>
+	</c:if>  
    <div class="act">
       <c:if test="${selectableStyle == 'true'}">
          <input type="button" name="goBack" class="active" value="<fmt:message key="button_goback"/>"
-            onclick="window.document.location='<osp:url value="selectStyle.osp"/>'"/>
+            onclick="window.document.location='<osp:url value="selectStyle.osp"/>'" accesskey="x"/>
       </c:if>
    </div>
