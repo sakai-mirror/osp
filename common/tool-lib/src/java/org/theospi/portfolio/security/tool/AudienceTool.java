@@ -564,7 +564,7 @@ public class AudienceTool extends HelperToolBase {
          return roleName;
       }
       else {
-         StringBuffer buf = new StringBuffer( roleName );
+         StringBuilder buf = new StringBuilder( roleName );
          buf.append(" (");
          buf.append( site.getTitle() );
          buf.append(")");
@@ -944,7 +944,7 @@ public class AudienceTool extends HelperToolBase {
         String content = "";
 
         if (from != null && to != null) {
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             buf.setLength(0);
 
             // email body

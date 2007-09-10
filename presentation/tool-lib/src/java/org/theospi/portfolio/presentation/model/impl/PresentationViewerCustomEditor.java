@@ -74,7 +74,7 @@ public class PresentationViewerCustomEditor extends PropertyEditorSupport implem
    }
 
    public String getAsText() {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       for (Iterator i = ((Collection) getValue()).iterator(); i.hasNext();) {
          Agent agent = (Agent) i.next();
          buffer.append(agent.getId().getValue());

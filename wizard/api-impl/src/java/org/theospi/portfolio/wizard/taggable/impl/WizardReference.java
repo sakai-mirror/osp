@@ -97,7 +97,7 @@ public class WizardReference {
 	 * {@inheritDoc}
 	 */
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(REF_SEPARATOR);
 		sb.append(REF_BASE);
 		sb.append(REF_SEPARATOR);

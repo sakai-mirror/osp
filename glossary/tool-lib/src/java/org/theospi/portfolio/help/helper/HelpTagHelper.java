@@ -43,7 +43,7 @@ public class HelpTagHelper {
    {
       boolean wordState = true;
       boolean inPhrase = false;
-      StringBuffer buf = new StringBuffer();
+      StringBuilder buf = new StringBuilder();
       Collection foundWords = new HashSet();
       
       for (int i = 0; i < charCount; i++) {
@@ -79,7 +79,7 @@ public class HelpTagHelper {
             }
             writer.write(in);
 
-            buf = new StringBuffer();
+            buf = new StringBuilder();
          } else if (wordState) {
             buf.append(in);
          } else if (in == '>') {
@@ -96,7 +96,7 @@ public class HelpTagHelper {
       }
    }
 
-   static protected void handleLast(Writer out, StringBuffer buf, GlossaryEntry[] terms,
+   static protected void handleLast(Writer out, StringBuilder buf, GlossaryEntry[] terms,
                              boolean inPhrase, Collection foundWords, 
                              boolean firstOnly, boolean hover, boolean link) throws IOException {
       GlossaryEntry entry = searchGlossary(buf.toString(), terms);
@@ -160,9 +160,9 @@ public class HelpTagHelper {
    }
 
 
-   static protected void outputPhrase(Writer out, StringBuffer buf, Collection foundWords, GlossaryEntry[] terms, 
+   static protected void outputPhrase(Writer out, StringBuilder buf, Collection foundWords, GlossaryEntry[] terms, 
          boolean firstOnly, boolean hover, boolean link) throws IOException {
-      StringBuffer newBuf = new StringBuffer();
+      StringBuilder newBuf = new StringBuilder();
       boolean firstWord = false;
       boolean inPhrase = false;
 
@@ -201,7 +201,7 @@ public class HelpTagHelper {
                out.write(in);
             }
 
-            newBuf = new StringBuffer();
+            newBuf = new StringBuilder();
          }
          else if (isWordBoundary(in)) {
             out.write(in);
@@ -222,7 +222,7 @@ public class HelpTagHelper {
    }
 
    static protected String getMarkup(String originalTerm, GlossaryEntry entry, boolean hover, boolean link) {
-      StringBuffer markup = new StringBuffer();
+      StringBuilder markup = new StringBuilder();
       String url = ServerConfigurationService.getServerUrl();
       String linkName = url + getHelpManager().getGlossary().getUrl() + "?id=" + entry.getId();
       linkName += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();

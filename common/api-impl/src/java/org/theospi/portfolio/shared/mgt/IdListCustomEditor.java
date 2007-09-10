@@ -61,7 +61,7 @@ public class IdListCustomEditor  extends PropertyEditorSupport implements TypedP
 
       List ids = (List)getValue();
 
-      StringBuffer sb = new StringBuffer();
+      StringBuilder sb = new StringBuilder();
 
       for (Iterator i=ids.iterator();i.hasNext();) {
          Id id = (Id)i.next();

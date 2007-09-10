@@ -93,7 +93,7 @@ public class AssignmentHelper {
     **/
    public static String joinAssignmentList( List<Assignment> assignments )
    {
-      StringBuffer assignBuf = new StringBuffer("");
+      StringBuilder assignBuf = new StringBuilder("");
       for ( Iterator it=assignments.iterator(); it.hasNext(); ) 
       {
          Assignment assign = (Assignment)it.next();
@@ -110,7 +110,7 @@ public class AssignmentHelper {
     **/
    public static String joinAssignmentIdList( List<String> assignments )
    {
-      StringBuffer assignBuf = new StringBuffer("");
+      StringBuilder assignBuf = new StringBuilder("");
       for ( Iterator it=assignments.iterator(); it.hasNext(); ) 
       {
          String assignId = (String)it.next();

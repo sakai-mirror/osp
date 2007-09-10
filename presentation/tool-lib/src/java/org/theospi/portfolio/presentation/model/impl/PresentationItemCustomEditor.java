@@ -67,7 +67,7 @@ public class PresentationItemCustomEditor extends PropertyEditorSupport implemen
    }
 
    public String getAsText() {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       for (Iterator i = ((Collection) getValue()).iterator(); i.hasNext();) {
          PresentationItem item = (PresentationItem) i.next();
          buffer.append(item.getDefinition().getId().getValue() + "." +

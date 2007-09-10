@@ -56,7 +56,7 @@ public class ItemDefinitionMimeType implements Serializable {
    }
 
    public String toString() {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append(getPrimary());
       if (getSecondary() != null && getSecondary().length() > 0) {
          buffer.append("/");

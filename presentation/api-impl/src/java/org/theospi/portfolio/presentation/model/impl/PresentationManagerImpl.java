@@ -731,7 +731,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public Collection findGlobalTemplates() {
    
-      StringBuffer query = new StringBuffer( "from PresentationTemplate where published=? and site_id in (" );
+      StringBuilder query = new StringBuilder( "from PresentationTemplate where published=? and site_id in (" );
 
       for (Iterator i = getGlobalSites().iterator(); i.hasNext();) {
          String site = (String) i.next();
@@ -1062,7 +1062,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          includeOwnerCondition = " ) and ( creator_id != :ownerId )";
       }
 
-      StringBuffer queryBuf = new StringBuffer( "SELECT {osp_presentation_comment.*} " +
+      StringBuilder queryBuf = new StringBuilder( "SELECT {osp_presentation_comment.*} " +
          " FROM osp_presentation_comment {osp_presentation_comment}, osp_presentation p " +
          " WHERE {osp_presentation_comment}.presentation_id = p.id and " );
                                               
@@ -1144,7 +1144,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          orderBy = "{osp_presentation_comment}." + orderBy;
       }
 
-      StringBuffer queryBuf = new StringBuffer( "SELECT {osp_presentation_comment.*} " +
+      StringBuilder queryBuf = new StringBuilder( "SELECT {osp_presentation_comment.*} " +
          " FROM osp_presentation_comment {osp_presentation_comment}, osp_presentation p " +
             " WHERE {osp_presentation_comment}.presentation_id = p.id and " );
             
@@ -1691,14 +1691,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
    
    protected void processFile(Node node, Hashtable fileMap) throws IOException {
-      // read file into StringBuffer
+      // read file into StringBuilder
       InputStream is = null;
       try {
          is = node.getInputStream();
 
          byte[] buffer = new byte[1024 * 10];
 
-         StringBuffer sb = new StringBuffer();
+         StringBuilder sb = new StringBuilder();
 
          int read = is.read(buffer);
 
@@ -1722,7 +1722,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          }
 
          if (changed) {
-            // write StringBuffer out
+            // write StringBuilder out
             ContentResourceEdit cre = (ContentResourceEdit)node.getResource();
             cre.setContent(sb.toString().getBytes());
             getContentHosting().commitResource(cre);
@@ -1745,7 +1745,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
    }
 
-   protected boolean substituteFileId(StringBuffer sb, Id oldId, Id newId) {
+   protected boolean substituteFileId(StringBuilder sb, Id oldId, Id newId) {
       int index = sb.indexOf(oldId.getValue());
       boolean changed = false;
       while (index != -1) {

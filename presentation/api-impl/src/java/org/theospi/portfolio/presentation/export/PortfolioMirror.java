@@ -265,7 +265,7 @@ public class PortfolioMirror extends Mirror {
 			// convert the string to bytes in UTF-8
 			byte[] bytes = id.getBytes("UTF-8");
 
-			StringBuffer buf = new StringBuffer();
+			StringBuilder buf = new StringBuilder();
 			for (int i = 0; i < bytes.length; i++)
 			{
 				byte b = bytes[i];

@@ -62,7 +62,7 @@ public class MimeTypeCustomEditor extends PropertyEditorSupport implements Typed
    }
 
    public String getAsText() {
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       for (Iterator i = ((Collection) getValue()).iterator(); i.hasNext();) {
          ItemDefinitionMimeType item = (ItemDefinitionMimeType) i.next();
          buffer.append(item.getPrimary());

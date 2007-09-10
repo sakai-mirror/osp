@@ -42,7 +42,7 @@ public class DateSelectTag extends DateSelectPopupTag {
    public int doStartTag() throws JspException {
 
       try {
-         StringBuffer buffer = new StringBuffer();
+         StringBuilder buffer = new StringBuilder();
          buffer.append("<select name=\"" + getMonthSelectId() + "\" id=\"" + getMonthSelectId() + "\" onchange=\"blur();\">\n");
          buffer.append("<option value=\"\">\n");
          for (int i=1; i<13; i++){

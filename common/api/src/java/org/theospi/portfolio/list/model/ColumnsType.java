@@ -125,7 +125,7 @@ public class ColumnsType implements UserType {
     * @throws java.sql.SQLException
     */
    public void nullSafeSet(PreparedStatement st, Object value, int index) throws HibernateException, SQLException {
-      StringBuffer sb = new StringBuffer();
+      StringBuilder sb = new StringBuilder();
       List value1 = (List)value;
 
       for (Iterator i=value1.iterator();i.hasNext();) {

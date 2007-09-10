@@ -77,7 +77,7 @@ public class TemplateBuilderController extends AbstractPresentationController im
     }
 
    protected String prepareBody(String body){
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       buffer.append("<?xml version=\"1.0\" ?>\n" +
             "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\n" +
             "\t\n\t<xsl:template match=\"ospiPresentation\">");
@@ -179,7 +179,7 @@ public class TemplateBuilderController extends AbstractPresentationController im
 //	 TODO: 20050810 ContentHosting
 	   //FileArtifact artifact = (FileArtifact)getFileArtifactHome().load(fileId);
       //BufferedReader reader = new BufferedReader(new InputStreamReader(artifact.getFile()));
-      StringBuffer buffer = new StringBuffer();
+      StringBuilder buffer = new StringBuilder();
       //String line;
       //while ((line = reader.readLine()) != null){
       //   if (line == null) break;
