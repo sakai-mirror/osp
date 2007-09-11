@@ -237,6 +237,28 @@
       <property name="formView"><value>viewCell</value></property>
    </bean>
 
+   <bean id="viewAssignmentController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.ViewAssignmentController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.tool.api.SessionManager" />
+            </property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="gotoMatrix">viewCellRedirect</prop>
+            <prop key="gotoWizard">viewPageRedirect</prop>
+            <prop key="matrixError">listScaffoldingRedirect</prop>
+         </props>
+      </property>      
+      <property name="commandName"><value>cellBean</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellFormBean</value></property>
+      <property name="formView"><value>viewAssign</value></property>      
+   </bean>
+
    <bean id="sequentialWizardPageController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.SequentialWizardPageController">

@@ -448,7 +448,22 @@
       
       <c:forEach var="assign" items="${assignments}" varStatus="loopStatus">
          <tr>
-      	  <td><c:out value="${assign.assignment.title}"/></td><!-- tbd make a link -->
+      	  <td>
+              <c:if test="${assign.submitted}">
+                 <a href="<osp:url value="viewAssign.osp">
+                            <osp:param name="assign_ref" value="${assign.reference}" />
+                            <osp:param name="page_id" value="${cellBean.cell.wizardPage.id}" />
+                            <osp:param name="returnView" value="${returnView}" />
+                            <osp:param name="isMatrix" value="${isMatrix}" />
+                            <osp:param name="isWizard" value="${isWizard}" />
+                            </osp:url>">
+                            <c:out value="${assign.assignment.title}"/>
+                            </a>
+              </c:if>
+              <c:if test="${!assign.submitted}">
+                 <c:out value="${assign.assignment.title}"/>
+              </c:if>
+           </td>
       	  <td><c:out value="${assign.timeSubmittedString}"/></td>
       	  <td><c:out value="${assign.status}"/></td>
       	  <td>
