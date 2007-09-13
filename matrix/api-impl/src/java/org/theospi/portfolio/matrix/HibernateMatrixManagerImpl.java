@@ -2494,46 +2494,90 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       String eval_type = messages.getString("evaluation_device");
       String review_type = messages.getString("review_device");
       String page_form = messages.getString("page_form");
-      String cell_type = messages.getString("matrix_cell");
-      String page_type = messages.getString("wizard_page");
-      String wiz_type = messages.getString("wizard");
       
-      String matrixReflection = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(sc.wizardPageDefinition.reflectionDevice, sc.scaffolding.worksiteId, '" + refl_type + "', '" + cell_type + "', sc.wizardPageDefinition.title, sc.scaffolding.title) " +
+      String cellNameText = messages.getString("cell_name_text");
+      String matrixNameText = messages.getString("matrix_name_text");
+      String wizPageNameText = messages.getString("wiz_page_name_text");
+      String wizardNameText = messages.getString("wiz_name_text");
+      
+      String matrixReflection = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+      		   "sc.wizardPageDefinition.reflectionDevice, " +
+      		   "sc.scaffolding.worksiteId, " +
+      		   "'" + refl_type + "', " +
+      		   "concat('" + cellNameText + "', sc.wizardPageDefinition.title), " +
+      		   "concat('" + matrixNameText + "', sc.scaffolding.title)) " +
             "from ScaffoldingCell sc " +
             "where sc.wizardPageDefinition.reflectionDevice = :formId ";
-      String matrixEval = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(sc.wizardPageDefinition.evaluationDevice, sc.scaffolding.worksiteId, '" + eval_type + "', '" + cell_type + "', sc.wizardPageDefinition.title, sc.scaffolding.title) " +
+      String matrixEval = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+      		   "sc.wizardPageDefinition.evaluationDevice, " +
+      		   "sc.scaffolding.worksiteId, " +
+      		   "'" + eval_type + "', " +
+      		   "concat('" + cellNameText + "', sc.wizardPageDefinition.title), " +
+      		   "concat('" + matrixNameText + "', sc.scaffolding.title)) " +
             "From ScaffoldingCell sc " +
             "where sc.wizardPageDefinition.evaluationDevice = :formId ";
-      String matrixReview = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(sc.wizardPageDefinition.reviewDevice, sc.scaffolding.worksiteId, '" + review_type + "', '" + cell_type + "', sc.wizardPageDefinition.title, sc.scaffolding.title) " +
+      String matrixReview = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+      		   "sc.wizardPageDefinition.reviewDevice, " +
+      		   "sc.scaffolding.worksiteId, " +
+      		   "'" + review_type + "', " +
+      		   "concat('" + cellNameText + "', sc.wizardPageDefinition.title), " +
+      		   "concat('" + matrixNameText + "', sc.scaffolding.title)) " +
             "From ScaffoldingCell sc " +
             "where sc.wizardPageDefinition.reviewDevice = :formId ";
 
-      String wizardPageReflection = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(wpd.reflectionDevice, w.siteId, '" + refl_type + "', '" + page_type + "', wpd.title, w.name) " +
+      String wizardPageReflection = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+      		   "wpd.reflectionDevice, " +
+      		   "w.siteId, " +
+      		   "'" + refl_type + "', " +
+      		   "concat('" + wizPageNameText + "', wpd.title), " +
+      		   "concat('" + wizardNameText + "', w.name)) " +
             "From WizardPageSequence wps " +
             "join wps.wizardPageDefinition wpd " +
             "join wps.category c " +
             "join c.wizard w " +
             "where wpd.reflectionDevice = :formId ";
-      String wizardPageEval = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(wpd.evaluationDevice, w.siteId, '" + eval_type + "', '" + page_type + "', wpd.title, w.name) " +
+      String wizardPageEval = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+      		   "wpd.evaluationDevice, " +
+      		   "w.siteId, " +
+      		   "'" + eval_type + "', " +
+      		   "concat('" + wizPageNameText + "', wpd.title), " +
+      		   "concat('" + wizardNameText + "', w.name)) " +
             "From WizardPageSequence wps " +
             "join wps.wizardPageDefinition wpd " +
             "join wps.category c " +
             "join c.wizard w " +
             "where wpd.evaluationDevice = :formId ";
-      String wizardPageReview ="select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(wpd.reviewDevice, w.siteId, '" + review_type + "', '" + page_type + "', wpd.title, w.name) " +
+      String wizardPageReview ="select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+      		   "wpd.reviewDevice, " +
+      		   "w.siteId, " +
+      		   "'" + review_type + "', " +
+      		   "concat('" + wizPageNameText + "', wpd.title), " +
+      		   "concat('" + wizardNameText + "', w.name)) " +
             "From WizardPageSequence wps " +
             "join wps.wizardPageDefinition wpd " +
             "join wps.category c " +
             "join c.wizard w " +
             "where wpd.reviewDevice = :formId ";
 
-      String wizardReflection = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(w.reflectionDevice, w.siteId, '" + refl_type + "', '" + wiz_type + "', w.name) " +
+      String wizardReflection = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+      		   "w.reflectionDevice, " +
+      		   "w.siteId, " +
+      		   "'" + refl_type + "', " +
+      		   "concat('" + wizardNameText + "', w.name)) " +
             "from Wizard w " + 
             "where w.reflectionDevice = :formId ";
-      String wizardEvalation = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(w.evaluationDevice, w.siteId, '" + eval_type + "', '" + wiz_type + "', w.name) " +
+      String wizardEvalation = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+      		   "w.evaluationDevice, " +
+      		   "w.siteId, " +
+      		   "'" + eval_type + "', " +
+      		   "concat('" + wizardNameText + "', w.name)) " +
             "from Wizard w " +
             "where w.evaluationDevice = :formId ";
-      String wizardReview = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(w.reviewDevice, w.siteId, '" + review_type + "', '" + wiz_type + "', w.name) " +
+      String wizardReview = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+      		   "w.reviewDevice, " +
+      		   "w.siteId, " +
+      		   "'" + review_type + "', " +
+      		   "concat('" + wizardNameText + "', w.name)) " +
             "from Wizard w " +
             "where w.reviewDevice = :formId";
       
@@ -2549,7 +2593,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       
 		results.addAll(objectsWithForms);
       
-      String cellQueryString = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(af, sc.scaffolding.worksiteId, '" + page_form + "', '" + cell_type + "', sc.wizardPageDefinition.title, sc.scaffolding.title) " +
+      String cellQueryString = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+      		   "af, " +
+      		   "sc.scaffolding.worksiteId, " +
+      		   "'" + page_form + "', " +
+      		   "concat('" + cellNameText + "', sc.wizardPageDefinition.title), " +
+               "concat('" + matrixNameText + "', sc.scaffolding.title)) " +
       		"from ScaffoldingCell sc " +
       		"left join sc.wizardPageDefinition.additionalForms as af " +
       		"where af = :formId";
@@ -2557,7 +2606,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             cellQueryString, "formId", formId.getValue());
       results.addAll(cellAdditionalForms);
       
-      String wizPageQueryString = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(af, w.siteId, '" + page_form + "', '" + page_type + "', wpd.title, w.name) " +
+      String wizPageQueryString = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+      		   "af, " +
+      		   "w.siteId, " +
+      		   "'" + page_form + "', " +
+      		   "concat('" + wizPageNameText + "', wpd.title), " +
+      		   "concat('" + wizardNameText + "', w.name)) " +
       		"From WizardPageSequence wps " +
             "join wps.wizardPageDefinition wpd " +
             "join wps.category c " +

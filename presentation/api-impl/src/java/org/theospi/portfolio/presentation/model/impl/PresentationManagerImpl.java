@@ -3428,14 +3428,25 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       
       String propFormType = messages.getString("template_property_form");
       String itemDefType = messages.getString("item_definition");
+      String templateNameText = messages.getString("template_name_text");
+      String itemDefNameText = messages.getString("item_def_text");
       
       Collection objectsWithForms = getHibernateTemplate().find(
-         "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(t.propertyFormType, t.siteId, '" + propFormType + "', t.name) " +
+         "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+            "t.propertyFormType, " +
+            "t.siteId, " +
+            "'" + propFormType + "', " +
+            "concat('" + templateNameText + "', t.name)) " +
          "from PresentationTemplate t where t.propertyFormType = ?", 
          new Object[] {formId});
       results.addAll(objectsWithForms);
 
-      String queryString = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(def.type, def.presentationTemplate.siteId, '" + itemDefType + "', def.title, def.presentationTemplate.name) " +
+      String queryString = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+      		   "def.type, " +
+      		   "def.presentationTemplate.siteId, " +
+      		   "'" + itemDefType + "', " +
+      		   "concat('" + itemDefNameText + "', def.title), " +
+      		   "concat('" + templateNameText + "', def.presentationTemplate.name)) " +
       		"from PresentationItemDefinition def where " +
       		"def.type = ?";
       Collection additionalForms = getHibernateTemplate().find(queryString,
