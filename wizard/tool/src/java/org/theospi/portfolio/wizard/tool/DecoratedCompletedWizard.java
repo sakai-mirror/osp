@@ -20,9 +20,11 @@
 **********************************************************************************/
 package org.theospi.portfolio.wizard.tool;
 
+import java.util.ArrayList;
 import java.util.List;
-
+import javax.faces.model.SelectItem;
 import org.sakaiproject.metaobj.shared.model.Agent;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 
@@ -45,8 +47,10 @@ public class DecoratedCompletedWizard {
    private List reviews = null;
 
    private int submittedPages = 0;
+   private List statusArray;
 
    public DecoratedCompletedWizard() {
+
    }
 
    public DecoratedCompletedWizard(WizardTool parent, DecoratedWizard wizard, CompletedWizard base) {
@@ -91,7 +95,7 @@ public class DecoratedCompletedWizard {
    public void setRootCategory(DecoratedCompletedCategory rootCategory) {
       this.rootCategory = rootCategory;
    }
-
+   
    public String processSubmitWizard() {
       getParent().processSubmitWizard(getBase());
       return "submitted";
@@ -134,4 +138,28 @@ public class DecoratedCompletedWizard {
    public void setSubmittedPages(int submittedPages) {
       this.submittedPages = submittedPages;
    }
+   
+   public List getStatusLists(){	   
+	   if(statusArray == null){
+		   statusArray = new ArrayList(4);
+		   statusArray.add(new SelectItem(MatrixFunctionConstants.READY_STATUS,
+				   this.getParent().getMessageFromBundle(MatrixFunctionConstants.READY_STATUS)));
+		   statusArray.add(new SelectItem(MatrixFunctionConstants.PENDING_STATUS,
+				   this.getParent().getMessageFromBundle(MatrixFunctionConstants.PENDING_STATUS)));
+		   statusArray.add(new SelectItem(MatrixFunctionConstants.COMPLETE_STATUS,
+				   this.getParent().getMessageFromBundle(MatrixFunctionConstants.COMPLETE_STATUS)));
+		   statusArray.add(new SelectItem(MatrixFunctionConstants.LOCKED_STATUS,
+				   this.getParent().getMessageFromBundle(MatrixFunctionConstants.LOCKED_STATUS)));
+	   }
+	   return statusArray;
+   }
+   
+   
+   public String processManageStatus(){
+	   this.getParent().getWizardManager().saveWizard(this.getBase());
+   
+	   return "runWizard";
+   }
+   
+
 }

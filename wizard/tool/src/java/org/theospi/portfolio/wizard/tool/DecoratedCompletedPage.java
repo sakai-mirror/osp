@@ -34,7 +34,7 @@ import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.model.CompletedWizardPage;
-import org.theospi.portfolio.wizard.model.Wizard;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -128,5 +128,10 @@ public class DecoratedCompletedPage {
    
    public String getClassInfo(){
 	   return this.classInfo;
+   }
+   
+   public String getStatusThroughBundle(){
+	   return this.getParent().getMessageFromBundle("PAGE_STATUS", 
+			   new Object[]{this.getParent().getMessageFromBundle(this.getBase().getWizardPage().getStatus())});
    }
 }

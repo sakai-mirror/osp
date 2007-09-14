@@ -15,7 +15,11 @@
 <sakai:view>
 <h:form>
 	   
-
+	<sakai:tool_bar>
+      <sakai:tool_bar_item rendered="#{wizard.canCreate}"
+      action="manageWizardStatus"
+      value="#{msgs.manage_wizard_status}" />
+    </sakai:tool_bar>
 
    <h:outputText value="#{msgs.wizard_preview_title}" styleClass="validation" rendered="#{wizard.current.base.preview}"/>
 
@@ -37,10 +41,10 @@
 		<%@include file="showWizardOwnerMessage.jspf"%>
    </f:subview>
   
-   
+
    
    <f:subview id="instructionSV" rendered="#{(wizard.current.instruction.text != '' and wizard.current.instruction != null) || not empty wizard.current.instruction.attachments}">
- 		     		
+	
 		<ospx:xheader>
 			<ospx:xheadertitle id="instructionsHeader">
 				<h:outputText value="#{msgs.guidance_instructions}" />
@@ -136,7 +140,7 @@
          <h:commandLink action="#{item.page.processExecPage}" rendered="#{!item.page.category && !item.page.wizard && wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
          	<h:outputText value="#{item.page.title}"/>
          </h:commandLink>
-         <h:outputText value=" #{READY_STATUS} (status: #{item.base.wizardPage.status})" rendered="#{item.classInfo == 'completedPage'}" />
+         <h:outputText value=" #{item.statusThroughBundle}" rendered="#{item.classInfo == 'completedPage'}" />
        </f:subview>
       </h:column>
    
