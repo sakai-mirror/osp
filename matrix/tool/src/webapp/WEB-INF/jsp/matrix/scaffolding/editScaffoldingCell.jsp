@@ -31,9 +31,9 @@
 	</h3>
 
 	<c:if test="${empty helperPage}">
-		(<c:out value="${scaffoldingCell.scaffolding.rowLabel}"/>: <span class="highlight"><c:out value="${scaffoldingCell.rootCriterion.description}"/></span>; <c:out value="${scaffoldingCell.scaffolding.columnLabel}"/>: <span class="highlight"><span class="highlight"><c:out value="${scaffoldingCell.level.description}"/></span>) </h3>
-		</span>
-	</c:if>
+		(<c:out value="${scaffoldingCell.scaffolding.rowLabel}"/>: <span class="highlight"><c:out value="${scaffoldingCell.rootCriterion.description}"/></span>; <c:out value="${scaffoldingCell.scaffolding.columnLabel}"/>: <span class="highlight">
+		<c:out value="${scaffoldingCell.level.description}"/></span>) </h3>
+		</c:if>
 	<fieldset class="fieldsetVis">
 		<legend><fmt:message key="${pageInstructionsKey}"/></legend>
 		<div class="instruction"> 
