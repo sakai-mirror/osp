@@ -9,70 +9,96 @@
 <c:set var="imageLib" value="/library/image/"/>
 
 <form name="form" method="POST"
-   <dl>
-      <dt><osp:message key="hdr.assignment"/></dt>
-      <dd><c:out value="${submission.assignment.title}"/></dd>
-        
-      <dt><osp:message key="hdr.status"/></dt>
-      <dd><c:out value="${submission.status}"/></dd>
-
-      <c:if test="${submission.gradeReleased}">        
-         <dt><osp:message key="hdr.grade"/></dt>
-         <dd><c:out value="${submission.grade}"/></dd>
+	<h3>
+		<osp:message key="assignment.title"/>
+		<span class="highlight">- <c:out value="${submission.status}"/></span>
+	</h3>
+    <table class="itemSummary">
+		<tr>
+			<th>
+				<osp:message key="hdr.assignment.label"/>
+			</th>
+			<td>
+				<c:out value="${submission.assignment.title}"/>
+			</td>
+		</tr>
+		<tr>
+			<th>
+				<osp:message key="hdr.status"/>
+			</th>
+			<td>
+				<c:out value="${submission.status}"/>
+			</td>
+		</tr>
+		<c:if test="${submission.gradeReleased}">
+		<tr>
+			<th>
+				<osp:message key="hdr.grade"/>
+			</th>
+			<td>
+				<span class="highlight"><c:out value="${submission.grade}"/></span>
+			</td>
+		</tr>	
       </c:if>
+	 </table> 
         
-      <br/>
-      <dt><osp:message key="assign.instruct"/></dt>
-      <dd><c:out value="${submission.assignment.content.instructions}" escapeXml="false"/></dd>
+      <h4><osp:message key="assign.instruct"/></h4>
+      <div class="textPanel indnt2"><c:out value="${submission.assignment.content.instructions}" escapeXml="false"/></div>
       
       <c:if test="${not empty assignAttachments}">
-         <dt><osp:message key="assign.attach"/></dt>
-         <dd>
+         <h4><osp:message key="assign.attach"/></h4>
+         <ul class="attachList indnt2">
          <c:forEach var="attach" items="${assignAttachments}">
-            <img src="<c:out value='${imageLib}${attach.iconUrl}'/>" border="0"/>
-            <a href="${attach.url}" target="_blank"><c:out value="${attach.displayName}"/></a>
-            (<c:out value="${attach.size}"/>)<br/>
+		 	<li>
+				<img src="<c:out value='${imageLib}${attach.iconUrl}'/>" border="0"/>
+				<a href="${attach.url}" target="_blank"><c:out value="${attach.displayName}"/></a>
+				<span class="textPanelFooter">(<c:out value="${attach.size}"/>)</span>
+			</li>
          </c:forEach>
-         </dd>
+         </ul>
       </c:if>
       
-      <hr/>
+      <hr class="itemSeparator"/>
       
       <c:if test="${submission.submitted}">
          <c:if test="${not empty submission.feedbackFormattedText}">
-            <dt><osp:message key="assign.submission"/></dt>
-            <dd><c:out value="${submission.feedbackFormattedText}" escapeXml="false"/></dd>
+            <h4><osp:message key="assign.submission"/></h4>
+            <div class="textPanel indnt2"><c:out value="${submission.feedbackFormattedText}" escapeXml="false"/></div>
          </c:if>
           
          <c:if test="${not empty submitAttachments}">
-            <dt><osp:message key="assign.submit.attach"/></dt>
-            <dd>
+            <h4><osp:message key="assign.submit.attach"/></h4>
+           <ul class="attachList indnt2">
             <c:forEach var="attach" items="${submitAttachments}">
-               <img src="<c:out value='${imageLib}${attach.iconUrl}'/>" border="0"/>
+               <li>
+			   <img src="<c:out value='${imageLib}${attach.iconUrl}'/>" border="0"/>
                <a href="${attach.url}" target="_blank"><c:out value="${attach.displayName}"/></a>
-               (<c:out value="${attach.size}"/>)<br/>
+               <span class="textPanelFooter">(<c:out value="${attach.size}"/>)</span>
+			   </li>
             </c:forEach>
-            </dd>
+            </ul>
          </c:if>
          
          <c:if test="${not empty submission.feedbackComment}">
-            <dt><osp:message key="assign.comments"/></dt>
-            <dd><c:out value="${submission.feedbackComment}" escapeXml="false"/></dd>
+            <h4><osp:message key="assign.comments"/></h4>
+            <div class="textPanel indnt2"><c:out value="${submission.feedbackComment}" escapeXml="false"/></div>
          </c:if>
          
          <c:if test="${not empty feedbackAttachments}">
-            <dt><osp:message key="assign.feedback.attach"/></dt>
-            <dd>
+            <h4><osp:message key="assign.feedback.attach"/></h4>
+            <ul class="attachList indnt2">
             <c:forEach var="attach" items="${feedbackAttachments}">
-               <img src="<c:out value='${imageLib}${attach.iconUrl}'/>" border="0"/>
+               <li>
+			   <img src="<c:out value='${imageLib}${attach.iconUrl}'/>" border="0"/>
                <a href="${attach.url}" target="_blank"><c:out value="${attach.displayName}"/></a>
-               (<c:out value="${attach.size}"/>)<br/>
+               <span class="textPanelFooter">(<c:out value="${attach.size}"/>)</span>
+			   </li>
             </c:forEach>
-            </dd>
+            </ul>
          </c:if>
       
       </c:if>
    </dl>
 
-   <input type="submit" name="submit" value="<fmt:message key="button_back"/>" accesskey="b"/>
+   <input type="submit" name="submit" value="<fmt:message key="button_back"/>" accesskey="b" class="active"/>
 </form>

@@ -6,14 +6,14 @@
 
 <h3><fmt:message key="title_publishScaffolding"/></h3>
    
-<div class="validation">
+<div class="alertMessage">
 	<fmt:message key="text_areYouSurePublish"/>
 </div>
 
-<form method="POST">
+<form method="post">
 
 	<div class="act">
-      <input name="continue" type="submit" value="<osp:message key="button_continue"/>" accesskey="s" class="active"/>
+      <input name="continue" type="submit" value="<osp:message key="button_continue"/>" accesskey="s" class="active" />
       <input name="cancel" type="submit" value="<osp:message key="button_cancel"/>"  accesskey="x" />
 	</div>
 </form>

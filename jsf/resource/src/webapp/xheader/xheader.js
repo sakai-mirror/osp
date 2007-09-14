@@ -67,3 +67,23 @@ function stopEvents(e)
       e.stopPropagation();
    }  
 }
+
+// handle iframe size when DOM is manipulated, call resizeFrame as last function of manipulation - requires jquery
+	function resizeFrame(updown) {
+		  var frame = parent.document.getElementById( window.name );
+		  if( frame ) {
+			if(updown=='shrink')
+			{
+			var clientH = document.body.clientHeight + 30;
+		  }
+		  else
+		  {
+		  var clientH = document.body.clientHeight + 30;
+		  }
+			$( frame ).height( clientH );
+		  } else {
+			throw( "resizeFrame did not get the frame (using name=" + window.name + ")" );
+		  }
+		}
+			//-->
+

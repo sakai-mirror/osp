@@ -5,17 +5,15 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
-<SCRIPT LANGUAGE="JavaScript">
+<script type="text/javascript">
 
 function hrefViewCell(cellId) {
   window.location="<osp:url value="editScaffoldingCell.osp?scaffoldingCell_id="/>"+cellId;
 }
 
-</SCRIPT>
+</script>
 
 <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" qualifier="${matrixContents.scaffolding.worksiteId}"/>
-
-
 		<div class="navIntraTool">
 			<c:if test="${can.create}">
 				<a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_edit"/></a>
@@ -39,9 +37,9 @@ function hrefViewCell(cellId) {
 		<p class="instruction"><fmt:message key="instructions_clickOnaCelltoEdit"/></p>  
 
 		<c:set var="columnHeading" value="${matrixContents.columnLabels}" />
-		<table cellspacing="0" width="100%">
+		<table cellspacing="0" width="100%" summary="<fmt:message key="table_summary_matrixScaffolding"/>">
 			<tr>
-				<th class="matrix-row-heading" width="10%">
+				<th class="matrix-row-heading" width="10%" scope="col">
                <osp-h:glossary link="true" hover="true">
    					<c:out value="${matrixContents.scaffolding.title}"/>
                </osp-h:glossary>
@@ -49,7 +47,7 @@ function hrefViewCell(cellId) {
 				<c:forEach var="head" items="${columnHeading}">
 					<th class="matrix-column-heading matriColumnDefault" width="10%" 
                   bgcolor="<c:out value="${head.color}"/>" 
-                  style="color: <c:if test="${not empty head.textColor}" ><c:out value="${head.textColor}"/></c:if>">
+                  style="color: <c:if test="${not empty head.textColor}" ><c:out value="${head.textColor}"/></c:if>" scope="col">
                   <osp-h:glossary link="true" hover="true">
                      <c:out value="${head.description}"/>
                   </osp-h:glossary>
@@ -64,9 +62,9 @@ function hrefViewCell(cellId) {
                         <c:out value="${rowLabel.description}"/>
                   </osp-h:glossary>
 					</th>
-	    
-					<c:forEach var="cell" items="${matrixContents.matrixContents[loopStatus.index]}">
-						<td class="matrix-cell-border matrix-<c:out value="${cell.initialStatus}"/>" onClick="hrefViewCell('<c:out value="${cell.id}"/>') " style="cursor:pointer">
+	    			<c:forEach var="cell" items="${matrixContents.matrixContents[loopStatus.index]}">
+						<td class="matrix-cell-border matrix-<c:out value="${cell.initialStatus}"/>" onclick="hrefViewCell('<c:out value="${cell.id}"/>') " style="cursor:pointer">
+						 <a href="#" onclick="hrefViewCell('<c:out value="${cell.id}"/>') " class="skip"><fmt:message key="table_cell_link_title"/></a>
 							&nbsp;
 						</td>
 					</c:forEach>

@@ -18,11 +18,11 @@
 
 
 
-<form method="POST">
+<form method="post">
 
 <input type="hidden" name="<c:out value="${isInSession}"/>" value="true"/>
 <div class="act">
 <input name="continue" type="submit" value="<osp:message key="button_continue"/>" class="active" accesskey="s" />
-<input name="cancel" type="submit" value="<osp:message key="button_cancel"/>" accesskey="x"/>
+<input name="cancel" type="submit" value="<osp:message key="button_cancel"/>" accesskey="x" />
 </div>
 </form>

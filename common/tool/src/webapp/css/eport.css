@@ -150,10 +150,9 @@ INPUT.colorBox {
  
  .xheader {
 /*  background-color:#eee;
-*/  color:#EE8800;
-font-weight: bold;
-		
-	font-size:1.2em;
+*/  color:gray !important;
+		font-weight: bold;
+		font-size:1.2em;
      vertical-align: middle;
 	  padding:.3em 0;	
 
@@ -167,4 +166,56 @@ font-weight: bold;
 	font-size: 120%;
 	color:gray;
 	padding:.3em	
-	}
+}
+
+.matrixCellList{
+	width:100%;
+	margin: 1em 0
+}
+
+.matrixCellList tr:hover{
+	background: #ffc
+}
+
+.matrixCellList th{
+	padding:.4em .2em;
+	border-bottom:2px solid #aaa;
+	border-top:2px solid #aaa;
+	background: #ddd;
+	font-weight: bold;
+	text-align: left
+}
+
+.matrixCellList td{
+	padding:.4em .2em;
+	text-align: left	
+	
+}
+.matrixCellList tr.cellItemAddLine, .matrixCellList tr.cellItemAddLine:hover{
+	background:#eee
+}
+
+.matrixCellList h4, .matrixCellList h5, .matrixCellList h6{
+	font-weight:normal;
+	display:inline;
+	margin:0;
+	padding:0;
+	color:#000
+}
+
+.matrixCellList .itemAction  a, .matrixCellList .itemAction  a:link{
+	color: #27d;
+	padding: .2em .3em 1px 0;
+	white-space: nowrap;
+	border-bottom: none !important;
+}
+
+.matrixCellList .itemAction  a:visited{
+	color: #27d;
+	text-decoration: none !important;
+}
+
+.matrixCellList .itemAction  a:hover{
+	color: #27d; /*for ie*/
+	text-decoration: underline !important; 
+}

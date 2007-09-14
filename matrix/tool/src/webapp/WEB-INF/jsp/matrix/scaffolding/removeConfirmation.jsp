@@ -10,16 +10,16 @@
    </fmt:message>
 </h3>
    
-<div class="validation">
+<div class="alertMessage">
    <fmt:message key="text_AreYouSureRemove">
       <fmt:param value="${label}"/>
       <fmt:param value="${displayText}"/>
    </fmt:message>
 </div>
 
-<form method="POST">
+<form method="post">
    <div class="act">
       <input name="continue" type="submit" value="<fmt:message key="button_continue" />" class="active" accesskey="s" />
-      <input name="cancel" type="submit" value="<fmt:message key="button_cancel" />"  accesskey="x"/>
+      <input name="cancel" type="submit" value="<fmt:message key="button_cancel" />"  accesskey="x" />
    </div>
 </form>

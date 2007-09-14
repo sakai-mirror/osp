@@ -8,16 +8,16 @@
    <fmt:message key="title_delete_matrix"/>
 </h3>
    
-<div class="validation">
+<div class="alertMessage">
    <fmt:message key="text_AreYouSureDeleteMatrix"/>
 	 <c:if test="${scaffolding_published}">
       <fmt:message key="text_CautionDeleteMatrix"/>
 	</c:if>
 </div>
 
-<form method="POST">
+<form method="post">
    <div class="act">
       <input name="continue" type="submit" value="<fmt:message key="button_continue" />" class="active" accesskey="s" />
-      <input name="cancel" type="submit" value="<fmt:message key="button_cancel" />"  accesskey="x"/>
+      <input name="cancel" type="submit" value="<fmt:message key="button_cancel" />"  accesskey="x" />
    </div>
 </form>
