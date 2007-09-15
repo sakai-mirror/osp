@@ -22,46 +22,63 @@
     <osp:form/>
     
     <spring:bind path="entry.term">
-        <c:if test="${status.error}"> 
-            <div class="validation"><c:out value="${status.errorMessage}"/></div>
+
+       <c:if test="${status.error}">
+	   		<p class="shorttext validFail">
         </c:if>
-        <div class="shorttext indnt2">
+		<c:if test="${!status.error}">
+	           <p class="shorttext">
+        </c:if>
             <span class="reqStar">*</span>
-            <label>
-                <fmt:message key="label_Term"/>
+            <label for="term-id">
+                <fmt:message key="label_Term"/> <span class="textPanelFooter"> (<fmt:message key="label_Term_hint"/>)</span>
             </label>
-            <input type="text" name="term" 
+            <input type="text" name="term" id="term-id" 
                    value="<c:out value="${status.value}"/>" 
                    size="47" maxlength="255"
             />
-        </div>
+			<c:if test="${status.error}">
+				<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
+			</c:if>	
+
+        </p>
     </spring:bind>
     
     <spring:bind path="entry.description">
-        <c:if test="${status.error}">
-            <div class="validation"><c:out value="${status.errorMessage}"/></div>
+       <c:if test="${status.error}">
+	   		<div class="longtext validFail">
         </c:if>
-        <div class="longtext indnt2">
+		<c:if test="${!status.error}">
+	           <div class="longtext">
+        </c:if>
             <span class="reqStar">*</span>
-            <label class="block">
-                <fmt:message key="label_shortDesc"/>
+            <label class="block" for="description-id">
+                <fmt:message key="label_shortDesc"/><span class="textPanelFooter"> (<fmt:message key="label_desc_hint"/>)</span>
+				<c:if test="${status.error}">
+					<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
+				</c:if>	
             </label>
-            <br />
             <c:set var="item" value="${status.value}"/>
-            <textarea rows="3" name="description" 
+            <textarea rows="3" name="description"  id="description-id" 
                 onkeyup="limitChar(this,255)"  cols="80"
             ><c:out value="${item}"/></textarea>
         </div>
     </spring:bind>
     
     <spring:bind path="entry.longDescription">
-        <c:if test="${status.error}">
-            <div class="validation"><c:out value="${status.errorMessage}"/></div>
-        </c:if>
-        <div class="longtext indnt2">
+		   <c:if test="${status.error}">
+				<div class="longtext validFail">
+			</c:if>
+			<c:if test="${!status.error}">
+				   <div class="longtext">
+			</c:if>
             <span class="reqStar">*</span>
             <label class="block">
                 <fmt:message key="label_longDesc"/>
+				<c:if test="${status.error}">
+					<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
+				</c:if>	
+
             </label>
             <c:set var="item" value="${status.value}"/>
             <table><tr>
@@ -77,13 +94,13 @@
     
     <div class="act">
         <c:if test="${not empty entry.id}">
-            <input type="submit" name="submitButton" class="active" value="<fmt:message key="button_submitEdit"/>" />
+            <input type="submit" name="submitButton" class="active" value="<fmt:message key="button_submitEdit"/>"  accesskey="s" />
         </c:if>
         <c:if test="${empty entry.id}">
-            <input type="submit" name="submitButton" class="active" value="<fmt:message key="button_submitAdd"/>" />
+            <input type="submit" name="submitButton" class="active" value="<fmt:message key="button_submitAdd"/>"  accesskey="s"  />
         </c:if>
 
-        <input type="button" value="<fmt:message key="button_cancel"/>" onclick="window.document.location='<osp:url value="glossaryList.osp"/>'">
+        <input type="button" value="<fmt:message key="button_cancel"/>" onclick="window.document.location='<osp:url value="glossaryList.osp"/>'"  accesskey="x" />
     </div>
 <script language="Javascript"><!--
 	document.editTermForm.term.focus();

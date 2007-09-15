@@ -503,6 +503,7 @@ function openNewWindow(URL)
 	var left = screen.width-width;
 	
    sFeatures = "left=" + left + ",top=0,width=" + width + ",height=" + height + ",titlebar=yes,status=yes,scrollbars=yes,resizable=yes";
-   window.open(URL, "osp_window", sFeatures);
+   newwindow=window.open(URL, "osp_window", sFeatures);
+   if (window.focus) {newwindow.focus()}
 }
 

@@ -4,7 +4,6 @@
 <!-- GUID=<c:out value="${newTermId}" /> -->
 
 <osp-c:authZMap prefix="osp.help.glossary." var="can" />
-
 <osp-c:authZMap prefix="" var="canWorksite" useSite="true" />
 
 <fmt:setLocale value="${locale}"/>
@@ -22,65 +21,70 @@
     </c:if>
     
     <c:if test="${can.export && not empty glossary}">
-    <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=helpManagerTarget&templateId=<c:out value="${template.id.value}"/>/<c:out value="${worksite.title}" /> Glossary.zip"><fmt:message key="action_export"/></a>
-            
+	    <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=helpManagerTarget&templateId=<c:out value="${template.id.value}"/>/<c:out value="${worksite.title}" /> Glossary.zip"><fmt:message key="action_export"/></a>
     </c:if>
     
     <c:if test="${canWorksite.maintain}">
         <a href="<osp:url value="osp.permissions.helper/editPermissions">
-                    <osp:param name="message"> 
-                      <fmt:message key="message_permissionsEdit">
-                          <fmt:param><c:out value="${tool.title}"/></fmt:param>
-                      <fmt:param><c:out value="${worksite.title}"/></fmt:param>
-                    </fmt:message>
-                    </osp:param>
-                    <osp:param name="name" value="glossary"/>
-                    <osp:param name="qualifier" value="${tool.id}"/>
-                    <osp:param name="returnView" value="glossaryListRedirect"/>
-                </osp:url>"
+			<osp:param name="message"> 
+				<fmt:message key="message_permissionsEdit">
+				  <fmt:param><c:out value="${tool.title}"/></fmt:param>
+				  <fmt:param><c:out value="${worksite.title}"/></fmt:param>
+				  </fmt:message>
+			</osp:param>
+			<osp:param name="name" value="glossary"/>
+			<osp:param name="qualifier" value="${tool.id}"/>
+			<osp:param name="returnView" value="glossaryListRedirect"/>
+		</osp:url>"
             title="<fmt:message key="action_permissions_title"/>">
             <fmt:message key="action_permissions"/></a>
     </c:if>
 </div>
 
-
-
-<osp:url var="listUrl" value="glossaryList.osp" />
-<osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
-<c:if test="${!global}">
-    <h3><fmt:message key="title_glossaryManager"/></h3>
-</c:if>
-<c:if test="${global}">
-    <h3><fmt:message key="title_glossaryManagerGlobal"/></h3>
-</c:if>
+<div class="navPanel">
+	<div class="viewNav">
+		<c:if test="${!global}">
+			<h3><fmt:message key="title_glossaryManager"/></h3>
+		</c:if>
+		<c:if test="${global}">
+			<h3><fmt:message key="title_glossaryManagerGlobal"/></h3>
+		</c:if>
+	</div>	
+	
+	<osp:url var="listUrl" value="glossaryList.osp" />
+	<osp:listScroll listUrl="${listUrl}" className="listNav" />
+</div>	
 
 
 <c:if test="${import_success}">
-   <div style="color:#008800"><fmt:message key="import_msg_success"/></div>
+   <div class="success"><fmt:message key="import_msg_success"/></div>
 </c:if>
 <c:if test="${import_unrecognized_file}">
-   <div style="color:#880000"><fmt:message key="import_msg_bad_file"/></div>
+   <div class="alertMessage"><fmt:message key="import_msg_bad_file"/></div>
 </c:if>
 <c:if test="${import_failed}">
-   <div style="color:#880000"><fmt:message key="import_msg_failed"/></div>
+   <div class="alertMessage"><fmt:message key="import_msg_failed"/></div>
 </c:if>
 <c:if test="${import_bad_parse}">
-   <div style="color:#880000"><fmt:message key="import_msg_bad_file_parse"/></div>
+   <div class="alertMessage"><fmt:message key="import_msg_bad_file_parse"/></div>
 </c:if>
 
-<table class="listHier" cellspacing="0">
+<table class="listHier lines" cellspacing="0" cellpadding="0"  border="0" summary="<fmt:message key="glossary_list_summary"/>">
     <thead>
         <tr>
             <th scope="col"><fmt:message key="label_Term"/></th>
+			<th scope="col"></th>
             <th scope="col"><fmt:message key="label_desc"/></th>
         </tr>
     </thead>
     <tbody>
         <c:forEach var="term" items="${glossary}">
 
-            <TR>
-                <TD>
+            <tr>
+                <td style="white-space:nowrap">
                     <osp-h:glossary link="true" hover="false"><c:out value="${term.term}" /></osp-h:glossary>
+				</td>
+				<td style="white-space:nowrap">
                     <c:if test="${can.edit || can.delete}">
                         <div class="itemAction">
                             <c:if test="${can.edit}">
@@ -94,10 +98,10 @@
                             </c:if>
                         </div>
                     </c:if>
-                </TD>
+                </td>
 
-                <TD><c:out value="${term.description}" /></TD>
-            </TR>
+                <td class="textPanel textPanelFooter"><c:out value="${term.description}" /></td>
+            </tr>
         </c:forEach>
     </tbody>
 </table>
