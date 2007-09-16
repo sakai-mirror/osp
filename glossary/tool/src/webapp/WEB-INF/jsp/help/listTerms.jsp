@@ -68,40 +68,48 @@
 <c:if test="${import_bad_parse}">
    <div class="alertMessage"><fmt:message key="import_msg_bad_file_parse"/></div>
 </c:if>
-
-<table class="listHier lines" cellspacing="0" cellpadding="0"  border="0" summary="<fmt:message key="glossary_list_summary"/>">
-    <thead>
-        <tr>
-            <th scope="col"><fmt:message key="label_Term"/></th>
-			<th scope="col"></th>
-            <th scope="col"><fmt:message key="label_desc"/></th>
-        </tr>
-    </thead>
-    <tbody>
-        <c:forEach var="term" items="${glossary}">
-
-            <tr>
-                <td style="white-space:nowrap">
-                    <osp-h:glossary link="true" hover="false"><c:out value="${term.term}" /></osp-h:glossary>
-				</td>
-				<td style="white-space:nowrap">
-                    <c:if test="${can.edit || can.delete}">
-                        <div class="itemAction">
-                            <c:if test="${can.edit}">
-                                <a href="<osp:url value="editGlossaryTerm.osp"/>&id=<c:out value="${term.id}" />"><fmt:message key="table_action_edit"/></a>
-                            </c:if>
-                            <c:if test="${can.edit && can.delete}">
-                                |
-                            </c:if>
-                            <c:if test="${can.delete}">
-                                <a href="<osp:url value="removeGlossaryTerm.osp"/>&id=<c:out value="${term.id}" />"><fmt:message key="table_action_delete"/></a>
-                            </c:if>
-                        </div>
-                    </c:if>
-                </td>
-
-                <td class="textPanel textPanelFooter"><c:out value="${term.description}" /></td>
-            </tr>
-        </c:forEach>
-    </tbody>
-</table>
+<c:choose>
+	<c:when test="${not empty glossary}">
+		<table class="listHier lines" cellspacing="0" cellpadding="0"  border="0" summary="<fmt:message key="glossary_list_summary"/>">
+			<thead>
+				<tr>
+					<th scope="col"><fmt:message key="label_Term"/></th>
+					<th scope="col"></th>
+					<th scope="col"><fmt:message key="label_desc"/></th>
+				</tr>
+			</thead>
+			<tbody>
+				<c:forEach var="term" items="${glossary}">
+		
+					<tr>
+						<td style="white-space:nowrap">
+							<osp-h:glossary link="true" hover="false"><c:out value="${term.term}" /></osp-h:glossary>
+						</td>
+						<td style="white-space:nowrap">
+							<c:if test="${can.edit || can.delete}">
+								<div class="itemAction">
+									<c:if test="${can.edit}">
+										<a href="<osp:url value="editGlossaryTerm.osp"/>&id=<c:out value="${term.id}" />"><fmt:message key="table_action_edit"/></a>
+									</c:if>
+									<c:if test="${can.edit && can.delete}">
+										|
+									</c:if>
+									<c:if test="${can.delete}">
+										<a href="<osp:url value="removeGlossaryTerm.osp"/>&id=<c:out value="${term.id}" />"><fmt:message key="table_action_delete"/></a>
+									</c:if>
+								</div>
+							</c:if>
+						</td>
+		
+						<td class="textPanel textPanelFooter"><c:out value="${term.description}" /></td>
+					</tr>
+				</c:forEach>
+			</tbody>
+		</table>
+	</c:when>
+	<c:otherwise>
+		<p class="instruction">
+			<fmt:message key="glossary_list_emptymessage"/>
+		</p>
+	</c:otherwise>
+	</c:choose>	
