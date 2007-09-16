@@ -31,7 +31,7 @@
         </c:if>
             <span class="reqStar">*</span>
             <label for="term-id">
-                <fmt:message key="label_Term"/> <span class="textPanelFooter"> (<fmt:message key="label_Term_hint"/>)</span>
+                <fmt:message key="label_Term"/> <span class="textPanelFooter"> <fmt:message key="label_Term_hint"/></span>
             </label>
             <input type="text" name="term" id="term-id" 
                    value="<c:out value="${status.value}"/>" 
@@ -53,7 +53,7 @@
         </c:if>
             <span class="reqStar">*</span>
             <label class="block" for="description-id">
-                <fmt:message key="label_shortDesc"/><span class="textPanelFooter"> (<fmt:message key="label_desc_hint"/>)</span>
+                <fmt:message key="label_shortDesc"/><span class="textPanelFooter"> <fmt:message key="label_desc_hint"/></span>
 				<c:if test="${status.error}">
 					<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
 				</c:if>	
