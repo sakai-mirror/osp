@@ -123,71 +123,109 @@
      
    
    
-   <!-- ************* Guidance Area Start, we want to keep an order ************* -->   
-   <c:if test="${not empty cell.scaffoldingCell.guidance}">
-   <%--TODO - this is  distracting - if there *is* guidance, read it. Do not need this front matter, but leaving in comments in case. 
-   <h4><osp:message key="guidance_header"/></h4>
-      
-      
-      <div class="instruction">
-         <osp:message key="guidance_instructions"/>
-      </div>
-  --%>    
-      <c:set value="false" var="oneDisplayed" />
-      <c:set value="0" var="i" />
-      		<!-- ** instruction ** -->
-      <c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}">
-               
+<!-- ************* Guidance Area Start, we want to keep an order ************* -->   
+<c:if test="${not empty cell.scaffoldingCell.guidance}">
+ 
+	<c:set value="false" var="oneDisplayed" />
+	<c:set value="0" var="i" />
+	
+    <!-- ** instruction ** -->
+    
+	<c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}">            
          <c:if test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
-         	
-         	<h4 class="xheader">		
-         		<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif" id="expandImg<c:out value='${i}'/>" alt="" 
-         			onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')" <c:if test="${!oneDisplayed}"> style="display:none;" </c:if> />
-         		<img src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" id="collapseImg<c:out value='${i}'/>" alt="" 
-         			onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';" <c:if test="${oneDisplayed}"> style="display:none;" </c:if> />
-         	 
-         	 	
-				<c:if test="${guidanceItem.type == 'instruction'}">
-         	 		<osp:message key="instructions"/>
-	         	</c:if>
-				<c:if test="${guidanceItem.type == 'example'}">
-         	 		<osp:message key="examples"/>
-	         	</c:if>
-				<c:if test="${guidanceItem.type == 'rationale'}">
-         	 		<osp:message key="rationale"/>
-	         	</c:if>
-			 </h4>
-			 <div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>" <c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
-			   <c:out value="${guidanceItem.text}" escapeXml="false" />
-			   	<c:if test="${not empty guidanceItem.attachments}">
-				   <ul class="attachList indnt1">
-					   <c:forEach var="guidanceItemAtt" items="${guidanceItem.attachments}" >
-						<li>
-						<img border="0" title="<c:out value="${hover}" />" alt="<c:out value="${guidanceItemAtt.displayName}"/>"  src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>"/>
-						  <a href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />" target="_blank">
-							 <c:out value="${guidanceItemAtt.displayName}" />
-						 </a>
-						</li> 
-					   </c:forEach>
-					   </ul>
-					 </c:if>  
-			  </div>
-			   
-			  <c:set value="true" var="oneDisplayed" />
-			  <c:set value="${i + 1}" var="i" />
-       </c:if>
-
-      </c:forEach>
+         	<c:if test="${guidanceItem.type == 'instruction'}">
+         		<h4 class="xheader">		
+         			<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif" id="expandImg<c:out value='${i}'/>" alt="" 
+         				onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')" <c:if test="${!oneDisplayed}"> style="display:none;" </c:if> />
+         			<img src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" id="collapseImg<c:out value='${i}'/>" alt="" 
+         				onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';" <c:if test="${oneDisplayed}"> style="display:none;" </c:if> />
+         			<osp:message key="instructions"/>
+			 	</h4>			 	
+			 	<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>" <c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+			   		<c:out value="${guidanceItem.text}" escapeXml="false" />
+			   		<c:if test="${not empty guidanceItem.attachments}">
+				   		<ul class="attachList indnt1">
+						   	<c:forEach var="guidanceItemAtt" items="${guidanceItem.attachments}" >
+								<li>
+									<img border="0" title="<c:out value="${hover}" />" alt="<c:out value="${guidanceItemAtt.displayName}"/>"  src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>"/>
+						  			<a href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />" target="_blank">
+							 			<c:out value="${guidanceItemAtt.displayName}" />
+									</a>
+								</li> 
+					   		</c:forEach>
+					   	</ul>
+					</c:if>  
+				</div>
+			</c:if>
+      	</c:if>
+	</c:forEach>
+	
+	<c:set value="1" var="i" />
+	
+    <!-- ** rationale ** -->
+    
+	<c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}">            
+         <c:if test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
+         	<c:if test="${guidanceItem.type == 'rationale'}">
+         		<h4 class="xheader">		
+         			<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif" id="expandImg<c:out value='${i}'/>" alt="" 
+         				onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')" <c:if test="${!oneDisplayed}"> style="display:none;" </c:if> />
+         			<img src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" id="collapseImg<c:out value='${i}'/>" alt="" 
+         				onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';" <c:if test="${oneDisplayed}"> style="display:none;" </c:if> />
+         			<osp:message key="rationale"/>
+			 	</h4>			 	
+			 	<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>" <c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+			   		<c:out value="${guidanceItem.text}" escapeXml="false" />
+			   		<c:if test="${not empty guidanceItem.attachments}">
+				   		<ul class="attachList indnt1">
+						   	<c:forEach var="guidanceItemAtt" items="${guidanceItem.attachments}" >
+								<li>
+									<img border="0" title="<c:out value="${hover}" />" alt="<c:out value="${guidanceItemAtt.displayName}"/>"  src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>"/>
+						  			<a href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />" target="_blank">
+							 			<c:out value="${guidanceItemAtt.displayName}" />
+									</a>
+								</li> 
+					   		</c:forEach>
+					   	</ul>
+					</c:if>  
+				</div>
+			</c:if>
+      	</c:if>
+	</c:forEach>    
+	<c:set value="2" var="i" />
+	
+    <!-- ** examples ** -->
+    
+	<c:forEach var="guidanceItem" items="${cell.scaffoldingCell.guidance.items}">            
+         <c:if test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
+         	<c:if test="${guidanceItem.type == 'example'}">
+         		<h4 class="xheader">		
+         			<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif" id="expandImg<c:out value='${i}'/>" alt="" 
+         				onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')" <c:if test="${!oneDisplayed}"> style="display:none;" </c:if> />
+         			<img src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif" id="collapseImg<c:out value='${i}'/>" alt="" 
+         				onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';" <c:if test="${oneDisplayed}"> style="display:none;" </c:if> />
+         			<osp:message key="examples"/>
+			 	</h4>			 	
+			 	<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>" <c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+			   		<c:out value="${guidanceItem.text}" escapeXml="false" />
+			   		<c:if test="${not empty guidanceItem.attachments}">
+				   		<ul class="attachList indnt1">
+						   	<c:forEach var="guidanceItemAtt" items="${guidanceItem.attachments}" >
+								<li>
+									<img border="0" title="<c:out value="${hover}" />" alt="<c:out value="${guidanceItemAtt.displayName}"/>"  src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>"/>
+						  			<a href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />" target="_blank">
+							 			<c:out value="${guidanceItemAtt.displayName}" />
+									</a>
+								</li> 
+					   		</c:forEach>
+					   	</ul>
+					</c:if>  
+				</div>
+			</c:if>
+      	</c:if>
+	</c:forEach>      
       
-      <c:if test="${guidanceItemCount > 0}" >
-			<h4><a href="<osp:url value="osp.guidance.helper/view">
-			 <osp:param name="session.page_id" value="${cell.wizardPage.id}"/>
-			 <osp:param name="${CURRENT_GUIDANCE_ID_KEY}" value="${cell.scaffoldingCell.guidance.id}"/>
-			 </osp:url>" title="<osp:message key="guidance_link_title"/>">
-			 <osp:message key="guidance_link_title"/></a>
-			 </h4>
-      </c:if>
-   </c:if>
+</c:if>
    <!-- ************* Guidance Area End ************* -->
    <!-- ************* Form Area Start ************* -->
    
