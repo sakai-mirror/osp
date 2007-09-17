@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+   <bean id="stylesOverview" class="org.sakaiproject.component.app.help.model.ResourceBean">
+      <property name="docId"><value>styles_overview</value></property>
+      <property name="name"><value>Styles Overview</value></property>
+      <property name="location"><value>/osp_style/styles.html</value></property>
+      <property name="defaultForTool"><value>osp.style</value></property>
+   </bean>
+
+    <bean id="org.sakaiproject.api.app.help.TableOfContents"
+          class="org.sakaiproject.component.app.help.model.TableOfContentsBean">
+      <property name="name"><value>root</value></property>
+      <property name="categories">
+         <list>
+            <bean id="ospStylesCategory" class="org.sakaiproject.component.app.help.model.CategoryBean">
+               <property name="name"><value>Styles</value></property>
+               <property name="resources">
+                  <list>
+                     <ref bean="stylesOverview"/>
+                  </list>
+               </property>
+            </bean>
+           </list>
+         </property>
+       </bean>
+</beans>
