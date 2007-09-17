@@ -102,7 +102,7 @@
 
         <input type="button" value="<fmt:message key="button_cancel"/>" onclick="window.document.location='<osp:url value="glossaryList.osp"/>'"  accesskey="x" />
     </div>
-<script language="Javascript"><!--
+<script type="text/javascript"><!--
 	document.editTermForm.term.focus();
 --></script>
 </form>

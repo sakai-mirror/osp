@@ -21,7 +21,7 @@
         </c:if>
          <span class="reqStar">*</span>
             <label for="name"><osp:message key="osp.help.glossary.importTheseFiles" bundle="${msgs}" /></label>
-            <input type="text" id="name" disabled="true"
+            <input type="text" id="name" disabled="disabled"
                 value="<c:out value="${name}"/>" />
             <input type="hidden" name="uploadedGlossary" id="uploadedGlossary"
                 value="<c:out value="${status.value}"/>" />
@@ -37,7 +37,7 @@
         <p class="instruction"><osp:message key="osp.help.glossary.whenTermExists" bundle="${msgs}" /></p>
         <p class="checkbox indnt1">
             <input type="radio" name="replaceExistingTerms" id="replaceTerm" value="true" 
-                <c:if test="${status.value}">checked</c:if> />
+                <c:if test="${status.value}">checked="checked"</c:if> />
             <label for="replaceTerm">
                     <osp:message key="osp.help.glossary.replaceExistingTerm" bundle="${msgs}" />
             </label>
