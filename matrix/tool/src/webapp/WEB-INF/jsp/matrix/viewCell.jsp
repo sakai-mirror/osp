@@ -395,20 +395,23 @@
 				<%-- these should be links below--%>
 				<c:choose>
 					<c:when test="${empty cellBean.nodes}">
-						<input type="submit" name="manageAttachments" value="<fmt:message key="action_addItems"/>"
-							onclick="javascript:stopEvents(event); document.form.method='GET';document.form.action='<osp:url value="osp.wizard.page.contents.helper/attachToCell.osp">
+						<a href="<osp:url value="osp.wizard.page.contents.helper/attachToCell.osp">
+							<osp:param name="page_id" value="${cell.wizardPage.id}"/></osp:url>"
+							onClick="javascript:stopEvents(event); document.form.method='GET';" >
+								<fmt:message key="action_addItems"/>
+						</a>	
+					</c:when>
+					<c:otherwise>
+						<a href="<osp:url value="osp.wizard.page.contents.helper/attachToCell.osp">
 							 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
-							 </osp:url>'" />
-						</c:when>
-						<c:otherwise>
-						 <input type="submit" name="manageAttachments" value="<fmt:message key="action_manageItems"/>"
-							onclick="javascript:stopEvents(event); document.form.method='GET';document.form.action='<osp:url value="osp.wizard.page.contents.helper/attachToCell.osp">
-							 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
-							 </osp:url>'" />
-			
-						</c:otherwise>
-						</c:choose>
-					 </div>
+							 </osp:url>"
+							 onclick="javascript:stopEvents(event); document.form.method='GET';"
+							 >
+								<fmt:message key="action_manageItems"/>
+						</a>			
+					</c:otherwise>
+				</c:choose>
+				</div>
 				 </c:when>
 				 <c:otherwise>
 					 <fmt:message key="other_items_header"/>
