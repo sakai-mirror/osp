@@ -54,7 +54,7 @@
 		</h3>
 	</div>
 	<c:if test="${can.evaluate}">
-		<form method="POST" id="reviewList" name="reviewList">
+		<form method="post" id="reviewList" name="reviewList">
 			<osp:form />
 			<osp:url  var="listUrl" value="listEvaluationItems.osp" />
 			<osp:listScroll  listUrl="${listUrl}" className="listNav" />
@@ -69,6 +69,13 @@
     <input type="hidden" id="eval_id" name="id" value="" />
     <c:set var="sortDir" value="asc" />
     <c:set var="sortDirectionText" value="descending" />
+    
+    <c:choose>
+    	<c:when test="${empty reviewerItems}">
+		<p class="instruction"><fmt:message key="eval_list_empty_message"/></p>
+	</c:when>
+	<c:otherwise>
+    
     <table class="listHier lines nolines" cellspacing="0" summary="<fmt:message key="eval_list_summary"/>">
         <thead>
             <tr>
@@ -247,6 +254,7 @@
             </c:forEach>
         </tbody>
     </table>
-    
+    </c:otherwise>
+    </c:choose>
     </form>
 </c:if>
