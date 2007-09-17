@@ -21,7 +21,7 @@
     <title><%= org.sakaiproject.tool.cover.ToolManager.getCurrentTool().getTitle()%></title>
     <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js">
     </script>
-    <script language="JavaScript" src="/osp-common-tool/js/eport.js"></script>
+    <script type="text/javascript" src="/osp-common-tool/js/eport.js"></script>
   <%
       String panelId = request.getParameter("panel");
       if (panelId == null) {
@@ -30,7 +30,7 @@
 
   %>
 
-  <script language="javascript">
+  <script type="text/javascript" >
    function resetHeight() {
       setMainFrameHeight('<%= org.sakaiproject.util.Validator.escapeJavascript(panelId)%>');
    }

@@ -18,13 +18,12 @@
        var value = selectBox.options[selectedIndex].value;
     
        if (value == 'fileArtifact'){
-          divElement.style.height="<c:out value="${mimeTypeListSize * 20}"/>px";
-          divElement.style.visibility="visible";
+//          divElement.style.height="<c:out value="${mimeTypeListSize * 20}"/>px";
+          divElement.style.display="block";
        } else {
-          divElement.style.height="0px";
-          divElement.style.visibility="hidden";
+   //       divElement.style.height="0px";
+          divElement.style.display="none";
        }
-    
        resetHeight();
     }
 </script>
@@ -40,114 +39,135 @@
     <input type="hidden" id="<c:out value="${status.expression}"/>"
         name="<c:out value="${status.expression}"/>" value="" />
 </spring:bind>
+<div class="highlightPanel actionitem">
+	<spring:bind path="template.item.type">
+			<c:if test="${status.error}">
+				<p class="shorttext validFail" style="border:none">
+			</c:if>	
+			<c:if test="${!status.error}">
+				<p class="shorttext"  style="border:none">
+			</c:if>
+	
+			<span class="reqStar">*</span>
+			<label for="<c:out value="${status.expression}"/>"><fmt:message key="label_type"/></label>
+			<select id="<c:out value="${status.expression}"/>"
+					name="<c:out value="${status.expression}"/>"
+					onchange='displayMimeTypeSelection(this,"mimeTypeSelection")'>
+				<option value=""><fmt:message key="addItemDef_pleaseSelectaType"/></option>
+				<option value="">- - - - - - - - - - - - - - - - - - - - -</option>
+				<c:forEach var="home" items="${homes}">
+					<c:if test="${!home.type.systemOnly}">
+						<option
+							<c:if test="${status.value == home.type.id.value}">selected="selected"</c:if>
+							value="<c:out value="${home.type.id.value}"/>"><c:out
+							value="${home.type.description}" /></option>
+					</c:if>
+				</c:forEach>
+			</select>
+			<c:if test="${status.error}">
+				<span  class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}" /></span>
+			</c:if>
+		</p>
+	
+	</spring:bind>
+	
+	<spring:bind path="template.item.name">
+			<c:if test="${status.error}">
+				<p class="shorttext validFail" style="border:none">
+			</c:if>	
+			<c:if test="${!status.error}">
+				<p class="shorttext" style="border:none">
+			</c:if>
+			<span class="reqStar">*</span>
+			<label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_name"/></label>
+			<input type="text"
+				id="<c:out value="${status.expression}"/>-id"
+				name="<c:out value="${status.expression}"/>"
+				value="<c:out value="${status.value}"/>" />
+			<c:if test="${status.error}">
+				<span  class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}" /></span>
+			</c:if>
+		</p>
+	</spring:bind>
+	
+	<spring:bind path="template.item.title">
+			<c:if test="${status.error}">
+				<p class="shorttext validFail" style="border:none">
+			</c:if>	
+			<c:if test="${!status.error}">
+				<p class="shorttext" style="border:none">
+			</c:if>
+			<span class="reqStar">*</span>
+			<label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_title"/></label>
+			<input type="text"
+				name="<c:out value="${status.expression}"/>"
+				id="<c:out value="${status.expression}"/>-id"
+				value="<c:out value="${status.value}"/>" />
+				<c:if test="${status.error}">
+					<span  class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}" /></span>
+				</c:if>
+			</p>
+	
+	</spring:bind>
+	
+	<spring:bind path="template.item.description">
+		<c:if test="${status.error}">
+			<div class="validation"><c:out value="${status.errorMessage}" /></div>
+		</c:if>
+		<p class="longtext" style="border:none">
+			<label class="block" for="<c:out value="${status.expression}"/>-id">
+				<fmt:message key="label_description"/>
+				<c:if test="${status.error}">
+					<span  class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}" /></span>
+				</c:if>
+			</label>
+			<textarea cols="80" rows="5" name="<c:out value="${status.expression}"/>"  id="<c:out value="${status.expression}"/>-id"><c:out
+				value="${status.value}" /></textarea>
+		</p>
+	</spring:bind>
+	
+	<spring:bind path="template.item.allowMultiple">
+		<h4><fmt:message key="legend_AllowMultipleSelection"/></h4>
+		<div class="checkbox indnt1" style="border:none">
+			<input type="radio" id="multiYes"
+				name="<c:out value="${status.expression}"/>" value="true"
+				<c:if test="${status.value == true}">checked="checked"</c:if> />
+			<label for="multiYes"><fmt:message key="label_yes"/></label>
+		</div>
+		<div class="checkbox indnt1" style="border:none">
+			<input type="radio" id="multiNo"
+				name="<c:out value="${status.expression}"/>" value="false"
+				<c:if test="${status.value == false}">checked="checked"</c:if> />
+			<label for="multiNo"><fmt:message key="label_no"/></label>
+		</div>
+	</spring:bind>
+	
+	
+	<spring:bind path="template.item.mimeTypes">
+	
+		<div style="display:none" id="mimeTypeSelection">
+					<h4><fmt:message key="label_limitToTheseMimeTypes"/></h4>
+	
+					<c:forEach var="mimeType" items="${mimeTypeList}">
+						<p class="checkbox indnt1" style="border:none">
+							<input type="checkbox"
+								name="<c:out value="${status.expression}"/>"
+								id="<c:out value="${mimeType}"/>-id"
+								<c:forEach var="next" items="${template.item.mimeTypes}"><c:if test="${mimeType eq next.value}">checked="checked"</c:if></c:forEach>
+								value="<c:out value="${mimeType}"/>" />
+							<label for="<c:out value="${mimeType}"/>-id"><c:out value="${mimeType}" /></label>
+						</p>
+					</c:forEach>
+	
+		</div>
+	</spring:bind>
+</div>
 
-<spring:bind path="template.item.type">
-    <c:if test="${status.error}">
-        <div class="validation"><c:out value="${status.errorMessage}" /></div>
-    </c:if>
-    <p class="shorttext">
-        <span class="reqStar">*</span>
-        <label for="<c:out value="${status.expression}"/>"><fmt:message key="label_type"/></label>
-        <select id="<c:out value="${status.expression}"/>"
-                name="<c:out value="${status.expression}"/>"
-                onchange='displayMimeTypeSelection(this,"mimeTypeSelection")'>
-            <option value=""><fmt:message key="addItemDef_pleaseSelectaType"/></option>
-            <option value="">- - - - - - - - - - - - - - - - - - - - -</option>
-            <c:forEach var="home" items="${homes}">
-                <c:if test="${!home.type.systemOnly}">
-                    <option
-                        <c:if test="${status.value == home.type.id.value}">selected</c:if>
-                        value="<c:out value="${home.type.id.value}"/>"><c:out
-                        value="${home.type.description}" /></option>
-                </c:if>
-            </c:forEach>
-        </select> 
-    </p>
-</spring:bind>
-
-<spring:bind path="template.item.name">
-    <c:if test="${status.error}">
-        <div class="validation"><c:out value="${status.errorMessage}" /></div>
-    </c:if>
-    <p class="shorttext">
-        <span class="reqStar">*</span>
-        <label for="<c:out value="${status.expression}"/>"><fmt:message key="label_name"/></label>
-        <input type="text"
-            name="<c:out value="${status.expression}"/>"
-            value="<c:out value="${status.value}"/>">
-    </p>
-</spring:bind>
-
-<spring:bind path="template.item.title">
-    <c:if test="${status.error}">
-        <div class="validation"><c:out value="${status.errorMessage}" /></div>
-    </c:if>
-    <p class="shorttext">
-        <span class="reqStar">*</span>
-        <label for="<c:out value="${status.expression}"/>"><fmt:message key="label_title"/></label>
-        <input type="text"
-            name="<c:out value="${status.expression}"/>"
-            value="<c:out value="${status.value}"/>">
-    </p>
-</spring:bind>
-
-<spring:bind path="template.item.description">
-    <c:if test="${status.error}">
-        <div class="validation"><c:out value="${status.errorMessage}" /></div>
-    </c:if>
-    <p class="longtext">
-        <label class="block" for="<c:out value="${status.expression}"/>"><fmt:message key="label_description"/></label>
-        <table><tr>
-        <td><textarea cols="80" rows="5" name="<c:out value="${status.expression}"/>"><c:out
-            value="${status.value}" /></textarea></td>
-        </tr></table>
-    </p>
-</spring:bind>
-
-<spring:bind path="template.item.allowMultiple">
-    <fieldset>
-        <legend class="radio"><fmt:message key="legend_AllowMultipleSelection"/></legend>
-        <div class="checkbox indnt1">
-            <input type="radio" id="multiYes"
-                name="<c:out value="${status.expression}"/>" value="true"
-                <c:if test="${status.value == true}">checked</c:if> />
-            <label for="multiYes"><fmt:message key="label_yes"/></label>
-        </div>
-        <div class="checkbox indnt1">
-            <input type="radio" id="multiNo"
-                name="<c:out value="${status.expression}"/>" value="false"
-                <c:if test="${status.value == false}">checked</c:if> />
-            <label for="multiNo"><fmt:message key="label_no"/></label>
-        </div>
-    </fieldset>
-</spring:bind>
-
-
-<spring:bind path="template.item.mimeTypes">
-
-    <div style="visibility:hidden; height: 0px" id="mimeTypeSelection">
-        <p class="shorttext">
-                <label><fmt:message key="label_limitToTheseMimeTypes"/></label>
-                <table cellspacing="0" cellpadding="0" border="0"><tr><td>
-                <c:forEach var="mimeType" items="${mimeTypeList}">
-                    <input type="checkbox"
-                        name="<c:out value="${status.expression}"/>"
-                        <c:forEach var="next" items="${template.item.mimeTypes}"><c:if test="${mimeType eq next.value}">checked</c:if></c:forEach>
-                        value="<c:out value="${mimeType}"/>">
-                    <c:out value="${mimeType}" />
-                    <br />
-                </c:forEach>
-                </td></tr></table>
-        </p>
-    </div>
-</spring:bind>
-
-
-    <p class="act indnt5">
+    <p class="act" style="margin:0;padding:.5em">
         <c:choose>
             <c:when test="${param.editItem}">
                 <input type="submit" name="_target2" value="<fmt:message key="button_saveEdit"/>"
-                    onclick="setElementValue(<spring:bind path="template.item.action">'<c:out value="${status.expression}"/>'</spring:bind>,'addItem');return true;" />
+                    onclick="setElementValue(<spring:bind path="template.item.action">'<c:out value="${status.expression}"/>'</spring:bind>,'addItem');return true;" class="active"/>
             </c:when>
             <c:otherwise>
                 <input type="submit" name="_target2" value="<fmt:message key="button_addToList"/>"
@@ -157,7 +177,7 @@
     </p>
 
 <spring:bind path="template.item.type">
-    <script>
+    <script type="text/javascript">
 displayMimeTypeSelection(ospGetElementById("<c:out value="${status.expression}"/>"),"mimeTypeSelection");
 </script>
 </spring:bind>

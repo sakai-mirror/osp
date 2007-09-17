@@ -9,7 +9,7 @@
 </div>-->
 <c:if test="${not empty step}">
 <link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
-<div class="xheader">
+<div class="step">
 
 <c:if test="${step eq 1}" >
 <fmt:message key="paging_steps">

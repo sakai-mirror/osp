@@ -13,52 +13,53 @@
    <fmt:message key="instructions_template_new3"/>
 </div>
 
-<form  method="POST" action="addTemplate.osp">
+<form  method="post" action="addTemplate.osp">
 <osp:form/>
 
 
 
       <%@ include file="/WEB-INF/jsp/presentation/addItemDefinition.jsp" %>
 
-
-
-<table class="listHier" cellspacing="0">
-            <thead>
-               <tr>
-                  <th scope="col" width="12%"><fmt:message key="table_header_sequence"/></th>
-                  <th scope="col"><fmt:message key="table_header_title"/></th>
-               </tr>
-            </thead>
-         <tbody>
-           <c:if test="${template.itemDefinitions['empty']}">
-                 <TR>
-                   <TD colspan="2" align="center">
-                        <b><fmt:message key="addTemplate_thereIsNoContentYet"/></b>
-                   </TD>
-                 </TR>
-           </c:if>
-           <c:if test="${not template.itemDefinitions['empty']}">
-               <c:forEach var="itemDef" items="${template.sortedItems}">
-                 <TR>
-                   <TD width="12%">
-                      <input type="text" name="itemSequence" value="<c:out value="${itemDef.sequence}"/>"
-                         size="4" maxlength="4" />
-                   </TD>
-                   <TD><c:out value="${itemDef.title}" />
-                        <div class="itemAction">
-                            <a href="<osp:url value="editItemDefinition.osp"/>&id=<c:out value="${itemDef.id.value}" />"><fmt:message key="action_edit"/></a>
-                            |
-                            <a href="<osp:url value="deleteItemDefinition.osp"/>&id=<c:out value="${itemDef.id.value}" />"><fmt:message key="action_delete"/></a>
-                        </div>
-                   </TD>
-    
-                 </TR>
-               </c:forEach>
-           </c:if>
-         </tbody>
-         </table>
-<br /><br />
-
+<c:choose>
+	<c:when test="${template.itemDefinitions['empty']}">
+		<p class="instruction"><fmt:message key="addTemplate_thereIsNoContentYet"/></p>
+	</c:when>
+	<c:otherwise>	
+		<table class="listHier lines nolines" cellspacing="0" cellpadding="0" border="0" style="width:auto" summary="<fmt:message key="table_addTemplate3_summary"/>">
+					<thead>
+					   <tr>
+						  <th scope="col" ><fmt:message key="table_header_sequence"/></th>
+						  <th scope="col"><fmt:message key="table_header_title"/></th>
+						  <th scope="col"></th>
+					   </tr>
+					</thead>
+				 <tbody>
+				   <c:if test="${not template.itemDefinitions['empty']}">
+					   <c:forEach var="itemDef" items="${template.sortedItems}">
+						 <tr>
+						   <td>
+						   	<label for="id-<c:out value="${itemDef.sequence}"/>" class="skip"><fmt:message key="table_addTemplate3_input_label"/></label>
+							  <input type="text" name="itemSequence" value="<c:out value="${itemDef.sequence}"/>"
+								 size="4" maxlength="4"
+								  id="id-<c:out value="${itemDef.sequence}"/>"	
+								 />
+						   </td>
+						   <td style="white-space:nowrap">
+						   	<c:out value="${itemDef.title}" />
+							</td>
+						   <td class="itemAction" style="white-space:nowrap">
+								<a href="<osp:url value="editItemDefinition.osp"/>&id=<c:out value="${itemDef.id.value}" />"><fmt:message key="action_edit"/></a>
+								|
+								<a href="<osp:url value="deleteItemDefinition.osp"/>&id=<c:out value="${itemDef.id.value}" />"><fmt:message key="action_delete"/></a>
+						   </td>
+			
+						 </tr>
+					   </c:forEach>
+				   </c:if>
+				 </tbody>
+				 </table>
+			</c:otherwise>
+		</c:choose>
 <c:set var="suppress_submit" value="true" />
 <%@ include file="/WEB-INF/jsp/presentation/wizardFooter.inc" %>
 
