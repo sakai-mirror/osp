@@ -32,7 +32,7 @@
 
 	<c:if test="${empty helperPage}">
 		(<c:out value="${scaffoldingCell.scaffolding.rowLabel}"/>: <span class="highlight"><c:out value="${scaffoldingCell.rootCriterion.description}"/></span>; <c:out value="${scaffoldingCell.scaffolding.columnLabel}"/>: <span class="highlight">
-		<c:out value="${scaffoldingCell.level.description}"/></span>) </h3>
+		<c:out value="${scaffoldingCell.level.description}"/></span>) 
 		</c:if>
 	<fieldset class="fieldsetVis">
 		<legend><fmt:message key="${pageInstructionsKey}"/></legend>
@@ -105,8 +105,8 @@
 				<p class="shorttext">
 					<label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_initialStatus"/></label>     
 					<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>-id">
-						<option value="READY" <c:if test="${status.value=='READY'}"> selected</c:if>><fmt:message key="matrix_legend_ready"/></option>
-						<option value="LOCKED" <c:if test="${status.value=='LOCKED'}"> selected</c:if>><fmt:message key="matrix_legend_locked"/></option>
+						<option value="READY" <c:if test="${status.value=='READY'}"> selected="selected"</c:if>><fmt:message key="matrix_legend_ready"/></option>
+						<option value="LOCKED" <c:if test="${status.value=='LOCKED'}">selected="selected"</c:if>><fmt:message key="matrix_legend_locked"/></option>
 					</select>
 				</p>
 			</spring:bind>
@@ -314,8 +314,8 @@
 
 		<p class="shorttext">
 			<label for="selectAdditionalFormId" ><fmt:message key="label_selectForm"/></label>    
-			<select name="selectAdditionalFormId"  id="selectAdditionalFormId"  onChange="document.getElementById('addForm-id').className='active'";>
-				<option value="" selected><fmt:message key="select_form_text" /></option>
+			<select name="selectAdditionalFormId"  id="selectAdditionalFormId"  onchange="document.getElementById('addForm-id').className='active';">
+				<option value="" selected="selected"><fmt:message key="select_form_text" /></option>
 				<c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
 					<option value="<c:out value="${addtlForm.id}"/>">
 				<c:out value="${addtlForm.name}"/></option>
@@ -324,8 +324,8 @@
 			<span class="act">
 				<input type="submit" id="addForm-id" name="addForm" value="<fmt:message key="button_add"/>" onclick="javascript:document.forms[0].validate.value='false';" />
 			</span>
-		</p>	 
-		<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="" style="width:70%">
+		</p>
+		<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<fmt:message key="table_forms_summary"/>" style="width:70%">
 			<c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
 				<tr>
 					<td>
@@ -418,7 +418,7 @@
 					<option onclick="document.forms[0].reflectionDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
 					<c:forEach var="refDev" items="${reflectionDevices}" varStatus="loopCount">
 						<option onclick="document.forms[0].reflectionDeviceType.value='<c:out value="${refDev.type}"/>';" 
-						value="<c:out value="${refDev.id}"/>" <c:if test="${status.value==refDev.id}"> selected</c:if>><c:out value="${refDev.name}"/></option>
+						value="<c:out value="${refDev.id}"/>" <c:if test="${status.value==refDev.id}"> selected="selected"</c:if>><c:out value="${refDev.name}"/></option>
 					</c:forEach>
 				</select>
 			</p>
@@ -445,7 +445,7 @@
 					<option onclick="document.forms[0].reviewDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
 					<c:forEach var="reviewDev" items="${reviewDevices}" varStatus="loopCount">
 						<option onclick="document.forms[0].reviewDeviceType.value='<c:out value="${reviewDev.type}"/>';" 
-						value="<c:out value="${reviewDev.id}"/>" <c:if test="${status.value==reviewDev.id}"> selected</c:if>><c:out value="${reviewDev.name}"/></option>
+						value="<c:out value="${reviewDev.id}"/>" <c:if test="${status.value==reviewDev.id}"> selected="selected"</c:if>><c:out value="${reviewDev.name}"/></option>
 					</c:forEach>
 				</select>
 			</p>
@@ -475,7 +475,7 @@
 						<option onclick="document.forms[0].evaluationDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
 						<c:forEach var="evalDev" items="${evaluationDevices}" varStatus="loopCount">
 							<option onclick="document.forms[0].evaluationDeviceType.value='<c:out value="${evalDev.type}"/>';" 
-							value="<c:out value="${evalDev.id}"/>" <c:if test="${status.value==evalDev.id}"> selected</c:if>><c:out value="${evalDev.name}"/></option>
+							value="<c:out value="${evalDev.id}"/>" <c:if test="${status.value==evalDev.id}"> selected="selected"</c:if>><c:out value="${evalDev.name}"/></option>
 						</c:forEach>
 					</select>
 				</p>
@@ -531,7 +531,7 @@
 	
 </form>
 	
-<form name="cancelForm" method="POST">
+<form name="cancelForm" method="post">
 	<osp:form/>
 
 	<input type="hidden" name="validate" value="false" />
