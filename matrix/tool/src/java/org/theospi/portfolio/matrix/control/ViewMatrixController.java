@@ -53,6 +53,7 @@ import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.assignment.cover.AssignmentService;
 import org.sakaiproject.assignment.api.AssignmentSubmission;
 import org.sakaiproject.assignment.api.Assignment;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.user.api.User;
 
 import org.springframework.validation.Errors;
@@ -77,7 +78,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
    public static final String GROUP_FILTER = "group_filter";
    
    public static final String GROUP_FILTER_BUTTON = "filter";
-   
+      
    private ToolManager toolManager;
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
@@ -218,8 +219,10 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       Boolean readOnly = Boolean.valueOf(false);
       String worksiteId = grid.getScaffolding().getWorksiteId().getValue();
 
-      String filteredGroup = (String) request.get(GROUP_FILTER);      
-      List<Group> groupList = new ArrayList<Group>(getGroupList(worksiteId));
+      String filteredGroup = (String) request.get(GROUP_FILTER);
+      boolean allowAllGroups = ServerConfigurationService.getBoolean(MatrixFunctionConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
+      			|| grid.getScaffolding().getReviewerGroupAccess() == Scaffolding.UNRESTRICTED_GROUP_ACCESS;
+      List<Group> groupList = new ArrayList<Group>(getGroupList(worksiteId, allowAllGroups));
       //Collections.sort(groupList);
       //TODO: Figure out why ClassCastExceptions fire if we do this the obvious way...  The User list sorts fine
       Collections.sort(groupList, new Comparator<Group>() {
@@ -227,7 +230,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
     		  return arg0.getTitle().toLowerCase().compareTo(arg1.getTitle().toLowerCase());
     	  }});
       
-      List userList = new ArrayList(getUserList(worksiteId, filteredGroup));
+      List userList = new ArrayList(getUserList(worksiteId, filteredGroup, allowAllGroups));
       Collections.sort(userList);
       model.put("members", userList);
       model.put("userGroups", groupList);
@@ -303,22 +306,27 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       return null;
 
    } // getCurrentSitePageId
-       
-    private Set getGroupList(String worksiteId) {
+    
+    private Set getGroupList(String worksiteId, boolean allowAllGroups) {
     	try {
 			Site site = SiteService.getSite(worksiteId);
-			return getGroupList(site);
+			return getGroupList(site, allowAllGroups);
 		} catch (IdUnusedException e) {
 			logger.error("", e);
 		}
-		return new HashSet();
+		return new HashSet();    	
     }
     
-    private Set getGroupList(Site site) {
+    private Set getGroupList(Site site, boolean allowAllGroups) {
     	Set groups = new HashSet();
 		if (site.hasGroups()) {
             String currentUser = SessionManager.getCurrentSessionUserId();
-            groups.addAll(site.getGroupsWithMember(currentUser));
+            if (allowAllGroups) {
+            	groups.addAll(site.getGroups());
+            }
+            else {
+            	groups.addAll(site.getGroupsWithMember(currentUser));
+            }
 		}
 		return groups;
     }
@@ -333,7 +341,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 		return false;
 	}
 
-	private Set getUserList(String worksiteId, String filterGroupId) {
+	private Set getUserList(String worksiteId, String filterGroupId, boolean allowAllGroups) {
 		Set members = new HashSet();
 		Set users = new HashSet();
 
@@ -341,13 +349,25 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 			Site site = SiteService.getSite(worksiteId);
 			if (site.hasGroups()) {
 				String currentUser = SessionManager.getCurrentSessionUserId();
-				Collection groups = site.getGroupsWithMember(currentUser);
-				for (Iterator iter = groups.iterator(); iter.hasNext();) {
-					Group group = (Group) iter.next();
-					// TODO: Determine if Java loop invariants are optimized out
-					if (filterGroupId == null || filterGroupId.equals("")
-							|| filterGroupId.equals(group.getId())) {
-						members.addAll(group.getMembers());
+				Collection groups;
+				if (allowAllGroups) {
+					groups = site.getGroups();
+				}
+				else {
+					groups = site.getGroupsWithMember(currentUser);
+				}
+				
+				if (allowAllGroups && (filterGroupId == null || filterGroupId.equals(""))) {
+					members.addAll(site.getMembers());
+				}
+				else {
+					for (Iterator iter = groups.iterator(); iter.hasNext();) {
+						Group group = (Group) iter.next();
+						// TODO: Determine if Java loop invariants are optimized out
+						if (filterGroupId == null || filterGroupId.equals("")
+								|| filterGroupId.equals(group.getId())) {
+							members.addAll(group.getMembers());
+						}
 					}
 				}
 			} else {

@@ -85,6 +85,7 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    transient private boolean validate;
    
    private int workflowOption;
+   private int reviewerGroupAccess;
    private Set matrix = new HashSet();
    
    public static final int NO_PROGRESSION = 0;
@@ -92,6 +93,9 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    public static final int VERTICAL_PROGRESSION = 2;
    public static final int OPEN_PROGRESSION = 3;
    public static final int MANUAL_PROGRESSION = 4;
+   
+   public static final int NORMAL_GROUP_ACCESS = 0;
+   public static final int UNRESTRICTED_GROUP_ACCESS = 1;
 
    public Scaffolding() {}
    
@@ -359,6 +363,14 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
     */
    public void setWorkflowOption(int workflowOption) {
       this.workflowOption = workflowOption;
+   }
+   
+   public int getReviewerGroupAccess() {
+	   return reviewerGroupAccess;
+   }
+   
+   public void setReviewerGroupAccess(int reviewerGroupAccess) {
+	   this.reviewerGroupAccess = reviewerGroupAccess;
    }
 
    public Set getMatrix() {

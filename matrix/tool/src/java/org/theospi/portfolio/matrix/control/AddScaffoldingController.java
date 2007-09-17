@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.List;
 
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
@@ -37,6 +38,7 @@ import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.tool.api.SessionManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.Matrix;
@@ -75,6 +77,8 @@ public class AddScaffoldingController extends BaseScaffoldingController
          model.put("isMatrixUsed", scaffolding.isPublished() && isMatrixUsed( scaffolding.getId() ) );
       else
          model.put("isMatrixUsed", false );
+      
+      model.put("ignoreReviewerGroups", ServerConfigurationService.getBoolean(MatrixFunctionConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false));
       
       return model;
    }

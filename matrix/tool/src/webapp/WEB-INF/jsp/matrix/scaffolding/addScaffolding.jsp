@@ -64,8 +64,7 @@
 			<label class="block"><fmt:message key="label_description"/></label>
 			<spring:bind path="scaffolding.description">
 				<table><tr>
-				<td><textarea name="<c:out value="${status.expression}"/>" id="descriptionTextArea" rows="5" cols="80">
-			   <c:out value="${status.value}"/></textarea></td>
+				<td><textarea name="<c:out value="${status.expression}"/>" id="descriptionTextArea" rows="5" cols="80"><c:out value="${status.value}"/></textarea></td>
 				</tr></table>
 				<c:if test="${status.error}">
 				<div class="validation"><c:out value="${status.errorMessage}"/></div>
@@ -393,6 +392,27 @@
         </spring:bind>
   </fieldset>
   <!-- ************* Progression Area End ************* -->
+
+	<!--  ********** Reviewer Group Access Start ************-->
+	<c:if test="${not ignoreReviewerGroups}">
+		<fieldset class="fieldsetVis">
+			<legend><osp:message key="matrix_group_access"/></legend>
+			<spring:bind path="scaffolding.reviewerGroupAccess">
+				<c:forTokens var="token" items="normal,unrestricted" delims="," varStatus="loopCount">
+					<div class="checkbox indnt1">
+						<input type="radio" id="<c:out value="${token}" />" name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
+							<c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
+						/>
+						<label for="<c:out value="${token}" />">
+							<osp:message key="${token}_group_access_label" />
+							<osp:message key="${token}_group_access_desc" />
+						</label>
+					</div>
+				</c:forTokens>
+			</spring:bind>
+		</fieldset>
+	</c:if>
+	<!--  ********** Reviewer Group Access End ************-->
 
 	<c:if test="${not empty isInSession}">
 		<input type="hidden" name="<c:out value="${isInSession}"/>" value="true"/>

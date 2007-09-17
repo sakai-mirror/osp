@@ -150,6 +150,7 @@
         <property name="completedColor" type="java.lang.String" not-null="false" length="7"/>
         <property name="lockedColor" type="java.lang.String" not-null="false" length="7"/>
         <property name="workflowOption" type="int" not-null="true" />
+        <property name="reviewerGroupAccess" type="int" not-null="true" />
         
         <set name="matrix" cascade="all-delete-orphan" inverse="true"
             lazy="true">
