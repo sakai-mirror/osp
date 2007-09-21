@@ -344,9 +344,9 @@ function showFrame(selectBoxName,previewFrameName, previewButtonName,closeButton
    var previewButton = ospGetElementById(previewButtonName);
    var closeButton = ospGetElementById(closeButtonName);
 
-   previewButton.style.visibility="hidden";
-   previewFrame.style.height="180px";
-   closeButton.style.visibility="visible";
+   previewButton.style.display="none";
+   closeButton.style.display="block";
+		previewFrame.style.display="block";
    previewFrame.src=url;
    return false;
 }
@@ -356,9 +356,9 @@ function closeFrame(previewFrameName, previewButtonName, closeButtonName){
    var previewFrame = document.getElementById(previewFrameName);
    var closeButton = ospGetElementById(closeButtonName);
 
-   closeButton.style.visibility="hidden";
-   previewFrame.style.height="0px";
-   previewButton.style.visibility="visible";
+   closeButton.style.display="none";
+    previewButton.style.display="block";
+    previewFrame.style.display="none";
    return false;
 }
 
