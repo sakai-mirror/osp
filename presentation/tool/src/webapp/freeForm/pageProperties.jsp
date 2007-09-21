@@ -15,8 +15,7 @@
 
 <sakai:view>
 <h:form>
-<sakai:view_title value="#{msgs.title_addPresentation1}" rendered="#{freeForm.presentation.newObject}"/>
-<sakai:view_title value="#{msgs.title_editPresentation1}" rendered="#{!freeForm.presentation.newObject}"/>
+
 <%@include file="steps.jspf"%>
 <sakai:view_title value="#{msgs.add_page}" rendered="#{freeForm.presentation.newObject}"/>
 <sakai:view_title value="#{msgs.edit_page}" rendered="#{!freeForm.presentation.newObject}"/>
@@ -30,7 +29,14 @@
         <ospx:splitsection size="75%" valign="top">
             <ospx:splitarea direction="horizontal" width="100%">
                 <ospx:splitsection size="80%" valign="top">
-                    <sakai:panel_edit>
+					<h:outputText  id="modifiedLabel" value="#{msgs.page_modified} "
+						rendered="#{freeForm.currentPage.base.modified != null}"/>
+					<h:outputFormat id="modified" value="#{msgs.date_format}"
+						rendered="#{freeForm.currentPage.base.modified != null}">
+						<f:param value="#{freeForm.currentPage.base.modified}"/>
+					</h:outputFormat>
+						<f:verbatim><br /></f:verbatim>
+                    <h:panelGrid styleClass="itemSummary" columns="2" border="0"  cellpadding="0" cellspacing="0" columnClasses="bogus;shorttext">
                         <ospx:formLabel valueRequired="true">
                             <h:outputLabel for="title" id="titleLabel" value="#{msgs.page_title}" />
                         </ospx:formLabel>
@@ -38,7 +44,7 @@
                             <h:inputText id="title" value="#{freeForm.currentPage.base.title}" required="true">
                                 <f:validateLength minimum="1" maximum="255"/>
                             </h:inputText>
-                            <h:message for="title" styleClass="validationEmbedded"/>
+                            <h:message for="title" styleClass="alertMessageInline" style="border:none"/>
                         </h:panelGroup>
                         <h:outputLabel for="description" id="descriptionLabel"
                                        value="#{msgs.page_description}"/>
@@ -47,7 +53,7 @@
                                              required="false">
                                 <f:validateLength minimum="0" maximum="255"/>
                             </h:inputTextarea>
-                            <h:message for="description" styleClass="validationEmbedded"/>
+                            <h:message for="description" styleClass="alertMessageInline" style="border:none"/>
                         </h:panelGroup>
 
                         <h:outputLabel for="keywords" id="keywordsLabel" value="#{msgs.page_keywords}"/>
@@ -56,7 +62,7 @@
                                              required="false">
                                 <f:validateLength minimum="0" maximum="255"/>
                             </h:inputTextarea>
-                            <h:message for="keywords" styleClass="validationEmbedded"/>
+                            <h:message for="keywords"  styleClass="alertMessageInline" style="border:none"/>
                         </h:panelGroup>
 
                         <ospx:formLabel valueRequired="true">
@@ -70,7 +76,6 @@
                                     <h:outputText id="layout" value="#{freeForm.currentPage.base.layout.name}"/>
                                 </sakai:doc_properties>
                             </f:subview>
-                            <h:message for="layoutFileHidden" styleClass="validationEmbedded"/>
                             <h:inputText id="layoutFile" value="#{freeForm.currentPage.layoutName}"
                                          readonly="true" rendered="#{freeForm.currentPage.renderLayoutName}"/>
 
@@ -80,11 +85,12 @@
                             <h:inputHidden id="layoutFileHidden" value="#{freeForm.currentPage.selectedLayout}"
                                            required="true"
                                            rendered="#{freeForm.currentPage.selectedLayout.base != null}"/>
-
+							<h:outputText value=" "/>
                             <h:commandLink action="#{freeForm.currentPage.processActionSelectLayout}"
                                            immediate="true">
                                 <h:outputText value="#{msgs.select_layout}"/>
                             </h:commandLink>
+							<h:message for="layoutFileHidden"  styleClass="alertMessageInline" style="border:none"/>
 
 
                         </h:panelGroup>
@@ -101,25 +107,15 @@
                         <h:panelGroup>
                             <h:inputText id="styleFile" value="#{freeForm.currentPage.styleName}"
                                          readonly="true" required="false"/>
+							<h:outputText value=" "/> 
                             <h:commandLink action="#{freeForm.currentPage.processActionSelectStyle}"
                                            immediate="true">
-
                                 <h:outputText value="#{msgs.select_style}"/>
                             </h:commandLink>
                         </h:panelGroup>
 
 
-                    </sakai:panel_edit>
-                </ospx:splitsection>
-                <ospx:splitsection valign="top">
-                    <sakai:panel_edit>
-                        <h:outputLabel for="modified" id="modifiedLabel" value="#{msgs.page_modified} "
-                        					rendered="#{freeForm.currentPage.base.modified != null}"/>
-                        <h:outputFormat id="modified" value="#{msgs.date_format}"
-                                        rendered="#{freeForm.currentPage.base.modified != null}">
-                            <f:param value="#{freeForm.currentPage.base.modified}"/>
-                        </h:outputFormat>
-                    </sakai:panel_edit>
+                    </h:panelGrid>
                 </ospx:splitsection>
             </ospx:splitarea>
         </ospx:splitsection>
@@ -130,7 +126,7 @@
     <ospx:xheadertitle id="styleTitle2" value="#{msgs.page_content_title}"/>
     <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
         <f:subview id="arrange">
-            <h:panelGrid columns="1">
+            <h:panelGrid columns="1" border="0">
                 <sakai:instruction_message value = "#{msgs.manage_items_instructions}"/>
                         <h:commandButton actionListener="#{freeForm.processActionManageItems}"
                                          value="#{msgs.manage_items}"/>

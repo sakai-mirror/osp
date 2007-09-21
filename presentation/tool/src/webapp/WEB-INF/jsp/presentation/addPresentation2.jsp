@@ -60,7 +60,7 @@
 
 <%@ include file="/WEB-INF/jsp/presentation/wizardHeader.inc"%>
 
-<form method="POST" name="wizardform" action="addPresentation.osp"
+<form method="post" name="wizardform" action="addPresentation.osp"
     onsubmit="updateItems();"><input type="hidden" name="direction"
     value="" />
     <input type="hidden" name="preview" value="" />
@@ -70,9 +70,8 @@
     <div class="instruction">
         <fmt:message key="instructions_addPresentation2"/>
     </div>
-
     <spring:bind path="presentation.items">
-        <table class="alternating">
+        <div class="alternating">
             <c:forEach var="itemDefinition" items="${types}"
                 varStatus="loopCounter">
     
@@ -83,12 +82,13 @@
                     <c:set var="alternating"></c:set>
                 </c:if>
     
-                <tr <c:out escapeXml="false" value="${alternating}"/>>
-                    <td>
-                    <table cellspacing="0" width="100%">
+                <div <c:out escapeXml="false" value="${alternating}"/>>
+
+                    <div class="highlightPanel" style="margin:0">
                         <c:choose>
-                            <c:when
+						<c:when
                                 test="${itemDefinition.allowMultiple == true}">
+						
                                 <c:set var="list1">
                                     <c:out value="${status.expression}" />_unselected_<c:out
                                         value="${loopCounter.index}" />
@@ -101,102 +101,101 @@
                                 <c:set var="selectBox">
                                     <c:out value="${list1}" />
                                 </c:set>
-    
-                                <tr class="underline">
-                                    <td class="underline" width="40%"
-                                        rowspan="2" valign="top">
-                                    <h3><c:out
-                                        value="${itemDefinition.title}" /></h3>
-                                    <br />
-                                    <c:out
-                                        value="${itemDefinition.description}" /></td>
-                                    <td class="underline" colspan="3"
-                                        align="center" valign="top"><fmt:message key="label_availableItems"/></td>
-                                </tr>
-                                <tr class="underline">
-                                    <td width="23%" align="center"
-                                        valign="top">
-                                        
-                                        <select multiple="true"
-                                        size="10"
-                                        onDblClick='move("<c:out value="${list1}"/>","<c:out value="${list2}"/>",false);'
-                                        id="<c:out value="${list1}"/>"
-                                        name="<c:out value="${list1}"/>"
-                                        style="width:175">
-                                        <c:forEach var="artifact"
-                                            items="${artifacts[itemDefinition.id.value]}">
-                                            <c:set var="value">
-                                                <c:out
-                                                    value="${itemDefinition.id.value}" />.<c:out
-                                                    value="${artifact.id.value}" />
-                                            </c:set>
-                                            <c:set var="found" value="false" />
-                                            <c:forEach var="next"
-                                                items="${items}">
-                                                <c:if
-                                                    test="${value eq next}">
-                                                    <c:set var="found"
-                                                        value="true" />
-                                                </c:if>
-                                            </c:forEach>
-                                            <c:if test="${found == false}">
-                                                <option
-                                                    value="<c:out value="${value}" />">
-                                                <c:out
-                                                    value="${artifact.displayName}" />
-                                                </option>
-                                            </c:if>
-                                        </c:forEach>
-                                    </select></td>
-                                    <td width="12%" align="center"
-                                        valign="top">
-                                    <div class="chefButtonRow"><input
-                                        name="add" type="button" style="width:100px;"
-                                        onClick="move('<c:out value="${list1}"/>','<c:out value="${list2}"/>',false)"
-                                        value="<fmt:message key="button_add"/> >"> <br />
-                         <input name="add all" type="button"  style="width:100px;" onClick="move('<c:out value="${list1}"/>','<c:out value="${list2}"/>',true)" value="<fmt:message key="button_addAll"/> >>"> <br/>
-                         <br />
-                                    <input name="remove" type="button"  style="width:100px;"
-                                        onClick="move('<c:out value="${list2}"/>','<c:out value="${list1}"/>',false)"
-                                        value="<fmt:message key="button_remove"/> <"> <br/>
-                         <input name="remove all" type="button"  style="width:100px;" onClick="move('<c:out value="${list2}"/>','<c:out value="${list1}"/>',true)" value="<fmt:message key="button_removeAll"/> <<"> <br/>
-                      </div>
-                   </td>
-                   <td width="25%" align="center" valign="top">
-    
-                      <select
-                            multiple="true"
-                            size="10"
-                            onDblClick='move("<c:out value="${list2}"/>","<c:out value="${list1}"/>",false);'
-                            id="<c:out value="${list2}"/>"
-                            name="<c:out value="${status.expression}"/>"
-                            style="width:175">
-                         <c:forEach var="artifact" items="${artifacts[itemDefinition.id.value]}">
-                            <c:set var="value"><c:out value="${itemDefinition.id.value}"/>.<c:out value="${artifact.id.value}"/></c:set>
-                               <c:forEach var="next" items="${items}">
-                                  <c:if test="${value eq next}">
-                                     <option value="<c:out value="${value}" />">
-                                        <c:out value="${artifact.displayName}"/>
-                                     </option>
-                                  </c:if>
-                               </c:forEach>
-                         </c:forEach>
-                      </select>
-                   </td>
-                 </tr>
-    
-                </c:when>
-                <c:otherwise>
+	<h3><c:out value="${itemDefinition.title}" /></h3>
+	<div class="textPanel"><c:out value="${itemDefinition.description}" /></div>
+	<table class="sidebyside" border="0" summary="<fmt:message key="item_selection_table_summary_step2"/>">
+		<tr>
+			<th><fmt:message key="label_availableItems_step2"/></th>
+			<th></th>
+			<th><fmt:message key="label_selectedItems_step2"/></th>
+		</tr>
+		<tr>
+			<td>
+				<select multiple="multiple"
+					size="10"
+					ondblclick='move("<c:out value="${list1}"/>","<c:out value="${list2}"/>",false);'
+					id="<c:out value="${list1}"/>"
+					name="<c:out value="${list1}"/>">
+					<c:forEach var="artifact"
+						items="${artifacts[itemDefinition.id.value]}">
+						<c:set var="value">
+							<c:out
+								value="${itemDefinition.id.value}" />
+							<c:out
+								value="${artifact.id.value}" />
+						</c:set>
+						<c:set var="found" value="false" />
+						<c:forEach var="next"
+							items="${items}">
+							<c:if
+								test="${value eq next}">
+								<c:set var="found" value="true" />
+							</c:if>
+						</c:forEach>
+						<c:if test="${found == false}">
+							<option
+								value="<c:out value="${value}" />">
+								<c:out value="${artifact.displayName}" />
+							</option>
+						</c:if>
+					</c:forEach>
+				</select>
+			</td>
+			<td style="text-align:center">
+				<input name="add"  type="button"
+					onclick="move('<c:out value="${list1}"/>','<c:out value="${list2}"/>',false)"
+					value="<fmt:message key="button_add"/> >" 
+				/> 
+				<br />
+				<input name="add all" type="button" 
+					onclick="move('<c:out value="${list1}"/>','<c:out value="${list2}"/>',true)" 
+					value="<fmt:message key="button_addAll"/> >>" 
+				/>
+				<hr class="itemSeparator" />
+				<input name="remove" type="button"
+					onclick="move('<c:out value="${list2}"/>','<c:out value="${list1}"/>',false)"
+					value="<fmt:message key="button_remove"/> <"
+				/>
+				<br />
+				<input name="remove all" type="button" 
+					onclick="move('<c:out value="${list2}"/>','<c:out value="${list1}"/>',true)" 
+					value="<fmt:message key="button_removeAll"/> <<"
+				/>
+			</td>
+			<td>
+				<select
+					multiple="multiple"
+					size="10"
+					ondblclick='move("<c:out value="${list2}"/>","<c:out value="${list1}"/>",false);'
+					id="<c:out value="${list2}"/>"
+					name="<c:out value="${status.expression}"/>">
+					<c:forEach var="artifact" items="${artifacts[itemDefinition.id.value]}">
+						<c:set var="value"><c:out value="${itemDefinition.id.value}"/>.<c:out value="${artifact.id.value}"/></c:set>
+						<c:forEach var="next" items="${items}">
+							<c:if test="${value eq next}">
+								<option value="<c:out value="${value}" />">
+									<c:out value="${artifact.displayName}"/>
+								</option>
+							</c:if>
+						</c:forEach>
+					</c:forEach>
+				</select>
+			</td>
+		</tr>
+	</table>
+</c:when>
+<c:otherwise>
                 <c:set var="selectBox"><c:out value="${status.expression}"/><c:out value="${loopCounter.index}"/></c:set>
                 
-                                <tr class="underline">
-                                    <td class="underline" valign="top">
+                                <div class="navPanel" style="background:transparent;">
+                                    <div class="viewNav">
                                     <h3><c:out
                                         value="${itemDefinition.title}" /></h3>
-                                    <br />
-                                    <c:out
-                                        value="${itemDefinition.description}" /></td>
-                                    <td align="right" valign="top"><fmt:message key="label_availableItems"/> <select
+                                    </div>
+									
+                                    <div class="listNav">
+									<label  for="<c:out value="${selectBox}"/>"><fmt:message key="label_availableItems"/></label>
+									<select
                                         id="<c:out value="${selectBox}"/>"
                                         name="<c:out value="${status.expression}"/>">
                                         <option value=""><fmt:message key="addPresentation2_selectItem"/>
@@ -212,21 +211,27 @@
                                             </c:set>
                                             <option
                                                 value="<c:out value="${value}" />"
-                                                <c:forEach var="next" items="${items}"><c:if test="${value eq next}">selected</c:if></c:forEach>>
+                                                <c:forEach var="next" items="${items}"><c:if test="${value eq next}">selected="selected"</c:if></c:forEach>>
                                             <c:out
                                                 value="${artifact.displayName}" />
                                             </option>
                                         </c:forEach>
-                                    </select></td>
-                                </tr>
-    
+                                    </select>
+									</div>
+								</div>
+								<c:if test="${not empty itemDefinition.description}">
+								<div class="textPanel indnt1">
+															<c:out
+                                        value="${itemDefinition.description}" />
+								</div>		
+								</c:if>
+			
                                 </c:otherwise>
                         </c:choose>
-                    </table>
-                    </td>
-                </tr>
+                    </div>
+                    </div>
             </c:forEach>
-        </table>
+        </div>
     </spring:bind>
     <c:set var="suppress_submit" value="true" />
     <c:set var="previewPres" value="true" />

@@ -29,38 +29,49 @@
  </div>
 
 
-
- <form method="POST" name="wizardform" action="addPresentation.osp"
+ <form method="post" name="wizardform" action="addPresentation.osp"
      onsubmit="return true;"><input type="hidden" name="direction"
      value="" />
      <osp:form />
 
      <spring:bind path="presentation.name">
-         <p class="shorttext">
              <c:if test="${status.error}">
-                 <div class="validation"><c:out value="${status.errorMessage}"/></div>
+                 <p class="shorttext validFail" >
+             </c:if>
+			 <c:if test="${!status.error}">
+                 <p class="shorttext" >
              </c:if>
              <span class="reqStar">*</span>
-             <label><fmt:message key="label_title"/></label>
+             <label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_title"/></label>
              <input type="text"
                  name="<c:out value="${status.expression}"/>"
+				  id="<c:out value="${status.expression}"/>-id"
                  value="<c:out value="${status.displayValue}"/>" />
+				 <c:if test="${status.error}">
+				 	<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
+				</c:if>
          </p>
      </spring:bind>
 
      <spring:bind path="presentation.description">
-         <p class="longtext">
              <c:if test="${status.error}">
-                 <div class="validation"><c:out value="${status.errorMessage}"/></div>
+                 <p class="longtext validFail" >
              </c:if>
-             <label><fmt:message key="label_description"/></label>
-             <table><tr>
+			 <c:if test="${!status.error}">
+                 <p class="longtext" >
+             </c:if>
+             <label class="block"  for="<c:out value="${status.expression}"/>">
+			 	<fmt:message key="label_description"/>
+				 <c:if test="${status.error}">
+					 <span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
+				 </c:if>
+			</label>
+
              <c:set var="descriptionID" value="${status.expression}" />
-             <td><textarea id="<c:out value="${status.expression}"/>"
+             <textarea id="<c:out value="${status.expression}"/>"
                  name="<c:out value="${status.expression}"/>"
                  cols="80" rows="5"><c:out
-                 value="${status.displayValue}" /></textarea></td>
-             </tr></table>
+                 value="${status.displayValue}" /></textarea>
          </p>
      </spring:bind>
 
@@ -82,10 +93,10 @@
      <spring:bind path="presentation.allowComments">
             <div class="checkbox indnt1">
                 <input type="checkbox" name="<c:out value="${status.expression}"/>" value="true"  id="<c:out value="${status.expression}"/>-id" 
-        			<c:if test="${status.value}">checked</c:if> />
+        			<c:if test="${status.value}">checked="checked"</c:if> />
       
-                <legend class="checkbox"><fmt:message key="label_allowComments"/></legend>
-                <label class="instruction"><fnt:message key="instruction_allowComments"/></label>
+                <label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_allowComments"/></label>
+                <span class="instruction"><fmt:message key="instruction_allowComments"/></span>
             </div>
      </spring:bind>
 

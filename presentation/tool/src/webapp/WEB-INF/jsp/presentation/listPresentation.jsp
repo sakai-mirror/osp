@@ -48,13 +48,17 @@
    <c:set var="presentationCount" value="${presentationStatus.count}" scope="request" />
   </c:forEach>
 
+<div class="navPanel">
+	<div class="viewNav">
+		<h3><fmt:message key="title_presentationManager"/></h3>
+	</div>	
+	<osp:url var="listUrl" value="listPresentation.osp"/>
+	<osp:listScroll listUrl="${listUrl}" className="listNav" />
+</div>	
 
-<osp:url var="listUrl" value="listPresentation.osp"/>
-<osp:listScroll listUrl="${listUrl}" className="navIntraTool" />
 
-<h3><fmt:message key="title_presentationManager"/></h3>
 
-<table class="listHier" cellspacing="0" >
+<table class="listHier lines nolines" cellspacing="0" cellpadding="0"  border="0" summary="<fmt:message key=" table_presentationManager_summary" />" >
    <thead>
       <tr>
          <th scope="col"><fmt:message key="table_header_name"/></th>
@@ -64,7 +68,7 @@
          <c:if test="${myworkspace}">
            <th scope="col"><fmt:message key="table_header_worksite"/></th>
          </c:if>
-         <th scope="col"><fmt:message key="table_header_expired"/></th>
+         <th scope="col" class="attach"><fmt:message key="table_header_expired"/></th>
       </tr>
    </thead>
     <tbody>
@@ -72,39 +76,41 @@
     <c:set var="isAuthorizedTo" value="${presentation.authz}" />
     <osp-c:authZMap prefix="osp.presentation." var="presCan" qualifier="${presentation.id}"/>
 
-    <TR>
-      <TD nowrap>
-      <a <c:if test="${presentation.template.includeHeaderAndFooter == false}">target="_new"</c:if>
+    <tr>
+      <td style="white-space:nowrap">
+	  <h4>
+      <a <c:if test="${presentation.template.includeHeaderAndFooter == false}">target="_blank" title="
+<fmt:message key="table_presentationManager_new_window"/>"</c:if>
                 href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />">
          <c:out value="${presentation.name}" />
       </a>
+	  </h4>
          <div class="itemAction">
          <c:set var="hasFirstAction" value="false" />
                 
              <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
 					  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="addPresentation.osp"/>&target=_target5&resetForm=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="action_share"/></a>
+                 <a href="<osp:url value="addPresentation.osp"/>&target=_target5&resetForm=true&id=<c:out value="${presentation.id.value}" />"  title="<fmt:message key="action_share"/> <c:out value="${presentation.name}" />"><fmt:message key="action_share"/></a>
              
              </c:if>
              <c:if test="${isAuthorizedTo.edit}">
-                 <input name="_page" type="hidden" value="1">
+                 <input name="_page" type="hidden" value="1" />
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="addPresentation.osp"/>&target=_target1&resetForm=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_edit"/></a>
+                 <a href="<osp:url value="addPresentation.osp"/>&target=_target1&resetForm=true&id=<c:out value="${presentation.id.value}" />"  title="<fmt:message key="action_edit"/> <c:out value="${presentation.name}" />"><fmt:message key="table_action_edit"/></a>
              </c:if>
-    
              <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="PresentationStats.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_viewStats"/></a>
+                 <a href="<osp:url value="PresentationStats.osp"/>&id=<c:out value="${presentation.id.value}" />" title="<fmt:message key="table_action_viewStats_title"/> <c:out value="${presentation.name}" />"><fmt:message key="table_action_viewStats"/></a>
              </c:if>
 
               <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
 
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&presentationId=<c:out value="${presentation.id.value}"/>/<c:out value="${presentation.name}" />.zip"><fmt:message key="table_action_download"/></a>
+                 <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&presentationId=<c:out value="${presentation.id.value}"/>/<c:out value="${presentation.name}" />.zip" title="<fmt:message key="table_action_download"/> <c:out value="${presentation.name}" />"> <fmt:message key="table_action_download"/></a>
 
 
              </c:if>
@@ -113,36 +119,36 @@
 
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
-                 <a onclick="return confirmDeletion();" href="<osp:url value="deletePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_delete"/></a>
+                 <a onclick="return confirmDeletion();" href="<osp:url value="deletePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />" title="<fmt:message key="table_action_delete"/> <c:out value="${presentation.name}" />"><fmt:message key="table_action_delete"/></a>
              </c:if>
              
 				 <c:if test="${!presCan.hide}">
 					
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="hidePresentation.osp"/>&hideAction=hide&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_hide"/></a>
+                 <a href="<osp:url value="hidePresentation.osp"/>&hideAction=hide&id=<c:out value="${presentation.id.value}" />" title="<fmt:message key="table_action_hide"/> <c:out value="${presentation.name}" />"><fmt:message key="table_action_hide"/></a>
              </c:if>
              <c:if test="${presCan.hide}">
 					<!-- This means it is already hidden because the "permission" is set to hide this id for this user -->
                  <c:if test="${hasFirstAction}" > | </c:if>
                  <c:set var="hasFirstAction" value="true" />
-                 <a href="<osp:url value="hidePresentation.osp"/>&hideAction=show&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_show"/></a>
+                 <a href="<osp:url value="hidePresentation.osp"/>&hideAction=show&id=<c:out value="${presentation.id.value}" />" title="<fmt:message key="table_action_show"/> <c:out value="${presentation.name}" />"><fmt:message key="table_action_show"/></a>
              </c:if>
          </div>
 
-      </TD>
-      <TD><c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${presentation.modified}" pattern="${dateFormat}"/></TD> 
-      <TD><c:out value="${presentation.template.name}" /></TD>
-      <TD><c:out value="${presentation.owner.displayName}" /></TD>
+      </td>
+      <td><c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${presentation.modified}" pattern="${dateFormat}"/></td> 
+      <td><c:out value="${presentation.template.name}" /></td>
+      <td><c:out value="${presentation.owner.displayName}" /></td>
       <c:if test="${myworkspace}">
-         <TD><c:out value="${presentation.worksiteName}" /></TD>
+         <td><c:out value="${presentation.worksiteName}" /></td>
       </c:if>
-      <TD style="text-align: center;">
+      <td class="attach">
          <c:if test="${presentation.expired}">
-            <img alt="<fmt:message key="linktitle_presentationExpired"/>"  src="<osp:url value="/img/checkon.gif"/>" border="0"/>
+            <img alt="<fmt:message key="linktitle_presentationExpired"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
          </c:if>
-      </TD>
-    </TR>
+      </td>
+    </tr>
   </c:forEach>
    </tbody>
   </table>

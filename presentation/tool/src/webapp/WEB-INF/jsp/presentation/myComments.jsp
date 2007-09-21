@@ -11,6 +11,9 @@
 </c:forEach>
 
 <h3>
+	<fmt:message key="title_commentsByMe"/>
+</h3>
+<p class="instruction">
     <c:if test="${commentsCount == 0}">
       <fmt:message key="title_commentsByMe_none"/>
     </c:if>
@@ -22,107 +25,108 @@
         <fmt:param><c:out value="${commentsCount}" /></fmt:param>
       </fmt:message>
     </c:if>
-</h3>
 
-<table class="listHier" cellspacing="0">
+   <c:if test="${not empty comments}">
+<table class="listHier lines nolines" cellspacing="0"  cellpadding="0" border="0" summary="<fmt:message key="table_commentsByMe_summary"/>">
     <thead>
         <tr>
             <c:set var="sortDir" value="asc" />
-            <th><c:if test="${sortByColumn == 'name'}">
+            <th scope="col"><c:if test="${sortByColumn == 'name'}">
                 <c:if test="${direction == 'asc'}">
                     <c:set var="sortDir" value="desc" />
                 </c:if>
             </c:if> <a
-                href="<osp:url value="myComments.osp"/>&sortByColumn=name&direction=<c:out value="${sortDir}" />">
-            <fmt:message key="table_header_presentation"/></a>&nbsp;</th>
+                href="<osp:url value="myComments.osp"/>&sortByColumn=name&direction=<c:out value="${sortDir}" />"
+				title="<fmt:message key="table_commentsForMe_srt_hint" /><fmt:message key="table_header_presentation"/>">
+            <fmt:message key="table_header_presentation"/></a></th>
             <c:set var="sortDir" value="asc" />
-            <th><c:if test="${sortByColumn == 'title'}">
+            <th scope="col"><c:if test="${sortByColumn == 'title'}">
                 <c:if test="${direction == 'asc'}">
                     <c:set var="sortDir" value="desc" />
                 </c:if>
             </c:if> <a
-                href="<osp:url value="myComments.osp"/>&sortByColumn=title&direction=<c:out value="${sortDir}" />">
-            <fmt:message key="table_header_comment"/></a>&nbsp;</th>
+                href="<osp:url value="myComments.osp"/>&sortByColumn=title&direction=<c:out value="${sortDir}" />"
+				title="<fmt:message key="table_commentsForMe_srt_hint" /><fmt:message key="table_header_comment"/>">
+            <fmt:message key="table_header_comment"/></a></th>
             <c:set var="sortDir" value="asc" />
-            <th><c:if test="${sortByColumn == 'created'}">
+            <th scope="col"><c:if test="${sortByColumn == 'created'}">
                 <c:if test="${direction == 'asc'}">
                     <c:set var="sortDir" value="desc" />
                 </c:if>
             </c:if> <a
-                href="<osp:url value="myComments.osp"/>&sortByColumn=created&direction=<c:out value="${sortDir}" />">
-            <fmt:message key="table_header_date"/></a>&nbsp;</th>
+                href="<osp:url value="myComments.osp"/>&sortByColumn=created&direction=<c:out value="${sortDir}" />"
+				title="<fmt:message key="table_commentsForMe_srt_hint" /><fmt:message key="table_header_date"/>">
+            <fmt:message key="table_header_date"/></a></th>
             <c:set var="sortDir" value="asc" />
-            <th><c:if test="${sortByColumn == 'owner_id'}">
+            <th scope="col"><c:if test="${sortByColumn == 'owner_id'}">
                 <c:if test="${direction == 'asc'}">
                     <c:set var="sortDir" value="desc" />
                 </c:if>
             </c:if> <a
-                href="<osp:url value="myComments.osp"/>&sortByColumn=owner_id&direction=<c:out value="${sortDir}" />">
-            <fmt:message key="table_header_presentationOwner"/></a>&nbsp;</th>
+                href="<osp:url value="myComments.osp"/>&sortByColumn=owner_id&direction=<c:out value="${sortDir}" />"
+				title="<fmt:message key="table_commentsForMe_srt_hint" /><fmt:message key="table_header_presentationOwner"/>">
+            <fmt:message key="table_header_presentationOwner"/></a></th>
             <c:set var="sortDir" value="asc" />
-            <th><c:if test="${sortByColumn == 'visibility'}">
+            <th scope="col"><c:if test="${sortByColumn == 'visibility'}">
                 <c:if test="${direction == 'asc'}">
                     <c:set var="sortDir" value="desc" />
                 </c:if>
             </c:if> <a
-                href="<osp:url value="myComments.osp"/>&sortByColumn=visibility&direction=<c:out value="${sortDir}" />">
-            <fmt:message key="table_header_visibility"/></a>&nbsp;</th>
+                href="<osp:url value="myComments.osp"/>&sortByColumn=visibility&direction=<c:out value="${sortDir}" />"
+				title="<fmt:message key="table_commentsForMe_srt_hint" /><fmt:message key="table_header_visibility"/>">
+            <fmt:message key="table_header_visibility"/></a></th>
         </tr>
     </thead>
     <tbody>
 
         <c:set value="0" var="odd" />
         <c:forEach begin="0" items="${comments}" var="comment">
-            <c:choose>
-                <c:when test="${odd == 1}">
-                    <c:set var="odd" value="0" />
-                    <c:set value="#FAFAFA" var="color" />
-                </c:when>
-                <c:otherwise>
-                    <c:set var="odd" value="1" />
-                    <c:set value="" var="color" />
-                </c:otherwise>
-            </c:choose>
-            <tr bgcolor="<c:out value="${color}" />">
+             <tr class="lightHighLightRow">
                 <td nowrap="nowrap">
-                <p><a target="_blank" 
-                    href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${comment.presentation.id.value}" />#comment<c:out value="${comment.id.value}" />">
+                <a target="_blank" 
+                    href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${comment.presentation.id.value}" />#comment<c:out value="${comment.id.value}" />"
+					title="<fmt:message key="table_commentsForMe_link_hint"/>">
                 <c:out value="${comment.presentation.name}" />(<c:out
                     value="${comment.presentation.template.name}" />) </a>
-                </p>
+                
                 </td>
                 <td>
-                <p><c:out value="${comment.title}" /></p>
+                <c:out value="${comment.title}" />
                 </td>
                 <td>
-                <p><c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${comment.created}" pattern="${dateFormat}"/></p>
+                <c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${comment.created}" pattern="${dateFormat}"/>
                 </td>
                 <td>
-                <P><c:out
-                    value="${comment.presentation.owner.displayName}" /></P>
+                <c:out
+                    value="${comment.presentation.owner.displayName}" />
                 </td>
                 <td>
-                <P><c:if test="${comment.visibility == 1}">
-               &nbsp;<fmt:message key="comments_private"/>&nbsp;
+                <c:if test="${comment.visibility == 1}">
+               <fmt:message key="comments_private"/>
             </c:if> <c:if test="${comment.visibility == 2}">
-               &nbsp;<fmt:message key="comments_shared"/>&nbsp;
+               <fmt:message key="comments_shared"/>
             </c:if> <c:if test="${comment.visibility == 3}">
-               &nbsp;<fmt:message key="comments_public"/>&nbsp;
+               <fmt:message key="comments_public"/>
             </c:if></P>
                 </td>
             </tr>
-            <tr bgcolor="<c:out value="${color}" />">
-                <td>&nbsp;</td>
+            <tr class="exclude">
+
                 <td colspan="5">
-                <p><c:out value="${comment.comment}" /></p>
+				<p class="indnt1">
+                	<c:out value="${comment.comment}" />
+				</p>	
                 </td>
             </tr>
         </c:forEach>
     </tbody>
 </table>
+</c:if>
 
-<p/>
-<form method="POST" action="listPresentation.osp">
-   <input type="submit" name="_cancel" value="<fmt:message key="button_back"/>"/>
+<form method="post" action="listPresentation.osp" class="inlineForm">
+<p class="act">
+   <input type="submit" name="_cancel" value="<fmt:message key="button_back"/>" accesskey="x" class="active" />
+</p> 
 </form>
+</p>
 

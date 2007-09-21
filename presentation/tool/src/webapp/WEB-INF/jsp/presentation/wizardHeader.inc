@@ -9,8 +9,7 @@
 </div>-->
 <c:if test="${not empty step}">
 <link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
-<div class="step">
-
+<h3>
 <c:if test="${step eq 1}" >
 <fmt:message key="paging_steps">
           <fmt:param><fmt:message key="step_1"/></fmt:param>
@@ -33,15 +32,16 @@
  </fmt:message>:
          <fmt:message key="step_publish"/>
 </c:if>
-
-</div>
+</h3>
 </c:if>
 <c:if test="${empty step}">
-<div class="step">
+<div class="xheader">ccccccc
+<h3>
         <fmt:message key="paging_steps">
           <fmt:param value="${currentPage}"/>
           <fmt:param value="${totalPages}"/>
         </fmt:message>
 
+</h3>
 </div>
 </c:if>

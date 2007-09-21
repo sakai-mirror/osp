@@ -6,7 +6,7 @@
         <input type="submit" name="<c:out value="${targetPrevious}"/>" value="<fmt:message key="button_back"/>" accesskey ="b" />
     </c:if>
     <c:if test="${previewPres}">
-        <input type="submit" name="<c:out value="${targetPreview}"/>" value="<fmt:message key="button_preview"/>" onClick="document.wizardform.preview.value = true;"  accesskey ="v" />
+        <input type="submit" name="<c:out value="${targetPreview}"/>" value="<fmt:message key="button_preview"/>" onclick="document.wizardform.preview.value = true;"  accesskey ="v" />
     </c:if>
     <c:if test="${updateSeq}">
         <input type="submit" name="<c:out value="${target}"/>" value="<fmt:message key="button_update"/>" accesskey ="s" />
