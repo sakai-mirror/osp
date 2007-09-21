@@ -1,8 +1,8 @@
 /* Styles for the xheader */    
 .xheader {
 /*  background-color:#eee;
-*/  color:#EE8800;
-font-weight: bold;
+*/  color:#555;
+	font-weight: bold;
 		
 	font-size:1.2em;
      vertical-align: middle;
@@ -65,3 +65,4 @@ font-weight: bold;
  .drawerBorder table {
 	margin:0;
  }
+ 
