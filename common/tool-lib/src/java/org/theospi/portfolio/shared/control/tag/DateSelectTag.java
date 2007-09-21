@@ -44,33 +44,33 @@ public class DateSelectTag extends DateSelectPopupTag {
       try {
          StringBuilder buffer = new StringBuilder();
          buffer.append("<select name=\"" + getMonthSelectId() + "\" id=\"" + getMonthSelectId() + "\" onchange=\"blur();\">\n");
-         buffer.append("<option value=\"\">\n");
+         buffer.append("<option value=\"\"></option>\n");
          for (int i=1; i<13; i++){
             buffer.append("<option value=\"" + i + "\"");
             if (getMonthSelected() == i){
-               buffer.append("selected=\"selected\"");
+               buffer.append(" selected=\"selected\"");
             }
             buffer.append(">" + getMonthName(i) + "</option>\n");
          }
          buffer.append("</select>");
 
          buffer.append("<select name=\"" + getDaySelectId() + "\" id=\"" + getDaySelectId() + "\" onchange=\"blur();\">\n");
-         buffer.append("<option value=\"\">\n");
+         buffer.append("<option value=\"\"></option>\n");
          for (int i=1; i<31; i++){
             buffer.append("<option value=\"" + i + "\"");
             if (getDaySelected() == i){
-               buffer.append("selected=\"selected\"");
+               buffer.append(" selected=\"selected\"");
             }
             buffer.append(">" + i + "</option>\n");
          }
          buffer.append("</select>");
 
          buffer.append("<select name=\"" + getYearSelectId() + "\" id=\"" + getYearSelectId() + "\" onchange=\"blur();\">\n");
-         buffer.append("<option value=\"\">\n");
+         buffer.append("<option value=\"\"></option>\n");
          for (int i=Integer.parseInt(earliestYear); i<Integer.parseInt(latestYear)+1; i++){
             buffer.append("<option value=\"" + i + "\"");
             if (getYearSelected() == i){
-               buffer.append("selected=\"selected\"");
+               buffer.append(" selected=\"selected\"");
             }
             buffer.append(">" + i + "</option>\n");
          }
