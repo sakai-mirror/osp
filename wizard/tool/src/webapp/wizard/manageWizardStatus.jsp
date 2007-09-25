@@ -13,9 +13,9 @@
    			</f:subview>
 			
    			<sakai:messages />
-   			
+   			<f:verbatim>
    			<br>
-   			
+   			</f:verbatim>
    			<f:subview id="dropDown">
    				<h:outputText value="#{msgs.legend_changeStatusTo}" style="font-weight: bold"/>
    				<h:selectOneMenu id="newStatus" immediate="true" value="#{wizard.current.runningWizard.base.status}">
@@ -23,7 +23,11 @@
 				</h:selectOneMenu>
 			</f:subview>	
 			
-			<br>
+			<h:selectOneRadio id="changeOption" value="#{wizard.current.runningWizard.changeOption}" layout="pageDirection">
+				<f:selectItem itemValue="thisUserOnly" itemLabel="#{msgs.label_forThisUserOnly}"/>
+				<f:selectItem itemValue="allUsers" itemLabel="#{msgs.label_forAllUsers}"/>
+			</h:selectOneRadio>
+				
 			
 			<sakai:button_bar>
 				<sakai:button_bar_item id="submitContinue" value="#{msgs.save_continue_wizard}"

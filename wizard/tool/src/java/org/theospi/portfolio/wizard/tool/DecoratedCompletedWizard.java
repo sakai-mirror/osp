@@ -21,11 +21,15 @@
 package org.theospi.portfolio.wizard.tool;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
 import javax.faces.model.SelectItem;
+
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.review.model.Review;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 
 /**
@@ -48,6 +52,9 @@ public class DecoratedCompletedWizard {
 
    private int submittedPages = 0;
    private List statusArray;
+   
+   private String changeOption = "thisUserOnly";
+   
 
    public DecoratedCompletedWizard() {
 
@@ -156,10 +163,32 @@ public class DecoratedCompletedWizard {
    
    
    public String processManageStatus(){
+	     
 	   this.getParent().getWizardManager().saveWizard(this.getBase());
+	   
    
+	   if ("allUsers".equalsIgnoreCase(getChangeOption())) {
+		   String status=  this.getBase().getStatus();
+
+		   List<CompletedWizard> allWizs = this.getParent().getWizardManager().getCompletedWizardsByWizardId(this.getBase().getWizard().getId().toString());
+		   for (Iterator<CompletedWizard> iter = allWizs.iterator(); iter.hasNext();) {
+			   CompletedWizard iterWiz = (CompletedWizard) iter.next();
+			   iterWiz.setStatus(status);
+			   this.getParent().getWizardManager().saveWizard(iterWiz);
+		   }
+	   }
+
 	   return "runWizard";
    }
+
+
+public String getChangeOption() {
+	return changeOption;
+}
+
+public void setChangeOption(String changeOption) {
+	this.changeOption = changeOption;
+}
    
 
 }

@@ -42,6 +42,11 @@
    </f:subview>
   
 
+	<f:subview id="status" rendered="#{wizard.current.runningWizard.base.status != 'READY'}">
+		<f:verbatim><div class="information"></f:verbatim>
+	            <h:outputText value="#{wizard.statusMessage}"/>
+		<f:verbatim></div></f:verbatim>
+   </f:subview>
    
    <f:subview id="instructionSV" rendered="#{(wizard.current.instruction.text != '' and wizard.current.instruction != null) || not empty wizard.current.instruction.attachments}">
 	
@@ -161,6 +166,9 @@
             
    </h:dataTable>
    </f:subview>   
+   
+   <f:verbatim><br><br></f:verbatim>
+   
     <!-- ****************** reflection ****************** -->
 	<%--TODO  this layout should match the one in matrix cells --%>
     <f:subview id="reflectionArea" rendered="#{wizard.current.base.reflectionDevice != null && 
@@ -183,6 +191,8 @@
 		   </f:verbatim>
 
          <h:commandLink action="#{wizard.processActionReflection}">
+        
+  
          	<h:outputText value="#{msgs.reflection_create}"/>
          </h:commandLink>
 		  <f:verbatim>
@@ -197,7 +207,7 @@
 						<img src = '/library/image/silk/application_form.gif' border= '0' hspace='0' />
 					</f:verbatim>
 					<h:outputText value=" " />
-				<h:outputLink value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.fixedExternalUri}" target="_blank">
+				<h:outputLink value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.fixedExternalUri}" target="_blank" >
 					<h:outputText value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.displayName}"/>
 				</h:outputLink>
 			</f:subview>
@@ -225,7 +235,11 @@
 
       </ospx:xheaderdrawer>
    </ospx:xheader>
+   <f:verbatim><br><br></f:verbatim>
    </f:subview>
+   
+   
+   
    <!-- ****************** feedback ****************** -->
  
    <ospx:xheader rendered="#{wizard.commentItem != ''}">
@@ -275,7 +289,9 @@
             </h:column>
          </sakai:flat_list>
       </ospx:xheaderdrawer>
+      <f:verbatim><br><br></f:verbatim>
   </ospx:xheader>
+     
      
      
    <!-- ****************** evaluation ****************** -->
@@ -324,7 +340,10 @@
             </h:column>
          </sakai:flat_list>
       </ospx:xheaderdrawer>
+      <f:verbatim><br><br></f:verbatim>
   </ospx:xheader>
+      
+      
       
    <sakai:button_bar>
 		<f:subview id="seqWizardButtons"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.sequential'}" >

@@ -1440,5 +1440,10 @@ public class WizardTool extends BuilderTool {
    public void setCurrentPage(DecoratedWizardPage currentPage) {
       this.currentPage = currentPage;
    }
+   
+   public String getStatusMessage(){
+	   return this.getMessageFromBundle("status_warning", 
+			   new Object[]{this.getCurrent().getRunningWizard().getBase().getStatus()});
+   }
 
 }
