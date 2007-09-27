@@ -71,4 +71,4 @@ usermembership		https://source.sakaiproject.org/svn/usermembership/tags/sakai_2-
 polls			https://source.sakaiproject.org/svn/polls/tags/sakai_2-5-0_QA_002
 datapoint       -r12106 https://source.sakaiproject.org/contrib/syracuse/datapoint/branches/2.5.x
 gmt             -r12106 https://source.sakaiproject.org/contrib/syracuse/gmt/branches/2.5.x  
-
+Xsdweaver	-r12244 https://source.sakaiproject.org/contrib/ucf/Xsdweaver/trunk
