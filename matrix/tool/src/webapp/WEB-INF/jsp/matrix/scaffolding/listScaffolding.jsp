@@ -96,9 +96,7 @@
 			 <th scope="col"><fmt:message key="table_header_name"/></th>
 			 <th scope="col"></th>
 			 	<th scope="col"><fmt:message key="table_header_owner"/></th>
-			 <c:if test="${can.create}">
 				<th scope="col"><fmt:message key="table_header_published"/></th>
-			 </c:if>	
 			 <c:if test="${myworkspace}">
 			   <th scope="col"><fmt:message key="table_header_worksite"/></th>
 			</c:if>
@@ -189,7 +187,6 @@
 				 <td>
 						<c:out value="${scaffold.owner.displayName}" />
 				</td>
-				<c:if test="${can.create}">
 				  <td>
 					 <c:if test="${scaffold.published}">
 						<fmt:message key="scaffolding_published_true"/>
@@ -201,7 +198,6 @@
 						<fmt:message key="scaffolding_published_false"/>
 					 </c:if>
 				 </td>
-				</c:if>	
 				<c:if test="${myworkspace}">
 				 <td>
 					<c:out value="${scaffold.worksiteName}" />
