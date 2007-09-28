@@ -60,6 +60,7 @@ import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
@@ -79,6 +80,7 @@ import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
+import org.theospi.portfolio.assignment.AssignmentHelper;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -913,9 +915,12 @@ public class WizardTool extends BuilderTool {
 		   Reference ref = (Reference)i.next();
 		   
          try {
-            wizardManager.importResource(
+            Wizard wizard = wizardManager.importWizardResource(
 				   getIdManager().getId(getWorksite().getId()),
 				   getContentHosting().getUuid(ref.getId()));
+               
+            if ( wizard != null )
+               validateWizard( wizard );
          } catch(ImportException ie) {
             lastError = BAD_IMPORT_ID;
          } catch(UnsupportedFileTypeException ufte) {
@@ -926,6 +931,23 @@ public class WizardTool extends BuilderTool {
 	   return LIST_PAGE;
    }
    
+   /**
+    ** Filter out assignments outside of this worksite
+    **/
+   protected void validateWizard( Wizard wizard ) {
+      for (Iterator it=wizard.getRootCategory().getChildPages().iterator(); it.hasNext();) {
+         WizardPageSequence page = (WizardPageSequence) it.next();
+         WizardPageDefinition wpd = page.getWizardPageDefinition();
+         List<String> attachments = wpd.getAttachments();
+         
+         attachments = 
+            AssignmentHelper.filterAssignmentsBySite( attachments, 
+                                                      wpd.getSiteId() );
+         wpd.setAttachments(attachments);
+      }
+      wizardManager.saveWizard(wizard);
+   }
+
    /**
     * This gets the list of evluators for the wizard
     * @param wizard

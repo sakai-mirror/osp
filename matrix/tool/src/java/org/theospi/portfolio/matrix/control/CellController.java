@@ -218,7 +218,7 @@ public class CellController implements FormController, LoadObjectController {
 			}
 		}
 		catch ( Exception e ) {
-			logger.warn(".getUserAssignments: ",  e);
+			logger.warn(".getUserAssignments: " + e.toString());
 		}
 		
 		return submissions;

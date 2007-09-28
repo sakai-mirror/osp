@@ -78,12 +78,17 @@ public class AssignmentRedirectorController implements LoadObjectController {
       session.remove(AssignmentHelper.WIZARD_PAGE_CONTEXT);
 
       // Save new assignments, if specified      
-      if ( assignments != null )
+      if ( assignments != null && !assignments.equals("") )
       {
          ArrayList<String> assignList = AssignmentHelper.splitAssignmentIdList( assignments );
          for ( int i=0; i<assignList.size(); i++ )
             assignList.set( i, AssignmentHelper.getReference(assignList.get(i)) );
          pageDef.setAttachments( assignList );
+      }
+      // Delete all assignments, if specified
+      else if ( assignments != null && assignments.equals("") )
+      {
+         pageDef.setAttachments( new ArrayList() );
       }
       
       return null;

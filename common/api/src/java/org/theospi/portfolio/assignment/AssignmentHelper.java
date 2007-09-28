@@ -33,8 +33,8 @@ import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.assignment.cover.AssignmentService;
 
-public class AssignmentHelper {
-
+public class AssignmentHelper 
+{
    public static final String WIZARD_PAGE_ASSIGNMENTS =
       "org.theospi.portfolio.assignment.wizPageDefList";
       
@@ -49,9 +49,11 @@ public class AssignmentHelper {
     ** Parse list of attachments (reference ids) and return collection of
     ** assignments corresponding to reference ids
     **/
-   public static ArrayList<Assignment> getSelectedAssignments( List attachments ) {
+   public static ArrayList<Assignment> getSelectedAssignments( List attachments ) 
+   {
       ArrayList assignments = new ArrayList();
-      for ( Iterator it = attachments.iterator(); it.hasNext();) {
+      for ( Iterator it = attachments.iterator(); it.hasNext();) 
+      {
          String artifactId = (String)it.next();
          Assignment thisAssignment = getAssignment(artifactId);
          if ( thisAssignment != null )
@@ -62,29 +64,46 @@ public class AssignmentHelper {
    }
    
    /**
+    ** Parse assignment references and remove assignments from other sites
+    **/
+   public static List filterAssignmentsBySite( List attachments, String siteId )
+   {
+      ArrayList<Assignment> assignments = getSelectedAssignments( attachments );
+      for ( int i=0; i<assignments.size(); i++ )
+      {
+         if ( !siteId.equals( assignments.get(i).getContext() ) )
+              attachments.remove(i);
+      } 
+      return attachments;
+   }
+   
+   /**
     ** Parse reference and return associated Assignment if it
     ** is a valid assignment reference. Otherwise return null.
     **/
-   public static Assignment getAssignment( String ref ) {
+   public static Assignment getAssignment( String ref ) 
+   {
+      Assignment assignment = null;
       try
       {
          if ( ! ref.startsWith( AssignmentService.REFERENCE_ROOT) )
             return null;
-         String[] parts = ref.split(Entity.SEPARATOR);
-         return AssignmentService.getAssignment(parts[2]);
+         String assignId = ref.split(Entity.SEPARATOR)[2];
+         assignment = AssignmentService.getAssignment(assignId);
       }
       catch (Exception e)
       {
-         log.warn("Invalid assignment reference: " + ref, e );
+         log.warn(".getAssignment: Invalid assignment reference: " + ref );
       }
       
-      return null;
+      return assignment;
    }
    
    /**
     ** Return reference string for specified assignment id
     **/
-   public static String getReference( String assignmentId ) {
+   public static String getReference( String assignmentId ) 
+   {
       return AssignmentService.REFERENCE_ROOT + Entity.SEPARATOR + assignmentId;
    }
    

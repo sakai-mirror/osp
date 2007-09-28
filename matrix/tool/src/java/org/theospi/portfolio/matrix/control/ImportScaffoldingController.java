@@ -20,8 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,6 +45,9 @@ import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingUploadForm;
 import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.assignment.AssignmentHelper;
 
 public class ImportScaffoldingController implements Controller, FormController {
    protected final transient Log logger = LogFactory.getLog(getClass());
@@ -100,6 +105,8 @@ public class ImportScaffoldingController implements Controller, FormController {
       try {
          scaffolding = getMatrixManager().uploadScaffolding(
               scaffoldingForm.getUploadedScaffolding(), getToolManager().getCurrentPlacement().getContext());
+              
+         validateScaffolding( scaffolding );
       } catch (InvalidUploadException e) {
          logger.warn("Failed uploading scaffolding", e);
          errors.rejectValue(e.getFieldName(), e.getMessage(), e.getMessage());
@@ -110,6 +117,22 @@ public class ImportScaffoldingController implements Controller, FormController {
       }
 
       return new ModelAndView("success", "scaffolding_id", scaffolding.getId());
+   }
+   
+   /**
+    ** Filter out assignments outside of this worksite
+    **/
+   protected void validateScaffolding( Scaffolding scaffolding ) {
+      for (Iterator iter=scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
+         ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
+         WizardPageDefinition wpd = sCell.getWizardPageDefinition();
+         List<String> attachments = wpd.getAttachments();
+         
+         attachments = 
+            AssignmentHelper.filterAssignmentsBySite( attachments, 
+                                                      wpd.getSiteId() );
+         wpd.setAttachments(attachments);
+      }
    }
 
    /**

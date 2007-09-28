@@ -1025,7 +1025,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
 
-   public boolean importResource(Id worksiteId, String nodeId) throws UnsupportedFileTypeException, ImportException
+   public Wizard importWizardResource(Id worksiteId, String nodeId) throws UnsupportedFileTypeException, ImportException
    {
 
       String id = getContentHosting().resolveUuid(nodeId);
@@ -1038,7 +1038,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
             InputStream zipContent = resource.streamContent();
             Wizard bean = importWizard(worksiteId, zipContent);
 
-            return bean != null;
+            return bean;
          } else {
             throw new UnsupportedFileTypeException("Unsupported file type");
          }
@@ -1053,7 +1053,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       } catch(IdUnusedException iue) {
          logger.warn("UnusedId: ", iue);
       }
-      return false;
+      return null;
    }
    
    private Wizard importWizard(Id worksiteId, InputStream in) throws IOException, ImportException
@@ -1459,7 +1459,20 @@ public class WizardManagerImpl extends HibernateDaoSupport
          String styleIdStr = pageDefNode.getChildTextTrim("style");
          wizardPageDefinition.setStyleId(getIdManager().getId(styleIdStr));
 
-         // read the into about additional forms
+         // read the info about attachments
+         if(pageDefNode.getChild("attachments") != null) {
+            List attachments = pageDefNode.getChild("attachments").getChildren("ref");
+            List<String> attachList = new ArrayList();
+            for(Iterator ii = attachments.iterator(); ii.hasNext(); ) {
+               Element attach = (Element)ii.next();
+
+               String attachId = attach.getTextTrim();
+               attachList.add(attachId);
+            }
+            wizardPageDefinition.setAttachments(attachList);
+         }
+         
+         // read the info about additional forms
          if(pageDefNode.getChild("additionalForms") != null) {
             List forms = pageDefNode.getChild("additionalForms").getChildren("form");
             List formsList = new ArrayList();
@@ -1926,6 +1939,15 @@ public class WizardManagerImpl extends HibernateDaoSupport
       attrNode.addContent(new CDATA(pageDef.getInitialStatus()));
       pageDefNode.addContent(attrNode);
 
+      Element attachmentsNode = new Element("attachments");
+      for(Iterator i = pageDef.getAttachments().iterator(); i.hasNext(); ) {
+         String attachment = (String)i.next();
+
+         attrNode = new Element("ref"); 
+         attrNode.addContent(new CDATA(attachment));
+         attachmentsNode.addContent(attrNode);
+      }
+      pageDefNode.addContent(attachmentsNode);
 
       Element additionalFormsNode = new Element("additionalForms");
       for(Iterator i = pageDef.getAdditionalForms().iterator(); i.hasNext(); ) {

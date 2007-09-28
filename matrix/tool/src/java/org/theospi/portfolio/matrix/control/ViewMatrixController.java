@@ -280,7 +280,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 			}
 		}
 		catch ( Exception e ) {
-			logger.warn(".getAssignments: ",  e);
+			logger.warn(".getAssignments: " +  e.toString());
 		}
 		
 		return submissions;

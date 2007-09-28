@@ -1242,8 +1242,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          Collection evaluators = sCell.getEvaluators();
          sCell.setEvaluators(new HashSet(evaluators));
          
-         //TODO: Figure out what to do with attached assignments
-         sCell.getWizardPageDefinition().setAttachments(new ArrayList());
+         List attachments = sCell.getWizardPageDefinition().getAttachments();
+         sCell.getWizardPageDefinition().setAttachments( new ArrayList(attachments) );
          
          sCell.getWizardPageDefinition().setPages(new HashSet());
          

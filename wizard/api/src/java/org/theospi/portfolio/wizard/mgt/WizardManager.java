@@ -270,7 +270,7 @@ public interface WizardManager extends WorkflowEnabledManager {
 	 */
 	public List getWizardsForWarehousing();
 
-	public boolean importResource(Id worksite, String reference)
+	public Wizard importWizardResource(Id worksite, String reference)
 			throws UnsupportedFileTypeException, ImportException;
 
 	public List listAllWizardsByOwner(String owner, String siteId);
