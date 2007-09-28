@@ -110,7 +110,6 @@
 	<module>reset-pass</module>
 	<module>gmt</module>
 	<module>datapoint</module>
-	<module>Xsdweaver</module>
       </modules>
     </profile>
     <profile>
@@ -191,7 +190,6 @@
 	<module>reset-pass</module>
 	<module>gmt</module>
 	<module>datapoint</module>
-	<module>Xsdweaver</module>
       </modules>
     </profile>
   </profiles>
