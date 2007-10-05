@@ -168,6 +168,9 @@ INPUT.colorBox {
 	padding:.3em	
 }
 
+.wizardSupportTableHead{
+	text-align: right !important;
+}
 .matrixCellList{
 	width:100%;
 	margin: 1em 0

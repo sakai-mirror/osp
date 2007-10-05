@@ -16,11 +16,9 @@
 <sakai:view>
 
    <%@include file="steps.jspf"%>
-
 <h:form>
   <sakai:view_title value="#{msgs.edit_wizard}" rendered='#{!wizard.current.newWizard}'/>
    <sakai:view_title value="#{msgs.add_wizard}"  rendered='#{wizard.current.newWizard}'/>
-
    <sakai:instruction_message value="#{msgs.wizard_instruction_message}" />
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>

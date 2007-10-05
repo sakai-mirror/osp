@@ -26,19 +26,19 @@
                'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.current.newWizard}"/>
     
    <%@include file="steps.jspf"%>
-      <f:subview id="instructionsHier" rendered="#{wizard.current.base.type ==
-               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.moving}">
-      <sakai:instruction_message value="#{msgs.wizard_pages_instructions_hier}" />
-   </f:subview>
-
-   <f:subview id="instructionsSeq" rendered="#{wizard.current.base.type ==
-               'org.theospi.portfolio.wizard.model.Wizard.sequential' && !wizard.moving}">
-      <sakai:instruction_message value="#{msgs.wizard_pages_instructions_seq}" />
-   </f:subview>
+	<f:subview id="instructionsHier">
+		<sakai:instruction_message value="#{msgs.wizard_pages_instructions_hier}" rendered="#{wizard.current.base.type ==
+		'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.moving  && !wizard.current.base.published}"/>
+		<sakai:instruction_message value="#{msgs.wizard_pages_instructions_hier_pub}" rendered="#{wizard.current.base.type ==
+		'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.moving  && wizard.current.base.published}"/>
+	</f:subview>
+	<f:subview id="instructionsSeq" rendered="#{wizard.current.base.type ==
+		'org.theospi.portfolio.wizard.model.Wizard.sequential' && !wizard.moving}">
+		<sakai:instruction_message value="" />
+	</f:subview>
    <f:subview id="instructionsMove" rendered="#{wizard.moving}">
       <sakai:instruction_message value="#{wizard.movingInstructions}" />
    </f:subview>
-
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />
@@ -56,8 +56,25 @@
          value="#{msgs.new_root_wizard_category}" />
    </sakai:tool_bar>
    </f:subview>--%>
-     <h:dataTable value="#{wizard.current.rootCategory.categoryPageList}" var="item" styleClass="lines listHier nolines" style="width:70%;" border="0" cellpadding="0" cellspacing="0" columnClasses="attach,bogus,bogus,bogus">
-      <h:column rendered="#{wizard.moving}">	
+	  <f:subview id="addPageBar" rendered="#{wizard.current.base.type != 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
+	  <h:commandLink 
+         action="#{wizard.current.rootCategory.processActionNewPage}"
+         value="#{msgs.wizard_pages_instructions_seq}" 
+         rendered="#{!wizard.moving && !wizard.current.base.published}"
+		 />
+      <h:commandLink
+         rendered="#{wizard.current.base.type ==
+               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.moving && !wizard.current.base.published}"
+         action="#{wizard.current.rootCategory.processActionNewCategory}"
+         value="#{msgs.new_root_wizard_category}" />
+		 
+		<sakai:instruction_message value="#{msgs.wizard_pages_instructions_seq_pub}"  rendered="#{wizard.current.base.type ==
+		'org.theospi.portfolio.wizard.model.Wizard.sequential' && !wizard.moving && wizard.current.base.published}" />
+	 </f:subview>
+  
+   
+     <h:dataTable value="#{wizard.current.rootCategory.categoryPageList}" var="item" styleClass="lines listHier nolines"  border="0" cellpadding="0" cellspacing="0" columnClasses="attach,nowrap,nowrap,bogus" summary="#{msgs.pages_list_summary}" rendered="#{not empty wizard.current.rootCategory.categoryPageList}">
+      <h:column rendered="#{wizard.moving}">
          <f:facet name="header">
             <h:outputText value="" />
          </f:facet>
@@ -87,12 +104,13 @@
          <!--h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" /-->
          <h:outputLabel value="#{item.title}"/>
          
-            
-         <f:subview id="underActions" rendered="#{wizard.current.base.type != 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
+           </h:column>
+		   <h:column  rendered="#{wizard.current.base.type != 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
+		   <f:subview id="underActions" rendered="#{wizard.current.base.type != 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
 
-		 <f:verbatim><div class="itemAction indnt2"></f:verbatim>
-	         <h:outputLabel value="#{item.indentString}"
-	            rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
+		 <f:verbatim><div class="itemAction"></f:verbatim>
+<%--	         <h:outputLabel value="#{item.indentString}"
+	            rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/> --%>
 	         <h:commandLink action="#{item.processActionEdit}" rendered="#{!wizard.moving}">
 	            <h:outputText value="#{msgs.editProperties}" />
 	         </h:commandLink>
@@ -100,8 +118,7 @@
 	         <h:commandLink action="#{item.processActionConfirmDelete}" rendered="#{!wizard.moving && !wizard.current.base.published}">
 	            <h:outputText value="#{msgs.delete}" />
 	         </h:commandLink>
-	
-	         <h:outputText value=" | " rendered="#{item.category && !wizard.moving && !wizard.current.base.published}"/>
+		         <h:outputText value=" | " rendered="#{item.category && !wizard.moving && !wizard.current.base.published}"/>
 	         <h:commandLink action="#{item.processActionNewCategory}" rendered="#{item.category && !wizard.moving && !wizard.current.base.published}">
 	            <h:outputText value="#{msgs.new_category}" />
 	         </h:commandLink>
@@ -153,8 +170,9 @@
          <f:subview id="columnActions" rendered="#{!wizard.moving && wizard.current.base.type == 
          					'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !item.wizard}">
 		 <h:panelGroup  styleClass="itemAction">
-	         <h:outputLabel value="#{item.indentString}"
+<%--	         <h:outputLabel value="#{item.indentString}"
 	            rendered="#{!wizard.moving && wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
+--%>				
 	         <h:commandLink action="#{item.processActionEdit}">
 	            <h:outputText value="#{msgs.editProperties}" />
 	         </h:commandLink>
@@ -185,14 +203,15 @@
          <f:subview id="columnWizardActions" rendered="#{item.wizard && !wizard.moving && !wizard.current.base.published}">
 		 <h:panelGroup  styleClass="itemAction">
 		      <h:commandLink
-		         action="#{wizard.current.rootCategory.processActionNewPage}"
-		         value="#{msgs.new_root_wizard_page}" />
-	         <h:outputText value=" | " />
-		      <h:commandLink
 		         rendered="#{wizard.current.base.type ==
 		               'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"
 		         action="#{wizard.current.rootCategory.processActionNewCategory}"
 		         value="#{msgs.new_root_wizard_category}" />
+
+		 <h:outputText value=" | " />
+		      <h:commandLink
+		         action="#{wizard.current.rootCategory.processActionNewPage}"
+		         value="#{msgs.new_root_wizard_page}" />
 			</h:panelGroup>	 
 		 </f:subview>
          <f:subview id="moveIntoWizard" rendered="#{wizard.moving && item.wizard}">
@@ -219,12 +238,6 @@
       </h:column>
       
       
-      
-      
-      
-      
-      
-      
       <h:column rendered="#{!wizard.moving && !wizard.current.base.published}">
          <f:facet name="header">
             <f:subview id="rearrangeTitle">
@@ -246,25 +259,6 @@
             <h:graphicImage value="/img/arrowDown.gif" />
          </h:commandLink>
       </h:column>
-	  <h:column>
-	  <f:facet name="header">
-	  <f:subview id="addPageBar" rendered="#{wizard.current.base.type != 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
-	  <h:panelGroup style="float:right"  styleClass="itemAction">
-	  <h:commandLink 
-         action="#{wizard.current.rootCategory.processActionNewPage}"
-         value="#{msgs.new_root_wizard_page_seq}" 
-         rendered="#{!wizard.moving && !wizard.current.base.published}"
-		 />
-		 
-      <h:commandLink
-         rendered="#{wizard.current.base.type ==
-               'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.moving && !wizard.current.base.published}"
-         action="#{wizard.current.rootCategory.processActionNewCategory}"
-         value="#{msgs.new_root_wizard_category}" />
-		 </h:panelGroup>
-		 </f:subview>
-		 </f:facet>
-	  </h:column>
    </h:dataTable>
 
    <f:subview id="buttonBar" rendered="#{!wizard.moving}">

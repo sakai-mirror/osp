@@ -29,7 +29,7 @@
    <%@include file="steps.jspf"%>
    
    <sakai:instruction_message value="#{msgs.wizard_instructions}" />
-   
+      
    <sakai:instruction_message value="#{msgs.instructions_requiredFields}" />
    
 <%--   <sakai:instruction_message value=" Last saved: " />
@@ -42,21 +42,21 @@
          <h:inputText id="name" value="#{wizard.current.base.name}" required="true" size="30">
             <f:validateLength minimum="1" maximum="255" />
          </h:inputText>
-         <h:message for="name" styleClass="validationEmbedded" />
+         <h:message for="name" styleClass="alertMessageInline" style="border:none"/>
       </h:panelGroup>
       <h:panelGroup styleClass="longtext" style="padding:0;display:block;margin:0">
 	  		<h:outputLabel for="description" id="descriptionLabel" value="#{msgs.wizard_description}" styleClass="block"/>
 			<h:inputTextarea id="description" value="#{wizard.current.base.description}" cols="60" rows="6" >
             <f:validateLength minimum="1" maximum="1024" />
          </h:inputTextarea>
-         <h:message for="description" styleClass="validationEmbedded" />
+         <h:message for="description" styleClass="alertMessageInline" style="border:none" />
       </h:panelGroup>
 	  <h:panelGroup styleClass="longtext" style="padding:0;display:block;margin:0">
       <h:outputLabel for="keywords" id="keywordsLabel" value="#{msgs.wizard_keywords}"  styleClass="block"/>
         <h:inputTextarea id="keywords" value="#{wizard.current.base.keywords}" cols="60" rows="6">
             <f:validateLength minimum="1" maximum="1024" />
          </h:inputTextarea>
-         <h:message for="keywords" styleClass="validationEmbedded" />
+         <h:message for="keywords" styleClass="alertMessageInline" />
       </h:panelGroup>
 	  <h:panelGroup styleClass="shorttext">
 	  <h:outputLabel for="styleFile" id="styleLabel" value="#{msgs.wizard_style}" />

@@ -185,7 +185,7 @@
 				</div>
 			</c:if>	
 			<c:if test="${!(empty scaffolding.levels)}">
-				<table class="listHier lines nolines" cellspacing="0" border="0" style="width:50%" summary="<fmt:message key="table_summary_cols"/>">
+				<table class="listHier lines nolines" cellspacing="0" border="0" style="width:70%" summary="<fmt:message key="table_summary_cols"/>">
 					<thead>
 						<tr>
 							<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
@@ -215,7 +215,7 @@
 										<div class="colorBoxNone"><fmt:message key="swatch_text_none"/></div>
 									</c:if>				
 							</td>
-							<td>
+							<td style="white-space:nowrap">
 									<span class="itemAction">
 									 <a href="javascript:document.forms[0].dest.value='addLevel';
 									  document.forms[0].submitAction.value='forward';
@@ -292,7 +292,7 @@
 				
 			</c:if>
 			<c:if test="${!(empty scaffolding.criteria)}">
-				<table class="listHier lines nolines" cellspacing="0" border="0" style="width:50%" summary="<fmt:message key="table_summary_rows"/>">
+				<table class="listHier lines nolines" cellspacing="0" border="0" style="width:70%" summary="<fmt:message key="table_summary_rows"/>">
 					<thead>
 						<tr>
 							<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
@@ -322,7 +322,7 @@
 										</c:if>
 	
 										</td>
-								<td>
+								<td style="white-space:nowrap">
 									<span class="itemAction">
 										  <a href="javascript:document.forms[0].dest.value='addCriterion';
 										  document.forms[0].submitAction.value='forward';
