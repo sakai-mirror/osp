@@ -597,7 +597,6 @@
                         <value>asn.grade</value>
                         <value>asn.new</value>
                         <value>asn.read</value>
-                        <value>asn.receive.notifications</value>
                         <value>asn.revise</value>
                         <value>asn.submit</value>
                         <value>assessment.createAssessment</value>
@@ -813,7 +812,6 @@
                         <value>asn.grade</value>
                         <value>asn.new</value>
                         <value>asn.read</value>
-                        <value>asn.receive.notifications</value>
                         <value>asn.revise</value>
                         <value>asn.submit</value>
                         <value>assessment.createAssessment</value>
@@ -1029,7 +1027,6 @@
                         <value>asn.grade</value>
                         <value>asn.new</value>
                         <value>asn.read</value>
-                        <value>asn.receive.notifications</value>
                         <value>asn.revise</value>
                         <value>asn.submit</value>
                         <value>assessment.createAssessment</value>
@@ -1147,7 +1144,6 @@
                         <value>asn.grade</value>
                         <value>asn.new</value>
                         <value>asn.read</value>
-                        <value>asn.receive.notifications</value>
                         <value>asn.revise</value>
                         <value>asn.submit</value>
                         <value>assessment.createAssessment</value>
