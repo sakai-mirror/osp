@@ -615,18 +615,22 @@
                         <value>assessment.template.create</value>
                         <value>assessment.template.delete.own</value>
                         <value>assessment.template.edit.own</value>
-                        <value>calendar.delete</value>
+                        <value>calendar.delete.any</value>
+                        <value>calendar.delete.own</value>
                         <value>calendar.new</value>
                         <value>calendar.read</value>
-                        <value>calendar.revise</value>
+                        <value>calendar.revise.any</value>
+                        <value>calendar.revise.own</value>
                         <value>chat.delete.any</value>
                         <value>chat.delete.own</value>
                         <value>chat.new</value>
                         <value>chat.read</value>
-                        <value>content.delete</value>
+                        <value>content.delete.any</value>
+                        <value>content.delete.own</value>
                         <value>content.new</value>
                         <value>content.read</value>
-                        <value>content.revise</value>
+                        <value>content.revise.any</value>
+                        <value>content.revise.own</value>
                         <value>disc.delete.any</value>
                         <value>disc.delete.own</value>
                         <value>disc.new</value>
@@ -830,18 +834,22 @@
                         <value>assessment.template.create</value>
                         <value>assessment.template.delete.own</value>
                         <value>assessment.template.edit.own</value>
-                        <value>calendar.delete</value>
+                        <value>calendar.delete.any</value>
+                        <value>calendar.delete.own</value>
                         <value>calendar.new</value>
                         <value>calendar.read</value>
-                        <value>calendar.revise</value>
+                        <value>calendar.revise.any</value>
+                        <value>calendar.revise.own</value>
                         <value>chat.delete.any</value>
                         <value>chat.delete.own</value>
                         <value>chat.new</value>
                         <value>chat.read</value>
-                        <value>content.delete</value>
+                        <value>content.delete.any</value>
+                        <value>content.delete.own</value>
                         <value>content.new</value>
                         <value>content.read</value>
-                        <value>content.revise</value>
+                        <value>content.revise.any</value>
+                        <value>content.revise.own</value>
                         <value>disc.delete.any</value>
                         <value>disc.delete.own</value>
                         <value>disc.new</value>
@@ -1045,18 +1053,22 @@
                         <value>assessment.template.create</value>
                         <value>assessment.template.delete.own</value>
                         <value>assessment.template.edit.own</value>
-                        <value>calendar.delete</value>
+                        <value>calendar.delete.any</value>
+                        <value>calendar.delete.own</value>
                         <value>calendar.new</value>
                         <value>calendar.read</value>
-                        <value>calendar.revise</value>
+                        <value>calendar.revise.any</value>
+                        <value>calendar.revise.own</value>
                         <value>chat.delete.any</value>
                         <value>chat.delete.own</value>
                         <value>chat.new</value>
                         <value>chat.read</value>
-                        <value>content.delete</value>
+                        <value>content.delete.any</value>
+                        <value>content.delete.own</value>
                         <value>content.new</value>
                         <value>content.read</value>
-                        <value>content.revise</value>
+                        <value>content.revise.any</value>
+                        <value>content.revise.own</value>
                         <value>disc.delete.any</value>
                         <value>disc.delete.own</value>
                         <value>disc.new</value>
@@ -1162,18 +1174,22 @@
                         <value>assessment.template.create</value>
                         <value>assessment.template.delete.own</value>
                         <value>assessment.template.edit.own</value>
-                        <value>calendar.delete</value>
+                        <value>calendar.delete.any</value>
+                        <value>calendar.delete.own</value>
                         <value>calendar.new</value>
                         <value>calendar.read</value>
-                        <value>calendar.revise</value>
+                        <value>calendar.revise.any</value>
+                        <value>calendar.revise.own</value>
                         <value>chat.delete.any</value>
                         <value>chat.delete.own</value>
                         <value>chat.new</value>
                         <value>chat.read</value>
-                        <value>content.delete</value>
+                        <value>content.delete.any</value>
+                        <value>content.delete.own</value>
                         <value>content.new</value>
                         <value>content.read</value>
-                        <value>content.revise</value>
+                        <value>content.revise.any</value>
+                        <value>content.revise.own</value>
                         <value>disc.delete.any</value>
                         <value>disc.delete.own</value>
                         <value>disc.new</value>
