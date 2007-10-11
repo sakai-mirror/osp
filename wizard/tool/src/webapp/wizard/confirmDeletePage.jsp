@@ -16,7 +16,7 @@
 <h:form>
 
    <sakai:view_title value="#{msgs.delete_wizard_page}"/>
-   <sakai:instruction_message value="#{msgs.delete_wizard_page_message}" />
+   	<h:outputText value="#{msgs.delete_wizard_page_message}" styleClass="alertMessage"/>
       
    <h:dataTable value="#{wizard.currentPageList}" var="page" styleClass="listHier lines nolines" cellpadding="0" cellspacing="0">
       <h:column>

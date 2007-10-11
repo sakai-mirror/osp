@@ -14,32 +14,39 @@
 <f:view>
 <sakai:view>
 <h:form>
-	   
-	<sakai:tool_bar>
-      <sakai:tool_bar_item rendered="#{wizard.canCreate}"
+
+	<sakai:tool_bar  rendered="#{wizard.canCreate}">
+      <sakai:tool_bar_item
       action="manageWizardStatus"
       value="#{msgs.manage_wizard_status}" />
     </sakai:tool_bar>
 
-   <h:outputText value="#{msgs.wizard_preview_title}" styleClass="validation" rendered="#{wizard.current.base.preview}"/>
+   <h:outputText value="#{msgs.wizard_preview_title}" styleClass="information" rendered="#{wizard.current.base.preview}"/>
 
-   <sakai:view_title value="#{wizard.current.base.name}"/>
-
+   <%-- TODO: munge these strings- want the pattern as in matrices: View: "Wizard title" (READ ONLY): Selected user name --%>
+   <h3>
+   <h:outputText value="#{wizard.current.base.name}"/>:
+	<%@include file="showWizardOwnerMessage.jspf"%>
+   </h3>
    <sakai:messages />
    
    <h:outputText value="#{wizard.lastSavePage} #{msgs.page_was_submitted}" styleClass="success" rendered="#{wizard.lastSavePage != ''}" />
    <h:outputText value="#{msgs.changes_saved}" styleClass="success" rendered="#{wizard.pageSaved}" />
    
-   <sakai:instruction_message value="#{wizard.current.base.description}" />
    
+   <sakai:instruction_message value="#{wizard.current.base.description}" rendered="#{not empty wizard.current.base.description}"/>
    
-   <f:subview id="viewUsers" rendered="#{(wizard.canEvaluateTool || wizard.canReviewTool) && wizard.current.base.published}">
-
-    	<h:selectOneMenu id="users" immediate="true" value="#{wizard.currentUserId}" valueChangeListener="#{wizard.current.processActionChangeUser}" onchange="this.form.submit();">
-		  	<f:selectItems value="#{wizard.current.userListForSelect}"/>
-		</h:selectOneMenu>
-		<%@include file="showWizardOwnerMessage.jspf"%>
-   </f:subview>
+      <h:panelGrid columns="1" width="100%" border="0">
+	  	  <h:panelGroup>
+			   <f:subview id="viewUsers" rendered="#{(wizard.canEvaluateTool || wizard.canReviewTool) && wizard.current.base.published}">
+					<h:outputLabel for ="users" value="#{msgs.select_wizard_user}" />
+					<h:outputText value=" "/>
+					<h:selectOneMenu id="users" immediate="true" value="#{wizard.currentUserId}" valueChangeListener="#{wizard.current.processActionChangeUser}" onchange="this.form.submit();">
+						<f:selectItems value="#{wizard.current.userListForSelect}"/>
+					</h:selectOneMenu>
+			   </f:subview>
+			</h:panelGroup>
+		</h:panelGrid>	
   
 
 	<f:subview id="status" rendered="#{wizard.current.runningWizard.base.status != 'READY'}">
@@ -49,16 +56,14 @@
    </f:subview>
    
    <f:subview id="instructionSV" rendered="#{(wizard.current.instruction.text != '' and wizard.current.instruction != null) || not empty wizard.current.instruction.attachments}">
-	
-		<ospx:xheader>
-			<ospx:xheadertitle id="instructionsHeader">
-				<h:outputText value="#{msgs.guidance_instructions}" />
-			</ospx:xheadertitle>
-		</ospx:xheader>
+	<h4>	
+	<h:outputText value="#{msgs.guidance_instructions}" />
+	</h4>
   		 	
-   		<div class="textPanel"><h:outputText value="#{wizard.current.instruction.text}" escape="false" /></div>
+   		<div class="textPanel indnt2"><h:outputText value="#{wizard.current.instruction.text}" escape="false" /></div>
    </f:subview>
-   <h:dataTable value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment"  rendered="#{not empty wizard.current.instruction.attachments}" border="0" styleClass="indnt1" style="width:50%">
+   <h:dataTable value="#{wizard.current.guidanceInstructionsAttachments}" var="attachment"  rendered="#{not empty wizard.current.instruction.attachments}" border="0" styleClass="indnt2" style="width:50%"
+   summary="#{msgs.guidance_instructions_attlist_summary}">
       <h:column>
       <sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
       <h:graphicImage id="instrFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
@@ -72,14 +77,15 @@
 
    
    <f:subview id="guidanceSV" rendered="#{(wizard.current.rationale.text != '' and wizard.current.rationale != null) || not empty wizard.current.rationale.attachments}">
-		<ospx:xheader>
-			<ospx:xheadertitle id="rationaleHeader">
-				<h:outputText value="#{msgs.guidance_rationale}" />
-			</ospx:xheadertitle>
-		</ospx:xheader>
-   		<div class="textPanel"><h:outputText value="#{wizard.current.rationale.text}" escape="false" /></div>
+   		<h4>
+			<h:outputText value="#{msgs.guidance_rationale}" />
+		</h4>	
+   		<div class="textPanel indnt2"><h:outputText value="#{wizard.current.rationale.text}" escape="false" /></div>
   	</f:subview>  
-   <h:dataTable value="#{wizard.current.guidanceRationaleAttachments}" var="attachment"  rendered="#{not empty wizard.current.rationale.attachments}"  border="0" styleClass="indnt1" style="width:50%">
+	
+	
+   <h:dataTable value="#{wizard.current.guidanceRationaleAttachments}" var="attachment"  rendered="#{not empty wizard.current.rationale.attachments}"  border="0" styleClass="indnt2" style="width:50%"
+   summary="#{msgs.guidance_rationale_attlist_summary}">
       <h:column>
       <sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
       <h:graphicImage id="rationaleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
@@ -92,14 +98,13 @@
    </h:dataTable>
    
    <f:subview id="exapmleSV" rendered="#{(wizard.current.example.text != '' and wizard.current.example != null) || not empty wizard.current.example.attachments}">
-		<ospx:xheader>
-			<ospx:xheadertitle id="exampleHeader">
+		<h4>
 				<h:outputText value="#{msgs.guidance_examples}" />
-			</ospx:xheadertitle>
-		</ospx:xheader>
-   	  <div class="textPanel"><h:outputText value="#{wizard.current.example.text}" escape="false" /></div>
+		</h4>		
+   	  <div class="textPanel indnt2"><h:outputText value="#{wizard.current.example.text}" escape="false" /></div>
    </f:subview> 
-   <h:dataTable value="#{wizard.current.guidanceExamplesAttachments}" var="attachment" border="0" styleClass="indnt1" style="width:50%" rendered="#{not empty wizard.current.example.attachments}" >
+   <h:dataTable value="#{wizard.current.guidanceExamplesAttachments}" var="attachment" border="0" styleClass="indnt2" style="width:50%" rendered="#{not empty wizard.current.example.attachments}" 
+   		summary="#{msgs.guidance_examples_attlist_summary}">
       <h:column>
       <sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
       <h:graphicImage id="exampleFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
@@ -113,12 +118,14 @@
    
  
     <f:subview id="thePagesCat" >
-   <h:dataTable value="#{wizard.current.runningWizard.rootCategory.categoryPageList}" var="item" styleClass="listHier lines nolines" headerClass="exclude">
+	
+   <h:dataTable value="#{wizard.current.runningWizard.rootCategory.categoryPageList}" var="item" styleClass="listHier lines nolines" summary="#{msgs.wizard_page_list_summary}" columnClasses="nowrap,nowrap,bogus">
    
      <h:column>
      	 <f:facet name="header">
             <f:subview id="header">
-               <h:outputText value="#{msgs.items}"  />
+               <h:outputText value="#{msgs.pages}" rendered="#{wizard.current.base.type != 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/> 
+			   <h:outputText value="#{msgs.pages_categ}" rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/> 
             </f:subview>
          </f:facet>
      	<f:subview id="categoryView" rendered="#{item.classInfo == 'completedCategory'}" >
@@ -134,7 +141,6 @@
          
          
       <f:subview id="pageView" rendered="#{item.classInfo == 'completedPage'}" >
-
          <h:outputLabel value="#{item.page.indentString}"
             rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
 
@@ -145,29 +151,38 @@
          <h:commandLink action="#{item.page.processExecPage}" rendered="#{!item.page.category && !item.page.wizard && wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
          	<h:outputText value="#{item.page.title}"/>
          </h:commandLink>
-         <h:outputText value=" #{item.statusThroughBundle}" rendered="#{item.classInfo == 'completedPage'}" />
+         
        </f:subview>
       </h:column>
-   
-   
-         <%-- TODO given that the description could be just about anything (markup wise) the value of having it here should be
-	  		balanced with the certain malformed layout and possible  invalid/unbalanced markup (if the trimming is just on chars) --%>
-      <h:column>
+	  <%--TODO: have created a new column for the status value - need to reformat that string--%>
+	  <h:column>
+	     <f:facet name="header">
+            <h:outputText value="Status" />
+         </f:facet>
+		
+	  <f:subview id="pageViewStatus" rendered="#{item.classInfo == 'completedPage'}" >
+	  	<h:outputText value=" #{item.statusThroughBundle}" rendered="#{item.classInfo == 'completedPage'}" styleClass=""/>
+	  </f:subview>
+	  </h:column>
+	  <%-- hide this column if sequential wizard, since we are hiding the page descriptions and that is all a seq wiz has --%>
+
+      <h:column rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
          <f:facet name="header">
             <h:outputText value="#{msgs.wizard_description}" />
          </f:facet>
-         <f:subview id="pageView2" rendered="#{item.classInfo == 'completedPage'}" >
+		 
+<%-- TODO:  come up with a hint/on demand way of showing the page description or leave it omitted as below
+		<f:subview id="pageView2" rendered="#{item.classInfo == 'completedPage'}" >
          	<h:outputText value="#{item.page.description}" escape="false" />
          </f:subview>
+--%>					 
          <f:subview id="categoryView2" rendered="#{item.classInfo == 'completedCategory'}" >
-         	<h:outputText value="#{item.category.description}" escape="false" />
+         	<h:outputText value="#{item.category.description}" escape="false"/>
          </f:subview>
       </h:column>
-            
+      
    </h:dataTable>
    </f:subview>   
-   
-   <f:verbatim><br><br></f:verbatim>
    
     <!-- ****************** reflection ****************** -->
 	<%--TODO  this layout should match the one in matrix cells --%>
@@ -218,15 +233,15 @@
 				</f:verbatim>
 				<h:outputText value=" " />
 				<h:outputText value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.displayName}" />
-				<f:verbatim>
-					<div class="itemAction indnt2">
-				</f:verbatim>
+				<h:outputText value=" " />
+					<f:verbatim>
+						<img src = '/library/image/silk/application_form_edit.png' border= '0' hspace='0' />
+					</f:verbatim>
+					<h:outputText value=" " />
 				<h:commandLink action="#{wizard.processEditReflection}">
+
 					<h:outputText value="#{msgs.reflection_edit}"/>
 				</h:commandLink>
-				<f:verbatim>
-					</div>
-				</f:verbatim>
 			</f:subview>
 		</f:subview>
 		  <f:verbatim>
@@ -235,7 +250,6 @@
 
       </ospx:xheaderdrawer>
    </ospx:xheader>
-   <f:verbatim><br><br></f:verbatim>
    </f:subview>
    
    
@@ -246,28 +260,26 @@
       <ospx:xheadertitle id="wizardReviews" value="#{msgs.wizard_reviews}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
                <f:verbatim>
-			      <div class="itemAction indnt4" style="margin-bottom:1em;padding-top:0">
+			      <div class="itemAction indnt2" style="margin-bottom:1em;padding-top:0">
                </f:verbatim>
 				  <f:subview id="feedbackAdd" 
 				  	rendered="#{wizard.canReview && wizard.current.base.reviewDevice != null &&
 				  		wizard.current.base.reviewDevice.value != ''}">
                     <h:commandLink action="#{wizard.processActionReview}">
-                       <h:outputText value="#{msgs.review_add}"/>
+                       <h:outputText value="#{msgs.review_add}" />
                     </h:commandLink>
 				  </f:subview>
+				 <h:outputText value=" " rendered="#{empty wizard.current.runningWizard.reviews}" />
+				  <h:outputText value="#{msgs.review_empty}" rendered="#{empty wizard.current.runningWizard.reviews}" />
               <f:verbatim>
                  </div>
               </f:verbatim>
-		<%-- TODO  need a rendered attribute on this list - omit if no items --%>	   
-         <sakai:flat_list value="#{wizard.current.runningWizard.reviews}" var="review">
+         <sakai:flat_list value="#{wizard.current.runningWizard.reviews}" var="review"  rendered="#{not empty wizard.current.runningWizard.reviews}">
             <h:column>
                <f:facet name="header">
                   <h:outputText value="#{msgs.wizard_eval_name}" />
                </f:facet>
 		<%-- TODO Dupe? --%>	   
-               <f:facet name="header">
-                  <h:outputText value="#{msgs.wizard_eval_name}" />
-               </f:facet>
 			   		<f:verbatim>
 					<img src = '/library/image/silk/comment.gif' border= '0' hspace='0' /><h:outputText value=" " />
 				</f:verbatim>
@@ -289,32 +301,32 @@
             </h:column>
          </sakai:flat_list>
       </ospx:xheaderdrawer>
-      <f:verbatim><br><br></f:verbatim>
   </ospx:xheader>
      
      
      
    <!-- ****************** evaluation ****************** -->
-   <ospx:xheader rendered="#{wizard.evaluationItem != ''}">
+   <ospx:xheader rendered="#{wizard.evaluationItem != ''}">               
       <ospx:xheadertitle id="wizardEvals" value="#{msgs.wizard_evals}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
                <f:verbatim>
-			      <div class="itemAction indnt4" style="margin-bottom:1em">
+			      <div class="itemAction indnt2" style="margin-bottom:1em">
                </f:verbatim>
 				  <f:subview id="evaluationAdd" 
 				  	rendered="#{wizard.canEvaluate && wizard.current.base.evaluationDevice != null &&
 				  		wizard.current.base.evaluationDevice.value != '' &&
 				  		wizard.current.runningWizard.base.status == 'PENDING'}">
-				  	
                     <h:commandLink action="#{wizard.processActionEvaluate}">
                        <h:outputText value="#{msgs.evaluation_add}"/>
                     </h:commandLink>
 				  </f:subview>
+			   <h:outputText value=" " rendered="#{empty wizard.current.runningWizard.evaluations}" />
+			   <h:outputText value="#{msgs.eval_empty}" rendered="#{empty wizard.current.runningWizard.evaluations}" />
               <f:verbatim>
                  </div>
               </f:verbatim>
 			   
-         <sakai:flat_list value="#{wizard.current.runningWizard.evaluations}" var="eval">
+         <sakai:flat_list value="#{wizard.current.runningWizard.evaluations}" var="eval" rendered="#{not empty wizard.current.runningWizard.evaluations}">
             <h:column>
                <f:facet name="header">
                   <h:outputText value="#{msgs.wizard_eval_name}" />
@@ -340,7 +352,6 @@
             </h:column>
          </sakai:flat_list>
       </ospx:xheaderdrawer>
-      <f:verbatim><br><br></f:verbatim>
   </ospx:xheader>
       
       

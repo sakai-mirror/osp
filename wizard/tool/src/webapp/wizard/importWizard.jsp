@@ -18,17 +18,19 @@
 <h:form>
 
    <sakai:view_title value="#{msgs.import_wizard_title}"/>
+
+     <sakai:instruction_message value="#{msgs.import_wizard_instruction}" />
    <sakai:messages />
    
    <sakai:panel_edit>
-      <h:outputLabel for="name" id="nameLabel" value="#{msgs.wizard_name}" />
+      <h:outputLabel for="files" id="nameLabel" value="#{msgs.wizard_name}" />
       <h:panelGroup styleClass="shorttext">
          <h:inputText id="files" value="#{wizard.importFilesString}" disabled="true" />
 		 <h:outputText value=" " />
          <h:commandLink action="#{wizard.processPickImportFiles}">
             <h:outputText value="#{msgs.pick_import_files}"/>
          </h:commandLink>
-         <h:message for="files" styleClass="validationEmbedded" />
+		 <h:message for="files" styleClass="alertMessageInline" style="border:none"/>
       </h:panelGroup>
    </sakai:panel_edit>
    

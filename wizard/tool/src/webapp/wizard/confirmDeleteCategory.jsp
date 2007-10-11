@@ -16,7 +16,7 @@
 <h:form>
 
    <sakai:view_title value="#{msgs.delete_wizard_category}"/>
-   <sakai:instruction_message value="#{msgs.delete_wizard_category_message}" />
+   <h:outputText value="#{msgs.delete_wizard_category_message}" styleClass="alertMessage"/>
       
    <h:dataTable value="#{wizard.currentCategoryList}" var="category" styleClass="listHier" headerClass="" cellpadding="0" cellspacing="0">
       <h:column>

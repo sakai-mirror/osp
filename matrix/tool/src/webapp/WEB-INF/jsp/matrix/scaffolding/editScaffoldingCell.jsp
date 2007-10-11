@@ -77,7 +77,7 @@
 			</c:if>	
 				<span class="reqStar">*</span><label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_cellTitle"/></label>
 				<input type="text" name="<c:out value="${status.expression}"/>"
-				value="<c:out value="${status.displayValue}"/>" size="40" id="<c:out value="${status.expression}"/>-id"/>
+				value="<c:out value="${status.displayValue}"/>" size="40" id="<c:out value="${status.expression}"/>-id" />
 				<c:if test="${status.error}">
 					<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
 				</c:if>
@@ -273,7 +273,7 @@
 						<c:if test="${not empty scaffoldingCell.guidance.example.limitedText}">
 							<div class="textPanel"><c:out value="${scaffoldingCell.guidance.example.limitedText}" escapeXml="false" /></div>
 						</c:if>
-						<c:if test="${not empty scaffoldingCell.guidance.rationale.attachments}">
+						<c:if test="${not empty scaffoldingCell.guidance.example.attachments}">
 							<ul class="attachList indnt1">
 								<c:forEach var="attachment" items="${scaffoldingCell.guidance.example.attachments}" varStatus="loopStatus">
 									<li><img border="0" title="<c:out value="${attachment.displayName}" />"
@@ -301,7 +301,7 @@
 
 	<!-- *************  User Forms Area  Start ************* -->
 	<fieldset class="fieldsetVis">
-		<legend>User forms</legend>
+		<legend><fmt:message key="legend_additional_user_Forms"/></legend>
 
 		<!-- ************* Additional Forms Area Start ************* -->   
 		<h5><fmt:message key="title_additionalForms"/></h5>
@@ -325,30 +325,32 @@
 				<input type="submit" id="addForm-id" name="addForm" value="<fmt:message key="button_add"/>" onclick="javascript:document.forms[0].validate.value='false';" />
 			</span>
 		</p>
-		<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<fmt:message key="table_forms_summary"/>" style="width:70%">
-			<c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
-				<tr>
-					<td>
-						<span class="indnt1">
-							<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' />
-							<c:out value="${chosenForm.name}" />
-						</span>
-					</td>
-					<td style="text-align:right">
-						<c:if test="${empty localDisabledText}">
-							<div class="itemAction">
-								<a href="javascript:document.forms[0].submitAction.value='removeFormDef';
-									document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
-									document.forms[0].onsubmit();
-									document.forms[0].submit();">
-									<osp:message key="remove"/>
-								</a>
-							</div>
-						</c:if>
-					</td>
-				</tr>
-			</c:forEach>
-		</table>
+		<c:if test="${not empty selectedAdditionalFormDevices}">
+			<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<fmt:message key="table_forms_summary"/>" style="width:50%">
+				<c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
+					<tr>
+						<td>
+							<span class="indnt1">
+								<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' />
+								<c:out value="${chosenForm.name}" />
+							</span>
+						</td>
+						<td style="text-align:right">
+							<c:if test="${empty localDisabledText}">
+								<div class="itemAction">
+									<a href="javascript:document.forms[0].submitAction.value='removeFormDef';
+										document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
+										document.forms[0].onsubmit();
+										document.forms[0].submit();">
+										<osp:message key="remove"/>
+									</a>
+								</div>
+							</c:if>
+						</td>
+					</tr>
+				</c:forEach>
+			</table>
+		</c:if>
 	
 		<!-- ************* Additional Forms Area End ************* -->   
 		<!-- ************* Assignments Area Start ************* -->   
@@ -425,7 +427,7 @@
 		</spring:bind>
 	</fieldset>
 	<fieldset class="fieldsetVis">
-		<legend>Feedback and Evaluation</legend>
+		<legend><fmt:message key="legend_feed_eval"/></legend>
 		<spring:bind path="scaffoldingCell.reviewDeviceType">  
 			<input type="hidden" name="<c:out value="${status.expression}"/>"
 			value="<c:out value="${status.value}"/>" />
@@ -507,7 +509,7 @@
 	</fieldset>
 	<spring:bind path="scaffoldingCell.id">
 		<input type="hidden" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.displayValue}"/>"/>
-		<span class="error_message"><c:out value="${status.errorMessage}"/></span>
+		<span class="error" style="border:none"><c:out value="${status.errorMessage}"/></span>
 	</spring:bind>
 	
 	<c:if test="${taggable}">

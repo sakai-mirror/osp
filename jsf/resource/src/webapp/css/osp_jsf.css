@@ -3,10 +3,10 @@
 /*  background-color:#eee;
 */  color:#555;
 	font-weight: bold;
-		
 	font-size:1.2em;
      vertical-align: middle;
-	  padding:.3em 0;	
+	  padding:.3em 0;
+	  margin:.5em 0	
 
  }
  .xhItalics {
@@ -65,4 +65,8 @@
  .drawerBorder table {
 	margin:0;
  }
- 
+
+/*complex lists - principal column nowrap (used in jsf columnClasses)*/
+.nowrap{
+	white-space: nowrap;
+} 

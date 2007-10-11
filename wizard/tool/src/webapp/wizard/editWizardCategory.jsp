@@ -26,7 +26,7 @@
    <sakai:messages />
 
    	<h:panelGrid  cellpadding="0" cellspacing="0"  columns="1"  styleClass="jsfFormTable">
-      <h:panelGroup styleClass="shorttext">
+      <h:panelGroup styleClass="shorttext" style="display:block;margin:0;">
 	  	<h:outputText value="*" styleClass="reqStar"/>
       	<h:outputLabel for="title" id="titleLabel" value="#{msgs.wizard_category_title}" />
 		<h:inputText id="title" value="#{wizard.currentCategory.base.title}" required="true">
@@ -34,15 +34,14 @@
          </h:inputText>
          <h:message for="title" styleClass="validationEmbedded" />
       </h:panelGroup>
-      
-      <h:panelGroup styleClass="longtext" style="display:block">
-	        <h:outputLabel for="description" id="descriptionLabel" value="#{msgs.wizard_category_description}" styleClass="block" />
+      <h:panelGroup styleClass="longtext" style="display:block;margin:0;" >
+	        <h:outputLabel for="description" id="descriptionLabel" value="#{msgs.wizard_category_description}" styleClass="block"/>
 			<h:inputTextarea id="description" value="#{wizard.currentCategory.base.description}" cols="35">
             	<f:validateLength minimum="0" maximum="255" />
 			</h:inputTextarea>
          <h:message for="description" styleClass="validationEmbedded" />
       </h:panelGroup>
-      <h:panelGroup styleClass="longtext" style="display:block">
+      <h:panelGroup styleClass="longtext" style="display:block;margin:0;">
 	  <h:outputLabel for="keywords" id="keywordsLabel" value="#{msgs.wizard_category_keywords}" styleClass="block" />
          <h:inputTextarea id="keywords" value="#{wizard.currentCategory.base.keywords}" cols="35">
             <f:validateLength minimum="0" maximum="255" />
@@ -50,7 +49,6 @@
          <h:message for="keywords" styleClass="validationEmbedded" />
       </h:panelGroup>
    </h:panelGrid>
-
    <sakai:button_bar>
       <sakai:button_bar_item id="submit" value="#{msgs.save_wizard_category}"
          action="#{wizard.currentCategory.processActionSave}" styleClass="active" accesskey="s"/>

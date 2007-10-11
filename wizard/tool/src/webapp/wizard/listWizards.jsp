@@ -15,7 +15,8 @@
 <f:view>
 <sakai:view>
 <h:form>
-   <sakai:tool_bar>
+
+<sakai:tool_bar rendered="#{wizard.canCreate ||  wizard.maintainer}">
       <sakai:tool_bar_item rendered="#{wizard.canCreate}"
       action="#{wizard.processActionNew}"
       value="#{msgs.new_wizard}" />
@@ -29,8 +30,11 @@
           value="#{msgs.permissions_link}" />
 
    </sakai:tool_bar>
-   <sakai:view_title value="#{msgs.wizard_title}"/>
+   <sakai:view_title value="#{msgs.wizard_title}" rendered="#{wizard.canCreate ||  wizard.maintainer}"/>
+   <sakai:view_title value="#{msgs.wizard_title_user}" rendered="#{not (wizard.canCreate ||  wizard.maintainer)}"/>
+   <%--
    <sakai:instruction_message value="#{msgs.wizard_instruction_message}" />
+  --%>  
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />
@@ -40,10 +44,9 @@
    <h:outputText value="#{wizard.lastError} #{msgs.wizard_bad_file_type}" styleClass="validation" rendered="#{wizard.lastError == 'badFileType'}" />
    <h:outputText value="#{wizard.lastError} #{msgs.wizard_bad_import}" styleClass="validation" rendered="#{wizard.lastError == 'badImport'}" />
 
+   <sakai:instruction_message   value="#{msgs.no_wizards}" rendered="#{empty wizard.wizards}" />
 
-   <%-- TODO this dataTable needs a rendered attribute to hide if there are no items - then the alternate message below gets displayed --%>
-   <%-- <sakai:instruction_message value="#{msgs.no_wizards}"  /> --%>
-   <h:dataTable  value="#{wizard.wizards}" var="wizardItem" styleClass="lines listHier nolines" headerClass="exclude" summary="">		
+   <h:dataTable  value="#{wizard.wizards}" var="wizardItem" styleClass="lines listHier nolines" headerClass="exclude" summary="#{msgs.wizard_list_summary}" rendered="#{not empty wizard.wizards}" border="0">
       <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.wizards}" />
