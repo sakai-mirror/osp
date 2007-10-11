@@ -806,14 +806,15 @@
                         <value>annc.read</value>
                         <value>annc.read.drafts</value>
                         <value>annc.revise.any</value>
-                        <value>annc.revise.anyannc.revise.own</value>
-                        <value>annc.revise.anyasn.delete</value>
-                        <value>annc.revise.anyasn.grade</value>
-                        <value>annc.revise.anyasn.new</value>
-                        <value>annc.revise.anyasn.read</value>
-                        <value>annc.revise.anyasn.revise</value>
-                        <value>annc.revise.any</value>
-                        <value>annc.revise.anyasn.submit</value>
+                        <value>annc.revise.own</value>
+                        <value>asn.all.groups</value>
+                        <value>asn.delete</value>
+                        <value>asn.grade</value>
+                        <value>asn.new</value>
+                        <value>asn.read</value>
+                        <value>asn.receive.notifications</value>
+                        <value>asn.revise</value>
+                        <value>asn.submit</value>
                         <value>assessment.createAssessment</value>
                         <value>assessment.deleteAssessment.any</value>
                         <value>assessment.deleteAssessment.own</value>
@@ -1021,14 +1022,15 @@
                         <value>annc.read</value>
                         <value>annc.read.drafts</value>
                         <value>annc.revise.any</value>
-                        <value>annc.revise.anyannc.revise.own</value>
-                        <value>annc.revise.anyasn.delete</value>
-                        <value>annc.revise.anyasn.grade</value>
-                        <value>annc.revise.anyasn.new</value>
-                        <value>annc.revise.anyasn.read</value>
-                        <value>annc.revise.anyasn.revise</value>
-                        <value>annc.revise.any</value>
-                        <value>annc.revise.anyasn.submit</value>
+                        <value>annc.revise.own</value>
+                        <value>asn.all.groups</value>
+                        <value>asn.delete</value>
+                        <value>asn.grade</value>
+                        <value>asn.new</value>
+                        <value>asn.read</value>
+                        <value>asn.receive.notifications</value>
+                        <value>asn.revise</value>
+                        <value>asn.submit</value>
                         <value>assessment.createAssessment</value>
                         <value>assessment.deleteAssessment.any</value>
                         <value>assessment.deleteAssessment.own</value>
@@ -1138,14 +1140,15 @@
                         <value>annc.read</value>
                         <value>annc.read.drafts</value>
                         <value>annc.revise.any</value>
-                        <value>annc.revise.anyannc.revise.own</value>
-                        <value>annc.revise.anyasn.delete</value>
-                        <value>annc.revise.anyasn.grade</value>
-                        <value>annc.revise.anyasn.new</value>
-                        <value>annc.revise.anyasn.read</value>
-                        <value>annc.revise.anyasn.revise</value>
-                        <value>annc.revise.any</value>
-                        <value>annc.revise.anyasn.submit</value>
+                        <value>annc.revise.own</value>
+                        <value>asn.all.groups</value>
+                        <value>asn.delete</value>
+                        <value>asn.grade</value>
+                        <value>asn.new</value>
+                        <value>asn.read</value>
+                        <value>asn.receive.notifications</value>
+                        <value>asn.revise</value>
+                        <value>asn.submit</value>
                         <value>assessment.createAssessment</value>
                         <value>assessment.deleteAssessment.any</value>
                         <value>assessment.deleteAssessment.own</value>
