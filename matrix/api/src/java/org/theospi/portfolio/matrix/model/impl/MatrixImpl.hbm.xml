@@ -15,7 +15,7 @@
         <many-to-one name="scaffolding" column="scaffolding_id"
             not-null="true" class="Scaffolding" cascade="none"/>
         <set name="cells" cascade="all-delete-orphan" inverse="true"
-            lazy="true">
+            lazy="false">
             <key column="matrix_id" />
             <one-to-many class="Cell" />
         </set>
@@ -134,7 +134,7 @@
             <many-to-many class="Criterion" />
         </list>
         
-		<set name="scaffoldingCells" lazy="true" inverse="true" cascade="all-delete-orphan">
+		<set name="scaffoldingCells" lazy="false" inverse="true" cascade="all-delete-orphan">
             <key column="scaffolding_id" />
             <one-to-many class="ScaffoldingCell" />
         </set>
@@ -168,9 +168,9 @@
     	</id>
     	<many-to-one name="rootCriterion" column="rootcriterion_id" class="Criterion"/>
       <many-to-one name="level" column="level_id" class="Level"/>
-    	<many-to-one name="scaffolding" column="scaffolding_id" not-null="true" class="Scaffolding"/>
+    	<many-to-one name="scaffolding" column="scaffolding_id" not-null="true" class="Scaffolding" lazy="false"/>
       <set name="cells" cascade="all-delete-orphan" inverse="true"
-            lazy="true">
+            lazy="false">
             <key column="scaffolding_cell_id" />
             <one-to-many class="Cell" />
         </set>
