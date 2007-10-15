@@ -28,7 +28,7 @@ public class AgentManagerOsp extends org.sakaiproject.metaobj.security.impl.saka
          uEdit.setEmail(agent.getId().getValue());
 
          // set id
-         uEdit.setId(agent.getId().getValue());
+         //uEdit.setId(agent.getId().getValue());
 
          // set the guest user type
          uEdit.setType("guest");
