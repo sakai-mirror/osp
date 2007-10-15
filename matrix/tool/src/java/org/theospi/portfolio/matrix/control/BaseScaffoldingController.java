@@ -214,8 +214,8 @@ public class BaseScaffoldingController {
       List criteria = scaffolding.getCriteria();
       Criterion criterion = new Criterion();
       Level level = new Level();
-      //Set cells = scaffolding.getScaffoldingCells();
-      Set cells = getMatrixManager().getScaffoldingCells(scaffolding.getId());
+      Set cells = scaffolding.getScaffoldingCells();
+      //Set cells = getMatrixManager().getScaffoldingCells(scaffolding.getId());
       boolean firstRow = true;
       boolean firstColumn = true;
       
