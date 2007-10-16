@@ -695,7 +695,9 @@ your browser doesn't support iframes
             <xsl:attribute name="title">
                <xsl:value-of select="$externalized/entry[@key=$key]"/>
             </xsl:attribute>
+            <span>
             <xsl:value-of select="$externalized/entry[@key=$key]"/>
+            </span>
          </a>
       </li>
    </xsl:template>
@@ -717,7 +719,9 @@ your browser doesn't support iframes
             <xsl:attribute name="title">
                <xsl:value-of select="$externalized/entry[@key=$key]"/>
             </xsl:attribute>
+            <span>
             <xsl:value-of select="$externalized/entry[@key=$key]"/>
+            </span>
          </a>
       </li>
    </xsl:template>
@@ -739,7 +743,9 @@ your browser doesn't support iframes
             <xsl:attribute name="title">
                <xsl:value-of select="$externalized/entry[@key=$key]"/>
             </xsl:attribute>
+            <span>
             <xsl:value-of select="$externalized/entry[@key=$key]"/>
+            </span>
          </a>
       </li>
    </xsl:template>
@@ -761,7 +767,9 @@ your browser doesn't support iframes
             <xsl:attribute name="title">
                <xsl:value-of select="$externalized/entry[@key=$key]"/>
             </xsl:attribute>
+            <span>
             <xsl:value-of select="$externalized/entry[@key=$key]"/>
+            </span>
          </a>
       </li>
    </xsl:template>
