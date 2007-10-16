@@ -29,6 +29,7 @@
             <xsl:attribute name="href">
                <xsl:value-of select="."/>
             </xsl:attribute>
+            <xsl:comment></xsl:comment>
          </link>
       </xsl:for-each>
       <link href="/portal/styles/portalstyles.css" type="text/css" rel="stylesheet" media="all" />
@@ -708,7 +709,7 @@ your browser doesn't support iframes
    ===============match site current===============
    =====================================================================
    -->
-   <xsl:template match="site[@selected='true']">
+   <xsl:template match="site[@selected='true' and @myWorkspace!='true']">
       <li class="selectedTab"><a href="#"><span><xsl:value-of select="title"/></span></a></li>
    </xsl:template>
 
@@ -716,7 +717,7 @@ your browser doesn't support iframes
    ===============match site my workspace===============
    =====================================================================
    -->
-   <xsl:template match="site[@myWorkspace='true']">
+   <xsl:template match="site[@myWorkspace='true' and @selected!='true']">
       <li>
          <a>
             <xsl:attribute name="href"><xsl:value-of select="url"/></xsl:attribute>
