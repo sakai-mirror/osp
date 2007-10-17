@@ -18,10 +18,17 @@
    <sakai:instruction_message value="#{guidance.guidanceInstructions}" />
    <sakai:messages />
 <h:form>
+
 <ospx:xheader rendered="#{guidance.instructionsRendered}">
-      <ospx:xheadertitle id="instructionTitleAdd" value="#{common_msgs.instruction_title_add}" rendered="#{guidance.current.instruction.base.text == ''}" />
-      <ospx:xheadertitle id="instructionTitleEdit" value="#{common_msgs.instruction_title_edit}" rendered="#{guidance.current.instruction.base.text != ''}" />
-      <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
+	  <ospx:xheader>
+			<ospx:xheadertitle id="instructionTitleAdd"  rendered="#{guidance.current.instruction.base.text == ''}">
+      			<h:outputText value="#{common_msgs.instruction_title_add}" />
+			</ospx:xheadertitle>
+      	 	<ospx:xheadertitle id="instructionTitleEdit" rendered="#{guidance.current.instruction.base.text != ''}">
+	   			<h:outputText value="#{common_msgs.instruction_title_edit}" />
+	   		</ospx:xheadertitle>	   
+	  </ospx:xheader>
+      <f:subview id="instructView2">
                <sakai:instruction_message value="#{common_msgs.instruction_message}" />
                <sakai:inputRichText value="#{guidance.current.instruction.base.text}"
                   attachedFiles="#{guidance.current.instruction.attachmentLinks}"
@@ -49,12 +56,18 @@
 					   value="#{common_msgs.manage_instruction_add}" />
 					</sakai:button_bar>
                </f:subview>
-      </ospx:xheaderdrawer>
+      </f:subview>
   </ospx:xheader>
   <ospx:xheader rendered="#{guidance.examplesRendered}">
-      <ospx:xheadertitle id="exampleTitleAdd" value="#{common_msgs.example_title_add}" rendered="#{guidance.current.example.base.text == ''}" />
-      <ospx:xheadertitle id="exampleTitleEdit" value="#{common_msgs.example_title_edit}" rendered="#{guidance.current.example.base.text != ''}" />
-      <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
+      <ospx:xheader>
+      		<ospx:xheadertitle id="exampleTitleAdd" rendered="#{guidance.current.example.base.text == ''}">
+	   			<h:outputText value="#{common_msgs.example_title_add}" />
+	   		</ospx:xheadertitle>	   
+      		<ospx:xheadertitle id="exampleTitleEdit" rendered="#{guidance.current.example.base.text != ''}" >
+	   			<h:outputText value="#{common_msgs.example_title_edit}" />
+	   		</ospx:xheadertitle>	   
+      </ospx:xheader>
+      <f:subview id="exapmleView2">
                <sakai:instruction_message value="#{common_msgs.example_message}" />
                <sakai:inputRichText value="#{guidance.current.example.base.text}"
                   attachedFiles="#{guidance.current.example.attachmentLinks}"
@@ -83,12 +96,16 @@
 				   value="#{common_msgs.manage_instruction_add}" />
 				</sakai:button_bar>
                </f:subview>
-      </ospx:xheaderdrawer>
+      </f:subview>
   </ospx:xheader>
   <ospx:xheader rendered="#{guidance.rationaleRendered}">
-      <ospx:xheadertitle id="rationaleTitleAdd" value="#{common_msgs.rationale_title_add}" rendered="#{guidance.current.rationale.base.text == ''}" />
-      <ospx:xheadertitle id="rationaleTitleEdit" value="#{common_msgs.rationale_title_edit}" rendered="#{guidance.current.rationale.base.text != ''}" />
-      <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
+      <ospx:xheadertitle id="rationaleTitleAdd" rendered="#{guidance.current.rationale.base.text == ''}" >
+	   		<h:outputText value="#{common_msgs.rationale_title_add}"  />
+	  </ospx:xheadertitle>
+      <ospx:xheadertitle id="rationaleTitleEdit" rendered="#{guidance.current.rationale.base.text != ''}">
+	   		<h:outputText value="#{common_msgs.rationale_title_edit}" />
+	  </ospx:xheadertitle>
+      <f:subview id="rationalView">
                <sakai:instruction_message value="#{common_msgs.rationale_message}" />
                <sakai:inputRichText value="#{guidance.current.rationale.base.text}"
                   attachedFiles="#{guidance.current.rationale.attachmentLinks}"
@@ -116,7 +133,7 @@
 					   value="#{common_msgs.manage_instruction_add}" />
 					</sakai:button_bar>
                </f:subview>
-      </ospx:xheaderdrawer>
+      </f:subview>
   </ospx:xheader>
 
    <sakai:button_bar>
