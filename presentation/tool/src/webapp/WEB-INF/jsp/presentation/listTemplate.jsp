@@ -90,9 +90,7 @@
 
 <c:choose>
 	<c:when test="${empty templates}">
-		<p class="information">
-			<fmt:message key="template_table_empty"/>
-		</p>
+		<p class="instruction"><fmt:message key="template_table_empty"/></p>
 	</c:when>
 	<c:otherwise>
 		<table class="listHier lines nolines" cellspacing="0" cellpadding="0" border="0" summary="<fmt:message key="template_table_summary"/>">

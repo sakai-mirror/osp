@@ -84,7 +84,7 @@
 
 <c:choose>
 	<c:when test="${empty layouts}">
-		<fmt:message key="layout_table_empty"/>
+		<p class="instruction"><fmt:message key="layout_table_empty"/></p>
 	</c:when>
 	<c:otherwise>
 		<table class="listHier lines nolines" cellspacing="0"  cellpadding="0" border="0" summary="<fmt:message key="layout_table_summary"/>">
