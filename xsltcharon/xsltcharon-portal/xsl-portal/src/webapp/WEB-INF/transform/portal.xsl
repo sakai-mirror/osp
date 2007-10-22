@@ -344,10 +344,10 @@ your browser doesn't support iframes
                         </xsl:apply-templates>
                      </xsl:for-each>
                      <xsl:if test="/portal/sites/tabsMoreSites/site">
-                        <li>
-                           <a href="#" onclick="$('div#selectNav').slideToggle()">
+                        <li class="more-tab">
+                           <a href="#" onclick="return dhtml_more_tabs();">
                               <xsl:attribute name="title"><xsl:value-of select="$externalized/entry[@key='sit_more']"/></xsl:attribute>
-                              <xsl:value-of select="$externalized/entry[@key='sit_more']"/>
+                              <span class="outer"><span class="inner"><xsl:value-of select="$externalized/entry[@key='sit_more_tab']"/></span></span>
                            </a>
                         </li>
                      </xsl:if>
@@ -380,6 +380,9 @@ your browser doesn't support iframes
                   </ul>
                </div> <!-- /termContainer -->
             </xsl:for-each>
+            <div id="more_tabs_instr">
+               <xsl:value-of disable-output-escaping="yes" select="$externalized/entry[@key='sit_moretab_inst']"/>
+            </div>
          </div> <!-- /  -->
       </div> <!-- /selectNav -->
    </div>
