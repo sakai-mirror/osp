@@ -673,7 +673,7 @@
 		border="0" summary="">
 		<tr>
 			<th><osp:message key="reviews_section_general" /></th>
-			<th></th>
+			<th>&nbsp;</th>
 			<th><osp:message key="table_header_createdBy" /></th>
 			<th><fmt:message key="table_header_creationDate" /></th>
 		</tr>
@@ -755,7 +755,7 @@
 		border="0" summary="">
 		<tr>
 			<th><osp:message key="eval_items_section_header" /></th>
-			<th></th>
+			<th>&nbsp;</th>
 			<th><osp:message key="table_header_createdBy" /></th>
 			<th><fmt:message key="table_header_modified" /></th>
 		</tr>
