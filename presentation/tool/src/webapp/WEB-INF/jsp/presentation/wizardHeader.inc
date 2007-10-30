@@ -35,7 +35,7 @@
 </h3>
 </c:if>
 <c:if test="${empty step}">
-<div class="xheader">ccccccc
+<div class="xheader">
 <h3>
         <fmt:message key="paging_steps">
           <fmt:param value="${currentPage}"/>
