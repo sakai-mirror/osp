@@ -119,9 +119,7 @@
 					<c:forEach var="artifact"
 						items="${artifacts[itemDefinition.id.value]}">
 						<c:set var="value">
-							<c:out
-								value="${itemDefinition.id.value}" />
-							<c:out
+							<c:out value="${itemDefinition.id.value}" />.<c:out
 								value="${artifact.id.value}" />
 						</c:set>
 						<c:set var="found" value="false" />
