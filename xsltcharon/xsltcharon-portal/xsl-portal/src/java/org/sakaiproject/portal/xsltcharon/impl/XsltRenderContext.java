@@ -22,10 +22,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.dom.DOMSource;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -38,7 +35,7 @@ public class XsltRenderContext implements PortalRenderContext {
 
    private static final Log log = LogFactory.getLog(XsltRenderEngine.class);
    private static final String ALT_TEMPLATE = "xsltUseTemplate";
-   
+
    /** messages. */
    private static ResourceLoader rb = new ResourceLoader("org/sakaiproject/portal/xsltcharon/messages");
 
@@ -112,7 +109,7 @@ public class XsltRenderContext implements PortalRenderContext {
       try {
          root.appendChild(createPageCategories(doc, (List) sitePages.get("pageNavTools")));
       } catch (ToolRenderException e) {
-         log.error("", e);   
+         log.error("", e);
       }
 
       root.appendChild(createExternalizedXml(doc));
@@ -129,7 +126,7 @@ public class XsltRenderContext implements PortalRenderContext {
       }
 
       ResourceLoader rbsitenav = (ResourceLoader) context.get("rloader");
-      
+
       for (Iterator i=rbsitenav.entrySet().iterator();i.hasNext();) {
          Map.Entry entry = (Map.Entry) i.next();
          externalized.appendChild(createExternalizedEntryXml(doc, entry.getKey(), entry.getValue()));
@@ -149,14 +146,14 @@ public class XsltRenderContext implements PortalRenderContext {
 
    protected Element createSites(Document doc) {
       Element sites = doc.createElement("sites");
-      
+
       sites.appendChild(createSitesList(doc, context, "tabsSites", "tabsSites"));
       sites.appendChild(createSitesList(doc, context, "tabsMoreSites", "tabsMoreSites"));
-      
+
       if (context.get("tabsMoreSortedTermList") != null) {
          sites.appendChild(createTermSites(doc));
       }
-      
+
       return sites;
    }
 
@@ -164,7 +161,7 @@ public class XsltRenderContext implements PortalRenderContext {
       Element siteTypes = doc.createElement("siteTypes");
       List<String> terms = (List<String>) context.get("tabsMoreSortedTermList");
       Map termsMap = (Map) context.get("tabsMoreTerms");
-      
+
       int index = 0;
       for (Iterator<String> i=terms.iterator();i.hasNext();) {
          Element siteType = doc.createElement("siteType");
@@ -175,18 +172,18 @@ public class XsltRenderContext implements PortalRenderContext {
          siteTypes.appendChild(siteType);
          index++;
       }
-      
+
       return siteTypes;
    }
 
    protected Element createSitesList(Document doc, Map currentContext, String prop, String elementName) {
       Element list = doc.createElement(elementName);
       List<Map> sites = (List<Map>) currentContext.get(prop);
-      
+
       if (sites == null) {
          return list;
       }
-      
+
       int index = 0;
       for (Iterator<Map> i=sites.iterator();i.hasNext();) {
          list.appendChild(createSite(doc, i.next(), index));
@@ -198,18 +195,18 @@ public class XsltRenderContext implements PortalRenderContext {
 
    protected Element createSite(Document doc, Map siteMap, int index) {
       Element site = doc.createElement("site");
-      
+
       appendTextElementNode(doc, "url", (String) siteMap.get("siteUrl"), site);
       appendTextElementNode(doc, "title", (String) siteMap.get("siteTitle"), site);
       appendTextElementNode(doc, "description", (String) siteMap.get("siteDescription"), site);
       appendTextElementNode(doc, "parent", (String) siteMap.get("parentSite"), site);
-      
+
       site.setAttribute("selected", siteMap.get("isCurrentSite").toString());
       site.setAttribute("myWorkspace", siteMap.get("isMyWorkspace").toString());
       site.setAttribute("depth", siteMap.get("depth").toString());
       site.setAttribute("child", siteMap.get("isChild").toString());
       site.setAttribute("order", "" + index);
-      
+
       return site;
    }
 
@@ -357,13 +354,13 @@ public class XsltRenderContext implements PortalRenderContext {
 
       toolElement.appendChild(title);
       toolElement.appendChild(escapedId);
-      
+
       appendTextElementNode(doc, "toolReset", tool.get("toolResetActionUrl").toString(), toolElement);
       appendTextElementNode(doc, "toolHelp", tool.get("toolHelpActionUrl").toString(), toolElement);
-      
+
       toolElement.setAttribute("hasReset", tool.get("toolShowResetButton").toString());
       toolElement.setAttribute("hasHelp", tool.get("toolShowHelpButton").toString());
-      
+
 
       if ((Boolean)tool.get("hasRenderResult")) {
          toolElement.setAttribute("renderResult", "true");
@@ -454,7 +451,39 @@ public class XsltRenderContext implements PortalRenderContext {
       appendTextElementNodes(doc, poweredByImage, config, "poweredByImages", "poweredByImage");
       appendTextElementNodes(doc, poweredByAltText, config, "poweredByAltTexts", "poweredByAltText");
 
+      addExtraConfig(config);
+
       return config;
+   }
+
+   protected void addExtraConfig(Element config) {
+      Element extra = config.getOwnerDocument().createElement("extra");
+      config.appendChild(extra);
+      for (Iterator<Map.Entry> i=context.entrySet().iterator();i.hasNext();) {
+         Map.Entry entry = i.next();
+         if (entry.getValue() instanceof String) {
+            appendTextElementNode(config.getOwnerDocument(),
+               (String) entry.getKey(), (String) entry.getValue(), extra);
+         }
+         else if (entry.getValue() instanceof String[]) {
+            appendTextElementNodes(config.getOwnerDocument(),
+               (String[]) entry.getValue(), extra, entry.getKey().toString() + "-list",
+               entry.getKey().toString());
+         }
+         else if (entry.getValue() instanceof List) {
+            List value = (List) entry.getValue();
+            if (value.size() > 0 && value.get(0) instanceof String) {
+               String[] values = new String[value.size()];
+               for (int j=0;j<values.length;j++) {
+                  values[j] = value.get(j).toString();
+               }
+               appendTextElementNodes(config.getOwnerDocument(),
+                  values, extra, entry.getKey().toString() + "-list",
+                  entry.getKey().toString());
+            }
+         }
+      }
+
    }
 
    protected Element createPoweredByXml(Document doc, String text, String image, String url) {
@@ -559,11 +588,11 @@ public class XsltRenderContext implements PortalRenderContext {
       if (request.getParameter(ALT_TEMPLATE) != null) {
          return request.getParameter(ALT_TEMPLATE);
       }
-      
+
       if (request.getAttribute(ALT_TEMPLATE) != null) {
          return request.getAttribute(ALT_TEMPLATE).toString();
       }
-      
+
       return null;
    }
 

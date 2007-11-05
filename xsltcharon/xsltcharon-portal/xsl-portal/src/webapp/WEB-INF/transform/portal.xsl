@@ -306,7 +306,8 @@ your browser doesn't support iframes
 			</div>
         </xsl:when-->
         <xsl:otherwise>
-<form method="post" action="/osp-portal/xlogin" enctype="application/x-www-form-urlencoded" target="_parent">
+<form method="post" action="{config/extra/loginPortalPath}/xlogin" 
+      enctype="application/x-www-form-urlencoded" target="_parent">
 <xsl:value-of select="$externalized/entry[@key='log.userid']"/>
 <input name="eid" id="eid" type="text" style ="width: 10em" />
 
