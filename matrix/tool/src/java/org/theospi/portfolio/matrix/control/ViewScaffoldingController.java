@@ -77,8 +77,7 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
       Level level = new Level();
       List<ScaffoldingCell> row = new ArrayList<ScaffoldingCell>();
 
-      Set<ScaffoldingCell> cells = scaffolding.getScaffoldingCells();
-      //Set<ScaffoldingCell> cells = getMatrixManager().getScaffoldingCells(scaffolding.getId());
+      Set<ScaffoldingCell> cells = getMatrixManager().getScaffoldingCells(scaffolding.getId());
        
       for (Iterator<Criterion> criteriaIterator = criteria.iterator(); criteriaIterator.hasNext();) {
          row = new ArrayList<ScaffoldingCell>();

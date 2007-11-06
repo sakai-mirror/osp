@@ -168,8 +168,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       Level level = new Level();
       List row = new ArrayList();
       
-      Set<Cell> cells = matrix.getCells();
-      //List<Cell> cells = getMatrixManager().getCells(matrix);
+      List<Cell> cells = getMatrixManager().getCells(matrix);
        
       for (Iterator<Criterion> criteriaIterator = criteria.iterator(); criteriaIterator.hasNext();) {
          row = new ArrayList();

@@ -83,17 +83,19 @@ public class BaseScaffoldingController {
          EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
                EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
          scaffolding = sessionBean.getScaffolding();
+         
          session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
       }
-        //Traversing the collections to un-lazily load
+      // Traversing the collections to un-lazily load
       scaffolding.getLevels().size();
       scaffolding.getCriteria().size();
-      //traverseScaffoldingCells(scaffolding);
+      traverseScaffoldingCells(scaffolding);
       
       return scaffolding;
    }
    
    protected void traverseScaffoldingCells(Scaffolding scaffolding) {
+      matrixManager.getScaffoldingCells(scaffolding.getId());
       scaffolding.getScaffoldingCells().size();
       for (Iterator iter=scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
@@ -214,8 +216,7 @@ public class BaseScaffoldingController {
       List criteria = scaffolding.getCriteria();
       Criterion criterion = new Criterion();
       Level level = new Level();
-      Set cells = scaffolding.getScaffoldingCells();
-      //Set cells = getMatrixManager().getScaffoldingCells(scaffolding.getId());
+      Set cells = getMatrixManager().getScaffoldingCells(scaffolding.getId());
       boolean firstRow = true;
       boolean firstColumn = true;
       
