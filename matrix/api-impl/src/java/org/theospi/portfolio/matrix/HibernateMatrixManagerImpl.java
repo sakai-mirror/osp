@@ -819,9 +819,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             if (node != null) {
                result.add(node);
             }
-            else {
-               //logger.warn("Cell contains stale artifact references (null node encountered) for Cell: " + cell.getId().getValue() + ". Detaching");
-               //detachArtifact(cell.getId(),attachment.getArtifactId());
+            else if ( !isNodeHidden(wpf.getArtifactId()) ) {
                removes.add(wpf.getArtifactId());
             }
          }
@@ -844,9 +842,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             if (node != null) {
                result.add(node);
             }
-            else {
-               //logger.warn("Cell contains stale artifact references (null node encountered) for Cell: " + cell.getId().getValue() + ". Detaching");
-               //detachArtifact(cell.getId(),attachment.getArtifactId());
+            else if ( !isNodeHidden(attachment.getArtifactId()) ) {
                removes.add(attachment.getArtifactId());
             }
          }
@@ -871,6 +867,22 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner());
    }
 
+   private boolean isNodeHidden( Id artifactId ) {
+      try {
+         String id = getContentHosting().resolveUuid(artifactId.getValue());
+         if ( id == null )
+            return false; // non-existant node is not "hidden"
+         getContentHosting().checkResource(id);
+      }
+      catch (PermissionException e) {
+         return true; // not permitted to view indicates "hidden"
+      }
+      catch (Exception e) {
+         return false;  // any other error does not constitute "hidden"
+      }
+      return false;
+   }
+   
    public Node getNode(Id artifactId) {
       String id = getContentHosting().resolveUuid(artifactId.getValue());
       if (id == null) {
@@ -889,16 +901,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          return new Node(artifactId, resource, owner);
       }
       catch (PermissionException e) {
-         logger.error("", e);
-         throw new RuntimeException(e);
+         logger.warn(this+".getNode "+e.toString());
+         return null;
       }
-      catch (IdUnusedException e) {
-         logger.error("", e);
-         throw new RuntimeException(e);
-      }
-      catch (TypeException e) {
-         logger.error("", e);
-         throw new RuntimeException(e);
+      catch (Exception e) {
+         logger.error(this+".getNode "+e.toString());
+         return null;
       }
    }
 
