@@ -4,7 +4,7 @@
   <parent>
     <artifactId>osp-presentation</artifactId>
     <groupId>org.sakaiproject.osp</groupId>
-    <version>M2</version>
+    <version>SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>osp-presentation-impl</artifactId>
