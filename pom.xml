@@ -11,6 +11,14 @@
   <groupId>org.sakaiproject.osp</groupId>
   <artifactId>osp-base</artifactId>
   <packaging>pom</packaging>
+  
+  <scm>
+    <connection>scm:svn:https://source.sakaiproject.org/svn/osp/trunk</connection>
+    <developerConnection>scm:svn:https://source.sakaiproject.org/svn/osp/trunk</developerConnection>
+    <url>https://source.sakaiproject.org/svn/osp/trunk</url>
+  </scm>
+  
+
   <modules>
     <module>common</module>
     <module>glossary</module>
