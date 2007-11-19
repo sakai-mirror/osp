@@ -3,6 +3,8 @@
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
    xmlns:xhtml="http://www.w3.org/1999/xhtml"
    xmlns:osp="http://www.osportfolio.org/OspML">
+
+<xsl:output method="html"/>
    
 <xsl:variable name="layoutFile" select="/ospiPresentation/layout/artifact/fileArtifact/uri" />
 <xsl:variable name="page" select="document($layoutFile)"/>
