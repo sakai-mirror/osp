@@ -475,7 +475,12 @@ public class XsltRenderContext implements PortalRenderContext {
             if (value.size() > 0 && value.get(0) instanceof String) {
                String[] values = new String[value.size()];
                for (int j=0;j<values.length;j++) {
-                  values[j] = value.get(j).toString();
+                  if (value.get(j) != null) {
+                     values[j] = value.get(j).toString();
+                  }
+                  else {
+                     values[j] = null;
+                  }
                }
                appendTextElementNodes(config.getOwnerDocument(),
                   values, extra, entry.getKey().toString() + "-list",
