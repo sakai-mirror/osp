@@ -223,6 +223,7 @@
 		<module>gmt</module>
 		<module>datapoint</module>
       <!--  <module>formbuilder</module> -->
+	<module>content-taggable</module>
       </modules>
     </profile>
   </profiles>
