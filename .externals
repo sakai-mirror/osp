@@ -68,3 +68,4 @@ warehouse		https://source.sakaiproject.org/svn/warehouse/trunk
 gmt			https://source.sakaiproject.org/contrib/syracuse/gmt/trunk
 datapoint		https://source.sakaiproject.org/contrib/syracuse/datapoint/trunk
 formbuilder		https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
+content-taggable	https://source.sakaiproject.org/contrib/iu/content-taggable/trunk
