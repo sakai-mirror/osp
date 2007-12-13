@@ -71,4 +71,9 @@ public class MatrixContentEntityProducer extends EntityProducerBase implements E
    public void setMatrixManager(DuplicatableToolService matrixManager) {
       this.matrixManager = matrixManager;
    }
+   
+   public void transferCopyEntities(String fromContext, String toContext, List ids, boolean cleanup)
+	{	
+		//TODO
+	}
 }
