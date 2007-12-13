@@ -70,4 +70,9 @@ public class PresentationContentEntityProducer extends EntityProducerBase implem
    public void setPresentationManager(DuplicatableToolService presentationManager) {
       this.presentationManager = presentationManager;
    }
+   
+   public void transferCopyEntities(String fromContext, String toContext, List ids, boolean cleanup)
+	{	
+		//TODO
+	}
 }
