@@ -128,7 +128,8 @@ public class GenericXmlRenderer implements PresentableObjectHome {
       logger.debug("adding attribute: " + attribName);
 
       Method readMethod = prop.getReadMethod();
-      if (readMethod == null || readMethod.getParameterTypes().length > 0) {
+      if (readMethod == null || readMethod.getParameterTypes().length > 0 ||
+              Collection.class.isAssignableFrom(readMethod.getReturnType())) {
          logger.debug("skipping attrib: " + attribName);
          return;
       }
