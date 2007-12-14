@@ -71,6 +71,9 @@ public class WizardEntityProducer extends EntityProducerBase implements EntityTr
       this.wizardManager = wizardManager;
    }
    
-   
+   public void transferCopyEntities(String fromContext, String toContext, List ids, boolean cleanup)
+	{	
+		//TODO
+	}
 
 }

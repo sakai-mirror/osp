@@ -64,6 +64,11 @@ public class GlossaryEntityProducer extends EntityProducerBase implements Entity
    public void setGlossary(Glossary glossary) {
       this.glossary = glossary;
    }
+   
+   public void transferCopyEntities(String fromContext, String toContext, List ids, boolean cleanup)
+	{	
+		//TODO
+	}
 
 }
 
