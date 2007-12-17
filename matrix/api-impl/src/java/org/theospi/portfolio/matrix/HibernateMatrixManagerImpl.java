@@ -1936,13 +1936,27 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       for (Iterator cells = matrix.getCells().iterator(); cells.hasNext();) {
          Cell cell = (Cell) cells.next();
          WizardPage page = cell.getWizardPage();
-         List reflections = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId(),
-               MatrixContentEntityProducer.MATRIX_PRODUCER);
-         List evaluations = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.EVALUATION_TYPE, page.getPageDefinition().getSiteId(),
-               MatrixContentEntityProducer.MATRIX_PRODUCER);
-         List feedback = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.FEEDBACK_TYPE, page.getPageDefinition().getSiteId(),
-               MatrixContentEntityProducer.MATRIX_PRODUCER);
-         
+         List reflections = new ArrayList();
+         List evaluations = new ArrayList();
+         List feedback = new ArrayList();
+
+         List reviews = getReviewManager().getReviewsByParentAndTypes(page.getId().getValue(),
+                 new int[]{Review.REFLECTION_TYPE, Review.EVALUATION_TYPE, Review.FEEDBACK_TYPE},
+                 page.getPageDefinition().getSiteId(),
+              MatrixContentEntityProducer.MATRIX_PRODUCER);
+
+
+         for (Iterator reviewsIter = reviews.iterator(); reviewsIter.hasNext();) {
+             Review review = (Review) reviewsIter.next();
+             if (review.getType() == Review.EVALUATION_TYPE) {
+                 evaluations.add(review);
+             } else if (review.getType() == Review.REFLECTION_TYPE) {
+                 reflections.add(review);
+             } else if (review.getType() == Review.FEEDBACK_TYPE) {
+                 feedback.add(review);
+             }
+         }
+
          page.setReflections(reflections);
          page.setEvaluations(evaluations);
          page.setFeedback(feedback);

@@ -23,6 +23,7 @@ package org.theospi.portfolio.review.impl;
 import java.util.Iterator;
 import java.util.List;
 
+import org.hibernate.criterion.Restrictions;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
@@ -89,41 +90,52 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
       return getReviewsByParent("getReviewsByParent", params, parentId, siteId, producer);
    }
 
-   
-   /**
+  /**
     * {@inheritDoc}
     */
    public List getReviewsByParentAndType(String parentId, int type, String siteId, String producer) {
       Object[] params = new Object[]{parentId, new Integer(type)};
       return getReviewsByParent("getReviewsByParentAndType", params, parentId, siteId, producer);
    }
-   
-   
-   /**
-    * the top function for getting the reviews.  This pushes these review content 
+    /**
+    * the top function for getting the reviews.  This pushes these review content
     * into the security advisor.
-    * 
+    *
     * @param query
     * @param params
     * @param parentId
     * @param siteId
     * @param producer
     * @return List of Review classes
-    */
-   protected List getReviewsByParent(String query, Object[] params, String parentId, String siteId, String producer) {
-      List reviews = getHibernateTemplate().findByNamedQuery(query, params);
-      for (Iterator i = reviews.iterator(); i.hasNext();) {
-         Review review = (Review) i.next();
-         Node node = getNode(review.getReviewContent(), parentId, siteId, producer);
-         review.setReviewContentNode(node);
-      }
-      
-      return reviews;
-   }
+     */
+    public List getReviewsByParentAndTypes(String parentId, int[] intTypes, String siteId, String producer) {
+        Integer[] types = new Integer[intTypes.length];
+        for (int i=0;i<intTypes.length;i++){
+            types[i] = new Integer(intTypes[i]);
+        }
+        List reviews = this.getSession().createCriteria(Review.class).add(
+                Restrictions.eq("parent",parentId)).add(Restrictions.in("type",types)).list();
+        populateReviews(parentId, siteId, producer, reviews);
+        return reviews;
+    }
 
-   public Review saveReview(Review review) {
+    protected List getReviewsByParent(String query, Object[] params, String parentId, String siteId, String producer) {
+       List reviews = getHibernateTemplate().findByNamedQuery(query, params);
+       populateReviews(parentId, siteId, producer, reviews);
+       return reviews;
+    }
+
+    protected void populateReviews(String parentId, String siteId, String producer, List reviews) {
+        for (Iterator i = reviews.iterator(); i.hasNext();) {
+           Review review = (Review) i.next();
+           Node node = getNode(review.getReviewContent(), parentId, siteId, producer);
+           review.setReviewContentNode(node);
+        }
+    }
+
+    public Review saveReview(Review review) {
       //review.setModified(now);
-      
+
       if (review.isNewObject()) {
          review.setNewId(review.getId());
          review.setId(null);
@@ -165,11 +177,11 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
 
       return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner());
    }
-   
+
    /**
     * pushes the artifact into the security advisor.  It then gets the resource, properties, and owner
-    * and places these into a Node.  
-    * 
+    * and places these into a Node.
+    *
     * @param artifactId Id
     * @return Node
     * @throws RuntimeException on PermissionException, IdUnusedException, and TypeException
@@ -204,13 +216,13 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
          throw new RuntimeException(e);
       }
    }
-   
- /*  
+
+ /*
    public Node getNode2(Reference ref, String parentId, String siteId) {
       String nodeId = getContentHosting().getUuid(ref.getId());
 
       Node node = getNode(getIdManager().getId(nodeId), siteId);
-      
+
       if (node == null) {
          return null;
       }
@@ -218,16 +230,16 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
             buildRef(siteId, parentId, node.getResource()));
 
       return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner());
-      
-      
+
+
    }
    */
-   protected String buildRef(String siteId, String contextId, ContentResource resource, 
+   protected String buildRef(String siteId, String contextId, ContentResource resource,
          String producer) {
       return ContentEntityUtil.getInstance().buildRef(
          producer, siteId, contextId, resource.getReference());
    }
-   
+
    public Node getNode(Reference ref) {
       String nodeId = getContentHosting().getUuid(ref.getId());
 

@@ -72,4 +72,16 @@ public interface ReviewManager {
     * @return List of Review
     */
    public List getReviewsByParentAndType(String parentId, int type, String siteId, String producer);
+
+    /**
+     * Returns a list of reviews for the given criteria
+     *
+     * @param parentId - the parentId of the review
+     * @param types - array of types to search for
+     * @param siteId - the siteId  of the review
+     * @param producer
+     * @return List of Review
+     */
+    public List getReviewsByParentAndTypes(String parentId, int[] types, String siteId, String producer);
+
 }
