@@ -19,6 +19,7 @@ db			https://source.sakaiproject.org/svn/db/trunk
 discussion              https://source.sakaiproject.org/contrib/deprecated/discussion/trunk
 email			https://source.sakaiproject.org/svn/email/trunk
 entity			https://source.sakaiproject.org/svn/entity/trunk
+entitybroker		https://source.sakaiproject.org/svn/entitybroker/trunk
 event			https://source.sakaiproject.org/svn/event/trunk
 gradebook		https://source.sakaiproject.org/svn/gradebook/trunk
 help			https://source.sakaiproject.org/svn/help/trunk
