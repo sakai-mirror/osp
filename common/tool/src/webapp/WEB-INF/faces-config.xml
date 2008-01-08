@@ -31,6 +31,12 @@
          <property-name>guidanceManager</property-name>
          <value>#{Components["org.theospi.portfolio.guidance.mgt.GuidanceManager"]}</value>
       </managed-property>
+      
+      <managed-property>
+         <description>Service Dependency: contentHostingService</description>
+         <property-name>contentHostingService</property-name>
+         <value>#{Components["org.sakaiproject.content.api.ContentHostingService"]}</value>
+      </managed-property>
 
    </managed-bean>
 

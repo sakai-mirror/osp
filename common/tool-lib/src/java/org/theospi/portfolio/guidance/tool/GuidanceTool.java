@@ -33,7 +33,7 @@ import javax.faces.context.FacesContext;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.content.api.ContentCollection;
-import org.sakaiproject.content.cover.ContentHostingService;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.cover.EntityManager;
 import org.sakaiproject.tool.api.Placement;
@@ -73,6 +73,8 @@ public class GuidanceTool extends HelperToolBase {
    private boolean showRationale = true;
 
    private GuidanceManager guidanceManager;
+   private ContentHostingService contentHostingService;
+   
    public static final String ATTACHMENT_TYPE = "org.theospi.portfolio.guidance.attachmentType";
 
    public GuidanceManager getGuidanceManager() {
@@ -81,6 +83,14 @@ public class GuidanceTool extends HelperToolBase {
 
    public void setGuidanceManager(GuidanceManager guidanceManager) {
       this.guidanceManager = guidanceManager;
+   }
+
+   public ContentHostingService getContentHostingService() {
+	return contentHostingService;
+   }
+
+   public void setContentHostingService(ContentHostingService contentHostingService) {
+	   this.contentHostingService = contentHostingService;
    }
 
    public String getGuidanceInstructions() {
@@ -489,8 +499,8 @@ public class GuidanceTool extends HelperToolBase {
       User user = UserDirectoryService.getCurrentUser();
       String userId = user.getId();
       String wsId = SiteService.getUserSiteId(userId);
-      String wsCollectionId = ContentHostingService.getSiteCollection(wsId);
-      ContentCollection collection = ContentHostingService.getCollection(wsCollectionId);
+      String wsCollectionId = getContentHostingService().getSiteCollection(wsId);
+      ContentCollection collection = getContentHostingService().getCollection(wsCollectionId);
       return collection;
    }
 
