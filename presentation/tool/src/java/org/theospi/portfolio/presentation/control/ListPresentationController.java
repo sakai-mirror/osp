@@ -36,6 +36,7 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.spring.util.SpringTool;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.api.Tool;
@@ -90,6 +91,7 @@ public class ListPresentationController extends AbstractPresentationController {
       model.put("osp_agent", currentAgent);
       model.put("showHidden", showHidden);
       model.put("myworkspace", isOnWorkspaceTab() );
+      model.put("lastViewKey", SpringTool.LAST_VIEW_VISITED);
       return new ModelAndView("success", model);
    }
    

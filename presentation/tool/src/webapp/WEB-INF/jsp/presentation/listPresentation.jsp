@@ -32,6 +32,7 @@
                 <osp:param name="name" value="presentation"/>
                 <osp:param name="qualifier" value="${tool.id}"/>
                 <osp:param name="returnView" value="listPresentationRedirect"/>
+                <osp:param name="session.${lastViewKey}" value="/listPresentation.osp"/>
                 </osp:url>"
             title="<fmt:message key="action_permissions_title"/>"> <fmt:message key="action_permissions"/> </a>
     </c:if>
