@@ -66,5 +66,11 @@ public interface AudienceSelectionHelper {
     
    public static final String AUDIENCE_SITE =
          "org.theospi.portfolio.security.audienceSite";
+   
+   public static final String CONTEXT =
+       "org.theospi.portfolio.security.context";
+   
+   public static final String CONTEXT2 =
+       "org.theospi.portfolio.security.context2";
          
 }

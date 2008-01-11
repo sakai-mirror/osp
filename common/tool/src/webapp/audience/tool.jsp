@@ -15,6 +15,8 @@
 <f:view>
 
 <sakai:view_title rendered="#{not audience.portfolioAudience}" value="#{common_msgs.audience_eval_title}"/>
+<h3><div class="highlight"><h:outputText value="#{audience.pageContext}"/></div></h3>
+<div class="highlight"><h:outputText value="#{audience.pageContext2}"/></div>
 <sakai:view>   
 <f:subview rendered="#{audience.portfolioAudience}" id="steps">
     <%@ include file="steps.jspf" %>

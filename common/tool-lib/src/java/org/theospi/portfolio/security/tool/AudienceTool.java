@@ -140,7 +140,6 @@ public class AudienceTool extends HelperToolBase {
     private boolean publicAudience = false;
 
 
-
     /*************************************************************************/
 
     protected List getMembersList() {
@@ -1132,5 +1131,29 @@ public class AudienceTool extends HelperToolBase {
 
         return members;
     }
+    
+    /**
+     * Context (AudienceSelectionHelper.CONTEXT) is used to describe the page/tool
+     * that is being used in this helper.  Context is the main title (ex. matrix or wizard name)
+     * and context 2 is used for the subtitle (ex. matrix cell or wizard page).  If left
+     * blank, then nothing displays on the page.  
+     * @return
+     */
 
+    public String getPageContext(){
+    	String context = (String) getAttribute(AudienceSelectionHelper.CONTEXT);
+    	return context != null ? context : "";
+    }
+    
+    /**
+     * Context2 (AudienceSelectionHelper.CONTEXT2) is used to describe the page/tool
+     * that is being used in this helper.  Context is the main title (ex. matrix or wizard name)
+     * and Context2 is used for the subtitle (ex. matrix cell or wizard page).  If left
+     * blank, then nothing displays on the page.  
+     * @return
+     */
+    public String getPageContext2(){
+    	String context2 = (String) getAttribute(AudienceSelectionHelper.CONTEXT2);
+    	return context2 != null ? context2 : "";
+    }
 }

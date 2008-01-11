@@ -438,8 +438,7 @@ public class EditScaffoldingCellController extends
 			session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
 					"true");
 			model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
-			setAudienceSelectionVariables(session, scaffoldingCell
-					.getWizardPageDefinition());
+			setAudienceSelectionVariables(session, scaffoldingCell);
 
 		}
 		return model;
@@ -487,7 +486,9 @@ public class EditScaffoldingCellController extends
 	}
 
 	protected void setAudienceSelectionVariables(Map session,
-			WizardPageDefinition wpd) {
+			ScaffoldingCell scaffoldingCell) {
+		WizardPageDefinition wpd = scaffoldingCell.getWizardPageDefinition();
+		
 		session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION,
 						AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX);
 
@@ -496,6 +497,17 @@ public class EditScaffoldingCellController extends
 
 		session.put(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
 		session.put(AudienceSelectionHelper.AUDIENCE_SITE, wpd.getSiteId());
+		
+		session.remove(AudienceSelectionHelper.CONTEXT);
+		session.remove(AudienceSelectionHelper.CONTEXT2);
+		
+		if(scaffoldingCell.getScaffolding() != null){ 
+			session.put(AudienceSelectionHelper.CONTEXT,
+					scaffoldingCell.getScaffolding().getTitle());
+		}
+		session.put(AudienceSelectionHelper.CONTEXT2,
+				scaffoldingCell.getTitle());
+
 	}
 
 	protected Collection getAvailableForms(String siteId, String type) {
