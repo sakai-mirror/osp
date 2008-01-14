@@ -86,6 +86,7 @@ public class ViewPresentationControl extends AbstractPresentationController impl
          presentation = presentationManager.getPresentation(presentation.getId(),
                secretExportKey);
          presentation.setSecretExportKey(secretExportKey);
+         logger.debug("User " + getAuthManager().getAgent().getId() + " is viewing a presentation with a secret export key: " + presentation.getId().getValue());
          return presentation;
       }
       else {
@@ -96,10 +97,12 @@ public class ViewPresentationControl extends AbstractPresentationController impl
             //side step any authz issues as the presentation only exists in the users session
             previewPres.setIsPublic(true);
             previewPres.setIsPreview(true);
+            logger.debug("User " + getAuthManager().getAgent().getId() + " is viewing a presentation from session: " + previewPres.getId().getValue());
 
             return previewPres;
     	 }
 
+         logger.debug("User " + getAuthManager().getAgent().getId() + " is viewing a presentation by id: " + presentation.getId().getValue());
          return getPresentationManager().getLightweightPresentation(presentation.getId());
       }
    }
