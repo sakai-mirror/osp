@@ -71,7 +71,7 @@
 			//-->
 
 </script>
-<script type="text/javascript" language="JavaScript" src="/library/js/jquery-1.1.2.js">
+<script type="text/javascript" language="JavaScript" src="/library/js/jquery.js">
 		
 </script>
 <div class="navPanel">

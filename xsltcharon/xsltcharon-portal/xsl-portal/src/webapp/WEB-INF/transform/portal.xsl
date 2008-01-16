@@ -39,7 +39,7 @@
       <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js">
          <xsl:value-of select="' '"/>
       </script>
-      <script type="text/javascript" language="JavaScript" src="/library/js/jquery-1.1.2.js">
+      <script type="text/javascript" language="JavaScript" src="/library/js/jquery.js">
          <xsl:value-of select="' '"/>
       </script>
       <script type="text/javascript" language="JavaScript" src="/portal/scripts/portalscripts.js">
