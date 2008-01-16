@@ -33,14 +33,9 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.security.mgt.OspHttpAccessBase;
 import org.theospi.portfolio.style.mgt.StyleManager;
-import org.theospi.portfolio.style.model.Style;
-import org.theospi.portfolio.shared.model.Node;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Collection;
 
 /**
@@ -71,23 +66,9 @@ public class MatrixHttpAccess extends OspHttpAccessBase {
       }
 
       toolSession.setAttribute(FormHelper.FORM_STYLES,
-         createStylesList(getStyleManager().getStyles(getIdManager().getId(createParser(ref).getId()))));
+         getStyleManager().createStyleUrlList(getStyleManager().getStyles(getIdManager().getId(createParser(ref).getId()))));
 
       super.handleAccess(req, res, ref, copyrightAcceptedRefs);
-   }
-
-   protected String getStyleUrl(Style style) {
-      Node styleNode = getMatrixManager().getNode(style.getStyleFile());
-      return styleNode.getExternalUri();
-   }
-
-   protected List createStylesList(List styles) {
-      List returned = new ArrayList(styles.size());
-      for (Iterator<Style> i=styles.iterator();i.hasNext();) {
-         returned.add(getStyleUrl(i.next()));
-      }
-
-      return returned;
    }
 
    public IdManager getIdManager() {

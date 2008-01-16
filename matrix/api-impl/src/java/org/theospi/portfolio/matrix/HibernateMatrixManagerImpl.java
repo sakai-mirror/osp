@@ -1979,12 +1979,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          }
       }
 
-      Matrix matrix = (Matrix) getHibernateTemplate().get(Matrix.class, objectId);
+      Scaffolding scaffolding = (Scaffolding) getHibernateTemplate().get(Scaffolding.class, objectId);
 
-      if (matrix != null) {
+      if (scaffolding != null) {
          List styles = new ArrayList();
-         if (matrix.getScaffolding().getStyle() != null) {
-            styles.add(matrix.getScaffolding().getStyle());
+         if (scaffolding.getStyle() != null) {
+            styles.add(scaffolding.getStyle());
          }
          return styles;
       }

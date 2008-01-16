@@ -44,6 +44,7 @@ import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 
 /**
@@ -58,6 +59,7 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
    private AuthorizationFacade authzManager;
    private ToolManager toolManager;
    private WorkflowManager workflowManager;
+   private StyleManager styleManager;
 
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.LoadObjectController#fillBackingObject(java.lang.Object, java.util.Map, java.util.Map, java.util.Map)
@@ -111,6 +113,9 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", getToolManager().getCurrentPlacement());
+      
+      model.put("styles",
+ 	         getStyleManager().createStyleUrlList(getStyleManager().getStyles(((MatrixGridBean)command).getScaffolding().getId())));
       
       return model;
    }
@@ -205,5 +210,13 @@ public class ViewScaffoldingController implements FormController, LoadObjectCont
     */
    public void setWorkflowManager(WorkflowManager workflowManager) {
       this.workflowManager = workflowManager;
+   }
+
+   public StyleManager getStyleManager() {
+	   return styleManager;
+   }
+
+   public void setStyleManager(StyleManager styleManager) {
+	   this.styleManager = styleManager;
    }
 }

@@ -20,11 +20,9 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -60,7 +58,6 @@ import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.style.mgt.StyleManager;
-import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.workflow.model.Workflow;
@@ -299,23 +296,9 @@ public class ReviewHelperController implements Controller {
          retView = "formEditor";
       }
       session.put(FormHelper.FORM_STYLES,
-         createStylesList(getStyleManager().getStyles(getIdManager().getId(pageId))));
+         getStyleManager().createStyleUrlList(getStyleManager().getStyles(getIdManager().getId(pageId))));
 
       return retView;
-   }
-
-   protected String getStyleUrl(Style style) {
-      Node styleNode = getMatrixManager().getNode(style.getStyleFile());
-      return styleNode.getExternalUri();
-   }
-
-   protected List createStylesList(List styles) {
-      List returned = new ArrayList(styles.size());
-      for (Iterator<Style> i=styles.iterator();i.hasNext();) {
-         returned.add(getStyleUrl(i.next()));
-      }
-
-      return returned;
    }
 
    /**

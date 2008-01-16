@@ -97,6 +97,9 @@
             <property name="toolManager">
                <ref bean="org.sakaiproject.tool.api.ActiveToolManager" />
             </property>
+            <property name="styleManager">
+               <ref bean="org.theospi.portfolio.style.mgt.StyleManager" />
+            </property>
          </bean>
       </property>
       <property name="customTypedEditors">
@@ -547,6 +550,9 @@
             </property>
             <property name="workflowManager">
                <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
+            </property>
+            <property name="styleManager">
+               <ref bean="org.theospi.portfolio.style.mgt.StyleManager" />
             </property>
 <!--             <property name="authManager"><ref bean="authManager"/></property>
             <property name="homeFactory"><ref bean="homeFactory"/></property>

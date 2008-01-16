@@ -100,9 +100,9 @@ public class StyleManagerImpl extends HibernateDaoSupport
    private AgentManager agentManager;
    private SecurityService securityService = null;
    private EventService eventService = null;
-   private List globalSites;
-   private List globalSiteTypes;
-   private List consumers;
+   private List<String> globalSites;
+   private List<String> globalSiteTypes;
+   private List<StyleConsumer> consumers;
    private boolean autoDdl = false;
 
    
@@ -202,15 +202,15 @@ public class StyleManagerImpl extends HibernateDaoSupport
    protected String buildGlobalSiteList() {
       String query = "(";
       
-      for (Iterator i=getGlobalSites().iterator();i.hasNext();) {
+      for (Iterator<String> i=getGlobalSites().iterator();i.hasNext();) {
          String site = (String)i.next();
          query += "'" + site + "',";
       }
       
-      for (Iterator j = getGlobalSiteTypes().iterator(); j.hasNext();) {
+      for (Iterator<String> j = getGlobalSiteTypes().iterator(); j.hasNext();) {
          String type = (String)j.next();
-         List sites = SiteService.getSites(SelectionType.ANY, type, null, null, null, null);
-         for (Iterator k = sites.iterator(); k.hasNext();) {
+         List<Site> sites = SiteService.getSites(SelectionType.ANY, type, null, null, null, null);
+         for (Iterator<Site> k = sites.iterator(); k.hasNext();) {
             Site theSite = (Site) k.next();
             query += "'" + theSite.getId() + "',";
          }
@@ -308,7 +308,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
       return false;
    }
    
-   public List getConsumers() {
+   public List<StyleConsumer> getConsumers() {
       return this.consumers;
    }
 
@@ -322,7 +322,7 @@ public class StyleManagerImpl extends HibernateDaoSupport
       return null;
    }
 
-   public void setConsumers(List consumers) {
+   public void setConsumers(List<StyleConsumer> consumers) {
       this.consumers = consumers;
    }
    
@@ -336,17 +336,16 @@ public class StyleManagerImpl extends HibernateDaoSupport
             new Adler32());
       ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(
             checksum));
-      List exportedRefs = new ArrayList();
-      for (Iterator i=styleIds.iterator();i.hasNext();) {
+      for (Iterator<String> i=styleIds.iterator();i.hasNext();) {
          String id = (String) i.next();
-         processStyle(id, zos, exportedRefs);
+         processStyle(id, zos);
       }
 
       zos.finish();
       zos.flush();
    }
    
-   protected void processStyle(String styleId, ZipOutputStream zos, List exportedRefs) throws IOException {
+   protected void processStyle(String styleId, ZipOutputStream zos) throws IOException {
       Style style = getStyle(getIdManager().getId(styleId));
       
       Node node = getNode(style.getStyleFile());
@@ -665,6 +664,29 @@ public class StyleManagerImpl extends HibernateDaoSupport
          logger.error(e);
       }
    }
+   
+   /**
+    * {@inheritDoc}
+    */
+   public List<String> createStyleUrlList(List<Style> styles) {
+	   if (styles != null) {
+		   List<String> returned = new ArrayList<String>(styles.size());
+		   for (Iterator<Style> i=styles.iterator();i.hasNext();) {
+			   returned.add(getStyleUrl(i.next()));
+		   }
+	
+		   return returned;
+	   }
+	   return new ArrayList<String>();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   public String getStyleUrl(Style style) {
+	   Node styleNode = getNode(style.getStyleFile());
+	   return styleNode.getExternalUri();
+   }
 
    public AuthenticationManager getAuthnManager() {
       return authnManager;
@@ -682,19 +704,19 @@ public class StyleManagerImpl extends HibernateDaoSupport
       this.authzManager = authzManager;
    }
 
-   public List getGlobalSites() {
+   public List<String> getGlobalSites() {
       return globalSites;
    }
 
-   public void setGlobalSites(List globalSites) {
+   public void setGlobalSites(List<String> globalSites) {
       this.globalSites = globalSites;
    }
 
-   public List getGlobalSiteTypes() {
+   public List<String> getGlobalSiteTypes() {
       return globalSiteTypes;
    }
 
-   public void setGlobalSiteTypes(List globalSiteTypes) {
+   public void setGlobalSiteTypes(List<String> globalSiteTypes) {
       this.globalSiteTypes = globalSiteTypes;
    }
 

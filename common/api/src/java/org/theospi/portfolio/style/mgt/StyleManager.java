@@ -65,4 +65,18 @@ public interface StyleManager {
    public List getConsumers();
 
    public List getStyles(Id consumerId);
+   
+   /**
+    * Take a list of style objects and return a list of the external urls.
+    * @param styles
+    * @return
+    */
+   public List<String> createStyleUrlList(List<Style> styles);
+
+   /**
+    * Get a Style's url
+    * @param style
+    * @return
+    */
+   public String getStyleUrl(Style style);
 }

@@ -175,7 +175,7 @@ public class CellController implements FormController, LoadObjectController {
 		model.put("objectDesc", objectMetadata[METADATA_DESC_INDEX]);
 
       model.put("styles",
-         createStylesList(getStyleManager().getStyles(getIdManager().getId(pageId))));
+    		  getStyleManager().createStyleUrlList(getStyleManager().getStyles(getIdManager().getId(pageId))));
 
       if (taggingManager.isTaggable()) {
 			TaggableItem item = wizardActivityProducer.getItem(cell.getCell()
@@ -236,11 +236,6 @@ public class CellController implements FormController, LoadObjectController {
       }
 		return new Boolean(true);
 	}
-   
-   protected String getStyleUrl(Style style) {
-      Node styleNode = getMatrixManager().getNode(style.getStyleFile());
-      return styleNode.getExternalUri();
-   }
 
    /**
 	 * 
@@ -320,15 +315,6 @@ public class CellController implements FormController, LoadObjectController {
 		}
 		return result;
 	}
-
-   protected List createStylesList(List styles) {
-      List returned = new ArrayList(styles.size());
-      for (Iterator<Style> i=styles.iterator();i.hasNext();) {
-         returned.add(getStyleUrl(i.next()));
-      }
-
-      return returned;
-   }
 
 	public ModelAndView handleRequest(Object requestModel, Map request,
 			Map session, Map application, Errors errors) {

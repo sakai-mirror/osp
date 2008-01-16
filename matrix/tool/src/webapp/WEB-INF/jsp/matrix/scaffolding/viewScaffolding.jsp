@@ -5,6 +5,11 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
+<c:forEach var="style" items="${styles}">
+   <link href="<c:out value='${style}'/>" type="text/css" rel="stylesheet"
+      media="all" />
+</c:forEach>
+
 <script type="text/javascript">
 
 function hrefViewCell(cellId) {
