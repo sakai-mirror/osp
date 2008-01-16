@@ -24,10 +24,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
@@ -63,6 +63,8 @@ import org.theospi.portfolio.style.model.Style;
 
 public class CellFormPickerController extends CellController implements FormController, LoadObjectController {
 
+   private static ResourceLoader myResources = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
+	
    protected final Log logger = LogFactory.getLog(getClass());
    private ContentHostingService contentHosting;
    private EntityManager entityManager;
@@ -254,8 +256,6 @@ public class CellFormPickerController extends CellController implements FormCont
          String objectDesc = (String)request.get("objectDesc");
 
          StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager().loadHome(formTypeId);
-         ResourceBundle myResources =
-            ResourceBundle.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
          List contentResourceList = null;
          try {
             String folderBase = getUserCollection().getId();
