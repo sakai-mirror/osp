@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -67,6 +67,8 @@ import org.theospi.portfolio.workflow.model.Workflow;
 
 public class ReviewHelperController implements Controller {
 
+   private static ResourceLoader myResources = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
+	
    private MatrixManager matrixManager;
    private IdManager idManager = null;
    private ReviewManager reviewManager;
@@ -257,8 +259,6 @@ public class ReviewHelperController implements Controller {
          String itemId = (String)request.get("itemId");
          session.put(ReviewHelper.REVIEW_ITEM_ID, itemId);
 
-         ResourceBundle myResources =
-            ResourceBundle.getBundle("org.theospi.portfolio.matrix.bundle.Messages");
          String formTypeTitle = myResources.getString(formTypeTitleKey);
 
          List contentResourceList = null;
