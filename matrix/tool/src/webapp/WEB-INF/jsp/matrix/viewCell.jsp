@@ -292,17 +292,15 @@
 				<tr>
 					<td>
 					<h5><span class="indnt2"> <img border="0"
-						src="/library/image/silk/application_form.gif" alt="" /> <c:if
-						test="${not (cell.status == 'READY' and readOnlyMatrix != 'true')}">
+						src="/library/image/silk/application_form.gif" alt="" /> 
 						<a href='<c:out value="${node.externalUri}"/>' target="_blank">
-					</c:if> <c:out value="${node.name}" /> <c:if
-						test="${not (cell.status == 'READY' and readOnlyMatrix != 'true')}">
+						<c:out value="${node.name}" /> 
 						</a>
-					</c:if> </span></h5>
+					</span></h5>
 					</td>
 					<td style="white-space: nowrap">
-					<div class="itemAction"><c:if
-						test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+					<div class="itemAction">
+					<c:if	test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
 
 						<a
 							href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
@@ -327,8 +325,9 @@
 						<c:if
 							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null}">
                         |
-                        </c:if>
-					</c:if> <c:if
+                  </c:if>
+					</c:if> 
+					<c:if
 						test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null}">
 						<a
 							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
@@ -591,9 +590,8 @@
 	</c:if>
 	<c:if test="${not empty reflections}">
 		<div class="matrixCellList">
-		<h4><span style="padding: .4em 2.6em;"> <c:set
-			var="canReflect" value="true" /> <c:if
-			test="${cell.status != 'READY' or readOnlyMatrix == 'true'}">
+		<h4><span style="padding: .4em 2.6em;"> 
+			<c:set var="canReflect" value="true" />
 
 			<img src='/library/image/silk/application_form.gif' border='0'
 				hspace='0' alt="" />
@@ -601,10 +599,7 @@
 				href='<c:out value="${reflections[0].reviewContentNode.externalUri}"/>'
 				target="_blank"> <c:out
 				value="${reflections[0].reviewContentNode.displayName}" /> </a>
-		</c:if> <c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
-			<img src='/library/image/silk/application_form.gif' border='0'
-				hspace='0' alt="" />
-			<c:out value="${reflections[0].reviewContentNode.displayName}" />
+		<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
 			<span class="itemAction"> <img
 				src="/library/image/silk/application_form_edit.png"
 				alt="<fmt:message key="edit"/>" /> <a

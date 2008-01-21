@@ -93,7 +93,7 @@ public class AssignmentHelper
       }
       catch (Exception e)
       {
-         log.warn(".getAssignment: Invalid assignment reference: " + ref );
+         log.debug(".getAssignment: Invalid assignment reference: " + ref );
       }
       
       return assignment;
