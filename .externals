@@ -12,6 +12,7 @@ entity			https://source.sakaiproject.org/svn/entity/trunk
 entitybroker		https://source.sakaiproject.org/svn/entitybroker/trunk
 event			https://source.sakaiproject.org/svn/event/trunk
 jcr                     https://source.sakaiproject.org/svn/jcr/trunk
+jobscheduler		https://source.sakaiproject.org/svn/jobscheduler/trunk
 jsf			https://source.sakaiproject.org/svn/jsf/trunk
 login			https://source.sakaiproject.org/svn/login/trunk
 mailarchive		https://source.sakaiproject.org/svn/mailarchive/trunk
