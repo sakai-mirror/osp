@@ -241,6 +241,7 @@
         <module>authz/authz-impl/pack</module>
         <module>archive/archive-api/api</module>
         <module>archive/import-api</module>
+        <module>calendar</module>
         <module>component</module>
         <module>content/content-api/api</module>
         <module>content/content-impl/impl</module>
@@ -274,6 +275,8 @@
         <module>metaobj</module>
         <module>osp</module>
         <module>portal</module>
+        <module>presence/presence-api/api</module>
+        <module>privacy</module>
         <module>reference/library</module>
         <module>sakai-mock</module>
         <module>search</module>
