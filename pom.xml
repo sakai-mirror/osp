@@ -238,11 +238,14 @@
         <module>authz/authz-api/api</module>
         <module>authz/authz-impl/impl</module>
         <module>authz/authz-impl/pack</module>
+        <module>archive/archive-api/api</module>
+        <module>archive/import-api</module>
         <module>component</module>
         <module>content/content-api/api</module>
         <module>content/content-impl/impl</module>
         <module>content/content-impl/pack</module>
         <module>content/content-impl/hbm</module>
+        <module>content-review</module>
         <module>courier/courier-api/api</module>
         <module>courier/courier-impl/impl</module>
         <module>courier/courier-impl/pack</module>
