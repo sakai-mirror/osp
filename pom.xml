@@ -234,6 +234,7 @@
         <module>alias/alias-api/api</module>
         <module>alias/alias-impl/impl</module>
         <module>alias/alias-impl/pack</module>
+        <module>announcement/announcement-api/api</module>
         <module>assignment</module>
         <module>authz/authz-api/api</module>
         <module>authz/authz-impl/impl</module>
@@ -250,6 +251,7 @@
         <module>courier/courier-impl/impl</module>
         <module>courier/courier-impl/pack</module>
         <module>courier/courier-util/util</module>
+        <module>course-management/cm-api/api</module>
         <module>db</module>
 	<module>email</module>
         <module>entity</module>
