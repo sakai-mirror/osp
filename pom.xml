@@ -257,6 +257,7 @@
         <module>entity</module>
         <module>entitybroker</module>
         <module>event</module>
+        <module>gradebook</module>
         <module>jcr</module>
         <module>jobscheduler</module>
         <module>jsf</module>
