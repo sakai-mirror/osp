@@ -1,0 +1,13 @@
+ <sakai:button_bar>
+  <sakai:button_bar_item action="#{freeForm.processActionContinue}"
+      value="#{msgs.continue}" styleClass="active" accesskey="s" />
+   <sakai:button_bar_item action="#{freeForm.processActionBack}"
+      value="#{msgs.back}"  accesskey="b" />
+   <c:if test="${freeForm.pageCount > 0}">
+      <sakai:button_bar_item id="preview_button" action="preview" value="#{msgs.button_preview}"  accesskey="v" />
+   </c:if>
+   <sakai:button_bar_item action="#{freeForm.processActionSave}"
+      value="#{msgs.save}"  accesskey="s" />
+   <sakai:button_bar_item action="#{freeForm.processActionCancel}"
+      value="#{msgs.cancel}"  accesskey="x" />
+ </sakai:button_bar>

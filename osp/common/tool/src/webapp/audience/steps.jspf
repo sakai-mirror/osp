@@ -1,0 +1,5 @@
+<ospx:wizardSteps currentStep="#{audience.stepString}">
+   <ospx:wizardStep label="#{common_msgs.step_begin}" />
+   <ospx:wizardStep label="#{common_msgs.step_design}" />
+   <ospx:wizardStep label="#{common_msgs.step_share}" />
+</ospx:wizardSteps>

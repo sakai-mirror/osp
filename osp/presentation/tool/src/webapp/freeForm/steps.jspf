@@ -1,0 +1,5 @@
+<ospx:wizardSteps currentStep="#{freeForm.stepString}">
+   <ospx:wizardStep label="#{msgs.step_begin}" />
+   <ospx:wizardStep label="#{msgs.step_design}" />
+   <ospx:wizardStep label="#{msgs.step_publish}" />
+</ospx:wizardSteps>
