@@ -273,6 +273,7 @@
         <module>user</module>
         <module>util</module>
         <module>velocity</module>
+        <module>web</module>
         <module>warehouse</module>
         <module>reports</module>
 		<module>gmt</module>
