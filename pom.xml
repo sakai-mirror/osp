@@ -273,6 +273,8 @@
         <module>portal</module>
         <module>reference/library</module>
         <module>sakai-mock</module>
+        <module>search</module>
+        <module>sections</module>
         <module>site/site-api/api</module>
         <module>site/site-impl/impl</module>
         <module>site/site-impl/pack</module>
