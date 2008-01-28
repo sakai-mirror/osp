@@ -23,6 +23,9 @@
             
       <configuration name="functions.require" 
                      value="osp.matrix.scaffolding.create|osp.matrix.scaffolding.use|osp.matrix.review|osp.matrix.evaluate" /> 
+                     
+      <!-- institutionSite says if it is an institution site  -->
+      <configuration name="institutionSite" value="false"/>
             
 	</tool>
 

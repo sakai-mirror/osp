@@ -59,6 +59,10 @@
             </c:if>     
         </c:if> 
         <c:if test="${isMaintainer}">
+        	<a href="<osp:url value="sakai.gmt.sites.helper/showSiteAssocs"></osp:url>"
+               title="<fmt:message key="association_title"/>"><fmt:message key="action_association"/></a>
+        
+        
              <a href="<osp:url value="osp.permissions.helper/editPermissions">
                <osp:param name="message"><fmt:message key="action_message_setPermission">
                 <fmt:param><c:out value="${tool.title}"/></fmt:param>
