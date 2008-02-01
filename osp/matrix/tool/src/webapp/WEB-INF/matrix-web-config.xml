@@ -62,6 +62,49 @@
       <property name="commandClass"><value>java.util.ArrayList</value></property>    
    </bean>
    
+   <bean id="linkScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.LinkScaffoldingController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="authzManager"><ref bean="authzManager"/></property>
+            <property name="agentManager"><ref bean="agentManager" /></property>
+            <property name="worksiteManager">
+               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+            </property>
+            <property name="listScrollIndexer">
+               <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
+            </property>
+            <property name="siteService">
+               <ref bean="org.sakaiproject.site.api.SiteService" />
+            </property>
+            <property name="sessionManager">
+               <ref bean="org.sakaiproject.tool.api.SessionManager" />
+            </property>
+            <property name="taggingManager">
+               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+            </property>
+            <property name="gmtService">
+               <ref bean="org.sakaiproject.gmt.api.GmtService" />
+            </property>
+            
+         </bean>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="mimeTypeCustomEditor"/>
+         </list>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">linkScaffolding</prop>
+         </props>
+      </property>      
+      <property name="commandName"><value>grids</value></property>
+      <property name="commandClass"><value>java.util.ArrayList</value></property>    
+   </bean>
+   
    <bean id="exposedScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.ExposedScaffoldingController">

@@ -110,5 +110,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/jobscheduler"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/warehouse-api"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/warehouse-impl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gmt-impl"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/gmt-api"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

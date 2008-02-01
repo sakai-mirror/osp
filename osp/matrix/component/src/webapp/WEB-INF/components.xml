@@ -434,5 +434,17 @@
          </list>
       </property>
    </bean>
+   
+   <bean id="org.theospi.portfolio.tagging.impl.MatrixTaggingProvider"
+    class="org.theospi.portfolio.tagging.impl.MatrixTaggingProviderImpl"
+    init-method="init"
+    singleton="true">
+    <property name="gmtService">
+      <ref bean="org.sakaiproject.gmt.api.GmtService" />
+    </property>
+    <property name="taggingManager">
+      <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+    </property>
+  </bean>
 
 </beans>

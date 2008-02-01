@@ -119,6 +119,8 @@
               <prop key="/moveCriterion.osp">moveCriterionController</prop>
               <prop key="/viewScaffolding.osp">viewScaffoldingController</prop>
               
+              <prop key="/linkScaffolding.osp">linkScaffoldingController</prop>
+              
               <!-- pretty is an alternate matrix editing view -->
               <prop key="/prettyScaffolding.osp">prettyScaffoldingController</prop>
               
