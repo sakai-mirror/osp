@@ -49,10 +49,11 @@
                                         overwrite="true" />
                 <move file="${basedir}/target/unpack/apache-tomcat-5.5.23" tofile="${basedir}/target/pack" overwrite="true" />
                 <delete dir="${basedir}/target/unpack"/>
-                 <echo>Executing cd ../;mvn -Dmaven.tomcat.home=${basedir}/target/pack -Dmaven.test.skip=true clean install sakai:deploy</echo> 
+                 <echo>Executing cd ../;mvn -Dmaven.tomcat.home=${basedir}/target/pack -Dmaven.test.skip=true -Pospmini clean install sakai:deploy</echo> 
                  <exec dir="../" executable="mvn" failonerror="true" >
     			<arg value="-Dmaven.tomcat.home=${basedir}/target/pack"/>
                         <arg value="-Dmaven.test.skip=true"/>
+			<arg value="-Pospmini"/>
 			<arg value="clean"/>
                         <arg value="install"/>
                         <arg value="sakai:deploy"/>
