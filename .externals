@@ -36,6 +36,7 @@ search			https://source.sakaiproject.org/svn/search/trunk
 sections		https://source.sakaiproject.org/svn/sections/trunk
 site			https://source.sakaiproject.org/svn/site/trunk
 site-manage		https://source.sakaiproject.org/svn/site-manage/trunk	
+syllabus		https://source.sakaiproject.org/svn/syllabus/trunk
 test-harness		https://source.sakaiproject.org/svn/test-harness/trunk
 tool			https://source.sakaiproject.org/svn/tool/trunk
 user			https://source.sakaiproject.org/svn/user/trunk
