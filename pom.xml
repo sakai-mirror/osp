@@ -267,8 +267,10 @@
         <module>search</module>
         <module>sections</module>
         <module>site</module>
+	<module>site-association</module>
         <module>site-manage</module>
 	<module>syllabus</module>
+	<module>taggable</module>
         <module>test-harness</module>
         <module>tool</module>
         <module>user</module>

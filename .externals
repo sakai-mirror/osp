@@ -35,8 +35,10 @@ sakai-mock              https://source.sakaiproject.org/svn/sakai-mock/trunk
 search			https://source.sakaiproject.org/svn/search/trunk
 sections		https://source.sakaiproject.org/svn/sections/trunk
 site			https://source.sakaiproject.org/svn/site/trunk
+site-association	https://source.sakaiproject.org/contrib/iu/site-association/trunk
 site-manage		https://source.sakaiproject.org/svn/site-manage/branches/SAK-12889	
 syllabus		https://source.sakaiproject.org/svn/syllabus/trunk
+taggable		https://source.sakaiproject.org/contrib/syracuse/taggable/trunk
 test-harness		https://source.sakaiproject.org/svn/test-harness/trunk
 tool			https://source.sakaiproject.org/svn/tool/trunk
 user			https://source.sakaiproject.org/svn/user/trunk
