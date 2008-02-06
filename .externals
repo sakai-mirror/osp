@@ -2,7 +2,7 @@ access			https://source.sakaiproject.org/svn/access/trunk
 alias			https://source.sakaiproject.org/svn/alias/trunk
 announcement		https://source.sakaiproject.org/svn/announcement/trunk
 archive			https://source.sakaiproject.org/svn/archive/trunk
-assignment		https://source.sakaiproject.org/svn/assignment/trunk
+assignment		https://source.sakaiproject.org/svn/assignment/branches/oncourse_osp_enhancements
 authz			https://source.sakaiproject.org/svn/authz/trunk
 calendar		https://source.sakaiproject.org/svn/calendar/trunk
 cluster			https://source.sakaiproject.org/svn/cluster/trunk
