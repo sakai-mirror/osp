@@ -38,7 +38,7 @@ site			https://source.sakaiproject.org/svn/site/trunk
 site-association	https://source.sakaiproject.org/contrib/iu/site-association/trunk
 site-manage		https://source.sakaiproject.org/svn/site-manage/trunk	
 syllabus		https://source.sakaiproject.org/svn/syllabus/trunk
-taggable		https://source.sakaiproject.org/contrib/syracuse/taggable/trunk
+taggable		https://source.sakaiproject.org/contrib/syracuse/taggable/branches/oncourse_osp_enhancements
 test-harness		https://source.sakaiproject.org/svn/test-harness/trunk
 tool			https://source.sakaiproject.org/svn/tool/trunk
 user			https://source.sakaiproject.org/svn/user/trunk
