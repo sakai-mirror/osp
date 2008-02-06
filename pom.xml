@@ -282,7 +282,6 @@
 		<module>gmt</module>
 		<module>datapoint</module>
 	<module>formbuilder</module>
-	<module>content-taggable</module>
 	<module>assignment2</module>
       </modules>
     </profile>
