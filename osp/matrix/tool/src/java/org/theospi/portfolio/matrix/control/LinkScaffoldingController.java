@@ -30,16 +30,15 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.assignment.taggable.api.TaggableActivity;
-import org.sakaiproject.assignment.taggable.api.TaggingManager;
-import org.sakaiproject.assignment.taggable.api.TaggingProvider;
+import org.sakaiproject.taggable.api.TaggableActivity;
+import org.sakaiproject.taggable.api.TaggingManager;
+import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.gmt.api.GmtService;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.sakaiproject.site.api.Site;
@@ -179,15 +178,6 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 	}
 
 	/**
-	 * See if the current tab is the workspace tab.
-	 * @return true if we are currently on the "My Workspace" tab.
-	 */
-	private boolean isOnWorkspaceTab()
-	{
-		return siteService.isUserSite(ToolManager.getCurrentPlacement().getContext());
-	}
-
-	/**
 	 * Find the sites that are associated to this site
 	 * @param sites Pass an empty list to fill up
 	 * @param siteIds Pass an empty list to fill up
@@ -199,13 +189,11 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 		List<Site> sites = new ArrayList<Site>(contexts.size());
 
 		for (String toContext : contexts) {
-			if (getGmtService().allowModifyLinks(fromContext, toContext)) {
-				try {
-					Site site = getSiteService().getSite(toContext);
-					sites.add(site);
-				} catch (IdUnusedException iue) {
-					logger.error(iue.getMessage(), iue);
-				}
+			try {
+				Site site = getSiteService().getSite(toContext);
+				sites.add(site);
+			} catch (IdUnusedException iue) {
+				logger.error(iue.getMessage(), iue);
 			}
 		}
 		return sites;

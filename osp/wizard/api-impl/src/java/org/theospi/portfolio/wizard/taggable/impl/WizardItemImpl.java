@@ -21,8 +21,8 @@
 
 package org.theospi.portfolio.wizard.taggable.impl;
 
-import org.sakaiproject.assignment.taggable.api.TaggableActivity;
-import org.sakaiproject.assignment.taggable.api.TaggableItem;
+import org.sakaiproject.taggable.api.TaggableActivity;
+import org.sakaiproject.taggable.api.TaggableItem;
 import org.theospi.portfolio.matrix.model.WizardPage;
 
 public class WizardItemImpl implements TaggableItem {

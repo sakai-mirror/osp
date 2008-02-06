@@ -443,7 +443,7 @@
       <ref bean="org.sakaiproject.gmt.api.GmtService" />
     </property>
     <property name="taggingManager">
-      <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+      <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
     </property>
   </bean>
 

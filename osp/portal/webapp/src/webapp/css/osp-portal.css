@@ -1,5 +1,5 @@
 
-.breadcrumbHolder{height:1.2em;background:#F0F0F0;padding:2px;}
+.breadcrumbHolder{height:1.2em;background:#F0F0F0;padding:2px;margin-left:10.2em;}
 
 /*the current tab*/
 .selectedCrumb {
@@ -7,10 +7,10 @@
 	font-weight: bold;
 }
 
-.breadcrumbHolder a:hover{ color:#000000;}
+.breadcrumbHolder a:hover{ color:#AF2824;}
 
 .breadcrumbHolder a {
-	color:#084A87;
+	color:#7D120C;
 	height:.8em;
 	margin:0;
 	padding:2px 6px;

@@ -6,12 +6,12 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.assignment.taggable.api.Tag;
-import org.sakaiproject.assignment.taggable.api.TagList;
-import org.sakaiproject.assignment.taggable.api.TaggableActivity;
-import org.sakaiproject.assignment.taggable.api.TaggableItem;
-import org.sakaiproject.assignment.taggable.api.TaggingHelperInfo;
-import org.sakaiproject.assignment.taggable.api.TaggingManager;
+import org.sakaiproject.taggable.api.Tag;
+import org.sakaiproject.taggable.api.TagList;
+import org.sakaiproject.taggable.api.TaggableActivity;
+import org.sakaiproject.taggable.api.TaggableItem;
+import org.sakaiproject.taggable.api.TaggingHelperInfo;
+import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.gmt.api.GmtService;
 import org.sakaiproject.gmt.tagging.impl.GmtTagListImpl;
