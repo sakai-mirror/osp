@@ -36,7 +36,7 @@ search			https://source.sakaiproject.org/svn/search/trunk
 sections		https://source.sakaiproject.org/svn/sections/trunk
 site			https://source.sakaiproject.org/svn/site/trunk
 site-association	https://source.sakaiproject.org/contrib/iu/site-association/trunk
-site-manage		https://source.sakaiproject.org/svn/site-manage/branches/SAK-12889	
+site-manage		https://source.sakaiproject.org/svn/site-manage/trunk	
 syllabus		https://source.sakaiproject.org/svn/syllabus/trunk
 taggable		https://source.sakaiproject.org/contrib/syracuse/taggable/trunk
 test-harness		https://source.sakaiproject.org/svn/test-harness/trunk
