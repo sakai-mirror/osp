@@ -647,6 +647,8 @@
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
             </property>
+            <property name="structuredArtifactDefinitionManager"><ref bean="structuredArtifactDefinitionManager"/></property>
+            <property name="wizardManager"><ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" /></property>
          </bean>
       </property>
       <property name="customTypedEditors">
@@ -667,6 +669,7 @@
             <prop key="moveCriterion">moveCriterionRedirect</prop>
             <prop key="removeLevCrit">removeLevCritRedirect</prop>
             <prop key="editScaffoldingConfirm">editScaffoldingConfirmRedirect</prop>
+            <prop key="selectEvaluators">selectCellEvaluators</prop>
          </props>
       </property>
       <property name="validator"><ref bean="matrixValidator"/></property>

@@ -146,8 +146,15 @@ public class BaseScaffoldingController {
                }
             }
 			}
-    	  
-         scaffolding = getMatrixManager().storeScaffolding(scaffolding);
+         //call save instead of store (which uses hibernate merge()) when you need the
+         //newId to be used as the new saved Id.  (only in case where the scaffolding is new)
+         //*problem was that merge did not switch newId to id when saved
+    	  if(scaffolding.getId() == null && scaffolding.getNewId() != null){
+    		  scaffolding = (Scaffolding) getMatrixManager().getScaffolding((Id) getMatrixManager().save(scaffolding));
+    	  }else{
+    		  scaffolding = getMatrixManager().storeScaffolding(scaffolding);
+    	  }
+        
       }
       catch ( Exception e )
       {

@@ -22,18 +22,19 @@ package org.theospi.portfolio.matrix.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
-import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
-import org.sakaiproject.exception.IdUnusedException;
+import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
+import org.theospi.portfolio.style.model.Style;
 
 /**
  * I. Communication
@@ -54,7 +55,7 @@ import org.sakaiproject.exception.IdUnusedException;
           
  * @author apple
  */
-public class Scaffolding extends IdentifiableObject implements Serializable {
+public class Scaffolding extends ObjectWithWorkflow implements Serializable {
    private Id id;
    private List levels = new ArrayList();
    private List criteria = new ArrayList();
@@ -97,6 +98,9 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    public static final int NORMAL_GROUP_ACCESS = 0;
    public static final int UNRESTRICTED_GROUP_ACCESS = 1;
 
+   private List additionalForms = new ArrayList();
+   private List<String> attachments = new ArrayList();
+   
    public Scaffolding() {}
    
    public Scaffolding (String columnLabel, String rowLabel) {
@@ -409,4 +413,20 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    public void setStyle(Style style) {
       this.style = style;
    }
+
+public List getAdditionalForms() {
+	return additionalForms;
+}
+
+public void setAdditionalForms(List additionalForms) {
+	this.additionalForms = additionalForms;
+}
+
+public List<String> getAttachments() {
+	return attachments;
+}
+
+public void setAttachments(List<String> attachments) {
+	this.attachments = attachments;
+}
 }
