@@ -59,7 +59,7 @@
             </c:if>     
         </c:if> 
         <c:if test="${isMaintainer}">
-        	<a href="<osp:url value="sakai.gmt.sites.helper/showSiteAssocs"></osp:url>"
+        	<a href="<osp:url value="sakai.siteassociation.siteAssoc.helper/showSiteAssocs"></osp:url>"
                title="<fmt:message key="association_title"/>"><fmt:message key="action_association"/></a>
         
         
