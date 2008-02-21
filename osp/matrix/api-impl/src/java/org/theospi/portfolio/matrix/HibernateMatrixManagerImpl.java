@@ -679,9 +679,14 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    protected Scaffolding getScaffoldingForExport(Id scaffoldingId) {
       Scaffolding scaffolding = (Scaffolding) this.getHibernateTemplate().get(Scaffolding.class, scaffoldingId);
 
+      //scaffolding evaluators:
+      Collection evaluators = this.getScaffoldingCellEvaluators(scaffolding.getId(), false);
+      scaffolding.setEvaluators(new HashSet(evaluators));      
+      
+      //scaffolding cells evaluators:
       for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
-         Collection evaluators = this.getScaffoldingCellEvaluators(sCell.getWizardPageDefinition().getId(), false);
+         evaluators = this.getScaffoldingCellEvaluators(sCell.getWizardPageDefinition().getId(), false);
          sCell.setEvaluators(new HashSet(evaluators));
       }      
 
@@ -1238,27 +1243,54 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             wf.getItems().size();
          }
       }
+      
+    //workflow:
+      Collection evalWorkflows = oldScaffolding.getEvalWorkflows();
+      for (Iterator iter2 = evalWorkflows.iterator(); iter2.hasNext();) {
+         Workflow wf = (Workflow)iter2.next();
+         Collection items = wf.getItems();
+         wf.setItems(new HashSet(items));
+      }
+      oldScaffolding.setEvalWorkflows(new HashSet(evalWorkflows));
+      
       removeFromSession(oldScaffolding);
       
       if (oldScaffolding.getStyle() != null) {
          styleIds.add(oldScaffolding.getStyle().getId().getValue());
       }
+      
+      
+      //scaffolding variables:
+      
+      //evaluators:
+      Collection evaluators = oldScaffolding.getEvaluators();
+      oldScaffolding.setEvaluators(new HashSet(evaluators));
+      
+      //attachments
+      List attachments = oldScaffolding.getAttachments();
+      oldScaffolding.setAttachments( new ArrayList(attachments) );
 
+      Collection forms = oldScaffolding.getAdditionalForms();
+      oldScaffolding.setAdditionalForms(new ArrayList(forms));
+      
+      
+      
+      //scaffolding cell variables:
       for (Iterator iter = scaffoldingCells.iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
          sCell.setCells(new HashSet());
-         Collection evaluators = sCell.getEvaluators();
+         evaluators = sCell.getEvaluators();
          sCell.setEvaluators(new HashSet(evaluators));
          
-         List attachments = sCell.getWizardPageDefinition().getAttachments();
+         attachments = sCell.getWizardPageDefinition().getAttachments();
          sCell.getWizardPageDefinition().setAttachments( new ArrayList(attachments) );
          
          sCell.getWizardPageDefinition().setPages(new HashSet());
          
-         Collection forms = sCell.getWizardPageDefinition().getAdditionalForms();
+         forms = sCell.getWizardPageDefinition().getAdditionalForms();
          sCell.getWizardPageDefinition().setAdditionalForms(new ArrayList(forms));
          
-         Collection evalWorkflows = sCell.getWizardPageDefinition().getEvalWorkflows();
+         evalWorkflows = sCell.getWizardPageDefinition().getEvalWorkflows();
          for (Iterator iter2 = evalWorkflows.iterator(); iter2.hasNext();) {
             Workflow wf = (Workflow)iter2.next();
             Collection items = wf.getItems();
@@ -1649,6 +1681,30 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     * @param scaffolding
     */
    private void createEvaluatorAuthzForImport(Scaffolding scaffolding) {
+	   
+	   //scaffolding evaluators:
+	   for (Iterator i = scaffolding.getEvaluators().iterator(); i.hasNext();) {
+           Id id = (Id)i.next();
+           if (id.getValue().startsWith("/site/")) {
+              // it's a role
+              String[] agentValues = id.getValue().split("/");
+              
+              String newStrId = id.getValue().replaceAll(agentValues[2], 
+                    scaffolding.getWorksiteId().getValue());
+              id = idManager.getId(newStrId);
+           }
+           Agent agent = this.getAgentFromId(id);
+
+           if (agent != null  && agent.getId() != null) {
+              this.getAuthzManager().createAuthorization(agent, 
+                    MatrixFunctionConstants.EVALUATE_MATRIX, scaffolding.getId());
+           }
+        }
+	   
+	   
+	   
+	   //all cell's evaluators:
+	   
       for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
          Collection evals = sCell.getEvaluators();

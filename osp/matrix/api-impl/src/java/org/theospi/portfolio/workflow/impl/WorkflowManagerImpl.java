@@ -30,6 +30,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
+import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
@@ -100,13 +101,13 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
    }
    
    public Set createEvalWorkflows(ObjectWithWorkflow obj) {
-      if (obj instanceof WizardPageDefinition)
-         return createEvalWorkflows((WizardPageDefinition)obj);
+      if (obj instanceof WizardPageDefinition || obj instanceof Scaffolding)
+         return createEvalWorkflowsHelper(obj);
       else
          return createEvalWorkflows((Wizard)obj);
    }
    
-   protected Set createEvalWorkflows(WizardPageDefinition wpd) {
+   protected Set createEvalWorkflowsHelper(ObjectWithWorkflow wpd) {
       Set workflows = wpd.getEvalWorkflows();
       if (wpd.getEvaluationDevice() != null && 
             wpd.getEvalWorkflows().size() == 0) {

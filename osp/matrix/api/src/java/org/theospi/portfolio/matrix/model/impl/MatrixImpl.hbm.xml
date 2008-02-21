@@ -126,6 +126,7 @@
         </set>
        <many-to-one name="wizardPageDefinition" class="WizardPageDefinition" column="wiz_page_def_id"
           cascade="all" unique="true" />
+
     </class>
     
     <class name="org.theospi.portfolio.shared.model.ObjectWithWorkflow" 
@@ -253,6 +254,10 @@
        </list>
       
       <many-to-one name="style" column="style_id" not-null="false" class="org.theospi.portfolio.style.model.Style"/> 
+      
+                
+      <property name="defaultUserForms" type="boolean" column="defaultUserForms"  not-null="false"/>
+      <property name="defaultFeedbackEval" type="boolean" column="defaultFeedbackEval"  not-null="false"/>
        
    </joined-subclass>
 

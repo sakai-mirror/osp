@@ -21,13 +21,17 @@
 
 package org.theospi.portfolio.matrix.control;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.taggable.api.TaggableActivity;
-import org.sakaiproject.taggable.api.TaggableItem;
-import org.sakaiproject.taggable.api.TaggingHelperInfo;
-import org.sakaiproject.taggable.api.TaggingManager;
-import org.sakaiproject.taggable.api.TaggingProvider;
+import org.sakaiproject.assignment.api.Assignment;
+import org.sakaiproject.assignment.api.AssignmentSubmission;
+import org.sakaiproject.assignment.cover.AssignmentService;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
@@ -38,25 +42,25 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.taggable.api.TaggableActivity;
+import org.sakaiproject.taggable.api.TaggableItem;
+import org.sakaiproject.taggable.api.TaggingHelperInfo;
+import org.sakaiproject.taggable.api.TaggingManager;
+import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.assignment.cover.AssignmentService;
-import org.sakaiproject.assignment.api.AssignmentSubmission;
-import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
-
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+import org.theospi.portfolio.assignment.AssignmentHelper;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
-import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Scaffolding;
-import org.theospi.portfolio.matrix.model.ScaffoldingCell;
-import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider;
 import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Pager;
@@ -64,16 +68,10 @@ import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Sort;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
-import org.theospi.portfolio.shared.model.Node;
-import org.theospi.portfolio.shared.model.CommonFormBean;
-import org.theospi.portfolio.style.model.Style;
-import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.shared.model.CommonFormBean;
+import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
-
-import org.theospi.portfolio.assignment.AssignmentHelper;
-
-import java.util.*;
 
 public class CellController implements FormController, LoadObjectController {
 
@@ -142,10 +140,25 @@ public class CellController implements FormController, LoadObjectController {
 			return model;
 		}
 
+		
 		String pageId = cell.getCell().getWizardPage().getId().getValue();
 		String siteId = cell.getCell().getWizardPage().getPageDefinition()
 				.getSiteId();
 
+		if(cell.getCell().getScaffoldingCell().getWizardPageDefinition().isDefaultUserForms()){
+			//use the forms from the matrix (default forms)
+			model.put("cellFormDefs", processAdditionalForms(cell.getCell()
+					.getScaffoldingCell().getScaffolding().getAdditionalForms()));
+		}else{
+			model.put("cellFormDefs", processAdditionalForms(cell.getCell()
+					.getScaffoldingCell().getAdditionalForms()));
+		}
+		if(cell.getCell().getScaffoldingCell().getWizardPageDefinition().isDefaultFeedbackEval()){
+			//user the forms from the matrix (default forms)
+			
+		}else{
+			
+		}
 		model.put("assignments", getUserAssignments(cell)); 
 		model.put("reviews", getReviewManager().getReviewsByParentAndType(
 				pageId, Review.FEEDBACK_TYPE, siteId, getEntityProducer()));
@@ -153,10 +166,6 @@ public class CellController implements FormController, LoadObjectController {
 				pageId, Review.EVALUATION_TYPE, siteId, getEntityProducer()));
 		model.put("reflections", getReviewManager().getReviewsByParentAndType(
 				pageId, Review.REFLECTION_TYPE, siteId, getEntityProducer()));
-
-		model.put("cellFormDefs", processAdditionalForms(cell.getCell()
-				.getScaffoldingCell().getAdditionalForms()));
-
 		model.put("cellForms", getMatrixManager().getPageForms(
 				cell.getCell().getWizardPage()));
 

@@ -100,6 +100,8 @@ public class Scaffolding extends ObjectWithWorkflow implements Serializable {
 
    private List additionalForms = new ArrayList();
    private List<String> attachments = new ArrayList();
+   private Collection evaluators = new HashSet();
+   
    
    public Scaffolding() {}
    
@@ -428,5 +430,13 @@ public List<String> getAttachments() {
 
 public void setAttachments(List<String> attachments) {
 	this.attachments = attachments;
+}
+
+public Collection getEvaluators() {
+	return evaluators;
+}
+
+public void setEvaluators(Collection evaluators) {
+	this.evaluators = evaluators;
 }
 }

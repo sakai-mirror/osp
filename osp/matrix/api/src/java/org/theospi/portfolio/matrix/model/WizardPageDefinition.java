@@ -50,6 +50,8 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    transient private Id guidanceId;
    private Guidance guidance;
    transient private Id deleteGuidanceId;
+   private boolean defaultUserForms = true;
+   private boolean defaultFeedbackEval = true;
    
    private String siteId;
    private Style style;
@@ -220,6 +222,22 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
     */
    public void setSuppressItems(boolean suppressItems) {
 	   this.suppressItems = suppressItems;
+   }
+   
+   public boolean isDefaultUserForms() {
+	   return defaultUserForms;
+   }
+
+   public void setDefaultUserForms(boolean defaultUserForms) {
+	   this.defaultUserForms = defaultUserForms;
+   }
+
+   public boolean isDefaultFeedbackEval() {
+	   return defaultFeedbackEval;
+   }
+
+   public void setDefaultFeedbackEval(boolean defaultFeedbackEval) {
+	   this.defaultFeedbackEval = defaultFeedbackEval;
    }
 
 }

@@ -267,4 +267,20 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    public void setSuppressItems(boolean suppressItems){
 	   wizardPageDefinition.setSuppressItems(suppressItems);
    }
+   
+   public boolean isDefaultFeedbackEval() {
+	   return wizardPageDefinition.isDefaultFeedbackEval();
+   }
+
+   public void setDefaultFeedbackEval(boolean defaultFeedbackEval) {
+	   wizardPageDefinition.setDefaultFeedbackEval(defaultFeedbackEval);
+   }
+   
+   public boolean isDefaultUserForms() {
+	   return wizardPageDefinition.isDefaultUserForms();
+   }
+
+   public void setDefaultUserForms(boolean defaultUserForms) {
+	   wizardPageDefinition.setDefaultUserForms(defaultUserForms);
+   }
 }

@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -48,6 +47,7 @@ import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.util.ResourceLoader;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
@@ -173,16 +173,24 @@ public class ReviewHelperController implements Controller {
       String pageTitle = null;
       Id id = getIdManager().getId(strId);
       ObjectWithWorkflow obj = null;
+
       if (lookupId.equals(WizardPage.PROCESS_TYPE_KEY)) {
-         WizardPage page = matrixManager.getWizardPage(id);
-         obj = page.getPageDefinition();
-         pageTitle = page.getPageDefinition().getTitle();
-         ownerEid = page.getOwner().getEid().getValue();
-      }
-      else {
-         CompletedWizard cw = wizardManager.getCompletedWizard(id);
-         obj = cw.getWizard();
-         ownerEid = cw.getOwner().getEid().getValue();
+    	
+    	  WizardPage page = matrixManager.getWizardPage(id);
+       	 if(request.get("scaffoldingId") != null){
+       		 //scaffoldingId is used for the reflection form when the default user forms
+          	 //are selected for a matrix cell
+       		 obj = matrixManager.getScaffolding(idManager.getId((String) request.get("scaffoldingId")));
+       	 }else{
+       		obj = page.getPageDefinition();
+       	 }
+       	 pageTitle = page.getPageDefinition().getTitle();
+       	 ownerEid = page.getOwner().getEid().getValue();
+       	 
+      }else {
+    	  CompletedWizard cw = wizardManager.getCompletedWizard(id);
+    	  obj = cw.getWizard();
+    	  ownerEid = cw.getOwner().getEid().getValue();
       }
 
 
@@ -201,7 +209,7 @@ public class ReviewHelperController implements Controller {
          case Review.EVALUATION_TYPE:
             formTypeId = obj.getEvaluationDevice().getValue();
             session.put(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS,
-                  obj.getEvalWorkflows());
+            		obj.getEvalWorkflows());
             formTypeTitleKey = "osp.reviewType." + Review.EVALUATION_TYPE;
             break;
          case Review.REFLECTION_TYPE:

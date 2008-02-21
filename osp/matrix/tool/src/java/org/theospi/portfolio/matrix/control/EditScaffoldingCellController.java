@@ -21,12 +21,18 @@
 
 package org.theospi.portfolio.matrix.control;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.taggable.api.TaggableActivity;
-import org.sakaiproject.taggable.api.TaggingHelperInfo;
-import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -35,36 +41,37 @@ import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.taggable.api.TaggableActivity;
+import org.sakaiproject.taggable.api.TaggingHelperInfo;
+import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.util.ResourceLoader;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+import org.theospi.portfolio.assignment.AssignmentHelper;
 import org.theospi.portfolio.guidance.mgt.GuidanceHelper;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
-import org.theospi.portfolio.matrix.model.ScaffoldingCell;
-import org.theospi.portfolio.matrix.model.WizardPageDefinition;
-import org.theospi.portfolio.security.AudienceSelectionHelper;
-import org.theospi.portfolio.security.Authorization;
-import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.shared.model.CommonFormBean;
-import org.theospi.portfolio.wizard.WizardFunctionConstants;
-import org.theospi.portfolio.wizard.mgt.WizardManager;
-import org.theospi.portfolio.wizard.model.Wizard;
-import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
-import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.Matrix;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider;
 import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Pager;
 import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Sort;
 import org.theospi.portfolio.review.mgt.ReviewManager;
-import org.theospi.portfolio.assignment.AssignmentHelper;
-
-import java.text.MessageFormat;
-import java.util.*;
+import org.theospi.portfolio.security.AudienceSelectionHelper;
+import org.theospi.portfolio.security.Authorization;
+import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.shared.model.CommonFormBean;
+import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
+import org.theospi.portfolio.wizard.WizardFunctionConstants;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
+import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
 
 /**
  * @author chmaurer
@@ -123,8 +130,7 @@ public class EditScaffoldingCellController extends
 				model.put("providers", providers);
 			}
 		}
-
-
+		
 		model.put("reflectionDevices", getReflectionDevices(def.getSiteId()));
 		model.put("evaluationDevices", getEvaluationDevices(def.getSiteId()));
 		model.put("reviewDevices", getReviewDevices(def.getSiteId()));
@@ -137,12 +143,18 @@ public class EditScaffoldingCellController extends
 		model.put("pageTitleKey", "title_editCell");
 		model.put("pageInstructionsKey", "instructions_cellSettings");
 		model.put("returnView", getReturnView());
-      model.put("enableAssignments", ServerConfigurationService.getBoolean("osp.experimental.assignments",false) );
+		model.put("enableAssignments", ServerConfigurationService.getBoolean("osp.experimental.assignments",false) );
 
-		if (sCell != null && sCell.getScaffolding() != null)
+		if (sCell != null && sCell.getScaffolding() != null){
 			model.put("isCellUsed", sCell.getScaffolding().isPublished()
 					&& isCellUsed(sCell));
-		else
+			
+			model.put("defaultEvaluators", getEvaluators(sCell.getScaffolding()));
+			model.put("defaultSelectedAssignments",
+	                AssignmentHelper.getSelectedAssignments(sCell.getScaffolding().getAttachments()) );
+			model.put("defaultSelectedAdditionalFormDevices",
+					getDefaultSelectedAdditionalFormDevices(sCell,def.getSiteId()));
+		}else
 			model.put("isCellUsed", false);
 
 		return model;
@@ -180,6 +192,18 @@ public class EditScaffoldingCellController extends
 			scaffoldingCell.setSuppressItems(false);
 		}else{
 			scaffoldingCell.setSuppressItems(true);  
+		}
+		
+		if(request.get("defaultFeedbackEval") == null || request.get("defaultFeedbackEval").toString() == "false"){
+			scaffoldingCell.setDefaultFeedbackEval(false);
+		}else{
+			scaffoldingCell.setDefaultFeedbackEval(true);  
+		}
+		
+		if(request.get("defaultUserForms") == null || request.get("defaultUserForms").toString() == "false"){
+			scaffoldingCell.setDefaultUserForms(false);
+		}else{
+			scaffoldingCell.setDefaultUserForms(true);  
 		}
 
 
@@ -460,9 +484,9 @@ public class EditScaffoldingCellController extends
 		return model;
 	}
 
-	protected List getEvaluators(WizardPageDefinition wpd) {
+	protected List getEvaluators(ObjectWithWorkflow oWW) {
 		List evalList = new ArrayList();
-		Id id = wpd.getId() == null ? wpd.getNewId() : wpd.getId();
+		Id id = oWW.getId() == null ? oWW.getNewId() : oWW.getId();
 
 		List evaluators = getAuthzManager().getAuthorizations(null,
 				MatrixFunctionConstants.EVALUATE_MATRIX, id);
@@ -580,6 +604,21 @@ public class EditScaffoldingCellController extends
 			CommonFormBean bean = (CommonFormBean) iter.next();
 			if (sCell.getAdditionalForms().contains(bean.getId()))
 				returnCol.add(bean);
+		}
+		return returnCol;
+	}
+	
+	protected Collection getDefaultSelectedAdditionalFormDevices(ScaffoldingCell sCell, String siteId){
+		// cwm need to preserve the ordering
+		Collection returnCol = new ArrayList();
+		
+		if(sCell.getScaffolding() != null){
+			Collection col = getAdditionalFormDevices(siteId);
+			for (Iterator iter = col.iterator(); iter.hasNext();) {
+				CommonFormBean bean = (CommonFormBean) iter.next();
+				if (sCell.getScaffolding().getAdditionalForms().contains(bean.getId()))
+					returnCol.add(bean);
+			}
 		}
 		return returnCol;
 	}
