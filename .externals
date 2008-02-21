@@ -68,5 +68,7 @@ webservices		https://source.sakaiproject.org/svn/webservices/tags/sakai_2-5-0_RC
 mailtool		https://source.sakaiproject.org/svn/mailtool/tags/sakai_2-5-0_RC_02a
 usermembership		https://source.sakaiproject.org/svn/usermembership/tags/sakai_2-5-0_RC_02a
 polls			https://source.sakaiproject.org/svn/polls/tags/sakai_2-5-0_RC_02a
-
+datapoint       -r12755 https://source.sakaiproject.org/contrib/syracuse/datapoint/branches/2.5.x
+gmt             -r12755 https://source.sakaiproject.org/contrib/syracuse/gmt/branches/2.5.x   
+formbuilder     -r12479 https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
 
