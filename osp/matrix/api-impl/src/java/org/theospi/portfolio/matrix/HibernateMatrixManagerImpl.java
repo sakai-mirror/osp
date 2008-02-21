@@ -73,20 +73,27 @@ import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.EntityContextFinder;
-import org.sakaiproject.metaobj.shared.mgt.*;
+import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
+import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
+import org.sakaiproject.metaobj.shared.mgt.FormConsumer;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.FinderException;
 import org.sakaiproject.metaobj.shared.model.FormConsumptionDetail;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
-import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
 import org.sakaiproject.site.api.Site;
@@ -100,17 +107,27 @@ import org.sakaiproject.util.ResourceLoader;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.theospi.event.EventService;
 import org.theospi.event.EventConstants;
+import org.theospi.event.EventService;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
-import org.theospi.portfolio.matrix.model.*;
+import org.theospi.portfolio.matrix.model.Attachment;
+import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.Criterion;
+import org.theospi.portfolio.matrix.model.Level;
+import org.theospi.portfolio.matrix.model.Matrix;
+import org.theospi.portfolio.matrix.model.Scaffolding;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.matrix.model.WizardPageForm;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.style.StyleConsumer;
 import org.theospi.portfolio.style.mgt.StyleManager;
@@ -1261,6 +1278,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       
       
       //scaffolding variables:
+      exportWorkflowForms(zos, oldScaffolding, oldScaffolding.getAdditionalForms(), formIds);
       
       //evaluators:
       Collection evaluators = oldScaffolding.getEvaluators();
@@ -1297,7 +1315,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             wf.setItems(new HashSet(items));
          }
          sCell.getWizardPageDefinition().setEvalWorkflows(new HashSet(evalWorkflows));
-         exportCellForms(zos, sCell, formIds);
+         exportWorkflowForms(zos, sCell.getWizardPageDefinition(), sCell.getAdditionalForms(), formIds);
          if (sCell.getGuidance() != null) {
             guidanceIds.add(sCell.getGuidance().getId().getValue());
          }
@@ -1367,9 +1385,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       zos.closeEntry();
    }
 
-   protected void exportCellForms(ZipOutputStream zos, ScaffoldingCell cell, List formIds) throws IOException {
-      List forms = cell.getAdditionalForms();
-      for (Iterator i=forms.iterator();i.hasNext();) {
+   protected void exportWorkflowForms(ZipOutputStream zos, ObjectWithWorkflow obj, List additionalForms, List formIds) throws IOException {
+
+      for (Iterator i=additionalForms.iterator();i.hasNext();) {
          String formId = (String) i.next();
          if (!formIds.contains(formId)) {
             storeFormInZip(zos, formId);
@@ -1377,30 +1395,31 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          }
       }
 
-      if (cell.getEvaluationDevice() != null) {
-         String evalDevId = cell.getEvaluationDevice().getValue();
+      if (obj.getEvaluationDevice() != null) {
+         String evalDevId = obj.getEvaluationDevice().getValue();
          if (!formIds.contains(evalDevId)) {
             storeFormInZip(zos, evalDevId);
             formIds.add(evalDevId);
          }
       }
 
-      if (cell.getReflectionDevice() != null) {
-         String reflDevId = cell.getReflectionDevice().getValue();
+      if (obj.getReflectionDevice() != null) {
+         String reflDevId = obj.getReflectionDevice().getValue();
          if (!formIds.contains(reflDevId)) {
             storeFormInZip(zos, reflDevId);
             formIds.add(reflDevId);
          }
       }
 
-      if (cell.getReviewDevice() != null) {
-         String revDevId = cell.getReviewDevice().getValue();
+      if (obj.getReviewDevice() != null) {
+         String revDevId = obj.getReviewDevice().getValue();
          if (!formIds.contains(revDevId)) {
             storeFormInZip(zos, revDevId);
             formIds.add(revDevId);
          }
       }
    }
+
 
    protected void fixPageForms(WizardPageDefinition wizardPage, Map formsMap) {
       List forms = wizardPage.getAdditionalForms();
@@ -1426,6 +1445,31 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
                wizardPage.getReviewDevice().getValue())));
       }
    }
+   
+   protected void fixPageForms(Scaffolding scaffolding, Map formsMap) {
+	      List forms = scaffolding.getAdditionalForms();
+	      List newForms = new ArrayList();
+	      for (Iterator i=forms.iterator();i.hasNext();) {
+	         String formId = (String) i.next();
+	         newForms.add(formsMap.get(formId));
+	      }
+	      scaffolding.setAdditionalForms(newForms);
+
+	      if (scaffolding.getEvaluationDevice() != null) {
+	    	  scaffolding.setEvaluationDevice(getIdManager().getId((String) formsMap.get(
+	    			  scaffolding.getEvaluationDevice().getValue())));
+	      }
+
+	      if (scaffolding.getReflectionDevice() != null) {
+	    	  scaffolding.setReflectionDevice(getIdManager().getId((String) formsMap.get(
+	    			  scaffolding.getReflectionDevice().getValue())));
+	      }
+
+	      if (scaffolding.getReviewDevice() != null) {
+	    	  scaffolding.setReviewDevice(getIdManager().getId((String) formsMap.get(
+	    			  scaffolding.getReviewDevice().getValue())));
+	      }
+	   }
 
    protected void storeFormInZip(ZipOutputStream zos, String formId) throws IOException {
 
@@ -1857,7 +1901,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             scaffolding.getStyle().setId(null);
          }
       }      
-      
+      substituteScaffoldingForms(scaffolding, guidanceMap, formsMap);
       substituteCriteria(scaffolding);
       substituteLevels(scaffolding);
       substituteScaffoldingCells(scaffolding, guidanceMap, formsMap, styleMap, siteId);
@@ -1882,6 +1926,25 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          newLevels.add(level);
       }
       scaffolding.setLevels(newLevels);
+   }
+   
+   protected void substituteScaffoldingForms(Scaffolding scaffolding, Map guidanceMap, Map formsMap){
+
+       fixPageForms(scaffolding, formsMap);
+
+       Set newWorkflows = new HashSet();
+       for (Iterator jiter=scaffolding.getEvalWorkflows().iterator(); jiter.hasNext();) {
+          Workflow w = (Workflow)jiter.next();
+          w.setId(null);
+          Set newItems = new HashSet();
+          for (Iterator kiter=w.getItems().iterator(); kiter.hasNext();) {
+             WorkflowItem wfi = (WorkflowItem)kiter.next();
+             wfi.setId(null);
+             newItems.add(wfi);
+          }
+          
+          newWorkflows.add(w);
+       }
    }
    
    protected void substituteScaffoldingCells(Scaffolding scaffolding, Map guidanceMap, Map formsMap, Map styleMap, String siteId) {
