@@ -439,12 +439,30 @@
     class="org.theospi.portfolio.tagging.impl.MatrixTaggingProviderImpl"
     init-method="init"
     singleton="true">
-    <property name="gmtService">
-      <ref bean="org.sakaiproject.gmt.api.GmtService" />
-    </property>
     <property name="taggingManager">
       <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
     </property>
+    <property name="linkManager">
+      <ref bean="org.sakaiproject.taggable.api.LinkManager" />
+    </property>
+    <property name="siteAssocManager">
+      <ref bean="org.sakaiproject.siteassociation.api.SiteAssocManager" />
+    </property>
   </bean>
+  
+  <bean id="org.sakaiproject.entity.api.EntityProducer.ospWizardPageDef"
+      class="org.theospi.portfolio.matrix.model.impl.WizardPageDefinitionEntityProducer"
+      init-method="init"
+		destroy-method="destroy"
+		singleton="true">
+      <property name="entityManager">
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
+      </property>
+      <property name="httpAccess">
+         <ref bean="org.sakaiproject.entity.api.HttpAccess.ospMatrix" />
+      </property>
+      <property name="idManager"><ref bean="idManager"/></property>
+      <property name="matrixManager"><ref bean="matrixManager"/></property>
+   </bean>
 
 </beans>

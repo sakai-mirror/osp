@@ -1,21 +1,23 @@
 package org.theospi.portfolio.tagging.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.gmt.tagging.impl.GmtTaggingHelperInfoImpl;
+import org.sakaiproject.siteassociation.api.SiteAssocManager;
+import org.sakaiproject.taggable.api.Link;
+import org.sakaiproject.taggable.api.LinkManager;
 import org.sakaiproject.taggable.api.Tag;
 import org.sakaiproject.taggable.api.TagList;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.taggable.api.TaggingHelperInfo;
 import org.sakaiproject.taggable.api.TaggingManager;
-import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.gmt.api.GmtService;
-import org.sakaiproject.gmt.tagging.impl.GmtTagListImpl;
-import org.sakaiproject.gmt.tagging.impl.GmtTaggingHelperInfoImpl;
+import org.sakaiproject.taggable.impl.TagImpl;
+import org.sakaiproject.taggable.impl.TagListImpl;
 import org.sakaiproject.util.ResourceLoader;
 import org.theospi.portfolio.tagging.api.MatrixTaggingProvider;
 
@@ -25,8 +27,9 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 	
 	private static ResourceLoader messages = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
 	
-	protected GmtService gmtService;
 	protected TaggingManager taggingManager;
+	protected LinkManager linkManager;
+	protected SiteAssocManager siteAssocManager;
 	
 	protected static final String LINK_HELPER = "osp.matrix.link";
 	
@@ -85,10 +88,20 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 	}
 
 	public TagList getTags(TaggableActivity activity) {
-		// TODO Auto-generated method stub
-		return new GmtTagListImpl();
-		//return (TagList) new ArrayList<Tag>();
-		//return null;
+		TagList tagList = new TagListImpl();
+		String activityContext = activity.getContext();
+		for (String toContext : getSiteAssocManager().getAssociatedFrom(activityContext)) {
+			try {
+				for (Link link : linkManager.getLinks(activity
+						.getReference(), true, toContext)) {
+					Tag tag = new TagImpl(link);
+					tagList.add(tag);
+				}
+			} catch (PermissionException pe) {
+				logger.error(pe.getMessage(), pe);
+			}
+		}
+		return tagList;
 	}
 
 	public void removeTags(TaggableActivity activity)
@@ -116,14 +129,23 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 		this.taggingManager = taggingManager;
 	}
 
-	public GmtService getGmtService() {
-		return gmtService;
+	public LinkManager getLinkManager()
+	{
+		return linkManager;
 	}
 
-	public void setGmtService(GmtService gmtService) {
-		this.gmtService = gmtService;
+	public void setLinkManager(LinkManager linkManager)
+	{
+		this.linkManager = linkManager;
 	}
-	
-	
 
+	public SiteAssocManager getSiteAssocManager()
+	{
+		return siteAssocManager;
+	}
+
+	public void setSiteAssocManager(SiteAssocManager siteAssocManager)
+	{
+		this.siteAssocManager = siteAssocManager;
+	}
 }

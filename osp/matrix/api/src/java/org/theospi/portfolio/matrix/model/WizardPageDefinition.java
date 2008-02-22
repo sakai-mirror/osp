@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
@@ -63,6 +64,8 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
 	private List<String> attachments = new ArrayList();
 	
 	public static String ATTACHMENT_ASSIGNMENT = "assignment";
+	
+	public static String WPD_ENTITY_STRING = "ospWizPageDef";
 
    /**
     * @return Returns the initialStatus.
@@ -224,8 +227,34 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
 	   this.suppressItems = suppressItems;
    }
    
+   public String getReference() {
+	   StringBuffer sb = new StringBuffer(Entity.SEPARATOR);
+	   	sb.append(WPD_ENTITY_STRING);
+		sb.append(Entity.SEPARATOR);
+		sb.append(getContext());
+		sb.append(Entity.SEPARATOR);
+		sb.append(getId());
+		return sb.toString();
+   }
+   
    public boolean isDefaultUserForms() {
 	   return defaultUserForms;
+   }
+
+   public String getContext()
+   {
+	   return getSiteId();
+   }
+   public boolean isPublished()
+   {
+	   //TODO how to do this for real?
+	   return true;
+   }
+
+   public String getParentTitle()
+   {
+	   // TODO Auto-generated method stub
+	   return null;
    }
 
    public void setDefaultUserForms(boolean defaultUserForms) {

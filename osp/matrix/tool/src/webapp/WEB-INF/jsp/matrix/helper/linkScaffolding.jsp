@@ -106,8 +106,10 @@
                   </osp-h:glossary>
 					</th>
 	    			<c:forEach var="cell" items="${matrixContents.matrixContents[loopStatus.index]}">
-						<td class="matrix-cell-border matrix-<c:out value="${cell.initialStatus}"/>" onclick="hrefLinkCell('<c:out value="${cell.id}"/>') " style="cursor:pointer">
-						 <a href="#" onclick="hrefLinkCell('<c:out value="${cell.id}"/>') " class="skip"><fmt:message key="table_cell_link_title"/></a>
+						<td class="matrix-cell-border matrix-<c:out value="${cell.scaffoldingCell.initialStatus}"/>" onclick="hrefLinkCell('<c:out value="${cell.scaffoldingCell.id}"/>') " style="cursor:pointer">
+						 <c:if test="${empty cell.link}">no link yet</c:if>
+						 <c:if test="${not empty cell.link}">here's a link</c:if>
+						 <a href="#" onclick="hrefLinkCell('<c:out value="${cell.scaffoldingCell.id}"/>') " class="skip"><fmt:message key="table_cell_link_title"/></a>
 							&nbsp;
 						</td>
 					</c:forEach>

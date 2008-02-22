@@ -85,8 +85,11 @@
             <property name="taggingManager">
                <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
             </property>
-            <property name="gmtService">
-               <ref bean="org.sakaiproject.gmt.api.GmtService" />
+            <property name="siteAssocManager">
+               <ref bean="org.sakaiproject.siteassociation.api.SiteAssocManager" />
+            </property>
+            <property name="linkManager">
+            	<ref bean="org.sakaiproject.taggable.api.LinkManager" />
             </property>
             
          </bean>

@@ -30,11 +30,13 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.taggable.api.Link;
+import org.sakaiproject.taggable.api.LinkManager;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.gmt.api.GmtService;
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -43,6 +45,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.siteassociation.api.SiteAssocManager;
 import org.theospi.portfolio.matrix.model.Criterion;
 import org.theospi.portfolio.matrix.model.Level;
 import org.theospi.portfolio.matrix.model.Scaffolding;
@@ -57,24 +60,41 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 	private IdManager idManager;
 	private SessionManager sessionManager;
 	private TaggingManager taggingManager;
+	private LinkManager linkManager;
 	private TaggingProvider matrixTaggingProvider;
-	private GmtService gmtService;
+	private SiteAssocManager siteAssocManager;
 
 	public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
 		Hashtable<String, Object> model = new Hashtable<String, Object>();
+		
+		TaggableActivity currentActivity = getCurrentActivity();
+		
+		String clickedCell = (String)request.get("page_id");
+		if (clickedCell != null) {
+			ScaffoldingCell sCell = getMatrixManager().getScaffoldingCell(idManager.getId(clickedCell));
+			try
+			{
+				if (linkManager.getLink(currentActivity.getReference(), sCell.getWizardPageDefinition().getReference()) == null) {
+					taggingManager.addLink(currentActivity.getReference(), sCell.getWizardPageDefinition().getReference(), null, null, true);
+				}
+			}
+			catch (PermissionException e)
+			{
+				logger.error("link could not be added", e);
+			}
+		}
+		
 		Agent currentAgent = getAuthManager().getAgent();
 		//String currentToolId = ToolManager.getCurrentPlacement().getId();
 		String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
 		
-		TaggableActivity currentActivity = getCurrentActivity();
-
 		String selectedSite = (String)request.get("selectedSite");
 		if (selectedSite == null) selectedSite = worksiteId;
 
 		List<Site> sites = getAvailableSites(currentActivity);
 
 		List<Scaffolding> scaffolding = getMatrixManager().findAvailableScaffolding(selectedSite, currentAgent);
-		List<MatrixGridBean> grids = getScaffoldingGrids(scaffolding);
+		List<MatrixGridBean> grids = getScaffoldingGrids(scaffolding, selectedSite);
 
 		// When selecting a matrix the user should start with a fresh user
 		session.remove(ViewMatrixController.VIEW_USER);
@@ -124,28 +144,42 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 		this.idManager = idManager;
 	}
 
-	private List<MatrixGridBean> getScaffoldingGrids(List<Scaffolding> scaffoldingList) {
+	private List<MatrixGridBean> getScaffoldingGrids(List<Scaffolding> scaffoldingList, String context) {
 		List<MatrixGridBean> beanList = new ArrayList<MatrixGridBean>(scaffoldingList.size());
+		
+		List<Link> links = new ArrayList<Link>();
+		try
+		{
+			links = linkManager.getLinks(getCurrentActivity().getReference(), true, context);
+		}
+		catch (PermissionException e)
+		{
+			logger.warn("no permission to get links");
+		}
+		
 		for (Scaffolding scaffolding : scaffoldingList) {
 			MatrixGridBean grid = new MatrixGridBean();
 
 			List<Level> levels = scaffolding.getLevels();
 			List<Criterion> criteria = scaffolding.getCriteria();
-			List<List<ScaffoldingCell>> matrixContents = new ArrayList<List<ScaffoldingCell>>();
+			List<List<LinkableScaffoldingCell>> matrixContents = new ArrayList<List<LinkableScaffoldingCell>>();
 			Criterion criterion = new Criterion();
 			Level level = new Level();
-			List<ScaffoldingCell> row = new ArrayList<ScaffoldingCell>();
+			List<LinkableScaffoldingCell> row = new ArrayList<LinkableScaffoldingCell>();
 
 			Set<ScaffoldingCell> cells = getMatrixManager().getScaffoldingCells(scaffolding.getId());
 
 			for (Iterator<Criterion> criteriaIterator = criteria.iterator(); criteriaIterator.hasNext();) {
-				row = new ArrayList<ScaffoldingCell>();
+				row = new ArrayList<LinkableScaffoldingCell>();
 				criterion = (Criterion) criteriaIterator.next();
 				for (Iterator<Level> levelsIterator = levels.iterator(); levelsIterator.hasNext();) {
 					level = (Level) levelsIterator.next();
 					ScaffoldingCell scaffoldingCell = getScaffoldingCell(cells, criterion, level);
-
-					row.add(scaffoldingCell);
+					Link link = linkManager.lookupLink(links, scaffoldingCell.getWizardPageDefinition().getReference());
+					LinkableScaffoldingCell linkableCell = new LinkableScaffoldingCell(scaffoldingCell, link);
+					
+					linkableCell.setLink(link);
+					row.add(linkableCell);
 				}
 				matrixContents.add(row);
 			}
@@ -158,6 +192,7 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 		}
 		return beanList;
 	}
+	
 
 	/**
 	 * Lookup the cell from the cells list that matches the passed criterion and level
@@ -185,7 +220,7 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 	protected List<Site> getAvailableSites(TaggableActivity currentActivity) {
 		String fromContext = currentActivity.getContext();
 
-		List<String> contexts = getGmtService().getAssociatedFrom(fromContext);
+		List<String> contexts = getSiteAssocManager().getAssociatedFrom(fromContext);
 		List<Site> sites = new ArrayList<Site>(contexts.size());
 
 		for (String toContext : contexts) {
@@ -231,15 +266,55 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 		this.taggingManager = taggingManager;
 	}
 
+	public LinkManager getLinkManager()
+	{
+		return linkManager;
+	}
+
+	public void setLinkManager(LinkManager linkManager)
+	{
+		this.linkManager = linkManager;
+	}
+
 	public void setMatrixTaggingProvider(TaggingProvider matrixTaggingProvider) {
 		this.matrixTaggingProvider = matrixTaggingProvider;
 	}
 
-	public GmtService getGmtService() {
-		return gmtService;
+	public SiteAssocManager getSiteAssocManager() {
+		return siteAssocManager;
 	}
 
-	public void setGmtService(GmtService gmtService) {
-		this.gmtService = gmtService;
+	public void setSiteAssocManager(SiteAssocManager siteAssocManager) {
+		this.siteAssocManager = siteAssocManager;
+	}
+	
+	public class LinkableScaffoldingCell {
+		private ScaffoldingCell scaffoldingCell;
+		private Link link;
+
+		public LinkableScaffoldingCell(ScaffoldingCell scaffoldingCell, Link link) {
+			this.scaffoldingCell = scaffoldingCell;
+			this.link = link;
+		}
+		
+		public ScaffoldingCell getScaffoldingCell()
+		{
+			return scaffoldingCell;
+		}
+
+		public void setScaffoldingCell(ScaffoldingCell scaffoldingCell)
+		{
+			this.scaffoldingCell = scaffoldingCell;
+		}
+
+		public Link getLink()
+		{
+			return link;
+		}
+
+		public void setLink(Link link)
+		{
+			this.link = link;
+		}		
 	}
 }
