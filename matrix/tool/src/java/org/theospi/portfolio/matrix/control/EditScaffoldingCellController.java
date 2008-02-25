@@ -175,8 +175,8 @@ public class EditScaffoldingCellController extends
 		Map model = new HashMap();
 
 
-	      
-		if(request.get("suppressItems") == null || request.get("suppressItems").toString() == "false"){
+	    String suppressItems = (String) request.get("suppressItems");
+		if(suppressItems == null || suppressItems.equalsIgnoreCase("false")){
 			scaffoldingCell.setSuppressItems(false);
 		}else{
 			scaffoldingCell.setSuppressItems(true);  
