@@ -95,7 +95,7 @@
 	<div class="instruction"><c:out
 		value="${cell.scaffoldingCell.wizardPageDefinition.description}"
 		escapeXml="false" /></div>
-</osp-h:glossary> <c:if test="${cell.status != 'READY'}">
+</osp-h:glossary> <c:if test="${(cell.status != 'READY' && cell.status != 'RETURNED')}">
 	<div class="information"><fmt:message key="status_warning">
 		<fmt:param>
 			<fmt:message key="${cell.status}" />
@@ -240,7 +240,7 @@
 			<td colspan="4">
 			<h4><c:choose>
 				<c:when
-					test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+					test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
 					<div class="itemAction"><a
 						href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -300,7 +300,7 @@
 					</td>
 					<td style="white-space: nowrap">
 					<div class="itemAction">
-					<c:if	test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+					<c:if	test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
 
 						<a
 							href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
@@ -394,7 +394,7 @@
 			<td colspan="4">
 			<h4><c:choose>
 				<c:when
-					test="${cell.status == 'READY' and readOnlyMatrix != 'true' && !cell.scaffoldingCell.suppressItems}">
+					test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true' && !cell.scaffoldingCell.suppressItems}">
 					<div class="itemAction"><%-- these should be links below--%>
 					<c:choose>
 						<c:when test="${empty cellBean.nodes}">
@@ -463,7 +463,7 @@
 			</td>
 			<td style="white-space: nowrap">
 			<div class="itemAction"><c:if
-				test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+				test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
 				<%--       <a name="linkNew" href="<osp:url value="attachToCell.osp">
 						 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
 						 </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="edit"/></a>
@@ -585,7 +585,7 @@
 		<h4><span class="instruction"><osp:message
 			key="reflection_section_empty" /></span></h4>
 		<c:if
-			test="${empty reflections && cell.status == 'READY' and readOnlyMatrix != 'true'}">
+			test="${empty reflections && (cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
 			<span class="itemAction"> <a
 				href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 					   <osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -614,7 +614,7 @@
 				href='<c:out value="${reflections[0].reviewContentNode.externalUri}"/>'
 				target="_blank"> <c:out
 				value="${reflections[0].reviewContentNode.displayName}" /> </a>
-		<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+		<c:if test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
 			<span class="itemAction"> <img
 				src="/library/image/silk/application_form_edit.png"
 				alt="<fmt:message key="edit"/>" /> <a
@@ -636,7 +636,7 @@
 </c:if> <!-- if status is ready --> <%-- TODO omit the following block if the items inside it are not rendered --%>
 
 
-<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+<c:if test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
 
 	<c:if test="${canReflect == 'true'}">
 		<p class="act" style="margin:0">

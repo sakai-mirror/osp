@@ -25,6 +25,9 @@
                <c:if test="${option.title == 'No Workflow'}">
                   <osp:message key="workflow_none" bundle="${msgs}" />
                </c:if>
+               <c:if test="${option.title == 'Returned Workflow'}">
+                  <osp:message key="workflow_returned" bundle="${msgs}" />
+               </c:if>
             </label>
          </div>
       </c:forEach>

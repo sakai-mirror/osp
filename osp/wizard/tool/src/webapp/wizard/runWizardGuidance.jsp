@@ -14,7 +14,6 @@
 <f:view>
 <sakai:view>
 <h:form>
-
 	<sakai:tool_bar  rendered="#{wizard.canCreate}">
       <sakai:tool_bar_item
       action="manageWizardStatus"
@@ -47,9 +46,8 @@
 			   </f:subview>
 			</h:panelGroup>
 		</h:panelGrid>	
-  
 
-	<f:subview id="status" rendered="#{wizard.current.runningWizard.base.status != 'READY'}">
+	<f:subview id="status" rendered="#{wizard.current.runningWizard.base.status != 'READY' && wizard.current.runningWizard.base.status != 'RETURNED'}">
 		<f:verbatim><div class="information"></f:verbatim>
 	            <h:outputText value="#{wizard.statusMessage}"/>
 		<f:verbatim></div></f:verbatim>
@@ -199,7 +197,8 @@
 		   </f:verbatim>
       
       <f:subview id="noReflection" 
-      	rendered="#{empty wizard.current.runningWizard.reflections && wizard.current.runningWizard.base.status == 'READY' &&
+      	rendered="#{empty wizard.current.runningWizard.reflections && 
+      	(wizard.current.runningWizard.base.status == 'READY' || wizard.current.runningWizard.base.status == 'RETURNED') &&
       		not wizard.current.runningWizard.isReadOnly}">
 		  <f:verbatim>
 			  <div class="itemAction indnt2">
@@ -216,7 +215,7 @@
 
 		 </f:subview>
 	  	<f:subview id="showReflection" rendered="#{not empty wizard.current.runningWizard.reflections}">
-			<f:subview id="displayReflection" rendered="#{wizard.current.runningWizard.base.status != 'READY' ||
+			<f:subview id="displayReflection" rendered="#{(wizard.current.runningWizard.base.status != 'READY' and wizard.current.runningWizard.base.status != 'RETURNED') ||
 				wizard.current.runningWizard.isReadOnly}">
 					<f:verbatim>
 						<img src = '/library/image/silk/application_form.gif' border= '0' hspace='0' />
@@ -226,7 +225,7 @@
 					<h:outputText value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.displayName}"/>
 				</h:outputLink>
 			</f:subview>
-			<f:subview id="editReflection" rendered="#{wizard.current.runningWizard.base.status == 'READY' && 
+			<f:subview id="editReflection" rendered="#{(wizard.current.runningWizard.base.status == 'READY' || wizard.current.runningWizard.base.status == 'RETURNED') && 
 				not wizard.current.runningWizard.isReadOnly}">
 				<f:verbatim>
 					<img src = '/library/image/silk/application_form.gif' border= '0' hspace='0' />
@@ -369,7 +368,7 @@
        
    <f:subview id="evalSubmitSV" rendered="#{wizard.evaluationItem != ''}">
     <sakai:button_bar_item id="submitEvalWizard" value="#{msgs.submit_wizard_for_evaluation}" 
-       rendered="#{wizard.current.runningWizard.base.status == 'READY' && wizard.current.runningWizard.isReadOnly == 'false'}"
+       rendered="#{(wizard.current.runningWizard.base.status == 'READY' || wizard.current.runningWizard.base.status == 'RETURNED') && wizard.current.runningWizard.isReadOnly == 'false'}"
        action="confirmSubmit" immediate="true"
         />
    </f:subview>

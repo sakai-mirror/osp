@@ -1,4 +1,4 @@
-<c:if test="${matrixContents.scaffolding.completedColor != '' or matrixContents.scaffolding.pendingColor != '' or matrixContents.scaffolding.readyColor != '' or 	matrixContents.scaffolding.lockedColor != ''}">
+<c:if test="${matrixContents.scaffolding.completedColor != '' or matrixContents.scaffolding.pendingColor != '' or matrixContents.scaffolding.readyColor != '' or 	matrixContents.scaffolding.lockedColor != '' or 	matrixContents.scaffolding.returnedColor != ''}">
 	<style type="text/css">
 		<c:if test="${matrixContents.scaffolding.completedColor != ''}">
 			td.matrix-COMPLETE, INPUT.matrix-COMPLETE { background-color: <c:out value="${matrixContents.scaffolding.completedColor}" />;}
@@ -11,6 +11,9 @@
 		</c:if>
 		<c:if test="${matrixContents.scaffolding.lockedColor != ''}">
 			td.matrix-LOCKED, INPUT.matrix-LOCKED { background-color: <c:out value="${matrixContents.scaffolding.lockedColor}" />;}
+		</c:if>
+		<c:if test="${matrixContents.scaffolding.returnedColor != ''}">
+			td.matrix-RETURNED, INPUT.matrix-RETURNED { background-color: <c:out value="${matrixContents.scaffolding.returnedColor}" />;}
 		</c:if>
 	</style>
 </c:if>	

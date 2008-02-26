@@ -68,6 +68,7 @@ public class Scaffolding extends ObjectWithWorkflow implements Serializable {
    private String pendingColor;
    private String completedColor;
    private String lockedColor;
+   private String returnedColor;
    
    private Style style;
    
@@ -438,5 +439,13 @@ public Collection getEvaluators() {
 
 public void setEvaluators(Collection evaluators) {
 	this.evaluators = evaluators;
+}
+
+public String getReturnedColor() {
+	return returnedColor;
+}
+
+public void setReturnedColor(String returnedColor) {
+	this.returnedColor = returnedColor;
 }
 }

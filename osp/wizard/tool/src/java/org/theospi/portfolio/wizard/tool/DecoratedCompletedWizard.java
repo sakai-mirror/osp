@@ -157,6 +157,8 @@ public class DecoratedCompletedWizard {
 				   this.getParent().getMessageFromBundle(MatrixFunctionConstants.COMPLETE_STATUS)));
 		   statusArray.add(new SelectItem(MatrixFunctionConstants.LOCKED_STATUS,
 				   this.getParent().getMessageFromBundle(MatrixFunctionConstants.LOCKED_STATUS)));
+		   statusArray.add(new SelectItem(MatrixFunctionConstants.RETURNED_STATUS,
+				   this.getParent().getMessageFromBundle(MatrixFunctionConstants.RETURNED_STATUS)));
 	   }
 	   return statusArray;
    }

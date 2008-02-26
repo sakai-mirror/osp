@@ -114,6 +114,7 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
          Workflow w_none = new Workflow("No Workflow", wpd);
          Workflow w_complete = new Workflow("Complete Workflow", wpd);
          Workflow w_return = new Workflow("Return Workflow", wpd);
+         Workflow w_returned = new Workflow("Returned Workflow", wpd);
          
          Id id = wpd.getId() != null ? wpd.getId() : wpd.getNewId();
          
@@ -123,9 +124,15 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
                id, WorkflowItem.CONTENT_LOCKING_UNLOCK));
          w_return.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
                id, MatrixFunctionConstants.READY_STATUS));
+         w_returned.add(new WorkflowItem(WorkflowItem.CONTENT_LOCKING_WORKFLOW, 
+                 id, WorkflowItem.CONTENT_LOCKING_UNLOCK));
+         w_returned.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
+                 id, MatrixFunctionConstants.RETURNED_STATUS));
+         
          workflows.add(w_none);
          workflows.add(w_complete);
          workflows.add(w_return);
+         workflows.add(w_returned);
          
       }
       else if (wpd.getEvaluationDevice() == null) {
@@ -151,6 +158,7 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
          Workflow w_none = new Workflow("No Workflow", wizard);
          Workflow w_complete = new Workflow("Complete Workflow", wizard);
          Workflow w_return = new Workflow("Return Workflow", wizard);
+         Workflow w_returned = new Workflow("Returned Workflow", wizard);
          
          Id id = wizard.getId() != null ? wizard.getId() : wizard.getNewId();
          
@@ -160,10 +168,15 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
                id, WorkflowItem.CONTENT_LOCKING_UNLOCK));
          w_return.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
                id, MatrixFunctionConstants.READY_STATUS));
+         w_returned.add(new WorkflowItem(WorkflowItem.CONTENT_LOCKING_WORKFLOW, 
+                 id, WorkflowItem.CONTENT_LOCKING_UNLOCK));
+         w_returned.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
+                 id, MatrixFunctionConstants.RETURNED_STATUS));
+           
          workflows.add(w_none);
          workflows.add(w_complete);
          workflows.add(w_return);
-         
+         workflows.add(w_returned);
       }
       else if (eval == null) {
          workflows = new HashSet();

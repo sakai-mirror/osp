@@ -102,7 +102,7 @@
 			 </c:if>
 		 </p>
 		  <h4><fmt:message key="title_matrixStatusColors"/></h4>
-		  <c:forTokens var="token" items="scaffolding.readyColor,scaffolding.pendingColor,scaffolding.completedColor,scaffolding.lockedColor"
+		  <c:forTokens var="token" items="scaffolding.readyColor,scaffolding.pendingColor,scaffolding.completedColor,scaffolding.lockedColor,scaffolding.returnedColor"
 						delims=",">
 			<spring:bind path="${token}">
 			   <c:if test="${status.error}">
@@ -122,6 +122,9 @@
 						</c:when>
 						<c:when test="${status.expression == 'lockedColor'}">
 							<c:set var="styleColor" value="matrix-LOCKED" />
+						</c:when>
+						<c:when test="${status.expression == 'returnedColor'}">
+							<c:set var="styleColor" value="matrix-RETURNED" />
 						</c:when>
 				   </c:choose>
 				   <input type="text" disabled="disabled" value="" size="2" class="<c:out value="${styleColor}"/>"

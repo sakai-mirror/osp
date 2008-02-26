@@ -32,6 +32,7 @@ public interface MatrixFunctionConstants {
    public final static String LOCKED_STATUS = "LOCKED";
    public final static String WAITING_STATUS = "WAITING";
    public final static String CHECKED_OUT_STATUS = "CHECKED_OUT";
+   public final static String RETURNED_STATUS = "RETURNED";
 
    public final static String SCAFFOLDING_PREFIX = "osp.matrix.scaffolding.";
    public final static String CREATE_SCAFFOLDING = SCAFFOLDING_PREFIX + "create";

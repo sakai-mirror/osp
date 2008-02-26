@@ -465,7 +465,7 @@ function mySetMainFrameHeight(id)
 		</c:if>
 
 		<!-- ************* Additional Forms Area Start ************* -->   
-		<span name="cellUserFormsSpan" id="cellUserFormsSpan" <c:if test="${scaffoldingCell.wizardPageDefinition.defaultUserForms}">style='display:none' </c:if>>
+		<span name="cellUserFormsSpan" id="cellUserFormsSpan" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultUserForms}">style='display:none' </c:if>>
 			<h5><fmt:message key="title_additionalForms"/></h5>
 			<p class="indnt1"> 
 				<fmt:message key="addForms_instructions" />
@@ -696,7 +696,7 @@ function mySetMainFrameHeight(id)
 			<!-- ********** Display Matrix Default Values End******************* -->
 		</c:if>
 
-		<span name="cellFeedbackEvalSpan" id="cellFeedbackEvalSpan" <c:if test="${scaffoldingCell.wizardPageDefinition.defaultFeedbackEval}">style='display:none' </c:if>>
+		<span name="cellFeedbackEvalSpan" id="cellFeedbackEvalSpan" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultFeedbackEval}">style='display:none' </c:if>>
 
 			<spring:bind path="scaffoldingCell.reviewDeviceType">  
 				<input type="hidden" name="<c:out value="${status.expression}"/>"

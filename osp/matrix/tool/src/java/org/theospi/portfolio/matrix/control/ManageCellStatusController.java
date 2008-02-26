@@ -67,6 +67,7 @@ public class ManageCellStatusController implements Controller {
       statusArray.add(MatrixFunctionConstants.PENDING_STATUS);
       statusArray.add(MatrixFunctionConstants.COMPLETE_STATUS);
       statusArray.add(MatrixFunctionConstants.LOCKED_STATUS);
+      statusArray.add(MatrixFunctionConstants.RETURNED_STATUS);
       
       model.put("statuses", statusArray);
       model.put("readOnlyMatrix", (String)request.get("readOnlyMatrix"));

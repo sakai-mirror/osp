@@ -71,6 +71,7 @@ TD.matrix-COMPLETE, INPUT.matrix-COMPLETE { background-color: #a6c7ea;}
 TD.matrix-PENDING, INPUT.matrix-PENDING { background-color: #f7ef84;}
 TD.matrix-READY, INPUT.matrix-READY { background-color: #86f283;}
 TD.matrix-LOCKED, INPUT.matrix-LOCKED { background-color: #ac326b;}
+TD.matrix-RETURNED, INPUT.matrix-RETURNED { background-color: #6633CC;}
 
 TD.matrixLegend-border{ border: 1px solid black;}
 
