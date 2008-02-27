@@ -61,9 +61,13 @@
       <hr class="itemSeparator"/>
       
       <c:if test="${submission.submitted}">
-         <c:if test="${not empty submission.feedbackFormattedText}">
+         <c:if test="${not empty submission.feedbackFormattedText && submission.gradeReleased}">
             <h4><osp:message key="assign.submission"/></h4>
             <div class="textPanel indnt2"><c:out value="${submission.feedbackFormattedText}" escapeXml="false"/></div>
+         </c:if>
+         <c:if test="${not empty submission.submittedText && not submission.gradeReleased}">
+            <h4><osp:message key="assign.submission.original"/></h4>
+            <div class="textPanel indnt2"><c:out value="${submission.submittedText}" escapeXml="false"/></div>
          </c:if>
           
          <c:if test="${not empty submitAttachments}">
@@ -79,12 +83,12 @@
             </ul>
          </c:if>
          
-         <c:if test="${not empty submission.feedbackComment}">
+         <c:if test="${not empty submission.feedbackComment && submission.gradeReleased}">
             <h4><osp:message key="assign.comments"/></h4>
             <div class="textPanel indnt2"><c:out value="${submission.feedbackComment}" escapeXml="false"/></div>
          </c:if>
          
-         <c:if test="${not empty feedbackAttachments}">
+         <c:if test="${not empty feedbackAttachments && submission.gradeReleased}">
             <h4><osp:message key="assign.feedback.attach"/></h4>
             <ul class="attachList indnt2">
             <c:forEach var="attach" items="${feedbackAttachments}">

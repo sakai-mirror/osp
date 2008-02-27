@@ -284,7 +284,11 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 				Assignment assign = (Assignment)it.next();
 				AssignmentSubmission assignSubmission = AssignmentService.getSubmission( assign.getId(),
 																												 user );
-				if (assignSubmission != null && assignSubmission.getSubmitted())
+
+				// assignments may be (incorrectly) marked as submitted, so check for valid submit time
+				if ( assignSubmission != null 
+					  && assignSubmission.getSubmitted() 
+					  && assignSubmission.getTimeSubmitted()!=null )
 					submissions.add(assignSubmission);
 			}
 		}

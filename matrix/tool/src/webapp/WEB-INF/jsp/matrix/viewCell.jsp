@@ -533,7 +533,8 @@
 		<c:forEach var="assign" items="${assignments}" varStatus="loopStatus">
 			<tr>
 				<td colspan="4">
-				<h5 class="indnt2"><c:if test="${assign.submitted}">
+				<h5 class="indnt2">
+				<c:if test="${assign.submitted && assign.timeSubmitted!=null}">
 					<img border="0" src="/library/image/silk/page_white_edit.png"
 						alt="" />
 
@@ -546,9 +547,11 @@
                             <osp:param name="isWizard" value="${isWizard}" />
                             </osp:url>">
 					<c:out value="${assign.assignment.title}" /> </a>
-				</c:if> <c:if test="${!assign.submitted}">
+				</c:if> 
+				<c:if test="${!assign.submitted || assign.timeSubmitted==null}">
 					<c:out value="${assign.assignment.title}" />
-				</c:if></h5>
+				</c:if>
+				</h5>
 				&nbsp;&nbsp; <span class="textPanelFooter">(<osp:message
 					key="hdr.submitted" />: <c:out
 					value="${assign.timeSubmittedString}" /> - <osp:message
