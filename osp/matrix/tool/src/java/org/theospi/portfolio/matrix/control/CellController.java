@@ -21,17 +21,23 @@
 
 package org.theospi.portfolio.matrix.control;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.assignment.api.AssignmentSubmission;
 import org.sakaiproject.assignment.cover.AssignmentService;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
@@ -48,6 +54,7 @@ import org.sakaiproject.taggable.api.TaggingHelperInfo;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
@@ -68,6 +75,7 @@ import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Sort;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
+import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.CommonFormBean;
 import org.theospi.portfolio.style.mgt.StyleManager;
@@ -111,11 +119,20 @@ public class CellController implements FormController, LoadObjectController {
 
 	protected static final String PROVIDERS_PARAM = "providers";
 
+	private ServerConfigurationService serverConfigurationService;
+	
 	public Map referenceData(Map request, Object command, Errors errors) {
 		ToolSession session = getSessionManager().getCurrentToolSession();
-
+		
 		CellFormBean cell = (CellFormBean) command;
+				
+		if((cell != null || cell.getCell() == null) && request.get("feedbackReturn") != null){
+			cell.setCell(matrixManager.getCell(idManager.getId(request.get("feedbackReturn").toString())));
+		}
+	
+
 		Map model = new HashMap();
+
 
 		model.put("isMatrix", "true");
 		model.put("currentUser", getSessionManager().getCurrentSessionUserId());
@@ -339,6 +356,13 @@ public class CellController implements FormController, LoadObjectController {
 		String submit = (String) request.get("submit");
 		String matrixAction = (String) request.get("matrix");
 		String submitAction = (String) request.get("submitAction");
+		String inviteFeedback = (String) request.get("inviteFeedback");
+		
+		if(inviteFeedback != null){
+			session.put("cellId", cell.getId().toString());
+			session.put("matrixCall", "matrixCall");
+			return new ModelAndView("feedbackHelper");
+		}
 
 		if ("tagItem".equals(submitAction)) {
 			return tagItem(cell, request, session);
@@ -382,6 +406,8 @@ public class CellController implements FormController, LoadObjectController {
 
 		return new ModelAndView("success", "cellBean", cellBean);
 	}
+
+	
 
 	protected ModelAndView tagItem(Cell cell, Map request, Map session) {
 		ModelAndView view = null;
@@ -636,4 +662,13 @@ public class CellController implements FormController, LoadObjectController {
    public void setStyleManager(StyleManager styleManager) {
       this.styleManager = styleManager;
    }
+
+public ServerConfigurationService getServerConfigurationService() {
+	return serverConfigurationService;
+}
+
+public void setServerConfigurationService(
+		ServerConfigurationService serverConfigurationService) {
+	this.serverConfigurationService = serverConfigurationService;
+}
 }

@@ -135,6 +135,7 @@
             <prop key="/editScaffoldingConfirm.osp">editScaffoldingConfirmController</prop>
             <prop key="/editScaffoldingCellConfirm.osp">editScaffoldingCellConfirmController</prop>
             <prop key="/reviewHelper.osp">reviewHelperController</prop>
+            <prop key="/feedbackHelper.osp">feedbackHelperController</prop>
             <prop key="/reviewPostProcessor.osp">reviewPostProcessor</prop>
             <prop key="/exposedScaffolding.osp">exposedScaffoldingController</prop>
 

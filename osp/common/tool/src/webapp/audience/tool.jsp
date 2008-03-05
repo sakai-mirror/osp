@@ -14,7 +14,11 @@
 
 <f:view>
 
-<sakai:view_title rendered="#{not audience.portfolioAudience}" value="#{common_msgs.audience_eval_title}"/>
+<sakai:view_title rendered="#{not audience.portfolioAudience && not audience.inviteFeedbackAudience}" value="#{common_msgs.audience_eval_title}"/>
+<sakai:view_title rendered="#{audience.inviteFeedbackAudience}" value="#{common_msgs.matrixFeedbackTitle}"/>
+<c:if test="${audience.inviteFeedbackAudience}">
+  <sakai:instruction_message value="#{common_msgs.matrixFeedbackInstructions}"/>
+</c:if>
 <h3><div class="highlight"><h:outputText value="#{audience.pageContext}"/></div></h3>
 <div class="highlight"><h:outputText value="#{audience.pageContext2}"/></div>
 <sakai:view>   
@@ -32,6 +36,7 @@
   <sakai:instruction_message value="#{common_msgs.audience_portfolio_instructions}"/>
 </c:if>
 
+
 <sakai:messages/>
 
 <h:form id="mainForm">
@@ -45,6 +50,9 @@
                <c:if test="${audience.matrixAudience}">
                   <ospx:xheadertitle id="userTitle" value="#{common_msgs.audience_user_title}" />
                </c:if>
+               <c:if test="${audience.inviteFeedbackAudience}">
+                  <ospx:xheadertitle id="userTitle" value="#{common_msgs.matrixFeedbackShareUsers}" />
+               </c:if>               
                <c:if test="${audience.portfolioAudience}">
                   <ospx:xheadertitle id="userTitle" value="#{common_msgs.audience_portfolio_user_title}" />
                </c:if>
@@ -91,6 +99,10 @@
                               <c:if test="${audience.matrixAudience}">
                                     <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
                               </c:if>
+                              <c:if test="${audience.inviteFeedbackAudience}">
+                                    <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
+                              </c:if>
+                              
                               <c:if test="${audience.portfolioAudience}">
                                     <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
                               </c:if>
@@ -106,17 +118,24 @@
                   </h:panelGrid>
                   
                   <!-- other user and email user option -->
-                  <f:subview id="emailUser" rendered="#{audience.portfolioAudience}">
+                  <f:subview id="emailUser" rendered="#{audience.portfolioAudience || audience.inviteFeedbackAudience}">
                      <f:verbatim><h3></f:verbatim>
-                     <h:outputText value="#{common_msgs.audience_portfolio_other_title}" />
+                     <h:outputText rendered="#{audience.portfolioAudience}" value="#{common_msgs.audience_portfolio_other_title}" />
+                     <h:outputText rendered="#{audience.inviteFeedbackAudience}" value="#{common_msgs.matrixFeedbackGuestUsers}" />
                      <f:verbatim></h3></f:verbatim>
+                  
+                  	 <c:if test="${audience.inviteFeedbackAudience}">
+					  <sakai:instruction_message value="#{common_msgs.matrixFeedbackGuestInstructions}"/>
+					</c:if>
                   
                      <f:verbatim><p class='shorttext'></f:verbatim>
                      <c:if test="${! audience.guestUserEnabled}">
-                        <h:outputLabel value="#{common_msgs.any_user_label}:" for="emails"/>
+                        <h:outputLabel rendered="#{audience.portfolioAudience}" value="#{common_msgs.any_user_label}:" for="emails"/>
+                        <h:outputLabel rendered="#{audience.inviteFeedbackAudience}" value="#{common_msgs.matrixFeedbackEnterGuest}:" for="emails"/>
                      </c:if>
                      <c:if test="${audience.guestUserEnabled}">
-                        <h:outputLabel value="#{common_msgs.email_label}:" for="emails"/>
+                        <h:outputLabel rendered="#{audience.portfolioAudience}" value="#{common_msgs.email_label}:" for="emails"/>
+                        <h:outputLabel rendered="#{audience.inviteFeedbackAudience}" value="#{common_msgs.matrixFeedbackEnterGuest}:" for="emails"/>
                      </c:if>
                                   
                      <h:inputText value="#{audience.searchEmails}" id="emails" size="60"/>
@@ -141,6 +160,9 @@
                      <c:if test="${audience.matrixAudience}">
                         <h:outputFormat value = "#{common_msgs.audience_individual_evaluators}" />
                      </c:if>
+                     <c:if test="${audience.inviteFeedbackAudience}">
+                        <h:outputFormat value = "#{common_msgs.audience_individual_users}" />
+                     </c:if>
                      <c:if test="${audience.portfolioAudience}">
                         <h:outputFormat value = "#{common_msgs.audience_individual_users}" />
                      </c:if>
@@ -149,7 +171,10 @@
                   
                </ospx:xheaderdrawer>
             </ospx:xheader>
-
+			
+			
+			
+			<c:if test="${!audience.inviteFeedbackAudience}">
             <!-- worksite role drawer -->
             <ospx:xheader>
                <c:if test="${audience.wizardAudience}">
@@ -158,6 +183,7 @@
                <c:if test="${audience.matrixAudience}">
                   <ospx:xheadertitle id="roleTitle" value="#{common_msgs.audience_role_title}" />
                </c:if>
+               
                <c:if test="${audience.portfolioAudience}">
                   <ospx:xheadertitle id="roleTitle" value="#{common_msgs.audience_portfolio_role_title}" />
                </c:if>
@@ -219,7 +245,9 @@
                   
                </ospx:xheaderdrawer>
             </ospx:xheader>
-
+			</c:if>
+			
+			
             <!-- Public URL Drawer -->
             <ospx:xheader rendered="#{audience.portfolioAudience}">
                <ospx:xheadertitle id="publicTitle" value="#{common_msgs.audience_public_title}"/>
@@ -261,7 +289,7 @@
                                value="#{common_msgs.save_audience}" styleClass="active" accesskey="s" />
 
         <sakai:button_bar_item id="saveNotify_button" action="#{audience.processActionSaveNotify}"
-                               rendered="#{audience.portfolioAudience}"
+                               rendered="#{audience.portfolioAudience || audience.inviteFeedbackAudience}"
                                value="#{common_msgs.save_notify_audience}" />
         <sakai:button_bar_item id="back_button" action="#{audience.processActionBack}"
                                rendered="#{audience.portfolioAudience}"

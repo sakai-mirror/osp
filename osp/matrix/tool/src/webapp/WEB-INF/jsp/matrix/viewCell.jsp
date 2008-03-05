@@ -870,6 +870,13 @@
 		<input type="submit" name="matrix" class="active"
 			value="<fmt:message key="button_back_to_matrix"/>" accesskey="x" />
 	</c:if>
-</c:if></div>
+</c:if>
+
+	<input type="submit" name="inviteFeedback" class="active"
+			value="Invite Feedback" />
+
+</div>
+
+
 
 </form>

@@ -20,39 +20,44 @@
  **********************************************************************************/
 package org.theospi.portfolio.security.tool;
 
-import org.sakaiproject.util.ResourceLoader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.regex.Pattern;
+
+import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.email.cover.EmailService;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.cover.EntityManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
-import org.sakaiproject.entity.api.Reference;
-import org.sakaiproject.entity.cover.EntityManager;
-
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.AgentImplOsp;
-import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.tool.HelperToolBase;
 import org.theospi.portfolio.shared.tool.PagingList;
-
-import javax.faces.context.FacesContext;
-import javax.faces.model.SelectItem;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * Created by IntelliJ IDEA.
@@ -70,12 +75,14 @@ public class AudienceTool extends HelperToolBase {
     private AgentManager agentManager;
     private int maxRoleMemberList;
 
+    private String[] selectedArray;
     private List selectedMembers = null;
     private List originalMembers = null;
     private List selectedRoles = null;
     private String searchUsers;
     private String searchEmails;
     private Site site;
+    
 
     /**
      * ***********************************
@@ -93,7 +100,7 @@ public class AudienceTool extends HelperToolBase {
     private List selectedUserList;
 
 
-    /**
+    /**s
      * **********************************
      */
 
@@ -138,8 +145,10 @@ public class AudienceTool extends HelperToolBase {
     private List groupMemberList = null;
     private String LIST_SEPERATOR = "__________________";
     private boolean publicAudience = false;
+    private String message;
 
-
+    private WorksiteManager worksiteManager;
+    
     /*************************************************************************/
 
     protected List getMembersList() {
@@ -232,6 +241,8 @@ public class AudienceTool extends HelperToolBase {
         session.setAttribute("target", getCancelTarget());
         clearAudienceSelectionVariables();
         processActionClearFilter();
+        selectedArray = null;
+        message = null;
         return returnToCaller();
     }
 
@@ -315,6 +326,13 @@ public class AudienceTool extends HelperToolBase {
 
     public boolean isMatrixAudience() {
         if ( getAudienceFunction().equals(AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX) )
+           return true;
+        else
+           return false;
+    }
+    
+    public boolean isInviteFeedbackAudience() {
+        if ( getAudienceFunction().equals(AudienceSelectionHelper.AUDIENCE_FUNCTION_INVITE_FEEDBACK) )
            return true;
         else
            return false;
@@ -415,7 +433,7 @@ public class AudienceTool extends HelperToolBase {
     }
 
     public String processActionAddEmailUser() {
-        boolean worksiteLimited = ! isPortfolioAudience();
+        boolean worksiteLimited = ! isPortfolioAudience() && ! isInviteFeedbackAudience();
         
         String emailOrUser = getSearchEmails();
         
@@ -476,18 +494,20 @@ public class AudienceTool extends HelperToolBase {
 
         boolean found = false;
 
-        for (Iterator i = userList.iterator(); i.hasNext();) {
-            found = true;
-            Agent agent = (Agent) i.next();
-            if (worksiteLimited && !checkWorksiteMember(agent)) {
-               return false;
-            }
-            if (agent instanceof AgentImplOsp) {
-                agent = createGuestUser(agent);
-                if (agent != null) 
-                    notifyNewUserEmail(agent);
-            }
-            addAgent(agent, "user_exists");
+        if(userList != null){
+        	for (Iterator i = userList.iterator(); i.hasNext();) {
+        		found = true;
+        		Agent agent = (Agent) i.next();
+        		if (worksiteLimited && !checkWorksiteMember(agent)) {
+        			return false;
+        		}
+        		if (agent instanceof AgentImplOsp) {
+        			agent = createGuestUser(agent);
+        			if (agent != null) 
+        				notifyNewUserEmail(agent);
+        		}
+        		addAgent(agent, "user_exists");
+        	}
         }
 
         return found;
@@ -518,6 +538,18 @@ public class AudienceTool extends HelperToolBase {
         return returnToCaller();
     }
 
+    public String processActionNotify(){
+    	ToolSession session = SessionManager.getCurrentToolSession();
+        session.setAttribute("target", getSaveTarget());
+        notifyAudience();
+    	clearAudienceSelectionVariables();
+        processActionClearFilter();
+        selectedArray = null;
+        message = null;
+        
+        return returnToCaller();
+    }
+    
     protected void save() {
         List added = new ArrayList();
 
@@ -535,6 +567,83 @@ public class AudienceTool extends HelperToolBase {
         removeMembers(originalMembers);
 
 
+    }
+    
+    protected String[] getSelectedUsersEmails(){
+    	List selectedUserEmails = new ArrayList();
+        for (Iterator i = getSelectedMembers().iterator(); i.hasNext();) {
+            DecoratedMember decoratedMember = (DecoratedMember) i.next();
+            if ( ! decoratedMember.getBase().isRole() && decoratedMember.getBase().getId() != null ) 
+            	selectedUserEmails.add(decoratedMember.getEmail());
+        }
+        String[] returnArray = new String[selectedUserEmails.size()];
+        for(int i = 0; i < selectedUserEmails.size(); i++){
+        	returnArray[i] = selectedUserEmails.get(i).toString();
+        }
+    	return returnArray;    	
+    }
+    
+    protected void notifyAudience(){
+    	String url;
+    	String emailMessage = "";
+    	String subject = "";
+    	User user = UserDirectoryService.getCurrentUser();
+    	
+    	if(isPortfolioAudience()){
+    		subject = getMessageFromBundle("portfolioSubject", null);
+    		url = ServerConfigurationService.getServerUrl() +
+    		"/osp-presentation-tool/viewPresentation.osp?id=" + this.getQualifier().getValue();
+    		url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
+   		
+    		emailMessage = getMessage() + getMessageFromBundle("portfolioBody", 
+    				new Object[]{user.getDisplayName()}) + " " + getPageContext() +
+    				getMessageFromBundle("portfolioLink", new Object[]{url});
+
+    	}else if(isInviteFeedbackAudience()){
+    		subject = getMessageFromBundle("matrixFeedbackSubject", null);
+    		url = ServerConfigurationService.getServerUrl() +
+    		"/osp-matrix-tool/viewCell.osp?page_id=" + this.getQualifier().getValue();
+
+    		emailMessage = getMessage() + getMessageFromBundle("matrixFeedbackBody", 
+    				new Object[]{user.getDisplayName()}) + " " + getPageContext() + " - " + getPageContext2();
+    	}
+
+    	try {
+
+    		String from = ServerConfigurationService.getString("setup.request", 
+    				"postmaster@".concat(ServerConfigurationService.getServerName()));
+
+    		//this makes sure the matrixFeedback only grabs users and not roles
+    		String[] emailList = isInviteFeedbackAudience() ? getSelectedUsersEmails() : getSelectedArray();
+    		
+    		for (int i = 0; i < emailList.length; i++) {
+    			String toUser = emailList[i];
+    			if (toUser.startsWith("ROLE")) {
+    				String role = toUser.substring(5, toUser.length());
+    				Set members = getSite().getMembers();
+    				for (Iterator j = members.iterator(); j.hasNext();) {
+    					Member member = (Member) j.next();
+    					if (member.getRole().getId().equals(role)) {
+    						String email = UserDirectoryService.getUser(member.getUserId()).getEmail();
+    						if (validateEmail(email)) {
+    							EmailService.send(from, email,
+    									subject, emailMessage, null, null, null);
+
+    						}
+    					}
+    				}
+
+    			} else {
+    				if (validateEmail(toUser)) {
+    					EmailService.send(from, toUser,
+    							subject, emailMessage, null, null, null);
+    				}
+    			}
+    		}
+
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
     }
 
     protected void addMembers(List added) {
@@ -785,6 +894,32 @@ public class AudienceTool extends HelperToolBase {
 
        return selectedRoleList;
     }
+    
+    public List getSelectedList() {
+
+        List selectedList = new ArrayList();
+        for (Iterator i = getSelectedMembers().iterator(); i.hasNext();) {
+            DecoratedMember decoratedMember = (DecoratedMember) i.next();
+            if (decoratedMember.getBase().isRole()) {
+               String roleName = null;
+               
+               if ( isWorksiteLimited() ) {
+                  roleName = decoratedMember.getBase().getDisplayName();
+               }
+               else {
+                  Site site = getSiteFromRoleMember( decoratedMember.getBase().getId().getValue() );
+                  roleName = formatRole( site, decoratedMember.getBase().getDisplayName() ); 
+               }
+                              
+               selectedList.add(new SelectItem(decoratedMember.getEmail(), 
+                                                   roleName,
+                                                   "role"));
+            }else if ( ! decoratedMember.getBase().isRole() && decoratedMember.getBase().getId() != null ) 
+            	selectedList.add(new SelectItem(decoratedMember.getEmail(), decoratedMember.getBase().getDisplayName(), "member"));
+        }
+
+        return selectedList;
+     }
 
    /**
      * Set list of selected roles
@@ -905,6 +1040,8 @@ public class AudienceTool extends HelperToolBase {
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_PUBLIC_URL);
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_SAVE_NOTIFY_TARGET);
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_SAVE_TARGET);
+        session.removeAttribute(AudienceSelectionHelper.CONTEXT);
+        session.removeAttribute(AudienceSelectionHelper.CONTEXT2);
         session.removeAttribute(PRESENTATION_VIEWERS);
     }
 
@@ -1156,4 +1293,28 @@ public class AudienceTool extends HelperToolBase {
     	String context2 = (String) getAttribute(AudienceSelectionHelper.CONTEXT2);
     	return context2 != null ? context2 : "";
     }
+
+	public String[] getSelectedArray() {
+		return selectedArray;
+	}
+
+	public void setSelectedArray(String[] selectedArray) {
+		this.selectedArray = selectedArray;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public WorksiteManager getWorksiteManager() {
+		return worksiteManager;
+	}
+
+	public void setWorksiteManager(WorksiteManager worksiteManager) {
+		this.worksiteManager = worksiteManager;
+	}
 }
