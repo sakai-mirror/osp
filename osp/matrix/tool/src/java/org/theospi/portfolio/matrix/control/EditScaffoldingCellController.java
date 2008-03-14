@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,10 +60,12 @@ import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider;
 import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Pager;
 import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Sort;
 import org.theospi.portfolio.review.mgt.ReviewManager;
+import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
@@ -96,6 +99,11 @@ public class EditScaffoldingCellController extends
 
 	private ReviewManager reviewManager;
 	
+	private boolean customFormUsed = false;
+	private boolean reflectionFormUsed = false;
+	private boolean feedbackFormUsed = false;
+	private boolean evaluationFormUsed = false;
+	private boolean isCellUsed = false;
 
 	private static ResourceLoader myResources = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
    
@@ -131,6 +139,12 @@ public class EditScaffoldingCellController extends
 			}
 		}
 		
+		customFormUsed = false;
+		reflectionFormUsed = false;
+		feedbackFormUsed = false;
+		evaluationFormUsed = false;
+		isCellUsed = false;
+		
 		model.put("reflectionDevices", getReflectionDevices(def.getSiteId()));
 		model.put("evaluationDevices", getEvaluationDevices(def.getSiteId()));
 		model.put("reviewDevices", getReviewDevices(def.getSiteId()));
@@ -139,24 +153,33 @@ public class EditScaffoldingCellController extends
 				getSelectedAdditionalFormDevices(sCell,def.getSiteId()));
 		model.put("selectedAssignments",
                 AssignmentHelper.getSelectedAssignments(sCell.getWizardPageDefinition().getAttachments()) );
-		model.put("evaluators", getEvaluators(sCell.getWizardPageDefinition()));
+		model.put("evaluators", getSelectedUsers(sCell.getWizardPageDefinition(), MatrixFunctionConstants.EVALUATE_MATRIX));
+		model.put("reviewers", getSelectedUsers(sCell.getWizardPageDefinition(), MatrixFunctionConstants.REVIEW_MATRIX));
 		model.put("pageTitleKey", "title_editCell");
 		model.put("pageInstructionsKey", "instructions_cellSettings");
 		model.put("returnView", getReturnView());
 		model.put("enableAssignments", ServerConfigurationService.getBoolean("osp.experimental.assignments",false) );
 
 		if (sCell != null && sCell.getScaffolding() != null){
-			model.put("isCellUsed", sCell.getScaffolding().isPublished()
-					&& isCellUsed(sCell));
-			
-			model.put("defaultEvaluators", getEvaluators(sCell.getScaffolding()));
+			//after the cell used booleans are set to false, have "icCellUsed(sCell)" update them accordingly
+			if(sCell.getScaffolding().isPublished()){
+				isCellUsed(sCell);
+			}			
+			model.put("defaultEvaluators", getSelectedUsers(sCell.getScaffolding(), MatrixFunctionConstants.EVALUATE_MATRIX));
+			model.put("defaultReviewers", getSelectedUsers(sCell.getScaffolding(), MatrixFunctionConstants.REVIEW_MATRIX));
 			model.put("defaultSelectedAssignments",
 	                AssignmentHelper.getSelectedAssignments(sCell.getScaffolding().getAttachments()) );
 			model.put("defaultSelectedAdditionalFormDevices",
 					getDefaultSelectedAdditionalFormDevices(sCell,def.getSiteId()));
-		}else
-			model.put("isCellUsed", false);
+		}
 
+		
+		model.put("isCellUsed", isCellUsed);
+		model.put("evaluationFormUsed", evaluationFormUsed);
+		model.put("feedbackFormUsed", feedbackFormUsed);
+		model.put("reflectionFormUsed", reflectionFormUsed);
+		model.put("customFormUsed", customFormUsed);
+		
 		return model;
 	}
 
@@ -187,6 +210,9 @@ public class EditScaffoldingCellController extends
 		Map model = new HashMap();
 
 
+		
+		//Deal with checkbox save's:
+		
 	    String suppressItems = (String) request.get("suppressItems");
 		if(suppressItems == null || suppressItems.equalsIgnoreCase("false")){
 			scaffoldingCell.setSuppressItems(false);
@@ -194,18 +220,48 @@ public class EditScaffoldingCellController extends
 			scaffoldingCell.setSuppressItems(true);  
 		}
 		
-		if(request.get("defaultFeedbackEval") == null || request.get("defaultFeedbackEval").toString() == "false"){
-			scaffoldingCell.setDefaultFeedbackEval(false);
+		if(request.get("defaultCustomForm") == null || request.get("defaultCustomForm").toString() == "false"){
+			scaffoldingCell.setDefaultCustomForm(false);
 		}else{
-			scaffoldingCell.setDefaultFeedbackEval(true);  
+			scaffoldingCell.setDefaultCustomForm(true);
 		}
 		
-		if(request.get("defaultUserForms") == null || request.get("defaultUserForms").toString() == "false"){
-			scaffoldingCell.setDefaultUserForms(false);
+		if(request.get("defaultFeedbackForm") == null || request.get("defaultFeedbackForm").toString() == "false"){
+			scaffoldingCell.setDefaultFeedbackForm(false);
 		}else{
-			scaffoldingCell.setDefaultUserForms(true);  
+			scaffoldingCell.setDefaultFeedbackForm(true);
 		}
-
+		
+		if(request.get("defaultReflectionForm") == null || request.get("defaultReflectionForm").toString() == "false"){
+			scaffoldingCell.setDefaultReflectionForm(false);
+		}else{
+			scaffoldingCell.setDefaultReflectionForm(true);
+		}
+		
+		if(request.get("defaultReviewers") == null || request.get("defaultReviewers").toString() == "false"){
+			scaffoldingCell.setDefaultReviewers(false);
+		}else{
+			scaffoldingCell.setDefaultReviewers(true);
+		}
+		
+		if(request.get("defaultEvaluationForm") == null || request.get("defaultEvaluationForm").toString() == "false"){
+			scaffoldingCell.setDefaultEvaluationForm(false);
+		}else{
+			scaffoldingCell.setDefaultEvaluationForm(true);
+		}
+		
+		if(request.get("defaultEvaluators") == null || request.get("defaultEvaluators").toString() == "false"){
+			scaffoldingCell.setDefaultEvaluators(false);
+		}else{
+			scaffoldingCell.setDefaultEvaluators(true);
+		}
+		
+		if(request.get("allowRequestFeedback") == null || request.get("allowRequestFeedback").toString() == "false"){
+			scaffoldingCell.setAllowRequestFeedback(false);
+		}else{
+			scaffoldingCell.setAllowRequestFeedback(true);  
+		}
+		//End Checkbox saves
 
 		if (addFormAction != null) {
 
@@ -448,7 +504,7 @@ public class EditScaffoldingCellController extends
 			session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
 					"true");
 			model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
-		} else if (!forwardView.equals("selectEvaluators")) {
+		} else if (!forwardView.equals("selectEvaluators") && !forwardView.equals("selectReviewers")) {
 			model.put("label", request.get("label"));
 			model.put("finalDest", request.get("finalDest"));
 			model.put("displayText", request.get("displayText"));
@@ -459,11 +515,22 @@ public class EditScaffoldingCellController extends
 			}
 		} 
       else {
-			session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
-					"true");
-			model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
-			setAudienceSelectionVariables(session, scaffoldingCell);
-
+    	  
+    	  session.remove("PRESENTATION_VIEWERS");
+    	  session.remove("audience");
+    	  session.remove("osp.audiencesakai.tool.helper.done.url");
+    	  
+    	  if(forwardView.compareTo("selectEvaluators") == 0){
+    		  session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
+    		  "true");
+    		  model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+    		  setAudienceSelectionVariables(session, scaffoldingCell, AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX);
+		  }else if(forwardView.compareTo("selectReviewers") == 0){
+			  session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
+			  "true");
+			  model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+			  setAudienceSelectionVariables(session, scaffoldingCell, AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX_REVIEW);
+		  }
 		}
 		return model;
 
@@ -484,37 +551,63 @@ public class EditScaffoldingCellController extends
 		return model;
 	}
 
-	protected List getEvaluators(ObjectWithWorkflow oWW) {
-		List evalList = new ArrayList();
+//	protected List getEvaluators(ObjectWithWorkflow oWW) {
+//		List evalList = new ArrayList();
+//		Id id = oWW.getId() == null ? oWW.getNewId() : oWW.getId();
+//
+//		List evaluators = getAuthzManager().getAuthorizations(null,
+//				MatrixFunctionConstants.EVALUATE_MATRIX, id);
+//
+//		for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
+//			Authorization az = (Authorization) iter.next();
+//			Agent agent = az.getAgent();
+//			String userId = az.getAgent().getEid().getValue();
+//			if (agent.isRole()) {
+//				evalList.add(MessageFormat.format(myResources
+//						.getString("decorated_role_format"),
+//						new Object[] { agent.getDisplayName() }));
+//			} else {
+//				evalList.add(MessageFormat.format(myResources
+//						.getString("decorated_user_format"), new Object[] {
+//						agent.getDisplayName(), userId }));
+//			}
+//		}
+//
+//		return evalList;
+//	}
+
+	
+	protected List getSelectedUsers(ObjectWithWorkflow oWW, String function) {
+		List returnList = new ArrayList();
 		Id id = oWW.getId() == null ? oWW.getNewId() : oWW.getId();
 
 		List evaluators = getAuthzManager().getAuthorizations(null,
-				MatrixFunctionConstants.EVALUATE_MATRIX, id);
+				function, id);
 
 		for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
 			Authorization az = (Authorization) iter.next();
 			Agent agent = az.getAgent();
 			String userId = az.getAgent().getEid().getValue();
 			if (agent.isRole()) {
-				evalList.add(MessageFormat.format(myResources
+				returnList.add(MessageFormat.format(myResources
 						.getString("decorated_role_format"),
 						new Object[] { agent.getDisplayName() }));
 			} else {
-				evalList.add(MessageFormat.format(myResources
+				returnList.add(MessageFormat.format(myResources
 						.getString("decorated_user_format"), new Object[] {
 						agent.getDisplayName(), userId }));
 			}
 		}
 
-		return evalList;
+		return returnList;
 	}
-
+	
 	protected void setAudienceSelectionVariables(Map session,
-			ScaffoldingCell scaffoldingCell) {
+			ScaffoldingCell scaffoldingCell, String audienceFunction) {
 		WizardPageDefinition wpd = scaffoldingCell.getWizardPageDefinition();
 		
 		session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION,
-						AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX);
+				audienceFunction);
 
 		String id = wpd.getId() != null ? wpd.getId().getValue() : wpd
 				.getNewId().getValue();
@@ -727,26 +820,59 @@ public class EditScaffoldingCellController extends
 				if (cell.getScaffoldingCell().equals(scaffoldingCell)) {
 					WizardPage wizardPage = cell.getWizardPage();
 					String pageId = wizardPage.getId().getValue();
-					if (wizardPage.getReflections() != null
-							&& wizardPage.getReflections().size() > 0)
-						return true;
-					if (wizardPage.getPageForms() != null
-							&& wizardPage.getPageForms().size() > 0)
-						return true;
-					if (wizardPage.getFeedback() != null
-							&& wizardPage.getFeedback().size() > 0)
-						return true;
-					if (wizardPage.getAttachments() != null
-							&& wizardPage.getAttachments().size() > 0)
-						return true;
-					if (reviewManager.getReviewsByParent(pageId) != null
-							&& reviewManager.getReviewsByParent(pageId).size() > 0)
-						return true;
+					if(!isCellUsed){
+						if (wizardPage.getReflections() != null
+								&& wizardPage.getReflections().size() > 0)
+							isCellUsed = true;
+						if (wizardPage.getPageForms() != null
+								&& wizardPage.getPageForms().size() > 0)
+							isCellUsed = true;
+						if (wizardPage.getFeedback() != null
+								&& wizardPage.getFeedback().size() > 0)
+							isCellUsed = true;
+						if (wizardPage.getAttachments() != null
+								&& wizardPage.getAttachments().size() > 0)
+							isCellUsed = true;
+						if (reviewManager.getReviewsByParent(pageId) != null
+								&& reviewManager.getReviewsByParent(pageId).size() > 0)
+							isCellUsed = true;
+					}
+					if(!reflectionFormUsed){
+						List reflections = getReviewManager().getReviewsByParentAndType(
+								wizardPage.getId().getValue(), Review.REFLECTION_TYPE, wizardPage.getPageDefinition().getSiteId(), MatrixContentEntityProducer.MATRIX_PRODUCER);
+						if(reflections != null	&& reflections.size() > 0)
+							reflectionFormUsed = true;
+					}
+					if(!customFormUsed){
+						Set pageForms = getMatrixManager().getPageForms(wizardPage);
+						if(pageForms != null && pageForms.size() > 0)
+							customFormUsed = true;
+					}
+					if(!feedbackFormUsed){
+						List feedbacks = getReviewManager().getReviewsByParentAndType(
+								wizardPage.getId().getValue(), Review.FEEDBACK_TYPE, wizardPage.getPageDefinition().getSiteId(), MatrixContentEntityProducer.MATRIX_PRODUCER);
+						if(feedbacks != null	&& feedbacks.size() > 0)
+							feedbackFormUsed = true;
+					}
+					if(!evaluationFormUsed){
+						List evals = getReviewManager().getReviewsByParentAndType(
+								wizardPage.getId().getValue(), Review.EVALUATION_TYPE, wizardPage.getPageDefinition().getSiteId(), MatrixContentEntityProducer.MATRIX_PRODUCER);
+						if(evals != null	&& evals.size() > 0)
+							evaluationFormUsed = true;
+					}
+
+					
 					// note: wizardPage.[get|set]Feedback() does not appear to
 					// be used
 				}
 			}
+			//there is no need to go on if all booleans are true
+			if(customFormUsed && reflectionFormUsed && feedbackFormUsed && evaluationFormUsed)
+				break;
 		}
+		
+		//if any boolean is true (including isCellUsed) then isCellUsed is true:
+		isCellUsed = isCellUsed || customFormUsed || reflectionFormUsed || feedbackFormUsed || evaluationFormUsed;
 
 		return false;
 	}
@@ -772,5 +898,25 @@ public class EditScaffoldingCellController extends
 			providers.add(new DecoratedTaggingProvider(activity, provider));
 		}
 		return providers;
+	}
+
+	public boolean isCustomFormUsed() {
+		return customFormUsed;
+	}
+
+	public boolean isReflectionFormUsed() {
+		return reflectionFormUsed;
+	}
+
+	public boolean isFeedbackFormUsed() {
+		return feedbackFormUsed;
+	}
+
+	public boolean isEvaluationFormUsed() {
+		return evaluationFormUsed;
+	}
+
+	public boolean isCellUsed() {
+		return isCellUsed;
 	}
 }

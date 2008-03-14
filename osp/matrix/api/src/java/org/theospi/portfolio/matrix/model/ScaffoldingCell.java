@@ -267,20 +267,49 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    public void setSuppressItems(boolean suppressItems){
 	   wizardPageDefinition.setSuppressItems(suppressItems);
    }
-   
-   public boolean isDefaultFeedbackEval() {
-	   return wizardPageDefinition.isDefaultFeedbackEval();
-   }
 
-   public void setDefaultFeedbackEval(boolean defaultFeedbackEval) {
-	   wizardPageDefinition.setDefaultFeedbackEval(defaultFeedbackEval);
+   public boolean isDefaultCustomForm() {
+	   return wizardPageDefinition.isDefaultCustomForm();
+   }
+   public void setDefaultCustomForm(boolean defaultCustomForm) {
+	   wizardPageDefinition.setDefaultCustomForm(defaultCustomForm);
+   }
+   public boolean isDefaultReflectionForm() {
+	   return wizardPageDefinition.isDefaultReflectionForm();
+   }
+   public void setDefaultReflectionForm(boolean defaultReflectionForm) {
+	   wizardPageDefinition.setDefaultReflectionForm(defaultReflectionForm);
+   }
+   public boolean isDefaultFeedbackForm() {
+	   return wizardPageDefinition.isDefaultFeedbackForm();
+   }
+   public void setDefaultFeedbackForm(boolean defaultFeedbackForm) {
+	   wizardPageDefinition.setDefaultFeedbackForm(defaultFeedbackForm);
+   }
+   public boolean isDefaultReviewers() {
+	   return wizardPageDefinition.isDefaultReviewers();
+   }
+   public void setDefaultReviewers(boolean defaultReviewers) {
+	   wizardPageDefinition.setDefaultReviewers(defaultReviewers);
+   }
+   public boolean isDefaultEvaluationForm() {
+	   return wizardPageDefinition.isDefaultEvaluationForm();
+   }
+   public void setDefaultEvaluationForm(boolean defaultEvaluationForm) {
+	   wizardPageDefinition.setDefaultEvaluationForm(defaultEvaluationForm);
+   }
+   public boolean isDefaultEvaluators() {
+	   return wizardPageDefinition.isDefaultEvaluators();
+   }
+   public void setDefaultEvaluators(boolean defaultEvaluators) {
+	   wizardPageDefinition.setDefaultEvaluators(defaultEvaluators);
    }
    
-   public boolean isDefaultUserForms() {
-	   return wizardPageDefinition.isDefaultUserForms();
+   public boolean isAllowRequestFeedback(){
+	   return wizardPageDefinition.isAllowRequestFeedback();
    }
-
-   public void setDefaultUserForms(boolean defaultUserForms) {
-	   wizardPageDefinition.setDefaultUserForms(defaultUserForms);
+   
+   public void setAllowRequestFeedback(boolean allowRequestFeedback){
+	   wizardPageDefinition.setAllowRequestFeedback(allowRequestFeedback);
    }
 }

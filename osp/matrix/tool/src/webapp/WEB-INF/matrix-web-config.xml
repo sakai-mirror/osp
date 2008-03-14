@@ -706,6 +706,7 @@
             <prop key="removeLevCrit">removeLevCritRedirect</prop>
             <prop key="editScaffoldingConfirm">editScaffoldingConfirmRedirect</prop>
             <prop key="selectEvaluators">selectCellEvaluators</prop>
+            <prop key="selectReviewers">selectCellEvaluators</prop>
          </props>
       </property>
       <property name="validator"><ref bean="matrixValidator"/></property>
@@ -879,6 +880,9 @@
             </property>
             <property name="workflowManager">
                <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
+            </property>
+             <property name="reviewManager">
+               <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
             </property>
          </bean>
       </property>
@@ -1055,6 +1059,7 @@
 			<prop key="return">viewScaffoldingRedirect</prop>
             <prop key="editScaffoldingCellConfirm">editScaffoldingCellConfirmRedirect</prop>
             <prop key="selectEvaluators">selectCellEvaluators</prop>
+            <prop key="selectReviewers">selectCellEvaluators</prop>
             <prop key="createGuidance">createGuidance</prop>
             <prop key="deleteGuidance">editScaffoldingCellRedirect</prop>
             <prop key="editInstructions">editInstructions</prop>

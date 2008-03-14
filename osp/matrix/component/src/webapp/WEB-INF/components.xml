@@ -324,7 +324,6 @@
             <entry>
                <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.maintain"/></key>
                <list>
-                  <value>osp.matrix.review</value>
                   <value>osp.matrix.scaffolding.create</value>
                   <value>osp.matrix.scaffolding.edit</value>
                   <value>osp.matrix.scaffolding.delete</value>
@@ -333,21 +332,9 @@
                </list>
             </entry>
             <entry>
-               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.review"/></key>
-               <list>
-                  <value>osp.matrix.review</value>
-               </list>
-            </entry>
-            <entry>
                <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.access"/></key>
                <list>
                   <value>osp.matrix.scaffolding.use</value>
-               </list>
-            </entry>
-            <entry>
-               <key><ref bean="org.theospi.portfolio.security.model.CrossRealmRoleWrapper.evaluate"/></key>
-               <list>
-                  <value>osp.matrix.evaluate</value>
                </list>
             </entry>
          </map>
@@ -360,8 +347,6 @@
             <value>osp.matrix.scaffolding.delete</value>
             <value>osp.matrix.scaffolding.publish</value>
             <value>osp.matrix.scaffolding.export</value>
-            <value>osp.matrix.review</value>
-            <value>osp.matrix.evaluate</value>
          </list>
       </property>
    </bean>

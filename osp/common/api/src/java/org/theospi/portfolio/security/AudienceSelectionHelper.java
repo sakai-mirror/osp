@@ -37,6 +37,8 @@ public interface AudienceSelectionHelper {
       "osp.wizard.evaluate";
    public static final String AUDIENCE_FUNCTION_MATRIX =
       "osp.matrix.evaluate";
+   public static final String AUDIENCE_FUNCTION_MATRIX_REVIEW =
+	      "osp.matrix.review";   
    public static final String AUDIENCE_FUNCTION_INVITE_FEEDBACK =
 	      "osp.inviteFeedback.evaluate";
    public static final String AUDIENCE_FUNCTION_PORTFOLIO =

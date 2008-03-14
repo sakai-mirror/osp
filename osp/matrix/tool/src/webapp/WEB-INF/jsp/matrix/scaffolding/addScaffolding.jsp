@@ -396,26 +396,7 @@
   </fieldset>
   <!-- ************* Progression Area End ************* -->
 
-	<!--  ********** Reviewer Group Access Start ************-->
-	<c:if test="${not ignoreReviewerGroups}">
-		<fieldset class="fieldsetVis">
-			<legend><osp:message key="matrix_group_access"/></legend>
-			<spring:bind path="scaffolding.reviewerGroupAccess">
-				<c:forTokens var="token" items="normal,unrestricted" delims="," varStatus="loopCount">
-					<div class="checkbox indnt1">
-						<input type="radio" id="<c:out value="${token}" />" name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
-							<c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
-						/>
-						<label for="<c:out value="${token}" />">
-							<osp:message key="${token}_group_access_label" />
-							<osp:message key="${token}_group_access_desc" />
-						</label>
-					</div>
-				</c:forTokens>
-			</spring:bind>
-		</fieldset>
-	</c:if>
-	<!--  ********** Reviewer Group Access End ************-->
+
 
 
 
@@ -423,7 +404,9 @@
 	<!-- *************  User Forms Area  Start ************* -->
 	<fieldset class="fieldsetVis">
 		<legend><fmt:message key="legend_additional_user_Forms"/></legend>
-
+		<p>
+			<fmt:message key="info_defaultForms" />
+		</p>
 		<!-- ************* Additional Forms Area Start ************* -->   
 		<h5><fmt:message key="title_additionalForms"/></h5>
 		<p class="indnt1"> 
@@ -434,7 +417,7 @@
 		</p>
 
 		<p class="shorttext">
-			<label for="selectAdditionalFormId" ><fmt:message key="label_selectForm"/></label>    
+			<label for="selectAdditionalFormId" ><fmt:message key="label_selectCustomForm"/></label>    
 			<select name="selectAdditionalFormId"  id="selectAdditionalFormId"  onchange="document.getElementById('addForm-id').className='active';">
 				<option value="" selected="selected"><fmt:message key="select_form_text" /></option>
 				<c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
@@ -494,7 +477,7 @@
 				<label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectReflectionDevice"/></label>    
 				<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>" 
 					<c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
-					<option onclick="document.forms[0].reflectionDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
+					<option onclick="document.forms[0].reflectionDeviceType.value='';" value=""><fmt:message key="select_form_text" /></option>
 					<c:forEach var="refDev" items="${reflectionDevices}" varStatus="loopCount">
 						<option onclick="document.forms[0].reflectionDeviceType.value='<c:out value="${refDev.type}"/>';" 
 						value="<c:out value="${refDev.id}"/>" <c:if test="${status.value==refDev.id}"> selected="selected"</c:if>><c:out value="${refDev.name}"/></option>
@@ -516,10 +499,12 @@
 
 
 
-	<!--  ********** Feedback and Evaluation start ************* -->
+	<!--  ********** Feedback start ************* -->
 	<fieldset class="fieldsetVis">
-		<legend><fmt:message key="legend_feed_eval"/></legend>
-
+		<legend><fmt:message key="legend_feedback"/></legend>
+		<p>
+			<fmt:message key="info_defaultFeedback" />
+		</p>
 		<!-- ************* Feedback Area Start ************* -->   
 		<spring:bind path="scaffolding.reviewDeviceType">  
 			<input type="hidden" name="<c:out value="${status.expression}"/>"
@@ -537,7 +522,7 @@
 				<label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectReviewDevice"/></label>    
 				<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>"
 					<c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
-					<option onclick="document.forms[0].reviewDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
+					<option onclick="document.forms[0].reviewDeviceType.value='';" value=""><fmt:message key="select_form_text" /></option>
 					<c:forEach var="reviewDev" items="${reviewDevices}" varStatus="loopCount">
 						<option onclick="document.forms[0].reviewDeviceType.value='<c:out value="${reviewDev.type}"/>';" 
 						value="<c:out value="${reviewDev.id}"/>" <c:if test="${status.value==reviewDev.id}"> selected="selected"</c:if>><c:out value="${reviewDev.name}"/></option>
@@ -550,7 +535,54 @@
 			<input type="hidden" name="<c:out value="${status.expression}"/>"
 			value="<c:out value="${status.value}"/>" />
 		</spring:bind>
+		
+		
+		
+		<!-- ************* Reviewers List Start ************* -->            
+	
+		<h5><fmt:message key="label_reviwers"/></h5>
+		<c:if test="${not empty reviewers}">
+			<ol>
+				<c:forEach var="reviwer" items="${reviewers}">
+					<li><c:out value="${reviwer}" /></li>
+				</c:forEach>
+			</ol>
+		</c:if>	
+		<p class="indnt1">
+			<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+				<osp:message key="select_reviewers"/>
+			</a>	 
+			<c:if test="${empty reviewers}">
+				&nbsp;<fmt:message key="info_reviewersNone"/>
+			</c:if>
+			<p>
+			<spring:bind path="scaffolding.allowRequestFeedback">  			
+				<input type="checkbox" name="allowRequestFeedback" value="true"  id="allowRequestFeedback" 
+					<c:if test="${status.value}">
+						checked
+					</c:if> 
+				 />
+				<label for="allowRequestFeedback" ><fmt:message key="allowRequestFeedback"/></label>    
+			</spring:bind>	
+			</p>
+		</p>
+	<!-- ************* Reviewers List End ************* -->
+		
+		
+		
 		<!-- ************* Feedback Area End ************* -->   
+		
+	</fieldset>	
+		
+		
+	<!--  ********** Evaluation start ************* -->
+	<fieldset class="fieldsetVis">
+		<legend><fmt:message key="legend_evaluation"/></legend>
+		<p>
+			<fmt:message key="info_defaultEvaluation" />
+		</p>
+		
+		
 		
 		<!-- ************* Review and Evaluation Area Start ************* -->            
 		
@@ -567,7 +599,7 @@
 					<label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectEvaluationDevice"/></label>    
 					<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>"
 						<c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
-						<option onclick="document.forms[0].evaluationDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
+						<option onclick="document.forms[0].evaluationDeviceType.value='';" value=""><fmt:message key="select_form_text" /></option>
 						<c:forEach var="evalDev" items="${evaluationDevices}" varStatus="loopCount">
 							<option onclick="document.forms[0].evaluationDeviceType.value='<c:out value="${evalDev.type}"/>';" 
 							value="<c:out value="${evalDev.id}"/>" <c:if test="${status.value==evalDev.id}"> selected="selected"</c:if>><c:out value="${evalDev.name}"/></option>

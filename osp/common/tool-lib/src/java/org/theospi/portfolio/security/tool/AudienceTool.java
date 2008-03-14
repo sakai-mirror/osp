@@ -331,6 +331,13 @@ public class AudienceTool extends HelperToolBase {
            return false;
     }
     
+    public boolean isMatrixAudienceReview() {
+        if ( getAudienceFunction().equals(AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX_REVIEW) )
+           return true;
+        else
+           return false;
+    }
+    
     public boolean isInviteFeedbackAudience() {
         if ( getAudienceFunction().equals(AudienceSelectionHelper.AUDIENCE_FUNCTION_INVITE_FEEDBACK) )
            return true;
@@ -1043,6 +1050,12 @@ public class AudienceTool extends HelperToolBase {
         session.removeAttribute(AudienceSelectionHelper.CONTEXT);
         session.removeAttribute(AudienceSelectionHelper.CONTEXT2);
         session.removeAttribute(PRESENTATION_VIEWERS);
+        
+        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION_INVITE_FEEDBACK);
+        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX);
+        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX_REVIEW);
+        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO);
+        session.removeAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD);
     }
 
     public String getStepString() {

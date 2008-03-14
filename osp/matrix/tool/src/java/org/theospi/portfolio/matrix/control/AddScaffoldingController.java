@@ -48,13 +48,16 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.assignment.AssignmentHelper;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
+import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.review.mgt.ReviewManager;
+import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.shared.model.CommonFormBean;
@@ -80,6 +83,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    public final static String FORM_TYPE = "form";
    private WizardManager wizardManager;
+
    
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.FormController#referenceData(java.util.Map, java.lang.Object, org.springframework.validation.Errors)
@@ -97,6 +101,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
     	  
          model.put("isMatrixUsed", scaffolding.isPublished() && isMatrixUsed( scaffolding.getId() ) );
          model.put("evaluators", getEvaluators(scaffolding));
+         model.put("reviewers", getReviewers(scaffolding));
          model.put("evaluationDevices", getEvaluationDevices(worksiteId.getValue()));
          model.put("reviewDevices", getReviewDevices(worksiteId.getValue()));
          model.put("reflectionDevices", getReflectionDevices(worksiteId.getValue()));
@@ -107,6 +112,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
       else{
          model.put("isMatrixUsed", false );
          model.put("evaluators",null);
+         model.put("reviewers",null);         
          model.put("evaluationDevices", null);
          model.put("reviewDevices", null);
          model.put("reflectionDevices", null);
@@ -141,32 +147,39 @@ public class AddScaffoldingController extends BaseScaffoldingController
       
       scaffolding.setOwner(authManager.getAgent());
       
+      
+      if(request.get("allowRequestFeedback") == null || request.get("allowRequestFeedback").toString() == "false"){
+    	  scaffolding.setAllowRequestFeedback(false);
+      }else{
+    	  scaffolding.setAllowRequestFeedback(true);  
+      }
+
       if (addFormAction != null) {
 
 			String id = (String) request.get("selectAdditionalFormId");
 			if ( id != null && !id.equals("") && !scaffolding.getAdditionalForms().contains(id) )
 				scaffolding.getAdditionalForms().add(id);
 			session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
-					"true");
+			"true");
 			model.put("scaffolding", scaffolding);
 			return new ModelAndView("success", model);
-		}
-      
+      }
+
       if (generateAction != null) {
-         if (scaffolding.isPublished()) {                              
-            return new ModelAndView("editScaffoldingConfirm");             
-         }           
-         
-         scaffolding = saveScaffolding(scaffolding);
-         session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
-         session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
-         model.put("scaffolding_id", scaffolding.getId());
-         return new ModelAndView("view", model);
+    	  if (scaffolding.isPublished()) {                              
+    		  return new ModelAndView("editScaffoldingConfirm");             
+    	  }           
+    	  
+    	  scaffolding = saveScaffolding(scaffolding);
+    	  session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
+    	  session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
+    	  model.put("scaffolding_id", scaffolding.getId());
+    	  return new ModelAndView("view", model);
       }
       if (cancelAction != null) {
-         return new ModelAndView("return");
+    	  return new ModelAndView("return");
       }
-      
+
       if (action != null) {
     	  if (action.equals("removeFormDef")) {
     		  String params = (String) request.get("params");
@@ -197,26 +210,31 @@ public class AddScaffoldingController extends BaseScaffoldingController
     		  }
     		  if(forwardView.compareTo("selectEvaluators") == 0){
     			  session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
-				"true");
-            	model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
-            	setAudienceSelectionVariables(session, scaffolding);
-            }
-            //matrixManager.storeScaffolding(scaffolding);
-            
-            //touchAllCells(scaffolding);
-            sessionBean.setScaffolding(scaffolding);
-            model.put("scaffolding_id", scaffolding.getId());
-            
-            return new ModelAndView(forwardView, model);
-            
-         }
+    			  "true");
+    			  model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+    			  setAudienceSelectionVariables(session, scaffolding, true);
+    		  }else if(forwardView.compareTo("selectReviewers") == 0){
+    			  session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
+    			  "true");
+    			  model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+    			  setAudienceSelectionVariables(session, scaffolding, false);
+    		  }
+    		  //matrixManager.storeScaffolding(scaffolding);
+
+    		  //touchAllCells(scaffolding);
+    		  sessionBean.setScaffolding(scaffolding);
+    		  model.put("scaffolding_id", scaffolding.getId());
+
+    		  return new ModelAndView(forwardView, model);
+
+    	  }
       }
       return new ModelAndView("success");
    }
    
    
    protected void setAudienceSelectionVariables(Map session,
-			Scaffolding scaffolding) {
+			Scaffolding scaffolding, boolean evaluate) {
 	   	Id scaffid;
 		//if scaffolding id does not exists (add matrix), 
 		//check if there is a "new"id, which acts like a temp id,
@@ -231,9 +249,13 @@ public class AddScaffoldingController extends BaseScaffoldingController
 		}
 		String id = scaffid.getValue();
 
-		
-		session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION,
-						AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX);		
+		if(evaluate){
+			session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION,
+						AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX);
+		}else{
+			session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION,
+					AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX_REVIEW);
+		}
 		session.put(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
 		session.put(AudienceSelectionHelper.AUDIENCE_SITE, scaffolding.getWorksiteId().toString());
 		
@@ -284,6 +306,50 @@ public class AddScaffoldingController extends BaseScaffoldingController
 
 		return evalList;
 	}
+   
+   protected List getReviewers(Scaffolding scaffolding) {
+		List evalList = new ArrayList();
+		Id id;
+		
+			
+		//if scaffolding id does not exists (add matrix), 
+		//check if there is a "new"id, which acts like a temp id,
+		//if not, create one, then use the "new"id as a reference
+		if(scaffolding.getId() == null){
+			if(scaffolding.getNewId() == null){
+				scaffolding.setNewId(getIdManager().createId());
+			}
+			id = scaffolding.getNewId();
+		}else{
+			id = scaffolding.getId();
+		}
+
+		if(id != null){
+			List evaluators = getAuthzManager().getAuthorizations(null,
+					MatrixFunctionConstants.REVIEW_MATRIX, id);
+
+			for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
+				Authorization az = (Authorization) iter.next();
+				Agent agent = az.getAgent();
+				String userId = az.getAgent().getEid().getValue();
+				if (agent.isRole()) {
+					evalList.add(MessageFormat.format(myResources
+							.getString("decorated_role_format"),
+							new Object[] { agent.getDisplayName() }));
+				} else {
+					evalList.add(MessageFormat.format(myResources
+							.getString("decorated_user_format"), new Object[] {
+						agent.getDisplayName(), userId }));
+				}
+			}
+		}
+
+		return evalList;
+	}
+   
+  
+   
+   
    
    protected Collection getEvaluationDevices(String siteId) {
 		Collection all = getFormsForSelect(WizardFunctionConstants.EVALUATION_TYPE, siteId);

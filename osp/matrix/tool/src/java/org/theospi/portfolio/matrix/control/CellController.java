@@ -21,25 +21,22 @@
 
 package org.theospi.portfolio.matrix.control;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.assignment.api.AssignmentSubmission;
 import org.sakaiproject.assignment.cover.AssignmentService;
+import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
@@ -48,13 +45,14 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.taggable.api.TaggingHelperInfo;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.tool.api.SessionManager;
-import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
@@ -75,7 +73,7 @@ import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Sort;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
-import org.theospi.portfolio.security.AudienceSelectionHelper;
+import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.CommonFormBean;
 import org.theospi.portfolio.style.mgt.StyleManager;
@@ -127,13 +125,32 @@ public class CellController implements FormController, LoadObjectController {
 		CellFormBean cell = (CellFormBean) command;
 				
 		if((cell != null || cell.getCell() == null) && request.get("feedbackReturn") != null){
-			cell.setCell(matrixManager.getCell(idManager.getId(request.get("feedbackReturn").toString())));
+			//feedbackReturn is returned from FeedbackHelperController and is the Id of the wizardPage of the cell.
+			cell.setCell(matrixManager.getCellFromPage(idManager.getId(request.get("feedbackReturn").toString())));
 		}
 	
 
 		Map model = new HashMap();
 
 
+		//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
+		model.put("matrixCanEvaluate", hasPermission(cell.getCell()
+				.getScaffoldingCell().isDefaultEvaluators() ? cell.getCell()
+				.getScaffoldingCell().getScaffolding().getId() : cell.getCell()
+				.getScaffoldingCell().getWizardPageDefinition().getId(),
+				cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
+				MatrixFunctionConstants.EVALUATE_MATRIX));
+		//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
+		//also, compare first result with the user's cell review list by sending the user's cell id
+		model.put("matrixCanReview", hasPermission(cell.getCell()
+				.getScaffoldingCell().isDefaultReviewers() ? cell.getCell()
+				.getScaffoldingCell().getScaffolding().getId() : cell.getCell()
+				.getScaffoldingCell().getWizardPageDefinition().getId(),
+				cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
+				MatrixFunctionConstants.REVIEW_MATRIX)
+				|| hasPermission(cell.getCell().getWizardPage().getId(),
+						cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
+						MatrixFunctionConstants.FEEDBACK_MATRIX));
 		model.put("isMatrix", "true");
 		model.put("currentUser", getSessionManager().getCurrentSessionUserId());
 		model.put("CURRENT_GUIDANCE_ID_KEY", "session."
@@ -162,20 +179,14 @@ public class CellController implements FormController, LoadObjectController {
 		String siteId = cell.getCell().getWizardPage().getPageDefinition()
 				.getSiteId();
 
-		if(cell.getCell().getScaffoldingCell().getWizardPageDefinition().isDefaultUserForms()){
-			//use the forms from the matrix (default forms)
+		if(cell.getCell().getScaffoldingCell().getWizardPageDefinition().isDefaultCustomForm()){
 			model.put("cellFormDefs", processAdditionalForms(cell.getCell()
 					.getScaffoldingCell().getScaffolding().getAdditionalForms()));
 		}else{
 			model.put("cellFormDefs", processAdditionalForms(cell.getCell()
 					.getScaffoldingCell().getAdditionalForms()));
 		}
-		if(cell.getCell().getScaffoldingCell().getWizardPageDefinition().isDefaultFeedbackEval()){
-			//user the forms from the matrix (default forms)
-			
-		}else{
-			
-		}
+
 		model.put("assignments", getUserAssignments(cell)); 
 		model.put("reviews", getReviewManager().getReviewsByParentAndType(
 				pageId, Review.FEEDBACK_TYPE, siteId, getEntityProducer()));
@@ -222,6 +233,56 @@ public class CellController implements FormController, LoadObjectController {
 		clearSession(session);
 		return model;
 	}
+	
+	/**
+	 * finds the list of evaluators/roles of the site id passed and checks against the current user.
+	 * returns true if user or role matches, otherwise false
+	 * 
+	 * @param id
+	 * @param worksiteId
+	 * @param function
+	 * @return
+	 */
+	protected boolean hasPermission(Id id, Id worksiteId, String function){
+		if(id == null)
+			return false;
+		
+		Site site = null;
+		try {
+			site = SiteService.getSite(worksiteId.getValue());
+		} catch (IdUnusedException e) {
+			e.printStackTrace();
+		}
+
+		if(site == null)
+			return false;
+
+		Role userRole = site.getUserRole(authManager.getAgent().getId().getValue());
+		List evaluators = getAuthzManager().getAuthorizations(null,
+				function, id);
+
+		for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
+			Authorization az = (Authorization) iter.next();
+			Agent agent = az.getAgent();
+			if (agent.isRole()) {
+				if(userRole != null){
+					// see if the user's role matches with the evaluation role: 
+					//(fyi, display name returns the role if the agent is a role)
+					if (userRole.getId().compareTo(
+							agent.getDisplayName()) == 0)
+						return true;
+				}
+			} else {
+				// see if the user matches with the evaluator user
+				if (authManager.getAgent().getId().getValue().compareTo(
+						agent.getId().toString()) == 0)
+					return true;
+			}
+		}
+
+		return false;
+	}
+	
 
 	/**
 	 ** Return list of AssignmentSubmissions, associated with this cell
@@ -359,8 +420,9 @@ public class CellController implements FormController, LoadObjectController {
 		String inviteFeedback = (String) request.get("inviteFeedback");
 		
 		if(inviteFeedback != null){
-			session.put("cellId", cell.getId().toString());
-			session.put("matrixCall", "matrixCall");
+			session.put("feedbackCellId", cell.getId().getValue());
+			session.put("feedbackMatrixCall", "feedbackMatrixCall");
+
 			return new ModelAndView("feedbackHelper");
 		}
 

@@ -14,7 +14,8 @@
 
 <f:view>
 
-<sakai:view_title rendered="#{not audience.portfolioAudience && not audience.inviteFeedbackAudience}" value="#{common_msgs.audience_eval_title}"/>
+<sakai:view_title rendered="#{audience.matrixAudienceReview}" value="#{common_msgs.audience_review_title}"/>
+<sakai:view_title rendered="#{not audience.portfolioAudience && not audience.inviteFeedbackAudience && not audience.matrixAudienceReview}" value="#{common_msgs.audience_eval_title}"/>
 <sakai:view_title rendered="#{audience.inviteFeedbackAudience}" value="#{common_msgs.matrixFeedbackTitle}"/>
 <c:if test="${audience.inviteFeedbackAudience}">
   <sakai:instruction_message value="#{common_msgs.matrixFeedbackInstructions}"/>
@@ -22,7 +23,7 @@
 <h3><div class="highlight"><h:outputText value="#{audience.pageContext}"/></div></h3>
 <div class="highlight"><h:outputText value="#{audience.pageContext2}"/></div>
 <sakai:view>   
-<f:subview rendered="#{audience.portfolioAudience}" id="steps">
+<f:subview rendered="#{audience.portfolioAudience}" id="stepsInclude">
     <%@ include file="steps.jspf" %>
 </f:subview>
 
@@ -34,6 +35,9 @@
 </c:if>
 <c:if test="${audience.portfolioAudience}">
   <sakai:instruction_message value="#{common_msgs.audience_portfolio_instructions}"/>
+</c:if>
+<c:if test="${audience.matrixAudienceReview}">
+  <sakai:instruction_message value="#{common_msgs.audience_addReviewers}"/>
 </c:if>
 
 
@@ -55,6 +59,9 @@
                </c:if>               
                <c:if test="${audience.portfolioAudience}">
                   <ospx:xheadertitle id="userTitle" value="#{common_msgs.audience_portfolio_user_title}" />
+               </c:if>
+               <c:if test="${audience.matrixAudienceReview}">
+               	  <ospx:xheadertitle id="userTitle" value="#{common_msgs.audience_addReviewers}" />
                </c:if>
                <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
                   <h:panelGrid id="transferUserTable" columns="3" columnClasses="available,transferButtons,selected" summary="#{common_msgs.name_table_summary}">
@@ -104,6 +111,9 @@
                               </c:if>
                               
                               <c:if test="${audience.portfolioAudience}">
+                                    <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
+                              </c:if>
+                              <c:if test="${audience.matrixAudienceReview}">
                                     <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
                               </c:if>
                            </ospx:splitsection>
@@ -166,6 +176,9 @@
                      <c:if test="${audience.portfolioAudience}">
                         <h:outputFormat value = "#{common_msgs.audience_individual_users}" />
                      </c:if>
+                     <c:if test="${audience.matrixAudienceReview}">
+                        <h:outputFormat value = "#{common_msgs.audience_individual_evaluators}" />
+                     </c:if>
                      <f:verbatim></p></f:verbatim>
                   </f:subview>
                   
@@ -178,6 +191,9 @@
             <!-- worksite role drawer -->
             <ospx:xheader>
                <c:if test="${audience.wizardAudience}">
+                  <ospx:xheadertitle id="roleTitle" value="#{common_msgs.audience_role_title}" />
+               </c:if>
+               <c:if test="${audience.matrixAudienceReview}">
                   <ospx:xheadertitle id="roleTitle" value="#{common_msgs.audience_role_title}" />
                </c:if>
                <c:if test="${audience.matrixAudience}">
@@ -225,6 +241,9 @@
                            <ospx:splitsection valign="top">
                               <c:if test="${audience.wizardAudience}">
                                     <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
+                              </c:if>
+                              <c:if test="${audience.matrixAudienceReview}">
+                                    <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
                               </c:if>
                               <c:if test="${audience.matrixAudience}">
                                     <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>

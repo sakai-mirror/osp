@@ -221,8 +221,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       String worksiteId = grid.getScaffolding().getWorksiteId().getValue();
 
       String filteredGroup = (String) request.get(GROUP_FILTER);
-      boolean allowAllGroups = ServerConfigurationService.getBoolean(MatrixFunctionConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
-      			|| grid.getScaffolding().getReviewerGroupAccess() == Scaffolding.UNRESTRICTED_GROUP_ACCESS;
+      boolean allowAllGroups = false;
       List<Group> groupList = new ArrayList<Group>(getGroupList(worksiteId, allowAllGroups));
       //Collections.sort(groupList);
       //TODO: Figure out why ClassCastExceptions fire if we do this the obvious way...  The User list sorts fine

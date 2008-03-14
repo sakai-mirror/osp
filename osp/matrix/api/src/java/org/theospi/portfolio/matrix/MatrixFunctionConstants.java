@@ -49,6 +49,7 @@ public interface MatrixFunctionConstants {
    public static final String REVIEW_MATRIX = MATRIX_PREFIX + "review";
    public static final String EVALUATE_MATRIX = MATRIX_PREFIX + "evaluate";
    public static final String VIEW_OWNER_MATRIX = MATRIX_PREFIX + "viewOwner";
+   public static final String FEEDBACK_MATRIX = "osp.inviteFeedback.evaluate";
    
    public static final String EVALUATE_SPECIFIC_MATRIXCELL = MATRIX_PREFIX + "evaluateSpecificMatrix";
    

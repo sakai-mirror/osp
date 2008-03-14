@@ -191,7 +191,7 @@
         <property name="lockedColor" type="java.lang.String" not-null="false" length="7"/>
         <property name="returnedColor" type="java.lang.String" not-null="false" length="7"/>
         <property name="workflowOption" type="int" not-null="true" />
-        <property name="reviewerGroupAccess" type="int" not-null="true" />
+        <property name="allowRequestFeedback" type="boolean" column="allowRequestFeedback"  not-null="false"/>
         
         <set name="matrix" cascade="all-delete-orphan" inverse="true"
             lazy="true">
@@ -257,9 +257,16 @@
       <many-to-one name="style" column="style_id" not-null="false" class="org.theospi.portfolio.style.model.Style"/> 
       
                 
-      <property name="defaultUserForms" type="boolean" column="defaultUserForms"  not-null="false"/>
-      <property name="defaultFeedbackEval" type="boolean" column="defaultFeedbackEval"  not-null="false"/>
-       
+      <property name="defaultCustomForm" type="boolean" column="defaultCustomForm"  not-null="false"/>
+      <property name="defaultReflectionForm" type="boolean" column="defaultReflectionForm"  not-null="false"/>
+      <property name="defaultFeedbackForm" type="boolean" column="defaultFeedbackForm"  not-null="false"/>
+      <property name="defaultReviewers" type="boolean" column="defaultReviewers"  not-null="false"/> 
+      <property name="defaultEvaluationForm" type="boolean" column="defaultEvaluationForm"  not-null="false"/> 
+      <property name="defaultEvaluators" type="boolean" column="defaultEvaluators"  not-null="false"/>    
+      
+      <property name="allowRequestFeedback" type="boolean" column="allowRequestFeedback"  not-null="false"/>
+      
+         
    </joined-subclass>
 
 </hibernate-mapping>

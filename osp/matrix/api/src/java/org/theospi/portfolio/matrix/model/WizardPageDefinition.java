@@ -51,8 +51,15 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    transient private Id guidanceId;
    private Guidance guidance;
    transient private Id deleteGuidanceId;
-   private boolean defaultUserForms = true;
-   private boolean defaultFeedbackEval = true;
+   
+   private boolean defaultCustomForm = true;
+   private boolean defaultReflectionForm = true;
+   private boolean defaultFeedbackForm = true;
+   private boolean defaultReviewers = true;
+   private boolean defaultEvaluationForm = true;
+   private boolean defaultEvaluators = true;
+   
+   private boolean allowRequestFeedback = true;
    
    private String siteId;
    private Style style;
@@ -236,10 +243,7 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
 		sb.append(getId());
 		return sb.toString();
    }
-   
-   public boolean isDefaultUserForms() {
-	   return defaultUserForms;
-   }
+
 
    public String getContext()
    {
@@ -256,17 +260,51 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
 	   // TODO Auto-generated method stub
 	   return null;
    }
-
-   public void setDefaultUserForms(boolean defaultUserForms) {
-	   this.defaultUserForms = defaultUserForms;
+   
+   public boolean isDefaultCustomForm() {
+	   return defaultCustomForm;
    }
-
-   public boolean isDefaultFeedbackEval() {
-	   return defaultFeedbackEval;
+   public void setDefaultCustomForm(boolean defaultCustomForm) {
+	   this.defaultCustomForm = defaultCustomForm;
    }
-
-   public void setDefaultFeedbackEval(boolean defaultFeedbackEval) {
-	   this.defaultFeedbackEval = defaultFeedbackEval;
+   public boolean isDefaultReflectionForm() {
+	   return defaultReflectionForm;
    }
+   public void setDefaultReflectionForm(boolean defaultReflectionForm) {
+	   this.defaultReflectionForm = defaultReflectionForm;
+   }
+   public boolean isDefaultFeedbackForm() {
+	   return defaultFeedbackForm;
+   }
+   public void setDefaultFeedbackForm(boolean defaultFeedbackForm) {
+	   this.defaultFeedbackForm = defaultFeedbackForm;
+   }
+   
+   public boolean isDefaultReviewers() {
+	   return defaultReviewers;
+   }
+   public void setDefaultReviewers(boolean defaultReviewers) {
+	   this.defaultReviewers = defaultReviewers;
+   }
+   public boolean isDefaultEvaluationForm() {
+	   return defaultEvaluationForm;
+   }
+   public void setDefaultEvaluationForm(boolean defaultEvaluationForm) {
+	   this.defaultEvaluationForm = defaultEvaluationForm;
+   }
+   public boolean isDefaultEvaluators() {
+	   return defaultEvaluators;
+   }
+   public void setDefaultEvaluators(boolean defaultEvaluators) {
+	   this.defaultEvaluators = defaultEvaluators;
+   }
+public boolean isAllowRequestFeedback() {
+	return allowRequestFeedback;
+}
+public void setAllowRequestFeedback(boolean allowRequestFeedback) {
+	this.allowRequestFeedback = allowRequestFeedback;
+}
+
+
 
 }

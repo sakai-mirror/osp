@@ -21,11 +21,12 @@ public class FeedbackHelperController implements Controller {
 	public ModelAndView handleRequest(Object requestModel, Map request,
 			Map session, Map application, Errors errors) {
 		
-		if(session.get("matrixCall") != null){
-			if(session.get("cellId") != null){
-				Cell cell = matrixManager.getCell(idManager.getId(session.get("cellId").toString()));
+		if(session.get("feedbackMatrixCall") != null){
+			if(session.get("feedbackCellId") != null){
+				Cell cell = matrixManager.getCell(idManager.getId(session.get("feedbackCellId").toString()));
 				setAudienceSelectionVariables(cell, session);
-				session.remove("matrixCall");
+				session.remove("feedbackMatrixCall");
+				session.remove("feedbackCellId");
 				return new ModelAndView("inviteFeedback");	
 			}
 		}
@@ -37,10 +38,12 @@ public class FeedbackHelperController implements Controller {
 		//helper to finish the notify part.
 		if(request.get("inviteFeedbackReturn") != null || request.get("inviteFeedbackNotify") != null){
 			if(request.get("inviteFeedbackReturn") != null){
+				model.put("page_id", request.get("inviteFeedbackReturn"));
 				model.put("feedbackReturn", request.get("inviteFeedbackReturn"));
 				return new ModelAndView("viewCell", model);
 			}else if(request.get("inviteFeedbackNotify") != null){
-				Cell cell = matrixManager.getCell(idManager.getId(request.get("inviteFeedbackNotify").toString()));
+				//inviteFeedbackNotify is returned from FeedbackHelperController and is the Id of the wizardPage of the cell.
+				Cell cell = matrixManager.getCellFromPage(idManager.getId(request.get("inviteFeedbackNotify").toString()));
 				setAudienceSelectionVariables(cell, session);				
 				return new ModelAndView("notifyAudience");
 			}
@@ -51,12 +54,12 @@ public class FeedbackHelperController implements Controller {
 	
 	protected Map setAudienceSelectionVariables(Cell cell, Map session) {
 		String baseUrl = this.getServerConfigurationService().getServerUrl();
-		String url =  baseUrl + "/osp-matrix-tool/viewCell.osp?page_id=" + cell.getId().getValue();
+	//	String url =  baseUrl + "/osp-matrix-tool/viewCell.osp?page_id=" + cell.getWizardPage().getId().getValue();
 
 		session.put(AudienceSelectionHelper.AUDIENCE_FUNCTION, 
 				AudienceSelectionHelper.AUDIENCE_FUNCTION_INVITE_FEEDBACK );
 
-		String id = cell.getId()!=null ? cell.getId().getValue() : cell.getNewId().getValue();
+		String id = cell.getWizardPage().getId()!=null ? cell.getWizardPage().getId().getValue() : cell.getWizardPage().getNewId().getValue();
 		session.put(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
 		session.put(AudienceSelectionHelper.AUDIENCE_SITE,cell.getWizardPage().getPageDefinition().getSiteId());
 

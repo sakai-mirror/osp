@@ -87,7 +87,6 @@ public class Scaffolding extends ObjectWithWorkflow implements Serializable {
    transient private boolean validate;
    
    private int workflowOption;
-   private int reviewerGroupAccess;
    private Set matrix = new HashSet();
    
    public static final int NO_PROGRESSION = 0;
@@ -102,7 +101,7 @@ public class Scaffolding extends ObjectWithWorkflow implements Serializable {
    private List additionalForms = new ArrayList();
    private List<String> attachments = new ArrayList();
    private Collection evaluators = new HashSet();
-   
+   private boolean allowRequestFeedback = true;
    
    public Scaffolding() {}
    
@@ -371,14 +370,6 @@ public class Scaffolding extends ObjectWithWorkflow implements Serializable {
    public void setWorkflowOption(int workflowOption) {
       this.workflowOption = workflowOption;
    }
-   
-   public int getReviewerGroupAccess() {
-	   return reviewerGroupAccess;
-   }
-   
-   public void setReviewerGroupAccess(int reviewerGroupAccess) {
-	   this.reviewerGroupAccess = reviewerGroupAccess;
-   }
 
    public Set getMatrix() {
       return matrix;
@@ -410,42 +401,50 @@ public class Scaffolding extends ObjectWithWorkflow implements Serializable {
    }
 
    public Style getStyle() {
-      return style;
+	   return style;
    }
 
    public void setStyle(Style style) {
-      this.style = style;
+	   this.style = style;
    }
 
-public List getAdditionalForms() {
-	return additionalForms;
-}
+   public List getAdditionalForms() {
+	   return additionalForms;
+   }
 
-public void setAdditionalForms(List additionalForms) {
-	this.additionalForms = additionalForms;
-}
+   public void setAdditionalForms(List additionalForms) {
+	   this.additionalForms = additionalForms;
+   }
 
-public List<String> getAttachments() {
-	return attachments;
-}
+   public List<String> getAttachments() {
+	   return attachments;
+   }
 
-public void setAttachments(List<String> attachments) {
-	this.attachments = attachments;
-}
+   public void setAttachments(List<String> attachments) {
+	   this.attachments = attachments;
+   }
 
-public Collection getEvaluators() {
-	return evaluators;
-}
+   public Collection getEvaluators() {
+	   return evaluators;
+   }
 
-public void setEvaluators(Collection evaluators) {
-	this.evaluators = evaluators;
-}
+   public void setEvaluators(Collection evaluators) {
+	   this.evaluators = evaluators;
+   }
 
-public String getReturnedColor() {
-	return returnedColor;
-}
+   public String getReturnedColor() {
+	   return returnedColor;
+   }
 
-public void setReturnedColor(String returnedColor) {
-	this.returnedColor = returnedColor;
-}
+   public void setReturnedColor(String returnedColor) {
+	   this.returnedColor = returnedColor;
+   }
+
+   public boolean isAllowRequestFeedback() {
+	   return allowRequestFeedback;
+   }
+
+   public void setAllowRequestFeedback(boolean allowRequestFeedback) {
+	   this.allowRequestFeedback = allowRequestFeedback;
+   }
 }

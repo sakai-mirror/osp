@@ -323,16 +323,16 @@
 							src="/library/image/silk/application_form_delete.png"
 							alt="<fmt:message key="delete"/>" /></a>
 						<c:if
-							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && 
-							(cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultUserForms) 
-									|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultUserForms)}">
+							test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && 
+							((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
+									|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
                         |
                   </c:if>
 					</c:if> 
 					<c:if
-						test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && 
-								(cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultUserForms) 
-									|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultUserForms)}">
+						test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && 
+								((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
+									|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
 						<a
 							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                           <osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -343,7 +343,7 @@
                           <osp:param name="objectTitle" value="${objectTitle}" />
                           <osp:param name="objectDesc" value="${objectDesc}" />
                           <osp:param name="itemId" value="${node.id}" />
-                          <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultUserForms}">
+                          <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
 				       		<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 				       	  </c:if>
                           </osp:url>"><osp:message
@@ -479,9 +479,9 @@
 					src="/library/image/silk/page_white_delete.png"
 					alt="<fmt:message key="delete"/>" /> </a>
 			</c:if> <c:if
-				test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && 
-						(cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultUserForms) 
-									|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultUserForms)}">
+				test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && 
+						((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
+									|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
 				<a
 					href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                           <osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -492,7 +492,7 @@
                           <osp:param name="objectTitle" value="${objectTitle}" />
                           <osp:param name="objectDesc" value="${objectDesc}" />
                           <osp:param name="itemId" value="${node.id}" />
-                          <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultUserForms}">
+                          <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
 				       		<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 				          </c:if>
                           </osp:url>"><osp:message
@@ -577,8 +577,8 @@
 
 
 <!-- ************* Reflection Area Start ************* --> 
-<c:if test="${(cell.scaffoldingCell.reflectionDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultUserForms) 
-|| (cell.scaffoldingCell.scaffolding.reflectionDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultUserForms)}">
+<c:if test="${(cell.scaffoldingCell.reflectionDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultReflectionForm) 
+|| (cell.scaffoldingCell.scaffolding.reflectionDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultReflectionForm)}">
 	<h3><osp:message key="reflection_section_header" /></h3>
 	<c:if test="${empty reflections}">
 		<p class="matrixCellList"><span style="padding: .4em 2.6em;">
@@ -596,7 +596,7 @@
 					   <osp:param name="objectId" value="${objectId}" />
 					   <osp:param name="objectTitle" value="${objectTitle}" />
 				       <osp:param name="objectDesc" value="${objectDesc}" />
-				       <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultUserForms}">
+				       <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultReflectionForm}">
 				       		<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 				       </c:if>
 					   </osp:url>">
@@ -623,7 +623,7 @@
 						   <osp:param name="org_theospi_portfolio_review_type" value="0" />
 						   <osp:param name="current_review_id" value="${reflections[0].reviewContentNode.resource.id}" />
 						   <osp:param name="process_type_key" value="page_id" />
-						   <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultUserForms}">
+						   <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultReflectionForm}">
 				       		 <osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 				       	   </c:if>
 						   </osp:url>">
@@ -681,9 +681,9 @@
 <!-- ************* General Review (Feedback) Area Start ************* -->
 
 <c:if
-	test="${(((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && 
-	((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultUserForms) 
-		|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultUserForms)))
+	test="${(((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && 
+	((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
+		|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm)))
 	|| not empty reviews}">
 	<table class="matrixCellList" cellpadding="0" cellspacing="0"
 		border="0" summary="">
@@ -699,9 +699,9 @@
 			</td>
 			<td>
 			<div class="itemAction"><c:if
-				test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && 
-				((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultUserForms) 
-					|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultUserForms))}">
+				test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && 
+				((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
+					|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
 				<a
 					href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 						<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -711,7 +711,7 @@
 						<osp:param name="objectId" value="${objectId}" />
 						<osp:param name="objectTitle" value="${objectTitle}" />
 						<osp:param name="objectDesc" value="${objectDesc}" />
-						<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultUserForms}">
+						<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
 				       		<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 				       </c:if>
 						</osp:url>">
@@ -753,9 +753,9 @@
 </c:if> <!-- ************* General Review (Feedback) Area End ************* -->
 
 <!-- ************* Evaluation Area Start ************* --> <c:if
-	test="${(((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && 
-	((cell.scaffoldingCell.evaluationDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackEval) 
-		|| (cell.scaffoldingCell.scaffolding.evaluationDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackEval)))}">
+	test="${(((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && 
+	((cell.scaffoldingCell.evaluationDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm) 
+		|| (cell.scaffoldingCell.scaffolding.evaluationDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm)))}">
 	<c:if test="${ cell.status == 'PENDING' and empty evaluations}">
 		<h3><osp:message key="evals_section_header" /></h3>
 		<p class="matrixCellList"><span style="padding: .4em 2.6em;">
@@ -769,7 +769,7 @@
 					<osp:param name="objectId" value="${objectId}" />
 					<osp:param name="objectTitle" value="${objectTitle}" />
 					<osp:param name="objectDesc" value="${objectDesc}" />
-					<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackEval}">
+					<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm}">
 				       		<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 				       </c:if>
 						</osp:url>">
@@ -792,9 +792,9 @@
 			</td>
 			<td>
 			<div class="itemAction"><c:if
-				test="${((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && 
-				((cell.scaffoldingCell.evaluationDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackEval) 
-					|| (cell.scaffoldingCell.scaffolding.evaluationDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackEval)) 
+				test="${((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && 
+				((cell.scaffoldingCell.evaluationDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm) 
+					|| (cell.scaffoldingCell.scaffolding.evaluationDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm)) 
 				&& cell.status == 'PENDING'}">
 				<a
 					href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
@@ -805,7 +805,7 @@
 					<osp:param name="objectId" value="${objectId}" />
 					<osp:param name="objectTitle" value="${objectTitle}" />
 					<osp:param name="objectDesc" value="${objectDesc}" />
-					<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackEval}">
+					<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm}">
 				    	<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
 				    </c:if>
 						</osp:url>">
@@ -872,9 +872,11 @@
 	</c:if>
 </c:if>
 
-	<input type="submit" name="inviteFeedback" class="active"
-			value="Invite Feedback" />
-
+	<c:if test="${isMatrix == 'true' and (cell.scaffoldingCell.scaffolding.allowRequestFeedback && cell.scaffoldingCell.wizardPageDefinition.defaultReviewers ||
+											cell.scaffoldingCell.wizardPageDefinition.allowRequestFeedback && !cell.scaffoldingCell.wizardPageDefinition.defaultReviewers)}">
+		<input type="submit" name="inviteFeedback" class="active"
+				value="Invite Feedback" />
+	</c:if>
 </div>
 
 
