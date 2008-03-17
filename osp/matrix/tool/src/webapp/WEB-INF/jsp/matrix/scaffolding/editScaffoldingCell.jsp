@@ -249,8 +249,7 @@ function mySetMainFrameHeight(id)
 			<h5><osp:message key="instructions"/></h5>
 			<p class="indnt1">
 				<a href="#"	onclick="javascript:document.forms[0].dest.value='editInstructions';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-					<osp:message key="add_first_instructions"/>
-				</a>
+					<osp:message key="add_first_instructions"/></a>
 				&nbsp;<osp:message key="add_first_instructions_message"/>
 			</p>	
 		</c:if>
@@ -295,8 +294,7 @@ function mySetMainFrameHeight(id)
 			<h5><osp:message key="rationale"/></h5>
 			<p class="indnt1">
 				<a href="#" onclick="javascript:document.forms[0].dest.value='editRationale';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-					<osp:message key="add_first_rationale"/>
-				</a>
+					<osp:message key="add_first_rationale"/></a>
 				&nbsp;<osp:message key="add_first_rationale_message"/>				
 			</p>
 		</c:if>	
@@ -342,8 +340,7 @@ function mySetMainFrameHeight(id)
 			<h5><osp:message key="examples"/></h5>
 			<p class="indnt1">
 				<a href="#" onclick="javascript:document.forms[0].dest.value='editExamples';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-					<osp:message key="add_first_examples"/>
-				</a>
+					<osp:message key="add_first_examples"/></a>
 				&nbsp;<osp:message key="add_first_examples_message"/>				
 			</p>	
 		</c:if>
@@ -535,8 +532,7 @@ function mySetMainFrameHeight(id)
 							document.forms[0].params.value='assignPickerAction=true:pageDef_id=<c:out value="${scaffoldingCell.wizardPageDefinition.id}" />:assignReturnView=<c:out value="${returnView}" />';
 							document.forms[0].onsubmit();
 							document.forms[0].submit();">
-							<osp:message key="add_first_assignment"/>
-						</a>
+							<osp:message key="add_first_assignment"/></a>
 						&nbsp;<osp:message key="add_first_assignment_message"/>					
 					</p>	
 				</c:if>
