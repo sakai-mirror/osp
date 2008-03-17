@@ -195,8 +195,11 @@
               </list>
             </property>
             <property name="serverConfigurationService">
-	            <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
-	        </property>
+            	<ref bean="org.sakaiproject.component.api.ServerConfigurationService" />
+            </property>
+            <property name="securityService">
+            	<ref bean="org.sakaiproject.authz.api.SecurityService" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">

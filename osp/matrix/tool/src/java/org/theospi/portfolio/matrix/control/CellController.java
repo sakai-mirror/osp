@@ -33,6 +33,7 @@ import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.assignment.api.AssignmentSubmission;
 import org.sakaiproject.assignment.cover.AssignmentService;
 import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
@@ -86,6 +87,8 @@ public class CellController implements FormController, LoadObjectController {
 	private MatrixManager matrixManager;
 
 	private AuthenticationManager authManager = null;
+	
+	private SecurityService securityService;
 
 	private IdManager idManager = null;
 
@@ -244,6 +247,9 @@ public class CellController implements FormController, LoadObjectController {
 	 * @return
 	 */
 	protected boolean hasPermission(Id id, Id worksiteId, String function){
+		if(getSecurityService().isSuperUser(authManager.getAgent().getId().getValue()))
+			return true;
+		
 		if(id == null)
 			return false;
 		
@@ -256,8 +262,9 @@ public class CellController implements FormController, LoadObjectController {
 
 		if(site == null)
 			return false;
-
+		
 		Role userRole = site.getUserRole(authManager.getAgent().getId().getValue());
+		
 		List evaluators = getAuthzManager().getAuthorizations(null,
 				function, id);
 
@@ -717,20 +724,29 @@ public class CellController implements FormController, LoadObjectController {
 		this.sessionManager = sessionManager;
 	}
 
-   public StyleManager getStyleManager() {
-      return styleManager;
-   }
+	public StyleManager getStyleManager() {
+		return styleManager;
+	}
 
-   public void setStyleManager(StyleManager styleManager) {
-      this.styleManager = styleManager;
-   }
+	public void setStyleManager(StyleManager styleManager) {
+		this.styleManager = styleManager;
+	}
 
-public ServerConfigurationService getServerConfigurationService() {
-	return serverConfigurationService;
-}
+	public ServerConfigurationService getServerConfigurationService() {
+		return serverConfigurationService;
+	}
 
-public void setServerConfigurationService(
-		ServerConfigurationService serverConfigurationService) {
-	this.serverConfigurationService = serverConfigurationService;
-}
+	public void setServerConfigurationService(
+			ServerConfigurationService serverConfigurationService) {
+		this.serverConfigurationService = serverConfigurationService;
+	}
+
+	public SecurityService getSecurityService() {
+		return securityService;
+	}
+
+	public void setSecurityService(SecurityService securityService) {
+		this.securityService = securityService;
+	}
+
 }
