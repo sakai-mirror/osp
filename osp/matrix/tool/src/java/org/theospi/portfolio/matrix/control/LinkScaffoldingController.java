@@ -35,12 +35,16 @@ import org.sakaiproject.taggable.api.LinkManager;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.entity.cover.EntityManager;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.sakaiproject.site.api.Site;
@@ -69,52 +73,112 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 		
 		TaggableActivity currentActivity = getCurrentActivity();
 		
-		String clickedCell = (String)request.get("page_id");
-		if (clickedCell != null) {
-			ScaffoldingCell sCell = getMatrixManager().getScaffoldingCell(idManager.getId(clickedCell));
-			try
-			{
-				if (linkManager.getLink(currentActivity.getReference(), sCell.getWizardPageDefinition().getReference()) == null) {
-					taggingManager.addLink(currentActivity.getReference(), sCell.getWizardPageDefinition().getReference(), null, null, true);
+		//FIXME change this to be a real permission
+		boolean canLink = true;
+		//boolean canLink = getAuthzManager().checkPermission(function, id);
+		
+		if (canLink) {
+			String clickedCell = (String)request.get("page_id");
+			if (clickedCell != null) {
+				ScaffoldingCell sCell = getMatrixManager().getScaffoldingCell(idManager.getId(clickedCell));
+				try
+				{
+					if (linkManager.getLink(currentActivity.getReference(), sCell.getWizardPageDefinition().getReference()) == null) {
+						taggingManager.addLink(currentActivity.getReference(), sCell.getWizardPageDefinition().getReference(), null, null, true);
+					}
 				}
-			}
-			catch (PermissionException e)
-			{
-				logger.error("link could not be added", e);
+				catch (PermissionException e)
+				{
+					logger.error("link could not be added", e);
+				}
 			}
 		}
 		
-		Agent currentAgent = getAuthManager().getAgent();
-		//String currentToolId = ToolManager.getCurrentPlacement().getId();
-		String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
-		
-		String selectedSite = (String)request.get("selectedSite");
-		if (selectedSite == null) selectedSite = worksiteId;
-
 		List<Site> sites = getAvailableSites(currentActivity);
-
-		List<Scaffolding> scaffolding = getMatrixManager().findAvailableScaffolding(selectedSite, currentAgent);
-		List<MatrixGridBean> grids = getScaffoldingGrids(scaffolding, selectedSite);
-
-		// When selecting a matrix the user should start with a fresh user
-		session.remove(ViewMatrixController.VIEW_USER);
-
-		model.put("grids", getListScrollIndexer().indexList(request, model, grids));
+		
+		if (canLink) {
+			//only do this for the instructor that has perms
+			addGridsToModel(request, model, currentActivity.getReference());
+		}
+		else {
+			//only do this for the student who does not have perms
+			addLinkedCellsToModel(request, model, sites, currentActivity.getReference());
+		}
+		
 		model.put("currentActivity", currentActivity);
-
-		//model.put("worksite", getWorksiteManager().getSite(worksiteId));
-		//model.put("tool", getWorksiteManager().getTool(currentToolId));
-		//model.put("isMaintainer", isMaintainer());
-		//model.put("osp_agent", currentAgent);
-		//model.put("myworkspace", isOnWorkspaceTab() );
 		model.put("sites", sites);
-		model.put("selectedSite", selectedSite);
-
-		//model.put("useExperimentalMatrix", getMatrixManager().isUseExperimentalMatrix());
-
+		
 		return new ModelAndView("success", model);
 	}
 
+	/**
+	 * Adds all of the matrices and links to the model under the key "grids"
+	 * @param request
+	 * @param model
+	 */
+	private void addGridsToModel(Map request, Hashtable<String, Object> model, String activityRef) {
+		Agent currentAgent = getAuthManager().getAgent();
+		
+		String selectedSite = (String)request.get("selectedSite");
+		
+		String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
+		if (selectedSite == null) selectedSite = worksiteId;
+		
+		List<Scaffolding> scaffolding = getMatrixManager().findAvailableScaffolding(selectedSite, currentAgent);
+		List<MatrixGridBean> grids = getScaffoldingGrids(scaffolding, selectedSite, activityRef);
+		model.put("grids", getListScrollIndexer().indexList(request, model, grids));
+		model.put("selectedSite", selectedSite);
+	}
+	
+	/**
+	 * Adds all of the linked cells to the model under the key "linkedCells"
+	 * @param model
+	 * @param sites
+	 * @param activityRef
+	 */
+	private void addLinkedCellsToModel(Map request, Hashtable<String, Object> model, List<Site> sites, String activityRef) {
+		List<Link> links = new ArrayList<Link>();
+		for (Site site : sites) {
+			try
+			{
+				links.addAll(getLinkManager().getLinks(activityRef, false, site.getId()));
+			}
+			catch (PermissionException e)
+			{
+				logger.warn("unable to get links for activity " + activityRef + " and site " + site.getId(), e);
+			}
+		}
+		List<Id> idList = new ArrayList<Id>();
+		//Map
+		for (Link link : links) {
+			Reference ref = EntityManager.newReference(link.getTagCriteriaRef());
+			idList.add(getIdManager().getId(ref.getId()));
+		}
+		List<ScaffoldingCell> sCells = getMatrixManager().getScaffoldingCells(idList);
+		List<LinkableScaffoldingCell> linkedCells = new ArrayList<LinkableScaffoldingCell>();
+		for (ScaffoldingCell sCell : sCells) {
+			LinkableScaffoldingCell lsc = new LinkableScaffoldingCell(sCell, lookupLink(links, activityRef, sCell));
+			linkedCells.add(lsc);
+		}
+		model.put("linkedCells", getListScrollIndexer().indexList(request, model, linkedCells));
+	}
+	
+	/**
+	 * Lookup the link to the cell and activity in the given list of links
+	 * @param links
+	 * @param activityRef
+	 * @param sCell
+	 * @return
+	 */
+	private Link lookupLink(List<Link> links, String activityRef, ScaffoldingCell sCell) {
+		for (Link link : links) {
+			if (link.getActivityRef().equals(activityRef) && link.getTagCriteriaRef().equals(sCell.getWizardPageDefinition().getReference())) {
+				return link;
+			}
+		}
+		return null;
+	}
+	
 	public ListScrollIndexer getListScrollIndexer() {
 		return listScrollIndexer;
 	}
@@ -144,13 +208,13 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 		this.idManager = idManager;
 	}
 
-	private List<MatrixGridBean> getScaffoldingGrids(List<Scaffolding> scaffoldingList, String context) {
+	private List<MatrixGridBean> getScaffoldingGrids(List<Scaffolding> scaffoldingList, String context, String activityRef) {
 		List<MatrixGridBean> beanList = new ArrayList<MatrixGridBean>(scaffoldingList.size());
 		
 		List<Link> links = new ArrayList<Link>();
 		try
 		{
-			links = linkManager.getLinks(getCurrentActivity().getReference(), true, context);
+			links = linkManager.getLinks(activityRef, true, context);
 		}
 		catch (PermissionException e)
 		{
@@ -223,6 +287,9 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 		List<String> contexts = getSiteAssocManager().getAssociatedFrom(fromContext);
 		List<Site> sites = new ArrayList<Site>(contexts.size());
 
+		if (contexts.size() == 0) {
+			contexts.add(fromContext);
+		}
 		for (String toContext : contexts) {
 			try {
 				Site site = getSiteService().getSite(toContext);
@@ -235,10 +302,11 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 	}
 
 	protected TaggableActivity getCurrentActivity() {
-		String activityRef = (String) getSessionManager()
-		.getCurrentToolSession().getAttribute(MatrixTaggingProvider.ACTIVITY_REF);
+		ToolSession toolSession = getSessionManager().getCurrentToolSession();
+		String activityRef = (String) toolSession.getAttribute(MatrixTaggingProvider.ACTIVITY_REF);
 		TaggableActivity activity = 
 			getTaggingManager().getActivity(activityRef, getMatrixTaggingProvider());
+		toolSession.removeAttribute(MatrixTaggingProvider.ACTIVITY_REF);
 		return activity;
 	}
 

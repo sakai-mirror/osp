@@ -108,6 +108,47 @@
       <property name="commandClass"><value>java.util.ArrayList</value></property>    
    </bean>
    
+   <bean id="listPageActivitiesController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+   	<property name="controller">
+   		<bean class="org.theospi.portfolio.matrix.control.ListPageActivities">
+   			<property name="taggingManager">
+               <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
+            </property>
+            <property name="linkManager">
+            	<ref bean="org.sakaiproject.taggable.api.LinkManager" />
+            </property>
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+            <property name="entityManager">
+               <ref bean="org.sakaiproject.entity.api.EntityManager"/>
+            </property>
+   		</bean>
+   	</property>
+   	<property name="screenMappings">
+         <props>
+            <prop key="success">listPageActivities</prop>
+         </props>
+      </property>      
+      <property name="commandName"><value>pageActivities</value></property>
+      <property name="commandClass"><value>java.util.HashSet</value></property> 
+   </bean>
+   
+   <bean id="scaffoldingCellInfoController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean class="org.theospi.portfolio.matrix.control.ScaffoldingCellInfoController">
+            <property name="matrixManager"><ref bean="matrixManager"/></property>
+            <property name="idManager"><ref bean="idManager"/></property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">cellDetail</prop>
+         </props>
+      </property>      
+      <property name="commandName"><value>scaffoldingCell</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.ScaffoldingCell</value></property>    
+   </bean>
+   
    <bean id="exposedScaffoldingController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.ExposedScaffoldingController">
@@ -1068,6 +1109,7 @@
             <prop key="editInstructions">editInstructions</prop>
             <prop key="editRationale">editRationale</prop>
             <prop key="editExamples">editExamples</prop>
+            <prop key="listPageActivities">listPageActivitiesRedirect</prop>
          </props>
       </property>
       <property name="validator"><ref bean="matrixValidator"/></property>

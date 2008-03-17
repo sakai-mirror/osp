@@ -64,4 +64,10 @@ public class WizardActivityImpl implements TaggableActivity {
 	public String getTitle() {
 		return def.getTitle();
 	}
+	
+	public String getActivityDetailUrl()
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

@@ -120,6 +120,8 @@
               <prop key="/viewScaffolding.osp">viewScaffoldingController</prop>
               
               <prop key="/linkScaffolding.osp">linkScaffoldingController</prop>
+              <prop key="/scaffoldingCellInfo.osp">scaffoldingCellInfoController</prop>
+              <prop key="/listPageActivities.osp">listPageActivitiesController</prop>
               
               <!-- pretty is an alternate matrix editing view -->
               <prop key="/prettyScaffolding.osp">prettyScaffoldingController</prop>

@@ -75,14 +75,20 @@ function mySetMainFrameHeight(id)
 
 <form name="form" method="post">
 
-	<c:if test="${taggable && !(empty helperInfoList)}">
+	<c:if test="${taggable}">
 		<div class="navIntraTool">
+			<c:if test="${!(empty helperInfoList)}">
 			<c:forEach var="helperInfo" items="${helperInfoList}">
 				<a href="javascript:document.forms[0].submitAction.value='tagActivity';document.forms[0].providerId.value='<c:out value="${helperInfo.provider.id}"/>';document.forms[0].onsubmit();document.forms[0].submit();"
 					title="<c:out value="${helperInfo.description}"/>">
 					<c:out value="${helperInfo.name}"/>
 				</a>
 			</c:forEach>
+			</c:if>
+			<a href="javascript:document.forms[0].submitAction.value='listPageActivities';document.forms[0].providerId.value='<c:out value="${helperInfo.provider.id}"/>';document.forms[0].onsubmit();document.forms[0].submit();"
+					title="<fmt:message key="link_page_activities"/>">
+					<fmt:message key="link_page_activities"/>
+				</a>
 		</div>
 	</c:if>
 	

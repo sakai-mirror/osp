@@ -36,6 +36,7 @@ import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
 import org.theospi.portfolio.shared.model.Node;
 
@@ -184,4 +185,9 @@ public interface MatrixManager extends WorkflowEnabledManager {
    Matrix getMatrixByPage(Id pageId);
 
    public boolean isUseExperimentalMatrix();
+   
+   List<WizardPageDefinition> getWizardPageDefs(List<Id> ids);
+   List<ScaffoldingCell> getScaffoldingCells(List<Id> ids);
+   
+   public WizardPageDefinition getWizardPageDefinition(Id pageDefId);
 }

@@ -4,6 +4,9 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
+	<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/thickbox.js"></script>
+	<link href="/osp-common-tool/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
+
 <script type="text/javascript">
 	<!--
 		function toggle_visibility(id) {
@@ -44,14 +47,25 @@
 	function hrefLinkCell(pageId) {
 	  window.location="<osp:url value="linkScaffolding.osp?page_id="/>"+pageId;
 	}
+
+	function hrefCellInfo(pageId) {
+	  window.location="<osp:url value="scaffoldingCellInfo.osp?page_id="/>"+pageId;
+	}
 			//-->
 
 </script>
 
-<h3><c:out value="${currentActivity.title}" /></h3>
+<h3>
+<fmt:message key="matrix_links_title">
+<fmt:param value="${currentActivity.title}" />
+</fmt:message>
+</h3>
+
+<fmt:message key="matrix_links_desc" />
 
 <form method="get" action="<osp:url value="linkScaffolding.osp"/>">
 						<osp:form/>
+	<fmt:message key="site_heading" />
 	<select name="selectedSite"  id="selectedSite" onchange="this.form.submit()">
 		<c:forEach var="site" items="${sites}">
 			<option value="<c:out value="${site.id}"/>" <c:if test="${selectedSite == site.id}"> selected="selected" </c:if>>
@@ -106,11 +120,19 @@
                   </osp-h:glossary>
 					</th>
 	    			<c:forEach var="cell" items="${matrixContents.matrixContents[loopStatus.index]}">
-						<td class="matrix-cell-border matrix-<c:out value="${cell.scaffoldingCell.initialStatus}"/>" onclick="hrefLinkCell('<c:out value="${cell.scaffoldingCell.id}"/>') " style="cursor:pointer">
-						 <c:if test="${empty cell.link}">no link yet</c:if>
-						 <c:if test="${not empty cell.link}">here's a link</c:if>
-						 <a href="#" onclick="hrefLinkCell('<c:out value="${cell.scaffoldingCell.id}"/>') " class="skip"><fmt:message key="table_cell_link_title"/></a>
-							&nbsp;
+						<td class="matrix-cell-border matrix-<c:out value="${cell.scaffoldingCell.initialStatus}"/>">
+						 <p style="position: relative; height: 100%;">
+						 <input style="position: absolute; top:0px; right:0px;" type="checkbox" name="linked" value="true"
+		                     <c:if test="${not empty cell.link}">checked</c:if>
+		                 onclick="hrefLinkCell('<c:out value="${cell.scaffoldingCell.id}"/>') "/>
+						 <a style="position: absolute; top: 50%; left: 50%;" 
+						 		class="thickbox" href="<osp:url value="scaffoldingCellInfo.osp" >
+						 		<osp:param name="pageId" value="${cell.scaffoldingCell.id}"/>
+						 	</osp:url>">
+						 	<img alt="asdf" src="/library/image/sakai/information.png" border="0"/>
+						 </a>
+						 
+						 </p>
 						</td>
 					</c:forEach>
 				</tr>
@@ -120,4 +142,27 @@
 	</td></tr>
 </c:forEach>
 </table>
-<!-- *********** end new stuff -->
+<!-- *********** end linkable view -->
+
+<!-- *********** begin viewonly links -->
+<table class="listHier lines nolines" cellspacing="0"  border="0" summary="<fmt:message key="list_link_summary"/>">
+   <thead>
+	  <tr>
+		 <th scope="col"><fmt:message key="table_header_name"/></th>
+	  </tr>
+   </thead>
+   <tbody>
+	<c:forEach var="linkedCell" items="${linkedCells}">
+	  <tr>
+		<td style="white-space: nowrap">
+			<a class="thickbox" href="<osp:url value="scaffoldingCellInfo.osp" >
+			 		<osp:param name="pageId" value="${linkedCell.scaffoldingCell.id}"/>
+			 	</osp:url>">
+			<c:out value="${linkedCell.scaffoldingCell.title}" />
+			</a>
+		</td>
+	</tr>
+	  </c:forEach>
+	</tbody>
+
+</table>

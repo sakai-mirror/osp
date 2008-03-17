@@ -2766,7 +2766,36 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       return results;
    }
+   
+   public List<WizardPageDefinition> getWizardPageDefs(List<Id> ids)
+   {
+	   if (ids.size() > 0) {
+		   String[] paramNames = new String[] {"ids"};
+		      Object[] params = new Object[]{ids};
+		   List<WizardPageDefinition> pageDefs = getHibernateTemplate().findByNamedParam("from WizardPageDefinition wpd where wpd.id in ( :ids )",
+		            paramNames, params);
+		   return pageDefs;
+	   }
+	   return new ArrayList<WizardPageDefinition>();
+   }
 
+   public List<ScaffoldingCell> getScaffoldingCells(List<Id> ids)
+   {
+	   if (ids.size() > 0) {
+		   String[] paramNames = new String[] {"ids"};
+		      Object[] params = new Object[]{ids};
+		   List<ScaffoldingCell> sCells = getHibernateTemplate().findByNamedParam("from ScaffoldingCell sCell where sCell.wizardPageDefinition.id in ( :ids )",
+		            paramNames, params);
+		   return sCells;
+	   }
+	   return new ArrayList<ScaffoldingCell>();
+   }
+   
+   public WizardPageDefinition getWizardPageDefinition(Id pageDefId) {
+	   WizardPageDefinition wizPageDef = (WizardPageDefinition)this.getHibernateTemplate().load(WizardPageDefinition.class, pageDefId);
+	   return wizPageDef;
+   }
+   
    public EventService getEventService() {
 	   return eventService;
    }

@@ -329,6 +329,9 @@ public class EditScaffoldingCellController extends
 				return sortList(scaffoldingCell, model, request, session);
 			} else if (action.equals("pageList")) {
 				return pageList(scaffoldingCell, model, request, session);
+			} else if (action.equals("listPageActivities")) {
+				model.put("criteriaRef", scaffoldingCell.getWizardPageDefinition().getReference());
+				return new ModelAndView("listPageActivities", model);
 			}
 			prepareModelWithScaffoldingId(model, scaffoldingCell);
 			return new ModelAndView("return", model);
