@@ -254,6 +254,7 @@
             <prop key="review">formCreator</prop>
             <prop key="formPicker">formPicker</prop>
             <prop key="tagItem">tagItemRedirect</prop>
+            <prop key="viewCellInformation">viewCellInformationRedirect</prop>
          </props>
       </property>
       <property name="customTypedEditors">
@@ -331,6 +332,32 @@
       <property name="commandName"><value>cellBean</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellFormBean</value></property>
       <property name="formView"><value>viewCell</value></property>
+   </bean>
+
+	<bean id="viewCellInformationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+      <property name="controller">
+         <bean
+         	class="org.theospi.portfolio.matrix.control.ViewCellInformationController">
+         	<property name="idManager">
+         		<ref bean="idManager" />
+         	</property>
+         	<property name="matrixManager">
+         		<ref bean="matrixManager" />
+         	</property>
+         	<property name="sessionManager">
+         		<ref bean="org.sakaiproject.tool.api.SessionManager" />
+         	</property>
+         </bean>
+      </property>
+      
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>cellBean</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellFormBean</value></property>
+      <property name="formView"><value>viewCellInformation</value></property>
    </bean>
 
    <bean id="viewAssignmentController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
