@@ -192,6 +192,7 @@
             <prop key="velocimacro.permissions.allowInline">true</prop>
             <prop key="velocimacro.permissions.allow.inline.local.scope">true</prop>
             <prop key="velocimacro.library.autoreload">true</prop>
+            <prop key="runtime.log.logsystem.class">org.apache.velocity.runtime.log.NullLogSystem</prop>
          </props>
       </property>
    </bean>
