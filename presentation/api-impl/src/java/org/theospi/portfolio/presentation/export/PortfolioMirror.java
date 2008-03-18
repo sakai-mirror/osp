@@ -20,24 +20,19 @@
 **********************************************************************************/
 package org.theospi.portfolio.presentation.export;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import websphinx.*;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Vector;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import websphinx.Access;
-import websphinx.Link;
-import websphinx.Mirror;
-import websphinx.Page;
-import websphinx.RewritableLinkTransformer;
 
 public class PortfolioMirror extends Mirror {
    protected final transient Log logger = LogFactory.getLog(getClass());
@@ -46,6 +41,7 @@ public class PortfolioMirror extends Mirror {
    private boolean needRewrite = false;
    Vector files = new Vector ();
    private String webappName = null;
+   protected static final String ESCAPE_URL = " ";
 
    private static final String OSP_LIBRARY_PATH = "/osp-common-tool/";
 
@@ -63,9 +59,9 @@ public class PortfolioMirror extends Mirror {
     * @param page Page to write
     */
    public synchronized void writePage(Page page) throws IOException {
-      URL url = page.getURL ();
-      String local = toLocalFileURL (url);
-      URL localURL = new URL (local);
+      URL pageURL = page.getURL();
+      String local = toLocalFileURL (pageURL);
+      URL localURL = new URL (escapeUrl(local));
       File localFile = Link.URLToFile (localURL);
 
       File parent = new File (localFile.getParent ());
@@ -205,7 +201,20 @@ public class PortfolioMirror extends Mirror {
        }
 
        public String lookup (URL base, URL url) {
-           return mirror.lookup (base, url);
+           try {
+           String newURL =  mirror.lookup (base, new URL(escapeUrl(url.toString())));
+           if (newURL.indexOf("http") < 0){
+               return newURL;
+           }
+           else {
+               return mirror.lookup (base, url);
+
+           }
+
+           }
+            catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+      }
        }
 
        public void map (URL remoteURL, String href) {
@@ -233,7 +242,6 @@ public class PortfolioMirror extends Mirror {
       public synchronized void writePage(Page page) throws IOException {
          if (page instanceof StreamedPage) {
             StreamedPage sp = (StreamedPage)page;
-
             FileOutputStream fos = new FileOutputStream(file);
             byte[] buffer = new byte[PresentationExport.BUFFER];
             InputStream is = sp.getStream();
@@ -249,5 +257,101 @@ public class PortfolioMirror extends Mirror {
          }
       }
    }
+   public static String escapeUrl(String id)
+	{
+		if (id == null) return "";
+		try
+		{
+			// convert the string to bytes in UTF-8
+			byte[] bytes = id.getBytes("UTF-8");
+
+			StringBuffer buf = new StringBuffer();
+			for (int i = 0; i < bytes.length; i++)
+			{
+				byte b = bytes[i];
+				// escape ascii control characters, ascii high bits, specials
+				if ((ESCAPE_URL.indexOf((char) b) != -1) || (b <= 0x1F) || (b == 0x7F) || (b >= 0x80))
+				{
+					buf.append("%");
+					buf.append(toHex(b));
+				}
+				else
+				{
+					buf.append((char) b);
+				}
+			}
+
+			String rv = buf.toString();
+			return rv;
+		}
+		catch (Exception e)
+		{
+
+			return id;
+		}
+
+	} // escapeUrl
+    private static final String toHex(byte b)
+        {
+
+            char ret[] = new char[2];
+
+            ret[0] = hexDigit((b >>> 4) & (byte) 0x0F);
+            ret[1] = hexDigit((b >>> 0) & (byte) 0x0F);
+
+            return new String(ret);
+        }
+
+        /**
+         * Returns the hex digit cooresponding to a number between 0 and 15.
+         *
+         * @param i
+         *        The number to get the hex digit for.
+         * @return The hex digit cooresponding to that number.
+         * @exception java.lang.IllegalArgumentException
+         *            If supplied digit is not between 0 and 15 inclusive.
+         */
+        private static final char hexDigit(int i)
+        {
+
+            switch (i)
+            {
+                case 0:
+                    return '0';
+                case 1:
+                    return '1';
+                case 2:
+                    return '2';
+                case 3:
+                    return '3';
+                case 4:
+                    return '4';
+                case 5:
+                    return '5';
+                case 6:
+                    return '6';
+                case 7:
+                    return '7';
+                case 8:
+                    return '8';
+                case 9:
+                    return '9';
+                case 10:
+                    return 'A';
+                case 11:
+                    return 'B';
+                case 12:
+                    return 'C';
+                case 13:
+                    return 'D';
+                case 14:
+                    return 'E';
+                case 15:
+                    return 'F';
+            }
+
+            throw new IllegalArgumentException("Invalid digit:" + i);
+        }
+
 
 }
