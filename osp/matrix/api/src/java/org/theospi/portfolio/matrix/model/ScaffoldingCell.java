@@ -137,6 +137,15 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    public void setEvaluators(Collection evaluators) {
       wizardPageDefinition.setEvaluators(evaluators);
    }
+   
+   public Collection getReviewers() {
+	      return wizardPageDefinition.getReviewers();
+	   }
+
+	   public void setReviewers(Collection reviewers) {
+	      wizardPageDefinition.setReviewers(reviewers);
+	   }
+   
    /**
     * @return Returns the validate.
     */

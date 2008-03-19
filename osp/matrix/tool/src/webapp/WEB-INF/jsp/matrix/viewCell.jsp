@@ -93,11 +93,11 @@
 	</c:if> <c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
 	</h3>
 
-	<a name="viewCellInformation" id="viewCellInformation" class="thickbox" title="<osp:message key="view_supporting_info" />"
+	<a name="viewCellInformation" id="viewCellInformation" class="thickbox" title="<osp:message key="supporting_info" />"
 		href="<osp:url value="viewCellInformation.osp">
 				<osp:param name="page_id" value="${cell.wizardPage.id}" />
 			   </osp:url>">
-			   <osp:message key="view_supporting_info" /></a>
+			   <osp:message key="matrix_viewing_title_view" />&nbsp;<osp:message key="supporting_info" /></a>
 		
 		
 </osp-h:glossary> <c:if test="${(cell.status != 'READY' && cell.status != 'RETURNED')}">

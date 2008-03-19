@@ -101,6 +101,7 @@ public class Scaffolding extends ObjectWithWorkflow implements Serializable {
    private List additionalForms = new ArrayList();
    private List<String> attachments = new ArrayList();
    private Collection evaluators = new HashSet();
+   private Collection reviewers = new HashSet();   
    private boolean allowRequestFeedback = true;
    
    public Scaffolding() {}
@@ -447,4 +448,12 @@ public class Scaffolding extends ObjectWithWorkflow implements Serializable {
    public void setAllowRequestFeedback(boolean allowRequestFeedback) {
 	   this.allowRequestFeedback = allowRequestFeedback;
    }
+
+public Collection getReviewers() {
+	return reviewers;
+}
+
+public void setReviewers(Collection reviewers) {
+	this.reviewers = reviewers;
+}
 }

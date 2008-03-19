@@ -247,7 +247,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          for(Iterator ii = cells.iterator(); ii.hasNext(); ) {
             ScaffoldingCell cell = (ScaffoldingCell)ii.next();
             
-            cell.setEvaluators(getScaffoldingCellEvaluators(cell.getWizardPageDefinition().getId(), true));
+            cell.setEvaluators(this.getWizardPageFunctionUserList(cell.getWizardPageDefinition().getId(), true, MatrixFunctionConstants.EVALUATE_MATRIX));
          }
          
          List levels = scaff.getLevels();
@@ -696,16 +696,31 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    protected Scaffolding getScaffoldingForExport(Id scaffoldingId) {
       Scaffolding scaffolding = (Scaffolding) this.getHibernateTemplate().get(Scaffolding.class, scaffoldingId);
 
+      
       //scaffolding evaluators:
-      Collection evaluators = this.getScaffoldingCellEvaluators(scaffolding.getId(), false);
+      Collection reviewers = this.getWizardPageFunctionUserList(scaffolding.getId(), false, MatrixFunctionConstants.REVIEW_MATRIX);
+      scaffolding.setReviewers(new HashSet(reviewers));      
+      
+      //scaffolding cells evaluators:
+      for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
+         ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
+         reviewers = this.getWizardPageFunctionUserList(sCell.getWizardPageDefinition().getId(), false, MatrixFunctionConstants.REVIEW_MATRIX);
+         sCell.setReviewers(new HashSet(reviewers));
+      } 
+      
+      //scaffolding evaluators:
+      Collection evaluators = this.getWizardPageFunctionUserList(scaffolding.getId(), false, MatrixFunctionConstants.EVALUATE_MATRIX);
       scaffolding.setEvaluators(new HashSet(evaluators));      
       
       //scaffolding cells evaluators:
       for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
-         evaluators = this.getScaffoldingCellEvaluators(sCell.getWizardPageDefinition().getId(), false);
+         evaluators = this.getWizardPageFunctionUserList(sCell.getWizardPageDefinition().getId(), false, MatrixFunctionConstants.EVALUATE_MATRIX);
          sCell.setEvaluators(new HashSet(evaluators));
       }      
+      
+      
+      
 
       return scaffolding;
    }
@@ -759,7 +774,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public ScaffoldingCell getScaffoldingCell(Id id) {
       ScaffoldingCell scaffoldingCell = (ScaffoldingCell)this.getHibernateTemplate().load(ScaffoldingCell.class, id);
       
-      scaffoldingCell.setEvaluators(getScaffoldingCellEvaluators(scaffoldingCell.getWizardPageDefinition().getId(), true));
+      scaffoldingCell.setEvaluators(getWizardPageFunctionUserList(scaffoldingCell.getWizardPageDefinition().getId(), true, MatrixFunctionConstants.EVALUATE_MATRIX));
 
       return scaffoldingCell;
    }
@@ -789,11 +804,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          
       return scaffoldingCell;
    }
+
    
-   protected Collection getScaffoldingCellEvaluators(Id wizardPageDefId, boolean useAgentId) {
+   protected Collection getWizardPageFunctionUserList(Id wizardPageDefId, boolean useAgentId, String function) {
       Collection evaluators = new HashSet();
       Collection viewerAuthzs = getAuthzManager().getAuthorizations(null,
-            MatrixFunctionConstants.EVALUATE_MATRIX, wizardPageDefId);
+    		  function, wizardPageDefId);
 
       for (Iterator i = viewerAuthzs.iterator(); i.hasNext();) {
          Authorization evaluator = (Authorization) i.next();
@@ -1261,54 +1277,33 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          }
       }
       
-    //workflow:
-      Collection evalWorkflows = oldScaffolding.getEvalWorkflows();
-      for (Iterator iter2 = evalWorkflows.iterator(); iter2.hasNext();) {
-         Workflow wf = (Workflow)iter2.next();
-         Collection items = wf.getItems();
-         wf.setItems(new HashSet(items));
-      }
-      oldScaffolding.setEvalWorkflows(new HashSet(evalWorkflows));
-      
       removeFromSession(oldScaffolding);
       
       if (oldScaffolding.getStyle() != null) {
          styleIds.add(oldScaffolding.getStyle().getId().getValue());
       }
       
-      
       //scaffolding variables:
       exportWorkflowForms(zos, oldScaffolding, oldScaffolding.getAdditionalForms(), formIds);
       
-      //evaluators:
-      Collection evaluators = oldScaffolding.getEvaluators();
-      oldScaffolding.setEvaluators(new HashSet(evaluators));
-      
-      //attachments
-      List attachments = oldScaffolding.getAttachments();
-      oldScaffolding.setAttachments( new ArrayList(attachments) );
+      Collection formsScaffolding = oldScaffolding.getAdditionalForms();
+      oldScaffolding.setAdditionalForms(new ArrayList(formsScaffolding));
 
-      Collection forms = oldScaffolding.getAdditionalForms();
-      oldScaffolding.setAdditionalForms(new ArrayList(forms));
-      
-      
-      
-      //scaffolding cell variables:
       for (Iterator iter = scaffoldingCells.iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
          sCell.setCells(new HashSet());
-         evaluators = sCell.getEvaluators();
+         Collection evaluators = sCell.getEvaluators();
          sCell.setEvaluators(new HashSet(evaluators));
          
-         attachments = sCell.getWizardPageDefinition().getAttachments();
+         List attachments = sCell.getWizardPageDefinition().getAttachments();
          sCell.getWizardPageDefinition().setAttachments( new ArrayList(attachments) );
          
          sCell.getWizardPageDefinition().setPages(new HashSet());
          
-         forms = sCell.getWizardPageDefinition().getAdditionalForms();
+         Collection forms = sCell.getWizardPageDefinition().getAdditionalForms();
          sCell.getWizardPageDefinition().setAdditionalForms(new ArrayList(forms));
          
-         evalWorkflows = sCell.getWizardPageDefinition().getEvalWorkflows();
+         Collection evalWorkflows = sCell.getWizardPageDefinition().getEvalWorkflows();
          for (Iterator iter2 = evalWorkflows.iterator(); iter2.hasNext();) {
             Workflow wf = (Workflow)iter2.next();
             Collection items = wf.getItems();
@@ -1316,6 +1311,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          }
          sCell.getWizardPageDefinition().setEvalWorkflows(new HashSet(evalWorkflows));
          exportWorkflowForms(zos, sCell.getWizardPageDefinition(), sCell.getAdditionalForms(), formIds);
+
          if (sCell.getGuidance() != null) {
             guidanceIds.add(sCell.getGuidance().getId().getValue());
          }
@@ -1338,7 +1334,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       oldScaffolding.setMatrix(new HashSet());
 
       removeFromSession(oldScaffolding);
-
+      
+ 
       //Saving the agent is not necessary and causes a StackOverflowError when XMLEncoder tries
       // to serialize.  So, we clear out the agents.
       oldScaffolding.setOwner(null);
@@ -1614,6 +1611,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          scaffolding = storeScaffolding(scaffolding);
          
          createEvaluatorAuthzForImport(scaffolding);
+         createReviewersAuthzForImport(scaffolding);
          
          itWorked = true;
          return scaffolding;
@@ -1720,6 +1718,59 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       }
    }
 
+   
+   /**
+    * this creates authorizations for each cell from the reviewers contained in the cell
+    * @param scaffolding
+    */
+   private void createReviewersAuthzForImport(Scaffolding scaffolding) {
+	   
+	   //scaffolding reviewers:
+	   for (Iterator i = scaffolding.getReviewers().iterator(); i.hasNext();) {
+           Id id = (Id)i.next();
+           if (id.getValue().startsWith("/site/")) {
+              // it's a role
+              String[] agentValues = id.getValue().split("/");
+              
+              String newStrId = id.getValue().replaceAll(agentValues[2], 
+                    scaffolding.getWorksiteId().getValue());
+              id = idManager.getId(newStrId);
+           }
+           Agent agent = this.getAgentFromId(id);
+
+           if (agent != null  && agent.getId() != null) {
+              this.getAuthzManager().createAuthorization(agent, 
+                    MatrixFunctionConstants.REVIEW_MATRIX, scaffolding.getId());
+           }
+        }
+	   
+	   
+	   
+	   //all cell's Reviewers:
+	   
+      for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
+         ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
+         Collection evals = sCell.getReviewers();
+         for (Iterator i = evals.iterator(); i.hasNext();) {
+            Id id = (Id)i.next();
+            if (id.getValue().startsWith("/site/")) {
+               // it's a role
+               String[] agentValues = id.getValue().split("/");
+               
+               String newStrId = id.getValue().replaceAll(agentValues[2], 
+                     scaffolding.getWorksiteId().getValue());
+               id = idManager.getId(newStrId);
+            }
+            Agent agent = this.getAgentFromId(id);
+
+            if (agent != null  && agent.getId() != null) {
+               this.getAuthzManager().createAuthorization(agent, 
+                     MatrixFunctionConstants.REVIEW_MATRIX, sCell.getWizardPageDefinition().getId());
+            }
+         }
+      }
+   }
+   
    /**
     * this creates authorizations for each cell from the evaluators contained in the cell
     * @param scaffolding

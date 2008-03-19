@@ -46,6 +46,7 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    private String initialStatus = "";
    private boolean suppressItems = false;
    private Collection evaluators = new HashSet();
+   private Collection reviewers = new HashSet();
    transient private boolean validate;
    private Set pages = new HashSet();
    transient private Id guidanceId;
@@ -303,6 +304,12 @@ public boolean isAllowRequestFeedback() {
 }
 public void setAllowRequestFeedback(boolean allowRequestFeedback) {
 	this.allowRequestFeedback = allowRequestFeedback;
+}
+public Collection getReviewers() {
+	return reviewers;
+}
+public void setReviewers(Collection reviewers) {
+	this.reviewers = reviewers;
 }
 
 
