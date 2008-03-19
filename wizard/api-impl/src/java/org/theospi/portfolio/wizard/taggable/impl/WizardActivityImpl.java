@@ -21,8 +21,8 @@
 
 package org.theospi.portfolio.wizard.taggable.impl;
 
-import org.sakaiproject.assignment.taggable.api.TaggableActivity;
-import org.sakaiproject.assignment.taggable.api.TaggableActivityProducer;
+import org.sakaiproject.taggable.api.TaggableActivity;
+import org.sakaiproject.taggable.api.TaggableActivityProducer;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 
 public class WizardActivityImpl implements TaggableActivity {
@@ -63,5 +63,11 @@ public class WizardActivityImpl implements TaggableActivity {
 
 	public String getTitle() {
 		return def.getTitle();
+	}
+	
+	public String getActivityDetailUrl()
+	{
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

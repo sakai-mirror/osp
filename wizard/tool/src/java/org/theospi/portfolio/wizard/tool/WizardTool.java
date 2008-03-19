@@ -22,9 +22,9 @@ package org.theospi.portfolio.wizard.tool;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.assignment.taggable.api.TaggableActivity;
-import org.sakaiproject.assignment.taggable.api.TaggingManager;
-import org.sakaiproject.assignment.taggable.api.TaggingProvider;
+import org.sakaiproject.taggable.api.TaggableActivity;
+import org.sakaiproject.taggable.api.TaggingManager;
+import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.component.cover.ComponentManager;
 import org.sakaiproject.content.api.ContentHostingService;

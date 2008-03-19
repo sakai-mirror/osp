@@ -132,7 +132,7 @@
                <ref bean="structuredArtifactDefinitionManager"/>
             </property>
             <property name="taggingManager">
-               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+               <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
@@ -192,7 +192,7 @@
                <ref bean="org.sakaiproject.tool.api.SessionManager" />
             </property>
             <property name="taggingManager">
-               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+               <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
@@ -281,7 +281,7 @@
                <ref bean="org.sakaiproject.tool.api.SessionManager" />
             </property>
             <property name="taggingManager">
-               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+               <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
@@ -599,7 +599,7 @@
                <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
             </property>
             <property name="taggingManager">
-               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+               <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
@@ -793,7 +793,7 @@
                <ref bean="org.sakaiproject.content.api.LockManager"/>
             </property>
             <property name="taggingManager">
-               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+               <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
             </property>
          </bean>
       </property>
@@ -821,7 +821,7 @@
                <ref bean="org.theospi.portfolio.guidance.mgt.GuidanceManager" />
             </property>
             <property name="taggingManager">
-               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+               <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
             </property>
             <property name="sessionManager">
                <ref bean="org.sakaiproject.tool.api.SessionManager" />
@@ -889,7 +889,7 @@
                <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
             </property>
             <property name="taggingManager">
-               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+               <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
@@ -944,7 +944,7 @@
                <ref bean="org.theospi.portfolio.workflow.mgt.WorkflowManager" />
             </property>
             <property name="taggingManager">
-               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+               <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
@@ -1054,7 +1054,7 @@
             <property name="idManager"><ref bean="idManager"/></property>
             <property name="authzManager"><ref bean="authzManager"/></property>
             <property name="taggingManager">
-               <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+               <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />

@@ -316,7 +316,7 @@
          <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager"/>
       </property>
       <property name="taggingManager">
-        <ref bean="org.sakaiproject.assignment.taggable.api.TaggingManager" />
+        <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
       </property>
       <property name="authzManager">
         <ref bean="authzManager"/>
