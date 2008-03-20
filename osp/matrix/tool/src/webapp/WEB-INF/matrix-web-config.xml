@@ -122,11 +122,15 @@
             <property name="entityManager">
                <ref bean="org.sakaiproject.entity.api.EntityManager"/>
             </property>
+            <property name="worksiteManager">
+               <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+            </property>
    		</bean>
    	</property>
    	<property name="screenMappings">
          <props>
             <prop key="success">listPageActivities</prop>
+            <prop key="goback">editScaffoldingCellRedirect</prop>
          </props>
       </property>      
       <property name="commandName"><value>pageActivities</value></property>

@@ -31,6 +31,8 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.exception.PermissionException;
+import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.taggable.api.Link;
 import org.sakaiproject.taggable.api.LinkManager;
 import org.sakaiproject.taggable.api.TaggableActivity;
@@ -52,18 +54,30 @@ public class ListPageActivities extends AbstractMatrixController
 	public ModelAndView handleRequest(Object requestModel, Map request, Map session,
 			Map application, Errors errors)
 	{
-		Map<String, Object> model = new HashMap<String, Object>();
-		Set<TaggableActivity> activities = new HashSet<TaggableActivity>();
-		
 		String criteriaRef = (String) request.get("criteriaRef");
 		Reference ref = getEntityManager().newReference(criteriaRef);
-		WizardPageDefinition wpd = getMatrixManager().getWizardPageDefinition(getIdManager().getId(ref.getId()));
+		Id pageId = getIdManager().getId(ref.getId());
+		String submit = (String) request.get("submit");
+		if (submit != null && "Back".equalsIgnoreCase(submit)) {
+			return new ModelAndView("goback", EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
+		}
+
+		Map<String, Object> model = new HashMap<String, Object>();
+		Set<WrappedActivity> activities = new HashSet<WrappedActivity>();
+		
+		
+		WizardPageDefinition wpd = getMatrixManager().getWizardPageDefinition(pageId);
 		model.put("pageTitle", wpd.getTitle());
+		
+		Map<String, String> siteNames = new HashMap<String, String>();
+		
 		try
 		{
 			List<Link> links = getLinkManager().getLinks(criteriaRef, true);
-			for (Link link : links) {				
-				activities.add(getTaggingManager().getActivity(link.getActivityRef(), getMatrixTaggingProvider()));
+			for (Link link : links) {
+				TaggableActivity activity = getTaggingManager().getActivity(link.getActivityRef(), getMatrixTaggingProvider());
+				
+				activities.add(new WrappedActivity(activity, lookupSiteName(activity.getContext(), siteNames)));
 			}
 		}
 		catch (PermissionException e)
@@ -75,7 +89,23 @@ public class ListPageActivities extends AbstractMatrixController
 		return new ModelAndView("success", model);
 	}
 	
-	
+	/**
+	 * Look for the site name in the map, or go to the site service to find it
+	 * @param context
+	 * @param siteNames
+	 * @return
+	 */
+	private String lookupSiteName(String context, Map<String, String> siteNames) {
+		String siteName = siteNames.get(context);
+		if (siteName == null) {
+			Site site = getWorksiteManager().getSite(context);
+			if (site != null) {
+				siteName = site.getTitle();
+				siteNames.put(context, siteName);
+			}
+		}
+		return siteName;
+	}
 	
 	public TaggingManager getTaggingManager() {
 		return taggingManager;
@@ -119,6 +149,40 @@ public class ListPageActivities extends AbstractMatrixController
 	public void setEntityManager(EntityManager entityManager)
 	{
 		this.entityManager = entityManager;
+	}
+	
+	public class WrappedActivity {
+		private String contextName;
+		private TaggableActivity activity;
+		
+		public WrappedActivity() {}
+		
+		public WrappedActivity(TaggableActivity activity, String contextName) {
+			this.activity = activity;
+			this.contextName = contextName;
+		}
+
+		public String getContextName()
+		{
+			return contextName;
+		}
+
+		public void setContextName(String contextName)
+		{
+			this.contextName = contextName;
+		}
+
+		public TaggableActivity getActivity()
+		{
+			return activity;
+		}
+
+		public void setActivity(TaggableActivity activity)
+		{
+			this.activity = activity;
+		}
+		
+		
 	}
 
 }
