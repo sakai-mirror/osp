@@ -92,7 +92,7 @@
           </c:if>
 	</c:if> <c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
 	</h3>
-
+	
 	<a name="viewCellInformation" id="viewCellInformation" class="thickbox" title="<osp:message key="supporting_info" />"
 		href="<osp:url value="viewCellInformation.osp">
 				<osp:param name="page_id" value="${cell.wizardPage.id}" />

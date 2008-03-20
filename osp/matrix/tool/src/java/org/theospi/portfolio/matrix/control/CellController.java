@@ -136,24 +136,26 @@ public class CellController implements FormController, LoadObjectController {
 		Map model = new HashMap();
 
 
-		//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
-		model.put("matrixCanEvaluate", hasPermission(cell.getCell()
-				.getScaffoldingCell().isDefaultEvaluators() ? cell.getCell()
-				.getScaffoldingCell().getScaffolding().getId() : cell.getCell()
-				.getScaffoldingCell().getWizardPageDefinition().getId(),
-				cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
-				MatrixFunctionConstants.EVALUATE_MATRIX));
-		//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
-		//also, compare first result with the user's cell review list by sending the user's cell id
-		model.put("matrixCanReview", hasPermission(cell.getCell()
-				.getScaffoldingCell().isDefaultReviewers() ? cell.getCell()
-				.getScaffoldingCell().getScaffolding().getId() : cell.getCell()
-				.getScaffoldingCell().getWizardPageDefinition().getId(),
-				cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
-				MatrixFunctionConstants.REVIEW_MATRIX)
-				|| hasPermission(cell.getCell().getWizardPage().getId(),
-						cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
-						MatrixFunctionConstants.FEEDBACK_MATRIX));
+		if(request.get("comingFromWizard") == null){
+			//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
+			model.put("matrixCanEvaluate", hasPermission(cell.getCell()
+					.getScaffoldingCell().isDefaultEvaluators() ? cell.getCell()
+							.getScaffoldingCell().getScaffolding().getId() : cell.getCell()
+							.getScaffoldingCell().getWizardPageDefinition().getId(),
+							cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
+							MatrixFunctionConstants.EVALUATE_MATRIX));
+			//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
+			//also, compare first result with the user's cell review list by sending the user's cell id
+			model.put("matrixCanReview", hasPermission(cell.getCell()
+					.getScaffoldingCell().isDefaultReviewers() ? cell.getCell()
+							.getScaffoldingCell().getScaffolding().getId() : cell.getCell()
+							.getScaffoldingCell().getWizardPageDefinition().getId(),
+							cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
+							MatrixFunctionConstants.REVIEW_MATRIX)
+							|| hasPermission(cell.getCell().getWizardPage().getId(),
+									cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
+									MatrixFunctionConstants.FEEDBACK_MATRIX));
+		}
 		model.put("isMatrix", "true");
 		model.put("currentUser", getSessionManager().getCurrentSessionUserId());
 		model.put("CURRENT_GUIDANCE_ID_KEY", "session."
@@ -425,6 +427,7 @@ public class CellController implements FormController, LoadObjectController {
 		String matrixAction = (String) request.get("matrix");
 		String submitAction = (String) request.get("submitAction");
 		String inviteFeedback = (String) request.get("inviteFeedback");
+
 		
 		if(inviteFeedback != null){
 			session.put("feedbackCellId", cell.getId().getValue());

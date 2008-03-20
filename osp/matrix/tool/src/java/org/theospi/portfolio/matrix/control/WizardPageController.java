@@ -61,6 +61,8 @@ public class WizardPageController extends CellController {
 	public Map referenceData(Map request, Object command, Errors errors) {
 		ToolSession session = getSessionManager().getCurrentToolSession();
 
+		//this is so CellController knows that WizardPageController called it
+		request.put("comingFromWizard", true);
 		Map model = super.referenceData(request, command, errors);
 		Boolean wizardPreview = Boolean.valueOf( (String)request.get("wizardPreview") );
 

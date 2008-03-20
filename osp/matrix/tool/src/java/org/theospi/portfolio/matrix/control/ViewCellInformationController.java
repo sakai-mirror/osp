@@ -16,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 
 public class ViewCellInformationController implements Controller, LoadObjectController {
 
@@ -36,46 +38,45 @@ public class ViewCellInformationController implements Controller, LoadObjectCont
 
 	public Object fillBackingObject(Object incomingModel, Map request,
 			Map session, Map application) throws Exception {
+		
+		
+		WizardPageDefinition wizPageDef = null;
+		
+		if(session.get(WizardPageHelper.WIZARD_PAGE) != null){
+			WizardPage wizPage = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
+			if(wizPage != null){
+				wizPageDef = wizPage.getPageDefinition();
+			}
+		}else{
 
-		// coming from matrix cell, not helper
-		session.remove(WizardPageHelper.WIZARD_PAGE);
+			String strId = (String) request.get("page_id");
+			if (strId == null) {
+				strId = (String) session.get("page_id");
+				session.remove("page_id");
+			}
 
-		CellFormBean cellBean = (CellFormBean) incomingModel;
+			Cell cell = null;
+			Id id = getIdManager().getId(strId);
 
-		String strId = (String) request.get("page_id");
-		if (strId == null) {
-			strId = (String) session.get("page_id");
-			session.remove("page_id");
+
+			try {
+				cell = matrixManager.getCellFromPage(id);
+
+
+				if (request.get("view_user") != null) {
+					session.put("view_user", cell.getWizardPage().getOwner()
+							.getId().getValue());
+				}
+			} catch (Exception e) {
+				logger.error("Error with cell: " + strId + " " + e.toString());
+				// tbd how to report error back to user?
+			}
+			
+			if(cell != null)
+				wizPageDef = cell.getScaffoldingCell().getWizardPageDefinition();
 		}
 
-		Cell cell;
-		Id id = getIdManager().getId(strId);
-
-		// Check if the cell has been removed, which can happen if:
-		// (1) user views matrix
-		// (2) owner removes column or row (the code verifies that no one has
-		// modified the matrix)
-		// (3) user selects a cell that has just been removed with the column or
-		// row
-		try {
-			cell = matrixManager.getCellFromPage(id);
-
-			cellBean.setCell(cell);
-
-			List nodeList = new ArrayList(matrixManager.getPageContents(cell
-					.getWizardPage()));
-			cellBean.setNodes(nodeList);
-
-         if (request.get("view_user") != null) {
-            session.put("view_user", cell.getWizardPage().getOwner()
-               .getId().getValue());
-         }
-		} catch (Exception e) {
-			logger.error("Error with cell: " + strId + " " + e.toString());
-			// tbd how to report error back to user?
-		}
-
-		return cellBean;
+		return wizPageDef;
 	}
 
 	public MatrixManager getMatrixManager() {

@@ -748,91 +748,93 @@ function mySetMainFrameHeight(id)
 		<!--- Cell Feedback form end --->			
 			
 			
-		<!--- Reviewers Area Start --->
+		<c:if test="${!isWizard}">
 		
-		<h5><osp:message key="label_reviwers"/></h5>		
-		
-		
-		<!-- this case is currently only needed for matrices -->
-		<c:if test="${scaffoldingCell.scaffolding != null}">
-
-
-			<!-- ************* Default Matrix Checkbox Start *********** -->
-			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultReviewers">  			   
-				<input type="checkbox" name="defaultReviewers" value="true"  id="defaultReviewers" 
-				<c:if test="${status.value}">checked</c:if> onclick="defaultFormClicked(this.checked, 'defaultReviewersSpan', 'cellReviewersSpan');" />
-				<label for="defaultReviewers" ><fmt:message key="defaultReviewersText"/></label> 
-			</spring:bind>
+			<!--- Reviewers Area Start --->
 			
-			<!-- ************* Default Matrix Checkbox Start *********** -->
+			<h5><osp:message key="label_reviwers"/></h5>		
+			
+			
+			<!-- this case is currently only needed for matrices -->
+			<c:if test="${scaffoldingCell.scaffolding != null}">
 	
 	
-			<!-- Default Reviewers start -->
-			<span name="defaultReviewersSpan" id="defaultReviewersSpan" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultReviewers}">style='display:none' </c:if>>
-
-				<!-- Reviewers list -->
-
-				<c:if test="${not empty defaultReviewers}">
+				<!-- ************* Default Matrix Checkbox Start *********** -->
+				<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultReviewers">  			   
+					<input type="checkbox" name="defaultReviewers" value="true"  id="defaultReviewers" 
+					<c:if test="${status.value}">checked</c:if> onclick="defaultFormClicked(this.checked, 'defaultReviewersSpan', 'cellReviewersSpan');" />
+					<label for="defaultReviewers" ><fmt:message key="defaultReviewersText"/></label> 
+				</spring:bind>
+				
+				<!-- ************* Default Matrix Checkbox Start *********** -->
+		
+		
+				<!-- Default Reviewers start -->
+				<span name="defaultReviewersSpan" id="defaultReviewersSpan" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultReviewers}">style='display:none' </c:if>>
+	
+					<!-- Reviewers list -->
+	
+					<c:if test="${not empty defaultReviewers}">
+						<ol>
+							<c:forEach var="eval" items="${defaultReviewers}">
+								<li><c:out value="${eval}" /></li>
+							</c:forEach>
+						</ol>
+					</c:if>	
+					<c:if test="${empty defaultReviewers}">
+						<p class="indnt1">
+							<span class="highlight"><fmt:message key="info_reviewersNoneNoBracket"/></span>
+						</p>			
+					</c:if>
+					
+					<p class="indnt1">
+						<c:if test="${scaffoldingCell.scaffolding.allowRequestFeedback}">
+							<c:out value="*"/><fmt:message key="allowRequestFeedback"/>
+						</c:if>
+						<c:if test="${!scaffoldingCell.scaffolding.allowRequestFeedback}">
+							<c:out value="*"/><fmt:message key="doNotAllowRequestFeedback"/>
+						</c:if>
+					</p>
+				</span>
+				<!--  Default Reviewers start  -->
+				
+				
+	
+			<!-- this case is currently only needed for matrices -->
+			</c:if>
+				
+					
+			<!-- Cell Reviewers Start -->            
+			<span name="cellReviewersSpan" id="cellReviewersSpan" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultReviewers}">style='display:none' </c:if>>
+		
+				<c:if test="${not empty reviewers}">
 					<ol>
-						<c:forEach var="eval" items="${defaultReviewers}">
+						<c:forEach var="eval" items="${reviewers}">
 							<li><c:out value="${eval}" /></li>
 						</c:forEach>
 					</ol>
 				</c:if>	
-				<c:if test="${empty defaultReviewers}">
-					<p class="indnt1">
-						<span class="highlight"><fmt:message key="info_reviewersNoneNoBracket"/></span>
-					</p>			
-				</c:if>
-				
 				<p class="indnt1">
-					<c:if test="${scaffoldingCell.scaffolding.allowRequestFeedback}">
-						<c:out value="*"/><fmt:message key="allowRequestFeedback"/>
-					</c:if>
-					<c:if test="${!scaffoldingCell.scaffolding.allowRequestFeedback}">
-						<c:out value="*"/><fmt:message key="doNotAllowRequestFeedback"/>
+					<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+						<osp:message key="select_reviewers"/>
+					</a>	 
+					<c:if test="${empty reviewers}">
+						&nbsp;<fmt:message key="info_reviewersNone"/>
 					</c:if>
 				</p>
+				<p class="indnt1"> 
+				<spring:bind path="scaffoldingCell.wizardPageDefinition.allowRequestFeedback">  			
+					<input type="checkbox" name="allowRequestFeedback" value="true"  id="allowRequestFeedback" 
+						<c:if test="${status.value}">
+							checked
+						</c:if> 
+					 />
+					<label for="allowRequestFeedback" ><fmt:message key="allowRequestFeedback"/></label>    
+				</spring:bind>	
+				</p>
 			</span>
-			<!--  Default Reviewers start  -->
-			
-			
-
-		<!-- this case is currently only needed for matrices -->
+			<!-- Cell Reviewers End -->
 		</c:if>
-			
-				
-		<!-- Cell Reviewers Start -->            
-		<span name="cellReviewersSpan" id="cellReviewersSpan" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultReviewers}">style='display:none' </c:if>>
-	
-			<c:if test="${not empty reviewers}">
-				<ol>
-					<c:forEach var="eval" items="${reviewers}">
-						<li><c:out value="${eval}" /></li>
-					</c:forEach>
-				</ol>
-			</c:if>	
-			<p class="indnt1">
-				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
-					<osp:message key="select_reviewers"/>
-				</a>	 
-				<c:if test="${empty reviewers}">
-					&nbsp;<fmt:message key="info_reviewersNone"/>
-				</c:if>
-			</p>
-			<p class="indnt1"> 
-			<spring:bind path="scaffoldingCell.wizardPageDefinition.allowRequestFeedback">  			
-				<input type="checkbox" name="allowRequestFeedback" value="true"  id="allowRequestFeedback" 
-					<c:if test="${status.value}">
-						checked
-					</c:if> 
-				 />
-				<label for="allowRequestFeedback" ><fmt:message key="allowRequestFeedback"/></label>    
-			</spring:bind>	
-			</p>
-		</span>
-		<!-- Cell Reviewers End -->
-			
 			
 	</fieldset>
 		

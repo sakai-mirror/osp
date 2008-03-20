@@ -10,19 +10,19 @@
 
 	<br>
 
-	<span class="xheader"><osp:message key="label_title" /></span>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}"/>
+	<span class="xheader"><osp:message key="label_title" /></span>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${wizardPageDef.title}"/>
 
 	
-	<c:if test="${cell.scaffoldingCell.wizardPageDefinition.description != null && cell.scaffoldingCell.wizardPageDefinition.description != ''}">
+	<c:if test="${wizardPageDef.description != null && wizardPageDef.description != ''}">
 		<h4 class="xheader">
 			<osp:message key="label_description" />
 		</h4>
 		<div class="indnt1">
-			<c:out value="${cell.scaffoldingCell.wizardPageDefinition.description}" escapeXml="false" />
+			<c:out value="${wizardPageDef.description}" escapeXml="false" />
 		</div>
 	</c:if>
 	
-	<c:if test="${not empty cell.scaffoldingCell.guidance}">
+	<c:if test="${not empty wizardPageDef.guidance}">
 
 		<c:set value="false" var="oneDisplayed" />
 		<c:set value="0" var="i" />
@@ -30,7 +30,7 @@
 		<!-- ** instruction ** -->
 	
 		<c:forEach var="guidanceItem"
-			items="${cell.scaffoldingCell.guidance.items}">
+			items="${wizardPageDef.guidance.items}">
 			<c:if
 				test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
 				<c:if test="${guidanceItem.type == 'instruction'}">
@@ -70,7 +70,7 @@
 		<!-- ** rationale ** -->
 	
 		<c:forEach var="guidanceItem"
-			items="${cell.scaffoldingCell.guidance.items}">
+			items="${wizardPageDef.guidance.items}">
 			<c:if
 				test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
 				<c:if test="${guidanceItem.type == 'rationale'}">
@@ -109,7 +109,7 @@
 		<!-- ** examples ** -->
 	
 		<c:forEach var="guidanceItem"
-			items="${cell.scaffoldingCell.guidance.items}">
+			items="${wizardPageDef.guidance.items}">
 			<c:if
 				test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
 				<c:if test="${guidanceItem.type == 'example'}">

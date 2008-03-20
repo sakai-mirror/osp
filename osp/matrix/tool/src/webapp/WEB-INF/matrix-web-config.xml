@@ -355,8 +355,8 @@
             <ref bean="idCustomEditor"/>
          </list>
       </property>
-      <property name="commandName"><value>cellBean</value></property>
-      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.CellFormBean</value></property>
+      <property name="commandName"><value>wizardPageDef</value></property>
+      <property name="commandClass"><value>org.theospi.portfolio.matrix.model.WizardPageDefinition</value></property>
       <property name="formView"><value>viewCellInformation</value></property>
    </bean>
 
