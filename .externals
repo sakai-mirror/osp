@@ -36,7 +36,7 @@ sakai-mock      	-r43028 https://source.sakaiproject.org/svn/sakai-mock/branches
 search				-r43028 https://source.sakaiproject.org/svn/search/branches/sakai_2-5-x
 sections			-r43028 https://source.sakaiproject.org/svn/sections/branches/sakai_2-5-x
 site				-r43028 https://source.sakaiproject.org/svn/site/branches/sakai_2-5-x
-site-association	-r46384 https://source.sakaiproject.org/contrib/iu/site-association/branches/sakai_2-5-x
+site-association	-r46384 https://source.sakaiproject.org/contrib/iu/site-association/trunk
 site-manage			-r43028 https://source.sakaiproject.org/svn/site-manage/branches/sakai_2-5-x	
 syllabus			-r43028 https://source.sakaiproject.org/svn/syllabus/branches/sakai_2-5-x
 taggable			-r46918 https://source.sakaiproject.org/contrib/syracuse/taggable/branches/oncourse_osp_enhancements
