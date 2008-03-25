@@ -109,23 +109,55 @@ implements Controller, FormController {
 
 		   if(dbScaffolding != null){
 			   boolean reflectChange = false;
-			   boolean customChange = false;
-			   boolean feedbackChange =  false;
-			   boolean evalChange = false;
-			   
-			   //find out what default forms have been changed:   
-			   if(!dbScaffolding.getReflectionDevice().equals(scaffolding.getReflectionDevice()))
-				   reflectChange = true;
-			   
-			   if(!dbScaffolding.getAdditionalForms().equals(scaffolding.getAdditionalForms()))
-				   customChange = true;
-			   
-			   if(!dbScaffolding.getReviewDevice().equals(scaffolding.getReviewDevice()))
-				   feedbackChange = true;
-			   
-			   if(!dbScaffolding.getEvaluationDevice().equals(scaffolding.getEvaluationDevice()))
-				   evalChange = true;
-			   
+				boolean customChange = false;
+				boolean feedbackChange = false;
+				boolean evalChange = false;
+
+				// find out what default forms have been changed:
+				if ((dbScaffolding.getReflectionDevice() == null && scaffolding
+						.getReflectionDevice() != null)
+						|| (dbScaffolding.getReflectionDevice() != null && scaffolding
+								.getReflectionDevice() == null)
+						|| (dbScaffolding.getReflectionDevice() != null
+								&& scaffolding.getReflectionDevice() != null && !dbScaffolding
+								.getReflectionDevice().equals(
+										scaffolding.getReflectionDevice()))) {
+					reflectChange = true;
+				}
+
+				if ((dbScaffolding.getAdditionalForms() != null && scaffolding
+						.getAdditionalForms() == null)
+						|| (dbScaffolding.getAdditionalForms() == null && scaffolding
+								.getAdditionalForms() != null)
+						|| (dbScaffolding.getAdditionalForms() != null
+								&& scaffolding.getAdditionalForms() != null && !dbScaffolding
+								.getAdditionalForms().equals(
+										scaffolding.getAdditionalForms()))) {
+					customChange = true;
+				}
+
+				if ((dbScaffolding.getReviewDevice() != null && scaffolding
+						.getReviewDevice() == null)
+						|| (dbScaffolding.getReviewDevice() == null && scaffolding
+								.getReviewDevice() != null)
+						|| (dbScaffolding.getReviewDevice() != null
+								&& scaffolding.getReviewDevice() != null && !dbScaffolding
+								.getReviewDevice().equals(
+										scaffolding.getReviewDevice()))) {
+					feedbackChange = true;
+				}
+
+				if ((dbScaffolding.getEvaluationDevice() == null && scaffolding
+						.getEvaluationDevice() != null)
+						|| (dbScaffolding.getEvaluationDevice() != null && scaffolding
+								.getEvaluationDevice() == null)
+						|| (dbScaffolding.getEvaluationDevice() != null
+								&& scaffolding.getEvaluationDevice() != null && !dbScaffolding
+								.getEvaluationDevice().equals(
+										scaffolding.getEvaluationDevice()))) {
+					evalChange = true;
+				}
+
 
 
 			   //only iterate through the matrix if there is a default form change:
