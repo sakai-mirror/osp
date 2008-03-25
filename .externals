@@ -1,53 +1,54 @@
-access			https://source.sakaiproject.org/svn/access/trunk
-alias			https://source.sakaiproject.org/svn/alias/trunk
-announcement		https://source.sakaiproject.org/svn/announcement/trunk
-archive			https://source.sakaiproject.org/svn/archive/trunk
-assignment		https://source.sakaiproject.org/svn/assignment/branches/oncourse_osp_enhancements
-authz			https://source.sakaiproject.org/svn/authz/trunk
-calendar		https://source.sakaiproject.org/svn/calendar/trunk
-cluster			https://source.sakaiproject.org/svn/cluster/trunk
-component		https://source.sakaiproject.org/svn/component/trunk	
-content			https://source.sakaiproject.org/svn/content/trunk
-content-review          https://source.sakaiproject.org/svn/content-review/trunk
-courier			https://source.sakaiproject.org/svn/courier/trunk
-course-management	https://source.sakaiproject.org/svn/course-management/trunk
-db			https://source.sakaiproject.org/svn/db/trunk
-email			https://source.sakaiproject.org/svn/email/trunk
-entity			https://source.sakaiproject.org/svn/entity/trunk
-entitybroker		https://source.sakaiproject.org/svn/entitybroker/trunk
-event			https://source.sakaiproject.org/svn/event/trunk
-gradebook		https://source.sakaiproject.org/svn/gradebook/trunk
-jcr                     https://source.sakaiproject.org/svn/jcr/trunk
-jobscheduler		https://source.sakaiproject.org/svn/jobscheduler/trunk
-jsf			https://source.sakaiproject.org/svn/jsf/trunk
-login			https://source.sakaiproject.org/svn/login/trunk
-mailarchive		https://source.sakaiproject.org/svn/mailarchive/trunk
-master			https://source.sakaiproject.org/svn/master/trunk
-memory			https://source.sakaiproject.org/svn/memory/trunk
-message			https://source.sakaiproject.org/svn/message/trunk
-metaobj			https://source.sakaiproject.org/svn/metaobj/trunk
-portal			https://source.sakaiproject.org/svn/portal/trunk
-presence		https://source.sakaiproject.org/svn/presence/trunk
-privacy			https://source.sakaiproject.org/svn/privacy/trunk
-providers		https://source.sakaiproject.org/svn/providers/trunk
-reference		https://source.sakaiproject.org/svn/reference/trunk
-sakai-mock              https://source.sakaiproject.org/svn/sakai-mock/trunk
-search			https://source.sakaiproject.org/svn/search/trunk
-sections		https://source.sakaiproject.org/svn/sections/trunk
-site			https://source.sakaiproject.org/svn/site/trunk
-site-association	https://source.sakaiproject.org/contrib/iu/site-association/trunk
-site-manage		https://source.sakaiproject.org/svn/site-manage/trunk	
-syllabus		https://source.sakaiproject.org/svn/syllabus/trunk
-taggable		https://source.sakaiproject.org/contrib/syracuse/taggable/branches/oncourse_osp_enhancements
-test-harness		https://source.sakaiproject.org/svn/test-harness/trunk
-tool			https://source.sakaiproject.org/svn/tool/trunk
-user			https://source.sakaiproject.org/svn/user/trunk
-util			https://source.sakaiproject.org/svn/util/trunk
-velocity		https://source.sakaiproject.org/svn/velocity/trunk
-web			https://source.sakaiproject.org/svn/web/trunk
-reports			https://source.sakaiproject.org/svn/reports/trunk
-warehouse		https://source.sakaiproject.org/svn/warehouse/trunk
-gmt			https://source.sakaiproject.org/contrib/syracuse/gmt/branches/oncourse_osp_enhancements
-datapoint		https://source.sakaiproject.org/contrib/syracuse/datapoint/branches/oncourse_osp_enhancements
-formbuilder		https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
-assignment2		https://source.sakaiproject.org/contrib/assignment2/trunk
+access				-r43208 https://source.sakaiproject.org/svn/access/branches/sakai_2-5-x
+alias				-r43208 https://source.sakaiproject.org/svn/alias/branches/sakai_2-5-x
+announcement		-r43208 https://source.sakaiproject.org/svn/announcement/branches/sakai_2-5-x
+archive				-r43208 https://source.sakaiproject.org/svn/archive/branches/sakai_2-5-x
+assignment			-r43208 https://source.sakaiproject.org/svn/assignment/branches/oncourse_osp_enhancements
+authz				-r43208 https://source.sakaiproject.org/svn/authz/branches/sakai_2-5-x
+calendar			-r43208 https://source.sakaiproject.org/svn/calendar/branches/sakai_2-5-x
+cluster				-r43208 https://source.sakaiproject.org/svn/cluster/branches/sakai_2-5-x
+component			-r43208 https://source.sakaiproject.org/svn/component/branches/sakai_2-5-x	
+content				-r43208 https://source.sakaiproject.org/svn/content/branches/sakai_2-5-x
+content-review  	-r43208 https://source.sakaiproject.org/svn/content-review/branches/sakai_2-5-x
+courier				-r43208 https://source.sakaiproject.org/svn/courier/branches/sakai_2-5-x
+course-management	-r43208 https://source.sakaiproject.org/svn/course-management/branches/sakai_2-5-x
+db					-r43208 https://source.sakaiproject.org/svn/db/branches/sakai_2-5-x
+email				-r43208 https://source.sakaiproject.org/svn/email/branches/sakai_2-5-x
+entity				-r43208 https://source.sakaiproject.org/svn/entity/branches/sakai_2-5-x
+entitybroker		-r43208 https://source.sakaiproject.org/svn/entitybroker/branches/sakai_2-5-x
+event				-r43208 https://source.sakaiproject.org/svn/event/branches/sakai_2-5-x
+gradebook			-r43208 https://source.sakaiproject.org/svn/gradebook/branches/sakai_2-5-x
+jcr             	-r43208 https://source.sakaiproject.org/svn/jcr/branches/sakai_2-5-x
+jobscheduler		-r43208 https://source.sakaiproject.org/svn/jobscheduler/branches/sakai_2-5-x
+jsf					-r43208 https://source.sakaiproject.org/svn/jsf/branches/sakai_2-5-x
+login				-r43208 https://source.sakaiproject.org/svn/login/branches/sakai_2-5-x
+mailarchive			-r43208 https://source.sakaiproject.org/svn/mailarchive/branches/sakai_2-5-x
+master				-r43208 https://source.sakaiproject.org/svn/master/branches/sakai_2-5-x
+memory				-r43208 https://source.sakaiproject.org/svn/memory/branches/sakai_2-5-x
+message				-r43208 https://source.sakaiproject.org/svn/message/branches/sakai_2-5-x
+metaobj				-r43208 https://source.sakaiproject.org/svn/metaobj/branches/sakai_2-5-x
+osp					-r45208 https://source.sakaiproject.org/svn/osp/branches/oncourse_osp_enhancements/osp
+portal				-r43208 https://source.sakaiproject.org/svn/portal/branches/sakai_2-5-x
+presence			-r43208 https://source.sakaiproject.org/svn/presence/branches/sakai_2-5-x
+privacy				-r43208 https://source.sakaiproject.org/svn/privacy/branches/sakai_2-5-x
+providers			-r43208 https://source.sakaiproject.org/svn/providers/branches/sakai_2-5-x
+reference			-r43208 https://source.sakaiproject.org/svn/reference/branches/sakai_2-5-x
+sakai-mock      	-r43208 https://source.sakaiproject.org/svn/sakai-mock/branches/sakai_2-5-x
+search				-r43208 https://source.sakaiproject.org/svn/search/branches/sakai_2-5-x
+sections			-r43208 https://source.sakaiproject.org/svn/sections/branches/sakai_2-5-x
+site				-r43208 https://source.sakaiproject.org/svn/site/branches/sakai_2-5-x
+site-association	-r46384 https://source.sakaiproject.org/contrib/iu/site-association/branches/sakai_2-5-x
+site-manage			-r43208 https://source.sakaiproject.org/svn/site-manage/branches/sakai_2-5-x	
+syllabus			-r43208 https://source.sakaiproject.org/svn/syllabus/branches/sakai_2-5-x
+taggable			-r46918 https://source.sakaiproject.org/contrib/syracuse/taggable/branches/oncourse_osp_enhancements
+test-harness		-r43208 https://source.sakaiproject.org/svn/test-harness/branches/sakai_2-5-x
+tool				-r43208 https://source.sakaiproject.org/svn/tool/branches/sakai_2-5-x
+user				-r43208 https://source.sakaiproject.org/svn/user/branches/sakai_2-5-x
+util				-r43208 https://source.sakaiproject.org/svn/util/branches/sakai_2-5-x
+velocity			-r43208 https://source.sakaiproject.org/svn/velocity/branches/sakai_2-5-x
+web					-r43208 https://source.sakaiproject.org/svn/web/branches/sakai_2-5-x
+reports				-r43208 https://source.sakaiproject.org/svn/reports/branches/sakai_2-5-x
+warehouse			-r43208 https://source.sakaiproject.org/svn/warehouse/branches/sakai_2-5-x
+gmt					-r46918 https://source.sakaiproject.org/contrib/syracuse/gmt/branches/oncourse_osp_enhancements
+datapoint			-r46918 https://source.sakaiproject.org/contrib/syracuse/datapoint/branches/oncourse_osp_enhancements
+formbuilder			-r45275 https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
+assignment2			-r47193 https://source.sakaiproject.org/contrib/assignment2/trunk
