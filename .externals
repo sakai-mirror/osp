@@ -16,7 +16,7 @@ email				-r43028 https://source.sakaiproject.org/svn/email/branches/sakai_2-5-x
 entity				-r43028 https://source.sakaiproject.org/svn/entity/branches/sakai_2-5-x
 entitybroker		-r43028 https://source.sakaiproject.org/svn/entitybroker/branches/sakai_2-5-x
 event				-r43028 https://source.sakaiproject.org/svn/event/branches/sakai_2-5-x
-gradebook			-r43028 https://source.sakaiproject.org/svn/gradebook/branches/sakai_2-5-x
+gradebook			-r43441 https://source.sakaiproject.org/svn/gradebook/trunk
 jcr             	-r43028 https://source.sakaiproject.org/svn/jcr/branches/sakai_2-5-x
 jobscheduler		-r43028 https://source.sakaiproject.org/svn/jobscheduler/branches/sakai_2-5-x
 jsf					-r43028 https://source.sakaiproject.org/svn/jsf/branches/sakai_2-5-x
@@ -51,4 +51,4 @@ warehouse			-r43028 https://source.sakaiproject.org/svn/warehouse/branches/sakai
 gmt					-r46918 https://source.sakaiproject.org/contrib/syracuse/gmt/branches/oncourse_osp_enhancements
 datapoint			-r46918 https://source.sakaiproject.org/contrib/syracuse/datapoint/branches/oncourse_osp_enhancements
 formbuilder			-r45275 https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
-assignment2			-r47193 https://source.sakaiproject.org/contrib/assignment2/trunk
+assignment2			-r47198 https://source.sakaiproject.org/contrib/assignment2/trunk
