@@ -70,6 +70,7 @@ import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.CommonFormBean;
+import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
@@ -151,6 +152,8 @@ public class EditScaffoldingCellController extends
 		model.put("additionalFormDevices", getAdditionalFormDevices(def.getSiteId()));
 		model.put("selectedAdditionalFormDevices",
 				getSelectedAdditionalFormDevices(sCell,def.getSiteId()));
+		model.put("usedAdditionalForms", getUsedFormList(sCell));
+		
 		model.put("selectedAssignments",
                 AssignmentHelper.getSelectedAssignments(sCell.getWizardPageDefinition().getAttachments()) );
 		model.put("evaluators", getSelectedUsers(sCell.getWizardPageDefinition(), MatrixFunctionConstants.EVALUATE_MATRIX));
@@ -220,43 +223,43 @@ public class EditScaffoldingCellController extends
 			scaffoldingCell.setSuppressItems(true);  
 		}
 		
-		if(request.get("defaultCustomForm") == null || request.get("defaultCustomForm").toString() == "false"){
+		if(request.get("hiddenDefaultCustomForm") == null || request.get("hiddenDefaultCustomForm").toString().equals("false")){
 			scaffoldingCell.setDefaultCustomForm(false);
 		}else{
 			scaffoldingCell.setDefaultCustomForm(true);
 		}
 		
-		if(request.get("defaultFeedbackForm") == null || request.get("defaultFeedbackForm").toString() == "false"){
+		if(request.get("hiddenDefaultFeedbackForm") == null || request.get("hiddenDefaultFeedbackForm").toString().equals("false")){
 			scaffoldingCell.setDefaultFeedbackForm(false);
 		}else{
 			scaffoldingCell.setDefaultFeedbackForm(true);
 		}
 		
-		if(request.get("defaultReflectionForm") == null || request.get("defaultReflectionForm").toString() == "false"){
+		if(request.get("hiddenDefaultReflectionForm") == null || request.get("hiddenDefaultReflectionForm").toString().equals("false")){
 			scaffoldingCell.setDefaultReflectionForm(false);
 		}else{
 			scaffoldingCell.setDefaultReflectionForm(true);
 		}
 		
-		if(request.get("defaultReviewers") == null || request.get("defaultReviewers").toString() == "false"){
+		if(request.get("defaultReviewers") == null || request.get("defaultReviewers").toString().equals("false")){
 			scaffoldingCell.setDefaultReviewers(false);
 		}else{
 			scaffoldingCell.setDefaultReviewers(true);
 		}
 		
-		if(request.get("defaultEvaluationForm") == null || request.get("defaultEvaluationForm").toString() == "false"){
+		if(request.get("hiddenDefaultEvaluationForm") == null || request.get("hiddenDefaultEvaluationForm").toString().equals("false")){
 			scaffoldingCell.setDefaultEvaluationForm(false);
 		}else{
 			scaffoldingCell.setDefaultEvaluationForm(true);
 		}
 		
-		if(request.get("defaultEvaluators") == null || request.get("defaultEvaluators").toString() == "false"){
+		if(request.get("defaultEvaluators") == null || request.get("defaultEvaluators").toString().equals("false")){
 			scaffoldingCell.setDefaultEvaluators(false);
 		}else{
 			scaffoldingCell.setDefaultEvaluators(true);
 		}
 		
-		if(request.get("allowRequestFeedback") == null || request.get("allowRequestFeedback").toString() == "false"){
+		if(request.get("allowRequestFeedback") == null || request.get("allowRequestFeedback").toString().equals("false")){
 			scaffoldingCell.setAllowRequestFeedback(false);
 		}else{
 			scaffoldingCell.setAllowRequestFeedback(true);  
@@ -903,6 +906,36 @@ public class EditScaffoldingCellController extends
 		return providers;
 	}
 
+	
+	private List getUsedFormList(ScaffoldingCell sCell){
+		List<String> usedForms = new ArrayList<String>();
+
+		List cells = getMatrixManager().getCellsByScaffoldingCell(sCell.getId());
+
+		for (Iterator cellIt = cells.iterator(); cellIt.hasNext();) {
+			Cell cell = (Cell) cellIt.next();
+			WizardPage wizardPage = cell.getWizardPage();
+			Set pageForms = getMatrixManager().getPageForms(wizardPage);
+
+			for (Iterator cellIter = pageForms.iterator(); cellIter.hasNext();) {
+				Node cellPageForm = (Node) cellIter.next();
+
+				boolean found = false;
+				for (Iterator newFormsIter = sCell.getAdditionalForms().iterator(); newFormsIter.hasNext();) {
+					String newFormDefId = (String) newFormsIter.next();
+					if(cellPageForm.getFileType().equals(newFormDefId)){
+						if(!usedForms.contains(newFormDefId)){
+							usedForms.add(newFormDefId);
+						}
+					}
+				}
+			}
+		}
+		   
+		return usedForms;
+	}
+	
+	
 	public boolean isCustomFormUsed() {
 		return customFormUsed;
 	}

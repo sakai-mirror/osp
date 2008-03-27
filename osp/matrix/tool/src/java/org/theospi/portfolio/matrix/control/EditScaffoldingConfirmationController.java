@@ -21,6 +21,7 @@
 package org.theospi.portfolio.matrix.control;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,16 +34,18 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
+import org.sakaiproject.tool.api.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
+import org.theospi.portfolio.shared.model.Node;
 
 
 public class EditScaffoldingConfirmationController extends BaseScaffoldingController
@@ -50,6 +53,7 @@ implements Controller, FormController {
 
    protected final Log logger = LogFactory.getLog(getClass());
    private ReviewManager reviewManager;
+   private SessionManager sessionManager;
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String viewName = "success";
@@ -62,6 +66,7 @@ implements Controller, FormController {
       
       Map model = new HashMap();
       model.put("scaffolding_id", id);
+      
       
       String cancel = (String)request.get("cancel");
       String next = (String)request.get("continue");
@@ -77,12 +82,23 @@ implements Controller, FormController {
       
       return new ModelAndView(viewName, model);
    }
-   
+
    public Map referenceData(Map request, Object command, Errors errors) {
-      Map model = new HashMap();
-      model.put("label", "Scaffolding");
-      model.put("isInSession", EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
-      return model;
+	   ToolSession session = getSessionManager().getCurrentToolSession();
+	   EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.getAttribute(
+			   EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
+	   Scaffolding scaffolding = sessionBean.getScaffolding();
+
+	   Map model = new HashMap();
+
+	   model.put("label", "Scaffolding");
+
+	   Collection changedCells = getChangedCells(scaffolding);
+	   
+	   model.put("changedCells", changedCells);
+	   model.put("changedCellsSize", changedCells.size());
+	   model.put("isInSession", EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
+	   return model;
    }
    
    /**
@@ -189,12 +205,14 @@ implements Controller, FormController {
 								   customChange){
 							   Set pageForms = getMatrixManager().getPageForms(wizardPage);
 							   if(pageForms != null && pageForms.size() > 0){
-								   //checkForMissingForms returns true if the ce
-
-								   sCell.getWizardPageDefinition().setDefaultCustomForm(false);
-								   sCell.getWizardPageDefinition().getAdditionalForms().clear();
-								   sCell.getWizardPageDefinition().getAdditionalForms().addAll(dbScaffolding.getAdditionalForms());
-
+								   if(anyRemovedFormBeingUsed(pageForms, scaffolding.getAdditionalForms())){
+									   //since a form that was removed is being used by this cell, 
+									   //use the old default for the cell's custom form list and set
+									   //useDefault to false
+									   sCell.getWizardPageDefinition().setDefaultCustomForm(false);
+									   sCell.getWizardPageDefinition().getAdditionalForms().clear();
+									   sCell.getWizardPageDefinition().getAdditionalForms().addAll(dbScaffolding.getAdditionalForms());
+								   }
 							   }
 						   }
 						   if (sCell.getWizardPageDefinition().isDefaultFeedbackForm() &&
@@ -229,12 +247,197 @@ implements Controller, FormController {
 	   return scaffolding;
    }
    
+   private boolean anyRemovedFormBeingUsed(Set cellPageForms, List newFormsList){
+	   //returns true if this function finds a form in cellPageForms that does not match
+	   //any form type in newFormsList
+	   for (Iterator cellIter = cellPageForms.iterator(); cellIter.hasNext();) {
+		   Node cellPageForm = (Node) cellIter.next();
+		   
+		   boolean found = false;
+		   for (Iterator newFormsIter = newFormsList.iterator(); newFormsIter.hasNext();) {
+			   String newFormDefId = (String) newFormsIter.next();
+	
+			   if(cellPageForm.getFileType().equals(newFormDefId)){
+				   found = true;
+				   break;
+			   }
+		   }
+		   if(!found)
+			   return true;
+	   }
+	   
+	   return false;
+   }
+
+   
+   /**
+    * 
+    * 
+    * Does the same looping as usedCellDefaultSettingAdjustment but doesn't make any changes and only
+    * returns a list of scaffolding cell names that will change a default setting
+    * 
+    * Closely tied to usedCellDefaultSettingAdjustment
+    * 
+    * @param scaffolding
+    * @return
+    */
+
+   private Collection getChangedCells(Scaffolding scaffolding) {
+	   List<String> changedCells = new ArrayList<String>();
+	   if(scaffolding.isPublished()){
+		   Id scaffoldingId = scaffolding.getId();
+		   
+
+		   Scaffolding dbScaffolding = getMatrixManager().getScaffolding(scaffoldingId);
+
+		   if(dbScaffolding != null){
+			   boolean reflectChange = false;
+				boolean customChange = false;
+				boolean feedbackChange = false;
+				boolean evalChange = false;
+
+				// find out what default forms have been changed:
+				if ((dbScaffolding.getReflectionDevice() == null && scaffolding
+						.getReflectionDevice() != null)
+						|| (dbScaffolding.getReflectionDevice() != null && scaffolding
+								.getReflectionDevice() == null)
+						|| (dbScaffolding.getReflectionDevice() != null
+								&& scaffolding.getReflectionDevice() != null && !dbScaffolding
+								.getReflectionDevice().equals(
+										scaffolding.getReflectionDevice()))) {
+					reflectChange = true;
+				}
+
+				if ((dbScaffolding.getAdditionalForms() != null && scaffolding
+						.getAdditionalForms() == null)
+						|| (dbScaffolding.getAdditionalForms() == null && scaffolding
+								.getAdditionalForms() != null)
+						|| (dbScaffolding.getAdditionalForms() != null
+								&& scaffolding.getAdditionalForms() != null && !dbScaffolding
+								.getAdditionalForms().equals(
+										scaffolding.getAdditionalForms()))) {
+					customChange = true;
+				}
+
+				if ((dbScaffolding.getReviewDevice() != null && scaffolding
+						.getReviewDevice() == null)
+						|| (dbScaffolding.getReviewDevice() == null && scaffolding
+								.getReviewDevice() != null)
+						|| (dbScaffolding.getReviewDevice() != null
+								&& scaffolding.getReviewDevice() != null && !dbScaffolding
+								.getReviewDevice().equals(
+										scaffolding.getReviewDevice()))) {
+					feedbackChange = true;
+				}
+
+				if ((dbScaffolding.getEvaluationDevice() == null && scaffolding
+						.getEvaluationDevice() != null)
+						|| (dbScaffolding.getEvaluationDevice() != null && scaffolding
+								.getEvaluationDevice() == null)
+						|| (dbScaffolding.getEvaluationDevice() != null
+								&& scaffolding.getEvaluationDevice() != null && !dbScaffolding
+								.getEvaluationDevice().equals(
+										scaffolding.getEvaluationDevice()))) {
+					evalChange = true;
+				}
+
+
+
+			   //only iterate through the matrix if there is a default form change:
+			   if(reflectChange || customChange || feedbackChange || evalChange){
+				   
+				   Set<ScaffoldingCell> scaffoldIngCells = getMatrixManager().getScaffoldingCells(scaffoldingId);
+	
+				   
+				   for(Iterator<ScaffoldingCell> scaffCellsIt = scaffoldIngCells.iterator(); scaffCellsIt.hasNext();){
+					   ScaffoldingCell sCell = scaffCellsIt.next();
+					   List cells = getMatrixManager().getCellsByScaffoldingCell(sCell.getId());
+					   
+					   for (Iterator cellIt = cells.iterator(); cellIt.hasNext();) {
+						   Cell cell = (Cell) cellIt.next();
+						   WizardPage wizardPage = cell.getWizardPage();
+						   
+						   //inside any of these if's, change the default value to false and copy over the old default form
+						   //over to the cell's form list
+						   if (sCell.getWizardPageDefinition().isDefaultReflectionForm() && 
+								   reflectChange){
+							   List reflections = getReviewManager().getReviewsByParentAndType(
+									   wizardPage.getId().getValue(), Review.REFLECTION_TYPE, wizardPage.getPageDefinition().getSiteId(), MatrixContentEntityProducer.MATRIX_PRODUCER);
+							   if(reflections != null	&& reflections.size() > 0){
+								   //add cell to list
+								   if(!changedCells.contains(sCell.getTitle())){
+									   changedCells.add(sCell.getTitle());
+									   break;
+								   }
+							   }
+						   }
+						   if (sCell.getWizardPageDefinition().isDefaultCustomForm() &&
+								   customChange){
+							   Set pageForms = getMatrixManager().getPageForms(wizardPage);
+							   if(pageForms != null && pageForms.size() > 0){
+								   if(anyRemovedFormBeingUsed(pageForms, scaffolding.getAdditionalForms())){
+									   //add cell to list
+									   if(!changedCells.contains(sCell.getTitle())){
+										   changedCells.add(sCell.getTitle());
+										   break;
+									   }
+								   }
+							   }
+						   }
+						   if (sCell.getWizardPageDefinition().isDefaultFeedbackForm() &&
+								   feedbackChange){
+							   List feedbacks = getReviewManager().getReviewsByParentAndType(
+									   wizardPage.getId().getValue(), Review.FEEDBACK_TYPE, wizardPage.getPageDefinition().getSiteId(), MatrixContentEntityProducer.MATRIX_PRODUCER);
+							   if(feedbacks != null	&& feedbacks.size() > 0){
+								   //add cell to list
+								   if(!changedCells.contains(sCell.getTitle())){
+									   changedCells.add(sCell.getTitle());
+									   break;
+								   }
+							   }
+						   }
+						   if (sCell.getWizardPageDefinition().isDefaultEvaluationForm() &&
+								   evalChange){
+							   List evals = getReviewManager().getReviewsByParentAndType(
+									   wizardPage.getId().getValue(), Review.EVALUATION_TYPE, wizardPage.getPageDefinition().getSiteId(), MatrixContentEntityProducer.MATRIX_PRODUCER);
+							   if(evals != null	&& evals.size() > 0){
+								   //add cell to list
+								   if(!changedCells.contains(sCell.getTitle())){
+									   changedCells.add(sCell.getTitle());
+									   break;
+								   }
+							   }
+						   }
+						   
+
+					   }
+				   }
+			   }
+		   }
+	   }
+	   
+	   return changedCells;
+   }
+   
+   
+   
+   
+   
+   
 public ReviewManager getReviewManager() {
 	return reviewManager;
 }
 
 public void setReviewManager(ReviewManager reviewManager) {
 	this.reviewManager = reviewManager;
+}
+
+public SessionManager getSessionManager() {
+	return sessionManager;
+}
+
+public void setSessionManager(SessionManager sessionManager) {
+	this.sessionManager = sessionManager;
 }
    
 }

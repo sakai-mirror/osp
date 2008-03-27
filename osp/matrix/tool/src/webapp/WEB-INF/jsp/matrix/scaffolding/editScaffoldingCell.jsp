@@ -415,7 +415,8 @@ function mySetMainFrameHeight(id)
 		<c:if test="${scaffoldingCell.scaffolding != null}" >
 		
 			<!-- ************* Default Matrix Custom Form Checkbox Start *********** -->
-			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultCustomForm">  			
+			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultCustomForm">  
+				<input type="hidden" name="hiddenDefaultCustomForm" value="${status.value}"/>
 				<input type="checkbox" name="defaultCustomForm" value="true"  id="defaultCustomForm" 
 					<c:if test="${status.value}">
 						checked
@@ -423,7 +424,7 @@ function mySetMainFrameHeight(id)
 					<c:if test="${customFormUsed}">
 					    <c:out value="${localDisabledText}"/> 
 					</c:if>
-					onclick="defaultFormClicked(this.checked, 'defaultCustomFormSpan', 'cellCustomFormSpan');"/>
+					onclick="defaultFormClicked(this.checked, 'defaultCustomFormSpan', 'cellCustomFormSpan');document.forms[0].hiddenDefaultCustomForm.value=this.checked;"/>
 				<label for="defaultCustomForm" ><fmt:message key="defaultCustomFormText"/></label>    
 			</spring:bind>		
 			<!-- ************* Default Matrix Checkbox End *********** -->
@@ -498,7 +499,13 @@ function mySetMainFrameHeight(id)
 									</span>
 								</td>
 								<td style="text-align:right">
-									<c:if test="${!customFormUsed}">
+			   						<c:set var="formUsed" value="false"/>
+			   						<c:forEach var="usedForm" items="${usedAdditionalForms}">
+			   							<c:if test="${usedForm == chosenForm.id}">
+			   								<c:set var="formUsed" value="true"/>
+			   							</c:if>
+									</c:forEach>
+									<c:if test="${formUsed == false}">
 										<div class="itemAction">
 											<a href="javascript:document.forms[0].submitAction.value='removeFormDef';
 												document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
@@ -575,13 +582,14 @@ function mySetMainFrameHeight(id)
 		<c:if test="${scaffoldingCell.scaffolding != null}" >
 		
 			<!-- ************* Default Matrix Reflection Form Checkbox Start *********** -->
-			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultReflectionForm">  			
+			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultReflectionForm">  
+				<input type="hidden" name="hiddenDefaultReflectionForm" value="${status.value}"/>
 				<input type="checkbox" name="defaultReflectionForm" value="true"  id="defaultReflectionForm" 
 					<c:if test="${status.value}">
 						checked
 					</c:if> 
 				    <c:if test="${reflectionFormUsed}"><c:out value="${localDisabledText}"/></c:if>
-					onclick="defaultFormClicked(this.checked, 'defaultReflectionFormSpan', 'cellReflectionFormSpan');"/>
+					onclick="defaultFormClicked(this.checked, 'defaultReflectionFormSpan', 'cellReflectionFormSpan');document.forms[0].hiddenDefaultReflectionForm.value=this.checked;"/>
 				<label for="defaultReflectionForm" ><fmt:message key="defaultReflectionFormText"/></label>    
 			</spring:bind>		
 			<!-- ************* Default Matrix Checkbox End *********** -->
@@ -674,9 +682,10 @@ function mySetMainFrameHeight(id)
 
 
 			<!-- ************* Default Matrix Checkbox Start *********** -->
-			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultFeedbackForm">  			   
+			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultFeedbackForm">  		
+				<input type="hidden" name="hiddenDefaultFeedbackForm" value="${status.value}"/>
 				<input type="checkbox" name="defaultFeedbackForm" value="true"  id="defaultFeedbackForm" 
-				<c:if test="${status.value}">checked</c:if> onclick="defaultFormClicked(this.checked, 'defaultFeedbackEvalSpan', 'cellFeedbackFormSpan');" <c:if test="${feedbackFormUsed}"><c:out value="${localDisabledText}"/></c:if> />
+				<c:if test="${status.value}">checked</c:if> onclick="defaultFormClicked(this.checked, 'defaultFeedbackEvalSpan', 'cellFeedbackFormSpan');document.forms[0].hiddenDefaultFeedbackForm.value=this.checked;" <c:if test="${feedbackFormUsed}"><c:out value="${localDisabledText}"/></c:if> />
 				<label for="defaultFeedbackForm" ><fmt:message key="defaultFeedbackFormText"/></label> 
 			</spring:bind>
 			
@@ -849,10 +858,11 @@ function mySetMainFrameHeight(id)
 
 
 			<!-- ************* Default Matrix Checkbox Start *********** -->
-			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultEvaluationForm">  			   
+			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultEvaluationForm">  		
+				<input type="hidden" name="hiddenDefaultEvaluationForm" value="${status.value}"/>
 				<input type="checkbox" name="defaultEvaluationForm" value="true"  id="defaultEvaluationForm" 
-					<c:if test="${status.value}">checked</c:if> onclick="defaultFormClicked(this.checked, 'defaultEvaluationFormSpan', 'cellEvaluationFormSpan');" 
-					<c:if test="${evaluationFormUsed}"><c:if test="${evaluationFormUsed}"><c:out value="${localDisabledText}"/></c:if></c:if>  
+					<c:if test="${status.value}">checked</c:if> onclick="defaultFormClicked(this.checked, 'defaultEvaluationFormSpan', 'cellEvaluationFormSpan');document.forms[0].hiddenDefaultEvaluationForm.value=this.checked;" 
+					<c:if test="${evaluationFormUsed}"><c:out value="${localDisabledText}"/></c:if>  
 				/>
 				<label for="defaultEvaluationForm" ><fmt:message key="defaultEvaluationFormText"/></label> 
 			</spring:bind>
