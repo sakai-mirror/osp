@@ -92,7 +92,7 @@
 			<c:out value="${matrixContents.scaffolding.title}" />
 		</a>
 	</h4>
-	<div class="instruction indnt2 textPanelFooter" id="<c:out value="${matrixContents.scaffolding.id.value}" />" style="padding:0;margin:0;display:none">
+	<div class="instruction indnt2 textPanelFooter" id="<c:out value="${matrixContents.scaffolding.id.value}" />" style="padding:0;margin:0;display:block">
 		<c:set var="columnHeading" value="${matrixContents.columnLabels}" />
 		<table cellspacing="0" width="100%" summary="<fmt:message key="table_summary_matrixScaffolding"/>">
 			<tr>
@@ -125,13 +125,13 @@
 						 <input style="position: absolute; top:0px; right:0px;" type="checkbox" name="linked" value="true"
 		                     <c:if test="${not empty cell.link}">checked</c:if>
 		                 onclick="hrefLinkCell('<c:out value="${cell.scaffoldingCell.id}"/>') "/>
-						 <a style="position: absolute; top: 50%; left: 50%;" 
-						 		class="thickbox" href="<osp:url value="scaffoldingCellInfo.osp" >
+						 <center>
+						 <a class="thickbox" href="<osp:url value="scaffoldingCellInfo.osp" >
 						 		<osp:param name="pageId" value="${cell.scaffoldingCell.id}"/>
 						 	</osp:url>">
 						 	<img alt="asdf" src="/library/image/sakai/information.png" border="0"/>
 						 </a>
-						 
+						 </center>
 						 </p>
 						</td>
 					</c:forEach>
@@ -166,3 +166,8 @@
 	</tbody>
 
 </table>
+<script type="text/javascript">
+<!--
+resizeFrame();
+//-->
+</script>
