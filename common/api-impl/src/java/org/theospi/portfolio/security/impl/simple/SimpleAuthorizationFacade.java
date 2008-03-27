@@ -22,6 +22,7 @@ package org.theospi.portfolio.security.impl.simple;
 
 import java.util.*;
 
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -57,16 +58,20 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
 
    private AuthenticationManager authManager = null;
    private org.sakaiproject.metaobj.security.AuthorizationFacade shim;
-   private boolean upgradeTo24 = false;
+	
+   // This can be disabled in sakai.properties (osp.upgrade25 = false)
+   // The default should be changed to false in future releases
+   private boolean DEFAULT_UPGRADE25 = true;
    
    public void init() {
-      if (isUpgradeTo24()) {
+      boolean upgradeTo25 = ServerConfigurationService.getBoolean("osp.upgrade25", DEFAULT_UPGRADE25);
+      if (upgradeTo25) {
          org.sakaiproject.tool.api.Session sakaiSession = SessionManager.getCurrentSession();
          String userId = sakaiSession.getUserId();
          sakaiSession.setUserId("admin");
          sakaiSession.setUserEid("admin");
          try {
-            processUpgradeTo24();
+            processUpgradeTo25();
          }
          finally {
             sakaiSession.setUserEid(userId);
@@ -75,7 +80,7 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
       }
    }
 
-   protected void processUpgradeTo24() {
+   protected void processUpgradeTo25() {
       List authzList = getHibernateTemplate().loadAll(Authorization.class);
       Map<String, List<Authorization>> qualifierAuthz = new Hashtable<String, List<Authorization>>();
       
@@ -92,14 +97,14 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
       for (Iterator<Map.Entry<String,List<Authorization>>> i=
          qualifierAuthz.entrySet().iterator();i.hasNext();) {
          Map.Entry<String,List<Authorization>> entry = i.next();
-         processUpgradeTo24Qualifier(entry.getKey(), entry.getValue());
+         processUpgradeTo25Qualifier(entry.getKey(), entry.getValue());
       }
    }
 
-   protected void processUpgradeTo24Qualifier(String qualifier, List<Authorization> authorizations) {
+   protected void processUpgradeTo25Qualifier(String qualifier, List<Authorization> authorizations) {
       try {
          Site site = SiteService.getSite(qualifier);
-         processUpgradeTo24Site(site, authorizations);
+         processUpgradeTo25Site(site, authorizations);
          return;
       } catch (IdUnusedException e) {
          // ignore, this just isn't a site
@@ -109,19 +114,19 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
       ToolConfiguration tool = SiteService.findTool(qualifier);
       
       if (tool != null) {
-         processUpgradeTo24Site(tool.getContainingPage().getContainingSite(), authorizations);
+         processUpgradeTo25Site(tool.getContainingPage().getContainingSite(), authorizations);
       }
    }
 
-   protected void processUpgradeTo24Site(Site site, List<Authorization> authorizations) {
+   protected void processUpgradeTo25Site(Site site, List<Authorization> authorizations) {
       try {
-         processUpgradeTo24Group(AuthzGroupService.getAuthzGroup(site.getReference()), authorizations);
+         processUpgradeTo25Group(AuthzGroupService.getAuthzGroup(site.getReference()), authorizations);
       } catch (GroupNotDefinedException e) {
          throw new OspException(e);
       }
    }
    
-   protected void processUpgradeTo24Group(AuthzGroup group, List<Authorization> authorizations) {
+   protected void processUpgradeTo25Group(AuthzGroup group, List<Authorization> authorizations) {
       
       for (Iterator<Authorization> i=authorizations.iterator();i.hasNext();) {
          Authorization authz = i.next();
@@ -408,13 +413,5 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
 
    public void setShim(org.sakaiproject.metaobj.security.AuthorizationFacade shim) {
       this.shim = shim;
-   }
-
-   public boolean isUpgradeTo24() {
-      return upgradeTo24;
-   }
-
-   public void setUpgradeTo24(boolean upgradeTo24) {
-      this.upgradeTo24 = upgradeTo24;
    }
 }
