@@ -22,6 +22,7 @@
 package org.theospi.portfolio.matrix.control;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -284,12 +285,10 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 	protected List<Site> getAvailableSites(TaggableActivity currentActivity) {
 		String fromContext = currentActivity.getContext();
 
-		List<String> contexts = getSiteAssocManager().getAssociatedFrom(fromContext);
+		Set<String> contexts = new HashSet<String>(getSiteAssocManager().getAssociatedFrom(fromContext));
+		contexts.add(fromContext);
 		List<Site> sites = new ArrayList<Site>(contexts.size());
 
-		if (contexts.size() == 0) {
-			contexts.add(fromContext);
-		}
 		for (String toContext : contexts) {
 			try {
 				Site site = getSiteService().getSite(toContext);
