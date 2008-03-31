@@ -20,13 +20,16 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -38,6 +41,7 @@ import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -73,7 +77,9 @@ public class ReviewHelperController implements Controller {
    private LockManager lockManager;
    private ContentHostingService contentHosting;
    private StyleManager styleManager;
-
+   private AuthenticationManager authManager = null;
+   private SecurityService securityService;
+	
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String strId = null;
       String lookupId = null;
@@ -154,6 +160,9 @@ public class ReviewHelperController implements Controller {
             if (session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS) != null) {
                Set workflows = (Set)session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
                List wfList = Arrays.asList(workflows.toArray());
+               if(!isSuperUser()){
+            	   wfList = removeResetWorkflow(wfList);
+               }
                Collections.sort(wfList, Workflow.getComparator());
                model.put("workflows", wfList);
                model.put("manager", manager);
@@ -233,6 +242,24 @@ public class ReviewHelperController implements Controller {
       return new ModelAndView(formView);
 
    }
+
+   private List removeResetWorkflow(List wfList){
+	   List newList = new ArrayList();
+	   for (Iterator iter = wfList.iterator(); iter.hasNext();) {
+		   Workflow wf = (Workflow) iter.next();
+		   if(!wf.getTitle().equals("Return Workflow")){
+			  newList.add(wf);
+		   }
+	   }
+	   
+	   return newList;
+   }
+   
+   private boolean isSuperUser(){
+	     return (getSecurityService().isSuperUser(authManager.getAgent().getId().getValue())) ? true : false;
+   }
+	
+   
 
    /**
     * 
@@ -497,5 +524,21 @@ public class ReviewHelperController implements Controller {
    public void setStyleManager(StyleManager styleManager) {
       this.styleManager = styleManager;
    }
+
+public SecurityService getSecurityService() {
+	return securityService;
+}
+
+public void setSecurityService(SecurityService securityService) {
+	this.securityService = securityService;
+}
+
+public AuthenticationManager getAuthManager() {
+	return authManager;
+}
+
+public void setAuthManager(AuthenticationManager authManager) {
+	this.authManager = authManager;
+}
 
 }
