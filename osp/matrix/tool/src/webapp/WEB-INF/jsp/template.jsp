@@ -45,7 +45,7 @@
       }
    }
    
-   iframeId = "<c:out value="${iframeId}" />";
+   iframeId = '<%= org.sakaiproject.util.Validator.escapeJavascript(panelId)%>';
    
   </script>
   </head>

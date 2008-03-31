@@ -39,7 +39,7 @@
 
 </table>
 <br/>
-<form name="form" method="POST"
+<form name="form" method="POST">
 	<input type="submit" name="submit" value="<fmt:message key="button_back"/>" accesskey="b" class="active"/>
 </form>
 
