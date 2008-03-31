@@ -81,7 +81,7 @@
 	<osp:listScroll listUrl="${listUrl}" className="listNav" />
 </div>
 
-<table>
+<table width="100%">
 <c:forEach var="matrixContents" items="${grids}" varStatus="gridLoopStatus">
 
 <tr><td>
