@@ -762,7 +762,8 @@
 </c:if>
 
 	<c:if test="${isMatrix == 'true' and (cell.scaffoldingCell.scaffolding.allowRequestFeedback && cell.scaffoldingCell.wizardPageDefinition.defaultReviewers ||
-											cell.scaffoldingCell.wizardPageDefinition.allowRequestFeedback && !cell.scaffoldingCell.wizardPageDefinition.defaultReviewers)}">
+											cell.scaffoldingCell.wizardPageDefinition.allowRequestFeedback && !cell.scaffoldingCell.wizardPageDefinition.defaultReviewers) &&
+												cell.wizardPage.owner.id == currentUser}">
 		<input type="submit" name="inviteFeedback" class="active"
 				value="Invite Feedback" />
 	</c:if>
