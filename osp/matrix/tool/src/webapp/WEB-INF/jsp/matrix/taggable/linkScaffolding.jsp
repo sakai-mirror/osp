@@ -167,8 +167,3 @@
 	</tbody>
 
 </table>
-<script type="text/javascript">
-<!--
-iframeId = "<c:out value="${iframeId}" />";
-//-->
-</script>

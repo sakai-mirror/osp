@@ -44,6 +44,9 @@
          parent.resetHeight();
       }
    }
+   
+   iframeId = "<c:out value="${iframeId}" />";
+   
   </script>
   </head>
   <body onload="loaded();">
