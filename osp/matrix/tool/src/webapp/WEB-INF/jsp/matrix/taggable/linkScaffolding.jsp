@@ -4,6 +4,7 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
+	<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/jquery-1.2.1.js"></script>
 	<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/thickbox.js"></script>
 	<link href="/osp-common-tool/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
 
@@ -168,6 +169,6 @@
 </table>
 <script type="text/javascript">
 <!--
-resizeFrame();
+iframeId = "<c:out value="${iframeId}" />";
 //-->
 </script>

@@ -46,6 +46,8 @@ import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.util.Web;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.sakaiproject.site.api.Site;
@@ -108,6 +110,7 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 		
 		model.put("currentActivity", currentActivity);
 		model.put("sites", sites);
+		model.put("iframeId", Web.escapeJavascript("Main" + ToolManager.getCurrentPlacement().getId()));
 		
 		return new ModelAndView("success", model);
 	}
