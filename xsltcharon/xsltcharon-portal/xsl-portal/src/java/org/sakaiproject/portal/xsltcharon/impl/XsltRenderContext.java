@@ -147,20 +147,21 @@ public class XsltRenderContext implements PortalRenderContext {
    protected Element createSites(Document doc) {
       Element sites = doc.createElement("sites");
 
-      sites.appendChild(createSitesList(doc, context, "tabsSites", "tabsSites"));
-      sites.appendChild(createSitesList(doc, context, "tabsMoreSites", "tabsMoreSites"));
+      Map tabSites = (Map) context.get("tabsSites");
+      sites.appendChild(createSitesList(doc, tabSites, "tabsSites", "tabsSites"));
+      sites.appendChild(createSitesList(doc, tabSites, "tabsMoreSites", "tabsMoreSites"));
 
-      if (context.get("tabsMoreSortedTermList") != null) {
-         sites.appendChild(createTermSites(doc));
+      if (tabSites.get("tabsMoreSortedTermList") != null) {
+         sites.appendChild(createTermSites(doc, tabSites));
       }
 
       return sites;
    }
 
-   protected Element createTermSites(Document doc) {
+   protected Element createTermSites(Document doc, Map tabSites) {
       Element siteTypes = doc.createElement("siteTypes");
-      List<String> terms = (List<String>) context.get("tabsMoreSortedTermList");
-      Map termsMap = (Map) context.get("tabsMoreTerms");
+      List<String> terms = (List<String>) tabSites.get("tabsMoreSortedTermList");
+      Map termsMap = (Map) tabSites.get("tabsMoreTerms");
 
       int index = 0;
       for (Iterator<String> i=terms.iterator();i.hasNext();) {
