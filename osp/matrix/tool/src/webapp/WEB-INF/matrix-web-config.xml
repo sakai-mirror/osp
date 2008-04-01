@@ -338,7 +338,7 @@
       <property name="formView"><value>viewCell</value></property>
    </bean>
 
-	<bean id="viewCellInformationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
+	<bean id="viewCellInformationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
       <property name="controller">
          <bean
          	class="org.theospi.portfolio.matrix.control.ViewCellInformationController">
@@ -353,7 +353,11 @@
          	</property>
          </bean>
       </property>
-      
+      <property name="screenMappings">
+         <props>
+            <prop key="success">viewCellInformation</prop>
+         </props>
+      </property> 
       <property name="customTypedEditors">
          <list>
             <ref bean="idCustomEditor"/>
@@ -361,8 +365,9 @@
       </property>
       <property name="commandName"><value>wizardPageDef</value></property>
       <property name="commandClass"><value>org.theospi.portfolio.matrix.model.WizardPageDefinition</value></property>
-      <property name="formView"><value>viewCellInformation</value></property>
+    
    </bean>
+
 
    <bean id="viewAssignmentController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
@@ -582,6 +587,10 @@
             </property>
             <property name="styleManager">
                <ref bean="org.theospi.portfolio.style.mgt.StyleManager"/>
+            </property>
+            <property name="authManager"><ref bean="authManager"/></property>
+            <property name="securityService">
+            	<ref bean="org.sakaiproject.authz.api.SecurityService" />
             </property>
          </bean>
       </property>

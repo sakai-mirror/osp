@@ -19,7 +19,7 @@ import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 
-public class ViewCellInformationController implements Controller, LoadObjectController {
+public class ViewCellInformationController implements Controller{
 
 	private MatrixManager matrixManager;
 	private IdManager idManager = null;
@@ -28,16 +28,6 @@ public class ViewCellInformationController implements Controller, LoadObjectCont
 	
 	public ModelAndView handleRequest(Object requestModel, Map request,
 			Map session, Map application, Errors errors) {
-		
-		
-		CellFormBean cellBean = (CellFormBean) requestModel;
-		Cell cell = cellBean.getCell();
-		
-		return null;
-	}
-
-	public Object fillBackingObject(Object incomingModel, Map request,
-			Map session, Map application) throws Exception {
 		
 		
 		WizardPageDefinition wizPageDef = null;
@@ -76,7 +66,8 @@ public class ViewCellInformationController implements Controller, LoadObjectCont
 				wizPageDef = cell.getScaffoldingCell().getWizardPageDefinition();
 		}
 
-		return wizPageDef;
+		
+		return new ModelAndView("success", "wizardPageDef", wizPageDef);
 	}
 
 	public MatrixManager getMatrixManager() {
