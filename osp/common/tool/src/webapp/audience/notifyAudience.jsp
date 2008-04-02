@@ -17,12 +17,13 @@
 <sakai:view_title rendered="#{!audience.inviteFeedbackAudience}" value="#{common_msgs.title_notifyViewers}"/>
 <sakai:view_title rendered="#{audience.inviteFeedbackAudience}" value="#{common_msgs.title_notifyUsers}"/>
 
-<c:if test="${!audience.inviteFeedbackAudience}">
+<f:subview rendered="#{!audience.inviteFeedbackAudience}" id="sV1">
 	<p class="instruction"><h:outputText value="#{common_msgs.instructions_pickUsersFromList}"/></p>
-</c:if>
-<c:if test="${audience.inviteFeedbackAudience}">
+</f:subview>
+<f:subview rendered="#{audience.inviteFeedbackAudience}" id="sV2">
 	<sakai:instruction_message value="#{common_msgs.instructions_notifyViewersChangesToX}"/>
-</c:if>
+</f:subview>
+
 
 <h3><div class="highlight"><h:outputText value="#{audience.pageContext}"/></div></h3>
 <div class="highlight"><h:outputText value="#{audience.pageContext2}"/></div>
@@ -37,14 +38,14 @@
     
     
     
-    <c:if test="${!audience.inviteFeedbackAudience}">
+    <f:subview rendered="#{!audience.inviteFeedbackAudience}" id="sV3">
 		<p class="indnt2">
 			<h:selectManyListbox id="selectedUsers" size="10" value="#{audience.selectedArray}"
 														   style="width:350px;">
 			   <f:selectItems value="#{audience.selectedList}"/>
 			</h:selectManyListbox>
 		</p>
-    </c:if>
+    </f:subview>
     
     
     
