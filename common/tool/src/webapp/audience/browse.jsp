@@ -14,7 +14,7 @@
 
 <f:view>
 
-<sakai:view_title rendered="#{not audience.portfolioAudience}" value="#{common_msgs.audience_global_title}"/>
+<sakai:view_title rendered="#{not audience.portfolioAudience}" value="#{common_msgs.audience_eval_title}"/>
 <sakai:view>
    <c:if test="${audience.wizardAudience}">
      <sakai:instruction_message value="#{common_msgs.audience_wizard_instructions}"/>
