@@ -224,14 +224,17 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       boolean allowAllGroups = ServerConfigurationService.getBoolean(MatrixFunctionConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
       			|| grid.getScaffolding().getReviewerGroupAccess() == Scaffolding.UNRESTRICTED_GROUP_ACCESS;
       List<Group> groupList = new ArrayList<Group>(getGroupList(worksiteId, allowAllGroups));
+		
       //Collections.sort(groupList);
       //TODO: Figure out why ClassCastExceptions fire if we do this the obvious way...  The User list sorts fine
+		
       Collections.sort(groupList, new Comparator<Group>() {
     	  public int compare(Group arg0, Group arg1) {
-    		  return arg0.getTitle().toLowerCase().compareTo(arg1.getTitle().toLowerCase());
+				  return arg0.getTitle().toLowerCase().compareTo(arg1.getTitle().toLowerCase());
     	  }});
       
-      List userList = new ArrayList(getUserList(worksiteId, filteredGroup, allowAllGroups));
+      List userList = new ArrayList(getUserList(worksiteId, filteredGroup, allowAllGroups, groupList));
+		
       Collections.sort(userList);
       model.put("members", userList);
       model.put("userGroups", groupList);
@@ -331,14 +334,17 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
     }
     
     private Set getGroupList(Site site, boolean allowAllGroups) {
+		long now = System.currentTimeMillis();
     	Set groups = new HashSet();
 		if (site.hasGroups()) {
             String currentUser = SessionManager.getCurrentSessionUserId();
             if (allowAllGroups) {
             	groups.addAll(site.getGroups());
+System.out.println("*** getGroups() " + (System.currentTimeMillis()-now) + " ms" );
             }
             else {
             	groups.addAll(site.getGroupsWithMember(currentUser));
+System.out.println("*** getGroupsWithMember() " + (System.currentTimeMillis()-now) + " ms" );
             }
 		}
 		return groups;
@@ -354,7 +360,8 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 		return false;
 	}
 
-	private Set getUserList(String worksiteId, String filterGroupId, boolean allowAllGroups) {
+	private Set getUserList(String worksiteId, String filterGroupId, boolean allowAllGroups, List<Group> groups) {
+		long now = System.currentTimeMillis();
 		Set members = new HashSet();
 		Set users = new HashSet();
 
@@ -362,13 +369,6 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 			Site site = SiteService.getSite(worksiteId);
 			if (site.hasGroups()) {
 				String currentUser = SessionManager.getCurrentSessionUserId();
-				Collection groups;
-				if (allowAllGroups) {
-					groups = site.getGroups();
-				}
-				else {
-					groups = site.getGroupsWithMember(currentUser);
-				}
 				
 				if (allowAllGroups && (filterGroupId == null || filterGroupId.equals(""))) {
 					members.addAll(site.getMembers());
@@ -383,8 +383,10 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 						}
 					}
 				}
+System.out.println("*** getUserList-groups " + (System.currentTimeMillis()-now) + " ms" );
 			} else {
 				members.addAll(site.getMembers());
+System.out.println("*** getUserList " + (System.currentTimeMillis()-now) + " ms" );
 			}
 
 			for (Iterator memb = members.iterator(); memb.hasNext();) {
