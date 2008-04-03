@@ -109,7 +109,7 @@
 				   <div class="validation"><c:out value="${status.errorMessage}"/></div>
 			   </c:if>
 			   	<p class="shorttext">
-				   <span class="reqStar">*</span><label for="<c:out value="${status.expression}"/>-id"><osp:message key="${status.expression}_label"  /></label>
+				   <label for="<c:out value="${status.expression}"/>-id"><osp:message key="${status.expression}_label"  /></label>
 				   <c:choose>
 						<c:when test="${status.expression == 'readyColor'}">
 							<c:set var="styleColor" value="matrix-READY" />
@@ -165,6 +165,11 @@
 			<input type="text" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>-id"
 					 value="<c:out value="${status.value}"/>"
 				  size="25" maxlength="25" />
+				  <c:if test="${(empty scaffolding.levels)}">
+						<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+							<fmt:message key="action_first_addColumn"/>
+						</a>
+				  </c:if>
 		 </div>
 		</spring:bind>
 	
@@ -179,9 +184,7 @@
 				</c:if>
 				<span class="reqStarInline">*</span>
 					<fmt:message key="no_cols_created_message"/>&nbsp;&nbsp;
-					<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-						<fmt:message key="action_first_addColumn"/>
-					</a>
+					
 					<c:if test="${status.error}">
 					   <span span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
 					</c:if>
@@ -270,6 +273,10 @@
 				<input type="text" name="<c:out value="${status.expression}"/>"  id="<c:out value="${status.expression}"/>-id"
 						 value="<c:out value="${status.value}"/>"
 					  size="25" maxlength="25" />
+				<c:if test="${(empty scaffolding.criteria)}">
+					<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
+						<fmt:message key="action_first_addRow"/></a>
+				</c:if>
 				 <c:if test="${status.error}">
 					<span class="alertMessageInline"><c:out value="${status.errorMessage}"/></span>
 				 </c:if>
@@ -286,8 +293,7 @@
 			</c:if>
 				<span class="reqStarInline">*</span>
 					<fmt:message key="no_rows_created_message"/>&nbsp;&nbsp;
-					<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
-					<fmt:message key="action_first_addRow"/></a>
+					
 					<c:if test="${status.error}">
 						<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
 					</c:if>
@@ -503,7 +509,7 @@
 	<fieldset class="fieldsetVis">
 		<legend><fmt:message key="legend_feedback"/></legend>
 		<p>
-			<fmt:message key="info_defaultFeedback" />
+			<fmt:message key="info_defaultForms" />
 		</p>
 		<!-- ************* Feedback Area Start ************* -->   
 		<spring:bind path="scaffolding.reviewDeviceType">  
@@ -548,13 +554,16 @@
 				</c:forEach>
 			</ol>
 		</c:if>	
+		<c:if test="${empty reviewers}">
+				<br>
+				<fmt:message key="info_reviewersNone"/>
+				<br>
+			</c:if>
 		<p class="indnt1">
 			<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
 				<osp:message key="select_reviewers"/>
 			</a>	 
-			<c:if test="${empty reviewers}">
-				&nbsp;<fmt:message key="info_reviewersNone"/>
-			</c:if>
+			
 			<p>
 			<spring:bind path="scaffolding.allowRequestFeedback">  			
 				<input type="checkbox" name="allowRequestFeedback" value="true"  id="allowRequestFeedback" 
@@ -579,7 +588,7 @@
 	<fieldset class="fieldsetVis">
 		<legend><fmt:message key="legend_evaluation"/></legend>
 		<p>
-			<fmt:message key="info_defaultEvaluation" />
+			<fmt:message key="info_defaultForms" />
 		</p>
 		
 		
@@ -622,13 +631,15 @@
 				</c:forEach>
 			</ol>
 		</c:if>	
+		<c:if test="${empty evaluators}">
+				<br>
+				<fmt:message key="no_evaluators"/>
+				<br>
+		</c:if>
 		<p class="indnt1">
 			<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
 				<osp:message key="select_evaluators"/>
 			</a>	 
-			<c:if test="${empty evaluators}">
-				&nbsp;<fmt:message key="no_evaluators"/>
-			</c:if>
 		</p>
 	<!-- ************* Evaluators List End ************* -->
 		
