@@ -231,7 +231,8 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
     		  return arg0.getTitle().toLowerCase().compareTo(arg1.getTitle().toLowerCase());
     	  }});
       
-      List userList = new ArrayList(getUserList(worksiteId, filteredGroup, allowAllGroups));
+      List userList = new ArrayList(getUserList(worksiteId, filteredGroup, allowAllGroups, groupList));
+		
       Collections.sort(userList);
       model.put("members", userList);
       model.put("userGroups", groupList);
@@ -354,7 +355,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 		return false;
 	}
 
-	private Set getUserList(String worksiteId, String filterGroupId, boolean allowAllGroups) {
+	private Set getUserList(String worksiteId, String filterGroupId, boolean allowAllGroups, List<Group> groups) {
 		Set members = new HashSet();
 		Set users = new HashSet();
 
@@ -362,13 +363,6 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 			Site site = SiteService.getSite(worksiteId);
 			if (site.hasGroups()) {
 				String currentUser = SessionManager.getCurrentSessionUserId();
-				Collection groups;
-				if (allowAllGroups) {
-					groups = site.getGroups();
-				}
-				else {
-					groups = site.getGroupsWithMember(currentUser);
-				}
 				
 				if (allowAllGroups && (filterGroupId == null || filterGroupId.equals(""))) {
 					members.addAll(site.getMembers());
