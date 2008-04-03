@@ -76,8 +76,13 @@ public class ListPageActivities extends AbstractMatrixController
 			List<Link> links = getLinkManager().getLinks(criteriaRef, true);
 			for (Link link : links) {
 				TaggableActivity activity = getTaggingManager().getActivity(link.getActivityRef(), getMatrixTaggingProvider());
-				
-				activities.add(new WrappedActivity(activity, lookupSiteName(activity.getContext(), siteNames)));
+				if (activity != null) {
+					activities.add(new WrappedActivity(activity, lookupSiteName(activity.getContext(), siteNames)));
+				}
+				else {
+					logger.warn("Link with ref " + link.getActivityRef() + " no longer exists.  Removing link.");
+					getLinkManager().removeLink(link);
+				}
 			}
 		}
 		catch (PermissionException e)

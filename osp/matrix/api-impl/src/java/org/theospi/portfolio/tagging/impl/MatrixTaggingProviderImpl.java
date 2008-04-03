@@ -123,7 +123,8 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 
 	public void removeTags(TaggableActivity activity)
 			throws PermissionException {
-		// TODO Auto-generated method stub
+
+		getTaggingManager().removeLinks(activity);
 		
 	}
 
