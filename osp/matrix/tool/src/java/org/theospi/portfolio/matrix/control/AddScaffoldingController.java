@@ -34,30 +34,23 @@ import java.util.List;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entity.api.EntityManager;
-import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.util.ResourceLoader;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.theospi.portfolio.assignment.AssignmentHelper;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
-import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.matrix.model.WizardPageDefinition;
-import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.review.mgt.ReviewManager;
-import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.shared.model.CommonFormBean;
@@ -72,8 +65,6 @@ import org.theospi.portfolio.wizard.model.Wizard;
 public class AddScaffoldingController extends BaseScaffoldingController 
    implements FormController, CustomCommandController {
 
-   private WorksiteManager worksiteManager = null;
-   private AuthenticationManager authManager = null;
    private SessionManager sessionManager;
    private ContentHostingService contentHosting;
    private EntityManager entityManager;
@@ -90,7 +81,6 @@ public class AddScaffoldingController extends BaseScaffoldingController
     */
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = new HashMap();
-      Id worksiteId = worksiteManager.getCurrentWorksiteId();
       model.put("isInSession", EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
       
       Scaffolding scaffolding = null;
@@ -98,16 +88,16 @@ public class AddScaffoldingController extends BaseScaffoldingController
          scaffolding = (Scaffolding)command;
       
       if ( scaffolding != null ){
-    	  
+    	  String worksiteId = scaffolding.getWorksiteId().getValue();
          model.put("isMatrixUsed", scaffolding.isPublished() && isMatrixUsed( scaffolding.getId() ) );
          model.put("evaluators", getEvaluators(scaffolding));
          model.put("reviewers", getReviewers(scaffolding));
-         model.put("evaluationDevices", getEvaluationDevices(worksiteId.getValue()));
-         model.put("reviewDevices", getReviewDevices(worksiteId.getValue()));
-         model.put("reflectionDevices", getReflectionDevices(worksiteId.getValue()));
-         model.put("additionalFormDevices", getAdditionalFormDevices(worksiteId.getValue()));
+         model.put("evaluationDevices", getEvaluationDevices(worksiteId));
+         model.put("reviewDevices", getReviewDevices(worksiteId));
+         model.put("reflectionDevices", getReflectionDevices(worksiteId));
+         model.put("additionalFormDevices", getAdditionalFormDevices(worksiteId));
          model.put("selectedAdditionalFormDevices",
-        		 getSelectedAdditionalFormDevices(scaffolding,worksiteId.getValue()));
+        		 getSelectedAdditionalFormDevices(scaffolding,worksiteId));
       } 
       else{
          model.put("isMatrixUsed", false );
@@ -137,16 +127,11 @@ public class AddScaffoldingController extends BaseScaffoldingController
       String cancelAction = (String)request.get("cancelAction");
       String addFormAction = (String) request.get("addForm");
       
-      Id worksiteId = worksiteManager.getCurrentWorksiteId();
       Map model = new HashMap();
       
       EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
             EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
-      Scaffolding scaffolding = sessionBean.getScaffolding();
-      scaffolding.setWorksiteId(worksiteId);
-      
-      scaffolding.setOwner(authManager.getAgent());
-      
+      Scaffolding scaffolding = sessionBean.getScaffolding();      
       
       if(request.get("allowRequestFeedback") == null || request.get("allowRequestFeedback").toString() == "false"){
     	  scaffolding.setAllowRequestFeedback(false);
@@ -257,7 +242,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
 					AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX_REVIEW);
 		}
 		session.put(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
-		session.put(AudienceSelectionHelper.AUDIENCE_SITE, scaffolding.getWorksiteId().toString());
+		session.put(AudienceSelectionHelper.AUDIENCE_SITE, scaffolding.getWorksiteId().getValue());
 		
 		//cleans up any previous context values
 		session.remove(AudienceSelectionHelper.CONTEXT);
@@ -459,30 +444,6 @@ public class AddScaffoldingController extends BaseScaffoldingController
       
    }
 
-   /**
-    * @return Returns the worksiteManager.
-    */
-   public WorksiteManager getWorksiteManager() {
-      return worksiteManager;
-   }
-   /**
-    * @param worksiteManager The worksiteManager to set.
-    */
-   public void setWorksiteManager(WorksiteManager worksiteManager) {
-      this.worksiteManager = worksiteManager;
-   }
-   /**
-    * @return Returns the authManager.
-    */
-   public AuthenticationManager getAuthManager() {
-      return authManager;
-   }
-   /**
-    * @param authManager The authManager to set.
-    */
-   public void setAuthManager(AuthenticationManager authManager) {
-      this.authManager = authManager;
-   }
 
    public SessionManager getSessionManager() {
       return sessionManager;
