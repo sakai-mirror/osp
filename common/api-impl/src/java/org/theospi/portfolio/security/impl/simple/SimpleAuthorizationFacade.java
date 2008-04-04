@@ -59,9 +59,8 @@ public class SimpleAuthorizationFacade extends HibernateDaoSupport implements Au
    private AuthenticationManager authManager = null;
    private org.sakaiproject.metaobj.security.AuthorizationFacade shim;
 	
-   // This can be disabled in sakai.properties (osp.upgrade25 = false)
-   // The default should be changed to false in future releases
-   private boolean DEFAULT_UPGRADE25 = true;
+   // OSP 2.5 Users should enable in sakai.properties (osp.upgrade25 = true)
+   private boolean DEFAULT_UPGRADE25 = false;
    
    public void init() {
       boolean upgradeTo25 = ServerConfigurationService.getBoolean("osp.upgrade25", DEFAULT_UPGRADE25);
