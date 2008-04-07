@@ -28,10 +28,13 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.content.api.LockManager;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
@@ -58,6 +61,9 @@ public class BaseScaffoldingController {
    private LockManager lockManager = null;
    private TaggingManager taggingManager;
    private WizardActivityProducer wizardActivityProducer;
+   private WorksiteManager worksiteManager = null;
+   private AuthenticationManager authManager = null;
+   
    
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.CustomCommandController#formBackingObject(java.util.Map, java.util.Map, java.util.Map)
@@ -72,7 +78,12 @@ public class BaseScaffoldingController {
             scaffolding = getMatrixManager().getScaffolding(id);
          }
          else {
+        	Id worksiteId = worksiteManager.getCurrentWorksiteId();
             scaffolding = getMatrixManager().createDefaultScaffolding();
+            scaffolding.setWorksiteId(worksiteId);
+            
+            scaffolding.setOwner(authManager.getAgent());
+            
          }
             EditedScaffoldingStorage sessionBean = new EditedScaffoldingStorage(scaffolding);
             session.put(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY,
@@ -314,5 +325,25 @@ public class BaseScaffoldingController {
 	public void setWizardActivityProducer(
 			WizardActivityProducer wizardActivityProducer) {
 		this.wizardActivityProducer = wizardActivityProducer;
+	}
+
+	public WorksiteManager getWorksiteManager()
+	{
+		return worksiteManager;
+	}
+
+	public void setWorksiteManager(WorksiteManager worksiteManager)
+	{
+		this.worksiteManager = worksiteManager;
+	}
+
+	public AuthenticationManager getAuthManager()
+	{
+		return authManager;
+	}
+
+	public void setAuthManager(AuthenticationManager authManager)
+	{
+		this.authManager = authManager;
 	}
 }

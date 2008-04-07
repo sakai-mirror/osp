@@ -30,11 +30,9 @@ import java.util.List;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.entity.api.EntityManager;
-import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
-import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.tool.api.SessionManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -53,8 +51,6 @@ import org.theospi.portfolio.review.mgt.ReviewManager;
 public class AddScaffoldingController extends BaseScaffoldingController 
    implements FormController, CustomCommandController {
 
-   private WorksiteManager worksiteManager = null;
-   private AuthenticationManager authManager = null;
    private SessionManager sessionManager;
    private ContentHostingService contentHosting;
    private EntityManager entityManager;
@@ -93,15 +89,11 @@ public class AddScaffoldingController extends BaseScaffoldingController
       String generateAction = (String)request.get("generateAction");
       String cancelAction = (String)request.get("cancelAction");
       
-      Id worksiteId = worksiteManager.getCurrentWorksiteId();
       Map model = new HashMap();
       
       EditedScaffoldingStorage sessionBean = (EditedScaffoldingStorage)session.get(
             EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);
-      Scaffolding scaffolding = sessionBean.getScaffolding();
-      scaffolding.setWorksiteId(worksiteId);
-      
-      scaffolding.setOwner(authManager.getAgent());
+      Scaffolding scaffolding = sessionBean.getScaffolding();      
       
       if (generateAction != null) {
          if (scaffolding.isPublished()) {                              
@@ -167,30 +159,6 @@ public class AddScaffoldingController extends BaseScaffoldingController
       
    }
 
-   /**
-    * @return Returns the worksiteManager.
-    */
-   public WorksiteManager getWorksiteManager() {
-      return worksiteManager;
-   }
-   /**
-    * @param worksiteManager The worksiteManager to set.
-    */
-   public void setWorksiteManager(WorksiteManager worksiteManager) {
-      this.worksiteManager = worksiteManager;
-   }
-   /**
-    * @return Returns the authManager.
-    */
-   public AuthenticationManager getAuthManager() {
-      return authManager;
-   }
-   /**
-    * @param authManager The authManager to set.
-    */
-   public void setAuthManager(AuthenticationManager authManager) {
-      this.authManager = authManager;
-   }
 
    public SessionManager getSessionManager() {
       return sessionManager;
