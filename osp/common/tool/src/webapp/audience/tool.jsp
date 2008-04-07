@@ -20,6 +20,14 @@
 <f:subview id="audSubV10" rendered="#{audience.inviteFeedbackAudience}">
   <sakai:instruction_message value="#{common_msgs.matrixFeedbackInstructions}"/>
 </f:subview>
+<f:subview rendered="#{audience.matrixAudienceReview}" id="reviewerInstructs">
+	<sakai:instruction_message value="#{common_msgs.audience_reviewersInfo}"/>
+</f:subview>
+<f:subview rendered="#{audience.matrixAudience}" id="matrixInstructs">
+	<sakai:instruction_message value="#{common_msgs.audience_evalInfo}"/>
+</f:subview>
+
+
 <h3><div class="highlight"><h:outputText value="#{audience.pageContext}"/></div></h3>
 <div class="highlight"><h:outputText value="#{audience.pageContext2}"/></div>
 <sakai:view>   
@@ -32,15 +40,11 @@
 <f:subview rendered="#{audience.wizardAudience}" id="wizardInstructs">
 	<sakai:instruction_message value="#{common_msgs.audience_wizard_instructions}"/>
 </f:subview>
-<f:subview rendered="#{audience.matrixAudience}" id="matrixInstructs">
-	<sakai:instruction_message value="#{common_msgs.audience_matrix_instructions}"/>
-</f:subview>
+
 <f:subview rendered="#{audience.portfolioAudience}" id="portInstructs">
 	<sakai:instruction_message value="#{common_msgs.audience_portfolio_instructions}"/>
 </f:subview>
-<f:subview rendered="#{audience.matrixAudienceReview}" id="reviewerInstructs">
-	<sakai:instruction_message value="#{common_msgs.audience_addReviewers}"/>
-</f:subview>
+
 
 
 <sakai:messages/>
@@ -59,7 +63,7 @@
 
                   <ospx:xheadertitle id="userTitle3" value="#{common_msgs.audience_portfolio_user_title}" rendered="#{audience.portfolioAudience}"/>
 
-               	  <ospx:xheadertitle id="userTitle4" value="#{common_msgs.audience_addReviewers}" rendered="#{audience.matrixAudienceReview}" />
+               	  <ospx:xheadertitle id="userTitle4" value="#{common_msgs.audience_user_title}" rendered="#{audience.matrixAudienceReview}" />
 
                <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
                   <h:panelGrid id="transferUserTable" columns="3" columnClasses="available,transferButtons,selected" summary="#{common_msgs.name_table_summary}">
@@ -67,7 +71,8 @@
                      <h:panelGroup>
                         <ospx:splitarea direction="vertical">
                            <ospx:splitsection valign="top">
-                              <h:outputFormat value="#{common_msgs.name_label}"/>
+                              <h:outputFormat value="#{common_msgs.name_label}" rendered="#{!audience.matrixAudienceReview}"/>
+                              <h:outputFormat value="#{common_msgs.users}" rendered="#{audience.matrixAudienceReview}"/>
                            </ospx:splitsection>
                            <ospx:splitsection valign="top">
                               <h:selectManyListbox id="availableUsers" value="#{audience.availableUserArray}"
@@ -111,7 +116,7 @@
                                     <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
                               </f:subview>
                               <f:subview rendered="#{audience.matrixAudienceReview}" id="revSubView2">
-                                    <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
+                                    <h:outputFormat value="#{common_msgs.selected_users}"/>
                               </f:subview>
                            </ospx:splitsection>
                            <ospx:splitsection valign="top">
@@ -149,7 +154,7 @@
                      <h:outputText value=" "/>
                      <h:commandButton id="add_email_button"
                                       action="#{audience.processActionAddEmailUser}"
-                                      value="#{common_msgs.add_members}"/>
+                                      value="#{common_msgs.add}"/>
                      <f:verbatim></p></f:verbatim>
                   </f:subview>
 
@@ -236,7 +241,7 @@
                                     <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
                               </f:subview>
                               <f:subview id="audSubV13" rendered="#{audience.matrixAudienceReview}">
-                                    <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
+                                    <h:outputFormat value="#{common_msgs.selected_roles}"/>
                               </f:subview>
                               <f:subview id="audSubV14" rendered="#{audience.matrixAudience}">
                                     <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
@@ -297,12 +302,18 @@
         </ospx:splitsection>
     </ospx:splitarea>
     <sakai:button_bar>
-        <sakai:button_bar_item id="save_button" action="#{audience.processActionSave}"
-                               value="#{common_msgs.save_audience}" styleClass="active" accesskey="s" />
+        <sakai:button_bar_item id="save_button" action="#{audience.processActionSave}" rendered="#{!audience.inviteFeedbackAudience}"
+                               value="#{common_msgs.button_save}" styleClass="active" accesskey="s" />
+		<sakai:button_bar_item id="save_buttonFeed" action="#{audience.processActionSave}" rendered="#{audience.inviteFeedbackAudience}"
+                               value="#{common_msgs.matrixFeedbackSendInvitation}" styleClass="active" accesskey="s" />
 
         <sakai:button_bar_item id="saveNotify_button" action="#{audience.processActionSaveNotify}"
-                               rendered="#{audience.portfolioAudience || audience.inviteFeedbackAudience}"
+                               rendered="#{audience.portfolioAudience}"
                                value="#{common_msgs.save_notify_audience}" />
+        <sakai:button_bar_item id="saveNotify_buttonFeed" action="#{audience.processActionSaveNotify}"
+                               rendered="#{audience.inviteFeedbackAudience}"
+                               value="#{common_msgs.matrixFeedbackInviteNotify}" />
+                               
         <sakai:button_bar_item id="back_button" action="#{audience.processActionBack}"
                                rendered="#{audience.portfolioAudience}"
                                value="#{common_msgs.back_audience}"/>
