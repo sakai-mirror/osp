@@ -872,6 +872,17 @@ function mySetMainFrameHeight(id)
 		
 				<!-- Default Reviewers start -->
 				<span name="defaultReviewersSpan" id="defaultReviewersSpan" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultReviewers}">style='display:none' </c:if>>
+					
+					<p class="indnt1">
+						<c:if test="${scaffoldingCell.scaffolding.allowRequestFeedback}">
+							<c:out value="*"/><fmt:message key="allowRequestFeedback"/>
+						</c:if>
+						<c:if test="${!scaffoldingCell.scaffolding.allowRequestFeedback}">
+							<c:out value="*"/><fmt:message key="doNotAllowRequestFeedback"/>
+						</c:if>
+					</p>
+	
+	
 	
 					<!-- Reviewers list -->
 	
@@ -888,14 +899,7 @@ function mySetMainFrameHeight(id)
 						</p>			
 					</c:if>
 					
-					<p class="indnt1">
-						<c:if test="${scaffoldingCell.scaffolding.allowRequestFeedback}">
-							<c:out value="*"/><fmt:message key="allowRequestFeedback"/>
-						</c:if>
-						<c:if test="${!scaffoldingCell.scaffolding.allowRequestFeedback}">
-							<c:out value="*"/><fmt:message key="doNotAllowRequestFeedback"/>
-						</c:if>
-					</p>
+					
 				</span>
 				<!--  Default Reviewers start  -->
 				
