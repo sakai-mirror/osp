@@ -1095,6 +1095,8 @@
             <prop key="editInstructions">editInstructions</prop>
             <prop key="editRationale">editRationale</prop>
             <prop key="editExamples">editExamples</prop>
+            <prop key="editRubrics">editRubrics</prop>
+            <prop key="editExpectations">editExpectations</prop>
          </props>
       </property>
       <property name="validator"><ref bean="matrixValidator"/></property>

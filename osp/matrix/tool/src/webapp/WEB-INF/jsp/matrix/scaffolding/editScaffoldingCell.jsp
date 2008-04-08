@@ -380,6 +380,98 @@ function mySetMainFrameHeight(id)
 				</tr>
 			</table>
 		</c:if>
+		
+		<!-- Rubric -->
+		<c:if test ="${empty scaffoldingCell.guidance.rubric.limitedText && empty scaffoldingCell.guidance.rubric.attachments}">
+			<h5><osp:message key="rubrics"/></h5>
+			<p class="indnt1">
+				<a href="#" onclick="javascript:document.forms[0].dest.value='editRubrics';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+					<osp:message key="add_first_rubrics"/></a>
+				&nbsp;<osp:message key="add_first_rubrics_message"/>				
+			</p>	
+		</c:if>
+		<c:if test ="${not empty scaffoldingCell.guidance.rubric.limitedText || not empty scaffoldingCell.guidance.rubric.attachments}">	
+			<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" style="width:70%"  summary="<osp:message key="rubrics_table_summary"/>">
+				<tr>
+					<th><h5><osp:message key="rubrics"/></h5></th>
+					<th style="text-align:right" class="itemAction specialLink">
+						<a href="#"  onclick="javascript:document.forms[0].dest.value='editRubrics';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+							<osp:message key="reviseRubrics"/>
+						</a>	
+					</th>
+				</tr>
+				<tr class="exclude">
+					<td colspan="2">
+						<c:if test="${not empty scaffoldingCell.guidance.rubric.limitedText}">
+							<div class="textPanel"><c:out value="${scaffoldingCell.guidance.rubric.limitedText}" escapeXml="false" /></div>
+						</c:if>
+						<c:if test="${not empty scaffoldingCell.guidance.rubric.attachments}">
+							<ul class="attachList indnt1">
+								<c:forEach var="attachment" items="${scaffoldingCell.guidance.rubric.attachments}" varStatus="loopStatus">
+									<li><img border="0" title="<c:out value="${attachment.displayName}" />"
+										alt="<c:out value="${attachment.displayName}"/>" 
+										src="/library/image/<osp-c:contentTypeMap 
+										fileType="${attachment.mimeType}" mapType="image" 
+										/>"/>
+										<a title="<c:out value="${attachment.displayName}" />"
+											href="<c:out value="${attachment.fullReference.base.url}" />" target="_new">
+											<c:out value="${attachment.displayName}"/>
+										</a>
+										<c:out value=" (${attachment.contentLength})"/>
+									</li>	
+								</c:forEach>
+							</ul>
+						</c:if>	
+					</td>
+				</tr>
+			</table>
+		</c:if>
+		
+		<!-- Expectations -->
+		<c:if test ="${empty scaffoldingCell.guidance.expectations.limitedText && empty scaffoldingCell.guidance.expectations.attachments}">
+			<h5><osp:message key="expectations"/></h5>
+			<p class="indnt1">
+				<a href="#" onclick="javascript:document.forms[0].dest.value='editExpectations';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+					<osp:message key="add_first_expectations"/></a>
+				&nbsp;<osp:message key="add_first_expectations_message"/>				
+			</p>	
+		</c:if>
+		<c:if test ="${not empty scaffoldingCell.guidance.expectations.limitedText || not empty scaffoldingCell.guidance.expectations.attachments}">	
+			<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" style="width:70%"  summary="<osp:message key="expectations_table_summary"/>">
+				<tr>
+					<th><h5><osp:message key="expectations"/></h5></th>
+					<th style="text-align:right" class="itemAction specialLink">
+						<a href="#"  onclick="javascript:document.forms[0].dest.value='editExpectations';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+							<osp:message key="reviseExpectations"/>
+						</a>	
+					</th>
+				</tr>
+				<tr class="exclude">
+					<td colspan="2">
+						<c:if test="${not empty scaffoldingCell.guidance.expectations.limitedText}">
+							<div class="textPanel"><c:out value="${scaffoldingCell.guidance.expectations.limitedText}" escapeXml="false" /></div>
+						</c:if>
+						<c:if test="${not empty scaffoldingCell.guidance.expectations.attachments}">
+							<ul class="attachList indnt1">
+								<c:forEach var="attachment" items="${scaffoldingCell.guidance.expectations.attachments}" varStatus="loopStatus">
+									<li><img border="0" title="<c:out value="${attachment.displayName}" />"
+										alt="<c:out value="${attachment.displayName}"/>" 
+										src="/library/image/<osp-c:contentTypeMap 
+										fileType="${attachment.mimeType}" mapType="image" 
+										/>"/>
+										<a title="<c:out value="${attachment.displayName}" />"
+											href="<c:out value="${attachment.fullReference.base.url}" />" target="_new">
+											<c:out value="${attachment.displayName}"/>
+										</a>
+										<c:out value=" (${attachment.contentLength})"/>
+									</li>	
+								</c:forEach>
+							</ul>
+						</c:if>	
+					</td>
+				</tr>
+			</table>
+		</c:if>
 	</fieldset>	
 	<!-- ************* Guidance Area End ************* -->    
 	

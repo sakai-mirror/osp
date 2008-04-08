@@ -76,7 +76,7 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
                              String securityViewFunction, String securityEditFunction) {
       Guidance guidance = new Guidance(getIdManager().createId(),
          description, siteId, securityQualifier, securityViewFunction, securityEditFunction);
-
+/*
       GuidanceItem instruction = new GuidanceItem(guidance, Guidance.INSTRUCTION_TYPE);
       guidance.getItems().add(instruction);
 
@@ -86,6 +86,12 @@ public class GuidanceManagerImpl extends HibernateDaoSupport implements Guidance
       GuidanceItem rationale = new GuidanceItem(guidance, Guidance.RATIONALE_TYPE);
       guidance.getItems().add(rationale);
 
+      GuidanceItem rubric = new GuidanceItem(guidance, Guidance.RUBRIC_TYPE);
+      guidance.getItems().add(rubric);
+      
+      GuidanceItem expectations = new GuidanceItem(guidance, Guidance.EXPECTATIONS_TYPE);
+      guidance.getItems().add(expectations);
+    */  
       return guidance;
    }
 

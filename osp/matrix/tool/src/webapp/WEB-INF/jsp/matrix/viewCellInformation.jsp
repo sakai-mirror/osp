@@ -143,6 +143,85 @@
 				</c:if>
 			</c:if>
 		</c:forEach>
+		
+		<!-- ** Rubric ** -->
+	
+		<c:forEach var="guidanceItem"
+			items="${wizardPageDef.guidance.items}">
+			<c:if
+				test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
+				<c:if test="${guidanceItem.type == 'rubric'}">
+					<h4 class="xheader">
+	<!--					<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
+						id="expandImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
+						<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
+						src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
+						id="collapseImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if> /> -->
+						<osp:message key="rubrics" /></h4>
+					<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+					<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
+						test="${not empty guidanceItem.attachments}">
+						<ul class="attachList indnt1">
+							<c:forEach var="guidanceItemAtt"
+								items="${guidanceItem.attachments}">
+								<li><img border="0" title="<c:out value="${hover}" />"
+									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
+									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
+								<a
+									href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
+									target="_blank"> <c:out
+									value="${guidanceItemAtt.displayName}" /> </a></li>
+							</c:forEach>
+						</ul>
+					</c:if></div>
+				</c:if>
+			</c:if>
+		</c:forEach>
+		
+		<!-- ** Expectations ** -->
+	
+		<c:forEach var="guidanceItem"
+			items="${wizardPageDef.guidance.items}">
+			<c:if
+				test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
+				<c:if test="${guidanceItem.type == 'expectations'}">
+					<h4 class="xheader">
+	<!--					<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
+						id="expandImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
+						<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
+						src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
+						id="collapseImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if> /> -->
+						<osp:message key="expectations" /></h4>
+					<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+					<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
+						test="${not empty guidanceItem.attachments}">
+						<ul class="attachList indnt1">
+							<c:forEach var="guidanceItemAtt"
+								items="${guidanceItem.attachments}">
+								<li><img border="0" title="<c:out value="${hover}" />"
+									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
+									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
+								<a
+									href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
+									target="_blank"> <c:out
+									value="${guidanceItemAtt.displayName}" /> </a></li>
+							</c:forEach>
+						</ul>
+					</c:if></div>
+				</c:if>
+			</c:if>
+		</c:forEach>
+		
+		
+		
 	
 	</c:if> 
 	<!-- ************* Guidance Area End ************* -->

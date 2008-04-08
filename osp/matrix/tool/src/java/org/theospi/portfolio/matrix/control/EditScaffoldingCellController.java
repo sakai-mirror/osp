@@ -471,12 +471,16 @@ public class EditScaffoldingCellController extends
 		if (forwardView.equals("createGuidance")
 				|| forwardView.equals("editInstructions")
 				|| forwardView.equals("editRationale")
-				|| forwardView.equals("editExamples")) {
+				|| forwardView.equals("editExamples")
+				|| forwardView.equals("editRubrics")
+				|| forwardView.equals("editExpectations")) {
 			Boolean bTrue = new Boolean(true);
 			Boolean bFalse = new Boolean(false);
 			session.put(GuidanceHelper.SHOW_INSTRUCTION_FLAG, bFalse);
 			session.put(GuidanceHelper.SHOW_RATIONALE_FLAG, bFalse);
 			session.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, bFalse);
+			session.put(GuidanceHelper.SHOW_RUBRIC_FLAG, bFalse);
+			session.put(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, bFalse);
 
 			if (forwardView.equals("editInstructions")
 					|| forwardView.equals("createGuidance"))
@@ -487,6 +491,12 @@ public class EditScaffoldingCellController extends
 			if (forwardView.equals("editExamples")
 					|| forwardView.equals("createGuidance"))
 				session.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, bTrue);
+			if (forwardView.equals("editRubrics")
+					|| forwardView.equals("createGuidance"))
+				session.put(GuidanceHelper.SHOW_RUBRIC_FLAG, bTrue);
+			if (forwardView.equals("editExpectations")
+					|| forwardView.equals("createGuidance"))
+				session.put(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, bTrue);
 
 			String currentSite = scaffoldingCell.getWizardPageDefinition().getSiteId();
 			session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
