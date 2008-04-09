@@ -4,12 +4,16 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
-<c:set var="cell" value="${cellBean.cell}" />
-
 <form method="POST">
 
 	<br>
 
+	<c:if test="${not empty site_title}">
+		<span class="xheader"><osp:message key="site" />:</span>&nbsp;<c:out value="${site_title}"/><br>
+	</c:if>
+	<c:if test="${not empty matrix_title}">
+		<span class="xheader"><osp:message key="matrix" />&nbsp;<osp:message key="name" />:</span>&nbsp;<c:out value="${matrix_title}"/><br>		
+	</c:if>
 	<span class="xheader"><osp:message key="label_title" /></span>&nbsp;&nbsp;&nbsp;&nbsp;<c:out value="${wizardPageDef.title}"/>
 
 	

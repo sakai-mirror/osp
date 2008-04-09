@@ -1,7 +1,6 @@
 package org.theospi.portfolio.matrix.control;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -9,13 +8,12 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
-import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.tool.api.SessionManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
-import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 
@@ -31,6 +29,10 @@ public class ViewCellInformationController implements Controller{
 		
 		
 		WizardPageDefinition wizPageDef = null;
+		Map model = new HashMap();
+		
+		model.put("site_title", "");
+		model.put("matrix_title", "");
 		
 		if(session.get(WizardPageHelper.WIZARD_PAGE) != null){
 			WizardPage wizPage = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
@@ -39,35 +41,35 @@ public class ViewCellInformationController implements Controller{
 			}
 		}else{
 
-			String strId = (String) request.get("page_id");
+			String strId = (String) request.get("sCell_id");
 			if (strId == null) {
-				strId = (String) session.get("page_id");
-				session.remove("page_id");
+				strId = (String) session.get("sCell_id");
+				session.remove("sCell_id");
 			}
 
-			Cell cell = null;
+			ScaffoldingCell sCell = null;
 			Id id = getIdManager().getId(strId);
 
 
 			try {
-				cell = matrixManager.getCellFromPage(id);
+				sCell = matrixManager.getScaffoldingCell(id);
+
+				model.put("site_title", sCell.getScaffolding().getWorksiteName());
+				model.put("matrix_title", sCell.getScaffolding().getTitle());
 
 
-				if (request.get("view_user") != null) {
-					session.put("view_user", cell.getWizardPage().getOwner()
-							.getId().getValue());
-				}
 			} catch (Exception e) {
 				logger.error("Error with cell: " + strId + " " + e.toString());
 				// tbd how to report error back to user?
 			}
 			
-			if(cell != null)
-				wizPageDef = cell.getScaffoldingCell().getWizardPageDefinition();
+			if(sCell != null)
+				wizPageDef = sCell.getWizardPageDefinition();
 		}
 
+		model.put("wizardPageDef", wizPageDef);
 		
-		return new ModelAndView("success", "wizardPageDef", wizPageDef);
+		return new ModelAndView("success", model);
 	}
 
 	public MatrixManager getMatrixManager() {

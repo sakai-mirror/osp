@@ -90,12 +90,17 @@
 		<c:if test="${categoryTitle != ''}">:
           
           </c:if>
-	</c:if> <c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
+	</c:if> 
+		<c:if test="${isMatrix == 'true'}">
+			<osp:message key="site" />:&nbsp;<c:out value="${cell.scaffoldingCell.scaffolding.worksiteName}"/> <br>
+			<osp:message key="matrix" />&nbsp;<osp:message key="name" />:&nbsp;<c:out value="${cell.scaffoldingCell.scaffolding.title}"/><br>			
+		</c:if>
+	<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
 	</h3>
-	
+	<br>
 	<a name="viewCellInformation" id="viewCellInformation" class="thickbox" title="<osp:message key="supporting_info" />"
 		href="<osp:url value="viewCellInformation.osp">
-				<osp:param name="page_id" value="${cell.wizardPage.id}" />
+				<osp:param name="sCell_id" value="${cell.scaffoldingCell.id}" />
 			   </osp:url>">
 			   <osp:message key="matrix_viewing_title_view" />&nbsp;<osp:message key="supporting_info" /></a>
 		
