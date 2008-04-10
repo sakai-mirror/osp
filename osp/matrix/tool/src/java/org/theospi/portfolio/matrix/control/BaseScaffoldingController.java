@@ -275,15 +275,19 @@ public class BaseScaffoldingController {
                   (scaffolding.getWorkflowOption() == Scaffolding.MANUAL_PROGRESSION)) {
                status = MatrixFunctionConstants.LOCKED_STATUS;
             }
+            
             if (scaffoldingCell == null) {
                scaffoldingCell = new ScaffoldingCell(criterion, level, status, scaffolding);
                scaffoldingCell.getWizardPageDefinition().setSiteId(scaffolding.getWorksiteId().getValue());
                scaffoldingCell.getWizardPageDefinition().setTitle(getDefaultTitle(scaffolding, criterion, level));
                getMatrixManager().storeScaffoldingCell(scaffoldingCell);
             }
-            else if (dirtyProgression){
-               scaffoldingCell.setInitialStatus(status);
-               getMatrixManager().storeScaffoldingCell(scaffoldingCell);
+            else{
+            	if (dirtyProgression){          
+            		scaffoldingCell.setInitialStatus(status);
+            	}
+            	scaffoldingCell.getWizardPageDefinition().setTitle(getDefaultTitle(scaffolding, criterion, level));
+            	getMatrixManager().storeScaffoldingCell(scaffoldingCell);
             }
             firstColumn = false;
          }

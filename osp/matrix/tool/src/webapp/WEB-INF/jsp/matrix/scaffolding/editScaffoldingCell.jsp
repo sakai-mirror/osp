@@ -157,21 +157,13 @@ function mySetMainFrameHeight(id)
 		<input type="hidden" name="finalDest" value="" /> 
 		<input type="hidden" name="validate" value="false" />
 		
-		<spring:bind path="scaffoldingCell.title">
-			<c:if test="${status.error}">
-				<p class="shorttext validFail">
-			</c:if>			
-			<c:if test="${!status.error}">
-				<p class="shorttext">
-			</c:if>	
-				<span class="reqStar">*</span><label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_cellTitle"/></label>
-				<input type="text" name="<c:out value="${status.expression}"/>"
-				value="<c:out value="${status.displayValue}"/>" size="40" id="<c:out value="${status.expression}"/>-id" />
-				<c:if test="${status.error}">
-					<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
-				</c:if>
-			</p>
-		</spring:bind>
+
+		<p class="shorttext">
+
+			<label for="title-id"><fmt:message key="label_cellTitle"/></label>
+			<c:out value="${scaffoldingCell.title}"/>
+		</p>
+
 		
 		<div class="longtext">
 			<label class="block"><fmt:message key="label_cellDescription"/></label>
