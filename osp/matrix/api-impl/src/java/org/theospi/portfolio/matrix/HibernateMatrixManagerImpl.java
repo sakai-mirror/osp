@@ -2697,6 +2697,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       String eval_type = messages.getString("evaluation_device");
       String review_type = messages.getString("review_device");
       String page_form = messages.getString("page_form");
+      String defaultTxt = messages.getString("default") + " ";
       
       String cellNameText = messages.getString("cell_name_text");
       String matrixNameText = messages.getString("matrix_name_text");
@@ -2727,6 +2728,28 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       		   "concat('" + matrixNameText + "', sc.scaffolding.title)) " +
             "From ScaffoldingCell sc " +
             "where sc.wizardPageDefinition.reviewDevice = :formId ";
+      
+      String scaffoldingReflection = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+		      "s.reflectionDevice, " +
+		      "s.worksiteId, " +
+		      "'" + defaultTxt + refl_type + "', " +
+		      "concat('" + matrixNameText + "', s.title)) " +
+	      "from Scaffolding s " +
+	      "where s.reflectionDevice = :formId ";
+      String scaffoldingEval = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+		      "s.evaluationDevice, " +
+		      "s.worksiteId, " +
+		      "'" + defaultTxt + eval_type + "', " +
+		      "concat('" + matrixNameText + "', s.title)) " +
+	      "From Scaffolding s " +
+	      "where s.evaluationDevice = :formId ";
+      String scaffoldingReview = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+		      "s.reviewDevice, " +
+		      "s.worksiteId, " +
+		      "'" + defaultTxt + review_type + "', " +
+		      "concat('" + matrixNameText + "', s.title)) " +
+	      "From Scaffolding s " +
+	      "where s.reviewDevice = :formId ";
 
       String wizardPageReflection = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
       		   "wpd.reflectionDevice, " +
@@ -2787,6 +2810,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Collection objectsWithForms = getHibernateTemplate().findByNamedParam(matrixReflection, "formId", formId);
       objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(matrixEval, "formId", formId));
       objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(matrixReview, "formId", formId));
+      objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(scaffoldingReflection, "formId", formId));
+      objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(scaffoldingEval, "formId", formId));
+      objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(scaffoldingReview, "formId", formId));
       objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(wizardPageReflection, "formId", formId));
       objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(wizardPageEval, "formId", formId));
       objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(wizardPageReview, "formId", formId));
@@ -2824,6 +2850,19 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Collection wizPageAdditionalForms = getHibernateTemplate().findByNamedParam(
             wizPageQueryString, "formId", formId.getValue());
       results.addAll(wizPageAdditionalForms);
+
+      String scaffoldingQueryString = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+	      "af, " +
+	      "s.worksiteId, " +
+	      "'" + defaultTxt + page_form + "', " +
+	      "concat('" + matrixNameText + "', s.title), " +
+	      "'') " +
+	      "from Scaffolding s " +
+	      "left join s.additionalForms as af " +
+	      "where af = :formId";
+      Collection scaffoldingAdditionalForms = getHibernateTemplate().findByNamedParam(
+    		  scaffoldingQueryString, "formId", formId.getValue());
+      results.addAll(scaffoldingAdditionalForms);
 
 
       return results;
