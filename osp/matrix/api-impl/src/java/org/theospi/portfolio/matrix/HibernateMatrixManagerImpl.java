@@ -2666,12 +2666,23 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          return true;
       }
 
-      String queryString = "from WizardPageDefinition as wpd left join wpd.additionalForms as af where " +
-         "af = ?";
+      String queryString = "from WizardPageDefinition as wpd " +
+      		"left join wpd.additionalForms as af where af = ?";
       Collection additionalForms = getHibernateTemplate().find(queryString,
          new Object[] {formId.getValue()});
 
-      return additionalForms.size() > 0;
+      if (additionalForms.size() > 0)
+    	  return true;
+      
+      String queryString2 = "from Scaffolding as s " +
+      		"left join s.additionalForms as af where af = ?";
+      Collection defaultAdditionalForms = getHibernateTemplate().find(queryString2,
+    		  new Object[] {formId.getValue()});
+
+      if (defaultAdditionalForms.size() > 0)
+    	  return true;
+      
+      return false;      
    }
 
    /**

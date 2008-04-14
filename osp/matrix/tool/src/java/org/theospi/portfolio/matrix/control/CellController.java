@@ -559,11 +559,13 @@ public class CellController implements FormController, LoadObjectController {
 			String strFormDefId = (String) iter.next();
 			StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager()
 					.loadHome(strFormDefId);
-			bean.getDescription();
-			// cwm use a different bean below, as the name has implications
-			retList.add(new CommonFormBean(strFormDefId, bean
-					.getDecoratedDescription(), strFormDefId, bean.getOwner()
-					.getName(), bean.getModified()));
+			if (bean != null) {
+				bean.getDescription();
+				// cwm use a different bean below, as the name has implications
+				retList.add(new CommonFormBean(strFormDefId, bean
+						.getDecoratedDescription(), strFormDefId, bean.getOwner()
+						.getName(), bean.getModified()));
+			}
 		}
 		return retList;
 	}
