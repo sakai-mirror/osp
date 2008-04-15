@@ -139,6 +139,12 @@ public class MatrixValidator extends ValidatorBase {
       if (scaffolding.getCriteria() == null || scaffolding.getCriteria().size() == 0) {
          errors.rejectValue("criteria", "error.required", "required");
       }
+      if (scaffolding.getColumnLabel() == null || scaffolding.getColumnLabel() == "") {
+    	  errors.rejectValue("columnLabel", "error.required", "required");
+      }
+      if (scaffolding.getRowLabel() == null || scaffolding.getRowLabel() == "") {
+    	  errors.rejectValue("rowLabel", "error.required", "required");
+      }
    }
    
    /*

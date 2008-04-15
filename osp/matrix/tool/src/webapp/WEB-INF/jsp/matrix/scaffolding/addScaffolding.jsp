@@ -157,33 +157,38 @@
 		<h4><fmt:message key="title_columns"/>
 	  </h4>
 	  <spring:bind path="scaffolding.columnLabel">
-			<c:if test="${status.error}">
-				<div class="validation"><c:out value="${status.errorMessage}"/></div>
-			</c:if>
-		 <div class="shorttext">
+		<c:if test="${status.error}">
+			<p class="shorttext validFail">
+		</c:if>	
+		<c:if test="${!status.error}">
+			<p class="shorttext">
+		</c:if>
 			<label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_columnLabel"/></label>
 			<input type="text" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>-id"
 					 value="<c:out value="${status.value}"/>"
 				  size="25" maxlength="25" />
-				  <c:if test="${(empty scaffolding.levels)}">
-						<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-							<fmt:message key="action_first_addColumn"/>
-						</a>
-				  </c:if>
-		 </div>
+			<c:if test="${status.error}">
+				<span class="alertMessageInline"><c:out value="${status.errorMessage}"/></span>
+			</c:if>
+		 </p>
 		</spring:bind>
-	
+
 	
 		<spring:bind path="scaffolding.levels">
 			<c:if test="${(empty scaffolding.levels)}">
-				<c:if test="${status.error}">
-					<div class="indnt1 highlight">
-				</c:if>	
-				<c:if test="${!status.error}">
-					<div class="instruction indnt1">
-				</c:if>
+			<c:if test="${status.error}">
+				<div class="indnt1 highlight">
+			</c:if>	
+			<c:if test="${!status.error}">
+				<div class="instruction indnt1">
+			</c:if>
 				<span class="reqStarInline">*</span>
 					<fmt:message key="no_cols_created_message"/>&nbsp;&nbsp;
+				
+						<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+							<fmt:message key="action_first_addColumn"/>
+						</a>
+				&nbsp;&nbsp;
 					
 					<c:if test="${status.error}">
 					   <span span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
@@ -268,19 +273,21 @@
 	
 		<h4><fmt:message key="title_rows"/></h4>
 	  <spring:bind path="scaffolding.rowLabel">
-			<div class="shorttext">
+			<c:if test="${status.error}">
+				<p class="shorttext validFail">
+			</c:if>	
+			<c:if test="${!status.error}">
+				<p class="shorttext">
+			</c:if>
 				<label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_rowLabel"/></label>
 				<input type="text" name="<c:out value="${status.expression}"/>"  id="<c:out value="${status.expression}"/>-id"
 						 value="<c:out value="${status.value}"/>"
 					  size="25" maxlength="25" />
-				<c:if test="${(empty scaffolding.criteria)}">
-					<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
-						<fmt:message key="action_first_addRow"/></a>
-				</c:if>
+				
 				 <c:if test="${status.error}">
 					<span class="alertMessageInline"><c:out value="${status.errorMessage}"/></span>
 				 </c:if>
-			</div>
+			</p>
 		</spring:bind>
 	
 		<spring:bind path="scaffolding.criteria">
@@ -294,6 +301,9 @@
 				<span class="reqStarInline">*</span>
 					<fmt:message key="no_rows_created_message"/>&nbsp;&nbsp;
 					
+					<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
+						<fmt:message key="action_first_addRow"/></a>&nbsp;&nbsp;
+			
 					<c:if test="${status.error}">
 						<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
 					</c:if>
