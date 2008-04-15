@@ -191,6 +191,9 @@
             <property name="styleManager">
                <ref bean="org.theospi.portfolio.style.mgt.StyleManager" />
             </property>
+            <property name="securityService">
+            	<ref bean="org.sakaiproject.authz.api.SecurityService" />
+            </property>
          </bean>
       </property>
       <property name="customTypedEditors">

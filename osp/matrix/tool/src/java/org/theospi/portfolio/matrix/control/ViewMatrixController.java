@@ -34,7 +34,10 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.Member;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.FunctionConstants;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -67,12 +70,14 @@ import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.assignment.AssignmentHelper;
 
 public class ViewMatrixController extends AbstractMatrixController implements FormController, LoadObjectController {
 
    protected final Log logger = LogFactory.getLog(getClass());
+   private SecurityService securityService;
    
    public static final String VIEW_USER = "view_user";
    
@@ -260,7 +265,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       model.put("styles",
     	         getStyleManager().createStyleUrlList(getStyleManager().getStyles(grid.getScaffolding().getId())));
       
-      
+      model.put("accessIds", getCellsICanAccess(getMatrixManager().getMatrix(grid.getMatrixId())));
       
       
       return model;
@@ -418,6 +423,107 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       //model.put("view_user", request.get("view_user"));
       return new ModelAndView("success", model);
    }
+   
+   private List<String> getCellsICanAccess(Matrix matrix){
+	   List<String> accessIds = new ArrayList<String>();
+	   
+	   
+	   for (Iterator iterator = matrix.getCells().iterator(); iterator
+				.hasNext();) {
+			Cell cell = (Cell) iterator.next();
+			boolean canEval = false;
+			boolean canFeedback = false;
+			boolean hasPermission = false;
+
+			if(getAuthManager().getAgent().getId().getValue().equals(matrix.getOwner().getId().getValue()))
+				hasPermission = true;
+
+			if(!hasPermission){
+				//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
+				canEval = hasPermission(cell.getScaffoldingCell()
+						.isDefaultEvaluators() ? cell.getScaffoldingCell()
+								.getScaffolding().getId() : cell.getScaffoldingCell()
+								.getWizardPageDefinition().getId(), cell
+								.getScaffoldingCell().getScaffolding().getWorksiteId(),
+								MatrixFunctionConstants.EVALUATE_MATRIX);
+				if(!canEval){
+					// depending on isDefaultFeedbackEval, either send the scaffolding
+					// id or the scaffolding cell's id
+					// also, compare first result with the user's cell review list by
+					// sending the user's cell id
+					canFeedback = hasPermission(cell.getScaffoldingCell()
+							.isDefaultReviewers() ? cell.getScaffoldingCell()
+									.getScaffolding().getId() : cell.getScaffoldingCell()
+									.getWizardPageDefinition().getId(), cell
+									.getScaffoldingCell().getScaffolding().getWorksiteId(),
+									MatrixFunctionConstants.REVIEW_MATRIX)
+									|| hasPermission(cell.getWizardPage().getId(), cell
+											.getScaffoldingCell().getScaffolding()
+											.getWorksiteId(),
+											MatrixFunctionConstants.FEEDBACK_MATRIX);
+				}
+			}
+			
+			if(hasPermission || canEval || canFeedback){
+				accessIds.add(cell.getId().getValue());
+			}
+		}
+	   
+	   return accessIds;
+   }
+   
+   /**
+	 * finds the list of evaluators/roles of the site id passed and checks against the current user.
+	 * returns true if user or role matches, otherwise false
+	 * 
+	 * @param id
+	 * @param worksiteId
+	 * @param function
+	 * @return
+	 */
+	protected boolean hasPermission(Id id, Id worksiteId, String function){
+		if(getSecurityService().isSuperUser(getAuthManager().getAgent().getId().getValue()))
+			return true;
+		
+		if(id == null)
+			return false;
+		
+		Site site = null;
+		try {
+			site = SiteService.getSite(worksiteId.getValue());
+		} catch (IdUnusedException e) {
+			e.printStackTrace();
+		}
+
+		if(site == null)
+			return false;
+		
+		Role userRole = site.getUserRole(getAuthManager().getAgent().getId().getValue());
+		
+		List evaluators = getAuthzManager().getAuthorizations(null,
+				function, id);
+
+		for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
+			Authorization az = (Authorization) iter.next();
+			Agent agent = az.getAgent();
+			if (agent.isRole()) {
+				if(userRole != null){
+					// see if the user's role matches with the evaluation role: 
+					//(fyi, display name returns the role if the agent is a role)
+					if (userRole.getId().compareTo(
+							agent.getDisplayName()) == 0)
+						return true;
+				}
+			} else {
+				// see if the user matches with the evaluator user
+				if (getAuthManager().getAgent().getId().getValue().compareTo(
+						agent.getId().toString()) == 0)
+					return true;
+			}
+		}
+
+		return false;
+	}
 
    
 
@@ -436,4 +542,13 @@ public StyleManager getStyleManager() {
 public void setStyleManager(StyleManager styleManager) {
 	this.styleManager = styleManager;
 }
+
+public SecurityService getSecurityService() {
+	return securityService;
+}
+
+public void setSecurityService(SecurityService securityService) {
+	this.securityService = securityService;
+}
+
 }

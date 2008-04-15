@@ -15,6 +15,12 @@
 	function hrefViewCell(pageId) {
 	  window.location="<osp:url value="viewCell.osp?page_id="/>"+pageId;
 	}
+	
+	function noAccess(cellName){
+		
+		document.getElementById('noAccessSpan').style.display = "";
+		document.getElementById('noAccessText').value = cellName;	
+	}
 
 
 </script>
@@ -72,6 +78,8 @@
 	</div>
 </c:if>
 
+
+
 <c:if test="${(not empty matrixContents.scaffolding)}">
 	<div class="navPanel">
 		<c:if test="${(matrixCan.evaluate || matrixCan.review)}">
@@ -114,11 +122,20 @@
 	</div>	
 </c:if>
 
+
+
 <c:if test="${not empty matrixContents.columnLabels}">
 	<p class="instruction">
 		<fmt:message key="instructions_clickOnaCellToEdit"/>
 	</p>
 	<c:set var="columnHeading" value="${matrixContents.columnLabels}" />
+	
+	<span id="noAccessSpan" class="alertMessageInline" style="border:none; display:none;">
+		<fmt:message key="no_view_access"/>&nbsp;&nbsp;
+		<input type="text" name="noAccessText" id="noAccessText" value="" style="border:none;" readonly/>
+		<br>
+	</span>
+	
         <table cellspacing="0" width="100%" summary="<fmt:message key="table_summary_matrixScaffolding"/>">
             <tr>
                 <th class="matrix-row-heading" width="10%" scope="col">
@@ -147,10 +164,28 @@
 
                  <c:forEach var="cellBean" items="${matrixContents.matrixContents[loopStatus.index]}">
                      <c:set var="cell" value="${cellBean.cell}"/>
-                     
-                     <td class="matrix-cell-border matrix-<c:out value="${cell.status}"/>" onclick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') " style="cursor:pointer">
+                    <!-- Find out if user has access to this cell -->
+                     <c:set var="hasAccess" value="false"/>
+                     <c:forEach var="cellId" items="${accessIds}">
+                     	<c:if test="${cellId == cell.id.value}">
+                     		<c:set var="hasAccess" value="true"/>
+                     	</c:if>                     	
+                     </c:forEach>
+					
+		                     
+                     <td class="matrix-cell-border matrix-<c:out value="${cell.status}"/>" 
+                     	<c:if test="${hasAccess}">
+                     		onclick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') "
+                     	</c:if> 
+                     	
+                     	<c:if test="${!hasAccess}">
+                     		onclick="noAccess('<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}"/>')"                    		
+                     	</c:if>
+                     	style="cursor:pointer">
                         &nbsp;
-						<a href="#" onclick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') " class="skip"><fmt:message key="table_cell_link_title"/></a>
+                        <c:if test="${hasAccess}">
+							<a href="#" onclick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') " class="skip"><fmt:message key="table_cell_link_title"/></a>
+						</c:if>
                         <c:forEach var="node" items="${cellBean.nodes}">
                             <fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="MM/dd/yyyy" var="date"/>
                                <c:set var="hover" value="Name:${node.name}; Size:${node.technicalMetadata.size} bytes; Last Modified: ${date}"/>
