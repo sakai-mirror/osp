@@ -146,9 +146,9 @@ public class EditScaffoldingCellController extends
 		evaluationFormUsed = false;
 		isCellUsed = false;
 		
-		model.put("reflectionDevices", getReflectionDevices(def.getSiteId()));
-		model.put("evaluationDevices", getEvaluationDevices(def.getSiteId()));
-		model.put("reviewDevices", getReviewDevices(def.getSiteId()));
+		model.put("reflectionDevices", getReflectionDevices(def.getSiteId(), sCell));
+		model.put("evaluationDevices", getEvaluationDevices(def.getSiteId(), sCell));
+		model.put("reviewDevices", getReviewDevices(def.getSiteId(), sCell));
 		model.put("additionalFormDevices", getAdditionalFormDevices(def.getSiteId()));
 		model.put("selectedAdditionalFormDevices",
 				getSelectedAdditionalFormDevices(sCell,def.getSiteId()));
@@ -680,23 +680,60 @@ public class EditScaffoldingCellController extends
 		return retWizards;
 	}
 
-	protected Collection getReviewDevices(String siteId) {
+	protected Collection getReviewDevices(String siteId, ScaffoldingCell scaffoldingCell) {
 		Collection all = getFormsForSelect(WizardFunctionConstants.COMMENT_TYPE, siteId);
 		all.addAll(getWizardsForSelect(WizardFunctionConstants.COMMENT_TYPE, siteId));
+		
+
+		//add any of the forms that the user does not have access to but has been added to the matrix
+		Id selectedId = scaffoldingCell.getReviewDevice();
+
+		if (selectedId != null && !sadCollectionContainsId(all, selectedId.getValue())){
+			StructuredArtifactDefinitionBean sad = getStructuredArtifactDefinitionManager().loadHome(selectedId);
+			all.add(new CommonFormBean(sad.getId().getValue(), sad
+					.getDecoratedDescription(), FORM_TYPE, sad.getOwner()
+					.getName(), sad.getModified()));
+		}
+
+		
 		return all;
 	}
 
-	protected Collection getReflectionDevices(String siteId) {
+	protected Collection getReflectionDevices(String siteId, ScaffoldingCell scaffoldingCell) {
 		Collection all = getFormsForSelect(WizardFunctionConstants.REFLECTION_TYPE, siteId);
 		all
 				.addAll(getWizardsForSelect(WizardFunctionConstants.REFLECTION_TYPE, siteId));
+		
+
+		//add any of the forms that the user does not have access to but has been added to the matrix
+		Id selectedId = scaffoldingCell.getReflectionDevice();
+
+		if (selectedId != null && !sadCollectionContainsId(all, selectedId.getValue())){
+			StructuredArtifactDefinitionBean sad = getStructuredArtifactDefinitionManager().loadHome(selectedId);
+			all.add(new CommonFormBean(sad.getId().getValue(), sad
+					.getDecoratedDescription(), FORM_TYPE, sad.getOwner()
+					.getName(), sad.getModified()));
+		}
+
+		
 		return all;
 	}
 
-	protected Collection getEvaluationDevices(String siteId) {
+	protected Collection getEvaluationDevices(String siteId, ScaffoldingCell scaffoldingCell) {
 		Collection all = getFormsForSelect(WizardFunctionConstants.EVALUATION_TYPE, siteId);
 		all
 				.addAll(getWizardsForSelect(WizardFunctionConstants.EVALUATION_TYPE, siteId));
+		
+		//add any of the forms that the user does not have access to but has been added to the matrix
+		Id selectedId = scaffoldingCell.getEvaluationDevice();
+
+		if (selectedId != null && !sadCollectionContainsId(all, selectedId.getValue())){
+			StructuredArtifactDefinitionBean sad = getStructuredArtifactDefinitionManager().loadHome(selectedId);
+			all.add(new CommonFormBean(sad.getId().getValue(), sad
+					.getDecoratedDescription(), FORM_TYPE, sad.getOwner()
+					.getName(), sad.getModified()));
+		}
+		
 		return all;
 	}
 
@@ -714,6 +751,20 @@ public class EditScaffoldingCellController extends
 			if (sCell.getAdditionalForms().contains(bean.getId()))
 				returnCol.add(bean);
 		}
+		
+		//add any of the forms that the user does not have access to but has been added to the matrix
+		Collection selectedIds = sCell.getAdditionalForms();
+		for (Iterator iterator = selectedIds.iterator(); iterator.hasNext();) {
+			String id = (String) iterator.next();
+			if (!sadCollectionContainsId(returnCol, id)){
+				StructuredArtifactDefinitionBean sad = getStructuredArtifactDefinitionManager().loadHome(getIdManager().getId(id));
+				returnCol.add(new CommonFormBean(sad.getId().getValue(), sad
+						.getDecoratedDescription(), FORM_TYPE, sad.getOwner()
+						.getName(), sad.getModified()));
+			}
+		}
+		
+		
 		return returnCol;
 	}
 	
@@ -722,16 +773,42 @@ public class EditScaffoldingCellController extends
 		Collection returnCol = new ArrayList();
 		
 		if(sCell.getScaffolding() != null){
-			Collection col = getAdditionalFormDevices(siteId);
-			for (Iterator iter = col.iterator(); iter.hasNext();) {
-				CommonFormBean bean = (CommonFormBean) iter.next();
-				if (sCell.getScaffolding().getAdditionalForms().contains(bean.getId()))
-					returnCol.add(bean);
+			
+			Collection idCol = sCell.getScaffolding().getAdditionalForms();
+			for (Iterator iterator = idCol.iterator(); iterator.hasNext();) {
+				String id = (String) iterator.next();
+				StructuredArtifactDefinitionBean sad = getStructuredArtifactDefinitionManager().loadHome(getIdManager().getId(id));
+				returnCol.add(new CommonFormBean(sad.getId().getValue(), sad
+						.getDecoratedDescription(), FORM_TYPE, sad.getOwner()
+						.getName(), sad.getModified()));			
 			}
+//			
+//			Collection col = getAdditionalFormDevices(siteId);
+//			for (Iterator iter = col.iterator(); iter.hasNext();) {
+//				CommonFormBean bean = (CommonFormBean) iter.next();
+//				if (sCell.getScaffolding().getAdditionalForms().contains(bean.getId()))
+//					returnCol.add(bean);
+//			}
 		}
 		return returnCol;
 	}
 
+	private boolean sadCollectionContainsId(Collection sadCol, String id){
+		boolean contains = false;
+
+		for (Iterator iter = sadCol.iterator(); iter.hasNext();) {
+			CommonFormBean bean = (CommonFormBean) iter.next();
+
+			if(bean.getId().equals(id)){
+				contains = true;
+				break;
+			}
+		}
+
+		return contains;
+	}
+
+	
 	/**
 	 * @return Returns the worksiteManager.
 	 */
