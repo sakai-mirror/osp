@@ -184,7 +184,7 @@ public class CellController implements FormController, LoadObjectController {
 		String siteId = cell.getCell().getWizardPage().getPageDefinition()
 				.getSiteId();
 
-		if(cell.getCell().getScaffoldingCell().getWizardPageDefinition().isDefaultCustomForm()){
+		if(cell.getCell().getScaffoldingCell().getWizardPageDefinition().isDefaultCustomForm() && request.get("comingFromWizard") == null){
 			model.put("cellFormDefs", processAdditionalForms(cell.getCell()
 					.getScaffoldingCell().getScaffolding().getAdditionalForms()));
 		}else{
