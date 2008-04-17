@@ -239,8 +239,6 @@ public class CellFormPickerController extends CellController implements FormCont
    protected String setupSessionInfo(Map request, Map<String, Object> session,
                                      String pageId, String pageTitle, String formTypeId) {
       String retView = "formCreator";
-      //session.put(ResourceEditingHelper.CREATE_TYPE,
-      //      ResourceEditingHelper.CREATE_TYPE_FORM);
       session.put("page_id", pageId);
       session.put(FormHelper.FORM_STYLES, getStyleManager().createStyleUrlList(getStyleManager().getStyles(getIdManager().getId(pageId))));
 
@@ -252,7 +250,6 @@ public class CellFormPickerController extends CellController implements FormCont
 
          String objectId = (String)request.get("objectId");
          String objectTitle = (String)request.get("objectTitle");
-         String objectDesc = (String)request.get("objectDesc");
 
          StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager().loadHome(formTypeId);
          List contentResourceList = null;
@@ -267,7 +264,7 @@ public class CellFormPickerController extends CellController implements FormCont
 
             String folderPath = createFolder(folderBase, "portfolio-interaction", rootDisplayName, rootDescription);
             folderPath = createFolder(folderPath, currentSite, SiteService.getSiteDisplay(currentSite), null);
-            folderPath = createFolder(folderPath, objectId, objectTitle, objectDesc);
+            folderPath = createFolder(folderPath, objectId, objectTitle, null);
             folderPath = createFolder(folderPath, formTypeId, bean.getDescription(), null);
 
             contentResourceList = this.getContentHosting().getAllResources(folderPath);
