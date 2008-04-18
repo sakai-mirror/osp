@@ -443,9 +443,13 @@ public class AudienceTool extends HelperToolBase {
         boolean worksiteLimited = ! isPortfolioAudience() && ! isInviteFeedbackAudience();
         
         String emailOrUser = getSearchEmails();
+        boolean guestUserEnabled = isGuestUserEnabled();
+        if(isInviteFeedbackAudience()){
+        	guestUserEnabled = false;
+        }
         
-        if ( ! findByEmailOrUserName(emailOrUser, isGuestUserEnabled(), worksiteLimited) ) {
-           if ( isGuestUserEnabled() )
+        if ( ! findByEmailOrUserName(emailOrUser, guestUserEnabled, worksiteLimited) ) {
+           if ( guestUserEnabled )
               FacesContext.getCurrentInstance().addMessage(null,
                                                            getFacesMessageFromBundle("email_user_not_found", (new Object[]{emailOrUser})));
            else

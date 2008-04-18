@@ -132,7 +132,7 @@
 	
 	<span id="noAccessSpan" class="alertMessageInline" style="border:none; display:none;">
 		<fmt:message key="no_view_access"/>&nbsp;&nbsp;
-		<input type="text" name="noAccessText" id="noAccessText" value="" style="border:none;" readonly/>
+		<input type="text" name="noAccessText" id="noAccessText" value="" style="border:none;" size="60%" readonly/>
 		<br>
 	</span>
 	

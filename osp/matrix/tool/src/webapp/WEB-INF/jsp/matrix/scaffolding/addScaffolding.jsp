@@ -177,7 +177,7 @@
 		<spring:bind path="scaffolding.levels">
 			<c:if test="${(empty scaffolding.levels)}">
 			<c:if test="${status.error}">
-				<div class="indnt1 highlight">
+				No reviewers have been added
 			</c:if>	
 			<c:if test="${!status.error}">
 				<div class="instruction indnt1">
@@ -196,16 +196,17 @@
 				</div>
 			</c:if>	
 			<c:if test="${!(empty scaffolding.levels)}">
+				<span class="itemAction">
+					<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+						<fmt:message key="action_addColumn"/>
+					</a>
+				</span>
 				<table class="listHier lines nolines" cellspacing="0" border="0" style="width:70%" summary="<fmt:message key="table_summary_cols"/>">
 					<thead>
 						<tr>
 							<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
 							<th scope="col" style="text-align:right">
-								<span class="itemAction">
-									<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-										<fmt:message key="action_addColumn"/>
-									</a>
-								</span>
+								
 							</th>
 						</tr>
 					</thead>
@@ -223,7 +224,7 @@
 										<div class="colorBox"  style="background-color: <c:out value="${level.color}"/>;color: <c:if test="${not empty level.textColor}" ><c:out value="${level.textColor}"/></c:if>"><fmt:message key="swatch_text"/></div>
 									</c:if>
 									<c:if test="${ empty level.color}">
-										<div class="colorBoxNone"><fmt:message key="swatch_text_none"/></div>
+										<div class="colorBox"><fmt:message key="swatch_text_none"/></div>
 									</c:if>				
 							</td>
 							<td style="white-space:nowrap">
@@ -311,12 +312,16 @@
 				
 			</c:if>
 			<c:if test="${!(empty scaffolding.criteria)}">
+				<span class="itemAction"> 
+					<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
+						<fmt:message key="action_addRow"/></a>
+				</span>
 				<table class="listHier lines nolines" cellspacing="0" border="0" style="width:70%" summary="<fmt:message key="table_summary_rows"/>">
 					<thead>
 						<tr>
 							<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
-							<th style="text-align:right"><span class="itemAction"> <a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
-								<fmt:message key="action_addRow"/></a></span>
+							<th style="text-align:right">
+								
 							</th>
 						</tr>
 					</thead>
@@ -337,7 +342,7 @@
 													</c:if>"><fmt:message key="swatch_text"/></div>
 										</c:if>
 										<c:if test="${ empty criterion.color}">
-											<div class="colorBoxNone"><fmt:message key="swatch_text_none"/></div>
+											<div class="colorBox"><fmt:message key="swatch_text_none"/></div>
 										</c:if>
 	
 										</td>
@@ -427,9 +432,6 @@
 		<h5><fmt:message key="title_additionalForms"/></h5>
 		<p class="indnt1"> 
 			<fmt:message key="addForms_instructions" />
-			<c:if test="${ empty selectedAdditionalFormDevices}">
-				<span class="highlight"><fmt:message key="addForms_instructions_noforms" /></span>
-			</c:if>
 		</p>
 
 		<p class="shorttext">
@@ -445,26 +447,32 @@
 				<input type="submit" id="addForm-id" name="addForm" value="<fmt:message key="button_add"/>" onclick="javascript:document.forms[0].validate.value='false';" />
 			</span>
 		</p>
+		<c:if test="${ empty selectedAdditionalFormDevices}">
+			<div class="instruction indnt2">
+				<fmt:message key="addForms_instructions_noforms" />
+			</div>
+		</c:if>
 		<c:if test="${not empty selectedAdditionalFormDevices}">
 			<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<fmt:message key="table_forms_summary"/>" style="width:50%">
 				<c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
 					<tr>
 						<td>
-							<span class="indnt1">
+							<span class="indnt2">
 								<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' />
 								<c:out value="${chosenForm.name}" />
 							</span>
-						</td>
-						<td style="text-align:right">
+							
+							
 							<c:if test="${empty localDisabledText}">
-								<div class="itemAction">
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<span class="itemAction">
 									<a href="javascript:document.forms[0].submitAction.value='removeFormDef';
 										document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
 										document.forms[0].onsubmit();
 										document.forms[0].submit();">
 										<osp:message key="remove"/>
 									</a>
-								</div>
+								</span>
 							</c:if>
 						</td>
 					</tr>
@@ -556,32 +564,41 @@
 		
 		<!-- ************* Reviewers List Start ************* -->            
 	
-		<h5><fmt:message key="label_reviwers"/></h5>
+		<h5 style="display:inline"><fmt:message key="label_reviwers"/></h5>
+		<c:if test="${empty reviewers}">
+			<span class="indnt1">
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+						<osp:message key="add_reviewers"/>
+				</a>
+			</span>
+		</c:if>
 		<c:if test="${not empty reviewers}">
 			<ol>
 				<c:forEach var="reviwer" items="${reviewers}">
 					<li><c:out value="${reviwer}" /></li>
 				</c:forEach>
 			</ol>
+			<p class="indnt1">
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+					<osp:message key="select_reviewers"/>
+				</a>	
+			</p>
 		</c:if>	
 		<c:if test="${empty reviewers}">
-				<br>
+			<div class="instruction indnt1">
 				<fmt:message key="info_reviewersNone"/>
-				<br>
-			</c:if>
+			</div>
+		</c:if>
 		<p class="indnt1">
-			<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
-				<osp:message key="select_reviewers"/>
-			</a>	 
-			
-			<p>
-			<spring:bind path="scaffolding.allowRequestFeedback">  			
-				<input type="checkbox" name="allowRequestFeedback" value="true"  id="allowRequestFeedback" 
-					<c:if test="${status.value}">
-						checked
-					</c:if> 
-				 />
-				<label for="allowRequestFeedback" ><fmt:message key="allowRequestFeedback"/></label>    
+			<spring:bind path="scaffolding.allowRequestFeedback">  	
+				<span class="instruction indnt1">		
+					<input type="checkbox" name="allowRequestFeedback" value="true"  id="allowRequestFeedback" 
+						<c:if test="${status.value}">
+							checked
+						</c:if> 
+					 />				
+					<label for="allowRequestFeedback" ><fmt:message key="allowRequestFeedback"/></label>
+				</span>    
 			</spring:bind>	
 			</p>
 		</p>
@@ -633,24 +650,32 @@
 		
 		<!-- ************* Evaluators List Start ************* -->            
 	
-		<h5><fmt:message key="label_evaluators"/></h5>
+		<h5  style="display:inline"><fmt:message key="label_evaluators"/></h5>
+		<c:if test="${empty evaluators}">
+			<span class="indnt1">
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+					<osp:message key="add_evaluators"/>
+				</a>
+			</span>
+		</c:if>
 		<c:if test="${not empty evaluators}">
 			<ol>
 				<c:forEach var="eval" items="${evaluators}">
 					<li><c:out value="${eval}" /></li>
 				</c:forEach>
 			</ol>
+			<p class="indnt1">
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+					<osp:message key="select_evaluators"/>
+				</a>	 
+			</p>
 		</c:if>	
 		<c:if test="${empty evaluators}">
-				<br>
+			<div class="instruction indnt1">
 				<fmt:message key="no_evaluators"/>
-				<br>
+			</div>
 		</c:if>
-		<p class="indnt1">
-			<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
-				<osp:message key="select_evaluators"/>
-			</a>	 
-		</p>
+		
 	<!-- ************* Evaluators List End ************* -->
 		
 		

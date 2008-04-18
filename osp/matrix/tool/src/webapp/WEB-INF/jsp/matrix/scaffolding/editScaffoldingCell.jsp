@@ -238,11 +238,16 @@ function mySetMainFrameHeight(id)
 	<fieldset class="fieldsetVis">
 		<legend><osp:message key="guidance_header"/></legend>
 		<c:if test ="${empty scaffoldingCell.guidance.instruction.limitedText && empty scaffoldingCell.guidance.instruction.attachments}">
-			<h5><osp:message key="instructions"/></h5>
-			<p class="indnt1">
+			<h5 style="display:inline"><osp:message key="instructions"/></h5>
+			<span class="indnt1">
 				<a href="#"	onclick="javascript:document.forms[0].dest.value='editInstructions';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-					<osp:message key="add_first_instructions"/></a>
-				&nbsp;<osp:message key="add_first_instructions_message"/>
+						<osp:message key="add_first_instructions"/></a>
+			</span>
+			<p class="indnt1 instruction">			
+				<br>
+				<osp:message key="add_first_instructions_message"/>
+				<br>
+				<br>
 			</p>	
 		</c:if>
 		<c:if test ="${not empty scaffoldingCell.guidance.instruction.limitedText || not empty scaffoldingCell.guidance.instruction.attachments}">
@@ -283,11 +288,16 @@ function mySetMainFrameHeight(id)
 			</table>
 		</c:if>	
 		<c:if test ="${empty scaffoldingCell.guidance.rationale.limitedText && empty scaffoldingCell.guidance.rationale.attachments}">
-			<h5><osp:message key="rationale"/></h5>
-			<p class="indnt1">
+			<h5 style="display:inline"><osp:message key="rationale"/></h5>
+			<span clas="indnt1">
 				<a href="#" onclick="javascript:document.forms[0].dest.value='editRationale';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
 					<osp:message key="add_first_rationale"/></a>
-				&nbsp;<osp:message key="add_first_rationale_message"/>				
+			</span>
+			<p class="indnt1 instruction">		
+				<br>	
+				<osp:message key="add_first_rationale_message"/>
+				<br>	
+				<br>			
 			</p>
 		</c:if>	
 		<c:if test ="${not empty scaffoldingCell.guidance.rationale.limitedText || not empty scaffoldingCell.guidance.rationale.attachments}">		
@@ -329,11 +339,16 @@ function mySetMainFrameHeight(id)
 		</c:if>	
 	
 		<c:if test ="${empty scaffoldingCell.guidance.example.limitedText && empty scaffoldingCell.guidance.example.attachments}">
-			<h5><osp:message key="examples"/></h5>
-			<p class="indnt1">
+			<h5 style="display:inline"><osp:message key="examples"/></h5>
+			<span clas="indnt1">
 				<a href="#" onclick="javascript:document.forms[0].dest.value='editExamples';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
 					<osp:message key="add_first_examples"/></a>
-				&nbsp;<osp:message key="add_first_examples_message"/>				
+			</span>
+			<p class="indnt1 instruction">
+				<br>
+				<osp:message key="add_first_examples_message"/>
+				<br>
+				<br>				
 			</p>	
 		</c:if>
 		<c:if test ="${not empty scaffoldingCell.guidance.example.limitedText || not empty scaffoldingCell.guidance.example.attachments}">	
@@ -375,11 +390,16 @@ function mySetMainFrameHeight(id)
 		
 		<!-- Rubric -->
 		<c:if test ="${empty scaffoldingCell.guidance.rubric.limitedText && empty scaffoldingCell.guidance.rubric.attachments}">
-			<h5><osp:message key="rubrics"/></h5>
-			<p class="indnt1">
+			<h5 style="display:inline"><osp:message key="rubrics"/></h5>
+			<span class="indnt1">
 				<a href="#" onclick="javascript:document.forms[0].dest.value='editRubrics';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
 					<osp:message key="add_first_rubrics"/></a>
-				&nbsp;<osp:message key="add_first_rubrics_message"/>				
+			</span>
+			<p class="indnt1 instruction">
+				<br>
+				<osp:message key="add_first_rubrics_message"/>
+				<br>	
+				<br>			
 			</p>	
 		</c:if>
 		<c:if test ="${not empty scaffoldingCell.guidance.rubric.limitedText || not empty scaffoldingCell.guidance.rubric.attachments}">	
@@ -421,11 +441,16 @@ function mySetMainFrameHeight(id)
 		
 		<!-- Expectations -->
 		<c:if test ="${empty scaffoldingCell.guidance.expectations.limitedText && empty scaffoldingCell.guidance.expectations.attachments}">
-			<h5><osp:message key="expectations"/></h5>
-			<p class="indnt1">
+			<h5 style="display:inline"><osp:message key="expectations"/></h5>
+			<span class="indnt1">
 				<a href="#" onclick="javascript:document.forms[0].dest.value='editExpectations';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
 					<osp:message key="add_first_expectations"/></a>
-				&nbsp;<osp:message key="add_first_expectations_message"/>				
+			</span>
+			<p class="indnt1 instruction">
+				<br>
+				<osp:message key="add_first_expectations_message"/>
+				<br>	
+				<br>			
 			</p>	
 		</c:if>
 		<c:if test ="${not empty scaffoldingCell.guidance.expectations.limitedText || not empty scaffoldingCell.guidance.expectations.attachments}">	
@@ -553,9 +578,7 @@ function mySetMainFrameHeight(id)
 				
 				<p class="indnt1"> 
 					<fmt:message key="addForms_instructions" />
-					<c:if test="${ empty selectedAdditionalFormDevices}">
-						<span class="highlight"><fmt:message key="addForms_instructions_noforms" /></span>
-					</c:if>
+					
 				</p>
 				
 				
@@ -572,6 +595,9 @@ function mySetMainFrameHeight(id)
 						<input type="submit" id="addForm-id" name="addForm" value="<fmt:message key="button_add"/>" onclick="javascript:document.forms[0].validate.value='false';" />
 					</span>
 				</p>
+				<c:if test="${ empty selectedAdditionalFormDevices}">
+					<span class="indnt2 instruction"><fmt:message key="addForms_instructions_noforms" /></span>
+				</c:if>
 				<c:if test="${not empty selectedAdditionalFormDevices}">
 					<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<fmt:message key="table_forms_summary"/>" style="width:50%">
 						<c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
@@ -581,8 +607,7 @@ function mySetMainFrameHeight(id)
 										<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' />
 										<c:out value="${chosenForm.name}" />
 									</span>
-								</td>
-								<td style="text-align:right">
+
 			   						<c:set var="formUsed" value="false"/>
 			   						<c:forEach var="usedForm" items="${usedAdditionalForms}">
 			   							<c:if test="${usedForm == chosenForm.id}">
@@ -590,14 +615,14 @@ function mySetMainFrameHeight(id)
 			   							</c:if>
 									</c:forEach>
 									<c:if test="${formUsed == false}">
-										<div class="itemAction">
+										<span class="itemAction indnt1">
 											<a href="javascript:document.forms[0].submitAction.value='removeFormDef';
 												document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
 												document.forms[0].onsubmit();
 												document.forms[0].submit();">
 												<osp:message key="remove"/>
 											</a>
-										</div>
+										</span>
 									</c:if>
 								</td>
 							</tr>
@@ -866,12 +891,9 @@ function mySetMainFrameHeight(id)
 				<span name="defaultReviewersSpan" id="defaultReviewersSpan" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultReviewers}">style='display:none' </c:if>>
 					
 					<p class="indnt1">
-						<c:if test="${scaffoldingCell.scaffolding.allowRequestFeedback}">
-							<c:out value="*"/><fmt:message key="allowRequestFeedback"/>
-						</c:if>
-						<c:if test="${!scaffoldingCell.scaffolding.allowRequestFeedback}">
-							<c:out value="*"/><fmt:message key="doNotAllowRequestFeedback"/>
-						</c:if>
+						<input type="checkbox" name="diabledCheckbox" value="true"  id="disabledCheckbox" 
+							<c:if test="${scaffoldingCell.scaffolding.allowRequestFeedback}">checked</c:if> onclick="defaultFormClicked(this.checked, 'defaultReviewersSpan', 'cellReviewersSpan');" disabled/>
+						<label for="diabledCheckbox" ><fmt:message key="defaultReviewersText"/></label> 
 					</p>
 	
 	
@@ -887,7 +909,7 @@ function mySetMainFrameHeight(id)
 					</c:if>	
 					<c:if test="${empty defaultReviewers}">
 						<p class="indnt1">
-							<span class="highlight"><fmt:message key="info_reviewersNoneNoBracket"/></span>
+							<span class="instruction"><fmt:message key="info_reviewersNone"/></span>
 						</p>			
 					</c:if>
 					
@@ -906,19 +928,20 @@ function mySetMainFrameHeight(id)
 		
 				<c:if test="${not empty reviewers}">
 					<ol>
-						<c:forEach var="eval" items="${reviewers}">
-							<li><c:out value="${eval}" /></li>
+						<c:forEach var="eval" items="${reviewers}" varStatus="rowCounter">
+							<li><c:out value="${rouCounter.count} ${eval}" /></li>
 						</c:forEach>
 					</ol>
 				</c:if>	
-				<p class="indnt1">
+				
+				<c:if test="${empty reviewers}">
+					<div class="indnt1 instruction"><fmt:message key="info_reviewersNone"/></div>
+				</c:if>
+				<div class="indnt1">
 					<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
 						<osp:message key="select_reviewers"/>
-					</a>	 
-					<c:if test="${empty reviewers}">
-						&nbsp;<fmt:message key="info_reviewersNone"/>
-					</c:if>
-				</p>
+					</a>	 					
+				</div>
 				<p class="indnt1"> 
 				<spring:bind path="scaffoldingCell.wizardPageDefinition.allowRequestFeedback">  			
 					<input type="checkbox" name="allowRequestFeedback" value="true"  id="allowRequestFeedback" 
@@ -1039,14 +1062,14 @@ function mySetMainFrameHeight(id)
 			<span name="defaultEvaluatorsSpan" id="defaultEvaluatorsSpan" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultEvaluators}">style='display:none' </c:if>>
 				<c:if test="${not empty defaultEvaluators}">
 					<ol>
-						<c:forEach var="eval" items="${defaultEvaluators}">
-							<li><c:out value="${eval}" /></li>
+						<c:forEach var="eval" items="${defaultEvaluators}" varStatus="rowCounter">
+							<li><c:out value="${rouCounter.count} ${eval}" /></li>
 						</c:forEach>
 					</ol>
 				</c:if>	
 				<c:if test="${empty defaultEvaluators}">
 					<p class="indnt1">
-						<span class="highlight"><fmt:message key="no_evaluators2"/></span>
+						<span class="instruction"><fmt:message key="no_evaluators"/></span>
 					</p>			
 				</c:if>
 			
@@ -1067,14 +1090,15 @@ function mySetMainFrameHeight(id)
 					</c:forEach>
 				</ol>
 			</c:if>	
-			<p class="indnt1">
+			
+			<c:if test="${empty evaluators}">
+				<div class="instruction indnt1"><fmt:message key="no_evaluators"/></div>
+			</c:if>
+			<div class="indnt1">
 				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
 					<osp:message key="select_evaluators"/>
 				</a>	 
-				<c:if test="${empty evaluators}">
-					&nbsp;<fmt:message key="no_evaluators"/>
-				</c:if>
-			</p>
+			</div>
 		
 		</span>
 		<!-- Cell Evaluator List End -->

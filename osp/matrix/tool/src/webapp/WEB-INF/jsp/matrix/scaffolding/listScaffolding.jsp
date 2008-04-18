@@ -196,7 +196,7 @@
 						<fmt:message key="scaffolding_published_true"/>
 					 </c:if>
 					 <c:if test="${scaffold.preview}">
-						<fmt:message key="scaffolding_published_preview"/>
+						<fmt:message key="scaffolding_published_false"/>
 					 </c:if>
 					 <c:if test="${!scaffold.published && !scaffold.preview}">
 						<fmt:message key="scaffolding_published_false"/>

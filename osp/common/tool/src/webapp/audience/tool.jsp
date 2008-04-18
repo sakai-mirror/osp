@@ -71,8 +71,7 @@
                      <h:panelGroup>
                         <ospx:splitarea direction="vertical">
                            <ospx:splitsection valign="top">
-                              <h:outputFormat value="#{common_msgs.name_label}" rendered="#{!audience.matrixAudienceReview}"/>
-                              <h:outputFormat value="#{common_msgs.users}" rendered="#{audience.matrixAudienceReview}"/>
+                              <h:outputFormat value="#{common_msgs.users}"/>
                            </ospx:splitsection>
                            <ospx:splitsection valign="top">
                               <h:selectManyListbox id="availableUsers" value="#{audience.availableUserArray}"
@@ -107,10 +106,10 @@
                                     <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
                               </f:subview>
                               <f:subview rendered="#{audience.matrixAudience}" id="matSubView2">
-                                    <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
+                                    <h:outputFormat value="#{common_msgs.selected_users}"/>
                               </f:subview>
                               <f:subview rendered="#{audience.inviteFeedbackAudience}" id="feedSubView2">
-                                    <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
+                                    <h:outputFormat value="#{common_msgs.audience_selected_reviewers}"/>
                               </f:subview>
                               <f:subview rendered="#{audience.portfolioAudience}" id="portSubView2">
                                     <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
@@ -244,7 +243,7 @@
                                     <h:outputFormat value="#{common_msgs.selected_roles}"/>
                               </f:subview>
                               <f:subview id="audSubV14" rendered="#{audience.matrixAudience}">
-                                    <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
+                                    <h:outputFormat value="#{common_msgs.selected_roles}"/>
                               </f:subview>
                               <f:subview id="audSubV15" rendered="#{audience.portfolioAudience}">
                                     <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
