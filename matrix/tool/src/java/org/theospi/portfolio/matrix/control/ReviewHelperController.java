@@ -40,6 +40,7 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.FormHelper;
+import org.sakaiproject.metaobj.shared.Helper;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
@@ -222,7 +223,7 @@ public class ReviewHelperController implements Controller {
       formView = setupSessionInfo(request, session, pageTitle, formTypeId, formTypeTitleKey, ownerEid, strId);
       session.put("page_id", strId);
       session.put("secondPass", "true");
-      return new ModelAndView(formView);
+      return new ModelAndView(formView, Helper.HELPER_SESSION_ID, request.get(Helper.HELPER_SESSION_ID));
 
    }
 
