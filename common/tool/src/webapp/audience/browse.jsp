@@ -16,15 +16,15 @@
 
 <sakai:view_title rendered="#{not audience.portfolioAudience}" value="#{common_msgs.audience_eval_title}"/>
 <sakai:view>
-   <c:if test="${audience.wizardAudience}">
+	<f:subview rendered="#{audience.wizardAudience}" id="sV1">
      <sakai:instruction_message value="#{common_msgs.audience_wizard_instructions}"/>
-   </c:if>
-   <c:if test="${audience.matrixAudience}">
+   </f:subview>
+   <f:subview rendered="#{audience.matrixAudience}" id="sv2">
      <sakai:instruction_message value="#{common_msgs.audience_matrix_instructions}"/>
-   </c:if>
-   <c:if test="${audience.portfolioAudience}">
+   </f:subview>
+   <f:subview rendered="#{audience.portfolioAudience}" id="sV3">
      <sakai:instruction_message value="#{common_msgs.audience_portfolio_instructions}"/>
-   </c:if>
+   </f:subview>
    
    <sakai:messages />
 
