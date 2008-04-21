@@ -249,6 +249,7 @@
 										<osp:param name="isWizard" value="${isWizard}" />
 										<osp:param name="objectId" value="${objectId}" />
 										<osp:param name="objectTitle" value="${objectTitle}" />
+                              <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 										</osp:url>"
 						onclick="javascript:stopEvents(event)"> <fmt:message
 						key="action_createForm" /> <c:out value="${cellFormDef.name}" />
@@ -256,6 +257,7 @@
 						href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
 										<osp:param name="attachFormAction" value="${cellFormDef.id}" />
+                              <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 										</osp:url>"
 						onclick="javascript:stopEvents(event)"> <fmt:message
 						key="action_chooseForms" /> <c:out value="${cellFormDef.name}" /></a>
@@ -306,6 +308,7 @@
                             <osp:param name="page_id" value="${cell.wizardPage.id}" />
                             <osp:param name="createFormAction" value="${cellFormDef.id}" />
                             <osp:param name="current_form_id" value="${node.resource.id}" />
+                            <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
                             </osp:url>"
 							title="<fmt:message key="edit"/>"> <img
 							src="/library/image/silk/application_form_edit.png"

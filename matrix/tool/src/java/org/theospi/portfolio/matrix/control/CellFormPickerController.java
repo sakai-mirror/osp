@@ -239,8 +239,6 @@ public class CellFormPickerController extends CellController implements FormCont
 
    protected ModelAndView setupSessionInfo(Map request, Map<String, Object> session,
                                      String pageId, String pageTitle, String formTypeId) {
-      session = new Hashtable();
-      
       String retView = "formCreator";
       session.put("page_id", pageId);
       session.put(FormHelper.FORM_STYLES, getStyleManager().createStyleUrlList(getStyleManager().getStyles(getIdManager().getId(pageId))));
@@ -294,12 +292,12 @@ public class CellFormPickerController extends CellController implements FormCont
          retView = "formEditor";
       }
       
-      String helperSessionId = IdManager.createUuid();
-      ToolSession helperSession = SessionManager.getCurrentSession().getToolSession(helperSessionId);
+      String helperSessionId = (String) request.get(Helper.HELPER_SESSION_ID); //IdManager.createUuid();
+//      ToolSession helperSession = SessionManager.getCurrentSession().getToolSession(helperSessionId);
       
-      for (Map.Entry<String, Object> entry : session.entrySet()) {
-         helperSession.setAttribute(entry.getKey(), entry.getValue());
-      }
+//      for (Map.Entry<String, Object> entry : session.entrySet()) {
+//         helperSession.setAttribute(entry.getKey(), entry.getValue());
+//      }
       
       return new ModelAndView(retView, Helper.HELPER_SESSION_ID, helperSessionId);
    }
