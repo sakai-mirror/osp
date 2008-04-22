@@ -56,6 +56,10 @@ public class XsltRenderContext implements PortalRenderContext {
       context.put(string, value);
       baseContext.put(string, value);
    }
+   
+   public Object get(String key) {
+      return context.get(key);
+   }
 
    public String dump() {
       return baseContext.dump();

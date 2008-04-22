@@ -1,10 +1,11 @@
 package org.sakaiproject.portal.xsltcharon.impl;
 
-import javax.xml.transform.URIResolver;
+import org.sakaiproject.webapp.api.WebappResourceManager;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamSource;
-import javax.servlet.ServletContext;
 
 /**
  * Created by IntelliJ IDEA.
@@ -15,9 +16,9 @@ import javax.servlet.ServletContext;
  */
 public class ServletResourceUriResolver implements URIResolver {
 
-   private ServletContext context;
+   private WebappResourceManager context;
 
-   public ServletResourceUriResolver(ServletContext context) {
+   public ServletResourceUriResolver(WebappResourceManager context) {
       this.context = context;
    }
 
