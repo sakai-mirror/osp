@@ -301,7 +301,7 @@
 					</td>
 					<td style="white-space: nowrap">
 					<div class="itemAction">
-					<c:if	test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+					<c:if	test="${cell.status == 'READY' and readOnlyMatrix != 'true' and not node.isLocked}">
 
 						<a
 							href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
@@ -604,7 +604,7 @@
 				href='<c:out value="${reflections[0].reviewContentNode.externalUri}"/>'
 				target="_blank"> <c:out
 				value="${reflections[0].reviewContentNode.displayName}" /> </a>
-		<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+		<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true' and not reflections[0].reviewContentNode.isLocked}">
 			<span class="itemAction"> <img
 				src="/library/image/silk/application_form_edit.png"
 				alt="<fmt:message key="edit"/>" /> <a

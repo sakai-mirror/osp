@@ -27,6 +27,7 @@ import org.hibernate.criterion.Restrictions;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
+import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.entity.api.EntityManager;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.exception.IdUnusedException;
@@ -54,6 +55,7 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
    private EntityManager entityManager;
    private IdManager idManager;
    private ContentHostingService contentHosting = null;
+   private LockManager lockManager;
    private EventService eventService = null;
    private AgentManager agentManager = null;
    
@@ -137,8 +139,6 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
     }
 
     public Review saveReview(Review review) {
-      //review.setModified(now);
-
       if (review.isNewObject()) {
          review.setNewId(review.getId());
          review.setId(null);
@@ -181,7 +181,7 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
       ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
             buildRef(siteId, parentId, node.getResource(), producer));
 
-      return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner());
+      return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner(), node.getIsLocked());
    }
 
    /**
@@ -206,8 +206,9 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
          ContentResource resource = getContentHosting().getResource(id);
          String ownerId = resource.getProperties().getProperty(resource.getProperties().getNamePropCreator());
          Agent owner = getAgentManager().getAgent((getIdManager().getId(ownerId)));
+         boolean locked = getLockManager().isLocked(artifactId.getValue());
 
-         return new Node(artifactId, resource, owner);
+         return new Node(artifactId, resource, owner, locked);
       }
       catch (PermissionException e) {
          logger.error("", e);
@@ -223,23 +224,6 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
       }
    }
 
- /*
-   public Node getNode2(Reference ref, String parentId, String siteId) {
-      String nodeId = getContentHosting().getUuid(ref.getId());
-
-      Node node = getNode(getIdManager().getId(nodeId), siteId);
-
-      if (node == null) {
-         return null;
-      }
-      ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
-            buildRef(siteId, parentId, node.getResource()));
-
-      return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner());
-
-
-   }
-   */
    protected String buildRef(String siteId, String contextId, ContentResource resource,
          String producer) {
       return ContentEntityUtil.getInstance().buildRef(
@@ -344,5 +328,11 @@ public class ReviewManagerImpl extends HibernateDaoSupport implements ReviewMana
 	   this.eventService = eventService;
    }
 
+   public LockManager getLockManager() {
+      return lockManager;
+   }
+   public void setLockManager(LockManager lockManager) {
+      this.lockManager = lockManager;
+   }
 
 }

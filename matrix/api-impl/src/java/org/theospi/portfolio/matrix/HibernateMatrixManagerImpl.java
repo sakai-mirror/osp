@@ -864,7 +864,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
             buildRef(siteId, page.getId().getValue(), node.getResource()));
 
-      return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner());
+      return new Node(artifactId, wrapped, node.getTechnicalMetadata().getOwner(), node.getIsLocked());
    }
 
    private boolean isNodeHidden( Id artifactId ) {
@@ -897,8 +897,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          ContentResource resource = getContentHosting().getResource(id);
          String ownerId = resource.getProperties().getProperty(resource.getProperties().getNamePropCreator());
          Agent owner = getAgentFromId(getIdManager().getId(ownerId));
+         boolean locked = getLockManager().isLocked(artifactId.getValue());
 
-         return new Node(artifactId, resource, owner);
+         return new Node(artifactId, resource, owner, locked);
       }
       catch (PermissionException e) {
          logger.warn(this+".getNode "+e.toString());

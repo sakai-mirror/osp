@@ -40,13 +40,24 @@ public class Node {
    private String fileType;
    private ContentResource resource;
    private boolean hasCopyright = false;
+   private boolean locked = false;
 
    public Node(Id id, ContentResource resource, Agent owner) {
+      createNode( id, resource, owner );
+   }
+   
+   public Node(Id id, ContentResource resource, Agent owner, boolean locked) {
+      createNode( id, resource, owner );
+      this.locked = locked;
+   }
+   
+   private void createNode(Id id, ContentResource resource, Agent owner) {
       this.resource = resource;
       this.id = id;
       name = resource.getProperties().getProperty(
             resource.getProperties().getNamePropDisplayName());
       displayName = name;
+      locked = false;
       
       //check for copyright
       hasCopyright = Boolean.getBoolean(resource.getProperties().getProperty(
@@ -187,4 +198,11 @@ public class Node {
       this.hasCopyright = hasCopyright;
    }
 
+   public boolean getIsLocked() {
+      return locked;
+   }
+
+   public void setIsLocked(boolean locked) {
+      this.locked = locked;
+   }
 }

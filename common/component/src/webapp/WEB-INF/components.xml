@@ -226,6 +226,9 @@
       <property name="eventService">
       	<ref bean="org.theospi.event.EventService"/>
       </property>
+      <property name="lockManager">
+         <ref bean="org.sakaiproject.content.api.LockManager"/>
+      </property>
    </bean>
 
    <bean id="org.theospi.portfolio.review.mgt.ReviewManager"
