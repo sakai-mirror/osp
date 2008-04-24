@@ -74,14 +74,12 @@ public class FormDeleteController implements LoadObjectController, CustomCommand
       String submitAction = (String)request.get("submit");
       String cancelAction = (String)request.get("cancel");
       if (submitAction != null) {
-         if (page != null) {
-            session.remove(WizardPageHelper.WIZARD_PAGE);
-            getMatrixManager().removeFromSession(page);
-            getMatrixManager().detachForm(page.getId(), formId);
-            if (sessionPage) {
-               
-               session.put(WizardPageHelper.WIZARD_PAGE, getMatrixManager().getWizardPage(page.getId()));
-            }
+         session.remove(WizardPageHelper.WIZARD_PAGE);
+         getMatrixManager().removeFromSession(page);
+         getMatrixManager().detachForm(page.getId(), formId);
+         if (sessionPage) {
+            
+            session.put(WizardPageHelper.WIZARD_PAGE, getMatrixManager().getWizardPage(page.getId()));
          }
       }
       

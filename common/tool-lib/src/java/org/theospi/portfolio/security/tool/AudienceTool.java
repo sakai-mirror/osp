@@ -476,6 +476,10 @@ public class AudienceTool extends HelperToolBase {
 
         boolean found = false;
 
+        if (userList == null) {
+           return false;
+        }
+       
         for (Iterator i = userList.iterator(); i.hasNext();) {
             found = true;
             Agent agent = (Agent) i.next();

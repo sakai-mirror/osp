@@ -107,7 +107,7 @@ public class EditScaffoldingCellController extends
 		Map model = new HashMap();
 
 		WizardPageDefinition def = sCell.getWizardPageDefinition();
-		if (def != null && def.getId() != null) {
+		if (def.getId() != null) {
 			TaggableActivity activity = wizardActivityProducer.getActivity(def);
 			if (getTaggingManager().isTaggable()) {
 				model.put("taggable", "true");

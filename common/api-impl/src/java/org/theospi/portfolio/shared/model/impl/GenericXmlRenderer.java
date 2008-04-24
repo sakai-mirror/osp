@@ -254,6 +254,9 @@ public class GenericXmlRenderer implements PresentableObjectHome {
       {
          elementStructure = structure.getParentElement().getChild(prop.getName());
       }
+      else if (elementStructure == null) {
+         return false;
+      }
       String typeAttribute = elementStructure.getAttributeValue("type");
       if (typeAttribute != null && typeAttribute.equals("collection") ){
          return true;

@@ -73,7 +73,7 @@ public class PresentationItemComparator implements Comparator {
       else if (o2 == null) return 1;
       else if (id1 == null && id2 != null) return -1;
       else if (id1 != null && id2 == null) return 1;
-      else if (id1.equals(id2)) return 0;  //if the ids are the same, should be the same object
+      else if (id1 != null && id1.equals(id2)) return 0;  //if the ids are the same, should be the same object
       
       long ord1 = q1.getNewSequence();
       long ord2 = q2.getNewSequence();
