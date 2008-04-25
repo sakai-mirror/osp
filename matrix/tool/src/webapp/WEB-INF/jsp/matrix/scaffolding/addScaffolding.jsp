@@ -414,6 +414,49 @@
 	</c:if>
 	<!--  ********** Reviewer Group Access End ************-->
 
+	<!--  ********** Feedback Options Start ************-->
+	<fieldset class="fieldsetVis">
+		<legend><osp:message key="feedback_options"/></legend>
+		<table cellspacing="0" border="0" summary="<fmt:message key="feedback_options"/>">
+		<thead>
+		<tr>
+		<th><fmt:message key="feedback_options_gen"/></th>
+		<th><fmt:message key="feedback_options_item"/></th>
+		</tr>
+		</thead>
+		<tbody><tr>
+		<td>
+		<spring:bind path="scaffolding.generalFeedbackOption">
+			<c:forTokens var="token" items="open,single,none" delims="," varStatus="loopCount">
+				<div class="checkbox indnt1">
+					<input type="radio" id="<c:out value="feedback_option_gen_${token}" />" name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
+						<c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
+					/>
+					<label for="<c:out value="feedback_option_gen_${token}" />">
+						<osp:message key="feedback_option_gen_${token}" />
+					</label>
+				</div>
+			</c:forTokens>
+		</spring:bind>
+		</td><td>
+		<spring:bind path="scaffolding.itemFeedbackOption">
+			<c:forTokens var="token" items="open,single,none" delims="," varStatus="loopCount">
+				<div class="checkbox indnt1">
+					<input type="radio" id="<c:out value="feedback_option_item_${token}" />" name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
+						<c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
+					/>
+					<label for="<c:out value="feedback_option_item_${token}" />">
+						<osp:message key="feedback_option_item_${token}" />
+					</label>
+				</div>
+			</c:forTokens>
+		</spring:bind>
+		</td>
+		</tr><tbody>
+		</table>
+	</fieldset>
+	<!--  ********** Feedback Options End ************-->
+
 	<c:if test="${not empty isInSession}">
 		<input type="hidden" name="<c:out value="${isInSession}"/>" value="true"/>
 	</c:if>

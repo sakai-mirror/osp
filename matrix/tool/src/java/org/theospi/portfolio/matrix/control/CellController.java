@@ -143,22 +143,23 @@ public class CellController implements FormController, LoadObjectController {
 		}
 
 		String pageId = cell.getCell().getWizardPage().getId().getValue();
-		String siteId = cell.getCell().getWizardPage().getPageDefinition()
-				.getSiteId();
+		String siteId = cell.getCell().getWizardPage().getPageDefinition().getSiteId();
+		List reviews =	
+			getReviewManager().getReviewsByParentAndType( pageId, Review.FEEDBACK_TYPE, siteId, getEntityProducer() );
+		Set cellForms = getMatrixManager().getPageForms(cell.getCell().getWizardPage());
 
 		model.put("assignments", getUserAssignments(cell)); 
-		model.put("reviews", getReviewManager().getReviewsByParentAndType(
-				pageId, Review.FEEDBACK_TYPE, siteId, getEntityProducer()));
+		model.put("reviews", reviews ); // feedback
 		model.put("evaluations", getReviewManager().getReviewsByParentAndType(
 				pageId, Review.EVALUATION_TYPE, siteId, getEntityProducer()));
 		model.put("reflections", getReviewManager().getReviewsByParentAndType(
 				pageId, Review.REFLECTION_TYPE, siteId, getEntityProducer()));
-
 		model.put("cellFormDefs", processAdditionalForms(cell.getCell()
 				.getScaffoldingCell().getAdditionalForms()));
-
-		model.put("cellForms", getMatrixManager().getPageForms(
-				cell.getCell().getWizardPage()));
+		model.put("cellForms", cellForms );
+				
+		model.put("allowItemFeedback", getAllowItemFeedback( cell.getCell().getScaffoldingCell().getScaffolding(), reviews, cellForms) );
+		model.put("allowGeneralFeedback", getAllowGeneralFeedback( cell.getCell().getScaffoldingCell().getScaffolding(), reviews) );
 
 		Boolean readOnly = new Boolean(false);
 
@@ -196,7 +197,73 @@ public class CellController implements FormController, LoadObjectController {
 		clearSession(session);
 		return model;
 	}
+	
+	/**
+	 ** Return true if general feedback is allowed based on feedback options
+	 **/
+	private Boolean getAllowGeneralFeedback( Scaffolding scaffolding, List reviews )
+	{
+		boolean allowGeneralFeedback = true;
+		
+		if ( scaffolding.getGeneralFeedbackOption()==Scaffolding.FEEDBACK_OPTION_SINGLE )
+		{
+			for (Iterator it=reviews.iterator(); it.hasNext();)
+			{
+				if ( ((Review)it.next()).getItemId() == null )
+				{
+					allowGeneralFeedback = false;
+					break;
+				}
+			}
+		}
+		else if ( scaffolding.getGeneralFeedbackOption()==Scaffolding.FEEDBACK_OPTION_NONE )
+		{
+			allowGeneralFeedback = false;
+		}
+		
+		return new Boolean(allowGeneralFeedback);
+	}
 
+	/**
+	 ** Return boolean array if item feedback is allowed based on feedback options
+	 **/
+	private Boolean[] getAllowItemFeedback( Scaffolding scaffolding, List reviews, Set<Node> cellForms )
+	{
+		Boolean[] allowItemFeedback = new Boolean[cellForms.size()];
+		int index = -1;
+		
+		for (Iterator cIt=cellForms.iterator(); cIt.hasNext();)
+		{
+			index++;
+			Node   thisNode   = (Node)cIt.next();
+				
+			if ( scaffolding.getItemFeedbackOption()==Scaffolding.FEEDBACK_OPTION_SINGLE )
+			{
+				allowItemFeedback[index] = true;
+				for (Iterator rIt=reviews.iterator(); rIt.hasNext();)
+				{
+					Review thisReview = (Review)rIt.next();
+					if ( thisReview.getItemId() != null &&
+						  thisReview.getItemId().equals(thisNode.getId().getValue()) )
+					{
+						allowItemFeedback[index] = false;
+						break;
+					}
+				}
+			}
+			else if ( scaffolding.getItemFeedbackOption()==Scaffolding.FEEDBACK_OPTION_NONE )
+			{
+				allowItemFeedback[index] = false;
+			}
+			else
+			{
+				allowItemFeedback[index] = true;
+			}
+		}
+		
+		return allowItemFeedback;
+	}
+	
 	/**
 	 ** Return list of AssignmentSubmissions, associated with this cell
 	 ** for the current user

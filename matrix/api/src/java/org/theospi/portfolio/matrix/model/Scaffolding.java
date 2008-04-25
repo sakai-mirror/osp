@@ -36,23 +36,6 @@ import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.exception.IdUnusedException;
 
 /**
- * I. Communication
- * A. Writing
- * B. Public Speaking
- * II. Critical Thinking
- * A. Logic
- * B. Analysis
- * III. Integration & Application of Knowledge
- * IV. Values & Ethics
- *
-           <bean class="org.sakaiproject.warehouse.impl.BeanPropertyAccess">
-              <property name="propertyName"><value>documentRoot</value></property>
-           </bean>
-           <bean class="org.sakaiproject.warehouse.impl.IdPropertyAccess">
-              <property name="propertyName"><value>privacyXsdId</value></property>
-           </bean> 
-          
- * @author apple
  */
 public class Scaffolding extends IdentifiableObject implements Serializable {
    private Id id;
@@ -86,16 +69,25 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    
    private int workflowOption;
    private int reviewerGroupAccess;
+   private int generalFeedbackOption;
+   private int itemFeedbackOption;
    private Set matrix = new HashSet();
    
+	// Dependent on ordering of <c:forTokens> in addScaffolding.jsp
    public static final int NO_PROGRESSION = 0;
    public static final int HORIZONTAL_PROGRESSION = 1;
    public static final int VERTICAL_PROGRESSION = 2;
    public static final int OPEN_PROGRESSION = 3;
    public static final int MANUAL_PROGRESSION = 4;
    
+	// Dependent on ordering of <c:forTokens> in addScaffolding.jsp
    public static final int NORMAL_GROUP_ACCESS = 0;
    public static final int UNRESTRICTED_GROUP_ACCESS = 1;
+	
+	// Dependent on ordering of <c:forTokens> in addScaffolding.jsp
+   public static final int FEEDBACK_OPTION_OPEN    = 0;
+   public static final int FEEDBACK_OPTION_SINGLE  = 1;
+   public static final int FEEDBACK_OPTION_NONE    = 2;
 
    public Scaffolding() {}
    
@@ -373,6 +365,42 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
 	   this.reviewerGroupAccess = reviewerGroupAccess;
    }
 
+   public int getGeneralFeedbackOption() {
+	   return generalFeedbackOption;
+   }
+   
+   public void setGeneralFeedbackOption(int feedbackOption) {
+	   this.generalFeedbackOption = feedbackOption;
+   }
+
+   public boolean isGeneralFeedbackOpen() {
+	   return generalFeedbackOption == FEEDBACK_OPTION_OPEN;
+   }
+   public boolean isGeneralFeedbackSingle() {
+	   return generalFeedbackOption == FEEDBACK_OPTION_SINGLE;
+   }
+   public boolean isGeneralFeedbackNone() {
+	   return generalFeedbackOption == FEEDBACK_OPTION_NONE;
+   }
+   
+   public int getItemFeedbackOption() {
+	   return itemFeedbackOption;
+   }
+   
+   public void setItemFeedbackOption(int feedbackOption) {
+	   this.itemFeedbackOption = feedbackOption;
+   }
+
+   public boolean isItemFeedbackOpen() {
+	   return itemFeedbackOption == FEEDBACK_OPTION_OPEN;
+   }
+   public boolean isItemFeedbackSingle() {
+	   return itemFeedbackOption == FEEDBACK_OPTION_SINGLE;
+   }
+   public boolean isItemFeedbackNone() {
+	   return itemFeedbackOption == FEEDBACK_OPTION_NONE;
+   }
+   
    public Set getMatrix() {
       return matrix;
    }
