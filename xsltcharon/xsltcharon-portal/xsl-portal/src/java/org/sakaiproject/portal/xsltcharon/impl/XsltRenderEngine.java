@@ -197,20 +197,20 @@ public class XsltRenderEngine implements PortalRenderEngine {
          }
       }
       
-      URL skinUrl = getLibraryWebappResourceManager().getResource(
+      InputStream skinStream = getLibraryWebappResourceManager().getResourceAsStream(
          "/skin/" + skin + "/portal.xslt");
       
-      if (skinUrl == null) {
+      if (skinStream == null) {
          // check the default one
 			String defaultSkin = ServerConfigurationService.getString("skin.default");
-         skinUrl = getLibraryWebappResourceManager().getResource(
+         skinStream = getLibraryWebappResourceManager().getResourceAsStream(
             "/skin/" + defaultSkin + "/portal.xslt");
-         if (skinUrl == null) {
+         if (skinStream == null) {
             return null;
          }
       }
       
-      returned = createTemplate(skinUrl);
+      returned = createTemplate(skinStream);
       
       if (cacheTemplates) {
          getTemplates().put("skin." + skin, returned);
@@ -272,7 +272,7 @@ public class XsltRenderEngine implements PortalRenderEngine {
    }
 
    protected Templates createTemplate(String transformerPath) throws IOException, TransformerConfigurationException {
-      return createTemplate(getPortalWebappResourceManager().getResource(transformerPath));
+      return createTemplate(getPortalWebappResourceManager().getResourceAsStream(transformerPath));
    }
    
    protected Templates createTemplate(URL url)
@@ -283,6 +283,13 @@ public class XsltRenderEngine implements PortalRenderEngine {
       String systemId = urlPath.substring(0, urlPath.lastIndexOf('/') + 1);
       Templates templates = TransformerFactory.newInstance().newTemplates(
                      new StreamSource(stream, systemId));
+      return templates;
+   }
+
+   protected Templates createTemplate(InputStream stream)
+      throws IOException, TransformerConfigurationException {
+      Templates templates = TransformerFactory.newInstance().newTemplates(
+                     new StreamSource(stream));
       return templates;
    }
 
