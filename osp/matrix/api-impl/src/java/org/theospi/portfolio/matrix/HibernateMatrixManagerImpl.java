@@ -1166,12 +1166,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             "wp.pageDefinition.title, c.matrix.owner, " +
             "c.wizardPage.modified, wp.pageDefinition.siteId) " +
             "from WizardPage wp, Authorization auth, Cell c " +
-            "where wp.pageDefinition.id = auth.qualifier " +
+            "where ((wp.pageDefinition.id = auth.qualifier and wp.pageDefinition.defaultEvaluators=?) or " +
+            "(c.scaffoldingCell.scaffolding.id = auth.qualifier and wp.pageDefinition.defaultEvaluators=?))" +
             "and wp.id = c.wizardPage.id " +
             "and auth.function = ? and wp.status = ? and (auth.agent=? " +
             " or auth.agent=?) " +
-            " and wp.pageDefinition.siteId=?",
-         new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+            " and wp.pageDefinition.siteId=? ",
+         new Object[]{new Boolean(false), new Boolean(true), MatrixFunctionConstants.EVALUATE_MATRIX,
             MatrixFunctionConstants.PENDING_STATUS,
             agent, role,
             worksiteId.getValue()});
