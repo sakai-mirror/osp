@@ -22,6 +22,8 @@ package org.theospi.portfolio.security.tool;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -153,7 +155,7 @@ public class AudienceTool extends HelperToolBase {
 
     protected List getMembersList() {
         Set members = getSite().getMembers();
-        List memberList = new ArrayList();
+        List<SelectItem> memberList = new ArrayList<SelectItem>();
         for (Iterator i = members.iterator(); i.hasNext();) {
             Member member = (Member) i.next();
 
@@ -165,8 +167,17 @@ public class AudienceTool extends HelperToolBase {
             }
         }
 
+        sortItemList(memberList);
         return memberList;
     }
+    
+    public void sortItemList(List<SelectItem> list) {
+		Collections.sort(list, new Comparator<SelectItem>() {
+			public int compare(SelectItem o1, SelectItem o2) {
+				return o1.getLabel().compareToIgnoreCase(o2.getLabel());
+			}
+		});
+	}
 
     public boolean isMaxList() {
 
@@ -696,7 +707,7 @@ public class AudienceTool extends HelperToolBase {
      ** Return list of roles for this site, or for all sites user can access
      **/
     public List getRoles() {
-        List returned = new ArrayList();
+        List<SelectItem> returned = new ArrayList<SelectItem>();
         
         if ( isWorksiteLimited() ) {
            Site site = getSite();
@@ -730,6 +741,8 @@ public class AudienceTool extends HelperToolBase {
            }
         
         }
+        
+        sortItemList(returned);
 
         return returned;
     }
@@ -835,7 +848,7 @@ public class AudienceTool extends HelperToolBase {
                 if ( ! decoratedMember.getBase().isRole() && decoratedMember.getBase().getId() != null ) 
                    selectedUserList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), "member"));
             }
-
+            sortItemList(selectedUserList);
         return selectedUserList;
     }
 
@@ -902,7 +915,7 @@ public class AudienceTool extends HelperToolBase {
                                                   "role"));
            }
        }
-
+       sortItemList(selectedRoleList);
        return selectedRoleList;
     }
     
