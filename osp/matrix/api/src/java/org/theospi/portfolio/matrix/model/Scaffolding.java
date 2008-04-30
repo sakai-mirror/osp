@@ -104,6 +104,10 @@ public class Scaffolding extends ObjectWithWorkflow implements Serializable {
    private Collection reviewers = new HashSet();   
    private boolean allowRequestFeedback = true;
    
+   //this variable is used for version control: if this is null when importing a matrix,
+   //then the matrix is an older version and set all defaults to false
+   private boolean defaultFormsMatrixVersion = false;
+   
    public Scaffolding() {}
    
    public Scaffolding (String columnLabel, String rowLabel) {
@@ -455,5 +459,13 @@ public Collection getReviewers() {
 
 public void setReviewers(Collection reviewers) {
 	this.reviewers = reviewers;
+}
+
+public boolean isDefaultFormsMatrixVersion() {
+	return defaultFormsMatrixVersion;
+}
+
+public void setDefaultFormsMatrixVersion(boolean defaultFormsMatrixVersion) {
+	this.defaultFormsMatrixVersion = defaultFormsMatrixVersion;
 }
 }

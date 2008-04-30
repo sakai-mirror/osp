@@ -9,6 +9,9 @@ UPDATE osp_wizard_page_def SET allowRequestFeedback = false
 
 ALTER TABLE osp_scaffolding Drop COLUMN reviewerGroupAccess;
 
+ALTER TABLE osp_scaffolding ADD COLUMN (defaultFormsMatrixVersion boolean);
+UPDATE osp_scaffolding SET defaultFormsMatrixVersion = true
+
 
 -------   These are the lines I removed to get rid of matrix evaluate and review permissions: ---------------
 

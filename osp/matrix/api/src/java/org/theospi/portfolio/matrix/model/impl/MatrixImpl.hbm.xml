@@ -192,6 +192,7 @@
         <property name="returnedColor" type="java.lang.String" not-null="false" length="7"/>
         <property name="workflowOption" type="int" not-null="true" />
         <property name="allowRequestFeedback" type="boolean" column="allowRequestFeedback"  not-null="false"/>
+        <property name="defaultFormsMatrixVersion" type="boolean" column="defaultFormsMatrixVersion"  not-null="false"/>
         
         <set name="matrix" cascade="all-delete-orphan" inverse="true"
             lazy="true">

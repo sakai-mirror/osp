@@ -462,6 +462,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
    public void previewScaffolding(Id scaffoldingId) {
       Scaffolding scaffolding = this.getScaffolding(scaffoldingId);
+      //this variable is used for version control: if this is null when importing a matrix,
+      //then the matrix is an older version and set all defaults to false
+      scaffolding.setDefaultFormsMatrixVersion(true);
       scaffolding.setPreview(true);
       this.storeScaffolding(scaffolding);
 
@@ -1597,6 +1600,18 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          scaffolding.setWorksiteId(getIdManager().getId(siteId));
          
          resetIds(scaffolding, guidanceMap, formsMap, styleMap, siteId);
+         
+         //this variable is used for version control: if this is null when importing a matrix,
+         //then the matrix is an older version and set all defaults to false
+         if(!scaffolding.isDefaultFormsMatrixVersion()){
+        	 //This means the matrix being imported is from an earlier version that didn't have defaultForm values
+        	 //therefore, we must set all defaultForm values to false (their default value is true)
+        	 setAllDefaultFormValuesToFalse(scaffolding);
+        	 //now that this matrix is in the current version, we must set defualtMatrix flag to true
+        	 scaffolding.setDefaultFormsMatrixVersion(true);
+         }
+         
+         
 
          scaffolding = saveNewScaffolding(scaffolding);         
 
@@ -1614,6 +1629,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          createEvaluatorAuthzForImport(scaffolding);
          createReviewersAuthzForImport(scaffolding);
          
+         //automatically preview the matrix to skip this step for the user:
+         previewScaffolding(scaffolding.getId());
+         
          itWorked = true;
          return scaffolding;
       }
@@ -1628,6 +1646,19 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             logger.error("", e);
          }
       }
+   }
+   
+   public void setAllDefaultFormValuesToFalse(Scaffolding scaffolding){
+	   for(int i=0; i < scaffolding.getScaffoldingCells().size(); i++){
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setAllowRequestFeedback(false);
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setDefaultCustomForm(false);
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setDefaultEvaluationForm(false);
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setDefaultEvaluators(false);
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setDefaultFeedbackForm(false);
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setDefaultReflectionForm(false);
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setDefaultReviewers(false);
+	   }
+	   
    }
 
    public Scaffolding uploadScaffolding(Reference uploadedScaffoldingFile, String siteId)
