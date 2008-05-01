@@ -128,7 +128,8 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 		String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
 		if (selectedSite == null) selectedSite = worksiteId;
 		
-		List<Scaffolding> scaffolding = getMatrixManager().findAvailableScaffolding(selectedSite, currentAgent);
+		//pass true for maintainer to get all unpublished matrixes
+		List<Scaffolding> scaffolding = getMatrixManager().findAvailableScaffolding(selectedSite, currentAgent, true);
 		List<MatrixGridBean> grids = getScaffoldingGrids(scaffolding, selectedSite, activityRef);
 		model.put("grids", getListScrollIndexer().indexList(request, model, grids));
 		model.put("selectedSite", selectedSite);

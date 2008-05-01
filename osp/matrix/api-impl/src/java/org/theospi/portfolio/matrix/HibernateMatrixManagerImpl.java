@@ -184,25 +184,39 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    /**
     *  {@inheritDoc}
     */
-   public List findAvailableScaffolding(String siteIdStr, Agent user) {
-      
-      Object[] params = new Object[]{getIdManager().getId(siteIdStr), user, new Boolean(true), new Boolean(true)};
-      return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
-            "and (s.owner=? or s.published=? or s.preview=?) ", params);
+   public List findAvailableScaffolding(String siteIdStr, Agent user, boolean showUnpublished) {
+	   Object[] params = new Object[]{getIdManager().getId(siteIdStr), user, new Boolean(true), new Boolean(true)};
+	   Object[] params2 = new Object[]{getIdManager().getId(siteIdStr), user, new Boolean(true)};
+
+	   //if showUnpublished, then you can see unpublisehd matrix's, otherwise you can
+	   //only see you own matrix's or published ones
+	   if(showUnpublished)
+		   return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
+			   "and (s.owner=? or s.published=? or s.preview=?) ", params);
+	   else
+		   return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
+				   "and (s.owner=? or s.published=?)", params2);
    }
    
    /**
     *  {@inheritDoc}
     */
-   public List findAvailableScaffolding(List sites, Agent user) {
+   public List findAvailableScaffolding(List sites, Agent user, boolean showUnpublished) {
       
       if ( sites == null || sites.size() == 0 )
          return new ArrayList();
       
       String[] paramNames = new String[] {"siteIds", "owner", "true"};
       Object[] params = new Object[]{sites, user, new Boolean(true)};
+      
+      //if showUnpublished, then you can see unpublisehd matrix's, otherwise you can
+	  //only see you own matrix's or published ones
+      if(showUnpublished)
       return getHibernateTemplate().findByNamedParam("from Scaffolding s where s.worksiteId in ( :siteIds ) and ( s.owner = :owner or s.published=:true or s.preview=:true)",
-            paramNames, params);
+              paramNames, params);
+      else
+    	  return getHibernateTemplate().findByNamedParam("from Scaffolding s where s.worksiteId in ( :siteIds ) and ( s.owner = :owner or s.published=:true)",
+    	            paramNames, params);
    }
    
    /**
