@@ -85,18 +85,25 @@
 	</c:if>
 
 </c:if> <osp-h:glossary link="true" hover="true">
-	<h3><c:if test="${isWizard == 'true' and sequential != 'true'}">
-		<c:out value="${categoryTitle}" />
-		<c:if test="${categoryTitle != ''}">:
-          
-          </c:if>
+	<c:if test="${isWizard == 'true' and sequential != 'true'}">
+		<h3>
+			<c:out value="${categoryTitle}" />
+			<c:if test="${categoryTitle != ''}">:
+	          
+	        </c:if>
+	    </h3>
 	</c:if> 
-		<c:if test="${isMatrix == 'true'}">
-			<osp:message key="site" />:&nbsp;<c:out value="${cell.scaffoldingCell.scaffolding.worksiteName}"/> <br>
-			<osp:message key="matrix" />&nbsp;<osp:message key="name" />:&nbsp;<c:out value="${cell.scaffoldingCell.scaffolding.title}"/><br>			
-		</c:if>
+	<c:if test="${isMatrix == 'true'}">
+		<h3 style="display:inline"><osp:message key="site" />:&nbsp;</h3>
+		<c:out value="${cell.scaffoldingCell.scaffolding.worksiteName}"/>
+		<br>
+		<h3 style="display:inline"><osp:message key="matrix" />&nbsp;<osp:message key="name" />:&nbsp;</h3>
+		<c:out value="${cell.scaffoldingCell.scaffolding.title}"/>
+		<br>			
+	</c:if>
+	<h3 style="display:inline"><osp:message key="label_title" />:&nbsp;</h3>
 	<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
-	</h3>
+	<br>	
 	<br>
 	<a name="viewCellInformation" id="viewCellInformation" class="thickbox" title="<osp:message key="supporting_info" />"
 		href="<osp:url value="viewCellInformation.osp">
