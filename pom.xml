@@ -221,7 +221,6 @@
         <module>sakai-mock</module>
         <module>warehouse</module>
         <module>reports</module>
-		<module>gmt</module>
 		<module>datapoint</module>
 	<module>formbuilder</module>
 	<module>taggable</module>
