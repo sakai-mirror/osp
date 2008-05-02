@@ -324,14 +324,11 @@
 							title="<fmt:message key="delete"/>"><img
 							src="/library/image/silk/application_form_delete.png"
 							alt="<fmt:message key="delete"/>" /></a>
-						<c:if
-							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null}">
-                        |
-                  </c:if>
 					</c:if> 
 				
 					<c:if
 						test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && allowItemFeedback[loopStatus.index]}">
+                        |
 						<a
 							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                           <osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -671,7 +668,7 @@
 <!-- ************* General Review (Feedback) Area Start ************* -->
 
 <c:if
-	test="${( ((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && not cell.scaffoldingCell.scaffolding.generalFeedbackNone) || (not empty reviews && not cell.scaffoldingCell.scaffolding.generalFeedbackNone)}">
+	test="${( ((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && not generalFeedbackNone) || (not empty reviews && not generalFeedbackNone)}">
 	<table class="matrixCellList" cellpadding="0" cellspacing="0"
 		border="0" summary="">
 		<tr>

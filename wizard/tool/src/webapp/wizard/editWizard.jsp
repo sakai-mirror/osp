@@ -35,7 +35,7 @@
 <%--   <sakai:instruction_message value=" Last saved: " />
    <sakai:instruction_message value="#{wizard.lastSavedId}" /> --%>
    <sakai:messages />
-      <h:panelGrid columns="1"  styleClass="jsfFormTable" cellpadding="0" summary="layout">
+   <h:panelGrid columns="1"  styleClass="jsfFormTable" cellpadding="0" summary="layout">
       <h:panelGroup styleClass="shorttext">
          <h:outputText value="*" styleClass="reqStar"/>
          <h:outputLabel for="name" id="nameLabel" value="#{msgs.wizard_name}" />
@@ -70,7 +70,31 @@
 	   <h:selectBooleanCheckbox id="asTool" value="#{wizard.current.exposeAsTool}" />
 	   <h:outputLabel value="#{msgs.expose_as_tool}" for="asTool" />
       </h:panelGroup> --%>
-</h:panelGrid>
+
+      <!--  ********** Feedback Options Start ************-->
+   
+      <h:panelGroup styleClass="longtext" style="padding:0;display:block;margin:0">
+      <h:outputText value="#{msgs.feedback_options_gen}" />
+      </h:panelGroup>
+      <h:panelGroup styleClass="longtext" style="padding:0;display:block;margin:5">
+         <h:selectOneRadio id="feedback_option_gen" value="#{wizard.current.base.generalFeedbackOptionString}" layout="pageDirection" disabled="#{wizard.current.isWizardUsed}">
+            <f:selectItem itemLabel="#{msgs.feedback_option_gen_open}"   itemValue="0"/>
+            <f:selectItem itemLabel="#{msgs.feedback_option_gen_single}" itemValue="1"/>
+            <f:selectItem itemLabel="#{msgs.feedback_option_gen_none}"   itemValue="2"/>
+         </h:selectOneRadio>
+      </h:panelGroup>
+      <h:panelGroup styleClass="longtext" style="padding:0;display:block;margin:0">
+      <h:outputText value="#{msgs.feedback_options_item}" />
+      </h:panelGroup>
+      <h:panelGroup styleClass="longtext" style="padding:0;display:block;margin:5">
+         <h:selectOneRadio id="feedback_option_item" value="#{wizard.current.base.itemFeedbackOptionString}" layout="pageDirection" border="0" disabled="#{wizard.current.isWizardUsed}">
+            <f:selectItem itemLabel="#{msgs.feedback_option_item_open}"   itemValue="0"/>
+            <f:selectItem itemLabel="#{msgs.feedback_option_item_single}" itemValue="1"/>
+            <f:selectItem itemLabel="#{msgs.feedback_option_item_none}"   itemValue="2"/>
+         </h:selectOneRadio>
+      </h:panelGroup>
+   </h:panelGrid>
+
    <%@include file="builderButtons.jspf"%>
 </h:form>
 </sakai:view>

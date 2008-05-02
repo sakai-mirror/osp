@@ -28,6 +28,8 @@
          class="org.theospi.portfolio.wizard.model.WizardCategory" column="root_category"
          cascade="all" unique="true" />
       <property name="sequence" type="int" column="seq_num" not-null="false"/>
+      <property name="generalFeedbackOption" type="int" column="generalFeedbackOption" not-null="true"/>
+      <property name="itemFeedbackOption" type="int" column="itemFeedbackOption" not-null="true"/>
    </joined-subclass>
 
    <class name="WizardPageSequence" table="osp_wizard_page_sequence">

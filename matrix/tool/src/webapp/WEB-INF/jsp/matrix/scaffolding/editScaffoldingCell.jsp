@@ -423,10 +423,10 @@
 		</spring:bind>
 	</fieldset>
 	<fieldset class="fieldsetVis">
-		<c:if test="${scaffoldingCell.scaffolding.itemFeedbackNone and scaffoldingCell.scaffolding.generalFeedbackNone}">
+		<c:if test="${feedbackOpts.itemFeedbackNone and feedbackOpts.generalFeedbackNone}">
 			<legend><fmt:message key="header_Evaluators"/></legend>
 		</c:if>
-		<c:if test="${not scaffoldingCell.scaffolding.itemFeedbackNone or not scaffoldingCell.scaffolding.generalFeedbackNone}">
+		<c:if test="${not feedbackOpts.itemFeedbackNone or not feedbackOpts.generalFeedbackNone}">
 			<legend><fmt:message key="legend_feed_eval"/></legend>
 		</c:if>
 		<spring:bind path="scaffoldingCell.reviewDeviceType">  
@@ -434,7 +434,7 @@
 			value="<c:out value="${status.value}"/>" />
 		</spring:bind>   
 		
-		<c:if test="${not scaffoldingCell.scaffolding.itemFeedbackNone or not scaffoldingCell.scaffolding.generalFeedbackNone}">
+		<c:if test="${not feedbackOpts.itemFeedbackNone or not feedbackOpts.generalFeedbackNone}">
 		<spring:bind path="scaffoldingCell.reviewDevice">  
 			<c:if test="${status.error}">
 				<div class="validation"><c:out value="${status.errorMessage}"/></div>

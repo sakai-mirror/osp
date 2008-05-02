@@ -633,8 +633,6 @@ public class DecoratedWizard implements DecoratedListInterface {
 			List reviews = parent.getReviewManager().getReviewsByParent( cw.getId().getValue() );
 			if ( reviews.size() > 0 )
 				return true;
-			else
-				return false;
 		}
 		return false;
 	}

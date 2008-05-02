@@ -73,36 +73,6 @@ public class CellFormPickerController extends CellController implements FormCont
    public static final String HELPER_CREATOR = "filepicker.helper.creator";
    public static final String HELPER_PICKER = "filepicker.helper.picker";
 
-   /*
-   public Map referenceData(Map request, Object command, Errors errors) {
-
-
-      ToolSession session = getSessionManager().getCurrentToolSession();
-      String pageId = (String) request.get("page_id");
-      if (pageId == null) {
-         pageId = (String)session.getAttribute("page_id");
-      }
-      WizardPage page = getMatrixManager().getWizardPage(getIdManager().getId(pageId));
-
-      if (session.getAttribute(FilePickerHelper.FILE_PICKER_CANCEL) == null &&
-            session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS) != null) {
-         // here is where we setup the id
-         List refs = (List)session.getAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-         page.getPageForms().clear();
-         for (Iterator iter = refs.iterator(); iter.hasNext();) {
-            Reference ref = (Reference) iter.next();
-            String strId = getMatrixManager().getNode(ref).getId().getValue();
-            page.getPageForms().add(strId);
-         }
-         getMatrixManager().storePage(page);
-
-         session.removeAttribute(FilePickerHelper.FILE_PICKER_ATTACHMENTS);
-         session.removeAttribute(FilePickerHelper.FILE_PICKER_CANCEL);
-      }
-      return null;
-   }
-*/
-
    public Object fillBackingObject(Object incomingModel, Map request,
                                    Map session, Map application) throws Exception {
 

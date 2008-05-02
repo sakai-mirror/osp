@@ -36,6 +36,7 @@ import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
+import org.theospi.portfolio.wizard.model.Wizard;
 
 /**
  * Created by IntelliJ IDEA.
@@ -59,12 +60,20 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
       boolean wizardPublished = false;
       
       if(sCell.getWizardPageDefinition() != null && getWizardManager() != null)
+      {
          if(sCell.getWizardPageDefinition().getId() != null) {
             WizardPageSequence wps = getWizardManager().getWizardPageSeqByDef(sCell.getWizardPageDefinition().getId());
             if(wps.getCategory() != null)
+            {
                if(wps.getCategory().getWizard() != null)
-                  wizardPublished = wps.getCategory().getWizard().isPublished();
+               {
+                  Wizard wizard = wps.getCategory().getWizard();
+                  wizardPublished = wizard.isPublished();
+                  model.put("feedbackOpts", wizard );
+               }
+            }
          }
+      }
       
       model.put("wizardPublished", new Boolean(wizardPublished));
       model.put("isPageUsed", wizardPublished && isPageUsed(sCell.getWizardPageDefinition()));

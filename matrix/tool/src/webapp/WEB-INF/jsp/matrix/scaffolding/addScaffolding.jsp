@@ -420,8 +420,8 @@
 		<table cellspacing="0" border="0" summary="<fmt:message key="feedback_options"/>">
 		<thead>
 		<tr>
-		<th><fmt:message key="feedback_options_gen"/></th>
-		<th><fmt:message key="feedback_options_item"/></th>
+		<th><h4><fmt:message key="feedback_options_gen"/></h4></th>
+		<th><h4><fmt:message key="feedback_options_item"/></h4></th>
 		</tr>
 		</thead>
 		<tbody><tr>

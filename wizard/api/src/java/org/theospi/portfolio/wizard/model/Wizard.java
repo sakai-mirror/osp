@@ -28,6 +28,7 @@ import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.style.model.Style;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
+import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 
 /**
  * The super class has the evaluation, reflection and review
@@ -37,7 +38,7 @@ import org.theospi.portfolio.wizard.WizardFunctionConstants;
 public class Wizard extends ObjectWithWorkflow {
 
    public final static String ROOT_TITLE = "root";
-   
+	
    private String name;
    private String description;
    private String keywords;
@@ -61,6 +62,9 @@ public class Wizard extends ObjectWithWorkflow {
    
    private boolean newObject = false;
    
+   private int generalFeedbackOption = WizardMatrixConstants.FEEDBACK_OPTION_OPEN;
+   private int itemFeedbackOption = WizardMatrixConstants.FEEDBACK_OPTION_OPEN;
+	
    public Wizard() {
    }
 
@@ -208,4 +212,50 @@ public class Wizard extends ObjectWithWorkflow {
       this.styleId = styleId;
    }
 
+   public String getGeneralFeedbackOptionString() {
+	   return String.valueOf(generalFeedbackOption);
+   }
+   public void setGeneralFeedbackOptionString(String feedbackOption) {
+	   this.generalFeedbackOption = Integer.valueOf(feedbackOption).intValue();
+   }
+   public int getGeneralFeedbackOption() {
+	   return generalFeedbackOption;
+   }
+   public void setGeneralFeedbackOption(int feedbackOption) {
+	   this.generalFeedbackOption = feedbackOption;
+   }
+
+   public boolean isGeneralFeedbackOpen() {
+	   return generalFeedbackOption == WizardMatrixConstants.FEEDBACK_OPTION_OPEN;
+   }
+   public boolean isGeneralFeedbackSingle() {
+	   return generalFeedbackOption == WizardMatrixConstants.FEEDBACK_OPTION_SINGLE;
+   }
+   public boolean isGeneralFeedbackNone() {
+	   return generalFeedbackOption == WizardMatrixConstants.FEEDBACK_OPTION_NONE;
+   }
+   
+   public String getItemFeedbackOptionString() {
+	   return String.valueOf(itemFeedbackOption);
+   }
+   public void setItemFeedbackOptionString(String feedbackOption) {
+	   this.itemFeedbackOption = Integer.valueOf(feedbackOption).intValue();
+   }
+   public int getItemFeedbackOption() {
+	   return itemFeedbackOption;
+   }
+   public void setItemFeedbackOption(int feedbackOption) {
+	   this.itemFeedbackOption = feedbackOption;
+   }
+
+   public boolean isItemFeedbackOpen() {
+	   return itemFeedbackOption == WizardMatrixConstants.FEEDBACK_OPTION_OPEN;
+   }
+   public boolean isItemFeedbackSingle() {
+	   return itemFeedbackOption == WizardMatrixConstants.FEEDBACK_OPTION_SINGLE;
+   }
+   public boolean isItemFeedbackNone() {
+	   return itemFeedbackOption == WizardMatrixConstants.FEEDBACK_OPTION_NONE;
+   }
+   
 }

@@ -67,6 +67,7 @@ import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.assignment.AssignmentHelper;
 
@@ -222,7 +223,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 
       String filteredGroup = (String) request.get(GROUP_FILTER);
       boolean allowAllGroups = ServerConfigurationService.getBoolean(MatrixFunctionConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
-      			|| grid.getScaffolding().getReviewerGroupAccess() == Scaffolding.UNRESTRICTED_GROUP_ACCESS;
+      			|| grid.getScaffolding().getReviewerGroupAccess() == WizardMatrixConstants.UNRESTRICTED_GROUP_ACCESS;
       List<Group> groupList = new ArrayList<Group>(getGroupList(worksiteId, allowAllGroups));
       //Collections.sort(groupList);
       //TODO: Figure out why ClassCastExceptions fire if we do this the obvious way...  The User list sorts fine

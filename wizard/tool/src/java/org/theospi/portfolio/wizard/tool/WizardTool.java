@@ -457,7 +457,7 @@ public class WizardTool extends BuilderTool {
         	  }
     	  }
     	  catch(Exception e){
-
+				logger.warn(this+".processActionSave: " + e.toString());
     	  }
       }
       for(Iterator i=tempDeletedItems.iterator(); i.hasNext();){

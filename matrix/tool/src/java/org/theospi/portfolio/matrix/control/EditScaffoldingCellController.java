@@ -92,8 +92,6 @@ public class EditScaffoldingCellController extends
 
 	private static ResourceLoader myResources = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
    
-	// TODO move this constant somewhere where I can get to them from here and
-	// in WizardTool
 	public final static String FORM_TYPE = "form";
 
 	/*
@@ -138,6 +136,7 @@ public class EditScaffoldingCellController extends
 		model.put("pageInstructionsKey", "instructions_cellSettings");
 		model.put("returnView", getReturnView());
       model.put("enableAssignments", ServerConfigurationService.getBoolean("osp.experimental.assignments",false) );
+		model.put("feedbackOpts", sCell.getScaffolding());
 
 		if (sCell != null && sCell.getScaffolding() != null)
 			model.put("isCellUsed", sCell.getScaffolding().isPublished()

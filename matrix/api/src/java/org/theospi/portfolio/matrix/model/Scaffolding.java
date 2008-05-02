@@ -34,6 +34,7 @@ import org.theospi.portfolio.style.model.Style;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.exception.IdUnusedException;
+import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 
 /**
  */
@@ -80,15 +81,6 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    public static final int OPEN_PROGRESSION = 3;
    public static final int MANUAL_PROGRESSION = 4;
    
-	// Dependent on ordering of <c:forTokens> in addScaffolding.jsp
-   public static final int NORMAL_GROUP_ACCESS = 0;
-   public static final int UNRESTRICTED_GROUP_ACCESS = 1;
-	
-	// Dependent on ordering of <c:forTokens> in addScaffolding.jsp
-   public static final int FEEDBACK_OPTION_OPEN    = 0;
-   public static final int FEEDBACK_OPTION_SINGLE  = 1;
-   public static final int FEEDBACK_OPTION_NONE    = 2;
-
    public Scaffolding() {}
    
    public Scaffolding (String columnLabel, String rowLabel) {
@@ -360,7 +352,7 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    public int getReviewerGroupAccess() {
 	   return reviewerGroupAccess;
    }
-   
+
    public void setReviewerGroupAccess(int reviewerGroupAccess) {
 	   this.reviewerGroupAccess = reviewerGroupAccess;
    }
@@ -368,37 +360,35 @@ public class Scaffolding extends IdentifiableObject implements Serializable {
    public int getGeneralFeedbackOption() {
 	   return generalFeedbackOption;
    }
-   
    public void setGeneralFeedbackOption(int feedbackOption) {
 	   this.generalFeedbackOption = feedbackOption;
    }
 
    public boolean isGeneralFeedbackOpen() {
-	   return generalFeedbackOption == FEEDBACK_OPTION_OPEN;
+	   return generalFeedbackOption == WizardMatrixConstants.FEEDBACK_OPTION_OPEN;
    }
    public boolean isGeneralFeedbackSingle() {
-	   return generalFeedbackOption == FEEDBACK_OPTION_SINGLE;
+	   return generalFeedbackOption == WizardMatrixConstants.FEEDBACK_OPTION_SINGLE;
    }
    public boolean isGeneralFeedbackNone() {
-	   return generalFeedbackOption == FEEDBACK_OPTION_NONE;
+	   return generalFeedbackOption == WizardMatrixConstants.FEEDBACK_OPTION_NONE;
    }
    
    public int getItemFeedbackOption() {
 	   return itemFeedbackOption;
    }
-   
    public void setItemFeedbackOption(int feedbackOption) {
 	   this.itemFeedbackOption = feedbackOption;
    }
 
    public boolean isItemFeedbackOpen() {
-	   return itemFeedbackOption == FEEDBACK_OPTION_OPEN;
+	   return itemFeedbackOption == WizardMatrixConstants.FEEDBACK_OPTION_OPEN;
    }
    public boolean isItemFeedbackSingle() {
-	   return itemFeedbackOption == FEEDBACK_OPTION_SINGLE;
+	   return itemFeedbackOption == WizardMatrixConstants.FEEDBACK_OPTION_SINGLE;
    }
    public boolean isItemFeedbackNone() {
-	   return itemFeedbackOption == FEEDBACK_OPTION_NONE;
+	   return itemFeedbackOption == WizardMatrixConstants.FEEDBACK_OPTION_NONE;
    }
    
    public Set getMatrix() {

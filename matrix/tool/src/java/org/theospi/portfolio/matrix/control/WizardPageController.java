@@ -24,6 +24,7 @@ package org.theospi.portfolio.matrix.control;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -59,10 +60,13 @@ public class WizardPageController extends CellController {
 	 *      java.lang.Object, org.springframework.validation.Errors)
 	 */
 	public Map referenceData(Map request, Object command, Errors errors) {
-		ToolSession session = getSessionManager().getCurrentToolSession();
-
+		// Call superclass first -- code below depends on this
 		Map model = super.referenceData(request, command, errors);
+		
+		ToolSession session = getSessionManager().getCurrentToolSession();
 		Boolean wizardPreview = Boolean.valueOf( (String)request.get("wizardPreview") );
+		CellFormBean cell = (CellFormBean) command;
+		String pageId = cell.getCell().getWizardPage().getId().getValue();
 
 		Agent owner = (Agent) request.get(WizardPageHelper.WIZARD_OWNER);
 
@@ -71,6 +75,20 @@ public class WizardPageController extends CellController {
 
 		session.setAttribute(WizardPageHelper.WIZARD_OWNER, owner);
 
+		Wizard wizard = getWizard(pageId);
+		model.put("objectId", wizard.getId().getValue());
+		model.put("objectTitle", wizard.getName());
+		model.put("objectDesc", wizard.getDescription());
+
+		List reviews = (List)model.get("reviews");
+		Set cellForms = (Set)model.get("cellForms");
+		
+		model.put("allowItemFeedback", 
+					 getAllowItemFeedback( wizard.getItemFeedbackOption(), reviews, cellForms) );
+		model.put("allowGeneralFeedback", 
+					 getAllowGeneralFeedback( wizard.getGeneralFeedbackOption(), reviews) );
+		model.put("generalFeedbackNone", wizard.isGeneralFeedbackNone());
+		
 		model.put("readOnlyMatrix", super.isReadOnly(owner, null));
 		model.put("pageTitleKey", "view_wizardPage");
 		model.put("helperPage", "true");
@@ -95,19 +113,13 @@ public class WizardPageController extends CellController {
 	/**
 	 * {@inheritDoc}
 	 */
-	protected String[] getObjectMetadata(String pageId, Map request) {
-		String[] objectMetadata = new String[3];
-
+	protected Wizard getWizard(String pageId) {
 		WizardPage page = getMatrixManager().getWizardPage(
 				getIdManager().getId(pageId));
 		WizardPageSequence seq = wizardManager.getWizardPageSeqByDef(page
 				.getPageDefinition().getId());
 		Wizard wizard = seq.getCategory().getWizard();
-      
-		objectMetadata[METADATA_ID_INDEX] = wizard.getId().getValue();
-		objectMetadata[METADATA_TITLE_INDEX] = wizard.getName();
-		objectMetadata[METADATA_DESC_INDEX] = wizard.getDescription();
-		return objectMetadata;
+		return wizard;
 	}
 
 	/**
