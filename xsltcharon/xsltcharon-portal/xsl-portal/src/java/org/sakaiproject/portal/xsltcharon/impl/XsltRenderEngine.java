@@ -1,29 +1,31 @@
 package org.sakaiproject.portal.xsltcharon.impl;
 
-import org.sakaiproject.portal.api.PortalRenderEngine;
-import org.sakaiproject.portal.api.PortalRenderContext;
-import org.sakaiproject.portal.api.PortalService;
-import org.sakaiproject.portal.api.Portal;
-import org.sakaiproject.tool.api.Placement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.web.context.ServletContextAware;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.portal.api.Portal;
+import org.sakaiproject.portal.api.PortalRenderContext;
+import org.sakaiproject.portal.api.PortalRenderEngine;
+import org.sakaiproject.portal.api.PortalService;
+import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.webapp.api.WebappResourceManager;
 import org.w3c.dom.Document;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.ServletContext;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.*;
-import java.io.Writer;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Map;
-import java.util.Iterator;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -32,7 +34,7 @@ import java.util.Hashtable;
  * Time: 12:06:22 PM
  * To change this template use File | Settings | File Templates.
  */
-public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware {
+public class XsltRenderEngine implements PortalRenderEngine {
 
    private static final String XSLT_CONTEXT = "xsltCharon";
 
@@ -42,20 +44,22 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
    private PortalService portalService;
    private String defaultTransformerPath;
 
-   private ServletContext servletContext;
-
    private Templates defaultTemplates;
+   private URIResolver libraryServletResolver;
    private URIResolver servletResolver;
 
    private Map<String, Templates> templates = new Hashtable<String, Templates>();
    private Map<String, String> transformerPaths;
+   private WebappResourceManager libraryWebappResourceManager;
+   private WebappResourceManager portalWebappResourceManager;
+   private boolean cacheTemplates = true;
+   private static final String XSLT_PORTAL_CACHE_TEMPLATES = "xslt-portal.cacheTemplates";
 
-   public XsltRenderEngine() {
+    public XsltRenderEngine() {
    }
 
-   public XsltRenderEngine(PortalService portalService, ServletContext servletContext) {
+   public XsltRenderEngine(PortalService portalService) {
       this.portalService = portalService;
-      this.servletContext = servletContext;
    }
 
    /**
@@ -67,6 +71,14 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
    }
 
    public void springInit() {
+      if (ServerConfigurationService.getString(XSLT_PORTAL_CACHE_TEMPLATES) != null){
+          try {
+              cacheTemplates = Boolean.parseBoolean(ServerConfigurationService.getString(XSLT_PORTAL_CACHE_TEMPLATES, "true"));
+          } catch (Exception e) {
+              log.error("can't parse " + XSLT_PORTAL_CACHE_TEMPLATES + " into a boolean", e);
+          }
+      }
+
       getPortalService().addRenderEngine(XSLT_CONTEXT, this);
       try {
          setDefaultTemplates(createTemplate());
@@ -75,12 +87,15 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
          log.error("unable to init portal transformation", e);
       } catch (TransformerConfigurationException e) {
          log.error("unable to init portal transformation", e);
+      } catch (IOException e) {
+         log.error("unable to init portal transformation", e);
       }
 
-      setServletResolver(new ServletResourceUriResolver(getServletContext()));
+      setServletResolver(new ServletResourceUriResolver(getPortalWebappResourceManager()));
+      //setLibraryServletResolver(new ServletResourceUriResolver(getLibraryWebappResourceManager()));
    }
 
-   protected void setupTemplates() throws MalformedURLException, TransformerConfigurationException {
+   protected void setupTemplates() throws IOException, TransformerConfigurationException {
       for (Iterator<Map.Entry<String, String>> i=getTransformerPaths().entrySet().iterator();
            i.hasNext();) {
          Map.Entry<String, String> entry = i.next();
@@ -120,18 +135,18 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
 
       if (template.equals("site")) {
          Document doc = xrc.produceDocument();
-         writeDocument(doc, out, xrc.getAlternateTemplate());
+         writeDocument(doc, out, xrc);
       }
       else {
          xrc.getBaseContext().getRenderEngine().render(template, xrc.getBaseContext(), out);
       }
    }
 
-   protected void writeDocument(Document doc, Writer out, String altTemplate) {
+   protected void writeDocument(Document doc, Writer out, XsltRenderContext xrc) {
       try {
          StreamResult outputTarget = new StreamResult(out);
 
-         Transformer transformer = getTransformer(altTemplate);
+         Transformer transformer = getTransformer(xrc);
          transformer.transform(new DOMSource(doc), outputTarget);
       }
       catch (TransformerException e) {
@@ -140,25 +155,76 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
 
    }
 
-   public Transformer getTransformer(String altTemplate) {
+   public Transformer getTransformer(XsltRenderContext xrc) {
       try {
          Templates templates = null;
+         boolean skin = false;
          
-         if (altTemplate != null) {
-            templates = getTemplates().get(altTemplate);
+         if (xrc.getAlternateTemplate() != null) {
+            templates = getTemplates().get(xrc.getAlternateTemplate());
          }
          
          // test seperately in case the param wasnt' correct
          if (templates == null) {
+            templates = getSkinTemplates(xrc);
+            skin = true;
+         }
+
+         if (templates == null) {
             templates = getDefaultTemplates();
+            skin = false;
          }
          
          Transformer trans = templates.newTransformer();
-         trans.setURIResolver(getServletResolver());
+         trans.setURIResolver(getServletResolver(skin));
          return trans;
       }
       catch (TransformerConfigurationException e) {
          throw new RuntimeException(e);
+      } catch (IOException e) {
+         throw new RuntimeException(e);
+      }
+   }
+
+   protected Templates getSkinTemplates(XsltRenderContext xrc) throws IOException, TransformerConfigurationException {
+      String skin = (String) xrc.get("pageSkin");
+      Templates returned = null;
+      
+      if (cacheTemplates) {
+         returned = getTemplates().get("skin." + skin);
+         if (returned != null) {
+            return returned;
+         }
+      }
+      
+      InputStream skinStream = getLibraryWebappResourceManager().getResourceAsStream(
+         "/skin/" + skin + "/portal.xslt");
+      
+      if (skinStream == null) {
+         // check the default one
+			String defaultSkin = ServerConfigurationService.getString("skin.default");
+         skinStream = getLibraryWebappResourceManager().getResourceAsStream(
+            "/skin/" + defaultSkin + "/portal.xslt");
+         if (skinStream == null) {
+            return null;
+         }
+      }
+      
+      returned = createTemplate(skinStream);
+      
+      if (cacheTemplates) {
+         getTemplates().put("skin." + skin, returned);
+      }
+      
+      return returned;
+   }
+
+   protected URIResolver getServletResolver(boolean skin) {
+      if (skin) {
+         return getLibraryServletResolver();
+      }
+      else {
+         return getServletResolver();
       }
    }
 
@@ -199,28 +265,31 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
       this.portalService = portalService;
    }
 
-   public ServletContext getServletContext() {
-      return servletContext;
-   }
-
-   public void setServletContext(ServletContext servletContext) {
-      this.servletContext = servletContext;
-   }
-
    protected Templates createTemplate()
-      throws MalformedURLException, TransformerConfigurationException {
+      throws IOException, TransformerConfigurationException {
       String transformerPath = getDefaultTransformerPath();
       return createTemplate(transformerPath);
    }
 
-   protected Templates createTemplate(String transformerPath) throws MalformedURLException, TransformerConfigurationException {
-      InputStream stream = getServletContext().getResourceAsStream(
-            transformerPath);
-      URL url = getServletContext().getResource(transformerPath);
+   protected Templates createTemplate(String transformerPath) throws IOException, TransformerConfigurationException {
+      return createTemplate(getPortalWebappResourceManager().getResourceAsStream(transformerPath));
+   }
+   
+   protected Templates createTemplate(URL url)
+      throws IOException, TransformerConfigurationException {
+      
+      InputStream stream = url.openStream();
       String urlPath = url.toString();
       String systemId = urlPath.substring(0, urlPath.lastIndexOf('/') + 1);
       Templates templates = TransformerFactory.newInstance().newTemplates(
                      new StreamSource(stream, systemId));
+      return templates;
+   }
+
+   protected Templates createTemplate(InputStream stream)
+      throws IOException, TransformerConfigurationException {
+      Templates templates = TransformerFactory.newInstance().newTemplates(
+                     new StreamSource(stream));
       return templates;
    }
 
@@ -246,5 +315,44 @@ public class XsltRenderEngine implements PortalRenderEngine, ServletContextAware
 
    public void setTransformerPaths(Map<String, String> transformerPaths) {
       this.transformerPaths = transformerPaths;
+   }
+
+   public WebappResourceManager getLibraryWebappResourceManager() {
+      if (libraryWebappResourceManager == null) {
+         libraryWebappResourceManager = 
+            (WebappResourceManager) ComponentManager.get("org.sakaiproject.webapp.api.WebappResourceManager.library");
+      }
+      return libraryWebappResourceManager;
+   }
+
+   public void setLibraryWebappResourceManager(WebappResourceManager libraryWebappResourceManager) {
+      this.libraryWebappResourceManager = libraryWebappResourceManager;
+   }
+
+   public WebappResourceManager getPortalWebappResourceManager() {
+      return portalWebappResourceManager;
+   }
+
+   public void setPortalWebappResourceManager(WebappResourceManager portalWebappResourceManager) {
+      this.portalWebappResourceManager = portalWebappResourceManager;
+   }
+
+   public boolean isCacheTemplates() {
+      return cacheTemplates;
+   }
+
+   public void setCacheTemplates(boolean cacheTemplates) {
+      this.cacheTemplates = cacheTemplates;
+   }
+
+   public URIResolver getLibraryServletResolver() {
+      if (libraryServletResolver == null) {
+         libraryServletResolver = new ServletResourceUriResolver(getLibraryWebappResourceManager());
+      }
+      return libraryServletResolver;
+   }
+
+   public void setLibraryServletResolver(URIResolver libraryServletResolver) {
+      this.libraryServletResolver = libraryServletResolver;
    }
 }
