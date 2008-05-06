@@ -18,8 +18,27 @@
 	
 	function noAccess(cellName){
 		
-		document.getElementById('noAccessSpan').style.display = "";
-		document.getElementById('noAccessText').value = cellName;	
+		document.getElementById('accessTable').style.display = "";
+		deleteColumn('accessTable');
+		addColumn('accessTable', cellName);
+	}
+	
+	function addColumn(tblId, cellName)
+	{
+		var tblBodyObj = document.getElementById(tblId).tBodies[0];
+		for (var i=0; i<tblBodyObj.rows.length; i++) {
+			var newCell = tblBodyObj.rows[i].insertCell(-1);
+			newCell.innerHTML = cellName
+		}
+	}
+	function deleteColumn(tblId)
+	{
+		var allRows = document.getElementById(tblId).rows;
+		for (var i=0; i<allRows.length; i++) {
+			if (allRows[i].cells.length > 1) {
+				allRows[i].deleteCell(-1);
+			}
+		}
 	}
 
 
@@ -130,12 +149,17 @@
 	</p>
 	<c:set var="columnHeading" value="${matrixContents.columnLabels}" />
 	
-	<span id="noAccessSpan" class="alertMessageInline" style="border:none; display:none;">
-		<fmt:message key="no_view_access"/>&nbsp;&nbsp;
-		<input type="text" name="noAccessText" id="noAccessText" value="" style="border:none;" size="60%" readonly/>
-		<br>
-	</span>
-	
+		<!-- This is used to alert the user if they do not have access to the cell they clicked on -->
+
+		<table id="accessTable" border="0" width="100%" style="display:none">
+			<tr class="alertMessage">
+				<td>
+					<fmt:message key="no_view_access"/>&nbsp;&nbsp;
+				</td>
+				<td></td>
+			</tr>
+		</table>
+
         <table cellspacing="0" width="100%" summary="<fmt:message key="table_summary_matrixScaffolding"/>">
             <tr>
                 <th class="matrix-row-heading" width="10%" scope="col">
