@@ -17,22 +17,29 @@
     <input type="hidden" name="displayText" value="" />
     <input type="hidden" name="validate" value="false" />
 	<c:if test="${empty scaffolding.title}">
-	<h3><fmt:message key="title_scaffoldingAdd"/></h3>
+		<h3><fmt:message key="title_scaffoldingAdd"/></h3>
+		<div class="instruction">
+		  <fmt:message key="instructions_scaffoldingAdd"/>
+		</div>
 	</c:if>
 	<c:if test="${not empty scaffolding.title}">
-	<h3><fmt:message key="title_scaffoldingReviseProp"/></h3>
+		<h3><fmt:message key="title_scaffoldingReviseProp"/></h3>
+		<div class="instruction">
+		  <fmt:message key="instructions_scaffoldingEdit"/>
+		</div>
 	</c:if>
-	<div class="instruction">
-	  <fmt:message key="instructions_scaffolding"/>
-	  <fmt:message key="instructions_requiredFields"/>
-	</div>
+	
 	
 	<c:if test="${scaffolding.published}">
 	<c:if test="${isMatrixUsed}" >
-	  <fmt:message key="instructions_hasBeenUsed"/>
+		<span  class="instruction">
+	  		<fmt:message key="instructions_hasBeenUsed"/>
+	  	</span>
 	</c:if>
 	<c:if test="${!isMatrixUsed}" >
-	  <fmt:message key="instructions_hasBeenPublished"/>
+		<span  class="instruction">
+	  		<fmt:message key="instructions_hasBeenPublished"/>
+	  	</span>
 	</c:if>
 	  <c:set var="disabledText" value="disabled=\"disabled\""/>
 	</c:if>
@@ -205,8 +212,8 @@
 					<thead>
 						<tr>
 							<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
-							<th scope="col" style="text-align:right">
-								
+							<th scope="col">
+								<fmt:message key="actions"/>
 							</th>
 						</tr>
 					</thead>
@@ -320,8 +327,8 @@
 					<thead>
 						<tr>
 							<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
-							<th style="text-align:right">
-								
+							<th>
+								<fmt:message key="actions"/>
 							</th>
 						</tr>
 					</thead>
@@ -591,7 +598,7 @@
 		</c:if>
 		<p class="indnt1">
 			<spring:bind path="scaffolding.allowRequestFeedback">  	
-				<span class="instruction indnt1">		
+				<span>		
 					<input type="checkbox" name="allowRequestFeedback" value="true"  id="allowRequestFeedback" 
 						<c:if test="${status.value}">
 							checked
@@ -696,7 +703,13 @@
 			value="<osp:message key="button_save"  />"
 		</c:if>
 		onclick="javascript:document.forms[0].validate.value='true';"/>
-		<input type="submit" name="cancelAction" value="<osp:message key="button_cancel"/>" accesskey="x"/>
+		<c:if test="${empty scaffolding.title}">
+		 	<input type="submit" name="cancelAction" value="<osp:message key="button_cancel"/>" accesskey="x"/>
+		</c:if>
+		<c:if test="${not empty scaffolding.title}">
+			<input type="submit" name="cancelActionExisting" value="<osp:message key="button_cancel"/>" accesskey="x"/>
+		</c:if>
+		
 	</div>
 
 	<osp:richTextWrapper textAreaId="descriptionTextArea" />

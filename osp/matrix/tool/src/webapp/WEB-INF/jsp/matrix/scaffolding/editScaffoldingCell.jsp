@@ -269,8 +269,8 @@ function mySetMainFrameHeight(id)
 		<c:if test ="${not empty scaffoldingCell.guidance.instruction.limitedText || not empty scaffoldingCell.guidance.instruction.attachments}">
 			<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" style="width:70%" summary="<osp:message key="guidance_table_summary"/>">
 				<tr>
-					<th><h5><osp:message key="instructions"/></h5></th>                     
-					<th style="text-align:right"  class="specialLink itemAction">
+					<th style="border-right-style:none"><h5><osp:message key="instructions"/></h5></th>                     
+					<th style="text-align:right;border-left-style:none;"  class="specialLink itemAction">
 						<a href="#" 
 							onclick="javascript:document.forms[0].dest.value='editInstructions';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
 							<osp:message key="reviseInstructions"/>
@@ -319,8 +319,8 @@ function mySetMainFrameHeight(id)
 		<c:if test ="${not empty scaffoldingCell.guidance.rationale.limitedText || not empty scaffoldingCell.guidance.rationale.attachments}">		
 			<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" style="width:70%"  summary="<osp:message key="rationale_table_summary"/>">
 				<tr>
-					<th><h5><osp:message key="rationale"/></h5></th>
-					<th style="text-align:right" class="specialLink itemAction">
+					<th style="border-right-style:none"><h5><osp:message key="rationale"/></h5></th>
+					<th style="text-align:right;border-left-style:none;" class="specialLink itemAction">
 						<a href="#" 
 							onclick="javascript:document.forms[0].dest.value='editRationale';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
 							<osp:message key="reviseRationale"/>
@@ -370,8 +370,8 @@ function mySetMainFrameHeight(id)
 		<c:if test ="${not empty scaffoldingCell.guidance.example.limitedText || not empty scaffoldingCell.guidance.example.attachments}">	
 			<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" style="width:70%"  summary="<osp:message key="examples_table_summary"/>">
 				<tr>
-					<th><h5><osp:message key="examples"/></h5></th>
-					<th style="text-align:right" class="itemAction specialLink">
+					<th style="border-right-style:none"><h5><osp:message key="examples"/></h5></th>
+					<th style="text-align:right;border-left-style:none;" class="itemAction specialLink">
 						<a href="#"  onclick="javascript:document.forms[0].dest.value='editExamples';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
 							<osp:message key="reviseExamples"/>
 						</a>	
@@ -421,8 +421,8 @@ function mySetMainFrameHeight(id)
 		<c:if test ="${not empty scaffoldingCell.guidance.rubric.limitedText || not empty scaffoldingCell.guidance.rubric.attachments}">	
 			<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" style="width:70%"  summary="<osp:message key="rubrics_table_summary"/>">
 				<tr>
-					<th><h5><osp:message key="rubrics"/></h5></th>
-					<th style="text-align:right" class="itemAction specialLink">
+					<th style="border-right-style:none"><h5><osp:message key="rubrics"/></h5></th>
+					<th style="text-align:right;border-left-style:none;" class="itemAction specialLink">
 						<a href="#"  onclick="javascript:document.forms[0].dest.value='editRubrics';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
 							<osp:message key="reviseRubrics"/>
 						</a>	
@@ -472,8 +472,8 @@ function mySetMainFrameHeight(id)
 		<c:if test ="${not empty scaffoldingCell.guidance.expectations.limitedText || not empty scaffoldingCell.guidance.expectations.attachments}">	
 			<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" style="width:70%"  summary="<osp:message key="expectations_table_summary"/>">
 				<tr>
-					<th><h5><osp:message key="expectations"/></h5></th>
-					<th style="text-align:right" class="itemAction specialLink">
+					<th style="border-right-style:none"><h5><osp:message key="expectations"/></h5></th>
+					<th style="text-align:right;border-left-style:none;" class="itemAction specialLink">
 						<a href="#"  onclick="javascript:document.forms[0].dest.value='editExpectations';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
 							<osp:message key="reviseExpectations"/>
 						</a>	
@@ -909,7 +909,7 @@ function mySetMainFrameHeight(id)
 					<p class="indnt1">
 						<input type="checkbox" name="diabledCheckbox" value="true"  id="disabledCheckbox" 
 							<c:if test="${scaffoldingCell.scaffolding.allowRequestFeedback}">checked</c:if> onclick="defaultFormClicked(this.checked, 'defaultReviewersSpan', 'cellReviewersSpan');" disabled/>
-						<label for="diabledCheckbox" ><fmt:message key="defaultReviewersText"/></label> 
+						<label for="diabledCheckbox" ><fmt:message key="allowRequestFeedback"/></label> 
 					</p>
 	
 	

@@ -126,6 +126,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
       if (action == null) action = (String) request.get("submitAction");
       String generateAction = (String)request.get("generateAction");
       String cancelAction = (String)request.get("cancelAction");
+      String cancelActionExisting = (String)request.get("cancelActionExisting");
       String addFormAction = (String) request.get("addForm");
       
       Map model = new HashMap();
@@ -168,6 +169,10 @@ public class AddScaffoldingController extends BaseScaffoldingController
       }
       if (cancelAction != null) {
     	  return new ModelAndView("return");
+      }
+      if(cancelActionExisting != null){
+    	  //return to edit scaffolding page instead of list scaffolding page
+    	  return new ModelAndView("view", "scaffolding_id", scaffolding.getId());
       }
 
       if (action != null) {
