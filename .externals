@@ -26,7 +26,7 @@ master				-r43028 https://source.sakaiproject.org/svn/master/branches/sakai_2-5-
 memory				-r43028 https://source.sakaiproject.org/svn/memory/branches/sakai_2-5-x
 message				-r43028 https://source.sakaiproject.org/svn/message/branches/sakai_2-5-x
 metaobj				-r43028 https://source.sakaiproject.org/svn/metaobj/branches/sakai_2-5-x
-osp				-r45171 https://source.sakaiproject.org/svn/osp/branches/oncourse_osp_enhancements/osp
+osp				-r46244 https://source.sakaiproject.org/svn/osp/branches/oncourse_osp_enhancements/osp
 portal				-r43028 https://source.sakaiproject.org/svn/portal/branches/sakai_2-5-x
 presence			-r43028 https://source.sakaiproject.org/svn/presence/branches/sakai_2-5-x
 privacy				-r43028 https://source.sakaiproject.org/svn/privacy/branches/sakai_2-5-x
@@ -36,7 +36,7 @@ sakai-mock      		-r43028 https://source.sakaiproject.org/svn/sakai-mock/branche
 search				-r43028 https://source.sakaiproject.org/svn/search/branches/sakai_2-5-x
 sections			-r43028 https://source.sakaiproject.org/svn/sections/branches/sakai_2-5-x
 site				-r43028 https://source.sakaiproject.org/svn/site/branches/sakai_2-5-x
-site-association		-r47673 https://source.sakaiproject.org/contrib/iu/site-association/trunk
+site-association		-r48720 https://source.sakaiproject.org/contrib/iu/site-association/trunk
 site-manage			-r43028 https://source.sakaiproject.org/svn/site-manage/branches/sakai_2-5-x	
 syllabus			-r43028 https://source.sakaiproject.org/svn/syllabus/branches/sakai_2-5-x
 taggable			-r47714 https://source.sakaiproject.org/contrib/syracuse/taggable/branches/oncourse_osp_enhancements
