@@ -105,6 +105,11 @@ public class EditScaffoldingCellController extends
 		Map model = new HashMap();
 
 		WizardPageDefinition def = sCell.getWizardPageDefinition();
+		// make sure security advisor is set for guidance attachments
+		if ( def.getGuidance() != null )
+			getGuidanceManager().assureAccess( def.getGuidance() );
+			
+		// taggable support
 		if (def.getId() != null) {
 			TaggableActivity activity = wizardActivityProducer.getActivity(def);
 			if (getTaggingManager().isTaggable()) {

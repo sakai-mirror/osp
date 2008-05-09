@@ -108,7 +108,11 @@ public class GuidanceTool extends HelperToolBase {
       else if (session.getAttribute(GuidanceManager.CURRENT_GUIDANCE) != null) {
          current = new DecoratedGuidance(this,
                (Guidance)session.getAttribute(GuidanceManager.CURRENT_GUIDANCE));
+         guidanceManager.assureAccess(current.getBase());
          session.removeAttribute(GuidanceManager.CURRENT_GUIDANCE);
+      }
+      else if (current != null) {
+         guidanceManager.assureAccess(current.getBase());
       }
 
       return current;
