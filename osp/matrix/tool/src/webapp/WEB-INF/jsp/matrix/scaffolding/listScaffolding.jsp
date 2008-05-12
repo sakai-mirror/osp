@@ -4,6 +4,10 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
+<c:set var="date_format">
+	<osp:message key="dateFormat_list" />
+</c:set>
+
 <c:if test="${!myworkspace}">
   <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" useSite="true"/>
   <osp-c:authZMap prefix="osp.matrix." var="matrixCan" useSite="true"/>
@@ -94,15 +98,158 @@
 	<osp:listScroll listUrl="${listUrl}" className="listNav" />
 </div>
 <c:if test="${!(empty scaffolding)}">
+	<c:set var="studentView" value="${!can.publish && !can.edit && !can.delete && !can.export}" />
 	<table class="listHier lines nolines" cellspacing="0"  border="0" summary="<fmt:message key="list_matrix_summary"/>">
 	   <thead>
 		  <tr>
-			 <th scope="col"><fmt:message key="table_header_name"/></th>
-			 <th scope="col"></th>
-			 	<th scope="col"><fmt:message key="table_header_owner"/></th>
-				<th scope="col"><fmt:message key="table_header_published"/></th>
+			 <th scope="col">
+				<c:if test="${sortBy == 'title' && sortAscending == true }">
+		 			<a href="<osp:url value="listScaffolding.osp">
+	               			<osp:param name="sort" value="title"/>
+	               			<osp:param name="ascending" value="false"/>
+	               			</osp:url>">
+	               		<fmt:message key="table_header_name"/>
+	               	</a>
+	               	<img src="img/sortascending.gif"/>
+				</c:if>
+		 		<c:if test="${sortBy == 'title' && sortAscending == false }">
+		 			<a href="<osp:url value="listScaffolding.osp">
+	               		<osp:param name="sort" value="title"/>
+	               		<osp:param name="ascending" value="true"/>
+	               		</osp:url>">
+	               		<fmt:message key="table_header_name"/>	             
+	               	</a>
+	               	<img src="img/sortdescending.gif"/>
+		 		</c:if>
+		 		<c:if test="${sortBy != 'title'}">
+		 			<a href="<osp:url value="listScaffolding.osp">
+	               			<osp:param name="sort" value="title"/>
+	               			<osp:param name="ascending" value="true"/>
+	               			</osp:url>">
+	               		<fmt:message key="table_header_name"/>
+	               	</a>
+		 		</c:if>
+			 </th>
+			 <c:if test="${!studentView}">
+			 	<th scope="col"></th>
+			 </c:if>
+			 <c:if test="${!studentView}">
+			 	<th scope="col">
+			 		<c:if test="${sortBy == 'owner' && sortAscending == true }">
+				 		<a href="<osp:url value="listScaffolding.osp">
+	               			<osp:param name="sort" value="owner"/>             		
+	               			<osp:param name="ascending" value="false"/>
+	               			</osp:url>">
+	               			<fmt:message key="table_header_owner"/>            		              			
+	               		</a>
+	               		<img src="img/sortascending.gif"/>
+					</c:if>
+			 		<c:if test="${sortBy == 'owner' && sortAscending == false }">
+			 			<a href="<osp:url value="listScaffolding.osp">
+		               		<osp:param name="sort" value="owner"/>
+		               		<osp:param name="ascending" value="true"/>
+		               		</osp:url>">
+		               		<fmt:message key="table_header_owner"/>	               		
+		               	</a>
+		               	<img src="img/sortdescending.gif"/>
+			 		</c:if> 
+			 		<c:if test="${sortBy != 'owner'}">
+			 			<a href="<osp:url value="listScaffolding.osp">
+	               			<osp:param name="sort" value="owner"/>             		
+	               			<osp:param name="ascending" value="true"/>
+	               			</osp:url>">
+	               			<fmt:message key="table_header_owner"/>
+	               		</a>
+			 		</c:if>	
+			 	</th>
+			 </c:if>
+			 <c:if test="${!studentView}">
+				<th scope="col">
+					<c:if test="${sortBy == 'published' && sortAscending == true }">
+				 		<a href="<osp:url value="listScaffolding.osp">
+	               			<osp:param name="sort" value="published"/>             		
+	               			<osp:param name="ascending" value="false"/>
+	               			</osp:url>">
+	               			<fmt:message key="table_header_published"/>          		              			
+	               		</a>
+	               		<img src="img/sortascending.gif"/>
+					</c:if>
+			 		<c:if test="${sortBy == 'published' && sortAscending == false }">
+			 			<a href="<osp:url value="listScaffolding.osp">
+		               		<osp:param name="sort" value="published"/>
+		               		<osp:param name="ascending" value="true"/>
+		               		</osp:url>">
+		               		<fmt:message key="table_header_published"/>               		
+		               	</a>
+		               	<img src="img/sortdescending.gif"/>
+			 		</c:if> 
+			 		<c:if test="${sortBy != 'published'}">
+			 			<a href="<osp:url value="listScaffolding.osp">
+	               			<osp:param name="sort" value="published"/>             		
+	               			<osp:param name="ascending" value="true"/>
+	               			</osp:url>">
+	               			<fmt:message key="table_header_published"/>
+	               		</a>
+			 		</c:if>	
+				</th>
+			 </c:if>
+			 <th scope="col">
+		 		<c:if test="${sortBy == 'modified' && sortAscending == true }">
+			 		<a href="<osp:url value="listScaffolding.osp">
+               			<osp:param name="sort" value="modified"/>             		
+               			<osp:param name="ascending" value="false"/>
+               			</osp:url>">
+               			<fmt:message key="table_header_modified"/>          		              			
+               		</a>
+               		<img src="img/sortascending.gif"/>
+				</c:if>
+		 		<c:if test="${sortBy == 'modified' && sortAscending == false }">
+		 			<a href="<osp:url value="listScaffolding.osp">
+	               		<osp:param name="sort" value="modified"/>
+	               		<osp:param name="ascending" value="true"/>
+	               		</osp:url>">
+	               		<fmt:message key="table_header_modified"/>              		
+	               	</a>
+	               	<img src="img/sortdescending.gif"/>
+		 		</c:if> 
+		 		<c:if test="${sortBy != 'modified'}">
+		 			<a href="<osp:url value="listScaffolding.osp">
+               			<osp:param name="sort" value="modified"/>             		
+               			<osp:param name="ascending" value="true"/>
+               			</osp:url>">
+               			<fmt:message key="table_header_modified"/>
+               		</a>
+		 		</c:if>			 
+			 </th>
 			 <c:if test="${myworkspace}">
-			   <th scope="col"><fmt:message key="table_header_worksite"/></th>
+			 	<th scope="col">
+				 	<c:if test="${sortBy == 'worksite' && sortAscending == true }">
+				 		<a href="<osp:url value="listScaffolding.osp">
+	               			<osp:param name="sort" value="worksite"/>             		
+	               			<osp:param name="ascending" value="false"/>
+	               			</osp:url>">
+	               			<fmt:message key="table_header_worksite"/>       		              			
+	               		</a>
+	               		<img src="img/sortascending.gif"/>
+					</c:if>
+			 		<c:if test="${sortBy == 'worksite' && sortAscending == false }">
+			 			<a href="<osp:url value="listScaffolding.osp">
+		               		<osp:param name="sort" value="worksite"/>
+		               		<osp:param name="ascending" value="true"/>
+		               		</osp:url>">
+		               		<fmt:message key="table_header_worksite"/>              		
+		               	</a>
+		               	<img src="img/sortdescending.gif"/>
+			 		</c:if> 
+			 		<c:if test="${sortBy != 'worksite'}">
+			 			<a href="<osp:url value="listScaffolding.osp">
+	               			<osp:param name="sort" value="worksite"/>             		
+	               			<osp:param name="ascending" value="true"/>
+	               			</osp:url>">
+	               			<fmt:message key="table_header_worksite"/>
+	               		</a>
+			 		</c:if>	
+			   </th>
 			</c:if>
 		  </tr>
 	   </thead>
@@ -137,6 +284,7 @@
 					</c:if>
 				</h4>
 				</td>
+				<c:if test="${!studentView}">
 				<td>
 					<c:set var="hasFirstAction" value="false" />
 					<div class="itemAction">
@@ -170,7 +318,7 @@
 							 <a href="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=matrixManager&scaffoldingId=<c:out value="${scaffold.id.value}"/>/<c:out value="${scaffold.title}" />.zip" title="<fmt:message key="table_action_export"/> <c:out value="${scaffold.title}" />"><fmt:message key="table_action_export"/></a>
 						</c:if>
 						<%--  Hiding this functionality as it hasn't gotten much testing
-								<c:if test="${isMaintainer && empty scaffold.exposedPageId}">
+				d				<c:if test="${isMaintainer && empty scaffold.exposedPageId}">
 									<c:if test="${hasFirstAction}" > | </c:if>
 									<c:set var="hasFirstAction" value="true" />
 									<a href="<osp:url value="exposedScaffolding.osp"/>&expose=true&scaffolding_id=<c:out value="${scaffold.id.value}"/>">
@@ -188,9 +336,13 @@
 						   --%>     
 					 </div>
 				 </td>
+				 </c:if>
+				 <c:if test="${!studentView}">
 				 <td>
 						<c:out value="${scaffold.owner.displayName}" />
 				</td>
+				</c:if>
+				<c:if test="${!studentView}">
 				  <td>
 					 <c:if test="${scaffold.published}">
 						<fmt:message key="scaffolding_published_true"/>
@@ -201,6 +353,12 @@
 					 <c:if test="${!scaffold.published && !scaffold.preview}">
 						<fmt:message key="scaffolding_published_false"/>
 					 </c:if>
+				 </td>
+				 </c:if>
+				 <td>
+				 	<fmt:formatDate
+						value="${scaffold.modifiedDate}"
+						pattern="${date_format}" />
 				 </td>
 				<c:if test="${myworkspace}">
 				 <td>

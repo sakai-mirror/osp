@@ -38,9 +38,15 @@
 	<div class="viewNav">
 		<c:if test="${can.create}">
 			<h3><fmt:message key="title_styleManager"/></h3>
+			<div class="instruction">
+				<fmt:message key="info_styleManager"/>
+			</div>
 		</c:if>	
 		<c:if test="${!(can.create)}">
 			<h3><fmt:message key="title_styleUser"/></h3>
+			<div class="instruction">
+				<fmt:message key="info_styleUser"/>
+			</div>
 		</c:if>
 	</div>
 	<osp:url var="listUrl" value="listStyle.osp"/>
@@ -51,23 +57,16 @@
    <div class="validation"><fmt:message key="${styleError}"/></div>
 </c:if>
 
-<c:if test="${ empty styles}">
-	<p class="instruction">
-	<fmt:message key="table_no_items_message"/>
-	<c:if test="${can.create}">
-			<fmt:message key="table_no_items_message_add"/>
-		</c:if>
-	</p>
-</c:if>
 
 
-<c:if test="${not empty styles}">
+
+
 	<table class="listHier lines nolines " cellspacing="0"  summary="<fmt:message key="table_summary"/>">
 	   <thead>
 		  <tr>
 			 <th scope="col" class="attach"></th>
 			 <th scope="col"><fmt:message key="table_header_name"/></th>
-			 <th scope="col"></th>
+			 <th scope="col"><fmt:message key="actions"/></th>
 			 <th scope="col"><fmt:message key="table_header_owner"/></th>
 			<th scope="col"><fmt:message key="table_header_published"/></th>
 		  </tr>
@@ -140,7 +139,16 @@
 	  
 		</tbody>
 	  </table>
-	</c:if>  
+	  
+	  <c:if test="${ empty styles}">
+			<p class="instruction indnt1">
+			<fmt:message key="table_no_items_message"/>
+			<c:if test="${can.create}">
+					<fmt:message key="table_no_items_message_add"/>
+				</c:if>
+			</p>
+		</c:if>
+ 
    <div class="act">
       <c:if test="${selectableStyle == 'true'}">
          <input type="button" name="goBack" class="active" value="<fmt:message key="button_goback"/>"

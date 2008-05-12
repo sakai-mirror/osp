@@ -1,16 +1,93 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
-
 <fmt:setLocale value="${locale}" />
 <fmt:setBundle basename="org.theospi.portfolio.matrix.bundle.Messages" />
+<%
+  	String thisId = request.getParameter("panel");
+  	if (thisId == null) 
+  	{
+    	thisId = "Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId();
+ 		 }
+%>
+<script type="text/javascript">
+	function resize(){
+		mySetMainFrameHeight('<%= org.sakaiproject.util.Web.escapeJavascript(thisId)%>');
+	}
+	
+	
+function mySetMainFrameHeight(id)
+{
+	// run the script only if this window's name matches the id parameter
+	// this tells us that the iframe in parent by the name of 'id' is the one who spawned us
+	if (typeof window.name != "undefined" && id != window.name) return;
+
+	var frame = parent.document.getElementById(id);
+	if (frame)
+	{
+
+		var objToResize = (frame.style) ? frame.style : frame;
+  
+    // SAK-11014 revert           if ( false ) {
+
+		var height; 		
+		var offsetH = document.body.offsetHeight;
+		var innerDocScrollH = null;
+
+		if (typeof(frame.contentDocument) != 'undefined' || typeof(frame.contentWindow) != 'undefined')
+		{
+			// very special way to get the height from IE on Windows!
+			// note that the above special way of testing for undefined variables is necessary for older browsers
+			// (IE 5.5 Mac) to not choke on the undefined variables.
+ 			var innerDoc = (frame.contentDocument) ? frame.contentDocument : frame.contentWindow.document;
+			innerDocScrollH = (innerDoc != null) ? innerDoc.body.scrollHeight : null;
+		}
+	
+		if (document.all && innerDocScrollH != null)
+		{
+			// IE on Windows only
+			height = innerDocScrollH;
+		}
+		else
+		{
+			// every other browser!
+			height = offsetH;
+		}
+   // SAK-11014 revert		} 
+
+   // SAK-11014 revert             var height = getFrameHeight(frame);
+
+		// here we fudge to get a little bigger
+		var newHeight = height + 40;
+
+		// but not too big!
+		if (newHeight > 32760) newHeight = 32760;
+
+		// capture my current scroll position
+		var scroll = findScroll();
+
+		// resize parent frame (this resets the scroll as well)
+		objToResize.height=newHeight + "px";
+
+		// reset the scroll, unless it was y=0)
+		if (scroll[1] > 0)
+		{
+			var position = findPosition(frame);
+			parent.window.scrollTo(position[0]+scroll[0], position[1]+scroll[1]);
+		}
+	}
+}
+</script> 
+			
+			
+
 
 <c:set var="date_format">
 	<osp:message key="dateFormat_full" />
 </c:set>
 
-<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/thickbox.js"></script>
-<link href="/osp-common-tool/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
+
+
 
 <script type="text/javascript"
 	src="/osp-jsf-resource/xheader/xheader.js"></script>
@@ -105,11 +182,7 @@
 	<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
 	<br>	
 	<br>
-	<a name="viewCellInformation" id="viewCellInformation" class="thickbox" title="<osp:message key="supporting_info" />"
-		href="<osp:url value="viewCellInformation.osp">
-				<osp:param name="sCell_id" value="${cell.scaffoldingCell.id}" />
-			   </osp:url>">
-			   <osp:message key="matrix_viewing_title_view" />&nbsp;<osp:message key="supporting_info" /></a>
+	
 		
 		
 </osp-h:glossary> <c:if test="${(cell.status != 'READY' && cell.status != 'RETURNED')}">
@@ -119,6 +192,223 @@
 		</fmt:param>
 	</fmt:message></div>
 </c:if> 
+
+	<c:if test="${not empty cell.scaffoldingCell.guidance}">
+	<div>
+		<a name="viewCellInformation" id="viewCellInformation_show" title="<osp:message key="supporting_info" />" class="show" 
+				href="#" onclick="$(this).next('.hide').toggle();$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$(this).toggle();">
+				<osp:message key="matrix_viewing_title_view" />&nbsp;<osp:message key="supporting_info" /></a>
+	
+
+		<a name="hideGuidanceInformation" id="hideGuidanceInformation_hide" title="<osp:message key="supporting_info" />" class="hide" style="display:none"
+				href="#" onclick="$(this).prev('.show').toggle(); $('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$(this).toggle();">
+			   <osp:message key="matrix_viewing_title_hide" />&nbsp;<osp:message key="supporting_info" /></a>
+		
+		<div class="toggle" style="display:none">
+		<c:set value="false" var="oneDisplayed" />
+		<c:set value="0" var="i" />
+	
+		<!-- ** instruction ** -->
+	
+		<c:forEach var="guidanceItem"
+			items="${cell.scaffoldingCell.guidance.items}">
+			<c:if
+				test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
+				<c:if test="${guidanceItem.type == 'instruction'}">
+					<h3>
+				<!--		<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
+						id="expandImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
+						<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
+						src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
+						id="collapseImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if> />	-->
+						<osp:message key="instructions" /></h3>
+					<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+					<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
+						test="${not empty guidanceItem.attachments}">
+						<ul class="attachList indnt1">
+							<c:forEach var="guidanceItemAtt"
+								items="${guidanceItem.attachments}">
+								<li><img border="0" title="<c:out value="${hover}" />"
+									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
+									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
+								<a
+									href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
+									target="_blank"> <c:out
+									value="${guidanceItemAtt.displayName}" /> </a></li>
+							</c:forEach>
+						</ul>
+					</c:if></div>
+				</c:if>
+			</c:if>
+		</c:forEach>
+	
+		<c:set value="1" var="i" />
+	
+		<!-- ** rationale ** -->
+	
+		<c:forEach var="guidanceItem"
+			items="${cell.scaffoldingCell.guidance.items}">
+			<c:if
+				test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
+				<c:if test="${guidanceItem.type == 'rationale'}">
+					<h3>
+		<!--						<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
+						id="expandImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
+						<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
+						src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
+						id="collapseImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if> />  -->
+						<osp:message key="rationale" /></h3>
+					<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+					<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
+						test="${not empty guidanceItem.attachments}">
+						<ul class="attachList indnt1">
+							<c:forEach var="guidanceItemAtt"
+								items="${guidanceItem.attachments}">
+								<li><img border="0" title="<c:out value="${hover}" />"
+									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
+									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
+								<a
+									href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
+									target="_blank"> <c:out
+									value="${guidanceItemAtt.displayName}" /> </a></li>
+							</c:forEach>
+						</ul>
+					</c:if></div>
+				</c:if>
+			</c:if>
+		</c:forEach>
+		<c:set value="2" var="i" />
+	
+		<!-- ** examples ** -->
+	
+		<c:forEach var="guidanceItem"
+			items="${cell.scaffoldingCell.guidance.items}">
+			<c:if
+				test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
+				<c:if test="${guidanceItem.type == 'example'}">
+					<h3>
+	<!--					<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
+						id="expandImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
+						<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
+						src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
+						id="collapseImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if> /> -->
+						<osp:message key="examples" /></h3>
+					<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+					<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
+						test="${not empty guidanceItem.attachments}">
+						<ul class="attachList indnt1">
+							<c:forEach var="guidanceItemAtt"
+								items="${guidanceItem.attachments}">
+								<li><img border="0" title="<c:out value="${hover}" />"
+									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
+									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
+								<a
+									href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
+									target="_blank"> <c:out
+									value="${guidanceItemAtt.displayName}" /> </a></li>
+							</c:forEach>
+						</ul>
+					</c:if></div>
+				</c:if>
+			</c:if>
+		</c:forEach>
+		
+		<!-- ** Rubric ** -->
+	
+		<c:forEach var="guidanceItem"
+			items="${cell.scaffoldingCell.guidance.items}">
+			<c:if
+				test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
+				<c:if test="${guidanceItem.type == 'rubric'}">
+					<h3>
+	<!--					<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
+						id="expandImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
+						<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
+						src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
+						id="collapseImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if> /> -->
+						<osp:message key="rubrics" /></h3>
+					<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+					<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
+						test="${not empty guidanceItem.attachments}">
+						<ul class="attachList indnt1">
+							<c:forEach var="guidanceItemAtt"
+								items="${guidanceItem.attachments}">
+								<li><img border="0" title="<c:out value="${hover}" />"
+									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
+									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
+								<a
+									href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
+									target="_blank"> <c:out
+									value="${guidanceItemAtt.displayName}" /> </a></li>
+							</c:forEach>
+						</ul>
+					</c:if></div>
+				</c:if>
+			</c:if>
+		</c:forEach>
+		
+		<!-- ** Expectations ** -->
+	
+		<c:forEach var="guidanceItem"
+			items="${cell.scaffoldingCell.guidance.items}">
+			<c:if
+				test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
+				<c:if test="${guidanceItem.type == 'expectations'}">
+					<h3 >
+	<!--					<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
+						id="expandImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
+						<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
+						src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
+						id="collapseImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if> /> -->
+						<osp:message key="expectations" /></h3>
+					<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+					<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
+						test="${not empty guidanceItem.attachments}">
+						<ul class="attachList indnt1">
+							<c:forEach var="guidanceItemAtt"
+								items="${guidanceItem.attachments}">
+								<li><img border="0" title="<c:out value="${hover}" />"
+									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
+									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
+								<a
+									href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
+									target="_blank"> <c:out
+									value="${guidanceItemAtt.displayName}" /> </a></li>
+							</c:forEach>
+						</ul>
+					</c:if></div>
+				</c:if>
+			</c:if>
+		</c:forEach>
+		
+		</div>
+		</div>
+	
+	</c:if> 
+
+
+
+
 
 
 
@@ -570,46 +860,8 @@
 </c:if> <!-- if status is ready --> <%-- TODO omit the following block if the items inside it are not rendered --%>
 
 
-<c:if test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
 
-	<c:if test="${canReflect == 'true'}">
-		<p class="act" style="margin:0">
-			<c:choose>
-				<c:when test="${isWizard !='true'}">
-					<input type="submit" name="submit"
-						value="<osp:message key='submit_cell_for_evaluation'/>"
-						<c:if test="${sequential == 'true' && currentStep < (totalSteps)}">
-							  onclick="document.form._next=true"
-						   </c:if>
-					/>
-				</c:when>
-				<c:otherwise>
-					<input type="submit" name="submit"
-						value="<osp:message key='submit_wpage_for_evaluation'/>"
-						<c:if test="${sequential == 'true' && currentStep < (totalSteps)}">
-							  onclick="document.form._next=true"
-						   </c:if>
-					/>
-				</c:otherwise>
-			</c:choose>	
-				   
-		<c:if test="${sequential == 'true'}">
-			<c:if test="${currentStep < (totalSteps)}">
-				<input type="hidden" name="_next" id="_next" />
-			</c:if>
-			<c:if test="${currentStep == (totalSteps)}">
-				<input type="hidden" name="_last" id="_last" value="true" />
-			</c:if>
-		</c:if>
-	</c:if>
-	<%-- TODO: this seems very confusing - being in the last step is no indication that I am done - I may want to go through again and edit unsubmitted pages.--%>
-	<c:if
-		test="${canReflect == 'true' && currentStep == (totalSteps) && sequential == 'true' && evaluationItem != ''}">
-		<input type="submit" name="submitWizard"
-			value="<osp:message key="submit_wizard_for_evaluation"/>" />
-	</c:if>
-	</p>
-</c:if> <input type="hidden" name="page_id"
+<input type="hidden" name="page_id"
 	value="<c:out value="${cell.wizardPage.id}"/>" /> <!-- ************* Reflection Area End ************* -->
 
 <!-- ************* General Review (Feedback) Area Start ************* -->
@@ -772,10 +1024,65 @@
 	   <input type="submit" name="cancel" value="<fmt:message key="button_cancel"/>"/>
 	   -->
 	</c:if>
-</c:if> <c:if test="${isEvaluation == 'true'}">
+</c:if> 
+
+
+
+<c:if test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
+
+	<c:if test="${canReflect == 'true'}">
+		<span class="act" style="margin:0">
+			<c:choose>
+				<c:when test="${isWizard !='true'}">
+					<input type="submit" name="submit" class="active"
+						value="<osp:message key='submit_cell_for_evaluation'/>"
+						<c:if test="${sequential == 'true' && currentStep < (totalSteps)}">
+							  onclick="document.form._next=true"
+						   </c:if>
+					/>
+				</c:when>
+				<c:otherwise>
+					<input type="submit" name="submit" class="active"
+						value="<osp:message key='submit_wpage_for_evaluation'/>"
+						<c:if test="${sequential == 'true' && currentStep < (totalSteps)}">
+							  onclick="document.form._next=true"
+						   </c:if>
+					/>
+				</c:otherwise>
+			</c:choose>	
+				   
+		<c:if test="${sequential == 'true'}">
+			<c:if test="${currentStep < (totalSteps)}">
+				<input type="hidden" name="_next" id="_next" />
+			</c:if>
+			<c:if test="${currentStep == (totalSteps)}">
+				<input type="hidden" name="_last" id="_last" value="true" />
+			</c:if>
+		</c:if>
+	</c:if>
+	<%-- TODO: this seems very confusing - being in the last step is no indication that I am done - I may want to go through again and edit unsubmitted pages.--%>
+	<c:if
+		test="${canReflect == 'true' && currentStep == (totalSteps) && sequential == 'true' && evaluationItem != ''}">
+		<input type="submit" name="submitWizard"
+			value="<osp:message key="submit_wizard_for_evaluation"/>" />
+	</c:if>
+	</span>
+</c:if> 
+
+
+
+<c:if test="${isMatrix == 'true' and (cell.scaffoldingCell.scaffolding.allowRequestFeedback && cell.scaffoldingCell.wizardPageDefinition.defaultReviewers ||
+										cell.scaffoldingCell.wizardPageDefinition.allowRequestFeedback && !cell.scaffoldingCell.wizardPageDefinition.defaultReviewers) &&
+											cell.wizardPage.owner.id == currentUser}">
+	<input type="submit" name="inviteFeedback" class="active"
+			value="<fmt:message key="share_collection"/>"/>
+</c:if>
+
+<c:if test="${isEvaluation == 'true'}">
 	<input type="submit" name="matrix" class="active"
 		value="<fmt:message key="button_back_to_evaluation"/>" accesskey="x" />
-</c:if> <c:if test="${sequential != 'true' && isEvaluation != 'true'}">
+</c:if> 
+<c:if test="${sequential != 'true' && isEvaluation != 'true'}">
 	<c:if test="${isWizard == 'true'}">
 		<input type="submit" name="matrix" class="active"
 			value="<fmt:message key="button_back_to_wizard"/>" accesskey="x" />
@@ -786,12 +1093,7 @@
 	</c:if>
 </c:if>
 
-	<c:if test="${isMatrix == 'true' and (cell.scaffoldingCell.scaffolding.allowRequestFeedback && cell.scaffoldingCell.wizardPageDefinition.defaultReviewers ||
-											cell.scaffoldingCell.wizardPageDefinition.allowRequestFeedback && !cell.scaffoldingCell.wizardPageDefinition.defaultReviewers) &&
-												cell.wizardPage.owner.id == currentUser}">
-		<input type="submit" name="inviteFeedback" class="active"
-				value="<fmt:message key="share_collection"/>"/>
-	</c:if>
+	
 </div>
 
 

@@ -6,8 +6,18 @@
 
 <link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css" rel="stylesheet" media="all" />
 <script type="text/javascript" src="/osp-jsf-resource/xheader/xheader.js"></script>
-
+<%
+  	String thisId = request.getParameter("panel");
+  	if (thisId == null) 
+  	{
+    	thisId = "Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId();
+ 		 }
+%>
 <script type="text/javascript">
+	function resize(){
+		mySetMainFrameHeight('<%= org.sakaiproject.util.Web.escapeJavascript(thisId)%>');
+	}
+
 
 function mySetMainFrameHeight(id)
 {
@@ -510,29 +520,14 @@ function mySetMainFrameHeight(id)
 	
 	
 	<!-- ************* Guidance and reflection Area Start ************* -->   
-	<SCRIPT type="text/javascript">
-		function defaultFormClicked(checked, trueSpan, falseSpan){
-
-		
-			if(checked){			
-				document.getElementById(trueSpan).style.display = "";
-				document.getElementById(falseSpan).style.display = "none";
-			}else{
-				document.getElementById(trueSpan).style.display = "none";
-				document.getElementById(falseSpan).style.display = "";
-			}
-			
-			mySetMainFrameHeight(self.name);
-
-		}
-			
-	</SCRIPT>
-	
 	
 	
 	<!-- *************  User Forms Area  Start ************* -->
 	<fieldset class="fieldsetVis">
 		<legend><fmt:message key="legend_additional_user_Forms"/></legend>
+		
+	<div>
+
 		
 		<h5><fmt:message key="title_additionalForms"/></h5>
 		
@@ -549,7 +544,7 @@ function mySetMainFrameHeight(id)
 					<c:if test="${customFormUsed}">
 					    <c:out value="${localDisabledText}"/> 
 					</c:if>
-					onclick="defaultFormClicked(this.checked, 'defaultCustomFormSpan', 'cellCustomFormSpan');document.forms[0].hiddenDefaultCustomForm.value=this.checked;"/>
+					onclick="$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$('div.toggle2:first', $(this).parents('div:first')).slideToggle(resize);document.forms[0].hiddenDefaultCustomForm.value=this.checked;"/>
 				<label for="defaultCustomForm" ><fmt:message key="defaultCustomFormText"/></label>    
 			</spring:bind>		
 			<!-- ************* Default Matrix Checkbox End *********** -->
@@ -559,7 +554,7 @@ function mySetMainFrameHeight(id)
 			<!-- Start of Defualt Custom Forms -->
 			
 			
-			<span name="defaultCustomFormSpan" id="defaultCustomFormSpan" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultCustomForm}">style='display:none' </c:if>>
+			<div name="defaultCustomFormSpan" id="defaultCustomFormSpan" class="toggle" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultCustomForm}">style='display:none' </c:if>>
 			
 				<c:if test="${ empty defaultSelectedAdditionalFormDevices}">
 					<p class="indnt1"> 
@@ -580,7 +575,7 @@ function mySetMainFrameHeight(id)
 						</c:forEach>
 					</table>
 				</c:if>
-			</span>
+			</div>
 			
 			<!--- End of Defualt Custom Forms --->
 			
@@ -590,7 +585,7 @@ function mySetMainFrameHeight(id)
 		
 			<!--- Cell Custom Forms Start --->
 			
-			<span name="cellCustomFormSpan" id="cellCustomFormSpan" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultCustomForm}">style='display:none' </c:if>>
+			<div name="cellCustomFormSpan" id="cellCustomFormSpan"  class="toggle2" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultCustomForm}">style='display:none' </c:if>>
 				
 				<p class="indnt1"> 
 					<fmt:message key="addForms_instructions" />
@@ -645,9 +640,9 @@ function mySetMainFrameHeight(id)
 						</c:forEach>
 					</table>
 				</c:if>
-			</span>
+			</div>
 			
-			
+			</div>
 			<!--- Cell Custom Forms End --->
 			
 			
@@ -701,6 +696,7 @@ function mySetMainFrameHeight(id)
 			
 		<br><br>
 			
+		<div>
 		<h5><osp:message key="label_selectReflectionDevice"/></h5>
 		
 		<!-- default case is currently only needed for matrices -->
@@ -714,7 +710,8 @@ function mySetMainFrameHeight(id)
 						checked
 					</c:if> 
 				    <c:if test="${reflectionFormUsed}"><c:out value="${localDisabledText}"/></c:if>
-					onclick="defaultFormClicked(this.checked, 'defaultReflectionFormSpan', 'cellReflectionFormSpan');document.forms[0].hiddenDefaultReflectionForm.value=this.checked;"/>
+				onclick="$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$('div.toggle2:first', $(this).parents('div:first')).slideToggle(resize);document.forms[0].hiddenDefaultReflectionForm.value=this.checked;"/>
+
 				<label for="defaultReflectionForm" ><fmt:message key="defaultReflectionFormText"/></label>    
 			</spring:bind>		
 			<!-- ************* Default Matrix Checkbox End *********** -->
@@ -723,7 +720,7 @@ function mySetMainFrameHeight(id)
 			
 			<!-- Default Reflection Area start -->
 			
-			<span name="defaultReflectionFormSpan" id="defaultReflectionFormSpan" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultReflectionForm}">style='display:none' </c:if>>
+			<div name="defaultReflectionFormSpan" id="defaultReflectionFormSpan" class="toggle" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultReflectionForm}">style='display:none' </c:if>>
 				
 				<spring:bind path="scaffoldingCell.scaffolding.reflectionDevice">
 					<c:if test="${status.value == null}">
@@ -748,7 +745,7 @@ function mySetMainFrameHeight(id)
 					</table>						
 				
 				</spring:bind>
-			</span>
+			</div>
 			
 			<!-- Default Reflection Area end -->
 		
@@ -759,7 +756,7 @@ function mySetMainFrameHeight(id)
 
 		<!-- cell Reflection area start -->   
 		
-		<span name="cellReflectionFormSpan" id="cellReflectionFormSpan" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultReflectionForm}">style='display:none' </c:if>>
+		<div name="cellReflectionFormSpan" id="cellReflectionFormSpan" class="toggle2" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultReflectionForm}">style='display:none' </c:if>>
 
 			<spring:bind path="scaffoldingCell.reflectionDeviceType">  
 				<input type="hidden" name="<c:out value="${status.expression}"/>"
@@ -786,7 +783,9 @@ function mySetMainFrameHeight(id)
 				</p>
 			</spring:bind>
 		
-		</span>
+		</div>
+		
+		</div>
 		<!-- *********  End span for hidding user forms when default user forms is checked *** -->
 	</fieldset>
 	
@@ -799,6 +798,7 @@ function mySetMainFrameHeight(id)
 	<fieldset class="fieldsetVis">
 		<legend><fmt:message key="legend_feedback"/></legend>
 		
+		<div>
 		<h5><osp:message key="label_selectReviewDevice"/></h5>		
 		
 		
@@ -810,7 +810,9 @@ function mySetMainFrameHeight(id)
 			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultFeedbackForm">  		
 				<input type="hidden" name="hiddenDefaultFeedbackForm" value="${status.value}"/>
 				<input type="checkbox" name="defaultFeedbackForm" value="true"  id="defaultFeedbackForm" 
-				<c:if test="${status.value}">checked</c:if> onclick="defaultFormClicked(this.checked, 'defaultFeedbackEvalSpan', 'cellFeedbackFormSpan');document.forms[0].hiddenDefaultFeedbackForm.value=this.checked;" <c:if test="${feedbackFormUsed}"><c:out value="${localDisabledText}"/></c:if> />
+				<c:if test="${status.value}">checked</c:if> 
+				onclick="$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$('div.toggle2:first', $(this).parents('div:first')).slideToggle(resize);document.forms[0].hiddenDefaultFeedbackForm.value=this.checked;"
+				<c:if test="${feedbackFormUsed}"><c:out value="${localDisabledText}"/></c:if> />
 				<label for="defaultFeedbackForm" ><fmt:message key="defaultFeedbackFormText"/></label> 
 			</spring:bind>
 			
@@ -818,7 +820,7 @@ function mySetMainFrameHeight(id)
 	
 	
 			<!-- Default Feedback Form start -->
-			<span name="defaultFeedbackEvalSpan" id="defaultFeedbackEvalSpan" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">style='display:none' </c:if>>
+			<div name="defaultFeedbackEvalSpan" id="defaultFeedbackEvalSpan" class="toggle" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">style='display:none' </c:if>>
 				<!-- Feedback -->
 				
 				<spring:bind path="scaffoldingCell.scaffolding.reviewDevice">
@@ -843,7 +845,7 @@ function mySetMainFrameHeight(id)
 						</c:forEach>
 					</table>						
 				</spring:bind>
-			</span>
+			</div>
 			<!-- Default Feedback Form end -->
 		
 			
@@ -851,7 +853,7 @@ function mySetMainFrameHeight(id)
 		</c:if>
 
 		<!--- Cell Feedback form start --->
-		<span name="cellFeedbackFormSpan" id="cellFeedbackFormSpan" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">style='display:none' </c:if>>
+		<div name="cellFeedbackFormSpan" id="cellFeedbackFormSpan" class="toggle2" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">style='display:none' </c:if>>
 			
 			<spring:bind path="scaffoldingCell.reviewDeviceType">  
 				<input type="hidden" name="<c:out value="${status.expression}"/>"
@@ -878,7 +880,9 @@ function mySetMainFrameHeight(id)
 					</select>
 				</p>
 			</spring:bind>
-		</span>
+		</div>
+		
+		</div>
 		<!--- Cell Feedback form end --->			
 			
 			
@@ -888,7 +892,7 @@ function mySetMainFrameHeight(id)
 			
 			<h5><osp:message key="label_reviwers"/></h5>		
 			
-			
+			<div>
 			<!-- this case is currently only needed for matrices -->
 			<c:if test="${scaffoldingCell.scaffolding != null}">
 	
@@ -896,7 +900,9 @@ function mySetMainFrameHeight(id)
 				<!-- ************* Default Matrix Checkbox Start *********** -->
 				<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultReviewers">  			   
 					<input type="checkbox" name="defaultReviewers" value="true"  id="defaultReviewers" 
-					<c:if test="${status.value}">checked</c:if> onclick="defaultFormClicked(this.checked, 'defaultReviewersSpan', 'cellReviewersSpan');" />
+					<c:if test="${status.value}">checked</c:if> 
+					onclick="$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$('div.toggle2:first', $(this).parents('div:first')).slideToggle(resize);"
+					
 					<label for="defaultReviewers" ><fmt:message key="defaultReviewersText"/></label> 
 				</spring:bind>
 				
@@ -904,7 +910,7 @@ function mySetMainFrameHeight(id)
 		
 		
 				<!-- Default Reviewers start -->
-				<span name="defaultReviewersSpan" id="defaultReviewersSpan" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultReviewers}">style='display:none' </c:if>>
+				<div name="defaultReviewersSpan" id="defaultReviewersSpan" class="toggle" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultReviewers}">style='display:none' </c:if>>
 					
 					<p class="indnt1">
 						<input type="checkbox" name="diabledCheckbox" value="true"  id="disabledCheckbox" 
@@ -930,7 +936,7 @@ function mySetMainFrameHeight(id)
 					</c:if>
 					
 					
-				</span>
+				</div>
 				<!--  Default Reviewers start  -->
 				
 				
@@ -940,7 +946,7 @@ function mySetMainFrameHeight(id)
 				
 					
 			<!-- Cell Reviewers Start -->            
-			<span name="cellReviewersSpan" id="cellReviewersSpan" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultReviewers}">style='display:none' </c:if>>
+			<div name="cellReviewersSpan" id="cellReviewersSpan" class="toggle2" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultReviewers}">style='display:none' </c:if>>
 		
 				<c:if test="${not empty reviewers}">
 					<ol>
@@ -968,7 +974,8 @@ function mySetMainFrameHeight(id)
 					<label for="allowRequestFeedback" ><fmt:message key="allowRequestFeedback"/></label>    
 				</spring:bind>	
 				</p>
-			</span>
+			</div>
+			</div>
 			<!-- Cell Reviewers End -->
 		</c:if>
 			
@@ -979,7 +986,7 @@ function mySetMainFrameHeight(id)
 		<legend><fmt:message key="legend_evaluation"/></legend>
 
 		<h5><fmt:message key="header_Evaluators"/></h5>
-
+		<div>
 		<!-- this case is currently only needed for matrices -->
 		<c:if test="${scaffoldingCell.scaffolding != null}">
 
@@ -988,7 +995,8 @@ function mySetMainFrameHeight(id)
 			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultEvaluationForm">  		
 				<input type="hidden" name="hiddenDefaultEvaluationForm" value="${status.value}"/>
 				<input type="checkbox" name="defaultEvaluationForm" value="true"  id="defaultEvaluationForm" 
-					<c:if test="${status.value}">checked</c:if> onclick="defaultFormClicked(this.checked, 'defaultEvaluationFormSpan', 'cellEvaluationFormSpan');document.forms[0].hiddenDefaultEvaluationForm.value=this.checked;" 
+					<c:if test="${status.value}">checked</c:if> 
+					onclick="$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$('div.toggle2:first', $(this).parents('div:first')).slideToggle(resize);document.forms[0].hiddenDefaultEvaluationForm.value=this.checked;"
 					<c:if test="${evaluationFormUsed}"><c:out value="${localDisabledText}"/></c:if>  
 				/>
 				<label for="defaultEvaluationForm" ><fmt:message key="defaultEvaluationFormText"/></label> 
@@ -998,7 +1006,7 @@ function mySetMainFrameHeight(id)
 		
 		
 			<!-- Evaluation Form Default Area Start-->
-			<span name="defaultEvaluationFormSpan" id="defaultEvaluationFormSpan" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultEvaluationForm}">style='display:none' </c:if>>
+			<div name="defaultEvaluationFormSpan" id="defaultEvaluationFormSpan" class="toggle" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultEvaluationForm}">style='display:none' </c:if>>
 				<spring:bind path="scaffoldingCell.scaffolding.evaluationDevice">
 					<c:if test="${status.value == null}">
 						<p class="indnt1"> 
@@ -1021,7 +1029,7 @@ function mySetMainFrameHeight(id)
 						</c:forEach>
 					</table>						
 				</spring:bind>
-			</span>
+			</div>
 			
 			<!-- Evaluation Form Default Area End -->	
 		
@@ -1030,7 +1038,7 @@ function mySetMainFrameHeight(id)
 		
 		
 		<!-- Evaluation Form Cell Area Start -->
-		<span name="cellEvaluationFormSpan" id="cellEvaluationFormSpan" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultEvaluationForm}">style='display:none' </c:if>>
+		<div name="cellEvaluationFormSpan" id="cellEvaluationFormSpan" class="toggle2" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultEvaluationForm}">style='display:none' </c:if>>
 			<div id="evaluatorsDiv">  
 				<p class="indnt1">
 					<fmt:message key="evaluation_select_instructions"/>
@@ -1052,16 +1060,16 @@ function mySetMainFrameHeight(id)
 					</p>
 				</spring:bind>
 			</div>
-		</span>		
+		</div>		
 		<!-- Evaluation Form Cell Area End -->		
 				
-				
+		</div>		
 				
 				
 				
 		<!--  Evaluator List Area Start --->
 		<h5><fmt:message key="label_evaluators"/></h5>
-		
+		<div>
 		
 		<!-- this case is currently only needed for matrices -->
 		<c:if test="${scaffoldingCell.scaffolding != null}">
@@ -1070,12 +1078,13 @@ function mySetMainFrameHeight(id)
 			<!-- ************* Default Matrix Checkbox Start *********** -->
 			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultEvaluators">  			   
 				<input type="checkbox" name="defaultEvaluators" value="true"  id="defaultEvaluators" 
-				<c:if test="${status.value}">checked</c:if> onclick="defaultFormClicked(this.checked, 'defaultEvaluatorsSpan', 'cellEvaluatorsSpan');" />
+				<c:if test="${status.value}">checked</c:if>
+				onclick="$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$('div.toggle2:first', $(this).parents('div:first')).slideToggle(resize);" />
 				<label for="defaultEvaluators" ><fmt:message key="defaultEvaluatorsText"/></label> 
 			</spring:bind>
 			
 			<!-- Evaluator List Default Area Start-->
-			<span name="defaultEvaluatorsSpan" id="defaultEvaluatorsSpan" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultEvaluators}">style='display:none' </c:if>>
+			<div name="defaultEvaluatorsSpan" id="defaultEvaluatorsSpan" class="toggle" <c:if test="${!scaffoldingCell.wizardPageDefinition.defaultEvaluators}">style='display:none' </c:if>>
 				<c:if test="${not empty defaultEvaluators}">
 					<ol>
 						<c:forEach var="eval" items="${defaultEvaluators}" varStatus="rowCounter">
@@ -1089,7 +1098,7 @@ function mySetMainFrameHeight(id)
 					</p>			
 				</c:if>
 			
-			</span>
+			</div>
 			<!-- Evaluator List Default Area End -->
 			
 			
@@ -1098,7 +1107,7 @@ function mySetMainFrameHeight(id)
 			
 			
 		<!-- Cell Evaluator List Start -->
-		<span name="cellEvaluatorsSpan" id="cellEvaluatorsSpan" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultEvaluators}">style='display:none' </c:if>>
+		<div name="cellEvaluatorsSpan" id="cellEvaluatorsSpan" class="toggle2" <c:if test="${!isWizard and scaffoldingCell.wizardPageDefinition.defaultEvaluators}">style='display:none' </c:if>>
 			<c:if test="${not empty evaluators}">
 				<ol>
 					<c:forEach var="eval" items="${evaluators}">
@@ -1116,7 +1125,8 @@ function mySetMainFrameHeight(id)
 				</a>	 
 			</div>
 		
-		</span>
+		</div>
+		</div>
 		<!-- Cell Evaluator List End -->
 
 	</fieldset>

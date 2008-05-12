@@ -470,6 +470,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       scaffolding.setPublished(true);
       scaffolding.setPublishedBy(authnManager.getAgent());
       scaffolding.setPublishedDate(new Date(System.currentTimeMillis()));
+      scaffolding.setModifiedDate(new Date(System.currentTimeMillis()));
       this.storeScaffolding(scaffolding);
       eventService.postEvent(EventConstants.EVENT_SCAFFOLD_PUBLISH,scaffolding.getId().getValue());
 
@@ -480,17 +481,19 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       //then the matrix is an older version and set all defaults to false
       scaffolding.setDefaultFormsMatrixVersion(true);
       scaffolding.setPreview(true);
+      scaffolding.setModifiedDate(new Date(System.currentTimeMillis()));
       this.storeScaffolding(scaffolding);
 
    }
    public Scaffolding storeScaffolding(Scaffolding scaffolding) {
+	  scaffolding.setModifiedDate(new Date(System.currentTimeMillis()));
       scaffolding = (Scaffolding)this.store(scaffolding);
       getHibernateTemplate().flush();
       eventService.postEvent(EventConstants.EVENT_SCAFFOLD_ADD_REVISE,scaffolding.getId().getValue());
       return scaffolding;
    }
    public Scaffolding saveNewScaffolding(Scaffolding scaffolding) {
-      
+	  scaffolding.setModifiedDate(new Date(System.currentTimeMillis()));
       Id id = (Id)this.save(scaffolding);
       getHibernateTemplate().flush();
       scaffolding = getScaffolding(id);
@@ -499,6 +502,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
    
    public Id storeScaffoldingCell(ScaffoldingCell scaffoldingCell) {
+	  scaffoldingCell.getScaffolding().setModifiedDate(new Date(System.currentTimeMillis()));	 
       scaffoldingCell = (ScaffoldingCell)store(scaffoldingCell);
       return scaffoldingCell.getId();
    }
@@ -1610,6 +1614,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          scaffolding.setPublished(false);
          scaffolding.setPublishedBy(null);
          scaffolding.setPublishedDate(null);
+         scaffolding.setModifiedDate(new Date(System.currentTimeMillis()));
          scaffolding.setOwner(getAuthnManager().getAgent());
          scaffolding.setWorksiteId(getIdManager().getId(siteId));
          

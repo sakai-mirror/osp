@@ -28,7 +28,7 @@
 		var tblBodyObj = document.getElementById(tblId).tBodies[0];
 		for (var i=0; i<tblBodyObj.rows.length; i++) {
 			var newCell = tblBodyObj.rows[i].insertCell(-1);
-			newCell.innerHTML = cellName
+			newCell.innerHTML = "<span class='alertMessage'><fmt:message key='no_view_access'/><br>" + cellName + "</span>";
 		}
 	}
 	function deleteColumn(tblId)
@@ -151,11 +151,8 @@
 	
 		<!-- This is used to alert the user if they do not have access to the cell they clicked on -->
 
-		<table id="accessTable" border="0" width="100%" style="display:none">
-			<tr class="alertMessage">
-				<td>
-					<fmt:message key="no_view_access"/>&nbsp;&nbsp;
-				</td>
+		<table id="accessTable" border="0" style="display:none">
+			<tr>
 				<td></td>
 			</tr>
 		</table>

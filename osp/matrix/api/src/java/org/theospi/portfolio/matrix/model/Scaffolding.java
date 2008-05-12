@@ -80,6 +80,7 @@ public class Scaffolding extends ObjectWithWorkflow implements Serializable {
    private boolean published = false;
    private Agent publishedBy;
    private Date publishedDate;
+   private Date modifiedDate;
    
    private String exposedPageId;
    private transient Boolean exposeAsTool = null;
@@ -467,5 +468,13 @@ public boolean isDefaultFormsMatrixVersion() {
 
 public void setDefaultFormsMatrixVersion(boolean defaultFormsMatrixVersion) {
 	this.defaultFormsMatrixVersion = defaultFormsMatrixVersion;
+}
+
+public Date getModifiedDate() {
+	return modifiedDate;
+}
+
+public void setModifiedDate(Date modifiedDate) {
+	this.modifiedDate = modifiedDate;
 }
 }
