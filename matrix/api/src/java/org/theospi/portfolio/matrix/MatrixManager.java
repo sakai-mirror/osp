@@ -103,8 +103,8 @@ public interface MatrixManager extends WorkflowEnabledManager {
     * @param userId
     * @return
     */
-   public List findAvailableScaffolding(String siteIdStr, Agent user);
-   public List findAvailableScaffolding(List sites, Agent user);
+   public List findAvailableScaffolding(String siteIdStr, Agent user, boolean showUnpublished);
+   public List findAvailableScaffolding(List sites, Agent user, boolean showUnpublished);
    
    List findPublishedScaffolding(List sites);
    

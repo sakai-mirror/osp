@@ -55,11 +55,11 @@ public class ListScaffoldingController extends AbstractMatrixController {
 
 		if ( isOnWorkspaceTab() )
 		{
-			scaffolding = getMatrixManager().findAvailableScaffolding(getUserWorksites(), currentAgent);
+			scaffolding = getMatrixManager().findAvailableScaffolding(getUserWorksites(), currentAgent, isMaintainer());
 		}
 		else
 		{
-			scaffolding = getMatrixManager().findAvailableScaffolding(worksiteId, currentAgent);
+			scaffolding = getMatrixManager().findAvailableScaffolding(worksiteId, currentAgent,  isMaintainer());
 		}
       
       // When selecting a matrix the user should start with a fresh user
