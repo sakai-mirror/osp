@@ -932,17 +932,19 @@ function mySetMainFrameHeight(id)
 
 <!-- ************* Evaluation Area Start ************* --> 
 <c:if
-	test="${(((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && 
+	test="${((((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && 
 	((cell.scaffoldingCell.evaluationDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm) 
-		|| (cell.scaffoldingCell.scaffolding.evaluationDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm)))}">
-	<c:if test="${ (cell.status == 'PENDING' || not empty evaluations)}">
+		|| (cell.scaffoldingCell.scaffolding.evaluationDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm))) && cell.status == 'PENDING') || not empty evaluations}">
 	<table class="matrixCellList" cellpadding="0" cellspacing="0"
 		border="0" summary="">
 		<tr>
 			<th colspan="2">
 				<osp:message key="eval_items_section_header" />
 				<span class="itemAction indnt1" style="font-weight:normal">
-					<c:if test="${cell.status == 'PENDING'}">
+					<c:if
+						test="${(((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && 
+						((cell.scaffoldingCell.evaluationDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm) 
+							|| (cell.scaffoldingCell.scaffolding.evaluationDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm))) && cell.status == 'PENDING'}">
 						<a
 							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 								    <osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -997,7 +999,6 @@ function mySetMainFrameHeight(id)
 			</c:forEach>
 		</c:if>
 	</table>
-	</c:if>
 </c:if>
  <!-- ************* Evaluation Area End ************* -->
 <c:if
