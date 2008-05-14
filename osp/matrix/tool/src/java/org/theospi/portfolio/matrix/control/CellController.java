@@ -138,7 +138,7 @@ public class CellController implements FormController, LoadObjectController {
 
 		if(request.get("comingFromWizard") == null){
 			//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
-			model.put("matrixCanEvaluate", hasPermission(cell.getCell()
+			model.put("matrixCanEvaluate", getMatrixManager().hasPermission(cell.getCell()
 					.getScaffoldingCell().isDefaultEvaluators() ? cell.getCell()
 							.getScaffoldingCell().getScaffolding().getId() : cell.getCell()
 							.getScaffoldingCell().getWizardPageDefinition().getId(),
@@ -146,13 +146,13 @@ public class CellController implements FormController, LoadObjectController {
 							MatrixFunctionConstants.EVALUATE_MATRIX));
 			//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
 			//also, compare first result with the user's cell review list by sending the user's cell id
-			model.put("matrixCanReview", hasPermission(cell.getCell()
+			model.put("matrixCanReview", getMatrixManager().hasPermission(cell.getCell()
 					.getScaffoldingCell().isDefaultReviewers() ? cell.getCell()
 							.getScaffoldingCell().getScaffolding().getId() : cell.getCell()
 							.getScaffoldingCell().getWizardPageDefinition().getId(),
 							cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
 							MatrixFunctionConstants.REVIEW_MATRIX)
-							|| hasPermission(cell.getCell().getWizardPage().getId(),
+							|| getMatrixManager().hasPermission(cell.getCell().getWizardPage().getId(),
 									cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
 									MatrixFunctionConstants.FEEDBACK_MATRIX));
 		}
@@ -238,60 +238,7 @@ public class CellController implements FormController, LoadObjectController {
 		clearSession(session);
 		return model;
 	}
-	
-	/**
-	 * finds the list of evaluators/roles of the site id passed and checks against the current user.
-	 * returns true if user or role matches, otherwise false
-	 * 
-	 * @param id
-	 * @param worksiteId
-	 * @param function
-	 * @return
-	 */
-	protected boolean hasPermission(Id id, Id worksiteId, String function){
-		if(getSecurityService().isSuperUser(authManager.getAgent().getId().getValue()))
-			return true;
-		
-		if(id == null)
-			return false;
-		
-		Site site = null;
-		try {
-			site = SiteService.getSite(worksiteId.getValue());
-		} catch (IdUnusedException e) {
-			e.printStackTrace();
-		}
 
-		if(site == null)
-			return false;
-		
-		Role userRole = site.getUserRole(authManager.getAgent().getId().getValue());
-		
-		List evaluators = getAuthzManager().getAuthorizations(null,
-				function, id);
-
-		for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
-			Authorization az = (Authorization) iter.next();
-			Agent agent = az.getAgent();
-			if (agent.isRole()) {
-				if(userRole != null){
-					// see if the user's role matches with the evaluation role: 
-					//(fyi, display name returns the role if the agent is a role)
-					if (userRole.getId().compareTo(
-							agent.getDisplayName()) == 0)
-						return true;
-				}
-			} else {
-				// see if the user matches with the evaluator user
-				if (authManager.getAgent().getId().getValue().compareTo(
-						agent.getId().toString()) == 0)
-					return true;
-			}
-		}
-
-		return false;
-	}
-	
 
 	/**
 	 ** Return list of AssignmentSubmissions, associated with this cell

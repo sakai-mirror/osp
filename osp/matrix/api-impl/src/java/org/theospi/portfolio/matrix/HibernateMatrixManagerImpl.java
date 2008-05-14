@@ -54,6 +54,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Expression;
 import org.jdom.Element;
+import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
@@ -1725,11 +1726,33 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       // this should set the security advisor for the attached artifacts.
       //getPageArtifacts(page);
-      boolean canEval = getAuthzManager().isAuthorized(MatrixFunctionConstants.EVALUATE_MATRIX, 
-            page.getPageDefinition().getId());
-      boolean canReview = getAuthzManager().isAuthorized(MatrixFunctionConstants.REVIEW_MATRIX, 
-            getIdManager().getId(page.getPageDefinition().getSiteId()));
       
+      boolean canEval = false, canReview = false;
+      
+      if(page.getPageDefinition().isDefaultEvaluators()){
+    	  //currently, this can only be true if its a matrix
+    	 Scaffolding scaffolding = this.getMatrixByPage(pageId).getScaffolding();
+    	 canEval = hasPermission(scaffolding.getId(), scaffolding.getWorksiteId(), MatrixFunctionConstants.EVALUATE_MATRIX);    	 
+      }else{
+    	  canEval = getAuthzManager().isAuthorized(MatrixFunctionConstants.EVALUATE_MATRIX, 
+  	            page.getPageDefinition().getId());
+      }
+      
+      //this is user specified reviewer access:
+      canReview = hasPermission(pageId, this.getIdManager().getId(page.getPageDefinition().getSiteId()), MatrixFunctionConstants.FEEDBACK_MATRIX);
+      
+      
+      if(!canReview){
+    	  if(page.getPageDefinition().isDefaultReviewers()){
+    		  //currently, this can only be true if its a matrix
+    		  Scaffolding scaffolding = this.getMatrixByPage(pageId).getScaffolding();
+    		  canReview = hasPermission(scaffolding.getId(), scaffolding.getWorksiteId(), MatrixFunctionConstants.REVIEW_MATRIX);
+    	  }else{
+    		  canReview = getAuthzManager().isAuthorized(MatrixFunctionConstants.REVIEW_MATRIX, 
+    				  page.getPageDefinition().getId());
+    	  }
+      }
+
       if (!canReview) {
          canReview = getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
             getIdManager().getId(page.getPageDefinition().getSiteId()));
@@ -2955,4 +2978,58 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public void setEventService(EventService eventService) {
 	   this.eventService = eventService;
    }
+	
+	/**
+	 * finds the list of evaluators/roles of the site id passed and checks against the current user.
+	 * returns true if user or role matches, otherwise false
+	 * 
+	 * @param id
+	 * @param worksiteId
+	 * @param function
+	 * @return
+	 */
+	public boolean hasPermission(Id id, Id worksiteId, String function){
+		if(getSecurityService().isSuperUser(getAuthnManager().getAgent().getId().getValue()))
+			return true;
+		
+		if(id == null)
+			return false;
+		
+		Site site = null;
+		try {
+			site = SiteService.getSite(worksiteId.getValue());
+		} catch (IdUnusedException e) {
+			e.printStackTrace();
+		}
+
+		if(site == null)
+			return false;
+		
+		Role userRole = site.getUserRole(getAuthnManager().getAgent().getId().getValue());
+		
+		List evaluators = getAuthzManager().getAuthorizations(null,
+				function, id);
+
+		for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
+			Authorization az = (Authorization) iter.next();
+			Agent agent = az.getAgent();
+			if (agent.isRole()) {
+				if(userRole != null){
+					// see if the user's role matches with the evaluation role: 
+					//(fyi, display name returns the role if the agent is a role)
+					if (userRole.getId().compareTo(
+							agent.getDisplayName()) == 0)
+						return true;
+				}
+			} else {
+				// see if the user matches with the evaluator user
+				if (getAuthnManager().getAgent().getId().getValue().compareTo(
+						agent.getId().toString()) == 0)
+					return true;
+			}
+		}
+
+		return false;
+	}
+	
 }

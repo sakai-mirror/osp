@@ -198,4 +198,14 @@ public interface MatrixManager extends WorkflowEnabledManager {
    List<ScaffoldingCell> getScaffoldingCells(List<Id> ids);
    
    public WizardPageDefinition getWizardPageDefinition(Id pageDefId);
+	/**
+	 * finds the list of evaluators/roles of the site id passed and checks against the current user.
+	 * returns true if user or role matches, otherwise false
+	 * 
+	 * @param id
+	 * @param worksiteId
+	 * @param function
+	 * @return
+	 */
+	public boolean hasPermission(Id id, Id worksiteId, String function);
 }
