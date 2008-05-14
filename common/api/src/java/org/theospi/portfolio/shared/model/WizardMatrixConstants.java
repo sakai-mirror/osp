@@ -35,5 +35,8 @@ public interface WizardMatrixConstants {
    public static final int NORMAL_GROUP_ACCESS = 0;
    public static final int UNRESTRICTED_GROUP_ACCESS = 1;
 
+	// sakai.properties (default is false)
+   public static final String PROP_GROUPS_ALLOW_ALL_GLOBAL = "osp.reviewer.groups.allowall.global";   
+   
 }
 

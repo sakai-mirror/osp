@@ -120,6 +120,7 @@ public class WizardTool extends BuilderTool {
    private List deletedItems = new ArrayList();
    private int nextWizard = 0;
    private String currentUserId;
+   private String currentGroupId;
    
    private String lastSaveWizard = "";
    private boolean pageSaved = false;
@@ -188,6 +189,20 @@ public class WizardTool extends BuilderTool {
     */
    public void setCurrentUserId(String currentUserId) {
       this.currentUserId = currentUserId;
+   }
+
+   /**
+    * @return Returns the currentGroupId.
+    */
+   public String getCurrentGroupId() {
+      return currentGroupId;
+   }
+
+   /**
+    * @param currentGroupId The currentGroupId to set.
+    */
+   public void setCurrentGroupId(String currentGroupId) {
+      this.currentGroupId = currentGroupId;
    }
 
    public String getOwnerCheckMessage() {

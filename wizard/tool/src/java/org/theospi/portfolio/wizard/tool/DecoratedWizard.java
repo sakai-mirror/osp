@@ -20,8 +20,8 @@
  **********************************************************************************/
 package org.theospi.portfolio.wizard.tool;
 
-import org.theospi.portfolio.security.AuthorizationFailedException;
-import org.theospi.portfolio.shared.model.OspException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.exception.IdUnusedException;
@@ -35,6 +35,11 @@ import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.util.ResourceLoader;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+
+import org.theospi.portfolio.security.AuthorizationFailedException;
+import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.guidance.model.GuidanceItem;
 import org.theospi.portfolio.style.StyleHelper;
@@ -43,6 +48,7 @@ import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.model.Wizard;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.wizard.tool.WizardTool.UserSelectListComparator;
+import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -80,6 +86,9 @@ public class DecoratedWizard implements DecoratedListInterface {
 
 	private int totalPages;
 
+	protected final Log logger = LogFactory.getLog(getClass());
+	private static ResourceLoader myResources = new ResourceLoader("org.theospi.portfolio.wizard.bundle.Messages");
+	
 	public DecoratedWizard(WizardTool tool, Wizard base) {
 		this.base = base;
 		this.parent = tool;
@@ -149,11 +158,42 @@ public class DecoratedWizard implements DecoratedListInterface {
 	public boolean getCanExport() {
 		return parent.getCanExport(base);
 	}
+	
+	public boolean getIgnoreReviewerGroupAccess() {
+		return ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false);
+	}
 
-
+	public List getGroupListForSelect() {
+    	List groupSelect = new ArrayList();
+		Set groups = new HashSet();
+      boolean allowAllGroups = ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
+      			|| base.getReviewerGroupAccess() == WizardMatrixConstants.UNRESTRICTED_GROUP_ACCESS;
+					
+    	try {
+			Site site = SiteService.getSite(base.getSiteId());
+			if (site.hasGroups()) {
+            String currentUser = SessionManager.getCurrentSessionUserId();
+            if (allowAllGroups) {
+            	groups.addAll(site.getGroups());
+            }
+            else {
+            	groups.addAll(site.getGroupsWithMember(currentUser));
+            }
+			}
+			for (Iterator it = groups.iterator(); it.hasNext();) {
+				Group group = (Group) it.next();
+				groupSelect.add(getParent().createSelect(group.getId(), group.getTitle()));
+			}
+		} 
+		catch (IdUnusedException e) {
+			logger.error("", e);
+		}
+		return groupSelect;
+	}
+	
 	public List getUserListForSelect() {
 		Placement placement = ToolManager.getCurrentPlacement();
-		String currentSiteId = placement.getContext();
+		String currentSiteId = base.getSiteId();
 		List theList = getUserList(currentSiteId);
 
 		String user = getParent().getCurrentUserId()!=null ? 
@@ -167,14 +207,27 @@ public class DecoratedWizard implements DecoratedListInterface {
 		Set members = new HashSet();
 		List users = new ArrayList();
 
+      boolean allowAllGroups = ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
+      			|| base.getReviewerGroupAccess() == WizardMatrixConstants.UNRESTRICTED_GROUP_ACCESS;
+					
 		try {
 			Site site = SiteService.getSite(worksiteId);
-			if (site.hasGroups()) {
-				String currentUser = SessionManager.getCurrentSessionUserId();
-				Collection groups = site.getGroupsWithMember(currentUser);
-				for (Iterator iter = groups.iterator(); iter.hasNext();) {
-					Group group = (Group) iter.next();
+			if ( site.hasGroups() ) {
+				String filterGroupId = parent.getCurrentGroupId();
+				if (allowAllGroups && (filterGroupId == null || filterGroupId.equals(""))) {
+					members.addAll(site.getMembers());
+				}
+				else if ( filterGroupId != null && !filterGroupId.equals("") ) {
+					Group group = site.getGroup(filterGroupId);
 					members.addAll(group.getMembers());
+				}
+				else {
+					String currentUser = SessionManager.getCurrentSessionUserId();
+					Collection groups = site.getGroupsWithMember(currentUser);
+					for (Iterator iter = groups.iterator(); iter.hasNext();) {
+						Group group = (Group) iter.next();
+						members.addAll(group.getMembers());
+					}
 				}
 			}
 			else {
@@ -189,8 +242,7 @@ public class DecoratedWizard implements DecoratedListInterface {
 					users.add(getParent().createSelect(user.getId(), user.getSortName()));
 				}
 				catch (UserNotDefinedException e) {
-					//TODO replace with a message bundle
-					getParent().logger.warn("User " + e.getId() + " cannot be found");
+					getParent().logger.warn(myResources.getString("err_user_not_found") + e.getId());
 				}
 			}
 			Collections.sort(users, new UserSelectListComparator());
@@ -379,6 +431,11 @@ public class DecoratedWizard implements DecoratedListInterface {
 		return getParent().LIST_PAGE;
 	}
 
+	public String processActionFilterGroup(ValueChangeEvent e) {
+		getParent().clearInterface();
+		return getParent().LIST_PAGE;
+	}
+
 	public ExternalContext processActionRunWizardHelper() {
 		getParent().clearInterface();
 
@@ -387,8 +444,6 @@ public class DecoratedWizard implements DecoratedListInterface {
 		}
 
 		ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
-
-		//ToolSession session = SessionManager.getCurrentToolSession();
 
 		setBase(parent.getWizardManager().getWizard(getBase().getId()));
 		rootCategory = new DecoratedCategory(base.getRootCategory(), parent);
@@ -401,7 +456,6 @@ public class DecoratedWizard implements DecoratedListInterface {
 	public String processActionRunWizard() {
 
 		ExternalContext context = processActionRunWizardHelper();
-		//return "runWizard";
 
 		try {
 			context.redirect("osp.wizard.run.helper/runWizardGuidance");

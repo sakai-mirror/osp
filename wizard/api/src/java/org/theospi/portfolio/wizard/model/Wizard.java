@@ -65,6 +65,8 @@ public class Wizard extends ObjectWithWorkflow {
    private int generalFeedbackOption = WizardMatrixConstants.FEEDBACK_OPTION_OPEN;
    private int itemFeedbackOption = WizardMatrixConstants.FEEDBACK_OPTION_OPEN;
 	
+   private int reviewerGroupAccess = WizardMatrixConstants.NORMAL_GROUP_ACCESS;
+	
    public Wizard() {
    }
 
@@ -235,6 +237,19 @@ public class Wizard extends ObjectWithWorkflow {
 	   return generalFeedbackOption == WizardMatrixConstants.FEEDBACK_OPTION_NONE;
    }
    
+   public String getReviewerGroupAccessString() {
+      return String.valueOf(reviewerGroupAccess);
+   }
+   public void setReviewerGroupAccessString(String reviewerGroupAccess) {
+      this.reviewerGroupAccess = Integer.valueOf(reviewerGroupAccess).intValue();
+   }
+   public int getReviewerGroupAccess() {
+      return reviewerGroupAccess;
+   }
+   public void setReviewerGroupAccess(int reviewerGroupAccess) {
+      this.reviewerGroupAccess = reviewerGroupAccess;
+   }
+
    public String getItemFeedbackOptionString() {
 	   return String.valueOf(itemFeedbackOption);
    }

@@ -71,6 +71,18 @@
 	   <h:outputLabel value="#{msgs.expose_as_tool}" for="asTool" />
       </h:panelGroup> --%>
 
+	<!--  ********** Reviewer Group Access Start ************-->
+      <h:panelGroup styleClass="longtext" style="padding:0;display:block;margin:0" rendered="#{!wizard.current.ignoreReviewerGroupAccess}">
+      <h:outputText value="#{msgs.reviewer_group_access}" />
+      </h:panelGroup>
+      <h:panelGroup styleClass="longtext" style="padding:0;display:block;margin:5" rendered="#{!wizard.current.ignoreReviewerGroupAccess}">
+         <h:selectOneRadio id="review_group_access" value="#{wizard.current.base.reviewerGroupAccessString}" layout="pageDirection" disabled="#{wizard.current.isWizardUsed}">
+            <f:selectItem itemLabel="#{msgs.normal_group_access_label}"   itemValue="0"/>
+            <f:selectItem itemLabel="#{msgs.unrestricted_group_access_label}" itemValue="1"/>
+         </h:selectOneRadio>
+      </h:panelGroup>
+	<!--  ********** Reviewer Group Access End ************-->
+
       <!--  ********** Feedback Options Start ************-->
    
       <h:panelGroup styleClass="longtext" style="padding:0;display:block;margin:0">

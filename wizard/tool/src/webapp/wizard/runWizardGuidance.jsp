@@ -33,16 +33,23 @@
    <h:outputText value="#{wizard.lastSavePage} #{msgs.page_was_submitted}" styleClass="success" rendered="#{wizard.lastSavePage != ''}" />
    <h:outputText value="#{msgs.changes_saved}" styleClass="success" rendered="#{wizard.pageSaved}" />
    
-   
-   <sakai:instruction_message value="#{wizard.current.base.description}" rendered="#{not empty wizard.current.base.description}"/>
-   
+   <sakai:instruction_message value="#{wizard.current.base.description}" rendered="#{not empty wizard.current.base.description}"/>  
 	
-	   <p><h:outputText value="#{msgs.users_unavailable}" styleClass="instruction" rendered="#{(wizard.canEvaluateTool || wizard.canReviewTool) && wizard.current.base.published && empty wizard.current.userListForSelect}"/></p>
+	   <p><h:outputText value="#{msgs.users_unavailable}" styleClass="instruction" rendered="#{(wizard.canEvaluateTool || wizard.canReviewTool) && (wizard.current.base.published || wizard.current.base.preview) && empty wizard.current.userListForSelect}"/></p>
 		
       <h:panelGrid columns="1" width="100%" border="0">
 	  	  <h:panelGroup>
-			   <f:subview id="viewUsers" rendered="#{(wizard.canEvaluateTool || wizard.canReviewTool) && wizard.current.base.published && not empty wizard.current.userListForSelect}">
-					<h:outputLabel for ="users" value="#{msgs.select_wizard_user}" />
+			   <f:subview id="viewGroups" rendered="#{(wizard.canEvaluateTool || wizard.canReviewTool) && (wizard.current.base.published || wizard.current.base.preview) && not empty wizard.current.groupListForSelect}"> <%-- tbd: handle groupList == 1 --%>
+					<h:outputLabel for ="groups" value="#{msgs.wizard_select_group}" />
+					<h:outputText value=" "/>
+					<h:selectOneMenu id="groups" immediate="true" value="#{wizard.currentGroupId}" valueChangeListener="#{wizard.current.processActionFilterGroup}" onchange="this.form.submit();">
+						<f:selectItem itemLabel="#{msgs.wizard_groups_showall}" itemValue=""/>
+						<f:selectItems value="#{wizard.current.groupListForSelect}"/>
+					</h:selectOneMenu>
+				</f:subview>
+				<f:verbatim>&nbsp;&nbsp;&nbsp;</f:verbatim>
+				<f:subview id="viewUsers" rendered="#{(wizard.canEvaluateTool || wizard.canReviewTool) && (wizard.current.base.published || wizard.current.base.preview) && not empty wizard.current.userListForSelect}">
+					<h:outputLabel for ="users" value="#{msgs.wizard_select_user}" />
 					<h:outputText value=" "/>
 					<h:selectOneMenu id="users" immediate="true" value="#{wizard.currentUserId}" valueChangeListener="#{wizard.current.processActionChangeUser}" onchange="this.form.submit();">
 						<f:selectItems value="#{wizard.current.userListForSelect}"/>
@@ -197,27 +204,19 @@
       				wizard.current.base.reflectionDevice.value != ''}">
          <ospx:xheadertitle id="reflectiontitleheader" value="#{msgs.reflection_section_header}" />
       <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-		  <f:verbatim>
-			  <div class=" indnt2">
-		   </f:verbatim>
+		<f:verbatim>
+			<div class="itemAction indnt2" style="margin-bottom:1em;padding-top:0">
+		</f:verbatim>
       
-      <f:subview id="noReflection" 
+     <f:subview id="noReflection" 
       	rendered="#{empty wizard.current.runningWizard.reflections && wizard.current.runningWizard.base.status == 'READY' &&
       		not wizard.current.runningWizard.isReadOnly}">
-		  <f:verbatim>
-			  <div class="itemAction indnt2">
-		   </f:verbatim>
 
          <h:commandLink action="#{wizard.processActionReflection}">
-        
-  
          	<h:outputText value="#{msgs.reflection_create}"/>
          </h:commandLink>
-		  <f:verbatim>
-			  </div>
-		   </f:verbatim>
+		</f:subview>
 
-		 </f:subview>
 	  	<f:subview id="showReflection" rendered="#{not empty wizard.current.runningWizard.reflections}">
 			<f:subview id="displayReflection" rendered="#{wizard.current.runningWizard.base.status != 'READY' ||
 				wizard.current.runningWizard.isReadOnly}">

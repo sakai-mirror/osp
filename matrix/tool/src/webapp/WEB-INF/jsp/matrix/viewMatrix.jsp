@@ -85,7 +85,7 @@
 						<div class="viewNav">
 							<c:if test="${not empty userGroups && userGroupsCount > 1}">
 								<label for="group_filter-id"><fmt:message key="matrix_viewing_select_group" /></label>
-								<select name="group_filter" id="group_filter-id">
+								<select name="group_filter" id="group_filter-id" onchange="this.form.submit()">
 									<option value="" <c:if test="${empty filteredGroup}">selected="selected"</c:if>>
 									<fmt:message key="matrix_groups_showall"></fmt:message>
 									</option>
@@ -95,8 +95,8 @@
 										</option>
 									</c:forEach>
 								</select>
-								<input type="submit" name="filter" value="<fmt:message key="button_filter"></fmt:message>"/>
 							</c:if>
+							 &nbsp;&nbsp;&nbsp;
 							<label for="view_user-id"><fmt:message key="matrix_viewing_select_user" /></label>
 							<select name="view_user"  id="view_user-id" onchange="this.form.submit()">
 								<c:forEach var="user" items="${members}">

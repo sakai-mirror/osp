@@ -43,6 +43,7 @@ import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.review.mgt.ReviewManager;
+import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 
 
 /**
@@ -74,7 +75,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
       else
          model.put("isMatrixUsed", false );
       
-      model.put("ignoreReviewerGroups", ServerConfigurationService.getBoolean(MatrixFunctionConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false));
+      model.put("ignoreReviewerGroups", ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false));
       
       return model;
    }

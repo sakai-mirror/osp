@@ -51,6 +51,4 @@ public interface MatrixFunctionConstants {
    
    public static final String EVALUATE_SPECIFIC_MATRIXCELL = MATRIX_PREFIX + "evaluateSpecificMatrix";
    
-   public static final String PROP_GROUPS_ALLOW_ALL_GLOBAL = "osp.reviewer.groups.allowall.global";   
-   
 }

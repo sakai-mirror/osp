@@ -222,7 +222,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       String worksiteId = grid.getScaffolding().getWorksiteId().getValue();
 
       String filteredGroup = (String) request.get(GROUP_FILTER);
-      boolean allowAllGroups = ServerConfigurationService.getBoolean(MatrixFunctionConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
+      boolean allowAllGroups = ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
       			|| grid.getScaffolding().getReviewerGroupAccess() == WizardMatrixConstants.UNRESTRICTED_GROUP_ACCESS;
       List<Group> groupList = new ArrayList<Group>(getGroupList(worksiteId, allowAllGroups));
       //Collections.sort(groupList);
@@ -363,22 +363,21 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
 		try {
 			Site site = SiteService.getSite(worksiteId);
 			if (site.hasGroups()) {
-				String currentUser = SessionManager.getCurrentSessionUserId();
-				
 				if (allowAllGroups && (filterGroupId == null || filterGroupId.equals(""))) {
 					members.addAll(site.getMembers());
+				}
+				else if ( filterGroupId != null && !filterGroupId.equals("") ) {
+					Group group = site.getGroup(filterGroupId);
+					members.addAll(group.getMembers());
 				}
 				else {
 					for (Iterator iter = groups.iterator(); iter.hasNext();) {
 						Group group = (Group) iter.next();
-						// TODO: Determine if Java loop invariants are optimized out
-						if (filterGroupId == null || filterGroupId.equals("")
-								|| filterGroupId.equals(group.getId())) {
-							members.addAll(group.getMembers());
-						}
+						members.addAll(group.getMembers());
 					}
 				}
-			} else {
+			} 
+			else {
 				members.addAll(site.getMembers());
 			}
 
