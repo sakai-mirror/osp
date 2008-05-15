@@ -55,7 +55,7 @@ public class ListScaffoldingController extends AbstractMatrixController {
 
 		if ( isOnWorkspaceTab() )
 		{
-			scaffolding = getMatrixManager().findAvailableScaffolding(getUserWorksites(), currentAgent, isMaintainer());
+			scaffolding = getMatrixManager().findAvailableScaffolding(getUserWorksites(), currentAgent, false);
 		}
 		else
 		{
