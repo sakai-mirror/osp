@@ -36,15 +36,10 @@ public class EvaluationContentWrapperForWizard extends EvaluationContentWrapper 
    public EvaluationContentWrapperForWizard(Id id, 
          String title, Agent owner, Date submittedDate, String siteId) throws UserNotDefinedException {
       
+      super(id, title, owner, submittedDate, siteId);
+		
       Set params = new HashSet();     
-      
-      setId(id);
-      setTitle(title);
-      setSubmittedDate(submittedDate);
-      setSiteTitle(super.fetchSiteName(siteId));
-      
       if (owner != null && owner.getId() != null) {
-         setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
          params.add(new ParamBean("session.WIZARD_USER_ID", getOwner().getId()));
          setUrl("openEvaluationWizardRedirect");
       }

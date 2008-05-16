@@ -110,6 +110,7 @@ import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.style.StyleConsumer;
@@ -1140,6 +1141,14 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return page;
    }
    
+   private List setEcwWorksiteIds(List list, Id worksiteId) {
+      for (Iterator i = list.iterator(); i.hasNext();) {
+         EvaluationContentWrapper ecw = (EvaluationContentWrapper) i.next();
+         ecw.setSiteId(worksiteId);
+      }
+      return list;
+   }
+
    protected List getEvaluatableCells(Agent agent, Agent role, Id worksiteId) {
       List returned = this.getHibernateTemplate().find("select distinct new " +
             "org.theospi.portfolio.matrix.model.EvaluationContentWrapperForMatrixCell(" +
@@ -1157,7 +1166,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             agent, role,
             worksiteId.getValue()});
 
-      return returned;
+      return setEcwWorksiteIds(returned, worksiteId);
    }
    
    public List getEvaluatableWizardPages(Agent agent, Agent role, Id worksiteId) {
@@ -1178,7 +1187,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             agent, role,
             worksiteId.getValue()});
       
-      return wizardPages;
+      return setEcwWorksiteIds(wizardPages, worksiteId);
    }
    
    protected List getEvaluatableWizards(Agent agent, Agent role, Id worksiteId) {
@@ -1198,7 +1207,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             MatrixFunctionConstants.PENDING_STATUS,
             agent, role,
             worksiteId.getValue()});
-      return wizards;
+				
+      return setEcwWorksiteIds(wizards, worksiteId);
    }
    
    public List getEvaluatableItems(Agent agent) {
@@ -1233,7 +1243,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
    
    public void packageScffoldingForExport(Id scaffoldingId, OutputStream os) throws IOException {
-      Scaffolding oldScaffolding = this.getScaffoldingForExport(scaffoldingId); //, true);
+      Scaffolding oldScaffolding = this.getScaffoldingForExport(scaffoldingId); 
       
 
       CheckedOutputStream checksum = new CheckedOutputStream(os, new Adler32());

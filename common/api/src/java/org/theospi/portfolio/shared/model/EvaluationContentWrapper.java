@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -44,8 +46,8 @@ public abstract class EvaluationContentWrapper {
    private String url;
    private Set urlParams = new HashSet();
    private String siteTitle;
-   
-   public EvaluationContentWrapper() {;}
+   private Id siteId;
+   protected final Log logger = LogFactory.getLog(getClass());
    
    public EvaluationContentWrapper(Id id, String title, Agent owner, 
          Date submittedDate, String siteId) throws UserNotDefinedException {
@@ -55,6 +57,7 @@ public abstract class EvaluationContentWrapper {
       
       this.owner = UserDirectoryService.getUser(owner.getId().getValue());
       this.siteTitle = fetchSiteName(siteId);
+      // siteId needs to be set later as an Id object
    }
    
    public EvaluationContentWrapper(Id id, String title, Agent owner, 
@@ -67,7 +70,7 @@ public abstract class EvaluationContentWrapper {
       this.owner = UserDirectoryService.getUser(owner.getId().getValue());
       this.evalType = type;
       this.siteTitle = fetchSiteName(siteId);
-
+      // siteId needs to be set later as an Id object
    }
    
    public EvaluationContentWrapper(Id id, String title, User owner, Date submittedDate) {
@@ -124,8 +127,7 @@ public abstract class EvaluationContentWrapper {
          Site site = SiteService.getSite(siteId);
          title = site.getTitle();
       } catch (IdUnusedException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         logger.warn(this+".fetchSiteName",e);
       }
       return title;
    }
@@ -234,5 +236,19 @@ public abstract class EvaluationContentWrapper {
     */
    public void setSiteTitle(String siteTitle) {
       this.siteTitle = siteTitle;
+   }
+	
+   /**
+    * @return the siteId
+    */
+   public Id getSiteId() {
+      return siteId;
+   }
+
+   /**
+    * @param siteId the siteId to set
+    */
+   public void setSiteId(Id siteId) {
+      this.siteId = siteId;
    }
 }

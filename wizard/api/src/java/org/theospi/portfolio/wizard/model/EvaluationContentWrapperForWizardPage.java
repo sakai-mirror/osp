@@ -42,13 +42,9 @@ public class EvaluationContentWrapperForWizardPage extends
    public EvaluationContentWrapperForWizardPage(Id id, String title, Agent owner, 
          Date submittedDate, String wizardType, String siteId) throws UserNotDefinedException {
      
-      setId(id);
-      setTitle(title);
-      setSubmittedDate(submittedDate);
-      setSiteTitle(super.fetchSiteName(siteId));
-      
+      super(id, title, owner, submittedDate, siteId);
+		
       if (owner != null && owner.getId() != null) {
-         setOwner(UserDirectoryService.getUser(owner.getId().getValue()));
          if (wizardType.equals(WizardFunctionConstants.WIZARD_TYPE_SEQUENTIAL)) {
             setUrl("openEvaluationPageSeqRedirect");         
          } else {

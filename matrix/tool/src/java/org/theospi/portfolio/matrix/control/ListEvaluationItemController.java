@@ -91,8 +91,6 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       else
          list = matrixManager.getEvaluatableItems(authManager.getAgent(), worksiteManager.getCurrentWorksiteId());
       
-      list = purgeNullOwners(list);
-      
       String sortColumn = (String)request.get("sortByColumn");
       if (sortColumn == null)
          sortColumn = EvaluationContentComparator.SORT_TITLE;
@@ -109,19 +107,6 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       return list; /* goes into 'reviewerItems'  */
    }
    
-   protected List purgeNullOwners(List list) {
-      List parsedList = new ArrayList(list.size());
-      
-      for (Iterator i = list.iterator(); i.hasNext();) {
-         EvaluationContentWrapper ecw = (EvaluationContentWrapper) i.next();
-         if (ecw.getOwner() != null)
-            parsedList.add(ecw);
-      }
-      
-      return parsedList;
-      
-   }
-
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.Controller#formBackingObject(java.util.Map, java.util.Map, java.util.Map)
     */
