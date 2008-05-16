@@ -145,7 +145,7 @@ public class EditScaffoldingCellController extends
 
 		if (sCell != null && sCell.getScaffolding() != null)
 			model.put("isCellUsed", sCell.getScaffolding().isPublished()
-					&& isCellUsed(sCell));
+					&& getMatrixManager().isScaffoldingCellUsed(sCell));
 		else
 			model.put("isCellUsed", false);
 
@@ -744,48 +744,6 @@ public class EditScaffoldingCellController extends
 	 */
 	public void setReviewManager(ReviewManager reviewManager) {
 		this.reviewManager = reviewManager;
-	}
-
-	/**
-	 * * Determine if any matrix cell with the specified scaffoldingCell has
-	 * been 'used' * (containing reflections and/or added form items)
-	 */
-	private boolean isCellUsed(ScaffoldingCell scaffoldingCell) {
-		Id scaffoldingId = scaffoldingCell.getScaffolding().getId();
-		List matrices = getMatrixManager().getMatrices(scaffoldingId);
-
-		for (Iterator matrixIt = matrices.iterator(); matrixIt.hasNext();) {
-			Matrix matrix = (Matrix) matrixIt.next();
-			List cells = getMatrixManager().getCells(matrix);
-
-			for (Iterator cellIt = cells.iterator(); cellIt.hasNext();) {
-				Cell cell = (Cell) cellIt.next();
-
-				if (cell.getScaffoldingCell().equals(scaffoldingCell)) {
-					WizardPage wizardPage = cell.getWizardPage();
-					String pageId = wizardPage.getId().getValue();
-					if (wizardPage.getReflections() != null
-							&& wizardPage.getReflections().size() > 0)
-						return true;
-					if (wizardPage.getPageForms() != null
-							&& wizardPage.getPageForms().size() > 0)
-						return true;
-					if (wizardPage.getFeedback() != null
-							&& wizardPage.getFeedback().size() > 0)
-						return true;
-					if (wizardPage.getAttachments() != null
-							&& wizardPage.getAttachments().size() > 0)
-						return true;
-					if (reviewManager.getReviewsByParent(pageId) != null
-							&& reviewManager.getReviewsByParent(pageId).size() > 0)
-						return true;
-					// note: wizardPage.[get|set]Feedback() does not appear to
-					// be used
-				}
-			}
-		}
-
-		return false;
 	}
 
 	protected List<TaggingHelperInfo> getHelperInfo(TaggableActivity activity) {

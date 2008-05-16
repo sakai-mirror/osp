@@ -113,6 +113,12 @@ public interface MatrixManager extends WorkflowEnabledManager {
    ScaffoldingCell getScaffoldingCell(Criterion criterion, Level level);
    ScaffoldingCell getScaffoldingCell(Id id);
    
+	/**
+	 * Determine if any matrix cell with the specified scaffoldingCell has
+	 * been 'used' (containing reflections and/or added form items)
+	 */
+   boolean isScaffoldingCellUsed(ScaffoldingCell cell);
+   
    /**
     * Get all scaffolding cells for a given scaffolding
     * @param scaffoldingId

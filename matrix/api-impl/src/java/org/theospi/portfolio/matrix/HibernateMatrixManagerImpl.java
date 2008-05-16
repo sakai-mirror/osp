@@ -757,6 +757,35 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return scaffoldingCell;
    }
    
+   //FIXME: These queries should be externalized and possibly promoted to the API 
+   public int getFormCountByPageDef(Id pageDefId) {
+	   Object[] params = new Object[] { pageDefId };
+	   return (Integer) getHibernateTemplate().find(
+			   "select count(*) from WizardPage wp join wp.pageForms where wp.pageDefinition.id=?", params).get(0);	   
+   }
+   
+   //FIXME: This should be in the ReviewManager, but is special-cased here for now
+   //NOTE: This is a theta-join because Review.parent and WizardPage.id are not mapped
+   public int getReviewCountByPageDef(Id pageDefId) {
+	   Object[] params = new Object[] { pageDefId };
+	   return (Integer) getHibernateTemplate().find(
+			   "select count(*) from Review r, WizardPage wp where wp.id = r.parent and wp.pageDefinition.id=?", params).get(0);
+   }
+   
+   public int getAttachmentCountByPageDef(Id pageDefId) {
+	   Object[] params = new Object[] { pageDefId };
+	   return (Integer) getHibernateTemplate().find(
+			   "select count(*) from WizardPage wp join wp.attachments where wp.pageDefinition.id=?", params).get(0);
+   }
+   
+   public boolean isScaffoldingCellUsed(ScaffoldingCell cell) {
+	   Id pageDefId = cell.getWizardPageDefinition().getId();
+	   
+	   return  getFormCountByPageDef(pageDefId) > 0
+	   		|| getAttachmentCountByPageDef(pageDefId) > 0
+	   		|| getReviewCountByPageDef(pageDefId) > 0;
+   }
+   
    /**
     * {@inheritDoc}
     */
