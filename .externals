@@ -2,7 +2,7 @@ access				-r43028 https://source.sakaiproject.org/svn/access/branches/sakai_2-5-
 alias				-r43028 https://source.sakaiproject.org/svn/alias/branches/sakai_2-5-x
 announcement			-r43028 https://source.sakaiproject.org/svn/announcement/branches/sakai_2-5-x
 archive				-r43028 https://source.sakaiproject.org/svn/archive/branches/sakai_2-5-x
-assignment			-r45172 https://source.sakaiproject.org/svn/assignment/branches/oncourse_osp_enhancements
+assignment			-r46126 https://source.sakaiproject.org/svn/assignment/branches/oncourse_osp_enhancements
 authz				-r43028 https://source.sakaiproject.org/svn/authz/branches/sakai_2-5-x
 calendar			-r43028 https://source.sakaiproject.org/svn/calendar/branches/sakai_2-5-x
 cluster				-r43028 https://source.sakaiproject.org/svn/cluster/branches/sakai_2-5-x
@@ -26,7 +26,7 @@ master				-r43028 https://source.sakaiproject.org/svn/master/branches/sakai_2-5-
 memory				-r43028 https://source.sakaiproject.org/svn/memory/branches/sakai_2-5-x
 message				-r43028 https://source.sakaiproject.org/svn/message/branches/sakai_2-5-x
 metaobj				-r43028 https://source.sakaiproject.org/svn/metaobj/branches/sakai_2-5-x
-osp				-r46244 https://source.sakaiproject.org/svn/osp/branches/oncourse_osp_enhancements/osp
+osp				-r46578 https://source.sakaiproject.org/svn/osp/branches/oncourse_osp_enhancements/osp
 portal				-r43028 https://source.sakaiproject.org/svn/portal/branches/sakai_2-5-x
 presence			-r43028 https://source.sakaiproject.org/svn/presence/branches/sakai_2-5-x
 privacy				-r43028 https://source.sakaiproject.org/svn/privacy/branches/sakai_2-5-x
@@ -39,7 +39,7 @@ site				-r43028 https://source.sakaiproject.org/svn/site/branches/sakai_2-5-x
 site-association		-r48720 https://source.sakaiproject.org/contrib/iu/site-association/trunk
 site-manage			-r45470 https://source.sakaiproject.org/svn/site-manage/branches/sakai_2-5-x	
 syllabus			-r43028 https://source.sakaiproject.org/svn/syllabus/branches/sakai_2-5-x
-taggable			-r47714 https://source.sakaiproject.org/contrib/syracuse/taggable/branches/oncourse_osp_enhancements
+taggable			-r49233 https://source.sakaiproject.org/contrib/syracuse/taggable/branches/oncourse_osp_enhancements
 test-harness			-r43028 https://source.sakaiproject.org/svn/test-harness/branches/sakai_2-5-x
 tool				-r43028 https://source.sakaiproject.org/svn/tool/branches/sakai_2-5-x
 user				-r43028 https://source.sakaiproject.org/svn/user/branches/sakai_2-5-x
@@ -48,7 +48,7 @@ velocity			-r43028 https://source.sakaiproject.org/svn/velocity/branches/sakai_2
 web				-r43028 https://source.sakaiproject.org/svn/web/branches/sakai_2-5-x
 reports				-r43028 https://source.sakaiproject.org/svn/reports/branches/sakai_2-5-x
 warehouse			-r43028 https://source.sakaiproject.org/svn/warehouse/branches/sakai_2-5-x
-gmt				-r46918 https://source.sakaiproject.org/contrib/syracuse/gmt/branches/oncourse_osp_enhancements
-datapoint			-r46918 https://source.sakaiproject.org/contrib/syracuse/datapoint/branches/oncourse_osp_enhancements
+gmt				-r49233 https://source.sakaiproject.org/contrib/syracuse/gmt/branches/oncourse_osp_enhancements
+datapoint			-r48637 https://source.sakaiproject.org/contrib/syracuse/datapoint/branches/oncourse_osp_enhancements
 formbuilder			-r45275 https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
-assignment2			-r47714 https://source.sakaiproject.org/contrib/assignment2/trunk
+assignment2			-r49233 https://source.sakaiproject.org/contrib/assignment2/trunk
