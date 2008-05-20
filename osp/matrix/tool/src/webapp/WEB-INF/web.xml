@@ -5,13 +5,30 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
+<description>OSP Matrix</description>
+<display-name>osp-matrix</display-name>
+    
 	<context-param>
       <param-name>contextConfigLocation</param-name>
       <param-value>/WEB-INF/components.xml</param-value>
    </context-param>
    
-   <display-name>osp-matrix</display-name>
-    <description>OSP Matrix</description>
+   <context-param>
+       <param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+       <param-value>server</param-value>
+   </context-param>
+
+  <!--sakai-->
+   <context-param>
+       <param-name>com.sun.faces.validateXml</param-name>
+       <param-value>true</param-value>
+   </context-param>
+   <context-param>
+       <param-name>com.sun.faces.verifyObjects</param-name>
+       <param-value>true</param-value>
+   </context-param>
+   
+   
 
     <filter>
         <filter-name>sakai.request</filter-name>
@@ -33,6 +50,14 @@
     <filter-mapping>
         <filter-name>sakai.request</filter-name>
         <servlet-name>osp.matrix.link</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>sakai.request</filter-name>
+        <servlet-name>osp.matrix.cell.info</servlet-name>
         <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>INCLUDE</dispatcher>
@@ -77,7 +102,28 @@
        <dispatcher>FORWARD</dispatcher>
        <dispatcher>INCLUDE</dispatcher>
    </filter-mapping>
+   
+   <filter-mapping>
+        <filter-name>sakai.request</filter-name>
+        <servlet-name>Faces Servlet</servlet-name>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+    </filter-mapping>
 
+   <listener>
+      <listener-class>org.sakaiproject.util.ContextLoaderListener</listener-class>
+   </listener>
+
+    <listener>
+        <listener-class>org.sakaiproject.util.ToolListener</listener-class>
+    </listener>
+
+   <servlet>
+       <servlet-name>Faces Servlet</servlet-name>
+       <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+       <load-on-startup>2</load-on-startup>
+   </servlet>
 
    <servlet>
       <servlet-name>springapp</servlet-name>
@@ -106,10 +152,28 @@
 
    <servlet>
       <servlet-name>osp.matrix.link</servlet-name>
+      <servlet-class>org.theospi.portfolio.matrix.util.MatrixJsfTool</servlet-class>
+      <init-param>
+            <param-name>default</param-name>
+            <param-value>jsfLinkScaffolding</param-value>
+        </init-param>
+      <init-param>
+          <param-name>path</param-name>
+          <param-value>/WEB-INF/jsp/matrix/taggable</param-value>
+      </init-param>
+      <init-param>
+          <param-name>default.last.view</param-name>
+          <param-value>false</param-value>
+      </init-param>
+      <load-on-startup>2</load-on-startup>
+   </servlet>
+   
+   <servlet>
+      <servlet-name>osp.matrix.cell.info</servlet-name>
       <servlet-class>org.sakaiproject.spring.util.SpringTool</servlet-class>
       <init-param>
             <param-name>default</param-name>
-            <param-value>linkScaffolding</param-value>
+            <param-value>viewCellInformation</param-value>
         </init-param>
       <init-param>
           <param-name>path</param-name>
@@ -117,7 +181,7 @@
       </init-param>
       <init-param>
           <param-name>default.last.view</param-name>
-          <param-value>true</param-value>
+          <param-value>false</param-value>
       </init-param>
       <load-on-startup>2</load-on-startup>
    </servlet>
@@ -228,28 +292,18 @@
       
    </servlet>
 
-   <listener>
-      <listener-class>org.sakaiproject.util.ContextLoaderListener</listener-class>
-   </listener>
-<!-- 
-   <listener>
-      <listener-class>org.sakaiproject.metaobj.utils.BeanFactory</listener-class>
-   </listener>
- -->
-    <listener>
-        <listener-class>org.sakaiproject.util.ToolListener</listener-class>
-    </listener>
-<!--     
-    <listener>
-        <listener-class>org.sakaiproject.metaobj.shared.control.SessionListener</listener-class>
-    </listener>
--->
+   
 
     <servlet-mapping>
       <servlet-name>springapp</servlet-name>
       <url-pattern>*.osp</url-pattern>
    </servlet-mapping>
-
+   
+   <servlet-mapping>
+       <servlet-name>Faces Servlet</servlet-name>
+       <url-pattern>*.jsf</url-pattern>
+   </servlet-mapping>
+   
    <servlet-mapping>
      <servlet-name>repository</servlet-name>
      <url-pattern>/repository/*</url-pattern>

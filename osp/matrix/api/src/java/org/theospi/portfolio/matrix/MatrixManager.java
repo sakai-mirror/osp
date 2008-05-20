@@ -98,6 +98,8 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    Scaffolding getScaffolding(Id scaffoldingId);
    
+   Scaffolding loadScaffolding(Id scaffoldingId);
+   
    /**
     * 
     * @param siteIdStr

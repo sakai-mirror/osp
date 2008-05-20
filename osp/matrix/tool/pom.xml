@@ -228,6 +228,33 @@
       <version>1.1.01</version>
     </dependency>
     <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-depend-jsf-widgets-sun</artifactId>
+      <version>${sakai.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-jsf-tool</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-jsf-app</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.osp</groupId>
+      <artifactId>osp-depend-jsf-widgets-sun</artifactId>
+      <version>${sakai.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.myfaces.tomahawk</groupId>
+      <artifactId>tomahawk</artifactId>
+      <version>1.1.6</version>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
       <version>1.1.2</version>

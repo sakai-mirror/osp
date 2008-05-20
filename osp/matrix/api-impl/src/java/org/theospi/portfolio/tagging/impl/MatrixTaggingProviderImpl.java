@@ -5,11 +5,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.api.ToolConfiguration;
-import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.siteassociation.api.SiteAssocManager;
 import org.sakaiproject.taggable.api.Link;
 import org.sakaiproject.taggable.api.LinkManager;
@@ -51,22 +47,6 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 		return messages.getString("provider_name");
 	}
 
-	private String getPlacementId(String context) {
-		String placement = null;
-		try
-		{
-			Site site = SiteService.getSite(context);
-			ToolConfiguration toolConfig = site.getToolForCommonId("osp.matrix");
-			placement = toolConfig.getId();
-		}
-		catch (IdUnusedException e)
-		{
-			logger.warn("unable to get site from context: " + context, e);
-		}
-		
-        return placement;
-	}
-
 	public boolean allowViewTags(String context) {
 		// TODO Auto-generated method stub
 		//CWM need something like this for instructor/student view differentiation
@@ -88,7 +68,7 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 			String text = messages.getString("act_helper_text");
 			String title = messages.getString("act_helper_title");
 			helperInfo = taggingManager.createTaggingHelperInfoObject(LINK_HELPER, text, title,
-					parameterMap, this, getPlacementId(context));
+					parameterMap, this);
 		}
 		return helperInfo;
 	}

@@ -102,6 +102,7 @@
       <property name="screenMappings">
          <props>
             <prop key="success">linkScaffolding</prop>
+            <prop key="back">helperDone</prop>
          </props>
       </property>      
       <property name="commandName"><value>grids</value></property>

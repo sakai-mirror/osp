@@ -714,6 +714,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return (Scaffolding) this.getHibernateTemplate().get(Scaffolding.class, scaffoldingId);
       //return getScaffolding(scaffoldingId, false);
    }
+   
+   public Scaffolding loadScaffolding(Id scaffoldingId) {
+	   Scaffolding scaffolding = (Scaffolding) this.getHibernateTemplate().load(Scaffolding.class, scaffoldingId);
+	   scaffolding.getLevels().size();
+	   scaffolding.getCriteria().size();
+	   return scaffolding;
+   }
 
    protected Scaffolding getScaffoldingForExport(Id scaffoldingId) {
       Scaffolding scaffolding = (Scaffolding) this.getHibernateTemplate().get(Scaffolding.class, scaffoldingId);

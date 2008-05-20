@@ -127,8 +127,8 @@
 		                     <c:if test="${not empty cell.link}">checked</c:if>
 		                 onclick="hrefLinkCell('<c:out value="${cell.scaffoldingCell.id}"/>') "/>
 						 <center>
-						 <a class="thickbox" href="<osp:url value="scaffoldingCellInfo.osp" >
-						 		<osp:param name="pageId" value="${cell.scaffoldingCell.id}"/>
+						 <a class="thickbox" href="<osp:url value="viewCellInformation.osp" >
+						 		<osp:param name="sCell_id" value="${cell.scaffoldingCell.id}"/>
 						 	</osp:url>">
 						 	<img alt="asdf" src="/library/image/sakai/information.png" border="0"/>
 						 </a>
@@ -145,25 +145,10 @@
 </table>
 <!-- *********** end linkable view -->
 
-<!-- *********** begin viewonly links -->
-<table class="listHier lines nolines" cellspacing="0"  border="0" summary="<fmt:message key="list_link_summary"/>">
-   <thead>
-	  <tr>
-		 <th scope="col"><fmt:message key="table_header_name"/></th>
-	  </tr>
-   </thead>
-   <tbody>
-	<c:forEach var="linkedCell" items="${linkedCells}">
-	  <tr>
-		<td style="white-space: nowrap">
-			<a class="thickbox" href="<osp:url value="scaffoldingCellInfo.osp" >
-			 		<osp:param name="pageId" value="${linkedCell.scaffoldingCell.id}"/>
-			 	</osp:url>">
-			<c:out value="${linkedCell.scaffoldingCell.title}" />
-			</a>
-		</td>
-	</tr>
-	  </c:forEach>
-	</tbody>
-
-</table>
+<form name="backForm" method="get" action="<osp:url value="linkScaffolding.osp"/>">
+						<osp:form/>
+<div class="act">
+	<input type="submit" name="goBack"
+			value="<fmt:message key="save_exit"/>" accesskey="b" class="active" />
+</div>
+</form>

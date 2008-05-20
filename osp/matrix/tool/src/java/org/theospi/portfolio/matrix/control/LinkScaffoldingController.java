@@ -76,6 +76,12 @@ public class LinkScaffoldingController extends AbstractMatrixController {
 		
 		TaggableActivity currentActivity = getCurrentActivity();
 		
+		//Did they click the back button
+		String back = (String) request.get("goBack");
+		if (back != null) {
+			return new ModelAndView("back");
+		}
+		
 		//FIXME change this to be a real permission
 		boolean canLink = true;
 		//boolean canLink = getAuthzManager().checkPermission(function, id);

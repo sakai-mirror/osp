@@ -47,6 +47,8 @@
    
    iframeId = '<%= org.sakaiproject.util.Validator.escapeJavascript(panelId)%>';
    
+   urlPrefix = '/tool/<%=org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId()%>';
+   
   </script>
   </head>
   <body onload="loaded();">
