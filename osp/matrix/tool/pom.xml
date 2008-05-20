@@ -17,6 +17,11 @@
   <inceptionYear>2004</inceptionYear>
   <packaging>war</packaging>
   <dependencies>
+  	<dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-email-api</artifactId>
+      <version>${sakai.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-matrix-impl</artifactId>

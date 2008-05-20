@@ -623,12 +623,17 @@
          	<property name="serverConfigurationService">
           		<ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
       		</property>
+      		<property name="authzManager"><ref bean="authzManager"/></property>
+      		<property name="siteService">
+               <ref bean="org.sakaiproject.site.api.SiteService" />
+            </property>
          </bean>
       </property>
       <property name="screenMappings">
          <props>
             <prop key="inviteFeedback">inviteFeedback</prop>
             <prop key="viewCell">viewCellRedirect</prop>
+            <prop key="viewScaffolding">matrixRedirect</prop>
             <prop key="notifyAudience">notifyAudience</prop>
          </props>
       </property>

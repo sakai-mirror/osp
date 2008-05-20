@@ -1,6 +1,84 @@
 <%@ include file="/WEB-INF/jsp/include.jsp" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<%
+  	String thisId = request.getParameter("panel");
+  	if (thisId == null) 
+  	{
+    	thisId = "Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId();
+ 		 }
+%>
+<script type="text/javascript">
+	function resize(){
+		mySetMainFrameHeight('<%= org.sakaiproject.util.Web.escapeJavascript(thisId)%>');
+	}
+
+
+function mySetMainFrameHeight(id)
+{
+	// run the script only if this window's name matches the id parameter
+	// this tells us that the iframe in parent by the name of 'id' is the one who spawned us
+	if (typeof window.name != "undefined" && id != window.name) return;
+
+	var frame = parent.document.getElementById(id);
+	if (frame)
+	{
+
+		var objToResize = (frame.style) ? frame.style : frame;
+  
+    // SAK-11014 revert           if ( false ) {
+
+		var height; 		
+		var offsetH = document.body.offsetHeight;
+		var innerDocScrollH = null;
+
+		if (typeof(frame.contentDocument) != 'undefined' || typeof(frame.contentWindow) != 'undefined')
+		{
+			// very special way to get the height from IE on Windows!
+			// note that the above special way of testing for undefined variables is necessary for older browsers
+			// (IE 5.5 Mac) to not choke on the undefined variables.
+ 			var innerDoc = (frame.contentDocument) ? frame.contentDocument : frame.contentWindow.document;
+			innerDocScrollH = (innerDoc != null) ? innerDoc.body.scrollHeight : null;
+		}
+	
+		if (document.all && innerDocScrollH != null)
+		{
+			// IE on Windows only
+			height = innerDocScrollH;
+		}
+		else
+		{
+			// every other browser!
+			height = offsetH;
+		}
+   // SAK-11014 revert		} 
+
+   // SAK-11014 revert             var height = getFrameHeight(frame);
+
+		// here we fudge to get a little bigger
+		var newHeight = height + 40;
+
+		// but not too big!
+		if (newHeight > 32760) newHeight = 32760;
+
+		// capture my current scroll position
+		var scroll = findScroll();
+
+		// resize parent frame (this resets the scroll as well)
+		objToResize.height=newHeight + "px";
+
+		// reset the scroll, unless it was y=0)
+		if (scroll[1] > 0)
+		{
+			var position = findPosition(frame);
+			parent.window.scrollTo(position[0]+scroll[0], position[1]+scroll[1]);
+		}
+	}
+}
+
+</script>
+
+
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
@@ -99,6 +177,7 @@
 </div>
 <c:if test="${!(empty scaffolding)}">
 	<c:set var="studentView" value="${!can.publish && !can.edit && !can.delete && !can.export}" />
+	<div>
 	<table class="listHier lines nolines" cellspacing="0"  border="0" summary="<fmt:message key="list_matrix_summary"/>">
 	   <thead>
 		  <tr>
@@ -255,6 +334,7 @@
 	   </thead>
 	   <tbody>
 		  <c:forEach var="scaffold" items="${scaffolding}">
+
 			<c:if test="${myworkspace}">
 			  <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" qualifier="${scaffold.worksiteId}"/>
 			  <osp-c:authZMap prefix="osp.matrix." var="matrixCan" qualifier="${scaffold.worksiteId}"/>
@@ -262,16 +342,21 @@
 			<tr>
 				<td style="white-space: nowrap">
 				<h4 style="display:inline">
+					
+					
 					<%-- if there is a description and user can create, show a toggle to open description, otherwise not--%>
-					<c:if test="${!(empty scaffold.description)}">
-						<c:if test="${can.create}">
-							<a href="#"  onclick="toggle_visibility('<c:out value="${scaffold.id.value}" />')"><img  id="toggle<c:out value="${scaffold.id.value}" />"  src="/library/image/sakai/expand.gif" style="padding-top:4px;width:13px" title="<fmt:message key="hideshowdesc_toggle_show"/>"></a></span>
-						</c:if>	
+					<c:if test="${!(empty scaffold.description)}">		
+						<a name="viewDesc" id="viewDesc" class="show" href="#" onclick="$(this).next('.hide').toggle();$('div.toggle${scaffold.id.value}:first', $(this).parents('div:first')).slideToggle(resize);$(this).toggle();">
+							<img  id="toggle<c:out value="${scaffold.id.value}" />"  src="/library/image/sakai/expand.gif" style="padding-top:4px;width:13px" title="<fmt:message key="hideshowdesc_toggle_show"/>">
+						</a>
+				
+			
+						<a name="hideDesc" id="hideDesc" class="hide" style="display:none" href="#" onclick="$(this).prev('.show').toggle(); $('div.toggle${scaffold.id.value}:first', $(this).parents('div:first')).slideToggle(resize);$(this).toggle();">
+							<img  id="toggle<c:out value="${scaffold.id.value}" />"  src="/library/image/sakai/collapse.gif" style="padding-top:4px;width:13px" title="<fmt:message key="hideshowdesc_toggle_hide"/>">
+						</a>				
 					</c:if>
-					<c:if test="${(empty scaffold.description)}">
-						<c:if test="${can.create}">
-							<img  src="/library/image/sakai/s.gif" style="width:13px" />
-						</c:if>	
+					<c:if test="${(empty scaffold.description)}">						
+							<img  src="/library/image/sakai/s.gif" style="width:13px" />					
 					</c:if>	
 					<c:if test="${(scaffold.published || scaffold.preview) && (scaffold.owner == osp_agent || can.use || matrixCan.review || matrixCan.evaluate)}">
 						<a href="<osp:url value="viewMatrix.osp"/>&scaffolding_id=<c:out value="${scaffold.id.value}" />" title="<fmt:message key="scaffolding_link_title">
@@ -369,24 +454,18 @@
 			<%-- if there is a description and user can create,  description visibility can be toggled, if user cannot create, just show--%>
 			<c:if test="${!(empty scaffold.description)}">
 				<tr class="exclude">
-					<td colspan="4">
-						<c:if test="${can.create}">
-							<div class="instruction indnt2 textPanelFooter" id="<c:out value="${scaffold.id.value}" />" style="padding:0;margin:0;display:none">
+					<td colspan="5">					
+							<div class="toggle${scaffold.id.value} instruction indnt2 textPanelFooter" style="padding:0;margin:0;display:none">
 								<c:out value="${scaffold.description}" escapeXml="false"/>
-							</div>
-						</c:if>	
-						<c:if test="${!(can.create)}">
-							<div class="instruction textPanelFooter indnt3">
-								<c:out value="${scaffold.description}" escapeXml="false"/>
-							</div>			
-						</c:if>
+							</div>													
 					</td>
 				</tr>
 			</c:if>	
-		
+	
 		  </c:forEach>
 		</tbody>
 	</table>
+	</div>
 </c:if> 
 <c:if test="${(empty scaffolding)}">
 	<c:if test="${can.create}">

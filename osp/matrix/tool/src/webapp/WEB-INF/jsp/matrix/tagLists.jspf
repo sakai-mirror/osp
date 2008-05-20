@@ -1,8 +1,17 @@
 <input type="hidden" name="criteria" value=""/>
 <input type="hidden" name="providerId" value=""/>
+<c:set var="firstFlag" value="true"/>
 <c:forEach var="provider" items="${providers}">
   <c:if test="${provider.allowViewTags}">
-    <h4><c:out value="${provider.provider.name}"/> <fmt:message key="tgble.tags"/></h4>
+  	<c:if test="${!firstFlag}">
+  		<br><br>
+  	</c:if>
+  	<div class="navPanel">
+	<div class="viewNav">
+		<c:set var="firstFlag" value="false"/>  	
+	
+    	<h4><c:out value="${provider.provider.name}"/> <fmt:message key="tgble.tags"/></h4>
+    </div>
     <c:choose>
       <c:when test="${!(empty provider.tags)}">
         <div class="listNav">
@@ -78,6 +87,7 @@
             </c:otherwise>
           </c:choose>
 		</div>
+		</div>
         <table class="listHier lines nolines" border="0" cellspacing="0">
           <tr>
             <c:forEach var="column" items="${provider.columns}">
@@ -121,6 +131,7 @@
         </table>
       </c:when>
       <c:otherwise>
+      	</div>
         <div class="information"><fmt:message key="tgble.tags_empty"/></div>
       </c:otherwise>
     </c:choose>

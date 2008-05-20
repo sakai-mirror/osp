@@ -374,11 +374,18 @@ public class CellController implements FormController, LoadObjectController {
 		String matrixAction = (String) request.get("matrix");
 		String submitAction = (String) request.get("submitAction");
 		String inviteFeedback = (String) request.get("inviteFeedback");
+		String submitForReview = (String) request.get("submitForReview");
 
 		
 		if(inviteFeedback != null){
 			session.put("feedbackCellId", cell.getId().getValue());
 			session.put("feedbackMatrixCall", "feedbackMatrixCall");
+
+			return new ModelAndView("feedbackHelper");
+		}
+		if(submitForReview != null){
+			session.put("feedbackCellId", cell.getId().getValue());
+			session.put("submitForReview", "submitForReview");
 
 			return new ModelAndView("feedbackHelper");
 		}

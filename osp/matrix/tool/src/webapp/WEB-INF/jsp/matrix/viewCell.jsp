@@ -1078,6 +1078,12 @@ function mySetMainFrameHeight(id)
 	<input type="submit" name="inviteFeedback" class="active"
 			value="<fmt:message key="share_collection"/>"/>
 </c:if>
+<c:if test="${isMatrix == 'true' and (!cell.scaffoldingCell.scaffolding.allowRequestFeedback && cell.scaffoldingCell.wizardPageDefinition.defaultReviewers ||
+										!cell.scaffoldingCell.wizardPageDefinition.allowRequestFeedback && !cell.scaffoldingCell.wizardPageDefinition.defaultReviewers) &&
+											cell.wizardPage.owner.id == currentUser}">
+	<input type="submit" name="submitForReview" class="active"
+			value="<fmt:message key="submit_for_review"/>"/>
+</c:if>
 
 <c:if test="${isEvaluation == 'true'}">
 	<input type="submit" name="matrix" class="active"

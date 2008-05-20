@@ -301,6 +301,14 @@ public class AudienceTool extends HelperToolBase {
     public String getBackTarget() {
         return (String) getAttribute(AudienceSelectionHelper.AUDIENCE_BACK_TARGET);
     }
+    
+    public String getMatrixReviewerObjectId() {
+        return (String) getAttribute(AudienceSelectionHelper.MATRIX_REVIEWER_OBJECT_ID);
+    }
+    
+    public String getMatrixReviewFunction(){
+    	 return (String) getAttribute(AudienceSelectionHelper.MATRIX_REVIEWER_FUNCTION);
+    }
 
     public void setIdManager(IdManager idManager) {
         this.idManager = idManager;
@@ -554,7 +562,11 @@ public class AudienceTool extends HelperToolBase {
     public String processActionSave() {
         ToolSession session = SessionManager.getCurrentToolSession();
         session.setAttribute("target", getSaveTarget());
-        save();
+        if(isInviteFeedbackAudience()){
+        	//send invitation emails
+        	notifyAudience();
+        }
+        save();     
         clearAudienceSelectionVariables();
         processActionClearFilter();
         return returnToCaller();
@@ -635,8 +647,31 @@ public class AudienceTool extends HelperToolBase {
     		String from = ServerConfigurationService.getString("setup.request", 
     				"postmaster@".concat(ServerConfigurationService.getServerName()));
 
-    		//this makes sure the matrixFeedback only grabs users and not roles
-    		String[] emailList = isInviteFeedbackAudience() ? getSelectedUsersEmails() : getSelectedArray();
+    		
+    		String[] emailList = null;
+    		if(isInviteFeedbackAudience()){
+    			emailList = getSelectedUsersEmails();
+    			//add all reviewers that are selected by the matrix creator
+    			List matrixReviewers = getMatrixReviewersList();
+    			
+    			
+    			//concat the two lists
+    			
+    			String[] tempEmailList = new String[emailList.length + matrixReviewers.size()];
+    			for(int i = 0; i < emailList.length + matrixReviewers.size(); i++){
+    				if(i < emailList.length)
+    					tempEmailList[i] = emailList[i].toString();
+    				else
+    					tempEmailList[i] = matrixReviewers.get(i - emailList.length).toString();
+    			}
+    			emailList = tempEmailList;
+    			
+    		}else{
+    			emailList = getSelectedArray();
+    		}
+    		
+    		
+    		List sentEmailAddrs = new ArrayList();
     		
     		for (int i = 0; i < emailList.length; i++) {
     			String toUser = emailList[i];
@@ -647,7 +682,8 @@ public class AudienceTool extends HelperToolBase {
     					Member member = (Member) j.next();
     					if (member.getRole().getId().equals(role)) {
     						String email = UserDirectoryService.getUser(member.getUserId()).getEmail();
-    						if (validateEmail(email)) {
+    						if (validateEmail(email) && !sentEmailAddrs.contains(email)) {
+    							sentEmailAddrs.add(email);
     							EmailService.send(from, email,
     									subject, emailMessage, null, null, null);
 
@@ -656,7 +692,8 @@ public class AudienceTool extends HelperToolBase {
     				}
 
     			} else {
-    				if (validateEmail(toUser)) {
+    				if (validateEmail(toUser) && !sentEmailAddrs.contains(toUser)) {
+    					sentEmailAddrs.add(toUser);
     					EmailService.send(from, toUser,
     							subject, emailMessage, null, null, null);
     				}
@@ -667,6 +704,25 @@ public class AudienceTool extends HelperToolBase {
     		e.printStackTrace();
     	}
     }
+    
+    protected List getMatrixReviewersList() {
+		List returnList = new ArrayList();
+		
+
+		List evaluators = getAuthzManager().getAuthorizations(null,
+				getMatrixReviewFunction(), getIdManager().getId(getMatrixReviewerObjectId()));
+
+		for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
+			Authorization az = (Authorization) iter.next();
+			Agent agent = az.getAgent();
+			
+
+			returnList.add(new DecoratedMember(this, agent).getEmail());
+		}
+
+		return returnList;
+	}
+    
 
     protected void addMembers(List added) {
         for (Iterator i = added.iterator(); i.hasNext();) {
@@ -1066,6 +1122,8 @@ public class AudienceTool extends HelperToolBase {
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_SAVE_TARGET);
         session.removeAttribute(AudienceSelectionHelper.CONTEXT);
         session.removeAttribute(AudienceSelectionHelper.CONTEXT2);
+        session.removeAttribute(AudienceSelectionHelper.MATRIX_REVIEWER_OBJECT_ID);
+        session.removeAttribute(AudienceSelectionHelper.MATRIX_REVIEWER_FUNCTION);
         session.removeAttribute(PRESENTATION_VIEWERS);
         
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION_INVITE_FEEDBACK);
@@ -1073,6 +1131,8 @@ public class AudienceTool extends HelperToolBase {
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX_REVIEW);
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO);
         session.removeAttribute(AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD);
+        
+        
     }
 
     public String getStepString() {
