@@ -155,7 +155,7 @@ public class MatrixLinkTool extends HelperToolBase
 		String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
 		if (selectedSiteId == null) setSelectedSiteId(worksiteId);
 
-		List<Scaffolding> scaffolding = getMatrixManager().findAvailableScaffolding(selectedSiteId, currentAgent, false);
+		List<Scaffolding> scaffolding = getMatrixManager().findPublishedScaffolding(selectedSiteId);
 		List<MatrixGridBean> grids = getScaffoldingGrids(scaffolding, selectedSiteId, getCurrentActivity().getReference());
 		return grids;
 	}

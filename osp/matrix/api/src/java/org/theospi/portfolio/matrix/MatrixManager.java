@@ -117,6 +117,8 @@ public interface MatrixManager extends WorkflowEnabledManager {
     */
    public List findAvailableScaffolding(List sites, Agent user, boolean showUnpublished);
    
+   List<Scaffolding> findPublishedScaffolding(String siteId);
+   
    List findPublishedScaffolding(List sites);
    
    ScaffoldingCell getNextScaffoldingCell(ScaffoldingCell scaffoldingCell, 

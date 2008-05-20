@@ -225,7 +225,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     * @param siteId String
     * @return List of Scaffolding
     */
-   protected List findPublishedScaffolding(String siteId) {
+   public List<Scaffolding> findPublishedScaffolding(String siteId) {
       Object[] params = new Object[]{getIdManager().getId(siteId), new Boolean(true)};
       return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
             "and s.published=?",
