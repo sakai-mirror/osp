@@ -254,7 +254,6 @@ public class ReviewHelperController implements Controller {
 
          String objectId = (String)request.get("objectId");
          String objectTitle = (String)request.get("objectTitle");
-         String objectDesc = (String)request.get("objectDesc");
 
          String itemId = (String)request.get("itemId");
          session.put(ReviewHelper.REVIEW_ITEM_ID, itemId);
@@ -273,7 +272,7 @@ public class ReviewHelperController implements Controller {
 
             String folderPath = createFolder(folderBase, "portfolio-interaction", rootDisplayName, rootDescription);
             folderPath = createFolder(folderPath, currentSite, SiteService.getSiteDisplay(currentSite), null);
-            folderPath = createFolder(folderPath, objectId, objectTitle, objectDesc);
+            folderPath = createFolder(folderPath, objectId, objectTitle, null);
             folderPath = createFolder(folderPath, formTypeId, formTypeTitle, null);
            
             contentResourceList = this.getContentHosting().getAllResources(folderPath);

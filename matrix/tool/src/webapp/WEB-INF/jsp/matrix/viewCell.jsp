@@ -249,7 +249,6 @@
 										<osp:param name="isWizard" value="${isWizard}" />
 										<osp:param name="objectId" value="${objectId}" />
 										<osp:param name="objectTitle" value="${objectTitle}" />
-										<osp:param name="objectDesc" value="${objectDesc}" />
 										</osp:url>"
 						onclick="javascript:stopEvents(event)"> <fmt:message
 						key="action_createForm" /> <c:out value="${cellFormDef.name}" />
@@ -338,7 +337,6 @@
                           <osp:param name="isWizard" value="${isWizard}" />
                           <osp:param name="objectId" value="${objectId}" />
                           <osp:param name="objectTitle" value="${objectTitle}" />
-                          <osp:param name="objectDesc" value="${objectDesc}" />
                           <osp:param name="itemId" value="${node.id}" />
                           </osp:url>"><osp:message
 							key="review" /></a>
@@ -482,7 +480,6 @@
                           <osp:param name="isWizard" value="${isWizard}" />
                           <osp:param name="objectId" value="${objectId}" />
                           <osp:param name="objectTitle" value="${objectTitle}" />
-                          <osp:param name="objectDesc" value="${objectDesc}" />
                           <osp:param name="itemId" value="${node.id}" />
                           </osp:url>"><osp:message
 					key="review" /></a>
@@ -584,7 +581,6 @@
 							<osp:param name="isWizard" value="${isWizard}" />
 							<osp:param name="objectId" value="${objectId}" />
 							<osp:param name="objectTitle" value="${objectTitle}" />
-							<osp:param name="objectDesc" value="${objectDesc}" />
 					   </osp:url>">
 			<osp:message key="reflection_create" /></a> </span>
 		</c:if> </span></p>
@@ -692,7 +688,6 @@
 						<osp:param name="isWizard" value="${isWizard}" />
 						<osp:param name="objectId" value="${objectId}" />
 						<osp:param name="objectTitle" value="${objectTitle}" />
-						<osp:param name="objectDesc" value="${objectDesc}" />
 						</osp:url>">
 				<osp:message key="review" /></a>
 			</c:if></div>
@@ -744,7 +739,6 @@
 					<osp:param name="isWizard" value="${isWizard}" />
 					<osp:param name="objectId" value="${objectId}" />
 					<osp:param name="objectTitle" value="${objectTitle}" />
-					<osp:param name="objectDesc" value="${objectDesc}" />
 						</osp:url>">
 		<osp:message key="add_evaluation" /></a> </span></p>
 		</h4>
@@ -774,7 +768,6 @@
 					<osp:param name="isWizard" value="${isWizard}" />
 					<osp:param name="objectId" value="${objectId}" />
 					<osp:param name="objectTitle" value="${objectTitle}" />
-					<osp:param name="objectDesc" value="${objectDesc}" />
 						</osp:url>">
 				<osp:message key="add_evaluation" /></a>
 			</c:if></div>
