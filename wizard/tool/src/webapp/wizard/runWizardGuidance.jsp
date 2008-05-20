@@ -36,9 +36,12 @@
    
    <sakai:instruction_message value="#{wizard.current.base.description}" rendered="#{not empty wizard.current.base.description}"/>
    
+	
+	   <p><h:outputText value="#{msgs.users_unavailable}" styleClass="instruction" rendered="#{(wizard.canEvaluateTool || wizard.canReviewTool) && wizard.current.base.published && empty wizard.current.userListForSelect}"/></p>
+		
       <h:panelGrid columns="1" width="100%" border="0">
 	  	  <h:panelGroup>
-			   <f:subview id="viewUsers" rendered="#{(wizard.canEvaluateTool || wizard.canReviewTool) && wizard.current.base.published}">
+			   <f:subview id="viewUsers" rendered="#{(wizard.canEvaluateTool || wizard.canReviewTool) && wizard.current.base.published && not empty wizard.current.userListForSelect}">
 					<h:outputLabel for ="users" value="#{msgs.select_wizard_user}" />
 					<h:outputText value=" "/>
 					<h:selectOneMenu id="users" immediate="true" value="#{wizard.currentUserId}" valueChangeListener="#{wizard.current.processActionChangeUser}" onchange="this.form.submit();">
@@ -46,7 +49,7 @@
 					</h:selectOneMenu>
 			   </f:subview>
 			</h:panelGroup>
-		</h:panelGrid>	
+		</h:panelGrid>
   
 
 	<f:subview id="status" rendered="#{wizard.current.runningWizard.base.status != 'READY'}">
@@ -357,7 +360,7 @@
       
       
    <sakai:button_bar>
-		<f:subview id="seqWizardButtons"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.sequential'}" >
+		<f:subview id="seqWizardButtons"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.sequential' && not empty wizard.current.userListForSelect}">	
        	<sakai:button_bar_item id="submitContinue" value="#{msgs.save_continue_wizard}"
 	      	 action="#{wizard.processExecPages}" accesskey="s" styleClass="active" />
 		</f:subview>
