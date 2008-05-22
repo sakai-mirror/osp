@@ -73,7 +73,7 @@
 
 	<!--  ********** Reviewer Group Access Start ************-->
       <h:panelGroup styleClass="longtext" style="padding:0;display:block;margin:0" rendered="#{!wizard.current.ignoreReviewerGroupAccess}">
-      <h:outputText value="#{msgs.reviewer_group_access}" />
+      <h:outputText value="#{msgs.group_access}" />
       </h:panelGroup>
       <h:panelGroup styleClass="longtext" style="padding:0;display:block;margin:5" rendered="#{!wizard.current.ignoreReviewerGroupAccess}">
          <h:selectOneRadio id="review_group_access" value="#{wizard.current.base.reviewerGroupAccessString}" layout="pageDirection" disabled="#{wizard.current.isWizardUsed}">

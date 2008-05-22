@@ -41,6 +41,71 @@
 <h:form id="mainForm">
     <ospx:splitarea direction="horizontal" width="100%">
         <ospx:splitsection size="100%" valign="top">
+		  
+         <!-- filter user groups and roles drawer (portfolio only) -->
+         <ospx:xheader rendered="#{audience.portfolioAudience}">
+            <ospx:xheadertitle id="browseFilter" value="#{common_msgs.audience_filter_instructions}  ">
+            </ospx:xheadertitle>
+             <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
+              <h:panelGrid id="filterGroupTable" columns="3" columnClasses="available,transferButtons">
+				 
+                <h:panelGroup>
+                   <ospx:splitarea direction="vertical">
+                      <ospx:splitsection valign="top">
+                      	<f:subview id="filterRolesMsg">
+                           <h:outputFormat value="#{common_msgs.filter_roles}"/>
+                        </f:subview>
+                      </ospx:splitsection>
+                      <ospx:splitsection valign="top">
+                         <h:selectManyListbox id="filterRoles" value="#{audience.selectedRolesFilter}" 
+								 							 onchange="this.document.getElementById('filterGroups').selectedIndex=-1;"
+															 size="10" style="width:350px;">
+                            <f:selectItems value="#{audience.roles}" />
+                         </h:selectManyListbox>
+                      </ospx:splitsection>
+                   </ospx:splitarea>
+                </h:panelGroup>
+					 
+                <h:panelGrid id="groupFilterButtons" columns="1" columnClasses="transferButtonTable">
+                   <ospx:splitarea width="120" direction="vertical">
+                      <ospx:splitsection valign="top" align="center">
+                         <sakai:button_bar>
+		                      <sakai:button_bar_item id="apply_filter_button"  
+      	                     action="#{audience.processActionApplyFilter}"
+         	                  value="#{common_msgs.apply_filter}"/>
+                         </sakai:button_bar>
+                      </ospx:splitsection>
+                      <ospx:splitsection valign="top" align="center">
+                         <sakai:button_bar>
+	                        <sakai:button_bar_item id="clear_filter_button" 
+   	                        action="#{audience.processActionClearFilter}"
+      	                     value="#{common_msgs.clear_filter}"/>
+                         </sakai:button_bar>
+                      </ospx:splitsection>
+                   </ospx:splitarea>
+                </h:panelGrid>
+					 
+                <h:panelGroup rendered="#{audience.hasGroups}">
+                  <ospx:splitarea direction="vertical">
+                    <ospx:splitsection valign="top">
+                      <f:subview id="filterGroupsMsg">
+                         <h:outputFormat value="#{common_msgs.filter_groups}"/>
+                      </f:subview>
+                    </ospx:splitsection>
+                    <ospx:splitsection valign="top">
+                      <h:selectManyListbox id="filterGroups" value="#{audience.selectedGroupsFilter}"
+							 							 onchange="this.document.getElementById('filterRoles').selectedIndex=-1;"
+                                           size="10" style="width:350px;">
+                        <f:selectItems value="#{audience.groups}" />
+                      </h:selectManyListbox>
+                    </ospx:splitsection>
+                  </ospx:splitarea>
+                </h:panelGroup>
+
+              </h:panelGrid>
+             </ospx:xheaderdrawer>
+         </ospx:xheader>
+			
             <!-- worksite user drawer -->
             <ospx:xheader>
             
@@ -129,93 +194,6 @@
                      <f:verbatim></p></f:verbatim>
                   </f:subview>
 
-                  <!-- optional message for browse user selection -->
-                  <f:subview id="browseUser" rendered="#{audience.maxList}" >
-                     <f:verbatim><p class='shorttext'></f:verbatim>
-                     <h:outputFormat value = "#{audience.browseMessage}"/>
-                         <h:outputFormat value = " "/>
-                     <h:commandLink id="browse_button" action="browse" value="#{common_msgs.browse_members}"
-                                    style="white-space:nowrap;"/>
-                     <h:outputFormat value = " "/>
-                     <f:subview id="audSubV1" rendered="#{audience.wizardAudience}">
-                        <h:outputFormat value = "#{common_msgs.audience_individual_evaluators}" />
-                     </f:subview>
-                     <f:subview id="audSubV2" rendered="#{audience.matrixAudience}">
-                        <h:outputFormat value = "#{common_msgs.audience_individual_evaluators}" />
-                     </f:subview>
-                     <f:subview id="audSubV4" rendered="#{audience.portfolioAudience}">
-                        <h:outputFormat value = "#{common_msgs.audience_individual_users}" />
-                     </f:subview>
-                     <f:verbatim></p></f:verbatim>
-                  </f:subview>
-                  
-               </ospx:xheaderdrawer>
-            </ospx:xheader>
-
-            <!-- worksite role drawer -->
-            <ospx:xheader>
-            	<ospx:xheadertitle id="roleTitle" value="#{common_msgs.audience_role_title}"  rendered="#{audience.wizardAudience}"/>
-
-                <ospx:xheadertitle id="roleTitle2" value="#{common_msgs.audience_role_title}"  rendered="#{audience.matrixAudience}"/>
-   
-                <ospx:xheadertitle id="roleTitle3" value="#{common_msgs.audience_portfolio_role_title}"  rendered="#{audience.portfolioAudience}" />
-
-               <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-                  <h:panelGrid id="transferRoleTable" columns="3" columnClasses="available,transferButtons,selected"  summary="#{common_msgs.role_table_summary}">
-                     <h:panelGroup>
-                        <ospx:splitarea direction="vertical">
-                           <ospx:splitsection valign="top">
-                              <h:outputFormat value="#{common_msgs.role_label}"/>
-                           </ospx:splitsection>
-                           <ospx:splitsection valign="top">
-                              <h:selectManyListbox id="availableRoles" value="#{audience.availableRoleArray}"
-                                                   size="10" style="width:350px;">
-                                 <f:selectItems value="#{audience.availableRoleList}"/>
-                              </h:selectManyListbox>
-                           </ospx:splitsection>
-                        </ospx:splitarea>
-                     </h:panelGroup>
-   
-                     <h:panelGrid id="roleTransferButtons" columns="1" columnClasses="transferButtonTable">
-                        <ospx:splitarea width="120" direction="vertical">
-                           <ospx:splitsection valign="top" align="center">
-                              <sakai:button_bar>
-                                 <sakai:button_bar_item id="add_role_button" action="#{audience.processActionAddRole}"
-                                                         value="#{common_msgs.add_members}"/>
-                              </sakai:button_bar>
-                           </ospx:splitsection>
-                           <ospx:splitsection valign="top" align="center">
-                              <sakai:button_bar>
-                                 <sakai:button_bar_item id="remove_role_button" action="#{audience.processActionRemoveRole}"
-                                                        value="#{common_msgs.remove_members}"/>
-                              </sakai:button_bar>
-                           </ospx:splitsection>
-                        </ospx:splitarea>
-                     </h:panelGrid>
-   
-                     <h:panelGroup>
-                        <ospx:splitarea direction="vertical">
-                           <ospx:splitsection valign="top">
-                           	  <f:subview id="audSubV12" rendered="#{audience.wizardAudience}">
-                                    <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
-                              </f:subview>
-                              <f:subview id="audSubV14" rendered="#{audience.matrixAudience}">
-                                    <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
-                              </f:subview>
-                              <f:subview id="audSubV15" rendered="#{audience.portfolioAudience}">
-                                    <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
-                              </f:subview>
-                           </ospx:splitsection>
-                           <ospx:splitsection valign="top">
-                              <h:selectManyListbox id="selectedRoles" size="10" value="#{audience.selectedRoleArray}"
-                                                   style="width:350px;">
-                                 <f:selectItems value="#{audience.selectedRoleList}"/>
-                              </h:selectManyListbox>
-                           </ospx:splitsection>
-                        </ospx:splitarea>
-                     </h:panelGroup>
-                  </h:panelGrid>
-                  
                </ospx:xheaderdrawer>
             </ospx:xheader>
 
