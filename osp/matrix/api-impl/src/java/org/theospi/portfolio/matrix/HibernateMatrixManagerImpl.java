@@ -170,6 +170,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private EntityContextFinder contentFinder = null;
    private String importFolderName;
    private boolean useExperimentalMatrix = false;
+
    
    private static ResourceLoader messages = new ResourceLoader(
          "org.theospi.portfolio.matrix.bundle.Messages");
@@ -3038,5 +3039,104 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
 		return false;
 	}
+
+
+
+	// FIXME: These queries should be externalized and possibly promoted to the
+	// API
+	public int getFormCountByPageDef(Id pageDefId) {
+		Object[] params = new Object[] { pageDefId };
+		return (Integer) getHibernateTemplate()
+				.find(
+						"select count(*) from WizardPage wp join wp.pageForms where wp.pageDefinition.id=?",
+						params).get(0);
+	}
+
+	// FIXME: This should be in the ReviewManager, but is special-cased here for
+	// now
+	// NOTE: This is a theta-join because Review.parent and WizardPage.id are
+	// not mapped
+	public int getReviewCountByPageDef(Id pageDefId) {
+		Object[] params = new Object[] { pageDefId };
+		return (Integer) getHibernateTemplate()
+				.find(
+						"select count(*) from Review r, WizardPage wp where wp.id = r.parent and wp.pageDefinition.id=?",
+						params).get(0);
+	}
+
+	public List getReviewCountListByType(Id pageDefId) {
+		Object[] params = new Object[] { pageDefId };
+		return getHibernateTemplate()
+				.find(
+						"select new org.theospi.portfolio.matrix.model.ReviewTypeAndCount(r.type, count(*)) from Review r, WizardPage wp where wp.id = r.parent and wp.pageDefinition.id=? GROUP BY r.type",
+						params);
+	}
+
+	public int getAttachmentCountByPageDef(Id pageDefId) {
+		Object[] params = new Object[] { pageDefId };
+		return (Integer) getHibernateTemplate()
+				.find(
+						"select count(*) from WizardPage wp join wp.attachments where wp.pageDefinition.id=?",
+						params).get(0);
+	}
+
+	public boolean isScaffoldingCellUsed(ScaffoldingCell cell) {
+		Id pageDefId = cell.getWizardPageDefinition().getId();
+
+		return getFormCountByPageDef(pageDefId) > 0
+				|| getAttachmentCountByPageDef(pageDefId) > 0
+				|| getReviewCountByPageDef(pageDefId) > 0;
+	}
+
+	public boolean isScaffoldingUsed(Scaffolding scaffolding) {
+
+		return getFormCountByScaffolding(scaffolding.getId()) > 0
+				|| getAttachmentCountByScaffolding(scaffolding.getId()) > 0
+				|| getReviewCountByScaffolding(scaffolding.getId()) > 0;
+	}
 	
+	public int getFormCountByScaffolding(Id scaffoldingId) {
+		Object[] params = new Object[] { scaffoldingId };
+		return (Integer) getHibernateTemplate()
+				.find(
+						"select count(*) from WizardPage wp, ScaffoldingCell sc join wp.pageForms where wp.pageDefinition.id=sc.wizardPageDefinition.id and sc.scaffolding.id=?",
+						params).get(0);
+		//		
+		// SELECT count(*) FROM osp_scaffolding s inner join
+		// osp_scaffolding_cell sc on sc.scaffolding_id = s.id
+		// join osp_wizard_page wp on wp.wiz_page_def_id=sc.wiz_page_def_id
+		// join osp_wiz_page_form wpf on wpf.page_id=wp.id
+		// where s.id ='AED66AB3B9AE98218C808C207A08EB63'
+		// GO
+	}
+
+	public int getAttachmentCountByScaffolding(Id scaffoldingId) {
+		Object[] params = new Object[] { scaffoldingId };
+		return (Integer) getHibernateTemplate()
+				.find(
+						"select count(*) from WizardPage wp, ScaffoldingCell sc join wp.attachments where wp.pageDefinition.id=sc.wizardPageDefinition.id and sc.scaffolding.id=?",
+						params).get(0);
+
+		// SELECT * FROM osp_scaffolding s inner join osp_scaffolding_cell sc on
+		// sc.scaffolding_id = s.id
+		// join osp_wizard_page wp on wp.wiz_page_def_id=sc.wiz_page_def_id
+		// join osp_wiz_page_attachment wpa on wpa.page_id=wp.id
+		// where s.id ='AED66AB3B9AE98218C808C207A08EB63'
+		// GO
+	}
+
+	public int getReviewCountByScaffolding(Id scaffoldingId) {
+		Object[] params = new Object[] { scaffoldingId };
+		return (Integer) getHibernateTemplate()
+				.find(
+						"select count(*) from WizardPage wp, Review r, ScaffoldingCell sc where wp.id = r.parent and wp.pageDefinition.id=sc.wizardPageDefinition.id and sc.scaffolding.id=?",
+						params).get(0);
+		// SELECT count(*) FROM osp_scaffolding s inner join
+		// osp_scaffolding_cell sc on sc.scaffolding_id = s.id
+		// join osp_wizard_page wp on wp.wiz_page_def_id=sc.wiz_page_def_id
+		// join osp_review r on r.parent_id=wp.id
+		// where s.id ='AED66AB3B9AE98218C808C207A08EB63'
+		//		GO
+	}
+
 }

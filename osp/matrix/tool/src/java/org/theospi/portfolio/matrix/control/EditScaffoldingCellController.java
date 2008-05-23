@@ -57,6 +57,7 @@ import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Matrix;
+import org.theospi.portfolio.matrix.model.ReviewTypeAndCount;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
@@ -166,7 +167,42 @@ public class EditScaffoldingCellController extends
 		if (sCell != null && sCell.getScaffolding() != null){
 			//after the cell used booleans are set to false, have "icCellUsed(sCell)" update them accordingly
 			if(sCell.getScaffolding().isPublished()){
-				isCellUsed(sCell);
+				customFormUsed = getMatrixManager().getFormCountByPageDef(sCell.getWizardPageDefinition().getId()) > 0;
+				List reviewTypeCountList = getMatrixManager().getReviewCountListByType(sCell.getWizardPageDefinition().getId());
+				for (Iterator iterator = reviewTypeCountList.iterator(); iterator.hasNext();) {
+					//no need to keep looking if all booleans are set to true:
+					if(!feedbackFormUsed && !reflectionFormUsed && !evaluationFormUsed){
+						ReviewTypeAndCount reviewTypeAndCount = (ReviewTypeAndCount) iterator.next();
+
+						//Feedback
+						if(reviewTypeAndCount.getType() == MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE){
+							if(reviewTypeAndCount.getCount() > 0){
+								feedbackFormUsed = true;
+								isCellUsed = true;
+							}
+						}
+
+						//Reflection
+						if(reviewTypeAndCount.getType() == MatrixFunctionConstants.REFLECTION_REVIEW_TYPE){
+							if(reviewTypeAndCount.getCount() > 0){
+								reflectionFormUsed = true;
+								isCellUsed = true;
+							}
+						}
+
+						//Evaluation
+						if(reviewTypeAndCount.getType() == MatrixFunctionConstants.EVALUATION_REVIEW_TYPE){
+							if(reviewTypeAndCount.getCount() > 0){
+								evaluationFormUsed = true;
+								isCellUsed = true;
+							}
+						}
+					}
+				}
+				//to save a db connection, cellUsed will be set to true already if any of the review booleans are true
+				if(!isCellUsed)
+					isCellUsed = getMatrixManager().isScaffoldingCellUsed(sCell);
+				//isCellUsed(sCell);
 			}			
 			model.put("defaultEvaluators", getSelectedUsers(sCell.getScaffolding(), MatrixFunctionConstants.EVALUATE_MATRIX));
 			model.put("defaultReviewers", getSelectedUsers(sCell.getScaffolding(), MatrixFunctionConstants.REVIEW_MATRIX));
@@ -895,80 +931,7 @@ public class EditScaffoldingCellController extends
 		this.reviewManager = reviewManager;
 	}
 
-	/**
-	 * * Determine if any matrix cell with the specified scaffoldingCell has
-	 * been 'used' * (containing reflections and/or added form items)
-	 */
-	private boolean isCellUsed(ScaffoldingCell scaffoldingCell) {
-		Id scaffoldingId = scaffoldingCell.getScaffolding().getId();
-		List matrices = getMatrixManager().getMatrices(scaffoldingId);
 
-		for (Iterator matrixIt = matrices.iterator(); matrixIt.hasNext();) {
-			Matrix matrix = (Matrix) matrixIt.next();
-			List cells = getMatrixManager().getCells(matrix);
-
-			for (Iterator cellIt = cells.iterator(); cellIt.hasNext();) {
-				Cell cell = (Cell) cellIt.next();
-
-				if (cell.getScaffoldingCell().equals(scaffoldingCell)) {
-					WizardPage wizardPage = cell.getWizardPage();
-					String pageId = wizardPage.getId().getValue();
-					if(!isCellUsed){
-						if (wizardPage.getReflections() != null
-								&& wizardPage.getReflections().size() > 0)
-							isCellUsed = true;
-						if (wizardPage.getPageForms() != null
-								&& wizardPage.getPageForms().size() > 0)
-							isCellUsed = true;
-						if (wizardPage.getFeedback() != null
-								&& wizardPage.getFeedback().size() > 0)
-							isCellUsed = true;
-						if (wizardPage.getAttachments() != null
-								&& wizardPage.getAttachments().size() > 0)
-							isCellUsed = true;
-						if (reviewManager.getReviewsByParent(pageId) != null
-								&& reviewManager.getReviewsByParent(pageId).size() > 0)
-							isCellUsed = true;
-					}
-					if(!reflectionFormUsed){
-						List reflections = getReviewManager().getReviewsByParentAndType(
-								wizardPage.getId().getValue(), Review.REFLECTION_TYPE, wizardPage.getPageDefinition().getSiteId(), MatrixContentEntityProducer.MATRIX_PRODUCER);
-						if(reflections != null	&& reflections.size() > 0)
-							reflectionFormUsed = true;
-					}
-					if(!customFormUsed){
-						Set pageForms = getMatrixManager().getPageForms(wizardPage);
-						if(pageForms != null && pageForms.size() > 0)
-							customFormUsed = true;
-					}
-					if(!feedbackFormUsed){
-						List feedbacks = getReviewManager().getReviewsByParentAndType(
-								wizardPage.getId().getValue(), Review.FEEDBACK_TYPE, wizardPage.getPageDefinition().getSiteId(), MatrixContentEntityProducer.MATRIX_PRODUCER);
-						if(feedbacks != null	&& feedbacks.size() > 0)
-							feedbackFormUsed = true;
-					}
-					if(!evaluationFormUsed){
-						List evals = getReviewManager().getReviewsByParentAndType(
-								wizardPage.getId().getValue(), Review.EVALUATION_TYPE, wizardPage.getPageDefinition().getSiteId(), MatrixContentEntityProducer.MATRIX_PRODUCER);
-						if(evals != null	&& evals.size() > 0)
-							evaluationFormUsed = true;
-					}
-
-					
-					// note: wizardPage.[get|set]Feedback() does not appear to
-					// be used
-				}
-			}
-			//there is no need to go on if all booleans are true
-			if(customFormUsed && reflectionFormUsed && feedbackFormUsed && evaluationFormUsed)
-				break;
-		}
-		
-		//if any boolean is true (including isCellUsed) then isCellUsed is true:
-		isCellUsed = isCellUsed || customFormUsed || reflectionFormUsed || feedbackFormUsed || evaluationFormUsed;
-
-		return false;
-	}
 
 	protected List<TaggingHelperInfo> getHelperInfo(TaggableActivity activity) {
 		List<TaggingHelperInfo> infoList = new ArrayList<TaggingHelperInfo>();

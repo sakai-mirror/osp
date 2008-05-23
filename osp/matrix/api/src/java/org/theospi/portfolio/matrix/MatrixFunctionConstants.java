@@ -55,4 +55,11 @@ public interface MatrixFunctionConstants {
    
    public static final String PROP_GROUPS_ALLOW_ALL_GLOBAL = "osp.reviewer.groups.allowall.global";   
    
+	//Reflection review type = 0
+	//Evaluation review type = 1
+	//Feedback review type   = 2
+   public static final int REFLECTION_REVIEW_TYPE = 0;
+   public static final int EVALUATION_REVIEW_TYPE = 1;
+   public static final int FEEDBACK_REVIEW_TYPE = 2;
+   
 }

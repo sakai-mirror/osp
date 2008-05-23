@@ -212,4 +212,52 @@ public interface MatrixManager extends WorkflowEnabledManager {
 	 * @return
 	 */
 	public boolean hasPermission(Id id, Id worksiteId, String function);
+	
+	/**
+	 * returns the count of forms that are associated with the pageDefId
+	 * @param pageDefId
+	 * @return
+	 */
+	public int getFormCountByPageDef(Id pageDefId);
+	
+	/**
+	 * returns the count of set of all reviews associated with the pageDefId
+	 * @param pageDefId
+	 * @return
+	 */
+	public int getReviewCountByPageDef(Id pageDefId);
+	
+	
+	/**
+	 * returns a list of ReviewTypeAndCount objects.  Each reviewTypeAndCount object 
+	 * has the type of review it is (eval, feedback, ect..) and how many reviews of that
+	 * type are associated with that pageDefId
+	 * 
+	 * @param pageDefId
+	 * @return
+	 */
+	public List getReviewCountListByType(Id pageDefId);
+		
+	/**
+	 * returns the count of all attachments associated with the pageDefId
+	 * @param pageDefId
+	 * @return
+	 */
+	public int getAttachmentCountByPageDef(Id pageDefId);
+	
+	/**
+	 * returns true if the scaffolding cell is being used by any users (forms, attachments, reviews, ect..)
+	 * @param cell
+	 * @return
+	 */
+	
+	public boolean isScaffoldingCellUsed(ScaffoldingCell cell);
+	
+	/**
+	 * returns true if the scaffolding is being used anywhere by any user (forms, attachments, reviews, ect..)
+	 * @param scaffolding
+	 * @return
+	 */
+	
+	public boolean isScaffoldingUsed(Scaffolding scaffolding);
 }
