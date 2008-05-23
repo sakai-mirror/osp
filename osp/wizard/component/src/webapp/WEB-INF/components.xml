@@ -327,6 +327,7 @@
       <property name="ratingProviderIds">
         <list>
           <value>org.sakaiproject.gmt.tagging.api.GmtTaggingProvider</value>
+          <value>org.theospi.portfolio.tagging.api.MatrixTaggingProvider</value>
         </list>
       </property>
    </bean>
@@ -460,6 +461,26 @@
       		<value>matrices</value>
       	</list>
       </property>
+   </bean>
+   
+   <bean id="org.sakaiproject.entity.api.EntityProducer.ospWizardPageDef"
+      class="org.theospi.portfolio.wizard.impl.WizardPageDefinitionEntityProducer"
+      init-method="init"
+		destroy-method="destroy"
+		singleton="true">
+      <property name="entityManager">
+         <ref bean="org.sakaiproject.entity.api.EntityManager"/>
+      </property>
+      <property name="httpAccess">
+         <ref bean="org.sakaiproject.entity.api.HttpAccess.ospWizard" />
+      </property>
+      <property name="wizardManager">
+         <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" />
+      </property>
+      <property name="matrixManager">
+         <ref bean="matrixManager"/>
+      </property>
+      <property name="idManager"><ref bean="idManager"/></property>
    </bean>
 
 </beans>

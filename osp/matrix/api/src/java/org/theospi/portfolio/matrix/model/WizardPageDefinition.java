@@ -53,6 +53,9 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    private Guidance guidance;
    transient private Id deleteGuidanceId;
    
+   //default it to matrix
+   private String type = WPD_MATRIX_TYPE;
+   
    private boolean defaultCustomForm = true;
    private boolean defaultReflectionForm = true;
    private boolean defaultFeedbackForm = true;
@@ -74,7 +77,18 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
 	public static String ATTACHMENT_ASSIGNMENT = "assignment";
 	
 	public static String WPD_ENTITY_STRING = "ospWizPageDef";
+	
+	public static String WPD_MATRIX_TYPE = "0";
+	public static String WPD_WIZARD_HIER_TYPE = "1";
+	public static String WPD_WIZARD_SEQ_TYPE = "2";
 
+	public WizardPageDefinition() {
+	}
+	
+	public WizardPageDefinition(String type) {
+		this.type = type;
+	}
+	
    /**
     * @return Returns the initialStatus.
     */
@@ -242,6 +256,8 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
 		sb.append(getContext());
 		sb.append(Entity.SEPARATOR);
 		sb.append(getId());
+		sb.append(Entity.SEPARATOR);
+		sb.append(getType());
 		return sb.toString();
    }
 
@@ -310,6 +326,14 @@ public Collection getReviewers() {
 }
 public void setReviewers(Collection reviewers) {
 	this.reviewers = reviewers;
+}
+public String getType()
+{
+	return type;
+}
+public void setType(String type)
+{
+	this.type = type;
 }
 
 

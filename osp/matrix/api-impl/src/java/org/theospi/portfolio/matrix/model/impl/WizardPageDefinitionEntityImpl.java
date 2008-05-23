@@ -22,25 +22,25 @@ package org.theospi.portfolio.matrix.model.impl;
 
 import java.util.Stack;
 
-import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.taggable.api.TagList;
 import org.sakaiproject.util.BaseResourcePropertiesEdit;
+import org.theospi.portfolio.matrix.WizardPageDefinitionEntity;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class WizardPageDefinitionEntity implements Entity
+public class WizardPageDefinitionEntityImpl implements WizardPageDefinitionEntity
 {
 
 	private WizardPageDefinition wpd;
 	private String parentTitle;
 	
-	public WizardPageDefinitionEntity() {
+	public WizardPageDefinitionEntityImpl() {
 		
 	}
 	
-	public WizardPageDefinitionEntity(WizardPageDefinition wpd, String parentTitle)
+	public WizardPageDefinitionEntityImpl(WizardPageDefinition wpd, String parentTitle)
 	{
 		this.wpd = wpd;
 		this.parentTitle = parentTitle;

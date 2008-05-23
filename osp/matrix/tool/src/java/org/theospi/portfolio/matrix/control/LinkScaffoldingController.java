@@ -59,6 +59,11 @@ import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.tagging.api.MatrixTaggingProvider;
 
+/**
+ * @deprecated This tool has been replaced by the jsf MatrixLinkTool
+ * @author chrismaurer
+ *
+ */
 public class LinkScaffoldingController extends AbstractMatrixController {
 
 	protected final Log logger = LogFactory.getLog(getClass());

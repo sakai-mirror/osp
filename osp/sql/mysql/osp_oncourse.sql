@@ -12,6 +12,12 @@ ALTER TABLE osp_scaffolding Drop COLUMN reviewerGroupAccess;
 ALTER TABLE osp_scaffolding ADD COLUMN (defaultFormsMatrixVersion boolean);
 UPDATE osp_scaffolding SET defaultFormsMatrixVersion = true
 
+update osp_wizard_page_def as wpd set wpd.type = '1';
+update osp_wizard_page_def as wpd set wpd.type = '0' where wpd.id in (
+select distinct s.wiz_page_def_id From osp_scaffolding_cell s );
+
+update TAGGABLE_LINK set TAG_CRITERIA_REF = concat(TAG_CRITERIA_REF,  '/0') where TAG_CRITERIA_REF like '/ospWizPageDef/%'
+
 
 -------   These are the lines I removed to get rid of matrix evaluate and review permissions: ---------------
 

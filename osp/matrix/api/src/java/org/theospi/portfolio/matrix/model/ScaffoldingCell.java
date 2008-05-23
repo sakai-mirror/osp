@@ -42,13 +42,13 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    private WizardPageDefinition wizardPageDefinition;
 
    public ScaffoldingCell() {
-      this.wizardPageDefinition = new WizardPageDefinition();
+      this.wizardPageDefinition = new WizardPageDefinition(WizardPageDefinition.WPD_MATRIX_TYPE);
    }
 
    public ScaffoldingCell(Criterion criterion, Level level, String initialStatus, Scaffolding scaffolding) {
       this.rootCriterion = criterion;
       this.level = level;
-      this.wizardPageDefinition = new WizardPageDefinition();
+      this.wizardPageDefinition = new WizardPageDefinition(WizardPageDefinition.WPD_MATRIX_TYPE);
       wizardPageDefinition.setInitialStatus(initialStatus);
       wizardPageDefinition.setSiteId(scaffolding.getWorksiteId().getValue());
       this.scaffolding = scaffolding;

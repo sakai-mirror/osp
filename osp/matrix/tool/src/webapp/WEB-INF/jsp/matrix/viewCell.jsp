@@ -86,7 +86,8 @@ function mySetMainFrameHeight(id)
 	<osp:message key="dateFormat_full" />
 </c:set>
 
-
+<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/thickbox.js"></script>
+<link href="/osp-common-tool/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
 
 
 <script type="text/javascript"
@@ -577,6 +578,22 @@ function mySetMainFrameHeight(id)
 		</c:forEach>
 
 	</c:forEach>
+	
+	
+	<!-- *************** Showing linked artifacts START **************** -->
+	
+	<c:forEach var="taggableItem" items="${taggableItems}" varStatus="taggableItemLoopStatus">
+		<tr><td colspan="4">
+		<img border="0" src="<c:out value="${taggableItem.iconUrl}" />" />
+		<a class="thickbox"
+					href="<c:out value="${taggableItem.itemDetailUrl}" />">
+				<c:out value="${taggableItem.activity.title}" /> </a>
+		</td></tr>
+	</c:forEach>
+	
+	<!-- *************** Showing linked artifacts END **************** -->
+	
+
 	<!-- ***** show the attached resources ***** -->
 
 	<c:if test="${!cell.scaffoldingCell.suppressItems}">

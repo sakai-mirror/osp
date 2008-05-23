@@ -123,6 +123,7 @@ import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.matrix.model.WizardPageForm;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
+import org.theospi.portfolio.matrix.model.impl.WizardPageDefinitionEntityImpl;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.Authorization;
@@ -3040,6 +3041,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 		return false;
 	}
 
+	public WizardPageDefinitionEntity createWizardPageDefinitionEntity(
+			WizardPageDefinition wpd, String parentTitle)
+	{
+		return new WizardPageDefinitionEntityImpl(wpd, parentTitle);
+	}
 
 
 	// FIXME: These queries should be externalized and possibly promoted to the

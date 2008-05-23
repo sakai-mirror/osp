@@ -23,21 +23,22 @@ package org.theospi.portfolio.matrix.control;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.assignment.api.AssignmentSubmission;
 import org.sakaiproject.assignment.cover.AssignmentService;
-import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
-import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
@@ -46,9 +47,10 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.taggable.api.Link;
+import org.sakaiproject.taggable.api.LinkManager;
 import org.sakaiproject.taggable.api.TaggableActivity;
+import org.sakaiproject.taggable.api.TaggableActivityProducer;
 import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.taggable.api.TaggingHelperInfo;
 import org.sakaiproject.taggable.api.TaggingManager;
@@ -74,7 +76,6 @@ import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Sort;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
-import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.CommonFormBean;
 import org.theospi.portfolio.style.mgt.StyleManager;
@@ -99,6 +100,8 @@ public class CellController implements FormController, LoadObjectController {
 	private AuthorizationFacade authzManager = null;
 
 	private TaggingManager taggingManager;
+	
+	private LinkManager linkManager = null;
 
 	private WizardActivityProducer wizardActivityProducer;
 
@@ -233,10 +236,45 @@ public class CellController implements FormController, LoadObjectController {
 			}
 			model.put("helperInfoList", getHelperInfo(item));
 			model.put("providers", providers);
+			
+			model.put("taggableItems", getTaggableItems(providers, cell.getCell().getWizardPage().getPageDefinition().getReference(), cell.getCell().getWizardPage().getOwner().getId().getValue()));
 		}
 
 		clearSession(session);
 		return model;
+	}
+	
+	protected Set<TaggableItem> getTaggableItems(List<DecoratedTaggingProvider> providers, String criteriaRef, String cellOwner) {
+		Set<TaggableActivity> activities = new HashSet<TaggableActivity>();
+		Set<TaggableItem> taggableItems = new HashSet<TaggableItem>();
+		List<Link> links;
+		try
+		{
+			links = getLinkManager().getLinks(criteriaRef, true);
+			//TODO: Make sure it's always okay to ignore the provider
+			for (DecoratedTaggingProvider provider : providers) {
+				for (Link link : links) {
+					TaggableActivity activity = getTaggingManager().getActivity(link.getActivityRef(), provider.getProvider());
+					if (activity != null) {
+						TaggableActivityProducer producer = getTaggingManager().findProducerByRef(activity.getReference());
+						List<TaggableItem> items = producer.getItems(activity, cellOwner, provider.getProvider());
+						taggableItems.addAll(items);
+						activities.add(activity);
+					}
+					else {
+						logger.warn("Link with ref " + link.getActivityRef() + " no longer exists.  Removing link.");
+						getLinkManager().removeLink(link);
+						links.remove(link);
+					}
+				}
+			}
+		}
+		catch (PermissionException pe)
+		{
+			logger.warn("unable to get links for criteriaRef " + criteriaRef, pe);
+		}
+		return taggableItems;
+		
 	}
 
 
@@ -656,6 +694,16 @@ public class CellController implements FormController, LoadObjectController {
 
 	public void setTaggingManager(TaggingManager taggingManager) {
 		this.taggingManager = taggingManager;
+	}
+
+	public LinkManager getLinkManager()
+	{
+		return linkManager;
+	}
+
+	public void setLinkManager(LinkManager linkManager)
+	{
+		this.linkManager = linkManager;
 	}
 
 	public WizardActivityProducer getWizardActivityProducer() {

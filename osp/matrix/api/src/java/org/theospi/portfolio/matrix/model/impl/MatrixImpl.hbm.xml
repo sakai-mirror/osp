@@ -268,6 +268,7 @@
       
       <property name="allowRequestFeedback" type="boolean" column="allowRequestFeedback"  not-null="false"/>
       
+      <property name="type" type="string" column="type" not-null="true" length="1"/>
          
    </joined-subclass>
 

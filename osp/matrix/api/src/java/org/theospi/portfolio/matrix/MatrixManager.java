@@ -213,6 +213,8 @@ public interface MatrixManager extends WorkflowEnabledManager {
 	 */
 	public boolean hasPermission(Id id, Id worksiteId, String function);
 	
+	public WizardPageDefinitionEntity createWizardPageDefinitionEntity(WizardPageDefinition wpd, String parentTitle);
+	
 	/**
 	 * returns the count of forms that are associated with the pageDefId
 	 * @param pageDefId

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.ObjectNotFoundException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
@@ -46,6 +47,12 @@ public class ViewCellInformationController implements Controller{
 				strId = (String) session.get("sCell_id");
 				session.remove("sCell_id");
 			}
+			
+			if (strId == null) {
+				//must have passed something else
+				strId = (String) session.get("page_def_id");
+				session.remove("page_def_id");
+			}
 
 			ScaffoldingCell sCell = null;
 			Id id = getIdManager().getId(strId);
@@ -53,15 +60,18 @@ public class ViewCellInformationController implements Controller{
 
 			try {
 				sCell = matrixManager.getScaffoldingCell(id);
-
-				model.put("site_title", sCell.getScaffolding().getWorksiteName());
-				model.put("matrix_title", sCell.getScaffolding().getTitle());
-
-
-			} catch (Exception e) {
-				logger.error("Error with cell: " + strId + " " + e.toString());
-				// tbd how to report error back to user?
+			} catch (ObjectNotFoundException e) {
+				logger.warn("Can't find scaffolding cell with idl: " + strId + ".  Trying as a wizard page definition.");
 			}
+			if (sCell == null) {
+				sCell = matrixManager.getScaffoldingCellByWizardPageDef(id);
+			}
+
+			model.put("site_title", sCell.getScaffolding().getWorksiteName());
+			model.put("matrix_title", sCell.getScaffolding().getTitle());
+
+
+
 			
 			if(sCell != null)
 				wizPageDef = sCell.getWizardPageDefinition();

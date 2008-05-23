@@ -29,7 +29,7 @@
 					href="<c:out value="${activity.activity.activityDetailUrl}" />">
 				<c:out value="${activity.activity.title}" /> </a></td>
 				<td style="white-space: nowrap"><c:out
-					value="${activity.activity.producer.name}" /></td>
+					value="${activity.activity.typeName}" /></td>
 				<td style="white-space: nowrap"><c:out
 					value="${activity.contextName}" escapeXml="false" /></td>
 

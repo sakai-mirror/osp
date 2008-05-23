@@ -1,6 +1,6 @@
 /**********************************************************************************
- * $URL$
- * $Id$
+ * $URL: https://source.sakaiproject.org/svn/osp/branches/oncourse_osp_enhancements/osp/matrix/api-impl/src/java/org/theospi/portfolio/matrix/model/impl/WizardPageDefinitionEntityProducer.java $
+ * $Id: WizardPageDefinitionEntityProducer.java 41530 2008-02-22 19:55:07Z chmaurer@iupui.edu $
  ***********************************************************************************
  *
  * Copyright (c) 2008 The Sakai Foundation.
@@ -18,7 +18,7 @@
  * limitations under the License.
  *
  **********************************************************************************/
-package org.theospi.portfolio.matrix.model.impl;
+package org.theospi.portfolio.wizard.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,13 +27,17 @@ import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.mgt.EntityProducerBase;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.WizardPageDefinitionEntity;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
+import org.theospi.portfolio.wizard.model.WizardPageSequence;
 
 public class WizardPageDefinitionEntityProducer extends EntityProducerBase
 {
 	protected final Log logger = LogFactory.getLog(getClass());
+	protected WizardManager wizardManager;
 	protected MatrixManager matrixManager;
 	protected IdManager idManager;
 
@@ -51,15 +55,10 @@ public class WizardPageDefinitionEntityProducer extends EntityProducerBase
 		logger.info("destroy()");
 	}
 
-	public String getLabel()
-	{
-		return WizardPageDefinition.WPD_ENTITY_STRING;
-	}
-
 	public boolean parseEntityReference(String reference, Reference ref) {
 		if (reference.startsWith(getContext())) {
-			String[] parts = reference.split(Entity.SEPARATOR, 4);
-			if (parts.length < 4) {
+			String[] parts = reference.split(Entity.SEPARATOR, 5);
+			if (parts.length < 5) {
 				return false;
 			}
 			String type = parts[1];
@@ -67,7 +66,7 @@ public class WizardPageDefinitionEntityProducer extends EntityProducerBase
 			 * This is only really used so we know what kind of object we are
 			 * referencing
 			 */
-			//String subtype = parts[2];
+			String subtype = parts[4];
 
 			String context = parts[2];
 			/*
@@ -75,19 +74,55 @@ public class WizardPageDefinitionEntityProducer extends EntityProducerBase
 			 */
 			String id = parts[3];
 
-			ref.set(type, null, id, null, context);
+			ref.set(type, subtype, id, null, context);
 			
 			return true;
 		}
 		return false;
 	}
+
+	public String getLabel()
+	{
+		return WizardPageDefinition.WPD_ENTITY_STRING;
+	}
 	
 	public Entity getEntity(Reference ref) {
-		ScaffoldingCell sCell = matrixManager.getScaffoldingCellByWizardPageDef(idManager.getId(ref.getId()));
+		WizardPageDefinitionEntity wpde = null;
 		
-		Scaffolding scaff = matrixManager.getScaffolding(sCell.getScaffolding().getId());
-		
-		return new WizardPageDefinitionEntity(sCell.getWizardPageDefinition(), scaff.getTitle());
+		if (ref.getSubType().equals(WizardPageDefinition.WPD_MATRIX_TYPE)) {
+			ScaffoldingCell sCell = matrixManager.getScaffoldingCellByWizardPageDef(idManager.getId(ref.getId()));
+			Scaffolding scaff = matrixManager.getScaffolding(sCell.getScaffolding().getId());
+
+			wpde = matrixManager.createWizardPageDefinitionEntity(sCell.getWizardPageDefinition(), scaff.getTitle());
+		}
+		else {
+			WizardPageSequence wps = wizardManager.getWizardPageSeqByDef(idManager.getId(ref.getId()));
+			String title = wps.getCategory().getWizard().getName();
+			wpde = matrixManager.createWizardPageDefinitionEntity(wps.getWizardPageDefinition(), title);
+		}
+
+		return wpde;
+	}
+
+
+	public WizardManager getWizardManager()
+	{
+		return wizardManager;
+	}
+
+	public void setWizardManager(WizardManager wizardManager)
+	{
+		this.wizardManager = wizardManager;
+	}
+	
+	public IdManager getIdManager()
+	{
+		return idManager;
+	}
+
+	public void setIdManager(IdManager idManager)
+	{
+		this.idManager = idManager;
 	}
 
 	public MatrixManager getMatrixManager()
@@ -98,16 +133,6 @@ public class WizardPageDefinitionEntityProducer extends EntityProducerBase
 	public void setMatrixManager(MatrixManager matrixManager)
 	{
 		this.matrixManager = matrixManager;
-	}
-
-	public IdManager getIdManager()
-	{
-		return idManager;
-	}
-
-	public void setIdManager(IdManager idManager)
-	{
-		this.idManager = idManager;
 	}
 
 }
