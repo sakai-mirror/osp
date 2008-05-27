@@ -2661,4 +2661,57 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public void setEventService(EventService eventService) {
 	   this.eventService = eventService;
    }
+   
+	public boolean isScaffoldingUsed(Scaffolding scaffolding) {
+
+		return getFormCountByScaffolding(scaffolding.getId()) > 0
+				|| getAttachmentCountByScaffolding(scaffolding.getId()) > 0
+				|| getReviewCountByScaffolding(scaffolding.getId()) > 0;
+	}
+	
+	public int getFormCountByScaffolding(Id scaffoldingId) {
+		Object[] params = new Object[] { scaffoldingId };
+		return (Integer) getHibernateTemplate()
+				.find(
+						"select count(*) from WizardPage wp, ScaffoldingCell sc join wp.pageForms where wp.pageDefinition.id=sc.wizardPageDefinition.id and sc.scaffolding.id=?",
+						params).get(0);
+		//		
+		// SELECT count(*) FROM osp_scaffolding s inner join
+		// osp_scaffolding_cell sc on sc.scaffolding_id = s.id
+		// join osp_wizard_page wp on wp.wiz_page_def_id=sc.wiz_page_def_id
+		// join osp_wiz_page_form wpf on wpf.page_id=wp.id
+		// where s.id ='AED66AB3B9AE98218C808C207A08EB63'
+		// GO
+	}
+
+	public int getAttachmentCountByScaffolding(Id scaffoldingId) {
+		Object[] params = new Object[] { scaffoldingId };
+		return (Integer) getHibernateTemplate()
+				.find(
+						"select count(*) from WizardPage wp, ScaffoldingCell sc join wp.attachments where wp.pageDefinition.id=sc.wizardPageDefinition.id and sc.scaffolding.id=?",
+						params).get(0);
+
+		// SELECT * FROM osp_scaffolding s inner join osp_scaffolding_cell sc on
+		// sc.scaffolding_id = s.id
+		// join osp_wizard_page wp on wp.wiz_page_def_id=sc.wiz_page_def_id
+		// join osp_wiz_page_attachment wpa on wpa.page_id=wp.id
+		// where s.id ='AED66AB3B9AE98218C808C207A08EB63'
+		// GO
+	}
+
+	public int getReviewCountByScaffolding(Id scaffoldingId) {
+		Object[] params = new Object[] { scaffoldingId };
+		return (Integer) getHibernateTemplate()
+				.find(
+						"select count(*) from WizardPage wp, Review r, ScaffoldingCell sc where wp.id = r.parent and wp.pageDefinition.id=sc.wizardPageDefinition.id and sc.scaffolding.id=?",
+						params).get(0);
+		// SELECT count(*) FROM osp_scaffolding s inner join
+		// osp_scaffolding_cell sc on sc.scaffolding_id = s.id
+		// join osp_wizard_page wp on wp.wiz_page_def_id=sc.wiz_page_def_id
+		// join osp_review r on r.parent_id=wp.id
+		// where s.id ='AED66AB3B9AE98218C808C207A08EB63'
+		//		GO
+	}
+   
+   
 }

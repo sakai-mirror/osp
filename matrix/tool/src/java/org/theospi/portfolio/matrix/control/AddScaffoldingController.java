@@ -71,7 +71,7 @@ public class AddScaffoldingController extends BaseScaffoldingController
          scaffolding = (Scaffolding)command;
       
       if ( scaffolding != null )
-         model.put("isMatrixUsed", scaffolding.isPublished() && isMatrixUsed( scaffolding.getId() ) );
+         model.put("isMatrixUsed", scaffolding.isPublished() && getMatrixManager().isScaffoldingUsed( scaffolding ) );
       else
          model.put("isMatrixUsed", false );
       
@@ -201,36 +201,5 @@ public class AddScaffoldingController extends BaseScaffoldingController
       this.reviewManager = reviewManager;
    }
 
-   /**
-    ** Determine if any matrix with the specified scaffoldingId has been 'used'
-    ** (e.g. containing reflections and/or added form items)
-    **/
-   private boolean isMatrixUsed( Id scaffoldingId ) 
-   {
-      List matrices = getMatrixManager().getMatrices(scaffoldingId);
-   
-      for (Iterator matrixIt = matrices.iterator(); matrixIt.hasNext();) 
-      {
-         Matrix matrix = (Matrix)matrixIt.next();
-         Set cells = matrix.getCells();
-       
-         for (Iterator cellIt=cells.iterator(); cellIt.hasNext();) 
-         {
-            Cell cell = (Cell)cellIt.next();
-            WizardPage wizardPage = cell.getWizardPage();
-				String pageId = wizardPage.getId().getValue();
-            if ( wizardPage.getReflections() != null && wizardPage.getReflections().size() > 0 )
-               return true;
-            if ( wizardPage.getPageForms() != null && wizardPage.getPageForms().size() > 0 )
-               return true;
-            if ( wizardPage.getAttachments() != null && wizardPage.getAttachments().size() > 0 )
-               return true;
-				if ( reviewManager.getReviewsByParent(pageId) != null && reviewManager.getReviewsByParent(pageId).size() > 0 )
-					return true;
-				// note: wizardPage.[get|set]Feedback() does not appear to be used
-         }
-      }
-      
-      return false;
-   }
+ 
 }

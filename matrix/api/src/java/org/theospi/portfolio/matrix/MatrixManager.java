@@ -190,4 +190,6 @@ public interface MatrixManager extends WorkflowEnabledManager {
    Matrix getMatrixByPage(Id pageId);
 
    public boolean isUseExperimentalMatrix();
+   
+   public boolean isScaffoldingUsed(Scaffolding scaffolding);
 }
