@@ -33,11 +33,13 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment.api.Assignment;
+import org.sakaiproject.assignment.api.AssignmentSubmission;
+import org.sakaiproject.assignment.cover.AssignmentService;
 import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.exception.IdUnusedException;
-import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.FunctionConstants;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -51,16 +53,12 @@ import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
-import org.sakaiproject.assignment.cover.AssignmentService;
-import org.sakaiproject.assignment.api.AssignmentSubmission;
-import org.sakaiproject.assignment.api.Assignment;
-import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.user.api.User;
-
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.assignment.AssignmentHelper;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
@@ -72,7 +70,6 @@ import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.style.mgt.StyleManager;
-import org.theospi.portfolio.assignment.AssignmentHelper;
 
 public class ViewMatrixController extends AbstractMatrixController implements FormController, LoadObjectController {
 
@@ -236,7 +233,13 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
     	  }});
       
       List userList = new ArrayList(getUserList(worksiteId, filteredGroup, allowAllGroups));
-      Collections.sort(userList);
+      Collections.sort(userList, new Comparator<User>(){
+
+		public int compare(User arg0, User arg1) {
+			return arg0.getSortName().compareToIgnoreCase(arg1.getSortName());
+		}
+      });
+      
       model.put("members", userList);
       model.put("userGroups", groupList);
       //TODO: Address why the fn:length() function can't be loaded or another handy way to pull collection size via EL
