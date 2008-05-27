@@ -316,6 +316,7 @@ function mySetMainFrameHeight(id)
 		<c:if test ="${empty scaffoldingCell.guidance.rationale.limitedText && empty scaffoldingCell.guidance.rationale.attachments}">
 			<h5 style="display:inline"><osp:message key="rationale"/></h5>
 			<span clas="indnt1">
+				&nbsp;&nbsp;
 				<a href="#" onclick="javascript:document.forms[0].dest.value='editRationale';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
 					<osp:message key="add_first_rationale"/></a>
 			</span>
@@ -367,6 +368,7 @@ function mySetMainFrameHeight(id)
 		<c:if test ="${empty scaffoldingCell.guidance.example.limitedText && empty scaffoldingCell.guidance.example.attachments}">
 			<h5 style="display:inline"><osp:message key="examples"/></h5>
 			<span clas="indnt1">
+				&nbsp;&nbsp;
 				<a href="#" onclick="javascript:document.forms[0].dest.value='editExamples';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
 					<osp:message key="add_first_examples"/></a>
 			</span>
