@@ -1,6 +1,8 @@
 package org.theospi.portfolio.tagging.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -10,6 +12,7 @@ import org.sakaiproject.siteassociation.api.SiteAssocManager;
 import org.sakaiproject.taggable.api.Link;
 import org.sakaiproject.taggable.api.LinkManager;
 import org.sakaiproject.taggable.api.Tag;
+import org.sakaiproject.taggable.api.TagColumn;
 import org.sakaiproject.taggable.api.TagList;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableItem;
@@ -85,7 +88,11 @@ public class MatrixTaggingProviderImpl implements MatrixTaggingProvider {
 	}
 
 	public TagList getTags(TaggableActivity activity) {
-		TagList tagList = taggingManager.createTagList();
+		List<TagColumn> columns = new ArrayList<TagColumn>();
+		columns.add(taggingManager.createTagColumn(TagList.CRITERIA, messages.getString("column_criteria"), messages.getString("column_criteria"), true));
+		columns.add(taggingManager.createTagColumn(TagList.PARENT, messages.getString("column_parent"), messages.getString("column_parent_desc"), true));
+		columns.add(taggingManager.createTagColumn(TagList.WORKSITE, messages.getString("column_worksite"), messages.getString("column_worksite_desc"), true));
+		TagList tagList = taggingManager.createTagList(columns);
 		String activityContext = activity.getContext();
 		for (String toContext : getSiteAssocManager().getAssociatedFrom(activityContext)) {
 			try {
