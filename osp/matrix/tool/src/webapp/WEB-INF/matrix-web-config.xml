@@ -252,6 +252,9 @@
             <property name="taggingManager">
                <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
             </property>
+            <property name="linkManager">
+            	<ref bean="org.sakaiproject.taggable.api.LinkManager" />
+            </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
             </property>
@@ -371,6 +374,9 @@
             </property>
             <property name="taggingManager">
                <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
+            </property>
+            <property name="linkManager">
+            	<ref bean="org.sakaiproject.taggable.api.LinkManager" />
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
