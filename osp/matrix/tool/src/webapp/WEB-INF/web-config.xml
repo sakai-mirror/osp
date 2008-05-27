@@ -119,7 +119,6 @@
               <prop key="/moveCriterion.osp">moveCriterionController</prop>
               <prop key="/viewScaffolding.osp">viewScaffoldingController</prop>
               
-              <prop key="/linkScaffolding.osp">linkScaffoldingController</prop>
               <prop key="/scaffoldingCellInfo.osp">scaffoldingCellInfoController</prop>
               <prop key="/listPageActivities.osp">listPageActivitiesController</prop>
               
