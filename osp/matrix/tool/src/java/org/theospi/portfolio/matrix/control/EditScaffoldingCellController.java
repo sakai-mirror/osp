@@ -170,34 +170,33 @@ public class EditScaffoldingCellController extends
 				customFormUsed = getMatrixManager().getFormCountByPageDef(sCell.getWizardPageDefinition().getId()) > 0;
 				List reviewTypeCountList = getMatrixManager().getReviewCountListByType(sCell.getWizardPageDefinition().getId());
 				for (Iterator iterator = reviewTypeCountList.iterator(); iterator.hasNext();) {
-					//no need to keep looking if all booleans are set to true:
-					if(!feedbackFormUsed && !reflectionFormUsed && !evaluationFormUsed){
-						ReviewTypeAndCount reviewTypeAndCount = (ReviewTypeAndCount) iterator.next();
 
-						//Feedback
-						if(reviewTypeAndCount.getType() == MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE){
-							if(reviewTypeAndCount.getCount() > 0){
-								feedbackFormUsed = true;
-								isCellUsed = true;
-							}
-						}
+					ReviewTypeAndCount reviewTypeAndCount = (ReviewTypeAndCount) iterator.next();
 
-						//Reflection
-						if(reviewTypeAndCount.getType() == MatrixFunctionConstants.REFLECTION_REVIEW_TYPE){
-							if(reviewTypeAndCount.getCount() > 0){
-								reflectionFormUsed = true;
-								isCellUsed = true;
-							}
-						}
-
-						//Evaluation
-						if(reviewTypeAndCount.getType() == MatrixFunctionConstants.EVALUATION_REVIEW_TYPE){
-							if(reviewTypeAndCount.getCount() > 0){
-								evaluationFormUsed = true;
-								isCellUsed = true;
-							}
+					//Feedback
+					if(reviewTypeAndCount.getType() == MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE){
+						if(reviewTypeAndCount.getCount() > 0){
+							feedbackFormUsed = true;
+							isCellUsed = true;
 						}
 					}
+
+					//Reflection
+					if(reviewTypeAndCount.getType() == MatrixFunctionConstants.REFLECTION_REVIEW_TYPE){
+						if(reviewTypeAndCount.getCount() > 0){
+							reflectionFormUsed = true;
+							isCellUsed = true;
+						}
+					}
+
+					//Evaluation
+					if(reviewTypeAndCount.getType() == MatrixFunctionConstants.EVALUATION_REVIEW_TYPE){
+						if(reviewTypeAndCount.getCount() > 0){
+							evaluationFormUsed = true;
+							isCellUsed = true;
+						}
+					}
+
 				}
 				//to save a db connection, cellUsed will be set to true already if any of the review booleans are true
 				if(!isCellUsed)

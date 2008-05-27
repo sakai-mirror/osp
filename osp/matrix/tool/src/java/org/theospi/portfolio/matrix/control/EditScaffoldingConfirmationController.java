@@ -198,31 +198,29 @@ implements Controller, FormController {
 				   boolean feedbackFormUsed = false, reflectionFormUsed = false, evaluationFormUsed = false;
 				   List reviewTypeCountList = getMatrixManager().getReviewCountListByType(sCell.getWizardPageDefinition().getId());
 				   for (Iterator iterator2 = reviewTypeCountList.iterator(); iterator2.hasNext();) {
-					   //no need to keep looking if all booleans are set to true:
-					   if(!feedbackFormUsed && !reflectionFormUsed && !evaluationFormUsed){
-						   ReviewTypeAndCount reviewTypeAndCount = (ReviewTypeAndCount) iterator2.next();
+					   ReviewTypeAndCount reviewTypeAndCount = (ReviewTypeAndCount) iterator2.next();
 
-						   //Feedback
-						   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE){
-							   if(reviewTypeAndCount.getCount() > 0){
-								   feedbackFormUsed = true;					 
-							   }
-						   }
-
-						   //Reflection
-						   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.REFLECTION_REVIEW_TYPE){
-							   if(reviewTypeAndCount.getCount() > 0){
-								   reflectionFormUsed = true;
-							   }
-						   }
-
-						   //Evaluation
-						   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.EVALUATION_REVIEW_TYPE){
-							   if(reviewTypeAndCount.getCount() > 0){
-								   evaluationFormUsed = true;
-							   }
+					   //Feedback
+					   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE){
+						   if(reviewTypeAndCount.getCount() > 0){
+							   feedbackFormUsed = true;					 
 						   }
 					   }
+
+					   //Reflection
+					   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.REFLECTION_REVIEW_TYPE){
+						   if(reviewTypeAndCount.getCount() > 0){
+							   reflectionFormUsed = true;
+						   }
+					   }
+
+					   //Evaluation
+					   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.EVALUATION_REVIEW_TYPE){
+						   if(reviewTypeAndCount.getCount() > 0){
+							   evaluationFormUsed = true;
+						   }
+					   }
+
 				   }
 
 				   //feedback
@@ -340,31 +338,29 @@ implements Controller, FormController {
 				   boolean feedbackFormUsed = false, reflectionFormUsed = false, evaluationFormUsed = false;
 				   List reviewTypeCountList = getMatrixManager().getReviewCountListByType(sCell.getWizardPageDefinition().getId());
 				   for (Iterator iterator2 = reviewTypeCountList.iterator(); iterator2.hasNext();) {
-					   //no need to keep looking if all booleans are set to true:
-					   if(!feedbackFormUsed && !reflectionFormUsed && !evaluationFormUsed){
-						   ReviewTypeAndCount reviewTypeAndCount = (ReviewTypeAndCount) iterator2.next();
+					   ReviewTypeAndCount reviewTypeAndCount = (ReviewTypeAndCount) iterator2.next();
 
-						   //Feedback
-						   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE){
-							   if(reviewTypeAndCount.getCount() > 0){
-								   feedbackFormUsed = true;
-							   }
-						   }
-
-						   //Reflection
-						   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.REFLECTION_REVIEW_TYPE){
-							   if(reviewTypeAndCount.getCount() > 0){
-								   reflectionFormUsed = true;
-							   }
-						   }
-
-						   //Evaluation
-						   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.EVALUATION_REVIEW_TYPE){
-							   if(reviewTypeAndCount.getCount() > 0){
-								   evaluationFormUsed = true;
-							   }
+					   //Feedback
+					   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE){
+						   if(reviewTypeAndCount.getCount() > 0){
+							   feedbackFormUsed = true;
 						   }
 					   }
+
+					   //Reflection
+					   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.REFLECTION_REVIEW_TYPE){
+						   if(reviewTypeAndCount.getCount() > 0){
+							   reflectionFormUsed = true;
+						   }
+					   }
+
+					   //Evaluation
+					   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.EVALUATION_REVIEW_TYPE){
+						   if(reviewTypeAndCount.getCount() > 0){
+							   evaluationFormUsed = true;
+						   }
+					   }
+
 				   }				 		
 
 				   //Feedback
