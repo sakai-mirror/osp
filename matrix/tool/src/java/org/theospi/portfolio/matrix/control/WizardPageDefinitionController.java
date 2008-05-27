@@ -25,7 +25,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.Set;
 
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.validation.Errors;
@@ -37,6 +42,7 @@ import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.security.AudienceSelectionHelper;
 
 /**
  * Created by IntelliJ IDEA.
@@ -197,4 +203,31 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
    protected String getReturnView() {
       return "page";
    }
+	
+	/**
+	 ** Return default list of evaluators for this wizard page
+	 **/
+	protected List getDefaultEvaluators(WizardPageDefinition wpd) {
+		List evalList = new ArrayList();
+		Set roles;
+		try {
+			roles = SiteService.getSite(wpd.getSiteId()).getRoles();
+		}
+		catch (IdUnusedException e) {
+			logger.warn(".getDefaultEvaluators unknown siteid", e);
+			return evalList;
+		}
+		
+		for (Iterator i = roles.iterator(); i.hasNext();) {
+			Role role = (Role) i.next();
+			if ( !role.isAllowed(AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD) )
+				continue;
+					
+			Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), wpd.getSiteId());
+			evalList.add(myResources.getFormattedMessage("decorated_role_format",
+																		new Object[] { roleAgent.getDisplayName() }));
+		}
+		return evalList;
+	}
+	
 }

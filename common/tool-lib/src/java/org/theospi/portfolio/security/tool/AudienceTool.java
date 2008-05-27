@@ -103,6 +103,8 @@ public class AudienceTool extends HelperToolBase {
     private String function;
     private Id qualifier;
     private boolean publicAudience = false;
+	 
+	 private SelectItemComparator selectItemComparator = new SelectItemComparator();
 
     /** This accepts email addresses */
     private static final Pattern emailPattern = Pattern.compile(
@@ -553,27 +555,27 @@ public class AudienceTool extends HelperToolBase {
 
     public List getAvailableUserList() {
 
-            availableUserList = new ArrayList();
+        availableUserList = new ArrayList();
 
-            List userMemberList = new ArrayList();
-            userMemberList.addAll(getFilteredMembersList());
+        List userMemberList = new ArrayList();
+        userMemberList.addAll(getFilteredMembersList());
 
-            for (Iterator idx = userMemberList.iterator(); idx.hasNext();) {
-                SelectItem availableItem = (SelectItem) idx.next();
-                boolean matchFound = false;
-                for (Iterator jdx = getSelectedUserList().iterator(); jdx.hasNext();) {
-                    SelectItem selectedItem = (SelectItem) jdx.next();
-                    if (selectedItem.getValue().toString().equals(availableItem.getValue().toString())) {
-                        matchFound = true;
-                        break;
-                    }
-
-                }
-                if (!matchFound){
-                    availableUserList.add(availableItem);
+        for (Iterator idx = userMemberList.iterator(); idx.hasNext();) {
+            SelectItem availableItem = (SelectItem) idx.next();
+            boolean matchFound = false;
+            for (Iterator jdx = getSelectedUserList().iterator(); jdx.hasNext();) {
+                SelectItem selectedItem = (SelectItem) jdx.next();
+                if (selectedItem.getValue().toString().equals(availableItem.getValue().toString())) {
+                    matchFound = true;
+                    break;
                 }
             }
+            if (!matchFound){
+                availableUserList.add(availableItem);
+            }
+        }
 
+        Collections.sort(availableUserList, selectItemComparator);
         return availableUserList;
     }
 
@@ -612,6 +614,7 @@ public class AudienceTool extends HelperToolBase {
                 }
             }
 
+        Collections.sort(availableRoleList, selectItemComparator);
         return availableRoleList;
     }
 
@@ -641,6 +644,7 @@ public class AudienceTool extends HelperToolBase {
                    selectedUserList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), "member"));
             }
 
+        Collections.sort(selectedUserList, selectItemComparator);
         return selectedUserList;
     }
 
@@ -701,6 +705,7 @@ public class AudienceTool extends HelperToolBase {
            }
        }
 
+       Collections.sort(selectedRoleList, selectItemComparator);
        return selectedRoleList;
     }
 
@@ -873,15 +878,16 @@ public class AudienceTool extends HelperToolBase {
     }
 
     public List getGroups() {
-        List returned = new ArrayList();
+        List groupsList = new ArrayList();
         Collection groups = getSite().getGroups();
 
         for (Iterator i = groups.iterator(); i.hasNext();) {
             Group group = (Group) i.next();
-            returned.add(new SelectItem(group.getId(), group.getTitle(), "group"));
+            groupsList.add(new SelectItem(group.getId(), group.getTitle(), "group"));
         }
 
-        return returned;
+        Collections.sort(groupsList, selectItemComparator);
+        return groupsList;
     }
 
     public List getSelectedGroupsFilter() {
@@ -1005,4 +1011,13 @@ public class AudienceTool extends HelperToolBase {
     public void setAgentManager(AgentManager agentManager) {
         this.agentManager = agentManager;
     }
+	 
+   /** 
+    ** Comparator for sorting SelectItem objects
+    **/
+	public class SelectItemComparator implements Comparator {
+		public int compare(Object o1, Object o2) {
+			return ((SelectItem)o1).getLabel().compareTo( ((SelectItem)o2).getLabel() );
+		}
+	}
 }

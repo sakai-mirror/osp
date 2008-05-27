@@ -23,6 +23,9 @@ package org.theospi.portfolio.matrix.control;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggingHelperInfo;
@@ -63,8 +66,14 @@ import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Sort;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.assignment.AssignmentHelper;
 
-import java.text.MessageFormat;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author chmaurer
@@ -90,7 +99,7 @@ public class EditScaffoldingCellController extends
 	private ReviewManager reviewManager;
 	
 
-	private static ResourceLoader myResources = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
+	protected static ResourceLoader myResources = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
    
 	public final static String FORM_TYPE = "form";
 
@@ -464,25 +473,58 @@ public class EditScaffoldingCellController extends
 		return model;
 	}
 
-	protected List getEvaluators(WizardPageDefinition wpd) {
+	/**
+	 ** Return default list of evaluators for this matrix cell
+	 **/
+	protected List getDefaultEvaluators(WizardPageDefinition wpd) {
 		List evalList = new ArrayList();
+		Set roles;
+		try {
+			roles = SiteService.getSite(wpd.getSiteId()).getRoles();
+		}
+		catch (IdUnusedException e) {
+			logger.warn(".getDefaultEvaluators unknown siteid", e);
+			return evalList;
+		}
+           
+		for (Iterator i = roles.iterator(); i.hasNext();) {
+			Role role = (Role) i.next();
+			if ( !role.isAllowed(AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX) )
+				continue;
+					
+			Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), wpd.getSiteId());
+			evalList.add(myResources.getFormattedMessage("decorated_role_format",
+																		new Object[] { roleAgent.getDisplayName() }));
+		}
+		return evalList;
+	}
+	
+	/**
+	 ** Return list of evaluators for this matrix (or wizard) page
+	 **/
+	protected List getEvaluators(WizardPageDefinition wpd) {
 		Id id = wpd.getId() == null ? wpd.getNewId() : wpd.getId();
 
 		List evaluators = getAuthzManager().getAuthorizations(null,
 				MatrixFunctionConstants.EVALUATE_MATRIX, id);
+      
+      // If no evaluators defined, add all qualified roles as default list
+      if ( evaluators.size() == 0 ) 
+			return getDefaultEvaluators(wpd);
 
+		// Otherwise, return list of selected evaluator roles and users
+		List evalList = new ArrayList();
 		for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
 			Authorization az = (Authorization) iter.next();
 			Agent agent = az.getAgent();
-			String userId = az.getAgent().getEid().getValue();
 			if (agent.isRole()) {
-				evalList.add(MessageFormat.format(myResources
-						.getString("decorated_role_format"),
-						new Object[] { agent.getDisplayName() }));
-			} else {
-				evalList.add(MessageFormat.format(myResources
-						.getString("decorated_user_format"), new Object[] {
-						agent.getDisplayName(), userId }));
+				evalList.add(myResources.getFormattedMessage("decorated_role_format",
+																			new Object[] { agent.getDisplayName() }));
+			} 
+			else {
+				String userId = az.getAgent().getEid().getValue();
+				evalList.add(myResources.getFormattedMessage("decorated_user_format", 
+																			new Object[] { agent.getDisplayName(), userId }));
 			}
 		}
 
