@@ -145,7 +145,7 @@ public class CellController implements FormController, LoadObjectController {
 		}
 
 		String pageId = cell.getCell().getWizardPage().getId().getValue();
-		String siteId = cell.getCell().getWizardPage().getPageDefinition().getSiteId();
+		String siteId = cell.getCell().getWizardPage().getPageDefinition().getSiteId().getValue();
 		List reviews =	
 			getReviewManager().getReviewsByParentAndType( pageId, Review.FEEDBACK_TYPE, siteId, getEntityProducer() );
 		Set cellForms = getMatrixManager().getPageForms(cell.getCell().getWizardPage());

@@ -174,7 +174,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       Placement placement = ToolManager.getCurrentPlacement();
       String currentSite = placement.getContext();
       Agent agent = getAuthManager().getAgent();
-      Wizard wizard = new Wizard(getIdManager().createId(), agent, currentSite);
+      Wizard wizard = new Wizard(getIdManager().createId(), agent, getIdManager().getId(currentSite));
       return wizard;
    }
    
@@ -215,7 +215,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
                wizardId);
       if (checkAuthz == WIZARD_VIEW_CHECK)
          getAuthorizationFacade().checkPermission(WizardFunctionConstants.VIEW_WIZARD,
-               getIdManager().getId(wizard.getSiteId()));
+               wizard.getSiteId());
       if (checkAuthz == WIZARD_EDIT_CHECK)
          getAuthorizationFacade().checkPermission(WizardFunctionConstants.EDIT_WIZARD,
                wizardId);
@@ -343,7 +343,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    private void removeTool(Wizard wizard) {
-      String siteId = wizard.getSiteId();
+      String siteId = wizard.getSiteId().getValue();
       try {
          Site siteEdit = SiteService.getSite(siteId);
 
@@ -359,7 +359,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
 
    private void addTool(Wizard wizard) {
-      String siteId = wizard.getSiteId();
+      String siteId = wizard.getSiteId().getValue();
       try {
          Site siteEdit = SiteService.getSite(siteId);
 
@@ -418,7 +418,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
             List reviews = getReviewManager().getReviewsByParent(
                   page.getId().getValue(), 
-                  page.getPageDefinition().getSiteId(),
+                  page.getPageDefinition().getSiteId().getValue(),
                   WizardEntityProducer.WIZARD_PRODUCER);
             for (Iterator iter = reviews.iterator(); iter.hasNext();) {
                Review review = (Review)iter.next();
@@ -500,12 +500,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public Reference decorateReference(Wizard wizard, String reference) {
       String fullRef = ContentEntityUtil.getInstance().buildRef(WizardEntityProducer.WIZARD_PRODUCER,
-            wizard.getSiteId(), wizard.getId().getValue(), reference);
+            wizard.getSiteId().getValue(), wizard.getId().getValue(), reference);
 
       return getEntityManager().newReference(fullRef);
    }
 
-   public List listWizardsByType(String owner, String siteId, String type) {
+   public List listWizardsByType(String owner, String siteIdStr, String type) {
+      Id siteId = getIdManager().getId(siteIdStr);
       Object[] params = new Object[]{getAgentManager().getAgent(owner), new Boolean(true), siteId, type};
       return getHibernateTemplate().find("from Wizard w where " +
             "(w.owner=? or w.published=?) and w.siteId=? and w.type=? order by seq_num", params);
@@ -531,19 +532,20 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return getCompletedWizards(getIdManager().getId(wizardId));
    }
 
-   public List listAllWizardsByOwner(String owner, String siteId) {
+   public List listAllWizardsByOwner(String owner, String siteIdStr) {
       Agent ownerAgent = getAgentManager().getAgent(owner);
+      Id siteId = getIdManager().getId(siteIdStr);
       Object[] params = new Object[]{ownerAgent, new Boolean(true), siteId};
       return getHibernateTemplate().find("from Wizard w where " +
             "(w.owner=? or w.published=?) and w.siteId=? order by seq_num", params);
    }
 
-   public List findWizardsByOwner(String ownerId, String siteId) {
+   public List findWizardsByOwner(String ownerId, Id siteId) {
       Object[] params = new Object[]{getAgentManager().getAgent(ownerId), siteId};
       return getHibernateTemplate().find("from Wizard w where w.owner=? and w.siteId=? order by seq_num", params);
    }
 
-   public List findPublishedWizards(List sites) {
+   public List findPublishedWizards(List<Id> sites) {
       String[] paramNames = new String[] {"published", "siteIds"};
       Object[] params = new Object[]{new Boolean(true), sites};
       return getHibernateTemplate().findByNamedParam("from Wizard w where w.published=:published " +
@@ -554,7 +556,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    /**
     * {@inheritDoc}
     */
-   public List findPublishedWizards(List sites, boolean lazy) {
+   public List findPublishedWizards(List<Id> sites, boolean lazy) {
       if (lazy) 
          return findPublishedWizardsLazy(sites);
       else
@@ -562,7 +564,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    }
    
    
-   protected List findPublishedWizardsLazy(List sites) {
+   protected List findPublishedWizardsLazy(List<Id> sites) {
       Criteria c = this.getSession().createCriteria(Wizard.class);
       Criteria rootCat = c.createCriteria("rootCategory");
       rootCat.setFetchMode("childPages", FetchMode.SELECT);
@@ -573,16 +575,16 @@ public class WizardManagerImpl extends HibernateDaoSupport
       return new ArrayList(c.list());
    }
    
-   public List findPublishedWizards(String siteId) {
+   public List findPublishedWizards(Id siteId) {
       Object[] params = new Object[]{new Boolean(true), siteId};
       return getHibernateTemplate().find("from Wizard w where w.published=? and w.siteId=? order by seq_num", params);
    }
    
-   public List<WizardPageDefinition> findWizardPageDefs(final String siteId) {
+   public List<WizardPageDefinition> findWizardPageDefs(final Id siteId) {
 	   return findWizardPageDefs(siteId, false);
 	}
 
-   public List<WizardPageDefinition> findWizardPageDefs(final String siteId,
+   public List<WizardPageDefinition> findWizardPageDefs(final Id siteId,
 			final boolean deep) {
 		return (List) getHibernateTemplate().execute(new HibernateCallback() {
 			public Object doInHibernate(Session session) {
@@ -786,7 +788,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       boolean canEval = getAuthorizationFacade().isAuthorized(WizardFunctionConstants.EVALUATE_WIZARD, 
             cw.getWizard().getId());
       boolean canReview = getAuthorizationFacade().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
-            getIdManager().getId(cw.getWizard().getSiteId()));
+            cw.getWizard().getSiteId());
       boolean canReflect = canEval || canReview;
       
       boolean owns = cw.getOwner().getId().equals(getAuthManager().getAgent().getId());
@@ -795,7 +797,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          //can I look at reviews/evals/reflections? - own or eval
          getReviewManager().getReviewsByParentAndType(
                id.getValue(), Review.EVALUATION_TYPE,
-               cw.getWizard().getSiteId(),
+               cw.getWizard().getSiteId().getValue(),
                WizardEntityProducer.WIZARD_PRODUCER);
       }
       
@@ -803,7 +805,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          //can I look at reviews/evals/reflections? - own or review
          getReviewManager().getReviewsByParentAndType(
                id.getValue(), Review.FEEDBACK_TYPE,
-               cw.getWizard().getSiteId(),
+               cw.getWizard().getSiteId().getValue(),
                WizardEntityProducer.WIZARD_PRODUCER);         
       }
       
@@ -811,7 +813,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
          //can I look at reviews/evals/reflections? - own or reflect
          getReviewManager().getReviewsByParentAndType(
                id.getValue(), Review.REFLECTION_TYPE,
-               cw.getWizard().getSiteId(),
+               cw.getWizard().getSiteId().getValue(),
                WizardEntityProducer.WIZARD_PRODUCER);         
       }
    }
@@ -842,7 +844,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
    /**
     * {@inheritDoc}
     */
-   public String getWizardIdSiteId(final Id wizardId) {
+   public Id getWizardIdSiteId(final Id wizardId) {
       
       try {
     	  net.sf.ehcache.Element elem = null;
@@ -851,12 +853,12 @@ public class WizardManagerImpl extends HibernateDaoSupport
          if(siteCache != null && elem != null) {
         	   if(elem.getValue() == null)
         	      return null;
-            return elem.getValue().toString();
+            return idManager.getId( elem.getValue().toString() );
          }
       } catch(CacheException e) {
          logger.warn("the wizard ehcache had an exception", e);
       }
-      String siteId;
+      Id siteId;
       
       HibernateCallback hcb = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException  {
@@ -866,26 +868,17 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
             query.setParameter(0, wizardId.getValue(), Hibernate.STRING);
 
-            String results = (String) query.uniqueResult();
-            
-            /*
-				//CWM just testing out some different hibernate options...
-            Criteria c = session.createCriteria(Wizard.class);
-            Criteria rootCat = c.createCriteria("rootCategory");
-            rootCat.setFetchMode("childPages", FetchMode.SELECT);
-            rootCat.setFetchMode("childCategories", FetchMode.SELECT);
-            c.add(Expression.eq("id", wizardId));
-            Wizard wiz = (Wizard) c.uniqueResult();
-            if (wiz == null) return null;
-            String results = wiz.getSiteId();
-            */
+            Id results = (Id) query.uniqueResult();
             
             return results;
          }
       };
-      siteId = ((String)getHibernateTemplate().execute(hcb));
-      if(siteCache != null)
-         siteCache.put(new net.sf.ehcache.Element(wizardId.getValue(), siteId));
+		
+      siteId = ((Id)getHibernateTemplate().execute(hcb));
+      if(siteCache != null && siteId != null)
+         siteCache.put(new net.sf.ehcache.Element(wizardId.getValue(), siteId.getValue()));
+      if(siteCache != null && siteId == null)
+         siteCache.put(new net.sf.ehcache.Element(wizardId.getValue(), null));
       
       return siteId;
    }
@@ -1075,7 +1068,8 @@ public class WizardManagerImpl extends HibernateDaoSupport
          return null;
 
        Map     importData = new HashMap();
-      Wizard   wizard = new Wizard(null, getAuthManager().getAgent(), worksiteId);
+      Wizard   wizard = new Wizard(null, getAuthManager().getAgent(), 
+											  getIdManager().getId(worksiteId));
       String tempDirName = getIdManager().createId().getValue();
 
       // set values not coming from the zip
@@ -2215,13 +2209,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
       CompletedWizard cw = this.getCompletedWizard(id);
       
       List reflections = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
-            Review.REFLECTION_TYPE, cw.getWizard().getSiteId(),
+            Review.REFLECTION_TYPE, cw.getWizard().getSiteId().getValue(),
             WizardEntityProducer.WIZARD_PRODUCER);
       List evaluations = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
-            Review.EVALUATION_TYPE, cw.getWizard().getSiteId(),
+            Review.EVALUATION_TYPE, cw.getWizard().getSiteId().getValue(),
             WizardEntityProducer.WIZARD_PRODUCER);
       List feedback = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
-            Review.FEEDBACK_TYPE, cw.getWizard().getSiteId(),
+            Review.FEEDBACK_TYPE, cw.getWizard().getSiteId().getValue(),
             WizardEntityProducer.WIZARD_PRODUCER);
       cw.setReflections(reflections);
       cw.setEvaluations(evaluations);
@@ -2239,13 +2233,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
          WizardPage page = cPage.getWizardPage();
          
          List reflections = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), 
-               Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId(),
+               Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId().getValue(),
                WizardEntityProducer.WIZARD_PRODUCER);
          List evaluations = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), 
-               Review.EVALUATION_TYPE, page.getPageDefinition().getSiteId(),
+               Review.EVALUATION_TYPE, page.getPageDefinition().getSiteId().getValue(),
                WizardEntityProducer.WIZARD_PRODUCER);
          List feedback = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), 
-               Review.FEEDBACK_TYPE, page.getPageDefinition().getSiteId(),
+               Review.FEEDBACK_TYPE, page.getPageDefinition().getSiteId().getValue(),
                WizardEntityProducer.WIZARD_PRODUCER);
          page.setReflections(reflections);
          page.setEvaluations(evaluations);
@@ -2401,7 +2395,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public void importResources(String fromContext, String toContext, List resourceIds) {
       try {
-         List wizards = this.findPublishedWizards(fromContext);
+         List wizards = this.findPublishedWizards( idManager.getId(fromContext) );
          if (wizards == null) {
             return;
          }

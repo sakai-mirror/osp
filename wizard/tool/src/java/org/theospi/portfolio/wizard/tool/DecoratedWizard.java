@@ -170,7 +170,7 @@ public class DecoratedWizard implements DecoratedListInterface {
       			|| base.getReviewerGroupAccess() == WizardMatrixConstants.UNRESTRICTED_GROUP_ACCESS;
 					
     	try {
-			Site site = SiteService.getSite(base.getSiteId());
+			Site site = SiteService.getSite(base.getSiteId().getValue());
 			if (site.hasGroups()) {
             String currentUser = SessionManager.getCurrentSessionUserId();
             if (allowAllGroups) {
@@ -193,7 +193,7 @@ public class DecoratedWizard implements DecoratedListInterface {
 	
 	public List getUserListForSelect() {
 		Placement placement = ToolManager.getCurrentPlacement();
-		String currentSiteId = base.getSiteId();
+		String currentSiteId = base.getSiteId().getValue();
 		List theList = getUserList(currentSiteId);
 
 		String user = getParent().getCurrentUserId()!=null ? 

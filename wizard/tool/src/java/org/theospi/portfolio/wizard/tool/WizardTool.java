@@ -780,7 +780,7 @@ public class WizardTool extends BuilderTool {
             AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD);
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER,
             wizard.getId().getValue());
-		session.setAttribute(AudienceSelectionHelper.AUDIENCE_SITE, wizard.getSiteId());
+		session.setAttribute(AudienceSelectionHelper.AUDIENCE_SITE, wizard.getSiteId().getValue());
 		
 		session.removeAttribute(AudienceSelectionHelper.CONTEXT);
 		session.removeAttribute(AudienceSelectionHelper.CONTEXT2);
@@ -961,7 +961,7 @@ public class WizardTool extends BuilderTool {
          
          attachments = 
             AssignmentHelper.filterAssignmentsBySite( attachments, 
-                                                      wpd.getSiteId() );
+                                                      wpd.getSiteId().getValue() );
          wpd.setAttachments(attachments);
       }
       wizardManager.saveWizard(wizard);

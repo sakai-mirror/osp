@@ -150,7 +150,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		// We aren't picky about the provider, so ignore that argument.
 		List<TaggableActivity> activities = new ArrayList<TaggableActivity>();
 		for (WizardPageDefinition def : wizardManager.findWizardPageDefs(
-				context, true)) {
+				idManager.getId(context), true)) {
 			activities.add(getActivity(def));
 		}
 		return activities;
@@ -183,11 +183,11 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		if (reference != null) {
 			if (WizardReference.REF_DEF.equals(reference.getType())) {
 				context = wizardManager.getWizardPageDefinition(
-						idManager.getId(reference.getId())).getSiteId();
+						idManager.getId(reference.getId())).getSiteId().getValue();
 			} else {
 				context = matrixManager.getWizardPage(
 						idManager.getId(reference.getId())).getPageDefinition()
-						.getSiteId();
+						.getSiteId().getValue();
 			}
 		}
 		return context;

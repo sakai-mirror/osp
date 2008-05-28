@@ -50,7 +50,7 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
       this.level = level;
       this.wizardPageDefinition = new WizardPageDefinition();
       wizardPageDefinition.setInitialStatus(initialStatus);
-      wizardPageDefinition.setSiteId(scaffolding.getWorksiteId().getValue());
+      wizardPageDefinition.setSiteId(scaffolding.getWorksiteId());
       this.scaffolding = scaffolding;
    }
    

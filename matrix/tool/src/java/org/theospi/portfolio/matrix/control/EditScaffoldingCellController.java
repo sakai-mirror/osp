@@ -137,12 +137,12 @@ public class EditScaffoldingCellController extends
 		}
 
 
-		model.put("reflectionDevices", getReflectionDevices(def.getSiteId(), sCell));
-		model.put("evaluationDevices", getEvaluationDevices(def.getSiteId(), sCell));
-		model.put("reviewDevices", getReviewDevices(def.getSiteId(), sCell));
-		model.put("additionalFormDevices", getAdditionalFormDevices(def.getSiteId()));
+		model.put("reflectionDevices", getReflectionDevices(def.getSiteId().getValue(), sCell));
+		model.put("evaluationDevices", getEvaluationDevices(def.getSiteId().getValue(), sCell));
+		model.put("reviewDevices", getReviewDevices(def.getSiteId().getValue(), sCell));
+		model.put("additionalFormDevices", getAdditionalFormDevices(def.getSiteId().getValue()));
 		model.put("selectedAdditionalFormDevices",
-				getSelectedAdditionalFormDevices(sCell, def.getSiteId()));
+				getSelectedAdditionalFormDevices(sCell, def.getSiteId().getValue()));
 		model.put("selectedAssignments",
                 AssignmentHelper.getSelectedAssignments(sCell.getWizardPageDefinition().getAttachments()) );
 		model.put("evaluators", getEvaluators(sCell.getWizardPageDefinition()));
@@ -415,7 +415,7 @@ public class EditScaffoldingCellController extends
 					|| forwardView.equals("createGuidance"))
 				session.put(GuidanceHelper.SHOW_EXAMPLE_FLAG, bTrue);
 
-			String currentSite = scaffoldingCell.getWizardPageDefinition().getSiteId();
+			String currentSite = scaffoldingCell.getWizardPageDefinition().getSiteId().getValue();
 			session.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG,
 					"true");
 			model.put(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG, "true");
@@ -480,7 +480,7 @@ public class EditScaffoldingCellController extends
 		List evalList = new ArrayList();
 		Set roles;
 		try {
-			roles = SiteService.getSite(wpd.getSiteId()).getRoles();
+			roles = SiteService.getSite(wpd.getSiteId().getValue()).getRoles();
 		}
 		catch (IdUnusedException e) {
 			logger.warn(".getDefaultEvaluators unknown siteid", e);
@@ -492,7 +492,7 @@ public class EditScaffoldingCellController extends
 			if ( !role.isAllowed(AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX) )
 				continue;
 					
-			Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), wpd.getSiteId());
+			Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), wpd.getSiteId().getValue());
 			evalList.add(myResources.getFormattedMessage("decorated_role_format",
 																		new Object[] { roleAgent.getDisplayName() }));
 		}
@@ -542,7 +542,7 @@ public class EditScaffoldingCellController extends
 				.getNewId().getValue();
 
 		session.put(AudienceSelectionHelper.AUDIENCE_QUALIFIER, id);
-		session.put(AudienceSelectionHelper.AUDIENCE_SITE, wpd.getSiteId());
+		session.put(AudienceSelectionHelper.AUDIENCE_SITE, wpd.getSiteId().getValue());
 		
 		session.remove(AudienceSelectionHelper.CONTEXT);
 		session.remove(AudienceSelectionHelper.CONTEXT2);

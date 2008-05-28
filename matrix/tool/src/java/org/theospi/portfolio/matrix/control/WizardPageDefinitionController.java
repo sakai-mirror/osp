@@ -105,7 +105,7 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
       page = (WizardPageDefinition)pageList.get(0);
       
       session.remove(WizardPageHelper.CANCELED);
-      page.setSiteId(ToolManager.getCurrentPlacement().getContext());
+      page.setSiteId(getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
       ScaffoldingCell cell = new ScaffoldingCell();
       cell.setWizardPageDefinition(page);
       if (page.getId() == null) {
@@ -211,7 +211,7 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
 		List evalList = new ArrayList();
 		Set roles;
 		try {
-			roles = SiteService.getSite(wpd.getSiteId()).getRoles();
+			roles = SiteService.getSite(wpd.getSiteId().getValue()).getRoles();
 		}
 		catch (IdUnusedException e) {
 			logger.warn(".getDefaultEvaluators unknown siteid", e);
@@ -223,7 +223,7 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
 			if ( !role.isAllowed(AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD) )
 				continue;
 					
-			Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), wpd.getSiteId());
+			Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), wpd.getSiteId().getValue());
 			evalList.add(myResources.getFormattedMessage("decorated_role_format",
 																		new Object[] { roleAgent.getDisplayName() }));
 		}

@@ -51,7 +51,7 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    private Guidance guidance;
    transient private Id deleteGuidanceId;
    
-   private String siteId;
+   private Id siteId;
    private Style style;
    
    transient private Id styleId;
@@ -190,11 +190,11 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
       this.description = description;
    }
 
-   public String getSiteId() {
+   public Id getSiteId() {
       return siteId;
    }
 
-   public void setSiteId(String siteId) {
+   public void setSiteId(Id siteId) {
       this.siteId = siteId;
    }
    public Style getStyle() {
