@@ -34,7 +34,6 @@ import javax.faces.model.SelectItem;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
@@ -51,14 +50,9 @@ import org.sakaiproject.taggable.api.LinkManager;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
-import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.util.Validator;
-import org.theospi.portfolio.guidance.mgt.GuidanceHelper;
-import org.theospi.portfolio.guidance.mgt.GuidanceManager;
-import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.control.MatrixGridBean;
 import org.theospi.portfolio.matrix.model.Criterion;
@@ -68,7 +62,6 @@ import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.tool.HelperToolBase;
 import org.theospi.portfolio.tagging.api.MatrixTaggingProvider;
-import org.theospi.portfolio.wizard.WizardFunctionConstants;
 
 public class MatrixLinkTool extends HelperToolBase
 {
@@ -150,8 +143,6 @@ public class MatrixLinkTool extends HelperToolBase
 	
 	
 	public List<MatrixGridBean> getGrids() {
-		Agent currentAgent = getAuthManager().getAgent();
-
 		String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
 		if (selectedSiteId == null) setSelectedSiteId(worksiteId);
 
