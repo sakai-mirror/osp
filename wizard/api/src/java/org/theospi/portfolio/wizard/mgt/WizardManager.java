@@ -311,4 +311,19 @@ public interface WizardManager extends WorkflowEnabledManager {
 	 */
 	public Wizard saveWizard(Wizard wizard);
 
+   /**
+    * get all the cells, pages, and wizards that this user can evaluate within specified worksite(s)
+    * @param agent Agent 
+    * @param worksiteIds List of worksite Ids
+    * @return List of org.theospi.portfolio.shared.model.EvaluationContentWrapper
+    */
+   List getEvaluatableItems(Agent agent, List<Id> worksiteIds);
+
+   /**
+    * get all the cells, pages, and wizards that this user can evaluate within all worksites they are a member of
+    * @param agent Agent 
+    * @return List of org.theospi.portfolio.shared.model.EvaluationContentWrapper
+    */
+   List getEvaluatableItems(Agent agent);
+
 }

@@ -517,6 +517,9 @@
          <property name="listScrollIndexer">
             <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
          </property>
+         <property name="wizardManager">
+            <ref bean="org.theospi.portfolio.wizard.mgt.WizardManager" />
+         </property>
       </bean>
       </property>
       <property name="screenMappings">

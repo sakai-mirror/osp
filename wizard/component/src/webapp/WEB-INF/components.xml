@@ -273,6 +273,9 @@
       <property name="eventService">
       	<ref bean="org.theospi.event.EventService"/>
       </property>
+      <property name="worksiteManager">
+         <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+      </property>
    </bean>
    
    <bean id="org.theospi.portfolio.wizard.mgt.impl.WizardManagerImpl.cache" 

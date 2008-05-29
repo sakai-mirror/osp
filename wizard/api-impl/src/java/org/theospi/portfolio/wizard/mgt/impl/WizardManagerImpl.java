@@ -47,7 +47,9 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.XMLOutputter;
+import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
@@ -84,7 +86,9 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.shared.model.Type;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
+import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.ToolConfiguration;
@@ -110,9 +114,11 @@ import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.impl.AllowAllSecurityAdvisor;
+import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.shared.model.OspException;
+import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 import org.theospi.portfolio.style.StyleConsumer;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.style.model.Style;
@@ -157,10 +163,14 @@ public class WizardManagerImpl extends HibernateDaoSupport
    private StyleManager styleManager;
    private MatrixManager matrixManager;
    private LockManager lockManager;
+   private WorksiteManager worksiteManager;
    
    private Cache siteCache = null;
    private String importFolderName;
 
+   private static boolean allowAllGroups = 
+      ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false);
+      
    protected void init() throws Exception {
       
       logger.info("init()");
@@ -2426,6 +2436,169 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    }
 
+   protected List getEvaluatableWizardPages(Agent agent, List<Agent> roles, List<Id> worksiteIds, HashMap siteHash) {
+      String[] paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
+      Object[] params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+                                      MatrixFunctionConstants.PENDING_STATUS,
+                                      agent, roles, worksiteIds};
+	
+      List wizardPages = this.getHibernateTemplate().findByNamedParam("select distinct new " +
+            "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizardPage(" +
+            "cwp.wizardPage.id, " +
+            "cwp.wizardPage.pageDefinition.title, cwp.category.wizard.owner, " +
+            "cwp.wizardPage.modified, " +
+            "cwp.category.wizard.wizard.type, cwp.wizardPage.pageDefinition.siteId) " +
+            "from CompletedWizardPage cwp, " +
+            "Authorization auth " +
+            "where cwp.wizardPage.pageDefinition.id = auth.qualifier " +
+            "and auth.function = :evaluate and cwp.wizardPage.status = :pendingStatus and " +
+            "(auth.agent=:user or auth.agent in ( :roles )) " +
+            " and cwp.wizardPage.pageDefinition.siteId in ( :siteIds )",
+             paramNames, params );
+      
+      // filter out group-restricted users
+      List filteredWizardPages = new ArrayList();
+      for ( Iterator it=wizardPages.iterator(); it.hasNext(); ) {
+         EvaluationContentWrapper evalItem = (EvaluationContentWrapper)it.next();
+         WizardPage wizPage = matrixManager.getWizardPage( evalItem.getId() );
+         
+         WizardPageSequence seq = getWizardPageSeqByDef(wizPage.getPageDefinition().getId());
+         Wizard wizard = seq.getCategory().getWizard();
+         
+         if ( !allowAllGroups && wizard.getReviewerGroupAccess() == WizardMatrixConstants.NORMAL_GROUP_ACCESS ) {
+            HashSet siteGroupUsers = (HashSet)siteHash.get( wizard.getSiteId().getValue() );
+            if ( siteGroupUsers != null && siteGroupUsers.contains(wizPage.getOwner().getId().getValue()) )
+               filteredWizardPages.add( evalItem );
+         }
+         else {
+            filteredWizardPages.add( evalItem );
+         }
+      }
+      
+      return filteredWizardPages;
+   }
+   
+   protected List getEvaluatableWizards(Agent agent, List<Agent> roles, List<Id> worksiteIds, HashMap siteHash) {
+     
+      String[] paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
+      Object[] params =  new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
+                                      MatrixFunctionConstants.PENDING_STATUS,
+                                      agent, roles, worksiteIds};
+	
+      List wizards = this.getHibernateTemplate().findByNamedParam("select distinct new " +
+            "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizard(" +
+            "cw.wizard.id, " +
+            "cw.wizard.name, cw.owner, " +
+            "cw.created, cw.wizard.siteId) " +
+            "from CompletedWizard cw, " +
+            "Authorization auth " +
+            "where cw.wizard.id = auth.qualifier " +
+            "and auth.function = :evaluate and cw.status = :pendingStatus and " +
+				"(auth.agent=:user or auth.agent in ( :roles )) " +
+            " and cw.wizard.siteId in ( :siteIds )",
+             paramNames, params );
+				
+      // filter out group-restricted users
+      List filteredWizards = new ArrayList();
+      for ( Iterator it=wizards.iterator(); it.hasNext(); ) {
+         EvaluationContentWrapper evalItem = (EvaluationContentWrapper)it.next();
+         Wizard wizard = getWizard( evalItem.getId() );
+         CompletedWizard completedWiz = getCompletedWizard( wizard, evalItem.getOwner().getId(), false );
+         
+         if ( !allowAllGroups && wizard.getReviewerGroupAccess() == WizardMatrixConstants.NORMAL_GROUP_ACCESS ) {
+            HashSet siteGroupUsers = (HashSet)siteHash.get( wizard.getSiteId().getValue() );
+            if ( siteGroupUsers != null && siteGroupUsers.contains(completedWiz.getOwner().getId().getValue()) )
+               filteredWizards.add( evalItem );
+         }
+         else {
+            filteredWizards.add( evalItem );
+         }
+      }
+      
+      return filteredWizards;
+   }
+   
+   /**
+    * get all the cells, pages, and wizards that this user can evaluate within specified worksite(s)
+    * @param agent Agent 
+    * @param worksiteIds List of worksite Ids
+    * @return List of org.theospi.portfolio.shared.model.EvaluationContentWrapper
+    */
+   public List getEvaluatableItems(Agent agent) {
+      List siteList = getWorksiteManager().getUserSites();
+		List siteIds = new ArrayList(siteList.size());
+		
+      for (Iterator i = siteList.iterator(); i.hasNext();) {
+         Site site = (Site) i.next();
+			siteIds.add( idManager.getId(site.getId()) );
+      }
+		
+      return getEvaluatableItems(agent, siteIds);
+   }
+   
+   /**
+    ** Return set of users who share a group with the specified evalUser
+    ** 
+    ** @param evalUser evaluator user
+    ** @param siteId   worksite id to serach
+    ** @return Set of users the evalUser is qualified to evaluate (with group restrictions)
+    **/
+   private HashSet getSiteGroupUsers( Agent evalUser, String siteId ) {
+      HashSet members = new HashSet();
+      try {
+         Site site = SiteService.getSite(siteId);
+         
+         if (site.hasGroups()) {
+            Iterator groupIt = site.getGroupsWithMember( evalUser.getId().getValue() ).iterator();
+            while (groupIt.hasNext()) {
+               Iterator memberIt = ((Group)groupIt.next()).getMembers().iterator();
+               while ( memberIt.hasNext() )
+                  members.add( ((Member)memberIt.next()).getUserId() );
+            }
+         }
+         else {
+            Iterator memberIt = site.getMembers().iterator();
+            while ( memberIt.hasNext() )
+               members.add( ((Member)memberIt.next()).getUserId() );
+         }
+      }
+      catch (IdUnusedException e) {
+         logger.warn(this+".getSiteGroupUsers invalid site id: " + siteId );
+      }
+      
+      return members;
+   }
+   
+   /**
+    * get all the cells, pages, and wizards that this user can evaluate within all worksites they are a member of
+    * @param agent Agent 
+    * @return List of org.theospi.portfolio.shared.model.EvaluationContentWrapper
+    */
+   public List getEvaluatableItems(Agent agent, List<Id>siteIds) {
+      List roles = new ArrayList();
+      HashMap siteHash = new HashMap( siteIds.size() );
+      
+      // Find user roles in each specified site
+      for (Iterator i = siteIds.iterator(); i.hasNext();) {
+         Id worksiteId = (Id)i.next();
+         List siteUserRoles = agent.getWorksiteRoles(worksiteId.getValue());
+         roles.addAll( siteUserRoles );
+         
+         HashSet siteGroupUsers = getSiteGroupUsers( agent, worksiteId.getValue() );
+         siteHash.put( worksiteId.getValue(), siteGroupUsers );
+      }
+      
+      List evalItems = matrixManager.getEvaluatableCells(agent, roles, siteIds, siteHash);
+      
+      evalItems.addAll( getEvaluatableWizardPages(agent, roles, siteIds, siteHash) );
+      evalItems.addAll( getEvaluatableWizards(agent, roles, siteIds, siteHash)  );
+      
+      return evalItems;
+   }
+   
+   //
+   // Injected compnent methods
+   //
    public String getImportFolderName() {
       return importFolderName;
    }
@@ -2434,14 +2607,12 @@ public class WizardManagerImpl extends HibernateDaoSupport
       this.importFolderName = importFolderName;
    }
 
-
    /**
     * @return the matrixManager
     */
    public MatrixManager getMatrixManager() {
       return matrixManager;
    }
-
 
    /**
     * @param matrixManager the matrixManager to set
@@ -2457,15 +2628,6 @@ public class WizardManagerImpl extends HibernateDaoSupport
       this.lockManager = lockManager;
    }
 
-
-/**
- * @return the siteCache
- */
-public Cache getSiteCache()
-{
-	return siteCache;
-}
-
    public EventService getEventService() {
 	   return eventService;
    }
@@ -2473,14 +2635,33 @@ public Cache getSiteCache()
 	   this.eventService = eventService;
    }
 
+   /**
+    * @return the siteCache
+    */
+   public Cache getSiteCache()
+   {
+      return siteCache;
+   }
 
+   /**
+    * @param siteCache the siteCache to set
+    */
+   public void setSiteCache(Cache siteCache)
+   {
+      this.siteCache = siteCache;
+   }
 
-/**
- * @param siteCache the siteCache to set
- */
-public void setSiteCache(Cache siteCache)
-{
-	this.siteCache = siteCache;
-}
-
+   /**
+    * @return Returns the worksiteManager.
+    */
+   public WorksiteManager getWorksiteManager() {
+      return worksiteManager;
+   }
+   /**
+    * @param worksiteManager The worksiteManager to set.
+    */
+   public void setWorksiteManager(WorksiteManager worksiteManager) {
+      this.worksiteManager = worksiteManager;
+   }
+   
 }

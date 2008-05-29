@@ -54,6 +54,7 @@ import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.EvaluationContentComparator;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
 
 /**
  * @author chmaurer
@@ -62,6 +63,7 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
 
    protected final Log logger = LogFactory.getLog(getClass());
    private MatrixManager matrixManager = null;
+	private WizardManager wizardManager = null;
    private IdManager idManager = null;
    private AuthenticationManager authManager = null;
    private AuthorizationFacade authzManager = null;
@@ -86,10 +88,14 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       if (evalType != null)
          setUserEvalProperty(evalType);
       
-      if (ALL_EVALS.equals(getUserEvalProperty()))         
-         list = matrixManager.getEvaluatableItems(authManager.getAgent());
-      else
-         list = matrixManager.getEvaluatableItems(authManager.getAgent(), worksiteManager.getCurrentWorksiteId());
+      if (ALL_EVALS.equals(getUserEvalProperty())) {
+         list = wizardManager.getEvaluatableItems(authManager.getAgent());
+      }
+      else {
+         List siteIds = new ArrayList(1);
+         siteIds.add( worksiteManager.getCurrentWorksiteId() );
+         list = wizardManager.getEvaluatableItems(authManager.getAgent(), siteIds);
+      }
       
       String sortColumn = (String)request.get("sortByColumn");
       if (sortColumn == null)
@@ -99,7 +105,6 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       if (strAsc != null)
          asc = strAsc.equalsIgnoreCase("asc");
 
-      
       Collections.sort(list, new EvaluationContentComparator(
             sortColumn, asc));
       list = getListScrollIndexer().indexList(request, request, list);
@@ -164,7 +169,6 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       model.put("currentUser", authManager.getAgent());
       
       String asc = (String)request.get("direction");
-      //Boolean asc = new Boolean(true);
       if (asc == null)
          asc = "asc";
       
@@ -344,5 +348,13 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       this.toolManager = toolManager;
    }
 
+	public WizardManager getWizardManager() {
+		return wizardManager;
+	}
+
+	public void setWizardManager(WizardManager wizardManager) {
+		this.wizardManager = wizardManager;
+	}
+   
 }
 
