@@ -50,14 +50,15 @@ public class ListScaffoldingController extends AbstractMatrixController {
 	// Sort strings
 	static final String SORT = "sort", ASCENDING = "ascending",  TITLE = "title", OWNER = "owner",
 						PUBLISHED = "published", MODIFIED = "modified", WORKSITE = "worksite";
-	private String sortBy = TITLE;
-	private boolean sortAscending = true;
+	
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Hashtable<String, Object> model = new Hashtable<String, Object>();
       Agent currentAgent = getAuthManager().getAgent();
       String currentToolId = ToolManager.getCurrentPlacement().getId();
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
+      String sortBy = TITLE;
+      boolean sortAscending = true;
 		List scaffolding = null;
 
 		if ( isOnWorkspaceTab() )
