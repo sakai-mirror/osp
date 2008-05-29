@@ -184,7 +184,7 @@
 		<spring:bind path="scaffolding.levels">
 			<c:if test="${(empty scaffolding.levels)}">
 			<c:if test="${status.error}">
-				No reviewers have been added
+				<div class="indnt1 highlight">
 			</c:if>	
 			<c:if test="${!status.error}">
 				<div class="instruction indnt1">
