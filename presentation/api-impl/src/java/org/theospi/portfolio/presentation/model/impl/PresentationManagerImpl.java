@@ -3182,7 +3182,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
                   counter ++;
                }
             }
-            template.setPropertyFormType(tempFormDef.getId());
+            //make sure it is not null
+            if (tempFormDef != null)
+            	template.setPropertyFormType(tempFormDef.getId());
+            
             storeTemplate(template, false);
             logger.info("OSP Portfolio Template Conversion: Template with id " + template.getId().getValue() + " is being updated to use form with id " + tempFormDef.getId().getValue());
          }
