@@ -158,7 +158,11 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
             }
          }
       }
-      scaffolding = matrix.getScaffolding();
+      
+      //not really sure why this is here, but making sure matrix isn't null
+      if (matrix != null)
+    	  scaffolding = matrix.getScaffolding();
+      
       if (createAuthz) {
          getAuthzManager().createAuthorization(getAuthManager().getAgent(), 
                  FunctionConstants.READ_MATRIX, matrix.getId());
