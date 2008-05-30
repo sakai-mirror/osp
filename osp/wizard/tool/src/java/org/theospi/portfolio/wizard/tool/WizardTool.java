@@ -128,6 +128,8 @@ public class WizardTool extends BuilderTool {
    
    private boolean loadCompletedWizard = false;
    
+   private int wizardListSize = 0;
+   
    //	import variables
    private String importFilesString = "";
    private List importFiles = new ArrayList();
@@ -319,9 +321,22 @@ public class WizardTool extends BuilderTool {
          setNextWizard(lastWizard.getBase().getSequence() + 1);
       }
 
+      if (wizards != null) 
+    	  setWizardListSize(wizards.size());
+      
       return returned;
    }
    
+   public int getWizardListSize()
+   {
+	   return wizardListSize;
+   }
+
+   public void setWizardListSize(int wizardListSize)
+   {
+	   this.wizardListSize = wizardListSize;
+   }
+
    public void clearInterface()
    {
       lastSaveWizard = "";
