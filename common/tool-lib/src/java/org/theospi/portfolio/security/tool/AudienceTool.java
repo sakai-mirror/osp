@@ -104,7 +104,7 @@ public class AudienceTool extends HelperToolBase {
     private Id qualifier;
     private boolean publicAudience = false;
 	 
-	 private SelectItemComparator selectItemComparator = new SelectItemComparator();
+    private SelectItemComparator selectItemComparator = new SelectItemComparator();
 
     /** This accepts email addresses */
     private static final Pattern emailPattern = Pattern.compile(

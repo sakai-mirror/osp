@@ -55,6 +55,8 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
 
    private List pageList = null;
    
+   protected final static String audienceSelectionFunction = AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD;
+   
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.FormController#referenceData(java.util.Map, java.lang.Object, org.springframework.validation.Errors)
     */
@@ -203,31 +205,5 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
    protected String getReturnView() {
       return "page";
    }
-	
-	/**
-	 ** Return default list of evaluators for this wizard page
-	 **/
-	protected List getDefaultEvaluators(WizardPageDefinition wpd) {
-		List evalList = new ArrayList();
-		Set roles;
-		try {
-			roles = SiteService.getSite(wpd.getSiteId().getValue()).getRoles();
-		}
-		catch (IdUnusedException e) {
-			logger.warn(".getDefaultEvaluators unknown siteid", e);
-			return evalList;
-		}
-		
-		for (Iterator i = roles.iterator(); i.hasNext();) {
-			Role role = (Role) i.next();
-			if ( !role.isAllowed(AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD) )
-				continue;
-					
-			Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), wpd.getSiteId().getValue());
-			evalList.add(myResources.getFormattedMessage("decorated_role_format",
-																		new Object[] { roleAgent.getDisplayName() }));
-		}
-		return evalList;
-	}
 	
 }

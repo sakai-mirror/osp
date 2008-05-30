@@ -103,6 +103,8 @@ public class EditScaffoldingCellController extends
    
 	public final static String FORM_TYPE = "form";
 
+	protected final static String audienceSelectionFunction = AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX;
+   
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -161,16 +163,6 @@ public class EditScaffoldingCellController extends
 		return model;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.theospi.utils.mvc.intf.CustomCommandController#formBackingObject(java.util.Map,
-	 *      java.util.Map, java.util.Map)
-	 */
-	// public Object formBackingObject(Map request, Map session, Map
-	// application) {
-	// return new ScaffoldingCell();
-	// }
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -474,7 +466,7 @@ public class EditScaffoldingCellController extends
 	}
 
 	/**
-	 ** Return default list of evaluators for this matrix cell
+	 ** Set and Return default list of evaluators for this matrix cell or wizard page
 	 **/
 	protected List getDefaultEvaluators(WizardPageDefinition wpd) {
 		List evalList = new ArrayList();
@@ -486,30 +478,33 @@ public class EditScaffoldingCellController extends
 			logger.warn(".getDefaultEvaluators unknown siteid", e);
 			return evalList;
 		}
-           
+		
 		for (Iterator i = roles.iterator(); i.hasNext();) {
 			Role role = (Role) i.next();
-			if ( !role.isAllowed(AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX) )
+			if ( !role.isAllowed(audienceSelectionFunction) )
 				continue;
 					
 			Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), wpd.getSiteId().getValue());
 			evalList.add(myResources.getFormattedMessage("decorated_role_format",
 																		new Object[] { roleAgent.getDisplayName() }));
+
+			getAuthzManager().createAuthorization(roleAgent, 
+                                               audienceSelectionFunction, 
+                                               wpd.getId());
 		}
 		return evalList;
 	}
 	
 	/**
-	 ** Return list of evaluators for this matrix (or wizard) page
+	 ** Return list of evaluators for this matrix cell or wizard page
 	 **/
 	protected List getEvaluators(WizardPageDefinition wpd) {
 		Id id = wpd.getId() == null ? wpd.getNewId() : wpd.getId();
 
-		List evaluators = getAuthzManager().getAuthorizations(null,
-				MatrixFunctionConstants.EVALUATE_MATRIX, id);
-      
-      // If no evaluators defined, add all qualified roles as default list
-      if ( evaluators.size() == 0 ) 
+		List evaluators = getAuthzManager().getAuthorizations(null, audienceSelectionFunction, id);
+		
+		// If no evaluators defined, add all qualified roles as default list
+		if ( evaluators.size() == 0 ) 
 			return getDefaultEvaluators(wpd);
 
 		// Otherwise, return list of selected evaluator roles and users
