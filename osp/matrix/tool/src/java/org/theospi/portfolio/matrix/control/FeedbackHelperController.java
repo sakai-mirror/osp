@@ -19,6 +19,7 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
@@ -43,6 +44,7 @@ public class FeedbackHelperController implements Controller {
 	private AuthorizationFacade authzManager;
 	private SiteService siteService;
 	private static ResourceLoader myResources = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
+	private static final String UISERVICE = "ui.service";
 	/** This accepts email addresses */
     private static final Pattern emailPattern = Pattern.compile(
           "^" +
@@ -201,64 +203,76 @@ public class FeedbackHelperController implements Controller {
 
 	    	String id = cell.getWizardPage().getId()!=null ? cell.getWizardPage().getId().getValue() : cell.getWizardPage().getNewId().getValue();
 	    	subject = myResources.getString("matrixFeedbackSubject");
-	    	url = getServerConfigurationService().getServerUrl() +
-	    	"/osp-matrix-tool/viewCell.osp?page_id=" + id;
-
-	    	String context1 = "", context2;
-	    	if(cell.getScaffoldingCell().getScaffolding() != null){ 
-				context1 = cell.getScaffoldingCell().getScaffolding().getTitle();
-			}
-	    	context2 = cell.getScaffoldingCell().getWizardPageDefinition().getTitle();
-	    	
-	    	emailMessage = myResources.getFormattedMessage("matrixFeedbackBody", 
-	    			new Object[]{user.getDisplayName()}) + " " + context1 + " - " + context2;
-
-
+	    	ToolConfiguration toolConfig;
 	    	try {
+	    		toolConfig = getSiteService().getSite(cell.getWizardPage().getPageDefinition().getSiteId()).getToolForCommonId("osp.matrix");
+	    		String placement = toolConfig.getId();
+	    		url = getServerConfigurationService().getPortalUrl() + "/directtool/" +  placement +
+	    		"/viewCell.osp?page_id=" + id;
+	    	//	"/viewMatrix.osp?1=1&scaffolding_id=" + cell.getScaffoldingCell().getScaffolding().getId().getValue();
 
-	    		String from = getServerConfigurationService().getString("setup.request", 
-	    				"postmaster@".concat(getServerConfigurationService().getServerName()));
 
-	    		//add all reviewers that are selected by the matrix creator
-	    		List matrixReviewers = getMatrixReviewersList(reviewObjectId);
+//	    		String context1 = "", context2;
+//	    		if(cell.getScaffoldingCell().getScaffolding() != null){ 
+//	    			context1 = cell.getScaffoldingCell().getScaffolding().getTitle();
+//	    		}
+//	    		context2 = cell.getScaffoldingCell().getWizardPageDefinition().getTitle();
 
-	    		String[] emailList = new String[matrixReviewers.size()];
-	    		for(int i = 0; i < matrixReviewers.size(); i++){
-	    			emailList[i] = matrixReviewers.get(i).toString();
-	    		}
-	    		
-	    		List sentEmailAddrs = new ArrayList();
+	    		emailMessage = myResources.getFormattedMessage(
+					"matrixFeedbackBody", new Object[] {
+							getServerConfigurationService().getString(UISERVICE),
+							user.getDisplayName(), user.getDisplayName() })
+					+ "\n\n" + url;
 
-	    		for (int i = 0; i < emailList.length; i++) {
-	    			String toUser = emailList[i];
-	    			if (toUser.startsWith("ROLE")) {
-	    				String role = toUser.substring(5, toUser.length());
-	    				Set members = getSite(cell.getWizardPage().getPageDefinition().getSiteId()).getMembers();
-	    				for (Iterator j = members.iterator(); j.hasNext();) {
-	    					Member member = (Member) j.next();
-	    					if (member.getRole().getId().equals(role)) {
-	    						String email = UserDirectoryService.getUser(member.getUserId()).getEmail();
-	    						if (validateEmail(email) && !sentEmailAddrs.contains(email)) {
-	    							sentEmailAddrs.add(email);
-	    							EmailService.send(from, email,
-	    									subject, emailMessage, null, null, null);
+			try {
+
+	    			String from = getServerConfigurationService().getString("setup.request", 
+	    					"postmaster@".concat(getServerConfigurationService().getServerName()));
+
+	    			//add all reviewers that are selected by the matrix creator
+	    			List matrixReviewers = getMatrixReviewersList(reviewObjectId);
+
+	    			String[] emailList = new String[matrixReviewers.size()];
+	    			for(int i = 0; i < matrixReviewers.size(); i++){
+	    				emailList[i] = matrixReviewers.get(i).toString();
+	    			}
+
+	    			List sentEmailAddrs = new ArrayList();
+
+	    			for (int i = 0; i < emailList.length; i++) {
+	    				String toUser = emailList[i];
+	    				if (toUser.startsWith("ROLE")) {
+	    					String role = toUser.substring(5, toUser.length());
+	    					Set members = getSite(cell.getWizardPage().getPageDefinition().getSiteId()).getMembers();
+	    					for (Iterator j = members.iterator(); j.hasNext();) {
+	    						Member member = (Member) j.next();
+	    						if (member.getRole().getId().equals(role)) {
+	    							String email = UserDirectoryService.getUser(member.getUserId()).getEmail();
+	    							if (validateEmail(email) && !sentEmailAddrs.contains(email)) {
+	    								sentEmailAddrs.add(email);
+	    								EmailService.send(from, email,
+	    										subject, emailMessage, null, null, null);
+	    							}
 	    						}
 	    					}
-	    				}
 
-	    			} else {
-	    				if (validateEmail(toUser) && !sentEmailAddrs.contains(toUser)) {
-	    					sentEmailAddrs.add(toUser);
-	    					EmailService.send(from, toUser,
-	    							subject, emailMessage, null, null, null);
+	    				} else {
+	    					if (validateEmail(toUser) && !sentEmailAddrs.contains(toUser)) {
+	    						sentEmailAddrs.add(toUser);
+	    						EmailService.send(from, toUser,
+	    								subject, emailMessage, null, null, null);
+	    					}
 	    				}
 	    			}
-	    		}
 
-	    	} catch (Exception e) {
-	    		e.printStackTrace();
+	    		} catch (Exception e) {
+	    			e.printStackTrace();
+	    		}
+	    	} catch (IdUnusedException e1) {
+	    		// TODO Auto-generated catch block
+	    		e1.printStackTrace();
 	    	}
-	    }
+	   }
 	
 
 	public ServerConfigurationService getServerConfigurationService() {

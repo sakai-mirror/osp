@@ -109,7 +109,7 @@ public class DeleteScaffoldingConfirmationController implements Controller {
 				for (ScaffoldingCell cell : cells) {
 					for (TaggingProvider provider : getTaggingManager()
 							.getProviders()) {
-						System.out.println(cell.getTitle());
+			//			System.out.println(cell.getTitle());
 						TaggableActivity activity = getWizardActivityProducer()
 								.getActivity(cell.getWizardPageDefinition());
 						provider.removeTags(activity);

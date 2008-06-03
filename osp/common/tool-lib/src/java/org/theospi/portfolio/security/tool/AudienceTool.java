@@ -48,6 +48,7 @@ import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.tool.api.ToolSession;
@@ -114,6 +115,7 @@ public class AudienceTool extends HelperToolBase {
     private String stepString = "2";
     private String function;
     private Id qualifier;
+    private static final String UISERVICE = "ui.service";
     
     /** This accepts email addresses */
     private static final Pattern emailPattern = Pattern.compile(
@@ -638,8 +640,27 @@ public class AudienceTool extends HelperToolBase {
     		url = ServerConfigurationService.getServerUrl() +
     		"/osp-matrix-tool/viewCell.osp?page_id=" + this.getQualifier().getValue();
 
-    		emailMessage = getMessage() + getMessageFromBundle("matrixFeedbackBody", 
-    				new Object[]{user.getDisplayName()}) + " " + getPageContext() + " - " + getPageContext2();
+    		ToolConfiguration toolConfig;
+    		try {
+    			toolConfig = getSiteService().getSite(getSite().getId()).getToolForCommonId("osp.matrix");
+
+    			String placement = toolConfig.getId();
+    			url = ServerConfigurationService.getPortalUrl() + "/directtool/" +  placement +
+    			"/viewCell.osp?page_id=" + this.getQualifier().getValue();
+
+    			if(getMessage() != null)
+    				emailMessage = getMessage() + "\n\n";
+    			emailMessage += getMessageFromBundle(
+    					"matrixFeedbackBody", new Object[] {
+    							ServerConfigurationService.getString(UISERVICE),
+    							user.getDisplayName(), user.getDisplayName() })
+    							+ "\n\n" + url;
+
+    		} catch (IdUnusedException e) {
+    			e.printStackTrace();
+    		}
+//  		emailMessage = getMessage() + getMessageFromBundle("matrixFeedbackBody", 
+//  		new Object[]{user.getDisplayName()}) + " " + getPageContext() + " - " + getPageContext2();
     	}
 
     	try {
@@ -1407,4 +1428,5 @@ public class AudienceTool extends HelperToolBase {
 	public void setWorksiteManager(WorksiteManager worksiteManager) {
 		this.worksiteManager = worksiteManager;
 	}
+
 }
