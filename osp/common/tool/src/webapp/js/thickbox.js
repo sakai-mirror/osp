@@ -75,7 +75,7 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 			}
       //Add portalMask to main portal
       ////
-		jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:100%'></div>");		
+		jQuery("body", parent.document).append("<div id='portalMask' style='width:100%;height:" + (parent.document.body.offsetHeight + 50) + "px;'></div>");		
 		jQuery("#portalMask", parent.document).click(tb_remove);
 		jQuery("#TB_overlay").click(tb_remove);}
          // now move our iframe zIndex above the portalMask
@@ -221,9 +221,9 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 			var params = tb_parseQuery( queryString );
 
 			var de = document.documentElement;
-			var h = parent.window.innerHeight || parent.self.innerHeight || (de&&de.clientHeight) || parent.document.body.clientHeight;
+			var h = window.innerHeight || self.innerHeight || (de&&de.clientHeight) || document.body.clientHeight;
 			TB_WIDTH = (params['width']*1) + 30 || 650; //defaults to 630 if no paramaters were added to URL
-			TB_HEIGHT = (params['height']*1) + 40 || h - 250; //defaults to 440 if no paramaters were added to URL
+			TB_HEIGHT = (params['height']*1) + 40 || h - 300; //defaults to 440 if no paramaters were added to URL
 			ajaxContentW = TB_WIDTH - 30;
 			ajaxContentH = TB_HEIGHT - 45;
 			var printDiv = "<div id='TB_printViewLink'><a href='"+url +"&printFriendly=true' target='_blank'><img src='/library/image/silk/printer.png' /></a></div>";
@@ -324,7 +324,7 @@ function tb_remove() {
 function tb_position() {
 tops = getPageScrollTop();
 jQuery("#TB_window").css({marginLeft: '-' + parseInt((TB_WIDTH / 2),10) + 'px', width: TB_WIDTH + 'px'});
-jQuery("#TB_window").css({top: (tops > 0 ? tops -100 : tops + (jQuery.browser.msie && jQuery.browser.version < 7 ? 300 : 100)) + 'px'});
+jQuery("#TB_window").css({top: (tops > 100 ? tops -100 : (jQuery.browser.msie && jQuery.browser.version < 7 ? 300 : 100)) + 'px'});
 
 	//if ( !(jQuery.browser.msie && jQuery.browser.version < 7)) { // take away IE6
 	//	jQuery("#TB_window").css({marginTop: '-' + parseInt((TB_HEIGHT / 2),10) + 'px'});
