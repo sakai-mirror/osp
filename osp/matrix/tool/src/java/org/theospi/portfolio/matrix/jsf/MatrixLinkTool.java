@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.faces.context.ExternalContext;
@@ -39,7 +40,6 @@ import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Site;
@@ -164,6 +164,8 @@ public class MatrixLinkTool extends HelperToolBase
 			logger.warn("no permission to get links");
 		}
 		
+		Map<Id, Integer> submissionCounts = getMatrixManager().getSubmissionCountByScaffolding(scaffoldingList);
+		
 		for (Scaffolding scaffolding : scaffoldingList) {
 			MatrixGridBean grid = new MatrixGridBean();
 			
@@ -181,8 +183,9 @@ public class MatrixLinkTool extends HelperToolBase
 				row = new ArrayList<DecoratedScaffoldingCell>();
 				for (Level level : levels) {
 					ScaffoldingCell scaffoldingCell = getScaffoldingCell(cells, criterion, level);
+					boolean linkDisabled = submissionCounts.get(scaffoldingCell.getId()) != null;
 					Link link = linkManager.lookupLink(links, scaffoldingCell.getWizardPageDefinition().getReference());
-					DecoratedScaffoldingCell linkableCell = new DecoratedScaffoldingCell(this, scaffoldingCell, link);
+					DecoratedScaffoldingCell linkableCell = new DecoratedScaffoldingCell(this, scaffoldingCell, link, linkDisabled);
 					row.add(linkableCell);
 				}
 				matrixContents.add(row);
@@ -369,13 +372,15 @@ public class MatrixLinkTool extends HelperToolBase
 		private ScaffoldingCell scaffoldingCell;
 		private Link link;
 		private boolean linked = false;
+		private boolean disabled = false;
 		private MatrixLinkTool parentTool;
 
-		public DecoratedScaffoldingCell(MatrixLinkTool parentTool, ScaffoldingCell scaffoldingCell, Link link) {
+		public DecoratedScaffoldingCell(MatrixLinkTool parentTool, ScaffoldingCell scaffoldingCell, Link link, boolean disabled) {
 			this.scaffoldingCell = scaffoldingCell;
 			this.link = link;
 			this.linked = link != null;
 			this.parentTool = parentTool;
+			this.disabled = disabled;
 		}
 		
 		public ScaffoldingCell getScaffoldingCell()
@@ -454,6 +459,16 @@ public class MatrixLinkTool extends HelperToolBase
 			else if (!tmpLinked && link != null){
 				parentTool.removeLinkList.add(getScaffoldingCell().getId());
 			}
+		}
+
+		public boolean isDisabled()
+		{
+			return disabled;
+		}
+
+		public void setDisabled(boolean disabled)
+		{
+			this.disabled = disabled;
 		}
 	}
 

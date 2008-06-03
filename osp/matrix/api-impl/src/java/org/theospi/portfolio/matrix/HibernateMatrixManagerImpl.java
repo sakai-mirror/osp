@@ -3145,4 +3145,37 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 		//		GO
 	}
 
+	
+	public Map<Id, Integer> getSubmissionCountByScaffolding(List<Scaffolding> scaffolding) {
+		/*
+		 * SELECT sc.id, count(sc.id) FROM osp_matrix_cell mc
+			join osp_wizard_page wp on mc.wizard_page_id = wp.id
+			join osp_scaffolding_cell sc on mc.scaffolding_cell_id = sc.id
+			join osp_scaffolding s on sc.scaffolding_id = s.id
+			where wp.status in ('PENDING', 'COMPLETE')
+			and s.id in ()
+			group by sc.id
+		 */
+		
+		String[] paramNames = new String[] { "scaffolding" };
+		Object[] params = new Object[] { scaffolding };
+		List results = getHibernateTemplate().findByNamedParam(
+						"select sc.id, count(sc.id) from Cell mc join mc.wizardPage wp join mc.scaffoldingCell sc where sc.scaffolding in (:scaffolding) AND wp.status in ('PENDING', 'COMPLETE') GROUP BY sc.id",
+						paramNames,
+						params);
+		
+		Map resultMap = new HashMap(results.size());
+		
+		for (Iterator i = results.iterator(); i.hasNext();) {
+			Object[] rs = (Object[]) i.next();
+			Id sc_id = (Id)rs[0];
+			Integer count = (Integer)rs[1];
+			resultMap.put(sc_id, count);
+		}
+		
+		
+		return resultMap;
+		
+		
+	}
 }

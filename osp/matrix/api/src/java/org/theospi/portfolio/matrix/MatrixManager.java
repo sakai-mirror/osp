@@ -23,6 +23,7 @@ package org.theospi.portfolio.matrix;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.sakaiproject.entity.api.Reference;
@@ -262,4 +263,11 @@ public interface MatrixManager extends WorkflowEnabledManager {
 	 */
 	
 	public boolean isScaffoldingUsed(Scaffolding scaffolding);
+	
+	/**
+	 * Get a count of submitted cells per scaffolding cell for a list of scaffolding
+	 * @param scaffolding
+	 * @return
+	 */
+	public Map<Id, Integer> getSubmissionCountByScaffolding(List<Scaffolding> scaffolding);
 }

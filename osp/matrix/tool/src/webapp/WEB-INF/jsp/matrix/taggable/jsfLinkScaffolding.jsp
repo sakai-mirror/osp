@@ -104,7 +104,7 @@
 											<h:selectBooleanCheckbox
 												style="position: absolute; top:0px; right:0px;"
 												id="cellLinkBox" value="#{cell.linked}"
-												valueChangeListener="#{cell.checkBoxChanged}" />
+												valueChangeListener="#{cell.checkBoxChanged}" disabled="#{cell.disabled}" />
 											<f:verbatim>
 												<center>
 											</f:verbatim>
