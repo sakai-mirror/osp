@@ -53,6 +53,11 @@ public class ViewCellInformationController implements Controller{
 				strId = (String) session.get("page_def_id");
 				session.remove("page_def_id");
 			}
+			
+			String printFriendly = (String) request.get("printFriendly");
+			if (printFriendly != null) {
+				model.put("printFriendly", true);
+			}
 
 			ScaffoldingCell sCell = null;
 			Id id = getIdManager().getId(strId);

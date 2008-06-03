@@ -91,6 +91,13 @@ margin-top: expression(0 - parseInt(this.offsetHeight / 2) + (TBWindowMargin = d
 	float:right;
 }
 
+#TB_printViewLink {
+	padding:7px 10px 5px 0;
+	margin-bottom:1px;
+	text-align:right;
+	float:left;
+}
+
 #TB_ajaxWindowTitle{
 	float:left;
 	padding:7px 0 5px 10px;

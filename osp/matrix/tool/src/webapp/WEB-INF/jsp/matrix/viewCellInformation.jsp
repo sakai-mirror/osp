@@ -6,6 +6,16 @@
 
 <form method="POST">
 
+	<c:if test="${printFriendly}">
+		<a id="printIcon" href="#" onclick="javascript:window.print();">
+			<img src="/library/image/silk/printer.png" />
+			<osp:message key="send_to_printer" />
+		</a> | <a id="closeWindow" href="#" onclick="javascript:window.close();">
+			<osp:message key="close_window" />
+		</a>
+		<br />
+	</c:if>
+
 	<br>
 
 	<c:if test="${not empty site_title}">
