@@ -576,6 +576,8 @@ public class WizardTool extends BuilderTool {
       session.setAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG, new Boolean(instructions));
       session.setAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG, new Boolean(rationale));
       session.setAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG, new Boolean(examples));
+      session.setAttribute(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, new Boolean(false));
+      session.setAttribute(GuidanceHelper.SHOW_RUBRIC_FLAG, new Boolean(false));
       
       session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
 
