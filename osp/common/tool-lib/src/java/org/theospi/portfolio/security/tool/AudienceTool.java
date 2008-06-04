@@ -637,8 +637,7 @@ public class AudienceTool extends HelperToolBase {
 
     	}else if(isInviteFeedbackAudience()){
     		subject = getMessageFromBundle("matrixFeedbackSubject", null);
-    		url = ServerConfigurationService.getServerUrl() +
-    		"/osp-matrix-tool/viewCell.osp?page_id=" + this.getQualifier().getValue();
+
 
     		ToolConfiguration toolConfig;
     		try {

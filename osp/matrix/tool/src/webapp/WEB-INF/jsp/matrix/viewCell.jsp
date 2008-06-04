@@ -3,6 +3,12 @@
 
 <fmt:setLocale value="${locale}" />
 <fmt:setBundle basename="org.theospi.portfolio.matrix.bundle.Messages" />
+
+
+<c:if test="${(isMatrix == 'true' && matrixCanViewCell) || isWizard == 'true'}">
+
+
+
 <%
   	String thisId = request.getParameter("panel");
   	if (thisId == null) 
@@ -1123,3 +1129,9 @@ function mySetMainFrameHeight(id)
 
 
 </form>
+</c:if>
+<c:if test="${isMatrix == 'true' && !matrixCanViewCell}">
+<br>
+<c:out value="You do not have permission to view this page."/>
+
+</c:if>

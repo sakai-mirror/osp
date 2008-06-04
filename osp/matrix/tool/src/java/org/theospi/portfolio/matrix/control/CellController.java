@@ -138,18 +138,19 @@ public class CellController implements FormController, LoadObjectController {
 
 		Map model = new HashMap();
 
-
+		model.put("matrixCanViewCell", false);
 		if(request.get("comingFromWizard") == null){
 			//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
-			model.put("matrixCanEvaluate", getMatrixManager().hasPermission(cell.getCell()
+			boolean matrixCanEvaluate = getMatrixManager().hasPermission(cell.getCell()
 					.getScaffoldingCell().isDefaultEvaluators() ? cell.getCell()
 							.getScaffoldingCell().getScaffolding().getId() : cell.getCell()
 							.getScaffoldingCell().getWizardPageDefinition().getId(),
 							cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
-							MatrixFunctionConstants.EVALUATE_MATRIX));
+							MatrixFunctionConstants.EVALUATE_MATRIX);
+			model.put("matrixCanEvaluate", matrixCanEvaluate);
 			//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
 			//also, compare first result with the user's cell review list by sending the user's cell id
-			model.put("matrixCanReview", getMatrixManager().hasPermission(cell.getCell()
+			boolean matrixCanReview = getMatrixManager().hasPermission(cell.getCell()
 					.getScaffoldingCell().isDefaultReviewers() ? cell.getCell()
 							.getScaffoldingCell().getScaffolding().getId() : cell.getCell()
 							.getScaffoldingCell().getWizardPageDefinition().getId(),
@@ -157,7 +158,17 @@ public class CellController implements FormController, LoadObjectController {
 							MatrixFunctionConstants.REVIEW_MATRIX)
 							|| getMatrixManager().hasPermission(cell.getCell().getWizardPage().getId(),
 									cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
-									MatrixFunctionConstants.FEEDBACK_MATRIX));
+									MatrixFunctionConstants.FEEDBACK_MATRIX);
+			model.put("matrixCanReview", matrixCanReview);
+			//NOTE: matrixCanEval or Review both return true if the user is a super user:
+			if (matrixCanEvaluate
+					|| matrixCanReview
+					|| cell.getCell().getWizardPage().getOwner().getId()
+							.getValue().equals(
+									getSessionManager()
+											.getCurrentSessionUserId())) {
+				model.put("matrixCanViewCell", true);
+			}
 		}
 		model.put("isMatrix", "true");
 		model.put("currentUser", getSessionManager().getCurrentSessionUserId());
