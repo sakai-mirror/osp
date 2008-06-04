@@ -95,11 +95,14 @@ function mySetMainFrameHeight(id)
 				</a>
 			</c:forEach>
 			</c:if>
-			<a href="javascript:document.forms[0].submitAction.value='listPageActivities';document.forms[0].providerId.value='<c:out value="${helperInfo.provider.id}"/>';document.forms[0].onsubmit();document.forms[0].submit();"
+			<c:if test="${!isWizard}">
+				<a href="javascript:document.forms[0].submitAction.value='listPageActivities';document.forms[0].providerId.value='<c:out value="${helperInfo.provider.id}"/>';document.forms[0].onsubmit();document.forms[0].submit();"
 					title="<fmt:message key="link_page_activities"/>">
 					<fmt:message key="link_page_activities"/>
 				</a>
+			</c:if>
 		</div>
+		
 	</c:if>
 	
 	
