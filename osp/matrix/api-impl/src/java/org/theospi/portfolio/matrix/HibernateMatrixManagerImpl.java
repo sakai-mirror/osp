@@ -3070,12 +3070,25 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 						params).get(0);
 	}
 
-	public List getReviewCountListByType(Id pageDefId) {
+	public Map<Integer, Integer> getReviewCountListByType(Id pageDefId) {
 		Object[] params = new Object[] { pageDefId };
-		return getHibernateTemplate()
+		List results = getHibernateTemplate()
 				.find(
-						"select new org.theospi.portfolio.matrix.model.ReviewTypeAndCount(r.type, count(*)) from Review r, WizardPage wp where wp.id = r.parent and wp.pageDefinition.id=? GROUP BY r.type",
+						"select r.type, count(*) from Review r, WizardPage wp where wp.id = r.parent and wp.pageDefinition.id=? GROUP BY r.type",
 						params);
+		
+		Map resultMap = new HashMap(results.size());
+		
+		for (Iterator i = results.iterator(); i.hasNext();) {
+			Object[] rs = (Object[]) i.next();
+			Integer type = (Integer)rs[0];
+			Integer count = (Integer)rs[1];
+			resultMap.put(type, count);
+		}
+		
+		
+		return resultMap;
+		
 	}
 
 	public int getAttachmentCountByPageDef(Id pageDefId) {

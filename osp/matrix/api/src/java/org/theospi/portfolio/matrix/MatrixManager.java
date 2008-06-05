@@ -232,14 +232,14 @@ public interface MatrixManager extends WorkflowEnabledManager {
 	
 	
 	/**
-	 * returns a list of ReviewTypeAndCount objects.  Each reviewTypeAndCount object 
+	 * returns a Map of types and counts.  Each  
 	 * has the type of review it is (eval, feedback, ect..) and how many reviews of that
 	 * type are associated with that pageDefId
 	 * 
 	 * @param pageDefId
 	 * @return
 	 */
-	public List getReviewCountListByType(Id pageDefId);
+	public Map<Integer, Integer> getReviewCountListByType(Id pageDefId);
 		
 	/**
 	 * returns the count of all attachments associated with the pageDefId

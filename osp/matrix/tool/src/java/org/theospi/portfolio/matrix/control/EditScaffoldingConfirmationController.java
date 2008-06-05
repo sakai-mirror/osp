@@ -196,32 +196,34 @@ implements Controller, FormController {
 				   
 				   
 				   boolean feedbackFormUsed = false, reflectionFormUsed = false, evaluationFormUsed = false;
-				   List reviewTypeCountList = getMatrixManager().getReviewCountListByType(sCell.getWizardPageDefinition().getId());
-				   for (Iterator iterator2 = reviewTypeCountList.iterator(); iterator2.hasNext();) {
-					   ReviewTypeAndCount reviewTypeAndCount = (ReviewTypeAndCount) iterator2.next();
+				  
+				   Map<Integer, Integer> reviewTypeCountMap = getMatrixManager()
+							.getReviewCountListByType(
+									sCell.getWizardPageDefinition().getId());
 
-					   //Feedback
-					   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE){
-						   if(reviewTypeAndCount.getCount() > 0){
-							   feedbackFormUsed = true;					 
-						   }
-					   }
+					// Feedback
+					if (reviewTypeCountMap
+							.containsKey(MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE)
+							&& reviewTypeCountMap
+									.get(MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE) > 0) {
+						feedbackFormUsed = true;
+					}
+					// Reflection
+					if (reviewTypeCountMap
+							.containsKey(MatrixFunctionConstants.REFLECTION_REVIEW_TYPE)
+							&& reviewTypeCountMap
+									.get(MatrixFunctionConstants.REFLECTION_REVIEW_TYPE) > 0) {
+						reflectionFormUsed = true;
+					}
+					// Evaluation
+					if (reviewTypeCountMap
+							.containsKey(MatrixFunctionConstants.EVALUATION_REVIEW_TYPE)
+							&& reviewTypeCountMap
+									.get(MatrixFunctionConstants.EVALUATION_REVIEW_TYPE) > 0) {
+						evaluationFormUsed = true;
+					}
 
-					   //Reflection
-					   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.REFLECTION_REVIEW_TYPE){
-						   if(reviewTypeAndCount.getCount() > 0){
-							   reflectionFormUsed = true;
-						   }
-					   }
 
-					   //Evaluation
-					   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.EVALUATION_REVIEW_TYPE){
-						   if(reviewTypeAndCount.getCount() > 0){
-							   evaluationFormUsed = true;
-						   }
-					   }
-
-				   }
 
 				   //feedback
 				   if(sCell.isDefaultFeedbackForm() && feedbackChange && feedbackFormUsed){
@@ -336,32 +338,30 @@ implements Controller, FormController {
 				   				   
 				   
 				   boolean feedbackFormUsed = false, reflectionFormUsed = false, evaluationFormUsed = false;
-				   List reviewTypeCountList = getMatrixManager().getReviewCountListByType(sCell.getWizardPageDefinition().getId());
-				   for (Iterator iterator2 = reviewTypeCountList.iterator(); iterator2.hasNext();) {
-					   ReviewTypeAndCount reviewTypeAndCount = (ReviewTypeAndCount) iterator2.next();
-
-					   //Feedback
-					   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE){
-						   if(reviewTypeAndCount.getCount() > 0){
-							   feedbackFormUsed = true;
-						   }
-					   }
-
-					   //Reflection
-					   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.REFLECTION_REVIEW_TYPE){
-						   if(reviewTypeAndCount.getCount() > 0){
-							   reflectionFormUsed = true;
-						   }
-					   }
-
-					   //Evaluation
-					   if(reviewTypeAndCount.getType() == MatrixFunctionConstants.EVALUATION_REVIEW_TYPE){
-						   if(reviewTypeAndCount.getCount() > 0){
-							   evaluationFormUsed = true;
-						   }
-					   }
-
-				   }				 		
+				   Map<Integer, Integer> reviewTypeCountMap = getMatrixManager().getReviewCountListByType(sCell.getWizardPageDefinition().getId());
+					
+				   // Feedback
+					if (reviewTypeCountMap
+							.containsKey(MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE)
+							&& reviewTypeCountMap
+									.get(MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE) > 0) {
+						feedbackFormUsed = true;
+					}
+					// Reflection
+					if (reviewTypeCountMap
+							.containsKey(MatrixFunctionConstants.REFLECTION_REVIEW_TYPE)
+							&& reviewTypeCountMap
+									.get(MatrixFunctionConstants.REFLECTION_REVIEW_TYPE) > 0) {
+						reflectionFormUsed = true;
+					}
+					// Evaluation
+					if (reviewTypeCountMap
+							.containsKey(MatrixFunctionConstants.EVALUATION_REVIEW_TYPE)
+							&& reviewTypeCountMap
+									.get(MatrixFunctionConstants.EVALUATION_REVIEW_TYPE) > 0) {
+						evaluationFormUsed = true;
+					}
+				   
 
 				   //Feedback
 				   if(sCell.isDefaultFeedbackForm() && feedbackChange && feedbackFormUsed){					   

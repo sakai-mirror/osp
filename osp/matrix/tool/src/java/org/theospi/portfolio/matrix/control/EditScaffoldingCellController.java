@@ -168,40 +168,35 @@ public class EditScaffoldingCellController extends
 			//after the cell used booleans are set to false, have "icCellUsed(sCell)" update them accordingly
 			if(sCell.getScaffolding().isPublished()){
 				customFormUsed = getMatrixManager().getFormCountByPageDef(sCell.getWizardPageDefinition().getId()) > 0;
-				List reviewTypeCountList = getMatrixManager().getReviewCountListByType(sCell.getWizardPageDefinition().getId());
-				for (Iterator iterator = reviewTypeCountList.iterator(); iterator.hasNext();) {
-
-					ReviewTypeAndCount reviewTypeAndCount = (ReviewTypeAndCount) iterator.next();
-
-					//Feedback
-					if(reviewTypeAndCount.getType() == MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE){
-						if(reviewTypeAndCount.getCount() > 0){
-							feedbackFormUsed = true;
-							isCellUsed = true;
-						}
-					}
-
-					//Reflection
-					if(reviewTypeAndCount.getType() == MatrixFunctionConstants.REFLECTION_REVIEW_TYPE){
-						if(reviewTypeAndCount.getCount() > 0){
-							reflectionFormUsed = true;
-							isCellUsed = true;
-						}
-					}
-
-					//Evaluation
-					if(reviewTypeAndCount.getType() == MatrixFunctionConstants.EVALUATION_REVIEW_TYPE){
-						if(reviewTypeAndCount.getCount() > 0){
-							evaluationFormUsed = true;
-							isCellUsed = true;
-						}
-					}
-
+				Map<Integer, Integer> reviewTypeCountMap = getMatrixManager().getReviewCountListByType(sCell.getWizardPageDefinition().getId());
+				
+				if (reviewTypeCountMap
+						.containsKey(MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE)
+						&& reviewTypeCountMap
+								.get(MatrixFunctionConstants.FEEDBACK_REVIEW_TYPE) > 0) {
+					feedbackFormUsed = true;
+					isCellUsed = true;
 				}
+				if (reviewTypeCountMap
+						.containsKey(MatrixFunctionConstants.REFLECTION_REVIEW_TYPE)
+						&& reviewTypeCountMap
+								.get(MatrixFunctionConstants.REFLECTION_REVIEW_TYPE) > 0) {
+					reflectionFormUsed = true;
+					isCellUsed = true;
+				}
+				if (reviewTypeCountMap
+						.containsKey(MatrixFunctionConstants.EVALUATION_REVIEW_TYPE)
+						&& reviewTypeCountMap
+								.get(MatrixFunctionConstants.EVALUATION_REVIEW_TYPE) > 0) {
+					evaluationFormUsed = true;
+					isCellUsed = true;
+				}
+				
+
 				//to save a db connection, cellUsed will be set to true already if any of the review booleans are true
 				if(!isCellUsed)
 					isCellUsed = getMatrixManager().isScaffoldingCellUsed(sCell);
-				//isCellUsed(sCell);
+
 			}			
 			model.put("defaultEvaluators", getSelectedUsers(sCell.getScaffolding(), MatrixFunctionConstants.EVALUATE_MATRIX));
 			model.put("defaultReviewers", getSelectedUsers(sCell.getScaffolding(), MatrixFunctionConstants.REVIEW_MATRIX));
