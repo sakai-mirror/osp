@@ -3,7 +3,7 @@
 <registration>
 
    <tool id="osp.style" title="Styles"
-      description="OSP Style Helper Tool">
+      description="Add Cascading Style Sheets (CSS) for controlling the appearance of wizards, matrices, and portfolios">
 
       <category name="sakai.helper" />
       <category name="sakai.main" />

@@ -2,7 +2,7 @@
 
 <registration>
 
-	<tool id="osp.wizard" title="Wizards" description="OSP Wizards Tool">
+	<tool id="osp.wizard" title="Wizards" description="Create and use a structured, guided ePortfolios wizard">
 
        <category name="sakai.main" />
       <category name="project" />
