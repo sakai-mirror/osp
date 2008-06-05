@@ -39,15 +39,9 @@ import org.sakaiproject.tool.api.ToolSession;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
-import org.theospi.portfolio.matrix.model.Cell;
-import org.theospi.portfolio.matrix.model.ReviewTypeAndCount;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
-import org.theospi.portfolio.matrix.model.WizardPage;
-import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.review.mgt.ReviewManager;
-import org.theospi.portfolio.review.model.Review;
-import org.theospi.portfolio.shared.model.Node;
 
 
 public class EditScaffoldingConfirmationController extends BaseScaffoldingController
