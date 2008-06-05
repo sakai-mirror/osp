@@ -27,12 +27,12 @@
 	
 		<h:form>
 			<sakai:view_title value="#{matrixLinkTool.viewTitle}" />
-			<sakai:instruction_message value="#{msgs.matrix_links_desc}" />
+			<sakai:instruction_message value="#{matrix_msgs.matrix_links_desc}" />
 			<sakai:messages />
 
 			<h:panelGrid columns="2">
 				<h:column>
-					<h:outputLabel value="#{msgs.site_heading}" />
+					<h:outputLabel value="#{matrix_msgs.site_heading}" />
 				</h:column>
 
 				<h:column>
@@ -140,9 +140,9 @@
 
 			<sakai:button_bar>
    <sakai:button_bar_item action="#{matrixLinkTool.processActionBack}"
-      value="#{msgs.save_exit}" styleClass="active" accesskey="b" />
+      value="#{matrix_msgs.save_exit}" styleClass="active" accesskey="b" />
       <sakai:button_bar_item action="#{matrixLinkTool.processActionCancel}"
-      value="#{msgs.cancel}" styleClass="active" accesskey="c" />
+      value="#{matrix_msgs.cancel}" styleClass="active" accesskey="c" />
       
  </sakai:button_bar>
 
