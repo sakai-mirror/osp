@@ -92,6 +92,7 @@ function mySetMainFrameHeight(id)
 	<osp:message key="dateFormat_full" />
 </c:set>
 
+
 <script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/thickbox.js"></script>
 <link href="/osp-common-tool/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
 
@@ -589,6 +590,7 @@ function mySetMainFrameHeight(id)
 	<!-- *************** Showing linked artifacts START **************** -->
 	
 	<c:forEach var="taggableItem" items="${taggableItems}" varStatus="taggableItemLoopStatus">
+		<c:set var="canReflect" value="true" />
 		<tr><td colspan="4">
 		<img border="0" src="<c:out value="${taggableItem.iconUrl}" />" />
 		<a class="thickbox"
@@ -1101,6 +1103,7 @@ function mySetMainFrameHeight(id)
 	<input type="submit" name="inviteFeedback" class="active"
 			value="<fmt:message key="share_collection"/>"/>
 </c:if>
+
 <c:if test="${isMatrix == 'true' and (!cell.scaffoldingCell.scaffolding.allowRequestFeedback && cell.scaffoldingCell.wizardPageDefinition.defaultReviewers ||
 										!cell.scaffoldingCell.wizardPageDefinition.allowRequestFeedback && !cell.scaffoldingCell.wizardPageDefinition.defaultReviewers) &&
 											cell.wizardPage.owner.id == currentUser}">
