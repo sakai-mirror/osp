@@ -82,22 +82,19 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
 
    public List getObjects() {
       List userSites = getWorksiteManager().getUserSites(null, getListService().getSiteTypeList());
-      List<String> siteIds = new ArrayList<String>(userSites.size());
-      List<Id> siteStrIds = new ArrayList<Id>(userSites.size());
+      List<Id> siteIds = new ArrayList<Id>(userSites.size());
       Map<String, Site> siteMap = new HashMap<String, Site>();
       
       for (Iterator i = userSites.iterator(); i.hasNext();) {
          Site site = (Site) i.next();
-         String siteId = site.getId();
-         siteIds.add(siteId);
-         siteStrIds.add(idManager.getId(siteId));
-         siteMap.put(siteId, site);
+         siteIds.add(idManager.getId(site.getId()));
+         siteMap.put(site.getId(), site);
       }
       
       List tempWizardList = new ArrayList();
       if (getDisplayTypes().contains("wizards")) tempWizardList = getWizardManager().findPublishedWizards(siteIds, true);
       List tempMatrixList = new ArrayList();
-      if (getDisplayTypes().contains("matrices")) tempMatrixList = getMatrixManager().findPublishedScaffolding(siteStrIds);
+      if (getDisplayTypes().contains("matrices")) tempMatrixList = getMatrixManager().findPublishedScaffolding(siteIds);
       
       List<SortableListObject> objects = new ArrayList<SortableListObject>();
       
@@ -113,7 +110,7 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
       
       for (Iterator i = allWizards.iterator(); i.hasNext();) {
          Wizard wizard = (Wizard)i.next();
-         String siteId = wizard.getSiteId();
+         String siteId = wizard.getSiteId().getValue();
          //make sure that the target site gets tested
          getAuthzManager().pushAuthzGroups(siteId);
          

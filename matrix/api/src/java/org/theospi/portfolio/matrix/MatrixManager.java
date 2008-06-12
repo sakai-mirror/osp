@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
 import java.util.Set;
+import java.util.HashMap;
 
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -139,20 +140,7 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    WizardPage submitPageForEvaluation(WizardPage page);
 
-   /**
-    * gets all the cells, pages, and wizards that this user can evaluate within a worksite
-    * @param agent Agent 
-    * @param worksiteId Id
-    * @return List of org.theospi.portfolio.shared.model.EvaluationContentWrapper
-    */
-   List getEvaluatableItems(Agent agent, Id worksiteId);
-
-   /**
-    * gets all the cells, pages, and wizards that this user can evaluate within all worksites they are a member of
-    * @param agent Agent 
-    * @return List of org.theospi.portfolio.shared.model.EvaluationContentWrapper
-    */
-   List getEvaluatableItems(Agent agent);
+   List getEvaluatableCells(Agent agent, List<Agent> roles, List<Id> worksiteIds, HashMap siteHash);
 
    /**
     * @param matrixId

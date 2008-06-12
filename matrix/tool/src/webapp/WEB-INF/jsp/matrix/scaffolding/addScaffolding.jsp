@@ -396,7 +396,7 @@
 	<!--  ********** Reviewer Group Access Start ************-->
 	<c:if test="${not ignoreReviewerGroups}">
 		<fieldset class="fieldsetVis">
-			<legend><osp:message key="matrix_group_access"/></legend>
+			<legend><osp:message key="group_access"/></legend>
 			<spring:bind path="scaffolding.reviewerGroupAccess">
 				<c:forTokens var="token" items="normal,unrestricted" delims="," varStatus="loopCount">
 					<div class="checkbox indnt1">
@@ -405,7 +405,6 @@
 						/>
 						<label for="<c:out value="${token}" />">
 							<osp:message key="${token}_group_access_label" />
-							<osp:message key="${token}_group_access_desc" />
 						</label>
 					</div>
 				</c:forTokens>

@@ -111,7 +111,7 @@ public class DecoratedCompletedWizard {
    public List getReflections() {
       if (reflections == null) {
          reflections = getParent().getReviewManager().getReviewsByParentAndType(
-            getBase().getId().getValue(), Review.REFLECTION_TYPE, getBase().getWizard().getSiteId(),
+            getBase().getId().getValue(), Review.REFLECTION_TYPE, getBase().getWizard().getSiteId().getValue(),
             getParent().getWizardManager().getWizardEntityProducer());
       }
       return reflections;
@@ -119,7 +119,7 @@ public class DecoratedCompletedWizard {
    public List getEvaluations() {
       if (evaluations == null) {
          evaluations = getParent().getReviewManager().getReviewsByParentAndType(
-            getBase().getId().getValue(), Review.EVALUATION_TYPE, getBase().getWizard().getSiteId(),
+            getBase().getId().getValue(), Review.EVALUATION_TYPE, getBase().getWizard().getSiteId().getValue(),
             getParent().getWizardManager().getWizardEntityProducer());
       }
       return evaluations;
@@ -127,7 +127,7 @@ public class DecoratedCompletedWizard {
    public List getReviews() {
       if (reviews == null) {
          reviews = getParent().getReviewManager().getReviewsByParentAndType(
-            getBase().getId().getValue(), Review.FEEDBACK_TYPE, getBase().getWizard().getSiteId(),
+            getBase().getId().getValue(), Review.FEEDBACK_TYPE, getBase().getWizard().getSiteId().getValue(),
             getParent().getWizardManager().getWizardEntityProducer());
       }
       return reviews;

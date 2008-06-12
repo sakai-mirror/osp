@@ -40,7 +40,7 @@ import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 public class EvaluationContentWrapperForMatrixCell extends EvaluationContentWrapper{
    
    public EvaluationContentWrapperForMatrixCell(Id id, String title, Agent owner, 
-         Date submittedDate, String siteId) throws UserNotDefinedException {
+         Date submittedDate, Id siteId) throws UserNotDefinedException {
 
       super(id, title, owner, submittedDate, siteId);
 		

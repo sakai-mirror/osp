@@ -244,7 +244,7 @@ public class BaseScaffoldingController {
             }
             if (scaffoldingCell == null) {
                scaffoldingCell = new ScaffoldingCell(criterion, level, status, scaffolding);
-               scaffoldingCell.getWizardPageDefinition().setSiteId(scaffolding.getWorksiteId().getValue());
+               scaffoldingCell.getWizardPageDefinition().setSiteId(scaffolding.getWorksiteId());
                scaffoldingCell.getWizardPageDefinition().setTitle(getDefaultTitle(scaffolding, criterion, level));
                getMatrixManager().storeScaffoldingCell(scaffoldingCell);
             }

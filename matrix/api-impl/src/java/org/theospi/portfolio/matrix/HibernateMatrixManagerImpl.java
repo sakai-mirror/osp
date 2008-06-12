@@ -55,6 +55,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Expression;
 import org.jdom.Element;
 import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
@@ -113,6 +114,7 @@ import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
+import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 import org.theospi.portfolio.style.StyleConsumer;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.style.model.Style;
@@ -154,6 +156,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private String importFolderName;
    private boolean useExperimentalMatrix = false;
    
+   private static boolean allowAllGroups = 
+      ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false);
+      
    private static ResourceLoader messages = new ResourceLoader(
          "org.theospi.portfolio.matrix.bundle.Messages");
 
@@ -195,12 +200,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Object[] params = new Object[]{sites, user, new Boolean(true)};
       
       //if showUnpublished, then you can see unpublisehd matrix's, otherwise you can
-	  //only see you own matrix's or published ones
+      //only see you own matrix's or published ones
       if(showUnpublished)
-      return getHibernateTemplate().findByNamedParam("from Scaffolding s where s.worksiteId in ( :siteIds ) and ( s.owner = :owner or s.published=:true or s.preview=:true)",
+         return getHibernateTemplate().findByNamedParam("from Scaffolding s where s.worksiteId in ( :siteIds ) and ( s.owner = :owner or s.published=:true or s.preview=:true)",
               paramNames, params);
       else
-    	  return getHibernateTemplate().findByNamedParam("from Scaffolding s where s.worksiteId in ( :siteIds ) and ( s.owner = :owner or s.published=:true)",
+         return getHibernateTemplate().findByNamedParam("from Scaffolding s where s.worksiteId in ( :siteIds ) and ( s.owner = :owner or s.published=:true)",
     	            paramNames, params);
    }
    
@@ -905,7 +910,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       if (node == null) {
          return null;
       }
-      String siteId = page.getPageDefinition().getSiteId();
+      String siteId = page.getPageDefinition().getSiteId().getValue();
       ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
             buildRef(siteId, page.getId().getValue(), node.getResource()));
 
@@ -1091,7 +1096,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
          List reviews = getReviewManager().getReviewsByParent(
                page.getId().getValue(), 
-               page.getPageDefinition().getSiteId(),
+               page.getPageDefinition().getSiteId().getValue(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);
          for (Iterator iter = reviews.iterator(); iter.hasNext();) {
             Review review = (Review)iter.next();
@@ -1141,16 +1146,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return page;
    }
    
-   private List setEcwWorksiteIds(List list, Id worksiteId) {
-      for (Iterator i = list.iterator(); i.hasNext();) {
-         EvaluationContentWrapper ecw = (EvaluationContentWrapper) i.next();
-         ecw.setSiteId(worksiteId);
-      }
-      return list;
-   }
-
-   protected List getEvaluatableCells(Agent agent, Agent role, Id worksiteId) {
-      List returned = this.getHibernateTemplate().find("select distinct new " +
+   public List getEvaluatableCells(Agent agent, List<Agent> roles, List<Id> worksiteIds, HashMap siteHash) {
+      String[] paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
+      Object[] params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+                                      MatrixFunctionConstants.PENDING_STATUS,
+                                      agent, roles, worksiteIds};
+	
+      List matrixCells = this.getHibernateTemplate().findByNamedParam("select distinct new " +
             "org.theospi.portfolio.matrix.model.EvaluationContentWrapperForMatrixCell(" +
             "wp.id, " +
             "wp.pageDefinition.title, c.matrix.owner, " +
@@ -1158,88 +1160,30 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             "from WizardPage wp, Authorization auth, Cell c " +
             "where wp.pageDefinition.id = auth.qualifier " +
             "and wp.id = c.wizardPage.id " +
-            "and auth.function = ? and wp.status = ? and (auth.agent=? " +
-            " or auth.agent=?) " +
-            " and wp.pageDefinition.siteId=?",
-         new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
-            MatrixFunctionConstants.PENDING_STATUS,
-            agent, role,
-            worksiteId.getValue()});
+            "and auth.function = :evaluate and wp.status = :pendingStatus and " +
+            "(auth.agent=:user or auth.agent in ( :roles )) " +
+            "and wp.pageDefinition.siteId in ( :siteIds )", 
+             paramNames, params );
 
-      return setEcwWorksiteIds(returned, worksiteId);
-   }
-   
-   public List getEvaluatableWizardPages(Agent agent, Agent role, Id worksiteId) {
-      List wizardPages = this.getHibernateTemplate().find("select distinct new " +
-            "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizardPage(" +
-            "cwp.wizardPage.id, " +
-            "cwp.wizardPage.pageDefinition.title, cwp.category.wizard.owner, " +
-            "cwp.wizardPage.modified, " +
-            "cwp.category.wizard.wizard.type, cwp.wizardPage.pageDefinition.siteId) " +
-            "from CompletedWizardPage cwp, " +
-            "Authorization auth " +
-            "where cwp.wizardPage.pageDefinition.id = auth.qualifier " +
-            "and auth.function = ? and cwp.wizardPage.status = ? and (auth.agent=? " +
-            " or auth.agent=?) " +
-            " and cwp.wizardPage.pageDefinition.siteId=?",
-         new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
-            MatrixFunctionConstants.PENDING_STATUS,
-            agent, role,
-            worksiteId.getValue()});
-      
-      return setEcwWorksiteIds(wizardPages, worksiteId);
-   }
-   
-   protected List getEvaluatableWizards(Agent agent, Agent role, Id worksiteId) {
-     
-      List wizards = this.getHibernateTemplate().find("select distinct new " +
-            "org.theospi.portfolio.wizard.model.EvaluationContentWrapperForWizard(" +
-            "cw.wizard.id, " +
-            "cw.wizard.name, cw.owner, " +
-            "cw.created, cw.wizard.siteId) " +
-            "from CompletedWizard cw, " +
-            "Authorization auth " +
-            "where cw.wizard.id = auth.qualifier " +
-            "and auth.function = ? and cw.status = ? and (auth.agent=? " +
-            " or auth.agent=?) " +
-            " and cw.wizard.siteId=?",
-         new Object[]{WizardFunctionConstants.EVALUATE_WIZARD,
-            MatrixFunctionConstants.PENDING_STATUS,
-            agent, role,
-            worksiteId.getValue()});
-				
-      return setEcwWorksiteIds(wizards, worksiteId);
-   }
-   
-   public List getEvaluatableItems(Agent agent) {
-      //get all sites
-      List allEvals = new ArrayList();
-      List sites = getWorksiteManager().getUserSites();
-      for (Iterator i = sites.iterator(); i.hasNext();) {
-         Site site = (Site) i.next();
-         allEvals.addAll(getEvaluatableItems(agent, idManager.getId(site.getId())));
+      // filter out group-restricted users
+      List filteredMatrixCells = new ArrayList();
+      for ( Iterator it=matrixCells.iterator(); it.hasNext(); ) {
+         EvaluationContentWrapper evalItem = (EvaluationContentWrapper)it.next();
+         WizardPage wizPage = getWizardPage( evalItem.getId() );
+         Scaffolding scaffolding = 
+            getScaffoldingCellByWizardPageDef( wizPage.getPageDefinition().getId() ).getScaffolding();
+         
+         if ( !allowAllGroups && scaffolding.getReviewerGroupAccess() == WizardMatrixConstants.NORMAL_GROUP_ACCESS ) {
+            HashSet siteGroupUsers = (HashSet)siteHash.get( scaffolding.getWorksiteId().getValue() );
+            if ( siteGroupUsers != null && siteGroupUsers.contains(wizPage.getOwner().getId().getValue()) )
+               filteredMatrixCells.add( evalItem );
+         }
+         else {
+            filteredMatrixCells.add( evalItem );
+         }
       }
       
-      return allEvals;
-   }
-   
-   /**
-    *  {@inheritDoc}
-    */
-   public List getEvaluatableItems(Agent agent, Id worksiteId) {
-      List roles = agent.getWorksiteRoles(worksiteId.getValue());
-      Agent role = null;
-      if (roles.size() > 0)
-         role= (Agent)roles.get(0);
-      
-      List returned = getEvaluatableCells(agent, role, worksiteId);
-      List wizardPages = getEvaluatableWizardPages(agent, role, worksiteId);
-      List wizards = getEvaluatableWizards(agent, role, worksiteId);
-      
-      returned.addAll(wizardPages);
-      returned.addAll(wizards);
-
-      return returned;
+      return filteredMatrixCells;
    }
    
    public void packageScffoldingForExport(Id scaffoldingId, OutputStream os) throws IOException {
@@ -1618,11 +1562,11 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       boolean canEval = getAuthzManager().isAuthorized(MatrixFunctionConstants.EVALUATE_MATRIX, 
             page.getPageDefinition().getId());
       boolean canReview = getAuthzManager().isAuthorized(MatrixFunctionConstants.REVIEW_MATRIX, 
-            getIdManager().getId(page.getPageDefinition().getSiteId()));
+            page.getPageDefinition().getSiteId());
       
       if (!canReview) {
          canReview = getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
-            getIdManager().getId(page.getPageDefinition().getSiteId()));
+            page.getPageDefinition().getSiteId());
       }
       
       
@@ -1638,7 +1582,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          //can I look at reviews/evals/reflections? - own, review or eval
          getReviewManager().getReviewsByParentAndType(
                id, Review.REFLECTION_TYPE,
-               page.getPageDefinition().getSiteId(),
+               page.getPageDefinition().getSiteId().getValue(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);
       }
       
@@ -1646,7 +1590,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          //can I look at reviews/evals/reflections? - own or eval
          getReviewManager().getReviewsByParentAndType(
                id, Review.EVALUATION_TYPE,
-               page.getPageDefinition().getSiteId(),
+               page.getPageDefinition().getSiteId().getValue(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);
       }
       
@@ -1654,7 +1598,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          //can I look at reviews/evals/reflections? - own or review
          getReviewManager().getReviewsByParentAndType(
                id, Review.FEEDBACK_TYPE,
-               page.getPageDefinition().getSiteId(),
+               page.getPageDefinition().getSiteId().getValue(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);         
       }
    }
@@ -1849,7 +1793,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          
          WizardPageDefinition wpd = scaffoldingCell.getWizardPageDefinition();
          wpd.setId(null);
-         wpd.setSiteId(siteId);
+         wpd.setSiteId( getIdManager().getId(siteId));
          if (wpd.getGuidance() != null) {
             if (guidanceMap != null) {
                Guidance guidance = (Guidance) guidanceMap.get(wpd.getGuidance().getId().getValue());
@@ -2035,7 +1979,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
          List reviews = getReviewManager().getReviewsByParentAndTypes(page.getId().getValue(),
                  new int[]{Review.REFLECTION_TYPE, Review.EVALUATION_TYPE, Review.FEEDBACK_TYPE},
-                 page.getPageDefinition().getSiteId(),
+                 page.getPageDefinition().getSiteId().getValue(),
               MatrixContentEntityProducer.MATRIX_PRODUCER);
 
 
@@ -2389,7 +2333,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       //the reflections
       List reflections = getReviewManager().getReviewsByParentAndType(
             page.getId().getValue(), Review.REFLECTION_TYPE,
-            page.getPageDefinition().getSiteId(),
+            page.getPageDefinition().getSiteId().getValue(),
             MatrixContentEntityProducer.MATRIX_PRODUCER);
       for (Iterator iter = reflections.iterator(); iter.hasNext();) {
          Review review = (Review)iter.next();
@@ -2712,6 +2656,5 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 		// where s.id ='AED66AB3B9AE98218C808C207A08EB63'
 		//		GO
 	}
-   
    
 }

@@ -90,8 +90,7 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
          return isWizardAuth(facade, id, agent, WizardFunctionConstants.EDIT_WIZARD);
          
       } else if (function.equals(WizardFunctionConstants.PUBLISH_WIZARD)) {
-         String siteStr = getWizardManager().getWizardIdSiteId(id);
-         Id siteId = getIdManager().getId(siteStr);
+         Id siteId = getWizardManager().getWizardIdSiteId(id);
          return new Boolean(facade.isAuthorized(agent,function,siteId));
          
       } else if (function.equals(WizardFunctionConstants.DELETE_WIZARD)) {
@@ -121,7 +120,7 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
          if (returned == null || !returned.booleanValue()) {
             returned = Boolean.valueOf(facade.isAuthorized(agent, 
                   WizardFunctionConstants.EDIT_WIZARD, 
-                  getIdManager().getId(wizard.getSiteId())));
+                  wizard.getSiteId()));
          }
          
          return returned;
@@ -169,13 +168,13 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
       } 
       else if (function.equals(WizardFunctionConstants.EVALUATE_SPECIFIC_WIZARD)) {
          Wizard wizard = wizardManager.getWizard(id);
-         Id siteId = idManager.getId(wizard.getSiteId());
+         Id siteId = wizard.getSiteId();
          facade.pushAuthzGroups(siteId.getValue());
          return isWizardAuthForEval(facade, agent, siteId);
       }
       else if (function.equals(WizardFunctionConstants.EVALUATE_SPECIFIC_WIZARDPAGE)) {
          Wizard wizard = wizardManager.getCompletedWizardByPage(id).getWizard();
-         Id siteId = idManager.getId(wizard.getSiteId());
+         Id siteId = wizard.getSiteId();
          facade.pushAuthzGroups(siteId.getValue());
          return isWizardAuthForEval(facade, agent, siteId);
       }
@@ -195,10 +194,10 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
     */
    protected Boolean isWizardAuth(AuthorizationFacade facade, Id qualifier, Agent agent, String function) {
       
-      String siteStr = getWizardManager().getWizardIdSiteId(qualifier);
+      Id siteId = getWizardManager().getWizardIdSiteId(qualifier);
       
-      if (siteStr == null) {
-         // must be tool id
+      // check if qualifier is the site id
+      if (siteId == null) {
          return new Boolean(facade.isAuthorized(function,qualifier));
       }
       
@@ -208,7 +207,6 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
          return new Boolean(true);
       }
       */
-      Id siteId = getIdManager().getId(siteStr);
       return new Boolean(facade.isAuthorized(function,siteId));
    }
 
@@ -221,10 +219,8 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
     * @return
     */
    protected Boolean isWizardViewAuth(AuthorizationFacade facade, Agent agent, Id id, boolean allowAnonymous) {
-      
-      String siteStr = getWizardManager().getWizardIdSiteId(id);
-      
-      if (siteStr == null) {
+      // if this fails, then id must be site id
+      if (getWizardManager().getWizardIdSiteId(id) == null) {
          return new Boolean(facade.isAuthorized(agent, 
                WizardFunctionConstants.VIEW_WIZARD, id));
       }
@@ -239,7 +235,7 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
     * @param wizardId      Id of the wizard we are checkingWizard
     * @param facade        AuthorizationFacade
     * @param agent         Agent
-    * @param id            Id
+    * @param id            Id (this is also the wizard id?!?)
     * @param allowAnonymous boolean
     * @return Boolean
     */
@@ -254,8 +250,7 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
          isAuthorized = facade.isAuthorized(agent, WizardFunctionConstants.VIEW_WIZARD, id);
          
          if(!isAuthorized) {
-            String siteStr = getWizardManager().getWizardIdSiteId(id);
-            Id siteId = getIdManager().getId(siteStr);
+            Id siteId = getWizardManager().getWizardIdSiteId(id);
             isAuthorized = facade.isAuthorized(WizardFunctionConstants.VIEW_WIZARD, siteId);
             
          }
@@ -264,13 +259,12 @@ public class WizardAuthorizerImpl implements ApplicationAuthorizer{
    }
 
    protected Boolean isWizardAuthForReview(AuthorizationFacade facade, Agent agent, Id id) {
-      String siteStr = getWizardManager().getWizardIdSiteId(id);
-      Id tmpId = id;
-      if (siteStr != null) {
-         tmpId = getIdManager().getId(siteStr);
-      }
-      
-      return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.REVIEW_WIZARD, tmpId));
+      Id siteId = getWizardManager().getWizardIdSiteId(id);
+      // id must be site id
+      if ( siteId == null )
+         return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.REVIEW_WIZARD, id));
+      else
+         return new Boolean(facade.isAuthorized(agent, WizardFunctionConstants.REVIEW_WIZARD, siteId));
    }
    
    protected Boolean isWizardAuthForEval(AuthorizationFacade facade, Agent agent, Id id) {

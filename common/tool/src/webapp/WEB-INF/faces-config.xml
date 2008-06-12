@@ -52,12 +52,6 @@
          <value>#{Components["idManager"]}</value>
       </managed-property>
 
-       <managed-property>
-         <description>Max site members: threshold to browse for individuals</description>
-         <property-name>maxRoleMemberList</property-name>
-         <value>20</value>
-      </managed-property>
-
       <managed-property>
          <description>Service Dependency: authzManager</description>
          <property-name>authzManager</property-name>

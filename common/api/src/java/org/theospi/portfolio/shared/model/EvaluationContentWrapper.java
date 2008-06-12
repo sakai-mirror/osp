@@ -49,35 +49,14 @@ public abstract class EvaluationContentWrapper {
    private Id siteId;
    protected final Log logger = LogFactory.getLog(getClass());
    
-   public EvaluationContentWrapper(Id id, String title, Agent owner, 
-         Date submittedDate, String siteId) throws UserNotDefinedException {
+   public EvaluationContentWrapper( Id id, String title, Agent owner, Date submittedDate, Id siteId) throws UserNotDefinedException {
       this.id = id;
       this.title = title;
       this.submittedDate = submittedDate;
       
       this.owner = UserDirectoryService.getUser(owner.getId().getValue());
-      this.siteTitle = fetchSiteName(siteId);
-      // siteId needs to be set later as an Id object
-   }
-   
-   public EvaluationContentWrapper(Id id, String title, Agent owner, 
-         Date submittedDate, String type, String siteType, String siteId) throws UserNotDefinedException {
-      
-      this.id = id;
-      this.title = title;
-      this.submittedDate = submittedDate;
-      
-      this.owner = UserDirectoryService.getUser(owner.getId().getValue());
-      this.evalType = type;
-      this.siteTitle = fetchSiteName(siteId);
-      // siteId needs to be set later as an Id object
-   }
-   
-   public EvaluationContentWrapper(Id id, String title, User owner, Date submittedDate) {
-      this.id = id;
-      this.title = title;
-      this.owner = owner;
-      this.submittedDate = submittedDate;
+      this.siteTitle = fetchSiteName(siteId.getValue());
+      this.siteId = siteId;
    }
    
    public class ParamBean {

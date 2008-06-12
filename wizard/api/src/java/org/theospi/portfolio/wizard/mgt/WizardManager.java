@@ -92,11 +92,11 @@ public interface WizardManager extends WorkflowEnabledManager {
 	 *            A list of site Ids (Strings)
 	 * @return
 	 */
-	public List findPublishedWizards(List sites);
+	public List findPublishedWizards(List<Id> sites);
 
-	public List findPublishedWizards(String siteId);
+	public List findPublishedWizards(Id siteId);
    
-   public List findPublishedWizards(List sites, boolean lazy);
+   public List findPublishedWizards(List<Id> sites, boolean lazy);
    
    /**
     ** Find all WizardPageSequence objects associated with this wizard
@@ -114,7 +114,7 @@ public interface WizardManager extends WorkflowEnabledManager {
 	 *            The identifier of the site.
 	 * @return A list of wizard page definitions for this site.
 	 */
-	public List<WizardPageDefinition> findWizardPageDefs(final String siteId);
+	public List<WizardPageDefinition> findWizardPageDefs(final Id siteId);
 
 	/**
 	 * Method to get each wizard page definition for the site identified by the
@@ -127,10 +127,10 @@ public interface WizardManager extends WorkflowEnabledManager {
 	 *            wizard pages.
 	 * @return A list of wizard page definitions for this site.
 	 */
-	public List<WizardPageDefinition> findWizardPageDefs(final String siteId,
+	public List<WizardPageDefinition> findWizardPageDefs(final Id siteId,
 			final boolean deep);
 
-	public List findWizardsByOwner(String ownerId, String siteId);
+	public List findWizardsByOwner(String ownerId, Id siteId);
 
 	public Collection getAvailableForms(String siteId, String type);
 
@@ -231,9 +231,9 @@ public interface WizardManager extends WorkflowEnabledManager {
 	 * 
 	 * @param Id
 	 *            wizardId
-	 * @return String of the site id
+	 * @return Id of the site
 	 */
-	public String getWizardIdSiteId(final Id wizardId);
+	public Id getWizardIdSiteId(final Id wizardId);
 
 	/**
 	 * Method to get the wizard page definition identified by the given
@@ -273,9 +273,9 @@ public interface WizardManager extends WorkflowEnabledManager {
 	public Wizard importWizardResource(Id worksite, String reference)
 			throws UnsupportedFileTypeException, ImportException;
 
-	public List listAllWizardsByOwner(String owner, String siteId);
+	public List listAllWizardsByOwner(String owner, String siteIdStr);
 
-	public List listWizardsByType(String owner, String siteId, String type);
+	public List listWizardsByType(String owner, String siteIdStr, String type);
 	
 	/**
     * changes the settings on the wizard to make it available for preview
@@ -310,5 +310,20 @@ public interface WizardManager extends WorkflowEnabledManager {
 	 * @return Wizard
 	 */
 	public Wizard saveWizard(Wizard wizard);
+
+   /**
+    * get all the cells, pages, and wizards that this user can evaluate within specified worksite(s)
+    * @param agent Agent 
+    * @param worksiteIds List of worksite Ids
+    * @return List of org.theospi.portfolio.shared.model.EvaluationContentWrapper
+    */
+   List getEvaluatableItems(Agent agent, List<Id> worksiteIds);
+
+   /**
+    * get all the cells, pages, and wizards that this user can evaluate within all worksites they are a member of
+    * @param agent Agent 
+    * @return List of org.theospi.portfolio.shared.model.EvaluationContentWrapper
+    */
+   List getEvaluatableItems(Agent agent);
 
 }

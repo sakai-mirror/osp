@@ -219,10 +219,7 @@
       
       <property name="suppressItems" column="SUPPRESS_ITEMS" type="boolean" not-null="false"/>
     
-      <!-- property name="guidanceId" column="guidance_id" not-null="false" length="36"
-           type="org.sakaiproject.metaobj.shared.IdType"/-->
-
-      <property name="siteId" type="string" column="site_id" />
+      <property name="siteId" type="org.sakaiproject.metaobj.shared.IdType" column="site_id" />
 
       <property name="guidance" column="guidance_id" not-null="false"
         type="org.theospi.portfolio.guidance.mgt.GuidanceUserType"/>

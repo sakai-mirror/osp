@@ -134,7 +134,7 @@ public class ManageCellStatusController implements Controller {
                      page.getId().getValue());
             }
             //unlock reflection form too 
-            List<Review> reflections = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId(),
+            List<Review> reflections = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId().getValue(),
                   MatrixContentEntityProducer.MATRIX_PRODUCER);
             for (Iterator<Review> iter3 = reflections.iterator(); iter3.hasNext();) {
                Review review = (Review)iter3.next();
@@ -155,7 +155,7 @@ public class ManageCellStatusController implements Controller {
                      page.getId().getValue(), "locked by status manager", true);
             }
             //lock reflection form too 
-            List<Review> reflections = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId(),
+            List<Review> reflections = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId().getValue(),
                   MatrixContentEntityProducer.MATRIX_PRODUCER);
             for (Iterator<Review> iter3 = reflections.iterator(); iter3.hasNext();) {
                Review review = (Review)iter3.next();

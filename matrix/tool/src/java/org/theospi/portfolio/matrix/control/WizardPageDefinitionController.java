@@ -25,7 +25,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Iterator;
+import java.util.Set;
 
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.CancelableController;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.validation.Errors;
@@ -37,6 +42,7 @@ import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.wizard.model.WizardPageSequence;
 import org.theospi.portfolio.wizard.model.Wizard;
+import org.theospi.portfolio.security.AudienceSelectionHelper;
 
 /**
  * Created by IntelliJ IDEA.
@@ -48,6 +54,8 @@ import org.theospi.portfolio.wizard.model.Wizard;
 public class WizardPageDefinitionController extends EditScaffoldingCellController implements CancelableController {
 
    private List pageList = null;
+   
+   protected final static String audienceSelectionFunction = AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD;
    
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.FormController#referenceData(java.util.Map, java.lang.Object, org.springframework.validation.Errors)
@@ -99,7 +107,7 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
       page = (WizardPageDefinition)pageList.get(0);
       
       session.remove(WizardPageHelper.CANCELED);
-      page.setSiteId(ToolManager.getCurrentPlacement().getContext());
+      page.setSiteId(getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
       ScaffoldingCell cell = new ScaffoldingCell();
       cell.setWizardPageDefinition(page);
       if (page.getId() == null) {
@@ -197,4 +205,5 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
    protected String getReturnView() {
       return "page";
    }
+	
 }

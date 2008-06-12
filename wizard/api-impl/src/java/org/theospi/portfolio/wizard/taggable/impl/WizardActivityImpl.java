@@ -46,7 +46,7 @@ public class WizardActivityImpl implements TaggableActivity {
 	}
 
 	public String getContext() {
-		return def.getSiteId();
+		return def.getSiteId().getValue();
 	}
 
 	public String getDescription() {
