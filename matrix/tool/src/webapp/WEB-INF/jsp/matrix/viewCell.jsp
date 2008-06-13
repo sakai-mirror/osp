@@ -289,6 +289,7 @@
 			<c:if
 				test="${node.fileType == cellFormDef.id or allowedNodeType == ''}">
 				<c:set var="canReflect" value="true" />
+				<c:set var="showUserButtons" value="${cell.status == 'READY' and readOnlyMatrix != 'true' and not node.isLocked}" />
 
 				<tr>
 					<td>
@@ -301,7 +302,7 @@
 					</td>
 					<td style="white-space: nowrap">
 					<div class="itemAction">
-					<c:if	test="${cell.status == 'READY' and readOnlyMatrix != 'true' and not node.isLocked}">
+					<c:if	test="${showUserButtons}">
 
 						<a
 							href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
@@ -328,7 +329,7 @@
 				
 					<c:if
 						test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && allowItemFeedback[loopStatus.index]}">
-                        |
+						<c:if test="${showUserButtons}"> | </c:if>
 						<a
 							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                           <osp:param name="page_id" value="${cell.wizardPage.id}" />
