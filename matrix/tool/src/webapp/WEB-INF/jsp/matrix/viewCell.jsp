@@ -311,7 +311,7 @@
                             <osp:param name="current_form_id" value="${node.resource.id}" />
                             <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
                             </osp:url>"
-							title="<fmt:message key="edit"/>"> <img
+							title="<fmt:message key="edit"/>"><img
 							src="/library/image/silk/application_form_edit.png"
 							alt="<fmt:message key="edit"/>" /> <fmt:message key="edit"/></a>
                         |
@@ -340,9 +340,10 @@
                           <osp:param name="objectTitle" value="${objectTitle}" />
                           <osp:param name="itemId" value="${node.id}" />
                           <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
-                          </osp:url>">
-								  <osp:message	key="review" />
-						</a>
+                          </osp:url>"
+							title="<fmt:message key="review"/>"><img
+							src="/library/image/silk/comment_add.png"
+							alt="<fmt:message key="review"/>" /> <fmt:message key="review"/></a>
 					</c:if></div>
 					</td>
 					<td><c:out value="${node.technicalMetadata.owner.displayName}" />
