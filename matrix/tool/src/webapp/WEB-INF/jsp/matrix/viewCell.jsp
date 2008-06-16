@@ -313,7 +313,7 @@
                             </osp:url>"
 							title="<fmt:message key="edit"/>"> <img
 							src="/library/image/silk/application_form_edit.png"
-							alt="<fmt:message key="edit"/>" /> </a>
+							alt="<fmt:message key="edit"/>" /><fmt:message key="edit"/></a>
                         |
                         <a
 							href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -322,9 +322,9 @@
                             <osp:param name="current_form_id" value="${node.id}" />
                             <osp:param name="submit" value="delete" />
                             </osp:url>"
-							title="<fmt:message key="delete"/>"><img
+							title="<fmt:message key="remove"/>"><img
 							src="/library/image/silk/application_form_delete.png"
-							alt="<fmt:message key="delete"/>" /></a>
+							alt="<fmt:message key="remove"/>" /><fmt:message key="remove"/></a>
 					</c:if> 
 				
 					<c:if
