@@ -24,6 +24,9 @@ package org.theospi.portfolio.matrix.control;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.CustomCommandController;
@@ -34,15 +37,26 @@ import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.review.model.Review;
+import org.theospi.portfolio.review.mgt.ReviewManager;
+import org.sakaiproject.content.api.LockManager;
 
 /**
  * @author chmaurer
  */
 public class FormDeleteController implements LoadObjectController, CustomCommandController {
 
-   IdManager idManager = null;
-   MatrixManager matrixManager = null;
+   protected final Log logger = LogFactory.getLog(getClass());
+	
+   private IdManager idManager = null;
+   private MatrixManager matrixManager = null;
+   private ReviewManager reviewManager;
+   private ContentHostingService contentHosting;
+   private LockManager lockManager;
    
+	private String DELETE_FORM = "delete";
+	private String DELETE_FEEDBACK = "deleteReview";
+	
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.CustomCommandController#formBackingObject(java.util.Map, java.util.Map, java.util.Map)
     */
@@ -72,15 +86,30 @@ public class FormDeleteController implements LoadObjectController, CustomCommand
       }
       
       String submitAction = (String)request.get("submit");
-      String cancelAction = (String)request.get("cancel");
-      if (submitAction != null) {
-         session.remove(WizardPageHelper.WIZARD_PAGE);
-         getMatrixManager().removeFromSession(page);
+      session.remove(WizardPageHelper.WIZARD_PAGE);
+      getMatrixManager().removeFromSession(page);
+      if ( submitAction.equals(DELETE_FORM) )
+      {
          getMatrixManager().detachForm(page.getId(), formId);
-         if (sessionPage) {
+      }
+      else // (submitAction.equals(DELETE_FEEDBACK)) 
+      {
+         Id reviewId = idManager.getId((String)request.get("review_id"));
+         Review review = getReviewManager().getReview(reviewId);
+         getReviewManager().deleteReview(review);
+      }
             
-            session.put(WizardPageHelper.WIZARD_PAGE, getMatrixManager().getWizardPage(page.getId()));
-         }
+      if (sessionPage) 
+         session.put(WizardPageHelper.WIZARD_PAGE, getMatrixManager().getWizardPage(page.getId()));
+      try {
+         // unlock and delete content
+         String reviewContentId = contentHosting.getUuid( formId.getValue() );
+         if ( getLockManager().isLocked(reviewContentId) ) 
+            getLockManager().removeLock(reviewContentId, cellId.getValue() );
+         getContentHosting().removeResource(formId.getValue());
+      } 
+      catch(Exception e) {
+         logger.warn("Error removing form: ", e );
       }
       
       // if not submit, then cancel, but both submit and cancel have the some view, so
@@ -113,4 +142,36 @@ public class FormDeleteController implements LoadObjectController, CustomCommand
    public void setMatrixManager(MatrixManager matrixManager) {
       this.matrixManager = matrixManager;
    }
+   /**
+    * @return the contentHosting
+    */
+   public ContentHostingService getContentHosting() {
+      return contentHosting;
+   }
+   /**
+    * @param contentHosting the contentHosting to set
+    */
+   public void setContentHosting(ContentHostingService contentHosting) {
+      this.contentHosting = contentHosting;
+   }
+   /**
+    * @return Returns the reviewManager.
+    */
+   public ReviewManager getReviewManager() {
+      return reviewManager;
+   }
+   /**
+    * @param reviewManager The reviewManager to set.
+    */
+   public void setReviewManager(ReviewManager reviewManager) {
+      this.reviewManager = reviewManager;
+   }
+   public LockManager getLockManager() {
+      return lockManager;
+   }
+   public void setLockManager(LockManager lockManager) {
+      this.lockManager = lockManager;
+   }
+
+
 }

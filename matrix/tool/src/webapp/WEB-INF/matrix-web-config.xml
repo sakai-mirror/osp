@@ -376,6 +376,15 @@
          <bean class="org.theospi.portfolio.matrix.control.FormDeleteController">
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
+ 	         <property name="contentHosting">
+               <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
+            </property>
+            <property name="reviewManager">
+               <ref bean="org.theospi.portfolio.review.mgt.ReviewManager"/>
+            </property>
+	        <property name="lockManager">
+	           <ref bean="org.sakaiproject.content.api.LockManager"/>
+	        </property>
          </bean>
       </property>
       <property name="screenMappings">

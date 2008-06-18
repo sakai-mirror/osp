@@ -2295,9 +2295,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
 
    /**
-    * This method locks and unlocks the page file attachments, the additional filled in forms,
-    * and the filled in reflection forms.  There is other locking in the ReviewHelperController 
-    * which locks the feedback and evaluation.
+    * This method locks/unlocks the page file attachments and the additional filled in forms.
     * @param lock boolean true locks the resources, false unlocks
     * @param page WizardPage of the content to lock
     */
@@ -2329,25 +2327,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
                   page.getId().getValue());
          }         
       }
-
-      //the reflections
-      List reflections = getReviewManager().getReviewsByParentAndType(
-            page.getId().getValue(), Review.REFLECTION_TYPE,
-            page.getPageDefinition().getSiteId().getValue(),
-            MatrixContentEntityProducer.MATRIX_PRODUCER);
-      for (Iterator iter = reflections.iterator(); iter.hasNext();) {
-         Review review = (Review)iter.next();
-         
-         if (lock) {
-            getLockManager().lockObject(review.getReviewContent().getValue(), 
-                  page.getId().getValue(), 
-                  "Submitting cell, 4 eval", true);
-         }
-         else {
-            getLockManager().removeLock(review.getReviewContent().getValue(), 
-                  page.getId().getValue());
-         }         
-      } 
    }
 
    private void processContentLockingWorkflow(WorkflowItem wi, WizardPage page) {

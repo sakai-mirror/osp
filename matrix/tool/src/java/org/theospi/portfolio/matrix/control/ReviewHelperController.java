@@ -112,6 +112,7 @@ public class ReviewHelperController implements Controller {
          strId = (String)session.get(lookupId);
          String formType = (String)session.get(ResourceEditingHelper.CREATE_SUB_TYPE);
          String itemId = (String)session.get(ReviewHelper.REVIEW_ITEM_ID);
+         String currentReviewId = (String)session.get(ResourceEditingHelper.ATTACHMENT_ID);
 
          Map<String, Object> model = new HashMap<String, Object>();
          model.put(lookupId, strId);
@@ -119,14 +120,43 @@ public class ReviewHelperController implements Controller {
          Placement placement = ToolManager.getCurrentPlacement();
          String currentSite = placement.getContext();
 
-         Review review = getReviewManager().createNew(
-               "New Review", currentSite);
-         review.setDeviceId(formType);
-         review.setParent(strId);
-         review.setItemId(itemId);
-         String strType = (String)session.get(ReviewHelper.REVIEW_TYPE);
-         review.setType(Integer.parseInt(strType));
+         // check if this is a new review
+         if ( currentReviewId == null ) {
+            Review review = getReviewManager().createNew("New Review", currentSite);
+            review.setDeviceId(formType);
+            review.setParent(strId);
+            review.setItemId(itemId);
+            String strType = (String)session.get(ReviewHelper.REVIEW_TYPE);
+            review.setType(Integer.parseInt(strType));
 
+            if (FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)) 
+                && session.get(FormHelper.RETURN_REFERENCE_TAG) != null) 
+            {
+               String artifactId = (String)session.get(FormHelper.RETURN_REFERENCE_TAG);
+               session.remove(FormHelper.RETURN_REFERENCE_TAG);
+               Node node = getMatrixManager().getNode(getIdManager().getId(artifactId));
+               
+               review.setReviewContentNode(node);
+               review.setReviewContent(node.getId());
+               getReviewManager().saveReview(review);
+            }
+            
+            // Lock review content (reflection, feedback, evaluation)
+            getLockManager().lockObject(review.getReviewContent().getValue(),
+                                        strId, "lock all review content", true);
+                  
+         }
+         
+         // otherwise this is an existing review being edited
+         else {
+            // Lock review content (reflection, feedback, evaluation)
+            currentReviewId = contentHosting.getUuid( currentReviewId );
+            getLockManager().lockObject(currentReviewId,
+                                        strId, "lock all review content", true);
+                  
+         }
+
+         // Clean up session attributes         
          session.remove(ResourceEditingHelper.CREATE_TYPE);
          session.remove(ResourceEditingHelper.CREATE_SUB_TYPE);
          session.remove(ReviewHelper.REVIEW_TYPE);
@@ -135,34 +165,19 @@ public class ReviewHelperController implements Controller {
          session.remove(lookupId);
          //session.remove("process_type_key");
          session.remove("secondPass");
-
-         if (FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)) &&
-               session.get(FormHelper.RETURN_REFERENCE_TAG) != null) {
-            String artifactId = (String)session.get(FormHelper.RETURN_REFERENCE_TAG);
-            Node node = getMatrixManager().getNode(getIdManager().getId(artifactId));
-
-            review.setReviewContentNode(node);
-            review.setReviewContent(node.getId());
-            getReviewManager().saveReview(review);
-
-            session.remove(FormHelper.RETURN_REFERENCE_TAG);
-
-            if (review.getType() == Review.EVALUATION_TYPE || review.getType() == Review.FEEDBACK_TYPE) {
-               getLockManager().lockObject(review.getReviewContent().getValue(),
-                  strId, "evals and review always locked", true);
-            }
-
-            if (session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS) != null) {
-               Set workflows = (Set)session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
-               List wfList = Arrays.asList(workflows.toArray());
-               Collections.sort(wfList, Workflow.getComparator());
-               model.put("workflows", wfList);
-               model.put("manager", manager);
-               model.put("obj_id", strId);
-               return new ModelAndView("postProcessor", model);
-            }
-         }
          session.remove(FormHelper.RETURN_ACTION_TAG);
+         
+         // Check for workflow post process
+         if (session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS) != null) {
+            Set workflows = (Set)session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
+            List wfList = Arrays.asList(workflows.toArray());
+            Collections.sort(wfList, Workflow.getComparator());
+            model.put("workflows", wfList);
+            model.put("manager", manager);
+            model.put("obj_id", strId);
+            return new ModelAndView("postProcessor", model);
+         }
+         
          return new ModelAndView(returnView, model);
       }
 
@@ -243,7 +258,7 @@ public class ReviewHelperController implements Controller {
                                      String ownerEid, String pageId) {
       String retView = "formCreator";
 
-
+      // check if this is a request for a new rewiew (i.e. no current_review_id)
       if (request.get("current_review_id") == null) {
          session.remove(ResourceEditingHelper.ATTACHMENT_ID);
          session.put(ResourceEditingHelper.CREATE_TYPE,
@@ -286,13 +301,24 @@ public class ReviewHelperController implements Controller {
 
          //CWM OSP-UI-09 - for auto naming
          session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(objectTitle, pageTitle, formTypeTitle, ownerEid, 1, contentResourceList));
-      } else {
+      } 
+		
+      // Otherwise, editting an existing review
+      else {
+         String currentReviewId = (String)request.get("current_review_id");
          session.remove(ResourceEditingHelper.CREATE_TYPE);
          session.remove(ResourceEditingHelper.CREATE_SUB_TYPE);
          session.remove(ResourceEditingHelper.CREATE_PARENT);
          session.put(ResourceEditingHelper.CREATE_TYPE,
             ResourceEditingHelper.CREATE_TYPE_FORM);
-         session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_review_id"));
+         session.put(ResourceEditingHelper.ATTACHMENT_ID, currentReviewId);
+         
+         // unlock review content for edit
+         String reviewContentId = contentHosting.getUuid( currentReviewId );
+         if ( getLockManager().isLocked(reviewContentId) ) {
+            getLockManager().removeLock(reviewContentId, pageId );
+         }
+         
          retView = "formEditor";
       }
       session.put(FormHelper.FORM_STYLES,
