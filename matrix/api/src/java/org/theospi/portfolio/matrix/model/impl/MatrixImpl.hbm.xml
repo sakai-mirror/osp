@@ -50,6 +50,7 @@
        <property name="status" type="java.lang.String" />
        <set name="attachments" cascade="all-delete-orphan"
            inverse="true" lazy="false">
+          <cache usage="nonstrict-read-write"/>
            <key column="page_id" />
            <one-to-many class="Attachment" />
        </set>
@@ -59,6 +60,7 @@
 
        <set name="pageForms" cascade="all-delete-orphan"
            inverse="true" lazy="false">
+           <cache usage="nonstrict-read-write"/>
            <key column="page_id" />
            <one-to-many class="WizardPageForm" />
        </set>
@@ -198,6 +200,7 @@
             type="org.sakaiproject.metaobj.shared.IdType"/>
         <property name="reviewDeviceType" type="string" column="review_device_type" />
         <set name="evalWorkflows" cascade="all,delete" inverse="true" lazy="false" >
+           <cache usage="nonstrict-read-write"/>
            <key column="parent_id" />
            <one-to-many class="org.theospi.portfolio.workflow.model.Workflow" />
         </set>
@@ -210,6 +213,7 @@
       <property name="initialStatus" type="java.lang.String" />
       <set name="pages" cascade="all-delete-orphan" inverse="true"
             lazy="true">
+         <cache usage="nonstrict-read-write"/>
          <key column="wiz_page_def_id" />
          <one-to-many class="WizardPage" />
       </set>
@@ -226,6 +230,7 @@
 
       <list name="additionalForms" cascade="all-delete-orphan"
            inverse="false" lazy="false" table="osp_scaffolding_cell_form_defs">
+           <cache usage="nonstrict-read-write"/>
            <key column="wiz_page_def_id" />
            <index column="seq_num" />
            <element column="form_def_id" type="string"/>

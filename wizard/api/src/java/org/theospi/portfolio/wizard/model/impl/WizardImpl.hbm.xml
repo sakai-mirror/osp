@@ -70,6 +70,7 @@
 
       <list name="childPages" cascade="all"
           inverse="true" lazy="false">
+          <cache usage="nonstrict-read-write"/>
           <key column="category_id" />
           <index column="seq_num" />
           <one-to-many class="WizardPageSequence" />
@@ -77,6 +78,7 @@
 
       <list name="childCategories" cascade="all"
           inverse="true" lazy="false">
+          <cache usage="nonstrict-read-write"/>
           <key column="parent_category_id" />
           <index column="seq_num" />
           <one-to-many class="WizardCategory" />
@@ -128,6 +130,7 @@
 
       <list name="childPages" cascade="all"
           inverse="true" lazy="false">
+          <cache usage="nonstrict-read-write"/>
           <key column="completed_category_id" />
           <index column="seq_num" />
           <one-to-many class="CompletedWizardPage" />
@@ -135,6 +138,7 @@
 
       <list name="childCategories" cascade="all"
           inverse="true" lazy="false">
+          <cache usage="nonstrict-read-write"/>
           <key column="parent_category_id" />
           <index column="seq_num" />
           <one-to-many class="CompletedWizardCategory" />
