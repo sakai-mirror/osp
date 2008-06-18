@@ -341,9 +341,7 @@
                           <osp:param name="itemId" value="${node.id}" />
                           <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
                           </osp:url>"
-							title="<fmt:message key="review"/>"><img
-							src="/library/image/silk/comment_add.png"
-							alt="<fmt:message key="review"/>" /> <fmt:message key="review"/></a>
+							title="<fmt:message key="review"/>"> <fmt:message key="review"/></a>
 					</c:if></div>
 					</td>
 					<td><c:out value="${node.technicalMetadata.owner.displayName}" />
@@ -502,9 +500,9 @@
 						   <osp:param name="submit" value="delete"/>
 						   </osp:url>"
 					onclick="javascript:stopEvents(event)"
-					title="<fmt:message key="delete"/>"> <img
+					title="<fmt:message key="remove"/>"> <img
 					src="/library/image/silk/page_white_delete.png"
-					alt="<fmt:message key="delete"/>" /> </a>
+					alt="<fmt:message key="remove"/>" /> <fmt:message key="remove"/></a>
 			</c:if> <c:if
 				test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null  && cell.status != 'COMPLETE'}">
 				<a
