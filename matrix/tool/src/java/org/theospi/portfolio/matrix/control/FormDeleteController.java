@@ -40,6 +40,10 @@ import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.sakaiproject.content.api.LockManager;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.tool.cover.SessionManager;
 
 /**
  * @author chmaurer
@@ -78,11 +82,13 @@ public class FormDeleteController implements LoadObjectController, CustomCommand
       WizardPage page = (WizardPage) session.get(WizardPageHelper.WIZARD_PAGE);
       Id cellId = idManager.getId((String) request.get("page_id"));
       Id formId = idManager.getId((String) request.get("current_form_id"));
-      Cell cell = getMatrixManager().getCellFromPage(cellId);
+      /*      Cell cell = getMatrixManager().getCellFromPage(cellId); */
+      /* original code doesn't work for wizard pages */
+      System.out.println("cellid " + cellId + " formId " + formId);
       boolean sessionPage = true;
       if (page == null) {
          sessionPage = false;
-         page = cell.getWizardPage();
+         page = getMatrixManager().getWizardPage(cellId);
       }
       
       String submitAction = (String)request.get("submit");
@@ -111,7 +117,15 @@ public class FormDeleteController implements LoadObjectController, CustomCommand
       catch(Exception e) {
          logger.warn("Error removing form: ", e );
       }
-      
+
+      ToolSession toolSession = SessionManager.getCurrentToolSession();
+      Tool tool = ToolManager.getCurrentTool();
+      String url = (String) toolSession.getAttribute(
+	     tool.getId() + Tool.HELPER_DONE_URL);
+      System.out.println("formdelete url " + url);
+      if (url.endsWith("/runWizardGuidance"))
+	  return new ModelAndView("gotoWizard", "page_id", page.getId().getValue());
+
       // if not submit, then cancel, but both submit and cancel have the some view, so
       return new ModelAndView("continue", "page_id", page.getId().getValue());
    }

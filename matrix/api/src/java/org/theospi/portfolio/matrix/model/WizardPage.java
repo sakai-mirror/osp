@@ -29,6 +29,12 @@ import java.util.Set;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
+import org.sakaiproject.id.cover.IdManager;
+import org.sakaiproject.tool.api.Tool;
+import org.sakaiproject.tool.api.ToolSession;
+import org.sakaiproject.tool.cover.ToolManager;
+import org.sakaiproject.tool.cover.SessionManager;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -136,6 +142,12 @@ public class WizardPage extends IdentifiableObject {
       return pageForms;
    }
 
+   public List<WizardPageForm> getPageFormList() {
+      List<WizardPageForm> forms = new ArrayList<WizardPageForm>();
+      forms.addAll(pageForms);
+      return forms;
+   }
+
    /**
     * @param pageForms A set of class WizardPageForm.
     */
@@ -207,6 +219,13 @@ public class WizardPage extends IdentifiableObject {
       this.reflections = reflections;
    }
 
+   public String getUniqueId() {
+       return IdManager.createUuid();
+   }
 
+    public String getPlacementId() {
+      ToolSession toolSession = SessionManager.getCurrentToolSession();
+      return toolSession.getPlacementId();
+    }
 
 }

@@ -47,6 +47,7 @@ import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.Placement;
+import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.tool.cover.SessionManager;
@@ -204,7 +205,34 @@ public class CellFormPickerController extends CellController implements FormCont
          return new ModelAndView("formViewer");
       }
       session.remove(FilePickerHelper.FILE_PICKER_RESOURCE_FILTER);
-      return new ModelAndView("page", "page_id", pageId);
+
+      /* 
+       * This is a kludge. Let me explain why. I need to edit a form
+       * in a main wizard. I can't figure out how to invoke the form edit
+       * helper from there. So I simply use the same call as from a wizard
+       * page. That works just fine. But at the end, it comes back here,
+       * because the forms code thinks it was called from the wizard page,
+       * not the main wizard. Because the startup code for the wizard page
+       * was never done, a HELPER_DONE_URL was never set up for this tool.
+       * (There is one for the main wizard, of course.) Spring uses the
+       * last view, which is runWizardGuidance, but with this tool,
+       * producing a mutant URL like this:
+       * portal/tool/cdf945a1-c11e-463a-8eed-f2818dab8515/osp.wizard.run.helper/osp.wizard.page.helper/runWizardGuidance
+       * When we detect that, we go back to the wizard. If someone wants to
+       * figure out how to call the helper properly from WizardTool.java and
+       * runWizardGuidance.jsp, please be my guest. It will almost certainly
+       * be a lot more complex than this.
+       */
+
+      ToolSession toolSession = SessionManager.getCurrentToolSession();
+      Tool tool = ToolManager.getCurrentTool();
+      String url = (String) toolSession.getAttribute(
+	     tool.getId() + Tool.HELPER_DONE_URL);
+
+      if (url.endsWith("/runWizardGuidance"))
+	  return new ModelAndView("gotoWizard", "page_id", pageId);
+      else
+	  return new ModelAndView("page", "page_id", pageId);
    }
 
    protected ModelAndView setupSessionInfo(Map request, Map<String, Object> session,

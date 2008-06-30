@@ -161,6 +161,40 @@
          <h:commandLink action="#{item.page.processExecPage}" rendered="#{!item.page.category && !item.page.wizard && wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
          	<h:outputText value="#{item.page.title}"/>
          </h:commandLink>
+
+         <h:dataTable value="#{item.base.wizardPage.pageFormList}" var="form">
+         <h:column>
+
+	 <h:outputText value="&nbsp;&nbsp;&nbsp;&nbsp;" escape="false" />
+	 <h:outputLink id="xyzzx" value="#{form.node.externalUri}" title="#{form.node.name}" target="_blank" >
+	   <h:outputText value="#{form.node.name}" />
+	 </h:outputLink>
+
+	 <h:outputText value="&nbsp;&nbsp;&nbsp;&nbsp;" escape="false" />
+	 <h:outputLink id="xyzzy" value="/portal/tool/#{item.base.wizardPage.placementId}/osp.wizard.run.helper/osp.wizard.page.helper/osp.wizard.page.contents.helper/cellFormPicker.osp" title="Edit">
+         <f:param name="1" value="1"/>
+         <f:param name="page_id" value="#{item.base.wizardPage.id}"/>
+         <f:param name="createFormAction" value="#{form.formType}"/>
+	 <f:param name="current_form_id" value="#{form.resourceId}"/>
+	 <f:param name="sakai_helperSessionId" value="#{item.base.wizardPage.uniqueId}"/>
+	    <h:outputText value="<img src='/library/image/silk/application_form_edit.png' alt='Edit'/>Edit" escape="false"/>
+	 </h:outputLink>
+	 <h:outputText value="&nbsp;&nbsp;" escape="false" />
+	 <h:outputLink id="xyzzz" value="/portal/tool/#{item.base.wizardPage.placementId}/osp.wizard.run.helper/osp.wizard.page.helper/osp.wizard.page.contents.helper/formDelete.osp" title="Delete">
+         <f:param name="1" value="1"/>
+         <f:param name="page_id" value="#{item.base.wizardPage.id}"/>
+         <f:param name="formDefId" value="#{form.formType}"/>
+	 <f:param name="current_form_id" value="#{form.artifactId}" />
+	 <f:param name="submit" value="delete" />
+	    <h:outputText value="<img src='/library/image/silk/application_form_delete.png' alt='Delete'/>Delete" escape="false"/>
+	 </h:outputLink>
+
+
+	 <br/>
+
+         </h:column>
+         </h:dataTable>
+
          
        </f:subview>
       </h:column>
@@ -168,6 +202,7 @@
 	  <h:column>
 	     <f:facet name="header">
             <h:outputText value="Status" />
+
          </f:facet>
 		
 	  <f:subview id="pageViewStatus" rendered="#{item.classInfo == 'completedPage'}" >

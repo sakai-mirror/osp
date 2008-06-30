@@ -22,7 +22,11 @@ package org.theospi.portfolio.matrix.model;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-
+import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.matrix.MatrixManager;
+import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.content.api.ContentResource;
+import java.net.URLEncoder;
 
 /**
  * @author rpembry
@@ -117,4 +121,18 @@ public class WizardPageForm extends IdentifiableObject {
    public void setFormType(String formType) {
       this.formType = formType;
    }
+
+   public Node getNode() {
+      MatrixManager matrixManager = (MatrixManager) ComponentManager.get("matrixManager");
+      Node node = matrixManager.getNode(artifactId);
+      return node;
+   }
+
+    /* need URLencoded version of resource ID */
+    public String getResourceId() {
+	Node node = getNode();
+	ContentResource resource = node.getResource();
+	String id = resource.getId();
+	return URLEncoder.encode(id);
+    }
 }
