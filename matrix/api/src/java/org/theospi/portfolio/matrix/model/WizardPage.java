@@ -144,7 +144,7 @@ public class WizardPage extends IdentifiableObject {
 
    public List<WizardPageForm> getPageFormList() {
       List<WizardPageForm> forms = new ArrayList<WizardPageForm>();
-      forms.addAll(pageForms);
+      forms.addAll(getPageForms());
       return forms;
    }
 

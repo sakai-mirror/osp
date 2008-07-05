@@ -150,17 +150,26 @@
        </f:subview>
          
          
-      <f:subview id="pageView" rendered="#{item.classInfo == 'completedPage'}" >
+      <f:subview id="formView" rendered="#{item.classInfo == 'completedPage' && item.base.wizardPage.pageDefinition.formsOnly}" >
+
          <h:outputLabel value="#{item.page.indentString}"
             rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
 
-         <h:graphicImage value="/img/page.gif" rendered="#{!item.page.category && !item.page.wizard}" />
+         <h:graphicImage value="/img/form.gif" rendered="#{!item.page.category && !item.page.wizard}" />
                   
-         <h:outputText value="#{item.page.title}" rendered="#{item.page.category || item.page.wizard ||  wizard.current.base.type != 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}" />
-         
-         <h:commandLink action="#{item.page.processExecPage}" rendered="#{!item.page.category && !item.page.wizard && wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
-         	<h:outputText value="#{item.page.title}"/>
-         </h:commandLink>
+	 <h:outputLink id="xyzzw" value="/portal/tool/#{item.base.wizardPage.placementId}/osp.wizard.run.helper/osp.wizard.page.helper/osp.wizard.page.contents.helper/cellFormPicker.osp" title="#{item.page.title}" rendered="#{item.base.wizardPage.pageDefinition.additionalForms[0]!=null}">
+         <f:param name="1" value="1"/>
+         <f:param name="page_id" value="#{item.base.wizardPage.id}"/>
+         <f:param name="createFormAction" value="#{item.base.wizardPage.pageDefinition.additionalForms[0]}"/>
+         <f:param name="isMatrix" value="false"/>
+         <f:param name="isWizard" value="true"/>
+         <f:param name="objectId" value="#{wizard.current.base.id}"/>
+         <f:param name="objectTitle" value="#{wizard.current.title}"/>
+	 <f:param name="sakai_helperSessionId" value="#{item.base.wizardPage.uniqueId}"/>
+	    <h:outputText value="#{item.page.title}" />
+	 </h:outputLink>
+
+	 <h:outputText value="#{item.page.title} (no form assigned)" rendered="#{item.base.wizardPage.pageDefinition.additionalForms[0]==null}"/>
 
          <h:dataTable value="#{item.base.wizardPage.pageFormList}" var="form">
          <h:column>
@@ -194,9 +203,24 @@
 
          </h:column>
          </h:dataTable>
+        
+       </f:subview>
 
+      <f:subview id="pageView" rendered="#{item.classInfo == 'completedPage' && !item.base.wizardPage.pageDefinition.formsOnly}" >
+
+         <h:outputLabel value="#{item.page.indentString}"
+            rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
+
+         <h:graphicImage value="/img/page.gif" rendered="#{!item.page.category && !item.page.wizard}" />
+                  
+         <h:outputText value="#{item.page.title}" rendered="#{item.page.category || item.page.wizard ||  wizard.current.base.type != 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}" />
+         
+         <h:commandLink action="#{item.page.processExecPage}" rendered="#{!item.page.category && !item.page.wizard && wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
+         	<h:outputText value="#{item.page.title}"/>
+         </h:commandLink>
          
        </f:subview>
+
       </h:column>
 	  <%--TODO: have created a new column for the status value - need to reformat that string--%>
 	  <h:column>
