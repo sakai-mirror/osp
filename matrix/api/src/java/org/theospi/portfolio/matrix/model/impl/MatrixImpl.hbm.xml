@@ -222,7 +222,9 @@
       <property name="description" type="text" column="description" not-null="false"/>
       
       <property name="suppressItems" column="SUPPRESS_ITEMS" type="boolean" not-null="false"/>
-    
+      <property name="formsOnly" type="boolean" not-null="false">
+	<column name="formsOnly" default="0" />
+      </property>
       <property name="siteId" type="org.sakaiproject.metaobj.shared.IdType" column="site_id" />
 
       <property name="guidance" column="guidance_id" not-null="false"

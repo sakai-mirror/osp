@@ -98,6 +98,21 @@ public class DecoratedCategory extends DecoratedCategoryChild {
       return new DecoratedWizardPage(this, wizardPage, getParent(), getIndent() + 1).processActionEdit(true);
    }
 
+  public String processActionNewForm() {
+     if(getBase().getWizard().isPublished())
+        return null;
+     WizardPageSequence wizardPage =
+           new WizardPageSequence(new WizardPageDefinition());
+     String siteId = getParent().getWorksite().getId();
+     wizardPage.getWizardPageDefinition().setSiteId(getParent().getIdManager().getId(siteId));
+     wizardPage.getWizardPageDefinition().setNewId(getParent().getIdManager().createId());
+     wizardPage.setCategory(getBase());
+     wizardPage.getWizardPageDefinition().setFormsOnly(true);
+     getParent().getCurrent().getRootCategory().setCategoryPageList(null);
+
+     return new DecoratedWizardPage(this, wizardPage, getParent(), getIndent() + 1).processActionEdit(true);
+   }
+
    protected void resequencePages() {
       int index = 0;
       for (Iterator i=getBase().getChildPages().iterator();i.hasNext();) {

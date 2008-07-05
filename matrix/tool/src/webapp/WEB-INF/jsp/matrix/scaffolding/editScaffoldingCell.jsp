@@ -83,6 +83,8 @@
 				</c:if>
 			</p>
 		</spring:bind>
+
+                <c:if test="${!scaffoldingCell.wizardPageDefinition.formsOnly}">
 		
 		<div class="longtext">
 			<label class="block"><fmt:message key="label_cellDescription"/></label>
@@ -112,11 +114,16 @@
 			</spring:bind>
 		</c:if>
 		
+		</c:if>  <!-- end of !formsonly -->
+
 		<c:if test="${isWizard == 'true'}">
 			<spring:bind path="scaffoldingCell.initialStatus">  
 				<input type="hidden" name="<c:out value="${status.expression}"/>" value="READY" />
 			</spring:bind>
 		</c:if>
+                
+		<c:if test="${!scaffoldingCell.wizardPageDefinition.formsOnly}">
+
 	
 		<!-- ************* Style Area Start ************* -->
 	
@@ -296,6 +303,8 @@
 	
 	<!-- ************* Guidance and reflection Area Start ************* -->   
 
+        </c:if>  <!-- end of !formsonly -->
+
 	<!-- *************  User Forms Area  Start ************* -->
 	<fieldset class="fieldsetVis">
 		<legend><fmt:message key="legend_additional_user_Forms"/></legend>
@@ -350,6 +359,9 @@
 		</c:if>
 	
 		<!-- ************* Additional Forms Area End ************* -->   
+
+		<c:if test="${!scaffoldingCell.wizardPageDefinition.formsOnly}">
+
 		<!-- ************* Assignments Area Start ************* -->   
 			
 		<c:if test="${enableAssignments}">
@@ -395,12 +407,15 @@
 		
 		<!-- ************* Assignments Area End ************* -->   
 
+		</c:if>  <!-- end of !formsonly -->
 	
 		<spring:bind path="scaffoldingCell.reflectionDeviceType">  
 			<input type="hidden" name="<c:out value="${status.expression}"/>"
 			value="<c:out value="${status.value}"/>" />
 		</spring:bind>
 	
+		<c:if test="${!scaffoldingCell.wizardPageDefinition.formsOnly}">
+
 		<spring:bind path="scaffoldingCell.reflectionDevice">  
 			<c:if test="${status.error}">
 				<div class="validation"><c:out value="${status.errorMessage}"/></div>
@@ -457,10 +472,15 @@
 		</spring:bind>
 		</c:if>
 		
+        </c:if>  <!-- end of !formsOnly -->
+
 		<spring:bind path="scaffoldingCell.evaluationDeviceType">  
 			<input type="hidden" name="<c:out value="${status.expression}"/>"
 			value="<c:out value="${status.value}"/>" />
 		</spring:bind>
+
+         <c:if test="${!scaffoldingCell.wizardPageDefinition.formsOnly}">
+
 		<!-- ************* Guidance and reflection Area End ************* -->        
 		
 		<!-- ************* Review and Evaluation Area Start ************* -->            
@@ -510,6 +530,9 @@
 		</p>
 	<!-- ************* Evaluators List End ************* -->
 	</fieldset>
+
+        </c:if>  <!-- end of !formsOnly -->
+
 	<spring:bind path="scaffoldingCell.id">
 		<input type="hidden" name="<c:out value="${status.expression}"/>" value="<c:out value="${status.displayValue}"/>"/>
 		<span class="error" style="border:none"><c:out value="${status.errorMessage}"/></span>

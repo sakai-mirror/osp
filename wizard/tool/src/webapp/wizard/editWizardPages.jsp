@@ -100,7 +100,8 @@
          <h:graphicImage value="/img/categoryExpanded.gif" rendered="#{item.category && item.hasChildren}" />
          <h:graphicImage value="/img/category.gif" rendered="#{item.category && !item.hasChildren}" />
 
-         <h:graphicImage value="/img/page.gif" rendered="#{!item.category && !item.wizard}" />
+         <h:graphicImage value="/img/page.gif" rendered="#{!item.category && !item.wizard &&!item.base.wizardPageDefinition.formsOnly}" />
+         <h:graphicImage value="/img/form.gif" rendered="#{!item.category && !item.wizard &&item.base.wizardPageDefinition.formsOnly}" />
          <!--h:selectBooleanCheckbox id="itemSelect" value="#{item.selected}" /-->
          <h:outputLabel value="#{item.title}"/>
          
@@ -126,7 +127,10 @@
 	         <h:commandLink action="#{item.processActionNewPage}" rendered="#{item.category && !wizard.moving && !wizard.current.base.published}">
 	            <h:outputText value="#{msgs.new_page}" />
 	         </h:commandLink>
-	
+	         <h:outputText value=" | "  rendered="#{item.category && !wizard.moving && !wizard.current.base.published}"/>
+	         <h:commandLink action="#{item.processActionNewForm}" rendered="#{item.category && !wizard.moving && !wizard.current.base.published}">
+	            <h:outputText value="#{msgs.new_form}" />
+	         </h:commandLink>
 	         <h:outputText value=" | " rendered="#{!wizard.moving && !wizard.current.base.published &&
 	               wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
 	         <h:commandLink action="#{item.processActionMove}" rendered="#{!wizard.moving && !wizard.current.base.published &&
@@ -189,6 +193,11 @@
 	         <h:commandLink action="#{item.processActionNewPage}" rendered="#{item.category &&  !wizard.current.base.published}">
 	            <h:outputText value="#{msgs.new_page}" />
 	         </h:commandLink>
+	         <h:outputText value=" | "  rendered="#{item.category && !wizard.moving && !wizard.current.base.published}"/>
+	         <h:commandLink action="#{item.processActionNewForm}" rendered="#{item.category &&  !wizard.current.base.published}">
+	            <h:outputText value="#{msgs.new_form}" />
+	         </h:commandLink>
+
 	
 	         <h:outputText value=" | " rendered="#{!wizard.moving && !wizard.current.base.published &&
 	               wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}"/>
@@ -212,6 +221,13 @@
 		      <h:commandLink
 		         action="#{wizard.current.rootCategory.processActionNewPage}"
 		         value="#{msgs.new_root_wizard_page}" />
+
+		 <h:outputText value=" | " />
+		      <h:commandLink
+		         action="#{wizard.current.rootCategory.processActionNewForm}"
+		         value="#{msgs.new_root_wizard_form}" />
+
+
 			</h:panelGroup>	 
 		 </f:subview>
          <f:subview id="moveIntoWizard" rendered="#{wizard.moving && item.wizard}">

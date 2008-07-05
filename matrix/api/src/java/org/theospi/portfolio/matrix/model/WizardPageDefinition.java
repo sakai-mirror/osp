@@ -44,6 +44,7 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    private String description;
    private String initialStatus = "";
    private boolean suppressItems = false;
+   private boolean formsOnly = false;
    private Collection evaluators = new HashSet();
    transient private boolean validate;
    private Set pages = new HashSet();
@@ -221,5 +222,18 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    public void setSuppressItems(boolean suppressItems) {
 	   this.suppressItems = suppressItems;
    }
+
+  /**
+   * @return formsOnly
+   */
+  public boolean isFormsOnly() {
+  	   return formsOnly;
+  }
+  /**
+   * @param setFormsOnly the formsOnly to set
+   */
+  public void setFormsOnly(boolean formsOnly) {
+   this.formsOnly = formsOnly;
+  }
 
 }
