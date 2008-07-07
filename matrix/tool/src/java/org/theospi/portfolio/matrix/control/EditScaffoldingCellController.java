@@ -489,8 +489,8 @@ public class EditScaffoldingCellController extends
 																		new Object[] { roleAgent.getDisplayName() }));
 
 			getAuthzManager().createAuthorization(roleAgent, 
-                                               audienceSelectionFunction, 
-                                               wpd.getId());
+															  audienceSelectionFunction, 
+															  (wpd.getId()==null?wpd.getNewId():wpd.getId()));
 		}
 		return evalList;
 	}
