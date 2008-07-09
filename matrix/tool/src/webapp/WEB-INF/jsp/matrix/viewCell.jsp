@@ -326,7 +326,7 @@
 					</c:if> 
 				
 					<c:if
-						test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && allowItemFeedback[loopStatus.index] && cell.status != 'COMPLETE'}">
+						test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && allowItemFeedback[loopStatus.index]}">
 						<c:if test="${showUserButtons}"> | </c:if>
 						<a
 							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
@@ -366,7 +366,7 @@
 							<td>
 								<!-- Allow Reviewers to edit/delete feedback -->
 								<c:if
-									test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.status != 'COMPLETE' }">
+									test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
 									<a
 										href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 												<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -485,10 +485,6 @@
 			<td style="white-space: nowrap">
 			<div class="itemAction"><c:if
 				test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
-				<%--       <a name="linkNew" href="<osp:url value="attachToCell.osp">
-						 <osp:param name="page_id" value="${cell.wizardPage.id}"/>
-						 </osp:url>" onclick="javascript:stopEvents(event)"><fmt:message key="edit"/></a>
-						 |   --%>
 				<a
 					href="<osp:url value="osp.wizard.page.contents.helper/resourceDelete.osp">
 						   <osp:param name="page_id" value="${cell.wizardPage.id}"/>
@@ -499,7 +495,7 @@
 					title="<fmt:message key="remove"/>"> 
 					<fmt:message key="remove"/></a>
 			</c:if> <c:if
-				test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null  && cell.status != 'COMPLETE'}">
+				test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null}">
 				<a
 					href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                           <osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -537,7 +533,7 @@
 					<td>
 						<!-- Allow Reviewers to edit/delete feedback -->
 						<c:if
-							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.status != 'COMPLETE' }">
+							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
 							<a
 								href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -658,7 +654,7 @@
 				href='<c:out value="${reflections[0].reviewContentNode.externalUri}"/>'
 				target="_blank"> <c:out
 				value="${reflections[0].reviewContentNode.displayName}" /> </a>
-		<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+		<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true' && enableReviewEdit}">
 			<span class="itemAction"> 
 				<a
 				href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
@@ -667,8 +663,18 @@
 						   <osp:param name="current_review_id" value="${reflections[0].reviewContentNode.resource.id}" />
 						   <osp:param name="process_type_key" value="page_id" />
                      <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
-						   </osp:url>">
-			<osp:message key="reflection_edit" /></a> </span>
+						   </osp:url>"> <osp:message key="reflection_edit" /></a> 
+											|
+				<a
+				href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
+							 <osp:param name="page_id" value="${cell.wizardPage.id}" />
+							 <osp:param name="formDefId" value="${cell.scaffoldingCell.reflectionDevice}" />
+							 <osp:param name="current_form_id" value="${reflections[0].reviewContentNode.resource.id}" />
+							 <osp:param name="review_id" value="${reflections[0].id}"/>
+							 <osp:param name="submit" value="deleteReview" />
+							 </osp:url>" title="<fmt:message key="delete"/>">
+							<fmt:message key="remove"/></a>
+			</span>
 		</c:if>
 	</c:if>
 	</span>
@@ -738,7 +744,7 @@
 			<td>
 			
 			<div class="itemAction"><c:if
-				test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && allowGeneralFeedback && cell.status != 'COMPLETE'}">
+				test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && allowGeneralFeedback}">
 				<a
 					href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 						<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -777,7 +783,7 @@
 					<td>
 						<!-- Allow Reviewers to edit/delete feedback -->
 						<c:if
-							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.status != 'COMPLETE'}">
+							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit}">
 							<a
 								href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -879,7 +885,7 @@
 				<td>
 					<!-- Allow Reviewers to edit/delete Evaluations -->
 					<c:if
-						test="${((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.status == 'PENDING'}">
+						test="${((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.status == 'PENDING' && enableReviewEdit}">
 						<a
 							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 									<osp:param name="page_id" value="${cell.wizardPage.id}" />

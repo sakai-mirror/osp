@@ -121,6 +121,7 @@
    <bean id="cellController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">
          <bean class="org.theospi.portfolio.matrix.control.CellController">
+            <property name="enableReviewEdit"><value>true</value></property>
             <property name="matrixManager"><ref bean="matrixManager"/></property>
             <property name="authManager"><ref bean="authManager"/></property>
             <property name="idManager"><ref bean="idManager"/></property>
