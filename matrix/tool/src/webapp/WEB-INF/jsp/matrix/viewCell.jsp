@@ -311,9 +311,8 @@
                             <osp:param name="current_form_id" value="${node.resource.id}" />
                             <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
                             </osp:url>"
-							title="<fmt:message key="edit"/>"><img
-							src="/library/image/silk/application_form_edit.png"
-							alt="<fmt:message key="edit"/>" /> <fmt:message key="edit"/></a>
+							title="<fmt:message key="edit"/>">
+							<fmt:message key="edit"/></a>
                         |
                         <a
 							href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -322,9 +321,8 @@
                             <osp:param name="current_form_id" value="${node.id}" />
                             <osp:param name="submit" value="delete" />
                             </osp:url>"
-							title="<fmt:message key="remove"/>"><img
-							src="/library/image/silk/application_form_delete.png"
-							alt="<fmt:message key="remove"/>" /> <fmt:message key="remove"/></a>
+							title="<fmt:message key="remove"/>">
+							<fmt:message key="remove"/></a>
 					</c:if> 
 				
 					<c:if
@@ -379,8 +377,7 @@
 												<osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 											  </osp:url>"
 										title="<fmt:message key="edit"/>"> 
-										<img src="/library/image/silk/application_form_edit.png"
-												alt="<fmt:message key="edit"/>" /> <fmt:message key="edit"/>
+												<fmt:message key="edit"/>
 									</a>
 											|
 									<a
@@ -392,8 +389,7 @@
 												 <osp:param name="submit" value="deleteReview" />
 												 </osp:url>"
 										title="<fmt:message key="delete"/>">
-										<img src="/library/image/silk/application_form_delete.png"
-												alt="<fmt:message key="delete"/>" /> <fmt:message key="remove"/>
+												<fmt:message key="remove"/>
 									</a>
 								</c:if>
 							</td>
@@ -500,9 +496,8 @@
 						   <osp:param name="submit" value="delete"/>
 						   </osp:url>"
 					onclick="javascript:stopEvents(event)"
-					title="<fmt:message key="remove"/>"> <img
-					src="/library/image/silk/page_white_delete.png"
-					alt="<fmt:message key="remove"/>" /> <fmt:message key="remove"/></a>
+					title="<fmt:message key="remove"/>"> 
+					<fmt:message key="remove"/></a>
 			</c:if> <c:if
 				test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null  && cell.status != 'COMPLETE'}">
 				<a
@@ -553,8 +548,7 @@
 										<osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 										</osp:url>"
 								title="<fmt:message key="edit"/>"> 
-									 <img src="/library/image/silk/application_form_edit.png"
-										alt="<fmt:message key="edit"/>" /> <fmt:message key="edit"/>
+										<fmt:message key="edit"/>
 								 </a>
 										 |
 								 <a
@@ -566,8 +560,7 @@
 										<osp:param name="submit" value="deleteReview" />
 										</osp:url>"
 								title="<fmt:message key="delete"/>">
-								<img src="/library/image/silk/application_form_delete.png"
-										alt="<fmt:message key="delete"/>" /> <fmt:message key="remove"/>
+										<fmt:message key="remove"/>
 								 </a>
 							 </c:if>
 					</td>
@@ -666,9 +659,8 @@
 				target="_blank"> <c:out
 				value="${reflections[0].reviewContentNode.displayName}" /> </a>
 		<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
-			<span class="itemAction"> <img
-				src="/library/image/silk/application_form_edit.png"
-				alt="<fmt:message key="edit"/>" /> <a
+			<span class="itemAction"> 
+				<a
 				href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 						   <osp:param name="page_id" value="${cell.wizardPage.id}" />
 						   <osp:param name="org_theospi_portfolio_review_type" value="0" />
@@ -795,8 +787,7 @@
 										<osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 									  </osp:url>"
 								title="<fmt:message key="edit"/>"> 
-								<img src="/library/image/silk/application_form_edit.png"
-										alt="<fmt:message key="edit"/>" /> <fmt:message key="edit"/>
+										<fmt:message key="edit"/>
 							</a>
 									|
 							<a
@@ -808,8 +799,7 @@
 										<osp:param name="submit" value="deleteReview" />
 										</osp:url>"
 								title="<fmt:message key="delete"/>">
-								<img src="/library/image/silk/application_form_delete.png"
-										alt="<fmt:message key="delete"/>" /> <fmt:message key="remove"/>
+										<fmt:message key="remove"/>
 							</a>
 						</c:if>
 					</td>
@@ -899,8 +889,7 @@
 									<osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 								  </osp:url>"
 							title="<fmt:message key="edit"/>"> 
-							<img src="/library/image/silk/application_form_edit.png"
-									alt="<fmt:message key="edit"/>" /> <fmt:message key="edit"/>
+									<fmt:message key="edit"/>
 						</a>
 								|
 						<a
@@ -912,8 +901,7 @@
 									 <osp:param name="submit" value="deleteReview" />
 									 </osp:url>"
 							title="<fmt:message key="delete"/>">
-							<img src="/library/image/silk/application_form_delete.png"
-									alt="<fmt:message key="delete"/>" /> <fmt:message key="remove"/>
+									<fmt:message key="remove"/>
 						</a>
 					</c:if>
 				</td>
