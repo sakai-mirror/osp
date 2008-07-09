@@ -154,7 +154,7 @@ public class EditScaffoldingCellController extends
       model.put("enableAssignments", ServerConfigurationService.getBoolean("osp.experimental.assignments",false) );
 		model.put("feedbackOpts", sCell.getScaffolding());
 
-		if (sCell != null && sCell.getScaffolding() != null)
+		if (sCell.getScaffolding() != null)
 			model.put("isCellUsed", sCell.getScaffolding().isPublished()
 					&& getMatrixManager().isScaffoldingCellUsed(sCell));
 		else

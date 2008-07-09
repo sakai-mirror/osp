@@ -146,7 +146,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       
       Matrix matrix = getMatrixManager().getMatrix(scaffoldingId, currentAgent.getId());
       if (matrix == null) {
-         if (currentAgent != null && !currentAgent.equals("")) {
+         if (!"".equals(currentAgent.getId())) {
             //Don't create a matrix unless the scaffolding has been published 
             // and the user has permission to use a matrix.
             if (scaffolding.isPublished() || scaffolding.isPreview()) {
@@ -204,7 +204,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
          matrixContents.add(row);
       }
 
-
+      //TODO: Clean up the possible null path for matrix object
       grid.setMatrixId(matrix.getId());
       grid.setMatrixOwner(matrix.getOwner());
       grid.setScaffolding(scaffolding);

@@ -270,6 +270,7 @@ public class PortfolioMirror extends Mirror {
 			{
 				byte b = bytes[i];
 				// escape ascii control characters, ascii high bits, specials
+				//TODO: Use standard routine rather than local magic
 				if ((ESCAPE_URL.indexOf((char) b) != -1) || (b <= 0x1F) || (b == 0x7F) || (b >= 0x80))
 				{
 					buf.append("%");

@@ -62,16 +62,17 @@ public class PresentationItemComparator implements Comparator {
     *                            being compared by this Comparator.
     */
    public int compare(Object o1, Object o2) {
+      if (o1 == null && o2 == null) return 0;
+      else if (o1 == null) return -1;
+      else if (o2 == null) return 1;
+	   
       PresentationItemDefinition q1 = (PresentationItemDefinition)o1;
       PresentationItemDefinition q2 = (PresentationItemDefinition)o2;
 
       Id id1 = q1.getId() == null ? q1.getNewId() : q1.getId();
       Id id2 = q2.getId() == null ? q2.getNewId() : q2.getId();
       
-      if (o1 == null && o2 == null) return 0;
-      else if (o1 == null) return -1;
-      else if (o2 == null) return 1;
-      else if (id1 == null && id2 != null) return -1;
+      if (id1 == null && id2 != null) return -1;
       else if (id1 != null && id2 == null) return 1;
       else if (id1 != null && id1.equals(id2)) return 0;  //if the ids are the same, should be the same object
       
