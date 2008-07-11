@@ -18,7 +18,6 @@
 <c:if test="${isExposedPage != true}">
 	<div class="navIntraTool">
 		<a href="<osp:url value="listScaffolding.osp"/>"><fmt:message key="action_list"/></a>
-		<a href="<osp:url value="viewMatrixSummary.osp"/>&scaffolding_id=${matrixContents.scaffolding.id}">View Summary</a>
 	</div>
 </c:if>
 

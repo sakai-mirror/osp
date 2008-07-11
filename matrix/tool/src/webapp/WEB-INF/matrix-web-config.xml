@@ -114,34 +114,6 @@
       <property name="commandClass"><value>org.theospi.portfolio.matrix.control.MatrixGridBean</value></property>
       <property name="formView"><value>viewMatrix</value></property>      
    </bean>
-   
-   <bean id="viewMatrixSummaryController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
-      <property name="controller">
-      	<bean class="org.theospi.portfolio.matrix.control.ViewMatrixSummaryController">
-      		<property name="matrixManager"><ref bean="matrixManager"/></property>
-      		<property name="authManager"><ref bean="authManager"/></property>
-      		<property name="idManager"><ref bean="idManager"/></property>
-      		<property name="authzManager"><ref bean="authzManager"/></property>
-      		<property name="agentManager"><ref bean="agentManager"/></property>
-      		<property name="worksiteManager">
-      			<ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
-      		</property>
-      		<property name="toolManager">
-      			<ref bean="org.sakaiproject.tool.api.ActiveToolManager" />
-      		</property>
-      		<property name="extractionService"><ref bean="org.sakaiproject.extraction.api.ExtractionService"/></property>
-      	</bean>
-      </property>
-      <property name="screenMappings">
-      	<props>
-      		<prop key="success">viewMatrixSummary</prop>
-      		<prop key="gridView">viewMatrix</prop>
-      	</props>
-      </property>
-      <property name="commandName"><value>matrixData</value></property>
-      <property name="commandClass"><value>org.theospi.portfolio.matrix.control.MatrixSummaryBean</value></property>
-      <property name="formView"><value>viewMatrixSummary</value></property>
-   </bean>
 
    <bean id="cellController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
       <property name="controller">

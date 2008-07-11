@@ -136,31 +136,4 @@
       </attribute>
    </tag>
    
-   <tag>
-   	<name>transformXml</name>
-   	<tag-class>org.theospi.portfolio.shared.control.tag.TransformXmlTag</tag-class>
-   	<description>Transform some XML anywhere within OSP</description>
-   	<body-content>JSP</body-content>
-   	<attribute>
-   		<name>template</name>
-   		<required>true</required>
-   		<rtexprvalue>true</rtexprvalue>
-   	</attribute>
-   	<attribute>
-   		<name>doc</name>
-   		<required>true</required>
-   		<rtexprvalue>true</rtexprvalue>
-   	</attribute>
-   	<attribute>
-   		<name>resolver</name>
-   		<required>false</required>
-   		<rtexprvalue>true</rtexprvalue>
-   	</attribute>
-   	<attribute>
-   		<name>omitProlog</name>
-   		<required>false</required>
-   		<rtexprvalue>false</rtexprvalue>
-   	</attribute>
-   </tag>
-   
 </taglib>

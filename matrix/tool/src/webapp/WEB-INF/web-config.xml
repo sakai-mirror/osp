@@ -96,8 +96,6 @@
               <prop key="/resetMatrix.osp">MatrixResetController</prop>
               <prop key="/submitCellConfirmation.osp">submitCellConfirmationController</prop>
               <prop key="/viewAssign.osp">viewAssignmentController</prop>
-              
-              <prop key="/viewMatrixSummary.osp">viewMatrixSummaryController</prop>
 
               <prop key="/attachToCell.osp">attachCellController</prop>
               <prop key="/manageCellStatus.osp">manageCellStatusController</prop>
