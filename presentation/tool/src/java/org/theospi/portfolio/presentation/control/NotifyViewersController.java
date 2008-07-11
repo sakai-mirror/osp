@@ -90,7 +90,7 @@ public class NotifyViewersController extends AbstractPresentationController impl
 
         String message = form.getMessage() +
                 "\n" + "****************************************************************" +
-                "\n" + user.getDisplayName() + " has shared a Presentation" +
+                "\n" + user.getDisplayName() + " (" + user.getEmail() + ") has shared a Presentation" +
                 "\n" + "This Presentation's name is: " + presentation.getName() +
                 "\n" + "Click here to view the presentation: " + url;
 
