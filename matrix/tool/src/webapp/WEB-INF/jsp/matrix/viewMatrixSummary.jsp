@@ -43,7 +43,7 @@
             background-image:url(/extraction-tool/lib/ext-2.1/examples/shared/icons/fam/delete.gif) !important;
         }
         .save {
-            background-image:url(/extraction-tool/lib/ext-2.1/examplesshared/icons/save.gif) !important;
+            background-image:url(/extraction-tool/lib/ext-2.1/examples/shared/icons/save.gif) !important;
         }
     </style>
     
