@@ -80,6 +80,12 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
    public static final String GROUP_FILTER_BUTTON = "filter";
       
    private ToolManager toolManager;
+   
+	//TODO: Find a place to put these without binding packages
+	private static final String PROP_EXTRACTION_JOB = "extraction.job";
+	private static final String PROP_EXTRACTION_JS_REVIEWER = "extraction.js.reviewer";
+	private static final String PROP_EXTRACTION_JS_LEARNER = "extraction.js.learner";	
+   
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
 
@@ -247,6 +253,8 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       model.put("tool", getToolManager().getCurrentPlacement());
       model.put("isMaintainer", isMaintainer());      
 
+      model.put("isSummaryAvailable", isSummaryAvailable(worksiteId));
+      
       model.put("matrixOwner", owner);      
       model.put("readOnlyMatrix", readOnly);
       
@@ -259,6 +267,17 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       return model;
    }
    
+	protected boolean isSummaryAvailable(String siteId) {
+		try {
+			Site site = SiteService.getSite(siteId);
+			String job = site.getProperties().getProperty(PROP_EXTRACTION_JOB);
+			return (job != null && !"".equals(job));
+		}
+		catch (Exception e) {
+			return false;
+		}
+	}
+
 	/**
 	 ** Return true if matrix owner has submitted assignments associated with this cell
 	 **/

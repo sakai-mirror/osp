@@ -91,6 +91,7 @@
            <props>
               <prop key="/listScaffolding.osp">listScaffoldingController</prop>
               <prop key="/viewMatrix.osp">viewMatrixController</prop>
+              <prop key="/viewMatrixSummary.osp">viewMatrixSummaryController</prop>
               <prop key="/viewCell.osp">cellController</prop>
               <prop key="/selectCellArtifacts.osp">cellArtifactController</prop>
               <prop key="/resetMatrix.osp">MatrixResetController</prop>

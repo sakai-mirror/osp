@@ -59,7 +59,11 @@
 			href="javascript:document.form.submitAction.value='tagItem';document.form.providerId.value='<c:out value="${helperInfo.provider.id}"/>';document.form.submit();">
 		<c:out value="${helperInfo.name}" /> </a>
 	</c:forEach>
-</c:if></div>
+</c:if>
+<c:if test="${isSummaryAvailable}">
+<a id="viewMatrixSummary" href="<osp:url value="viewMatrixSummary.osp"/>&scaffolding_id=<c:out value="${cell.scaffoldingCell.scaffolding.id}"/>">View Summary</a>
+</c:if>
+</div>
 <c:if test="${cell.scaffoldingCell.scaffolding.preview}">
 	<div class="validation"><fmt:message key="title_cellPreview" /></div>
 </c:if> <c:if test="${isWizard == 'true'}">

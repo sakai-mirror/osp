@@ -30,6 +30,7 @@ import org.sakaiproject.assignment.taggable.api.TaggingManager;
 import org.sakaiproject.assignment.taggable.api.TaggingProvider;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
+import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
@@ -38,6 +39,8 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.assignment.cover.AssignmentService;
@@ -112,6 +115,11 @@ public class CellController implements FormController, LoadObjectController {
 	protected static final int METADATA_DESC_INDEX = 2;
 
 	protected static final String PROVIDERS_PARAM = "providers";
+	
+	//TODO: Find a place to put these without binding packages
+	private static final String PROP_EXTRACTION_JOB = "extraction.job";
+	private static final String PROP_EXTRACTION_JS_REVIEWER = "extraction.js.reviewer";
+	private static final String PROP_EXTRACTION_JS_LEARNER = "extraction.js.learner";	
 
 	public Map referenceData(Map request, Object command, Errors errors) {
 		ToolSession session = getSessionManager().getCurrentToolSession();
@@ -145,6 +153,8 @@ public class CellController implements FormController, LoadObjectController {
 		String pageId = cell.getCell().getWizardPage().getId().getValue();
 		String siteId = cell.getCell().getWizardPage().getPageDefinition()
 				.getSiteId();
+		
+		model.put("isSummaryAvailable", isSummaryAvailable(siteId));
 
 		model.put("assignments", getUserAssignments(cell)); 
 		model.put("reviews", getReviewManager().getReviewsByParentAndType(
@@ -195,6 +205,17 @@ public class CellController implements FormController, LoadObjectController {
 
 		clearSession(session);
 		return model;
+	}
+	
+	protected boolean isSummaryAvailable(String siteId) {
+		try {
+			Site site = SiteService.getSite(siteId);
+			String job = site.getProperties().getProperty(PROP_EXTRACTION_JOB);
+			return (job != null && !"".equals(job));
+		}
+		catch (Exception e) {
+			return false;
+		}
 	}
 
 	/**
