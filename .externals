@@ -68,3 +68,7 @@ velocity -r48527 https://source.sakaiproject.org/svn/velocity/tags/sakai_2-5-1_r
 warehouse -r48528 https://source.sakaiproject.org/svn/warehouse/tags/sakai_2-5-1_rc04
 web -r48529 https://source.sakaiproject.org/svn/web/tags/sakai_2-5-1_rc04
 webservices -r48530 https://source.sakaiproject.org/svn/webservices/tags/sakai_2-5-1_rc04
+datapoint       -r12755 https://source.sakaiproject.org/contrib/syracuse/datapoint/branches/2.5.x
+gmt             -r12755 https://source.sakaiproject.org/contrib/syracuse/gmt/branches/2.5.x   
+formbuilder     -r12479 https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
+
