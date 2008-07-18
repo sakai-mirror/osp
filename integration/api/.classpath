@@ -4,13 +4,13 @@
   </classpathentry>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-component-M2.jar">
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-component-2.5.1.jar">
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-legacy-service-M2.jar">
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-legacy-service-2.5.1.jar">
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-tool-M2.jar">
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-tool-2.5.1.jar">
   </classpathentry>
-  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-metaobj-api-M2.jar">
+  <classpathentry kind="var" path="M2_REPO/org/sakaiproject/sakai-metaobj-api-2.5.1.jar">
   </classpathentry>
   <classpathentry kind="var" path="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar">
   </classpathentry>
