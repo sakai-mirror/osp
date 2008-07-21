@@ -2,7 +2,7 @@
 
 <registration>
 
-	<tool id="osp.glossary" title="Glossary" description="OSP Glossary Tool">
+	<tool id="osp.glossary" title="Glossary" description="Create a glossary of terms referenced in Matrix row and/or column names">
        <configuration name="test" value="reg-value" />
 
        <category name="sakai.main" />
