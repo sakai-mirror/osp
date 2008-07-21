@@ -251,15 +251,15 @@
 										<osp:param name="objectTitle" value="${objectTitle}" />
                               <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 										</osp:url>"
-						onclick="javascript:stopEvents(event)"> <fmt:message
-						key="action_createForm" /> <c:out value="${cellFormDef.name}" />
-					</a> | <a
+						onclick="javascript:stopEvents(event)"><fmt:message
+						key="action_createForm" /> <c:out value="${cellFormDef.name}" /></a>
+					| <a
 						href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
 										<osp:param name="attachFormAction" value="${cellFormDef.id}" />
                               <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 										</osp:url>"
-						onclick="javascript:stopEvents(event)"> <fmt:message
+						onclick="javascript:stopEvents(event)"><fmt:message
 						key="action_chooseForms" /> <c:out value="${cellFormDef.name}" /></a>
 					</div>
 				</c:when>
