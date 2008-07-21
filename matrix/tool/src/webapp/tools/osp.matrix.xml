@@ -2,7 +2,7 @@
 
 <registration>
 
-	<tool id="osp.matrix" title="Matrices" description="OSP Matrices Tool">
+	<tool id="osp.matrix" title="Matrices" description="Create and use a structured, guided ePortfolio matrix">
 
       <category name="sakai.main" />
       <category name="project" />
