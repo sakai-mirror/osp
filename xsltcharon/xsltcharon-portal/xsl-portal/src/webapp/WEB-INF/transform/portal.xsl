@@ -35,7 +35,7 @@
       <link href="/portal/styles/portalstyles.css" type="text/css" rel="stylesheet" media="all" />
 
     <meta http-equiv="Content-Style-Type" content="text/css" />
-      <title><xsl:value-of select="pageTitle" /></title>
+      <title><xsl:value-of disable-output-escaping="yes" select="pageTitle" /></title>
       <script type="text/javascript" language="JavaScript" src="/library/js/headscripts.js">
          <xsl:value-of select="' '"/>
       </script>
@@ -370,7 +370,7 @@ your browser doesn't support iframes
             <xsl:for-each select="sites/siteTypes/siteType">
                <xsl:sort select="@order" data-type="number"/>
                <div class="termContainer">
-                  <h4><xsl:value-of select="title" /></h4>
+                  <h4><xsl:value-of disable-output-escaping="yes" select="title" /></h4>
                   <ul id="siteLinkList2">
                      <xsl:for-each select="sites/site">
                         <xsl:sort select="@order" data-type="number"/>
@@ -407,7 +407,7 @@ your browser doesn't support iframes
          <li class="selectedTool">
             <span>
                <xsl:attribute name="class"><xsl:value-of select="menuClass"/></xsl:attribute>
-               <xsl:value-of select="title"/>   
+               <xsl:value-of disable-output-escaping="yes" select="title"/>   
             </span>
          </li>
       </xsl:if>
@@ -433,7 +433,7 @@ your browser doesn't support iframes
             </xsl:attribute>
             <span>
                <xsl:attribute name="class"><xsl:value-of select="menuClass"/></xsl:attribute>
-               <xsl:value-of select="title"/>   
+               <xsl:value-of disable-output-escaping="yes" select="title"/>   
             </span>
          </li>
       </xsl:if>
@@ -462,7 +462,7 @@ your browser doesn't support iframes
                   <xsl:attribute name="href">#</xsl:attribute>
                   <xsl:attribute name="onclick">
                      window.open('<xsl:value-of select="columns/column/tools/tool/url"/>',
-                        '<xsl:value-of select="title"/>',
+                        '<xsl:value-of disable-output-escaping="yes" select="title"/>',
                         'resizable=yes,toolbar=no,scrollbars=yes, width=800,height=600')
                   </xsl:attribute>
                </xsl:if>
@@ -471,7 +471,7 @@ your browser doesn't support iframes
                </xsl:attribute>
                <xsl:attribute name="class"><xsl:value-of select="menuClass"/></xsl:attribute>
                <span>
-                  <xsl:value-of select="title"/>   
+                  <xsl:value-of disable-output-escaping="yes" select="title"/>   
                </span>
             </a>
          </li>
@@ -714,7 +714,7 @@ your browser doesn't support iframes
    =====================================================================
    -->
    <xsl:template match="site[@selected='true' and @myWorkspace!='true']">
-      <li class="selectedTab"><a href="#"><span><xsl:value-of select="title"/></span></a></li>
+      <li class="selectedTab"><a href="#"><span><xsl:value-of disable-output-escaping="yes" select="title"/></span></a></li>
    </xsl:template>
 
    <!--
@@ -739,8 +739,8 @@ your browser doesn't support iframes
       <li>
          <a>
             <xsl:attribute name="href"><xsl:value-of select="url"/></xsl:attribute>
-            <xsl:attribute name="title"><xsl:value-of select="title"/></xsl:attribute>
-            <span><xsl:value-of select="title"/></span>
+            <xsl:attribute name="title"><xsl:value-of disable-output-escaping="yes" select="title"/></xsl:attribute>
+            <span><xsl:value-of disable-output-escaping="yes" select="title"/></span>
          </a>
       </li>
    </xsl:template>
@@ -954,7 +954,7 @@ your browser doesn't support iframes
             <xsl:attribute name="href">#</xsl:attribute>
             <xsl:attribute name="onclick">
                window.open('<xsl:value-of select="$currentTool/columns/column/tools/tool/url"/>',
-                  '<xsl:value-of select="title"/>',
+                  '<xsl:value-of disable-output-escaping="yes" select="title"/>',
                   'resizable=yes,toolbar=no,scrollbars=yes, width=800,height=600')
             </xsl:attribute>
          </xsl:if>
