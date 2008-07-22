@@ -14,16 +14,17 @@
          <div class="checkbox indnt1">
             <input type="radio" id="workflow_option_<c:out value="${loopStatus.index}" />" 
                   name="workflowId" 
+                  <c:if test="${option.title == 'Complete Workflow'}">checked</c:if>
                   value="<c:out value="${option.id}" />" />
             <label for="workflow_option_<c:out value="${loopStatus.index}" />">
-               <c:if test="${option.title == 'Return Workflow'}">
-                  <osp:message key="workflow_return" bundle="${msgs}" />
-               </c:if>
                <c:if test="${option.title == 'Complete Workflow'}">
                   <osp:message key="workflow_complete" bundle="${msgs}" />
                </c:if>
                <c:if test="${option.title == 'No Workflow'}">
                   <osp:message key="workflow_none" bundle="${msgs}" />
+               </c:if>
+               <c:if test="${option.title == 'Return Workflow'}">
+                  <osp:message key="workflow_return" bundle="${msgs}" />
                </c:if>
             </label>
          </div>
