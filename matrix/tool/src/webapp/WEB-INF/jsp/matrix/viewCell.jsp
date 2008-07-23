@@ -62,7 +62,15 @@
 </c:if></div>
 <c:if test="${cell.scaffoldingCell.scaffolding.preview}">
 	<div class="validation"><fmt:message key="title_cellPreview" /></div>
-</c:if> <c:if test="${isWizard == 'true'}">
+</c:if>
+
+<c:if test="${matrixCan.viewOwner || !matrixCan.evaluate}">
+<h2 class="owner">
+   <c:out value="${wizardOwner}" />
+</h2>
+</c:if>
+
+<c:if test="${isWizard == 'true'}">
 	<osp-h:glossary link="true" hover="true">
 		<h3><c:out value="${wizardTitle}" /></h3>
 		<div class="instruction"><c:out value="${wizardDescription}"
@@ -342,7 +350,17 @@
 							title="<fmt:message key="review"/>"> <fmt:message key="review"/></a>
 					</c:if></div>
 					</td>
-					<td><c:out value="${node.technicalMetadata.owner.displayName}" />
+					<td>
+<c:choose>
+<c:when test="${matrixCan.viewOwner || !matrixCan.evaluate}">
+					<c:out value="${node.technicalMetadata.owner.displayName}" />
+</c:when>
+<c:otherwise>
+		<span title="<fmt:message key="blind_evaluation_tooltip"/>">
+		<fmt:message key="blind_evaluation_username"></fmt:message>
+		</span>
+</c:otherwise>
+</c:choose>
 					</td>
 					<td><fmt:formatDate
 						value="${node.technicalMetadata.lastModified}"
@@ -510,7 +528,17 @@
 					key="review" /></a>
 			</c:if></div>
 			</td>
-			<td><c:out value="${node.technicalMetadata.owner.displayName}" />
+			<td>
+<c:choose>
+<c:when test="${matrixCan.viewOwner || !matrixCan.evaluate}">
+			<c:out value="${node.technicalMetadata.owner.displayName}" />
+</c:when>
+<c:otherwise>
+		<span title="<fmt:message key="blind_evaluation_tooltip"/>">
+		<fmt:message key="blind_evaluation_username"></fmt:message>
+		</span>
+</c:otherwise>
+</c:choose>
 			</td>
 			<td><fmt:formatDate
 				value="${node.technicalMetadata.lastModified}"
@@ -809,8 +837,18 @@
 							</a>
 						</c:if>
 					</td>
-					<td><c:out
+					<td>
+<c:choose>
+<c:when test="${matrixCan.viewOwner || !matrixCan.evaluate}">
+						<c:out
 						value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
+</c:when>
+<c:otherwise>
+		<span title="<fmt:message key="blind_evaluation_tooltip"/>">
+		<fmt:message key="blind_evaluation_username"></fmt:message>
+		</span>
+</c:otherwise>
+</c:choose>
 					</td>
 					<td><fmt:formatDate
 						value="${object.reviewContentNode.technicalMetadata.creation}"

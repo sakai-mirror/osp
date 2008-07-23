@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.control.ToolFinishedView;
@@ -51,6 +52,7 @@ import org.theospi.portfolio.wizard.model.WizardPageSequence;
  */
 public class WizardPageController extends CellController {
 
+	private static ResourceLoader rb = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
 	private WizardManager wizardManager;
 
 	/*
@@ -68,8 +70,7 @@ public class WizardPageController extends CellController {
 		CellFormBean cell = (CellFormBean) command;
 		String pageId = cell.getCell().getWizardPage().getId().getValue();
 
-		Agent owner = (Agent) request.get(WizardPageHelper.WIZARD_OWNER);
-
+		Agent owner = cell.getCell().getWizardPage().getOwner();
 		if (owner == null)
 			owner = (Agent) session.getAttribute(WizardPageHelper.WIZARD_OWNER);
 
@@ -90,6 +91,7 @@ public class WizardPageController extends CellController {
 		model.put("generalFeedbackNone", wizard.isGeneralFeedbackNone());
 		
 		model.put("readOnlyMatrix", super.isReadOnly(owner, null));
+		model.put("wizardOwner", rb.getFormattedMessage("wizard_of", new Object[]{owner.getDisplayName()}) );
 		model.put("pageTitleKey", "view_wizardPage");
 		model.put("helperPage", "true");
 		model.put("isWizard", "true");
