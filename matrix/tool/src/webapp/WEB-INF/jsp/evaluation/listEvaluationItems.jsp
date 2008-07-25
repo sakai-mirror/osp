@@ -220,17 +220,19 @@
                   </td>
 						
                   <c:if test="${can.viewOwner || isUserSite || allEvalsKey == evalType}"> 
+                  <td>
                      <c:choose>
                        <c:when test="${canSite.viewOwner}">
-                         <td>
                            <c:out value="${item.owner.sortName}" />
-                         </td>
                        </c:when>
                        <c:otherwise>
-                         <td>&nbsp</td>
+                           <span title="<fmt:message key="blind_evaluation_tooltip"/>">
+                           <fmt:message key="blind_evaluation_username"></fmt:message>
+                           </span>
                        </c:otherwise>
                      </c:choose>
-						</c:if>
+                  </td>
+                  </c:if>
 						
                     <td>
                         <c:if test="${item.submittedDate==null}"> &nbsp; </c:if>

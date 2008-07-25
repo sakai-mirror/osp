@@ -1,5 +1,6 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@page pageEncoding="UTF-8"%>
 
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.glossary.bundle.Messages"/>

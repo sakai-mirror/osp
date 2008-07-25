@@ -45,6 +45,7 @@ import org.sakaiproject.assignment.api.AssignmentSubmission;
 import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.util.ResourceLoader;
 
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -80,6 +81,8 @@ public class CellController implements FormController, LoadObjectController {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	private static ResourceLoader rb = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
+	
 	private MatrixManager matrixManager;
 
 	private AuthenticationManager authManager = null;
@@ -181,6 +184,7 @@ public class CellController implements FormController, LoadObjectController {
 			model.put("objectId", scaffolding.getId().getValue());
 			model.put("objectTitle", scaffolding.getTitle());
 			model.put("objectDesc", scaffolding.getDescription());
+			model.put("wizardOwner", rb.getFormattedMessage("matrix_of", new Object[]{owner.getDisplayName()}) );
 		}
 
 		model.put("readOnlyMatrix", readOnly);
