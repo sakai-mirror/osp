@@ -26,7 +26,6 @@ import java.util.Set;
 
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.IdentifiableObject;
-import org.sakaiproject.id.cover.IdManager;
 
 /**
  * @author rpembry
@@ -160,9 +159,5 @@ public class Cell extends IdentifiableObject {
 
    public void setWizardPage(WizardPage wizardPage) {
       this.wizardPage = wizardPage;
-   }
-   
-   public String getUniqueId() {
-      return IdManager.createUuid();
    }
 }
