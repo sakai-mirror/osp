@@ -22,6 +22,7 @@ package org.theospi.portfolio.matrix.control;
 
 
 import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.sakaiproject.util.FormattedText;
 import org.springframework.validation.Errors;
 import org.theospi.portfolio.matrix.model.CriterionTransport;
 import org.theospi.portfolio.matrix.model.LevelTransport;
@@ -115,6 +116,20 @@ public class MatrixValidator extends ValidatorBase {
             scaffoldingCell.getTitle().trim().equals("")) {
          errors.rejectValue("title", "error.required", "required");
       }
+      
+      if (scaffoldingCell.getWizardPageDefinition().getDescription() != null) {
+         StringBuilder sbError = new StringBuilder();
+         String tempDesc = FormattedText.processFormattedText(
+            scaffoldingCell.getWizardPageDefinition().getDescription(), sbError);
+         
+         if (sbError.length() > 0) {
+            errors.rejectValue("wizardPageDefinition.description", "error.html.format", sbError.toString());  
+         }
+         else {
+            scaffoldingCell.getWizardPageDefinition().setDescription(tempDesc);
+         }
+      }
+      
    }
 
    protected void validateCriterion(CriterionTransport criterion, Errors errors) {
@@ -138,6 +153,17 @@ public class MatrixValidator extends ValidatorBase {
       }
       if (scaffolding.getCriteria() == null || scaffolding.getCriteria().size() == 0) {
          errors.rejectValue("criteria", "error.required", "required");
+      }
+      if (scaffolding.getDescription() != null) {
+         StringBuilder sbError = new StringBuilder();
+         String tempDesc = FormattedText.processFormattedText(scaffolding.getDescription(), sbError);
+         
+         if (sbError.length() > 0) {
+            errors.rejectValue("description", "error.html.format", sbError.toString());  
+         }
+         else {
+            scaffolding.setDescription(tempDesc);
+         }
       }
    }
    

@@ -27,6 +27,7 @@ package org.theospi.portfolio.help.control;
 import org.springframework.validation.Errors;
 import org.theospi.portfolio.help.model.GlossaryEntry;
 import org.theospi.utils.mvc.impl.ValidatorBase;
+import org.sakaiproject.util.FormattedText;
 
 /**
  * @author chrismaurer
@@ -60,6 +61,16 @@ public class GlossaryEntryValidator extends ValidatorBase {
       if (entry.getLongDescription() == null || entry.getLongDescription().equals("")) {
          errors.rejectValue("longDescription", "error.required", "required");
       }
+      
+      StringBuilder sbError = new StringBuilder();
+      String testLongDesc = FormattedText.processFormattedText(entry.getLongDescription(), sbError);
+      if (sbError.length() > 0) {
+         errors.rejectValue("longDescription", "error.html.format", sbError.toString());
+      }
+      else {
+         entry.setLongDescription(testLongDesc);
+      }
+      
      //TODO Should there be a length check on the long description?
       
    }
