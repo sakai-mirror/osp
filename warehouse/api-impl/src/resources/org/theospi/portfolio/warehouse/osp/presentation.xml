@@ -416,7 +416,7 @@
        <column>
          <name>value</name>
          <type>VARCHAR</type>
-         <param>255</param>
+         <param>4000</param>
        </column>
        <column>
          <name>seq_num</name>
