@@ -26,20 +26,20 @@
       <version>${sakai.version}</version>
       <exclusions>
         <exclusion>
-                <groupId>aopalliance</groupId>
-                <artifactId>aopalliance</artifactId>
+          <groupId>aopalliance</groupId>
+          <artifactId>aopalliance</artifactId>
         </exclusion>
         <exclusion>
-                <groupId>cglib</groupId>
-                <artifactId>cglib-full</artifactId>
+          <groupId>cglib</groupId>
+          <artifactId>cglib-full</artifactId>
         </exclusion>
         <exclusion>
-                <groupId>javax.transaction</groupId>
-                <artifactId>jta</artifactId>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
         </exclusion>
         <exclusion>
-                <groupId>portlet-api</groupId>
-                <artifactId>portlet-api</artifactId>
+          <groupId>portlet-api</groupId>
+          <artifactId>portlet-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -49,20 +49,20 @@
       <version>${sakai.version}</version>
       <exclusions>
         <exclusion>
-                <groupId>aopalliance</groupId>
-                <artifactId>aopalliance</artifactId>
+          <groupId>aopalliance</groupId>
+          <artifactId>aopalliance</artifactId>
         </exclusion>
         <exclusion>
-                <groupId>cglib</groupId>
-                <artifactId>cglib-full</artifactId>
+          <groupId>cglib</groupId>
+          <artifactId>cglib-full</artifactId>
         </exclusion>
         <exclusion>
-                <groupId>javax.transaction</groupId>
-                <artifactId>jta</artifactId>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
         </exclusion>
         <exclusion>
-                <groupId>portlet-api</groupId>
-                <artifactId>portlet-api</artifactId>
+          <groupId>portlet-api</groupId>
+          <artifactId>portlet-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -72,20 +72,20 @@
       <version>${sakai.version}</version>
       <exclusions>
         <exclusion>
-                <groupId>aopalliance</groupId>
-                <artifactId>aopalliance</artifactId>
+          <groupId>aopalliance</groupId>
+          <artifactId>aopalliance</artifactId>
         </exclusion>
         <exclusion>
-                <groupId>cglib</groupId>
-                <artifactId>cglib-full</artifactId>
+          <groupId>cglib</groupId>
+          <artifactId>cglib-full</artifactId>
         </exclusion>
         <exclusion>
-                <groupId>javax.transaction</groupId>
-                <artifactId>jta</artifactId>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
         </exclusion>
         <exclusion>
-                <groupId>portlet-api</groupId>
-                <artifactId>portlet-api</artifactId>
+          <groupId>portlet-api</groupId>
+          <artifactId>portlet-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -95,20 +95,20 @@
       <version>${sakai.version}</version>
       <exclusions>
         <exclusion>
-                <groupId>aopalliance</groupId>
-                <artifactId>aopalliance</artifactId>
+          <groupId>aopalliance</groupId>
+          <artifactId>aopalliance</artifactId>
         </exclusion>
         <exclusion>
-                <groupId>cglib</groupId>
-                <artifactId>cglib-full</artifactId>
+          <groupId>cglib</groupId>
+          <artifactId>cglib-full</artifactId>
         </exclusion>
         <exclusion>
-                <groupId>javax.transaction</groupId>
-                <artifactId>jta</artifactId>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
         </exclusion>
         <exclusion>
-                <groupId>portlet-api</groupId>
-                <artifactId>portlet-api</artifactId>
+          <groupId>portlet-api</groupId>
+          <artifactId>portlet-api</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

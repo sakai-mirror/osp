@@ -21,30 +21,22 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-kernel-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-util-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
+<!--org.sakaiprojectsakai-util-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-site-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-user-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
+<!--org.sakaiprojectsakai-site-api${sakai.version}-->
+<!--org.sakaiprojectsakai-user-api${sakai.version}-->
     <dependency>
       <groupId>${sakai.ehcache.groupId}</groupId>
       <artifactId>${sakai.ehcache.artifactId}</artifactId>
