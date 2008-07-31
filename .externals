@@ -38,6 +38,7 @@ privacy			https://source.sakaiproject.org/svn/privacy/trunk
 profile			https://source.sakaiproject.org/svn/profile/trunk
 providers		https://source.sakaiproject.org/svn/providers/trunk
 reference		https://source.sakaiproject.org/svn/reference/trunk
+reset-pass		https://source.sakaiproject.org/svn/reset-pass/trunk
 rights			https://source.sakaiproject.org/svn/rights/trunk
 roster			https://source.sakaiproject.org/svn/roster/trunk
 rwiki			https://source.sakaiproject.org/svn/rwiki/trunk
