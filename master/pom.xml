@@ -17,8 +17,7 @@
     <url>http://www.osportfolio.org/</url>
   </organization>
   <inceptionYear>2003</inceptionYear>
-  <dependencies>
-  </dependencies>
+  <dependencies/>
   <build>
     <resources/>
   </build>

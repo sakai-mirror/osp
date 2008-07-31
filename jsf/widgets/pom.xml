@@ -27,6 +27,14 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-kernel-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-component-manager</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-depend-jsf-widgets-myfaces</artifactId>
       <version>${sakai.version}</version>
@@ -37,16 +45,8 @@
       <artifactId>sakai-metaobj-api</artifactId>
       <version>${sakai.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-component-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-content-api</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
+<!--org.sakaiprojectsakai-component-api${sakai.version}-->
+<!--org.sakaiprojectsakai-content-api${sakai.version}-->
 <!-- Sun JSF dependencies -->
 <!-- 
     <dependency>

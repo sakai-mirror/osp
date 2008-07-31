@@ -32,7 +32,9 @@
                <sakai:instruction_message value="#{common_msgs.instruction_message}" />
                <sakai:inputRichText value="#{guidance.current.instruction.base.text}"
                   attachedFiles="#{guidance.current.instruction.attachmentLinks}"
-                  rows="23"  cols="100"  buttonSet="small" showXPath="false" />
+                  rows="23"  cols="100"  buttonSet="small" showXPath="false" >
+                  <f:validator validatorId="org.sakaiproject.gradebook.jsf.validator.RichTextValidator"/>
+               </sakai:inputRichText>
                <f:subview id="instrItems" rendered="#{not empty guidance.current.instruction.attachments}">
                <sakai:flat_list value="#{guidance.current.instruction.attachments}" var="material" style="margin:1em 1em 0 1em;width:auto" summary="#{common_msgs.item_list_summary}">
                   <h:column>

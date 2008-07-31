@@ -18,6 +18,15 @@
      </locale-config>
    </application>
 
+	<validator>
+		<validator-id>
+			org.sakaiproject.gradebook.jsf.validator.RichTextValidator
+		</validator-id>
+		<validator-class>
+			org.theospi.portfolio.shared.tool.RichTextValidator
+		</validator-class>
+	</validator>
+
    <!-- =================== Tool Beans ============== -->
 
    <managed-bean>

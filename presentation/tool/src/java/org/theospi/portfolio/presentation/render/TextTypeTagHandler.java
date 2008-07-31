@@ -42,6 +42,7 @@ import org.theospi.portfolio.presentation.component.SequenceComponent;
 import org.theospi.portfolio.presentation.model.PresentationPageRegion;
 import org.theospi.portfolio.presentation.tool.DecoratedRegion;
 import org.theospi.portfolio.presentation.tool.RegionMap;
+import org.theospi.portfolio.shared.tool.RichTextValidator;
 import org.xml.sax.Attributes;
 
 /**
@@ -167,6 +168,7 @@ public class TextTypeTagHandler extends LayoutPageHandlerBase {
       }
       
       parent.getComponent().getChildren().add(input);
+      input.addValidator(new RichTextValidator());
       return input;
    }
 
