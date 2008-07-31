@@ -62,3 +62,6 @@ warehouse		https://source.sakaiproject.org/svn/warehouse/trunk
 gmt			https://source.sakaiproject.org/contrib/syracuse/gmt/trunk
 datapoint		https://source.sakaiproject.org/contrib/syracuse/datapoint/trunk
 formbuilder		https://source.sakaiproject.org/contrib/ucf/formbuilder/trunk
+mailtool		https://source.sakaiproject.org/svn/mailtool/trunk
+usermembership		https://source.sakaiproject.org/svn/usermembership/trunk
+polls			https://source.sakaiproject.org/svn/polls/trunk
