@@ -121,7 +121,8 @@ public class ReviewHelperController implements Controller {
          String currentSite = placement.getContext();
 
          // check if this is a new review
-         if ( currentReviewId == null ) {
+         if ( currentReviewId == null && 
+              !FormHelper.RETURN_ACTION_CANCEL.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)))  {
             Review review = getReviewManager().createNew("New Review", currentSite);
             review.setDeviceId(formType);
             review.setParent(strId);
@@ -148,7 +149,7 @@ public class ReviewHelperController implements Controller {
          }
          
          // otherwise this is an existing review being edited
-         else {
+         else if (currentReviewId != null) {
             // Lock review content (reflection, feedback, evaluation)
             currentReviewId = contentHosting.getUuid( currentReviewId );
             getLockManager().lockObject(currentReviewId,
