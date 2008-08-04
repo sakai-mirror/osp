@@ -230,7 +230,7 @@
          </f:facet>
 		
 	  <f:subview id="pageViewStatus" rendered="#{item.classInfo == 'completedPage'}" >
-	  	<h:outputText value=" #{item.statusThroughBundle}" rendered="#{item.classInfo == 'completedPage'}" styleClass=""/>
+	  	<h:outputText value=" #{item.statusThroughBundle}" rendered="#{item.classInfo == 'completedPage'&& !item.base.wizardPage.pageDefinition.formsOnly}" styleClass=""/>
 	  </f:subview>
 	  </h:column>
 	  <%-- hide this column if sequential wizard, since we are hiding the page descriptions and that is all a seq wiz has --%>
@@ -248,6 +248,10 @@
          <f:subview id="categoryView2" rendered="#{item.classInfo == 'completedCategory'}" >
          	<h:outputText value="#{item.category.description}" escape="false"/>
          </f:subview>
+         <f:subview id="formView2" rendered="#{item.classInfo == 'completedPage' &&  item.base.wizardPage.pageDefinition.formsOnly}" >
+         	<h:outputText value="#{item.base.wizardPage.pageDefinition.description}" escape="false"/>
+         </f:subview>
+
       </h:column>
       
    </h:dataTable>

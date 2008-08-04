@@ -84,8 +84,6 @@
 			</p>
 		</spring:bind>
 
-                <c:if test="${!scaffoldingCell.wizardPageDefinition.formsOnly}">
-		
 		<div class="longtext">
 			<label class="block"><fmt:message key="label_cellDescription"/></label>
 			<spring:bind path="scaffoldingCell.wizardPageDefinition.description">
@@ -99,6 +97,8 @@
 			</spring:bind>
 		</div>
 	
+                <c:if test="${!scaffoldingCell.wizardPageDefinition.formsOnly}">
+
 		<c:if test="${isWizard != 'true'}">
 			<spring:bind path="scaffoldingCell.initialStatus">  
 				<c:if test="${status.error}">
