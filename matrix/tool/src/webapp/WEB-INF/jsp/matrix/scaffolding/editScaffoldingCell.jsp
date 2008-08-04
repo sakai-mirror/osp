@@ -312,7 +312,12 @@
 		<!-- ************* Additional Forms Area Start ************* -->   
 		<h5><fmt:message key="title_additionalForms"/></h5>
 		<p class="indnt1"> 
-			<fmt:message key="addForms_instructions" />
+		        <c:if test="${scaffoldingCell.wizardPageDefinition.formsOnly}">
+			    <fmt:message key="addForms_one_instructions" />
+			</c:if>
+		        <c:if test="${!scaffoldingCell.wizardPageDefinition.formsOnly}">
+			    <fmt:message key="addForms_instructions" />
+			</c:if>
 			<c:if test="${ empty selectedAdditionalFormDevices}">
 				<span class="highlight"><fmt:message key="addForms_instructions_noforms" /></span>
 			</c:if>
@@ -321,6 +326,13 @@
 		<p class="shorttext">
 			<label for="selectAdditionalFormId" ><fmt:message key="label_selectForm"/></label>    
 			<select name="selectAdditionalFormId"  id="selectAdditionalFormId"  onchange="document.getElementById('addForm-id').className='active';">
+
+			<c:set var="formChoiceDisabled" value=""/>
+			<c:if test="${scaffoldingCell.wizardPageDefinition.formsOnly && not empty selectedAdditionalFormDevices}">
+			   <c:set var="formChoiceDisabled" value="disabled"/>
+			</c:if>			   
+
+			<select ${formChoiceDisabled} name="selectAdditionalFormId"  id="selectAdditionalFormId"  onchange="document.getElementById('addForm-id').className='active';">
 				<option value="" selected="selected"><fmt:message key="select_form_text" /></option>
 				<c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
 					<option value="<c:out value="${addtlForm.id}"/>">
@@ -328,7 +340,7 @@
 				</c:forEach>
 			</select>
 			<span class="act">
-				<input type="submit" id="addForm-id" name="addForm" value="<fmt:message key="button_add"/>" onclick="javascript:document.forms[0].validate.value='false';" />
+				<input ${formChoiceDisabled} type="submit" id="addForm-id" name="addForm" value="<fmt:message key="button_add"/>" onclick="javascript:document.forms[0].validate.value='false';" />
 			</span>
 		</p>
 		<c:if test="${not empty selectedAdditionalFormDevices}">
@@ -344,9 +356,14 @@
 						<td style="text-align:right">
 							<c:if test="${empty localDisabledText}">
 								<div class="itemAction">
+								<!-- onsubmit is often null. however the fsck code in some very devious way
+								  -- does javascript to set it to an empty function. For formsonly fsck isn't
+								  -- there, so we have to check for this case -->
 									<a href="javascript:document.forms[0].submitAction.value='removeFormDef';
 										document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
-										document.forms[0].onsubmit();
+										if (typeof document.forms[0].onsubmit == 'function') {
+										  document.forms[0].onsubmit();
+										}
 										document.forms[0].submit();">
 										<osp:message key="remove"/>
 									</a>
