@@ -324,20 +324,18 @@
 		</p>
 
 		<p class="shorttext">
-			<label for="selectAdditionalFormId" ><fmt:message key="label_selectForm"/></label>    
-			<select name="selectAdditionalFormId"  id="selectAdditionalFormId"  onchange="document.getElementById('addForm-id').className='active';">
-
 			<c:set var="formChoiceDisabled" value=""/>
 			<c:if test="${scaffoldingCell.wizardPageDefinition.formsOnly && not empty selectedAdditionalFormDevices}">
 			   <c:set var="formChoiceDisabled" value="disabled"/>
 			</c:if>			   
 
+			<label for="selectAdditionalFormId" ><fmt:message key="label_selectForm"/></label>    
 			<select ${formChoiceDisabled} name="selectAdditionalFormId"  id="selectAdditionalFormId"  onchange="document.getElementById('addForm-id').className='active';">
-				<option value="" selected="selected"><fmt:message key="select_form_text" /></option>
-				<c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
-					<option value="<c:out value="${addtlForm.id}"/>">
-				<c:out value="${addtlForm.name}"/></option>
-				</c:forEach>
+			<option value="" selected="selected"><fmt:message key="select_form_text" /></option>
+			    <c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
+				<option value="<c:out value="${addtlForm.id}"/>">
+			        <c:out value="${addtlForm.name}"/></option>
+			    </c:forEach>
 			</select>
 			<span class="act">
 				<input ${formChoiceDisabled} type="submit" id="addForm-id" name="addForm" value="<fmt:message key="button_add"/>" onclick="javascript:document.forms[0].validate.value='false';" />
