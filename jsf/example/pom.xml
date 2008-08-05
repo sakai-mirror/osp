@@ -21,6 +21,10 @@
   <packaging>war</packaging>
   <dependencies>
     <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-kernel-api</artifactId>
     </dependency>
@@ -36,11 +40,7 @@
 <!--org.sakaiprojectsakai-db-api${sakai.version}-->
 <!--org.sakaiprojectsakai-content-api${sakai.version}-->
 <!-- end repository dependencies -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>${sakai.servletapi.version}</version>
-    </dependency>
+<!--javax.servletservlet-api${sakai.servletapi.version}-->
 <!-- this is required for any Sakai JSF tool -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
