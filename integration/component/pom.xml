@@ -27,7 +27,7 @@
   <parent>
     <artifactId>osp-integration</artifactId>
     <groupId>org.sakaiproject.osp</groupId>
-    <version>SNAPSHOT</version>
+    <version>2.6.0RC1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>osp-integration-component</artifactId>
