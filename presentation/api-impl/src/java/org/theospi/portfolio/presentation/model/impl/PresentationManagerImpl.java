@@ -108,6 +108,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private List initializedServices;
    private boolean autoDdl = true;
    private boolean portfolioPropertyFormConversion = true;
+   private String downloadExternalUri;
 
    static final private String   IMPORT_BASE_FOLDER_ID = "importedPresentations";
    private String importFolderName;
@@ -2231,10 +2232,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
 
       String secretExportKey = getIdManager().createId().getValue();
-      String url = presentation.getExternalUri() + "&secretExportKey=" + secretExportKey;
-      
-      //This should come from the above presentation.getExternalUri() call;
-      //url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
+      String url = presentation.getExternalUri(downloadExternalUri) + "&secretExportKey=" + secretExportKey;
       
       File tempDirectory = new File(tempDir, secretExportKey);
 
@@ -3483,5 +3481,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public void setEventService(EventService eventService) {
 	   this.eventService = eventService;
+   }
+
+   public String getDownloadExternalUri() {
+      return downloadExternalUri;
+   }
+
+   public void setDownloadExternalUri(String downloadExternalUri) {
+      this.downloadExternalUri = downloadExternalUri;
    }
 }
