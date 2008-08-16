@@ -72,6 +72,7 @@ public class Presentation extends IdentifiableObject {
    public final static String FREEFORM_TYPE = "osp.presentation.type.freeForm";
    public final static String TEMPLATE_TYPE = "osp.presentation.type.template";
    public static final Id FREEFORM_TEMPLATE_ID = new IdImpl("freeFormTemplate", null);
+   private String externalUriForDownload;
 
 
    public String getToolId() {
@@ -210,11 +211,9 @@ public class Presentation extends IdentifiableObject {
       return getExpiresOn().getTime() < System.currentTimeMillis();
    }
 
+
    public String getExternalUri() {
-      String uri = ServerConfigurationService.getServerUrl();
-      uri += "/osp-presentation-tool/viewPresentation.osp?panel=presentation&id=" + getId().getValue();
-      uri += "&" + Tool.PLACEMENT_ID + "=" + getToolId();
-      return uri;
+      return getExternalUri(ServerConfigurationService.getServerUrl());
    }
 
    public String getPresentationType() {
@@ -344,4 +343,17 @@ public class Presentation extends IdentifiableObject {
    }
 
 
+   /**
+    * allows setting a special internal url for portfolio download.  This solves problems
+    * trying to spider the portfolio over https
+    * @return
+    */
+   public String getExternalUri(String uri) {
+      if (uri == null || uri.length() == 0) {
+         uri = ServerConfigurationService.getServerUrl();
+      }
+      uri += "/osp-presentation-tool/viewPresentation.osp?panel=presentation&id=" + getId().getValue();
+      uri += "&" + Tool.PLACEMENT_ID + "=" + getToolId();
+      return uri;
+   }
 }

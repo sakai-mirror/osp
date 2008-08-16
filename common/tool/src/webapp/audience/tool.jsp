@@ -40,20 +40,16 @@
 
 <h:form id="mainForm">
     <ospx:splitarea direction="horizontal" width="100%">
-        <ospx:splitsection size="100%" valign="top">
-		  
-            <!-- worksite user drawer -->
-            <ospx:xheader>
-            
-            	<ospx:xheadertitle id="userTitle" value="#{common_msgs.audience_user_title}" rendered="#{audience.wizardAudience}" />
+      <ospx:splitsection size="100%" valign="top">
+        
+         <!-- worksite user section -->
+         <sakai:view_title id="userTitle" value="#{common_msgs.audience_user_title}" rendered="#{audience.wizardAudience}" />
 
-                <ospx:xheadertitle id="userTitle1" value="#{common_msgs.audience_user_title}"  rendered="#{audience.matrixAudience}" />
+         <sakai:view_title id="userTitle1" value="#{common_msgs.audience_user_title}"  rendered="#{audience.matrixAudience}" />
 
-                <ospx:xheadertitle id="userTitle3" value="#{common_msgs.audience_portfolio_user_title}" rendered="#{audience.portfolioAudience}"/>
+         <sakai:view_title id="userTitle3" value="#{common_msgs.audience_portfolio_user_title}" rendered="#{audience.portfolioAudience}"/>
 
-               <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-               
-         <!-- filter user groups and roles drawer (portfolio only) -->
+         <!-- optionally filter user groups and roles (portfolio only) -->
          <f:subview id="filterUser" rendered="#{audience.portfolioAudience}">
               <h:panelGrid id="filterGroupTable" columns="2" columnClasses="available,transferButtons">
 				 
@@ -159,10 +155,10 @@
                   
                      <f:verbatim><p class='shorttext'></f:verbatim>
                      <f:subview rendered="#{!audience.guestUserEnabled}" id="guestSubView">
-                        <h:outputLabel value="#{common_msgs.any_user_label}:" for="emails"/>
+                        <h:outputLabel value="#{common_msgs.any_user_label}:"/>
                      </f:subview>
                      <f:subview rendered="#{audience.guestUserEnabled}" id="guestSubView2">
-                        <h:outputLabel value="#{common_msgs.email_label}:" for="emails"/>
+                        <h:outputLabel value="#{common_msgs.email_label}:"/>
                      </f:subview>
                      
                      <h:inputText value="#{audience.searchEmails}" id="emails" size="60"/>
@@ -173,19 +169,31 @@
                      <f:verbatim></p></f:verbatim>
                   </f:subview>
 
-               </ospx:xheaderdrawer>
-            </ospx:xheader>
-            
-            <!-- worksite role drawer -->
-            <ospx:xheader>
-            	<ospx:xheadertitle id="roleTitle" value="#{common_msgs.audience_role_title}"  rendered="#{audience.wizardAudience}"/>
+                  <!-- worksite role section -->
+                  <ospx:splitarea width="825" direction="horizontal">
+                    <ospx:splitsection valign="top" align="left">
+                      <sakai:view_title id="roleTitle" value="#{common_msgs.audience_role_title}"  rendered="#{audience.wizardAudience}"/>
 
-                <ospx:xheadertitle id="roleTitle2" value="#{common_msgs.audience_role_title}"  rendered="#{audience.matrixAudience}"/>
+                      <sakai:view_title id="roleTitle2" value="#{common_msgs.audience_role_title}"  rendered="#{audience.matrixAudience}"/>
    
-                <ospx:xheadertitle id="roleTitle3" value="#{common_msgs.audience_portfolio_role_title}"  rendered="#{audience.portfolioAudience}" />
-
-               <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-                  <h:panelGrid id="transferRoleTable" columns="3" columnClasses="available,transferButtons,selected"  summary="#{common_msgs.role_table_summary}">
+                      <sakai:view_title id="roleTitle3" value="#{common_msgs.audience_portfolio_role_title}"  rendered="#{audience.portfolioAudience}" />
+                    </ospx:splitsection>
+							
+                    <!-- option to show/hide all site roles -->
+                    <ospx:splitsection valign="bottom" align="right">
+                      <f:subview id="showAllSiteRoles" rendered="#{audience.renderShowAllSiteRoles}">
+                         <h:commandLink id="update_role_button1" 
+                                                action="#{audience.processActionShowAllSiteRoles}"
+                                                rendered="#{!audience.showAllSiteRoles}"
+                                                value="#{common_msgs.update_allsite_roles}"/>
+                         <h:commandLink id="update_role_button2" 
+                                                action="#{audience.processActionHideAllSiteRoles}"
+                                                rendered="#{audience.showAllSiteRoles}"
+                                                value="#{common_msgs.update_site_roles}"/>
+                      </f:subview>
+                    </ospx:splitsection>
+                  </ospx:splitarea>
+                   <h:panelGrid id="transferRoleTable" columns="3" columnClasses="available,transferButtons,selected"  summary="#{common_msgs.role_table_summary}">
                      <h:panelGroup>
                         <ospx:splitarea direction="vertical">
                            <ospx:splitsection valign="top">
@@ -238,15 +246,12 @@
                            </ospx:splitsection>
                         </ospx:splitarea>
                      </h:panelGroup>
-                  </h:panelGrid>
+                   </h:panelGrid>
                   
-               </ospx:xheaderdrawer>
-            </ospx:xheader>
-
-            <!-- Public URL Drawer -->
-            <ospx:xheader rendered="#{audience.portfolioAudience}">
-               <ospx:xheadertitle id="publicTitle" value="#{common_msgs.audience_public_title}"/>
-               <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
+            <!-- Public URL subview -->
+            <ospx:splitarea direction="vertical" rendered="#{audience.portfolioAudience}">
+				<ospx:splitsection>
+               <sakai:view_title id="publicTitle" value="#{common_msgs.audience_public_title}"/>
                   <ospx:splitarea direction="horizontal">
                      <ospx:splitsection size="100%">
                         <sakai:instruction_message value="#{common_msgs.audience_public_instructions}"/>
@@ -274,12 +279,13 @@
                      setPublicURLDisabled();
                   </script></f:verbatim>
                   <f:verbatim></p></f:verbatim>
-               </ospx:xheaderdrawer>
-            </ospx:xheader>
+               </ospx:splitsection>
+            </ospx:splitarea>
             
-        </ospx:splitsection>
+      </ospx:splitsection>
     </ospx:splitarea>
     <sakai:button_bar>
+	 
         <sakai:button_bar_item id="save_button" action="#{audience.processActionSave}"
                                value="#{common_msgs.save_audience}" styleClass="active" accesskey="s" />
 
