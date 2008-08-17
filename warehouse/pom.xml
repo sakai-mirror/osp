@@ -23,4 +23,18 @@
   <build>
     <resources/>
   </build>
+<dependencyManagement>
+ <dependencies>
+<dependency>
+      <groupId>org.sakaiproject</groupId>
+      <artifactId>sakai-warehouse-impl</artifactId>
+      <version>2.6.0RC1-SNAPSHOT</version>
+ </dependency>
+<dependency>
+      <groupId>org.sakaiproject.osp</groupId>
+      <artifactId>osp-warehouse-impl</artifactId>
+      <version>2.6.0RC1-SNAPSHOT</version>
+ </dependency>
+</dependencies>
+</dependencyManagement>
 </project>
