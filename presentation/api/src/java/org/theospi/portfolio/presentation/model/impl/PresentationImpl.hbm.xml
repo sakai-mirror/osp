@@ -246,6 +246,10 @@
 		from PresentationLog where presentation_id=? ORDER BY view_date DESC
    </query>
       
+   <query name="findPortfolioByLogID">
+		from PresentationLog where id=?
+   </query>
+      
    <query name="findLayoutsByOwner">
 		from PresentationLayout where owner=? and siteId=? Order by name
    </query>
