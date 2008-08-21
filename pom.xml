@@ -184,6 +184,9 @@
         <module>warehouse</module>
         <module>reports</module>
 	<module>reset-pass</module>
+	<module>gmt</module>
+        <module>datapoint</module>
+        <module>formbuilder</module>
       </modules>
     </profile>
     <profile>
