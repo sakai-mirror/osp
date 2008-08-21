@@ -33,6 +33,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
@@ -60,6 +61,17 @@ import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.File;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -76,6 +88,24 @@ public class ViewPresentationControl extends AbstractPresentationController impl
    private ArtifactFinderManager artifactFinderManager;
    private Hashtable presentationTemplateCache = new Hashtable();
    private URIResolver uriResolver;
+   private static CacheManager cacheManager = null;
+   private static Cache cache = setupCache();
+
+   private static Cache setupCache() {
+      // detailed configuration is in presentation/tool/src/bundle/ehcache.xml,
+      // which ends up in tomcat/webapps/osp-presentation-tool/WEB-INF/classes/
+
+      if ( !ServerConfigurationService.getBoolean("cache.osp.presentation.data",true) )
+         return null;
+
+      cacheManager = CacheManager.create();
+      if (cacheManager != null) {
+         cacheManager.addCache("org.theospi.portfolio.presentation.control.ViewPresentationControl.XML");
+         cache = cacheManager.getCache("org.theospi.portfolio.presentation.control.ViewPresentationControl.XML");
+      }
+      return cache;
+   }
+
 
    public Object fillBackingObject(Object incomingModel, Map request,
                                    Map session, Map application) throws Exception {
@@ -153,8 +183,30 @@ public class ViewPresentationControl extends AbstractPresentationController impl
          model.put("presentation", pres);
          Document doc = null;
          
-         if (pres.getPresentationType().equals(Presentation.TEMPLATE_TYPE))
-            doc = getPresentationManager().createDocument(pres);
+         if (pres.getPresentationType().equals(Presentation.TEMPLATE_TYPE)) {
+
+            // have to check modified dates rather than depending upon
+            // clearing the cache when something changes. In a cluster
+            // the event that invalidates the cache may occur on a different
+            // system. For previews always force current data. Otherwise
+            // invalidate cache if presentation or template on which it is
+            // based changes.
+            if (cache != null && !pres.isPreview()) {
+               Element element = cache.get(pres.getId());
+               if (element != null &&
+                   pres.getModified().getTime() <= element.getCreationTime() &&
+                   pres.getTemplate().getModified().getTime() <= element.getCreationTime()) {
+                  doc = (Document)element.getValue();
+               }
+            }
+            
+            if (doc == null) {
+               doc = getPresentationManager().createDocument(pres);
+
+               if (cache != null && doc != null)
+                  cache.put(new Element(pres.getId(), doc));
+            }
+         } 
          else {
             String page = (String)request.get("page");
             if (pres.isPreview()) {
