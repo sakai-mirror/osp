@@ -29,6 +29,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
@@ -45,8 +46,10 @@ import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.mgt.HomeFactory;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.ContentResourceArtifact;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.utils.Config;
 import org.sakaiproject.metaobj.utils.mvc.impl.servlet.ServletRequestBeanDataBinder;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScroll;
@@ -78,6 +81,7 @@ import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationItem;
 import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
+import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.Node;
@@ -275,39 +279,97 @@ public class AddPresentationController extends AbstractWizardFormController {
          presentation.setTemplate(template);
 
          model.put("types", template.getSortedItems());
+         
+         // Create sorted list of artifacts
          for (Iterator i = template.getSortedItems().iterator(); i.hasNext();) {
             PresentationItemDefinition itemDef = (PresentationItemDefinition) i.next();
 
             if (artifactCache.containsKey(itemDef.getType()) && !itemDef.getHasMimeTypes()){
                artifacts.put(itemDef.getId().getValue(), artifactCache.get(itemDef.getType()));
-            } else {
-               Collection itemArtifacts = getPresentationManager().loadArtifactsForItemDef(itemDef, agent);
+            } 
+            else {
+               List itemArtifacts = (List) getPresentationManager().loadArtifactsForItemDef(itemDef, agent);
+               // Update display name of resource content to include abbreviated folder name
+               if (itemArtifacts.size() > 0 && itemArtifacts.get(0) instanceof ContentResourceArtifact) {
+                  // don't do this for forms, as their display name is OK as is
+                  if (! ((ContentResourceArtifact)itemArtifacts.get(0)).getBase().getContentType().equals("application/x-osp"))
+                     for (ContentResourceArtifact art: (List<ContentResourceArtifact>)itemArtifacts)
+                        art.setDisplayName( abbreviateResourceName(art) );
+               }
+               // Sort artifacts by display name (wizards also sorted by date)
+               if (itemArtifacts.size() > 0 && itemArtifacts.get(0) instanceof CompletedWizard)
+                  Collections.sort((List<CompletedWizard>)itemArtifacts, new SortWizards());
+               else
+                  Collections.sort((List<Artifact>)itemArtifacts, new SortArtifacts());
 
+               // cache only full list
                if (!itemDef.getHasMimeTypes()) {
-                  // cache only full list
                   artifactCache.put(itemDef.getType(), itemArtifacts);
                }
                artifacts.put(itemDef.getId().getValue(), itemArtifacts);
             }
          }
          model.put("artifacts", artifacts);
+         
          Collection items = new ArrayList();
          for (Iterator i = presentation.getPresentationItems().iterator(); i.hasNext();) {
             PresentationItem item = (PresentationItem) i.next();
             items.add(item.getDefinition().getId().getValue() + "." +
-                  item.getArtifactId());
+                      item.getArtifactId());
          }
          model.put("items", items);
+         
          return model;
       }
-      if (page == PRESENTATION_AUTHORIZATIONS) {             
-
-       setAudienceSelectionVariables(request.getSession(), presentation);
-      }
-
+      
+      if (page == PRESENTATION_AUTHORIZATIONS)
+         setAudienceSelectionVariables(request.getSession(), presentation);
+      
       return model;
- }
+   }
+
+   private int FOLDER_MAX_LEN = 16; // maximum display size for folder name
+   private int FOLDER_ABBR_SIZE = 7; // abbreviated folder name prefix/suffix size
+   private String FOLDER_ABBR_TOKEN = ".."; // abbreviated folder name token
    
+   /** Prepend containing folder name to resource name, abbreviating if too long
+    **/
+   protected String abbreviateResourceName(ContentResourceArtifact art) {
+      String folder = art.getBase().getContainingCollection().getProperties().getProperty(ResourceProperties.PROP_DISPLAY_NAME);
+      
+      if (folder.length() > FOLDER_MAX_LEN)
+      {
+         int len = folder.length();
+         StringBuilder newFolder = new StringBuilder(folder.substring(0,FOLDER_ABBR_SIZE) );
+         newFolder.append( FOLDER_ABBR_TOKEN );
+         newFolder.append( folder.substring(len-FOLDER_ABBR_SIZE, len) );
+         folder = newFolder.toString();
+      }
+      StringBuilder resourceName = new StringBuilder(folder);
+      resourceName.append( Entity.SEPARATOR );
+      resourceName.append( art.getDisplayName() );
+      return resourceName.toString();
+   }
+
+   /** Sort artifacts by display name
+    **/		
+   protected class SortArtifacts implements Comparator<Artifact> {
+      public int compare(Artifact o1,Artifact o2) {
+         return o1.getDisplayName().compareTo(o2.getDisplayName());
+      }
+   }
+
+   /** Sort Wizards by name and date (in case any share the same name)
+    **/
+   protected class SortWizards implements Comparator<CompletedWizard> {
+      public int compare(CompletedWizard o1,CompletedWizard o2) {
+         if (o1.getDisplayName().equals(o2.getDisplayName())) {
+            return o1.getCreated().compareTo(o2.getCreated());
+         } else
+            return o1.getDisplayName().compareTo(o2.getDisplayName());
+      }
+   }
+
    protected void setupSessionInfoForPropertyForm(HttpSession session, String presentationTitle, 
          String formTypeId, String currentFormId) {
       
