@@ -103,15 +103,16 @@
                                 </c:set>
 	<h3><c:out value="${itemDefinition.title}" /></h3>
 	<div class="textPanel"><c:out value="${itemDefinition.description}" /></div>
-	<table class="sidebyside" border="0" summary="<fmt:message key="item_selection_table_summary_step2"/>">
+	<table width="100%" class="sidebyside" border="0" summary="<fmt:message key="item_selection_table_summary_step2"/>">
 		<tr>
 			<th><fmt:message key="label_availableItems_step2"/></th>
 			<th></th>
 			<th><fmt:message key="label_selectedItems_step2"/></th>
 		</tr>
 		<tr>
-			<td>
+			<td style="width:40%">
 				<select multiple="multiple"
+				        style="width:100%"
 					size="10"
 					ondblclick='move("<c:out value="${list1}"/>","<c:out value="${list2}"/>",false);'
 					id="<c:out value="${list1}"/>"
@@ -160,9 +161,10 @@
 					value="<fmt:message key="button_removeAll"/> <<"
 				/>
 			</td>
-			<td>
+			<td style="width:40%">
 				<select
 					multiple="multiple"
+					style="width:100%"
 					size="10"
 					ondblclick='move("<c:out value="${list2}"/>","<c:out value="${list1}"/>",false);'
 					id="<c:out value="${list2}"/>"

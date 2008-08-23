@@ -20,7 +20,10 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,16 +43,13 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.FormHelper;
-import org.sakaiproject.metaobj.shared.Helper;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.Placement;
-import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.ToolManager;
-import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.validation.Errors;
@@ -57,7 +57,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageForm;
 import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
-import org.sakaiproject.id.cover.IdManager;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.tool.BaseFormResourceFilter;
 
@@ -192,9 +191,9 @@ public class CellFormPickerController extends CellController implements FormCont
 
       }
       else if (createFormAction != null) {
-         ModelAndView returned = setupSessionInfo(request, session, pageId, pageTitle, createFormAction);
+         String view = setupSessionInfo(request, session, pageId, pageTitle, createFormAction);
          session.put(WHICH_HELPER_KEY, HELPER_CREATOR);
-         return returned;
+         return new ModelAndView(view);
       }
       else if (viewFormAction != null) {
          setupSessionInfo(request, session, pageId, pageTitle, viewFormAction);
@@ -207,7 +206,7 @@ public class CellFormPickerController extends CellController implements FormCont
       return new ModelAndView("page", "page_id", pageId);
    }
 
-   protected ModelAndView setupSessionInfo(Map request, Map<String, Object> session,
+   protected String setupSessionInfo(Map request, Map<String, Object> session,
                                      String pageId, String pageTitle, String formTypeId) {
       String retView = "formCreator";
       session.put("page_id", pageId);
@@ -261,15 +260,7 @@ public class CellFormPickerController extends CellController implements FormCont
          session.put(ResourceEditingHelper.ATTACHMENT_ID, request.get("current_form_id"));
          retView = "formEditor";
       }
-      
-      String helperSessionId = (String) request.get(Helper.HELPER_SESSION_ID); //IdManager.createUuid();
-//      ToolSession helperSession = SessionManager.getCurrentSession().getToolSession(helperSessionId);
-      
-//      for (Map.Entry<String, Object> entry : session.entrySet()) {
-//         helperSession.setAttribute(entry.getKey(), entry.getValue());
-//      }
-      
-      return new ModelAndView(retView, Helper.HELPER_SESSION_ID, helperSessionId);
+      return retView;
    }
 
    /**

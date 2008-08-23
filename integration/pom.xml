@@ -47,4 +47,13 @@
   <build>
     <resources/>
   </build>
+ <dependencyManagement>
+   <dependencies>
+   <dependency>
+      <groupId>org.sakaiproject.osp</groupId>
+      <artifactId>osp-integration-impl</artifactId>
+      <version>2.6.0RC1-SNAPSHOT</version>
+    </dependency>
+   </dependencies>
+ </dependencyManagement> 
 </project>

@@ -100,7 +100,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private ContentHostingService contentHosting = null;
    private SecurityService securityService = null;
    private EventService eventService = null;
-   private Map secretExportKeys = new Hashtable();
    private String tempPresDownloadDir;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private List globalSites;
@@ -188,11 +187,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       clearLocks(template.getId());
       for (Iterator i = template.getFiles().iterator();i.hasNext();){
          TemplateFileRef fileRef = (TemplateFileRef) i.next();
-         //getLockManager().addLock(fileRef.getFile().getId(), template.getId(), "saving a presentation template");
          getLockManager().lockObject(fileRef.getFileId(),
         		 template.getId().getValue(), "saving a presentation template", true);
       }
-      //getLockManager().addLock(template.getRenderer(), template.getId(), "saving a presentation template");
       getLockManager().lockObject(template.getRenderer().getValue(),
     		  template.getId().getValue(), "saving a presentation template", true);
 
@@ -214,9 +211,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
             for (Iterator i = template.getItemDefinitions().iterator(); i.hasNext();) {
                PresentationItemDefinition itemDef = (PresentationItemDefinition) i.next();
-//               if (itemDef.getHasMimeTypes()) {
                   itemDef.getMimeTypes().size();
-//               }
             }
 
             return template;
@@ -252,19 +247,20 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return getHibernateTemplate().findByNamedQuery("findPortfoliosForConversion");
    }
 
-    public void reassignOwner(PresentationTemplate templateId)
+   public void reassignOwner(PresentationTemplate templateId)
    {
           templateId.setOwner(getAgentManager().getAgent("admin"));
    }
+	
    public Presentation getPresentation(final Id id, String secretExportKey) {
-      Presentation pres = (Presentation)secretExportKeys.get(secretExportKey);
+      Presentation pres = findPresentationByLogID( idManager.getId(secretExportKey) );
       if (pres == null || !id.equals(pres.getId())) {
          throw new AuthorizationFailedException("Exporting inappropriate presentation");
       }
 
       switchUser(pres.getOwner());
 
-      return getPresentation(id);
+      return pres;
    }
 
    protected void switchUser(Agent owner) {
@@ -293,7 +289,17 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
    }
 
+   /** Return Presentation object corresponding to given id
+    ** (exception is thrown if user not authorized)
+    **/
    public Presentation getPresentation(final Id id) {
+      return getPresentation(id, true);
+   }
+   
+   /** Return Presentation object corresponding to given id,
+    ** optionally bypassing authorization check (for local export)
+    **/
+   private Presentation getPresentation(final Id id, boolean checkAuth) {
 
       HibernateCallback callback = new HibernateCallback() {
 
@@ -320,7 +326,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       try {
          Presentation presentation = (Presentation) getHibernateTemplate().execute(callback);
 
-         if (!presentation.getIsPublic() &&
+         if (!presentation.getIsPublic() && checkAuth &&
              !presentation.getOwner().equals(getAuthnManager().getAgent())) {
             getAuthzManager().checkPermission(PresentationFunctionConstants.VIEW_PRESENTATION, presentation.getId());
          }
@@ -333,7 +339,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             presentation.getViewers().add(viewer.getAgent());
          }
          return presentation;
-      } catch (HibernateObjectRetrievalFailureException e) {
+      } 
+      catch (HibernateObjectRetrievalFailureException e) {
          logger.debug(e);
          return null;
       }
@@ -490,8 +497,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    protected void deleteLogs(final Id presentationId) throws HibernateException {
-      //session.delete("from PresentationLog where presentation_id=?",
-      //   presentation.getId().getValue(), Hibernate.STRING);
       HibernateCallback callback = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
       
@@ -505,9 +510,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    protected void deleteComments(final Id presentationId) throws HibernateException {
-      //session.delete("from PresentationComment where presentation_id=?",
-      //   presentation.getId().getValue(), Hibernate.STRING);
-      
       HibernateCallback callback = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
             
@@ -522,8 +524,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    protected void deletePresentationPages(final Id presentationId) throws HibernateException {
-      //session.delete("from PresentationPage where presentation_id=?",
-      //      presentation.getId().getValue(), Hibernate.STRING);
       
       HibernateCallback callback = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
@@ -2089,12 +2089,32 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return fileRefElement;
    }
 
+   /** Save PresentationLog object to database
+    ** FlushMode is set to FLUSH_EAGER, since the object
+    ** is often immediately queried for portfolio exports.
+    **/
    public void storePresentationLog(PresentationLog log) {
+      int oldFlushMode = getHibernateTemplate().getFlushMode();
+      getHibernateTemplate().setFlushMode(getHibernateTemplate().FLUSH_EAGER);
       getHibernateTemplate().save(log);
+      getHibernateTemplate().setFlushMode(oldFlushMode);
    }
 
+   /** findLogsByPresID
+    ** Return Collection of PresentationLog objects corresponding
+    ** to all requests to view given portfolio.
+    **/
    public Collection findLogsByPresID(Id presID) {
       return getHibernateTemplate().findByNamedQuery("findLogsByPortfolio", presID.getValue());
+   }
+
+   /** findPresentationByLogID
+    ** Return Presentation corresponding to given PresentationLog id
+    **/
+   public Presentation findPresentationByLogID(Id logID) {
+      PresentationLog pLog = 
+         (PresentationLog)getHibernateTemplate().findByNamedQuery("findPortfolioByLogID", logID).get(0);
+      return getPresentation( pLog.getPresentation().getId(), false );
    }
 
    public TemplateFileRef getTemplateFileRef(Id refId) {
@@ -2164,8 +2184,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
 
    public void importResources(String fromContext, String toContext, List resourceIds) {
-      //Agent agent = getAuthnManager().getAgent();
-      //Collection templates = findTemplatesByOwner(agent, fromContext);
       Collection templates = findPublishedTemplatesBySite(fromContext);
 
       for (Iterator i=templates.iterator();i.hasNext();) {
@@ -2231,7 +2249,14 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          tempDir.mkdirs();
       }
 
-      String secretExportKey = getIdManager().createId().getValue();
+      // Create log of presentation view and use log id as cluster-independent secretExportKey
+      PresentationLog pLog = new PresentationLog();
+      pLog.setPresentation(presentation);
+      pLog.setViewDate(new java.util.Date());
+      pLog.setViewer(presentation.getOwner()); // assumes only owner can download
+      storePresentationLog(pLog);
+      String secretExportKey = pLog.getId().getValue();     
+      
       String url = presentation.getExternalUri(downloadExternalUri) + "&secretExportKey=" + secretExportKey;
       
       File tempDirectory = new File(tempDir, secretExportKey);
@@ -2240,16 +2265,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
         url, tempDirectory.getPath());
 
       try {
-         synchronized(secretExportKeys) {
-            secretExportKeys.put(secretExportKey, presentation);
-         }
-
          export.run();
-
-         synchronized(secretExportKeys) {
-            secretExportKeys.remove(secretExportKey);
-         }
-
          export.createZip(out);
       }
       finally {

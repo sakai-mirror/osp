@@ -249,6 +249,8 @@ public interface PresentationManager extends CleanupableService {
    public void storePresentationLog(PresentationLog log);
 
    public Collection findLogsByPresID(Id presID);
+	
+   public Presentation findPresentationByLogID(Id presID);
 
    public Collection getPresentationItems(Id artifactId);
 

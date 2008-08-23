@@ -257,7 +257,6 @@
 										<osp:param name="isWizard" value="${isWizard}" />
 										<osp:param name="objectId" value="${objectId}" />
 										<osp:param name="objectTitle" value="${objectTitle}" />
-                              <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 										</osp:url>"
 						onclick="javascript:stopEvents(event)"><fmt:message
 						key="action_createForm" /> <c:out value="${cellFormDef.name}" /></a>
@@ -265,7 +264,6 @@
 						href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
 										<osp:param name="attachFormAction" value="${cellFormDef.id}" />
-                              <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 										</osp:url>"
 						onclick="javascript:stopEvents(event)"><fmt:message
 						key="action_chooseForms" /> <c:out value="${cellFormDef.name}" /></a>
@@ -317,7 +315,6 @@
                             <osp:param name="page_id" value="${cell.wizardPage.id}" />
                             <osp:param name="createFormAction" value="${cellFormDef.id}" />
                             <osp:param name="current_form_id" value="${node.resource.id}" />
-                            <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
                             </osp:url>"
 							title="<fmt:message key="edit"/>">
 							<fmt:message key="edit"/></a>
@@ -345,7 +342,6 @@
                           <osp:param name="objectId" value="${objectId}" />
                           <osp:param name="objectTitle" value="${objectTitle}" />
                           <osp:param name="itemId" value="${node.id}" />
-                          <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
                           </osp:url>"
 							title="<fmt:message key="review"/>"> <fmt:message key="review"/></a>
 					</c:if></div>
@@ -523,7 +519,6 @@
                           <osp:param name="objectId" value="${objectId}" />
                           <osp:param name="objectTitle" value="${objectTitle}" />
                           <osp:param name="itemId" value="${node.id}" />
-                          <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
                           </osp:url>"><osp:message
 					key="review" /></a>
 			</c:if></div>
@@ -666,7 +661,6 @@
 							<osp:param name="isWizard" value="${isWizard}" />
 							<osp:param name="objectId" value="${objectId}" />
 							<osp:param name="objectTitle" value="${objectTitle}" />
-                 <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 					   </osp:url>">
 			<osp:message key="reflection_create" /></a> </span>
 		</c:if> </span></p>
@@ -690,7 +684,6 @@
 						   <osp:param name="org_theospi_portfolio_review_type" value="0" />
 						   <osp:param name="current_review_id" value="${reflections[0].reviewContentNode.resource.id}" />
 						   <osp:param name="process_type_key" value="page_id" />
-                     <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 						   </osp:url>"> <osp:message key="reflection_edit" /></a> 
 											|
 				<a
@@ -781,7 +774,6 @@
 						<osp:param name="isWizard" value="${isWizard}" />
 						<osp:param name="objectId" value="${objectId}" />
 						<osp:param name="objectTitle" value="${objectTitle}" />
-                  <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 						</osp:url>">
 				<osp:message key="review" /></a>
 			</c:if></div>
@@ -872,7 +864,6 @@
 					<osp:param name="isWizard" value="${isWizard}" />
 					<osp:param name="objectId" value="${objectId}" />
 					<osp:param name="objectTitle" value="${objectTitle}" />
-               <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 						</osp:url>">
 		<osp:message key="add_evaluation" /></a> </span></p>
 		</h4>
@@ -902,7 +893,6 @@
 					<osp:param name="isWizard" value="${isWizard}" />
 					<osp:param name="objectId" value="${objectId}" />
 					<osp:param name="objectTitle" value="${objectTitle}" />
-               <osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 						</osp:url>">
 				<osp:message key="add_evaluation" /></a>
 			</c:if></div>

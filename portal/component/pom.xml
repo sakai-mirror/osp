@@ -31,7 +31,7 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-portal-impl</artifactId>
-      <version>${sakai.version}</version>
+      
     </dependency>
 <!--org.sakaiprojectsakai-util${sakai.version}-->
 <!--${sakai.spring.groupId}${sakai.spring.artifactId}${sakai.spring.version}-->

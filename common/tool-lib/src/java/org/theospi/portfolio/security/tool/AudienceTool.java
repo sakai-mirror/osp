@@ -107,6 +107,8 @@ public class AudienceTool extends HelperToolBase {
 	 
     private SelectItemComparator selectItemComparator = new SelectItemComparator();
 
+    private MemberSort memberSort = new MemberSort();
+
     /** This accepts email addresses */
     private static final Pattern emailPattern = Pattern.compile(
           "^" +
@@ -135,7 +137,7 @@ public class AudienceTool extends HelperToolBase {
           "$"
           );
     
-
+ 
     /*************************************************************************/
 
     private List getFilteredMembersList() {
@@ -162,7 +164,7 @@ public class AudienceTool extends HelperToolBase {
                memberList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), "member"));
             }
         }
-       
+        
         return memberList;
     }
 
@@ -591,7 +593,7 @@ public class AudienceTool extends HelperToolBase {
             }
         }
 
-        Collections.sort(availableUserList, selectItemComparator);
+        Collections.sort(availableUserList, memberSort);
         return availableUserList;
     }
 
@@ -660,7 +662,7 @@ public class AudienceTool extends HelperToolBase {
                    selectedUserList.add(new SelectItem(decoratedMember.getBase().getId().getValue(), decoratedMember.getBase().getDisplayName(), "member"));
             }
 
-        Collections.sort(selectedUserList, selectItemComparator);
+        Collections.sort(selectedUserList, memberSort);
         return selectedUserList;
     }
 
@@ -1055,4 +1057,25 @@ public class AudienceTool extends HelperToolBase {
 			return ((SelectItem)o1).getLabel().compareTo( ((SelectItem)o2).getLabel() );
 		}
 	}
+   
+   /**
+    ** Sort SelectList of member names
+    ** (tbd: localize sorting of names)
+    **/
+   public class MemberSort implements Comparator<SelectItem> {
+      
+      public int compare(SelectItem o1, SelectItem o2) {
+         String n1 = o1.getLabel();
+         String n2 = o2.getLabel();
+         int i1 = n1.lastIndexOf(" ");
+         int i2 = n2.lastIndexOf(" ");
+         if (i1 > 0)
+            n1 = n1.substring(i1 + 1) + " " + n1.substring(0, i1);
+         if (i2 > 0)
+            n2 = n2.substring(i2 + 1) + " " + n2.substring(0, i2);
+         
+         return n1.compareToIgnoreCase(n2);
+      }
+   }
+    
 }
