@@ -20,7 +20,6 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-jsf-widgets</artifactId>
-      
       <exclusions>
         <exclusion>
           <groupId>org.sakaiproject</groupId>
@@ -47,7 +46,6 @@
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-jsf-widgets-sun</artifactId>
-      
     </dependency>
   </dependencies>
 </project>

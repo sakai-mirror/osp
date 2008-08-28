@@ -39,13 +39,11 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-api</artifactId>
-      
     </dependency>
 <!--org.sakaiprojectsakai-util-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
-      
     </dependency>
 <!--org.sakaiprojectsakai-site-api${sakai.version}-->
 <!--org.sakaiprojectsakai-user-api${sakai.version}-->

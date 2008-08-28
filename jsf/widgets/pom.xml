@@ -41,13 +41,11 @@
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-depend-jsf-widgets-myfaces</artifactId>
-      
       <type>pom</type>
     </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
-      
     </dependency>
 <!--org.sakaiprojectsakai-component-api${sakai.version}-->
 <!--org.sakaiprojectsakai-content-api${sakai.version}-->

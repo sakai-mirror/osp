@@ -46,7 +46,6 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-impl</artifactId>
-      
       <exclusions>
         <exclusion>
           <groupId>aopalliance</groupId>
@@ -69,7 +68,6 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-integration-impl</artifactId>
-      
       <exclusions>
         <exclusion>
           <groupId>aopalliance</groupId>
@@ -92,7 +90,6 @@
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-impl</artifactId>
-      
       <exclusions>
         <exclusion>
           <groupId>aopalliance</groupId>

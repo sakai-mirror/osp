@@ -21,6 +21,10 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-kernel-util</artifactId>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>
@@ -44,27 +48,23 @@
       <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-component-manager</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.sakaiproject.kernel.util</groupId>
-      <artifactId>sakai-util</artifactId>
-    </dependency>
+<!--
+      This has been relocated to sakai-kernel-util
+      org.sakaiproject.kernel.utilsakai-util-->
 <!--org.sakaiprojectsakai-component${sakai.version}-->
 <!--org.sakaiprojectsakai-tool-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
-      
     </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-tool-lib</artifactId>
-      
     </dependency>
 <!--org.sakaiprojectsakai-util${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-impl</artifactId>
-      
     </dependency>
 <!--org.sakaiprojectsakai-util${sakai.version}-->
     <dependency>
@@ -75,12 +75,10 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-api</artifactId>
-      
     </dependency>
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-presentation-api</artifactId>
-      
     </dependency>
     <dependency>
       <groupId>aopalliance</groupId>

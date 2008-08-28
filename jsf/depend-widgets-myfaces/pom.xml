@@ -20,7 +20,6 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-jsf-widgets</artifactId>
-      
     </dependency>
   </dependencies>
 </project>
