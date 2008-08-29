@@ -18,6 +18,10 @@
   <packaging>war</packaging>
   <dependencies>
     <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-kernel-util</artifactId>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>
@@ -33,31 +37,25 @@
       <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-component-manager</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.sakaiproject.kernel.util</groupId>
-      <artifactId>sakai-tool-util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject.kernel.util</groupId>
-      <artifactId>sakai-user-util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject.kernel.util</groupId>
-      <artifactId>sakai-webapp-util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject.kernel.util</groupId>
-      <artifactId>sakai-util</artifactId>
-    </dependency>
+<!--
+      This has been relocated to sakai-kernel-util
+      org.sakaiproject.kernel.utilsakai-tool-util-->
+<!--
+      This has been relocated to sakai-kernel-util
+      org.sakaiproject.kernel.utilsakai-user-util-->
+<!--
+      This has been relocated to sakai-kernel-util
+      org.sakaiproject.kernel.utilsakai-webapp-util-->
+<!--
+      This has been relocated to sakai-kernel-util
+      org.sakaiproject.kernel.utilsakai-util-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-portal-api</artifactId>
-      
     </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-portal-render-api</artifactId>
-      
     </dependency>
 <!--org.sakaiprojectsakai-user-api${sakai.version}-->
 <!--org.sakaiprojectsakai-tool-api${sakai.version}-->
@@ -66,7 +64,6 @@
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-portal-impl</artifactId>
-      
     </dependency>
 <!--org.sakaiprojectsakai-tool-util${sakai.version}-->
 <!--org.sakaiprojectsakai-user-util${sakai.version}-->
@@ -77,14 +74,12 @@
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-portal-util</artifactId>
-      
     </dependency>
 <!--javax.servletservlet-api${sakai.servletapi.version}provided-->
 <!--${sakai.spring.groupId}${sakai.spring.artifactId}${sakai.spring.version}provided-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-tool-lib</artifactId>
-      
     </dependency>
   </dependencies>
   <build>

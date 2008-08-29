@@ -23,7 +23,6 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-impl</artifactId>
-      
       <exclusions>
         <exclusion>
           <groupId>aopalliance</groupId>
@@ -46,7 +45,6 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-warehouse-impl</artifactId>
-      
       <exclusions>
         <exclusion>
           <groupId>aopalliance</groupId>

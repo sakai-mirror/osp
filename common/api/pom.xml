@@ -53,13 +53,11 @@
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
-      
     </dependency>
 <!--org.sakaiprojectsakai-util-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-scheduler-api</artifactId>
-      
     </dependency>
 <!--org.sakaiprojectsakai-authz-api${sakai.version}-->
 <!--org.sakaiprojectsakai-user-api${sakai.version}-->
@@ -76,7 +74,6 @@
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-assignment-api</artifactId>
-      
     </dependency>
     <dependency>
       <groupId>aopalliance</groupId>
