@@ -474,9 +474,6 @@ public class AddPresentationController extends AbstractWizardFormController {
    
    
    protected String createFolder(String base, String append, String appendDisplay, String appendDescription) {
-      //String folder = "/user/" + 
-      //SessionManager.getCurrentSessionUserId() + 
-      //PresentationManager.PRESENTATION_PROPERTIES_FOLDER_PATH;
       String folder = base + append + "/";
 
       try {
@@ -812,22 +809,7 @@ public class AddPresentationController extends AbstractWizardFormController {
          return new ModelAndView("notifyViewersRedirect", params);
       }
 
-      Map model = new Hashtable();
-
-      model.put("isMaintainer", isMaintainer());
-      model.put("newPresentationId", presentation.getId());
-
-      List presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(getAuthManager().getAgent(),
-            ToolManager.getCurrentPlacement().getId()));
-
-      Map request = new Hashtable();
-      request.put(ListScroll.ENSURE_VISIBLE_TAG, "" + getPresentationIndex(presentations, presentation));
-
-      model.put("presentations", getListScrollIndexer().indexList(request, model, presentations));
-      model.put("osp_agent", getAuthManager().getAgent());
-
-      return new ModelAndView("listPresentationRedirect", model);
-
+      return new ModelAndView("listPresentationRedirect");
    }
 
    protected int getPresentationIndex(List presentations, Presentation presentation) {
@@ -849,22 +831,7 @@ public class AddPresentationController extends AbstractWizardFormController {
                                         Object o, BindException e) throws Exception {
       ToolSession session = SessionManager.getCurrentToolSession();
       session.removeAttribute(FreeFormHelper.FREE_FORM_ACTION);
-      Presentation presentation = (Presentation) o;
-
-      Map model = new Hashtable();
-
-      model.put("isMaintainer", isMaintainer());
-
-      List presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(getAuthManager().getAgent(),
-            ToolManager.getCurrentPlacement().getId()));
-
-      Map request = new Hashtable();
-      request.put(ListScroll.ENSURE_VISIBLE_TAG, "" + getPresentationIndex(presentations, presentation));
-
-      model.put("presentations", getListScrollIndexer().indexList(request, model, presentations));
-      model.put("osp_agent", getAuthManager().getAgent());
-
-      return new ModelAndView("listPresentationRedirect", model);
+      return new ModelAndView("listPresentationRedirect");
    }
     protected void setAudienceSelectionVariables(HttpSession session, Presentation pres) {
       String baseUrl = this.getServerConfigurationService().getServerUrl();

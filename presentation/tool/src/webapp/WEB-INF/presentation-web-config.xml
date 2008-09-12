@@ -727,7 +727,7 @@
         </property>
         <property name="screenMappings">
             <props>
-                <prop key="success">listPresentation</prop>
+                <prop key="success">listPresentationRedirect</prop>
             </props>
         </property>
         <property name="customTypedEditors">

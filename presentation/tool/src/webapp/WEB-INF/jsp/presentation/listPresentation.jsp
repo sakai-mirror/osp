@@ -4,26 +4,14 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
 
-   <osp-c:authZMap prefix="osp.presentation." var="can" />
-
-<!-- GUID=<c:out value="${newPresentationId}"/> -->
+<osp-c:authZMap prefix="osp.presentation." var="can" />
 
 <div class="navIntraTool">
     <c:if test="${can.create}">
         <a href="<osp:url value="addPresentation.osp"/>&resetForm=true"
-            title="<fmt:message key="action_new_title"/>"> <fmt:message key="action_new"/> </a>
+            title="<fmt:message key="action_new_portfolio"/>"> <fmt:message key="action_new_portfolio"/> </a>
     </c:if>
-    <a href="<osp:url value="myComments.osp">
-               <osp:param name="sortByColumn" value="created"/>
-               <osp:param name="direction" value="desc"/>
-            </osp:url>"
-        title="<fmt:message key="action_myComments_title"/>"> <fmt:message key="action_myComments"/> </a>
-    <a href="<osp:url value="commentsForMe.osp">
-               <osp:param name="sortByColumn" value="created"/>
-               <osp:param name="direction" value="desc"/>
-            </osp:url>"
-        title="<fmt:message key="action_commentsOthers_title"/>"> <fmt:message key="action_commentsOthers"/> </a>
-
+    
     <c:if test="${isMaintainer}">
         <a href="<osp:url value="osp.permissions.helper/editPermissions">
                 <osp:param name="message"><fmt:message key="message_permissionsEdit">
@@ -36,13 +24,57 @@
                 </osp:url>"
             title="<fmt:message key="action_permissions_title"/>"> <fmt:message key="action_permissions"/> </a>
     </c:if>
+</div>
+
+<br/> <!-- temp separation; start of tabs -->
+
+<div class="navIntraTool">
+    <c:choose>
+      <c:when test="${filterList != 'all'}">
+          <a href="<osp:url value="listPresentation.osp"/>&filterListKey=all"><fmt:message key="action_filter_all"/></a>
+      </c:when>
+      <c:otherwise><fmt:message key="action_filter_all"/></c:otherwise>
+    </c:choose>
     
-    <c:if test="${showHidden}">
-		    <a href="<osp:url value="listPresentation.osp"/>&action=showHidden&showHiddenKey=false"><fmt:message key="action_remove_hidden"/></a>
-	 </c:if>
-	 <c:if test="${!showHidden}">
-	    	<a href="<osp:url value="listPresentation.osp"/>&action=showHidden&showHiddenKey=true"><fmt:message key="action_show_all_presentations"/></a>
-	 </c:if>
+    <c:choose>
+      <c:when test="${filterList != 'mine'}">
+          <a href="<osp:url value="listPresentation.osp"/>&filterListKey=mine"><fmt:message key="action_filter_mine"/></a>
+      </c:when>
+      <c:otherwise><fmt:message key="action_filter_mine"/></c:otherwise>
+    </c:choose>
+    
+    <c:choose>
+      <c:when test="${filterList != 'shared'}">
+         <a href="<osp:url value="listPresentation.osp"/>&filterListKey=shared"><fmt:message key="action_filter_shared"/></a>
+      </c:when>
+      <c:otherwise><fmt:message key="action_filter_shared"/></c:otherwise>
+    </c:choose>
+</div>
+    
+<br/> <!-- temp separation; end of tabs -->
+
+<div class="navIntraTool">
+    <fmt:message key="title_show"/>
+    <c:choose>
+      <c:when test="${showHidden != 'all'}">
+          <a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=all"><fmt:message key="action_show_all"/></a>
+      </c:when>
+      <c:otherwise><fmt:message key="action_show_all"/></c:otherwise>
+    </c:choose>
+    
+    <c:choose>
+      <c:when test="${showHidden != 'hidden'}">
+          <a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=hidden"><fmt:message key="action_show_hidden"/></a>
+      </c:when>
+      <c:otherwise><fmt:message key="action_show_hidden"/></c:otherwise>
+    </c:choose>
+    
+    <c:choose>
+      <c:when test="${showHidden != 'visible'}">
+         <a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=visible"><fmt:message key="action_show_not_hidden"/></a>
+      </c:when>
+      <c:otherwise><fmt:message key="action_show_not_hidden"/></c:otherwise>
+    </c:choose>
 </div>
 
 <c:forEach var="presentation" items="${presentations}" varStatus="presentationStatus">
@@ -50,9 +82,6 @@
   </c:forEach>
 
 <div class="navPanel">
-	<div class="viewNav">
-		<h3><fmt:message key="title_presentationManager"/></h3>
-	</div>	
 	<osp:url var="listUrl" value="listPresentation.osp"/>
 	<osp:listScroll listUrl="${listUrl}" className="listNav" />
 </div>	
@@ -66,13 +95,15 @@
 	   <thead>
 		  <tr>
 			 <th scope="col"><fmt:message key="table_header_name"/></th>
-			 <th scope="col"><fmt:message key="table_header_dateModified"/></th>
-			 <th scope="col"><fmt:message key="table_header_template"/></th>
 			 <th scope="col"><fmt:message key="table_header_owner"/></th>
+			 <th scope="col"><fmt:message key="table_header_dateModified"/></th>
+			 <th scope="col" class="attach"><fmt:message key="table_header_status"/></th>
+			 <th scope="col" class="attach"><fmt:message key="table_header_shared"/></th>
+			 <th scope="col"><fmt:message key="table_header_comments"/></th>
 			 <c:if test="${myworkspace}">
 			   <th scope="col"><fmt:message key="table_header_worksite"/></th>
 			 </c:if>
-			 <th scope="col" class="attach"><fmt:message key="table_header_expired"/></th>
+			 <th scope="col"><fmt:message key="table_header_actions"/></th>
 		  </tr>
 	   </thead>
 		<tbody>
@@ -141,17 +172,25 @@
 			 </div>
 	
 		  </td>
-		  <td><c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${presentation.modified}" pattern="${dateFormat}"/></td> 
-		  <td><c:out value="${presentation.template.name}" /></td>
+        
 		  <td><c:out value="${presentation.owner.displayName}" /></td>
+        
+		  <td><c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${presentation.modified}" pattern="${dateFormat}"/></td> 
+        
+		  <td align="center">
+			 <c:if test="${!presentation.expired}">
+				<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
+			 </c:if>
+		  </td>
+        
+		  <td>-<!-- shared placeholder --></td>
+		  <td>-<!-- comments placeholder --></td>
+        
 		  <c:if test="${myworkspace}">
 			 <td><c:out value="${presentation.worksiteName}" /></td>
 		  </c:if>
-		  <td class="attach">
-			 <c:if test="${presentation.expired}">
-				<img alt="<fmt:message key="linktitle_presentationExpired"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
-			 </c:if>
-		  </td>
+        
+		  <td>-<!-- actions placeholder --></td>
 		</tr>
 	  </c:forEach>
 	   </tbody>

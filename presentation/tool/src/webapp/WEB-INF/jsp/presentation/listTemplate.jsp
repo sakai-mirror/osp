@@ -52,8 +52,8 @@
 <c:if test="${can.create || isMaintainer}">
     <div class="navIntraTool">
        <c:if test="${can.create}">
-          <a href="<osp:url value="addTemplate.osp"/>" title="<fmt:message key="action_new_title"/>" >
-          <fmt:message key="action_new"/>
+          <a href="<osp:url value="addTemplate.osp"/>" title="<fmt:message key="action_add"/>" >
+          <fmt:message key="action_add"/>
           </a>
           <a href="<osp:url value="importTemplate.osp"/>" title="<fmt:message key="action_import_title"/>" >
           <fmt:message key="action_import"/>

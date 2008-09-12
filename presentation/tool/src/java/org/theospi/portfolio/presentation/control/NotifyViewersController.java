@@ -70,13 +70,12 @@ public class NotifyViewersController extends AbstractPresentationController impl
     }
 
     public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
+        if (request.containsKey(PARAM_CANCEL)) 
+           return new ModelAndView("success");
+
         NotificationForm form = (NotificationForm) requestModel;
         Agent agent = getAuthManager().getAgent();
         Presentation presentation = getPresentationManager().getPresentation(form.getPresentationId());
-        if (request.containsKey(PARAM_CANCEL)) {
-            return setupPresentationList(new Hashtable(), request, presentation);
-        }
-
         Map model = new HashMap();
         model.put("owner", agent.getDisplayName());
         model.put("message", form.getMessage());
@@ -100,10 +99,6 @@ public class NotifyViewersController extends AbstractPresentationController impl
            String from = getServerConfigurationService().getString("setup.request", 
                  "postmaster@".concat(getServerConfigurationService().getServerName()));
                       
-            //getMailMessage().setTo(form.getRecipients());
-            //getMailMessage().setModel(model);
-            //getMailMessage().setFrom(user.getEmail());
-            //getMailer().send(getMailMessage());
             for (int i = 0; i < form.getRecipients().length; i++) {
                 String toUser = form.getRecipients()[i];
                 if (toUser.startsWith("ROLE")) {
@@ -131,38 +126,15 @@ public class NotifyViewersController extends AbstractPresentationController impl
             logger.error("error sending email notification", e);
         }
 
-        return setupPresentationList(model, request, presentation);
-    }
-
-    protected ModelAndView setupPresentationList(Map model, Map request, Presentation presentation) {
-        model.put("isMaintainer", isMaintainer());
-
-        List presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(getAuthManager().getAgent(),
-                ToolManager.getCurrentPlacement().getId()));
-
-
-        model.put("presentations", getListScrollIndexer().indexList(request, model, presentations));
-        model.put("osp_agent", getAuthManager().getAgent());
-
-        return new ModelAndView("success", model);
+        return new ModelAndView("success");
     }
 
     protected boolean validateEmail(String displayName) {
 
-        if (!emailPattern.matcher(displayName).matches()) {
-
-            return false;
-        }
-
-        /*try {
-         InternetAddress.parse(displayName, true);
-      }
-      catch (AddressException e) {
-
-         return false;
-      }  */
-
-        return true;
+        if (!emailPattern.matcher(displayName).matches()) 
+           return false;
+        else
+           return true;
     }
 
     protected int getPresentationIndex(List presentations, Presentation presentation) {
@@ -180,10 +152,7 @@ public class NotifyViewersController extends AbstractPresentationController impl
     }
 
     public ModelAndView processCancel(Map request, Map session, Map application, Object command, Errors errors) throws Exception {
-        NotificationForm form = (NotificationForm) command;
-        Presentation presentation = getPresentationManager().getPresentation(form.getPresentationId());
-
-        return setupPresentationList(new Hashtable(), request, presentation);
+        return new ModelAndView("success");
     }
 
     public Config getOspConfig() {

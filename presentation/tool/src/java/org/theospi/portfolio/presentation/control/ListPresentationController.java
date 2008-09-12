@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,6 +46,7 @@ import org.sakaiproject.user.api.PreferencesEdit;
 import org.sakaiproject.user.cover.PreferencesService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.presentation.PresentationManager;
 
 public class ListPresentationController extends AbstractPresentationController {
 
@@ -52,106 +54,118 @@ public class ListPresentationController extends AbstractPresentationController {
    private ListScrollIndexer listScrollIndexer;
    private ServerConfigurationService serverConfigurationService;
    
-   private final static String HIDDEN_PRES_PLACEMENT_PREF = "org.theospi.portfolio.presentation.placement.";
-   private final static String HIDDEN_PRES_PREF = "org.theospi.portfolio.presentation.hidden.";
-
+   private final static String PORTFOLIO_PREFERENCES = "org.theospi.portfolio.presentation.placement.";
+   private final static String PREF_HIDDEN = "org.theospi.portfolio.presentation.hidden.";
+   private final static String PREF_FILTER = "org.theospi.portfolio.presentation.filter.";
+   
+   private final static String PREF_FILTER_VALUE_ALL    = "all";
+   private final static String PREF_FILTER_VALUE_MINE   = "mine";
+   private final static String PREF_FILTER_VALUE_SHARED = "shared";
+   
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Hashtable<String, Object> model = new Hashtable<String, Object>();
       Agent currentAgent = getAuthManager().getAgent();
       String currentToolId = ToolManager.getCurrentPlacement().getId();
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
 
-      boolean showHidden = getUserPresHiddenProperty();
-      String showHiddenKey = (String)request.get("showHiddenKey");
-      if (showHiddenKey != null)
-         showHidden = setUserPresHiddenProperty(showHiddenKey);
+      String showHidden = getUserPreferenceProperty(PREF_HIDDEN, 
+                                                    (String)request.get("showHiddenKey"),
+                                                    PresentationManager.PRESENTATION_VIEW_ALL);
+      String filterList = getUserPreferenceProperty(PREF_FILTER, 
+                                                    (String)request.get("filterListKey"),
+                                                    PREF_FILTER_VALUE_ALL);
       
-      List presentations = null;
-		if ( isOnWorkspaceTab() )
-      {
-         presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(currentAgent, showHidden));
-      }
-      else
-      {
-         presentations = new ArrayList(getPresentationManager().findPresentationsByViewer(currentAgent,
-                                                                                          currentToolId, showHidden));
-      }
+      Collection presentations = null;
+      String filterToolId = null;
+      
+      // If not on MyWorkspace, grab presentations for this tool only
+		if ( ! isOnWorkspaceTab() )
+         filterToolId = currentToolId;
+        
+      if ( filterList.equals(PREF_FILTER_VALUE_MINE) )
+         presentations = getPresentationManager().findOwnerPresentations(currentAgent, filterToolId, showHidden);
+      else if ( filterList.equals(PREF_FILTER_VALUE_SHARED) )
+         presentations = getPresentationManager().findSharedPresentations(currentAgent, filterToolId, showHidden);
+      else // ( filterList.equals(PREF_FILTER_VALUE_ALL) )
+         presentations = getPresentationManager().findAllPresentations(currentAgent, filterToolId, showHidden);
 
       model.put("presentations",
-         getListScrollIndexer().indexList(request, model, presentations));
+                getListScrollIndexer().indexList(request, model, new ArrayList(presentations)));
 
       String baseUrl = getServerConfigurationService().getServerUrl();
 
-      String url =  baseUrl + "/osp-presentation-tool/viewPresentation.osp?";
-      url += Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
+      String url =  baseUrl + "/osp-presentation-tool/viewPresentation.osp?" 
+         + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
       model.put("baseUrl", url);
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", getWorksiteManager().getTool(currentToolId));
       model.put("isMaintainer", isMaintainer());
       model.put("osp_agent", currentAgent);
       model.put("showHidden", showHidden);
+      model.put("filterList", filterList);
       model.put("myworkspace", isOnWorkspaceTab() );
       model.put("lastViewKey", SpringTool.LAST_VIEW_VISITED);
       return new ModelAndView("success", model);
    }
    
    /**
-    * 
-    * @return
+    ** If prefValue provided, save it and return, 
+    ** otherwise retrieve stored prefValue for given prefKey
+    **
+    ** @param prefKey preference key
+    ** @param prefValue optional new value to save
     */
-   protected boolean getUserPresHiddenProperty() {
-      boolean prop = true;
+   protected String getUserPreferenceProperty(String prefKey, String prefValue, String dfltValue) 
+   {
       
-      try {
-         Preferences userPreferences = PreferencesService.getPreferences(getAuthManager().getAgent().getId().getValue());
-         ResourceProperties evalPrefs = userPreferences.getProperties(HIDDEN_PRES_PLACEMENT_PREF + ToolManager.getCurrentPlacement().getId());
-         String tmpProp = evalPrefs.getProperty(HIDDEN_PRES_PREF);
-         if (tmpProp != null) prop = Boolean.getBoolean(tmpProp);
+      String propsName = PORTFOLIO_PREFERENCES + ToolManager.getCurrentPlacement().getId();
+      String userId    = getAuthManager().getAgent().getId().getValue();
+
+      // If no preference was provided in request, then get saved preference
+      if ( prefValue == null ) {
+         Preferences userPreferences = PreferencesService.getPreferences(userId);
+         ResourceProperties portfolioPrefs = userPreferences.getProperties(propsName);
+         prefValue = portfolioPrefs.getProperty(prefKey);
+         
+         // If prefValue found, just return
+         if ( prefValue != null )
+            return prefValue;
+               
+         // Otherwise, use the default value and continue to save
+         else
+            prefValue = dfltValue;
       }
-      catch (Exception e) {
-         logger.debug("Couldn't get user prefs for showing hidden presentations.  Using defaults.");
-      }
-      return prop;
-   }
-   
-   /**
-    * 
-    * @param evalType
-    */
-   protected boolean setUserPresHiddenProperty(String hiddenValue) {
+       
+      // Otherwise, save preference and return  
       PreferencesEdit prefEdit = null;
       try {
-         prefEdit = (PreferencesEdit) PreferencesService.add(getAuthManager().getAgent().getId().getValue());
-      } catch (PermissionException e) {
-         logger.warn("Problem saving preferences for site hidden presentations in setUserPresHiddenProperty().", e);
-      } catch (IdUsedException e) {
+         prefEdit = (PreferencesEdit) PreferencesService.add(userId);
+      } 
+      catch (PermissionException e) {
+         logger.warn(e.toString());
+      } 
+      catch (IdUsedException e) {
          // Preferences already exist, just edit
          try {
-            prefEdit = (PreferencesEdit) PreferencesService.edit(getAuthManager().getAgent().getId().getValue());
-         } catch (PermissionException e1) {
-            logger.warn("Problem saving preferences for site hidden presentations in setUserPresHiddenProperty().", e1);
-         } catch (InUseException e1) {
-            logger.warn("Problem saving preferences for site hidden presentations in setUserPresHiddenProperty().", e1);
-         } catch (IdUnusedException e1) {
-            // This should be safe to ignore since we got here because it existed
-            logger.warn("Problem saving preferences for site hidden presentations in setUserPresHiddenProperty().", e1);
-         }
+            prefEdit = (PreferencesEdit) PreferencesService.edit(userId);
+         } 
+         catch (Exception e2) {
+            logger.warn(e2.toString());
+         } 
       }
+      
       if (prefEdit != null) {
-         ResourceProperties propEdit = prefEdit.getPropertiesEdit(HIDDEN_PRES_PLACEMENT_PREF + ToolManager.getCurrentPlacement().getId());
-         if (hiddenValue.equals(Boolean.toString(Boolean.TRUE)))
-            propEdit.removeProperty(HIDDEN_PRES_PREF);
-         else
-            propEdit.addProperty(HIDDEN_PRES_PREF, hiddenValue);
          try {
+            ResourceProperties propEdit = prefEdit.getPropertiesEdit(propsName);
+            propEdit.addProperty(prefKey, prefValue);
             PreferencesService.commit(prefEdit);
          }
          catch (Exception e) {
-            logger.warn("Problem saving preferences for site hidden presentations in setUserPresHiddenProperty().", e);
+            logger.warn(e.toString());
          }
       }
-      return hiddenValue.equals(Boolean.toString(Boolean.TRUE));
-
+      
+      return prefValue;
    }
 
    /**

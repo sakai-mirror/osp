@@ -59,6 +59,10 @@ public interface PresentationManager extends CleanupableService {
    public static final String PORTFOLIO_INTERACTION_FOLDER_DESC = "portfolioInteraction.description";
    public static final String PRESENTATION_PROPERTIES_FOLDER_PATH = "/" + PRESENTATION_PROPERTIES_FOLDER + "/";
    public static final String PRESENTATION_MESSAGE_BUNDLE = "org.theospi.portfolio.presentation.bundle.Messages";
+   
+   public static final String PRESENTATION_VIEW_ALL     = "all";
+   public static final String PRESENTATION_VIEW_HIDDEN  = "hidden";
+   public static final String PRESENTATION_VIEW_VISIBLE = "visible"; // not hidden
 
    
    public PresentationTemplate storeTemplate(PresentationTemplate template);
@@ -90,23 +94,6 @@ public interface PresentationManager extends CleanupableService {
    public TemplateFileRef getTemplateFileRef(Id refId);
    public void updateTemplateFileRef(TemplateFileRef ref);
    public void deleteTemplateFileRef(Id refId);
-
-   /**
-    * returns a list of all presentation owned by agent.
-    *
-    * @param owner
-    * @return
-    */
-   public Collection findPresentationsByOwner(Agent owner);
-
-   /**
-    * returns a list of all presentation owned by agent within the given toolId.
-    *
-    * @param owner
-    * @return
-    */
-   public Collection findPresentationsByOwner(Agent owner, String toolId);
-
 
    /**
     * returns a list of all presentation templates owned by agent.
@@ -155,41 +142,34 @@ public interface PresentationManager extends CleanupableService {
    public Document getPresentationPreviewLayoutAsXml(Presentation presentation, String pageId);
 
    /**
-    * returns a list of all presentations owned by agent </br>
+    * Return a list of all presentations agent can view, optionally filtered by toolId.
     *
-    * @param viewer
-    * @return
+    * @param owner current user
+    * @param toolId current tool (or null to ignore)
+    * @param showHidden option to show all, hidden, not hidden portfolios
+    * @return collection of presentations
     */
-   public Collection findPresentationsByViewer(Agent viewer);
+   public Collection findAllPresentations(Agent viewer, String toolId, String showHidden);
 
    /**
-    * returns a list of all presentations agent can view within the given tool</br>
+    * Return a list of presentation  shared with agent, optionally filtered by toolId.
     *
-    * @param viewer
-    * @param toolId
-    * @return
+    * @param owner current user
+    * @param toolId current tool (or null to ignore)
+    * @param showHidden option to show all, hidden, not hidden portfolios
+    * @return collection of presentations
     */
-   public Collection findPresentationsByViewer(Agent viewer, String toolId);
+   public Collection findSharedPresentations(Agent viewer, String toolId, String showHidden);
    
    /**
-    * 
-    * returns a list of all presentations agent can view within the given tool, optionally showing hidden presentations</br>
-    * 
-    * @param viewer
-    * @param toolId
-    * @param showHidden
-    * @return
+    * Return a list of all presentation owned by agent, optionally filtered by toolId.
+    *
+    * @param owner current user
+    * @param toolId current tool (or null to ignore)
+    * @param showHidden option to show all, hidden, not hidden portfolios
+    * @return collection of presentations
     */
-   public Collection findPresentationsByViewer(Agent viewer, String toolId, boolean showHidden);
-
-   /**
-    * returns a list of all presentations agent can view, optionally showing hidden presentations</br>
-    * 
-    * @param viewer
-    * @param showHidden
-    * @return
-    */
-   public Collection findPresentationsByViewer(Agent viewer, boolean showHidden);
+   public Collection findOwnerPresentations(Agent owner, String toolId, String showHidden);
 
    public void createComment(PresentationComment comment);
    public void createComment(PresentationComment comment, boolean checkAuthz, boolean updateDates);
