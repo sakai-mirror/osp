@@ -25,6 +25,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,7 +47,10 @@ import org.sakaiproject.user.api.PreferencesEdit;
 import org.sakaiproject.user.cover.PreferencesService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+
 import org.theospi.portfolio.presentation.PresentationManager;
+import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.security.AudienceSelectionHelper;
 
 public class ListPresentationController extends AbstractPresentationController {
 
@@ -89,8 +93,8 @@ public class ListPresentationController extends AbstractPresentationController {
       else // ( filterList.equals(PREF_FILTER_VALUE_ALL) )
          presentations = getPresentationManager().findAllPresentations(currentAgent, filterToolId, showHidden);
 
-      model.put("presentations",
-                getListScrollIndexer().indexList(request, model, new ArrayList(presentations)));
+      List presSubList = getListScrollIndexer().indexList(request, model, new ArrayList(presentations));
+      model.put("presentations", getPresentationData(presSubList) );
 
       String baseUrl = getServerConfigurationService().getServerUrl();
 
@@ -191,6 +195,73 @@ public class ListPresentationController extends AbstractPresentationController {
    public void setServerConfigurationService(
          ServerConfigurationService serverConfigurationService) {
       this.serverConfigurationService = serverConfigurationService;
+   }
+   
+   
+   /** Given a list of presentations, this method returns a list of PresentationDataBean objects
+    **/
+   public List getPresentationData( List presList ) {
+      ArrayList presData = new ArrayList( presList.size() );
+      for (Iterator it = presList.iterator(); it.hasNext();) {
+         Presentation pres = (Presentation) it.next();
+         presData.add( new PresentationDataBean( pres ) );
+      }
+      return presData;
+   }
+   
+   /** This class provides auxiliary data (comments, shared status) for a given presentation
+    **/
+   public class PresentationDataBean {
+      Presentation m_presentation;
+      int m_commentNum;
+      boolean m_shared;
+      
+      public PresentationDataBean( Presentation presentation ) {
+         m_presentation = presentation;
+         
+         // determine shared attributes (public is considered shared)
+         if ( presentation.getIsPublic() ) {
+            m_shared = true;
+         }
+         else {
+            List authzs = getAuthzManager().getAuthorizations(null, AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO, presentation.getId());
+            if (authzs.size() > 0)
+               m_shared = true;
+            else
+               m_shared = false;
+         }
+         
+         // find number of comments
+         if ( presentation.isAllowComments() ) {
+            List comments = getPresentationManager().getPresentationComments( presentation.getId(), getAuthManager().getAgent() );
+            m_commentNum = comments.size();
+         }
+         else {
+            m_commentNum = -1; // comments not allowed
+         }
+      }
+      
+      public Presentation getPresentation() {
+         return m_presentation;
+      }
+      
+      public int getCommentNum() {
+         return m_commentNum;
+      }
+      
+      public String getCommentNumAsString() {
+         StringBuilder commentStr = new StringBuilder();
+         if ( m_commentNum >= 0 ) {
+            commentStr.append( "(" );
+            commentStr.append( String.valueOf(m_commentNum) );
+            commentStr.append( ")" );
+         }
+         return commentStr.toString();
+      }
+      
+      public boolean getShared() {
+         return m_shared;
+      }
    }
 	
 }
