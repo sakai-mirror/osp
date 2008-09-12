@@ -81,14 +81,13 @@ import net.sf.ehcache.Element;
  */
 public class ViewPresentationControl extends AbstractPresentationController implements LoadObjectController {
 
-   protected final Log logger = LogFactory.getLog(getClass());
+   protected static Log logger = LogFactory.getLog(ViewPresentationControl.class);
    private HomeFactory homeFactory = null;
    private ArtifactFinder artifactFinder = null;
    private AuthorizationFacade authzManager = null;
    private ArtifactFinderManager artifactFinderManager;
    private Hashtable presentationTemplateCache = new Hashtable();
    private URIResolver uriResolver;
-   private static CacheManager cacheManager = null;
    private static Cache cache = setupCache();
 
    private static Cache setupCache() {
@@ -98,12 +97,22 @@ public class ViewPresentationControl extends AbstractPresentationController impl
       if ( !ServerConfigurationService.getBoolean("cache.osp.presentation.data",true) )
          return null;
 
-      cacheManager = CacheManager.create();
-      if (cacheManager != null) {
-         cacheManager.addCache("org.theospi.portfolio.presentation.control.ViewPresentationControl.XML");
-         cache = cacheManager.getCache("org.theospi.portfolio.presentation.control.ViewPresentationControl.XML");
+      String cacheName = "org.theospi.portfolio.presentation.control.ViewPresentationControl.XML";
+      CacheManager cacheManager = CacheManager.create();
+      if (cacheManager == null)
+         return null;
+         
+      try
+      {
+         cacheManager.addCache(cacheName);
+         return cacheManager.getCache(cacheName);
       }
-      return cache;
+      catch (Exception e)
+      {
+         logger.warn("ViewPresentationControl.setupCache failed");
+      }
+      
+      return null;
    }
 
 
