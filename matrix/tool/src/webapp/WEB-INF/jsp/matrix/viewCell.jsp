@@ -388,7 +388,6 @@
 												<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
 												<osp:param name="review_id" value="${object.id}"/>
 												<osp:param name="process_type_key" value="page_id" />
-												<osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 											  </osp:url>"
 										title="<fmt:message key="edit"/>"> 
 												<fmt:message key="edit"/>
@@ -564,7 +563,6 @@
 										<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
 										<osp:param name="review_id" value="${object.id}"/>
 										<osp:param name="process_type_key" value="page_id" />
-										<osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 										</osp:url>"
 								title="<fmt:message key="edit"/>"> 
 										<fmt:message key="edit"/>
@@ -810,7 +808,6 @@
 										<osp:param name="org_theospi_portfolio_review_type" value="2" />
 										<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
 										<osp:param name="process_type_key" value="page_id" />
-										<osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 									  </osp:url>"
 								title="<fmt:message key="edit"/>"> 
 										<fmt:message key="edit"/>
@@ -920,7 +917,6 @@
 									<osp:param name="org_theospi_portfolio_review_type" value="1" />
 									<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
 									<osp:param name="process_type_key" value="page_id" />
-									<osp:param name="sakai_helperSessionId" value="${cell.uniqueId}" />
 								  </osp:url>"
 							title="<fmt:message key="edit"/>"> 
 									<fmt:message key="edit"/>
