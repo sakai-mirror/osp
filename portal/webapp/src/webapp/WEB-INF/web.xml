@@ -54,10 +54,12 @@
        <load-on-startup>1</load-on-startup>
     </servlet>
 
-    <!-- <servlet-mapping>
+<!-- http://jira.sakaiproject.org/jira/browse/SAK-14404
+    <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>/library/*</url-pattern>
-    </servlet-mapping> -->
+    </servlet-mapping>
+-->
 
     <servlet-mapping>
         <servlet-name>osp.portal.xslt</servlet-name>
