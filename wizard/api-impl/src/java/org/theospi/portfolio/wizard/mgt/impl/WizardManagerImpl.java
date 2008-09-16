@@ -2191,6 +2191,10 @@ public class WizardManagerImpl extends HibernateDaoSupport
    public Element getArtifactAsXml(Artifact art) {
       return getXmlRenderer().getArtifactAsXml(art);
    }
+   
+   public Element getArtifactAsXml(Artifact artifact, String container, String site, String context) {
+	   return getXmlRenderer().getArtifactAsXml(artifact, container, site, context);
+   }
 
    public Collection findByOwnerAndType(Id owner, String type) {
       return findByOwner(owner);
