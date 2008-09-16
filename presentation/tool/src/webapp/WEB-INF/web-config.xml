@@ -87,8 +87,7 @@
 
                <prop key="/deleteComment.osp">deleteCommentController</prop>
                <prop key="/updateCommentVisibility.osp">updateCommentVisibilityController</prop>
-               <prop key="/myComments.osp">myCommentsController</prop>
-               <prop key="/commentsForMe.osp">commentsForMeController</prop>
+               <prop key="/listComments.osp">listCommentsController</prop>
                <prop key="/listPresentation.osp">listPresentationController</prop>
                <prop key="/PresentationStats.osp">viewPresentationStatsController</prop>
                <prop key="/listSelectRedirect.osp">listRedirectController</prop>

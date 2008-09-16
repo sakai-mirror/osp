@@ -871,7 +871,7 @@
         </property>
     </bean>
 
-    <bean id="myCommentsController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+    <bean id="listCommentsController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
             <bean class="org.theospi.portfolio.presentation.control.CommentListController">
                 <property name="authManager">
@@ -880,12 +880,11 @@
                 <property name="presentationManager">
                     <ref bean="presentationManager"/>
                 </property>
-                <!--<property name="authzManager"><ref bean="authzManager"/></property>-->
-                <property name="type">
-                    <value>creator</value>
-                </property>
                 <property name="worksiteManager">
                     <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+                </property>
+                <property name="idManager">
+                    <ref bean="idManager"/>
                 </property>
             </bean>
         </property>
@@ -896,43 +895,7 @@
         </property>
         <property name="screenMappings">
             <props>
-                <prop key="success">myComments</prop>
-            </props>
-        </property>
-        <property name="commandName">
-            <value>sortBy</value>
-        </property>
-        <property name="commandClass">
-            <value>org.theospi.portfolio.presentation.CommentSortBy</value>
-        </property>
-    </bean>
-
-    <bean id="commentsForMeController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
-        <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.CommentListController">
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <!--<property name="authzManager"><ref bean="authzManager"/></property>-->
-                <property name="type">
-                    <value>owner</value>
-                </property>
-                <property name="worksiteManager">
-                    <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
-                </property>
-            </bean>
-        </property>
-        <property name="customTypedEditors">
-            <list>
-                <ref bean="idCustomEditor"/>
-            </list>
-        </property>
-        <property name="screenMappings">
-            <props>
-                <prop key="success">commentsForMe</prop>
+                <prop key="success">listComments</prop>
             </props>
         </property>
         <property name="commandName">

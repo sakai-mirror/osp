@@ -144,9 +144,22 @@
 				<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
 			 </c:if>
 		  </td>
-        
-		  <td align="center"><c:out value="${presentationBean.commentNumAsString}" /></td>
-        
+		  
+		  <td align="center">
+				<c:choose>
+				<c:when test="${presentationBean.commentNum > 0}">
+  				<a href="<osp:url value="listComments.osp">
+					<osp:param name="id" value="${presentation.id.value}" />
+				</osp:url>" title="<fmt:message key="table_header_comments"/>"> 
+				<c:out value="${presentationBean.commentNumAsString}" />
+				</a>
+				</c:when>
+				<c:otherwise>
+					 <c:out value="${presentationBean.commentNumAsString}" />
+				</c:otherwise>
+				</c:choose>
+			</td>
+		  
 		  <c:if test="${myworkspace}">
 			 <td><c:out value="${presentation.worksiteName}" /></td>
 		  </c:if>
