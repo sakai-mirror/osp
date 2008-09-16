@@ -91,10 +91,40 @@
 	<osp:url var="listUrl" value="listPresentation.osp"/>
 	<osp:listScroll listUrl="${listUrl}" className="listNav" />
 </div>	
+
+<%-- show no portfolio message if presentation list is empty --%>
 <c:choose>
-	<c:when  test="${empty presentations}">
-		<fmt:message key="table_presentationManager_empty_list_message"/>
+	<c:when  test="${empty presentations && showHidden == 'all'}">
+      <p align="center">
+		<fmt:message key="table_empty_list_all"/>
+      <c:if test="${filterList != 'shared' && can.create}">
+        <br/><a href="<osp:url value="addPresentation.osp"/>&resetForm=true"
+            title="<fmt:message key="action_new_portfolio_now"/>"> <fmt:message key="action_new_portfolio_now"/> </a>
+      </c:if>
+      </p>
 	</c:when>
+   
+	<c:when  test="${empty presentations && showHidden == 'hidden'}">
+      <p align="center">
+		<fmt:message key="table_empty_list_hidden"/>
+      <c:if test="${filterList != 'shared' && can.create}">
+        <br/><a href="<osp:url value="addPresentation.osp"/>&resetForm=true"
+            title="<fmt:message key="action_new_portfolio_now"/>"> <fmt:message key="action_new_portfolio_now"/> </a>
+      </c:if>
+      </p>
+	</c:when>
+   
+	<c:when  test="${empty presentations && showHidden == 'visible'}">
+      <p align="center">
+		<fmt:message key="table_empty_list_visible"/>
+      <c:if test="${filterList != 'shared' && can.create}">
+        <br/><a href="<osp:url value="addPresentation.osp"/>&resetForm=true"
+            title="<fmt:message key="action_new_portfolio_now"/>"> <fmt:message key="action_new_portfolio_now"/> </a>
+      </c:if>
+      </p>
+	</c:when>
+   
+   <%-- Otherwise display list of portfolios --%>
 	<c:otherwise>
 		
 	<table class="listHier lines nolines" cellspacing="0" cellpadding="0"  border="0" summary="<fmt:message key=" table_presentationManager_summary" />" >
@@ -174,6 +204,10 @@
              <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
              <option
                 value="<osp:url value="addPresentation.osp"/>&target=_target5&resetForm=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="action_share"/></option>
+             <!--
+             <option
+                value="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="action_share"/></option>
+              -->
              </c:if>
              
              <c:if test="${isAuthorizedTo.edit}">
