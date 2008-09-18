@@ -9,7 +9,6 @@
 	   <a target="_blank" href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${comment.presentation.id.value}" />#comment<c:out value="${comment.id.value}" />"
 	   		title="<fmt:message key="table_comments_link_hint"/>">
 		  <c:out value="${comment.presentation.name}" />
-		  (<c:out value="${comment.presentation.template.name}" />)
 	   </a>
 		</c:forEach>
    </h3>

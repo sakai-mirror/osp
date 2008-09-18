@@ -227,6 +227,7 @@ $(document).ready(function() {
 		  </tr>
 	   </thead>
 		<tbody>
+      
 	  <c:forEach var="presentationBean" items="${presentations}" varStatus="loopCounter">
 	
 		<c:set var="presentation" value="${presentationBean.presentation}" />
@@ -240,8 +241,7 @@ $(document).ready(function() {
 		>
 		  <td style="white-space:nowrap">
 		  		  <h4>
-		  <a <c:if test="${presentation.template.includeHeaderAndFooter == false}">target="_blank" title="
-	<fmt:message key="table_presentationManager_new_window"/>"</c:if>
+		  <a <c:if test="${presentation.template.includeHeaderAndFooter == false}">target="_blank" title="<fmt:message key="table_presentationManager_new_window"/>"</c:if>
 					href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />">
 			 <c:out value="${presentation.name}" />
 		  </a>
@@ -297,8 +297,7 @@ $(document).ready(function() {
 							<ul  id="menu-<c:out  value="${2000 - loopCounter.index}" />" class="makeMenuChild">
 							<c:if test="${presentation.owner.id.value == osp_agent.id.value}">
 								<li>
-									<a 
-									href="<osp:url value="addPresentation.osp"/>&target=_target5&resetForm=true&id=<c:out value="${presentation.id.value}" />"> <fmt:message key="action_share"/>
+									<a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="action_share"/>
 									</a>
 								</li>
 							</c:if>
@@ -339,51 +338,6 @@ $(document).ready(function() {
 						
 					</ul>
 						<a href="#" id="last-<c:out  value="${2000 - loopCounter.index}" />" class="skip"></a>
-			<%--	
-           <select  name="action${presentation.id.value}" onchange="alert(form${presentation.id.value}.action${presentation.id.value}.options[selectedIndex].value)">
-           
-             <option selected><fmt:message key="table_action_select"/></option>
-             
-             <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
-             <option
-                value="<osp:url value="addPresentation.osp"/>&target=_target5&resetForm=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="action_share"/></option>
-             <!--
-             <option
-                value="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="action_share"/></option>
-              -->
-             </c:if>
-             
-             <c:if test="${isAuthorizedTo.edit}">
-             <option
-                value="<osp:url value="addPresentation.osp"/>&target=_target1&resetForm=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_edit"/></option>
-             </c:if>
-             
-             <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
-             <option
-                value="<osp:url value="PresentationStats.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_viewStats"/></option>
-             </c:if>
-   
-             <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
-             <option
-                value="<osp:url includeQuestion="false" value="/repository/1=1"/>&manager=presentationManager&presentationId=<c:out value="${presentation.id.value}"/>/<c:out value="${presentation.name}" />.zip"><fmt:message key="table_action_download"/></option>
-             </c:if>
-             
-             <c:if test="${isAuthorizedTo.delete}">
-             <option
-                value="<osp:url value="deletePresentation.osp"/>&id=<c:out value="${presentation.id.value}"/>"><fmt:message key="table_action_delete"/></option>
-             </c:if>
-             
-             <c:if test="${!presCan.hide}">
-             <option
-                value="<osp:url value="hidePresentation.osp"/>&hideAction=hide&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_hide"/></option>
-             </c:if>
-             
-             <c:if test="${presCan.hide}">
-             <option
-                value="<osp:url value="hidePresentation.osp"/>&hideAction=show&id=<c:out value="${presentation.id.value}" />"><fmt:message key="table_action_show"/></option>
-             </c:if>
-           </select>
-		   --%>
            </form>
         </td>
 		</tr>

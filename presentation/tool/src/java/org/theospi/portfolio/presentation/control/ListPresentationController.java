@@ -93,7 +93,7 @@ public class ListPresentationController extends AbstractPresentationController {
       else // ( filterList.equals(PREF_FILTER_VALUE_ALL) )
          presentations = getPresentationManager().findAllPresentations(currentAgent, filterToolId, showHidden);
 
-      List presSubList = getListScrollIndexer().indexList(request, model, new ArrayList(presentations));
+      List presSubList = getListScrollIndexer().indexList(request, model, new ArrayList(presentations), true);
       model.put("presentations", getPresentationData(presSubList) );
 
       String baseUrl = getServerConfigurationService().getServerUrl();

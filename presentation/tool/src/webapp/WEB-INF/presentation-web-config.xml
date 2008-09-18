@@ -467,7 +467,42 @@
             </props>
         </property>
         <property name="commandName">
-            <value>presentations</value>
+            <value>presentation</value>
+        </property>
+        <property name="commandClass">
+            <value>org.theospi.portfolio.presentation.model.Presentation</value>
+        </property>
+    </bean>
+
+    <bean id="sharePresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+        <property name="controller">
+            <bean class="org.theospi.portfolio.presentation.control.SharePresentationController">
+                <property name="presentationManager">
+                    <ref bean="presentationManager"/>
+                </property>
+                <property name="authzManager">
+                    <ref bean="authzManager"/>
+                </property>
+                <property name="serverConfigurationService">
+                    <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
+                </property>
+            </bean>
+        </property>
+        <property name="customTypedEditors">
+            <list>
+                <ref bean="idCustomEditor"/>
+            </list>
+        </property>
+        <property name="screenMappings">
+            <props>
+              <prop key="share">sharePresentation</prop>
+              <prop key="success">listPresentationRedirect</prop>
+              <!-- tbd change navigation for undo -->
+              <prop key="undo">listPresentationRedirect</prop> 
+            </props>
+        </property>
+        <property name="commandName">
+            <value>presentation</value>
         </property>
         <property name="commandClass">
             <value>org.theospi.portfolio.presentation.model.Presentation</value>
