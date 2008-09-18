@@ -4,14 +4,21 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
 
-   <h3 align="center">
-		<c:forEach begin="0" end="0" items="${comments}" var="comment">
-	   <a target="_blank" href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${comment.presentation.id.value}" />#comment<c:out value="${comment.id.value}" />"
+<table width="100%">
+<c:forEach begin="0" end="0" items="${comments}" var="comment">
+   <tr>
+      <td align="left">
+		  <h3><c:out value="${comment.presentation.name}" /></h3>
+      </td>
+      <td align="right">
+	     <a target="_blank" href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${comment.presentation.id.value}" />#comment<c:out value="${comment.id.value}" />"
 	   		title="<fmt:message key="table_comments_link_hint"/>">
-		  <c:out value="${comment.presentation.name}" />
-	   </a>
-		</c:forEach>
-   </h3>
+               <fmt:message key="pres_preview" />
+		  </a>
+	   </td>
+   </tr>
+</c:forEach>
+</table>
    
    <c:if test="${not empty comments}">
 	   <table class="listHier lines nolines" cellspacing="0"  cellpadding="0" border="0" summary="<fmt:message key="table_comments_summary"/>">
