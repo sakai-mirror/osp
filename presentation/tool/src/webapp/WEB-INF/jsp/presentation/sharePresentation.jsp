@@ -58,11 +58,14 @@
    </div>
    
    <br/>
+   
    <c:choose>
      <c:when test="${empty shareList}">
          <fmt:message key="pres_share_none"/>
-         <!-- tbd: link to old share page for now -->
+         <%-- OLD LINK
          <a href="<osp:url value="addPresentation.osp"/>&target=_target5&resetForm=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share_add"/></a>
+         --%>
+         <a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share_add"/></a>
      </c:when>
      
      <c:otherwise>
@@ -71,8 +74,10 @@
          <tr>
          <td><b><fmt:message key="pres_share_list"/></b></td>
          <td align="right">
-         <!-- tbd: link to old share page for now -->
+         <%-- OLD LINK
          <a href="<osp:url value="addPresentation.osp"/>&target=_target5&resetForm=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share_more"/></a>
+         --%>
+         <a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share_more"/></a>
          </td>
          </tr>
          </thead>
@@ -106,6 +111,4 @@
       <input name="save" type="submit" value="<fmt:message key="button_saveEdit" />" class="active" accesskey="s" />
       <input name="undo" type="submit" value="<fmt:message key="button_undo" />"  accesskey="x" />
    </div>
-   
-   <hr/>   
 </form>

@@ -109,6 +109,7 @@
                <prop key="/addPresentation.osp">addPresentationController</prop>
                <prop key="/deletePresentation.osp">deletePresentationController</prop>
                <prop key="/sharePresentation.osp">sharePresentationController</prop>
+               <prop key="/sharePresentationMore.osp">sharePresentationMoreController</prop>
 					<prop key="/hidePresentation.osp">hidePresentationController</prop>
                <prop key="/addViewer.osp">addViewerController</prop>
                <prop key="/deleteViewer.osp">deleteViewerController</prop>

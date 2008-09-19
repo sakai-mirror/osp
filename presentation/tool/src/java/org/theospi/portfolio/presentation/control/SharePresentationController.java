@@ -51,17 +51,19 @@ public class SharePresentationController extends AbstractPresentationController 
    private final String SHARE_PUBLIC  = "pres_share_public";
    private final String SHARE_SELECT  = "pres_share_select";
    
-   private final String SHARE_LIST_ATTRIBUTE   = "org.theospi.portfolio.presentation.control.SharePresentationController.shareList";
-   private final String SHARE_PUBLIC_ATTRIBUTE = "org.theospi.portfolio.presentation.control.SharePresentationController.public";
+   public final static String SHARE_LIST_ATTRIBUTE   = "org.theospi.portfolio.presentation.control.SharePresentationController.shareList";
+   public final static String SHARE_PUBLIC_ATTRIBUTE = "org.theospi.portfolio.presentation.control.SharePresentationController.public";
    
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
+      // Get specified portfolio/presentation      
       Map model = new HashMap();
       Presentation presentation = (Presentation) requestModel;
       presentation = getPresentationManager().getPresentation(presentation.getId());
-      
-      // Check if cancel request (TBD: change this to an UNDO request)
-      String cancel = (String) request.get("undo");
-      if (cancel != null)
+
+      // Check if Undo request 
+      // TBD: change to no navigation change, just undo changes
+      String undo = (String) request.get("undo");
+      if (undo != null)
       {
          cleanSessionAttributes(presentation);
          return new ModelAndView("undo");
@@ -179,7 +181,7 @@ public class SharePresentationController extends AbstractPresentationController 
          revisedHash.put( member.getId().getValue(), member );
       }
       
-      // Setup hashmap of origShareList
+      // Setup hashmap of origShareList and check for deletions
       HashMap originalHash = new HashMap( origShareList.size() );
       for (Iterator it=origShareList.iterator(); it.hasNext(); ) {
          Agent member = (Agent)it.next();
@@ -192,7 +194,14 @@ public class SharePresentationController extends AbstractPresentationController 
                                                   presentation.getId() );
       }
       
-      // tbd check for additions
+      // Check for additions to original shareList
+      for (Iterator it=revisedShareList.iterator(); it.hasNext(); ) {
+         Agent member = (Agent)it.next();
+         if ( ! originalHash.containsKey(member.getId().getValue()) )
+            getAuthzManager().createAuthorization(member,  
+                                                  AudienceSelectionHelper.AUDIENCE_FUNCTION_PORTFOLIO,
+                                                  presentation.getId() );
+      }
    }
    
    /** Construct public url for given portfolio presentation

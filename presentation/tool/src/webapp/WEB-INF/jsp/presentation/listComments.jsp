@@ -59,6 +59,7 @@
 			</li>
 		</c:forEach>
 	</ul>
+</c:if>
 	<p class="act">
 	   <input type="submit" name="_cancel" value="<fmt:message key="button_back"/>" accesskey="x" class="active" />
 	 </p>  

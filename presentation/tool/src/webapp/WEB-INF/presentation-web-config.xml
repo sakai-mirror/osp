@@ -443,15 +443,6 @@
                 <property name="presentationManager">
                     <ref bean="presentationManager"/>
                 </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -499,6 +490,45 @@
               <prop key="success">listPresentationRedirect</prop>
               <!-- tbd change navigation for undo -->
               <prop key="undo">listPresentationRedirect</prop> 
+            </props>
+        </property>
+        <property name="commandName">
+            <value>presentation</value>
+        </property>
+        <property name="commandClass">
+            <value>org.theospi.portfolio.presentation.model.Presentation</value>
+        </property>
+    </bean>
+
+    <bean id="sharePresentationMoreController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+        <property name="controller">
+            <bean class="org.theospi.portfolio.presentation.control.SharePresentationMoreController">
+                <property name="presentationManager">
+                    <ref bean="presentationManager"/>
+                </property>
+                <property name="authzManager">
+                    <ref bean="authzManager"/>
+                </property>
+                <property name="serverConfigurationService">
+                    <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
+                </property>
+                <property name="siteService">
+                    <ref bean="org.sakaiproject.site.api.SiteService"/>
+                </property>
+                <property name="agentManager">
+                  <ref bean="agentManager"/>
+                </property>
+            </bean>
+        </property>
+        <property name="customTypedEditors">
+            <list>
+                <ref bean="idCustomEditor"/>
+            </list>
+        </property>
+        <property name="screenMappings">
+            <props>
+              <prop key="back">sharePresentationRedirect</prop>
+              <prop key="share">sharePresentationMore</prop>
             </props>
         </property>
         <property name="commandName">
