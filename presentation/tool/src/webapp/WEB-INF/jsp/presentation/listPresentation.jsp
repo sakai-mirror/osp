@@ -104,7 +104,7 @@ $(document).ready(function() {
                 </osp:url>"
             title="<fmt:message key="action_permissions_title"/>"> <fmt:message key="action_permissions"/> </a></span></li>
     </c:if>
-</div>
+</ul>
 
 <ul class="tabNav specialLink">
     <c:choose>
@@ -171,7 +171,7 @@ $(document).ready(function() {
     </c:choose>
 </ul>
 
-<div class="navPanel">
+<div class="navPanel" id="NavPanelPager">
 	<osp:url var="listUrl" value="listPresentation.osp"/>
 	<osp:listScroll listUrl="${listUrl}" className="listNav" />
 </div>	
@@ -286,15 +286,15 @@ $(document).ready(function() {
         <!-- selection of actions/options -->
 		  <td>
            <form name="form${presentation.id.value}" style="margin:0">
-				<a href="#" onfocus="document.getElementById('menu-<c:out  value="${2000 - loopCounter.index}" />').style.display='none';"></a>
-				<a href="#" onfocus="document.getElementById('menu-<c:out  value="${2000 - loopCounter.index}" />').style.display='block';" class="skip"><fmt:message key="table_action_action_open"/></a>
+				<a href="#" onfocus="document.getElementById('menu-<c:out  value="${loopCounter.index}" />').style.display='none';"></a>
+				<a href="#" onfocus="document.getElementById('menu-<c:out  value="${loopCounter.index}" />').style.display='block';" class="skip"><fmt:message key="table_action_action_open"/></a>
 		
 		   <%-- desNote: alternate rendering - using the resources menu as model - come back to it if time--%>	
-					<ul style="z-index:<c:out  value="${2000 - loopCounter.index}" />;margin:0;display:block" class="makeMenu">
-						<li  class="menuOpen" id="<c:out  value="${2000 - loopCounter.index}" />">
+					<ul style="z-index:<c:out  value="${1000 - loopCounter.index}" />;margin:0;display:block" class="makeMenu">
+						<li  class="menuOpen" id="<c:out  value="${loopCounter.index}" />">
 							&nbsp;<fmt:message key="table_action_action"/>
 							<img src = "/library/image/sakai/icon-dropdn.gif?panel=Main" border="0"  alt="Add"  class="dropdn"/> 
-							<ul  id="menu-<c:out  value="${2000 - loopCounter.index}" />" class="makeMenuChild">
+							<ul  id="menu-<c:out  value="${loopCounter.index}" />" class="makeMenuChild">
 							<c:if test="${presentation.owner.id.value == osp_agent.id.value}">
 								<li>
 									<a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="action_share"/>
@@ -333,11 +333,11 @@ $(document).ready(function() {
 							</ul>
 						</li>
 					<li style="height:1px;width:1px;display:inline;">
-						<a href="#"  class="skip" onfocus="document.getElementById('menu-<c:out  value="${2000 - loopCounter.index}" />').style.display='none';document.getElementById('last-<c:out  value="${2000 - loopCounter.index}" />').focus()" ><fmt:message key="table_action_action_close"/></a>
+						<a href="#"  class="skip" onfocus="document.getElementById('menu-<c:out  value="${loopCounter.index}" />').style.display='none';document.getElementById('last-<c:out  value="${loopCounter.index}" />').focus()" ><fmt:message key="table_action_action_close"/></a>
 					</li>
 						
 					</ul>
-						<a href="#" id="last-<c:out  value="${2000 - loopCounter.index}" />" class="skip"></a>
+						<a href="#" id="last-<c:out  value="${loopCounter.index}" />" class="skip"></a>
            </form>
         </td>
 		</tr>

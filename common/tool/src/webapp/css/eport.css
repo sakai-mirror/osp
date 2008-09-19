@@ -429,7 +429,7 @@ INPUT.colorBox {
 }
 
 body{
-/*	background:#EFEDE6 !important*/
+	/*background:#EFEDE6 !important*/
 }
 .navPanel{
 	background:transparent !important
@@ -437,4 +437,25 @@ body{
 .makeMenuChild{
 	margin-left:-6em !important;
 	width:10em !important;
+}
+.commentsList{
+	margin:1em 0;padding:0
+}
+.commentsList li{
+	list-style: none;
+	padding:0;
+	margin:0;
+}
+.commentsList li div.commentMetadata{
+	height:25px;
+	line-height:25px;
+	vertical-align: middle;
+	padding:0 1em;
+	background:#eee url(../img/comment-metadata-back.gif) top left no-repeat
+}
+.commentsList li div.commentMetadata h4{
+	color:#000
+}
+.commentsList div.commentBody{
+	padding:1em
 }
