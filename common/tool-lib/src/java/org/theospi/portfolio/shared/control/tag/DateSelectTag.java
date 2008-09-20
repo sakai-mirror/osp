@@ -56,7 +56,7 @@ public class DateSelectTag extends DateSelectPopupTag {
 
          buffer.append("<select name=\"" + getDaySelectId() + "\" id=\"" + getDaySelectId() + "\" onchange=\"blur();\">\n");
          buffer.append("<option value=\"\"></option>\n");
-         for (int i=1; i<31; i++){
+         for (int i=1; i<32; i++){
             buffer.append("<option value=\"" + i + "\"");
             if (getDaySelected() == i){
                buffer.append(" selected=\"selected\"");

@@ -2119,6 +2119,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return getXmlRenderer().getArtifactAsXml(artifact);
    }
 
+   public Element getArtifactAsXml(Artifact artifact, String container, String site, String context) {
+	   return getXmlRenderer().getArtifactAsXml(artifact, container, site, context);
+   }
 
    /**
     * @return Returns the worksiteManager.
