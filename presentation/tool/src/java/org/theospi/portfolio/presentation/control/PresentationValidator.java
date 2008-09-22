@@ -178,11 +178,11 @@ public class PresentationValidator extends ValidatorBase {
 
    protected void validatePresentationInitialPage(Object obj, Errors errors) {
       Presentation presentation = (Presentation) obj;
-      if (presentation.getPresentationType().equals(Presentation.TEMPLATE_TYPE)) {
+      if (!presentation.getPresentationType().equals(Presentation.FREEFORM_TYPE)) {
          if (presentation.getTemplate().getId() == null ||
             presentation.getTemplate().getId().getValue() == null ||
             presentation.getTemplate().getId().getValue().length() == 0) {
-            errors.rejectValue("template.id", "error.required", "template is required");
+            errors.rejectValue("template.id", "error.portfolioTypeRequired", "You must select a portfolio type.");
          }
       }
    }

@@ -217,6 +217,12 @@ public class AddPresentationController extends AbstractWizardFormController {
       SchemaFactory schemaFactory = SchemaFactory.getInstance();
       return schemaFactory.getSchema(rNode.getInputStream());
    }
+   
+   protected class PresentationTemplateComparator implements Comparator<PresentationTemplate> {
+	   public int compare(PresentationTemplate arg0, PresentationTemplate arg1) {
+		   return arg0.getName().compareTo(arg1.getName());
+	   }
+   }
 
    protected Map referenceData(HttpServletRequest request, int page) throws Exception {
       Map model = new HashMap();
@@ -238,9 +244,20 @@ public class AddPresentationController extends AbstractWizardFormController {
       
       if (page == ADD_PAGE) {
          Agent agent = getAuthManager().getAgent();
-         model.put("templates", getPresentationManager().findTemplatesByOwner(agent, ToolManager.getCurrentPlacement().getContext()));
-         model.put("publishedTemplates", getPresentationManager().findPublishedTemplates(ToolManager.getCurrentPlacement().getContext()));
-         model.put("globalPublishedTemplates", getPresentationManager().findGlobalTemplates());
+         Collection templates = getPresentationManager().findTemplatesByOwner(agent, ToolManager.getCurrentPlacement().getContext());
+         Collection publishedTemplates = getPresentationManager().findPublishedTemplates(ToolManager.getCurrentPlacement().getContext());
+         Collection globalPublishedTemplates = getPresentationManager().findGlobalTemplates();
+         model.put("templates", templates);
+         model.put("publishedTemplates", publishedTemplates);
+         model.put("globalPublishedTemplates", globalPublishedTemplates);
+         
+         TreeSet<PresentationTemplate> availableTemplates = new TreeSet<PresentationTemplate>(new PresentationTemplateComparator());
+         availableTemplates.addAll(templates);
+         availableTemplates.addAll(publishedTemplates);
+         availableTemplates.addAll(globalPublishedTemplates);
+         model.put("availableTemplates", availableTemplates);
+         
+         model.put("freeFormTemplateId", Presentation.FREEFORM_TEMPLATE_ID);
          return model;
       }
       if (page == PROPERTY_PAGE) {

@@ -8,35 +8,66 @@
 <c:set var="targetNext" value="_target1"/>
 <c:set var="suppress_previous" value="true"/>
 
-<h3><fmt:message key="title_addPresentation1"/></h3>
+<%-- <h3><fmt:message key="title_addPresentation1"/></h3> --%>
 
 <form method="post" name="wizardform" action="addPresentation.osp" onsubmit="return true;">
 <input type="hidden" name="direction" value=""/>
 <osp:form/>
+
 <spring:bind path="presentation.presentationType">
-	<div class="checkbox">
-		<input type="radio" name="<c:out value="${status.expression}"/>" value="osp.presentation.type.freeForm"
-			id="<c:out value="${status.expression}"/>id"
-			< c:if test="${status.value == 'osp.presentation.type.freeForm' || noTemplates}">checked="checked"</c:if> 
-		/>
-		<label for="<c:out value="${status.expression}"/>id">
-			<fmt:message key="label_freeForm"/>
-		</label>	
-		<p class="instruction indnt2"><fmt:message key="addPresentation1_manageYourself"/></p>
-	</div>
-	<div class="checkbox">
-		<input type="radio" name="<c:out value="${status.expression}"/>" value="osp.presentation.type.template"
-		 	id="<c:out value="${status.expression}"/>-id"
-			< c:if test="${status.value == 'osp.presentation.type.template' && !noTemplates}"> checked="checked"</c:if>
-			<c:if test="${noTemplates}">disabled="disabled"</c:if>
-		/>
-		<label for="<c:out value="${status.expression}"/>-id">
-			<fmt:message key="label_usingTemplate"/>
-		</label>
-		<p class="instruction indnt2"><fmt:message key="text_useTemplate"/></p>
-	</div>
+	<input id="presType" type="hidden" name="${status.expression}"/>
 </spring:bind>
 
+<div class="presentationTypeDialog">
+	<h3><fmt:message key="heading_createPresentation"/></h3>
+	<spring:bind path="presentation.template.id">
+		<c:if test="${status.error}">
+			<%-- FIXME: This needs an appropriate class for error msg --%>
+			<div class="alert">
+				<c:out value="${status.errorMessage}"/>
+			</div>
+		</c:if>
+		<c:if test="${!noTemplates}">
+			<div class="presentationTypeGroup">
+				<c:forEach var="template"
+					items="${availableTemplates}"
+					varStatus="templateStatus">
+					<div class="portfolioTypeOption">
+						<input type="radio"
+							id="${status.expression}-${templateStatus.count}"
+							name="${status.expression}"
+							value="<c:out value="${template.id.value}"/>"
+							onclick="getElementById('presType').value = 'osp.presentation.type.template';" />
+						<label for="${status.expression}-${templateStatus.count}"><c:out value="${template.name}"/></label>
+						<p class="portfolioTypeDescription">
+							<c:out value="${template.description}"/>
+						</p>
+						<div class="portfolioTypeMoreInfo">
+							<a href="#" onclick="return false;">More Info</a> <%-- TODO: i18n --%>
+						</div>
+					</div>
+				</c:forEach>
+			</div>
+		</c:if>
+		
+		<%-- Handle option to turn free-form off --%>
+		<div class="presentationTypeGroup">
+			<div class="portfolioTypeOption">
+				<input type="radio"
+					id="${status.expression}-freeForm"
+					name="${status.expression}"
+					value="${freeFormTemplateId.value}"
+					onclick="getElementById('presType').value = 'osp.presentation.type.freeForm';" />
+				<label for="${status.expression}-freeForm"><fmt:message key="label_freeForm"/></label>
+				<p class="portfolioTypeDescription">
+					<fmt:message key="addPresentation1_manageYourself"/>
+				</p>
+			</div>
+		</div>
+	</spring:bind>
+</div>
+
+<%--
 <p class="shorttext indnt3">
 	<spring:bind path="presentation.template.id">
 		<span class="reqStar">*</span>
@@ -74,7 +105,9 @@
 		</c:if>
 	</spring:bind>
 </p>
+--%>
 
+<%--
 <c:if test="${!noTemplates}">
     <spring:bind path="presentation.template.id">
         <div class="indnt3">
@@ -96,7 +129,7 @@
 
     </spring:bind>
 </c:if>
-
+--%>
 
 <c:set var="suppress_submit" value="true"/>
 <c:set var="suppress_save" value="true"/>
