@@ -81,6 +81,7 @@ import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationItem;
 import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
+import org.theospi.portfolio.presentation.model.PresentationTemplateNameComparator;
 import org.theospi.portfolio.wizard.model.CompletedWizard;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.AuthorizationFacade;
@@ -218,12 +219,6 @@ public class AddPresentationController extends AbstractWizardFormController {
       return schemaFactory.getSchema(rNode.getInputStream());
    }
    
-   protected class PresentationTemplateComparator implements Comparator<PresentationTemplate> {
-	   public int compare(PresentationTemplate arg0, PresentationTemplate arg1) {
-		   return arg0.getName().compareTo(arg1.getName());
-	   }
-   }
-
    protected Map referenceData(HttpServletRequest request, int page) throws Exception {
       Map model = new HashMap();
       Presentation presentation = (Presentation) request.getSession().getAttribute(getCommandName());
@@ -251,7 +246,7 @@ public class AddPresentationController extends AbstractWizardFormController {
          model.put("publishedTemplates", publishedTemplates);
          model.put("globalPublishedTemplates", globalPublishedTemplates);
          
-         TreeSet<PresentationTemplate> availableTemplates = new TreeSet<PresentationTemplate>(new PresentationTemplateComparator());
+         TreeSet<PresentationTemplate> availableTemplates = new TreeSet<PresentationTemplate>(new PresentationTemplateNameComparator());
          availableTemplates.addAll(templates);
          availableTemplates.addAll(publishedTemplates);
          availableTemplates.addAll(globalPublishedTemplates);

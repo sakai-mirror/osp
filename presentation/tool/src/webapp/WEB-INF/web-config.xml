@@ -107,6 +107,7 @@
                <prop key="/deleteItemDefinition.osp">deleteItemDefinitionController</prop>
                <prop key="/editItemDefinition.osp">editItemDefinitionController</prop>
                <prop key="/addPresentation.osp">addPresentationController</prop>
+               <prop key="/createPresentation.osp">createPresentationController</prop>
                <prop key="/deletePresentation.osp">deletePresentationController</prop>
                <prop key="/sharePresentation.osp">sharePresentationController</prop>
                <prop key="/sharePresentationMore.osp">sharePresentationMoreController</prop>

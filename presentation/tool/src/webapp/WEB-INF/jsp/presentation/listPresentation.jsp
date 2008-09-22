@@ -88,7 +88,7 @@ $(document).ready(function() {
 
 <ul class="navIntraTool">
     <c:if test="${can.create}">
-        <li class="firstToolBarItem"><span><a href="<osp:url value="addPresentation.osp"/>&resetForm=true"
+        <li class="firstToolBarItem"><span><a href="<osp:url value="createPresentation.osp"/>"
             title="<fmt:message key="action_new_portfolio"/>"> <fmt:message key="action_new_portfolio"/> </a></span></li>
     </c:if>
     
@@ -303,7 +303,7 @@ $(document).ready(function() {
 							</c:if>
 							<c:if test="${isAuthorizedTo.edit}">
 									<a 
-									href="<osp:url value="addPresentation.osp"/>&target=_target1&resetForm=true&id=<c:out value="${presentation.id.value}" />"> <fmt:message key="table_action_edit"/>
+									href="<osp:url value="addPresentation.osp"/>&target=_target3&resetForm=true&id=<c:out value="${presentation.id.value}" />"> <fmt:message key="table_action_edit"/>
 									</a>
 							</c:if>
   <c:if test="${presentation.owner.id.value == osp_agent.id.value}">
