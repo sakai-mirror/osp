@@ -1876,7 +1876,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
          if (art != null && art.getHome() instanceof PresentableObjectHome) {
             PresentableObjectHome home = (PresentableObjectHome) art.getHome();
-            Element node = home.getArtifactAsXml(art);
+            Element node = home.getArtifactAsXml(art, PresentationContentEntityProducer.PRODUCER_NAME, presentation.getSiteId(), presentation.getId().getValue());
             node.setName("artifact");
             itemElement.addContent(node);
          }
@@ -2664,15 +2664,15 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       
       Artifact art;
 
-      if (finder instanceof EntityContextFinder && !presentation.isPreview()) {
-         art = ((EntityContextFinder)finder).loadInContext(itemId,
-               PresentationContentEntityProducer.PRODUCER_NAME, 
-               presentation.getSiteId(),
-               presentation.getId().getValue());
-      }
-      else {
-         art = finder.load(itemId);
-      }
+//      if (finder instanceof EntityContextFinder && !presentation.isPreview()) {
+//         art = ((EntityContextFinder)finder).loadInContext(itemId,
+//               PresentationContentEntityProducer.PRODUCER_NAME, 
+//               presentation.getSiteId(),
+//               presentation.getId().getValue());
+//      }
+//      else {
+      art = finder.load(itemId);
+//      }
       return art;
    }
    
