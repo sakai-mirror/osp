@@ -203,7 +203,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
             if ( request.get(availItem.getId().getValue()) != null )
             {
                mods = true;
-               selectedList.add( availItem.getAgent() );
+               selectedList.add( availItem );
             }
             else {
                newAvailList.add( availItem );
@@ -403,29 +403,4 @@ public class SharePresentationMoreController extends AbstractPresentationControl
 			return o1.getDisplayName().compareTo( o2.getDisplayName() );
 		}
 	}
-
-   /**
-    ** Wrapper for Agents that adds worksiteName for roles
-    **/
-   public class AgentWrapper {
-      String worksiteName = null;
-      Agent agent = null;
-
-      public AgentWrapper( Agent agent, String worksiteName ) {
-         this.agent = agent;
-         this.worksiteName = worksiteName;
-      }
-      
-      public Id getId() {
-         return agent.getId();
-      }
-      
-      public String getDisplayName() {
-         return agent.getDisplayName()+" ("+worksiteName+")";
-      }
-      
-      public Agent getAgent() {
-         return agent;
-      }
-   }   
 }

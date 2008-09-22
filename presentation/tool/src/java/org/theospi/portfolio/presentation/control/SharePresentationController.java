@@ -40,6 +40,10 @@ import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.entity.api.Reference;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.entity.cover.EntityManager;
+import org.sakaiproject.site.cover.SiteService;
 
 /**
  **/
@@ -138,13 +142,34 @@ public class SharePresentationController extends AbstractPresentationController 
                
       ArrayList shareList = new ArrayList(authzList.size());                                            
       for (Iterator it=authzList.iterator(); it.hasNext(); ) {
-         Agent member = ((Authorization)it.next()).getAgent();
-         shareList.add( member );
+         Agent agent = ((Authorization)it.next()).getAgent();
+         if ( agent.isRole() ) {
+            String worksiteName = getSiteFromRoleMember(agent.getId().getValue());
+            agent = new AgentWrapper( agent, worksiteName );
+         }
+         shareList.add( agent );
       }
       
       return shareList;
    }
-    
+
+   /**
+    ** Parse role id and return Site title
+    **/
+    private String getSiteFromRoleMember( String roleMember ) {
+       Reference ref = EntityManager.newReference( roleMember );
+       String siteId = ref.getContainer();
+       String siteTitle = "";
+       try {
+          siteTitle = SiteService.getSite(siteId).getTitle();
+       }
+       catch (IdUnusedException e) {
+          logger.warn(e.toString());
+       }
+            
+       return siteTitle;
+    }
+
    /**
     ** get session-based share list and remove selected-for-removal members 
     **/

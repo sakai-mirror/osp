@@ -89,7 +89,6 @@
            <input type="checkbox" name="${shareMember.id.value}" id="${shareMember.id.value}" />
            <label for="${shareMember.id.value}">
            <c:out value="${shareMember.displayName}" />
-           <c:if test="${shareMember.role}"> <fmt:message key="pres_share_role"/></c:if>
            </label>
            </div>
            </td></tr>
