@@ -20,7 +20,7 @@ public class CreatePresentationController extends SimpleFormController {
 	
 	public CreatePresentationController() {
 		setFormView("createPresentation");
-		setSuccessView("listPresentationRedirect");
+		setSuccessView("editPresentationRedirect");
 		setCommandClass(CreatePresentationCommand.class);
 		setValidator(new CreatePresentationValidator());
 	}
@@ -49,7 +49,9 @@ public class CreatePresentationController extends SimpleFormController {
 			errors.reject("error.presentationTypeRequired");
 			return showForm(request, response, errors);
 		}
-		return new ModelAndView(getSuccessView());
+		HashMap<String, Object> model = new HashMap<String, Object>();
+		model.put("id", presentation.getId().getValue());
+		return new ModelAndView(getSuccessView(), model);
 	}
 
 	public void setPresentationService(PresentationService presentationService) {

@@ -693,14 +693,32 @@
 		<property name="toolManager">
 			<ref bean="org.sakaiproject.tool.api.ToolManager"/>
 		</property>
+		<property name="idCustomEditor">
+			<ref bean="idCustomEditor"/>
+		</property>
     </bean>
-
-	<bean id="createPresentationController" class="org.theospi.portfolio.presentation.control.CreatePresentationController">
+    
+    <bean id="supportedController" abstract="true">
 		<property name="presentationService">
 			<ref bean="org.theospi.portfolio.presentation.support.PresentationService" />
-		</property>
+		</property>		
+    </bean>
+
+	<bean id="createPresentationController" class="org.theospi.portfolio.presentation.control.CreatePresentationController" parent="supportedController">
+	</bean>
+	
+	<bean id="editPresentationController" class="org.theospi.portfolio.presentation.control.EditPresentationController" parent="supportedController">
 	</bean>
 
+	<bean id="editOptionsController" class="org.theospi.portfolio.presentation.control.EditOptionsController" parent="supportedController">
+	</bean>
+	
+	<bean id="editContentController" class="org.theospi.portfolio.presentation.control.EditContentController" parent="supportedController">
+	</bean>
+	
+	<bean id="updatePresentationController" class="org.theospi.portfolio.presentation.control.UpdatePresentationController" parent="supportedController">
+	</bean>
+	
     <bean id="viewPresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
             <bean class="org.theospi.portfolio.presentation.control.ViewPresentationControl">

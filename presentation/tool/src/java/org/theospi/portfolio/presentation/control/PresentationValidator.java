@@ -193,6 +193,7 @@ public class PresentationValidator extends ValidatorBase {
          errors.rejectValue("name", "error.required", "name is required");
       }
 
+      //FIXME: This has got to go -- changing values in validation is a bad idea
       if (presentation.getPresentationType().equals(Presentation.FREEFORM_TYPE)) {
          presentation.getTemplate().setId(Presentation.FREEFORM_TEMPLATE_ID);
       }

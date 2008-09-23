@@ -302,8 +302,11 @@ $(document).ready(function() {
 								</li>
 							</c:if>
 							<c:if test="${isAuthorizedTo.edit}">
+									<a
+									href="<osp:url value="addPresentation.osp"/>&target=_target1&resetForm=true&id=<c:out value="${presentation.id.value}" />"> <fmt:message key="table_action_edit"/>
+									</a>
 									<a 
-									href="<osp:url value="addPresentation.osp"/>&target=_target3&resetForm=true&id=<c:out value="${presentation.id.value}" />"> <fmt:message key="table_action_edit"/>
+									href="<osp:url value="editPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"> <fmt:message key="table_action_edit"/>
 									</a>
 							</c:if>
   <c:if test="${presentation.owner.id.value == osp_agent.id.value}">

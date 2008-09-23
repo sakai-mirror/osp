@@ -11,12 +11,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.sakaiproject.metaobj.shared.mgt.IdCustomEditor;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.model.PresentationTemplateNameComparator;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.security.AuthorizationFailedException;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.tool.api.ToolManager;
@@ -28,6 +30,8 @@ public class PresentationService {
 	private AuthorizationFacade authzManager;
 	private PresentationManager presentationManager;
 	private ToolManager toolManager;
+	private IdCustomEditor idCustomEditor;
+	
 	private static final Log log = LogFactory.getLog(PresentationService.class);
 	
 	//TODO: Add signature for more parameterized creation -- not just complete current context (user, site, tool)
@@ -65,6 +69,29 @@ public class PresentationService {
         return new ArrayList<PresentationTemplate>(availableTemplates);
 	}
 	
+	public boolean updatePresentation(String presentationId, String name, String description) {
+		Presentation presentation = presentationManager.getPresentation(idManager.getId(presentationId));
+		if (presentation == null)
+			throw new IllegalArgumentException("Portfolio does not exist with ID: " + presentationId);
+		
+		if (name != null)
+			presentation.setName(name);
+		
+		if (description != null)
+			presentation.setDescription(description);
+		
+        presentation.setModified(new Date(System.currentTimeMillis()));
+		presentation = presentationManager.storePresentation(presentation);
+		return (presentation != null);
+	}
+	
+	public Presentation getPresentation(String id) {
+		Presentation presentation = presentationManager.getPresentation(idManager.getId(id));
+		if (presentation == null)
+			throw new IllegalArgumentException("Portfolio does not exist with ID: " + id);
+		return presentation;
+	}
+	
 	public void setIdManager(IdManager idManager) {
 		this.idManager = idManager;
 	}
@@ -82,6 +109,12 @@ public class PresentationService {
 	}
 	public void setToolManager(ToolManager toolManager) {
 		this.toolManager = toolManager;
+	}
+	public IdCustomEditor getIdCustomEditor() {
+		return idCustomEditor;
+	}
+	public void setIdCustomEditor(IdCustomEditor idCustomEditor) {
+		this.idCustomEditor = idCustomEditor;
 	}
 	
 }
