@@ -16,7 +16,7 @@
 <!--[if gt IE 5.0]><![if lt IE 7]>
 <style type="text/css">
 /* that IE 5+ conditional comment makes this only visible in IE 5+*/ 
-ul.makeMenu{border:1px solid red}
+ul.makeMenu{border:none}
 ul.makeMenu ul {  /* copy of above declaration without the > selector */                                                                      
   display: none; position: absolute; top: 18px; left: 0px; background-image:none; background-color:#ffffff;width: 8em; z-index:3;border:1px solid  #666  	
 }
@@ -39,11 +39,11 @@ ul.makeMenu li {
 
 .menuOpen{margin:2px !important;padding:2px !important;background:#fff;width:6em;border-width:1px 1px 1px 0;border-style:solid;border-color: #ccc;}
 .menuOpen:hover{border-width:1px 1px 1px 0;border-style:solid;border-color: #ccc;;background:#fff}
-ul.makeMenu{border:none !important;background:#fff;border:1px solid #ccc !important;margin:2px;padding:2px;padding-left:5px;width:3em;}
-ul.makeMenu:hover{border:1px solid #ccc !important; background:#fff}
+ul.makeMenu{border:none !important;background:transparent;border:1px solid #ccc !important;margin:2px;padding:2px;padding-left:5px;width:3em;}
+ul.makeMenu:hover{border:none !important; background:transparent}
 ul.makeMenu ul{top: 15px !important;left:0}
 .attach{width:1em !important;}
-ul.makeMenu{border:1px solid red !important}
+ul.makeMenu{border:none !important}
 </style>
 <![endif]-->
 
@@ -133,10 +133,9 @@ $(document).ready(function() {
         <li class="selected"><span><fmt:message key="action_filter_shared"/></span></li>
       </c:otherwise>
     </c:choose>
-	</ul>	
-
-    
-<br/> <!-- temp separation; end of tabs -->
+	</ul>
+	<div class="tabNavPanel">
+ <!-- temp separation; end of tabs -->
 
 
 <ul class="smallNavIntraTool specialLink">
@@ -350,3 +349,4 @@ $(document).ready(function() {
 	  <div style="height:20em"></div>
 	 </c:otherwise>
 </c:choose> 
+</div>
