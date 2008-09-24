@@ -27,8 +27,8 @@ memory			https://source.sakaiproject.org/svn/memory/trunk
 message			https://source.sakaiproject.org/svn/message/trunk
 metaobj			https://source.sakaiproject.org/svn/metaobj/trunk
 msgcntr			https://source.sakaiproject.org/svn/msgcntr/trunk
-osp			https://source.sakaiproject.org/svn/osp/trunk
-#osp			https://source.sakaiproject.org/svn/osp/branches/SAK-13146
+#osp			https://source.sakaiproject.org/svn/osp/trunk
+osp			https://source.sakaiproject.org/svn/osp/branches/SAK-14417
 podcasts		https://source.sakaiproject.org/svn/podcasts/trunk
 portal			https://source.sakaiproject.org/svn/portal/trunk
 postem			https://source.sakaiproject.org/svn/postem/trunk
