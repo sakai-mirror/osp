@@ -80,7 +80,7 @@ public class SharePresentationController extends AbstractPresentationController 
          model.put(SHARE_PUBLIC, "false");
          
       List revisedShareList = getRevisedShareList( request, presentation );
-      if ( revisedShareList.size() > 0 )
+      if ( revisedShareList.size() > 0 || request.get(SHARE_SELECT)!=null )
          model.put(SHARE_SELECT, "true");
       else
          model.put(SHARE_SELECT, "false");

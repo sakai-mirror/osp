@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.HashMap;
 import java.util.Comparator;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,6 +36,8 @@ import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.theospi.portfolio.shared.model.AgentImplOsp;
+
 import org.theospi.portfolio.security.Authorization;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -48,31 +51,60 @@ import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.api.Session;
+import org.sakaiproject.util.ResourceLoader;
+import org.sakaiproject.email.api.EmailService; 
+import org.sakaiproject.user.api.UserDirectoryService; 
 
 /**
  **/
 public class SharePresentationMoreController extends AbstractPresentationController implements Controller {
    protected final Log logger = LogFactory.getLog(getClass());
+   private ResourceLoader rl = new ResourceLoader("org.theospi.portfolio.presentation.bundle.Messages");
    private ServerConfigurationService serverConfigurationService;
    private SiteService siteService;
+   private EmailService emailService;
+   private UserDirectoryService userDirectoryService;
    
    private UserAgentComparator userAgentComparator = new UserAgentComparator();
    private RoleAgentComparator roleAgentComparator = new RoleAgentComparator();
    
-   private final String SHARE_PUBLIC  = "pres_share_public";
-   private final String SHARE_SELECT  = "pres_share_select";
-   
-   private final String SHARE_LIST_ATTRIBUTE   = "org.theospi.portfolio.presentation.control.SharePresentationController.shareList";
-   private final String SHARE_PUBLIC_ATTRIBUTE = "org.theospi.portfolio.presentation.control.SharePresentationController.public";
-   
    private final String SHAREBY_KEY    = "shareBy";
    private final String SHAREBY_BROWSE = "share_browse";
-   private final String SHAREBY_GROUP = "share_group";
+   private final String SHAREBY_GROUP  = "share_group";
    private final String SHAREBY_SEARCH = "share_search";
    private final String SHAREBY_EMAIL  = "share_email";
    private final String SHAREBY_ROLE   = "share_role";
    private final String SHAREBY_ALLROLE= "share_allrole";
    
+    /** This accepts email addresses */
+    private static final Pattern emailPattern = Pattern.compile(
+          "^" +
+             "(?>" +
+                "\\.?[a-zA-Z\\d!#$%&'*+\\-/=?^_`{|}~]+" +
+             ")+" + 
+          "@" + 
+             "(" +
+                "(" +
+                   "(?!-)[a-zA-Z\\d\\-]+(?<!-)\\." +
+                ")+" +
+                "[a-zA-Z]{2,}" +
+             "|" +
+                "(?!\\.)" +
+                "(" +
+                   "\\.?" +
+                   "(" +
+                      "25[0-5]" +
+                   "|" +
+                      "2[0-4]\\d" +
+                   "|" +
+                      "[01]?\\d?\\d" +
+                   ")" +
+                "){4}" +
+             ")" +
+          "$"
+          );
+    
+ 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       // Get specified portfolio/presentation      
       Map model = new HashMap();
@@ -97,12 +129,16 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       List shareList = getShareList(presentation);
       
       boolean isUpdated = false;
-      if (shareBy.equals(SHAREBY_SEARCH) ) // tbd
+      if (shareBy.equals(SHAREBY_EMAIL) || shareBy.equals(SHAREBY_SEARCH) ) 
       {
-      }
-      else if (shareBy.equals(SHAREBY_EMAIL) ) // tbd
-      {
-         
+         String shareUser = (String)request.get("share_user");
+         if ( shareUser != null && !shareUser.equals("") ) {
+            String errMsg = addUserByEmailOrId(shareBy, shareUser, shareList);
+            if ( errMsg == null )
+               isUpdated = true;
+            else
+               model.put("errMsg", rl.getFormattedMessage(errMsg, new Object[]{shareUser}) );
+         }
       }
       else if ( shareBy.equals(SHAREBY_BROWSE) || shareBy.equals(SHAREBY_GROUP) )
       {
@@ -122,6 +158,132 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       model.put("isUpdated", String.valueOf(isUpdated) );
       return new ModelAndView("share", model);
    }
+
+   /**
+    ** Add specified user (or guest-user/email-address) to the shareList
+    ** 
+    ** @param shareBy indicates whether user or email-address is specified
+    ** @param shareUser user to share with (userId or email-address)
+    ** @param shareList current list of shared users
+    ** @return null if successful, otherwise an error message property is returned
+    ** 
+    **/
+   private String addUserByEmailOrId( String shareBy, String shareUser, List shareList ) {
+      List userList = getAgentManager().findByProperty(AgentManager.TYPE_EID, shareUser);
+      
+      // Check if user not found (and not share-by-email or guest user)
+      if ( userList==null && shareBy.equals(SHAREBY_SEARCH) ) {
+         return "share_err_user";
+      }
+      
+      // Otherwise if user not found and this is share-by-email or guest user
+      else if ( userList == null && shareBy.equals(SHAREBY_EMAIL)) {
+         AgentImplOsp tempAgent = new AgentImplOsp();
+         if ( validateEmail(shareUser) ) {
+            tempAgent.setDisplayName(shareUser);
+            tempAgent.setRole(Agent.ROLE_GUEST);
+            tempAgent.setId(getIdManager().getId(shareUser));
+            Agent agent = getAgentManager().createAgent(tempAgent);
+            
+            if (agent != null) {
+               notifyNewUserEmail( agent );
+               shareList.add( agent );
+            }
+            else {
+               return "share_err_email";
+            }
+         }
+         else {
+            return "share_err_email";
+         }
+      }
+      
+      // Check for duplciates
+      else if ( isUserShared( (Agent)userList.get(0), shareList) ) {
+         return "share_err_dup";
+      }
+      
+      // Otherwise, user is found; add to the shareList
+      else {
+         shareList.add( userList.get(0) );
+      }
+       
+      return null;
+   }
+   
+   /** Check if given user is already in shareList
+    **/
+   private boolean isUserShared( Agent agent, List shareList ) {
+      for (Iterator it = shareList.iterator(); it.hasNext();) {
+         Agent shareUser = (Agent) it.next();
+         if ( shareUser.getId().getValue().equals( agent.getId().getValue() ) )
+            return true;
+      }
+      return false;
+   }
+
+    /**
+     ** Verify syntax of email adddress and verify it does not
+     ** contain the invalidEmailInIdAccountString string from sakai.properties
+     ** 
+     ** @param email email address string
+     ** @return boolean true if valid, otherwise false
+     **/
+    protected boolean validateEmail(String email) {
+       if (!emailPattern.matcher(email).matches())
+          return false;
+          
+       String invalidEmailInIdAccountString = getServerConfigurationService().getString("invalidEmailInIdAccountString", null);
+       
+       if(invalidEmailInIdAccountString != null) {
+          String[] invalidDomains = invalidEmailInIdAccountString.split(",");
+          
+          for(int i = 0; i < invalidDomains.length; i++) {
+             String domain = invalidDomains[i].trim();
+             
+             if(email.toLowerCase().indexOf(domain.toLowerCase()) != -1) {
+                return false;
+             }
+          }
+       }
+       return true;
+    }
+
+   /**
+    ** Notify specified guest user that they have been added as a guest user
+    ** TBD: change to use email template service
+    **/
+    private void notifyNewUserEmail(Agent guest) {
+        String from = getServerConfigurationService().getString("setup.request", null);
+        if (from == null) {
+
+            from = "postmaster@".concat(getServerConfigurationService().getServerName());
+        }
+        String productionSiteName = getServerConfigurationService().getString("ui.service", "");
+        String productionSiteUrl = getServerConfigurationService().getPortalUrl();
+
+        String to = guest.getDisplayName();
+        String headerTo = to;
+        String replyTo = to;
+        String message_subject = rl.getFormattedMessage("email.guestusernoti", new Object[]{productionSiteName});
+        String content = "";
+
+        if (from != null && to != null) {
+            StringBuilder buf = new StringBuilder();
+            buf.setLength(0);
+
+            // email body
+            buf.append(to + ":\n\n");
+            AgentImplOsp impl = (AgentImplOsp) guest;
+            buf.append(rl.getFormattedMessage("email.addedto", new Object[]{productionSiteName, productionSiteUrl}) + "\n\n");
+            buf.append(rl.getFormattedMessage("email.simpleby", new Object[]{getUserDirectoryService().getCurrentUser().getDisplayName()}) + "\n\n");
+            buf.append(rl.getFormattedMessage("email.userid", new Object[]{to}) + "\n\n");
+            buf.append(rl.getFormattedMessage("email.password", new Object[]{impl.getPassword()}) + "\n\n");
+
+            content = buf.toString();
+            getEmailService().send(from, to, message_subject, content, headerTo, replyTo, null);
+        }
+    }
 
    /**
     ** get session-based share list
@@ -174,14 +336,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       ArrayList selectedList = new ArrayList();
       ArrayList newAvailList = new ArrayList();
       
-      if ( shareBy.equals(SHAREBY_SEARCH) )
-      {
-      }
-      else if ( shareBy.equals(SHAREBY_EMAIL) )
-      {
-      }
-      
-      else if (shareBy.equals(SHAREBY_BROWSE) || shareBy.equals(SHAREBY_GROUP))
+      if (shareBy.equals(SHAREBY_BROWSE) || shareBy.equals(SHAREBY_GROUP))
       {
          for (Iterator it = availList.iterator(); it.hasNext();) {
             Agent availItem = (Agent) it.next();
@@ -373,6 +528,22 @@ public class SharePresentationMoreController extends AbstractPresentationControl
 
    public void setSiteService( SiteService siteService) {
       this.siteService = siteService;
+   }
+   
+   public EmailService getEmailService() {
+      return emailService;
+   }
+
+   public void setEmailService( EmailService emailService ) {
+      this.emailService = emailService;
+   }
+   
+   public UserDirectoryService getUserDirectoryService() {
+      return userDirectoryService;
+   }
+
+   public void setUserDirectoryService( UserDirectoryService userDirectoryService) {
+      this.userDirectoryService = userDirectoryService;
    }
    
    /**

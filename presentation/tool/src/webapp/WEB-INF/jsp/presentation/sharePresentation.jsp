@@ -93,8 +93,7 @@
       <label for="pres_share_public">
          <fmt:message key="pres_share_public"/>
       </label>
-    <%--  desNote: preview link (if this is what this is) has moved to top right
-      <a href="${publicUrl}" target="_blank_"><fmt:message key="pres_share_here"/></a>--%>
+      <a href="${publicUrl}" target="_blank_"><fmt:message key="pres_share_here"/></a>
    </div>
       
    <div class="checkbox">

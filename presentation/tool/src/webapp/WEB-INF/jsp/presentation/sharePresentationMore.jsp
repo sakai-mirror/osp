@@ -92,6 +92,11 @@ $(document).ready(function() {
     	<fmt:message key="share_confirm"/>
 	</div>
 </c:if>
+<c:if test="${not empty errMsg}">
+	<div class="alertMessageInline">
+     <c:out value="${errMsg}" />
+	</div>
+</c:if>
    
 <form method="post" name="mainForm">
 <input type="hidden" name="shareBy" value="${shareBy}"/>
@@ -173,14 +178,6 @@ $(document).ready(function() {
    <thead>
    <tr>
    <td>
-      <c:if test="${shareBy=='share_browse' || shareBy=='share_group'}">
-         <a href="javascript:document.mainForm.submit();"><fmt:message key="share_add_users"/></a>
-      </c:if>
-      <c:if test="${shareBy=='share_role' || shareBy=='share_allrole'}">
-         <a href="javascript:document.mainForm.submit();"><fmt:message key="share_add_roles"/></a>
-      </c:if>
-   </td>
-   <td style="text-align:right;padding-left:2em;white-space:nowrap">
       <span class="messageInstruction">
       <c:if test="${shareBy=='share_browse' || shareBy=='share_group'}">
       <fmt:message key="share_user_list"/> 
@@ -189,6 +186,14 @@ $(document).ready(function() {
       <fmt:message key="share_role_list"/> 
       </c:if>
       </span>
+   </td>
+   <td style="text-align:right;padding-left:2em;white-space:nowrap">
+      <c:if test="${shareBy=='share_browse' || shareBy=='share_group'}">
+         <a href="javascript:document.mainForm.submit();"><fmt:message key="share_add_users"/></a>
+      </c:if>
+      <c:if test="${shareBy=='share_role' || shareBy=='share_allrole'}">
+         <a href="javascript:document.mainForm.submit();"><fmt:message key="share_add_roles"/></a>
+      </c:if>
    </td>
    </tr>
    </thead>
@@ -223,6 +228,9 @@ $(document).ready(function() {
    <tfoot>
    <tr>
    <td>
+      <span class="messageInstruction"><fmt:message key="share_hint"/></span>
+   </td>
+   <td style="text-align:right;padding-left:2em;white-space:nowrap">
       <c:if test="${shareBy=='share_browse' || shareBy=='share_group'}">
          <a href="javascript:document.mainForm.submit();"><fmt:message key="share_add_users"/></a>
       </c:if>
@@ -230,32 +238,37 @@ $(document).ready(function() {
          <a href="javascript:document.mainForm.submit();"><fmt:message key="share_add_roles"/></a>
       </c:if>
    </td>
-   <td style="text-align:right;padding-left:2em;white-space:nowrap">
-      <span class="messageInstruction"><fmt:message key="share_hint"/></span>
-   </td>
    </tr>
    </tfoot>
    </table>
    </c:if>
 </c:when>
 
-<%-- enter new user to share with --%>
-<c:when test="${shareBy=='share_search'}">
-<p  class="longttext">
-<label for="share_enter_userid" style="display:block;padding:.3em"><fmt:message key="share_enter_userid"/></label> 
-   <input type="text" name="share_enter_userid" id="share_enter_userid" size="60" />
-   <a href="javascript:document.mainForm.submit();"><fmt:message key="share_submit"/></a>
-  </p> 
+<%-- enter new user or email to share with --%>
+<c:when test="${shareBy=='share_search' || shareBy=='share_email'}">
+<p class="longttext">
+  <table style="width:auto">
+  <tr>
+  <td>
+    <label for="share_enter_userid" style="display:block;padding:.3em">
+      <c:if test="${shareBy=='share_search'}">
+      <fmt:message key="share_enter_userid"/>
+      </c:if>
+      <c:if test="${shareBy=='share_email'}"> 
+      <fmt:message key="share_enter_email"/>
+      </c:if>
+    </label> 
+  </td>
+  <td style="text-align:right;padding-left:2em;white-space:nowrap">
+     <a href="javascript:document.mainForm.submit();"><fmt:message key="share_submit"/></a>
+  </td>
+  </tr>
+  <tr><td colspan="2">
+  <input type="text" name="share_user" id="share_user" size="60" />
+  </td></tr>
+</table>
+</p> 
 </c:when>
-
-<%-- enter new user by email to share with --%>
-<c:when test="${shareBy=='share_email'}">
-   <p  class="longttext">
-<label for="share_enter_email" style="display:block;padding:.3em"><fmt:message key="share_enter_email"/></label> 
-   <input type="text" name="share_enter_email" id="share_enter_email" size="60" />
-   <a href="javascript:document.mainForm.submit();"><fmt:message key="share_submit"/></a>
-</p>
-   </c:when>
 
 </c:choose>
 

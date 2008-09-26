@@ -518,6 +518,15 @@
                 <property name="agentManager">
                   <ref bean="agentManager"/>
                 </property>
+                <property name="userDirectoryService">
+                  <ref bean="org.sakaiproject.user.api.UserDirectoryService"/>
+                </property>
+                <property name="emailService">
+                  <ref bean="org.sakaiproject.email.api.EmailService"/>
+                </property>
+                <property name="idManager">
+                    <ref bean="idManager"/>
+                </property>
             </bean>
         </property>
         <property name="customTypedEditors">
