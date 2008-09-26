@@ -402,9 +402,14 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       }
       
       Collection groups = site.getGroups();
+      String selectedGroup = (String)request.get("groups");
       for (Iterator i = groups.iterator(); i.hasNext();) {
          Group group = (Group) i.next();
-         boolean checked = request.get(group.getId())!=null ? true : false;
+         boolean checked = false;
+         if ( selectedGroup == null )
+            selectedGroup = group.getId();
+         if ( selectedGroup.equals(group.getId()) )
+            checked = true;
          groupsList.add(new GroupWrapper( group, checked ));
       }
       

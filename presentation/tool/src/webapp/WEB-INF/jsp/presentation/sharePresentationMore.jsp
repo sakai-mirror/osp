@@ -142,10 +142,10 @@ $(document).ready(function() {
    <c:forEach var="group" items="${groupList}"> 
      <tr><td colspan="2">
      <div class="checkbox">
-     <input type="checkbox" name="${group.id}" id="${group.id}" 
+     <input type="radio" name="groups" id="groups" value="${group.id}"  
          <c:if test="${group.checked}"> checked="checked"</c:if>
          onchange="javascript:document.mainForm.submit();" />
-     <label for="${group.id}">
+     <label for="groups">
      <c:out value="${group.title}" />
      </label>
      </div>
