@@ -87,7 +87,7 @@ $(document).ready(function() {
    <fmt:message key="title_share_add"/>
 </h3>
 
-<c:if test="${isUpdated=='true'}">
+<c:if test="${isUpdated}">
 	<div class="messageInformation" id="messageHolder" style="width:20em">
     	<fmt:message key="share_confirm"/>
 	</div>
@@ -109,11 +109,11 @@ $(document).ready(function() {
    	<li id="0" class="menuOpen"><fmt:message key="share_by"/>
 		<ul id="menu-0" class="makeMenuChild" style="display:none">
 	   <li><a href="javascript:document.mainForm.shareBy.value='share_browse';document.mainForm.submit();"><fmt:message key="share_browse"/></a> </li>
-	   <c:if test="${hasGroups=='true'}">
+	   <c:if test="${hasGroups}">
 		  <li><a href="javascript:document.mainForm.shareBy.value='share_group';document.mainForm.submit();"><fmt:message key="share_group"/></a> </li>
 	   </c:if>
 	   <li><a href="javascript:document.mainForm.shareBy.value='share_search';document.mainForm.submit();"><fmt:message key="share_search"/></a> </li>
-	   <c:if test="${guestEnabled=='true'}">
+	   <c:if test="${guestEnabled}">
 		  <li><a href="javascript:document.mainForm.shareBy.value='share_email';document.mainForm.submit();"><fmt:message key="share_email"/></a> </li>
 	   </c:if>
 	   <li><a href="javascript:document.mainForm.shareBy.value='share_role';document.mainForm.submit();"><fmt:message key="share_role"/></a> </li>
@@ -126,32 +126,34 @@ $(document).ready(function() {
 </table>
 
 <!-- select groups to to filter -->
-<c:if test="${shareBy=='share_group' && hasGroups=='true'}">
-   <fmt:message key="share_group_filter"/> 
+<c:if test="${shareBy=='share_group' && hasGroups}">
+<blockquote>
    <table width="auto" rules="groups">
    <thead>
+   
    <tr>
    <td>
-      <h3>
-      <fmt:message key="share_group_filter"/> 
-      </h3>
+      <span class="messageInstruction"><fmt:message key="share_group_filter"/></span>
    </td>
-   </tr>
    </thead>
          
-   <!-- Gonzalo, could this be a scrolling list of checkboxes? visible size of about 10? I don't know how to do this -->
-   <%-- it will be a scrollable  box of 180 px height if the content goes over 180px, if less, it will he as high as the contents--%>
+   <%-- this is a scrollable  box of 180 px height if the content goes over 180px, if less, it will he as high as the contents--%>
    <tbody>
    <c:forEach var="group" items="${groupList}"> 
      <tr><td colspan="2">
      <div class="checkbox">
-     <input type="checkbox" name="${group.id}" id="${group.id}" />
+     <input type="checkbox" name="${group.id}" id="${group.id}" 
+         <c:if test="${group.checked}"> checked="checked"</c:if>
+         onchange="javascript:document.mainForm.submit();" />
      <label for="${group.id}">
      <c:out value="${group.title}" />
      </label>
      </div>
      </td></tr>
    </c:forEach>
+   </tbody>
+   </table>
+</blockquote>
 </c:if>
 
 <c:choose>

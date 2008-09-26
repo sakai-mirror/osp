@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Collections;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,6 +52,7 @@ public class SharePresentationController extends AbstractPresentationController 
    protected final Log logger = LogFactory.getLog(getClass());
 
    private ServerConfigurationService serverConfigurationService;
+   private UserAgentComparator userAgentComparator = new UserAgentComparator();
    
    private final String SHARE_PUBLIC  = "pres_share_public";
    private final String SHARE_SELECT  = "pres_share_select";
@@ -188,6 +190,7 @@ public class SharePresentationController extends AbstractPresentationController 
               revisedShareList.add( member );
       }
       
+      Collections.sort(revisedShareList, userAgentComparator);
       session.setAttribute(SHARE_LIST_ATTRIBUTE+presentation.getId().getValue(), revisedShareList);
       return revisedShareList;
    }
