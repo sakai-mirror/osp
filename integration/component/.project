@@ -1,0 +1,17 @@
+<projectDescription>
+  <name>osp-integration-component</name>
+  <comment/>
+  <projects>
+    <project>osp-common-impl</project>
+    <project>osp-integration-impl</project>
+    <project>sakai-metaobj-impl</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

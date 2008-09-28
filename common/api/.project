@@ -1,0 +1,18 @@
+<projectDescription>
+  <name>osp-common-api</name>
+  <comment/>
+  <projects>
+    <project>sakai-assignment-api</project>
+    <project>sakai-metaobj-api</project>
+    <project>sakai-scheduler-api</project>
+    <project>sakai-taggable-api</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

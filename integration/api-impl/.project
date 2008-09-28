@@ -1,0 +1,19 @@
+<projectDescription>
+  <name>osp-integration-impl</name>
+  <comment/>
+  <projects>
+    <project>osp-common-api</project>
+    <project>osp-integration-api</project>
+    <project>sakai-metaobj-api</project>
+    <project>sakai-metaobj-impl</project>
+    <project>sakai-scheduler-api</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>
