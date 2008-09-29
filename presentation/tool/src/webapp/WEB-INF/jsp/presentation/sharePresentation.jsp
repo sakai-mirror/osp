@@ -47,35 +47,10 @@
 					
 });
 </script>
-<table width="100%">
-   <tr>
-      <td align="left">
-          <h3><c:out value="${presentation.name}" /></h3>
-      </td>
-      <td align="right">
-		  <a <c:if test="${presentation.template.includeHeaderAndFooter == false}">target="_blank" title="<fmt:message key="table_presentationManager_new_window"/>"</c:if>
-					href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />">
-               <fmt:message key="pres_preview" />
-		  </a>
-	   </td>
-   </tr>
-</table>
- <!-- temp separation; start of tabs -->
-<ul class="tabNav specialLink">
 
-<li>
- <a href="#"><fmt:message key="pres_summary"/></a>
- </li>
- <li>
- <a href="#"><fmt:message key="pres_content"/></a>
- </li>
- <li>
- <a href="#"><fmt:message key="pres_required"/></a>
- </li>
- <li  class="selected"> 
- <span> <fmt:message key="pres_share"/></span>
- </li>
-</ul>
+<c:set var="pres_active_page" value="share" />
+<%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
+ 
 <div class="tabNavPanel">
  <!-- temp separation; end of tabs -->
 

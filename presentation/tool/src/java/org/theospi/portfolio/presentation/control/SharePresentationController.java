@@ -72,7 +72,9 @@ public class SharePresentationController extends AbstractPresentationController 
       if (undo != null)
       {
          cleanSessionAttributes(presentation);
-         return new ModelAndView("undo");
+         model.put("id", presentation.getId().getValue());
+         model.put("undone", true);
+         return new ModelAndView("undo", model);
       }
       
       // determine share status
@@ -107,7 +109,11 @@ public class SharePresentationController extends AbstractPresentationController 
       saveRevisedShareList( revisedShareList, presentation );
       cleanSessionAttributes(presentation);
       
-      return new ModelAndView("success");
+      //Success should come back here via redirect...
+      model.clear();
+      model.put("id", presentation.getId().getValue());
+      model.put("succeeded", true);
+      return new ModelAndView("success", model);
    }
    
    /** 

@@ -535,3 +535,23 @@ p.closeMe{float:right;width:2em;cursor:pointer;text-align:right;margin:0;padding
 em.closeMe{font-style:normal;cursor:pointer;padding-left:1em}
 .messageContent{clear:both;margin-top:2em}
 .messageError .messageError,.messageValidation .messageValidation,.messageInformation .messageInformation,.messageConfirmation .messageConfirmation,.messageSuccess .messageSuccess,.messageInstruction .messageInstruction{background-image:none;border:none;padding-left:0}
+
+#presentationName {
+    background-color:transparent !important;
+    color:#555555;
+    font-family:Arial,Helvetica,sans-serif;
+    margin:1em 0.5em 0;
+    padding:0;
+}
+
+#presentationName .editableText {
+    font-weight:bold;
+    font-size: 1.2em;
+}
+
+#presentationName .inlineEdit {
+    font-weight:bold;
+    font-size: 1.2em;
+    margin:1em 0 0;
+}
+

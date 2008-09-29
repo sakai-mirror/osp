@@ -27,9 +27,12 @@ public class UpdatePresentationController extends AbstractCommandController {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "You have submitted bad input -- check the API");
 		}
 		
+		Boolean active = null;
+		if (request.getParameter("active") != null)
+			active = Boolean.valueOf(request.getParameter("active"));
 		Presentation presentation = (Presentation) command;
 		try {
-			if (!presentationService.updatePresentation(presentation.getId().getValue(), presentation.getName(), presentation.getDescription())) {				
+			if (!presentationService.updatePresentation(presentation.getId().getValue(), presentation.getName(), presentation.getDescription(), active)) {				
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
 		}
@@ -44,7 +47,7 @@ public class UpdatePresentationController extends AbstractCommandController {
 		binder.registerCustomEditor(Id.class, presentationService.getIdCustomEditor());
 		binder.setAllowedFields(new String[] {"id", "name", "description"});
 	}
-	
+
 	public void setPresentationService(PresentationService presentationService) {
 		this.presentationService = presentationService;
 	}

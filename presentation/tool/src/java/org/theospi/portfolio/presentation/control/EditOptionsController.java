@@ -1,27 +1,25 @@
 package org.theospi.portfolio.presentation.control;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.theospi.portfolio.presentation.support.PresentationService;
+public class EditOptionsController extends AbstractCalloutController {
 
-public class EditOptionsController extends SimpleFormController {
-	private PresentationService presentationService;
-
+	/*
 	public EditOptionsController() {
-		setFormView("editOptions");
-		setSuccessView("listPresentationRedirect");
+		setHelperView("addPresentationProperty");
+		setReturnView("editPresentationRedirect");
 	}
-
+	*/
+	
 	@Override
-	protected Object formBackingObject(HttpServletRequest request) throws Exception {
-		return new HashMap<String, Object>();
+	protected Map<String, Object> getSessionParams(String presentationId, HttpServletRequest request) {
+		return presentationService.editOptions(presentationId);
 	}
-
-	public void setPresentationService(PresentationService presentationService) {
-		this.presentationService = presentationService;
+	
+	@Override
+	protected void save(String presentationId, String reference) {
+		presentationService.saveOptions(presentationId, reference);
 	}
-
 }

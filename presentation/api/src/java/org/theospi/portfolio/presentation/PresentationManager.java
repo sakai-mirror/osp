@@ -60,6 +60,10 @@ public interface PresentationManager extends CleanupableService {
    public static final String PRESENTATION_PROPERTIES_FOLDER_PATH = "/" + PRESENTATION_PROPERTIES_FOLDER + "/";
    public static final String PRESENTATION_MESSAGE_BUNDLE = "org.theospi.portfolio.presentation.bundle.Messages";
    
+   public static final String PRESENTATION_FORMS_FOLDER = "portfolioForms";
+   public static final String PRESENTATION_FORMS_FOLDER_DISPNAME = "portfolioForms.displayName";
+   public static final String PRESENTATION_FORMS_FOLDER_DESC = "portfolioForms.description";
+   
    public static final String PRESENTATION_VIEW_ALL     = "all";
    public static final String PRESENTATION_VIEW_HIDDEN  = "hidden";
    public static final String PRESENTATION_VIEW_VISIBLE = "visible"; // not hidden

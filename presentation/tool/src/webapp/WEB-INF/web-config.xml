@@ -113,6 +113,7 @@
                <prop key="/editOptions.osp">editOptionsController</prop>
                <prop key="/editContent.osp">editContentController</prop>
                <prop key="/updatePresentation.osp">updatePresentationController</prop>
+               <prop key="/editPresentationForm.osp">editPresentationFormController</prop>
                               
                <prop key="/deletePresentation.osp">deletePresentationController</prop>
                <prop key="/sharePresentation.osp">sharePresentationController</prop>
