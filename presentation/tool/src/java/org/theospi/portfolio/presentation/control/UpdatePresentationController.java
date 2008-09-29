@@ -30,9 +30,14 @@ public class UpdatePresentationController extends AbstractCommandController {
 		Boolean active = null;
 		if (request.getParameter("active") != null)
 			active = Boolean.valueOf(request.getParameter("active"));
+		
+		Boolean allowComments = null;
+		if (request.getParameter("allowComments") != null)
+			allowComments = Boolean.valueOf(request.getParameter("allowComments"));
+		
 		Presentation presentation = (Presentation) command;
 		try {
-			if (!presentationService.updatePresentation(presentation.getId().getValue(), presentation.getName(), presentation.getDescription(), active)) {				
+			if (!presentationService.updatePresentation(presentation.getId().getValue(), presentation.getName(), presentation.getDescription(), active, allowComments)) {				
 				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			}
 		}

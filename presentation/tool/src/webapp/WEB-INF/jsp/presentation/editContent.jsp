@@ -97,9 +97,8 @@ $(document).ready(function() {
  <!-- temp separation; end of tabs -->
 
 <h3>
-   <fmt:message key="pres_share_this"/>
+   <fmt:message key="pres_content_heading"/>
 </h3>
-
 
 <form method="post" name="wizardform" action="editContent.osp" onsubmit="updateItems();">
 <osp:form/>

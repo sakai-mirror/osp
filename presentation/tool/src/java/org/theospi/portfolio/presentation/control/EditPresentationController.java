@@ -2,6 +2,7 @@ package org.theospi.portfolio.presentation.control;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,9 +13,8 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationComment;
 import org.theospi.portfolio.presentation.support.PresentationService;
-
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 public class EditPresentationController extends SimpleFormController {
 	private PresentationService presentationService;
@@ -43,6 +43,9 @@ public class EditPresentationController extends SimpleFormController {
 		else {
 			model.put("active", Boolean.FALSE);
 		}
+		List<PresentationComment> comments = presentationService.getComments(presentation.getId().getValue());
+		model.put("comments", comments);
+		model.put("numComments", new Integer(comments.size()));
 		return model;
 	}
 	

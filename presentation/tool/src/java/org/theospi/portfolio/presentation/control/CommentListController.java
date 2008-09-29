@@ -51,6 +51,11 @@ public class CommentListController extends AbstractPresentationController implem
 
       Map model = new Hashtable();
       model.put("comments", commentList);
+      model.put("id", id.getValue());
+      
+      if (request.get("returnView") != null) {
+    	  model.put("returnView", request.get("returnView"));
+      }
 
       return new ModelAndView("success", model);
    }

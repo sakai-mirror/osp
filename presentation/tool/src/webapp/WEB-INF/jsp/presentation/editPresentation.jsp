@@ -10,8 +10,12 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-	$('.autoPost').click(function() {
-		$.post('updatePresentation.osp', { id: osp.bag.presentationId, active: $(this).val() });
+	$('.autoPost').change(function() {
+		if ($(this).attr('checked')) {
+			var params = { id : osp.bag.presentationId };
+			params[$(this).attr('name')] = $(this).val();
+			$.post('updatePresentation.osp', params );
+		}
 	});
 });
 </script>
@@ -101,21 +105,6 @@ $(document).ready(function() {
 <td>
 	<div class="presentation_menu_block">
 		<div class="presentation_menu_header">
-			<fmt:message key="quick_start" />
-		</div>
-		<div class="presentation_menu_body">
-			<p class="quickLink"><a href="<osp:url value="editContent.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_content"/></a></p>
-			<p class="quickLinkInfo"><fmt:message key="pres_content_caption"/></p>
-			<p class="quickLink"><a href="<osp:url value="editOptions.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_options"/></a></p>
-			<p class="quickLinkInfo"><fmt:message key="pres_options_caption"/></p>
-			<p class="quickLink"><a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share"/></a></p>
-			<p class="quickLinkInfo"><fmt:message key="pres_share_caption"/></p>
-		</div>
-	</div>
-</td>
-<td>
-	<div class="presentation_menu_block">
-		<div class="presentation_menu_header">
 			<fmt:message key="pres_status" />
 		</div>
 		<div class="presentation_menu_body">
@@ -130,10 +119,10 @@ $(document).ready(function() {
 				</p>
 				<p class="quickLinkInfo <c:if test="${optionsAreNull}">disabled</c:if>">
 					<fmt:message key="active_caption" />
-					<c:if test="${active}">
+					<c:if test="${not optionsAreNull}">
 						<a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="sharing"/></a>
 					</c:if>
-					<c:if test="${not active}">
+					<c:if test="${optionsAreNull}">
 						<fmt:message key="sharing"/>
 					</c:if>
 				</p>
@@ -152,6 +141,69 @@ $(document).ready(function() {
 			</div>
 			<c:if test="${optionsAreNull}">
 			<p class="quickLinkInfo"><fmt:message key="inactive_hint"/></p>
+			</c:if>
+		</div>
+	</div>
+</td>
+<td>
+	<div class="presentation_menu_block">
+		<div class="presentation_menu_header">
+			<fmt:message key="quick_start" />
+		</div>
+		<div class="presentation_menu_body">
+			<p class="quickLink"><a href="<osp:url value="editContent.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_content"/></a></p>
+			<p class="quickLinkInfo"><fmt:message key="pres_content_caption"/></p>
+			<c:if test="${not empty presentation.template.propertyFormType}">
+			<p class="quickLink"><a href="<osp:url value="editOptions.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_options"/></a></p>
+			<p class="quickLinkInfo"><fmt:message key="pres_options_caption"/></p>
+			</c:if>
+			<p class="quickLink"><a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share"/></a></p>
+			<p class="quickLinkInfo"><fmt:message key="pres_share_caption"/></p>
+		</div>
+	</div>
+</td>
+<td>
+	<div class="presentation_menu_block">
+		<div class="presentation_menu_header">
+			<fmt:message key="pres_comments_heading" />
+		</div>
+		<div class="presentation_menu_body">
+			<div>
+				<p class="quickLink">
+					<input class="autoPost" type="radio"
+					       id="btnAllow"
+					       name="allowComments" value="true"
+					       <c:if test="${presentation.allowComments}">checked="checked"</c:if> />
+					<label for="btnAllow"><fmt:message key="button_allow" /></label>
+				</p>
+				<p class="quickLinkInfo">
+					<fmt:message key="allowed_caption" />
+				</p>
+				<p class="quickLink">
+					<input class="autoPost" type="radio"
+					       id="btnDisallow"
+					       name="allowComments" value="false"
+					       <c:if test="${not presentation.allowComments}">checked="checked"</c:if> />
+					<label for="btnDisallow"><fmt:message key="button_disallow" /></label>
+				</p>
+				<p class="quickLinkInfo">
+					<fmt:message key="disallowed_caption" />
+				</p>
+			</div>
+			<c:if test="${numComments > 0}">
+				<hr style="border: 1px solid #CCCCCC; width: 90%; "/>
+				<p class="quickLinkInfo">
+					<c:choose>
+						<c:when test="${numComments == 1}"><fmt:message key="comments_hint"/></c:when>
+						<c:otherwise><fmt:message key="comments_hint_plural"/></c:otherwise>
+					</c:choose>
+					<a href="<osp:url value="listComments.osp"/>&id=<c:out value="${presentation.id.value}"/>&returnView=editPresentation.osp&returnText=back_to_presentation"><c:out value="${numComments}" />
+						<c:choose>
+							<c:when test="${numComments == 1}"><fmt:message key="comments_hint2"/></c:when>
+							<c:otherwise><fmt:message key="comments_hint2_plural"/></c:otherwise>
+						</c:choose>
+					</a>
+				</p>
 			</c:if>
 		</div>
 	</div>

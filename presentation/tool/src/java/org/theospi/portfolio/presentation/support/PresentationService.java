@@ -34,6 +34,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.theospi.portfolio.presentation.PresentationFunctionConstants;
 import org.theospi.portfolio.presentation.PresentationManager;
 import org.theospi.portfolio.presentation.model.Presentation;
+import org.theospi.portfolio.presentation.model.PresentationComment;
 import org.theospi.portfolio.presentation.model.PresentationItem;
 import org.theospi.portfolio.presentation.model.PresentationItemDefinition;
 import org.theospi.portfolio.presentation.model.PresentationTemplate;
@@ -69,7 +70,7 @@ public class PresentationService {
 	private ContentHostingService contentHostingService;
 	
 	private static final Log log = LogFactory.getLog(PresentationService.class);
-	private static ResourceLoader resourceBundle = new ResourceLoader(PresentationManager.PRESENTATION_MESSAGE_BUNDLE);	
+	public static final ResourceLoader resourceBundle = new ResourceLoader(PresentationManager.PRESENTATION_MESSAGE_BUNDLE);	
 	
 	//TODO: Add signature for more parameterized creation -- not just complete current context (user, site, tool)
 	public Presentation createPresentation(String presentationType, String templateId) {
@@ -106,7 +107,7 @@ public class PresentationService {
         return new ArrayList<PresentationTemplate>(availableTemplates);
 	}
 	
-	public boolean updatePresentation(String presentationId, String name, String description, Boolean active) {
+	public boolean updatePresentation(String presentationId, String name, String description, Boolean active, Boolean allowComments) {
 		Presentation presentation = editPresentation(presentationId);
 		
 		if (name != null)
@@ -115,12 +116,15 @@ public class PresentationService {
 		if (description != null)
 			presentation.setDescription(description);
 				
-		if (Boolean.TRUE.equals(active)) {
+		if (Boolean.TRUE.equals(active))
 			presentation.setExpiresOn(null);
-		}
-		else if (Boolean.FALSE.equals(active)) {
+		else if (Boolean.FALSE.equals(active))
 			presentation.setExpiresOn(new GregorianCalendar(1970, 1, 1).getTime());
-		}
+		
+		if (Boolean.TRUE.equals(allowComments))
+			presentation.setAllowComments(true);
+		else if (Boolean.FALSE.equals(allowComments))
+			presentation.setAllowComments(false);
 		
 		presentation = presentationManager.storePresentation(presentation);
 		return (presentation != null);
@@ -141,6 +145,10 @@ public class PresentationService {
 	
 	public Presentation savePresentation(Presentation presentation) {
 		return presentationManager.storePresentation(presentation);
+	}
+	
+	public List<PresentationComment> getComments(String presentationId) {
+		return presentationManager.getPresentationComments(idManager.getId(presentationId), authnManager.getAgent());
 	}
 	
 	public Map<String, Object> editOptions(String presentationId) {

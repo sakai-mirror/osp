@@ -46,3 +46,6 @@
        </TR>
     </c:forEach>
 </table>
+<form method="post" action="listPresentation.osp">
+<input type="submit" name="submit" value="<fmt:message key="button_back"/>"/>
+</form>

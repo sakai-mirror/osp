@@ -3,7 +3,8 @@
 
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
-<form method="post" action="listPresentation.osp" name="backtolist">
+<form method="get" action="<c:choose><c:when test="${empty returnView}">listPresentation.osp</c:when><c:otherwise><c:out value="${returnView}"/></c:otherwise></c:choose>" name="backtolist">
+<input type="hidden" name="id" value="<c:out value="${id}"/>" />
 
 <c:forEach begin="0" end="0" items="${comments}" var="comment">
 	<ul  class="smallNavIntraTool " style="margin-top:2em">
@@ -23,7 +24,7 @@
 		</li>
 		<li>
 			<span>
-				<a href="#" onclick="document.backtolist.submit()"><fmt:message key="table_comments_back"/></a>
+				<a href="#" onclick="document.backtolist.submit()"><c:choose><c:when test="${empty returnText}"><fmt:message key="table_comments_back"/></c:when><c:otherwise><fmt:message key="${returnText}"/></c:otherwise></c:choose></a>
 			</span>	
 		</li>
 	</ul>	
