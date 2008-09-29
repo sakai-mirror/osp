@@ -17,8 +17,10 @@ $(document).ready(function() {
 </script>
 
 <style type="text/css">
-.quickLink { padding-top: 0.2em; text-align: center; }
-.quickLinkInfo { margin-top: 0.1em; text-align: center; }
+.quickLink { padding-top: 0.2em; text-align: center; font-size: 1.2em; }
+.quickLinkInfo { margin-top: 0.1em; text-align: center; font-size: 0.9em; }
+.quickLinkDisabled { color: #666666; }
+.quickLinkDisabled label { color: #666666; }
 .presentation_menu_block {
 	margin: auto;
 	width: 300px;
@@ -117,27 +119,37 @@ $(document).ready(function() {
 			<fmt:message key="pres_status" />
 		</div>
 		<div class="presentation_menu_body">
-			<p class="quickLink">
-				<input class="autoPost" type="radio"
-				       name="active" value="true"
-				       <c:if test="${optionsAreNull}">disabled="disabled"</c:if>
-				       <c:if test="${active}">selected="selected"</c:if> />
-				<label><fmt:message key="button_active" /></label>
-			</p>
-			<p class="quickLinkInfo">
-				<fmt:message key="active_caption" /> <a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="sharing"/></a>
-			</p>
-			
-			<p class="quickLink">
-				<input class="autoPost" type="radio"
-				       name="active" value="false"
-				       <c:if test="${optionsAreNull}">disabled="disabled"</c:if>
-				       <c:if test="${not active}">selected="selected"</c:if> />
-				<label><fmt:message key="button_inactive" /></label>
-			</p>
-			<p class="quickLinkInfo">
-				<fmt:message key="inactive_caption" />
-			</p>
+			<div <c:if test="${optionsAreNull}">class="quickLinkDisabled"</c:if>>
+				<p class="quickLink">
+					<input class="autoPost" type="radio"
+					       id="btnActive"
+					       name="active" value="true"
+					       <c:if test="${optionsAreNull}">disabled="disabled"</c:if>
+					       <c:if test="${active}">checked="checked"</c:if> />
+					<label for="btnActive"><fmt:message key="button_active" /></label>
+				</p>
+				<p class="quickLinkInfo <c:if test="${optionsAreNull}">disabled</c:if>">
+					<fmt:message key="active_caption" />
+					<c:if test="${active}">
+						<a href="<osp:url value="sharePresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="sharing"/></a>
+					</c:if>
+					<c:if test="${not active}">
+						<fmt:message key="sharing"/>
+					</c:if>
+				</p>
+				
+				<p class="quickLink">
+					<input class="autoPost" type="radio"
+					       id="btnInactive"
+					       name="active" value="false"
+					       <c:if test="${optionsAreNull}">disabled="disabled"</c:if>
+					       <c:if test="${not active}">checked="checked"</c:if> />
+					<label for="btnInactive"><fmt:message key="button_inactive" /></label>
+				</p>
+				<p class="quickLinkInfo">
+					<fmt:message key="inactive_caption" />
+				</p>
+			</div>
 			<c:if test="${optionsAreNull}">
 			<p class="quickLinkInfo"><fmt:message key="inactive_hint"/></p>
 			</c:if>

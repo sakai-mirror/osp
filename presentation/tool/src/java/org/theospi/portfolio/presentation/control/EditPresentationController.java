@@ -14,6 +14,8 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.support.PresentationService;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 public class EditPresentationController extends SimpleFormController {
 	private PresentationService presentationService;
 	
@@ -35,11 +37,11 @@ public class EditPresentationController extends SimpleFormController {
 	protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
 		Map<String, Object> model = new HashMap<String, Object>();
 		Presentation presentation = (Presentation) command;
-		if (presentation.getExpiresOn() == null || presentation.getExpiresOn().before(new Date())) {
-			model.put("active", true);
+		if (presentation.getExpiresOn() == null || presentation.getExpiresOn().after(new Date())) {
+			model.put("active", Boolean.TRUE);
 		}
 		else {
-			model.put("active", false);
+			model.put("active", Boolean.FALSE);
 		}
 		return model;
 	}

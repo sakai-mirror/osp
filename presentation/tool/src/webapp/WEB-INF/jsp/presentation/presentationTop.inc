@@ -37,7 +37,7 @@ $(document).ready(function() {
 
 <ul class="tabNav specialLink">
 	<c:choose>
-		<c:when test="${pres_active_page} == 'summary'">
+		<c:when test="${pres_active_page == 'summary'}">
 			<li class="selected"><span><fmt:message key="pres_summary"/></span></li>
 		</c:when>
 		<c:otherwise>
@@ -45,7 +45,7 @@ $(document).ready(function() {
 		</c:otherwise>
 	</c:choose>
 	<c:choose>
-		<c:when test="${pres_active_page} == 'content'">
+		<c:when test="${pres_active_page == 'content'}">
 			<li class="selected"><span><fmt:message key="pres_content"/></span></li>
 		</c:when>
 		<c:otherwise>
@@ -53,7 +53,7 @@ $(document).ready(function() {
 		</c:otherwise>
 	</c:choose>
 	<c:choose>
-		<c:when test="${pres_active_page} == 'share'">
+		<c:when test="${pres_active_page == 'share'}">
 			<li class="selected"><span><fmt:message key="pres_share"/></span></li>	
 		</c:when>
 		<c:otherwise>
