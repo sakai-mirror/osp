@@ -75,11 +75,12 @@ $(document).ready(function() {
 <table>
 <tr>
   <td>
-     <!-- Gonzalo: this should be a pull-down list like the Actions in listPresentation.jsp, Thanks! -->
    <ul class=" inlineMenu" style="margin:0;display:block;border:none;">
    	<li id="0" class="menuOpen"><fmt:message key="share_by"/>
 		<ul id="menu-0" class="makeMenuChild" style="display:none">
+	   <c:if test="${!myWorkspace}">
 	   <li><a href="javascript:document.mainForm.shareBy.value='share_browse';document.mainForm.submit();"><fmt:message key="share_browse"/></a> </li>
+      </c:if>
 	   <c:if test="${hasGroups}">
 		  <li><a href="javascript:document.mainForm.shareBy.value='share_group';document.mainForm.submit();"><fmt:message key="share_group"/></a> </li>
 	   </c:if>
@@ -87,7 +88,9 @@ $(document).ready(function() {
 	   <c:if test="${guestEnabled}">
 		  <li><a href="javascript:document.mainForm.shareBy.value='share_email';document.mainForm.submit();"><fmt:message key="share_email"/></a> </li>
 	   </c:if>
+	   <c:if test="${!myWorkspace}">
 	   <li><a href="javascript:document.mainForm.shareBy.value='share_role';document.mainForm.submit();"><fmt:message key="share_role"/></a> </li>
+      </c:if>
 	   <li><a href="javascript:document.mainForm.shareBy.value='share_allrole';document.mainForm.submit();"><fmt:message key="share_allrole"/></a> </li>
    </ul>
    </li>
@@ -171,9 +174,8 @@ $(document).ready(function() {
    </tr>
    </thead>
          
-   <!-- Gonzalo, could this be a scrolling list of checkboxes? visible size of about 20? I don't know how to do this -->
-   <%-- it will be ascrollable  box of 180 px height if the content goes over 180px, if less, it will he as high as the contents 
-   	and will not have a scroillbar --%>
+   <%-- this will be avscrollable box of 180 px height if the content goes over 180px, 
+        if less, it will he as high as the contents and will not have a scrollbar --%>
    <tbody>
    	<tr> 
 		<td  colspan="2">
@@ -200,16 +202,8 @@ $(document).ready(function() {
 		 </tbody>
    <tfoot>
    <tr>
-   <td>
+   <td colspan="2">
       <span class="messageInstruction"><fmt:message key="share_hint"/></span>
-   </td>
-   <td style="text-align:right;padding-left:2em;white-space:nowrap">
-      <c:if test="${shareBy=='share_browse' || shareBy=='share_group'}">
-         <a href="javascript:document.mainForm.submit();"><fmt:message key="share_add_users"/></a>
-      </c:if>
-      <c:if test="${shareBy=='share_role' || shareBy=='share_allrole'}">
-         <a href="javascript:document.mainForm.submit();"><fmt:message key="share_add_roles"/></a>
-      </c:if>
    </td>
    </tr>
    </tfoot>

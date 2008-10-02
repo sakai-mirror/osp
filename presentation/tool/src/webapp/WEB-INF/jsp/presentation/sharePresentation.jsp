@@ -57,9 +57,6 @@
 <h3>
    <fmt:message key="pres_share_this"/>
 </h3>
-<%--  desNote: if all the choices below are mutually exclusive an input  radio 
-	group would be more appropriate if so and are changing to a radio set - please mantain the id of the input id="pres_share_select"
-	--%>
 <form method="post" name="mainForm">
    <div class="checkbox">
       <input type="checkbox" name="pres_share_public" id="pres_share_public"
@@ -68,13 +65,13 @@
       <label for="pres_share_public">
          <fmt:message key="pres_share_public"/>
       </label>
-      <a href="${publicUrl}" target="_blank_"><fmt:message key="pres_share_here"/></a>
+      <a href="javascript:alert('${publicUrl}')"><fmt:message key="pres_share_here"/></a>
    </div>
       
    <div class="checkbox">
-   		<%--desNote: TODO if this input (identified via ID)  is checked, #sharePanel will show, otherwise it will hide
-		 moreover - if the input is unchecked, all the values should be nulled? All people and groups unselected? probably--%>
-      <input   type="checkbox" name="pres_share_select" id="pres_share_select" <%-- desNote: TODO comment for now so can display toggledisabled="disabled"--%>
+  		<%--desNote: if this input (identified via ID)  is checked, #sharePanel will show, otherwise it will hide --%>
+      <input   type="checkbox" name="pres_share_select" id="pres_share_select"
+         <c:if test="${pres_share_select=='true' && not empty shareList}">disabled="disabled"</c:if>
          <c:if test="${pres_share_select=='true'}"> checked="checked"</c:if>
       />
       <label for="pres_share_select">
@@ -82,7 +79,7 @@
       </label>
    </div>
    
-   <%--desNote: following panel should display on enter  under the following condition: 
+   <%--desNote: following panel should display on enter under the following condition: 
    		portfolio has previously been set to "shared"
 		or it has been set to shared via input above  now (this later case is scripted above) --%>
    <div class="addPanel" id="sharePanel">
@@ -90,9 +87,6 @@
      <c:when test="${empty shareList}">
         <p class="messageInstruction">
  	 	<fmt:message key="pres_share_none"/>
-         <%-- OLD LINK
-         <a href="<osp:url value="addPresentation.osp"/>&target=_target5&resetForm=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share_add"/></a>
-         --%>
          <a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share_add"/></a>
 		</p> 
      </c:when>
@@ -103,9 +97,6 @@
          <tr>
          <td><h3 style="padding:0;margin:0"><fmt:message key="pres_share_list"/></h3></td>
          <td align="right">
-         <%-- OLD LINK
-         <a href="<osp:url value="addPresentation.osp"/>&target=_target5&resetForm=true&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share_more"/></a>
-         --%>
          <a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share_more"/></a>
          </td>
          </tr>

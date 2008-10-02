@@ -112,21 +112,20 @@ public class SharePresentationMoreController extends AbstractPresentationControl
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       // Get specified portfolio/presentation      
       Map model = new HashMap();
+      String errMsg = null;
       Presentation presentation = (Presentation) requestModel;
       presentation = getPresentationManager().getPresentation(presentation.getId());
       model.put("id", presentation.getId().getValue());
       
-      // Check if request to return to previous page
-      if ( request.get("back") != null )
-         return new ModelAndView("back", model);
-         
+      boolean myWorkspace = getSiteService().isUserSite(presentation.getSiteId());
       model.put("presentation", presentation);
       model.put("hasGroups", getHasGroups(presentation.getSiteId()));
+      model.put("myWorkspace", myWorkspace);
       model.put("guestEnabled", getGuestUserEnabled());
       
       String shareBy = (String)request.get(SHAREBY_KEY);
       if ( shareBy==null || shareBy.equals("") )
-         shareBy = SHAREBY_BROWSE;
+         shareBy = myWorkspace ? SHAREBY_SEARCH : SHAREBY_BROWSE;
       model.put(SHAREBY_KEY, shareBy);
 
       // Update list of Shared-with Users         
@@ -137,7 +136,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       {
          String shareUser = (String)request.get("share_user");
          if ( shareUser != null && !shareUser.equals("") ) {
-            String errMsg = addUserByEmailOrId(shareBy, shareUser, shareList);
+            errMsg = addUserByEmailOrId(shareBy, shareUser, shareList);
             if ( errMsg == null )
                isUpdated = true;
             else
@@ -164,7 +163,12 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       }
       
       model.put("isUpdated", new Boolean(isUpdated) );
-      return new ModelAndView("share", model);
+      
+      // Check if request to return to previous page
+      if ( request.get("back") != null && errMsg == null )
+         return new ModelAndView("back", model);
+      else   
+         return new ModelAndView("share", model);
    }
 
    /**
