@@ -143,11 +143,11 @@ $(document).ready(function() {
 	    <fmt:message key="title_show"/>
 		</li>	
     <c:choose>
-      <c:when test="${showHidden != 'all'}">
-          <li class="firstItem"><span><a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=all"><fmt:message key="action_show_all"/></a></span></li>
+      <c:when test="${showHidden != 'visible'}">
+         <li class="firstItem"><span><a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=visible"><fmt:message key="action_show_not_hidden"/></a></span></li>
       </c:when>
       <c:otherwise>
-        <li class="firstItem"><span><fmt:message key="action_show_all"/></span></li>
+         <li class="firstItem"><span><fmt:message key="action_show_not_hidden"/></span></li>
       </c:otherwise>
     </c:choose>
     
@@ -161,11 +161,11 @@ $(document).ready(function() {
     </c:choose>
     
     <c:choose>
-      <c:when test="${showHidden != 'visible'}">
-         <li><span><a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=visible"><fmt:message key="action_show_not_hidden"/></a></span></li>
+      <c:when test="${showHidden != 'all'}">
+          <li><span><a href="<osp:url value="listPresentation.osp"/>&showHiddenKey=all"><fmt:message key="action_show_all"/></a></span></li>
       </c:when>
       <c:otherwise>
-				<li><span><fmt:message key="action_show_not_hidden"/></span></li>
+        <li><span><fmt:message key="action_show_all"/></span></li>
       </c:otherwise>
     </c:choose>
 </ul>

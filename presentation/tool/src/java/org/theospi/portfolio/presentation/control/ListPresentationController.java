@@ -74,7 +74,7 @@ public class ListPresentationController extends AbstractPresentationController {
 
       String showHidden = getUserPreferenceProperty(PREF_HIDDEN, 
                                                     (String)request.get("showHiddenKey"),
-                                                    PresentationManager.PRESENTATION_VIEW_ALL);
+                                                    PresentationManager.PRESENTATION_VIEW_VISIBLE);
       String filterList = getUserPreferenceProperty(PREF_FILTER, 
                                                     (String)request.get("filterListKey"),
                                                     PREF_FILTER_VALUE_ALL);
