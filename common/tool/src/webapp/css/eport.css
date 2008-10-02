@@ -537,11 +537,12 @@ em.closeMe{font-style:normal;cursor:pointer;padding-left:1em}
 .messageError .messageError,.messageValidation .messageValidation,.messageInformation .messageInformation,.messageConfirmation .messageConfirmation,.messageSuccess .messageSuccess,.messageInstruction .messageInstruction{background-image:none;border:none;padding-left:0}
 
 #presentationName {
-    background-color:transparent !important;
+/*    background-color:transparent !important;*/
     color:#555555;
     font-family:Arial,Helvetica,sans-serif;
     margin:1em 0.5em 0;
     padding:0;
+		margin:0;
 }
 
 #presentationName .editableText {
@@ -554,4 +555,36 @@ em.closeMe{font-style:normal;cursor:pointer;padding-left:1em}
     font-size: 1.2em;
     margin:1em 0 0;
 }
+
+.editableActive{
+	padding:4px !important; 
+	background:#cef
+}
+.presentationTypeGroup{
+	border:1px solid #ccc;
+	margin:1em 0;
+	padding:1em;
+	list-style:none;
+}
+ .presentationElementGroup{
+	margin:0;
+	padding:0;
+	list-style:none;
+}
+ .presentationElement{
+ 		border:1px solid #ccc;
+		margin:0 0 1em 0;
+		padding:.5em
+	}
+
+.presentationTypeGroup li{
+	list-style:none;
+}
+
+.presentationTypeGroup label{font-size:1.1em}
+.presentationTypeGroup p, .presentationTypeGroup a{
+	padding-left:1.7em;
+	margin:0; inherit;
+}
+.quickLinkInfo{height:2em;line-height:1.2em;	}
 

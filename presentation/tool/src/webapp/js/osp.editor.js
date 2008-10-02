@@ -41,8 +41,11 @@ osp.bag = osp.bag || {};
 			$(that.selector + ' .undoLink').show();
 			$(that.selector + ' .editLink').hide();
 			$(that.selector + ' .inlineEdit').show();
+			$(that.selector + ' .inlineEdit').focus();
 			$(that.selector + ' .editableText').hide();
-		}
+			$(that.selector).addClass('editableActive');
+			resizeFrame('grow')
+		}	
 	
 		that.hideEdit = function() {
 			$(that.selector + ' .saveLink').hide();
@@ -51,6 +54,8 @@ osp.bag = osp.bag || {};
 			$(that.selector + ' .inlineEdit').hide();
 			$(that.selector + ' .editableText').show();
 			$(that.selector + ' .inlineEdit').val('');		
+			$(that.selector).removeClass('editableActive');
+			resizeFrame('shrink')
 		}
 		
 		init();

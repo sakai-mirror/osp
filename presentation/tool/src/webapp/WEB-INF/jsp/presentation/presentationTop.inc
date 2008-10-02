@@ -12,20 +12,22 @@ $(document).ready(function() {
 });
 </script>
 
-<table width="100%">
+<table width="100%" style="margin-top:1em">
 	<tr>
-		<td align="left">
+		<td  style="vertical-align:middle;text-align:left">
 			<spring:bind path="presentation.name">
-				<div id="presentationName">
+				<div id="presentationName" class="shorttext">
 					<span class="editableText portfolio_name"><c:out value="${status.value}"/></span>
-					<input class="inlineEdit" type="text" style="display:none;" size="60" />
-					<a href="#" class="editLink"><fmt:message key="edit"/></a>
-					<a href="#" class="saveLink" style="display: none;"><fmt:message key="button_saveEdit"/></a>
-					<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_undo"/></a>
+					<input class="inlineEdit" type="text" style="display:none;margin:0;" size="40" />
+					<span class="itemAction">
+						<a href="#" class="editLink"><fmt:message key="edit"/></a>
+						<a href="#" class="saveLink" style="display: none;"><fmt:message key="button_saveEdit"/></a>
+						<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_undo"/></a>
+					</span>
 				</div>
 			</spring:bind>
 		</td>
-		<td align="right">
+		<td   style="vertical-align:middle; text-align:right">
 			<a href="<osp:url value="listPresentation.osp" />"><fmt:message key="return_to_list" /></a> | 
 			<a <c:if test="${presentation.template.includeHeaderAndFooter == false}">target="_blank" title="<fmt:message key="table_presentationManager_new_window"/>"</c:if>
 				href="<osp:url value="viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />">

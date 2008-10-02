@@ -25,11 +25,18 @@ $(document).ready(function() {
 .quickLinkInfo { margin-top: 0.1em; text-align: center; font-size: 0.9em; }
 .quickLinkDisabled { color: #666666; }
 .quickLinkDisabled label { color: #666666; }
+.presentation_menu{
+}
+.presentation_menu th{
+	text-align:left;
+	padding:0;
+	}
+
 .presentation_menu_block {
 	margin: auto;
-	width: 300px;
+	width:230px;
 	height: 100%;
-}
+	}
 
 .presentation_menu_header {
  	text-align: center;
@@ -43,9 +50,11 @@ $(document).ready(function() {
 	background-color: #FCFCEE;
 	padding: 0.2em;
  	text-align: center;
- }
- 
- 
+	}
+.presentation_menu_body p{
+	padding:0 .3em
+}
+
 </style>
 
 <spring:nestedPath path="presentation">
@@ -61,53 +70,63 @@ $(document).ready(function() {
    <fmt:message key="pres_details"/>
 </h3>
 
-<table>
+<table class="itemSummary">
 <tbody>
 <%-- Description:  --%>
-<spring:bind path="description">
-	<tr id="presentationDescription">
-		<td class="label"><fmt:message key="table_row_description"/></td>
-		<td>
-			<span class="editableText"><c:out value="${status.value}" /></span>
-			<textarea class="inlineEdit" cols="40" rows="4" style="display:none;"></textarea>
-			<a href="#" class="editLink"><fmt:message key="edit"/></a>
-			<a href="#" class="saveLink" style="display: none;"><fmt:message key="button_saveEdit"/></a>
-			<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_undo"/></a>
-		</td>		
-	</tr>
-</spring:bind>
 <%-- Type of Portfolio: --%>
 <spring:bind path="template.name">
 	<tr>
-		<td><fmt:message key="table_row_type"/></td>
+		<th><fmt:message key="table_row_type"/></th>
 		<td><c:out value="${status.value}" /></td>
 	</tr>
 </spring:bind>
 <%-- Created On: --%>
 <spring:bind path="created">
 	<tr>
-		<td><fmt:message key="table_row_created"/></td>
+		<th><fmt:message key="table_row_created"/></th>
 		<td><c:out value="${status.value}" /></td>
 	</tr>
 </spring:bind>
 <%-- Modified On: --%>
 <spring:bind path="modified">
 	<tr>
-		<td><fmt:message key="table_row_modified"/></td>
+		<th><fmt:message key="table_row_modified"/></th>
 		<td><c:out value="${status.value}" /></td>
 	</tr>
 </spring:bind>
+<spring:bind path="description">
+	<tr>
+		<th><fmt:message key="table_row_description"/></th>
+		<td  id="presentationDescription">
+			<span class="editableText"><c:out value="${status.value}" /></span>
+			<textarea class="inlineEdit" cols="40" rows="4" style="display:none;"></textarea>
+			<span class="itemAction"><a href="#" class="editLink"><fmt:message key="edit"/></a></span>
+			<p class="itemAction">
+				<a href="#" class="saveLink" style="display: none;"><fmt:message key="button_saveEdit"/></a>
+				<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_undo"/></a>
+			</p>
+		</td>		
+	</tr>
+</spring:bind>
+
 </tbody>
 </table>
-<table style="width: 100%;">
+<table style="width: 100%;" cellspacing="10" class="presentation_menu">
 <tbody>
 <tr>
-<td>
+<th  class="presentation_menu_header">
+	<fmt:message key="pres_status" />
+</th>
+<th class="presentation_menu_header">
+			<fmt:message key="quick_start" />
+</th>
+<th  class="presentation_menu_header" >
+	<fmt:message key="pres_comments_heading" />
+</th>
+<tr>
+<td class="presentation_menu_body">
 	<div class="presentation_menu_block">
-		<div class="presentation_menu_header">
-			<fmt:message key="pres_status" />
-		</div>
-		<div class="presentation_menu_body">
+		<div>
 			<div <c:if test="${optionsAreNull}">class="quickLinkDisabled"</c:if>>
 				<p class="quickLink">
 					<input class="autoPost" type="radio"
@@ -145,12 +164,9 @@ $(document).ready(function() {
 		</div>
 	</div>
 </td>
-<td>
+<td  class="presentation_menu_body">
 	<div class="presentation_menu_block">
-		<div class="presentation_menu_header">
-			<fmt:message key="quick_start" />
-		</div>
-		<div class="presentation_menu_body">
+		<div>
 			<p class="quickLink"><a href="<osp:url value="editContent.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_content"/></a></p>
 			<p class="quickLinkInfo"><fmt:message key="pres_content_caption"/></p>
 			<c:if test="${not empty presentation.template.propertyFormType}">
@@ -162,12 +178,9 @@ $(document).ready(function() {
 		</div>
 	</div>
 </td>
-<td>
+<td  class="presentation_menu_body">
 	<div class="presentation_menu_block">
-		<div class="presentation_menu_header">
-			<fmt:message key="pres_comments_heading" />
-		</div>
-		<div class="presentation_menu_body">
+		<div>
 			<div>
 				<p class="quickLink">
 					<input class="autoPost" type="radio"

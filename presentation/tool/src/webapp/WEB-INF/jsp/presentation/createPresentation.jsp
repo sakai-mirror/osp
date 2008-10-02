@@ -24,49 +24,49 @@
 	<spring:bind path="*">
 		<c:if test="${status.error}">
 			<%-- FIXME: This needs an appropriate class for error msg --%>
-			<div class="alert">
+			<div class="messageValidation">
 				<c:out value="${status.errorMessage}"/>
 			</div>
 		</c:if>
 	</spring:bind>
 	<spring:bind path="templateId">
 		<c:if test="${not empty availableTemplates}">
-			<div class="presentationTypeGroup">
+			<ul class="presentationTypeGroup">
 				<c:forEach var="template"
 					items="${availableTemplates}"
 					varStatus="templateStatus">
-					<div class="portfolioTypeOption">
+					<li class="portfolioTypeOption">
 						<input type="radio"
 							id="${status.expression}-${templateStatus.count}"
 							name="${status.expression}"
 							value="<c:out value="${template.id.value}"/>"
 							onclick="getElementById('presType').value = 'osp.presentation.type.template';" />
 						<label for="${status.expression}-${templateStatus.count}"><c:out value="${template.name}"/></label>
-						<p class="portfolioTypeDescription">
+						<p class="messageInstruction">
 							<c:out value="${template.description}"/>
 						</p>
 						<div class="portfolioTypeMoreInfo">
 							<a href="#" onclick="return false;">More Info</a> <%-- TODO: i18n --%>
 						</div>
-					</div>
+					</li>
 				</c:forEach>
-			</div>
+			</ul>
 		</c:if>
 		
 		<%-- Handle option to turn free-form off --%>
-		<div class="presentationTypeGroup">
-			<div class="portfolioTypeOption">
+		<ul class="presentationTypeGroup">
+			<li class="portfolioTypeOption">
 				<input type="radio"
 					id="${status.expression}-freeForm"
 					name="${status.expression}"
 					value="${freeFormTemplateId.value}"
 					onclick="getElementById('presType').value = 'osp.presentation.type.freeForm';" />
 				<label for="${status.expression}-freeForm"><fmt:message key="label_freeForm"/></label>
-				<p class="portfolioTypeDescription">
+				<p class="messageInstruction">
 					<fmt:message key="addPresentation1_manageYourself"/>
 				</p>
-			</div>
-		</div>
+			</li>
+		</ul>
 	</spring:bind>
 </div>
 

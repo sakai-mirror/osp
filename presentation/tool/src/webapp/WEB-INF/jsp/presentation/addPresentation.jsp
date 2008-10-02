@@ -23,7 +23,7 @@
 	<spring:bind path="presentation.template.id">
 		<c:if test="${status.error}">
 			<%-- FIXME: This needs an appropriate class for error msg --%>
-			<div class="alert">
+			<div class="messageValidation">
 				<c:out value="${status.errorMessage}"/>
 			</div>
 		</c:if>
