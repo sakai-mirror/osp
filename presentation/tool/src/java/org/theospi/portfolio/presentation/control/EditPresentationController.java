@@ -15,6 +15,9 @@ import org.springframework.web.servlet.mvc.SimpleFormController;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.presentation.model.PresentationComment;
 import org.theospi.portfolio.presentation.support.PresentationService;
+import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.tool.api.ToolSession;
+import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 
 public class EditPresentationController extends SimpleFormController {
 	private PresentationService presentationService;
@@ -29,8 +32,12 @@ public class EditPresentationController extends SimpleFormController {
 	@Override
 	protected Object formBackingObject(HttpServletRequest request) throws Exception {
 		//NOTE: Authorization failures and bad IDs throw exceptions here
+		ToolSession session = SessionManager.getCurrentToolSession();
 		String presentationId = request.getParameter("id");
-		return presentationService.getPresentation(presentationId);
+		if ( presentationId != null && ! presentationId.equals("") )
+			return presentationService.getPresentation(presentationId);
+		else 
+			return session.getAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation");
 	}
 	
 	@Override
@@ -46,13 +53,26 @@ public class EditPresentationController extends SimpleFormController {
 		List<PresentationComment> comments = presentationService.getComments(presentation.getId().getValue());
 		model.put("comments", comments);
 		model.put("numComments", new Integer(comments.size()));
+		
 		return model;
 	}
 	
 	@Override
-	protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors)
-			throws Exception {
-		return new ModelAndView("listPresentationRedirect");
+	protected ModelAndView processFormSubmission(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors)	throws Exception {	
+		Presentation presentation = (Presentation) command;
+		if ( presentation.getIsFreeFormType() && 
+			  request.getParameter("freeFormContent")!= null && 
+			  request.getParameter("freeFormContent").equals("true") )
+		{
+			ToolSession session = SessionManager.getCurrentToolSession();
+			session.setAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation", presentation);
+			return new ModelAndView("freeFormPresentationRedirect");
+		}
+		
+		else
+		{
+			return new ModelAndView("listPresentationRedirect");
+		}
 	}
 	
 	public void setPresentationService(PresentationService presentationService) {

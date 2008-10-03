@@ -36,7 +36,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.model.Presentation;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
+import org.theospi.portfolio.presentation.intf.FreeFormHelper;
 
+import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.tool.cover.SessionManager;
@@ -61,13 +63,33 @@ public class SharePresentationController extends AbstractPresentationController 
    public final static String SHARE_PUBLIC_ATTRIBUTE = "org.theospi.portfolio.presentation.control.SharePresentationController.public";
    
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-      // Get specified portfolio/presentation      
       Map model = new HashMap();
       Presentation presentation = (Presentation) requestModel;
-      presentation = getPresentationManager().getPresentation(presentation.getId());
+      
+      // Get presentation from tool session if returning from free-form helper
+      if (presentation == null || presentation.getId() == null )
+      {
+         ToolSession toolSession = SessionManager.getCurrentToolSession();
+         presentation = (Presentation)toolSession.getAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation");
+      }
+      
+      // otherwise, load presentation specified by given id
+      else
+      {
+         presentation = getPresentationManager().getPresentation(presentation.getId());
+      }
 
+      // Check if request to edit free-form content
+      if ( presentation.getIsFreeFormType() && 
+           request.get("freeFormContent")!= null && 
+           request.get("freeFormContent").equals("true") )
+      {
+         ToolSession toolSession = SessionManager.getCurrentToolSession();
+         toolSession.setAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation", presentation);
+         return new ModelAndView("freeFormPresentationRedirect");
+      }
+      
       // Check if Undo request 
-      // TBD: change to no navigation change, just undo changes
       String undo = (String) request.get("undo");
       if (undo != null)
       {

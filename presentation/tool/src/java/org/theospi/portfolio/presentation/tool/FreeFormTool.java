@@ -27,6 +27,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
@@ -66,6 +69,7 @@ import org.theospi.portfolio.style.model.Style;
  */
 public class FreeFormTool extends HelperToolBase {
 
+   protected static Log logger = LogFactory.getLog(FreeFormTool.class);
    private PresentationManager presentationManager;
    private IdManager idManager;
    private XmlTagFactory factory;
@@ -81,15 +85,7 @@ public class FreeFormTool extends HelperToolBase {
    private String nextPageId = null;
    private int step = 1;
    private int pageCount;
-
-   public String processActionBack() {
-      if (!validPages()) {
-         return null;
-      }
-      setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_BACK);
-      return returnToCaller();
-   }
-
+	
    protected boolean validPages() {
       if (getPageList() == null || getPageList().size() == 0) {
          FacesContext.getCurrentInstance().addMessage(null,
@@ -100,26 +96,34 @@ public class FreeFormTool extends HelperToolBase {
       return true;
    }
 
-   public String processActionContinue() {
-      if (!validPages()) {
-         return null;
-      }
-      setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_CONTINUE);
-      return returnToCaller();
-   }
-
    public String processActionSave() {
       if (!validPages()) {
          return null;
       }
-      setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_SAVE);
-      return returnToCaller();
+      
+      Presentation presentation = getPresentation();
+      getPresentationManager().storePresentation(presentation);
+      return "main";
    }
 
+   public String processActionSummary() {
+      // tbd - fix navigation (currently just returns to caller)
+		setAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation", getPresentation());
+      return returnToCaller();
+   }
+   
+   public String processActionShare() {
+      // tbd - fix navigation (currently just returns to caller)
+		setAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation", getPresentation());
+      return returnToCaller();
+   }
+   
    public String processActionCancel() {
       initValues();
-      setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_CANCEL);
-      return returnToCaller();
+      Presentation presentation = getPresentation();
+      List pages = getPresentationManager().getPresentationPagesByPresentation(presentation.getId());
+      presentation.setPages(pages);
+      return "main";
    }
 
    public String processActionCancelPage() {
@@ -225,7 +229,7 @@ public class FreeFormTool extends HelperToolBase {
          context.redirect("sakai.filepicker.helper/tool");
       }
       catch (IOException e) {
-         throw new RuntimeException("Failed to redirect to helper", e);
+		   logger.warn(e.toString());
       }
    }
 
@@ -412,7 +416,7 @@ public class FreeFormTool extends HelperToolBase {
 		   context.redirect("osp.style.helper/listStyle");
 	   }
 	   catch (IOException e) {
-		   throw new RuntimeException("Failed to redirect to helper", e);
+		   logger.warn(e.toString());
 	   }
 	   return null;
    }
@@ -431,7 +435,7 @@ public class FreeFormTool extends HelperToolBase {
 		   context.redirect("osp.presLayout.helper/listLayout");
 	   }
 	   catch (IOException e) {
-		   throw new RuntimeException("Failed to redirect to helper", e);
+		   logger.warn(e.toString());
 	   }
 	   return null;
    }

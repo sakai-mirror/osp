@@ -62,8 +62,8 @@ $(document).ready(function() {
 <div class="tabNavPanel">
  <!-- temp separation; end of tabs -->
 
-<form method="post" onsubmit="return true;">
-<osp:form/>
+<form name="mainForm" id="mainForm" method="post" onsubmit="return true;">
+<input type="hidden" name="freeFormContent" value=""/>
 
 <div class="presentationPanel">
 <h3>
@@ -167,7 +167,12 @@ $(document).ready(function() {
 <td  class="presentation_menu_body">
 	<div class="presentation_menu_block">
 		<div>
-			<p class="quickLink"><a href="<osp:url value="editContent.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_content"/></a></p>
+			<c:if test="${! presentation.isFreeFormType}">
+				<p class="quickLink"><a href="<osp:url value="editContent.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_content"/></a></p>
+			</c:if>
+			<c:if test="${presentation.isFreeFormType}">
+				<li><a href="javascript:document.mainForm.freeFormContent.value='true';document.mainForm.submit();"><fmt:message key="pres_content"/></a></li>
+			</c:if>
 			<p class="quickLinkInfo"><fmt:message key="pres_content_caption"/></p>
 			<c:if test="${not empty presentation.template.propertyFormType}">
 			<p class="quickLink"><a href="<osp:url value="editOptions.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_options"/></a></p>

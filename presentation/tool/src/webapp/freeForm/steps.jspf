@@ -1,5 +1,11 @@
-<ospx:wizardSteps currentStep="#{freeForm.stepString}">
-   <ospx:wizardStep label="#{msgs.step_begin}" />
-   <ospx:wizardStep label="#{msgs.step_design}" />
-   <ospx:wizardStep label="#{msgs.step_publish}" />
-</ospx:wizardSteps>
+
+<h:commandLink action="#{freeForm.processActionSummary}" title="#{msgs.pres_summary}">
+			<h:outputText value="#{msgs.pres_summary}"/> 
+</h:commandLink>
+
+<h:outputText value="#{msgs.pres_content}"/> 
+
+<h:commandLink action="#{freeForm.processActionShare}" title="#{msgs.pres_share}">
+			<h:outputText value="#{msgs.pres_share}"/> 
+</h:commandLink>
+

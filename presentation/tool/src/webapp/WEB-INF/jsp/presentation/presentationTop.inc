@@ -37,6 +37,9 @@ $(document).ready(function() {
 	</tr>
 </table>
 
+<form method="post" name="topForm" id="topForm">
+<input type="hidden" name="freeFormContent" value=""/>
+
 <ul class="tabNav specialLink">
 	<c:choose>
 		<c:when test="${pres_active_page == 'summary'}">
@@ -51,7 +54,12 @@ $(document).ready(function() {
 			<li class="selected"><span><fmt:message key="pres_content"/></span></li>
 		</c:when>
 		<c:otherwise>
+		<c:if test="${! presentation.isFreeFormType}">
 			<li><a href="<osp:url value="editContent.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_content"/></a></li>
+		</c:if>
+		<c:if test="${presentation.isFreeFormType}">
+			<li><a href="javascript:document.topForm.freeFormContent.value='true';document.topForm.submit();"><fmt:message key="pres_content"/></a></li>
+		</c:if>
 		</c:otherwise>
 	</c:choose>
 	<c:choose>
@@ -63,3 +71,4 @@ $(document).ready(function() {
 		</c:otherwise>
 	</c:choose>
 </ul>
+</form>
