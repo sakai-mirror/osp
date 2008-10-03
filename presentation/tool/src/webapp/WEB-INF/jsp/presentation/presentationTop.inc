@@ -37,7 +37,7 @@ $(document).ready(function() {
 	</tr>
 </table>
 
-<form method="post" name="topForm" id="topForm">
+<form method="post" name="topForm" id="topForm" style="margin:0">
 <input type="hidden" name="freeFormContent" value=""/>
 
 <ul class="tabNav specialLink">
