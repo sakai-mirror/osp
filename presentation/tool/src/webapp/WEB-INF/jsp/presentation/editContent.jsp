@@ -75,23 +75,35 @@
 <c:set var="pres_active_page" value="content"/>
 <%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
 
-<%--  Editing is getting lost somewhere and throwing an NPE
 <script type="text/javascript">
 $(document).ready(function() {
+	osp.bag.selections = {};
+	$('select.artifactPicker').change(function() {
+		osp.bag.selections[$(this).attr('id')] = $(this).val();
+	});
+	$('select.artifactPicker').each(function() {
+		osp.bag.selections[$(this).attr('id')] = $(this).val();
+	});
+	osp.bag.formTypes = {};
+	<c:forEach var="itemDefinition" items="${types}">
+		osp.bag.formTypes['<c:out value="${itemDefinition.id.value}"/>'] = '<c:out value="${itemDefinition.type}"/>';  
+	</c:forEach>
 	$('a.inlineFormEdit').click(function(ev) {
 		ev.preventDefault();
-		var idx = this.href.lastIndexOf("&");
-		var id = this.href.substring(idx+5);
-		var href = this.href.substring(0, idx);
-		if ($('#' + id).get(0).selectedIndex > 1) {
-			var formId = $('#' + id).val();
-			formId = formId.substring(formId.indexOf('.') + 1);
-			window.location = href + '&formId=' + formId;
-		}
+		var item = this.href.substring(this.href.indexOf('#') + 1);
+		if (osp.bag.selections[item]) {
+			var pieces = osp.bag.selections[item].split('.');
+			var itemDefId = pieces[0];
+			var formTypeId = osp.bag.formTypes[itemDefId];
+			var formId = pieces[1];
+			window.location = '<osp:url value="editPresentationForm.osp" />'
+					+ '&id=<c:out value="${presentation.id.value}" />'
+					+ '&formTypeId=' + formTypeId
+					+ '&formId=' + formId;
+		}		
 	});
 });
 </script>
---%>
 
 <div class="tabNavPanel">
  <!-- temp separation; end of tabs -->
@@ -145,13 +157,11 @@ $(document).ready(function() {
 										<th>
 											<fmt:message key="label_availableItems_step2"/>
 											<c:if test="${not itemDefintion.hasMimeTypes}">
-												<a href="<osp:url value="editPresentationForm.osp"/>&id=<c:out value="${presentation.id.value}" />&formTypeId=<c:out value="${itemDefinition.type}"/>"
+												<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>"
 												   class="inlineCreate"><fmt:message key="create_new"/></a>
-												   <%-- 
 												   &nbsp;
-												<a href="<osp:url value="editPresentationForm.osp"/>&id=<c:out value="${presentation.id.value}" />&formTypeId=<c:out value="${itemDefinition.type}"/>&box=<c:out value="${list1}"/>"
+												<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>&amp;box=<c:out value="${list1}"/>"
 												   class="inlineFormEdit"><fmt:message key="edit_selected"/></a>
-												   --%>
 											</c:if>
 										</th>
 										<th></th>
@@ -249,6 +259,7 @@ $(document).ready(function() {
 									<div class="listNav" style="background:transparent;width:35%">
 										<label  for="<c:out value="${selectBox}"/>"><fmt:message key="label_availableItems"/></label>
 										<select
+											class="artifactPicker"
 											id="<c:out value="${selectBox}"/>"
 											name="<c:out value="${status.expression}"/>">
 											<option value=""><fmt:message key="addPresentation2_selectItem"/>
@@ -272,16 +283,15 @@ $(document).ready(function() {
 										</select>
 									<c:if test="${not itemDefintion.hasMimeTypes}">
 										<div>
-											<a href="<osp:url value="editPresentationForm.osp"/>&id=<c:out value="${presentation.id.value}" />&formTypeId=<c:out value="${itemDefinition.type}"/>"
+											<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>"
 											   class="inlineCreate"><fmt:message key="create_new" /></a>
-											   <%--
 											   &nbsp;
-											<a href="<osp:url value="editPresentationForm.osp"/>&id=<c:out value="${presentation.id.value}" />&formTypeId=<c:out value="${itemDefinition.type}"/>&box=<c:out value="${selectBox}"/>"
+											<a href="#<c:out value="${selectBox}" />"
 											   class="inlineFormEdit"><fmt:message key="edit_selected"/></a>
-											   --%>
 										</div>
 									</c:if>
 								</div>
+							</div>
 						</c:otherwise>
 					</c:choose>
 				</li>

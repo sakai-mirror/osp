@@ -204,14 +204,18 @@ public class PresentationService {
 	public Map<String, Object> editForm(String presentationId, String formTypeId, String formId) {
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		Presentation presentation = editPresentation(presentationId);
-		if (formId == null)
-			throw new IllegalArgumentException("Cannot edit null form");
-		
 		if (formTypeId == null)
 			formTypeId = getFormType(formId);
 		
 		if (formTypeId == null)
 			throw new IllegalArgumentException("Cannot edit with null form type");
+		
+		if (formId == null)
+			throw new IllegalArgumentException("Cannot edit null form");
+		
+		formId = contentHostingService.resolveUuid(formId);
+		if (formId == null)
+			throw new IllegalArgumentException("Cannot edit nonexistent form");
 		
 		//String resourceId = contentHostingService.resolveUuid(formId);
 		params.put(ResourceEditingHelper.ATTACHMENT_ID, formId);
