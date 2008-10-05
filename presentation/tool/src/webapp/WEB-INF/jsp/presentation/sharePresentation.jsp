@@ -96,8 +96,8 @@
          <thead>
          <tr>
          <td><h3 style="padding:0;margin:0"><fmt:message key="pres_share_list"/></h3></td>
-         <td align="right">
-         <a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share_more"/></a>
+         <td align="right" class="specialLink">
+         <a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"  class="addUsersSmall"><span><fmt:message key="pres_share_more"/></span></a>
          </td>
          </tr>
          </thead>
@@ -128,8 +128,8 @@
 
          <tfoot>
          <tr>
-         <td colspan="2" align="right">
-            <a href="javascript:document.mainForm.submit();"><fmt:message key="pres_share_rem"/></a> 
+         <td colspan="2" align="right" class="specialLink">
+            <a href="javascript:document.mainForm.submit();"  class="removeSmall"><span><fmt:message key="pres_share_rem"/></span></a> 
          </td>
          </tr>
          </tfoot>

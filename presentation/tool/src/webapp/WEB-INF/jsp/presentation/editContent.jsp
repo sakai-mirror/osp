@@ -154,18 +154,36 @@ $(document).ready(function() {
 								<div class="textPanel"><c:out value="${itemDefinition.description}" /></div>
 								<table width="100%" class="sidebyside" border="0" summary="<fmt:message key="item_selection_table_summary_step2"/>">
 									<tr>
-										<th>
-											<fmt:message key="label_availableItems_step2"/>
-											<c:if test="${not itemDefintion.hasMimeTypes}">
-												<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>"
+										<th style="padding:0">
+											<table width="100%" style="margin:0">
+												<tr>
+													<td>
+														<fmt:message key="label_availableItems_step2"/>
+													</td>
+													<c:if test="${not itemDefintion.hasMimeTypes}">
+														<td style="text-align:right">
+															<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>"
 												   class="inlineCreate"><fmt:message key="create_new"/></a>
 												   &nbsp;
-												<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>&amp;box=<c:out value="${list1}"/>"
-												   class="inlineFormEdit"><fmt:message key="edit_selected"/></a>
-											</c:if>
+														</td>
+													</c:if>
+												</tr>
+											</table>	
 										</th>
 										<th></th>
-										<th><fmt:message key="label_selectedItems_step2"/></th>
+										<th style="padding:0">
+											<table width="100%" style="margin:0">
+												<tr>
+													<td>
+														<fmt:message key="label_selectedItems_step2"/>
+													</td>
+													<td style="text-align:right">
+														<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>&amp;box=<c:out value="${list1}"/>"
+													  class="inlineFormEdit"><fmt:message key="edit_selected"/></a>
+													</td>
+												</tr>
+											</table>	
+									  </th>
 									</tr>
 									<tr>
 										<td style="width:40%">
@@ -256,8 +274,8 @@ $(document).ready(function() {
 										</c:if>
 
 									</div>
-									<div class="listNav" style="background:transparent;width:35%">
-										<label  for="<c:out value="${selectBox}"/>"><fmt:message key="label_availableItems"/></label>
+									<div class="listNav">
+										<label  for="<c:out value="${selectBox}"/>" class="itemAction" style="margin-left:0;padding-left:0;display:block"><span><fmt:message key="label_availableItems"/></span></label>
 										<select
 											class="artifactPicker"
 											id="<c:out value="${selectBox}"/>"
@@ -282,13 +300,12 @@ $(document).ready(function() {
 											</c:forEach>
 										</select>
 									<c:if test="${not itemDefintion.hasMimeTypes}">
-										<div>
+										<span class="itemAction"  style="margin-left:0;padding-left:0;white-space:nowrap;padding-top:4px;display:inline-block;">
 											<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>"
-											   class="inlineCreate"><fmt:message key="create_new" /></a>
-											   &nbsp;
+											   class="inlineCreate""><fmt:message key="create_new" /></a>| 
 											<a href="#<c:out value="${selectBox}" />"
 											   class="inlineFormEdit"><fmt:message key="edit_selected"/></a>
-										</div>
+										</span>
 									</c:if>
 								</div>
 							</div>

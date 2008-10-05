@@ -63,8 +63,9 @@ $(document).ready(function() {
     	<fmt:message key="share_confirm"/>
 	</div>
 </c:if>
+
 <c:if test="${not empty errMsg}">
-	<div class="alertMessageInline">
+	<div class="messageValidation">
      <c:out value="${errMsg}" />
 	</div>
 </c:if>
@@ -163,12 +164,12 @@ $(document).ready(function() {
       </c:if>
       </span>
    </td>
-   <td style="text-align:right;padding-left:2em;white-space:nowrap">
+   <td style="text-align:right;padding-left:2em;white-space:nowrap" class="specialLink">
       <c:if test="${shareBy=='share_browse' || shareBy=='share_group'}">
-         <a href="javascript:document.mainForm.submit();"><fmt:message key="share_add_users"/></a>
+      	<a href="javascript:document.mainForm.submit();" class="addSmall"><span><fmt:message key="share_add_users"/></span></a>
       </c:if>
       <c:if test="${shareBy=='share_role' || shareBy=='share_allrole'}">
-         <a href="javascript:document.mainForm.submit();"><fmt:message key="share_add_roles"/></a>
+         <a href="javascript:document.mainForm.submit();" class="addSmall"><span><fmt:message key="share_add_roles"/></span></a>
       </c:if>
    </td>
    </tr>
@@ -226,8 +227,8 @@ $(document).ready(function() {
       </c:if>
     </label> 
   </td>
-  <td style="text-align:right;padding-left:2em;white-space:nowrap">
-     <a href="javascript:document.mainForm.submit();"><fmt:message key="share_submit"/></a>
+  <td style="text-align:right;padding-left:2em;white-space:nowrap" class="specialLink">
+     <a href="javascript:document.mainForm.submit();"  class="addSmall"><span><fmt:message key="share_submit"/></span></a>
   </td>
   </tr>
   <tr><td colspan="2">

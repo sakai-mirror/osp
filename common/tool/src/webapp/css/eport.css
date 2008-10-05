@@ -560,6 +560,7 @@ em.closeMe{font-style:normal;cursor:pointer;padding-left:1em}
 	padding:4px !important; 
 	background:#cef
 }
+
 .presentationTypeGroup{
 	border:1px solid #ccc;
 	margin:1em 0;
@@ -576,6 +577,12 @@ em.closeMe{font-style:normal;cursor:pointer;padding-left:1em}
 		margin:0 0 1em 0;
 		padding:.5em
 	}
+.presentationElement .listNav{
+	background:transparent;border:1px solid #fff;width:35%;padding:0 4px 4px;text-align:left;
+}
+.presentationElement .listNav:hover{
+	background:#ffc;border:1px solid #ccc;width:35%;padding:0 4px 4px;text-align:left;
+}
 
 .presentationTypeGroup li{
 	list-style:none;
@@ -584,7 +591,23 @@ em.closeMe{font-style:normal;cursor:pointer;padding-left:1em}
 .presentationTypeGroup label{font-size:1.1em}
 .presentationTypeGroup p, .presentationTypeGroup a{
 	padding-left:1.7em;
-	margin:0; inherit;
+	margin:0 inherit;
 }
 .quickLinkInfo{height:2em;line-height:1.2em;	}
+
+/*iconized links*/
+.addSmall,.addUsersSmall, .removeSmall{
+	display:inline-block;
+	padding-left:18px;
+	height:17px;
+}
+.addSmall{
+	background:url(../img/add.png) no-repeat;
+	}
+.addUsersSmall{
+	background:url(../img/group_add.png) no-repeat;
+	}
+.removeSmall{
+	background:url(../img/user_delete.png) no-repeat;
+}
 
