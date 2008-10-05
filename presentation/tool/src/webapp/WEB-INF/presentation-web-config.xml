@@ -325,68 +325,6 @@
         </property>
     </bean>
 
-    <bean id="addPresentationController" class="org.theospi.portfolio.presentation.control.AddPresentationController">
-        <property name="worksiteManager">
-            <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
-        </property>
-        <property name="presentationManager">
-            <ref bean="presentationManager"/>
-        </property>
-        <property name="idManager">
-            <ref bean="idManager"/>
-        </property>
-        <property name="authManager">
-            <ref bean="authManager"/>
-        </property>
-        <property name="agentManager">
-            <ref bean="agentManager"/>
-        </property>
-        <property name="homeFactory">
-            <ref bean="homeFactory"/>
-        </property>
-        <property name="authzManager">
-            <ref bean="authzManager"/>
-        </property>
-        <property name="ospConfig">
-            <ref bean="ospConfig"/>
-        </property>
-        <property name="listScrollIndexer">
-            <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
-        </property>
-        <property name="serverConfigurationService">
-            <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
-        </property>
-        <property name="contentHosting">
-            <ref bean="org.sakaiproject.content.api.ContentHostingService"/>
-        </property>
-        <property name="customTypedEditors">
-            <list>
-                <ref bean="presentationItemCustomEditor"/>
-                <ref bean="idCustomEditor"/>
-                <ref bean="presentationViewerCustomEditor"/>
-            </list>
-        </property>
-        <property name="pages">
-            <list>
-                <value>addPresentation</value>
-                <value>addPresentation1</value>
-                <value>addPresentationProperty</value>
-                <value>addPresentation2</value>
-                <value>freeFormPresentationRedirect</value>
-                <value>addPresentation3</value>
-            </list>
-        </property>
-        <property name="commandName">
-            <value>presentation</value>
-        </property>
-        <property name="validator">
-            <ref bean="presentationValidator"/>
-        </property>
-        <property name="commandClass">
-            <value>org.theospi.portfolio.presentation.model.Presentation</value>
-        </property>
-    </bean>
-
     <bean id="listPresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
             <bean class="org.theospi.portfolio.presentation.control.ListPresentationController">

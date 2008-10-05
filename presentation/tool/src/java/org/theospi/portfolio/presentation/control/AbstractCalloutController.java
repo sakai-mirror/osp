@@ -10,29 +10,21 @@ import javax.servlet.http.HttpSession;
 
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.metaobj.shared.FormHelper;
-import org.sakaiproject.metaobj.shared.model.Id;
-import org.springframework.validation.BindException;
-import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractCommandController;
 import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.mvc.SimpleFormController;
-import org.theospi.portfolio.presentation.model.Presentation;
-import org.theospi.portfolio.presentation.model.PresentationTemplate;
 import org.theospi.portfolio.presentation.support.PresentationService;
-import org.theospi.portfolio.shared.model.Node;
 
 public abstract class AbstractCalloutController extends AbstractController {
 	protected PresentationService presentationService;
 	protected String helperView = "formHelper";
 	protected String returnView = "editPresentationRedirect";
 	protected static final String PROP_PRESENTATION_ID = "_Presentation:Id";
-	
+		
 	//There are only three ways this controller gets invoked
 	// 1: Initial request -- set up session and call out to helper
-	// 2: Return from helper -- handle helper action, tear down session, return to EditPresentation
-	// 2a: Save callback -- attach form if not already attached, otherwise no-op
-	// 2b: Cancel callback -- no-op
+	// 2: Return from helper -- handle helper action, tear down session, return to the return view
+	// 2a: Save callback -- act on the details returned from helper to commit a change
+	// 2b: Cancel callback -- clean up any extra materials required
 	
 	@Override
 	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
