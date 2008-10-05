@@ -4,6 +4,41 @@
 <beans default-lazy-init="false">
     <bean id="presentationValidator" class="org.theospi.portfolio.presentation.control.PresentationValidator"/>
 
+	<bean id="abstractPresentationController"
+			abstract="true">
+		<property name="presentationManager">
+			<ref bean="presentationManager"/>
+		</property>
+		<property name="authManager">
+			<ref bean="authManager"/>
+		</property>
+		<property name="agentManager">
+			<ref bean="agentManager"/>
+		</property>
+		<property name="homeFactory">
+			<ref bean="homeFactory"/>
+		</property>
+		<property name="authzManager">
+			<ref bean="authzManager"/>
+		</property>
+		<property name="idManager">
+			<ref bean="idManager"/>
+		</property>
+		<property name="worksiteManager">
+			<ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
+		</property>
+		<property name="addTemplateController">
+			<ref bean="addTemplateController"/>
+		</property>
+    </bean>
+    
+    <bean id="listScrollerController" abstract="true" parent="abstractPresentationController">
+		<property name="listScrollIndexer">
+			<ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
+		</property>    
+    </bean>
+
+    
     <bean id="presentationItemCustomEditor"
           class="org.theospi.portfolio.presentation.model.impl.PresentationItemCustomEditor">
         <property name="idManager">
@@ -112,22 +147,7 @@
 
     <bean id="previewTemplateController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.PreviewTemplateController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.PreviewTemplateController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="screenMappings">
@@ -177,31 +197,7 @@
 
     <bean id="listTemplateController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.ListTemplateController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
-                </property>
-                <property name="worksiteManager">
-                    <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
-                </property>
-                <property name="listScrollIndexer">
-                    <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.ListTemplateController" parent="listScrollerController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -224,22 +220,7 @@
 
     <bean id="deleteTemplateController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.DeleteTemplateController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.DeleteTemplateController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -262,22 +243,7 @@
 
     <bean id="copyTemplateController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.CopyTemplateController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.CopyTemplateController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -301,10 +267,7 @@
     <bean id="deleteItemDefinitionController"
           class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.DeleteItemDefinitionController">
-                <property name="addTemplateController">
-                    <ref bean="addTemplateController"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.DeleteItemDefinitionController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -327,33 +290,9 @@
 
     <bean id="listPresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.ListPresentationController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
-                </property>
-                <property name="listScrollIndexer">
-                    <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.ListPresentationController" parent="listScrollerController">
                 <property name="serverConfigurationService">
                     <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
-                </property>
-                <property name="worksiteManager">
-                    <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
                 </property>
             </bean>
         </property>
@@ -377,10 +316,7 @@
 
     <bean id="deletePresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.DeletePresentationController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.DeletePresentationController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -405,13 +341,7 @@
 
     <bean id="sharePresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.SharePresentationController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.SharePresentationController" parent="abstractPresentationController">
                 <property name="serverConfigurationService">
                     <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
                 </property>
@@ -440,30 +370,18 @@
 
     <bean id="sharePresentationMoreController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.SharePresentationMoreController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.SharePresentationMoreController" parent="abstractPresentationController">
                 <property name="serverConfigurationService">
                     <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
                 </property>
                 <property name="siteService">
                     <ref bean="org.sakaiproject.site.api.SiteService"/>
                 </property>
-                <property name="agentManager">
-                  <ref bean="agentManager"/>
-                </property>
                 <property name="userDirectoryService">
                   <ref bean="org.sakaiproject.user.api.UserDirectoryService"/>
                 </property>
                 <property name="emailService">
                   <ref bean="org.sakaiproject.email.api.EmailService"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
                 </property>
             </bean>
         </property>
@@ -488,30 +406,9 @@
 
 	<bean id="hidePresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.HidePresentationController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
-                </property>
-                <property name="listScrollIndexer">
-                    <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.HidePresentationController" parent="listScrollerController">
                 <property name="serverConfigurationService">
                     <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
-                </property>
-                <property name="worksiteManager">
-                    <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
                 </property>
             </bean>
         </property>
@@ -533,97 +430,6 @@
         </property>
     </bean>
 
-    <bean id="addViewerController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
-        <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.AddViewerController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="worksiteManager">
-                    <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
-                </property>
-            </bean>
-        </property>
-        <property name="formMethod">
-            <value>get</value>
-        </property>
-        <property name="screenMappings">
-            <props>
-                <prop key="success">addPresentation3</prop>
-            </props>
-        </property>
-        <property name="customTypedEditors">
-            <list>
-                <ref bean="idCustomEditor"/>
-            </list>
-        </property>
-        <property name="commandName">
-            <value>viewer</value>
-        </property>
-        <property name="commandClass">
-            <value>org.sakaiproject.metaobj.shared.model.impl.AgentImpl</value>
-        </property>
-        <property name="formView">
-            <value>addPresentation3</value>
-        </property>
-    </bean>
-
-    <bean id="deleteViewerController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
-        <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.DeleteViewerController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
-                </property>
-            </bean>
-        </property>
-        <property name="formMethod">
-            <value>get</value>
-        </property>
-        <property name="screenMappings">
-            <props>
-                <prop key="success">addPresentationRedirect</prop>
-            </props>
-        </property>
-        <property name="customTypedEditors">
-            <list>
-                <ref bean="idCustomEditor"/>
-            </list>
-        </property>
-        <property name="commandName">
-            <value>viewer</value>
-        </property>
-        <property name="commandClass">
-            <value>org.sakaiproject.metaobj.shared.model.impl.AgentImpl</value>
-        </property>
-        <property name="formView">
-            <value>addPresentation3</value>
-        </property>
-    </bean>
-    
     <bean id="org.theospi.portfolio.presentation.support.PresentationService" class="org.theospi.portfolio.presentation.support.PresentationService">
 		<property name="authnManager">
 		    <ref bean="authManager"/>
@@ -683,19 +489,7 @@
 	
     <bean id="viewPresentationController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.ViewPresentationControl">
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.ViewPresentationControl" parent="abstractPresentationController">
                 <property name="artifactFinderManager">
                     <ref bean="artifactFinderManager"/>
                 </property>
@@ -731,13 +525,7 @@
     <bean id="viewPresentationStatsController"
           class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.ViewPresentationStatsController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.ViewPresentationStatsController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -760,19 +548,7 @@
 
     <bean id="notifyViewersController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.NotifyViewersController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.NotifyViewersController" parent="listScrollerController">
                 <property name="ospConfig">
                     <ref bean="ospConfig"/>
                 </property>
@@ -782,17 +558,8 @@
                 <property name="mailer">
                     <ref bean="mailer"/>
                 </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
-                <property name="listScrollIndexer">
-                    <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
-                </property>
                 <property name="serverConfigurationService">
                     <ref bean="org.sakaiproject.component.api.ServerConfigurationService"/>
-                </property>
-                <property name="worksiteManager">
-                    <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
                 </property>
             </bean>
         </property>
@@ -834,25 +601,11 @@
             <value>localhost</value>
         </property>
     </bean>
+    
 
     <bean id="addCommentController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.AddCommentController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.AddCommentController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="screenMappings">
@@ -879,15 +632,7 @@
 
     <bean id="deleteCommentController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.DeleteCommentController">
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-
-                <!--<property name="authzManager"><ref bean="authzManager"/></property>-->
+            <bean class="org.theospi.portfolio.presentation.control.DeleteCommentController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -911,15 +656,7 @@
     <bean id="updateCommentVisibilityController"
           class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.UpdateCommentVisibilityController">
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-
-                <!--<property name="authzManager"><ref bean="authzManager"/></property>-->
+            <bean class="org.theospi.portfolio.presentation.control.UpdateCommentVisibilityController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -942,19 +679,7 @@
 
     <bean id="listCommentsController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.CommentListController">
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="worksiteManager">
-                    <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.CommentListController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -977,31 +702,7 @@
 
     <bean id="publishTemplateController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.PublishTemplateController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
-                </property>
-                <property name="worksiteManager">
-                    <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
-                </property>
-                <property name="listScrollIndexer">
-                    <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.PublishTemplateController" parent="listScrollerController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -1025,10 +726,7 @@
 
     <bean id="insertImageController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.InsertImageController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.InsertImageController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="screenMappings">
@@ -1052,22 +750,7 @@
 
     <bean id="deleteTemplateFileController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.DeleteTemplateFileController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="addTemplateController">
-                    <ref bean="addTemplateController"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.DeleteTemplateFileController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -1090,10 +773,7 @@
 
     <bean id="editTemplateFileController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.EditTemplateFileController">
-                <property name="addTemplateController">
-                    <ref bean="addTemplateController"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.EditTemplateFileController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -1115,16 +795,7 @@
     </bean>
 
     <bean id="org.theospi.portfolio.presentation.control.ImportTemplateController"
-          class="org.theospi.portfolio.presentation.control.ImportTemplateController">
-        <property name="presentationManager">
-            <ref bean="presentationManager"/>
-        </property>
-        <property name="authManager">
-            <ref bean="authManager"/>
-        </property>
-        <property name="homeFactory">
-            <ref bean="homeFactory"/>
-        </property>
+          class="org.theospi.portfolio.presentation.control.ImportTemplateController" parent="abstractPresentationController">
         <property name="entityManager">
             <ref bean="org.sakaiproject.entity.api.EntityManager"/>
         </property>
@@ -1167,31 +838,7 @@
 
     <bean id="listLayoutController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.ListLayoutController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
-                </property>
-                <property name="worksiteManager">
-                    <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
-                </property>
-                <property name="listScrollIndexer">
-                    <ref bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.ListLayoutController" parent="listScrollerController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -1215,16 +862,7 @@
 
     <bean id="addLayoutController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.AddLayoutController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.AddLayoutController" parent="abstractPresentationController">
                 <property name="entityManager">
                     <ref bean="org.sakaiproject.entity.api.EntityManager"/>
                 </property>
@@ -1263,25 +901,7 @@
 
     <bean id="deleteLayoutController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.DeleteLayoutController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.DeleteLayoutController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -1304,28 +924,7 @@
 
     <bean id="publishLayoutController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.PublishLayoutController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="authManager">
-                    <ref bean="authManager"/>
-                </property>
-                <property name="agentManager">
-                    <ref bean="agentManager"/>
-                </property>
-                <property name="homeFactory">
-                    <ref bean="homeFactory"/>
-                </property>
-                <property name="authzManager">
-                    <ref bean="authzManager"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
-                </property>
-                <property name="worksiteManager">
-                    <ref bean="org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.PublishLayoutController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="customTypedEditors">
@@ -1348,13 +947,7 @@
 
     <bean id="selectLayoutController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
         <property name="controller">
-            <bean class="org.theospi.portfolio.presentation.control.SelectLayoutController">
-                <property name="presentationManager">
-                    <ref bean="presentationManager"/>
-                </property>
-                <property name="idManager">
-                    <ref bean="idManager"/>
-                </property>
+            <bean class="org.theospi.portfolio.presentation.control.SelectLayoutController" parent="abstractPresentationController">
             </bean>
         </property>
         <property name="customTypedEditors">
