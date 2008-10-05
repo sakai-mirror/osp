@@ -31,6 +31,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.presentation.CommentSortBy;
 import org.theospi.portfolio.presentation.PresentationManager;
+import org.sakaiproject.metaobj.shared.model.Id;
 
 /**
  * Created by IntelliJ IDEA.
@@ -41,37 +42,25 @@ import org.theospi.portfolio.presentation.PresentationManager;
  */
 public class CommentListController extends AbstractPresentationController implements CustomCommandController {
 
-   private String type = null;
-
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
-      List commentList;
       Agent agent = getAuthManager().getAgent();
       PresentationManager presentationManager = getPresentationManager();
-      CommentSortBy sortBy = (CommentSortBy) requestModel;
-      String toolId = ToolManager.getCurrentPlacement().getId();
-      if (type.equals("owner")) {
-         commentList = presentationManager.getOwnerComments(agent, toolId, sortBy, false);
-      } else {
-         commentList = presentationManager.getCreatorComments(agent, toolId, sortBy);
-      }
+      
+      Id id = getIdManager().getId((String)request.get("id"));
+      List commentList = presentationManager.getPresentationComments(id, agent);
 
       Map model = new Hashtable();
       model.put("comments", commentList);
-      model.put("sortBy", requestModel);
-      model.put("currentAgent", getAuthManager().getAgent());
+      model.put("id", id.getValue());
+      
+      if (request.get("returnView") != null) {
+    	  model.put("returnView", request.get("returnView"));
+      }
 
       return new ModelAndView("success", model);
    }
 
-   public String getType() {
-      return type;
-   }
-
-   public void setType(String type) {
-      this.type = type;
-   }
-
    public Object formBackingObject(Map request, Map session, Map application) {
-      return new CommentSortBy();
+      return new CommentSortBy(); // not currently used
    }
 }

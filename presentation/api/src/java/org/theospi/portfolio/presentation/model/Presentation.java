@@ -219,6 +219,10 @@ public class Presentation extends IdentifiableObject {
    public String getPresentationType() {
       return presentationType;
    }
+   
+   public boolean getIsFreeFormType() {
+      return (presentationType.equals(FREEFORM_TYPE));
+   }
 
    public void setPresentationType(String presentationType) {
       this.presentationType = presentationType;

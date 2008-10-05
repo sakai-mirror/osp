@@ -25,6 +25,9 @@ import org.theospi.jsf.impl.DefaultXmlTagFactory;
 import org.theospi.jsf.impl.DefaultXmlTagHandler;
 import org.theospi.jsf.intf.XmlTagHandler;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -34,6 +37,8 @@ import org.theospi.jsf.intf.XmlTagHandler;
  */
 public class PresentationTagFactory extends DefaultXmlTagFactory {
 
+   protected final Log logger = LogFactory.getLog(getClass());
+   
    private final static String OSP_NS_URI = "http://www.osportfolio.org/OspML";
    private XmlTagHandler regionTagHandler;
    private XmlTagHandler sequenceTagHandler;
@@ -79,11 +84,19 @@ public class PresentationTagFactory extends DefaultXmlTagFactory {
    }
 
    public void init() {
-      ComponentManager.loadComponent("org.theospi.jsf.intf.XmlTagFactory.freeFormPresentation", this);
-      setDefaultHandler(new DefaultXmlTagHandler(this));
-      setRegionTagHandler(new RegionTagHandler(this));
-      setSequenceTagHandler(new SequenceTagHandler(this));
-      setTextTypeTagHandler(new TextTypeTagHandler(this));
+      try
+      {
+         ComponentManager.loadComponent("org.theospi.jsf.intf.XmlTagFactory.freeFormPresentation", this);
+         setDefaultHandler(new DefaultXmlTagHandler(this));
+         setRegionTagHandler(new RegionTagHandler(this));
+         setSequenceTagHandler(new SequenceTagHandler(this));
+         setTextTypeTagHandler(new TextTypeTagHandler(this));
+      }
+      catch (Exception e)
+      {
+         // this will fail if tool is reloaded (i.e. testing)
+         logger.warn(e.toString());
+      }
    }
 
 }

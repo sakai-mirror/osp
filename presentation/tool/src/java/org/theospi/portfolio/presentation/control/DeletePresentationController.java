@@ -40,6 +40,15 @@ public class DeletePresentationController extends AbstractPresentationController
    protected final Log logger = LogFactory.getLog(getClass());
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
+   
+      String cancel = (String) request.get("cancel");
+      String doit = (String) request.get("continue");
+
+      if (cancel != null)
+         return new ModelAndView("cancel");
+      else if (doit == null)
+         return new ModelAndView("delete");
+
       Presentation presentation = (Presentation) requestModel;
       presentation = getPresentationManager().getPresentation(presentation.getId());
       getPresentationManager().deletePresentation(presentation.getId());

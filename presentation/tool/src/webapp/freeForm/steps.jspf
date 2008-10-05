@@ -1,5 +1,18 @@
-<ospx:wizardSteps currentStep="#{freeForm.stepString}">
-   <ospx:wizardStep label="#{msgs.step_begin}" />
-   <ospx:wizardStep label="#{msgs.step_design}" />
-   <ospx:wizardStep label="#{msgs.step_publish}" />
-</ospx:wizardSteps>
+<link media="all" rel="stylesheet" type="text/css" href="/osp-common-tool/css/eport.css" />
+<ul class="tabNav specialLink">
+	<li>
+		<h:commandLink action="#{freeForm.processActionSummary}" title="#{msgs.pres_summary}">
+					<h:outputText value="#{msgs.pres_summary}"/> 
+		</h:commandLink>
+	</li>
+	<li  class="selected">
+		<span>
+			<h:outputText value="#{msgs.pres_content}"/>
+		</span>	
+	</li>
+	<li>
+		<h:commandLink action="#{freeForm.processActionShare}" title="#{msgs.pres_share}">
+					<h:outputText value="#{msgs.pres_share}"/> 
+		</h:commandLink>
+	</li>
+</ul>	

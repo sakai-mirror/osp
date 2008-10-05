@@ -507,3 +507,35 @@ function openNewWindow(URL)
    if (window.focus) {newwindow.focus()}
 }
 
+function resizeFrame(updown) {
+  var frame = parent.document.getElementById( window.name );
+  if( frame ) {
+	if(updown=='shrink')
+	{
+	var clientH = document.body.clientHeight + 30;
+  }
+  else
+  {
+  var clientH = document.body.clientHeight + 30;
+  }
+	$( frame ).height( clientH );
+  } else {
+	throw( "resizeFrame did not get the frame (using name=" + window.name + ")" );
+  }
+}
+function setupMessageListener(messageHolder, messageMode){
+    //test to see if there is an actual message (trim whitespace first)
+    var str = $("#" + messageHolder).text();
+    str = jQuery.trim(str);
+    // show if message is there, then hide it
+    if (str != '') {
+        $("#" + messageHolder).fadeIn('slow')
+        $("#" + messageHolder).addClass(messageMode);
+        $("#" + messageHolder).animate({
+            opacity: 1.0
+        }, 5000)
+        $("#" + messageHolder).fadeOut('slow', function(){
+            $("#" + messageHolder).remove();
+        });
+    }
+}
