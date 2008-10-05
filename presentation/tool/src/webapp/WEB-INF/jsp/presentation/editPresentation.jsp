@@ -171,7 +171,7 @@ $(document).ready(function() {
 				<p class="quickLink"><a href="<osp:url value="editContent.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_content"/></a></p>
 			</c:if>
 			<c:if test="${presentation.isFreeFormType}">
-				<li><a href="javascript:document.mainForm.freeFormContent.value='true';document.mainForm.submit();"><fmt:message key="pres_content"/></a></li>
+				<p class="quickLink"><a href="javascript:document.mainForm.freeFormContent.value='true';document.mainForm.submit();"><fmt:message key="pres_content"/></a></p>
 			</c:if>
 			<p class="quickLinkInfo"><fmt:message key="pres_content_caption"/></p>
 			<c:if test="${not empty presentation.template.propertyFormType}">
