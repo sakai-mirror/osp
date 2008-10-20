@@ -46,7 +46,7 @@
 							<c:out value="${template.description}"/>
 						</p>
 						<div class="portfolioTypeMoreInfo">
-							<a href="#" onclick="return false;">More Info</a> <%-- TODO: i18n --%>
+							<a href="#" onclick="return false;"><fmt:message key="more_info"/></a> 
 						</div>
 					</li>
 				</c:forEach>
@@ -71,7 +71,7 @@
 </div>
 
 <div class="act">
-	<input type="submit" name="submit" value="Create" /> <input type="submit" name="cancel" value="Cancel" />
+	<input type="submit" name="submit" value="<fmt:message key="button_create"/>" /> <input type="submit" name="cancel" value="<fmt:message key="button_cancel"/>" />
 </div>
 </spring:nestedPath>
 </form>
