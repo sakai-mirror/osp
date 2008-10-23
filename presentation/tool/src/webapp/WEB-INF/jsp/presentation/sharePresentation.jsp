@@ -7,26 +7,8 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function(){
-		if ($("#pres_share_select:checked").val())
-	{
-		$("#sharePanel").show();
-	}
-	else
-	{
-		$("#sharePanel").hide();
-	}
-
-	$('#pres_share_select').click(function(){
-			if (this.checked) {
-				$("#sharePanel").fadeIn();
-				resizeFrame();
-			}
-			else
-			{
-			$("#sharePanel").fadeOut();
-			resizeFrame('shrink');
-			}
-		});
+		$("#hideUrl").hide();
+		$("#urlText").hide();
 
 	$(".multSelectHolder").each(function(){
 		if ($(this).height() > 180) {
@@ -65,7 +47,9 @@
       <label for="pres_share_public">
          <fmt:message key="pres_share_public"/>
       </label>
-      <a href="javascript:alert('${publicUrl}')"><fmt:message key="pres_share_here"/></a>
+       <a id="showUrl" href="#" onclick="$('#hideUrl').show(); $('#showUrl').hide(); $('#urlText').show();"><fmt:message key="pres_share_showurl"/></a>
+       <a id="hideUrl" href="#" onclick="$('#showUrl').show(); $('#hideUrl').hide(); $('#urlText').hide();"><fmt:message key="pres_share_hideurl"/></a>
+       <input id="urlText" type="text" readonly="true" name="publicUrl" value="${publicUrl}" size="120"/>
    </div>
       
    <c:choose>
