@@ -68,27 +68,18 @@
       <a href="javascript:alert('${publicUrl}')"><fmt:message key="pres_share_here"/></a>
    </div>
       
-   <div class="checkbox">
-  		<%--desNote: if this input (identified via ID)  is checked, #sharePanel will show, otherwise it will hide --%>
-      <input   type="checkbox" name="pres_share_select" id="pres_share_select"
-         <c:if test="${pres_share_select=='true' && not empty shareList}">disabled="disabled"</c:if>
-         <c:if test="${pres_share_select=='true'}"> checked="checked"</c:if>
-      />
-      <label for="pres_share_select">
-         <fmt:message key="pres_share_select"/>
-      </label>
-   </div>
-   
-   <%--desNote: following panel should display on enter under the following condition: 
-   		portfolio has previously been set to "shared"
-		or it has been set to shared via input above  now (this later case is scripted above) --%>
-   <div class="addPanel" id="sharePanel">
    <c:choose>
      <c:when test="${empty shareList}">
-        <p class="messageInstruction">
- 	 	<fmt:message key="pres_share_none"/>
-         <a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"><fmt:message key="pres_share_add"/></a>
-		</p> 
+         <table width="80%"   style="margin-top:1em">
+         <thead>
+         <tr>
+         <td><h3 style="padding:0;margin:0"><fmt:message key="pres_share_none"/></h3></td>
+         <td align="right" class="specialLink">
+         <a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"  class="addUsersSmall"><span><fmt:message key="pres_share_add"/></span></a>
+         </td>
+         </tr>
+         </thead>
+         </table>
      </c:when>
      
      <c:otherwise>
@@ -136,7 +127,6 @@
          </table>
      </c:otherwise>
    </c:choose>
-</div> <%--end of #sharePanel --%>
    <div class="act">
       <input name="save" type="submit" value="<fmt:message key="button_saveEdit" />" class="active" accesskey="s" />
       <input name="undo" type="submit" value="<fmt:message key="button_undo" />"  accesskey="x" />
