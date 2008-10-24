@@ -45,9 +45,6 @@
 						<p class="messageInstruction">
 							<c:out value="${template.description}"/>
 						</p>
-						<div class="portfolioTypeMoreInfo">
-							<a href="#" onclick="return false;"><fmt:message key="more_info"/></a> 
-						</div>
 					</li>
 				</c:forEach>
 			</ul>
