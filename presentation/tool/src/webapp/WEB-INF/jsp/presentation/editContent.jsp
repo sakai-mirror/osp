@@ -5,6 +5,49 @@
 <fmt:setBundle basename="org.theospi.portfolio.presentation.bundle.Messages"/>
 
 <script type="text/javascript" src="/library/js/jquery.js"></script>
+
+<script  type ="text/javascript">
+$(document).ready(function() {
+	setupMessageListener("messageHolder", "messageInformation");
+	$(".multSelectHolder").each(function(){
+		if ($(this).height() > 180) {
+		$(this).addClass("oversize")
+}
+})
+
+	$(".multSelectHolder input:checkbox").click( function() {
+		if ($(this).attr('checked')) {
+		$(this).parents("li").addClass("selected")
+		}
+		else
+		{
+		$(this).parents("li").removeClass("selected")
+		}
+})
+
+	jQuery('body').click(function(e) { 
+			
+		if ( e.target.className !='menuOpen' && e.target.className !='dropdn'  ){
+			$('.makeMenuChild').fadeOut();
+		}
+			else
+			{
+				if( e.target.className =='dropdn' ){
+			targetId=$(e.target).parent('li').attr('id');
+			$('.makeMenuChild').hide();
+			$('#menu-' + targetId).fadeIn(500);
+
+}
+				else{
+			targetId=e.target.id;
+			$('.makeMenuChild').hide();
+			$('#menu-' + targetId).fadeIn(500);
+			}}
+	});
+	});
+
+</script>
+
 <script type="text/javascript" language="JavaScript">
     function updateItems() {
        var arrBox = new Array();
@@ -49,28 +92,7 @@
     <c:if test="${preview == true}">
       window.open('<osp:url value="/viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />');
     </c:if>
-    
-    <c:if test="${not empty msg}">
-    	$(window).load(function() {
-    		$('#portfolioMessage').slideDown(1000, function() {
-    			$(this).slideUp(3000);
-    		});
-    		//$('#portfolioMessage').animate({ backgroundColor: 'white' }, 3000, function() {
-    			//$(this).slideUp(3000);
-    		//});
-    	});
-    </c:if>
 </script>
-
-<%--
-<c:if test="${not empty msg}">
-	<div id="portfolioMessage" style="display:none; position: absolute; top: 0px; width: 100%;">
-		<div style="margin: 0 auto; text-align: center; width: 50%; border: 1px solid black; padding: 2em; font-size: 1.5em; background: #FFFF66;">
-		<c:out value="${msg}" />
-		</div>
-	</div>
-</c:if>
---%>
 
 <c:set var="pres_active_page" value="content"/>
 <%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
@@ -111,6 +133,18 @@ $(document).ready(function() {
 <h3>
    <p class="instructionMessage"><fmt:message key="instructions_addPresentation2"/></p>
 </h3>
+
+
+<c:if test="${actionSave}">
+	<div class="messageInformation" id="messageHolder" style="width:20em">
+    	<fmt:message key="confirm_save"/>
+	</div>
+</c:if>
+<c:if test="${actionUndo}">
+	<div class="messageInformation" id="messageHolder" style="width:20em">
+    	<fmt:message key="confirm_undo"/>
+	</div>
+</c:if>
 
 <form method="post" name="wizardform" action="editContent.osp" onsubmit="updateItems();">
 <osp:form/>

@@ -354,10 +354,9 @@
         </property>
         <property name="screenMappings">
             <props>
+              <prop key="save">sharePresentation</prop>
+              <prop key="undo">sharePresentation</prop>
               <prop key="share">sharePresentation</prop>
-              <prop key="success">sharePresentationRedirect</prop>
-              <!-- tbd change navigation for undo -->
-              <prop key="undo">sharePresentationRedirect</prop> 
             </props>
         </property>
         <property name="commandName">
