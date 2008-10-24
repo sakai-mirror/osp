@@ -51,6 +51,13 @@ public class PresentationItemDefinition extends IdentifiableObject implements Se
    public boolean getHasMimeTypes() {
       return (type != null && type.equals("fileArtifact"));
    }
+	
+   public Boolean getIsFormType() {
+      return new Boolean(type != null 
+                         && ! type.equals("fileArtifact")
+                         && ! type.equals("completedWizard")
+                         && ! type.equals("matrix") );
+   }
 
    public PresentationTemplate getPresentationTemplate() {
       return presentationTemplate;
