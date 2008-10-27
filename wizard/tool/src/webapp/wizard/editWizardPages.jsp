@@ -59,17 +59,9 @@
 	  <f:subview id="addPageBar" rendered="#{wizard.current.base.type != 'org.theospi.portfolio.wizard.model.Wizard.hierarchical'}">
 	  <h:commandLink 
          action="#{wizard.current.rootCategory.processActionNewPage}"
-         value="#{msgs.new_root_wizard_page}" 
+         value="#{msgs.wizard_pages_instructions_seq}" 
          rendered="#{!wizard.moving && !wizard.current.base.published}"
 		 />
-         <h:outputText value=" | " rendered="#{!wizard.moving && !wizard.current.base.published}" />
-
-	  <h:commandLink 
-         action="#{wizard.current.rootCategory.processActionNewForm}"
-         value="#{msgs.new_root_wizard_form}" 
-         rendered="#{!wizard.moving && !wizard.current.base.published}"
-		 />
-
       <h:commandLink
          rendered="#{wizard.current.base.type ==
                'org.theospi.portfolio.wizard.model.Wizard.hierarchical' && !wizard.moving && !wizard.current.base.published}"
