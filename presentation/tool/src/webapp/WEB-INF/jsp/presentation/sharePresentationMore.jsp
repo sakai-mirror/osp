@@ -7,7 +7,9 @@
 </script>
 
 <script  type ="text/javascript">
+var selectCount=0;
 $(document).ready(function() {
+   $("#back_add").hide();
 	setupMessageListener("messageHolder", "messageInformation");
 	$(".multSelectHolder").each(function(){
 		if ($(this).height() > 180) {
@@ -15,14 +17,24 @@ $(document).ready(function() {
 }
 })
 
-	$(".multSelectHolder input:checkbox").click( function() {
-		if ($(this).attr('checked')) {
-		$(this).parents("li").addClass("selected")
-		}
-		else
-		{
-		$(this).parents("li").removeClass("selected")
-		}
+   $(".multSelectHolder input:checkbox").click( function() {
+      if ($(this).attr('checked')) {
+         $(this).parents("li").addClass("selected")
+         selectCount++;
+         if ( selectCount == 1 ) {
+            $("#back_add").show();
+            $("#back").hide();
+         }
+      }
+      else
+      {
+         $(this).parents("li").removeClass("selected")
+         selectCount--;
+         if ( selectCount == 0 ) {
+            $("#back_add").hide();
+            $("#back").show();
+         }
+      }
 })
 
 	jQuery('body').click(function(e) { 
@@ -52,7 +64,6 @@ $(document).ready(function() {
 <%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
 
 <div class="tabNavPanel">
- <!-- temp separation; end of tabs -->
 
 <h3>
    <fmt:message key="title_share_add"/>
@@ -60,7 +71,7 @@ $(document).ready(function() {
 
 <c:if test="${isUpdated}">
 	<div class="messageInformation" id="messageHolder" style="width:20em">
-    	<fmt:message key="share_confirm"/>
+    	<fmt:message key="confirm_save"/>
 	</div>
 </c:if>
 
@@ -175,7 +186,7 @@ $(document).ready(function() {
    </tr>
    </thead>
          
-   <%-- this will be avscrollable box of 180 px height if the content goes over 180px, 
+   <%-- this will be a scrollable box of 180 px height if the content goes over 180px, 
         if less, it will he as high as the contents and will not have a scrollbar --%>
    <tbody>
    	<tr> 
@@ -241,8 +252,17 @@ $(document).ready(function() {
 </c:choose>
 
    <div class="act">
-      <input name="back" type="submit" value="<fmt:message key="button_return" />" class="active" accesskey="b" />
-   </div>
+   <c:choose>
+      <c:when test="${shareBy=='share_browse' || shareBy=='share_group' || shareBy=='share_role' || shareBy=='share_allrole'}">
+
+         <input id="back_add" name="back_add" type="submit" value="<fmt:message key="button_add_return" />" class="active" accesskey="b" />
+         <input id="back"     name="back" type="submit" value="<fmt:message key="button_return" />" class="active" accesskey="b" />
+      </c:when>
+      <c:otherwise>
+         <input id="back" name="back" type="submit" value="<fmt:message key="button_add_return" />" class="active" accesskey="b" />
+      </c:otherwise>
+    </c:choose>
+    </div>
    
 </form>
 </div>

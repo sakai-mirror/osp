@@ -76,11 +76,6 @@ $(document).ready(function() {
 <%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
  
 <div class="tabNavPanel">
- <!-- temp separation; end of tabs -->
-
-<h3>
-   <fmt:message key="pres_share_this"/>
-</h3>
 
 <c:if test="${actionSave}">
 	<div class="messageInformation" id="messageHolder" style="width:20em">
@@ -94,30 +89,13 @@ $(document).ready(function() {
 </c:if>
 
 <form method="post" name="mainForm">
-   <div class="checkbox">
-      <input type="checkbox" name="pres_share_public" id="pres_share_public"
-         <c:if test="${pres_share_public=='true'}"> checked="checked"</c:if>
-      />
-      <label for="pres_share_public">
-         <fmt:message key="pres_share_public"/>
-      </label>
-       <a id="showUrl" href="#" onclick="$('#hideUrl').show(); $('#showUrl').hide(); $('#urlText').show();"><fmt:message key="pres_share_showurl"/></a>
-       <a id="hideUrl" href="#" onclick="$('#showUrl').show(); $('#hideUrl').hide(); $('#urlText').hide();"><fmt:message key="pres_share_hideurl"/></a>
-       <input id="urlText" type="text" readonly="true" name="publicUrl" value="${publicUrl}" size="120"/>
-   </div>
-      
+
+<p><fmt:message key="share_when_active"/></p>
+		
    <c:choose>
      <c:when test="${empty shareList}">
-         <table width="80%"   style="margin-top:1em">
-         <thead>
-         <tr>
-         <td><h3 style="padding:0;margin:0"><fmt:message key="pres_share_none"/></h3></td>
-         <td align="right" class="specialLink">
-         <a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"  class="addUsersSmall"><span><fmt:message key="pres_share_add"/></span></a>
-         </td>
-         </tr>
-         </thead>
-         </table>
+       <h3 style="padding:0;margin:0"><fmt:message key="pres_share_none"/></h3>
+         <p><a href="<osp:url value="sharePresentationMore.osp"/>&id=<c:out value="${presentation.id.value}" />"  class="addUsersSmall"><span><fmt:message key="pres_share_add"/></span></a></p>
      </c:when>
      
      <c:otherwise>
@@ -165,6 +143,23 @@ $(document).ready(function() {
          </table>
      </c:otherwise>
    </c:choose>
+	
+   <h3>
+      <fmt:message key="pres_share_this"/>
+   </h3>
+
+   <div class="checkbox">
+      <input type="checkbox" name="pres_share_public" id="pres_share_public"
+         <c:if test="${pres_share_public=='true'}"> checked="checked"</c:if>
+      />
+      <label for="pres_share_public">
+         <fmt:message key="pres_share_public"/>
+      </label>
+       <a id="showUrl" href="#" onclick="$('#hideUrl').show(); $('#showUrl').hide(); $('#urlText').show();"><fmt:message key="pres_share_showurl"/></a>
+       <a id="hideUrl" href="#" onclick="$('#showUrl').show(); $('#hideUrl').hide(); $('#urlText').hide();"><fmt:message key="pres_share_hideurl"/></a>
+       <input id="urlText" type="text" readonly="true" name="publicUrl" value="${publicUrl}" size="120"/>
+   </div>	
+	
    <div class="act">
       <input name="save" type="submit" value="<fmt:message key="button_saveEdit" />" class="active" accesskey="s" />
       <input name="undo" type="submit" value="<fmt:message key="button_undo" />"  accesskey="x" />
