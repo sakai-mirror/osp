@@ -118,18 +118,24 @@ public class FreeFormTool extends HelperToolBase {
       return returnToCaller();
    }
    
+   public String processActionReturn() {
+      setRedirectCaller("listPresentation.osp");
+      return returnToCaller();
+   }
+   
    /** FreeFormTool is currently set up as a helper for historic reasons.
     ** It should be moved and configured as a regular controller to allow proper
     ** navigation between SharePresentationController and EditPresentationController.
     ** For now, this method resets the HELPER_DONE_URL to the navigation target.
     **/
-   private void setRedirectCaller( String target ) {
+   private String setRedirectCaller( String target ) {
       Tool tool = ToolManager.getCurrentTool();
       ToolSession session = SessionManager.getCurrentToolSession();
       String url = (String) session.getAttribute(tool.getId() + Tool.HELPER_DONE_URL);
       url = url.substring( 0, url.lastIndexOf('/')+1 );
       url = url + target;
       session.setAttribute(tool.getId() + Tool.HELPER_DONE_URL, url);
+      return url;
    }
    
    public String processActionCancel() {
@@ -540,11 +546,11 @@ public class FreeFormTool extends HelperToolBase {
     * @return The url (String) to the portfolio preivew
     */
    public String getPreviewUrl() {
-      Tool tool = ToolManager.getCurrentTool();
-      ToolSession session = SessionManager.getCurrentToolSession();
-      // Making a significant assumption here... is there a better way to get the url for this?
-      return (String) session.getAttribute(
-            tool.getId() + Tool.HELPER_DONE_URL) + "/../viewPresentation.osp";
+      String url = setRedirectCaller("viewPresentation.osp");
+      Presentation presentaiton = getPresentation();
+      setAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation", presentation);
+      url += "?1=1&id="+presentation.getId().getValue();
+      return url;
    }
 
 

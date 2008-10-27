@@ -17,7 +17,44 @@
 
 	<sakai:view>
 		<h:form>
-			<%@include file="steps.jspf"%>
+      
+<link media="all" rel="stylesheet" type="text/css" href="/osp-common-tool/css/eport.css" />
+
+<table width="100%" style="margin-top:1em">
+	<tr>
+		<td style="vertical-align:middle;text-align:left">
+				<div id="presentationName" class="shorttext">
+					<span class="editableText portfolio_name"><h:outputText value="#{freeForm.presentation.name}"/></span>
+				</div>
+		</td>
+		<td style="vertical-align:middle; text-align:right">
+
+		<h:commandLink action="#{freeForm.processActionReturn}" title="#{msgs.return_to_list}">
+					<h:outputText value="#{msgs.return_to_list}"/> 
+		</h:commandLink> 
+		|
+      <a href="${freeForm.previewUrl}" target="_blank"><h:outputText value="#{msgs.pres_preview}"/></a>
+		</td>
+	</tr>
+</table>
+
+<ul class="tabNav specialLink">
+	<li>
+		<h:commandLink action="#{freeForm.processActionSummary}" title="#{msgs.pres_summary}">
+					<h:outputText value="#{msgs.pres_summary}"/> 
+		</h:commandLink>
+	</li>
+	<li  class="selected">
+		<span>
+			<h:outputText value="#{msgs.pres_content}"/>
+		</span>	
+	</li>
+	<li>
+		<h:commandLink action="#{freeForm.processActionShare}" title="#{msgs.pres_share}">
+					<h:outputText value="#{msgs.pres_share}"/> 
+		</h:commandLink>
+	</li>
+</ul>	
 			<div class="tabNavPanel">
 				<sakai:instruction_message value="#{msgs.instructions_freeForm}"/>
 				<sakai:messages/>
