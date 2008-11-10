@@ -113,6 +113,16 @@ public class CellController implements FormController, LoadObjectController {
 
 	protected static final String PROVIDERS_PARAM = "providers";
 
+    private class NodeNameComparator implements java.util.Comparator<Node> {
+        public int compare(Node n1, Node n2) {
+            return n1.getName().compareToIgnoreCase(n2.getName());
+        }
+
+        public boolean equals(Object o) {
+            return (this == o || o instanceof NodeNameComparator);
+        }
+    }
+
 	public Map referenceData(Map request, Object command, Errors errors) {
 		ToolSession session = getSessionManager().getCurrentToolSession();
 
@@ -146,6 +156,9 @@ public class CellController implements FormController, LoadObjectController {
 		String siteId = cell.getCell().getWizardPage().getPageDefinition()
 				.getSiteId();
 
+        TreeSet cellForms = new TreeSet(new NodeNameComparator());
+        cellForms.addAll(getMatrixManager().getPageForms(cell.getCell().getWizardPage()));
+		
 		model.put("assignments", getUserAssignments(cell)); 
 		model.put("reviews", getReviewManager().getReviewsByParentAndType(
 				pageId, Review.FEEDBACK_TYPE, siteId, getEntityProducer()));
@@ -157,8 +170,7 @@ public class CellController implements FormController, LoadObjectController {
 		model.put("cellFormDefs", processAdditionalForms(cell.getCell()
 				.getScaffoldingCell().getAdditionalForms()));
 
-		model.put("cellForms", getMatrixManager().getPageForms(
-				cell.getCell().getWizardPage()));
+		model.put("cellForms", cellForms);
 
 		Boolean readOnly = new Boolean(false);
 
