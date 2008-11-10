@@ -119,6 +119,16 @@ public class CellController implements FormController, LoadObjectController {
 	
 	protected boolean enableReviewEdit = true;
 
+    private class NodeNameComparator implements java.util.Comparator<Node> {
+        public int compare(Node n1, Node n2) {
+            return n1.getName().compareToIgnoreCase(n2.getName());
+        }
+
+        public boolean equals(Object o) {
+            return (this == o || o instanceof NodeNameComparator);
+        }
+    }
+
 	public Map referenceData(Map request, Object command, Errors errors) {
 		ToolSession session = getSessionManager().getCurrentToolSession();
 		Boolean readOnly = new Boolean(false);
@@ -154,8 +164,9 @@ public class CellController implements FormController, LoadObjectController {
 		String siteId = cell.getCell().getWizardPage().getPageDefinition().getSiteId().getValue();
 		List reviews =	
 			getReviewManager().getReviewsByParentAndType( pageId, Review.FEEDBACK_TYPE, siteId, getEntityProducer() );
-		Set cellForms = getMatrixManager().getPageForms(cell.getCell().getWizardPage());
-
+        TreeSet cellForms = new TreeSet(new NodeNameComparator());
+        cellForms.addAll(getMatrixManager().getPageForms(cell.getCell().getWizardPage()));
+		
 		model.put("assignments", getUserAssignments(cell)); 
 		model.put("reviews", reviews ); // feedback
 		model.put("evaluations", getReviewManager().getReviewsByParentAndType(
