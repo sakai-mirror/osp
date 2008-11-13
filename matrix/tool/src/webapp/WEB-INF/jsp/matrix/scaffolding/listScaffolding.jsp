@@ -95,11 +95,13 @@
 		  <tr>
 			 <th scope="col"><fmt:message key="table_header_name"/></th>
 			 <th scope="col"></th>
+			 <c:if test="${can.create || can.edit || isMaintainer}">
 			 	<th scope="col"><fmt:message key="table_header_owner"/></th>
+			 </c:if>
 				<th scope="col"><fmt:message key="table_header_published"/></th>
 			 <c:if test="${myworkspace}">
 			   <th scope="col"><fmt:message key="table_header_worksite"/></th>
-			</c:if>
+			 </c:if>
 		  </tr>
 	   </thead>
 	   <tbody>
@@ -133,6 +135,7 @@
 					</c:if>
 				</h4>
 				</td>
+            
 				<td>
 					<c:set var="hasFirstAction" value="false" />
 					<div class="itemAction">
@@ -184,9 +187,13 @@
 						   --%>     
 					 </div>
 				 </td>
+             
+				 <c:if test="${can.create || can.edit || isMaintainer}">
 				 <td>
 						<c:out value="${scaffold.owner.displayName}" />
 				</td>
+				</c:if>
+            
 				  <td>
 					 <c:if test="${scaffold.published}">
 						<fmt:message key="scaffolding_published_true"/>
