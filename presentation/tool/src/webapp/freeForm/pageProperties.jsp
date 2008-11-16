@@ -16,7 +16,35 @@
 <sakai:view>
 <h:form>
 
-<%@include file="steps.jspf"%>
+<link media="all" rel="stylesheet" type="text/css" href="/osp-common-tool/css/eport.css" />
+<table width="100%" style="margin-top:1em">
+	<tr>
+		<td style="vertical-align:middle;text-align:left">
+				<div id="presentationName" class="shorttext">
+					<span class="editableText portfolio_name"><h:outputText value="#{freeForm.presentation.name}"/></span>
+				</div>
+		</td>
+	</tr>
+</table>
+
+<ul class="tabNav specialLink">
+	<li>
+		<h:commandLink action="#{freeForm.processActionSummary}" title="#{msgs.pres_summary}">
+					<h:outputText value="#{msgs.pres_summary}"/> 
+		</h:commandLink>
+	</li>
+	<li  class="selected">
+		<span>
+			<h:outputText value="#{msgs.pres_content}"/>
+		</span>	
+	</li>
+	<li>
+		<h:commandLink action="#{freeForm.processActionShare}" title="#{msgs.pres_share}">
+					<h:outputText value="#{msgs.pres_share}"/> 
+		</h:commandLink>
+	</li>
+</ul>	
+
 <div class="tabNavPanel">
 	<sakai:view_title value="#{msgs.add_page}" rendered="#{freeForm.presentation.newObject}"/>
 	<sakai:view_title value="#{msgs.edit_page}" rendered="#{!freeForm.presentation.newObject}"/>
