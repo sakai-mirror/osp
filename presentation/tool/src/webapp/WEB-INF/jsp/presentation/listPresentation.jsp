@@ -181,7 +181,7 @@ $(document).ready(function() {
       <p align="center">
 		<fmt:message key="table_empty_list_all"/>
       <c:if test="${filterList != 'shared' && can.create}">
-        <br/><a href="<osp:url value="addPresentation.osp"/>&resetForm=true"
+        <br/><a href="<osp:url value="createPresentation.osp"/>"
             title="<fmt:message key="action_new_portfolio_now"/>"> <fmt:message key="action_new_portfolio_now"/> </a>
       </c:if>
       </p>
@@ -191,7 +191,7 @@ $(document).ready(function() {
       <p align="center">
 		<fmt:message key="table_empty_list_hidden"/>
       <c:if test="${filterList != 'shared' && can.create}">
-        <br/><a href="<osp:url value="addPresentation.osp"/>&resetForm=true"
+        <br/><a href="<osp:url value="createPresentation.osp"/>"
             title="<fmt:message key="action_new_portfolio_now"/>"> <fmt:message key="action_new_portfolio_now"/> </a>
       </c:if>
       </p>
@@ -201,7 +201,7 @@ $(document).ready(function() {
       <p align="center">
 		<fmt:message key="table_empty_list_visible"/>
       <c:if test="${filterList != 'shared' && can.create}">
-        <br/><a href="<osp:url value="addPresentation.osp"/>&resetForm=true"
+        <br/><a href="<osp:url value="createPresentation.osp"/>"
             title="<fmt:message key="action_new_portfolio_now"/>"> <fmt:message key="action_new_portfolio_now"/> </a>
       </c:if>
       </p>
