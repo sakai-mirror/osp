@@ -48,6 +48,48 @@
 });
 </script>
 
+<script  type ="text/javascript">
+$(document).ready(function() {
+	setupMessageListener("messageHolder", "messageInformation");
+	$(".multSelectHolder").each(function(){
+		if ($(this).height() > 180) {
+		$(this).addClass("oversize")
+}
+})
+
+	$(".multSelectHolder input:checkbox").click( function() {
+		if ($(this).attr('checked')) {
+		$(this).parents("li").addClass("selected")
+		}
+		else
+		{
+		$(this).parents("li").removeClass("selected")
+		}
+})
+
+	jQuery('body').click(function(e) { 
+			
+		if ( e.target.className !='menuOpen' && e.target.className !='dropdn'  ){
+			$('.makeMenuChild').fadeOut();
+		}
+			else
+			{
+				if( e.target.className =='dropdn' ){
+			targetId=$(e.target).parent('li').attr('id');
+			$('.makeMenuChild').hide();
+			$('#menu-' + targetId).fadeIn(500);
+
+}
+				else{
+			targetId=e.target.id;
+			$('.makeMenuChild').hide();
+			$('#menu-' + targetId).fadeIn(500);
+			}}
+	});
+	});
+
+</script>
+
 <c:set var="pres_active_page" value="share" />
 <%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
  
@@ -57,6 +99,18 @@
 <h3>
    <fmt:message key="pres_share_this"/>
 </h3>
+
+<c:if test="${actionSave}">
+	<div class="messageInformation" id="messageHolder" style="width:20em">
+    	<fmt:message key="confirm_save"/>
+	</div>
+</c:if>
+<c:if test="${actionUndo}">
+	<div class="messageInformation" id="messageHolder" style="width:20em">
+    	<fmt:message key="confirm_undo"/>
+	</div>
+</c:if>
+
 <form method="post" name="mainForm">
    <div class="checkbox">
       <input type="checkbox" name="pres_share_public" id="pres_share_public"

@@ -34,23 +34,25 @@ public class EditContentController extends SimpleFormController {
 	@Override
 	protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
 		Presentation presentation = (Presentation) command;
-		return presentationService.getPresentationArtifacts(presentation.getId().getValue());
+		Map model = presentationService.getPresentationArtifacts(presentation.getId().getValue());
+		if ( request.getParameter("save") != null )
+			model.put("actionSave", true ); 
+		else if ( request.getParameter("undo") != null )
+			model.put("actionUndo", true ); 
+		return model;
 	}
-	
+
 	@Override
 	protected boolean isFormSubmission(HttpServletRequest request) {
 		return request.getParameter("undo") == null && super.isFormSubmission(request);
 	}
-		
+
 	@Override
 	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 		Presentation presentation = presentationService.savePresentation((Presentation) command);
 		if (presentation == null)
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		HashMap<String, Object> model = new HashMap<String, Object>();
-		model.put("msg", "Changes Accepted!");
-		model.put("id", presentation.getId().getValue());
-		return new ModelAndView(getSuccessView(), model);
+		return showForm(request,response,errors);
 	}
 
 	@Override
