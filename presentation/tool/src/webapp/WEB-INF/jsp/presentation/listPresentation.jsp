@@ -214,6 +214,7 @@ $(document).ready(function() {
 	   <thead>
 		  <tr>
 			 <th scope="col"><fmt:message key="table_header_name"/></th>
+			 <th scope="col" class="attach"></th>
 			 <th scope="col"><fmt:message key="table_header_owner"/></th>
 			 <th scope="col"><fmt:message key="table_header_dateModified"/></th>
 			 <th scope="col" class="attach"><fmt:message key="table_header_status"/></th>
@@ -222,7 +223,6 @@ $(document).ready(function() {
 			 <c:if test="${myworkspace}">
 			   <th scope="col"><fmt:message key="table_header_worksite"/></th>
 			 </c:if>
-			 <th scope="col" class="attach"><fmt:message key="table_header_actions"/></th>
 		  </tr>
 	   </thead>
 		<tbody>
@@ -247,42 +247,7 @@ $(document).ready(function() {
 		  </h4>	
 		  </td>
         
-		  <td><c:out value="${presentation.owner.displayName}" /></td>
-        
-		  <td><c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${presentation.modified}" pattern="${dateFormat}"/></td> 
-        
-		  <td align="center">
-			 <c:if test="${!presentation.expired}">
-				<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
-			 </c:if>
-		  </td>
-        
-		  <td align="center">
-			 <c:if test="${presentationBean.shared}">
-				<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
-			 </c:if>
-		  </td>
-		  
-		  <td align="center">
-				<c:choose>
-				<c:when test="${presentationBean.commentNum > 0}">
-  				<a href="<osp:url value="listComments.osp">
-					<osp:param name="id" value="${presentation.id.value}" />
-				</osp:url>" title="<fmt:message key="table_header_comments"/>"> 
-				<c:out value="${presentationBean.commentNumAsString}" />
-				</a>
-				</c:when>
-				<c:otherwise>
-					 <c:out value="${presentationBean.commentNumAsString}" />
-				</c:otherwise>
-				</c:choose>
-			</td>
-		  
-		  <c:if test="${myworkspace}">
-			 <td><c:out value="${presentation.worksiteName}" /></td>
-		  </c:if>
-        
-        <!-- selection of actions/options -->
+        <!-- START selection of actions/options -->
 		  <td>
            <form name="form${presentation.id.value}" style="margin:0">
 				<a href="#" onfocus="document.getElementById('menu-<c:out  value="${loopCounter.index}" />').style.display='none';"></a>
@@ -301,11 +266,6 @@ $(document).ready(function() {
 								</li>
 							</c:if>
 							<c:if test="${isAuthorizedTo.edit}">
-							<%--
-									<a
-									href="<osp:url value="addPresentation.osp"/>&target=_target1&resetForm=true&id=<c:out value="${presentation.id.value}" />"> <fmt:message key="table_action_edit"/>
-									</a>
-									--%>
 									<a 
 									href="<osp:url value="editPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />"> <fmt:message key="table_action_edit"/>
 									</a>
@@ -344,6 +304,42 @@ $(document).ready(function() {
 						<a href="#" id="last-<c:out  value="${loopCounter.index}" />" class="skip"></a>
            </form>
         </td>
+        <!-- END selection of actions/options -->
+        
+		  <td><c:out value="${presentation.owner.displayName}" /></td>
+        
+		  <td><c:set var="dateFormat"><fmt:message key="dateFormat_Middle"/></c:set><fmt:formatDate value="${presentation.modified}" pattern="${dateFormat}"/></td> 
+        
+		  <td align="center">
+			 <c:if test="${!presentation.expired}">
+				<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
+			 </c:if>
+		  </td>
+        
+		  <td align="center">
+			 <c:if test="${presentationBean.shared}">
+				<img alt="<fmt:message key="alt_image_yes"/>"  src="/library/image/sakai/checkon.gif" border="0"/>
+			 </c:if>
+		  </td>
+		  
+		  <td align="center">
+				<c:choose>
+				<c:when test="${presentationBean.commentNum > 0}">
+  				<a href="<osp:url value="listComments.osp">
+					<osp:param name="id" value="${presentation.id.value}" />
+				</osp:url>" title="<fmt:message key="table_header_comments"/>"> 
+				<c:out value="${presentationBean.commentNumAsString}" />
+				</a>
+				</c:when>
+				<c:otherwise>
+					 <c:out value="${presentationBean.commentNumAsString}" />
+				</c:otherwise>
+				</c:choose>
+			</td>
+		  
+		  <c:if test="${myworkspace}">
+			 <td><c:out value="${presentation.worksiteName}" /></td>
+		  </c:if>
 		</tr>
 	  </c:forEach>
 	   </tbody>
