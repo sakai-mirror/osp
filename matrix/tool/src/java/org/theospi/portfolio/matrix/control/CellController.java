@@ -156,8 +156,8 @@ public class CellController implements FormController, LoadObjectController {
 		String siteId = cell.getCell().getWizardPage().getPageDefinition()
 				.getSiteId();
 
-        TreeSet cellForms = new TreeSet(new NodeNameComparator());
-        cellForms.addAll(getMatrixManager().getPageForms(cell.getCell().getWizardPage()));
+                ArrayList<Node> cellForms = new ArrayList<Node>(getMatrixManager().getPageForms(cell.getCell().getWizardPage()));
+                Collections.sort(cellForms, new NodeNameComparator());
 		
 		model.put("assignments", getUserAssignments(cell)); 
 		model.put("reviews", getReviewManager().getReviewsByParentAndType(
