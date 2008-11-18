@@ -164,8 +164,8 @@ public class CellController implements FormController, LoadObjectController {
 		String siteId = cell.getCell().getWizardPage().getPageDefinition().getSiteId().getValue();
 		List reviews =	
 			getReviewManager().getReviewsByParentAndType( pageId, Review.FEEDBACK_TYPE, siteId, getEntityProducer() );
-                ArrayList<Node> cellForms = new ArrayList<Node>(getMatrixManager().getPageForms(cell.getCell().getWizardPage()));
-                Collections.sort(cellForms, new NodeNameComparator());
+        TreeSet cellForms = new TreeSet(new NodeNameComparator());
+        cellForms.addAll(getMatrixManager().getPageForms(cell.getCell().getWizardPage()));
 		
 		model.put("assignments", getUserAssignments(cell)); 
 		model.put("reviews", reviews ); // feedback
@@ -252,7 +252,7 @@ public class CellController implements FormController, LoadObjectController {
 	/**
 	 ** Return boolean array if item feedback is allowed based on feedback options
 	 **/
-	protected Boolean[] getAllowItemFeedback( int feedbackOption, List reviews, List<Node> cellForms )
+	protected Boolean[] getAllowItemFeedback( int feedbackOption, List reviews, Set<Node> cellForms )
 	{
 		Boolean[] allowItemFeedback = new Boolean[cellForms.size()];
 		int index = -1;
