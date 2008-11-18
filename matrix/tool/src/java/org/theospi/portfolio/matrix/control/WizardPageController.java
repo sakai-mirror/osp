@@ -82,7 +82,7 @@ public class WizardPageController extends CellController {
 		model.put("objectDesc", wizard.getDescription());
 
 		List reviews = (List)model.get("reviews");
-		Set cellForms = (Set)model.get("cellForms");
+		List cellForms = (List)model.get("cellForms");
 		
 		model.put("allowItemFeedback", 
 					 getAllowItemFeedback( wizard.getItemFeedbackOption(), reviews, cellForms) );
