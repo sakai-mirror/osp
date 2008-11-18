@@ -115,6 +115,10 @@ TD.reviewer-cell {
     padding: 5px;
 }
 
+.matrixTable {
+    width: 100%;
+}
+
 .matrixLegendTable {
     width: auto;
 }
@@ -130,18 +134,22 @@ TD.matrix-cell-border {
 
 TD.matrix-COMPLETE, INPUT.matrix-COMPLETE {
     background-color: #a6c7ea;
+    cursor:pointer;
 }
 
 TD.matrix-PENDING, INPUT.matrix-PENDING {
     background-color: #f7ef84;
+    cursor:pointer;
 }
 
 TD.matrix-READY, INPUT.matrix-READY {
     background-color: #86f283;
+    cursor:pointer;
 }
 
 TD.matrix-LOCKED, INPUT.matrix-LOCKED {
     background-color: #ac326b;
+    cursor:pointer;
 }
 
 TD.matrixLegend-border {

@@ -6,8 +6,7 @@
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
 <c:forEach var="style" items="${styles}">
-   <link href="<c:out value='${style}'/>" type="text/css" rel="stylesheet"
-      media="all" />
+   <link href="<c:out value='${style}'/>" type="text/css" rel="stylesheet" media="all" />
 </c:forEach>
 
 <script type="text/javaScript">
@@ -119,36 +118,40 @@
 		<fmt:message key="instructions_clickOnaCellToEdit"/>
 	</p>
 	<c:set var="columnHeading" value="${matrixContents.columnLabels}" />
-        <table cellspacing="0" width="100%" summary="<fmt:message key="table_summary_matrixScaffolding"/>">
+        <table class="matrixTable" cellspacing="0" summary="<fmt:message key="table_summary_matrixScaffolding"/>">
+            <thead>
             <tr>
-                <th class="matrix-row-heading" scope="col">
+                <th class="matrix-row-heading" id="chead" scope="col">
                     <osp-h:glossary link="true" hover="true">
                        <c:out value="${matrixContents.scaffolding.title}"/>
                     </osp-h:glossary>
                 </th>
-                <c:forEach var="head" items="${columnHeading}">
-                    <th class="matrix-column-heading matrixColumnDefault" 
-                        bgcolor="<c:out value="${head.color}"/>"
-                        style="color: <c:if test="${not empty head.textColor}" ><c:out value="${head.textColor}"/></c:if>"  scope="col">
+                <c:forEach var="head" items="${columnHeading}" varStatus="loopStatus">
+                    <th class="matrix-column-heading matrixColumnDefault" id="chead-<c:out value="${loopStatus.index}"/>" 
+                        <c:if test="${not empty head.color}">bgcolor="<c:out value="${head.color}"/>"</c:if>
+                        <c:if test="${not empty head.textColor}" >style="color: <c:out value="${head.textColor}"/>"</c:if>  
+                        scope="col">
                         <osp-h:glossary link="true" hover="true">
                               <c:out value="${head.description}"/>
                         </osp-h:glossary>
                     </th>
                 </c:forEach>
             </tr>   
-            <c:forEach var="rowLabel" items="${matrixContents.rowLabels}" varStatus="loopStatus" >
+            </thead>
+            
+            <tbody>
+            <c:forEach var="rowLabel" items="${matrixContents.rowLabels}" varStatus="rowLoop" >
               <tr>
-                    <th class="matrix-row-heading matrixRowDefault" bgcolor="<c:out value="${rowLabel.color}"/>" 
-                    		style="color: <c:if test="${not empty rowLabel.textColor}" ><c:out value="${rowLabel.textColor}"/></c:if>" scope="row"> 
-							 <osp-h:glossary link="true" hover="true">
-                           <c:out value="${rowLabel.description}"/>
-							</osp-h:glossary>
+                    <th class="matrix-row-heading matrixRowDefault" id="rhead-<c:out value="${rowLoop.index}"/>" 
+                        <c:if test="${not empty rowLabel.color}">bgcolor="<c:out value="${rowLabel.color}"/>" </c:if>
+                        <c:if test="${not empty rowLabel.textColor}" >style="color: <c:out value="${rowLabel.textColor}"/>"</c:if> scope="row"> 
+                      <osp-h:glossary link="true" hover="true"><c:out value="${rowLabel.description}"/></osp-h:glossary>
                     </th>
 
-                 <c:forEach var="cellBean" items="${matrixContents.matrixContents[loopStatus.index]}">
+                 <c:forEach var="cellBean" items="${matrixContents.matrixContents[rowLoop.index]}" varStatus="cellLoop">
                      <c:set var="cell" value="${cellBean.cell}"/>
                      
-                     <td class="matrix-cell-border matrix-<c:out value="${cell.status}"/>" onclick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') " style="cursor:pointer">
+                     <td id="row-<c:out value="${rowLoop.index}"/>_cell-<c:out value="${cellLoop.index}"/>" class="matrix-cell-border matrix-<c:out value="${cell.status}"/>" onclick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') ">
                         &nbsp;
 						<a href="#" onclick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') " class="skip"><fmt:message key="table_cell_link_title"/></a>
                         <c:forEach var="node" items="${cellBean.nodes}">
@@ -168,6 +171,8 @@
                  </c:forEach>
               </tr>
             </c:forEach>
+            </tbody>
+            
         </table>
         
         <%@ include file="matrixLegend.jspf" %>
