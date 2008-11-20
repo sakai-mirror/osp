@@ -164,6 +164,13 @@ TH.matrix-column-heading {
     width: 10%;
 }
 
+TH.matrix-column-footer {
+    border-left: 2px solid black;
+    font-family: Verdana, Verdana, Verdana, sans-serif;
+    font-size: 10pt;
+    width: 10%;
+}
+
 TH.matrix-row-heading {
     height: 50px;
     border-bottom: 2px solid black;

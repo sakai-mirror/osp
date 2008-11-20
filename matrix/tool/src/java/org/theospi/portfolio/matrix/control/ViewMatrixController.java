@@ -81,6 +81,8 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
    
    public static final String GROUP_FILTER_BUTTON = "filter";
       
+   private static int MATRIX_ROW_FOOTER = 10;
+	
    private ToolManager toolManager;
    private StyleManager styleManager;
 
@@ -268,12 +270,26 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
     	         getStyleManager().createStyleUrlList(getStyleManager().getStyles(grid.getScaffolding().getId())));
       
       
-      
+      model.put("showFooter", getShowFooter(grid));
       
       return model;
    }
    
-   
+   /**
+    ** Return true if matrix footer should be displayed. The footer will be displayed if the number of rows
+    ** exceeds MATRIX_ROW_FOOTER0, which is configurable in sakai.properties as osp.matrixRowFooter. 
+    ** If osp.matrixRowFooter is -1, the footer will never be displayed.
+    **/
+   protected Boolean getShowFooter(MatrixGridBean grid) {
+      int matrixRowFooter = ServerConfigurationService.getInt("osp.matrixRowFooter", MATRIX_ROW_FOOTER );
+      
+      if ( matrixRowFooter < 0 )
+         return new Boolean(false);
+      else if ( grid.getMatrixContents().size() > MATRIX_ROW_FOOTER )
+         return new Boolean(true);
+      else
+         return new Boolean(false);
+   }
    
 	/**
 	 ** Return true if matrix owner has submitted assignments associated with this cell

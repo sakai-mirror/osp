@@ -173,6 +173,24 @@
             </c:forEach>
             </tbody>
             
+            <c:if test="${showFooter}">
+            <tfoot>
+            <tr>
+                <th>&nbsp;</th>
+                <c:forEach var="foot" items="${columnHeading}" varStatus="loopStatus">
+                    <th class="matrix-column-footer matrixColumnDefault" id="cfoot-<c:out value="${loopStatus.index}"/>" 
+                        <c:if test="${not empty foot.color}">bgcolor="<c:out value="${foot.color}"/>"</c:if>
+                        <c:if test="${not empty foot.textColor}" >style="color: <c:out value="${foot.textColor}"/>"</c:if>  
+                        scope="col">
+                        <osp-h:glossary link="true" hover="true">
+                              <c:out value="${foot.description}"/>
+                        </osp-h:glossary>
+                    </th>
+                </c:forEach>
+            </tr>   
+            </tfoot>
+            </c:if>
+            
         </table>
         
         <%@ include file="matrixLegend.jspf" %>
