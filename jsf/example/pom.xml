@@ -4,7 +4,7 @@
   <parent>
     <artifactId>osp-jsf</artifactId>
     <groupId>org.sakaiproject.osp</groupId>
-    <version>SNAPSHOT</version>
+    <version>2.6.0RC1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <name>OSP JSF Widgets - Example</name>
@@ -21,6 +21,10 @@
   <packaging>war</packaging>
   <dependencies>
     <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-kernel-api</artifactId>
     </dependency>
@@ -36,22 +40,16 @@
 <!--org.sakaiprojectsakai-db-api${sakai.version}-->
 <!--org.sakaiprojectsakai-content-api${sakai.version}-->
 <!-- end repository dependencies -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>${sakai.servletapi.version}</version>
-    </dependency>
+<!--javax.servletservlet-api${sakai.servletapi.version}-->
 <!-- this is required for any Sakai JSF tool -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-jsf-tool</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
 <!-- these (jsf-app and util-web) are options to get full Sakai integration -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-jsf-app</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
 <!-- MyFaces JSF dependencies -->
 <!-- 
@@ -83,14 +81,12 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-depend-jsf-widgets-sun</artifactId>
-      <version>${sakai.version}</version>
       <type>pom</type>
     </dependency>
 <!-- Adaptor to use tag library with Sun's RI -->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-depend-jsf-widgets-sun</artifactId>
-      <version>${sakai.version}</version>
       <type>pom</type>
     </dependency>
     <dependency>

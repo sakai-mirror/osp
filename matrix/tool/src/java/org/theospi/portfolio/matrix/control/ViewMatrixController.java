@@ -3,19 +3,19 @@
 * $Id:ViewMatrixController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
-*
-* Licensed under the Educational Community License, Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.opensource.org/licenses/ecl1.php
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
+ * Copyright (c) 2005, 2006, 2007, 2008 Sakai Foundation
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.osedu.org/licenses/ECL-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
 *
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
@@ -81,6 +81,8 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
    
    public static final String GROUP_FILTER_BUTTON = "filter";
       
+   private static int MATRIX_ROW_FOOTER = 10;
+	
    private ToolManager toolManager;
    private StyleManager styleManager;
 
@@ -268,12 +270,26 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
     	         getStyleManager().createStyleUrlList(getStyleManager().getStyles(grid.getScaffolding().getId())));
       
       
-      
+      model.put("showFooter", getShowFooter(grid));
       
       return model;
    }
    
-   
+   /**
+    ** Return true if matrix footer should be displayed. The footer will be displayed if the number of rows
+    ** exceeds MATRIX_ROW_FOOTER0, which is configurable in sakai.properties as osp.matrixRowFooter. 
+    ** If osp.matrixRowFooter is -1, the footer will never be displayed.
+    **/
+   protected Boolean getShowFooter(MatrixGridBean grid) {
+      int matrixRowFooter = ServerConfigurationService.getInt("osp.matrixRowFooter", MATRIX_ROW_FOOTER );
+      
+      if ( matrixRowFooter < 0 )
+         return new Boolean(false);
+      else if ( grid.getMatrixContents().size() > MATRIX_ROW_FOOTER )
+         return new Boolean(true);
+      else
+         return new Boolean(false);
+   }
    
 	/**
 	 ** Return true if matrix owner has submitted assignments associated with this cell

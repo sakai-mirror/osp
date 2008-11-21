@@ -5,19 +5,19 @@
   ~  $Id: ContentCollection.java 8537 2006-05-01 02:13:28Z jimeng@umich.edu $
   ~ **********************************************************************************
   ~
-  ~  Copyright (c) 2003, 2004, 2005, 2006 The Sakai Foundation.
-  ~
-  ~  Licensed under the Educational Community License, Version 1.0 (the "License");
-  ~  you may not use this file except in compliance with the License.
-  ~  You may obtain a copy of the License at
-  ~
-  ~       http://www.opensource.org/licenses/ecl1.php
-  ~
-  ~  Unless required by applicable law or agreed to in writing, software
-  ~  distributed under the License is distributed on an "AS IS" BASIS,
-  ~  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~  See the License for the specific language governing permissions and
-  ~  limitations under the License.
+ * Copyright (c) 2003, 2004, 2005, 2006 Sakai Foundation
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.osedu.org/licenses/ECL-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
   ~
   ~ *********************************************************************************
   ~
@@ -27,7 +27,7 @@
   <parent>
     <artifactId>osp-integration</artifactId>
     <groupId>org.sakaiproject.osp</groupId>
-    <version>SNAPSHOT</version>
+    <version>2.6.0RC1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>osp-integration-impl</artifactId>
@@ -45,16 +45,35 @@
   <dependencies>
     <dependency>
       <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-kernel-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>net.sf.ehcache</groupId>
+      <artifactId>ehcache</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-kernel-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-component-manager</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.sakaiproject.kernel.util</groupId>
-      <artifactId>sakai-util</artifactId>
-    </dependency>
+<!--
+      This has been relocated to sakai-kernel-util
+      org.sakaiproject.kernel.utilsakai-util-->
     <dependency>
       <groupId>quartz</groupId>
       <artifactId>quartz</artifactId>
@@ -64,17 +83,14 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-api</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-integration-api</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-scheduler-api</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
 <!--org.sakaiprojectsakai-site-api${sakai.version}-->
 <!--org.sakaiprojectsakai-tool-api${sakai.version}-->
@@ -82,12 +98,10 @@
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-impl</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
 <!--org.sakaiprojectsakai-util${sakai.version}-->
 <!--org.sakaiprojectsakai-entity-api${sakai.version}-->
@@ -96,19 +110,16 @@
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-common-api</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
 <!--org.sakaiprojectsakai-util${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
 <!--org.sakaiprojectsakai-util-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-scheduler-api</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
 <!--org.sakaiprojectsakai-authz-api${sakai.version}-->
 <!--org.sakaiprojectsakai-user-api${sakai.version}-->
@@ -158,16 +169,8 @@
       <artifactId>dom4j</artifactId>
       <version>1.6</version>
     </dependency>
-    <dependency>
-      <groupId>${sakai.ehcache.groupId}</groupId>
-      <artifactId>${sakai.ehcache.artifactId}</artifactId>
-      <version>${sakai.ehcache.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${sakai.hibernate.groupId}</groupId>
-      <artifactId>${sakai.hibernate.artifactId}</artifactId>
-      <version>${sakai.hibernate.version}</version>
-    </dependency>
+<!--${sakai.ehcache.groupId}${sakai.ehcache.artifactId}${sakai.ehcache.version}-->
+<!--${sakai.hibernate.groupId}${sakai.hibernate.artifactId}${sakai.hibernate.version}-->
     <dependency>
       <groupId>hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
@@ -193,16 +196,8 @@
       <artifactId>portlet-api</artifactId>
       <version>1.0</version>
     </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>${sakai.servletapi.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${sakai.spring.groupId}</groupId>
-      <artifactId>${sakai.spring.artifactId}</artifactId>
-      <version>${sakai.spring.version}</version>
-    </dependency>
+<!--javax.servletservlet-api${sakai.servletapi.version}-->
+<!--${sakai.spring.groupId}${sakai.spring.artifactId}${sakai.spring.version}-->
   </dependencies>
   <build>
     <resources>

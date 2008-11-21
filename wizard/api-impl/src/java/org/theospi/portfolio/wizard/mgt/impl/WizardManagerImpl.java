@@ -3,19 +3,19 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
-*
-* Licensed under the Educational Community License, Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.opensource.org/licenses/ecl1.php
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
+ * Copyright (c) 2005, 2006, 2007, 2008 Sakai Foundation
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.osedu.org/licenses/ECL-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
 *
 **********************************************************************************/
 package org.theospi.portfolio.wizard.mgt.impl;
@@ -2191,6 +2191,10 @@ public class WizardManagerImpl extends HibernateDaoSupport
    public Element getArtifactAsXml(Artifact art) {
       return getXmlRenderer().getArtifactAsXml(art);
    }
+   
+   public Element getArtifactAsXml(Artifact artifact, String container, String site, String context) {
+	   return getXmlRenderer().getArtifactAsXml(artifact, container, site, context);
+   }
 
    public Collection findByOwnerAndType(Id owner, String type) {
       return findByOwner(owner);
@@ -2217,24 +2221,26 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public Artifact load(Id id) {
       CompletedWizard cw = this.getCompletedWizard(id);
-      
-      List reflections = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
-            Review.REFLECTION_TYPE, cw.getWizard().getSiteId().getValue(),
-            WizardEntityProducer.WIZARD_PRODUCER);
-      List evaluations = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
-            Review.EVALUATION_TYPE, cw.getWizard().getSiteId().getValue(),
-            WizardEntityProducer.WIZARD_PRODUCER);
-      List feedback = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
-            Review.FEEDBACK_TYPE, cw.getWizard().getSiteId().getValue(),
-            WizardEntityProducer.WIZARD_PRODUCER);
-      cw.setReflections(reflections);
-      cw.setEvaluations(evaluations);
-      cw.setFeedback(feedback);
-      
-      loadWizardPageReviews(cw.getRootCategory());
-      //cw.get
-      cw.setHome(this);
-      return cw;
+      if (cw != null) {
+	      List reflections = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
+	            Review.REFLECTION_TYPE, cw.getWizard().getSiteId().getValue(),
+	            WizardEntityProducer.WIZARD_PRODUCER);
+	      List evaluations = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
+	            Review.EVALUATION_TYPE, cw.getWizard().getSiteId().getValue(),
+	            WizardEntityProducer.WIZARD_PRODUCER);
+	      List feedback = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
+	            Review.FEEDBACK_TYPE, cw.getWizard().getSiteId().getValue(),
+	            WizardEntityProducer.WIZARD_PRODUCER);
+	      cw.setReflections(reflections);
+	      cw.setEvaluations(evaluations);
+	      cw.setFeedback(feedback);
+	      
+	      loadWizardPageReviews(cw.getRootCategory());
+	      //cw.get
+	      cw.setHome(this);
+	      return cw;
+      }
+      return null;
    }
    
    private void loadWizardPageReviews(CompletedWizardCategory category) {

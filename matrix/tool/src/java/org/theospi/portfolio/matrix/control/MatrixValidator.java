@@ -3,25 +3,26 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
-*
-* Licensed under the Educational Community License, Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.opensource.org/licenses/ecl1.php
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
+ * Copyright (c) 2005, 2006, 2007, 2008 Sakai Foundation
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.osedu.org/licenses/ECL-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
 *
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
 
 import org.sakaiproject.metaobj.security.AuthenticationManager;
+import org.sakaiproject.util.FormattedText;
 import org.springframework.validation.Errors;
 import org.theospi.portfolio.matrix.model.CriterionTransport;
 import org.theospi.portfolio.matrix.model.LevelTransport;
@@ -115,6 +116,20 @@ public class MatrixValidator extends ValidatorBase {
             scaffoldingCell.getTitle().trim().equals("")) {
          errors.rejectValue("title", "error.required", "required");
       }
+      
+      if (scaffoldingCell.getWizardPageDefinition().getDescription() != null) {
+         StringBuilder sbError = new StringBuilder();
+         String tempDesc = FormattedText.processFormattedText(
+            scaffoldingCell.getWizardPageDefinition().getDescription(), sbError);
+         
+         if (sbError.length() > 0) {
+            errors.rejectValue("wizardPageDefinition.description", "error.html.format", sbError.toString());  
+         }
+         else {
+            scaffoldingCell.getWizardPageDefinition().setDescription(tempDesc);
+         }
+      }
+      
    }
 
    protected void validateCriterion(CriterionTransport criterion, Errors errors) {
@@ -138,6 +153,17 @@ public class MatrixValidator extends ValidatorBase {
       }
       if (scaffolding.getCriteria() == null || scaffolding.getCriteria().size() == 0) {
          errors.rejectValue("criteria", "error.required", "required");
+      }
+      if (scaffolding.getDescription() != null) {
+         StringBuilder sbError = new StringBuilder();
+         String tempDesc = FormattedText.processFormattedText(scaffolding.getDescription(), sbError);
+         
+         if (sbError.length() > 0) {
+            errors.rejectValue("description", "error.html.format", sbError.toString());  
+         }
+         else {
+            scaffolding.setDescription(tempDesc);
+         }
       }
    }
    

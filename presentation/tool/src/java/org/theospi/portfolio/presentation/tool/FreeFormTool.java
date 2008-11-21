@@ -3,19 +3,19 @@
 * $Id:FreeFormTool.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
-*
-* Licensed under the Educational Community License, Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.opensource.org/licenses/ecl1.php
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
+ * Copyright (c) 2005, 2006, 2007 Sakai Foundation
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.osedu.org/licenses/ECL-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
 *
 **********************************************************************************/
 package org.theospi.portfolio.presentation.tool;
@@ -26,6 +26,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
@@ -66,6 +69,7 @@ import org.theospi.portfolio.style.model.Style;
  */
 public class FreeFormTool extends HelperToolBase {
 
+   protected static Log logger = LogFactory.getLog(FreeFormTool.class);
    private PresentationManager presentationManager;
    private IdManager idManager;
    private XmlTagFactory factory;
@@ -81,15 +85,7 @@ public class FreeFormTool extends HelperToolBase {
    private String nextPageId = null;
    private int step = 1;
    private int pageCount;
-
-   public String processActionBack() {
-      if (!validPages()) {
-         return null;
-      }
-      setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_BACK);
-      return returnToCaller();
-   }
-
+	
    protected boolean validPages() {
       if (getPageList() == null || getPageList().size() == 0) {
          FacesContext.getCurrentInstance().addMessage(null,
@@ -100,26 +96,54 @@ public class FreeFormTool extends HelperToolBase {
       return true;
    }
 
-   public String processActionContinue() {
-      if (!validPages()) {
-         return null;
-      }
-      setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_CONTINUE);
-      return returnToCaller();
-   }
-
    public String processActionSave() {
       if (!validPages()) {
          return null;
       }
-      setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_SAVE);
-      return returnToCaller();
+      
+      Presentation presentation = getPresentation();
+      getPresentationManager().storePresentation(presentation);
+      return "main";
    }
 
+   public String processActionSummary() {
+      setAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation", getPresentation());
+      setRedirectCaller("editPresentation.osp");
+      return returnToCaller();
+   }
+   
+   public String processActionShare() {
+      setAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation", getPresentation());
+      setRedirectCaller("sharePresentation.osp");
+      return returnToCaller();
+   }
+   
+   public String processActionReturn() {
+      setRedirectCaller("listPresentation.osp");
+      return returnToCaller();
+   }
+   
+   /** FreeFormTool is currently set up as a helper for historic reasons.
+    ** It should be moved and configured as a regular controller to allow proper
+    ** navigation between SharePresentationController and EditPresentationController.
+    ** For now, this method resets the HELPER_DONE_URL to the navigation target.
+    **/
+   private String setRedirectCaller( String target ) {
+      Tool tool = ToolManager.getCurrentTool();
+      ToolSession session = SessionManager.getCurrentToolSession();
+      String url = (String) session.getAttribute(tool.getId() + Tool.HELPER_DONE_URL);
+      url = url.substring( 0, url.lastIndexOf('/')+1 );
+      url = url + target;
+      session.setAttribute(tool.getId() + Tool.HELPER_DONE_URL, url);
+      return url;
+   }
+   
    public String processActionCancel() {
       initValues();
-      setAttribute(FreeFormHelper.FREE_FORM_ACTION, FreeFormHelper.ACTION_CANCEL);
-      return returnToCaller();
+      Presentation presentation = getPresentation();
+      List pages = getPresentationManager().getPresentationPagesByPresentation(presentation.getId());
+      presentation.setPages(pages);
+      return "main";
    }
 
    public String processActionCancelPage() {
@@ -225,7 +249,7 @@ public class FreeFormTool extends HelperToolBase {
          context.redirect("sakai.filepicker.helper/tool");
       }
       catch (IOException e) {
-         throw new RuntimeException("Failed to redirect to helper", e);
+		   logger.warn(e.toString());
       }
    }
 
@@ -412,7 +436,7 @@ public class FreeFormTool extends HelperToolBase {
 		   context.redirect("osp.style.helper/listStyle");
 	   }
 	   catch (IOException e) {
-		   throw new RuntimeException("Failed to redirect to helper", e);
+		   logger.warn(e.toString());
 	   }
 	   return null;
    }
@@ -431,7 +455,7 @@ public class FreeFormTool extends HelperToolBase {
 		   context.redirect("osp.presLayout.helper/listLayout");
 	   }
 	   catch (IOException e) {
-		   throw new RuntimeException("Failed to redirect to helper", e);
+		   logger.warn(e.toString());
 	   }
 	   return null;
    }
@@ -522,11 +546,11 @@ public class FreeFormTool extends HelperToolBase {
     * @return The url (String) to the portfolio preivew
     */
    public String getPreviewUrl() {
-      Tool tool = ToolManager.getCurrentTool();
-      ToolSession session = SessionManager.getCurrentToolSession();
-      // Making a significant assumption here... is there a better way to get the url for this?
-      return (String) session.getAttribute(
-            tool.getId() + Tool.HELPER_DONE_URL) + "/../viewPresentation.osp";
+      String url = setRedirectCaller("viewPresentation.osp");
+      Presentation presentaiton = getPresentation();
+      setAttribute(FreeFormHelper.FREE_FORM_PREFIX + "presentation", presentation);
+      url += "?1=1&id="+presentation.getId().getValue();
+      return url;
    }
 
 

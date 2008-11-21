@@ -3,19 +3,19 @@
 * $Id:GenericXmlRenderer.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
-*
-* Licensed under the Educational Community License, Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.opensource.org/licenses/ecl1.php
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
+ * Copyright (c) 2005, 2006, 2007, 2008 Sakai Foundation
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.osedu.org/licenses/ECL-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
 *
 **********************************************************************************/
 package org.theospi.portfolio.shared.model.impl;
@@ -36,6 +36,7 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
+import org.sakaiproject.metaobj.shared.EntityContextFinder;
 import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.Id;
@@ -73,10 +74,10 @@ public class GenericXmlRenderer implements PresentableObjectHome {
       }
    }
 
-   protected Element getXml(Object object) {
+   protected Element getXml(Object object, String container, String site, String context) {
       Element rootElement = new Element(getRootName());
       try {
-         addObjectNodeInfo(rootElement, object, getObjectStructureRoot());
+         addObjectNodeInfo(rootElement, object, getObjectStructureRoot(), container, site, context);
       } catch (IntrospectionException e) {
          logger.error("",e);
       }
@@ -95,7 +96,7 @@ public class GenericXmlRenderer implements PresentableObjectHome {
       return false;
    }
 
-   protected void addObjectNodeInfo(Element parentNode, Object object, Element structure) throws IntrospectionException {
+   protected void addObjectNodeInfo(Element parentNode, Object object, Element structure, String container, String site, String context) throws IntrospectionException {
       if (object == null) return;
       // go through each property... put each one in...
       logger.debug("adding object of class " + object.getClass());
@@ -109,11 +110,11 @@ public class GenericXmlRenderer implements PresentableObjectHome {
          logger.debug("examining property: " + property.getName());
          if (isTraversableType(property, structure)){
             if (isCollection(property,structure)){
-               addCollectionItems(parentNode, property, object, structure);
+               addCollectionItems(parentNode, property, object, structure, container, site, context);
             } else if (isArtifact(property,structure)) {
-               addArtifactItem(parentNode, property, object);
+               addArtifactItem(parentNode, property, object, container, site, context);
             } else {
-               addItem(parentNode, property, object, structure);
+               addItem(parentNode, property, object, structure, container, site, context);
             }
          } else {
             addItemToXml(parentNode, property, object);
@@ -152,7 +153,7 @@ public class GenericXmlRenderer implements PresentableObjectHome {
       parentNode.addContent(attribute);
    }
 
-   protected void addItem(Element parentNode, PropertyDescriptor prop, Object object, Element structure) {
+   protected void addItem(Element parentNode, PropertyDescriptor prop, Object object, Element structure, String container, String site, String context) {
       logger.debug("addItem()");
 
       Method readMethod = prop.getReadMethod();
@@ -160,7 +161,7 @@ public class GenericXmlRenderer implements PresentableObjectHome {
       try {
          Object newObject = readMethod.invoke(object, (Object[]) null);
          parentNode.addContent(newElement);
-         addObjectNodeInfo(newElement, newObject, structure.getChild(prop.getName()));
+         addObjectNodeInfo(newElement, newObject, structure.getChild(prop.getName()), container, site, context);
       } catch (IllegalAccessException e) {
          logger.error("could not get attribute", e);
       } catch (InvocationTargetException e) {
@@ -171,33 +172,34 @@ public class GenericXmlRenderer implements PresentableObjectHome {
    }
 
 
-   protected void addArtifactItem(Element parentNode, PropertyDescriptor prop, Object object) {
+   protected void addArtifactItem(Element parentNode, PropertyDescriptor prop, Object object, String container, String site, String context) {
       logger.debug("addArtifactItem()");
 
       Method readMethod = prop.getReadMethod();
-
       Id artifactId = null;
-
       try {
-         artifactId = (Id) readMethod.invoke(object, (Object[]) null);
+    	  artifactId = (Id) readMethod.invoke(object, (Object[]) null);
+    	  
+    	  
       } catch (IllegalAccessException e) {
-         logger.error("could not get attribute", e);
+    	  logger.error("could not get attribute", e);
       } catch (InvocationTargetException e) {
-         logger.error("could not get attribute", e);
+    	  logger.error("could not get attribute", e);
       }
 
       logger.debug("finding artifact with id=" + artifactId);
 
       Artifact art = getArtifactFinder().load(artifactId);
+      
       if (art.getHome() instanceof PresentableObjectHome) {
          PresentableObjectHome home = (PresentableObjectHome) art.getHome();
-         Element node = home.getArtifactAsXml(art);
+         Element node = home.getArtifactAsXml(art, container, site, context);
          node.setName("artifact");
          parentNode.addContent(node);
       }
    }
 
-   protected void addCollectionItems(Element parentNode, PropertyDescriptor prop, Object object, Element structure){
+   protected void addCollectionItems(Element parentNode, PropertyDescriptor prop, Object object, Element structure, String container, String site, String context){
       logger.debug("addCollectionItems()");
 
       Method readMethod = prop.getReadMethod();
@@ -218,7 +220,7 @@ public class GenericXmlRenderer implements PresentableObjectHome {
             {
                elementStructure = structure.getParentElement().getChild(prop.getName());
             }
-            addObjectNodeInfo(newElement, i.next(), elementStructure);
+            addObjectNodeInfo(newElement, i.next(), elementStructure, container, site, context);
             index++;
          }
       } catch (IllegalAccessException e) {
@@ -266,17 +268,21 @@ public class GenericXmlRenderer implements PresentableObjectHome {
 
 
    public Element getArtifactAsXml(Artifact artifact) {
-      try {
-         Class supportedType = Class.forName(getSupportedType());
-         if (supportedType.isAssignableFrom(artifact.getClass())) {
-            return getXml(artifact);
-         }
-      } catch (ClassNotFoundException e) {
-         throw new RuntimeException(getSupportedType() + " is not a valid class: " + e.getMessage(),e);
-      }
+      return getArtifactAsXml(artifact, null, null, null);
+   }
+   
+   public Element getArtifactAsXml(Artifact artifact, String container, String site, String context) {
+	   try {
+		   Class supportedType = Class.forName(getSupportedType());
+		   if (supportedType.isAssignableFrom(artifact.getClass())) {
+			   return getXml(artifact, container, site, context);
+		   }
+	   } catch (ClassNotFoundException e) {
+		   throw new RuntimeException(getSupportedType() + " is not a valid class: " + e.getMessage(),e);
+	   }
 
-      throw new OspException("Expecting object of type: "  + getSupportedType() + " but found object of type "  +
-            artifact.getClass());
+	   throw new OspException("Expecting object of type: "  + getSupportedType() + " but found object of type "  +
+			   artifact.getClass());
    }
 
    public ArtifactFinder getArtifactFinder() {

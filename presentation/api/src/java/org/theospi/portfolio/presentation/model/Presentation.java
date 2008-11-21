@@ -3,19 +3,19 @@
 * $Id:Presentation.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
-*
-* Licensed under the Educational Community License, Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.opensource.org/licenses/ecl1.php
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
+ * Copyright (c) 2005, 2006, 2007 Sakai Foundation
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.osedu.org/licenses/ECL-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
 *
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model;
@@ -72,6 +72,7 @@ public class Presentation extends IdentifiableObject {
    public final static String FREEFORM_TYPE = "osp.presentation.type.freeForm";
    public final static String TEMPLATE_TYPE = "osp.presentation.type.template";
    public static final Id FREEFORM_TEMPLATE_ID = new IdImpl("freeFormTemplate", null);
+   private String externalUriForDownload;
 
 
    public String getToolId() {
@@ -210,15 +211,17 @@ public class Presentation extends IdentifiableObject {
       return getExpiresOn().getTime() < System.currentTimeMillis();
    }
 
+
    public String getExternalUri() {
-      String uri = ServerConfigurationService.getServerUrl();
-      uri += "/osp-presentation-tool/viewPresentation.osp?panel=presentation&id=" + getId().getValue();
-      uri += "&" + Tool.PLACEMENT_ID + "=" + getToolId();
-      return uri;
+      return getExternalUri(ServerConfigurationService.getServerUrl());
    }
 
    public String getPresentationType() {
       return presentationType;
+   }
+   
+   public boolean getIsFreeFormType() {
+      return (presentationType.equals(FREEFORM_TYPE));
    }
 
    public void setPresentationType(String presentationType) {
@@ -344,4 +347,17 @@ public class Presentation extends IdentifiableObject {
    }
 
 
+   /**
+    * allows setting a special internal url for portfolio download.  This solves problems
+    * trying to spider the portfolio over https
+    * @return
+    */
+   public String getExternalUri(String uri) {
+      if (uri == null || uri.length() == 0) {
+         uri = ServerConfigurationService.getServerUrl();
+      }
+      uri += "/osp-presentation-tool/viewPresentation.osp?panel=presentation&id=" + getId().getValue();
+      uri += "&" + Tool.PLACEMENT_ID + "=" + getToolId();
+      return uri;
+   }
 }

@@ -4,7 +4,7 @@
   <parent>
     <artifactId>osp-jsf</artifactId>
     <groupId>org.sakaiproject.osp</groupId>
-    <version>SNAPSHOT</version>
+    <version>2.6.0RC1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <name>OSP JSF Widgets</name>
@@ -27,6 +27,10 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-kernel-api</artifactId>
     </dependency>
@@ -37,13 +41,11 @@
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-depend-jsf-widgets-myfaces</artifactId>
-      <version>${sakai.version}</version>
       <type>pom</type>
     </dependency>
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
 <!--org.sakaiprojectsakai-component-api${sakai.version}-->
 <!--org.sakaiprojectsakai-content-api${sakai.version}-->
@@ -92,11 +94,7 @@
       <artifactId>commons-logging</artifactId>
       <version>1.0.4</version>
     </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>${sakai.servletapi.version}</version>
-    </dependency>
+<!--javax.servletservlet-api${sakai.servletapi.version}-->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jsp-api</artifactId>

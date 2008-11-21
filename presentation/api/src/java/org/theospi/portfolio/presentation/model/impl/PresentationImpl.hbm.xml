@@ -202,14 +202,6 @@
 		from Presentation where template_id=?
    </query>
    
-   <query name="findPortfolioByOwner">
-		from Presentation where owner=? Order by name
-   </query>
-   
-   <query name="findPortfolioByOwnerAndTool">
-		from Presentation where owner=? and toolId=? Order by name
-   </query>
-
    <query name="findTemplateByOwnerAndSite">
 		from PresentationTemplate where owner=? and siteId=? Order by name
    </query>
@@ -244,6 +236,10 @@
       
    <query name="findLogsByPortfolio">
 		from PresentationLog where presentation_id=? ORDER BY view_date DESC
+   </query>
+      
+   <query name="findPortfolioByLogID">
+		from PresentationLog where id=?
    </query>
       
    <query name="findLayoutsByOwner">
@@ -282,11 +278,34 @@
    	from Presentation p where p.properties != null and p.propertyForm = null 
    </query>
    
-   <query name="findPortfoliosByToolWithAuthzNoHidden">
+   <query name="findPortfolioByOwnerInclusive">
+		from Presentation p where owner=:owner and p.id in ( :hiddenId ) Order by p.name
+   </query>
+   
+   <query name="findPortfolioByOwnerAndToolInclusive">
+		from Presentation p where owner=:owner and toolId=:toolId and p.id in ( :hiddenId ) Order by p.name
+   </query>
+   <query name="findPortfolioByOwnerExclusive">
+		from Presentation p where owner=:owner and p.id not in ( :hiddenId ) Order by p.name
+   </query>
+   
+   <query name="findPortfolioByOwnerAndToolExclusive">
+		from Presentation p where owner=:owner and toolId=:toolId and p.id not in ( :hiddenId ) Order by p.name
+   </query>
+
+   <query name="findPortfoliosByToolInclusive">
+   	from Presentation p where p.toolId=:toolId and p.id in ( :id ) and p.id in ( :hiddenId )
+   </query>
+   
+   <query name="findPortfoliosByToolExclusive">
    	from Presentation p where p.toolId=:toolId and p.id in ( :id ) and p.id not in ( :hiddenId )
    </query>
    
-   <query name="findPortfoliosWithAuthzNoHidden">
+   <query name="findPortfoliosInclusive">
+   	from Presentation p where p.id in ( :id ) and p.id in ( :hiddenId )
+   </query>
+   
+   <query name="findPortfoliosExclusive">
    	from Presentation p where p.id in ( :id ) and p.id not in ( :hiddenId )
    </query>
    

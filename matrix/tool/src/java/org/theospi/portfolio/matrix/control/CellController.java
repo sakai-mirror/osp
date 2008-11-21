@@ -3,13 +3,13 @@
  * $Id:CellController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
  ***********************************************************************************
  *
- * Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
+ * Copyright (c) 2005, 2006, 2007, 2008 Sakai Foundation
  *
- * Licensed under the Educational Community License, Version 1.0 (the "License");
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.opensource.org/licenses/ecl1.php
+ *       http://www.osedu.org/licenses/ECL-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -45,6 +45,7 @@ import org.sakaiproject.assignment.api.AssignmentSubmission;
 import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.util.ResourceLoader;
 
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
@@ -80,6 +81,8 @@ public class CellController implements FormController, LoadObjectController {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	private static ResourceLoader rb = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
+	
 	private MatrixManager matrixManager;
 
 	private AuthenticationManager authManager = null;
@@ -113,6 +116,18 @@ public class CellController implements FormController, LoadObjectController {
 	protected static final int METADATA_DESC_INDEX = 2;
 
 	protected static final String PROVIDERS_PARAM = "providers";
+	
+	protected boolean enableReviewEdit = true;
+
+    private class NodeNameComparator implements java.util.Comparator<Node> {
+        public int compare(Node n1, Node n2) {
+            return n1.getName().compareToIgnoreCase(n2.getName());
+        }
+
+        public boolean equals(Object o) {
+            return (this == o || o instanceof NodeNameComparator);
+        }
+    }
 
 	public Map referenceData(Map request, Object command, Errors errors) {
 		ToolSession session = getSessionManager().getCurrentToolSession();
@@ -122,6 +137,7 @@ public class CellController implements FormController, LoadObjectController {
 
 		model.put("isMatrix", "true");
 		model.put("isWizard", "false");
+		model.put("enableReviewEdit", getEnableReviewEdit());
 		model.put("currentUser", getSessionManager().getCurrentSessionUserId());
 		model.put("CURRENT_GUIDANCE_ID_KEY", "session."
 				+ GuidanceManager.CURRENT_GUIDANCE_ID);
@@ -148,8 +164,9 @@ public class CellController implements FormController, LoadObjectController {
 		String siteId = cell.getCell().getWizardPage().getPageDefinition().getSiteId().getValue();
 		List reviews =	
 			getReviewManager().getReviewsByParentAndType( pageId, Review.FEEDBACK_TYPE, siteId, getEntityProducer() );
-		Set cellForms = getMatrixManager().getPageForms(cell.getCell().getWizardPage());
-
+		ArrayList<Node> cellForms = new ArrayList<Node>(getMatrixManager().getPageForms(cell.getCell().getWizardPage()));
+		Collections.sort(cellForms, new NodeNameComparator());
+		
 		model.put("assignments", getUserAssignments(cell)); 
 		model.put("reviews", reviews ); // feedback
 		model.put("evaluations", getReviewManager().getReviewsByParentAndType(
@@ -178,6 +195,7 @@ public class CellController implements FormController, LoadObjectController {
 			model.put("objectId", scaffolding.getId().getValue());
 			model.put("objectTitle", scaffolding.getTitle());
 			model.put("objectDesc", scaffolding.getDescription());
+			model.put("wizardOwner", rb.getFormattedMessage("matrix_of", new Object[]{owner.getDisplayName()}) );
 		}
 
 		model.put("readOnlyMatrix", readOnly);
@@ -234,7 +252,7 @@ public class CellController implements FormController, LoadObjectController {
 	/**
 	 ** Return boolean array if item feedback is allowed based on feedback options
 	 **/
-	protected Boolean[] getAllowItemFeedback( int feedbackOption, List reviews, Set<Node> cellForms )
+	protected Boolean[] getAllowItemFeedback( int feedbackOption, List reviews, List<Node> cellForms )
 	{
 		Boolean[] allowItemFeedback = new Boolean[cellForms.size()];
 		int index = -1;
@@ -557,6 +575,20 @@ public class CellController implements FormController, LoadObjectController {
 		return providers;
 	}
 
+	
+	/**
+	 ** If enabled, users may edit/delete reviews (feedback, evaluation, reflection) according to these rules:
+	 **    Feedback -- edit/delete option (even after status COMPLETE)
+	 **    Evaluations - edit/delete option (but not allowed when status COMPLETE)
+	 **    Relections - edit/delete option, prior to submitting (status READY)
+	 */
+	public boolean getEnableReviewEdit() {
+		return enableReviewEdit;
+	}
+	public void setEnableReviewEdit( boolean enableReviewEdit ) {
+		this.enableReviewEdit = enableReviewEdit;
+	}
+	
 	/**
 	 * @return
 	 */

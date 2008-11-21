@@ -3,19 +3,19 @@
 * $Id:ViewPresentationControl.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006 The Sakai Foundation.
-*
-* Licensed under the Educational Community License, Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.opensource.org/licenses/ecl1.php
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
+ * Copyright (c) 2005, 2006, 2007, 2008 Sakai Foundation
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.osedu.org/licenses/ECL-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
 *
 **********************************************************************************/
 package org.theospi.portfolio.presentation.control;
@@ -33,6 +33,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.ArtifactFinderManager;
@@ -60,6 +61,17 @@ import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.OspException;
 
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.File;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
+
 /**
  * Created by IntelliJ IDEA.
  * User: John Ellis
@@ -69,13 +81,40 @@ import org.theospi.portfolio.shared.model.OspException;
  */
 public class ViewPresentationControl extends AbstractPresentationController implements LoadObjectController {
 
-   protected final Log logger = LogFactory.getLog(getClass());
+   protected static Log logger = LogFactory.getLog(ViewPresentationControl.class);
    private HomeFactory homeFactory = null;
    private ArtifactFinder artifactFinder = null;
    private AuthorizationFacade authzManager = null;
    private ArtifactFinderManager artifactFinderManager;
    private Hashtable presentationTemplateCache = new Hashtable();
    private URIResolver uriResolver;
+   private static Cache cache = setupCache();
+
+   private static Cache setupCache() {
+      // detailed configuration is in presentation/tool/src/bundle/ehcache.xml,
+      // which ends up in tomcat/webapps/osp-presentation-tool/WEB-INF/classes/
+
+      if ( !ServerConfigurationService.getBoolean("cache.osp.presentation.data",true) )
+         return null;
+
+      String cacheName = "org.theospi.portfolio.presentation.control.ViewPresentationControl.XML";
+      CacheManager cacheManager = CacheManager.create();
+      if (cacheManager == null)
+         return null;
+         
+      try
+      {
+         cacheManager.addCache(cacheName);
+         return cacheManager.getCache(cacheName);
+      }
+      catch (Exception e)
+      {
+         logger.warn("ViewPresentationControl.setupCache failed");
+      }
+      
+      return null;
+   }
+
 
    public Object fillBackingObject(Object incomingModel, Map request,
                                    Map session, Map application) throws Exception {
@@ -102,14 +141,25 @@ public class ViewPresentationControl extends AbstractPresentationController impl
             return previewPres;
     	 }
 
-         logger.debug("User " + getAuthManager().getAgent().getId() + " is viewing a presentation by id: " + presentation.getId().getValue());
-         return getPresentationManager().getLightweightPresentation(presentation.getId());
+         if ( presentation.getId() == null ) {
+            logger.warn("Attempt to view invalid/unspecified presentation by user " 
+                        + getAuthManager().getAgent().getId() );
+            return null;
+         }
+         else {
+            logger.debug("User " + getAuthManager().getAgent().getId() + " is viewing a presentation by id: " + presentation.getId().getValue());
+            return getPresentationManager().getLightweightPresentation(presentation.getId());
+         }
       }
    }
 
    public ModelAndView handleRequest(Object requestModel, Map request,
                                      Map session, Map application, Errors errors) {
       Presentation pres = (Presentation) requestModel;
+      
+      // check for unspecified or invalid portfolio
+      if ( pres == null )
+         return new ModelAndView("expired");
 
       if (pres.getSecretExportKey() == null) {
          if (!pres.getIsPublic()) {
@@ -153,8 +203,30 @@ public class ViewPresentationControl extends AbstractPresentationController impl
          model.put("presentation", pres);
          Document doc = null;
          
-         if (pres.getPresentationType().equals(Presentation.TEMPLATE_TYPE))
-            doc = getPresentationManager().createDocument(pres);
+         if (pres.getPresentationType().equals(Presentation.TEMPLATE_TYPE)) {
+
+            // have to check modified dates rather than depending upon
+            // clearing the cache when something changes. In a cluster
+            // the event that invalidates the cache may occur on a different
+            // system. For previews always force current data. Otherwise
+            // invalidate cache if presentation or template on which it is
+            // based changes.
+            if (cache != null && !pres.isPreview()) {
+               Element element = cache.get(pres.getId());
+               if (element != null &&
+                   pres.getModified().getTime() <= element.getCreationTime() &&
+                   pres.getTemplate().getModified().getTime() <= element.getCreationTime()) {
+                  doc = (Document)element.getValue();
+               }
+            }
+            
+            if (doc == null) {
+               doc = getPresentationManager().createDocument(pres);
+
+               if (cache != null && doc != null)
+                  cache.put(new Element(pres.getId(), doc));
+            }
+         } 
          else {
             String page = (String)request.get("page");
             if (pres.isPreview()) {

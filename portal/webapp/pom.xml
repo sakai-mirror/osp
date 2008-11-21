@@ -4,7 +4,7 @@
   <parent>
     <artifactId>osp-portal-base</artifactId>
     <groupId>org.sakaiproject.osp</groupId>
-    <version>SNAPSHOT</version>
+    <version>2.6.0RC1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>osp-portal</artifactId>
@@ -16,7 +16,48 @@
   </organization>
   <inceptionYear>2004</inceptionYear>
   <packaging>war</packaging>
+
+    <!-- profiles added for WAS support -->
+    <profiles>
+        <profile>
+            <id>full</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.sakaiproject</groupId>
+                    <artifactId>sakai-portal-impl</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <!-- exclude xerces xml parser apis for WAS -->
+            <id>was</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.sakaiproject</groupId>
+                    <artifactId>sakai-portal-impl</artifactId>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>xerces</groupId>
+                            <artifactId>xmlParserAPIs</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
   <dependencies>
+    <dependency>
+      <groupId>org.sakaiproject.kernel</groupId>
+      <artifactId>sakai-kernel-util</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-kernel-api</artifactId>
@@ -25,34 +66,25 @@
       <groupId>org.sakaiproject.kernel</groupId>
       <artifactId>sakai-component-manager</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.sakaiproject.kernel.util</groupId>
-      <artifactId>sakai-tool-util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject.kernel.util</groupId>
-      <artifactId>sakai-user-util</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject.kernel.util</groupId>
-      <artifactId>sakai-util</artifactId>
-    </dependency>
+<!--
+      This has been relocated to sakai-kernel-util
+      org.sakaiproject.kernel.utilsakai-tool-util-->
+<!--
+      This has been relocated to sakai-kernel-util
+      org.sakaiproject.kernel.utilsakai-user-util-->
+<!--
+      This has been relocated to sakai-kernel-util
+      org.sakaiproject.kernel.utilsakai-util-->
 <!--org.sakaiprojectsakai-component${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject.osp</groupId>
       <artifactId>osp-portal-api</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>${sakai.servletapi.version}</version>
-    </dependency>
+<!--javax.servletservlet-api${sakai.servletapi.version}-->
 <!--org.sakaiprojectsakai-tool-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-metaobj-api</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
 <!--org.sakaiprojectsakai-site-api${sakai.version}-->
 <!--org.sakaiprojectsakai-entity-api${sakai.version}-->
@@ -63,13 +95,7 @@
 <!--org.sakaiprojectsakai-component-api${sakai.version}-->
     <dependency>
       <groupId>org.sakaiproject</groupId>
-      <artifactId>sakai-portal-impl</artifactId>
-      <version>${sakai.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.sakaiproject</groupId>
       <artifactId>sakai-portal-util</artifactId>
-      <version>${sakai.version}</version>
     </dependency>
 <!--org.sakaiprojectsakai-util${sakai.version}-->
 <!--org.sakaiprojectsakai-tool-util${sakai.version}-->

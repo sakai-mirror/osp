@@ -3,13 +3,13 @@
  * $Id:EditScaffoldingCellController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
  ***********************************************************************************
  *
- * Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
+ * Copyright (c) 2005, 2006, 2007, 2008 Sakai Foundation
  *
- * Licensed under the Educational Community License, Version 1.0 (the "License");
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.opensource.org/licenses/ecl1.php
+ *       http://www.osedu.org/licenses/ECL-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -489,8 +489,8 @@ public class EditScaffoldingCellController extends
 																		new Object[] { roleAgent.getDisplayName() }));
 
 			getAuthzManager().createAuthorization(roleAgent, 
-                                               audienceSelectionFunction, 
-					       (wpd.getId()==null?wpd.getNewId():wpd.getId()));
+															  audienceSelectionFunction, 
+															  (wpd.getId()==null?wpd.getNewId():wpd.getId()));
 		}
 		return evalList;
 	}

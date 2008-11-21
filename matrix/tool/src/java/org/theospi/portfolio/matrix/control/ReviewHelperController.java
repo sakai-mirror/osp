@@ -3,19 +3,19 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
-*
-* Licensed under the Educational Community License, Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.opensource.org/licenses/ecl1.php
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
+ * Copyright (c) 2005, 2006, 2007, 2008 Sakai Foundation
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.osedu.org/licenses/ECL-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
 *
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
@@ -40,7 +40,6 @@ import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
 import org.sakaiproject.metaobj.shared.FormHelper;
-import org.sakaiproject.metaobj.shared.Helper;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
@@ -121,7 +120,8 @@ public class ReviewHelperController implements Controller {
          String currentSite = placement.getContext();
 
          // check if this is a new review
-         if ( currentReviewId == null ) {
+         if ( currentReviewId == null && 
+              !FormHelper.RETURN_ACTION_CANCEL.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)))  {
             Review review = getReviewManager().createNew("New Review", currentSite);
             review.setDeviceId(formType);
             review.setParent(strId);
@@ -148,7 +148,7 @@ public class ReviewHelperController implements Controller {
          }
          
          // otherwise this is an existing review being edited
-         else {
+         else if (currentReviewId != null) {
             // Lock review content (reflection, feedback, evaluation)
             currentReviewId = contentHosting.getUuid( currentReviewId );
             getLockManager().lockObject(currentReviewId,
@@ -238,7 +238,7 @@ public class ReviewHelperController implements Controller {
       formView = setupSessionInfo(request, session, pageTitle, formTypeId, formTypeTitleKey, ownerEid, strId);
       session.put("page_id", strId);
       session.put("secondPass", "true");
-      return new ModelAndView(formView, Helper.HELPER_SESSION_ID, request.get(Helper.HELPER_SESSION_ID));
+      return new ModelAndView(formView);
 
    }
 

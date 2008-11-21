@@ -581,6 +581,7 @@
       </property>
    </bean>
 
+   <!-- is this used ???
    <bean id="org.theospi.portfolio.list.intf.ListGenerator.portfolios"
       class="org.theospi.portfolio.presentation.model.impl.PresentationListGenerator" init-method="init">
       <property name="presentationManager">
@@ -625,5 +626,6 @@
       	</list>
       </property>
    </bean>
+   -->
    
 </beans>

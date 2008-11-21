@@ -53,7 +53,7 @@
 			<span class="reqStar">*</span><label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_title"/></label>
 				<input type="text" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>-id"
 					   value="<c:out value="${status.value}"/>"
-					   size="25" maxlength="25" <c:out value="${disabledText}"/> />
+					   size="25" maxlength="25" />
 				<c:if test="${status.error}">
 					<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
 			</c:if>

@@ -3,19 +3,19 @@
 * $Id$
 ***********************************************************************************
 *
-* Copyright (c) 2005, 2006, 2007 The Sakai Foundation.
-*
-* Licensed under the Educational Community License, Version 1.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.opensource.org/licenses/ecl1.php
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
+ * Copyright (c) 2005, 2006, 2007, 2008 Sakai Foundation
+ *
+ * Licensed under the Educational Community License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.osedu.org/licenses/ECL-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
 *
 **********************************************************************************/
 package org.theospi.portfolio.presentation.model.impl;
@@ -100,7 +100,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private ContentHostingService contentHosting = null;
    private SecurityService securityService = null;
    private EventService eventService = null;
-   private Map secretExportKeys = new Hashtable();
    private String tempPresDownloadDir;
    private StructuredArtifactDefinitionManager structuredArtifactDefinitionManager;
    private List globalSites;
@@ -108,6 +107,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    private List initializedServices;
    private boolean autoDdl = true;
    private boolean portfolioPropertyFormConversion = true;
+   private String downloadExternalUri;
 
    static final private String   IMPORT_BASE_FOLDER_ID = "importedPresentations";
    private String importFolderName;
@@ -187,11 +187,9 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       clearLocks(template.getId());
       for (Iterator i = template.getFiles().iterator();i.hasNext();){
          TemplateFileRef fileRef = (TemplateFileRef) i.next();
-         //getLockManager().addLock(fileRef.getFile().getId(), template.getId(), "saving a presentation template");
          getLockManager().lockObject(fileRef.getFileId(),
         		 template.getId().getValue(), "saving a presentation template", true);
       }
-      //getLockManager().addLock(template.getRenderer(), template.getId(), "saving a presentation template");
       getLockManager().lockObject(template.getRenderer().getValue(),
     		  template.getId().getValue(), "saving a presentation template", true);
 
@@ -213,9 +211,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
             for (Iterator i = template.getItemDefinitions().iterator(); i.hasNext();) {
                PresentationItemDefinition itemDef = (PresentationItemDefinition) i.next();
-//               if (itemDef.getHasMimeTypes()) {
                   itemDef.getMimeTypes().size();
-//               }
             }
 
             return template;
@@ -251,19 +247,20 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return getHibernateTemplate().findByNamedQuery("findPortfoliosForConversion");
    }
 
-    public void reassignOwner(PresentationTemplate templateId)
+   public void reassignOwner(PresentationTemplate templateId)
    {
           templateId.setOwner(getAgentManager().getAgent("admin"));
    }
+	
    public Presentation getPresentation(final Id id, String secretExportKey) {
-      Presentation pres = (Presentation)secretExportKeys.get(secretExportKey);
+      Presentation pres = findPresentationByLogID( idManager.getId(secretExportKey) );
       if (pres == null || !id.equals(pres.getId())) {
          throw new AuthorizationFailedException("Exporting inappropriate presentation");
       }
 
       switchUser(pres.getOwner());
 
-      return getPresentation(id);
+      return pres;
    }
 
    protected void switchUser(Agent owner) {
@@ -292,7 +289,17 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
    }
 
+   /** Return Presentation object corresponding to given id
+    ** (exception is thrown if user not authorized)
+    **/
    public Presentation getPresentation(final Id id) {
+      return getPresentation(id, true);
+   }
+   
+   /** Return Presentation object corresponding to given id,
+    ** optionally bypassing authorization check (for local export)
+    **/
+   private Presentation getPresentation(final Id id, boolean checkAuth) {
 
       HibernateCallback callback = new HibernateCallback() {
 
@@ -319,7 +326,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       try {
          Presentation presentation = (Presentation) getHibernateTemplate().execute(callback);
 
-         if (!presentation.getIsPublic() &&
+         if (!presentation.getIsPublic() && checkAuth &&
              !presentation.getOwner().equals(getAuthnManager().getAgent())) {
             getAuthzManager().checkPermission(PresentationFunctionConstants.VIEW_PRESENTATION, presentation.getId());
          }
@@ -332,7 +339,8 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             presentation.getViewers().add(viewer.getAgent());
          }
          return presentation;
-      } catch (HibernateObjectRetrievalFailureException e) {
+      } 
+      catch (HibernateObjectRetrievalFailureException e) {
          logger.debug(e);
          return null;
       }
@@ -414,18 +422,10 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       getAuthzManager().checkPermission(PresentationFunctionConstants.DELETE_TEMPLATE, template.getId());
       clearLocks(template.getId());
 
-      // first delete all presentations that use this template
-      // this will delete all authorization as well
       Collection presentations = getHibernateTemplate().findByNamedQuery("findPortfolioByTemplate", id.getValue());
-      //Query q = getHibernateTemplate().
-      for (Iterator i = presentations.iterator(); i.hasNext();) {
-         //Presentation presentation = (Presentation) i.next();
-         //deletePresentation(presentation.getId(), false);
-
-         //Don't think we want to just delete presentations.
-         // Let's return false instead.
+      // Don't think we want to delete template presentations -- return false if any exist
+      if ( presentations.size() > 0 )
          return false;
-      }
 
       HibernateCallback callback = new HibernateCallback() {
 
@@ -489,8 +489,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    protected void deleteLogs(final Id presentationId) throws HibernateException {
-      //session.delete("from PresentationLog where presentation_id=?",
-      //   presentation.getId().getValue(), Hibernate.STRING);
       HibernateCallback callback = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
       
@@ -504,9 +502,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    protected void deleteComments(final Id presentationId) throws HibernateException {
-      //session.delete("from PresentationComment where presentation_id=?",
-      //   presentation.getId().getValue(), Hibernate.STRING);
-      
       HibernateCallback callback = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
             
@@ -521,8 +516,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    }
 
    protected void deletePresentationPages(final Id presentationId) throws HibernateException {
-      //session.delete("from PresentationPage where presentation_id=?",
-      //      presentation.getId().getValue(), Hibernate.STRING);
       
       HibernateCallback callback = new HibernateCallback() {
          public Object doInHibernate(Session session) throws HibernateException, SQLException {
@@ -615,7 +608,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
                getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
          }
-         //getHibernateTemplate().save(presentation, presentation.getId());
          
          if (presentation.getId() != null) {
             presentation.setNewId(presentation.getId());
@@ -632,13 +624,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          eventService.postEvent(EventConstants.EVENT_PORTFOLIO_REVISE, presentation.getId().getValue());
       }
       
-      //locking the prop form prohibits editing...this is bad!
-      //if (presentation.getPropertyForm() != null) {
-      //   getLockManager().lockObject(presentation.getPropertyForm().getValue(), 
-      //         presentation.getId().getValue(),
-      //         "Locking property form for this portfolio", true);
-      //}
-
       storePresentationPages(presentation.getPages(), presentation.getId());
 
       return presentation;
@@ -672,8 +657,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          fixupRegions(page);
          if (page.isNewObject()) {
             page.setCreated(new Date(System.currentTimeMillis()));
-            //getHibernateTemplate().save(page, page.getId());
-            //TODO changing the save to use newId instead of Id since we're setting a specific one
             page.setNewId(page.getId());
             page.setId(null);
             getHibernateTemplate().save(page);
@@ -698,16 +681,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          region.setPage(page);
       }
    }      
-
-   public Collection findPresentationsByOwner(Agent owner) {
-      return getHibernateTemplate().findByNamedQuery("findPortfolioByOwner",
-         owner);
-   }
-
-   public Collection findPresentationsByOwner(Agent owner, String toolId) {
-      return getHibernateTemplate().findByNamedQuery("findPortfolioByOwnerAndTool",
-            new Object[]{owner, toolId});
-   }
 
    public Collection findTemplatesByOwner(Agent owner, String siteId) {
       return getHibernateTemplate().findByNamedQuery("findTemplateByOwnerAndSite",
@@ -761,150 +734,152 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          "findAllPublishedTemplatesBySite",
          new Object[]{new Boolean(true), siteId});
    }
-   
-   public Collection findPresentationsByViewer(Agent viewer) {
 
-      Collection presentationAuthzs = getAuthzManager().getAuthorizations(viewer,
-         PresentationFunctionConstants.VIEW_PRESENTATION, null);
+   /**
+    * {@inheritDoc}
+    */
+   public Collection findAllPresentations(Agent viewer, String toolId, String showHidden) {
+      Collection ownerList = findOwnerPresentations( viewer, toolId, showHidden );
+      Collection sharedList = findSharedPresentations( viewer, toolId, showHidden );
+      Collection allList = ownerList;
+      
+      // Filter out shared presentations if owned by current user
+      for (Iterator i=sharedList.iterator();i.hasNext();) {
+         Presentation pres = (Presentation)i.next();
 
-      Collection returned = new ArrayList(findPresentationsByOwner(viewer));
-
-      for (Iterator i=returned.iterator();i.hasNext();) {
-         getHibernateTemplate().evict(i.next());
-      }
-
-      for (Iterator i = presentationAuthzs.iterator(); i.hasNext();) {
-         Id presId = ((Authorization) i.next()).getQualifier();
-         Presentation pres = getLightweightPresentation(presId);
-
-        if (!returned.contains(pres) && !pres.isExpired() && (pres.getOwner() != null)) {
-                getHibernateTemplate().evict(pres);
-                returned.add(pres);
-         }
-         else{
+         if ( !ownerList.contains(pres) ) 
+            allList.add(pres);
+         else
             getHibernateTemplate().evict(pres);
-        }
       }
-
-      return returned;
+      
+      return allList;
    }
    
    /**
     * {@inheritDoc}
     */
-   public Collection findPresentationsByViewer(Agent viewer, String toolId) {
-      return findPresentationsByViewer(viewer, toolId, true);
-   }
+   public Collection findSharedPresentations(Agent viewer, String toolId, String showHidden) {
+      // Build list of hidden presentation authzs
+      Collection hiddenAuthzs = getAuthzManager().getAuthorizations(viewer, 
+            PresentationFunctionConstants.HIDE_PRESENTATION, null);
+      List<Id> hiddenIds = new ArrayList<Id>();
+      hiddenIds.add(getIdManager().getId("last")); // ensure list not empty
+      
+      if ( !showHidden.equals(PRESENTATION_VIEW_ALL) ) 
+         hiddenIds = buildPresList(hiddenAuthzs);
 
-   /**
-    * {@inheritDoc}
-    */
-   public Collection findPresentationsByViewer(Agent viewer, String toolId, boolean showHidden) {
-
-      Collection presentationAuthzs = getAuthzManager().getAuthorizations(viewer,
+      // Build list of presentations shared with user
+      Collection viewAuthzs = getAuthzManager().getAuthorizations(viewer,
             PresentationFunctionConstants.VIEW_PRESENTATION,  null);
       
-      Collection hiddenAuths = getAuthzManager().getAuthorizations(viewer, 
-            PresentationFunctionConstants.HIDE_PRESENTATION, null);
-
-      Collection returned = findPresentationsByOwner(viewer, toolId);
-
-      for (Iterator i=returned.iterator();i.hasNext();) {
-         Presentation pres = (Presentation)i.next();
-         pres.setAuthz(new PresentationAuthzMap(viewer, pres));
+      Collection presList;
+      if ( toolId != null )
+      {
+         String[] paramNames = new String[] {"toolId", "id", "hiddenId"};
+         Object[] params = new Object[]{toolId, buildPresList(viewAuthzs), hiddenIds};
+         
+         
+         if ( showHidden.equals(PRESENTATION_VIEW_HIDDEN) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                           "findPortfoliosByToolInclusive", paramNames, params);
+         else if ( showHidden.equals(PRESENTATION_VIEW_VISIBLE) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                           "findPortfoliosByToolExclusive", paramNames, params);
+         else // ( showHidden.equals(PRESENTATION_VIEW_ALL) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                           "findPortfoliosByToolExclusive", paramNames, params);
       }
-      
-      List<Id> hiddenIds = new ArrayList<Id>();
-      hiddenIds.add(getIdManager().getId("last"));
-      if (!showHidden) {
-         hiddenIds = buildPresList(hiddenAuths);
+      else
+      {
+         String[] paramNames = new String[] {"id", "hiddenId"};
+         Object[] params = new Object[]{buildPresList(viewAuthzs), hiddenIds};
+         
+         if ( showHidden.equals(PRESENTATION_VIEW_HIDDEN) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                           "findPortfoliosInclusive", paramNames, params);
+         else if ( showHidden.equals(PRESENTATION_VIEW_VISIBLE) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                           "findPortfoliosExclusive", paramNames, params);
+         else // ( showHidden.equals(PRESENTATION_VIEW_ALL) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                           "findPortfoliosExclusive", paramNames, params);
       }
-      
-      String[] paramNames = new String[] {"toolId", "id", "hiddenId"};
-      Object[] params = new Object[]{toolId, buildPresList(presentationAuthzs), 
-            hiddenIds};
-      
-      Collection authzPres = getHibernateTemplate().findByNamedQueryAndNamedParam(
-            "findPortfoliosByToolWithAuthzNoHidden", paramNames, params);
 
-      for (Iterator i=authzPres.iterator();i.hasNext();) {
+      // Make sure all presentations have valid owner and are not expired
+      Collection finalPresList = new ArrayList();
+      for (Iterator i=presList.iterator();i.hasNext();) 
+      {
          Presentation pres = (Presentation)i.next();
-
-         if (!returned.contains(pres) && !pres.isExpired() && (pres.getOwner() != null)) {
+         if ( !pres.isExpired() && pres.getOwner().getId() != null ) 
+         {
             pres.setAuthz(new PresentationAuthzMap(viewer, pres));
-            returned.add(pres);
+            finalPresList.add(pres);
          }
-          else{
-             getHibernateTemplate().evict(pres);
+         else
+         {
+            getHibernateTemplate().evict(pres);
          }
       }
       
-      //Remove the regular ones that are hidden
-      for (Iterator j=returned.iterator(); j.hasNext();) {
-         Presentation pres = (Presentation)j.next();
-         if (hiddenIds.contains(pres.getId())) {
-            j.remove();
-         }
-      }
-
-      return returned;
+      return finalPresList;
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   public Collection findPresentationsByViewer(Agent viewer, boolean showHidden) {
-      
-      Collection presentationAuthzs = getAuthzManager().getAuthorizations(viewer,
-            PresentationFunctionConstants.VIEW_PRESENTATION,  null);
-      
-      Collection hiddenAuths = getAuthzManager().getAuthorizations(viewer, 
+   public Collection findOwnerPresentations(Agent owner, String toolId, String showHidden) {
+   
+      // Build list of hidden presentation authzs
+      Collection hiddenAuthzs = getAuthzManager().getAuthorizations(owner, 
             PresentationFunctionConstants.HIDE_PRESENTATION, null);
-
-      // Get all presentations owned by user
-      Collection returned = findPresentationsByOwner(viewer);
-
-      for (Iterator i=returned.iterator();i.hasNext();) {
-         Presentation pres = (Presentation)i.next();
-         pres.setAuthz(new PresentationAuthzMap(viewer, pres));
-      }
-      
-      // Build list of hidden Authzs ('last' ensures list not empty)
       List<Id> hiddenIds = new ArrayList<Id>();
-      hiddenIds.add(getIdManager().getId("last"));
-      if (!showHidden) {
-         hiddenIds = buildPresList(hiddenAuths);
+      hiddenIds.add(getIdManager().getId("last")); // ensure list not empty
+      
+      if ( !showHidden.equals(PRESENTATION_VIEW_ALL) ) 
+         hiddenIds = buildPresList(hiddenAuthzs);
+
+      Collection presList;
+      if ( toolId == null )
+      {
+         String[] paramNames = new String[] {"owner", "hiddenId"};
+         Object[] params = new Object[]{owner, hiddenIds};
+         
+         if ( showHidden.equals(PRESENTATION_VIEW_HIDDEN) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                       "findPortfolioByOwnerInclusive", 
+                                                       paramNames, params);
+         else if ( showHidden.equals(PRESENTATION_VIEW_VISIBLE) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                       "findPortfolioByOwnerExclusive", 
+                                                       paramNames, params);
+         else // ( showHidden.equals(PRESENTATION_VIEW_ALL) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                       "findPortfolioByOwnerExclusive", 
+                                                       paramNames, params);
+      }
+      else
+      {
+         String[] paramNames = new String[] {"owner", "toolId", "hiddenId"};
+         Object[] params = new Object[]{owner, toolId, hiddenIds};
+         
+         if ( showHidden.equals(PRESENTATION_VIEW_HIDDEN) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                       "findPortfolioByOwnerAndToolInclusive", 
+                                                       paramNames, params);
+         else if ( showHidden.equals(PRESENTATION_VIEW_VISIBLE) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                       "findPortfolioByOwnerAndToolExclusive", 
+                                                       paramNames, params);
+         else // ( showHidden.equals(PRESENTATION_VIEW_ALL) ) 
+            presList = getHibernateTemplate().findByNamedQueryAndNamedParam(
+                                                       "findPortfolioByOwnerAndToolExclusive", 
+                                                       paramNames, params);
       }
       
-      // Get all presentations that are not hidden and add to list if valid
-      String[] paramNames = new String[] {"id", "hiddenId"};
-      Object[] params = new Object[]{buildPresList(presentationAuthzs), 
-            hiddenIds};
-      
-      Collection authzPres = getHibernateTemplate().findByNamedQueryAndNamedParam(
-            "findPortfoliosWithAuthzNoHidden", paramNames, params);
-
-      for (Iterator i=authzPres.iterator();i.hasNext();) {
+      for (Iterator i=presList.iterator();i.hasNext();) {
          Presentation pres = (Presentation)i.next();
-
-         if (!returned.contains(pres) && !pres.isExpired() && (pres.getOwner() != null)) {
-            pres.setAuthz(new PresentationAuthzMap(viewer, pres));
-            returned.add(pres);
-         }
-          else{
-             getHibernateTemplate().evict(pres);
-         }
+         pres.setAuthz(new PresentationAuthzMap(owner, pres));
       }
       
-      // Remove any presentations that are hidden
-      for (Iterator j=returned.iterator(); j.hasNext();) {
-         Presentation pres = (Presentation)j.next();
-         if (hiddenIds.contains(pres.getId())) {
-            j.remove();
-         }
-      }
-
-      return returned;
+      return presList;
    }
 
    protected List<Id> buildPresList(Collection presentationAuthzs) {
@@ -963,15 +938,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       } catch (HibernateException e) {
          logger.error("",e);
          throw new OspException(e);
-      } finally {
-         /*
-         try {
-             session.close();
-         } catch (HibernateException e) {
-            logger.error("",e);
-         }
-         */
-      }
+      } 
    }
 
    public PresentationComment getPresentationComment(Id id) {
@@ -1030,15 +997,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       } catch (HibernateException e) {
          logger.error("",e);
          throw new OspException(e);
-      } finally {
-         /*
-         try {
-            // session.close();
-         } catch (HibernateException e) {
-            logger.error("",e);
-         }
-         */
-      }
+      } 
    }
 
    public List getOwnerComments(Agent owner, String toolId, CommentSortBy sortBy) {
@@ -1089,13 +1048,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       } catch (HibernateException e) {
          logger.error("",e);
          throw new OspException(e);
-      } /* finally {
-         try {
-            // session.close();
-         } catch (HibernateException e) {
-            logger.error("",e);
-         }
-      }        */
+      } 
    }
 
 
@@ -1126,13 +1079,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       } catch (HibernateException e) {
          logger.error("",e);
          throw new OspException(e);
-      } /* finally {
-         try {
-            // session.close();
-         } catch (HibernateException e) {
-            logger.error("",e);
-         }
-      }    */
+      } 
    }
 
    public List getCreatorComments(Agent creator, String toolId, CommentSortBy sortBy) {
@@ -1169,13 +1116,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       } catch (HibernateException e) {
          logger.error("",e);
          throw new OspException(e);
-      } /* finally {
-         try {
-            // session.close();
-         } catch (HibernateException e) {
-            logger.error("",e);
-         }
-      }  */
+      } 
    }
 
    public boolean isGlobal() {
@@ -1225,13 +1166,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       } catch (HibernateException e) {
          logger.error("",e);
          throw new OspException(e);
-      } /* finally {
-         try {
-            // session.close();
-         } catch (HibernateException e) {
-            logger.error("",e);
-         }
-      }    */
+      }
    }
 
    public Collection getPresentationsBasedOnTemplateFileRef(Id artifactId) {
@@ -1258,13 +1193,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       } catch (HibernateException e) {
          logger.error("",e);
          throw new OspException(e);
-      } /* finally {
-         try {
-            // session.close();
-         } catch (HibernateException e) {
-            logger.error("",e);
-         }
-      }    */
+      } 
    }
 
    public Collection findPresentationsByTool(Id id) {
@@ -1580,11 +1509,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
          resource = getContentHosting().addResource(fileParent.getId() + fileName, contentType, bos.toByteArray(),
             resourceProperties, NotificationService.NOTI_NONE);
-//         ResourcePropertiesEdit resourceProperties = resource.getPropertiesEdit();
-//         resourceProperties.addProperty (ResourceProperties.PROP_DISPLAY_NAME, file.getName());
-//         resource.setContent(bos.toByteArray());
-//         resource.setContentType(contentType);
-//         getContentHosting().commitResource(resource);
          
          Id newId = getIdManager().getId(getContentHosting().getUuid(resource.getId()));
          fileMap.put(oldId, newId);
@@ -1915,7 +1839,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
          if (art != null && art.getHome() instanceof PresentableObjectHome) {
             PresentableObjectHome home = (PresentableObjectHome) art.getHome();
-            Element node = home.getArtifactAsXml(art);
+            Element node = home.getArtifactAsXml(art, PresentationContentEntityProducer.PRODUCER_NAME, presentation.getSiteId(), presentation.getId().getValue());
             node.setName("artifact");
             itemElement.addContent(node);
          }
@@ -2088,12 +2012,48 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return fileRefElement;
    }
 
-   public void storePresentationLog(PresentationLog log) {
-      getHibernateTemplate().save(log);
+   /** Save PresentationLog object to database.
+    ** Portfolio Export will query the log immediately after write, so:
+    **    - FlushMode is set to FLUSH_EAGER wtihin this method
+    **    - auto-commit is set wtihin this method
+    **/
+   public synchronized void storePresentationLog(PresentationLog log) {
+      try {
+         int oldFlushMode = getHibernateTemplate().getFlushMode();
+         boolean oldAutoCommit = getSession().connection().getAutoCommit();
+         try {
+            getHibernateTemplate().setFlushMode(getHibernateTemplate().FLUSH_EAGER);
+            getSession().connection().setAutoCommit(true); 
+            getHibernateTemplate().save(log);
+         }
+         catch (Exception e ) {
+            logger.warn(e);
+         }
+         finally {
+            getHibernateTemplate().setFlushMode(oldFlushMode);
+            getSession().connection().setAutoCommit(oldAutoCommit); 
+         }
+      }
+      catch (Exception e ) {
+         logger.warn(e);
+      }
    }
-
+   
+   /** findLogsByPresID
+    ** Return Collection of PresentationLog objects corresponding
+    ** to all requests to view given portfolio.
+    **/
    public Collection findLogsByPresID(Id presID) {
       return getHibernateTemplate().findByNamedQuery("findLogsByPortfolio", presID.getValue());
+   }
+
+   /** findPresentationByLogID
+    ** Return Presentation corresponding to given PresentationLog id
+    **/
+   public Presentation findPresentationByLogID(Id logID) {
+      PresentationLog pLog = 
+         (PresentationLog)getHibernateTemplate().findByNamedQuery("findPortfolioByLogID", logID).get(0);
+      return getPresentation( pLog.getPresentation().getId(), false );
    }
 
    public TemplateFileRef getTemplateFileRef(Id refId) {
@@ -2163,8 +2123,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
 
    public void importResources(String fromContext, String toContext, List resourceIds) {
-      //Agent agent = getAuthnManager().getAgent();
-      //Collection templates = findTemplatesByOwner(agent, fromContext);
       Collection templates = findPublishedTemplatesBySite(fromContext);
 
       for (Iterator i=templates.iterator();i.hasNext();) {
@@ -2230,11 +2188,15 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          tempDir.mkdirs();
       }
 
-      String secretExportKey = getIdManager().createId().getValue();
-      String url = presentation.getExternalUri() + "&secretExportKey=" + secretExportKey;
+      // Create log of presentation view and use log id as cluster-independent secretExportKey
+      PresentationLog pLog = new PresentationLog();
+      pLog.setPresentation(presentation);
+      pLog.setViewDate(new java.util.Date());
+      pLog.setViewer(presentation.getOwner()); // assumes only owner can download
+      storePresentationLog(pLog);
+      String secretExportKey = pLog.getId().getValue();     
       
-      //This should come from the above presentation.getExternalUri() call;
-      //url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
+      String url = presentation.getExternalUri(downloadExternalUri) + "&secretExportKey=" + secretExportKey;
       
       File tempDirectory = new File(tempDir, secretExportKey);
 
@@ -2242,16 +2204,7 @@ public class PresentationManagerImpl extends HibernateDaoSupport
         url, tempDirectory.getPath());
 
       try {
-         synchronized(secretExportKeys) {
-            secretExportKeys.put(secretExportKey, presentation);
-         }
-
          export.run();
-
-         synchronized(secretExportKeys) {
-            secretExportKeys.remove(secretExportKey);
-         }
-
          export.createZip(out);
       }
       finally {
@@ -2509,10 +2462,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             
             PresentationLayout layout =
                (PresentationLayout) session.load(PresentationLayout.class, id);
-            //session.delete("from PresentationLayout where id=?", id.getValue(), Hibernate.STRING);
-            //Query q = session.createQuery("from PresentationLayout where id=?");
-            //q.setString(0, id.getValue());
-            //q.executeUpdate();
             session.delete(layout);
             return null;
          }
@@ -2694,15 +2643,15 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       
       Artifact art;
 
-      if (finder instanceof EntityContextFinder && !presentation.isPreview()) {
-         art = ((EntityContextFinder)finder).loadInContext(itemId,
-               PresentationContentEntityProducer.PRODUCER_NAME, 
-               presentation.getSiteId(),
-               presentation.getId().getValue());
-      }
-      else {
-         art = finder.load(itemId);
-      }
+//      if (finder instanceof EntityContextFinder && !presentation.isPreview()) {
+//         art = ((EntityContextFinder)finder).loadInContext(itemId,
+//               PresentationContentEntityProducer.PRODUCER_NAME, 
+//               presentation.getSiteId(),
+//               presentation.getId().getValue());
+//      }
+//      else {
+      art = finder.load(itemId);
+//      }
       return art;
    }
    
@@ -3483,5 +3432,13 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    public void setEventService(EventService eventService) {
 	   this.eventService = eventService;
+   }
+
+   public String getDownloadExternalUri() {
+      return downloadExternalUri;
+   }
+
+   public void setDownloadExternalUri(String downloadExternalUri) {
+      this.downloadExternalUri = downloadExternalUri;
    }
 }

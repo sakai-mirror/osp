@@ -1,0 +1,22 @@
+<projectDescription>
+  <name>osp-jsf-example</name>
+  <comment>This project contains examples of Sakai JSF in action.</comment>
+  <projects>
+    <project>osp-depend-jsf-widgets-sun</project>
+    <project>osp-jsf-widgets</project>
+    <project>sakai-depend-jsf-widgets-myfaces</project>
+    <project>sakai-depend-jsf-widgets-sun</project>
+    <project>sakai-jsf-app</project>
+    <project>sakai-jsf-tool</project>
+    <project>sakai-jsf-widgets</project>
+    <project>sakai-jsf-widgets-sun</project>
+  </projects>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

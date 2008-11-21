@@ -87,8 +87,7 @@
 
                <prop key="/deleteComment.osp">deleteCommentController</prop>
                <prop key="/updateCommentVisibility.osp">updateCommentVisibilityController</prop>
-               <prop key="/myComments.osp">myCommentsController</prop>
-               <prop key="/commentsForMe.osp">commentsForMeController</prop>
+               <prop key="/listComments.osp">listCommentsController</prop>
                <prop key="/listPresentation.osp">listPresentationController</prop>
                <prop key="/PresentationStats.osp">viewPresentationStatsController</prop>
                <prop key="/listSelectRedirect.osp">listRedirectController</prop>
@@ -107,11 +106,18 @@
                <prop key="/editTemplate.osp">addTemplateController</prop>
                <prop key="/deleteItemDefinition.osp">deleteItemDefinitionController</prop>
                <prop key="/editItemDefinition.osp">editItemDefinitionController</prop>
-               <prop key="/addPresentation.osp">addPresentationController</prop>
+               
+               <prop key="/createPresentation.osp">createPresentationController</prop>
+               <prop key="/editPresentation.osp">editPresentationController</prop>
+               <prop key="/editOptions.osp">editOptionsController</prop>
+               <prop key="/editContent.osp">editContentController</prop>
+               <prop key="/updatePresentation.osp">updatePresentationController</prop>
+               <prop key="/editPresentationForm.osp">editPresentationFormController</prop>
+                              
                <prop key="/deletePresentation.osp">deletePresentationController</prop>
-					<prop key="/hidePresentation.osp">hidePresentationController</prop>
-               <prop key="/addViewer.osp">addViewerController</prop>
-               <prop key="/deleteViewer.osp">deleteViewerController</prop>
+               <prop key="/sharePresentation.osp">sharePresentationController</prop>
+               <prop key="/sharePresentationMore.osp">sharePresentationMoreController</prop>
+               <prop key="/hidePresentation.osp">hidePresentationController</prop>
                <prop key="/addComment.osp">addCommentController</prop>
                <prop key="/js/htmlarea/popups/insertImage.osp">insertImageController</prop>
 

@@ -1,16 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
 <projectDescription>
   <name>osp-common-api</name>
-  <comment>
-  </comment>
+  <comment/>
   <projects>
+    <project>sakai-assignment-api</project>
+    <project>sakai-metaobj-api</project>
+    <project>sakai-scheduler-api</project>
+    <project>sakai-taggable-api</project>
   </projects>
   <buildSpec>
     <buildCommand>
       <name>org.eclipse.jdt.core.javabuilder</name>
-      <arguments>
-      </arguments>
     </buildCommand>
   </buildSpec>
   <natures>
