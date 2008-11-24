@@ -105,6 +105,7 @@ public class AudienceTool extends HelperToolBase {
     private String stepString = "2";
     private String function;
     private Id qualifier;
+    private boolean showAllSiteRoles = false;
     
     /** This accepts email addresses */
     private static final Pattern emailPattern = Pattern.compile(
@@ -354,8 +355,8 @@ public class AudienceTool extends HelperToolBase {
      ** Return current site for this portfolio/matrix/wizard
      **/   
     public Site getSite() {
-        if (site == null) {
-            String currentSiteId = (String) getAttribute(AudienceSelectionHelper.AUDIENCE_SITE);
+        String currentSiteId = (String) getAttribute(AudienceSelectionHelper.AUDIENCE_SITE);
+        if ( site == null || ! currentSiteId.equals(site.getId()) ) {
             try {
                 site = getSiteService().getSite(currentSiteId);
             }
@@ -580,6 +581,21 @@ public class AudienceTool extends HelperToolBase {
         List returned = new ArrayList();
         
         if ( isWorksiteLimited() ) {
+           Site site = getSite();
+           Set roles = site.getRoles();
+           
+           for (Iterator i = roles.iterator(); i.hasNext();) {
+              Role role = (Role) i.next();
+              Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), site.getId());
+              returned.add(new SelectItem(roleAgent.getId().getValue(), 
+                                          role.getId(), 
+                                          "role"));
+           }
+        }
+        
+        // Looping through all user sites for roles can be a perfomance hit,
+        // so isShowAllSiteRoles() is false by default
+        else if ( !isShowAllSiteRoles() ) {
            Site site = getSite();
            Set roles = site.getRoles();
            
@@ -838,6 +854,37 @@ public class AudienceTool extends HelperToolBase {
         return "main";
     }
 
+    /** Return whether or not this portfolio is in a my workspace site
+     **/
+    private boolean isUserSite() {
+       return siteService.isUserSite(getSite().getId());
+    }
+ 
+    /** Only render 'show all site roles' option for portfolios outside of my workspace sites
+     **/
+    public boolean isRenderShowAllSiteRoles() {
+       return isPortfolioAudience() && !isUserSite();
+    }
+
+    /** Return value of showAllSiteRoles (always true for my workspace)
+     **/
+    public boolean isShowAllSiteRoles() {
+       return isUserSite() || showAllSiteRoles;
+    }
+
+   /** Action to show roles from all sites
+    **/
+    public String processActionShowAllSiteRoles() {
+        showAllSiteRoles = true;
+        return "main";
+    }
+
+   /** Action to hide roles from all sites (use only this site)
+    **/
+    public String processActionHideAllSiteRoles() {
+        showAllSiteRoles = false;
+        return "main";
+    }
 
    /** Action to add to list of roles
     **/

@@ -20,33 +20,32 @@
     <%@ include file="steps.jspf" %>
 </f:subview>
 
-<c:if test="${audience.wizardAudience}">
-  <sakai:instruction_message value="#{common_msgs.audience_wizard_instructions}"/>
-</c:if>
-<c:if test="${audience.matrixAudience}">
-  <sakai:instruction_message value="#{common_msgs.audience_matrix_instructions}"/>
-</c:if>
-<c:if test="${audience.portfolioAudience}">
-  <sakai:instruction_message value="#{common_msgs.audience_portfolio_instructions}"/>
-</c:if>
+
+<f:subview rendered="#{audience.wizardAudience}" id="wizardInstructs">
+	<sakai:instruction_message value="#{common_msgs.audience_wizard_instructions}"/>
+</f:subview>
+
+<f:subview rendered="#{audience.portfolioAudience}" id="portInstructs">
+	<sakai:instruction_message value="#{common_msgs.audience_portfolio_instructions}"/>
+</f:subview>
+
+<f:subview rendered="#{audience.matrixAudience}" id="matrixInstructs">
+	<sakai:instruction_message value="#{common_msgs.audience_matrix_instructions}"/>
+</f:subview>
+
 
 <sakai:messages/>
 
 <h:form id="mainForm">
     <ospx:splitarea direction="horizontal" width="100%">
-        <ospx:splitsection size="100%" valign="top">
-            <!-- worksite user drawer -->
-            <ospx:xheader>
-               <c:if test="${audience.wizardAudience}">
-                  <ospx:xheadertitle id="userTitle" value="#{common_msgs.audience_user_title}" />
-               </c:if>
-               <c:if test="${audience.matrixAudience}">
-                  <ospx:xheadertitle id="userTitle" value="#{common_msgs.audience_user_title}" />
-               </c:if>
-               <c:if test="${audience.portfolioAudience}">
-                  <ospx:xheadertitle id="userTitle" value="#{common_msgs.audience_portfolio_user_title}" />
-               </c:if>
-               <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
+      <ospx:splitsection size="100%" valign="top">
+        
+         <!-- worksite user section -->
+         <sakai:view_title id="userTitle" value="#{common_msgs.audience_user_title}" rendered="#{audience.wizardAudience}" />
+ 
+         <sakai:view_title id="userTitle1" value="#{common_msgs.audience_user_title}"  rendered="#{audience.matrixAudience}" />
+ 
+         <sakai:view_title id="userTitle3" value="#{common_msgs.audience_portfolio_user_title}" rendered="#{audience.portfolioAudience}"/>
                   <h:panelGrid id="transferUserTable" columns="3" columnClasses="available,transferButtons,selected" summary="#{common_msgs.name_table_summary}">
 
                      <h:panelGroup>
@@ -83,15 +82,15 @@
                      <h:panelGroup>
                         <ospx:splitarea direction="vertical">
                            <ospx:splitsection valign="top">
-                              <c:if test="${audience.wizardAudience}">
+                           	<f:subview rendered="#{audience.wizardAudience}" id="wizSubView2">
                                     <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
-                              </c:if>
-                              <c:if test="${audience.matrixAudience}">
+                              </f:subview>
+                              <f:subview rendered="#{audience.matrixAudience}" id="matSubView2">
                                     <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
-                              </c:if>
-                              <c:if test="${audience.portfolioAudience}">
+                              </f:subview>
+                              <f:subview rendered="#{audience.portfolioAudience}" id="portSubView2">
                                     <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
-                              </c:if>
+                              </f:subview>
                            </ospx:splitsection>
                            <ospx:splitsection valign="top">
                               <h:selectManyListbox id="selectedUsers" size="10" value="#{audience.selectedUserArray}"
@@ -110,13 +109,13 @@
                      <f:verbatim></h3></f:verbatim>
                   
                      <f:verbatim><p class='shorttext'></f:verbatim>
-                     <c:if test="${! audience.guestUserEnabled}">
+                     <f:subview rendered="#{!audience.guestUserEnabled}" id="guestSubView">
                         <h:outputLabel value="#{common_msgs.any_user_label}:" for="emails"/>
-                     </c:if>
-                     <c:if test="${audience.guestUserEnabled}">
+                     </f:subview>
+                     <f:subview rendered="#{audience.guestUserEnabled}" id="guestSubView2">
                         <h:outputLabel value="#{common_msgs.email_label}:" for="emails"/>
-                     </c:if>
-                                  
+                     </f:subview>
+                     
                      <h:inputText value="#{audience.searchEmails}" id="emails" size="60"/>
                      <h:outputText value=" "/>
                      <h:commandButton id="add_email_button"
@@ -133,34 +132,43 @@
                      <h:commandLink id="browse_button" action="browse" value="#{common_msgs.browse_members}"
                                     style="white-space:nowrap;"/>
                      <h:outputFormat value = " "/>
-                     <c:if test="${audience.wizardAudience}">
+                     <f:subview id="audSubV1" rendered="#{audience.wizardAudience}">
                         <h:outputFormat value = "#{common_msgs.audience_individual_evaluators}" />
-                     </c:if>
-                     <c:if test="${audience.matrixAudience}">
+                     </f:subview>
+                     <f:subview id="audSubV2" rendered="#{audience.matrixAudience}">
                         <h:outputFormat value = "#{common_msgs.audience_individual_evaluators}" />
-                     </c:if>
-                     <c:if test="${audience.portfolioAudience}">
+                     </f:subview>
+                     <f:subview id="audSubV4" rendered="#{audience.portfolioAudience}">
                         <h:outputFormat value = "#{common_msgs.audience_individual_users}" />
-                     </c:if>
+                     </f:subview>
                      <f:verbatim></p></f:verbatim>
                   </f:subview>
-                  
-               </ospx:xheaderdrawer>
-            </ospx:xheader>
-
-            <!-- worksite role drawer -->
-            <ospx:xheader>
-               <c:if test="${audience.wizardAudience}">
-                  <ospx:xheadertitle id="roleTitle" value="#{common_msgs.audience_role_title}" />
-               </c:if>
-               <c:if test="${audience.matrixAudience}">
-                  <ospx:xheadertitle id="roleTitle" value="#{common_msgs.audience_role_title}" />
-               </c:if>
-               <c:if test="${audience.portfolioAudience}">
-                  <ospx:xheadertitle id="roleTitle" value="#{common_msgs.audience_portfolio_role_title}" />
-               </c:if>
-               <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-                  <h:panelGrid id="transferRoleTable" columns="3" columnClasses="available,transferButtons,selected"  summary="#{common_msgs.role_table_summary}">
+ 
+                  <!-- worksite role section -->
+                  <ospx:splitarea width="825" direction="horizontal">
+                    <ospx:splitsection valign="top" align="left">
+                      <sakai:view_title id="roleTitle" value="#{common_msgs.audience_role_title}"  rendered="#{audience.wizardAudience}"/>
+ 
+                      <sakai:view_title id="roleTitle2" value="#{common_msgs.audience_role_title}"  rendered="#{audience.matrixAudience}"/>
+    
+                      <sakai:view_title id="roleTitle3" value="#{common_msgs.audience_portfolio_role_title}"  rendered="#{audience.portfolioAudience}" />
+                    </ospx:splitsection>
+							
+                    <!-- option to show/hide all site roles -->
+                    <ospx:splitsection valign="bottom" align="right">
+                      <f:subview id="showAllSiteRoles" rendered="#{audience.renderShowAllSiteRoles}">
+                         <h:commandLink id="update_role_button1" 
+                                                action="#{audience.processActionShowAllSiteRoles}"
+                                                rendered="#{!audience.showAllSiteRoles}"
+                                                value="#{common_msgs.update_allsite_roles}"/>
+                         <h:commandLink id="update_role_button2" 
+                                                action="#{audience.processActionHideAllSiteRoles}"
+                                                rendered="#{audience.showAllSiteRoles}"
+                                                value="#{common_msgs.update_site_roles}"/>
+                      </f:subview>
+                    </ospx:splitsection>
+                  </ospx:splitarea>
+                   <h:panelGrid id="transferRoleTable" columns="3" columnClasses="available,transferButtons,selected"  summary="#{common_msgs.role_table_summary}">
                      <h:panelGroup>
                         <ospx:splitarea direction="vertical">
                            <ospx:splitsection valign="top">
@@ -195,15 +203,15 @@
                      <h:panelGroup>
                         <ospx:splitarea direction="vertical">
                            <ospx:splitsection valign="top">
-                              <c:if test="${audience.wizardAudience}">
+                           	  <f:subview id="audSubV12" rendered="#{audience.wizardAudience}">
                                     <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
-                              </c:if>
-                              <c:if test="${audience.matrixAudience}">
+                              </f:subview>
+                              <f:subview id="audSubV14" rendered="#{audience.matrixAudience}">
                                     <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
-                              </c:if>
-                              <c:if test="${audience.portfolioAudience}">
+                              </f:subview>
+                              <f:subview id="audSubV15" rendered="#{audience.portfolioAudience}">
                                     <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
-                              </c:if>
+                              </f:subview>
                            </ospx:splitsection>
                            <ospx:splitsection valign="top">
                               <h:selectManyListbox id="selectedRoles" size="10" value="#{audience.selectedRoleArray}"
@@ -213,15 +221,12 @@
                            </ospx:splitsection>
                         </ospx:splitarea>
                      </h:panelGroup>
-                  </h:panelGrid>
+                   </h:panelGrid>
                   
-               </ospx:xheaderdrawer>
-            </ospx:xheader>
-
-            <!-- Public URL Drawer -->
-            <ospx:xheader rendered="#{audience.portfolioAudience}">
-               <ospx:xheadertitle id="publicTitle" value="#{common_msgs.audience_public_title}"/>
-               <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
+            <!-- Public URL subview -->
+            <ospx:splitarea direction="vertical" rendered="#{audience.portfolioAudience}">
+				<ospx:splitsection>
+               <sakai:view_title id="publicTitle" value="#{common_msgs.audience_public_title}"/>
                   <ospx:splitarea direction="horizontal">
                      <ospx:splitsection size="100%">
                         <sakai:instruction_message value="#{common_msgs.audience_public_instructions}"/>
@@ -249,12 +254,13 @@
                      setPublicURLDisabled();
                   </script></f:verbatim>
                   <f:verbatim></p></f:verbatim>
-               </ospx:xheaderdrawer>
-            </ospx:xheader>
+               </ospx:splitsection>
+            </ospx:splitarea>
             
-        </ospx:splitsection>
+      </ospx:splitsection>
     </ospx:splitarea>
     <sakai:button_bar>
+	 
         <sakai:button_bar_item id="save_button" action="#{audience.processActionSave}"
                                value="#{common_msgs.save_audience}" styleClass="active" accesskey="s" />
 
