@@ -225,7 +225,8 @@
           <type>INTEGER</type>
         </column>
      </columns>
-     <not-null>id</not-null>
+     <not-null>form_def_id</not-null>
+     <not-null>wizard_page_def_id</not-null>
      <primary-key>wizard_page_def_id, form_def_id</primary-key>
    </table>
 
