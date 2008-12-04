@@ -495,8 +495,7 @@
 		</c:if>	
 		<p class="indnt1">
 			<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
-				<osp:message key="select_evaluators"/>
-			</a>	 
+				<osp:message key="select_evaluators"/></a>	 
 			<c:if test="${empty evaluators}">
 				&nbsp;<fmt:message key="no_evaluators"/>
 			</c:if>
