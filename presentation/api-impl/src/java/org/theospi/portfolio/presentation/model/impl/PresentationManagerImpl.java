@@ -608,7 +608,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
             getAuthzManager().checkPermission(PresentationFunctionConstants.CREATE_PRESENTATION,
                getIdManager().getId(ToolManager.getCurrentPlacement().getId()));
          }
-         //getHibernateTemplate().save(presentation, presentation.getId());
          
          if (presentation.getId() != null) {
             presentation.setNewId(presentation.getId());
@@ -625,13 +624,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          eventService.postEvent(EventConstants.EVENT_PORTFOLIO_REVISE, presentation.getId().getValue());
       }
       
-      //locking the prop form prohibits editing...this is bad!
-      //if (presentation.getPropertyForm() != null) {
-      //   getLockManager().lockObject(presentation.getPropertyForm().getValue(), 
-      //         presentation.getId().getValue(),
-      //         "Locking property form for this portfolio", true);
-      //}
-
       storePresentationPages(presentation.getPages(), presentation.getId());
 
       return presentation;
@@ -665,8 +657,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          fixupRegions(page);
          if (page.isNewObject()) {
             page.setCreated(new Date(System.currentTimeMillis()));
-            //getHibernateTemplate().save(page, page.getId());
-            //TODO changing the save to use newId instead of Id since we're setting a specific one
             page.setNewId(page.getId());
             page.setId(null);
             getHibernateTemplate().save(page);
@@ -745,33 +735,6 @@ public class PresentationManagerImpl extends HibernateDaoSupport
          new Object[]{new Boolean(true), siteId});
    }
 
-   /* Original method used only in PresentationListGenerator -- which appears to be unused   
-   public Collection findPresentationsByViewer(Agent viewer) {
-      Collection presentationAuthzs = getAuthzManager().getAuthorizations(viewer,
-         PresentationFunctionConstants.VIEW_PRESENTATION, null);
-
-      Collection returned = new ArrayList(findOwnerPresentations(viewer));
-
-      for (Iterator i=returned.iterator();i.hasNext();) {
-         getHibernateTemplate().evict(i.next());
-      }
-
-      for (Iterator i = presentationAuthzs.iterator(); i.hasNext();) {
-         Id presId = ((Authorization) i.next()).getQualifier();
-         Presentation pres = getLightweightPresentation(presId);
-
-        if (!returned.contains(pres) && !pres.isExpired() && (pres.getOwner() != null)) {
-                getHibernateTemplate().evict(pres);
-                returned.add(pres);
-         }
-         else{
-            getHibernateTemplate().evict(pres);
-        }
-      }
-
-      return returned;
-   }
-   */
    /**
     * {@inheritDoc}
     */
@@ -2049,17 +2012,33 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       return fileRefElement;
    }
 
-   /** Save PresentationLog object to database
-    ** FlushMode is set to FLUSH_EAGER, since the object
-    ** is often immediately queried for portfolio exports.
+   /** Save PresentationLog object to database.
+    ** Portfolio Export will query the log immediately after write, so:
+    **    - FlushMode is set to FLUSH_EAGER wtihin this method
+    **    - auto-commit is set wtihin this method
     **/
-   public void storePresentationLog(PresentationLog log) {
-      int oldFlushMode = getHibernateTemplate().getFlushMode();
-      getHibernateTemplate().setFlushMode(getHibernateTemplate().FLUSH_EAGER);
-      getHibernateTemplate().save(log);
-      getHibernateTemplate().setFlushMode(oldFlushMode);
+   public synchronized void storePresentationLog(PresentationLog log) {
+      try {
+         int oldFlushMode = getHibernateTemplate().getFlushMode();
+         boolean oldAutoCommit = getSession().connection().getAutoCommit();
+         try {
+            getHibernateTemplate().setFlushMode(getHibernateTemplate().FLUSH_EAGER);
+            getSession().connection().setAutoCommit(true); 
+            getHibernateTemplate().save(log);
+         }
+         catch (Exception e ) {
+            logger.warn(e);
+         }
+         finally {
+            getHibernateTemplate().setFlushMode(oldFlushMode);
+            getSession().connection().setAutoCommit(oldAutoCommit); 
+         }
+      }
+      catch (Exception e ) {
+         logger.warn(e);
+      }
    }
-
+   
    /** findLogsByPresID
     ** Return Collection of PresentationLog objects corresponding
     ** to all requests to view given portfolio.
