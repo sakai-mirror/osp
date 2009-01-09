@@ -126,7 +126,6 @@ public class SharePresentationController extends AbstractPresentationController 
       
       // Save updated share list
       saveRevisedShareList( revisedShareList, presentation );
-      cleanSessionAttributes(presentation);
       
       model.put("actionSave", true );
       return new ModelAndView("save", model);
