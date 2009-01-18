@@ -4,7 +4,7 @@
   <parent>
     <artifactId>osp-glossary</artifactId>
     <groupId>org.sakaiproject.osp</groupId>
-    <version>2.6.0RC1-SNAPSHOT</version>
+    <version>3.0.0-milestone01</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <artifactId>osp-glossary-tool</artifactId>
