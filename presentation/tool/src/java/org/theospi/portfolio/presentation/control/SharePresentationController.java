@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.HashMap;
 import java.util.Collections;
 
@@ -47,6 +48,14 @@ import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.entity.cover.EntityManager;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserDirectoryService;
+import org.sakaiproject.authz.api.Member;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.email.api.EmailService; 
+import org.sakaiproject.util.ResourceLoader;
+import org.sakaiproject.entity.api.Reference;
 
 /**
  **/
@@ -55,6 +64,10 @@ public class SharePresentationController extends AbstractPresentationController 
 
    private ServerConfigurationService serverConfigurationService;
    private UserAgentComparator userAgentComparator = new UserAgentComparator();
+   private EmailService emailService;
+   private UserDirectoryService userDirectoryService;
+	
+   private ResourceLoader rl = new ResourceLoader("org.theospi.portfolio.presentation.bundle.Messages");
    
    private final String SHARE_PUBLIC  = "pres_share_public";
    private final String SHARE_SELECT  = "pres_share_select";
@@ -113,7 +126,7 @@ public class SharePresentationController extends AbstractPresentationController 
       model.put("shareList", revisedShareList );
       
       // If save not requested, then display share page
-      if ( request.get("save") == null )
+      if ( request.get("save") == null && request.get("notify") == null )
          return new ModelAndView("share", model);
          
       // Otherwise, save presentation share status
@@ -126,11 +139,75 @@ public class SharePresentationController extends AbstractPresentationController 
       
       // Save updated share list
       saveRevisedShareList( revisedShareList, presentation );
+
+      // Notify users if requested
+      if ( request.get("notify") != null )
+         notifyViewers(presentation, revisedShareList);
       
       model.put("actionSave", true );
       return new ModelAndView("save", model);
    }
    
+   public void notifyViewers( Presentation presentation, List revisedShareList ) { 
+        User user = userDirectoryService.getCurrentUser();
+
+        String url = getPublicUrl( presentation );
+
+        //  TBD: email template service
+        String subject = rl.getFormattedMessage("email.notify.subject", new Object[]{user.getDisplayName()});
+		  
+        StringBuffer message = new StringBuffer();
+		  message.append( rl.getFormattedMessage("email.notify.msg1", 
+                                                new Object[]{getServerConfigurationService().getString("ui.service","Sakai")}) );
+        message.append("\n\n");
+		  message.append( rl.getFormattedMessage("email.notify.msg2", 
+                                                new Object[]{user.getDisplayName(), user.getEmail()}) );
+        message.append("\n\n");
+		  message.append( rl.getFormattedMessage("email.notify.msg3", 
+                                                new Object[]{presentation.getName()}) );
+        message.append("\n\n");
+		  message.append( rl.getFormattedMessage("email.notify.msg4", 
+                                                new Object[]{url}) );
+        message.append("\n\n");
+		  
+        String emailFrom = getServerConfigurationService().getString("setup.request", 
+																							"postmaster@".concat(getServerConfigurationService().getServerName()));
+        
+        for (Iterator it=revisedShareList.iterator(); it.hasNext(); ) 
+        {
+           try
+           {
+              Agent shareMember = (Agent)it.next();
+              if ( shareMember.isRole() )
+              {
+					  Reference r = EntityManager.newReference( shareMember.getRole() );
+                 Site site = SiteService.getSite( r.getId() );
+                 Set members = site.getMembers();
+                 for (Iterator j = members.iterator(); j.hasNext();) 
+                 {
+                    Member member = (Member) j.next();
+                    if ( shareMember.getRole().contains( member.getRole().getId() )) 
+                    {
+                       String emailTo = userDirectoryService.getUser(member.getUserId()).getEmail();
+                       if ( SharePresentationMoreController.emailPattern.matcher(emailTo).matches() )
+                          emailService.send(emailFrom, emailTo, subject, message.toString(), emailTo, null, null);
+                    }
+                 }
+              }
+              else 
+              {
+                 String emailTo = userDirectoryService.getUser(shareMember.getId().getValue()).getEmail();
+                 if ( SharePresentationMoreController.emailPattern.matcher(emailTo).matches() )
+                    emailService.send(emailFrom, emailTo, subject, message.toString(), emailTo, null, null);
+              }
+           }
+           catch ( Exception e ) 
+           {
+              logger.warn(e.toString());
+           }
+        }
+    }
+
    /** 
     ** Get session-based state of isPublic flag for this presentation
     **/
@@ -277,4 +354,20 @@ public class SharePresentationController extends AbstractPresentationController 
       this.serverConfigurationService = serverConfigurationService;
    }
 
+   public EmailService getEmailService() {
+      return emailService;
+   }
+
+   public void setEmailService( EmailService emailService ) {
+      this.emailService = emailService;
+   }
+   
+   public UserDirectoryService getUserDirectoryService() {
+      return userDirectoryService;
+   }
+
+   public void setUserDirectoryService( UserDirectoryService userDirectoryService) {
+      this.userDirectoryService = userDirectoryService;
+   }
+   
 }
