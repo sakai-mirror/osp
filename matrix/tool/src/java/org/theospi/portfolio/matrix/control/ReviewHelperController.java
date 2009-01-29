@@ -127,7 +127,9 @@ public class ReviewHelperController implements Controller {
             review.setParent(strId);
             review.setItemId(itemId);
             String strType = (String)session.get(ReviewHelper.REVIEW_TYPE);
-            review.setType(Integer.parseInt(strType));
+            // (note: strType may be null if user hits submit twice)
+            if ( strType != null && ! strType.equals("") )
+               review.setType(Integer.parseInt(strType));
 
             if (FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)) 
                 && session.get(FormHelper.RETURN_REFERENCE_TAG) != null) 
