@@ -142,9 +142,10 @@ public class ReviewHelperController implements Controller {
             }
             
             // Lock review content (reflection, feedback, evaluation)
-            getLockManager().lockObject(review.getReviewContent().getValue(),
-                                        strId, "lock all review content", true);
-                  
+            // (note: reviewContent may be null if user hits submit twice)
+            if ( review.getReviewContent() != null )
+               getLockManager().lockObject(review.getReviewContent().getValue(),
+                                           strId, "lock all review content", true);
          }
          
          // otherwise this is an existing review being edited
