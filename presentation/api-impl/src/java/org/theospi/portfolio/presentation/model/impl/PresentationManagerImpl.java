@@ -646,32 +646,43 @@ public class PresentationManagerImpl extends HibernateDaoSupport
       }
    }
 
+	
+   /** Save Presentation Pages to database.
+    **/
    protected void storePresentationPages(List pages, Id presentationId) {
       if (pages == null) {
          return;
       }
 
-      for (Iterator i=pages.iterator();i.hasNext();) {
-         PresentationPage page = (PresentationPage) i.next();
-         page.setModified(new Date(System.currentTimeMillis()));
-         fixupRegions(page);
-         if (page.isNewObject()) {
-            page.setCreated(new Date(System.currentTimeMillis()));
-            page.setNewId(page.getId());
-            page.setId(null);
-            getHibernateTemplate().save(page);
+      try {
+         // Save added/modified pages
+         for (Iterator i=pages.iterator();i.hasNext();) {
+            PresentationPage page = (PresentationPage) i.next();
+            page.setModified(new Date(System.currentTimeMillis()));
+            fixupRegions(page);
+            if (page.isNewObject()) {
+               page.setCreated(new Date(System.currentTimeMillis()));
+               page.setNewId(page.getId());
+               page.setId(null);
+               getHibernateTemplate().save(page);
+            }
+            else {
+               getHibernateTemplate().merge(page);
+            }
          }
-         else {
-            getHibernateTemplate().merge(page);
+
+         // Remove deleted pages
+         List allPages = getPresentationPagesByPresentation(presentationId);
+         for (Iterator i=allPages.iterator();i.hasNext();) {
+            PresentationPage page = (PresentationPage) i.next();
+            if (!pages.contains(page)) {
+               getHibernateTemplate().delete(page);
+            }
          }
       }
-
-      List allPages = getPresentationPagesByPresentation(presentationId);
-      for (Iterator i=allPages.iterator();i.hasNext();) {
-         PresentationPage page = (PresentationPage) i.next();
-         if (!pages.contains(page)) {
-            getHibernateTemplate().delete(page);
-         }
+      catch (Exception e) {
+         // Hibernate errors generated if user hits save twice
+         logger.warn(e);
       }
    }
 
