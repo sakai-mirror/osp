@@ -192,7 +192,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       // Otherwise if user not found and this is share-by-email or guest user
       else if ( userList == null && shareBy.equals(SHAREBY_EMAIL)) {
          if ( validateEmail(shareUser) ) {
-            Agent agent = getAgentManager().createAgent(shareUser, Agent.ROLE_GUEST, getIdManager().getId(shareUser) );
+            Agent agent = getAgentManager().createAgent(shareUser, getIdManager().getId(shareUser) );
             if (agent != null) {
                notifyNewUserEmail( agent );
                shareList.add( agent );
