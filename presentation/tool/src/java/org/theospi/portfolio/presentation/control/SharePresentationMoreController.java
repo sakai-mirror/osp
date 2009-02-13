@@ -38,7 +38,6 @@ import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
-import org.theospi.portfolio.shared.model.AgentImplOsp;
 
 import org.theospi.portfolio.security.Authorization;
 import org.springframework.validation.Errors;
@@ -192,13 +191,8 @@ public class SharePresentationMoreController extends AbstractPresentationControl
       
       // Otherwise if user not found and this is share-by-email or guest user
       else if ( userList == null && shareBy.equals(SHAREBY_EMAIL)) {
-         AgentImplOsp tempAgent = new AgentImplOsp();
          if ( validateEmail(shareUser) ) {
-            tempAgent.setDisplayName(shareUser);
-            tempAgent.setRole(Agent.ROLE_GUEST);
-            tempAgent.setId(getIdManager().getId(shareUser));
-            Agent agent = getAgentManager().createAgent(tempAgent);
-            
+            Agent agent = getAgentManager().createAgent(shareUser, Agent.ROLE_GUEST, getIdManager().getId(shareUser) );
             if (agent != null) {
                notifyNewUserEmail( agent );
                shareList.add( agent );
@@ -288,11 +282,10 @@ public class SharePresentationMoreController extends AbstractPresentationControl
 
             // email body
             buf.append(to + ":\n\n");
-            AgentImplOsp impl = (AgentImplOsp) guest;
             buf.append(rl.getFormattedMessage("email.addedto", new Object[]{productionSiteName, productionSiteUrl}) + "\n\n");
             buf.append(rl.getFormattedMessage("email.simpleby", new Object[]{getUserDirectoryService().getCurrentUser().getDisplayName()}) + "\n\n");
             buf.append(rl.getFormattedMessage("email.userid", new Object[]{to}) + "\n\n");
-            buf.append(rl.getFormattedMessage("email.password", new Object[]{impl.getPassword()}) + "\n\n");
+            buf.append(rl.getFormattedMessage("email.password", new Object[]{guest.getPassword()}) + "\n\n");
 
             content = buf.toString();
             getEmailService().send(from, to, message_subject, content, headerTo, replyTo, null);

@@ -1369,19 +1369,6 @@
       </property>
    </bean>
 
-   <bean id="org.sakaiproject.metaobj.security.PasswordGenerator" class="org.theospi.portfolio.security.impl.PasswordGeneratorImpl">
-      <property name="length">
-         <value>8</value>
-      </property>
-   </bean>
-   <bean id="org.sakaiproject.metaobj.shared.mgt.AgentManager.osp" class="org.theospi.portfolio.security.impl.AgentManagerOsp">
-      <property name="ospiIdManager">
-         <ref bean="idManager"/>
-      </property>
-
-       <property name="passwordGenerator"><ref bean="org.sakaiproject.metaobj.security.PasswordGenerator"/></property>
-   </bean>
-
    <bean id="org.theospi.event.EventService"
       class="org.theospi.event.impl.EventServiceImpl">
    </bean>

@@ -43,8 +43,6 @@ import org.sakaiproject.entity.cover.EntityManager;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
-import org.theospi.portfolio.shared.model.AgentImplOsp;
-import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.tool.HelperToolBase;
 import org.theospi.portfolio.shared.tool.PagingList;
 
