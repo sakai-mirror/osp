@@ -85,4 +85,8 @@ public class AgentWrapper implements Agent {
    public boolean isRole() {
       return agent.isRole();
    }
+
+   public String getPassword() {
+      return agent.getPassword();
+   }
 }   
