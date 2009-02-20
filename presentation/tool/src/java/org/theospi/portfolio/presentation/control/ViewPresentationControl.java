@@ -100,13 +100,25 @@ public class ViewPresentationControl extends AbstractPresentationController impl
             return previewPres;
     	 }
 
-         return getPresentationManager().getLightweightPresentation(presentation.getId());
+         if ( presentation.getId() == null ) {
+            logger.warn("Attempt to view invalid/unspecified presentation by user " 
+                        + getAuthManager().getAgent().getId() );
+            return null;
+         }
+         else {
+            logger.debug("User " + getAuthManager().getAgent().getId() + " is viewing a presentation by id: " + presentation.getId().getValue());
+            return getPresentationManager().getLightweightPresentation(presentation.getId());
+         }
       }
    }
 
    public ModelAndView handleRequest(Object requestModel, Map request,
                                      Map session, Map application, Errors errors) {
       Presentation pres = (Presentation) requestModel;
+      
+      // check for unspecified or invalid portfolio
+      if ( pres == null )
+         return new ModelAndView("expired");
 
       if (pres.getSecretExportKey() == null) {
          if (!pres.getIsPublic()) {
