@@ -183,6 +183,7 @@ $(document).ready(function() {
    </c:choose>
    <div class="act">
       <input name="save" type="submit" value="<fmt:message key="button_saveEdit" />" class="active" accesskey="s" />
+      <input name="notify" type="submit" value="<fmt:message key="button_saveAndNotify" />" class="active" accesskey="n" />
       <input name="undo" type="submit" value="<fmt:message key="button_undo" />"  accesskey="x" />
    </div>
    </div> <%--end of #tabNavPanel --%>

@@ -80,7 +80,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
    private final String SHAREBY_ALLROLE= "share_allrole";
    
     /** This accepts email addresses */
-    private static final Pattern emailPattern = Pattern.compile(
+    protected static final Pattern emailPattern = Pattern.compile(
           "^" +
              "(?>" +
                 "\\.?[a-zA-Z\\d!#$%&'*+\\-/=?^_`{|}~]+" +
@@ -541,7 +541,7 @@ public class SharePresentationMoreController extends AbstractPresentationControl
            }
         }
         
-        // get all site roles (no site has been specified
+        // get all site roles (no site has been specified)
         else {
            List siteList = getSiteService().getSites(SiteService.SelectionType.ACCESS,
                                                      null, null, null, 
