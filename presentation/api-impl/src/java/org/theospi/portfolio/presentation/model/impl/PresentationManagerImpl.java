@@ -2651,18 +2651,18 @@ public class PresentationManagerImpl extends HibernateDaoSupport
 
    protected Artifact getPresentationItem(String type, Id itemId, Presentation presentation) {
       ArtifactFinder finder = getArtifactFinderManager().getArtifactFinderByType(type);
-      
       Artifact art;
 
-//      if (finder instanceof EntityContextFinder && !presentation.isPreview()) {
-//         art = ((EntityContextFinder)finder).loadInContext(itemId,
-//               PresentationContentEntityProducer.PRODUCER_NAME, 
-//               presentation.getSiteId(),
-//               presentation.getId().getValue());
-//      }
-//      else {
-      art = finder.load(itemId);
-//      }
+      if (finder instanceof EntityContextFinder && !presentation.isPreview()) {
+         art = ((EntityContextFinder)finder).loadInContext(itemId,
+               PresentationContentEntityProducer.PRODUCER_NAME, 
+               presentation.getSiteId(),
+               presentation.getId().getValue());
+      }
+      else {
+         art = finder.load(itemId);
+      }
+
       return art;
    }
    
