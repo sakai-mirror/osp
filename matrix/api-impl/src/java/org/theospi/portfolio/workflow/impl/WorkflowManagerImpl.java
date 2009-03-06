@@ -30,6 +30,7 @@ import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
+import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
@@ -100,19 +101,20 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
    }
    
    public Set createEvalWorkflows(ObjectWithWorkflow obj) {
-      if (obj instanceof WizardPageDefinition)
-         return createEvalWorkflows((WizardPageDefinition)obj);
+      if (obj instanceof WizardPageDefinition || obj instanceof Scaffolding)
+         return createEvalWorkflowsHelper(obj);
       else
          return createEvalWorkflows((Wizard)obj);
    }
    
-   protected Set createEvalWorkflows(WizardPageDefinition wpd) {
+   protected Set createEvalWorkflowsHelper(ObjectWithWorkflow wpd) {
       Set workflows = wpd.getEvalWorkflows();
       if (wpd.getEvaluationDevice() != null && 
             wpd.getEvalWorkflows().size() == 0) {
          Workflow w_none = new Workflow("No Workflow", wpd);
          Workflow w_complete = new Workflow("Complete Workflow", wpd);
          Workflow w_return = new Workflow("Return Workflow", wpd);
+         Workflow w_returned = new Workflow("Returned Workflow", wpd);
          
          Id id = wpd.getId() != null ? wpd.getId() : wpd.getNewId();
          
@@ -122,9 +124,15 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
                id, WorkflowItem.CONTENT_LOCKING_UNLOCK));
          w_return.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
                id, MatrixFunctionConstants.READY_STATUS));
+         w_returned.add(new WorkflowItem(WorkflowItem.CONTENT_LOCKING_WORKFLOW, 
+                 id, WorkflowItem.CONTENT_LOCKING_UNLOCK));
+         w_returned.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
+                 id, MatrixFunctionConstants.RETURNED_STATUS));
+         
          workflows.add(w_none);
          workflows.add(w_complete);
          workflows.add(w_return);
+         workflows.add(w_returned);
          
       }
       else if (wpd.getEvaluationDevice() == null) {
@@ -150,6 +158,7 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
          Workflow w_none = new Workflow("No Workflow", wizard);
          Workflow w_complete = new Workflow("Complete Workflow", wizard);
          Workflow w_return = new Workflow("Return Workflow", wizard);
+         Workflow w_returned = new Workflow("Returned Workflow", wizard);
          
          Id id = wizard.getId() != null ? wizard.getId() : wizard.getNewId();
          
@@ -159,10 +168,15 @@ public class WorkflowManagerImpl extends HibernateDaoSupport implements Workflow
                id, WorkflowItem.CONTENT_LOCKING_UNLOCK));
          w_return.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
                id, MatrixFunctionConstants.READY_STATUS));
+         w_returned.add(new WorkflowItem(WorkflowItem.CONTENT_LOCKING_WORKFLOW, 
+                 id, WorkflowItem.CONTENT_LOCKING_UNLOCK));
+         w_returned.add(new WorkflowItem(WorkflowItem.STATUS_CHANGE_WORKFLOW, 
+                 id, MatrixFunctionConstants.RETURNED_STATUS));
+           
          workflows.add(w_none);
          workflows.add(w_complete);
          workflows.add(w_return);
-         
+         workflows.add(w_returned);
       }
       else if (eval == null) {
          workflows = new HashSet();

@@ -48,6 +48,7 @@ public abstract class EvaluationContentWrapper {
    private String siteTitle;
    private Id siteId;
    protected final Log logger = LogFactory.getLog(getClass());
+   private boolean hideOwnerDisplay = false;
    
    public EvaluationContentWrapper( Id id, String title, Agent owner, Date submittedDate, Id siteId) throws UserNotDefinedException {
       this.id = id;
@@ -229,5 +230,21 @@ public abstract class EvaluationContentWrapper {
     */
    public void setSiteId(Id siteId) {
       this.siteId = siteId;
+   }
+
+   /**
+    * 
+    * @return
+    */
+   public boolean isHideOwnerDisplay() {
+	   return hideOwnerDisplay;
+   }
+
+   /**
+    * 
+    * @param hideOwnerDisplay
+    */
+   public void setHideOwnerDisplay(boolean hideOwnerDisplay) {
+	   this.hideOwnerDisplay = hideOwnerDisplay;
    }
 }

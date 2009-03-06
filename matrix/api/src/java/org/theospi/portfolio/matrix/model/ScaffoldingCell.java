@@ -42,15 +42,15 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    private WizardPageDefinition wizardPageDefinition;
 
    public ScaffoldingCell() {
-      this.wizardPageDefinition = new WizardPageDefinition();
+      this.wizardPageDefinition = new WizardPageDefinition(WizardPageDefinition.WPD_MATRIX_TYPE);
    }
 
    public ScaffoldingCell(Criterion criterion, Level level, String initialStatus, Scaffolding scaffolding) {
       this.rootCriterion = criterion;
       this.level = level;
-      this.wizardPageDefinition = new WizardPageDefinition();
+      this.wizardPageDefinition = new WizardPageDefinition(WizardPageDefinition.WPD_MATRIX_TYPE);
       wizardPageDefinition.setInitialStatus(initialStatus);
-      wizardPageDefinition.setSiteId(scaffolding.getWorksiteId());
+      wizardPageDefinition.setSiteId(scaffolding.getWorksiteId().getValue());
       this.scaffolding = scaffolding;
    }
    
@@ -137,6 +137,15 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    public void setEvaluators(Collection evaluators) {
       wizardPageDefinition.setEvaluators(evaluators);
    }
+   
+   public Collection getReviewers() {
+	      return wizardPageDefinition.getReviewers();
+	   }
+
+	   public void setReviewers(Collection reviewers) {
+	      wizardPageDefinition.setReviewers(reviewers);
+	   }
+   
    /**
     * @return Returns the validate.
     */
@@ -266,5 +275,58 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    
    public void setSuppressItems(boolean suppressItems){
 	   wizardPageDefinition.setSuppressItems(suppressItems);
+   }
+
+   public boolean isDefaultCustomForm() {
+	   return wizardPageDefinition.isDefaultCustomForm();
+   }
+   public void setDefaultCustomForm(boolean defaultCustomForm) {
+	   wizardPageDefinition.setDefaultCustomForm(defaultCustomForm);
+   }
+   public boolean isDefaultReflectionForm() {
+	   return wizardPageDefinition.isDefaultReflectionForm();
+   }
+   public void setDefaultReflectionForm(boolean defaultReflectionForm) {
+	   wizardPageDefinition.setDefaultReflectionForm(defaultReflectionForm);
+   }
+   public boolean isDefaultFeedbackForm() {
+	   return wizardPageDefinition.isDefaultFeedbackForm();
+   }
+   public void setDefaultFeedbackForm(boolean defaultFeedbackForm) {
+	   wizardPageDefinition.setDefaultFeedbackForm(defaultFeedbackForm);
+   }
+   public boolean isDefaultReviewers() {
+	   return wizardPageDefinition.isDefaultReviewers();
+   }
+   public void setDefaultReviewers(boolean defaultReviewers) {
+	   wizardPageDefinition.setDefaultReviewers(defaultReviewers);
+   }
+   public boolean isDefaultEvaluationForm() {
+	   return wizardPageDefinition.isDefaultEvaluationForm();
+   }
+   public void setDefaultEvaluationForm(boolean defaultEvaluationForm) {
+	   wizardPageDefinition.setDefaultEvaluationForm(defaultEvaluationForm);
+   }
+   public boolean isDefaultEvaluators() {
+	   return wizardPageDefinition.isDefaultEvaluators();
+   }
+   public void setDefaultEvaluators(boolean defaultEvaluators) {
+	   wizardPageDefinition.setDefaultEvaluators(defaultEvaluators);
+   }
+   
+   public boolean isAllowRequestFeedback(){
+	   return wizardPageDefinition.isAllowRequestFeedback();
+   }
+   
+   public void setAllowRequestFeedback(boolean allowRequestFeedback){
+	   wizardPageDefinition.setAllowRequestFeedback(allowRequestFeedback);
+   }
+   
+   public boolean isHideEvaluations(){
+	   return wizardPageDefinition.isHideEvaluations();
+   }
+   
+   public void setHideEvaluations(boolean hideEvaluations){
+	   wizardPageDefinition.setHideEvaluations(hideEvaluations);
    }
 }

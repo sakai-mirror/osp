@@ -40,6 +40,8 @@ public class Guidance extends IdentifiableObject implements Serializable {
    public final static String INSTRUCTION_TYPE = "instruction";
    public final static String EXAMPLE_TYPE = "example";
    public final static String RATIONALE_TYPE = "rationale";
+   public final static String RUBRIC_TYPE = "rubric";
+   public final static String EXPECTATIONS_TYPE = "expectations";
 
    private String description;
    private String siteId;
@@ -123,7 +125,9 @@ public class Guidance extends IdentifiableObject implements Serializable {
             return item;
          }
       }
-      return null;
+      GuidanceItem newItem = new GuidanceItem(this, type);
+      items.add(newItem);
+      return newItem;
    }
 
    public GuidanceItem getInstruction() {
@@ -138,6 +142,14 @@ public class Guidance extends IdentifiableObject implements Serializable {
       return getItem(RATIONALE_TYPE);
    }
 
+   public GuidanceItem getRubric() {
+	   return getItem(RUBRIC_TYPE);
+   }
+
+   public GuidanceItem getExpectations() {
+	   return getItem(EXPECTATIONS_TYPE);
+   }
+   
    public boolean isNewObject() {
       return newObject;
    }

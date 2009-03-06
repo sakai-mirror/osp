@@ -5,6 +5,7 @@
     <project>osp-common-impl</project>
     <project>osp-matrix-impl</project>
     <project>sakai-metaobj-impl</project>
+    <project>sakai-taggable-impl</project>
   </projects>
   <buildSpec>
     <buildCommand>

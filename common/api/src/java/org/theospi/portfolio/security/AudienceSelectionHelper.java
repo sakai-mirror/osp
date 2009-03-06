@@ -37,6 +37,10 @@ public interface AudienceSelectionHelper {
       "osp.wizard.evaluate";
    public static final String AUDIENCE_FUNCTION_MATRIX =
       "osp.matrix.evaluate";
+   public static final String AUDIENCE_FUNCTION_MATRIX_REVIEW =
+	      "osp.matrix.review";   
+   public static final String AUDIENCE_FUNCTION_INVITE_FEEDBACK =
+	      "osp.inviteFeedback.evaluate";
    public static final String AUDIENCE_FUNCTION_PORTFOLIO =
       "osp.presentation.view";
    
@@ -72,5 +76,13 @@ public interface AudienceSelectionHelper {
    
    public static final String CONTEXT2 =
        "org.theospi.portfolio.security.context2";
-         
+   
+   /**
+    * this is the id that MatrixFunctionConstants.REVIEW_MATRIX function uses for matrix reviewers:
+    * This ID will either be scaffoldingCell.wizardPageDef.id or scaffolding.id
+    */
+   public static final String MATRIX_REVIEWER_OBJECT_ID = "org.theospi.portfolio.security.matrixReviewerObjectId";
+   
+   public static final String MATRIX_REVIEWER_FUNCTION = "org.theospi.portfolio.security.matrixReviewerFunction";
+      
 }

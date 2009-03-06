@@ -14,6 +14,13 @@
 <f:view>
 <sakai:view>
 <h:form>
+	<style type="text/css">
+		.wizard-COMPLETE { background-color: #a6c7ea;}
+		.wizard-PENDING { background-color: #f7ef84;}
+		.wizard-READY { background-color: #86f283;}
+		.wizard-LOCKED { background-color: #ac326b;}
+		.wizard-RETURNED { background-color: #6633CC;}
+	</style>
 
 	<sakai:tool_bar  rendered="#{wizard.canCreate}">
       <sakai:tool_bar_item
@@ -57,15 +64,14 @@
 			   </f:subview>
 			</h:panelGroup>
 		</h:panelGrid>
-  
 
-	<f:subview id="status" rendered="#{wizard.current.runningWizard.base.status != 'READY'}">
+	<f:subview id="status" rendered="#{wizard.current.runningWizard.base.status != 'READY' && wizard.current.runningWizard.base.status != 'RETURNED'}">
 		<f:verbatim><div class="information"></f:verbatim>
 	            <h:outputText value="#{wizard.statusMessage}"/>
 		<f:verbatim></div></f:verbatim>
    </f:subview>
    
-   <f:subview id="instructionSV" rendered="#{(wizard.current.instruction.text != '' and wizard.current.instruction != null) || not empty wizard.current.instruction.attachments}">
+   <f:subview id="instructionSV" rendered="#{(wizard.current.instruction.text != null and wizard.current.instruction.text != '' and wizard.current.instruction != null) || not empty wizard.current.instruction.attachments}">
 	<h4>	
 	<h:outputText value="#{msgs.guidance_instructions}" />
 	</h4>
@@ -86,7 +92,7 @@
    </h:dataTable>
 
    
-   <f:subview id="guidanceSV" rendered="#{(wizard.current.rationale.text != '' and wizard.current.rationale != null) || not empty wizard.current.rationale.attachments}">
+   <f:subview id="guidanceSV" rendered="#{(wizard.current.rationale.text != null and wizard.current.rationale.text != '' and wizard.current.rationale != null) || not empty wizard.current.rationale.attachments}">
    		<h4>
 			<h:outputText value="#{msgs.guidance_rationale}" />
 		</h4>	
@@ -107,7 +113,7 @@
       </h:column>
    </h:dataTable>
    
-   <f:subview id="exapmleSV" rendered="#{(wizard.current.example.text != '' and wizard.current.example != null) || not empty wizard.current.example.attachments}">
+   <f:subview id="exapmleSV" rendered="#{(wizard.current.example.text != null and wizard.current.example.text != '' and wizard.current.example != null) || not empty wizard.current.example.attachments}">
 		<h4>
 				<h:outputText value="#{msgs.guidance_examples}" />
 		</h4>		
@@ -126,6 +132,44 @@
       </h:column>
    </h:dataTable>
    
+   
+    <f:subview id="rubricSV" rendered="#{(wizard.current.rubric.text != null and wizard.current.rubric.text != '' and wizard.current.rubric != null) || not empty wizard.current.rubric.attachments}">
+		<h4>
+				<h:outputText value="#{msgs.guidance_rubric}" />
+		</h4>		
+   	  <div class="textPanel indnt2"><h:outputText value="#{wizard.current.rubric.text}" escape="false" /></div>
+   </f:subview> 
+   <h:dataTable value="#{wizard.current.guidanceRubricAttachments}" var="attachment" border="0" styleClass="indnt2" style="width:50%" rendered="#{not empty wizard.current.rubric.attachments}" 
+   		summary="#{msgs.guidance_rubric_attlist_summary}">
+      <h:column>
+      <sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+      <h:graphicImage id="rubricFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
+      <h:outputText value=" "/><h:outputLink title="#{attachment.displayName}"
+         value="#{attachment.fullReference.base.url}" target="_blank">
+         <h:outputText value="#{attachment.displayName}"/>
+      </h:outputLink>
+      <h:outputText value=" (#{attachment.contentLength})"  styleClass="textPanelFooter"/>
+      </h:column>
+   </h:dataTable>
+   
+    <f:subview id="expectationsSV" rendered="#{(wizard.current.expectations.text != null and wizard.current.expectations.text != '' and wizard.current.expectations != null) || not empty wizard.current.expectations.attachments}">
+		<h4>
+				<h:outputText value="#{msgs.guidance_expectations}" />
+		</h4>		
+   	  <div class="textPanel indnt2"><h:outputText value="#{wizard.current.expectations.text}" escape="false" /></div>
+   </f:subview> 
+   <h:dataTable value="#{wizard.current.guidanceExpectationsAttachments}" var="attachment" border="0" styleClass="indnt2" style="width:50%" rendered="#{not empty wizard.current.expectations.attachments}" 
+   		summary="#{msgs.guidance_expectations_attlist_summary}">
+      <h:column>
+      <sakai:contentTypeMap fileType="#{attachment.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+      <h:graphicImage id="expectationsFileIcon" value="#{imagePath}" alt="#{attachment.displayName}" title="#{attachment.displayName}" />
+      <h:outputText value=" "/><h:outputLink title="#{attachment.displayName}"
+         value="#{attachment.fullReference.base.url}" target="_blank">
+         <h:outputText value="#{attachment.displayName}"/>
+      </h:outputLink>
+      <h:outputText value=" (#{attachment.contentLength})"  styleClass="textPanelFooter"/>
+      </h:column>
+   </h:dataTable>
  
     <f:subview id="thePagesCat" >
 	
@@ -170,9 +214,11 @@
             <h:outputText value="Status" />
          </f:facet>
 		
-	  <f:subview id="pageViewStatus" rendered="#{item.classInfo == 'completedPage'}" >
-	  	<h:outputText value=" #{item.statusThroughBundle}" rendered="#{item.classInfo == 'completedPage'}" styleClass=""/>
-	  </f:subview>
+		  <f:subview id="pageViewStatus" rendered="#{item.classInfo == 'completedPage'}" >
+		  	<f:verbatim><table style="width: 100%"><tr><td style="text-align: center;" class="wizard-</f:verbatim><h:outputText value="#{item.base.wizardPage.status}"/><f:verbatim>"></f:verbatim>
+		  	<h:outputText value=" #{item.base.wizardPage.status}" rendered="#{item.classInfo == 'completedPage'}" />
+		  	<f:verbatim></td></tr></table></f:verbatim>
+		  </f:subview>
 	  </h:column>
 	  <%-- hide this column if sequential wizard, since we are hiding the page descriptions and that is all a seq wiz has --%>
 
@@ -209,7 +255,8 @@
 		</f:verbatim>
       
      <f:subview id="noReflection" 
-      	rendered="#{empty wizard.current.runningWizard.reflections && wizard.current.runningWizard.base.status == 'READY' &&
+      	rendered="#{empty wizard.current.runningWizard.reflections && 
+      	(wizard.current.runningWizard.base.status == 'READY' || wizard.current.runningWizard.base.status == 'RETURNED') &&
       		not wizard.current.runningWizard.isReadOnly}">
 
          <h:commandLink action="#{wizard.processActionReflection}">
@@ -218,7 +265,7 @@
 		</f:subview>
 
 	  	<f:subview id="showReflection" rendered="#{not empty wizard.current.runningWizard.reflections}">
-			<f:subview id="displayReflection" rendered="#{wizard.current.runningWizard.base.status != 'READY' ||
+			<f:subview id="displayReflection" rendered="#{(wizard.current.runningWizard.base.status != 'READY' and wizard.current.runningWizard.base.status != 'RETURNED') ||
 				wizard.current.runningWizard.isReadOnly}">
 					<f:verbatim>
 						<img src = '/library/image/silk/application_form.gif' border= '0' hspace='0' />
@@ -228,7 +275,7 @@
 					<h:outputText value="#{wizard.current.runningWizard.reflections[0].reviewContentNode.displayName}"/>
 				</h:outputLink>
 			</f:subview>
-			<f:subview id="editReflection" rendered="#{wizard.current.runningWizard.base.status == 'READY' && 
+			<f:subview id="editReflection" rendered="#{(wizard.current.runningWizard.base.status == 'READY' || wizard.current.runningWizard.base.status == 'RETURNED') && 
 				not wizard.current.runningWizard.isReadOnly}">
 				<f:verbatim>
 					<img src = '/library/image/silk/application_form.gif' border= '0' hspace='0' />
@@ -371,7 +418,7 @@
        
    <f:subview id="evalSubmitSV" rendered="#{wizard.evaluationItem != ''}">
     <sakai:button_bar_item id="submitEvalWizard" value="#{msgs.submit_wizard_for_evaluation}" 
-       rendered="#{wizard.current.runningWizard.base.status == 'READY' && wizard.current.runningWizard.isReadOnly == 'false'}"
+       rendered="#{(wizard.current.runningWizard.base.status == 'READY' || wizard.current.runningWizard.base.status == 'RETURNED') && wizard.current.runningWizard.isReadOnly == 'false'}"
        action="confirmSubmit" immediate="true"
         />
    </f:subview>

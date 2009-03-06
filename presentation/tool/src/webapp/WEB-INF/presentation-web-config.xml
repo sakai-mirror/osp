@@ -550,6 +550,43 @@
             <value>org.theospi.portfolio.presentation.model.Presentation</value>
         </property>
     </bean>
+    
+    <bean id="notifyViewersController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.ViewControllerImpl">
+      <property name="controller">
+         <bean
+         	class="org.theospi.portfolio.presentation.control.NotifyViewersController">
+         	<property name="idManager">
+         		<ref bean="idManager" />
+         	</property>
+         	<property name="listScrollIndexer">
+         		<ref
+         			bean="org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer" />
+         	</property>
+         	<property name="presentationManager">
+         		<ref bean="presentationManager" />
+         	</property>
+         	<property name="authManager">
+         		<ref bean="authManager" />
+         	</property>
+         	<property name="authzManager">
+         		<ref bean="authzManager" />
+         	</property>
+         </bean>
+      </property>
+      <property name="screenMappings">
+         <props>
+            <prop key="success">listPresentation</prop>
+            <prop key="notifyAudience">notifyAudience</prop>
+         </props>
+      </property>
+      <property name="customTypedEditors">
+         <list>
+            <ref bean="idCustomEditor"/>
+         </list>
+      </property>
+      <property name="commandName"><value>string</value></property>
+      <property name="commandClass"><value>java.lang.String</value></property>
+   </bean>
 
     <bean id="addCommentController" class="org.sakaiproject.metaobj.utils.mvc.impl.servlet.FormControllerImpl">
         <property name="controller">

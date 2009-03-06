@@ -428,7 +428,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
             List reviews = getReviewManager().getReviewsByParent(
                   page.getId().getValue(), 
-                  page.getPageDefinition().getSiteId().getValue(),
+                  page.getPageDefinition().getSiteId(),
                   WizardEntityProducer.WIZARD_PRODUCER);
             for (Iterator iter = reviews.iterator(); iter.hasNext();) {
                Review review = (Review)iter.next();
@@ -1428,7 +1428,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
                pageSequenceNode.getChildTextTrim("sequence")));
 
          Element pageDefNode = pageSequenceNode.getChild("pageDef");
-         WizardPageDefinition wizardPageDefinition = new WizardPageDefinition();
+         WizardPageDefinition wizardPageDefinition = new WizardPageDefinition(wizard.getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL) ? WizardPageDefinition.WPD_WIZARD_HIER_TYPE : WizardPageDefinition.WPD_WIZARD_SEQ_TYPE);
 
          wizardPageDefinition.setNewId(getIdManager().createId());
 
@@ -1576,7 +1576,7 @@ public class WizardManagerImpl extends HibernateDaoSupport
       for(Iterator i = cat.getChildPages().iterator(); i.hasNext(); ) {
          WizardPageSequence sequence = (WizardPageSequence)i.next();
          WizardPageDefinition definition = (WizardPageDefinition)sequence.getWizardPageDefinition();
-         definition.setSiteId(cat.getWizard().getSiteId());
+         definition.setSiteId(cat.getWizard().getSiteId().getValue());
 
          if(definition.getEvaluationDevice() != null && definition.getEvaluationDevice().getValue() != null)
             definition.setEvaluationDevice(idManager.getId(
@@ -2249,13 +2249,13 @@ public class WizardManagerImpl extends HibernateDaoSupport
          WizardPage page = cPage.getWizardPage();
          
          List reflections = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), 
-               Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId().getValue(),
+               Review.REFLECTION_TYPE, page.getPageDefinition().getSiteId(),
                WizardEntityProducer.WIZARD_PRODUCER);
          List evaluations = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), 
-               Review.EVALUATION_TYPE, page.getPageDefinition().getSiteId().getValue(),
+               Review.EVALUATION_TYPE, page.getPageDefinition().getSiteId(),
                WizardEntityProducer.WIZARD_PRODUCER);
          List feedback = getReviewManager().getReviewsByParentAndType(page.getId().getValue(), 
-               Review.FEEDBACK_TYPE, page.getPageDefinition().getSiteId().getValue(),
+               Review.FEEDBACK_TYPE, page.getPageDefinition().getSiteId(),
                WizardEntityProducer.WIZARD_PRODUCER);
          page.setReflections(reflections);
          page.setEvaluations(evaluations);

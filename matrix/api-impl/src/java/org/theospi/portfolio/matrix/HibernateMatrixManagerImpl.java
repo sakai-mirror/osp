@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -41,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedOutputStream;
 import java.util.zip.ZipEntry;
@@ -54,7 +56,16 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Expression;
 import org.jdom.Element;
+import org.sakaiproject.authz.api.AuthzGroup;
+import org.sakaiproject.authz.api.AuthzPermissionException;
+import org.sakaiproject.authz.api.GroupAlreadyDefinedException;
+import org.sakaiproject.authz.api.GroupIdInvalidException;
+import org.sakaiproject.authz.api.GroupNotDefinedException;
+import org.sakaiproject.authz.api.Member;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.SecurityAdvisor;
 import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
@@ -62,6 +73,7 @@ import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.ContentResourceEdit;
 import org.sakaiproject.content.api.LockManager;
+import org.sakaiproject.email.cover.EmailService;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.entity.api.ResourcePropertiesEdit;
@@ -74,45 +86,66 @@ import org.sakaiproject.exception.OverQuotaException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.ServerOverloadException;
 import org.sakaiproject.exception.TypeException;
-import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.security.AllowMapSecurityAdvisor;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.ArtifactFinder;
 import org.sakaiproject.metaobj.shared.DownloadableManager;
 import org.sakaiproject.metaobj.shared.EntityContextFinder;
-import org.sakaiproject.metaobj.shared.mgt.*;
+import org.sakaiproject.metaobj.shared.mgt.AgentManager;
+import org.sakaiproject.metaobj.shared.mgt.ContentEntityUtil;
+import org.sakaiproject.metaobj.shared.mgt.ContentEntityWrapper;
+import org.sakaiproject.metaobj.shared.mgt.FormConsumer;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.mgt.PresentableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.ReadableObjectHome;
+import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Artifact;
 import org.sakaiproject.metaobj.shared.model.FinderException;
 import org.sakaiproject.metaobj.shared.model.FormConsumptionDetail;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.sakaiproject.metaobj.shared.model.MimeType;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
-import org.sakaiproject.metaobj.shared.model.InvalidUploadException;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.service.legacy.resource.DuplicatableToolService;
+import org.sakaiproject.site.api.Group;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SitePage;
 import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.site.cover.SiteService;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.theospi.event.EventService;
 import org.theospi.event.EventConstants;
+import org.theospi.event.EventService;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
 import org.theospi.portfolio.guidance.model.Guidance;
-import org.theospi.portfolio.matrix.model.*;
+import org.theospi.portfolio.matrix.model.Attachment;
+import org.theospi.portfolio.matrix.model.Cell;
+import org.theospi.portfolio.matrix.model.Criterion;
+import org.theospi.portfolio.matrix.model.Level;
+import org.theospi.portfolio.matrix.model.Matrix;
+import org.theospi.portfolio.matrix.model.Scaffolding;
+import org.theospi.portfolio.matrix.model.ScaffoldingCell;
+import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.matrix.model.WizardPageForm;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
+import org.theospi.portfolio.matrix.model.impl.WizardPageDefinitionEntityImpl;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.shared.model.OspException;
 import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 import org.theospi.portfolio.style.StyleConsumer;
@@ -154,14 +187,41 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    private EntityContextFinder contentFinder = null;
    private String importFolderName;
-   private boolean useExperimentalMatrix = false;
-   
+   private boolean useExperimentalMatrix = false;  
    private static boolean allowAllGroups = 
       ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false);
       
    private static ResourceLoader messages = new ResourceLoader(
          "org.theospi.portfolio.matrix.bundle.Messages");
 
+   /** This accepts email addresses */
+   private static final Pattern emailPattern = Pattern.compile(
+         "^" +
+            "(?>" +
+               "\\.?[a-zA-Z\\d!#$%&'*+\\-/=?^_`{|}~]+" +
+            ")+" + 
+         "@" + 
+            "(" +
+               "(" +
+                  "(?!-)[a-zA-Z\\d\\-]+(?<!-)\\." +
+               ")+" +
+               "[a-zA-Z]{2,}" +
+            "|" +
+               "(?!\\.)" +
+               "(" +
+                  "\\.?" +
+                  "(" +
+                     "25[0-5]" +
+                  "|" +
+                     "2[0-4]\\d" +
+                  "|" +
+                     "[01]?\\d?\\d" +
+                  ")" +
+               "){4}" +
+            ")" +
+         "$"
+         );
+   
    public Scaffolding createDefaultScaffolding() {
       return getDefaultScaffoldingBean().createDefaultScaffolding();
    }
@@ -214,7 +274,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     * @param siteId String
     * @return List of Scaffolding
     */
-   protected List findPublishedScaffolding(String siteId) {
+   public List<Scaffolding> findPublishedScaffolding(String siteId) {
       Object[] params = new Object[]{getIdManager().getId(siteId), new Boolean(true)};
       return getHibernateTemplate().find("from Scaffolding s where s.worksiteId=? " +
             "and s.published=?",
@@ -251,7 +311,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          for(Iterator ii = cells.iterator(); ii.hasNext(); ) {
             ScaffoldingCell cell = (ScaffoldingCell)ii.next();
             
-            cell.setEvaluators(getScaffoldingCellEvaluators(cell.getWizardPageDefinition().getId(), true));
+            cell.setEvaluators(this.getWizardPageFunctionUserList(cell.getWizardPageDefinition().getId(), true, MatrixFunctionConstants.EVALUATE_MATRIX));
          }
          
          List levels = scaff.getLevels();
@@ -460,32 +520,93 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       scaffolding.setPublished(true);
       scaffolding.setPublishedBy(authnManager.getAgent());
       scaffolding.setPublishedDate(new Date(System.currentTimeMillis()));
+      scaffolding.setModifiedDate(new Date(System.currentTimeMillis()));
       this.storeScaffolding(scaffolding);
       eventService.postEvent(EventConstants.EVENT_SCAFFOLD_PUBLISH,scaffolding.getId().getValue());
 
    }
    public void previewScaffolding(Id scaffoldingId) {
       Scaffolding scaffolding = this.getScaffolding(scaffoldingId);
+      //this variable is used for version control: if this is null when importing a matrix,
+      //then the matrix is an older version and set all defaults to false
+      scaffolding.setDefaultFormsMatrixVersion(true);
       scaffolding.setPreview(true);
+      scaffolding.setModifiedDate(new Date(System.currentTimeMillis()));
       this.storeScaffolding(scaffolding);
 
    }
    public Scaffolding storeScaffolding(Scaffolding scaffolding) {
+	  scaffolding.setModifiedDate(new Date(System.currentTimeMillis()));
       scaffolding = (Scaffolding)this.store(scaffolding);
       getHibernateTemplate().flush();
       eventService.postEvent(EventConstants.EVENT_SCAFFOLD_ADD_REVISE,scaffolding.getId().getValue());
+      generateScaffoldingRealm(scaffolding);
       return scaffolding;
    }
    public Scaffolding saveNewScaffolding(Scaffolding scaffolding) {
-      
+	  scaffolding.setModifiedDate(new Date(System.currentTimeMillis()));
       Id id = (Id)this.save(scaffolding);
       getHibernateTemplate().flush();
       scaffolding = getScaffolding(id);
-      
+      generateScaffoldingRealm(scaffolding);
       return scaffolding;
    }
    
+   /**
+    * Make sure that a realm with default perms is created when the scaffolding is 
+    * saved.  Otherwise, you have to enter the perms screen first.
+    * @param scaffolding
+    */
+   private void generateScaffoldingRealm(Scaffolding scaffolding) {
+	   AuthzGroup templateAzg = null;
+	   AuthzGroup azg = null;
+	   Site site = null;
+	   try {
+		   String realmTemplate = "!matrix.template.";
+		   site = SiteService.getSite(scaffolding.getWorksiteId().getValue());
+		   templateAzg = AuthzGroupService.getInstance().getAuthzGroup(realmTemplate + site.getType());
+	   }
+	   catch (GroupNotDefinedException gnde) {
+		   logger.warn("group with id: " + gnde.getId() + " not defined", gnde);
+	   } catch (IdUnusedException iue) {
+		   logger.warn("id: " + iue.getId() + " not found", iue);
+	   }
+	   try {
+		   if (templateAzg != null) {
+			   azg = AuthzGroupService.getInstance().addAuthzGroup(
+					   scaffolding.getReference(), templateAzg, null);
+			   if (site != null && azg != null) {
+				   purgeBadRoles(azg, site);
+				   try {
+					   AuthzGroupService.save(azg);
+				   } catch (GroupNotDefinedException e1) {
+					   logger.warn("azg no defined", e1);
+					   //shouldn't need to do anything since it was just created
+				   }
+			   }
+		   }
+	   } catch (GroupIdInvalidException giie) {
+		   logger.warn("group id invalid", giie);
+	   } catch (GroupAlreadyDefinedException gade) {
+		   logger.warn("group already defined");
+		   //this should be pretty common, so don't really need the full stack trace here
+	   } catch (AuthzPermissionException ape) {
+		   logger.warn("Permission exception", ape);
+	   } 
+   }
+   
+   private void purgeBadRoles(AuthzGroup azg, Site site) {
+	   Set<Role> activeRoles = site.getRoles();
+	   Set<Role> azgRoles = azg.getRoles();
+	   for (Role role: azgRoles) {
+		   if (!activeRoles.contains(role))
+			   azg.removeRole(role.getId());
+	   }
+	   
+   }
+   
    public Id storeScaffoldingCell(ScaffoldingCell scaffoldingCell) {
+	  scaffoldingCell.getScaffolding().setModifiedDate(new Date(System.currentTimeMillis()));	 
       scaffoldingCell = (ScaffoldingCell)store(scaffoldingCell);
       return scaffoldingCell.getId();
    }
@@ -696,15 +817,42 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return (Scaffolding) this.getHibernateTemplate().get(Scaffolding.class, scaffoldingId);
       //return getScaffolding(scaffoldingId, false);
    }
+   
+   public Scaffolding loadScaffolding(Id scaffoldingId) {
+	   Scaffolding scaffolding = (Scaffolding) this.getHibernateTemplate().load(Scaffolding.class, scaffoldingId);
+	   scaffolding.getLevels().size();
+	   scaffolding.getCriteria().size();
+	   return scaffolding;
+   }
 
    protected Scaffolding getScaffoldingForExport(Id scaffoldingId) {
       Scaffolding scaffolding = (Scaffolding) this.getHibernateTemplate().get(Scaffolding.class, scaffoldingId);
 
+      
+      //scaffolding evaluators:
+      Collection reviewers = this.getWizardPageFunctionUserList(scaffolding.getId(), false, MatrixFunctionConstants.REVIEW_MATRIX);
+      scaffolding.setReviewers(new HashSet(reviewers));      
+      
+      //scaffolding cells evaluators:
       for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
-         Collection evaluators = this.getScaffoldingCellEvaluators(sCell.getWizardPageDefinition().getId(), false);
+         reviewers = this.getWizardPageFunctionUserList(sCell.getWizardPageDefinition().getId(), false, MatrixFunctionConstants.REVIEW_MATRIX);
+         sCell.setReviewers(new HashSet(reviewers));
+      } 
+      
+      //scaffolding evaluators:
+      Collection evaluators = this.getWizardPageFunctionUserList(scaffolding.getId(), false, MatrixFunctionConstants.EVALUATE_MATRIX);
+      scaffolding.setEvaluators(new HashSet(evaluators));      
+      
+      //scaffolding cells evaluators:
+      for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
+         ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
+         evaluators = this.getWizardPageFunctionUserList(sCell.getWizardPageDefinition().getId(), false, MatrixFunctionConstants.EVALUATE_MATRIX);
          sCell.setEvaluators(new HashSet(evaluators));
       }      
+      
+      
+      
 
       return scaffolding;
    }
@@ -758,7 +906,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public ScaffoldingCell getScaffoldingCell(Id id) {
       ScaffoldingCell scaffoldingCell = (ScaffoldingCell)this.getHibernateTemplate().load(ScaffoldingCell.class, id);
       
-      scaffoldingCell.setEvaluators(getScaffoldingCellEvaluators(scaffoldingCell.getWizardPageDefinition().getId(), true));
+      scaffoldingCell.setEvaluators(getWizardPageFunctionUserList(scaffoldingCell.getWizardPageDefinition().getId(), true, MatrixFunctionConstants.EVALUATE_MATRIX));
 
       return scaffoldingCell;
    }
@@ -817,11 +965,12 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          
       return scaffoldingCell;
    }
+
    
-   protected Collection getScaffoldingCellEvaluators(Id wizardPageDefId, boolean useAgentId) {
+   protected Collection getWizardPageFunctionUserList(Id wizardPageDefId, boolean useAgentId, String function) {
       Collection evaluators = new HashSet();
       Collection viewerAuthzs = getAuthzManager().getAuthorizations(null,
-            MatrixFunctionConstants.EVALUATE_MATRIX, wizardPageDefId);
+    		  function, wizardPageDefId);
 
       for (Iterator i = viewerAuthzs.iterator(); i.hasNext();) {
          Authorization evaluator = (Authorization) i.next();
@@ -910,7 +1059,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       if (node == null) {
          return null;
       }
-      String siteId = page.getPageDefinition().getSiteId().getValue();
+      String siteId = page.getPageDefinition().getSiteId();
       ContentResource wrapped = new ContentEntityWrapper(node.getResource(),
             buildRef(siteId, page.getId().getValue(), node.getResource()));
 
@@ -1096,7 +1245,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
          List reviews = getReviewManager().getReviewsByParent(
                page.getId().getValue(), 
-               page.getPageDefinition().getSiteId().getValue(),
+               page.getPageDefinition().getSiteId(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);
          for (Iterator iter = reviews.iterator(); iter.hasNext();) {
             Review review = (Review)iter.next();
@@ -1110,8 +1259,18 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
 
    public void deleteScaffolding(Id scaffoldingId) {
-      this.getHibernateTemplate().delete(getScaffolding(scaffoldingId));
+	   Scaffolding scaffolding = getScaffolding(scaffoldingId);
+	   String scaffoldingRef = scaffolding.getReference();
+	   
+      this.getHibernateTemplate().delete(scaffolding);
       eventService.postEvent(EventConstants.EVENT_SCAFFOLD_DELETE,scaffoldingId.getValue());
+      
+    //remove azg
+	   try {
+		AuthzGroupService.removeAuthzGroup(scaffoldingRef);
+	} catch (AuthzPermissionException e) {
+		logger.warn("could not remove azg for scaffolding", e);
+	}
    }
    
    public Cell submitCellForEvaluation(Cell cell) {
@@ -1146,7 +1305,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return page;
    }
    
-   public List getEvaluatableCells(Agent agent, List<Agent> roles, List<Id> worksiteIds, HashMap siteHash) {
+   public List getEvaluatableCells(Agent agent, List<Agent> roles, List<Id> worksiteIds, Map siteHash) {
       String[] paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
       Object[] params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
                                       MatrixFunctionConstants.PENDING_STATUS,
@@ -1158,15 +1317,28 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             "wp.pageDefinition.title, c.matrix.owner, " +
             "c.wizardPage.modified, wp.pageDefinition.siteId) " +
             "from WizardPage wp, Authorization auth, Cell c " +
-            "where wp.pageDefinition.id = auth.qualifier " +
+            "where ((wp.pageDefinition.id = auth.qualifier and wp.pageDefinition.defaultEvaluators=?) or " +
+            "(c.scaffoldingCell.scaffolding.id = auth.qualifier and wp.pageDefinition.defaultEvaluators=?))" +
             "and wp.id = c.wizardPage.id " +
             "and auth.function = :evaluate and wp.status = :pendingStatus and " +
             "(auth.agent=:user or auth.agent in ( :roles )) " +
             "and wp.pageDefinition.siteId in ( :siteIds )", 
              paramNames, params );
+      
+      //if the current user doesn't have Access User List permission for the specific matrix, then
+      //this means they must not be able to see the owner for blind evaluation
+      List filteredMatrixCells = new ArrayList();
+      for (Iterator iterator = matrixCells.iterator(); iterator.hasNext();) {
+    	  EvaluationContentWrapper item = (EvaluationContentWrapper) iterator.next();
+    	  String ref = getScaffoldingCellByWizardPageDef(getWizardPage(item.getId()).getPageDefinition().getId()).getScaffolding().getReference();
+    	  if(!getAuthzManager().isAuthorized(MatrixFunctionConstants.ACCESS_USERLIST, getIdManager().getId(ref))) {
+    		  item.setHideOwnerDisplay(true);
+    	  }
+    	  filteredMatrixCells.add( item );
+      }
 
       // filter out group-restricted users
-      List filteredMatrixCells = new ArrayList();
+      /*
       for ( Iterator it=matrixCells.iterator(); it.hasNext(); ) {
          EvaluationContentWrapper evalItem = (EvaluationContentWrapper)it.next();
          WizardPage wizPage = getWizardPage( evalItem.getId() );
@@ -1181,114 +1353,173 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          else {
             filteredMatrixCells.add( evalItem );
          }
+         
       }
-      
+      */
       return filteredMatrixCells;
    }
    
+   /**
+    *  {@inheritDoc}
+    */
+   /*
+   public List getEvaluatableItems(Agent agent, Id worksiteId) {
+      List roles = agent.getWorksiteRoles(worksiteId.getValue());
+      Agent role = null;
+      if (roles.size() > 0)
+    	  role= (Agent)roles.get(0);
+
+      List returned = getEvaluatableCells(agent, roles, worksiteId);
+      List wizardPages = getEvaluatableWizardPages(agent, role, worksiteId);
+      List wizards = getEvaluatableWizards(agent, role, worksiteId);
+
+      returned.addAll(wizardPages);
+      returned.addAll(wizards);
+
+      return returned;
+   }
+   */
+
    public void packageScffoldingForExport(Id scaffoldingId, OutputStream os) throws IOException {
       Scaffolding oldScaffolding = this.getScaffoldingForExport(scaffoldingId); 
       
 
-      CheckedOutputStream checksum = new CheckedOutputStream(os, new Adler32());
-      ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(checksum));
+	   CheckedOutputStream checksum = new CheckedOutputStream(os, new Adler32());
+	   ZipOutputStream zos = new ZipOutputStream(new BufferedOutputStream(checksum));
 
-      List levels = oldScaffolding.getLevels();
-      List criteria = oldScaffolding.getCriteria();
-      Set scaffoldingCells = oldScaffolding.getScaffoldingCells();
-      List guidanceIds = new ArrayList();
-      Set styleIds = new HashSet();
-      List formIds = new ArrayList();
-      
-      levels.size();
-      criteria.size();
-      scaffoldingCells.size();
-      for (Iterator iter = scaffoldingCells.iterator(); iter.hasNext();) {
-         ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
-         Collection evalWorkflows = sCell.getWizardPageDefinition().getEvalWorkflows();
-         for (Iterator iter2 = evalWorkflows.iterator(); iter2.hasNext();) {
-            Workflow wf = (Workflow)iter2.next();
-            wf.getItems().size();
-         }
-      }
-      removeFromSession(oldScaffolding);
-      
-      if (oldScaffolding.getStyle() != null) {
-         styleIds.add(oldScaffolding.getStyle().getId().getValue());
-      }
+	   List levels = oldScaffolding.getLevels();
+	   List criteria = oldScaffolding.getCriteria();
+	   Set scaffoldingCells = oldScaffolding.getScaffoldingCells();
+	   List guidanceIds = new ArrayList();
+	   Set styleIds = new HashSet();
+	   List formIds = new ArrayList();      
+	   Collection scaffEvaluators = oldScaffolding.getEvaluators();
+	   Collection scaffReviewers = oldScaffolding.getReviewers();
+	   List scaffAttachments = oldScaffolding.getAttachments();
 
-      for (Iterator iter = scaffoldingCells.iterator(); iter.hasNext();) {
-         ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
-         sCell.setCells(new HashSet());
-         Collection evaluators = sCell.getEvaluators();
-         sCell.setEvaluators(new HashSet(evaluators));
-         
-         List attachments = sCell.getWizardPageDefinition().getAttachments();
-         sCell.getWizardPageDefinition().setAttachments( new ArrayList(attachments) );
-         
-         sCell.getWizardPageDefinition().setPages(new HashSet());
-         
-         Collection forms = sCell.getWizardPageDefinition().getAdditionalForms();
-         sCell.getWizardPageDefinition().setAdditionalForms(new ArrayList(forms));
-         
-         Collection evalWorkflows = sCell.getWizardPageDefinition().getEvalWorkflows();
-         for (Iterator iter2 = evalWorkflows.iterator(); iter2.hasNext();) {
-            Workflow wf = (Workflow)iter2.next();
-            Collection items = wf.getItems();
-            wf.setItems(new HashSet(items));
-         }
-         sCell.getWizardPageDefinition().setEvalWorkflows(new HashSet(evalWorkflows));
-         exportCellForms(zos, sCell, formIds);
-         if (sCell.getGuidance() != null) {
-            guidanceIds.add(sCell.getGuidance().getId().getValue());
-         }
-         if (sCell.getWizardPageDefinition().getStyle() != null) {
-            styleIds.add(sCell.getWizardPageDefinition().getStyle().getId().getValue());
-         }
-      }
+	   levels.size();
+	   criteria.size();
+	   scaffoldingCells.size();
+	   for (Iterator iter = scaffoldingCells.iterator(); iter.hasNext();) {
+		   ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
+		   Collection evalWorkflows = sCell.getWizardPageDefinition().getEvalWorkflows();
+		   for (Iterator iter2 = evalWorkflows.iterator(); iter2.hasNext();) {
+			   Workflow wf = (Workflow)iter2.next();
+			   wf.getItems().size();
+		   }
+	   }
+	   //initialize scaffolding workflow into session
+	   Collection scaffoldingEvalWorkflows = oldScaffolding.getEvalWorkflows();
+	   for (Iterator iter2 = scaffoldingEvalWorkflows.iterator(); iter2.hasNext();) {
+		   Workflow wf = (Workflow)iter2.next();
+		   wf.getItems().size();
+	   }
 
-      if (guidanceIds.size() > 0) {
-         exportGuidance(zos, guidanceIds);
-      }
-      
-      if (styleIds.size() > 0) {
-         exportStyle(zos, styleIds);
-      }
+	   removeFromSession(oldScaffolding);
 
-      oldScaffolding.setLevels(new ArrayList(levels));
-      oldScaffolding.setCriteria(new ArrayList(criteria));
-      oldScaffolding.setScaffoldingCells(new HashSet(scaffoldingCells));
-      oldScaffolding.setMatrix(new HashSet());
+	   if (oldScaffolding.getStyle() != null) {
+		   styleIds.add(oldScaffolding.getStyle().getId().getValue());
+	   }
 
-      removeFromSession(oldScaffolding);
 
-      //Saving the agent is not necessary and causes a StackOverflowError when XMLEncoder tries
-      // to serialize.  So, we clear out the agents.
-      oldScaffolding.setOwner(null);
-      oldScaffolding.setPublishedBy(null);
-      
-      ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      XMLEncoder xenc=new XMLEncoder(bos);
-      xenc.writeObject(oldScaffolding);
-      xenc.close();
 
-      removeFromSession(oldScaffolding);
+	   Collection formsScaffolding = oldScaffolding.getAdditionalForms();
+	   oldScaffolding.setAdditionalForms(new ArrayList(formsScaffolding));
 
-      storeFileInZip(zos, new ByteArrayInputStream(bos.toByteArray()),
-         "scaffolding");
-      this.getHibernateTemplate().clear();
-      try {
-         this.getHibernateTemplate().flush();
-      }
-      catch (AssertionFailure af) {
-         //TODO There's got to be a better way to catch/prevent this error
-         logger.warn("Catching AssertionFailure from Hibernate during a flush");
-         this.getSession().clear();
-      }
-      bos.close();
+	   for (Iterator iter = scaffoldingCells.iterator(); iter.hasNext();) {
+		   ScaffoldingCell sCell = (ScaffoldingCell)iter.next();
+		   sCell.setCells(new HashSet());
+		   Collection evaluators = sCell.getEvaluators();
+		   sCell.setEvaluators(new HashSet(evaluators));
 
-      zos.finish();
-      zos.flush();
+		   Collection reviewers = sCell.getReviewers();
+		   sCell.setReviewers(new HashSet(reviewers));
+
+		   List attachments = sCell.getWizardPageDefinition().getAttachments();
+		   sCell.getWizardPageDefinition().setAttachments( new ArrayList(attachments) );
+
+		   sCell.getWizardPageDefinition().setPages(new HashSet());
+
+		   Collection forms = sCell.getWizardPageDefinition().getAdditionalForms();
+		   sCell.getWizardPageDefinition().setAdditionalForms(new ArrayList(forms));
+
+		   Collection evalWorkflows = sCell.getWizardPageDefinition().getEvalWorkflows();
+		   for (Iterator iter2 = evalWorkflows.iterator(); iter2.hasNext();) {
+			   Workflow wf = (Workflow)iter2.next();
+			   Collection items = wf.getItems();
+			   wf.setItems(new HashSet(items));
+		   }
+		   sCell.getWizardPageDefinition().setEvalWorkflows(new HashSet(evalWorkflows));
+		   exportWorkflowForms(zos, sCell.getWizardPageDefinition(), sCell.getAdditionalForms(), formIds);
+
+		   if (sCell.getGuidance() != null) {
+			   guidanceIds.add(sCell.getGuidance().getId().getValue());
+		   }
+		   if (sCell.getWizardPageDefinition().getStyle() != null) {
+			   styleIds.add(sCell.getWizardPageDefinition().getStyle().getId().getValue());
+		   }
+	   }
+
+	   if (guidanceIds.size() > 0) {
+		   exportGuidance(zos, guidanceIds);
+	   }
+
+	   if (styleIds.size() > 0) {
+		   exportStyle(zos, styleIds);
+	   }
+
+
+	   //workflow
+	   Collection scaffEvalWorkflows = oldScaffolding.getEvalWorkflows();
+	   for (Iterator iter2 = scaffEvalWorkflows.iterator(); iter2.hasNext();) {
+		   Workflow wf = (Workflow)iter2.next();
+		   Collection items = wf.getItems();
+		   wf.setItems(new HashSet(items));
+	   }
+
+	   //scaffolding variables:
+	   exportWorkflowForms(zos, oldScaffolding, oldScaffolding.getAdditionalForms(), formIds);
+
+	   oldScaffolding.setLevels(new ArrayList(levels));
+	   oldScaffolding.setCriteria(new ArrayList(criteria));
+	   oldScaffolding.setScaffoldingCells(new HashSet(scaffoldingCells));
+	   oldScaffolding.setMatrix(new HashSet());
+
+	   oldScaffolding.setEvalWorkflows(new HashSet(scaffEvalWorkflows));
+	   oldScaffolding.setEvaluators(new HashSet(scaffEvaluators));
+	   oldScaffolding.setReviewers(new HashSet(scaffReviewers));
+	   oldScaffolding.setAttachments(new ArrayList(scaffAttachments));
+
+	   removeFromSession(oldScaffolding);
+
+
+	   //Saving the agent is not necessary and causes a StackOverflowError when XMLEncoder tries
+	   // to serialize.  So, we clear out the agents.
+	   oldScaffolding.setOwner(null);
+	   oldScaffolding.setPublishedBy(null);
+
+	   ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	   XMLEncoder xenc=new XMLEncoder(bos);
+	   xenc.writeObject(oldScaffolding);
+	   xenc.close();
+
+	   removeFromSession(oldScaffolding);
+
+	   storeFileInZip(zos, new ByteArrayInputStream(bos.toByteArray()),
+			   "scaffolding");
+	   this.getHibernateTemplate().clear();
+	   try {
+		   this.getHibernateTemplate().flush();
+	   }
+	   catch (AssertionFailure af) {
+		   //TODO There's got to be a better way to catch/prevent this error
+		   logger.warn("Catching AssertionFailure from Hibernate during a flush");
+		   this.getSession().clear();
+	   }
+	   bos.close();
+
+	   zos.finish();
+	   zos.flush();
    }
 
    protected void exportGuidance(ZipOutputStream zos, List guidanceIds)
@@ -1308,9 +1539,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       zos.closeEntry();
    }
 
-   protected void exportCellForms(ZipOutputStream zos, ScaffoldingCell cell, List formIds) throws IOException {
-      List forms = cell.getAdditionalForms();
-      for (Iterator i=forms.iterator();i.hasNext();) {
+   protected void exportWorkflowForms(ZipOutputStream zos, ObjectWithWorkflow obj, List additionalForms, List formIds) throws IOException {
+
+      for (Iterator i=additionalForms.iterator();i.hasNext();) {
          String formId = (String) i.next();
          if (!formIds.contains(formId)) {
             storeFormInZip(zos, formId);
@@ -1318,30 +1549,31 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          }
       }
 
-      if (cell.getEvaluationDevice() != null) {
-         String evalDevId = cell.getEvaluationDevice().getValue();
+      if (obj.getEvaluationDevice() != null) {
+         String evalDevId = obj.getEvaluationDevice().getValue();
          if (!formIds.contains(evalDevId)) {
             storeFormInZip(zos, evalDevId);
             formIds.add(evalDevId);
          }
       }
 
-      if (cell.getReflectionDevice() != null) {
-         String reflDevId = cell.getReflectionDevice().getValue();
+      if (obj.getReflectionDevice() != null) {
+         String reflDevId = obj.getReflectionDevice().getValue();
          if (!formIds.contains(reflDevId)) {
             storeFormInZip(zos, reflDevId);
             formIds.add(reflDevId);
          }
       }
 
-      if (cell.getReviewDevice() != null) {
-         String revDevId = cell.getReviewDevice().getValue();
+      if (obj.getReviewDevice() != null) {
+         String revDevId = obj.getReviewDevice().getValue();
          if (!formIds.contains(revDevId)) {
             storeFormInZip(zos, revDevId);
             formIds.add(revDevId);
          }
       }
    }
+
 
    protected void fixPageForms(WizardPageDefinition wizardPage, Map formsMap) {
       List forms = wizardPage.getAdditionalForms();
@@ -1367,6 +1599,31 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
                wizardPage.getReviewDevice().getValue())));
       }
    }
+   
+   protected void fixPageForms(Scaffolding scaffolding, Map formsMap) {
+	      List forms = scaffolding.getAdditionalForms();
+	      List newForms = new ArrayList();
+	      for (Iterator i=forms.iterator();i.hasNext();) {
+	         String formId = (String) i.next();
+	         newForms.add(formsMap.get(formId));
+	      }
+	      scaffolding.setAdditionalForms(newForms);
+
+	      if (scaffolding.getEvaluationDevice() != null) {
+	    	  scaffolding.setEvaluationDevice(getIdManager().getId((String) formsMap.get(
+	    			  scaffolding.getEvaluationDevice().getValue())));
+	      }
+
+	      if (scaffolding.getReflectionDevice() != null) {
+	    	  scaffolding.setReflectionDevice(getIdManager().getId((String) formsMap.get(
+	    			  scaffolding.getReflectionDevice().getValue())));
+	      }
+
+	      if (scaffolding.getReviewDevice() != null) {
+	    	  scaffolding.setReviewDevice(getIdManager().getId((String) formsMap.get(
+	    			  scaffolding.getReviewDevice().getValue())));
+	      }
+	   }
 
    protected void storeFormInZip(ZipOutputStream zos, String formId) throws IOException {
 
@@ -1478,10 +1735,23 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          scaffolding.setPublished(false);
          scaffolding.setPublishedBy(null);
          scaffolding.setPublishedDate(null);
+         scaffolding.setModifiedDate(new Date(System.currentTimeMillis()));
          scaffolding.setOwner(getAuthnManager().getAgent());
          scaffolding.setWorksiteId(getIdManager().getId(siteId));
          
          resetIds(scaffolding, guidanceMap, formsMap, styleMap, siteId);
+         
+         //this variable is used for version control: if this is null when importing a matrix,
+         //then the matrix is an older version and set all defaults to false
+         if(!scaffolding.isDefaultFormsMatrixVersion()){
+        	 //This means the matrix being imported is from an earlier version that didn't have defaultForm values
+        	 //therefore, we must set all defaultForm values to false (their default value is true)
+        	 setAllDefaultFormValuesToFalse(scaffolding);
+        	 //now that this matrix is in the current version, we must set defualtMatrix flag to true
+        	 scaffolding.setDefaultFormsMatrixVersion(true);
+         }
+         
+         
 
          scaffolding = saveNewScaffolding(scaffolding);         
 
@@ -1497,6 +1767,10 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          scaffolding = storeScaffolding(scaffolding);
          
          createEvaluatorAuthzForImport(scaffolding);
+         createReviewersAuthzForImport(scaffolding);
+         
+         //automatically preview the matrix to skip this step for the user:
+         previewScaffolding(scaffolding.getId());
          
          itWorked = true;
          return scaffolding;
@@ -1512,6 +1786,19 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             logger.error("", e);
          }
       }
+   }
+   
+   public void setAllDefaultFormValuesToFalse(Scaffolding scaffolding){
+	   for(int i=0; i < scaffolding.getScaffoldingCells().size(); i++){
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setAllowRequestFeedback(false);
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setDefaultCustomForm(false);
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setDefaultEvaluationForm(false);
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setDefaultEvaluators(false);
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setDefaultFeedbackForm(false);
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setDefaultReflectionForm(false);
+		   ((ScaffoldingCell) ((Set) scaffolding.getScaffoldingCells()).toArray()[i]).setDefaultReviewers(false);
+	   }
+	   
    }
 
    public Scaffolding uploadScaffolding(Reference uploadedScaffoldingFile, String siteId)
@@ -1559,20 +1846,67 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
       // this should set the security advisor for the attached artifacts.
       //getPageArtifacts(page);
-      boolean canEval = getAuthzManager().isAuthorized(MatrixFunctionConstants.EVALUATE_MATRIX, 
-            page.getPageDefinition().getId());
-      boolean canReview = getAuthzManager().isAuthorized(MatrixFunctionConstants.REVIEW_MATRIX, 
-            page.getPageDefinition().getSiteId());
       
-      if (!canReview) {
-         canReview = getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
-            page.getPageDefinition().getSiteId());
+      boolean isMatrix = page.getPageDefinition().getType().equals(page.getPageDefinition().WPD_MATRIX_TYPE);
+      
+      boolean canEval = false, canReview = false, hideEvaluations = false;
+      
+      if(page.getPageDefinition().isDefaultEvaluators()){
+    	  if(isMatrix){
+    		  Scaffolding scaffolding = this.getMatrixByPage(pageId).getScaffolding();
+    		  canEval = hasPermission(scaffolding.getId(), scaffolding.getWorksiteId(), MatrixFunctionConstants.EVALUATE_MATRIX);
+    	  }
+      }else{
+    	  canEval = getAuthzManager().isAuthorized(MatrixFunctionConstants.EVALUATE_MATRIX, 
+  	            page.getPageDefinition().getId());
       }
       
+      //this is user specified reviewer access:
+      canReview = hasPermission(pageId, this.getIdManager().getId(page.getPageDefinition().getSiteId()), MatrixFunctionConstants.FEEDBACK_MATRIX);
       
-      boolean owns = page.getOwner().getId().equals(getAuthnManager().getAgent().getId());
       
-      if (canEval || canReview || owns) {
+      if(!canReview){
+    	  if(page.getPageDefinition().isDefaultReviewers()){
+    		  //currently, this can only be true if its a matrix
+    		  Scaffolding scaffolding = this.getMatrixByPage(pageId).getScaffolding();
+    		  canReview = hasPermission(scaffolding.getId(), scaffolding.getWorksiteId(), MatrixFunctionConstants.REVIEW_MATRIX);
+    	  }else{
+    		  canReview = getAuthzManager().isAuthorized(MatrixFunctionConstants.REVIEW_MATRIX, 
+    				  page.getPageDefinition().getId());
+    	  }
+      }
+
+      if (!canReview) {
+         canReview = getAuthzManager().isAuthorized(WizardFunctionConstants.REVIEW_WIZARD, 
+            getIdManager().getId(page.getPageDefinition().getSiteId()));
+      }
+      
+      if(isMatrix){
+
+    	  if(page.getPageDefinition().isDefaultEvaluationForm()){
+    		  Scaffolding scaffolding = this.getMatrixByPage(pageId).getScaffolding();
+    		  hideEvaluations = scaffolding.isHideEvaluations();
+    	  }else{
+    		  hideEvaluations = page.getPageDefinition().isHideEvaluations();
+    	  }
+      }
+
+      
+      
+      
+      boolean owns = page.getOwner().getId().equals(getAuthnManager().getAgent().getId());     
+      boolean canAccessAllCells = false;
+      boolean canViewOtherReviews = false;
+      boolean canViewOtherEvals = false;
+      
+      if(isMatrix){
+    	  Scaffolding scaffolding = this.getMatrixByPage(pageId).getScaffolding();
+    	  canAccessAllCells = getAuthzManager().isAuthorized(MatrixFunctionConstants.ACCESS_ALL_CELLS, getIdManager().getId(scaffolding.getReference()));
+    	  canViewOtherReviews = getAuthzManager().isAuthorized(MatrixFunctionConstants.VIEW_FEEDBACK_OTHER, getIdManager().getId(scaffolding.getReference()));
+    	  canViewOtherEvals = getAuthzManager().isAuthorized(MatrixFunctionConstants.VIEW_EVAL_OTHER, getIdManager().getId(scaffolding.getReference()));
+      }
+      
+      if (canEval || canReview || owns || canAccessAllCells || canViewOtherReviews || canViewOtherEvals) {
          //can I look at files? - own, review or eval
          getPageContents(page);
          
@@ -1582,32 +1916,114 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          //can I look at reviews/evals/reflections? - own, review or eval
          getReviewManager().getReviewsByParentAndType(
                id, Review.REFLECTION_TYPE,
-               page.getPageDefinition().getSiteId().getValue(),
+               page.getPageDefinition().getSiteId(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);
+         
+         org.sakaiproject.tool.api.Session session = SessionManager.getCurrentSession();
+         SecurityAdvisor contentAdvisor = (SecurityAdvisor)session.getAttribute("assignment.content.security.advisor");
+         if (contentAdvisor != null)
+        	 securityService.pushAdvisor(contentAdvisor);
       }
       
-      if (canEval || owns) {
+      if ((owns && !hideEvaluations) || (isMatrix && canViewOtherEvals) || (!isMatrix && canEval)) {
          //can I look at reviews/evals/reflections? - own or eval
          getReviewManager().getReviewsByParentAndType(
                id, Review.EVALUATION_TYPE,
-               page.getPageDefinition().getSiteId().getValue(),
+               page.getPageDefinition().getSiteId(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);
       }
       
-      if (canEval || canReview || owns) {
+      if (owns || (isMatrix && canViewOtherReviews) || (!isMatrix && (canEval || canReview))){
          //can I look at reviews/evals/reflections? - own or review
          getReviewManager().getReviewsByParentAndType(
                id, Review.FEEDBACK_TYPE,
-               page.getPageDefinition().getSiteId().getValue(),
+               page.getPageDefinition().getSiteId(),
                MatrixContentEntityProducer.MATRIX_PRODUCER);         
       }
    }
 
+   
+   /**
+    * this creates authorizations for each cell from the reviewers contained in the cell
+    * @param scaffolding
+    */
+   private void createReviewersAuthzForImport(Scaffolding scaffolding) {
+	   
+	   //scaffolding reviewers:
+	   for (Iterator i = scaffolding.getReviewers().iterator(); i.hasNext();) {
+           Id id = (Id)i.next();
+           if (id.getValue().startsWith("/site/")) {
+              // it's a role
+              String[] agentValues = id.getValue().split("/");
+              
+              String newStrId = id.getValue().replaceAll(agentValues[2], 
+                    scaffolding.getWorksiteId().getValue());
+              id = idManager.getId(newStrId);
+           }
+           Agent agent = this.getAgentFromId(id);
+
+           if (agent != null  && agent.getId() != null) {
+              this.getAuthzManager().createAuthorization(agent, 
+                    MatrixFunctionConstants.REVIEW_MATRIX, scaffolding.getId());
+           }
+        }
+	   
+	   
+	   
+	   //all cell's Reviewers:
+	   
+      for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
+         ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
+         Collection evals = sCell.getReviewers();
+         for (Iterator i = evals.iterator(); i.hasNext();) {
+            Id id = (Id)i.next();
+            if (id.getValue().startsWith("/site/")) {
+               // it's a role
+               String[] agentValues = id.getValue().split("/");
+               
+               String newStrId = id.getValue().replaceAll(agentValues[2], 
+                     scaffolding.getWorksiteId().getValue());
+               id = idManager.getId(newStrId);
+            }
+            Agent agent = this.getAgentFromId(id);
+
+            if (agent != null  && agent.getId() != null) {
+               this.getAuthzManager().createAuthorization(agent, 
+                     MatrixFunctionConstants.REVIEW_MATRIX, sCell.getWizardPageDefinition().getId());
+            }
+         }
+      }
+   }
+   
    /**
     * this creates authorizations for each cell from the evaluators contained in the cell
     * @param scaffolding
     */
    private void createEvaluatorAuthzForImport(Scaffolding scaffolding) {
+	   
+	   //scaffolding evaluators:
+	   for (Iterator i = scaffolding.getEvaluators().iterator(); i.hasNext();) {
+           Id id = (Id)i.next();
+           if (id.getValue().startsWith("/site/")) {
+              // it's a role
+              String[] agentValues = id.getValue().split("/");
+              
+              String newStrId = id.getValue().replaceAll(agentValues[2], 
+                    scaffolding.getWorksiteId().getValue());
+              id = idManager.getId(newStrId);
+           }
+           Agent agent = this.getAgentFromId(id);
+
+           if (agent != null  && agent.getId() != null) {
+              this.getAuthzManager().createAuthorization(agent, 
+                    MatrixFunctionConstants.EVALUATE_MATRIX, scaffolding.getId());
+           }
+        }
+	   
+	   
+	   
+	   //all cell's evaluators:
+	   
       for (Iterator iter = scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
          ScaffoldingCell sCell = (ScaffoldingCell) iter.next();
          Collection evals = sCell.getEvaluators();
@@ -1758,7 +2174,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             scaffolding.getStyle().setId(null);
          }
       }      
-      
+      substituteScaffoldingForms(scaffolding, guidanceMap, formsMap);
       substituteCriteria(scaffolding);
       substituteLevels(scaffolding);
       substituteScaffoldingCells(scaffolding, guidanceMap, formsMap, styleMap, siteId);
@@ -1785,6 +2201,25 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       scaffolding.setLevels(newLevels);
    }
    
+   protected void substituteScaffoldingForms(Scaffolding scaffolding, Map guidanceMap, Map formsMap){
+
+       fixPageForms(scaffolding, formsMap);
+
+       Set newWorkflows = new HashSet();
+       for (Iterator jiter=scaffolding.getEvalWorkflows().iterator(); jiter.hasNext();) {
+          Workflow w = (Workflow)jiter.next();
+          w.setId(null);
+          Set newItems = new HashSet();
+          for (Iterator kiter=w.getItems().iterator(); kiter.hasNext();) {
+             WorkflowItem wfi = (WorkflowItem)kiter.next();
+             wfi.setId(null);
+             newItems.add(wfi);
+          }
+          
+          newWorkflows.add(w);
+       }
+   }
+   
    protected void substituteScaffoldingCells(Scaffolding scaffolding, Map guidanceMap, Map formsMap, Map styleMap, String siteId) {
       Set sCells = new HashSet(); 
       for (Iterator iter=scaffolding.getScaffoldingCells().iterator(); iter.hasNext();) {
@@ -1793,7 +2228,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          
          WizardPageDefinition wpd = scaffoldingCell.getWizardPageDefinition();
          wpd.setId(null);
-         wpd.setSiteId( getIdManager().getId(siteId));
+         wpd.setSiteId(siteId);
          if (wpd.getGuidance() != null) {
             if (guidanceMap != null) {
                Guidance guidance = (Guidance) guidanceMap.get(wpd.getGuidance().getId().getValue());
@@ -1982,7 +2417,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 
          List reviews = getReviewManager().getReviewsByParentAndTypes(page.getId().getValue(),
                  new int[]{Review.REFLECTION_TYPE, Review.EVALUATION_TYPE, Review.FEEDBACK_TYPE},
-                 page.getPageDefinition().getSiteId().getValue(),
+                 page.getPageDefinition().getSiteId(),
               MatrixContentEntityProducer.MATRIX_PRODUCER);
 
 
@@ -2431,12 +2866,23 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          return true;
       }
 
-      String queryString = "from WizardPageDefinition as wpd left join wpd.additionalForms as af where " +
-         "af = ?";
+      String queryString = "from WizardPageDefinition as wpd " +
+      		"left join wpd.additionalForms as af where af = ?";
       Collection additionalForms = getHibernateTemplate().find(queryString,
          new Object[] {formId.getValue()});
 
-      return additionalForms.size() > 0;
+      if (additionalForms.size() > 0)
+    	  return true;
+      
+      String queryString2 = "from Scaffolding as s " +
+      		"left join s.additionalForms as af where af = ?";
+      Collection defaultAdditionalForms = getHibernateTemplate().find(queryString2,
+    		  new Object[] {formId.getValue()});
+
+      if (defaultAdditionalForms.size() > 0)
+    	  return true;
+      
+      return false;      
    }
 
    /**
@@ -2451,6 +2897,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       String eval_type = messages.getString("evaluation_device");
       String review_type = messages.getString("review_device");
       String page_form = messages.getString("page_form");
+      String defaultTxt = messages.getString("default") + " ";
       
       String cellNameText = messages.getString("cell_name_text");
       String matrixNameText = messages.getString("matrix_name_text");
@@ -2481,6 +2928,28 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       		   "concat('" + matrixNameText + "', sc.scaffolding.title)) " +
             "From ScaffoldingCell sc " +
             "where sc.wizardPageDefinition.reviewDevice = :formId ";
+      
+      String scaffoldingReflection = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+		      "s.reflectionDevice, " +
+		      "s.worksiteId, " +
+		      "'" + defaultTxt + refl_type + "', " +
+		      "concat('" + matrixNameText + "', s.title)) " +
+	      "from Scaffolding s " +
+	      "where s.reflectionDevice = :formId ";
+      String scaffoldingEval = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+		      "s.evaluationDevice, " +
+		      "s.worksiteId, " +
+		      "'" + defaultTxt + eval_type + "', " +
+		      "concat('" + matrixNameText + "', s.title)) " +
+	      "From Scaffolding s " +
+	      "where s.evaluationDevice = :formId ";
+      String scaffoldingReview = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+		      "s.reviewDevice, " +
+		      "s.worksiteId, " +
+		      "'" + defaultTxt + review_type + "', " +
+		      "concat('" + matrixNameText + "', s.title)) " +
+	      "From Scaffolding s " +
+	      "where s.reviewDevice = :formId ";
 
       String wizardPageReflection = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
       		   "wpd.reflectionDevice, " +
@@ -2541,6 +3010,9 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       Collection objectsWithForms = getHibernateTemplate().findByNamedParam(matrixReflection, "formId", formId);
       objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(matrixEval, "formId", formId));
       objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(matrixReview, "formId", formId));
+      objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(scaffoldingReflection, "formId", formId));
+      objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(scaffoldingEval, "formId", formId));
+      objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(scaffoldingReview, "formId", formId));
       objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(wizardPageReflection, "formId", formId));
       objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(wizardPageEval, "formId", formId));
       objectsWithForms.addAll(getHibernateTemplate().findByNamedParam(wizardPageReview, "formId", formId));
@@ -2579,10 +3051,52 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             wizPageQueryString, "formId", formId.getValue());
       results.addAll(wizPageAdditionalForms);
 
+      String scaffoldingQueryString = "select new org.sakaiproject.metaobj.shared.model.FormConsumptionDetail(" +
+	      "af, " +
+	      "s.worksiteId, " +
+	      "'" + defaultTxt + page_form + "', " +
+	      "concat('" + matrixNameText + "', s.title), " +
+	      "'') " +
+	      "from Scaffolding s " +
+	      "left join s.additionalForms as af " +
+	      "where af = :formId";
+      Collection scaffoldingAdditionalForms = getHibernateTemplate().findByNamedParam(
+    		  scaffoldingQueryString, "formId", formId.getValue());
+      results.addAll(scaffoldingAdditionalForms);
+
 
       return results;
    }
+   
+   public List<WizardPageDefinition> getWizardPageDefs(List<Id> ids)
+   {
+	   if (ids.size() > 0) {
+		   String[] paramNames = new String[] {"ids"};
+		      Object[] params = new Object[]{ids};
+		   List<WizardPageDefinition> pageDefs = getHibernateTemplate().findByNamedParam("from WizardPageDefinition wpd where wpd.id in ( :ids )",
+		            paramNames, params);
+		   return pageDefs;
+	   }
+	   return new ArrayList<WizardPageDefinition>();
+   }
 
+   public List<ScaffoldingCell> getScaffoldingCells(List<Id> ids)
+   {
+	   if (ids.size() > 0) {
+		   String[] paramNames = new String[] {"ids"};
+		      Object[] params = new Object[]{ids};
+		   List<ScaffoldingCell> sCells = getHibernateTemplate().findByNamedParam("from ScaffoldingCell sCell where sCell.wizardPageDefinition.id in ( :ids )",
+		            paramNames, params);
+		   return sCells;
+	   }
+	   return new ArrayList<ScaffoldingCell>();
+   }
+   
+   public WizardPageDefinition getWizardPageDefinition(Id pageDefId) {
+	   WizardPageDefinition wizPageDef = (WizardPageDefinition)this.getHibernateTemplate().load(WizardPageDefinition.class, pageDefId);
+	   return wizPageDef;
+   }
+   
    public EventService getEventService() {
 	   return eventService;
    }
@@ -2590,7 +3104,88 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    public void setEventService(EventService eventService) {
 	   this.eventService = eventService;
    }
-   
+	
+	/**
+	 * finds the list of evaluators/roles of the site id passed and checks against the current user.
+	 * returns true if user or role matches, otherwise false
+	 * 
+	 * @param id
+	 * @param worksiteId
+	 * @param function
+	 * @return
+	 */
+	public boolean hasPermission(Id id, Id worksiteId, String function){
+		if(getSecurityService().isSuperUser(getAuthnManager().getAgent().getId().getValue()))
+			return true;
+		
+		if(id == null)
+			return false;
+		
+		Site site = null;
+		try {
+			site = SiteService.getSite(worksiteId.getValue());
+		} catch (IdUnusedException e) {
+			e.printStackTrace();
+		}
+
+		if(site == null)
+			return false;
+		
+		Role userRole = site.getUserRole(getAuthnManager().getAgent().getId().getValue());
+		
+		List evaluators = getAuthzManager().getAuthorizations(null,
+				function, id);
+
+		for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
+			Authorization az = (Authorization) iter.next();
+			Agent agent = az.getAgent();
+			if (agent.isRole()) {
+				if(userRole != null){
+					// see if the user's role matches with the evaluation role: 
+					//(fyi, display name returns the role if the agent is a role)
+					if (userRole.getId().compareTo(
+							agent.getDisplayName()) == 0)
+						return true;
+				}
+			} else {
+				// see if the user matches with the evaluator user
+				if (getAuthnManager().getAgent().getId().getValue().compareTo(
+						agent.getId().toString()) == 0)
+					return true;
+			}
+		}
+
+		return false;
+	}
+
+	public WizardPageDefinitionEntity createWizardPageDefinitionEntity(
+			WizardPageDefinition wpd, String parentTitle)
+	{
+		return new WizardPageDefinitionEntityImpl(wpd, parentTitle);
+	}
+
+	public Map<Integer, Integer> getReviewCountListByType(Id pageDefId) {
+		Object[] params = new Object[] { pageDefId };
+		List results = getHibernateTemplate()
+				.find(
+						"select r.type, count(*) from Review r, WizardPage wp where wp.id = r.parent and wp.pageDefinition.id=? GROUP BY r.type",
+						params);
+		
+		Map resultMap = new HashMap(results.size());
+		
+		for (Iterator i = results.iterator(); i.hasNext();) {
+			Object[] rs = (Object[]) i.next();
+			Integer type = (Integer)rs[0];
+			Integer count = (Integer)rs[1];
+			resultMap.put(type, count);
+		}
+		
+		
+		return resultMap;
+		
+	}
+
+
 	public boolean isScaffoldingUsed(Scaffolding scaffolding) {
 
 		return getFormCountByScaffolding(scaffolding.getId()) > 0
@@ -2641,5 +3236,345 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 		// where s.id ='AED66AB3B9AE98218C808C207A08EB63'
 		//		GO
 	}
-   
+
+	
+	public Map<Id, Integer> getSubmissionCountByScaffolding(List<Scaffolding> scaffolding) {
+		/*
+		 * SELECT sc.id, count(sc.id) FROM osp_matrix_cell mc
+			join osp_wizard_page wp on mc.wizard_page_id = wp.id
+			join osp_scaffolding_cell sc on mc.scaffolding_cell_id = sc.id
+			join osp_scaffolding s on sc.scaffolding_id = s.id
+			where wp.status in ('PENDING', 'COMPLETE')
+			and s.id in ()
+			group by sc.id
+		 */
+		List results = new ArrayList();
+		
+		if (scaffolding.size() > 0) {
+			String[] paramNames = new String[] { "scaffolding" };
+			Object[] params = new Object[] { scaffolding };
+			results = getHibernateTemplate().findByNamedParam(
+					"select sc.id, count(sc.id) from Cell mc join mc.wizardPage wp join mc.scaffoldingCell sc where sc.scaffolding in (:scaffolding) AND wp.status in ('PENDING', 'COMPLETE') GROUP BY sc.id",
+					paramNames,
+					params);
+
+		}
+		
+		Map resultMap = new HashMap(results.size());
+		
+		for (Iterator i = results.iterator(); i.hasNext();) {
+			Object[] rs = (Object[]) i.next();
+			Id sc_id = (Id)rs[0];
+			Integer count = (Integer)rs[1];
+			resultMap.put(sc_id, count);
+		}
+		
+		
+		return resultMap;
+		
+		
+	}
+	
+	
+	  
+	public boolean hasGroups(String worksiteId) {
+		try {
+			Site site = SiteService.getSite(worksiteId);
+			return site.hasGroups();
+		} catch (IdUnusedException e) {
+			logger.error("", e);
+		}
+		return false;
+	}
+
+
+	public Set getGroupList(String worksiteId, boolean allowAllGroups) {
+		try {
+			Site site = SiteService.getSite(worksiteId);
+			return getGroupList(site, allowAllGroups);
+		} catch (IdUnusedException e) {
+			logger.error("", e);
+		}
+		return new HashSet();    	
+	}
+
+	public Set getGroupList(Site site, boolean allowAllGroups) {
+		Set groups = new HashSet();
+		if (site.hasGroups()) {
+			String currentUser = SessionManager.getCurrentSessionUserId();
+			if (allowAllGroups) {
+				groups.addAll(site.getGroups());
+			}
+			else {
+				groups.addAll(site.getGroupsWithMember(currentUser));
+			}
+		}
+		return groups;
+	}
+
+	public Set getUserList(String worksiteId, String filterGroupId, boolean allowAllGroups, List<Group> groups) {
+		Set members = new HashSet();
+		Set users = new HashSet();
+
+		try {
+			Site site = SiteService.getSite(worksiteId);
+			if (site.hasGroups()) {
+				String currentUser = SessionManager.getCurrentSessionUserId();
+
+				if (allowAllGroups && (filterGroupId == null || filterGroupId.equals(""))) {
+					members.addAll(site.getMembers());
+				}
+				else {
+					for (Iterator iter = groups.iterator(); iter.hasNext();) {
+						Group group = (Group) iter.next();
+						// TODO: Determine if Java loop invariants are optimized out
+						if (filterGroupId == null || "".equals(filterGroupId)
+								|| filterGroupId.equals(group.getId())) {
+							members.addAll(group.getMembers());
+						}
+					}
+				}
+			} else {
+				members.addAll(site.getMembers());
+			}
+
+			for (Iterator memb = members.iterator(); memb.hasNext();) {
+				try {
+					Member member = (Member) memb.next();
+					users.add(UserDirectoryService.getUser(member.getUserId()));
+				} catch (UserNotDefinedException e) {
+					logger.warn("Unable to find user: " + e.getId() + " "
+							+ e.toString());
+				}
+			}
+		} catch (IdUnusedException e) {
+			logger.error("", e);
+		}
+		return users;
+	}
+	
+	public List getSelectedUsers(ObjectWithWorkflow oWW, String function) {
+		List returnList = new ArrayList();
+		Id id = oWW.getId() == null ? oWW.getNewId() : oWW.getId();
+		if (id != null) {
+			List evaluators = getAuthzManager().getAuthorizations(null,
+					function, id);
+
+			for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
+				Authorization az = (Authorization) iter.next();
+				Agent agent = az.getAgent();
+				String userId = az.getAgent().getEid().getValue();
+				if (agent.isRole()) {
+					returnList.add(MessageFormat.format(messages
+							.getString("decorated_role_format"),
+							new Object[] { agent.getDisplayName() }));
+				} else {
+					returnList.add(MessageFormat.format(messages
+							.getString("decorated_user_format"), new Object[] {
+						agent.getDisplayName(), userId }));
+				}
+			}
+		}
+		return returnList;
+	}
+	
+	public void notifyAudience(WizardPage wizPage, Id reviewObjectId, boolean groupAware, List sentEmailAddrs, String parentTitle, String function){
+
+    	String url;
+    	String emailBody = "";
+    	String subject = "";
+    	User user = UserDirectoryService.getCurrentUser();
+    	Boolean isMatrix = wizPage.getPageDefinition().getType().equals(wizPage.getPageDefinition().WPD_MATRIX_TYPE);
+    	String uCasePageType = isMatrix ? messages.getString("email_uppercase_matrixCell") : messages.getString("email_uppercase_wizardPage");
+    	String pageType = isMatrix ? messages.getString("email_matrixCell") : messages.getString("email_wizardPage");
+    	String pageTool = isMatrix ? messages.getString("email_matrix") : messages.getString("email_wizard");
+    	boolean evaluation = MatrixFunctionConstants.EVALUATE_MATRIX.equals(function);
+    	
+    	String id = wizPage.getId()!=null ? wizPage.getId().getValue() : wizPage.getNewId().getValue();
+    	
+    	if(evaluation){
+    		subject = messages.getFormattedMessage("matrixEvaluationSubject", new Object[]{uCasePageType, user.getDisplayName()});   		
+    	}else{
+    		subject = messages.getFormattedMessage("matrixFeedbackSubject", new Object[]{user.getDisplayName()});
+    	}
+
+    	ToolConfiguration toolConfig;
+    	try {
+    		Site wpSite = SiteService.getSite(wizPage.getPageDefinition().getSiteId());
+    		
+    		
+    		if(isMatrix){
+    			toolConfig = wpSite.getToolForCommonId("osp.matrix");
+    			String placement = toolConfig.getId();
+    			url = ServerConfigurationService.getPortalUrl() + "/directtool/" +  placement +
+    				"/viewCell.osp?page_id=" + id;
+    		
+    		}else{
+    			toolConfig = wpSite.getToolForCommonId("osp.wizard");
+    			String placement = toolConfig.getId();
+    			if(wizPage.getPageDefinition().getType().equals(wizPage.getPageDefinition().WPD_WIZARD_SEQ_TYPE)){
+    				url = ServerConfigurationService.getPortalUrl() + "/directtool/" +  placement +
+    					"/osp.wizard.run.helper/osp.wizard.page.helper/sequentialWizardPage.osp?page_id=" + id + "&directLinked=true";
+    			}else{
+    				url = ServerConfigurationService.getPortalUrl() + "/directtool/" +  placement +
+        				"/osp.wizard.run.helper/osp.wizard.page.helper/wizardPage.osp?page_id=" + id + "&directLinked=true";
+    			}
+    		}
+
+    		if(evaluation){
+    			emailBody = messages.getFormattedMessage(
+    					"matrixEvaluationBody", new Object[] {user.getDisplayName(), pageType, wizPage.getPageDefinition().getTitle(),
+    							pageType, pageTool, parentTitle, wpSite.getTitle(), pageType, wpSite.getTitle(), url, pageType, pageType, pageType});
+    		}else{
+    			emailBody = messages.getFormattedMessage(
+    					"matrixFeedbackBody", new Object[] {user.getDisplayName(), wizPage.getPageDefinition().getTitle(),
+    							parentTitle, wpSite.getTitle(), url});   			
+    		}
+    		try {
+
+    			String from = ServerConfigurationService.getString("setup.request", 
+    					"postmaster@".concat(ServerConfigurationService.getServerName()));
+
+    			List<User> usersAllowedToViewAllGroupsForObject = null;
+    			if(isMatrix){
+    				String reference = getScaffoldingCellByWizardPageDef(wizPage.getPageDefinition().getId()).getScaffolding().getReference();
+
+    				usersAllowedToViewAllGroupsForObject = getSecurityService().unlockUsers(MatrixFunctionConstants.VIEW_ALL_GROUPS, reference);
+    			}
+    			
+    			List<String> emails = getAuthzEmails(reviewObjectId, wpSite, groupAware, function, usersAllowedToViewAllGroupsForObject);
+    			
+    			//remove any sent email addresses:
+    			if(sentEmailAddrs != null){
+    				for (Iterator iterator = emails.iterator(); iterator.hasNext();) {
+    					String email = (String) iterator.next();
+    					if(sentEmailAddrs.contains(email)){
+    						iterator.remove();
+    					}
+    				}
+    			}
+
+    			sendEmail(emails, from, subject, emailBody);
+
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    		}
+    	} catch (IdUnusedException e1) {
+    		e1.printStackTrace();
+    	}
+	}
+		
+
+	private void sendEmail(List<String> toEmails, String from, String subject, String body){
+		for (String email : toEmails) {
+			if (validateEmail(email)) {
+				EmailService.send(from, email,
+						subject, body, null, null, null);
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 * Returns a list of email addresses to based off the parameters:
+	 * 
+	 * 
+	 * @param reviewObjectId	This is the reference ID to which the authorization function you want to be checked against (ie. site, scaffolding, ect)  Can't be null.
+	 * @param site				The site you are concerned with.  Can't be null.
+	 * @param groupAware		This will determine if you want to filter the emails based off group access.
+	 * @param function			This is the function (review, evaluate, ect) that you are concerned with	Can't be null.
+	 * @param usersAllowedToViewAllGroupsForObject	A list of users who have the ability to view all groups.  These users will be added in the list if they have the function permission
+	 * 												but aren't in the current users group.  Null value is ok.
+	 * @return
+	 */
+	protected List<String> getAuthzEmails(Id reviewObjectId, Site site, boolean groupAware, String function, List<User> usersAllowedToViewAllGroupsForObject){
+		
+		List<String> returnList = new ArrayList();
+		
+		if(reviewObjectId == null || site == null || function == null){
+			logger.warn("Invalid null argument passed to HibernateMatrixManager.getAuthzEmails");
+			return returnList;
+		}
+		
+		//no need to look for groups if the site doesn't have groups
+		groupAware = groupAware && site.hasGroups();
+				
+		List evaluators = getAuthzManager().getAuthorizations(null, function, reviewObjectId);
+		Set<User> usersInGroup = new HashSet<User>();
+		if(groupAware){
+			// allow all groups needs to be set to false for getUserList (even if user has the permission) b/c this is creating a list of users who can 
+			// evaluate/review/ect for this user, not who the current user can evaluate/review/ect.	
+			boolean allowAllGroups = false;
+			//filterGroupId is null so it will return all users for all groups
+			String filterGroupId = null;		
+			usersInGroup = getUserList(site.getId(),
+					filterGroupId,
+					allowAllGroups,
+					new ArrayList<Group>(getGroupList(site,	allowAllGroups)));
+
+
+			if(usersAllowedToViewAllGroupsForObject != null){
+				//add all users who have the View All Groups permission to the group user list
+				for (Iterator iterator = usersAllowedToViewAllGroupsForObject.iterator(); iterator.hasNext();) {
+					User user = (User) iterator.next();
+					if(!usersInGroup.contains(user)){
+						usersInGroup.add(user);
+					}
+				}
+			}
+		}
+
+
+		User user;
+		for (Iterator iterator = evaluators.iterator(); iterator.hasNext();) {
+			Authorization az = (Authorization) iterator.next();
+			Agent agent = az.getAgent();
+			try {
+				if (agent.isRole()) {
+					for (Iterator j = site.getMembers().iterator(); j.hasNext();) {
+						Member member = (Member) j.next();
+						
+						if (member.getRole().getId().equals(az.getAgent().getDisplayName())){
+							user = UserDirectoryService.getUserByEid(
+									member.getUserEid().toString());
+							
+							if(!groupAware || (groupAware && usersInGroup.contains(user))) {
+								String email;
+								
+								email = user.getEmail();
+								if (validateEmail(email)
+										&& !returnList.contains(email)) {
+									returnList.add(email);
+								}
+							}
+						}
+					}
+				} else {
+					user = UserDirectoryService.getUserByEid(
+							agent.getEid().toString());
+					
+					if(!groupAware || (groupAware && usersInGroup.contains(user))){
+						String email = user.getEmail();
+						if (validateEmail(email) && !returnList.contains(email)) {
+							returnList.add(email);
+						}
+					}
+				}
+			}catch (UserNotDefinedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return returnList;		
+	}
+	
+	protected boolean validateEmail(String displayName)
+	{
+		if (!emailPattern.matcher(displayName).matches()) {
+			return false;
+		}
+
+		return true;
+	}
+
 }

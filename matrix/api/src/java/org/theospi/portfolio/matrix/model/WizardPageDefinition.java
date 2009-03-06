@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.sakaiproject.entity.api.Entity;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.theospi.portfolio.guidance.model.Guidance;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
@@ -45,13 +46,27 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    private String initialStatus = "";
    private boolean suppressItems = false;
    private Collection evaluators = new HashSet();
+   private Collection reviewers = new HashSet();
    transient private boolean validate;
    private Set pages = new HashSet();
    transient private Id guidanceId;
    private Guidance guidance;
    transient private Id deleteGuidanceId;
    
-   private Id siteId;
+   //default it to matrix
+   private String type = WPD_MATRIX_TYPE;
+   
+   private boolean defaultCustomForm = true;
+   private boolean defaultReflectionForm = true;
+   private boolean defaultFeedbackForm = true;
+   private boolean defaultReviewers = true;
+   private boolean defaultEvaluationForm = true;
+   private boolean defaultEvaluators = true;
+   
+   private boolean allowRequestFeedback = true;
+   private boolean hideEvaluations = false;
+   
+   private String siteId;
    private Style style;
    
    transient private Id styleId;
@@ -61,7 +76,20 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
 	private List<String> attachments = new ArrayList();
 	
 	public static String ATTACHMENT_ASSIGNMENT = "assignment";
+	
+	public static String WPD_ENTITY_STRING = "ospWizPageDef";
+	
+	public static String WPD_MATRIX_TYPE = "0";
+	public static String WPD_WIZARD_HIER_TYPE = "1";
+	public static String WPD_WIZARD_SEQ_TYPE = "2";
 
+	public WizardPageDefinition() {
+	}
+	
+	public WizardPageDefinition(String type) {
+		this.type = type;
+	}
+	
    /**
     * @return Returns the initialStatus.
     */
@@ -190,11 +218,11 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
       this.description = description;
    }
 
-   public Id getSiteId() {
+   public String getSiteId() {
       return siteId;
    }
 
-   public void setSiteId(Id siteId) {
+   public void setSiteId(String siteId) {
       this.siteId = siteId;
    }
    public Style getStyle() {
@@ -221,5 +249,102 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
    public void setSuppressItems(boolean suppressItems) {
 	   this.suppressItems = suppressItems;
    }
+   
+   public String getReference() {
+	   StringBuffer sb = new StringBuffer(Entity.SEPARATOR);
+	   	sb.append(WPD_ENTITY_STRING);
+		sb.append(Entity.SEPARATOR);
+		sb.append(getContext());
+		sb.append(Entity.SEPARATOR);
+		sb.append(getId());
+		sb.append(Entity.SEPARATOR);
+		sb.append(getType());
+		return sb.toString();
+   }
+
+
+   public String getContext()
+   {
+	   return getSiteId();
+   }
+   public boolean isPublished()
+   {
+	   //TODO how to do this for real?
+	   return true;
+   }
+
+   public String getParentTitle()
+   {
+	   // TODO Auto-generated method stub
+	   return null;
+   }
+   
+   public boolean isDefaultCustomForm() {
+	   return defaultCustomForm;
+   }
+   public void setDefaultCustomForm(boolean defaultCustomForm) {
+	   this.defaultCustomForm = defaultCustomForm;
+   }
+   public boolean isDefaultReflectionForm() {
+	   return defaultReflectionForm;
+   }
+   public void setDefaultReflectionForm(boolean defaultReflectionForm) {
+	   this.defaultReflectionForm = defaultReflectionForm;
+   }
+   public boolean isDefaultFeedbackForm() {
+	   return defaultFeedbackForm;
+   }
+   public void setDefaultFeedbackForm(boolean defaultFeedbackForm) {
+	   this.defaultFeedbackForm = defaultFeedbackForm;
+   }
+   
+   public boolean isDefaultReviewers() {
+	   return defaultReviewers;
+   }
+   public void setDefaultReviewers(boolean defaultReviewers) {
+	   this.defaultReviewers = defaultReviewers;
+   }
+   public boolean isDefaultEvaluationForm() {
+	   return defaultEvaluationForm;
+   }
+   public void setDefaultEvaluationForm(boolean defaultEvaluationForm) {
+	   this.defaultEvaluationForm = defaultEvaluationForm;
+   }
+   public boolean isDefaultEvaluators() {
+	   return defaultEvaluators;
+   }
+   public void setDefaultEvaluators(boolean defaultEvaluators) {
+	   this.defaultEvaluators = defaultEvaluators;
+   }
+public boolean isAllowRequestFeedback() {
+	return allowRequestFeedback;
+}
+public void setAllowRequestFeedback(boolean allowRequestFeedback) {
+	this.allowRequestFeedback = allowRequestFeedback;
+}
+public Collection getReviewers() {
+	return reviewers;
+}
+public void setReviewers(Collection reviewers) {
+	this.reviewers = reviewers;
+}
+public String getType()
+{
+	return type;
+}
+public void setType(String type)
+{
+	this.type = type;
+}
+
+public boolean isHideEvaluations() {
+	return hideEvaluations;
+}
+
+public void setHideEvaluations(boolean hideEvaluations) {
+	this.hideEvaluations = hideEvaluations;
+}
+
+
 
 }

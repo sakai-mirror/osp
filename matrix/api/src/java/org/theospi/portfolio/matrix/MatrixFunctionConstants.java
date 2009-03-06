@@ -32,15 +32,19 @@ public interface MatrixFunctionConstants {
    public final static String LOCKED_STATUS = "LOCKED";
    public final static String WAITING_STATUS = "WAITING";
    public final static String CHECKED_OUT_STATUS = "CHECKED_OUT";
+   public final static String RETURNED_STATUS = "RETURNED";
 
    public final static String SCAFFOLDING_PREFIX = "osp.matrix.scaffolding.";
-   public final static String CREATE_SCAFFOLDING = SCAFFOLDING_PREFIX + "create";
-   public final static String EDIT_SCAFFOLDING = SCAFFOLDING_PREFIX + "edit";
-   //public static final String VIEW_MATRIX_USERS = SCAFFOLDING_PREFIX + "viewUsers";
-   public final static String PUBLISH_SCAFFOLDING = SCAFFOLDING_PREFIX + "publish";
-   public final static String DELETE_SCAFFOLDING = SCAFFOLDING_PREFIX + "delete";
-   public final static String EXPORT_SCAFFOLDING = SCAFFOLDING_PREFIX + "export";
-   public final static String USE_SCAFFOLDING = SCAFFOLDING_PREFIX + "use";
+    public final static String CREATE_SCAFFOLDING = SCAFFOLDING_PREFIX + "create";
+   public final static String REVISE_SCAFFOLDING_ANY = SCAFFOLDING_PREFIX + "revise.any";
+   public final static String REVISE_SCAFFOLDING_OWN = SCAFFOLDING_PREFIX + "revise.own";
+   public final static String DELETE_SCAFFOLDING_ANY = SCAFFOLDING_PREFIX + "delete.any";
+   public final static String DELETE_SCAFFOLDING_OWN = SCAFFOLDING_PREFIX + "delete.own";
+   public final static String PUBLISH_SCAFFOLDING_ANY = SCAFFOLDING_PREFIX + "publish.any";
+   public final static String PUBLISH_SCAFFOLDING_OWN = SCAFFOLDING_PREFIX + "publish.own";
+   public final static String EXPORT_SCAFFOLDING_ANY = SCAFFOLDING_PREFIX + "export.any";
+   public final static String EXPORT_SCAFFOLDING_OWN = SCAFFOLDING_PREFIX + "export.own";
+   
    public static final String VIEW_SCAFFOLDING_GUIDANCE = SCAFFOLDING_PREFIX + "viewScaffGuidance";
    public static final String EDIT_SCAFFOLDING_GUIDANCE = SCAFFOLDING_PREFIX + "editScaffGuidance";
       
@@ -48,7 +52,29 @@ public interface MatrixFunctionConstants {
    public static final String REVIEW_MATRIX = MATRIX_PREFIX + "review";
    public static final String EVALUATE_MATRIX = MATRIX_PREFIX + "evaluate";
    public static final String VIEW_OWNER_MATRIX = MATRIX_PREFIX + "viewOwner";
+   public static final String FEEDBACK_MATRIX = "osp.inviteFeedback.evaluate";
    
    public static final String EVALUATE_SPECIFIC_MATRIXCELL = MATRIX_PREFIX + "evaluateSpecificMatrix";
+   
+   
+   public final static String SCAFFOLDING_SPECIFIC_PREFIX = "osp.matrix.scaffoldingSpecific.";
+   public final static String ACCESS_ALL_CELLS = SCAFFOLDING_SPECIFIC_PREFIX + "accessAll";
+   public final static String VIEW_EVAL_OTHER = SCAFFOLDING_SPECIFIC_PREFIX + "viewEvalOther";
+   public final static String VIEW_FEEDBACK_OTHER = SCAFFOLDING_SPECIFIC_PREFIX + "viewFeedbackOther";
+   public final static String MANAGE_STATUS = SCAFFOLDING_SPECIFIC_PREFIX + "manageStatus";
+   public final static String ACCESS_USERLIST = SCAFFOLDING_SPECIFIC_PREFIX + "accessUserList";
+   public final static String VIEW_ALL_GROUPS = SCAFFOLDING_SPECIFIC_PREFIX + "viewAllGroups";
+   public final static String CAN_USE_SCAFFOLDING = SCAFFOLDING_SPECIFIC_PREFIX + "use";
+   
+   
+   
+	//Reflection review type = 0
+	//Evaluation review type = 1
+	//Feedback review type   = 2
+   public static final int REFLECTION_REVIEW_TYPE = 0;
+   public static final int EVALUATION_REVIEW_TYPE = 1;
+   public static final int FEEDBACK_REVIEW_TYPE = 2;
+   
+   
    
 }

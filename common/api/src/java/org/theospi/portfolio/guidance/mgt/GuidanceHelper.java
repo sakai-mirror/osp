@@ -31,4 +31,10 @@ public interface GuidanceHelper {
    
    public static final String SHOW_EXAMPLE_FLAG =
       "org.theospi.portfolio.guidance.exampleFlag";
+   
+   public static final String SHOW_RUBRIC_FLAG =
+	      "org.theospi.portfolio.guidance.rubricFlag";
+   
+   public static final String SHOW_EXPECTATIONS_FLAG =
+	      "org.theospi.portfolio.guidance.expectationsFlag";
 }

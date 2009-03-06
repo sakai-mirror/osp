@@ -87,9 +87,9 @@ public class DecoratedCategory extends DecoratedCategoryChild {
       if(getBase().getWizard().isPublished())
          return null;
       WizardPageSequence wizardPage =
-            new WizardPageSequence(new WizardPageDefinition());
+            new WizardPageSequence(new WizardPageDefinition(getBase().getWizard().getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL) ? WizardPageDefinition.WPD_WIZARD_HIER_TYPE : WizardPageDefinition.WPD_WIZARD_SEQ_TYPE));
       String siteId = getParent().getWorksite().getId();
-      wizardPage.getWizardPageDefinition().setSiteId(getParent().getIdManager().getId(siteId));
+      wizardPage.getWizardPageDefinition().setSiteId(siteId);
       wizardPage.getWizardPageDefinition().setNewId(getParent().getIdManager().createId());
       wizardPage.setCategory(getBase());
 

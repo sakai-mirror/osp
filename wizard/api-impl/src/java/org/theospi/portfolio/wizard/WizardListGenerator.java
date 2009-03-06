@@ -155,8 +155,8 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
 //       But check from the cache first
          Boolean authzCheck = sitePermCache.get(siteId.getValue());
          if (authzCheck == null) {
-            authzCheck = getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING, 
-                  siteId);
+            authzCheck = getAuthzManager().isAuthorized(MatrixFunctionConstants.CAN_USE_SCAFFOLDING, 
+                  getIdManager().getId(scaffolding.getReference()));
             sitePermCache.put(siteId.getValue(), authzCheck);
             logger.debug("Pushing site into cache for WizardListGenerator (matrices): " + siteId);
          }
