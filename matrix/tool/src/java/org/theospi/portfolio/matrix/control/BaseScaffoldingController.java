@@ -21,6 +21,7 @@
 
 package org.theospi.portfolio.matrix.control;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,19 +38,25 @@ import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.taggable.api.TaggableActivity;
+import org.sakaiproject.taggable.api.TaggingManager;
+import org.sakaiproject.taggable.api.TaggingProvider;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.model.Attachment;
+import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Criterion;
 import org.theospi.portfolio.matrix.model.Level;
+import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
-import org.theospi.portfolio.matrix.model.WizardPageForm;
-import org.theospi.portfolio.matrix.model.Attachment;
-import org.theospi.portfolio.matrix.model.Matrix;
-import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.matrix.model.WizardPageForm;
 import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
+import org.theospi.portfolio.workflow.mgt.WorkflowManager;
 
 public class BaseScaffoldingController {
    
@@ -61,6 +68,7 @@ public class BaseScaffoldingController {
    private LockManager lockManager = null;
    private TaggingManager taggingManager;
    private WizardActivityProducer wizardActivityProducer;
+   private WorkflowManager workflowManager;
    private WorksiteManager worksiteManager = null;
    private AuthenticationManager authManager = null;
    
@@ -135,30 +143,41 @@ public class BaseScaffoldingController {
       try
       {
     	  // if taggable, remove tags for any page defs that have been removed
-         if (getTaggingManager().isTaggable() && 
-             scaffolding.getId() != null && 
-             wizardActivityProducer != null) 
-         {
-            Scaffolding origScaffolding = getMatrixManager()
-                  .getScaffolding(scaffolding.getId());
-            Set<ScaffoldingCell> storedCells = origScaffolding
-                  .getScaffoldingCells();
-            for (ScaffoldingCell cell : storedCells) 
-            {
-               if (!scaffolding.getScaffoldingCells().contains(cell)) 
-               {
-                  for (TaggingProvider provider : getTaggingManager()
-                        .getProviders()) 
-                  {
-                     TaggableActivity activity = wizardActivityProducer
-                           .getActivity(cell.getWizardPageDefinition());
-                     provider.removeTags(activity);
-                  }
-               }
-            }
-			}
+    	  if (getTaggingManager().isTaggable() && 
+    			  scaffolding.getId() != null && 
+    			  wizardActivityProducer != null) 
+    	  {
+    		  Scaffolding origScaffolding = getMatrixManager()
+    		  .getScaffolding(scaffolding.getId());
+    		  Set<ScaffoldingCell> storedCells = origScaffolding
+    		  .getScaffoldingCells();
+    		  for (ScaffoldingCell cell : storedCells) 
+    		  {
+    			  if (!scaffolding.getScaffoldingCells().contains(cell)) 
+    			  {
+    				  for (TaggingProvider provider : getTaggingManager()
+    						  .getProviders()) 
+    				  {
+    					  TaggableActivity activity = wizardActivityProducer
+    					  .getActivity(cell.getWizardPageDefinition());
+    					  provider.removeTags(activity);
+    				  }
+    			  }
+    		  }
+    	  }
     	  
-         scaffolding = getMatrixManager().storeScaffolding(scaffolding);
+    	  scaffolding.setEvalWorkflows(
+  				new HashSet(createEvalWorkflows(scaffolding)));
+    	  
+    	  //call save instead of store (which uses hibernate merge()) when you need the
+    	  //newId to be used as the new saved Id.  (only in case where the scaffolding is new)
+    	  //*problem was that merge did not switch newId to id when saved
+    	  if(scaffolding.getId() == null && scaffolding.getNewId() != null){
+    		  scaffolding = (Scaffolding) getMatrixManager().getScaffolding((Id) getMatrixManager().save(scaffolding));
+    	  }else{
+    		  scaffolding = getMatrixManager().storeScaffolding(scaffolding);
+    	  }
+        
       }
       catch ( Exception e )
       {
@@ -174,6 +193,25 @@ public class BaseScaffoldingController {
       
       return scaffolding;
    }
+   
+   protected Set createEvalWorkflows(ObjectWithWorkflow wpd) {
+		return getWorkflowManager().createEvalWorkflows(wpd);
+	}
+   
+	/**
+	 * @return Returns the workflowManager.
+	 */
+	public WorkflowManager getWorkflowManager() {
+		return workflowManager;
+	}
+
+	/**
+	 * @param workflowManager
+	 *            The workflowManager to set.
+	 */
+	public void setWorkflowManager(WorkflowManager workflowManager) {
+		this.workflowManager = workflowManager;
+	}
    
    /**
     ** Update the status of all matrix cells to match the initial status 
@@ -242,15 +280,19 @@ public class BaseScaffoldingController {
                   (scaffolding.getWorkflowOption() == Scaffolding.MANUAL_PROGRESSION)) {
                status = MatrixFunctionConstants.LOCKED_STATUS;
             }
+            
             if (scaffoldingCell == null) {
                scaffoldingCell = new ScaffoldingCell(criterion, level, status, scaffolding);
-               scaffoldingCell.getWizardPageDefinition().setSiteId(scaffolding.getWorksiteId());
+               scaffoldingCell.getWizardPageDefinition().setSiteId(scaffolding.getWorksiteId().getValue());
                scaffoldingCell.getWizardPageDefinition().setTitle(getDefaultTitle(scaffolding, criterion, level));
                getMatrixManager().storeScaffoldingCell(scaffoldingCell);
             }
-            else if (dirtyProgression){
-               scaffoldingCell.setInitialStatus(status);
-               getMatrixManager().storeScaffoldingCell(scaffoldingCell);
+            else{
+            	if (dirtyProgression){          
+            		scaffoldingCell.setInitialStatus(status);
+            	}
+            	scaffoldingCell.getWizardPageDefinition().setTitle(getDefaultTitle(scaffolding, criterion, level));
+            	getMatrixManager().storeScaffoldingCell(scaffoldingCell);
             }
             firstColumn = false;
          }
@@ -272,9 +314,14 @@ public class BaseScaffoldingController {
    }
    
    protected String getDefaultTitle(Scaffolding scaffolding, Criterion criterion, Level level) {
-      String title = scaffolding.getRowLabel() + ": " + criterion.getDescription() + "; " +
-            scaffolding.getColumnLabel() + ": " + level.getDescription();
-      
+      String title = "";
+      if(scaffolding.getRowLabel() != null && scaffolding.getRowLabel() != "")
+    	  title = title + scaffolding.getRowLabel() + ": ";
+      title = title + criterion.getDescription() + "; ";
+      if(scaffolding.getColumnLabel() != null && scaffolding.getColumnLabel() != "")
+    	  title = title + scaffolding.getColumnLabel() + ": ";
+      title = title + level.getDescription();
+
       return title;
    }
 

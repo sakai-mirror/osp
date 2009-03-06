@@ -22,13 +22,17 @@ package org.theospi.portfolio.matrix.control;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
@@ -42,16 +46,24 @@ import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
+import org.sakaiproject.site.api.Group;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.ToolManager;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.user.api.Preferences;
 import org.sakaiproject.user.api.PreferencesEdit;
+import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.PreferencesService;
+import org.sakaiproject.user.cover.UserDirectoryService;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
+import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.EvaluationContentComparator;
+import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.EvaluationContentWrapper;
 import org.theospi.portfolio.wizard.mgt.WizardManager;
@@ -77,6 +89,9 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
    private final static String ALL_EVALS = "org.theospi.portfolio.evaluation.allSites";
    private final static String EVAL_SITE_FETCH = "org.theospi.portfolio.evaluation.siteEvals";
    
+   public static final String GROUP_FILTER = "group_filter";
+   
+   
    /* (non-Javadoc)
     * @see org.theospi.utils.mvc.intf.LoadObjectController#fillBackingObject(java.lang.Object, java.util.Map, java.util.Map, java.util.Map)
     */
@@ -84,7 +99,7 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       
       List list = new ArrayList();
       
-      String evalType = (String)request.get("evalTypeKey");
+      String evalType = CURRENT_SITE_EVALS; //(String)request.get("evalTypeKey");
       if (evalType != null)
          setUserEvalProperty(evalType);
       
@@ -185,6 +200,82 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       boolean userSite = SiteService.isUserSite(getWorksiteManager().getCurrentWorksiteId().getValue());
       model.put("isUserSite", userSite);
       
+      boolean hasGroups = getMatrixManager().hasGroups(worksiteId);
+      model.put("hasGroups", hasGroups);
+      
+      
+      boolean allowAllGroups = false;
+      List<Group> groupList = new ArrayList<Group>(getMatrixManager().getGroupList(worksiteId, allowAllGroups));
+      //Collections.sort(groupList);
+      //TODO: Figure out why ClassCastExceptions fire if we do this the obvious way...  The User list sorts fine
+      Collections.sort(groupList, new Comparator<Group>() {
+    	  public int compare(Group arg0, Group arg1) {
+    		  return arg0.getTitle().toLowerCase().compareTo(arg1.getTitle().toLowerCase());
+    	  }});
+      
+      
+      model.put("userGroups", groupList);
+      model.put("userGroupsCount", groupList.size());
+      
+      String filteredGroup = (String) request.get(GROUP_FILTER);
+      model.put("filteredGroup", filteredGroup);
+
+
+      if(hasGroups){
+    	  List userList = new ArrayList(getMatrixManager().getUserList(worksiteId, filteredGroup, allowAllGroups, groupList));
+
+    	  model.put("members", userList);
+
+    	  //Hold permission results for each scaffolding for quicker accessing
+    	  Map<String, Boolean> allGroupsForScaffolding = new HashMap<String, Boolean>();
+    	  
+    	  List<EvaluationContentWrapper> removeList = new ArrayList();
+    	  
+    	  //loop through each returned EvaluationContentWrapper
+    	  for(Iterator i = ((List) command).iterator(); i.hasNext(); ) {
+    		  EvaluationContentWrapper wrapper = (EvaluationContentWrapper)i.next();
+    		  //if filteredGroup "All Groups" is selected and this is a matrix evaluation item
+    		  if((filteredGroup == null || "".equals(filteredGroup)) && Cell.TYPE.equals( wrapper.getEvalType())){
+    			  	  //grab the scaffolding for the matrix
+    				  Scaffolding scaffolding = getMatrixManager()
+							.getScaffoldingCellByWizardPageDef(
+									getMatrixManager().getWizardPage(
+											wrapper.getId())
+											.getPageDefinition().getId())
+							.getScaffolding();
+    				  boolean viewAllGroups = false;
+    				  //if this scaffolding is not cached in the map, then add it
+    				  if(!allGroupsForScaffolding.containsKey(scaffolding.getReference())){
+    					  viewAllGroups= getAuthzManager().isAuthorized(MatrixFunctionConstants.VIEW_ALL_GROUPS, getIdManager().getId(scaffolding.getReference()));
+    					  allGroupsForScaffolding.put(scaffolding.getReference(), viewAllGroups);
+    				  }else{
+    					  viewAllGroups = allGroupsForScaffolding.get(scaffolding.getReference());
+    				  }
+    				  
+    				  //if the current user doesn't have view all groups permission for this scaffolding,
+    				  //then you need to check to see if the user has the ability to view the owner within
+    				  //their own groups
+    				  if(!viewAllGroups){
+    					  if(!userList.contains(wrapper.getOwner())){
+    						  removeList.add(wrapper);
+    					  }
+    				  }
+    		  }else if(!userList.contains(wrapper.getOwner())){
+    			  //a specific group was selected 
+    			  //and the wrapper owner doesn't exist in the group
+    			  
+    			  //So add the evaluation item to the remove list if the owner is part of the viewable group(s)
+    			  removeList.add(wrapper);
+    		  }
+    	  }
+    	  
+    	  //go through each removeList item and remove the evaluation in the command var.
+    	  for (EvaluationContentWrapper evaluationContentWrapper : removeList) {
+    		  ((List) command).remove(evaluationContentWrapper);
+    	  }
+      }
+      
+      
       return model;
    }
    
@@ -247,6 +338,9 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
             getIdManager().getId(getToolManager().getCurrentPlacement().getContext())));
    }
 
+ 
+   
+   
    /**
     * @return
     */

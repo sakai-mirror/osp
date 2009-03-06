@@ -21,6 +21,7 @@
 
 package org.theospi.portfolio.matrix.control;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -131,6 +132,8 @@ public class BaseScaffoldingCellController {
 				new HashSet(createEvalWorkflows(scaffoldingCell
 						.getWizardPageDefinition())));
 		getMatrixManager().storeScaffoldingCell(scaffoldingCell);
+		scaffoldingCell.getScaffolding().setModifiedDate(new Date(System.currentTimeMillis()));
+		getMatrixManager().storeScaffolding(scaffoldingCell.getScaffolding());
 		List cells = getMatrixManager().getCellsByScaffoldingCell(
 				scaffoldingCell.getId());
 		for (Iterator iter = cells.iterator(); iter.hasNext();) {

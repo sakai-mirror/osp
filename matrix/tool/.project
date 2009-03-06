@@ -5,12 +5,16 @@
     <project>osp-common-api</project>
     <project>osp-common-impl</project>
     <project>osp-common-tool-lib</project>
+    <project>osp-depend-jsf-widgets-sun</project>
     <project>osp-glossary-tool-lib</project>
+    <project>osp-jsf-widgets</project>
     <project>osp-matrix-api</project>
     <project>osp-matrix-impl</project>
     <project>osp-wizard-api</project>
     <project>sakai-assignment-api</project>
+    <project>sakai-depend-jsf-widgets-myfaces</project>
     <project>sakai-depend-jsf-widgets-sun</project>
+    <project>sakai-jsf-app</project>
     <project>sakai-jsf-tool</project>
     <project>sakai-jsf-widgets</project>
     <project>sakai-jsf-widgets-sun</project>
@@ -18,6 +22,7 @@
     <project>sakai-metaobj-impl</project>
     <project>sakai-metaobj-tool-lib</project>
     <project>sakai-taggable-api</project>
+    <project>sakai-taggable-impl</project>
   </projects>
   <buildSpec>
     <buildCommand>

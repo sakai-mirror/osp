@@ -66,11 +66,18 @@
          <property-name>authzManager</property-name>
          <value>#{Components["authzManager"]}</value>
       </managed-property>
+      
+      
+      <managed-property>
+         <description>Service Dependency: worksiteManager</description>
+         <property-name>worksiteManager</property-name>
+         <value>#{Components["org.sakaiproject.metaobj.worksite.mgt.WorksiteManager"]}</value>
+      </managed-property>
 
       <managed-property>
          <description>Service Dependency: agentManager</description>
          <property-name>agentManager</property-name>
-         <value>#{Components["org.sakaiproject.metaobj.shared.mgt.AgentManager.osp"]}</value>
+         <value>#{Components["agentManager"]}</value>
       </managed-property>
 
       <managed-property>
@@ -85,8 +92,12 @@
          <value>#{Components["org.sakaiproject.tool.api.ActiveToolManager"]}</value>
       </managed-property>
 
+	
    </managed-bean>
 
+    
+
+   
    <managed-bean>
       <description>ListTool</description>
       <managed-bean-name>ListTool</managed-bean-name>
@@ -101,6 +112,7 @@
       </managed-property>
 
    </managed-bean>
+
 
    <navigation-rule>
      <from-view-id>/audience/tool.jsp</from-view-id>

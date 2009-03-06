@@ -20,38 +20,50 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.sakaiproject.util.ResourceLoader;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
 import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.content.api.ResourceEditingHelper;
+import org.sakaiproject.email.cover.EmailService;
 import org.sakaiproject.entity.api.ResourceProperties;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.exception.IdUsedException;
 import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.exception.TypeException;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.FormHelper;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
+import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.sakaiproject.user.api.User;
+import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
+import org.sakaiproject.util.ResourceLoader;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.theospi.portfolio.matrix.MatrixManager;
+import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
@@ -65,6 +77,8 @@ import org.theospi.portfolio.workflow.model.Workflow;
 public class ReviewHelperController implements Controller {
 
    private static ResourceLoader myResources = new ResourceLoader("org.theospi.portfolio.matrix.bundle.Messages");
+   
+   protected final Log LOG = LogFactory.getLog(getClass());
 	
    private MatrixManager matrixManager;
    private IdManager idManager = null;
@@ -73,12 +87,17 @@ public class ReviewHelperController implements Controller {
    private LockManager lockManager;
    private ContentHostingService contentHosting;
    private StyleManager styleManager;
-
+   private AuthenticationManager authManager = null;
+   private SecurityService securityService;
+	
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       String strId = null;
       String lookupId = null;
       String returnView = "return";
       String manager = "";
+	   
+	   Placement placement = ToolManager.getCurrentPlacement();
+	   
 
       if (request.get("process_type_key") != null) {
          session.put("process_type_key", request.get("process_type_key"));
@@ -116,7 +135,6 @@ public class ReviewHelperController implements Controller {
          Map<String, Object> model = new HashMap<String, Object>();
          model.put(lookupId, strId);
 
-         Placement placement = ToolManager.getCurrentPlacement();
          String currentSite = placement.getContext();
 
          // check if this is a new review
@@ -148,6 +166,15 @@ public class ReviewHelperController implements Controller {
             if ( review.getReviewContent() != null )
                getLockManager().lockObject(review.getReviewContent().getValue(),
                                            strId, "lock all review content", true);
+            
+            boolean isEval = review.getType() == Review.EVALUATION_TYPE;
+            boolean isFeedback = review.getType() == Review.FEEDBACK_TYPE;
+                        
+            if (isEval || isFeedback) {
+               processEvalFeedbackNotifications(lookupId, strId, isEval, isFeedback,
+            		   currentSite, placement);
+            }
+            
          }
          
          // otherwise this is an existing review being edited
@@ -158,6 +185,7 @@ public class ReviewHelperController implements Controller {
                                         strId, "lock all review content", true);
                   
          }
+       
 
          // Clean up session attributes         
          session.remove(ResourceEditingHelper.CREATE_TYPE);
@@ -168,18 +196,20 @@ public class ReviewHelperController implements Controller {
          session.remove(lookupId);
          //session.remove("process_type_key");
          session.remove("secondPass");
-         session.remove(FormHelper.RETURN_ACTION_TAG);
-         
-         // Check for workflow post process
-         if (session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS) != null) {
-            Set workflows = (Set)session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
-            List wfList = Arrays.asList(workflows.toArray());
-            Collections.sort(wfList, Workflow.getComparator());
-            model.put("workflows", wfList);
-            model.put("manager", manager);
-            model.put("obj_id", strId);
-            return new ModelAndView("postProcessor", model);
-         }
+
+		// Check for workflow post process
+        if (session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS) != null) {
+           Set workflows = (Set)session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
+           List wfList = Arrays.asList(workflows.toArray());
+           if(!isSuperUser()){
+        	   wfList = removeResetWorkflow(wfList);
+           }
+           Collections.sort(wfList, Workflow.getComparator());
+           model.put("workflows", wfList);
+           model.put("manager", manager);
+           model.put("obj_id", strId);
+           return new ModelAndView("postProcessor", model);
+        }
          
          return new ModelAndView(returnView, model);
       }
@@ -188,20 +218,25 @@ public class ReviewHelperController implements Controller {
       // This is the first pass, 
       // so we are presenting the form to create a new [feedback | evaluation | reflection] review
       //
-      String ownerEid = null;
       String pageTitle = null;
       Id id = getIdManager().getId(strId);
       ObjectWithWorkflow obj = null;
+
       if (lookupId.equals(WizardPage.PROCESS_TYPE_KEY)) {
-         WizardPage page = matrixManager.getWizardPage(id);
-         obj = page.getPageDefinition();
-         pageTitle = page.getPageDefinition().getTitle();
-         ownerEid = page.getOwner().getEid().getValue();
-      }
-      else {
-         CompletedWizard cw = wizardManager.getCompletedWizard(id);
-         obj = cw.getWizard();
-         ownerEid = cw.getOwner().getEid().getValue();
+    	
+    	  WizardPage page = matrixManager.getWizardPage(id);
+       	 if(request.get("scaffoldingId") != null){
+       		 //scaffoldingId is used for the reflection form when the default user forms
+          	 //are selected for a matrix cell
+       		 obj = matrixManager.getScaffolding(idManager.getId((String) request.get("scaffoldingId")));
+       	 }else{
+       		obj = page.getPageDefinition();
+       	 }
+       	 pageTitle = page.getPageDefinition().getTitle();
+       	 
+      }else {
+    	  CompletedWizard cw = wizardManager.getCompletedWizard(id);
+    	  obj = cw.getWizard();
       }
 
 
@@ -220,13 +255,11 @@ public class ReviewHelperController implements Controller {
          case Review.EVALUATION_TYPE:
             formTypeId = obj.getEvaluationDevice().getValue();
             session.put(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS,
-                  obj.getEvalWorkflows());
+            		obj.getEvalWorkflows());
             formTypeTitleKey = "osp.reviewType." + Review.EVALUATION_TYPE;
             break;
          case Review.REFLECTION_TYPE:
             formTypeId = obj.getReflectionDevice().getValue();
-            // set ownerEid to null since we don't need it for the reflection
-            ownerEid = null;
             formTypeTitleKey = "osp.reviewType." + Review.REFLECTION_TYPE;
             break;
       }
@@ -238,12 +271,129 @@ public class ReviewHelperController implements Controller {
             ResourceEditingHelper.CREATE_TYPE_FORM);
 
 
-      formView = setupSessionInfo(request, session, pageTitle, formTypeId, formTypeTitleKey, ownerEid, strId);
+      formView = setupSessionInfo(request, session, pageTitle, formTypeId, formTypeTitleKey, strId, placement);
       session.put("page_id", strId);
       session.put("secondPass", "true");
       return new ModelAndView(formView);
 
    }
+   
+   /**
+    * Determine if a notification should be sent out and send it if needed
+    * @param lookupId
+    * @param strId
+    * @param isEval
+    * @param isFeedback
+    * @param currentSite
+    * @param cellPageType
+    * @param cellPageTypeBig
+    * @param matrixWizardType
+    */
+   private void processEvalFeedbackNotifications(String lookupId, String strId, 
+		   boolean isEval, boolean isFeedback, String currentSite, Placement placement) {
+	 //send out notification emails
+       boolean sendNotification = true;
+       boolean skipNotification = false;
+       
+       String cellPageType = "";
+       String cellPageTypeBig = "";
+       String matrixWizardType = "";
+       String cellPageName = "";
+       String matrixWizardName = "";
+       String to = null;
+       
+       if ("page_id".equals(lookupId)) {
+    	   Id pageId = getIdManager().getId(strId);
+    	   WizardPage wizPage = getMatrixManager().getWizardPage(pageId);
+    	   Agent owner = wizPage.getOwner();
+    	   try {
+    		   User user = UserDirectoryService.getUser(owner.getId().getValue()); 
+    		   if (user != null)
+    			   to = user.getEmail();
+    	   } catch (UserNotDefinedException e) {
+    		   LOG.warn("Unable to find user " + e.getId() + " to get email address for notification");
+    	   }
+    	   
+    	   WizardPageDefinition wpd = wizPage.getPageDefinition();
+    	   cellPageName = wpd.getTitle();
+    	   if (wpd.getType().equals(WizardPageDefinition.WPD_MATRIX_TYPE)) {
+    		   cellPageType = myResources.getString("cellType");
+    		   cellPageTypeBig = myResources.getString("cellTypeBig");
+    		   matrixWizardType = myResources.getString("matrixType");
+    		   Scaffolding scaffolding = getMatrixManager().getMatrixByPage(pageId).getScaffolding();
+    		   matrixWizardName = scaffolding.getTitle();
+    		   if(wpd.isDefaultEvaluationForm()){            			   
+    			   sendNotification = !scaffolding.isHideEvaluations();
+    		   }else{
+    			   sendNotification = !wpd.isHideEvaluations();
+    		   }
+    	   }
+    	   else {
+    		   //at a wizard page?
+    		   cellPageType = myResources.getString("pageType");
+    		   cellPageTypeBig = myResources.getString("pageTypeBig");
+    		   matrixWizardType = myResources.getString("wizardType");
+    		   CompletedWizard cWizard = getWizardManager().getCompletedWizardByPage(pageId);
+    		   matrixWizardName = cWizard.getWizard().getName();
+    	   }
+       }
+       else {
+    	   //At a wizard?
+    	   skipNotification = true;
+       }
+       
+       
+       String typeStr = myResources.getString("legend_feedback");
+       String typeIntroStr = myResources.getString("notification_newFeedback");
+       if (isEval) {
+    	   typeStr = myResources.getString("legend_evaluation");
+    	   typeIntroStr = myResources.getString("notification_aNewEval");
+    	   //TODO only send if hide evals is toggled off
+    	   
+       }
+       
+       //send email if
+       if (!skipNotification && (isFeedback || (sendNotification && isEval))) {
+    	   
+    	   
+    	   String siteName;
+    	   try {
+    		   siteName = SiteService.getSite(currentSite).getTitle();
+    	   } catch (IdUnusedException e) {
+    		   siteName="<site not found>";
+    	   }
+    	    
+    	   String directLink = ServerConfigurationService.getServerUrl() + 
+    	   		"/direct/matrixcell/" + strId + "/" + placement.getId() + "/" +"/viewCell.osp";
+
+    	   String[] subjArray = {cellPageName, matrixWizardName, matrixWizardType, typeStr};
+    	   String message_subject = myResources.getFormattedMessage("feedbackEvalNotificationSubject", subjArray);
+
+    	   String[] contentArray = {cellPageType, cellPageName, cellPageTypeBig, matrixWizardType, matrixWizardName, siteName, typeIntroStr, directLink};
+    	   String content = myResources.getFormattedMessage("feedbackEvalNotificationBody", contentArray);
+    	   String from = ServerConfigurationService.getString("setup.request", "oncourse_notification@iu.edu");
+    	   //String to = ownerUser.getEmail();
+    	   EmailService.send(from, to, message_subject, content, to, from, null);
+       }
+   }
+
+   private List removeResetWorkflow(List wfList){
+	   List newList = new ArrayList();
+	   for (Iterator iter = wfList.iterator(); iter.hasNext();) {
+		   Workflow wf = (Workflow) iter.next();
+		   if(!wf.getTitle().equals("Return Workflow")){
+			  newList.add(wf);
+		   }
+	   }
+	   
+	   return newList;
+   }
+   
+   private boolean isSuperUser(){
+	     return (getSecurityService().isSuperUser(authManager.getAgent().getId().getValue())) ? true : false;
+   }
+	
+   
 
    /**
     * 
@@ -258,7 +408,7 @@ public class ReviewHelperController implements Controller {
     */
    protected String setupSessionInfo(Map request, Map<String, Object> session,
                                      String pageTitle, String formTypeId, String formTypeTitleKey,
-                                     String ownerEid, String pageId) {
+                                     String pageId, Placement placement) {
       String retView = "formCreator";
 
       // check if this is a request for a new rewiew (i.e. no current_review_id)
@@ -280,7 +430,6 @@ public class ReviewHelperController implements Controller {
          try {
             String folderBase = getUserCollection().getId();
 
-            Placement placement = ToolManager.getCurrentPlacement();
             String currentSite = placement.getContext();
 
             String rootDisplayName = myResources.getString("portfolioInteraction.displayName");
@@ -303,7 +452,7 @@ public class ReviewHelperController implements Controller {
          }
 
          //CWM OSP-UI-09 - for auto naming
-         session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(objectTitle, pageTitle, formTypeTitle, ownerEid, 1, contentResourceList));
+         session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(objectTitle, pageTitle, formTypeTitle, 1, contentResourceList));
       } 
 		
       // Otherwise, editting an existing review
@@ -335,25 +484,19 @@ public class ReviewHelperController implements Controller {
     * @param objectTitle
     * @param pageTitle
     * @param formTypeName
-    * @param ownerEid
     * @param count: this keeps track of the number of times getFormDisplayName is called for naming reasons
     * @param contentResourceList: a list of the resources for looking up the names to compare to the new name
     * @return
     */
-   protected String getFormDisplayName(String objectTitle, String pageTitle, String formTypeName, String ownerEid, int count, List contentResourceList) {
+   protected String getFormDisplayName(String objectTitle, String pageTitle, String formTypeName, int count, List contentResourceList) {
       String includePageTitle = "";
-      String includeOwner = "";
       String name = "";
 
       if (pageTitle != null && pageTitle.length() > 0) {
          includePageTitle = pageTitle + "-";
       }
 
-      if (ownerEid != null && ownerEid.length() > 0) {
-         includeOwner = ownerEid + "-";
-      }
-
-      name = objectTitle + "-" + includePageTitle + includeOwner + formTypeName;
+      name = objectTitle + "-" + includePageTitle + formTypeName;
       
       if(count > 1){
     	  name = name + " (" + count + ")";
@@ -363,7 +506,7 @@ public class ReviewHelperController implements Controller {
       
       //if the name already exists, then recursively loop through this function untill there is an unique name      
       return formDisplayNameExists(name, contentResourceList) && contentResourceList != null ? 
-    		  getFormDisplayName(objectTitle, pageTitle, formTypeName, ownerEid, count, contentResourceList) : name;
+    		  getFormDisplayName(objectTitle, pageTitle, formTypeName, count, contentResourceList) : name;
    }
    
    /**
@@ -518,5 +661,21 @@ public class ReviewHelperController implements Controller {
    public void setStyleManager(StyleManager styleManager) {
       this.styleManager = styleManager;
    }
+
+public SecurityService getSecurityService() {
+	return securityService;
+}
+
+public void setSecurityService(SecurityService securityService) {
+	this.securityService = securityService;
+}
+
+public AuthenticationManager getAuthManager() {
+	return authManager;
+}
+
+public void setAuthManager(AuthenticationManager authManager) {
+	this.authManager = authManager;
+}
 
 }

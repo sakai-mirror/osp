@@ -17,22 +17,29 @@
     <input type="hidden" name="displayText" value="" />
     <input type="hidden" name="validate" value="false" />
 	<c:if test="${empty scaffolding.title}">
-	<h3><fmt:message key="title_scaffoldingAdd"/></h3>
+		<h3><fmt:message key="title_scaffoldingAdd"/></h3>
+		<div class="instruction">
+		  <fmt:message key="instructions_scaffoldingAdd"/>
+		</div>
 	</c:if>
 	<c:if test="${not empty scaffolding.title}">
-	<h3><fmt:message key="title_scaffoldingReviseProp"/></h3>
+		<h3><fmt:message key="title_scaffoldingReviseProp"/></h3>
+		<div class="instruction">
+		  <fmt:message key="instructions_scaffoldingEdit"/>
+		</div>
 	</c:if>
-	<div class="instruction">
-	  <fmt:message key="instructions_scaffolding"/>
-	  <fmt:message key="instructions_requiredFields"/>
-	</div>
+	
 	
 	<c:if test="${scaffolding.published}">
 	<c:if test="${isMatrixUsed}" >
-	  <fmt:message key="instructions_hasBeenUsed"/>
+		<span  class="instruction">
+	  		<fmt:message key="instructions_hasBeenUsed"/>
+	  	</span>
 	</c:if>
 	<c:if test="${!isMatrixUsed}" >
-	  <fmt:message key="instructions_hasBeenPublished"/>
+		<span  class="instruction">
+	  		<fmt:message key="instructions_hasBeenPublished"/>
+	  	</span>
 	</c:if>
 	  <c:set var="disabledText" value="disabled=\"disabled\""/>
 	</c:if>
@@ -102,14 +109,14 @@
 			 </c:if>
 		 </p>
 		  <h4><fmt:message key="title_matrixStatusColors"/></h4>
-		  <c:forTokens var="token" items="scaffolding.readyColor,scaffolding.pendingColor,scaffolding.completedColor,scaffolding.lockedColor"
+		  <c:forTokens var="token" items="scaffolding.readyColor,scaffolding.pendingColor,scaffolding.completedColor,scaffolding.lockedColor,scaffolding.returnedColor"
 						delims=",">
 			<spring:bind path="${token}">
 			   <c:if test="${status.error}">
 				   <div class="validation"><c:out value="${status.errorMessage}"/></div>
 			   </c:if>
 			   	<p class="shorttext">
-				   <span class="reqStar">*</span><label for="<c:out value="${status.expression}"/>-id"><osp:message key="${status.expression}_label"  /></label>
+				   <label for="<c:out value="${status.expression}"/>-id"><osp:message key="${status.expression}_label"  /></label>
 				   <c:choose>
 						<c:when test="${status.expression == 'readyColor'}">
 							<c:set var="styleColor" value="matrix-READY" />
@@ -122,6 +129,9 @@
 						</c:when>
 						<c:when test="${status.expression == 'lockedColor'}">
 							<c:set var="styleColor" value="matrix-LOCKED" />
+						</c:when>
+						<c:when test="${status.expression == 'returnedColor'}">
+							<c:set var="styleColor" value="matrix-RETURNED" />
 						</c:when>
 				   </c:choose>
 				   <input type="text" disabled="disabled" value="" size="2" class="<c:out value="${styleColor}"/>"
@@ -154,47 +164,56 @@
 		<h4><fmt:message key="title_columns"/>
 	  </h4>
 	  <spring:bind path="scaffolding.columnLabel">
-			<c:if test="${status.error}">
-				<div class="validation"><c:out value="${status.errorMessage}"/></div>
-			</c:if>
-		 <div class="shorttext">
+		<c:if test="${status.error}">
+			<p class="shorttext validFail">
+		</c:if>	
+		<c:if test="${!status.error}">
+			<p class="shorttext">
+		</c:if>
 			<label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_columnLabel"/></label>
 			<input type="text" name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}"/>-id"
 					 value="<c:out value="${status.value}"/>"
 				  size="25" maxlength="25" />
-		 </div>
+			<c:if test="${status.error}">
+				<span class="alertMessageInline"><c:out value="${status.errorMessage}"/></span>
+			</c:if>
+		 </p>
 		</spring:bind>
-	
+
 	
 		<spring:bind path="scaffolding.levels">
 			<c:if test="${(empty scaffolding.levels)}">
-				<c:if test="${status.error}">
-					<div class="indnt1 highlight">
-				</c:if>	
-				<c:if test="${!status.error}">
-					<div class="instruction indnt1">
-				</c:if>
+			<c:if test="${status.error}">
+				<div class="indnt1 highlight">
+			</c:if>	
+			<c:if test="${!status.error}">
+				<div class="instruction indnt1">
+			</c:if>
 				<span class="reqStarInline">*</span>
 					<fmt:message key="no_cols_created_message"/>&nbsp;&nbsp;
-					<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-						<fmt:message key="action_first_addColumn"/>
-					</a>
+				
+						<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+							<fmt:message key="action_first_addColumn"/>
+						</a>
+				&nbsp;&nbsp;
+					
 					<c:if test="${status.error}">
 					   <span span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
 					</c:if>
 				</div>
 			</c:if>	
 			<c:if test="${!(empty scaffolding.levels)}">
+				<span class="itemAction">
+					<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
+						<fmt:message key="action_addColumn"/>
+					</a>
+				</span>
 				<table class="listHier lines nolines" cellspacing="0" border="0" style="width:70%" summary="<fmt:message key="table_summary_cols"/>">
 					<thead>
 						<tr>
 							<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
-							<th scope="col" style="text-align:right">
-								<span class="itemAction">
-									<a href="javascript:document.forms[0].dest.value='addLevel';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();">
-										<fmt:message key="action_addColumn"/>
-									</a>
-								</span>
+							<th scope="col">
+								<fmt:message key="actions"/>
 							</th>
 						</tr>
 					</thead>
@@ -212,7 +231,7 @@
 										<div class="colorBox"  style="background-color: <c:out value="${level.color}"/>;color: <c:if test="${not empty level.textColor}" ><c:out value="${level.textColor}"/></c:if>"><fmt:message key="swatch_text"/></div>
 									</c:if>
 									<c:if test="${ empty level.color}">
-										<div class="colorBoxNone"><fmt:message key="swatch_text_none"/></div>
+										<div class="colorBox"><fmt:message key="swatch_text_none"/></div>
 									</c:if>				
 							</td>
 							<td style="white-space:nowrap">
@@ -262,15 +281,21 @@
 	
 		<h4><fmt:message key="title_rows"/></h4>
 	  <spring:bind path="scaffolding.rowLabel">
-			<div class="shorttext">
+			<c:if test="${status.error}">
+				<p class="shorttext validFail">
+			</c:if>	
+			<c:if test="${!status.error}">
+				<p class="shorttext">
+			</c:if>
 				<label for="<c:out value="${status.expression}"/>-id"><fmt:message key="label_rowLabel"/></label>
 				<input type="text" name="<c:out value="${status.expression}"/>"  id="<c:out value="${status.expression}"/>-id"
 						 value="<c:out value="${status.value}"/>"
 					  size="25" maxlength="25" />
+				
 				 <c:if test="${status.error}">
 					<span class="alertMessageInline"><c:out value="${status.errorMessage}"/></span>
 				 </c:if>
-			</div>
+			</p>
 		</spring:bind>
 	
 		<spring:bind path="scaffolding.criteria">
@@ -283,8 +308,10 @@
 			</c:if>
 				<span class="reqStarInline">*</span>
 					<fmt:message key="no_rows_created_message"/>&nbsp;&nbsp;
+					
 					<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
-					<fmt:message key="action_first_addRow"/></a>
+						<fmt:message key="action_first_addRow"/></a>&nbsp;&nbsp;
+			
 					<c:if test="${status.error}">
 						<span class="alertMessageInline" style="border:none"><c:out value="${status.errorMessage}"/></span>
 					</c:if>
@@ -292,12 +319,16 @@
 				
 			</c:if>
 			<c:if test="${!(empty scaffolding.criteria)}">
+				<span class="itemAction"> 
+					<a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
+						<fmt:message key="action_addRow"/></a>
+				</span>
 				<table class="listHier lines nolines" cellspacing="0" border="0" style="width:70%" summary="<fmt:message key="table_summary_rows"/>">
 					<thead>
 						<tr>
 							<th scope="col" colspan="2"><fmt:message key="table_header_name"/></th>
-							<th style="text-align:right"><span class="itemAction"> <a href="javascript:document.forms[0].dest.value='addCriterion';document.forms[0].submitAction.value='forward';document.forms[0].params.value='path=';document.forms[0].onsubmit();document.forms[0].submit();">
-								<fmt:message key="action_addRow"/></a></span>
+							<th>
+								<fmt:message key="actions"/>
 							</th>
 						</tr>
 					</thead>
@@ -318,7 +349,7 @@
 													</c:if>"><fmt:message key="swatch_text"/></div>
 										</c:if>
 										<c:if test="${ empty criterion.color}">
-											<div class="colorBoxNone"><fmt:message key="swatch_text_none"/></div>
+											<div class="colorBox"><fmt:message key="swatch_text_none"/></div>
 										</c:if>
 	
 										</td>
@@ -393,25 +424,282 @@
   </fieldset>
   <!-- ************* Progression Area End ************* -->
 
-	<!--  ********** Reviewer Group Access Start ************-->
-	<c:if test="${not ignoreReviewerGroups}">
-		<fieldset class="fieldsetVis">
-			<legend><osp:message key="group_access"/></legend>
-			<spring:bind path="scaffolding.reviewerGroupAccess">
-				<c:forTokens var="token" items="normal,unrestricted" delims="," varStatus="loopCount">
-					<div class="checkbox indnt1">
-						<input type="radio" id="<c:out value="${token}" />" name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
-							<c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
-						/>
-						<label for="<c:out value="${token}" />">
-							<osp:message key="${token}_group_access_label" />
-						</label>
-					</div>
-				</c:forTokens>
+
+
+
+	<!-- *************  User Forms Area  Start ************* -->
+	<fieldset class="fieldsetVis">
+		<legend><fmt:message key="legend_additional_user_Forms"/></legend>
+		<p>
+			<fmt:message key="info_defaultForms" />
+		</p>
+		<!-- ************* Additional Forms Area Start ************* -->   
+		<h5><fmt:message key="title_additionalForms"/></h5>
+		<p class="indnt1"> 
+			<fmt:message key="addForms_instructions" />
+		</p>
+
+		<p class="shorttext">
+			<label for="selectAdditionalFormId" ><fmt:message key="label_selectCustomForm"/></label>    
+			<select name="selectAdditionalFormId"  id="selectAdditionalFormId"  onchange="document.getElementById('addForm-id').className='active';">
+				<option value="" selected="selected"><fmt:message key="select_form_text" /></option>
+				<c:forEach var="addtlForm" items="${additionalFormDevices}" varStatus="loopCount">
+					<option value="<c:out value="${addtlForm.id}"/>">
+				<c:out value="${addtlForm.name}"/></option>
+				</c:forEach>
+			</select>
+			<span class="act">
+				<input type="submit" id="addForm-id" name="addForm" value="<fmt:message key="button_add"/>" onclick="javascript:document.forms[0].validate.value='false';" />
+			</span>
+		</p>
+		<c:if test="${ empty selectedAdditionalFormDevices}">
+			<div class="instruction indnt2">
+				<fmt:message key="addForms_instructions_noforms" />
+			</div>
+		</c:if>
+		<c:if test="${not empty selectedAdditionalFormDevices}">
+			<table class="listHier lines nolines" cellpadding="0" cellspacing="0" border="0" summary="<fmt:message key="table_forms_summary"/>" style="width:50%">
+				<c:forEach var="chosenForm" items="${selectedAdditionalFormDevices}">
+					<tr>
+						<td>
+							<span class="indnt2">
+								<img src = '/library/image/sakai/generic.gif' border= '0' alt ='' />
+								<c:out value="${chosenForm.name}" />
+							</span>
+							
+							
+							<c:if test="${empty localDisabledText}">
+								&nbsp;&nbsp;&nbsp;&nbsp;
+								<span class="itemAction">
+									<a href="javascript:document.forms[0].submitAction.value='removeFormDef';
+										document.forms[0].params.value='id=<c:out value="${chosenForm.id}"/>';
+										document.forms[0].onsubmit();
+										document.forms[0].submit();">
+										<osp:message key="remove"/>
+									</a>
+								</span>
+							</c:if>
+						</td>
+					</tr>
+				</c:forEach>
+			</table>
+		</c:if>
+	
+		<!-- ************* Additional Forms Area End ************* -->   
+ 
+
+		<!-- ************* Reflection Form Aream Start *********** -->
+		<spring:bind path="scaffolding.reflectionDeviceType">  
+			<input type="hidden" name="<c:out value="${status.expression}"/>"
+			value="<c:out value="${status.value}"/>" />
+		</spring:bind>
+	
+		<spring:bind path="scaffolding.reflectionDevice">  
+			<c:if test="${status.error}">
+				<div class="validation"><c:out value="${status.errorMessage}"/></div>
+			</c:if>
+			<h5><osp:message key="label_selectReflectionDevice"/></h5>
+			<p class="indnt1">
+				<fmt:message key="reflection_select_instructions"/>
+			</p>	
+			<p class="shorttext"> 
+				<label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectReflectionDevice"/></label>    
+				<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>" 
+					<c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
+					<option onclick="document.forms[0].reflectionDeviceType.value='';" value=""><fmt:message key="select_form_text" /></option>
+					<c:forEach var="refDev" items="${reflectionDevices}" varStatus="loopCount">
+						<option onclick="document.forms[0].reflectionDeviceType.value='<c:out value="${refDev.type}"/>';" 
+						value="<c:out value="${refDev.id}"/>" <c:if test="${status.value==refDev.id}"> selected="selected"</c:if>><c:out value="${refDev.name}"/></option>
+					</c:forEach>
+				</select>
+			</p>
+		</spring:bind>
+		
+		<!-- ************* Reflection Form Aream End *********** -->
+	</fieldset>
+
+
+
+
+
+
+
+
+
+
+
+	<!--  ********** Feedback start ************* -->
+	<fieldset class="fieldsetVis">
+		<legend><fmt:message key="legend_feedback"/></legend>
+		<p>
+			<fmt:message key="info_defaultForms" />
+		</p>
+		<!-- ************* Feedback Area Start ************* -->   
+		<spring:bind path="scaffolding.reviewDeviceType">  
+			<input type="hidden" name="<c:out value="${status.expression}"/>"
+			value="<c:out value="${status.value}"/>" />
+		</spring:bind>   
+		<spring:bind path="scaffolding.reviewDevice">  
+			<c:if test="${status.error}">
+				<div class="validation"><c:out value="${status.errorMessage}"/></div>
+			</c:if>
+			<h5> <osp:message key="label_selectReviewDevice"/></h5>
+			<p class="indnt1">
+				<fmt:message key="feedback_select_instructions"/>
+			</p>	
+			<p class="shorttext">
+				<label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectReviewDevice"/></label>    
+				<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>"
+					<c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
+					<option onclick="document.forms[0].reviewDeviceType.value='';" value=""><fmt:message key="select_form_text" /></option>
+					<c:forEach var="reviewDev" items="${reviewDevices}" varStatus="loopCount">
+						<option onclick="document.forms[0].reviewDeviceType.value='<c:out value="${reviewDev.type}"/>';" 
+						value="<c:out value="${reviewDev.id}"/>" <c:if test="${status.value==reviewDev.id}"> selected="selected"</c:if>><c:out value="${reviewDev.name}"/></option>
+					</c:forEach>
+				</select>
+			</p>
+		</spring:bind>
+		
+		<spring:bind path="scaffolding.evaluationDeviceType">  
+			<input type="hidden" name="<c:out value="${status.expression}"/>"
+			value="<c:out value="${status.value}"/>" />
+		</spring:bind>
+		
+		
+		
+		<!-- ************* Reviewers List Start ************* -->            
+	
+		<h5 style="display:inline"><fmt:message key="label_reviwers"/></h5>
+		<c:if test="${empty reviewers}">
+			<span class="indnt1">
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+						<osp:message key="add_reviewers"/>
+				</a>
+			</span>
+		</c:if>
+		<c:if test="${not empty reviewers}">
+			<ol>
+				<c:forEach var="reviwer" items="${reviewers}">
+					<li><c:out value="${reviwer}" /></li>
+				</c:forEach>
+			</ol>
+			<p class="indnt1">
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectReviewers';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+					<osp:message key="select_reviewers"/>
+				</a>	
+			</p>
+		</c:if>	
+		<c:if test="${empty reviewers}">
+			<div class="instruction indnt1">
+				<fmt:message key="info_reviewersNone"/>
+			</div>
+		</c:if>
+		<p class="indnt1">
+			<spring:bind path="scaffolding.allowRequestFeedback">  	
+				<span>		
+					<input type="checkbox" name="allowRequestFeedback" value="true"  id="allowRequestFeedback" 
+						<c:if test="${status.value}">
+							checked
+						</c:if> 
+					 />				
+					<label for="allowRequestFeedback" ><fmt:message key="allowRequestFeedback"/></label>
+				</span>    
+			</spring:bind>	
+			</p>
+		</p>
+	<!-- ************* Reviewers List End ************* -->
+		
+		
+		
+		<!-- ************* Feedback Area End ************* -->   
+		
+	</fieldset>	
+		
+		
+	<!--  ********** Evaluation start ************* -->
+	<fieldset class="fieldsetVis">
+		<legend><fmt:message key="legend_evaluation"/></legend>
+		<p>
+			<fmt:message key="info_defaultForms" />
+		</p>
+		
+		
+		
+		<!-- ************* Review and Evaluation Area Start ************* -->            
+		
+		<h5><fmt:message key="header_Evaluators"/></h5>
+		<div id="evaluatorsDiv">  
+			<p class="indnt1">
+				<fmt:message key="evaluation_select_instructions"/>
+			</p>
+			<spring:bind path="scaffolding.evaluationDevice">  
+				<c:if test="${status.error}">
+			<div class="validation"><c:out value="${status.errorMessage}"/></div>
+			</c:if>
+				<p class="shorttext">
+					<label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectEvaluationDevice"/></label>    
+					<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>"
+						<c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
+						<option onclick="document.forms[0].evaluationDeviceType.value='';" value=""><fmt:message key="select_form_text" /></option>
+						<c:forEach var="evalDev" items="${evaluationDevices}" varStatus="loopCount">
+							<option onclick="document.forms[0].evaluationDeviceType.value='<c:out value="${evalDev.type}"/>';" 
+							value="<c:out value="${evalDev.id}"/>" <c:if test="${status.value==evalDev.id}"> selected="selected"</c:if>><c:out value="${evalDev.name}"/></option>
+						</c:forEach>
+					</select>
+				</p>
 			</spring:bind>
-		</fieldset>
-	</c:if>
-	<!--  ********** Reviewer Group Access End ************-->
+			
+			<p class="indnt1">
+			<spring:bind path="scaffolding.hideEvaluations">  	
+				<span>		
+					<input type="checkbox" name="hideEvaluations" value="true"  id="hideEvaluations" 
+						<c:if test="${status.value}">
+							checked
+						</c:if> 
+					 />				
+					<label for="hideEvaluations" ><fmt:message key="hideEvaluations"/></label>
+				</span>    
+			</spring:bind>	
+			</p>
+		
+		</div>
+	
+		<!-- ************* Review and Evaluation Area End ************* -->
+		
+		
+		<!-- ************* Evaluators List Start ************* -->            
+	
+		<h5  style="display:inline"><fmt:message key="label_evaluators"/></h5>
+		<c:if test="${empty evaluators}">
+			<span class="indnt1">
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+					<osp:message key="add_evaluators"/>
+				</a>
+			</span>
+		</c:if>
+		<c:if test="${not empty evaluators}">
+			<ol>
+				<c:forEach var="eval" items="${evaluators}">
+					<li><c:out value="${eval}" /></li>
+				</c:forEach>
+			</ol>
+			<p class="indnt1">
+				<a href="#"	onclick="javascript:document.forms[0].dest.value='selectEvaluators';document.forms[0].submitAction.value='forward';document.forms[0].onsubmit();document.forms[0].submit();" >
+					<osp:message key="select_evaluators"/>
+				</a>	 
+			</p>
+		</c:if>	
+		<c:if test="${empty evaluators}">
+			<div class="instruction indnt1">
+				<fmt:message key="no_evaluators"/>
+			</div>
+		</c:if>
+		
+	<!-- ************* Evaluators List End ************* -->
+		
+		
+	</fieldset>	
+	<!--  ********** Feedback and Evaluation end ************* -->
 
 	<!--  ********** Feedback Options Start ************-->
 	<fieldset class="fieldsetVis">
@@ -473,7 +761,13 @@
 			value="<osp:message key="button_save"  />"
 		</c:if>
 		onclick="javascript:document.forms[0].validate.value='true';"/>
-		<input type="submit" name="cancelAction" value="<osp:message key="button_cancel"/>" accesskey="x"/>
+		<c:if test="${empty scaffolding.title}">
+		 	<input type="submit" name="cancelAction" value="<osp:message key="button_cancel"/>" accesskey="x"/>
+		</c:if>
+		<c:if test="${not empty scaffolding.title}">
+			<input type="submit" name="cancelActionExisting" value="<osp:message key="button_cancel"/>" accesskey="x"/>
+		</c:if>
+		
 	</div>
 
 	<osp:richTextWrapper textAreaId="descriptionTextArea" />

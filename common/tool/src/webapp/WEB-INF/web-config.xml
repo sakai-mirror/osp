@@ -84,6 +84,7 @@
         <property name="mappings">
             <props>
                <prop key="/editPermissions.osp">editPermissionsController</prop>
+               <prop key="/editPermissions_new.osp">editPermissionsNewController</prop>
                
                <!-- Style -->
                <prop key="/listAssignment.osp">listAssignmentController</prop>

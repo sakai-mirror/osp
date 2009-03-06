@@ -20,14 +20,18 @@
 **********************************************************************************/
 package org.theospi.portfolio.matrix.control;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.cover.ComponentManager;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.Controller;
@@ -40,6 +44,8 @@ import org.theospi.portfolio.workflow.model.Workflow;
 public class ReviewPostProcessor  implements Controller {
    
    private IdManager idManager = null;
+   private SecurityService securityService;
+   private AuthenticationManager authManager = null;
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Map<String, Object> model = new HashMap<String, Object>();
@@ -55,6 +61,9 @@ public class ReviewPostProcessor  implements Controller {
       else {
          Set workflows = (Set)session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
          List wfList = Arrays.asList(workflows.toArray());
+         if(!isSuperUser()){
+      	   wfList = removeResetWorkflow(wfList);
+         }
          Collections.sort(wfList, Workflow.getComparator());
          
          model.put("workflows", wfList);
@@ -65,6 +74,21 @@ public class ReviewPostProcessor  implements Controller {
       return new ModelAndView(view, model);
    }
 
+   private List removeResetWorkflow(List wfList){
+	   List newList = new ArrayList();
+	   for (Iterator iter = wfList.iterator(); iter.hasNext();) {
+		   Workflow wf = (Workflow) iter.next();
+		   if(!wf.getTitle().equals("Return Workflow")){
+			  newList.add(wf);
+		   }
+	   }
+	   
+	   return newList;
+   }
+   
+   private boolean isSuperUser(){
+	     return (getSecurityService().isSuperUser(authManager.getAgent().getId().getValue())) ? true : false;
+   }
    
    /**
     * @return Returns the idManager.
@@ -84,6 +108,22 @@ public class ReviewPostProcessor  implements Controller {
          
    protected WorkflowEnabledManager getWorkflowEnabledManager(String name) {
       return (WorkflowEnabledManager)ComponentManager.get(name);
-   }  
+   }
+
+public SecurityService getSecurityService() {
+	return securityService;
+}
+
+public void setSecurityService(SecurityService securityService) {
+	this.securityService = securityService;
+}
+
+public AuthenticationManager getAuthManager() {
+	return authManager;
+}
+
+public void setAuthManager(AuthenticationManager authManager) {
+	this.authManager = authManager;
+}  
 
 }
