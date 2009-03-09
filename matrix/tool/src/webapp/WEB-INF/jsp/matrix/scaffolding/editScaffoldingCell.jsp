@@ -791,42 +791,9 @@ function mySetMainFrameHeight(id)
 
 	<!--- Feedback Fieldset: --->
 
-	
+	<c:if test="${not feedbackOpts.itemFeedbackNone or not feedbackOpts.generalFeedbackNone}">
 	<fieldset class="fieldsetVis">
-		<c:if test="${feedbackOpts.itemFeedbackNone and feedbackOpts.generalFeedbackNone}">
-			<legend><fmt:message key="header_Evaluators"/></legend>
-		</c:if>
-		<c:if test="${not feedbackOpts.itemFeedbackNone or not feedbackOpts.generalFeedbackNone}">
-			<legend><fmt:message key="legend_feed_eval"/></legend>
-		</c:if>
-		<spring:bind path="scaffoldingCell.reviewDeviceType">  
-			<input type="hidden" name="<c:out value="${status.expression}"/>"
-			value="<c:out value="${status.value}"/>" />
-		</spring:bind>   
-		
-		<c:if test="${not feedbackOpts.itemFeedbackNone or not feedbackOpts.generalFeedbackNone}">
-		<spring:bind path="scaffoldingCell.reviewDevice">  
-			<c:if test="${status.error}">
-				<div class="validation"><c:out value="${status.errorMessage}"/></div>
-			</c:if>
-			<h5> <osp:message key="label_selectReviewDevice"/></h5>
-			<p class="indnt1">
-				<fmt:message key="feedback_select_instructions"/>
-			</p>	
-			<p class="shorttext">
-				<label for="<c:out value="${status.expression}-id"/>"><fmt:message key="label_selectReviewDevice"/></label>    
-				<select name="<c:out value="${status.expression}"/>" id="<c:out value="${status.expression}-id"/>"
-					<c:if test="${not empty status.value}"> <c:out value="${localDisabledText}"/> </c:if>>
-					<option onclick="document.forms[0].reviewDeviceType.value='';" value=""><fmt:message key="select_item_text" /></option>
-					<c:forEach var="reviewDev" items="${reviewDevices}" varStatus="loopCount">
-						<option onclick="document.forms[0].reviewDeviceType.value='<c:out value="${reviewDev.type}"/>';" 
-						value="<c:out value="${reviewDev.id}"/>" <c:if test="${status.value==reviewDev.id}"> selected="selected"</c:if>><c:out value="${reviewDev.name}"/></option>
-					</c:forEach>
-				</select>
-			</p>
-		</spring:bind>
 		<legend><fmt:message key="legend_feedback"/></legend>
-		</c:if>
 		
 		<div>
 		<h5><osp:message key="label_selectReviewDevice"/></h5>		
@@ -1010,6 +977,7 @@ function mySetMainFrameHeight(id)
 		</c:if>
 			
 	</fieldset>
+	</c:if>
 		
 	<!--  ********** Evaluation start ************* -->
 	<fieldset class="fieldsetVis">
