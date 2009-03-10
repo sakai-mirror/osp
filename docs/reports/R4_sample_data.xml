@@ -1,0 +1,1214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="./R3_Rating_Details.xslt"?>
+
+<reportResult xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<title>rd cur</title>
+<description></description>
+<keywords></keywords>
+<runDate>Tue Feb 03 11:55:18 EST 2009</runDate>
+<isWarehouseReport>false</isWarehouseReport>
+
+<isLiveReport>false</isLiveReport>
+<isSavedReport>false</isSavedReport>
+<accessUrl>http://localhost:8080/access</accessUrl>
+<attributes></attributes>
+<parameters>
+<parameter title="Choose a Matrix" name="matrixId" type="string">3B1FE9E052226EEBEF7E516DBE039FDA</parameter>
+<parameter title="Most recent evaluations only?" name="mostRecentOnly" type="string">true</parameter>
+</parameters>
+<columns>
+<column colIndex="0" title="OWNER_SITEUSER"></column>
+<column colIndex="1" title="REVIEW_CONTENT_ARTIFACT"></column>
+<column colIndex="2" title="ROOTCRITERION_ID"></column>
+
+<column colIndex="3" title="LEVEL_ID"></column>
+</columns>
+<data>
+<datarow index="0">
+<element colIndex="0" colName="OWNER_SITEUSER">
+<user>
+<id>994eccaf-a4b6-4967-af88-5002bab00cb5</id>
+<eid>chmaurer</eid>
+<displayName>Christopher Wayne Maurer</displayName>
+<sortName>Maurer, Christopher Wayne</sortName>
+<firstName>Christopher Wayne</firstName>
+<lastName>Maurer</lastName>
+
+<email>chmaurer@iupui.edu</email>
+<groups>prj</groups>
+<role>participant</role>
+</user>
+</element>
+<element colIndex="1" colName="REVIEW_CONTENT_ARTIFACT">
+<artifact>
+<metaData>
+<id>ca132472-ca92-4cb5-9599-b84c74e8afb2</id>
+<displayName>Reportable Matrix-Row: Core Communication and Quantitative Skills; Column: Beginner-Evaluation (6)</displayName>
+<type>
+<id>file</id>
+
+<description>file</description>
+</type>
+<repositoryNode>
+<created>Tue Feb 03 11:52:00 EST 2009</created>
+<modified>Tue Feb 03 11:52:00 EST 2009</modified>
+<createdBy>admin</createdBy>
+<modifiedBy>admin</modifiedBy>
+<size>109</size>
+<mimeType>
+<primary></primary>
+<sub></sub>
+
+</mimeType>
+</repositoryNode>
+</metaData>
+<structuredData>
+<EvaluationForm>
+  
+<comments>bad&lt;br type="_moz" /&gt;</comments>
+  
+<rating>1</rating>
+
+</EvaluationForm>
+</structuredData>
+<schema>
+<instructions>&lt;br type="_moz" /&gt;</instructions>
+
+<element name="EvaluationForm" minOccurs="1" maxOccurs="1">
+<xs:annotation xmlns:xs="http://www.w3.org/2001/XMLSchema">
+			
+<xs:documentation source="ospi.label" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en"></xs:documentation>
+		
+</xs:annotation>
+<children>
+<element name="rating" type="xs:string" minOccurs="1" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Rating</xs:documentation>
+			
+
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Use the Rating menu to select a rating:</xs:documentation>
+	
+</xs:annotation>
+<xs:simpleType>
+		
+<xs:restriction base="xs:string">
+
+<xs:enumeration value="">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">select a rating</xs:documentation>
+	
+
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="1">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">does not meet expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="2">
+	
+
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">meets expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="3">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">exceeds expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="n/a">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">not applicable</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+		
+</xs:restriction>
+	
+</xs:simpleType>
+
+</element>
+<element name="comments" type="unknown" minOccurs="0" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Comments</xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Enter your comments below:</xs:documentation>
+		
+<xs:documentation source="ospi.isRichText">true</xs:documentation>
+	
+</xs:annotation>
+</element>
+
+<element name="attachments" type="xs:anyURI" minOccurs="0" maxOccurs="-1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Attachments</xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Click Add Attachments to attach a file to your evaluation:</xs:documentation>
+	
+</xs:annotation>
+<xs:simpleType>
+		
+<xs:restriction base="xs:anyURI">
+		
+</xs:restriction>
+
+	
+</xs:simpleType>
+</element>
+</children>
+</element>
+</schema>
+</artifact>
+</element>
+<element colIndex="2" colName="ROOTCRITERION_ID">ACE87A4D518FA27A9CE0D09A6BC2D41C</element>
+<element colIndex="3" colName="LEVEL_ID">EB7952FBFD394466AA7B395C05B76ADD</element>
+</datarow>
+<datarow index="1">
+<element colIndex="0" colName="OWNER_SITEUSER">
+<user>
+<id>994eccaf-a4b6-4967-af88-5002bab00cb5</id>
+
+<eid>chmaurer</eid>
+<displayName>Christopher Wayne Maurer</displayName>
+<sortName>Maurer, Christopher Wayne</sortName>
+<firstName>Christopher Wayne</firstName>
+<lastName>Maurer</lastName>
+<email>chmaurer@iupui.edu</email>
+<groups>prj</groups>
+<role>participant</role>
+</user>
+
+</element>
+<element colIndex="1" colName="REVIEW_CONTENT_ARTIFACT">
+<artifact>
+<metaData>
+<id>aa262a85-ad3d-4ff7-9b72-ac6b1705003b</id>
+<displayName>Reportable Matrix-Row: Core Communication and Quantitative Skills; Column: Beginner-Evaluation (5)</displayName>
+<type>
+<id>file</id>
+<description>file</description>
+</type>
+<repositoryNode>
+<created>Tue Feb 03 11:48:48 EST 2009</created>
+
+<modified>Tue Feb 03 11:48:48 EST 2009</modified>
+<createdBy>admin</createdBy>
+<modifiedBy>admin</modifiedBy>
+<size>110</size>
+<mimeType>
+<primary></primary>
+<sub></sub>
+</mimeType>
+</repositoryNode>
+</metaData>
+<structuredData>
+<EvaluationForm>
+  
+
+<comments>nice&lt;br type="_moz" /&gt;</comments>
+  
+<rating>3</rating>
+
+</EvaluationForm>
+</structuredData>
+<schema>
+<instructions>&lt;br type="_moz" /&gt;</instructions>
+<element name="EvaluationForm" minOccurs="1" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en"></xs:documentation>
+			
+
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en"></xs:documentation>
+		
+</xs:annotation>
+<children>
+<element name="rating" type="xs:string" minOccurs="1" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Rating</xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Use the Rating menu to select a rating:</xs:documentation>
+	
+
+</xs:annotation>
+<xs:simpleType>
+		
+<xs:restriction base="xs:string">
+
+<xs:enumeration value="">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">select a rating</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="1">
+
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">does not meet expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="2">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">meets expectations</xs:documentation>
+	
+
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="3">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">exceeds expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="n/a">
+	
+
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">not applicable</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+		
+</xs:restriction>
+	
+</xs:simpleType>
+</element>
+<element name="comments" type="unknown" minOccurs="0" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Comments</xs:documentation>
+
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Enter your comments below:</xs:documentation>
+		
+<xs:documentation source="ospi.isRichText">true</xs:documentation>
+	
+</xs:annotation>
+</element>
+<element name="attachments" type="xs:anyURI" minOccurs="0" maxOccurs="-1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Attachments</xs:documentation>
+			
+
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Click Add Attachments to attach a file to your evaluation:</xs:documentation>
+	
+</xs:annotation>
+<xs:simpleType>
+		
+<xs:restriction base="xs:anyURI">
+		
+</xs:restriction>
+	
+</xs:simpleType>
+</element>
+</children>
+</element>
+</schema>
+
+</artifact>
+</element>
+<element colIndex="2" colName="ROOTCRITERION_ID">ACE87A4D518FA27A9CE0D09A6BC2D41C</element>
+<element colIndex="3" colName="LEVEL_ID">EB7952FBFD394466AA7B395C05B76ADD</element>
+</datarow>
+<datarow index="2">
+<element colIndex="0" colName="OWNER_SITEUSER">
+<user>
+<id>admin</id>
+<eid>admin</eid>
+<displayName>Sakai Administrator</displayName>
+<sortName>Administrator, Sakai</sortName>
+
+<firstName>Sakai</firstName>
+<lastName>Administrator</lastName>
+<email>chmaurer@iupui.edu</email>
+<groups>foo group,765 group</groups>
+<role>CIG Coordinator</role>
+</user>
+</element>
+<element colIndex="1" colName="REVIEW_CONTENT_ARTIFACT">
+<artifact>
+<metaData>
+<id>3b4de682-8261-4c75-ad1c-6ac12a9111b5</id>
+
+<displayName>Reportable Matrix-Row: Core Communication and Quantitative Skills; Column: Beginner-Evaluation</displayName>
+<type>
+<id>file</id>
+<description>file</description>
+</type>
+<repositoryNode>
+<created>Tue Feb 03 11:37:03 EST 2009</created>
+<modified>Tue Feb 03 11:37:03 EST 2009</modified>
+<createdBy>admin</createdBy>
+<modifiedBy>admin</modifiedBy>
+
+<size>109</size>
+<mimeType>
+<primary></primary>
+<sub></sub>
+</mimeType>
+</repositoryNode>
+</metaData>
+<structuredData>
+<EvaluationForm>
+  
+<comments>sdF&lt;br type="_moz" /&gt;</comments>
+  
+<rating>1</rating>
+
+</EvaluationForm>
+</structuredData>
+<schema>
+<instructions>&lt;br type="_moz" /&gt;</instructions>
+<element name="EvaluationForm" minOccurs="1" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en"></xs:documentation>
+		
+</xs:annotation>
+<children>
+
+<element name="rating" type="xs:string" minOccurs="1" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Rating</xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Use the Rating menu to select a rating:</xs:documentation>
+	
+</xs:annotation>
+<xs:simpleType>
+		
+<xs:restriction base="xs:string">
+
+<xs:enumeration value="">
+
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">select a rating</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="1">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">does not meet expectations</xs:documentation>
+	
+
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="2">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">meets expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="3">
+	
+
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">exceeds expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="n/a">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">not applicable</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+		
+</xs:restriction>
+	
+</xs:simpleType>
+</element>
+<element name="comments" type="unknown" minOccurs="0" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Comments</xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Enter your comments below:</xs:documentation>
+
+		
+<xs:documentation source="ospi.isRichText">true</xs:documentation>
+	
+</xs:annotation>
+</element>
+<element name="attachments" type="xs:anyURI" minOccurs="0" maxOccurs="-1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Attachments</xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Click Add Attachments to attach a file to your evaluation:</xs:documentation>
+	
+
+</xs:annotation>
+<xs:simpleType>
+		
+<xs:restriction base="xs:anyURI">
+		
+</xs:restriction>
+	
+</xs:simpleType>
+</element>
+</children>
+</element>
+</schema>
+</artifact>
+</element>
+<element colIndex="2" colName="ROOTCRITERION_ID">ACE87A4D518FA27A9CE0D09A6BC2D41C</element>
+<element colIndex="3" colName="LEVEL_ID">EB7952FBFD394466AA7B395C05B76ADD</element>
+
+</datarow>
+<datarow index="3">
+<element colIndex="0" colName="OWNER_SITEUSER">
+<user>
+<id>admin</id>
+<eid>admin</eid>
+<displayName>Sakai Administrator</displayName>
+<sortName>Administrator, Sakai</sortName>
+<firstName>Sakai</firstName>
+<lastName>Administrator</lastName>
+<email>chmaurer@iupui.edu</email>
+
+<groups>foo group,765 group</groups>
+<role>CIG Coordinator</role>
+</user>
+</element>
+<element colIndex="1" colName="REVIEW_CONTENT_ARTIFACT">
+<artifact>
+<metaData>
+<id>d0308249-9e99-4e82-b287-e7908e65b4a6</id>
+<displayName>Reportable Matrix-Row: Core Communication and Quantitative Skills; Column: Beginner-Evaluation (2)</displayName>
+<type>
+<id>file</id>
+<description>file</description>
+
+</type>
+<repositoryNode>
+<created>Tue Feb 03 11:37:21 EST 2009</created>
+<modified>Tue Feb 03 11:37:21 EST 2009</modified>
+<createdBy>admin</createdBy>
+<modifiedBy>admin</modifiedBy>
+<size>112</size>
+<mimeType>
+<primary></primary>
+<sub></sub>
+</mimeType>
+</repositoryNode>
+
+</metaData>
+<structuredData>
+<EvaluationForm>
+  
+<comments>QWER&lt;br type="_moz" /&gt;</comments>
+  
+<rating>n/a</rating>
+
+</EvaluationForm>
+</structuredData>
+<schema>
+<instructions>&lt;br type="_moz" /&gt;</instructions>
+<element name="EvaluationForm" minOccurs="1" maxOccurs="1">
+
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en"></xs:documentation>
+		
+</xs:annotation>
+<children>
+<element name="rating" type="xs:string" minOccurs="1" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Rating</xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Use the Rating menu to select a rating:</xs:documentation>
+	
+</xs:annotation>
+<xs:simpleType>
+		
+<xs:restriction base="xs:string">
+
+<xs:enumeration value="">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">select a rating</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="1">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">does not meet expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="2">
+	
+<xs:annotation>
+
+		
+<xs:documentation xml:lang="en">meets expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="3">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">exceeds expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="n/a">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">not applicable</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+		
+</xs:restriction>
+	
+</xs:simpleType>
+</element>
+
+<element name="comments" type="unknown" minOccurs="0" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Comments</xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Enter your comments below:</xs:documentation>
+		
+<xs:documentation source="ospi.isRichText">true</xs:documentation>
+	
+</xs:annotation>
+</element>
+<element name="attachments" type="xs:anyURI" minOccurs="0" maxOccurs="-1">
+
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Attachments</xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Click Add Attachments to attach a file to your evaluation:</xs:documentation>
+	
+</xs:annotation>
+<xs:simpleType>
+		
+<xs:restriction base="xs:anyURI">
+		
+</xs:restriction>
+	
+
+</xs:simpleType>
+</element>
+</children>
+</element>
+</schema>
+</artifact>
+</element>
+<element colIndex="2" colName="ROOTCRITERION_ID">ACE87A4D518FA27A9CE0D09A6BC2D41C</element>
+<element colIndex="3" colName="LEVEL_ID">EB7952FBFD394466AA7B395C05B76ADD</element>
+</datarow>
+<datarow index="4">
+<element colIndex="0" colName="OWNER_SITEUSER">
+<user>
+<id>admin</id>
+
+<eid>admin</eid>
+<displayName>Sakai Administrator</displayName>
+<sortName>Administrator, Sakai</sortName>
+<firstName>Sakai</firstName>
+<lastName>Administrator</lastName>
+<email>chmaurer@iupui.edu</email>
+<groups>foo group,765 group</groups>
+<role>CIG Coordinator</role>
+</user>
+
+</element>
+<element colIndex="1" colName="REVIEW_CONTENT_ARTIFACT">
+<artifact>
+<metaData>
+<id>7ca884f1-fd7b-4baf-8e51-796ec6e42310</id>
+<displayName>Reportable Matrix-Row: Core Communication and Quantitative Skills; Column: Beginner-Evaluation (3)</displayName>
+<type>
+<id>file</id>
+<description>file</description>
+</type>
+<repositoryNode>
+<created>Tue Feb 03 11:37:42 EST 2009</created>
+
+<modified>Tue Feb 03 11:37:42 EST 2009</modified>
+<createdBy>admin</createdBy>
+<modifiedBy>admin</modifiedBy>
+<size>110</size>
+<mimeType>
+<primary></primary>
+<sub></sub>
+</mimeType>
+</repositoryNode>
+</metaData>
+<structuredData>
+<EvaluationForm>
+  
+
+<comments>qwer&lt;br type="_moz" /&gt;</comments>
+  
+<rating>3</rating>
+
+</EvaluationForm>
+</structuredData>
+<schema>
+<instructions>&lt;br type="_moz" /&gt;</instructions>
+<element name="EvaluationForm" minOccurs="1" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en"></xs:documentation>
+			
+
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en"></xs:documentation>
+		
+</xs:annotation>
+<children>
+<element name="rating" type="xs:string" minOccurs="1" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Rating</xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Use the Rating menu to select a rating:</xs:documentation>
+	
+
+</xs:annotation>
+<xs:simpleType>
+		
+<xs:restriction base="xs:string">
+
+<xs:enumeration value="">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">select a rating</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="1">
+
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">does not meet expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="2">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">meets expectations</xs:documentation>
+	
+
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="3">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">exceeds expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="n/a">
+	
+
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">not applicable</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+		
+</xs:restriction>
+	
+</xs:simpleType>
+</element>
+<element name="comments" type="unknown" minOccurs="0" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Comments</xs:documentation>
+
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Enter your comments below:</xs:documentation>
+		
+<xs:documentation source="ospi.isRichText">true</xs:documentation>
+	
+</xs:annotation>
+</element>
+<element name="attachments" type="xs:anyURI" minOccurs="0" maxOccurs="-1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Attachments</xs:documentation>
+			
+
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Click Add Attachments to attach a file to your evaluation:</xs:documentation>
+	
+</xs:annotation>
+<xs:simpleType>
+		
+<xs:restriction base="xs:anyURI">
+		
+</xs:restriction>
+	
+</xs:simpleType>
+</element>
+</children>
+</element>
+</schema>
+
+</artifact>
+</element>
+<element colIndex="2" colName="ROOTCRITERION_ID">ACE87A4D518FA27A9CE0D09A6BC2D41C</element>
+<element colIndex="3" colName="LEVEL_ID">EB7952FBFD394466AA7B395C05B76ADD</element>
+</datarow>
+<datarow index="5">
+<element colIndex="0" colName="OWNER_SITEUSER">
+<user>
+<id>fac612a7-8b87-4859-b0bf-6322079638d4</id>
+<eid>cwm</eid>
+<displayName>cwm</displayName>
+<sortName>cwm</sortName>
+
+<firstName></firstName>
+<lastName></lastName>
+<email>chmaurer@iupui.edu</email>
+<groups>foo</groups>
+<role>participant</role>
+</user>
+</element>
+<element colIndex="1" colName="REVIEW_CONTENT_ARTIFACT">
+<artifact>
+<metaData>
+<id>3063eaa1-7807-41a0-843c-c956e4a021c4</id>
+<displayName>Reportable Matrix-Row: Core Communication and Quantitative Skills; Column: Beginner-Evaluation (4)</displayName>
+
+<type>
+<id>file</id>
+<description>file</description>
+</type>
+<repositoryNode>
+<created>Tue Feb 03 11:48:19 EST 2009</created>
+<modified>Tue Feb 03 11:48:19 EST 2009</modified>
+<createdBy>admin</createdBy>
+<modifiedBy>admin</modifiedBy>
+<size>109</size>
+
+<mimeType>
+<primary></primary>
+<sub></sub>
+</mimeType>
+</repositoryNode>
+</metaData>
+<structuredData>
+<EvaluationForm>
+  
+<comments>bad&lt;br type="_moz" /&gt;</comments>
+  
+<rating>1</rating>
+
+</EvaluationForm>
+
+</structuredData>
+<schema>
+<instructions>&lt;br type="_moz" /&gt;</instructions>
+<element name="EvaluationForm" minOccurs="1" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en"></xs:documentation>
+		
+</xs:annotation>
+<children>
+<element name="rating" type="xs:string" minOccurs="1" maxOccurs="1">
+<xs:annotation>
+
+			
+<xs:documentation source="ospi.label" xml:lang="en">Rating</xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Use the Rating menu to select a rating:</xs:documentation>
+	
+</xs:annotation>
+<xs:simpleType>
+		
+<xs:restriction base="xs:string">
+
+<xs:enumeration value="">
+	
+<xs:annotation>
+
+		
+<xs:documentation xml:lang="en">select a rating</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="1">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">does not meet expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="2">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">meets expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="3">
+	
+<xs:annotation>
+		
+
+<xs:documentation xml:lang="en">exceeds expectations</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+<xs:enumeration value="n/a">
+	
+<xs:annotation>
+		
+<xs:documentation xml:lang="en">not applicable</xs:documentation>
+	
+</xs:annotation>
+
+</xs:enumeration>
+
+		
+</xs:restriction>
+	
+</xs:simpleType>
+</element>
+<element name="comments" type="unknown" minOccurs="0" maxOccurs="1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Comments</xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Enter your comments below:</xs:documentation>
+		
+<xs:documentation source="ospi.isRichText">true</xs:documentation>
+
+	
+</xs:annotation>
+</element>
+<element name="attachments" type="xs:anyURI" minOccurs="0" maxOccurs="-1">
+<xs:annotation>
+			
+<xs:documentation source="ospi.label" xml:lang="en">Attachments</xs:documentation>
+			
+<xs:documentation source="ospi.description" xml:lang="en"></xs:documentation>
+			
+<xs:documentation source="ospi.inlinedescription" xml:lang="en">Click Add Attachments to attach a file to your evaluation:</xs:documentation>
+	
+</xs:annotation>
+<xs:simpleType>
+		
+
+<xs:restriction base="xs:anyURI">
+		
+</xs:restriction>
+	
+</xs:simpleType>
+</element>
+</children>
+</element>
+</schema>
+</artifact>
+</element>
+<element colIndex="2" colName="ROOTCRITERION_ID">ACE87A4D518FA27A9CE0D09A6BC2D41C</element>
+<element colIndex="3" colName="LEVEL_ID">EB7952FBFD394466AA7B395C05B76ADD</element>
+</datarow>
+</data>
+
+<extraReportResult index="0">
+<parameters>
+<parameter title="Choose a Matrix" name="matrixId" type="string">3B1FE9E052226EEBEF7E516DBE039FDA</parameter>
+<parameter title="Most recent evaluations only?" name="mostRecentOnly" type="string">true</parameter>
+</parameters>
+<columns>
+<column colIndex="0" title="ROWID"></column>
+<column colIndex="1" title="ROWNAME"></column>
+<column colIndex="2" title="NUMCOLS"></column>
+</columns>
+<data>
+<datarow index="0">
+<element colIndex="0" colName="ROWID">ACE87A4D518FA27A9CE0D09A6BC2D41C</element>
+<element colIndex="1" colName="ROWNAME">Core Communication and Quantitative Skills</element>
+
+<element colIndex="2" colName="NUMCOLS">3</element>
+</datarow>
+<datarow index="1">
+<element colIndex="0" colName="ROWID">7A4C43652493BF748D3BC966E195A372</element>
+<element colIndex="1" colName="ROWNAME">Critical Thinking</element>
+<element colIndex="2" colName="NUMCOLS">3</element>
+</datarow>
+<datarow index="2">
+<element colIndex="0" colName="ROWID">E2466386DF41C01357BA4A0C6563710D</element>
+<element colIndex="1" colName="ROWNAME">Integration and Application of Knowledge</element>
+<element colIndex="2" colName="NUMCOLS">3</element>
+
+</datarow>
+</data>
+</extraReportResult>
+<extraReportResult index="1">
+<parameters>
+<parameter title="Choose a Matrix" name="matrixId" type="string">3B1FE9E052226EEBEF7E516DBE039FDA</parameter>
+<parameter title="Most recent evaluations only?" name="mostRecentOnly" type="string">true</parameter>
+</parameters>
+<columns>
+<column colIndex="0" title="TITLE"></column>
+<column colIndex="1" title="ROWID"></column>
+<column colIndex="2" title="ROWNAME"></column>
+<column colIndex="3" title="COLID"></column>
+<column colIndex="4" title="COLNAME"></column>
+</columns>
+
+<data>
+<datarow index="0">
+<element colIndex="0" colName="TITLE">Reportable Matrix</element>
+<element colIndex="1" colName="ROWID">ACE87A4D518FA27A9CE0D09A6BC2D41C</element>
+<element colIndex="2" colName="ROWNAME">Core Communication and Quantitative Skills</element>
+<element colIndex="3" colName="COLID">EB7952FBFD394466AA7B395C05B76ADD</element>
+<element colIndex="4" colName="COLNAME">Beginner</element>
+</datarow>
+<datarow index="1">
+<element colIndex="0" colName="TITLE">Reportable Matrix</element>
+<element colIndex="1" colName="ROWID">ACE87A4D518FA27A9CE0D09A6BC2D41C</element>
+
+<element colIndex="2" colName="ROWNAME">Core Communication and Quantitative Skills</element>
+<element colIndex="3" colName="COLID">FF2535F98E4423599F367AC17D45F908</element>
+<element colIndex="4" colName="COLNAME">Intermediate</element>
+</datarow>
+<datarow index="2">
+<element colIndex="0" colName="TITLE">Reportable Matrix</element>
+<element colIndex="1" colName="ROWID">ACE87A4D518FA27A9CE0D09A6BC2D41C</element>
+<element colIndex="2" colName="ROWNAME">Core Communication and Quantitative Skills</element>
+<element colIndex="3" colName="COLID">EAFF6249A98822A265E982073D0FD41C</element>
+<element colIndex="4" colName="COLNAME">Advanced</element>
+
+</datarow>
+<datarow index="3">
+<element colIndex="0" colName="TITLE">Reportable Matrix</element>
+<element colIndex="1" colName="ROWID">7A4C43652493BF748D3BC966E195A372</element>
+<element colIndex="2" colName="ROWNAME">Critical Thinking</element>
+<element colIndex="3" colName="COLID">EB7952FBFD394466AA7B395C05B76ADD</element>
+<element colIndex="4" colName="COLNAME">Beginner</element>
+</datarow>
+<datarow index="4">
+<element colIndex="0" colName="TITLE">Reportable Matrix</element>
+<element colIndex="1" colName="ROWID">7A4C43652493BF748D3BC966E195A372</element>
+
+<element colIndex="2" colName="ROWNAME">Critical Thinking</element>
+<element colIndex="3" colName="COLID">FF2535F98E4423599F367AC17D45F908</element>
+<element colIndex="4" colName="COLNAME">Intermediate</element>
+</datarow>
+<datarow index="5">
+<element colIndex="0" colName="TITLE">Reportable Matrix</element>
+<element colIndex="1" colName="ROWID">7A4C43652493BF748D3BC966E195A372</element>
+<element colIndex="2" colName="ROWNAME">Critical Thinking</element>
+<element colIndex="3" colName="COLID">EAFF6249A98822A265E982073D0FD41C</element>
+<element colIndex="4" colName="COLNAME">Advanced</element>
+
+</datarow>
+<datarow index="6">
+<element colIndex="0" colName="TITLE">Reportable Matrix</element>
+<element colIndex="1" colName="ROWID">E2466386DF41C01357BA4A0C6563710D</element>
+<element colIndex="2" colName="ROWNAME">Integration and Application of Knowledge</element>
+<element colIndex="3" colName="COLID">EB7952FBFD394466AA7B395C05B76ADD</element>
+<element colIndex="4" colName="COLNAME">Beginner</element>
+</datarow>
+<datarow index="7">
+<element colIndex="0" colName="TITLE">Reportable Matrix</element>
+<element colIndex="1" colName="ROWID">E2466386DF41C01357BA4A0C6563710D</element>
+
+<element colIndex="2" colName="ROWNAME">Integration and Application of Knowledge</element>
+<element colIndex="3" colName="COLID">FF2535F98E4423599F367AC17D45F908</element>
+<element colIndex="4" colName="COLNAME">Intermediate</element>
+</datarow>
+<datarow index="8">
+<element colIndex="0" colName="TITLE">Reportable Matrix</element>
+<element colIndex="1" colName="ROWID">E2466386DF41C01357BA4A0C6563710D</element>
+<element colIndex="2" colName="ROWNAME">Integration and Application of Knowledge</element>
+<element colIndex="3" colName="COLID">EAFF6249A98822A265E982073D0FD41C</element>
+<element colIndex="4" colName="COLNAME">Advanced</element>
+
+</datarow>
+</data>
+</extraReportResult>
+<extraReportResult index="2">
+<parameters>
+<parameter title="Choose a Matrix" name="matrixId" type="string">3B1FE9E052226EEBEF7E516DBE039FDA</parameter>
+<parameter title="Most recent evaluations only?" name="mostRecentOnly" type="string">true</parameter>
+</parameters>
+<columns>
+<column colIndex="0" title="OWNER"></column>
+</columns>
+<data>
+<datarow index="0">
+<element colIndex="0" colName="OWNER">994eccaf-a4b6-4967-af88-5002bab00cb5</element>
+
+</datarow>
+<datarow index="1">
+<element colIndex="0" colName="OWNER">admin</element>
+</datarow>
+<datarow index="2">
+<element colIndex="0" colName="OWNER">fac612a7-8b87-4859-b0bf-6322079638d4</element>
+</datarow>
+</data>
+</extraReportResult>
+</reportResult>
+
+
