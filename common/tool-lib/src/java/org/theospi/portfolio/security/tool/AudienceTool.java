@@ -23,7 +23,6 @@ package org.theospi.portfolio.security.tool;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -32,8 +31,10 @@ import java.util.regex.Pattern;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 
+import org.sakaiproject.authz.api.Member;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.email.cover.EmailService;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.cover.EntityManager;
 import org.sakaiproject.exception.IdUnusedException;
@@ -44,9 +45,12 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.worksite.mgt.WorksiteManager;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
+import org.sakaiproject.tool.api.Tool;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.theospi.portfolio.security.AudienceSelectionHelper;
@@ -72,7 +76,8 @@ public class AudienceTool extends HelperToolBase {
     private String[] selectedArray;
     private List selectedMembers = null;
     private List originalMembers = null;
-	 private List selectedRoles = null;
+	private List selectedRoles = null;
+	private String searchEmails;
     private Site site;
 
     /**
@@ -141,33 +146,6 @@ public class AudienceTool extends HelperToolBase {
     
 
     /*************************************************************************/
-
-    private List getEvaluateMembersList() {
-       Set members = getEvaluateUsers();
-          
-        List<SelectItem> memberList = new ArrayList<SelectItem>();
-        for (Iterator i = members.iterator(); i.hasNext();) {
-           String userId =(String)i.next();
-
-            Agent agent = getAgentManager().getAgent(userId);
-            //Check for a null agent since the site.getMembers() will return member records for deleted users
-            if (agent != null && agent.getId() != null) {
-            	DecoratedMember decoratedMember = new DecoratedMember(this, agent);
-            	try {
-            		memberList.add(new SelectItem(decoratedMember.getBase()
-            				.getId().getValue(), UserDirectoryService.getUser(
-            						decoratedMember.getBase().getId().getValue())
-            						.getSortName(), "member"));
-            	} catch (UserNotDefinedException e) {
-            		// TODO Auto-generated catch block
-            		e.printStackTrace();
-            	}
-            }
-        }
-        
-        sortItemList(memberList);
-        return memberList;
-    }
     
     public void sortItemList(List<SelectItem> list) {
 		Collections.sort(list, new Comparator<SelectItem>() {
@@ -247,6 +225,18 @@ public class AudienceTool extends HelperToolBase {
         }
         save();
         clearAudienceSelectionVariables();
+        return returnToCaller();
+    }
+    
+    public String processActionNotify(){
+    	ToolSession session = SessionManager.getCurrentToolSession();
+        session.setAttribute("target", getSaveTarget());
+        notifyAudience();
+    	clearAudienceSelectionVariables();
+        //processActionClearFilter();
+        selectedArray = null;
+        message = null;
+        
         return returnToCaller();
     }
 
@@ -383,6 +373,29 @@ public class AudienceTool extends HelperToolBase {
        }
        return true;
     }
+    
+    public String processActionAddEmailUser() {
+        boolean worksiteLimited = ! isPortfolioAudience() && ! isInviteFeedbackAudience();
+        
+        String emailOrUser = getSearchEmails();
+        boolean guestUserEnabled = isGuestUserEnabled();
+        if(isInviteFeedbackAudience()){
+        	guestUserEnabled = false;
+        }
+        
+        if ( ! findByEmailOrUserName(emailOrUser, guestUserEnabled, worksiteLimited) ) {
+           if ( guestUserEnabled )
+              FacesContext.getCurrentInstance().addMessage(null,
+                                                           getFacesMessageFromBundle("email_user_not_found", (new Object[]{emailOrUser})));
+           else
+              FacesContext.getCurrentInstance().addMessage(null,
+                                                           getFacesMessageFromBundle("user_not_found", (new Object[]{emailOrUser})));
+        } 
+        else {
+            setSearchEmails("");
+        }
+        return "tool";
+    }
 
     public String processActionAddGroup() {
         for (Iterator i = getSelectedRoles().iterator(); i.hasNext();) {
@@ -392,6 +405,47 @@ public class AudienceTool extends HelperToolBase {
         }
         getSelectedRoles().clear();
         return "tool";
+    }
+    
+    /**
+     * @param displayName - for a guest user, this is the email address
+     * 
+     */
+    protected boolean findByEmailOrUserName(String displayName, boolean allowGuest, boolean worksiteLimited) {
+        List userList = getAgentManager().findByProperty(AgentManager.TYPE_EID, displayName);
+        
+        // if guest users not allowed and user was not found, return false
+        if ( ! allowGuest && userList == null) 
+           return false;
+        
+        if (allowGuest && !worksiteLimited && userList == null) {
+            if(validateEmail(displayName) && isDomainAllowed(displayName)) {
+                Agent agent = getAgentManager().createAgent(displayName, getIdManager().getId(displayName) );
+                if (agent != null) {
+                    notifyNewUserEmail( agent );
+                 }
+         	    userList.add(agent);
+            }
+         }
+           
+        boolean found = false;
+
+        if(userList != null){
+        	for (Iterator i = userList.iterator(); i.hasNext();) {
+        		found = true;
+        		Agent agent = (Agent) i.next();
+        		if (worksiteLimited && !checkWorksiteMember(agent)) {
+        			return false;
+        		}
+        	}
+        }
+
+        return found;
+    }
+    
+    protected boolean checkWorksiteMember(Agent agent) {
+        List roles = agent.getWorksiteRoles(getSite().getId());
+        return (roles != null && roles.size() > 0);
     }
 
     protected void addAgent(Agent agent, String key) {
@@ -410,7 +464,7 @@ public class AudienceTool extends HelperToolBase {
         if(isInviteFeedbackAudience()){
             session.setAttribute("feedbackAction", "save");           
         	//send invitation emails
-        	//notifyAudience();
+        	notifyAudience();
         }
         save();     
         clearAudienceSelectionVariables();
@@ -448,7 +502,7 @@ public class AudienceTool extends HelperToolBase {
     	return returnArray;    	
     }
     
-    /*
+    
     protected void notifyAudience(){
     	String url;
     	String emailMessage = "";
@@ -544,7 +598,47 @@ public class AudienceTool extends HelperToolBase {
     		e.printStackTrace();
     	}
     }
-    */
+    
+    private void notifyNewUserEmail(Agent guest) {
+        String from = ServerConfigurationService.getString("setup.request", null);
+        if (from == null) {
+
+            from = "postmaster@".concat(ServerConfigurationService.getServerName());
+        }
+        String productionSiteName = ServerConfigurationService.getString("ui.service", "");
+        String productionSiteUrl = ServerConfigurationService.getPortalUrl();
+
+        String to = guest.getDisplayName();
+        String headerTo = to;
+        String replyTo = to;
+        String message_subject = getMessageFromBundle("email.guestusernoti", new Object[]{productionSiteName});
+        String content = "";
+
+        if (from != null && to != null) {
+            StringBuilder buf = new StringBuilder();
+            buf.setLength(0);
+
+            // email body
+            buf.append(to + ":\n\n");
+            buf.append(getMessageFromBundle("email.addedto", new Object[]{productionSiteName, productionSiteUrl}) + "\n\n");
+            buf.append(getMessageFromBundle("email.simpleby", new Object[]{UserDirectoryService.getCurrentUser().getDisplayName()}) + "\n\n");
+            buf.append(getMessageFromBundle("email.userid", new Object[]{to}) + "\n\n");
+            buf.append(getMessageFromBundle("email.password", new Object[]{guest.getPassword()}) + "\n\n");
+
+            content = buf.toString();
+            EmailService.send(from, to, message_subject, content, headerTo, replyTo, null);
+        }
+    }
+    
+
+    protected boolean validateEmail(String displayName) {
+       if (!emailPattern.matcher(displayName).matches()) {
+          return false;
+       }
+
+       return true;
+    }
+    
     
     protected List getMatrixReviewersList() {
 		List returnList = new ArrayList();
@@ -660,7 +754,7 @@ public class AudienceTool extends HelperToolBase {
         availableUserList = new ArrayList();
 
         List userMemberList = new ArrayList();
-        userMemberList.addAll(getEvaluateMembersList());
+        userMemberList.addAll(getMembersList());
 
         for (Iterator idx = userMemberList.iterator(); idx.hasNext();) {
             SelectItem availableItem = (SelectItem) idx.next();
@@ -969,22 +1063,31 @@ public class AudienceTool extends HelperToolBase {
         
         
     }
+    
+    protected List getMembersList() {
+        Set members = getSite().getMembers();
+        List<SelectItem> memberList = new ArrayList<SelectItem>();
+        for (Iterator i = members.iterator(); i.hasNext();) {
+            Member member = (Member) i.next();
 
-    protected Set<String> getEvaluateUsers() {
-       Set evalUsers = new HashSet();
-       Site site = getSite();
-       Set roles = site.getRoles();
-           
-       for (Iterator i = roles.iterator(); i.hasNext();) {
-          Role role = (Role) i.next();
-          // check if role has evaluate permission
-          if ( isWizardAudience() && role.isAllowed(AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD) )
-             evalUsers.addAll( site.getUsersHasRole(role.getId()) );
-          if ( isMatrixAudience() && role.isAllowed(AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX) )
-             evalUsers.addAll( site.getUsersHasRole(role.getId()) );
-       }
-       
-       return evalUsers;
+            Agent agent = getAgentManager().getAgent((member.getUserId()));
+            //Check for a null agent since the site.getMembers() will return member records for deleted users
+            if (agent != null && agent.getId() != null) {
+            	DecoratedMember decoratedMember = new DecoratedMember(this, agent);
+            	try {
+            		memberList.add(new SelectItem(decoratedMember.getBase()
+            				.getId().getValue(), UserDirectoryService.getUser(
+            						decoratedMember.getBase().getId().getValue())
+            						.getSortName(), "member"));
+            	} catch (UserNotDefinedException e) {
+            		// TODO Auto-generated catch block
+            		e.printStackTrace();
+            	}
+            }
+        }
+
+        sortItemList(memberList);
+        return memberList;
     }
     
     /**
@@ -1009,6 +1112,14 @@ public class AudienceTool extends HelperToolBase {
     public String getPageContext2(){
     	String context2 = (String) getAttribute(AudienceSelectionHelper.CONTEXT2);
     	return context2 != null ? context2 : "";
+    }
+    
+    public String getSearchEmails() {
+        return searchEmails;
+    }
+
+    public void setSearchEmails(String searchEmails) {
+        this.searchEmails = searchEmails;
     }
 	 
 	 

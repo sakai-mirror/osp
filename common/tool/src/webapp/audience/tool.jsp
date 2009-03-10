@@ -27,11 +27,7 @@
 	<sakai:instruction_message value="#{common_msgs.audience_evalInfo}"/>
 </f:subview>
 
-<sakai:view>   
-
-<f:subview rendered="#{audience.matrixAudience}" id="matrixInstructs">
-	<sakai:instruction_message value="#{common_msgs.audience_matrix_instructions}"/>
-</f:subview>
+<sakai:view>
 
 <f:subview rendered="#{audience.wizardAudience}" id="wizardInstructs">
 	<sakai:instruction_message value="#{common_msgs.audience_wizard_instructions}"/>
@@ -54,10 +50,6 @@
                	  <ospx:xheadertitle id="userTitle4" value="#{common_msgs.audience_user_title}" rendered="#{audience.matrixAudienceReview}" />
 
                <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-                  <h:panelGrid id="transferUserTable" columns="3" columnClasses="available,transferButtons,selected" summary="#{common_msgs.name_table_summary}">
-
-         <sakai:view_title id="userTitle1" value="#{common_msgs.audience_user_title}"  rendered="#{audience.matrixAudience}" />
-
                   <h:panelGrid id="transferUserTable" columns="3" columnClasses="available,transferButtons,selected" summary="#{common_msgs.name_table_summary}">
                      <h:panelGroup>
                         <ospx:splitarea direction="vertical">
@@ -142,7 +134,7 @@
                      <f:verbatim></p></f:verbatim>
                   </f:subview>
 
-                  <!-- optional message for browse user selection -->
+                  <%-- optional message for browse user selection 
                   <f:subview id="browseUser" rendered="#{audience.maxList}" >
                      <f:verbatim><p class='shorttext'></f:verbatim>
                      <h:outputFormat value = "#{audience.browseMessage}"/>
@@ -164,7 +156,7 @@
                      </f:subview>
                      <f:verbatim></p></f:verbatim>
                   </f:subview>
-                  
+                  --%>
                </ospx:xheaderdrawer>
             </ospx:xheader>
 			
@@ -235,7 +227,9 @@
                         </ospx:splitarea>
                      </h:panelGroup>
                    </h:panelGrid>
-                  
+                </ospx:xheaderdrawer>
+            </ospx:xheader>
+		</f:subview>
       </ospx:splitsection>
     </ospx:splitarea>
     <sakai:button_bar>
