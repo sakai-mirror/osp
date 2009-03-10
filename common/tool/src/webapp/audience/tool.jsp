@@ -14,14 +14,8 @@
 
 <f:view>
 
-<<<<<<< .working
-<sakai:view_title value="#{common_msgs.audience_eval_title}"/>
-
-<h3><div class="highlight"><h:outputText value="#{audience.pageContext}"/></div></h3>
-<div class="highlight"><h:outputText value="#{audience.pageContext2}"/></div>
-=======
 <sakai:view_title rendered="#{audience.matrixAudienceReview}" value="#{common_msgs.audience_review_title}"/>
-<sakai:view_title rendered="#{not audience.portfolioAudience && not audience.inviteFeedbackAudience && not audience.matrixAudienceReview}" value="#{common_msgs.audience_eval_title}"/>
+<sakai:view_title rendered="#{not audience.inviteFeedbackAudience && not audience.matrixAudienceReview}" value="#{common_msgs.audience_eval_title}"/>
 <sakai:view_title rendered="#{audience.inviteFeedbackAudience}" value="#{common_msgs.matrixFeedbackTitle}"/>
 <f:subview id="audSubV10" rendered="#{audience.inviteFeedbackAudience}">
   <sakai:instruction_message value="#{common_msgs.matrixFeedbackInstructions}"/>
@@ -33,51 +27,20 @@
 	<sakai:instruction_message value="#{common_msgs.audience_evalInfo}"/>
 </f:subview>
 
-
->>>>>>> .merge-right.r57443
 <sakai:view>   
-<<<<<<< .working
 
-<f:subview rendered="#{audience.wizardAudience}" id="wizardInstructs">
-	<sakai:instruction_message value="#{common_msgs.audience_wizard_instructions}"/>
-=======
-<f:subview rendered="#{audience.portfolioAudience}" id="stepsInclude">
-    <%@ include file="steps.jspf" %>
->>>>>>> .merge-right.r57443
-</f:subview>
-
-<<<<<<< .working
 <f:subview rendered="#{audience.matrixAudience}" id="matrixInstructs">
 	<sakai:instruction_message value="#{common_msgs.audience_matrix_instructions}"/>
 </f:subview>
-=======
->>>>>>> .merge-right.r57443
-
-<<<<<<< .working
-
-=======
 
 <f:subview rendered="#{audience.wizardAudience}" id="wizardInstructs">
 	<sakai:instruction_message value="#{common_msgs.audience_wizard_instructions}"/>
 </f:subview>
 
-<f:subview rendered="#{audience.portfolioAudience}" id="portInstructs">
-	<sakai:instruction_message value="#{common_msgs.audience_portfolio_instructions}"/>
-</f:subview>
-
-
-
->>>>>>> .merge-right.r57443
 <sakai:messages/>
 
 <h:form id="mainForm">
     <ospx:splitarea direction="horizontal" width="100%">
-<<<<<<< .working
-      <ospx:splitsection size="100%" valign="top">
-        
-         <!-- worksite user section -->
-         <sakai:view_title id="userTitle" value="#{common_msgs.audience_user_title}" rendered="#{audience.wizardAudience}" />
-=======
         <ospx:splitsection size="100%" valign="top">
             <!-- worksite user drawer -->
             <ospx:xheader>
@@ -88,13 +51,10 @@
 
                   <ospx:xheadertitle id="userTitle2" value="#{common_msgs.matrixFeedbackShareUsers}" rendered="#{audience.inviteFeedbackAudience}" /> 
 
-                  <ospx:xheadertitle id="userTitle3" value="#{common_msgs.audience_portfolio_user_title}" rendered="#{audience.portfolioAudience}"/>
-
                	  <ospx:xheadertitle id="userTitle4" value="#{common_msgs.audience_user_title}" rendered="#{audience.matrixAudienceReview}" />
 
                <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
                   <h:panelGrid id="transferUserTable" columns="3" columnClasses="available,transferButtons,selected" summary="#{common_msgs.name_table_summary}">
->>>>>>> .merge-right.r57443
 
          <sakai:view_title id="userTitle1" value="#{common_msgs.audience_user_title}"  rendered="#{audience.matrixAudience}" />
 
@@ -142,9 +102,6 @@
                               <f:subview rendered="#{audience.inviteFeedbackAudience}" id="feedSubView2">
                                     <h:outputFormat value="#{common_msgs.audience_selected_reviewers}"/>
                               </f:subview>
-                              <f:subview rendered="#{audience.portfolioAudience}" id="portSubView2">
-                                    <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
-                              </f:subview>
                               <f:subview rendered="#{audience.matrixAudienceReview}" id="revSubView2">
                                     <h:outputFormat value="#{common_msgs.selected_users}"/>
                               </f:subview>
@@ -159,16 +116,9 @@
                      </h:panelGroup>
                   </h:panelGrid>
                   
-<<<<<<< .working
-                  <!-- worksite role section -->
-                  <ospx:splitarea width="825" direction="horizontal">
-                    <ospx:splitsection valign="top" align="left">
-                      <sakai:view_title id="roleTitle" value="#{common_msgs.audience_role_title}"  rendered="#{audience.wizardAudience}"/>
-=======
                   <!-- other user and email user option -->
-                  <f:subview id="emailUser" rendered="#{audience.portfolioAudience || audience.inviteFeedbackAudience}">
+                  <f:subview id="emailUser" rendered="#{audience.inviteFeedbackAudience}">
                      <f:verbatim><h3></f:verbatim>
-                     <h:outputText rendered="#{audience.portfolioAudience}" value="#{common_msgs.audience_portfolio_other_title}" />
                      <h:outputText rendered="#{audience.inviteFeedbackAudience}" value="#{common_msgs.matrixFeedbackGuestUsers}" />
                      <f:verbatim></h3></f:verbatim>
                   
@@ -178,11 +128,9 @@
                   
                      <f:verbatim><p class='shorttext'></f:verbatim>
                      <f:subview rendered="#{!audience.guestUserEnabled}" id="guestSubView">
-                        <h:outputLabel rendered="#{audience.portfolioAudience}" value="#{common_msgs.any_user_label}:" for="emails"/>
                         <h:outputLabel rendered="#{audience.inviteFeedbackAudience}" value="#{common_msgs.matrixFeedbackEnterGuest}:" for="emails"/>
                      </f:subview>
                      <f:subview rendered="#{audience.guestUserEnabled}" id="guestSubView2">
-                        <h:outputLabel rendered="#{audience.portfolioAudience}" value="#{common_msgs.email_label}:" for="emails"/>
                         <h:outputLabel rendered="#{audience.inviteFeedbackAudience}" value="#{common_msgs.matrixFeedbackEnterGuest}:" for="emails"/>
                      </f:subview>
                                   
@@ -193,15 +141,7 @@
                                       value="#{common_msgs.add}"/>
                      <f:verbatim></p></f:verbatim>
                   </f:subview>
->>>>>>> .merge-right.r57443
 
-<<<<<<< .working
-                      <sakai:view_title id="roleTitle2" value="#{common_msgs.audience_role_title}"  rendered="#{audience.matrixAudience}"/>
-                    </ospx:splitsection>
-                    
-                  </ospx:splitarea>
-                   <h:panelGrid id="transferRoleTable" columns="3" columnClasses="available,transferButtons,selected"  summary="#{common_msgs.role_table_summary}">
-=======
                   <!-- optional message for browse user selection -->
                   <f:subview id="browseUser" rendered="#{audience.maxList}" >
                      <f:verbatim><p class='shorttext'></f:verbatim>
@@ -217,9 +157,6 @@
                         <h:outputFormat value = "#{common_msgs.audience_individual_evaluators}" />
                      </f:subview>
                      <f:subview id="audSubV3" rendered="#{audience.inviteFeedbackAudience}">
-                        <h:outputFormat value = "#{common_msgs.audience_individual_users}" />
-                     </f:subview>
-                     <f:subview id="audSubV4" rendered="#{audience.portfolioAudience}">
                         <h:outputFormat value = "#{common_msgs.audience_individual_users}" />
                      </f:subview>
                      <f:subview id="audSubV5" rendered="#{audience.matrixAudienceReview}">
@@ -242,12 +179,9 @@
                   <ospx:xheadertitle id="roleTitle1" value="#{common_msgs.audience_role_title}"  rendered="#{audience.matrixAudienceReview}"/>
 
                   <ospx:xheadertitle id="roleTitle2" value="#{common_msgs.audience_role_title}"  rendered="#{audience.matrixAudience}"/>
-     
-                  <ospx:xheadertitle id="roleTitle3" value="#{common_msgs.audience_portfolio_role_title}"  rendered="#{audience.portfolioAudience}" />
         
                <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
                   <h:panelGrid id="transferRoleTable" columns="3" columnClasses="available,transferButtons,selected"  summary="#{common_msgs.role_table_summary}">
->>>>>>> .merge-right.r57443
                      <h:panelGroup>
                         <ospx:splitarea direction="vertical">
                            <ospx:splitsection valign="top">
@@ -284,12 +218,6 @@
                            <ospx:splitsection valign="top">
                            	  <f:subview id="audSubV12" rendered="#{audience.wizardAudience}">
                                     <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
-<<<<<<< .working
-                              </f:subview>
-                              <f:subview id="audSubV14" rendered="#{audience.matrixAudience}">
-                                    <h:outputFormat value="#{common_msgs.audience_selected_evaluators}"/>
-                              </f:subview>
-=======
                               </f:subview>
                               <f:subview id="audSubV13" rendered="#{audience.matrixAudienceReview}">
                                     <h:outputFormat value="#{common_msgs.selected_roles}"/>
@@ -297,10 +225,6 @@
                               <f:subview id="audSubV14" rendered="#{audience.matrixAudience}">
                                     <h:outputFormat value="#{common_msgs.selected_roles}"/>
                               </f:subview>
-                              <f:subview id="audSubV15" rendered="#{audience.portfolioAudience}">
-                                    <h:outputFormat value="#{common_msgs.audience_selected_audience}"/>
-                              </f:subview>
->>>>>>> .merge-right.r57443
                            </ospx:splitsection>
                            <ospx:splitsection valign="top">
                               <h:selectManyListbox id="selectedRoles" size="10" value="#{audience.selectedRoleArray}"
@@ -312,50 +236,7 @@
                      </h:panelGroup>
                    </h:panelGrid>
                   
-<<<<<<< .working
       </ospx:splitsection>
-=======
-               </ospx:xheaderdrawer>
-            </ospx:xheader>
-			</f:subview>
-			
-			
-            <!-- Public URL Drawer -->
-            <ospx:xheader rendered="#{audience.portfolioAudience}">
-               <ospx:xheadertitle id="publicTitle" value="#{common_msgs.audience_public_title}"/>
-               <ospx:xheaderdrawer initiallyexpanded="true" cssclass="drawerBorder">
-                  <ospx:splitarea direction="horizontal">
-                     <ospx:splitsection size="100%">
-                        <sakai:instruction_message value="#{common_msgs.audience_public_instructions}"/>
-                     </ospx:splitsection>
-                  </ospx:splitarea>
-                       
-                  <f:verbatim><script>
-                     function setPublicURLDisabled(){
-                        isPublic = document.getElementById("mainForm:isPublic");
-                        publicUrl = document.getElementById("mainForm:publicUrl");
-   
-                        publicUrl.disabled = !isPublic.checked;
-                     }
-                     var selected = false;
-                  </script></f:verbatim>
-                  <f:verbatim><p class='shorttext'><label for="isPublic"></f:verbatim>
-                  <h:selectBooleanCheckbox id="isPublic" value="#{audience.publicAudience}"
-                                           onclick="setPublicURLDisabled()"/>
-                  <h:outputText value="#{common_msgs.public_label}: " style="white-space:nowrap;"/>
-                  <f:verbatim></label></f:verbatim>
-                  <h:inputText value="#{audience.publicURL}" id="publicUrl" size="60" readonly="true"
-                               onclick="if(!selected){this.focus(); this.select();selected=true;}"/>
-                               
-                  <f:verbatim><script>
-                     setPublicURLDisabled();
-                  </script></f:verbatim>
-                  <f:verbatim></p></f:verbatim>
-               </ospx:xheaderdrawer>
-            </ospx:xheader>
-            
-        </ospx:splitsection>
->>>>>>> .merge-right.r57443
     </ospx:splitarea>
     <sakai:button_bar>
         <sakai:button_bar_item id="save_button" action="#{audience.processActionSave}" rendered="#{!audience.inviteFeedbackAudience}"
