@@ -2,7 +2,7 @@ access			https://source.sakaiproject.org/svn/access/trunk
 alias			https://source.sakaiproject.org/svn/alias/trunk
 announcement		https://source.sakaiproject.org/svn/announcement/trunk
 archive			https://source.sakaiproject.org/svn/archive/trunk
-assignment		https://source.sakaiproject.org/svn/assignment/trunk
+assignment		https://source.sakaiproject.org/svn/assignment/branches/SAK-15710
 authz			https://source.sakaiproject.org/svn/authz/trunk
 blog			https://source.sakaiproject.org/svn/blog/trunk
 calendar		https://source.sakaiproject.org/svn/calendar/trunk
@@ -29,9 +29,9 @@ memory			https://source.sakaiproject.org/svn/memory/trunk
 message			https://source.sakaiproject.org/svn/message/trunk
 metaobj			https://source.sakaiproject.org/svn/metaobj/trunk
 msgcntr			https://source.sakaiproject.org/svn/msgcntr/trunk
-osp			https://source.sakaiproject.org/svn/osp/trunk
+osp			https://source.sakaiproject.org/svn/osp/branches/SAK-15710
 podcasts		https://source.sakaiproject.org/svn/podcasts/trunk
-portal			https://source.sakaiproject.org/svn/portal/trunk
+portal			https://source.sakaiproject.org/svn/portal/branches/SAK-15710
 postem			https://source.sakaiproject.org/svn/postem/trunk
 presence		https://source.sakaiproject.org/svn/presence/trunk
 presentation		https://source.sakaiproject.org/svn/presentation/trunk
@@ -50,9 +50,10 @@ samples			https://source.sakaiproject.org/svn/samples/trunk
 search			https://source.sakaiproject.org/svn/search/trunk
 sections		https://source.sakaiproject.org/svn/sections/trunk
 site			https://source.sakaiproject.org/svn/site/trunk
+site-association	https://source.sakaiproject.org/contrib/iu/site-association/branches/SAK-15710
 site-manage		https://source.sakaiproject.org/svn/site-manage/trunk
 syllabus		https://source.sakaiproject.org/svn/syllabus/trunk
-taggable		https://source.sakaiproject.org/svn/taggable/trunk
+taggable		https://source.sakaiproject.org/svn/taggable/branches/SAK-15710
 test-harness		https://source.sakaiproject.org/svn/test-harness/trunk
 textarea		https://source.sakaiproject.org/svn/textarea/trunk
 tool			https://source.sakaiproject.org/svn/tool/trunk
