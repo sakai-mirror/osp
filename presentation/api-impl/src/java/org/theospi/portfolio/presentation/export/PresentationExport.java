@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -135,7 +136,7 @@ public class PresentationExport extends Crawler implements LinkListener {
 
       byte data[] = new byte[BUFFER];
       for (int i=0;i<files.length;i++) {
-         String fileName = parentPrefix + files[i].getName();
+         String fileName = URLDecoder.decode( parentPrefix + files[i].getName() );
          logger.debug("Adding " + fileName);
          InputStream in = new FileInputStream(files[i]);
 
