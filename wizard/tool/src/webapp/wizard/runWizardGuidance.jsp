@@ -360,7 +360,7 @@
       
       
    <sakai:button_bar>
-		<f:subview id="seqWizardButtons"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.sequential' && not empty wizard.current.userListForSelect}">	
+		<f:subview id="seqWizardButtons"  rendered="#{wizard.current.base.type == 'org.theospi.portfolio.wizard.model.Wizard.sequential' && (wizard.current.canOperateOnWizardInstance || not empty wizard.current.userListForSelect)}">	
        	<sakai:button_bar_item id="submitContinue" value="#{msgs.save_continue_wizard}"
 	      	 action="#{wizard.processExecPages}" accesskey="s" styleClass="active" />
 		</f:subview>
