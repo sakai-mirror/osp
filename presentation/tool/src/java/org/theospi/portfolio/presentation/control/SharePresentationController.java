@@ -172,6 +172,7 @@ public class SharePresentationController extends AbstractPresentationController 
 		  
         String emailFrom = getServerConfigurationService().getString("setup.request", 
 																							"postmaster@".concat(getServerConfigurationService().getServerName()));
+        String replyTo = user.getEmail();
         
         for (Iterator it=revisedShareList.iterator(); it.hasNext(); ) 
         {
@@ -190,7 +191,7 @@ public class SharePresentationController extends AbstractPresentationController 
                     {
                        String emailTo = userDirectoryService.getUser(member.getUserId()).getEmail();
                        if ( SharePresentationMoreController.emailPattern.matcher(emailTo).matches() )
-                          emailService.send(emailFrom, emailTo, subject, message.toString(), emailTo, null, null);
+                          emailService.send(emailFrom, emailTo, subject, message.toString(), emailTo, replyTo, null);
                     }
                  }
               }
@@ -198,7 +199,7 @@ public class SharePresentationController extends AbstractPresentationController 
               {
                  String emailTo = userDirectoryService.getUser(shareMember.getId().getValue()).getEmail();
                  if ( SharePresentationMoreController.emailPattern.matcher(emailTo).matches() )
-                    emailService.send(emailFrom, emailTo, subject, message.toString(), emailTo, null, null);
+                    emailService.send(emailFrom, emailTo, subject, message.toString(), emailTo, replyTo, null);
               }
            }
            catch ( Exception e ) 
