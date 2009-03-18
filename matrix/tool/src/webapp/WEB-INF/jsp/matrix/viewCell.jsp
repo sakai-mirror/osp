@@ -391,8 +391,7 @@
 												<osp:param name="process_type_key" value="page_id" />
 											  </osp:url>"
 										title="<fmt:message key="edit"/>"> 
-												<fmt:message key="edit"/>
-									</a>
+												<fmt:message key="edit"/></a>
 											|
 									<a
 										href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -567,8 +566,7 @@
 										<osp:param name="process_type_key" value="page_id" />
 										</osp:url>"
 								title="<fmt:message key="edit"/>"> 
-										<fmt:message key="edit"/>
-								 </a>
+										<fmt:message key="edit"/></a>
 										 |
 								 <a
 								href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -813,8 +811,7 @@
 										<osp:param name="process_type_key" value="page_id" />
 									  </osp:url>"
 								title="<fmt:message key="edit"/>"> 
-										<fmt:message key="edit"/>
-							</a>
+										<fmt:message key="edit"/></a>
 									|
 							<a
 								href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -923,8 +920,7 @@
 									<osp:param name="process_type_key" value="page_id" />
 								  </osp:url>"
 							title="<fmt:message key="edit"/>"> 
-									<fmt:message key="edit"/>
-						</a>
+									<fmt:message key="edit"/></a>
 								|
 						<a
 							href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
