@@ -52,7 +52,7 @@ public class Wizard extends ObjectWithWorkflow {
    private String exposedPageId;
    private transient Boolean exposeAsTool = null;
    
-   private Id siteId;
+   private String siteId;
    private WizardCategory rootCategory;
    private int sequence = 0;
    private Style style;
@@ -70,7 +70,7 @@ public class Wizard extends ObjectWithWorkflow {
    public Wizard() {
    }
 
-   public Wizard(Id id, Agent owner, Id siteId) {
+   public Wizard(Id id, Agent owner, String siteId) {
       setId(id);
       this.owner = owner;
       this.siteId = siteId;
@@ -123,10 +123,10 @@ public class Wizard extends ObjectWithWorkflow {
    public void setNewObject(boolean newObject) {
       this.newObject = newObject;
    }
-   public Id getSiteId() {
+   public String getSiteId() {
       return siteId;
    }
-   public void setSiteId(Id siteId) {
+   public void setSiteId(String siteId) {
       this.siteId = siteId;
    }
    public String getKeywords() {

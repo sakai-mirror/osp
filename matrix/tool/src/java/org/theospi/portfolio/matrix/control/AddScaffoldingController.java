@@ -155,9 +155,6 @@ public class AddScaffoldingController extends BaseScaffoldingController
     	  }           
     	  
     	  scaffolding = saveScaffolding(scaffolding);
-    	  if(!scaffolding.isPreview() && !scaffolding.isPublished()){
-    		  getMatrixManager().previewScaffolding(scaffolding.getId());
-    	  }
     	  
     	  session.remove(EditedScaffoldingStorage.STORED_SCAFFOLDING_FLAG);
     	  session.remove(EditedScaffoldingStorage.EDITED_SCAFFOLDING_STORAGE_SESSION_KEY);

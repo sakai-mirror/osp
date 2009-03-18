@@ -1305,9 +1305,10 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
       return page;
    }
    
-   public List getEvaluatableCells(Agent agent, List<Agent> roles, List<Id> worksiteIds, Map siteHash) {
-      String[] paramNames = new String[] {"evaluate", "pendingStatus", "user", "roles", "siteIds"};
-      Object[] params =  new Object[]{MatrixFunctionConstants.EVALUATE_MATRIX,
+   public List getEvaluatableCells(Agent agent, List<Agent> roles, List<String> worksiteIds, Map siteHash) {
+      String[] paramNames = new String[] {"false", "true", "evaluate", "pendingStatus", "user", "roles", "siteIds"};
+      Object[] params =  new Object[]{new Boolean(false), new Boolean(true),
+    		  						  MatrixFunctionConstants.EVALUATE_MATRIX,
                                       MatrixFunctionConstants.PENDING_STATUS,
                                       agent, roles, worksiteIds};
 	
@@ -1317,8 +1318,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
             "wp.pageDefinition.title, c.matrix.owner, " +
             "c.wizardPage.modified, wp.pageDefinition.siteId) " +
             "from WizardPage wp, Authorization auth, Cell c " +
-            "where ((wp.pageDefinition.id = auth.qualifier and wp.pageDefinition.defaultEvaluators=?) or " +
-            "(c.scaffoldingCell.scaffolding.id = auth.qualifier and wp.pageDefinition.defaultEvaluators=?))" +
+            "where ((wp.pageDefinition.id = auth.qualifier and wp.pageDefinition.defaultEvaluators=:false) or " +
+            "(c.scaffoldingCell.scaffolding.id = auth.qualifier and wp.pageDefinition.defaultEvaluators=:true))" +
             "and wp.id = c.wizardPage.id " +
             "and auth.function = :evaluate and wp.status = :pendingStatus and " +
             "(auth.agent=:user or auth.agent in ( :roles )) " +
@@ -1768,9 +1769,6 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
          
          createEvaluatorAuthzForImport(scaffolding);
          createReviewersAuthzForImport(scaffolding);
-         
-         //automatically preview the matrix to skip this step for the user:
-         previewScaffolding(scaffolding.getId());
          
          itWorked = true;
          return scaffolding;

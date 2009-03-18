@@ -278,11 +278,7 @@ public class CellController implements FormController, LoadObjectController {
 				pageId, Review.EVALUATION_TYPE, siteId, getEntityProducer()));
 		model.put("reflections", getReviewManager().getReviewsByParentAndType(
 				pageId, Review.REFLECTION_TYPE, siteId, getEntityProducer()));
-		model.put("cellFormDefs", processAdditionalForms(cell.getCell()
-				.getScaffoldingCell().getAdditionalForms()));
 		model.put("cellForms", cellForms );
-		model.put("cellForms", getMatrixManager().getPageForms(
-				cell.getCell().getWizardPage()));
 		
 
 		Boolean readOnly = new Boolean(false);

@@ -46,17 +46,17 @@ public abstract class EvaluationContentWrapper {
    private String url;
    private Set urlParams = new HashSet();
    private String siteTitle;
-   private Id siteId;
+   private String siteId;
    protected final Log logger = LogFactory.getLog(getClass());
    private boolean hideOwnerDisplay = false;
    
-   public EvaluationContentWrapper( Id id, String title, Agent owner, Date submittedDate, Id siteId) throws UserNotDefinedException {
+   public EvaluationContentWrapper( Id id, String title, Agent owner, Date submittedDate, String siteId) throws UserNotDefinedException {
       this.id = id;
       this.title = title;
       this.submittedDate = submittedDate;
       
       this.owner = UserDirectoryService.getUser(owner.getId().getValue());
-      this.siteTitle = fetchSiteName(siteId.getValue());
+      this.siteTitle = fetchSiteName(siteId);
       this.siteId = siteId;
    }
    
@@ -221,14 +221,14 @@ public abstract class EvaluationContentWrapper {
    /**
     * @return the siteId
     */
-   public Id getSiteId() {
+   public String getSiteId() {
       return siteId;
    }
 
    /**
     * @param siteId the siteId to set
     */
-   public void setSiteId(Id siteId) {
+   public void setSiteId(String siteId) {
       this.siteId = siteId;
    }
 

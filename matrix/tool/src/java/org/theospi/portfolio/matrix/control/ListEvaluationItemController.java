@@ -107,8 +107,8 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
          list = wizardManager.getEvaluatableItems(authManager.getAgent());
       }
       else {
-         List siteIds = new ArrayList(1);
-         siteIds.add( worksiteManager.getCurrentWorksiteId() );
+         List<String> siteIds = new ArrayList<String>(1);
+         siteIds.add( worksiteManager.getCurrentWorksiteId().getValue() );
          list = wizardManager.getEvaluatableItems(authManager.getAgent(), siteIds);
       }
       

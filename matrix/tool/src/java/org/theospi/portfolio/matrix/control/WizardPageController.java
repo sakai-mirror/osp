@@ -24,7 +24,6 @@ package org.theospi.portfolio.matrix.control;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -62,13 +61,15 @@ public class WizardPageController extends CellController {
 	 *      java.lang.Object, org.springframework.validation.Errors)
 	 */
 	public Map referenceData(Map request, Object command, Errors errors) {
+		//this is so CellController knows that WizardPageController called it
+		request.put("comingFromWizard", true);
+		
+		
 		// Call superclass first -- code below depends on this
 		Map model = super.referenceData(request, command, errors);
 		
 		ToolSession session = getSessionManager().getCurrentToolSession();
 
-		//this is so CellController knows that WizardPageController called it
-		request.put("comingFromWizard", true);
 		Boolean wizardPreview = Boolean.valueOf( (String)request.get("wizardPreview") );
 		CellFormBean cell = (CellFormBean) command;
 		String pageId = cell.getCell().getWizardPage().getId().getValue();

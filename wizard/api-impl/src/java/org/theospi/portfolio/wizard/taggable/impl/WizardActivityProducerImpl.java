@@ -155,7 +155,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		// We aren't picky about the provider, so ignore that argument.
 		List<TaggableActivity> activities = new ArrayList<TaggableActivity>();
 		for (WizardPageDefinition def : wizardManager.findWizardPageDefs(
-				idManager.getId(context), true)) {
+				context, true)) {
 			activities.add(getActivity(def));
 		}
 		return activities;

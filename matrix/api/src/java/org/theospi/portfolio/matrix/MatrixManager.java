@@ -151,7 +151,7 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    WizardPage submitPageForEvaluation(WizardPage page);
 
-   List getEvaluatableCells(Agent agent, List<Agent> roles, List<Id> worksiteIds, Map siteHash);
+   List getEvaluatableCells(Agent agent, List<Agent> roles, List<String> worksiteIds, Map siteHash);
 
    /**
     * @param matrixId
