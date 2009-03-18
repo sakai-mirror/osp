@@ -742,7 +742,7 @@ public class CellController implements FormController, LoadObjectController {
 				bean.getDescription();
 				// cwm use a different bean below, as the name has implications
 				retList.add(new CommonFormBean(strFormDefId, bean
-						.getDecoratedDescription(), strFormDefId, bean.getOwner()
+						.getDescription(), strFormDefId, bean.getOwner()
 						.getName(), bean.getModified()));
 			}
 		}
