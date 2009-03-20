@@ -2213,24 +2213,26 @@ public class WizardManagerImpl extends HibernateDaoSupport
 
    public Artifact load(Id id) {
       CompletedWizard cw = this.getCompletedWizard(id);
-      
-      List reflections = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
-            Review.REFLECTION_TYPE, cw.getWizard().getSiteId(),
-            WizardEntityProducer.WIZARD_PRODUCER);
-      List evaluations = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
-            Review.EVALUATION_TYPE, cw.getWizard().getSiteId(),
-            WizardEntityProducer.WIZARD_PRODUCER);
-      List feedback = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
-            Review.FEEDBACK_TYPE, cw.getWizard().getSiteId(),
-            WizardEntityProducer.WIZARD_PRODUCER);
-      cw.setReflections(reflections);
-      cw.setEvaluations(evaluations);
-      cw.setFeedback(feedback);
-      
-      loadWizardPageReviews(cw.getRootCategory());
-      //cw.get
-      cw.setHome(this);
-      return cw;
+      if (cw != null) {
+	      List reflections = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
+	            Review.REFLECTION_TYPE, cw.getWizard().getSiteId(),
+	            WizardEntityProducer.WIZARD_PRODUCER);
+	      List evaluations = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
+	            Review.EVALUATION_TYPE, cw.getWizard().getSiteId(),
+	            WizardEntityProducer.WIZARD_PRODUCER);
+	      List feedback = getReviewManager().getReviewsByParentAndType(cw.getId().getValue(), 
+	            Review.FEEDBACK_TYPE, cw.getWizard().getSiteId(),
+	            WizardEntityProducer.WIZARD_PRODUCER);
+	      cw.setReflections(reflections);
+	      cw.setEvaluations(evaluations);
+	      cw.setFeedback(feedback);
+	      
+	      loadWizardPageReviews(cw.getRootCategory());
+	      //cw.get
+	      cw.setHome(this);
+	      return cw;
+      }
+      return null;
    }
    
    private void loadWizardPageReviews(CompletedWizardCategory category) {

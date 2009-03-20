@@ -626,7 +626,7 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    }
 
    public Matrix getMatrix(Id matrixId) {
-      return (Matrix) this.getHibernateTemplate().load(Matrix.class, matrixId);
+      return (Matrix) this.getHibernateTemplate().get(Matrix.class, matrixId);
    }
    
    public List getMatricesForWarehousing() {
@@ -2009,10 +2009,13 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
     * @see org.theospi.portfolio.shared.mgt.ReadableObjectHome#load(org.theospi.portfolio.shared.model.Id)
     */
    public Artifact load(Id id) {
-      Matrix matrix = getMatrix(id);
-      loadMatrixCellReviews(matrix);
-      matrix.setHome(this);
-      return matrix;
+	   Matrix matrix = getMatrix(id);
+	   if (matrix != null) {
+		   loadMatrixCellReviews(matrix);
+		   matrix.setHome(this);
+		   return matrix;
+	   }
+	   return null;
    }
    
    private void loadMatrixCellReviews(Matrix matrix) {
