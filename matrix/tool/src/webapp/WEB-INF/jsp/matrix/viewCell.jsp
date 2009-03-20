@@ -160,7 +160,7 @@ function mySetMainFrameHeightViewCell(id)
 	<div class="validation"><fmt:message key="title_cellPreview" /></div>
 </c:if>
 
-<c:if test="${matrixCan.viewOwner || !matrixCan.evaluate}">
+<c:if test="${scaffoldingCan.accessUserList}">
 <h2 class="owner">
    <c:out value="${wizardOwner}" />
 </h2>
@@ -609,7 +609,7 @@ function mySetMainFrameHeightViewCell(id)
 							<td>
 								<!-- Allow Reviewers to edit/delete feedback -->
 								<c:if
-									test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
+									test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
 									<a
 										href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 												<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -617,6 +617,9 @@ function mySetMainFrameHeightViewCell(id)
 												<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
 												<osp:param name="review_id" value="${object.id}"/>
 												<osp:param name="process_type_key" value="page_id" />
+												<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 											  </osp:url>"
 										title="<fmt:message key="edit"/>"> 
 												<fmt:message key="edit"/>
@@ -629,6 +632,9 @@ function mySetMainFrameHeightViewCell(id)
 												 <osp:param name="current_form_id" value="${object.reviewContentNode.resource.id}" />
 												 <osp:param name="review_id" value="${object.id}"/>
 												 <osp:param name="submit" value="deleteReview" />
+												 <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 												 </osp:url>"
 										title="<fmt:message key="delete"/>">
 												<fmt:message key="remove"/>
@@ -806,7 +812,7 @@ function mySetMainFrameHeightViewCell(id)
 					<td>
 						<!-- Allow Reviewers to edit/delete feedback -->
 						<c:if
-							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
+							test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
 							<a
 								href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -814,6 +820,9 @@ function mySetMainFrameHeightViewCell(id)
 										<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
 										<osp:param name="review_id" value="${object.id}"/>
 										<osp:param name="process_type_key" value="page_id" />
+										<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 										</osp:url>"
 								title="<fmt:message key="edit"/>"> 
 										<fmt:message key="edit"/>
@@ -826,6 +835,9 @@ function mySetMainFrameHeightViewCell(id)
 										<osp:param name="current_form_id" value="${object.reviewContentNode.resource.id}" />
 										<osp:param name="review_id" value="${object.id}"/>
 										<osp:param name="submit" value="deleteReview" />
+										<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 										</osp:url>"
 								title="<fmt:message key="delete"/>">
 										<fmt:message key="remove"/>
@@ -1059,13 +1071,16 @@ function mySetMainFrameHeightViewCell(id)
 					<td>
 						<!-- Allow Reviewers to edit/delete feedback -->
 						<c:if
-							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit}">
+							test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit}">
 							<a
 								href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
 										<osp:param name="org_theospi_portfolio_review_type" value="2" />
 										<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
 										<osp:param name="process_type_key" value="page_id" />
+										<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 									  </osp:url>"
 								title="<fmt:message key="edit"/>"> 
 										<fmt:message key="edit"/>
@@ -1078,6 +1093,9 @@ function mySetMainFrameHeightViewCell(id)
 										<osp:param name="current_form_id" value="${object.reviewContentNode.resource.id}" />
 										<osp:param name="review_id" value="${object.id}"/>
 										<osp:param name="submit" value="deleteReview" />
+										<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 										</osp:url>"
 								title="<fmt:message key="delete"/>">
 										<fmt:message key="remove"/>
@@ -1086,7 +1104,7 @@ function mySetMainFrameHeightViewCell(id)
 					</td>
 					<td>
 <c:choose>
-<c:when test="${matrixCan.viewOwner || !matrixCan.evaluate}">
+<c:when test="${scaffoldingCan.accessUserList}">
 						<c:out
 						value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
 </c:when>
@@ -1158,13 +1176,16 @@ function mySetMainFrameHeightViewCell(id)
 				<td>
 					<!-- Allow Reviewers to edit/delete Evaluations -->
 					<c:if
-						test="${((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.status != 'COMPLETE' && enableReviewEdit}">
+						test="${((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.status != 'COMPLETE' && enableReviewEdit}">
 						<a
 							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 									<osp:param name="page_id" value="${cell.wizardPage.id}" />
 									<osp:param name="org_theospi_portfolio_review_type" value="1" />
 									<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
 									<osp:param name="process_type_key" value="page_id" />
+									<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 								  </osp:url>"
 							title="<fmt:message key="edit"/>"> 
 									<fmt:message key="edit"/>
@@ -1177,6 +1198,9 @@ function mySetMainFrameHeightViewCell(id)
 									 <osp:param name="current_form_id" value="${object.reviewContentNode.resource.id}" />
 									 <osp:param name="review_id" value="${object.id}"/>
 									 <osp:param name="submit" value="deleteReview" />
+									 <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 									 </osp:url>"
 							title="<fmt:message key="delete"/>">
 									<fmt:message key="remove"/>
