@@ -224,6 +224,8 @@ public class EditScaffoldingCellController extends
 		model.put("reflectionFormUsed", reflectionFormUsed);
 		model.put("customFormUsed", customFormUsed);
 		
+		model.put("enableDafaultMatrixOptions", getMatrixManager().isEnableDafaultMatrixOptions());
+		
 		return model;
 	}
 

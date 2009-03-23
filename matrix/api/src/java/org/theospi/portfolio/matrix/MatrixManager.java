@@ -190,6 +190,8 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    public boolean isUseExperimentalMatrix();
    
+   public boolean isEnableDafaultMatrixOptions();
+   
    List<WizardPageDefinition> getWizardPageDefs(List<Id> ids);
    List<ScaffoldingCell> getScaffoldingCells(List<Id> ids);
    
@@ -328,4 +330,6 @@ public interface MatrixManager extends WorkflowEnabledManager {
 	 * @param function
 	 */
 	public void notifyAudience(WizardPage wizPage, Id reviewObjectId, boolean groupAware, List sentEmailAddrs, String parentTitle, String function);
+
+	public Cell createCellWrapper(WizardPage page);
 }

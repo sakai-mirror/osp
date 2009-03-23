@@ -187,7 +187,8 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
    private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
    private EntityContextFinder contentFinder = null;
    private String importFolderName;
-   private boolean useExperimentalMatrix = false;  
+   private boolean useExperimentalMatrix = false;
+   private boolean enableDafaultMatrixOptions = true;
    private static boolean allowAllGroups = 
       ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false);
       
@@ -3573,6 +3574,38 @@ public class HibernateMatrixManagerImpl extends HibernateDaoSupport
 		}
 
 		return true;
+	}
+	
+	public Cell createCellWrapper(WizardPage page) {
+		Cell cell = new Cell();
+		cell.setWizardPage(page);
+		if (page.getId() == null) {
+			cell.setId(page.getNewId());
+		} else {
+			cell.setId(page.getId());
+		}
+
+		WizardPageDefinition pageDef = page.getPageDefinition();
+
+		boolean defaults = isEnableDafaultMatrixOptions();
+		ScaffoldingCell cellDef = new ScaffoldingCell(defaults, defaults, defaults, defaults, defaults, defaults, defaults);
+		cellDef.setWizardPageDefinition(pageDef);
+		if (pageDef.getId() == null) {
+			cellDef.setId(pageDef.getNewId());
+		} else {
+			cellDef.setId(pageDef.getId());
+		}
+
+		cell.setScaffoldingCell(cellDef);
+		return cell;
+	}
+
+	public boolean isEnableDafaultMatrixOptions() {
+		return enableDafaultMatrixOptions;
+	}
+
+	public void setEnableDafaultMatrixOptions(boolean enableDafaultMatrixOptions) {
+		this.enableDafaultMatrixOptions = enableDafaultMatrixOptions;
 	}
 
 }

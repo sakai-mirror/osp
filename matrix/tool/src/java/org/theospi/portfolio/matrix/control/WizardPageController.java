@@ -184,7 +184,7 @@ public class WizardPageController extends CellController {
 		request.put("wizardDescription", seq.getCategory().getWizard()
 				.getDescription());
 
-		Cell cell = createCellWrapper(page);
+		Cell cell = getMatrixManager().createCellWrapper(page);
 
 		CellFormBean cellBean = (CellFormBean) incomingModel;
 		cellBean.setCell(cell);
@@ -206,29 +206,6 @@ public class WizardPageController extends CellController {
 
 		return super.handleRequest(requestModel, request, session, application,
 				errors);
-	}
-
-	public static Cell createCellWrapper(WizardPage page) {
-		Cell cell = new Cell();
-		cell.setWizardPage(page);
-		if (page.getId() == null) {
-			cell.setId(page.getNewId());
-		} else {
-			cell.setId(page.getId());
-		}
-
-		WizardPageDefinition pageDef = page.getPageDefinition();
-
-		ScaffoldingCell cellDef = new ScaffoldingCell();
-		cellDef.setWizardPageDefinition(pageDef);
-		if (pageDef.getId() == null) {
-			cellDef.setId(pageDef.getNewId());
-		} else {
-			cellDef.setId(pageDef.getId());
-		}
-
-		cell.setScaffoldingCell(cellDef);
-		return cell;
 	}
 
 	public WizardManager getWizardManager() {

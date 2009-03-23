@@ -530,7 +530,7 @@ function mySetMainFrameHeight(id)
 		<h5><fmt:message key="title_additionalForms"/></h5>
 		
 		<!-- default case is currently only needed for matrices -->
-		<c:if test="${scaffoldingCell.scaffolding != null}" >
+		<c:if test="${scaffoldingCell.scaffolding != null && enableDafaultMatrixOptions == 'true'}" >
 		
 			<!-- ************* Default Matrix Custom Form Checkbox Start *********** -->
 			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultCustomForm">  
@@ -697,7 +697,7 @@ function mySetMainFrameHeight(id)
 		<h5><osp:message key="label_selectReflectionDevice"/></h5>
 		
 		<!-- default case is currently only needed for matrices -->
-		<c:if test="${scaffoldingCell.scaffolding != null}" >
+		<c:if test="${scaffoldingCell.scaffolding != null && enableDafaultMatrixOptions == 'true'}" >
 		
 			<!-- ************* Default Matrix Reflection Form Checkbox Start *********** -->
 			<spring:bind path="scaffoldingCell.wizardPageDefinition.defaultReflectionForm">  
@@ -800,7 +800,7 @@ function mySetMainFrameHeight(id)
 		
 		
 		<!-- this case is currently only needed for matrices -->
-		<c:if test="${scaffoldingCell.scaffolding != null}">
+		<c:if test="${scaffoldingCell.scaffolding != null && enableDafaultMatrixOptions == 'true'}">
 
 
 			<!-- ************* Default Matrix Checkbox Start *********** -->
@@ -891,7 +891,7 @@ function mySetMainFrameHeight(id)
 			
 			<div>
 			<!-- this case is currently only needed for matrices -->
-			<c:if test="${scaffoldingCell.scaffolding != null}">
+			<c:if test="${scaffoldingCell.scaffolding != null && enableDafaultMatrixOptions == 'true'}">
 	
 	
 				<!-- ************* Default Matrix Checkbox Start *********** -->
@@ -986,7 +986,7 @@ function mySetMainFrameHeight(id)
 		<h5><fmt:message key="header_Evaluators"/></h5>
 		<div>
 		<!-- this case is currently only needed for matrices -->
-		<c:if test="${scaffoldingCell.scaffolding != null}">
+		<c:if test="${scaffoldingCell.scaffolding != null && enableDafaultMatrixOptions == 'true'}">
 
 
 			<!-- ************* Default Matrix Checkbox Start *********** -->
@@ -1089,7 +1089,7 @@ function mySetMainFrameHeight(id)
 		<div>
 		
 		<!-- this case is currently only needed for matrices -->
-		<c:if test="${scaffoldingCell.scaffolding != null}">
+		<c:if test="${scaffoldingCell.scaffolding != null && enableDafaultMatrixOptions == 'true'}">
 
 
 			<!-- ************* Default Matrix Checkbox Start *********** -->

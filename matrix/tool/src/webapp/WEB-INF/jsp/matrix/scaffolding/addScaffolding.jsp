@@ -428,6 +428,7 @@
 
 
 	<!-- *************  User Forms Area  Start ************* -->
+<c:if test="${enableDafaultMatrixOptions == 'true'}">
 	<fieldset class="fieldsetVis">
 		<legend><fmt:message key="legend_additional_user_Forms"/></legend>
 		<p>
@@ -517,7 +518,7 @@
 		
 		<!-- ************* Reflection Form Aream End *********** -->
 	</fieldset>
-
+</c:if>
 
 
 
@@ -531,6 +532,56 @@
 	<!--  ********** Feedback start ************* -->
 	<fieldset class="fieldsetVis">
 		<legend><fmt:message key="legend_feedback"/></legend>
+		
+		
+		<!--  ********** Feedback Options Start ************-->
+		<table cellspacing="0" border="0" summary="<fmt:message key="feedback_options"/>">
+		<thead>
+		<tr>
+		<th><h4><fmt:message key="feedback_options_gen"/></h4></th>
+		<th><h4><fmt:message key="feedback_options_item"/></h4></th>
+		</tr>
+		</thead>
+		<tbody><tr>
+		<td>
+		<spring:bind path="scaffolding.generalFeedbackOption">
+			<c:forTokens var="token" items="open,single,none" delims="," varStatus="loopCount">
+				<div class="checkbox indnt1">
+					<input type="radio" id="<c:out value="feedback_option_gen_${token}" />" 
+						name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
+						<c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
+						<c:out value="${disabledText}"/>
+					/>
+					<label for="<c:out value="feedback_option_gen_${token}" />">
+						<osp:message key="feedback_option_gen_${token}" />
+					</label>
+				</div>
+			</c:forTokens>
+		</spring:bind>
+		</td><td>
+		<spring:bind path="scaffolding.itemFeedbackOption">
+			<c:forTokens var="token" items="open,single,none" delims="," varStatus="loopCount">
+				<div class="checkbox indnt1">
+					<input type="radio" id="<c:out value="feedback_option_item_${token}" />" 
+						name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
+						<c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
+						<c:out value="${disabledText}"/>
+					/>
+					<label for="<c:out value="feedback_option_item_${token}" />">
+						<osp:message key="feedback_option_item_${token}" />
+					</label>
+				</div>
+			</c:forTokens>
+		</spring:bind>
+		</td>
+		</tr><tbody>
+		</table>
+	<!--  ********** Feedback Options End ************-->
+		
+		
+<c:if test="${enableDafaultMatrixOptions == 'true'}">		
+		
+		<hr color="#CCCCCC" size="1px" width="70%" />
 		<p>
 			<fmt:message key="info_defaultForms" />
 		</p>
@@ -609,7 +660,7 @@
 		</p>
 	<!-- ************* Reviewers List End ************* -->
 		
-		
+</c:if>		
 		
 		<!-- ************* Feedback Area End ************* -->   
 		
@@ -617,6 +668,7 @@
 		
 		
 	<!--  ********** Evaluation start ************* -->
+<c:if test="${enableDafaultMatrixOptions == 'true'}">
 	<fieldset class="fieldsetVis">
 		<legend><fmt:message key="legend_evaluation"/></legend>
 		<p>
@@ -699,54 +751,10 @@
 		
 		
 	</fieldset>	
+</c:if>	
 	<!--  ********** Feedback and Evaluation end ************* -->
 
-	<!--  ********** Feedback Options Start ************-->
-	<fieldset class="fieldsetVis">
-		<legend><osp:message key="feedback_options"/></legend>
-		<table cellspacing="0" border="0" summary="<fmt:message key="feedback_options"/>">
-		<thead>
-		<tr>
-		<th><h4><fmt:message key="feedback_options_gen"/></h4></th>
-		<th><h4><fmt:message key="feedback_options_item"/></h4></th>
-		</tr>
-		</thead>
-		<tbody><tr>
-		<td>
-		<spring:bind path="scaffolding.generalFeedbackOption">
-			<c:forTokens var="token" items="open,single,none" delims="," varStatus="loopCount">
-				<div class="checkbox indnt1">
-					<input type="radio" id="<c:out value="feedback_option_gen_${token}" />" 
-						name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
-						<c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
-						<c:out value="${disabledText}"/>
-					/>
-					<label for="<c:out value="feedback_option_gen_${token}" />">
-						<osp:message key="feedback_option_gen_${token}" />
-					</label>
-				</div>
-			</c:forTokens>
-		</spring:bind>
-		</td><td>
-		<spring:bind path="scaffolding.itemFeedbackOption">
-			<c:forTokens var="token" items="open,single,none" delims="," varStatus="loopCount">
-				<div class="checkbox indnt1">
-					<input type="radio" id="<c:out value="feedback_option_item_${token}" />" 
-						name="<c:out value="${status.expression}"/>" value="<c:out value="${loopCount.index}" />"
-						<c:if test="${status.value == loopCount.index}"> checked="checked" </c:if>
-						<c:out value="${disabledText}"/>
-					/>
-					<label for="<c:out value="feedback_option_item_${token}" />">
-						<osp:message key="feedback_option_item_${token}" />
-					</label>
-				</div>
-			</c:forTokens>
-		</spring:bind>
-		</td>
-		</tr><tbody>
-		</table>
-	</fieldset>
-	<!--  ********** Feedback Options End ************-->
+	
 
 	<c:if test="${not empty isInSession}">
 		<input type="hidden" name="<c:out value="${isInSession}"/>" value="true"/>

@@ -42,13 +42,28 @@ public class ScaffoldingCell extends IdentifiableObject implements Serializable 
    private WizardPageDefinition wizardPageDefinition;
 
    public ScaffoldingCell() {
-      this.wizardPageDefinition = new WizardPageDefinition(WizardPageDefinition.WPD_MATRIX_TYPE);
+     this.wizardPageDefinition = new WizardPageDefinition(WizardPageDefinition.WPD_MATRIX_TYPE);
+  }
+   
+   public ScaffoldingCell(boolean defaultCustomForm, 
+			boolean defaultReflectionForm, boolean defaultFeedbackForm, 
+			boolean defaultReviewers, boolean defaultEvaluationForm, 
+			boolean defaultEvaluators, boolean allowRequestFeedback) {
+      this.wizardPageDefinition = new WizardPageDefinition(WizardPageDefinition.WPD_MATRIX_TYPE, 
+    		  defaultCustomForm, defaultReflectionForm, defaultFeedbackForm, 
+    		  defaultReviewers, defaultEvaluationForm, defaultEvaluators, allowRequestFeedback);
    }
 
-   public ScaffoldingCell(Criterion criterion, Level level, String initialStatus, Scaffolding scaffolding) {
+   public ScaffoldingCell(Criterion criterion, Level level, String initialStatus, Scaffolding scaffolding, 
+		   boolean defaultCustomForm, 
+			boolean defaultReflectionForm, boolean defaultFeedbackForm, 
+			boolean defaultReviewers, boolean defaultEvaluationForm, 
+			boolean defaultEvaluators, boolean allowRequestFeedback) {
       this.rootCriterion = criterion;
       this.level = level;
-      this.wizardPageDefinition = new WizardPageDefinition(WizardPageDefinition.WPD_MATRIX_TYPE);
+      this.wizardPageDefinition = new WizardPageDefinition(WizardPageDefinition.WPD_MATRIX_TYPE, 
+    		  defaultCustomForm, defaultReflectionForm, defaultFeedbackForm, 
+    		  defaultReviewers, defaultEvaluationForm, defaultEvaluators, allowRequestFeedback);
       wizardPageDefinition.setInitialStatus(initialStatus);
       wizardPageDefinition.setSiteId(scaffolding.getWorksiteId().getValue());
       this.scaffolding = scaffolding;

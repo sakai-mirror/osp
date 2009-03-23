@@ -90,6 +90,20 @@ public class WizardPageDefinition extends ObjectWithWorkflow {
 		this.type = type;
 	}
 	
+	public WizardPageDefinition(String type, boolean defaultCustomForm, 
+			boolean defaultReflectionForm, boolean defaultFeedbackForm, 
+			boolean defaultReviewers, boolean defaultEvaluationForm, 
+			boolean defaultEvaluators, boolean allowRequestFeedback) {
+		this.type = type;
+		this.defaultCustomForm = defaultCustomForm;
+		this.defaultReflectionForm = defaultReflectionForm;
+		this.defaultFeedbackForm = defaultFeedbackForm;
+		this.defaultReviewers = defaultReviewers;
+		this.defaultEvaluationForm = defaultEvaluationForm;
+		this.defaultEvaluators = defaultEvaluators;
+		this.allowRequestFeedback = allowRequestFeedback;
+	}
+	
    /**
     * @return Returns the initialStatus.
     */

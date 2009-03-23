@@ -105,6 +105,8 @@ public class AddScaffoldingController extends BaseScaffoldingController
       model.put("ignoreReviewerGroups", ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false));
       
       
+      model.put("enableDafaultMatrixOptions", getMatrixManager().isEnableDafaultMatrixOptions());
+      
       return model;
    }
    

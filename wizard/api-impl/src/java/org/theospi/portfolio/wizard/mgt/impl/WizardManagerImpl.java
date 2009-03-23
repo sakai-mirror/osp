@@ -1426,7 +1426,9 @@ public class WizardManagerImpl extends HibernateDaoSupport
                pageSequenceNode.getChildTextTrim("sequence")));
 
          Element pageDefNode = pageSequenceNode.getChild("pageDef");
-         WizardPageDefinition wizardPageDefinition = new WizardPageDefinition(wizard.getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL) ? WizardPageDefinition.WPD_WIZARD_HIER_TYPE : WizardPageDefinition.WPD_WIZARD_SEQ_TYPE);
+         boolean defaults = getMatrixManager().isEnableDafaultMatrixOptions();
+         WizardPageDefinition wizardPageDefinition = new WizardPageDefinition(wizard.getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL) ? WizardPageDefinition.WPD_WIZARD_HIER_TYPE : WizardPageDefinition.WPD_WIZARD_SEQ_TYPE, 
+        		 defaults, defaults, defaults, defaults, defaults, defaults, defaults);
 
          wizardPageDefinition.setNewId(getIdManager().createId());
 

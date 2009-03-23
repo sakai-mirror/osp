@@ -86,8 +86,10 @@ public class DecoratedCategory extends DecoratedCategoryChild {
    public String processActionNewPage() {
       if(getBase().getWizard().isPublished())
          return null;
+      boolean defaults = getParent().getMatrixManager().isEnableDafaultMatrixOptions();
       WizardPageSequence wizardPage =
-            new WizardPageSequence(new WizardPageDefinition(getBase().getWizard().getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL) ? WizardPageDefinition.WPD_WIZARD_HIER_TYPE : WizardPageDefinition.WPD_WIZARD_SEQ_TYPE));
+            new WizardPageSequence(new WizardPageDefinition(getBase().getWizard().getType().equals(WizardFunctionConstants.WIZARD_TYPE_HIERARCHICAL) ? WizardPageDefinition.WPD_WIZARD_HIER_TYPE : WizardPageDefinition.WPD_WIZARD_SEQ_TYPE, 
+            		defaults, defaults, defaults, defaults, defaults, defaults, defaults));
       String siteId = getParent().getWorksite().getId();
       wizardPage.getWizardPageDefinition().setSiteId(siteId);
       wizardPage.getWizardPageDefinition().setNewId(getParent().getIdManager().createId());
