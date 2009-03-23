@@ -194,7 +194,7 @@ $(document).ready(function() {
 													<td>
 														<fmt:message key="label_availableItems_step2"/>
 													</td>
-													<c:if test="${not itemDefintion.hasMimeTypes}">
+													<c:if test="${itemDefinition.isFormType}">
 														<td style="text-align:right">
 															<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>"
 												   class="inlineCreate"><fmt:message key="create_new"/></a>
@@ -211,10 +211,12 @@ $(document).ready(function() {
 													<td>
 														<fmt:message key="label_selectedItems_step2"/>
 													</td>
+													<c:if test="${itemDefinition.isFormType}">
 													<td style="text-align:right">
 														<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>&amp;box=<c:out value="${list1}"/>"
 													  class="inlineFormEdit"><fmt:message key="edit_selected"/></a>
 													</td>
+													</c:if>
 												</tr>
 											</table>	
 									  </th>
@@ -333,7 +335,7 @@ $(document).ready(function() {
 												</option>
 											</c:forEach>
 										</select>
-									<c:if test="${not itemDefintion.hasMimeTypes}">
+									<c:if test="${itemDefinition.isFormType}">
 										<span class="itemAction"  style="margin-left:0;padding-left:0;white-space:nowrap;padding-top:4px;display:inline-block;">
 											<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>"
 											   class="inlineCreate""><fmt:message key="create_new" /></a>| 
