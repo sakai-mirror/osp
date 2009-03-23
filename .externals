@@ -3,7 +3,7 @@ alias			https://source.sakaiproject.org/svn/alias/trunk
 announcement		https://source.sakaiproject.org/svn/announcement/trunk
 archive			https://source.sakaiproject.org/svn/archive/trunk
 assignment		https://source.sakaiproject.org/svn/assignment/branches/SAK-15710
-authz			https://source.sakaiproject.org/svn/authz/branches/SAK-15710
+authz			https://source.sakaiproject.org/svn/authz/trunk
 blog			https://source.sakaiproject.org/svn/blog/trunk
 calendar		https://source.sakaiproject.org/svn/calendar/trunk
 chat			https://source.sakaiproject.org/svn/chat/trunk
