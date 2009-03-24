@@ -1,3 +1,4 @@
+kernel			https://source.sakaiproject.org/svn/kernel/branches/SAK-15710
 access			https://source.sakaiproject.org/svn/access/trunk
 alias			https://source.sakaiproject.org/svn/alias/trunk
 announcement		https://source.sakaiproject.org/svn/announcement/trunk
