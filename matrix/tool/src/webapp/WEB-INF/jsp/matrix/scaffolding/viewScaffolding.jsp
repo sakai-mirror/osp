@@ -19,12 +19,37 @@ function hrefViewCell(cellId) {
 </script>
 
 <osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" qualifier="${matrixContents.scaffolding.worksiteId}"/>
+<osp-c:authZMap prefix="osp.matrix.scaffolding.revise." var="canRevise" qualifier="${matrixContents.scaffolding.worksiteId}"/>
 		<div class="navIntraTool">
-			<c:if test="${can.create}">
+			<c:if test="${canRevise.any || (canRevise.own && matrixContents.scaffolding.owner == osp_agent)}">
 				<a href="<osp:url value="addScaffolding.osp?scaffolding_id=${matrixContents.scaffolding.id}"/>"><fmt:message key="action_edit"/></a>
 			</c:if>
-         <a href="<osp:url value="listScaffolding.osp"/>"><fmt:message key="action_list"/></a>
+			<c:if test="${canRevise.any || (canRevise.own && matrixContents.scaffolding.owner == osp_agent)}">
+				<a
+					href="<osp:url value="osp.permissions.helper/editPermissions_new">
+	               <osp:param name="message"><fmt:message key="action_message_setMatrixPermission">
+	                <fmt:param><c:out value="${matrixContents.scaffolding.title}"/></fmt:param>
+	               <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message>
+	             </osp:param>
+	               <osp:param name="name" value="scaffoldingSpecific"/>
+	               <osp:param name="qualifier" value="${matrixContents.scaffolding.reference}"/>
+	               <osp:param name="returnView" value="viewScaffoldingRedirect"/>
+	               <osp:param name="returnKey" value="scaffolding_id"/>
+	               <osp:param name="returnKeyValue" value="${matrixContents.scaffolding.id}"/>
+	               </osp:url>"
+					title="<fmt:message key="action_permissions_title"/>"> <fmt:message
+					key="action_permissions" /> </a>
+			</c:if>
+			
+         	<a href="<osp:url value="listScaffolding.osp"/>"><fmt:message key="action_list"/></a>
+         	
 		</div>
+		
+
+	<c:if test="${toolPermissionSaved}">
+		<div class="success"><fmt:message key="changesSaved"/></div>	
+	</c:if>
+	
 	<h3><fmt:message key="title_matrixScaffolding"/></h3>
    
    <c:if test="${not empty matrixContents.scaffolding.description}">
@@ -68,9 +93,15 @@ function hrefViewCell(cellId) {
                   </osp-h:glossary>
 					</th>
 	    			<c:forEach var="cell" items="${matrixContents.matrixContents[loopStatus.index]}">
-						<td class="matrix-cell-border matrix-<c:out value="${cell.initialStatus}"/>" onclick="hrefViewCell('<c:out value="${cell.id}"/>') " style="cursor:pointer">
-						 <a href="#" onclick="hrefViewCell('<c:out value="${cell.id}"/>') " class="skip"><fmt:message key="table_cell_link_title"/></a>
-							&nbsp;
+						<td class="matrix-cell-border matrix-<c:out value="${cell.initialStatus}"/>" 
+							<c:if test="${canRevise.any || (canRevise.own && matrixContents.scaffolding.owner == osp_agent)}">
+								onclick="hrefViewCell('<c:out value="${cell.id}"/>') "
+							</c:if>
+							 style="cursor:pointer">
+							 <c:if test="${canRevise.any || (canRevise.own && matrixContents.scaffolding.owner == osp_agent)}">
+							 	<a href="#" onclick="hrefViewCell('<c:out value="${cell.id}"/>') " class="skip"><fmt:message key="table_cell_link_title"/></a>
+									&nbsp;
+							</c:if>
 						</td>
 					</c:forEach>
 				</tr>

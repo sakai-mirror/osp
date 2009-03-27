@@ -21,6 +21,15 @@
 
 package org.theospi.portfolio.matrix.control;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.taggable.api.TaggableActivity;
@@ -28,8 +37,15 @@ import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.taggable.api.TaggingHelperInfo;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
+import org.sakaiproject.assignment.api.Assignment;
+import org.sakaiproject.assignment.api.AssignmentSubmission;
+import org.sakaiproject.assignment.cover.AssignmentService;
+import org.sakaiproject.authz.api.SecurityAdvisor;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.content.api.FilePickerHelper;
 import org.sakaiproject.content.api.ResourceEditingHelper;
+import org.sakaiproject.exception.PermissionException;
 import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.mgt.StructuredArtifactDefinitionManager;
@@ -38,11 +54,16 @@ import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.StructuredArtifactDefinitionBean;
 import org.sakaiproject.metaobj.utils.mvc.intf.FormController;
 import org.sakaiproject.metaobj.utils.mvc.intf.LoadObjectController;
+import org.sakaiproject.taggable.api.Link;
+import org.sakaiproject.taggable.api.LinkManager;
+import org.sakaiproject.taggable.api.TaggableActivity;
+import org.sakaiproject.taggable.api.TaggableActivityProducer;
+import org.sakaiproject.taggable.api.TaggableItem;
+import org.sakaiproject.taggable.api.TaggingHelperInfo;
+import org.sakaiproject.taggable.api.TaggingManager;
+import org.sakaiproject.taggable.api.TaggingProvider;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.tool.api.ToolSession;
-import org.sakaiproject.assignment.cover.AssignmentService;
-import org.sakaiproject.assignment.api.AssignmentSubmission;
-import org.sakaiproject.assignment.api.Assignment;
 import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.cover.UserDirectoryService;
 import org.sakaiproject.util.ResourceLoader;
@@ -50,13 +71,13 @@ import org.sakaiproject.util.ResourceLoader;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+import org.theospi.portfolio.assignment.AssignmentHelper;
 import org.theospi.portfolio.guidance.mgt.GuidanceManager;
+import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.WizardPageHelper;
-import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Scaffolding;
-import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.impl.MatrixContentEntityProducer;
 import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider;
@@ -65,17 +86,14 @@ import org.theospi.portfolio.matrix.taggable.tool.DecoratedTaggingProvider.Sort;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
-import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.shared.model.CommonFormBean;
+import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 import org.theospi.portfolio.style.model.Style;
-import org.theospi.portfolio.style.mgt.StyleManager;
-import org.theospi.portfolio.security.AuthorizationFacade;
+import org.theospi.portfolio.wizard.mgt.WizardManager;
 import org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer;
-
-import org.theospi.portfolio.assignment.AssignmentHelper;
-
-import java.util.*;
 
 public class CellController implements FormController, LoadObjectController {
 
@@ -86,6 +104,8 @@ public class CellController implements FormController, LoadObjectController {
 	private MatrixManager matrixManager;
 
 	private AuthenticationManager authManager = null;
+	
+	private SecurityService securityService;
 
 	private IdManager idManager = null;
 
@@ -96,8 +116,12 @@ public class CellController implements FormController, LoadObjectController {
 	private AuthorizationFacade authzManager = null;
 
 	private TaggingManager taggingManager;
+	
+	private LinkManager linkManager = null;
 
 	private WizardActivityProducer wizardActivityProducer;
+	
+	private WizardManager wizardManager;
 
 	private SessionManager sessionManager;
 
@@ -129,12 +153,84 @@ public class CellController implements FormController, LoadObjectController {
         }
     }
 
+	private ServerConfigurationService serverConfigurationService;
+	
 	public Map referenceData(Map request, Object command, Errors errors) {
-		ToolSession session = getSessionManager().getCurrentToolSession();
-		Boolean readOnly = new Boolean(false);
-		CellFormBean cell = (CellFormBean) command;
+		
 		Map model = new HashMap();
+		model.put("feedbackSent", false);
+		ToolSession session = getSessionManager().getCurrentToolSession();
+		
+		CellFormBean cell = (CellFormBean) command;
+				
+		if((cell != null || cell.getCell() == null) && request.get("feedbackReturn") != null){
+			//feedbackReturn is returned from FeedbackHelperController and is the Id of the wizardPage of the cell.
+			cell.setCell(matrixManager.getCellFromPage(idManager.getId(request.get("feedbackReturn").toString())));
+			if(request.get("feedbackAction") != null && request.get("feedbackAction").toString().equals("save")){
+				model.put("feedbackSent", true);
+			}
+		}
+	
 
+		
+
+		model.put("matrixCanViewCell", false);
+		if(request.get("comingFromWizard") == null){
+			//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
+			boolean matrixCanEvaluate = getMatrixManager().hasPermission(cell.getCell()
+					.getScaffoldingCell().isDefaultEvaluators() ? cell.getCell()
+							.getScaffoldingCell().getScaffolding().getId() : cell.getCell()
+							.getScaffoldingCell().getWizardPageDefinition().getId(),
+							cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
+							MatrixFunctionConstants.EVALUATE_MATRIX);
+			model.put("matrixCanEvaluate", matrixCanEvaluate);
+			//depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
+			//also, compare first result with the user's cell review list by sending the user's cell id
+			boolean allowParticipantFeedback = cell.getCell()
+					.getScaffoldingCell().isDefaultReviewers() ? cell.getCell()
+					.getScaffoldingCell().getScaffolding()
+					.isAllowRequestFeedback() : cell.getCell()
+					.getScaffoldingCell().getWizardPageDefinition()
+					.isAllowRequestFeedback();
+			boolean matrixCanReview = getMatrixManager().hasPermission(cell.getCell()
+					.getScaffoldingCell().isDefaultReviewers() ? cell.getCell()
+							.getScaffoldingCell().getScaffolding().getId() : cell.getCell()
+							.getScaffoldingCell().getWizardPageDefinition().getId(),
+							cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
+							MatrixFunctionConstants.REVIEW_MATRIX)
+							|| (allowParticipantFeedback && getMatrixManager().hasPermission(cell.getCell().getWizardPage().getId(),
+									cell.getCell().getScaffoldingCell().getScaffolding().getWorksiteId(),
+									MatrixFunctionConstants.FEEDBACK_MATRIX));
+			model.put("matrixCanReview", matrixCanReview);
+			
+			boolean hasAnyReviewers =	cell.getCell().getScaffoldingCell().isDefaultReviewers() ? 
+					!getMatrixManager().getSelectedUsers(cell.getCell().getScaffoldingCell().getScaffolding(), MatrixFunctionConstants.REVIEW_MATRIX).isEmpty()
+					: !getMatrixManager().getSelectedUsers(cell.getCell().getScaffoldingCell().getWizardPageDefinition(), MatrixFunctionConstants.REVIEW_MATRIX).isEmpty();
+				model.put("hasAnyReviewers", hasAnyReviewers);
+				
+			// NOTE: matrixCanEval or Review both return true if the user is a
+			// super user:
+			if (matrixCanEvaluate
+					|| matrixCanReview
+					|| cell.getCell().getWizardPage().getOwner().getId()
+							.getValue().equals(
+									getSessionManager()
+											.getCurrentSessionUserId())
+					|| getAuthzManager().isAuthorized(
+							getAuthManager().getAgent(),
+							MatrixFunctionConstants.ACCESS_ALL_CELLS,
+							getIdManager().getId(
+									cell.getCell().getScaffoldingCell()
+											.getScaffolding().getReference()))) {
+				model.put("matrixCanViewCell", true);
+			}
+		}else{
+			WizardPage currentWizPage = getMatrixManager().getWizardPage(cell.getCell().getWizardPage().getId());
+			Id wizPageDefId = currentWizPage.getPageDefinition().getId();
+			String wizardId = getWizardManager().getWizardPageSeqByDef(wizPageDefId).getCategory().getWizard().getId().getValue();
+			model.put("wizardId", wizardId);
+			model.put("isWizardOwner", getSessionManager().getCurrentSessionUserId().equals(currentWizPage.getOwner().getId().getValue()));
+		}
 		model.put("isMatrix", "true");
 		model.put("isWizard", "false");
 		model.put("enableReviewEdit", getEnableReviewEdit());
@@ -160,22 +256,32 @@ public class CellController implements FormController, LoadObjectController {
 			return model;
 		}
 
+		
 		String pageId = cell.getCell().getWizardPage().getId().getValue();
-		String siteId = cell.getCell().getWizardPage().getPageDefinition().getSiteId().getValue();
+		String siteId = cell.getCell().getWizardPage().getPageDefinition().getSiteId();
 		List reviews =	
 			getReviewManager().getReviewsByParentAndType( pageId, Review.FEEDBACK_TYPE, siteId, getEntityProducer() );
 		ArrayList<Node> cellForms = new ArrayList<Node>(getMatrixManager().getPageForms(cell.getCell().getWizardPage()));
 		Collections.sort(cellForms, new NodeNameComparator());
 		
+		if(cell.getCell().getScaffoldingCell().getWizardPageDefinition().isDefaultCustomForm() && request.get("comingFromWizard") == null){
+			model.put("cellFormDefs", processAdditionalForms(cell.getCell()
+					.getScaffoldingCell().getScaffolding().getAdditionalForms()));
+		}else{
+			model.put("cellFormDefs", processAdditionalForms(cell.getCell()
+					.getScaffoldingCell().getAdditionalForms()));
+		}
+
 		model.put("assignments", getUserAssignments(cell)); 
 		model.put("reviews", reviews ); // feedback
 		model.put("evaluations", getReviewManager().getReviewsByParentAndType(
 				pageId, Review.EVALUATION_TYPE, siteId, getEntityProducer()));
 		model.put("reflections", getReviewManager().getReviewsByParentAndType(
 				pageId, Review.REFLECTION_TYPE, siteId, getEntityProducer()));
-		model.put("cellFormDefs", processAdditionalForms(cell.getCell()
-				.getScaffoldingCell().getAdditionalForms()));
 		model.put("cellForms", cellForms );
+		
+
+		Boolean readOnly = new Boolean(false);
 				
 		// Matrix-only initializations
 		if (cell.getCell().getMatrix() != null) {
@@ -186,8 +292,8 @@ public class CellController implements FormController, LoadObjectController {
 			model.put("generalFeedbackNone", cell.getCell().getScaffoldingCell().getScaffolding().isGeneralFeedbackNone());
 						 
 			Agent owner = cell.getCell().getMatrix().getOwner();
-			readOnly = isReadOnly(owner, cell.getCell().getMatrix()
-					.getScaffolding().getWorksiteId());
+			readOnly = isReadOnly(owner, getIdManager().getId(cell.getCell().getMatrix()
+					.getScaffolding().getReference()));
 					
 			Cell pageCell = getMatrixManager().getCellFromPage(getIdManager().getId(pageId));
 			Scaffolding scaffolding = pageCell.getMatrix().getScaffolding();
@@ -217,6 +323,10 @@ public class CellController implements FormController, LoadObjectController {
 			}
 			model.put("helperInfoList", getHelperInfo(item));
 			model.put("providers", providers);
+			
+			model.put("taggableItems", getTaggableItems(providers, cell.getCell().getWizardPage().getPageDefinition().getReference(), cell.getCell().getWizardPage().getOwner().getId().getValue()));
+			
+			model.put("decoWrapper", "ospMatrix_" + siteId + "_" + pageId);
 		}
 
 		clearSession(session);
@@ -247,6 +357,73 @@ public class CellController implements FormController, LoadObjectController {
 		}
 		
 		return new Boolean(allowGeneralFeedback);
+	}
+	
+	protected Set<TaggableItem> getTaggableItems(List<DecoratedTaggingProvider> providers, String criteriaRef, String cellOwner) {
+		Set<TaggableActivity> activities = new HashSet<TaggableActivity>();
+		Set<TaggableItem> taggableItems = new HashSet<TaggableItem>();
+		List<Link> links;
+		try
+		{
+			links = getLinkManager().getLinks(criteriaRef, true);
+			//TODO: Make sure it's always okay to ignore the provider
+			for (DecoratedTaggingProvider provider : providers) {
+				for (Link link : links) {
+					TaggableActivity activity = getTaggingManager().getActivity(link.getActivityRef(), provider.getProvider());
+					if (activity != null) {
+						TaggableActivityProducer producer = getTaggingManager().findProducerByRef(activity.getReference());
+						if (producer.getItemPermissionOverride() != null) {
+							getSecurityService().pushAdvisor(new SimpleSecurityAdvisor(
+									getSessionManager().getCurrentSessionUserId(), 
+									producer.getItemPermissionOverride()));
+						}
+						List<TaggableItem> items = producer.getItems(activity, cellOwner, provider.getProvider());
+						taggableItems.addAll(items);
+						activities.add(activity);
+						
+						if (producer.getItemPermissionOverride() != null) {
+							getSecurityService().popAdvisor();
+						}
+					}
+					else {
+						logger.warn("Link with ref " + link.getActivityRef() + " no longer exists.  Removing link.");
+						getLinkManager().removeLink(link);
+						links.remove(link);
+					}
+				}
+			}
+		}
+		catch (PermissionException pe)
+		{
+			logger.warn("unable to get links for criteriaRef " + criteriaRef, pe);
+		}
+		return taggableItems;
+		
+	}
+	
+	/**
+	 * A simple SecurityAdviser that can be used to override permissions for one user for one function.
+	 */
+	protected class SimpleSecurityAdvisor implements SecurityAdvisor
+	{
+		protected String m_userId;
+		protected String m_function;
+
+		public SimpleSecurityAdvisor(String userId, String function)
+		{
+			m_userId = userId;
+			m_function = function;
+		}
+
+		public SecurityAdvice isAllowed(String userId, String function, String reference)
+		{
+			SecurityAdvice rv = SecurityAdvice.PASS;
+			if (m_userId.equals(userId) && m_function.equals(function))
+			{
+				rv = SecurityAdvice.ALLOWED;
+			}
+			return rv;
+		}
 	}
 
 	/**
@@ -323,11 +500,16 @@ public class CellController implements FormController, LoadObjectController {
 	protected Boolean isReadOnly(Agent owner, Id id) {
       if ((owner != null && owner.equals(getAuthManager().getAgent()))
          && (id == null || getAuthzManager().isAuthorized(
-         MatrixFunctionConstants.USE_SCAFFOLDING, id))) {
+         MatrixFunctionConstants.CAN_USE_SCAFFOLDING, id))) {
          return new Boolean(false);
       }
 		return new Boolean(true);
 	}
+	
+   protected String getStyleUrl(Style style) {
+      Node styleNode = getMatrixManager().getNode(style.getStyleFile());
+      return styleNode.getExternalUri();
+   }
 
 	public Object fillBackingObject(Object incomingModel, Map request,
 			Map session, Map application) throws Exception {
@@ -387,6 +569,15 @@ public class CellController implements FormController, LoadObjectController {
 		return result;
 	}
 
+   protected List createStylesList(List styles) {
+      List returned = new ArrayList(styles.size());
+      for (Iterator<Style> i=styles.iterator();i.hasNext();) {
+         returned.add(getStyleUrl(i.next()));
+      }
+
+      return returned;
+   }
+   
 	public ModelAndView handleRequest(Object requestModel, Map request,
 			Map session, Map application, Errors errors) {
 		CellFormBean cellBean = (CellFormBean) requestModel;
@@ -401,6 +592,23 @@ public class CellController implements FormController, LoadObjectController {
 		String submit = (String) request.get("submit");
 		String matrixAction = (String) request.get("matrix");
 		String submitAction = (String) request.get("submitAction");
+		String inviteFeedback = (String) request.get("inviteFeedback");
+		String submitForReview = (String) request.get("submitForReview");
+
+		
+		if(inviteFeedback != null){
+			session.put("feedbackCellId", cell.getId().getValue());
+			session.put("feedbackMatrixCall", "feedbackMatrixCall");
+
+			return new ModelAndView("feedbackHelper");
+		}
+		if(submitForReview != null){
+			Map map = new HashMap();
+			map.put("page_id", cell.getWizardPage().getId());
+			map.put("feedbackCellId", cell.getId().getValue());
+			map.put("cellBean", cellBean);
+			return new ModelAndView("inviteFeedbackConfirm", map);
+		}
 
 		if ("tagItem".equals(submitAction)) {
 			return tagItem(cell, request, session);
@@ -421,29 +629,36 @@ public class CellController implements FormController, LoadObjectController {
 		}
 
 		if (matrixAction != null) {
+			Map map = new HashMap();
 			String scaffId = "";
-
+			String viewUser = "";
 			if (getTaggingManager().isTaggable()) {
 				session.remove(PROVIDERS_PARAM);
 			}
 
-         if (cell.getMatrix() != null) {
-            scaffId = cell.getMatrix().getScaffolding().getId().getValue();
-         }
+			if (cell.getMatrix() != null) {
+				scaffId = cell.getMatrix().getScaffolding().getId().getValue();
+				viewUser = cell.getMatrix().getOwner().getId().getValue();
+			}
 
+			map.put("scaffolding_id", scaffId);
+			map.put("view_user", viewUser);
+			
 			if (session.get("is_eval_page_id") != null) {
 				String eval_page_id = (String) session.get("is_eval_page_id");
 				String pageId = cell.getWizardPage().getId().getValue();
-            if (eval_page_id.equals(pageId)) {
-               return new ModelAndView("cancelEvaluation");
-            }
+				if (eval_page_id.equals(pageId)) {
+					return new ModelAndView("cancelEvaluation");
+				}
 			}
 
-			return new ModelAndView("cancel", "scaffolding_id", scaffId);
+			return new ModelAndView("cancel", map);
 		}
 
 		return new ModelAndView("success", "cellBean", cellBean);
 	}
+
+	
 
 	protected ModelAndView tagItem(Cell cell, Map request, Map session) {
 		ModelAndView view = null;
@@ -523,10 +738,13 @@ public class CellController implements FormController, LoadObjectController {
 			String strFormDefId = (String) iter.next();
 			StructuredArtifactDefinitionBean bean = getStructuredArtifactDefinitionManager()
 					.loadHome(strFormDefId);
-			// cwm use a different bean below, as the name has implications
-			retList.add(new CommonFormBean(strFormDefId, bean
-					.getDescription(), strFormDefId, bean.getOwner()
-					.getName(), bean.getModified()));
+			if (bean != null) {
+				bean.getDescription();
+				// cwm use a different bean below, as the name has implications
+				retList.add(new CommonFormBean(strFormDefId, bean
+						.getDescription(), strFormDefId, bean.getOwner()
+						.getName(), bean.getModified()));
+			}
 		}
 		return retList;
 	}
@@ -679,6 +897,16 @@ public class CellController implements FormController, LoadObjectController {
 		this.taggingManager = taggingManager;
 	}
 
+	public LinkManager getLinkManager()
+	{
+		return linkManager;
+	}
+
+	public void setLinkManager(LinkManager linkManager)
+	{
+		this.linkManager = linkManager;
+	}
+
 	public WizardActivityProducer getWizardActivityProducer() {
 		return wizardActivityProducer;
 	}
@@ -704,11 +932,37 @@ public class CellController implements FormController, LoadObjectController {
 		this.sessionManager = sessionManager;
 	}
 
-   public StyleManager getStyleManager() {
-      return styleManager;
-   }
+	public StyleManager getStyleManager() {
+		return styleManager;
+	}
 
-   public void setStyleManager(StyleManager styleManager) {
-      this.styleManager = styleManager;
-   }
+	public void setStyleManager(StyleManager styleManager) {
+		this.styleManager = styleManager;
+	}
+
+	public ServerConfigurationService getServerConfigurationService() {
+		return serverConfigurationService;
+	}
+
+	public void setServerConfigurationService(
+			ServerConfigurationService serverConfigurationService) {
+		this.serverConfigurationService = serverConfigurationService;
+	}
+
+	public SecurityService getSecurityService() {
+		return securityService;
+	}
+
+	public void setSecurityService(SecurityService securityService) {
+		this.securityService = securityService;
+	}
+
+	public WizardManager getWizardManager() {
+		return wizardManager;
+	}
+
+	public void setWizardManager(WizardManager wizardManager) {
+		this.wizardManager = wizardManager;
+	}
+
 }

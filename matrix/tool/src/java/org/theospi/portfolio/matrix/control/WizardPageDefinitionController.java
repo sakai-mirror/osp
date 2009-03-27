@@ -107,8 +107,9 @@ public class WizardPageDefinitionController extends EditScaffoldingCellControlle
       page = (WizardPageDefinition)pageList.get(0);
       
       session.remove(WizardPageHelper.CANCELED);
-      page.setSiteId(getIdManager().getId(ToolManager.getCurrentPlacement().getContext()));
-      ScaffoldingCell cell = new ScaffoldingCell();
+      page.setSiteId(ToolManager.getCurrentPlacement().getContext());
+      boolean defaults = getMatrixManager().isEnableDafaultMatrixOptions();
+      ScaffoldingCell cell = new ScaffoldingCell(defaults, defaults, defaults, defaults, defaults, defaults, defaults);
       cell.setWizardPageDefinition(page);
       if (page.getId() == null) {
          cell.setId(page.getNewId());

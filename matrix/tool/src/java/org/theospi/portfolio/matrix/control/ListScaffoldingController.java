@@ -22,22 +22,27 @@
 package org.theospi.portfolio.matrix.control;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
-import org.sakaiproject.metaobj.shared.mgt.IdManager;
-import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.site.api.ToolConfiguration;
 import org.sakaiproject.tool.cover.ToolManager;
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.site.api.SiteService;
+import org.theospi.portfolio.matrix.model.Scaffolding;
 
 public class ListScaffoldingController extends AbstractMatrixController {
 
@@ -45,12 +50,18 @@ public class ListScaffoldingController extends AbstractMatrixController {
    private ListScrollIndexer listScrollIndexer;
    private SiteService siteService;
 	private IdManager idManager;
+	// Sort strings
+	static final String SORT = "sort", ASCENDING = "ascending",  TITLE = "title", OWNER = "owner",
+						PUBLISHED = "published", MODIFIED = "modified", WORKSITE = "worksite";
+	
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Hashtable<String, Object> model = new Hashtable<String, Object>();
       Agent currentAgent = getAuthManager().getAgent();
       String currentToolId = ToolManager.getCurrentPlacement().getId();
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
+      String sortBy = TITLE;
+      boolean sortAscending = true;
 		List scaffolding = null;
 
 		if ( isOnWorkspaceTab() )
@@ -59,14 +70,29 @@ public class ListScaffoldingController extends AbstractMatrixController {
 		}
 		else
 		{
-			scaffolding = getMatrixManager().findAvailableScaffolding(worksiteId, currentAgent,  isMaintainer());
+			scaffolding = getMatrixManager().findAvailableScaffolding(worksiteId, currentAgent, isMaintainer());
 		}
-      
+		
+		if(request.get(SORT) != null){
+			sortBy = request.get(SORT).toString();
+			sortAscending = Boolean.parseBoolean(request.get(ASCENDING).toString());
+		}
+		scaffolding = sortScaffolding(scaffolding, sortBy, sortAscending);
+		List decoratedScaffolding = new ArrayList();
+		
+		for (Iterator iterator = scaffolding.iterator(); iterator.hasNext();) {
+			Scaffolding s = (Scaffolding) iterator.next();
+			decoratedScaffolding.add(new DecoratedScaffolding(s));			
+		}
+		
       // When selecting a matrix the user should start with a fresh user
       session.remove(ViewMatrixController.VIEW_USER);
-
+      //used to determine to display pager
+      model.put("scaffoldingListSize", scaffolding.size());
+      model.put("sortBy", sortBy);
+      model.put("sortAscending", sortAscending);
       model.put("scaffolding",
-         getListScrollIndexer().indexList(request, model, scaffolding));
+         getListScrollIndexer().indexList(request, model, decoratedScaffolding));
 
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", getWorksiteManager().getTool(currentToolId));
@@ -75,6 +101,9 @@ public class ListScaffoldingController extends AbstractMatrixController {
 		model.put("myworkspace", isOnWorkspaceTab() );
       
       model.put("useExperimentalMatrix", getMatrixManager().isUseExperimentalMatrix());
+      
+      if(request.get("toolPermissionSaved") != null)
+    	  model.put("toolPermissionSaved", request.get("toolPermissionSaved"));
       
       return new ModelAndView("success", model);
    }
@@ -134,5 +163,73 @@ public class ListScaffoldingController extends AbstractMatrixController {
 		}
 		
 		return siteStrIds;
+	}
+	
+	public List sortScaffolding(List<Scaffolding> list, final String sort, final boolean ascending) {
+		Collections.sort(list, new Comparator<Scaffolding>() {
+			public int compare(Scaffolding o1, Scaffolding o2) {
+				Scaffolding s1 = null;
+				Scaffolding s2 = null;
+				if (ascending) {
+					s1 = o1;
+					s2 = o2;
+				} else {
+					s2 = o1;
+					s1 = o2;
+				}
+				if (sort.equalsIgnoreCase(TITLE)) {
+					return s1.getTitle().compareToIgnoreCase(
+							s2.getTitle());
+				}else if (sort.equalsIgnoreCase(OWNER)) {
+					return s1.getOwner().getDisplayName().compareToIgnoreCase(
+							s2.getOwner().getDisplayName());
+				}else if (sort.equalsIgnoreCase(PUBLISHED)) {
+					return Boolean.toString(s1.isPublished()).compareToIgnoreCase(
+							Boolean.toString(s2.isPublished()));				
+				}else if (sort.equalsIgnoreCase(MODIFIED)) {
+					if(s1.getModifiedDate() == null){
+						return -1;
+					}
+					if(s2.getModifiedDate() == null){
+						return 1;
+					}
+					return s1.getModifiedDate().compareTo(
+							s2.getModifiedDate());				
+				}else if (sort.equalsIgnoreCase(WORKSITE)) {
+					return s1.getWorksiteName().compareToIgnoreCase(
+							s2.getWorksiteName());
+				}else {				
+					return s1.getTitle().compareToIgnoreCase(
+							s2.getTitle());
+				}
+			}
+		});
+		
+		return list;
+	}
+	
+	public class DecoratedScaffolding {
+		private Scaffolding scaffolding;
+
+		public DecoratedScaffolding(Scaffolding scaffolding){
+			this.scaffolding = scaffolding;
+		}
+		
+		public Scaffolding getScaffolding(){
+			return scaffolding;
+		}
+		
+		public String getScaffoldingToolUrl(){
+
+			String url;
+			try {
+				url = ServerConfigurationService.getPortalUrl() + "/directtool/" + getSiteService().getSite(scaffolding.getWorksiteId().getValue()).getToolForCommonId("osp.matrix").getId() + "/listScaffolding.osp";
+				return url;
+			} catch (IdUnusedException e) {
+				e.printStackTrace();
+			}
+			
+			return "";
+		}
 	}
 }

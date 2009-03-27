@@ -3,6 +3,7 @@
 <%@ taglib uri="http://sakaiproject.org/jsf/sakai" prefix="sakai" %>
 <%@ taglib uri="http://www.theospi.org/jsf/osp" prefix="ospx" %>
 <%@ taglib uri="http://www.theospi.org/help/jsf" prefix="help" %>
+<%@ taglib uri="http://myfaces.apache.org/tomahawk" prefix="t" %>
 
 <%
       response.setContentType("text/html; charset=UTF-8");
@@ -16,22 +17,28 @@
 <sakai:view>
 <h:form>
 
-<sakai:tool_bar rendered="#{wizard.canCreate ||  wizard.maintainer}">
-      <sakai:tool_bar_item rendered="#{wizard.canCreate}"
+<t:aliasBeansScope>
+<t:aliasBean alias="#{wizardCreate}" value="#{wizard.canCreate}" />
+<t:aliasBean alias="#{wizardMaintainer}" value="#{wizard.maintainer}" />
+
+<sakai:tool_bar rendered="#{wizardCreate ||  wizardMaintainer}">
+      <sakai:tool_bar_item rendered="#{wizardCreate}"
       action="#{wizard.processActionNew}"
       value="#{msgs.new_wizard}" />
           
-      <sakai:tool_bar_item rendered="#{wizard.canCreate}"
+      <sakai:tool_bar_item rendered="#{wizardCreate}"
           action="#{wizard.importWizard}"
           value="#{msgs.import}" />
 
-      <sakai:tool_bar_item rendered="#{wizard.maintainer}"
+      <sakai:tool_bar_item rendered="#{wizardMaintainer}"
           action="#{wizard.processPermissions}"
           value="#{msgs.permissions_link}" />
 
    </sakai:tool_bar>
-   <sakai:view_title value="#{msgs.wizard_title}" rendered="#{wizard.canCreate ||  wizard.maintainer}"/>
-   <sakai:view_title value="#{msgs.wizard_title_user}" rendered="#{not (wizard.canCreate ||  wizard.maintainer)}"/>
+   <sakai:view_title value="#{msgs.wizard_title}" rendered="#{wizardCreate ||  wizardMaintainer}"/>
+   <sakai:view_title value="#{msgs.wizard_title_user}" rendered="#{not (wizardCreate ||  wizardMaintainer)}"/>
+   
+</t:aliasBeansScope>   
    <%--
    <sakai:instruction_message value="#{msgs.wizard_instruction_message}" />
   --%>  
@@ -44,19 +51,19 @@
    <h:outputText value="#{wizard.lastError} #{msgs.wizard_bad_file_type}" styleClass="validation" rendered="#{wizard.lastError == 'badFileType'}" />
    <h:outputText value="#{wizard.lastError} #{msgs.wizard_bad_import}" styleClass="validation" rendered="#{wizard.lastError == 'badImport'}" />
 
-   <sakai:instruction_message   value="#{msgs.no_wizards}" rendered="#{empty wizard.wizards}" />
-
-   <h:dataTable  value="#{wizard.wizards}" var="wizardItem" styleClass="lines listHier nolines" headerClass="exclude" summary="#{msgs.wizard_list_summary}" rendered="#{not empty wizard.wizards}" border="0">
+   <h:dataTable  value="#{wizard.wizards}" var="wizardItem" styleClass="lines listHier nolines" headerClass="exclude" summary="#{msgs.wizard_list_summary}" border="0">
       <h:column>
          <f:facet name="header">
             <h:outputText value="#{msgs.wizards}" />
          </f:facet>
-         <h:outputText value="#{wizardItem.base.name}" rendered="#{!wizardItem.canOperateOnWizardInstance}"/>
-         <f:subview id="runLink" rendered="#{wizardItem.canOperateOnWizardInstance}">
-            <h:commandLink action="#{wizardItem.processActionRunWizard}" title="#{msgs.run_wizard}">
-               <h:outputText value="#{wizardItem.base.name}"/>
-            </h:commandLink>
-         </f:subview>
+         <t:aliasBean alias="#{wizardItemOperate}" value="#{wizardItem.canOperateOnWizardInstance}">
+	         <h:outputText value="#{wizardItem.base.name}" rendered="#{!wizardItemOperate}"/>
+	         <f:subview id="runLink" rendered="#{wizardItemOperate}">
+	            <h:commandLink action="#{wizardItem.processActionRunWizard}" title="#{msgs.run_wizard}">
+	               <h:outputText value="#{wizardItem.base.name}"/>
+	            </h:commandLink>
+	         </f:subview>
+         </t:aliasBean>
 	     <sakai:separatedList id="wizActionList" separator=" | " styleClass="itemAction">
 	           <f:subview id="previewLink" rendered="#{wizardItem.canPublish && wizardItem.totalPages > 0 && !wizardItem.base.preview && !wizardItem.base.published}">
 	                 <h:commandLink action="#{wizardItem.processActionPreview}">
@@ -156,6 +163,9 @@
       </h:column>
 
    </h:dataTable>
+   
+   <%-- wizard.wizardListSize needs to be called after wizard.wizards, otherwise it won't be populated --%>
+   <sakai:instruction_message   value="#{msgs.no_wizards}" rendered="#{wizard.wizardListSize == 0}" />
    
 </h:form>
 </sakai:view>

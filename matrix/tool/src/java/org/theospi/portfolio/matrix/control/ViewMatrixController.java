@@ -33,7 +33,13 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.assignment.api.Assignment;
+import org.sakaiproject.assignment.api.AssignmentSubmission;
+import org.sakaiproject.assignment.cover.AssignmentService;
 import org.sakaiproject.authz.api.Member;
+import org.sakaiproject.authz.api.Role;
+import org.sakaiproject.authz.api.SecurityService;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.security.FunctionConstants;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -48,16 +54,12 @@ import org.sakaiproject.tool.api.Placement;
 import org.sakaiproject.tool.api.ToolManager;
 import org.sakaiproject.tool.api.ToolSession;
 import org.sakaiproject.tool.cover.SessionManager;
+import org.sakaiproject.user.api.User;
 import org.sakaiproject.user.api.UserNotDefinedException;
 import org.sakaiproject.user.cover.UserDirectoryService;
-import org.sakaiproject.assignment.cover.AssignmentService;
-import org.sakaiproject.assignment.api.AssignmentSubmission;
-import org.sakaiproject.assignment.api.Assignment;
-import org.sakaiproject.component.cover.ServerConfigurationService;
-import org.sakaiproject.user.api.User;
-
 import org.springframework.validation.Errors;
 import org.springframework.web.servlet.ModelAndView;
+import org.theospi.portfolio.assignment.AssignmentHelper;
 import org.theospi.portfolio.matrix.MatrixFunctionConstants;
 import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Cell;
@@ -70,10 +72,12 @@ import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.assignment.AssignmentHelper;
+import org.theospi.portfolio.security.Authorization;
 
 public class ViewMatrixController extends AbstractMatrixController implements FormController, LoadObjectController {
 
    protected final Log logger = LogFactory.getLog(getClass());
+   private SecurityService securityService;
    
    public static final String VIEW_USER = "view_user";
    
@@ -226,9 +230,8 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       String worksiteId = grid.getScaffolding().getWorksiteId().getValue();
 
       String filteredGroup = (String) request.get(GROUP_FILTER);
-      boolean allowAllGroups = ServerConfigurationService.getBoolean(WizardMatrixConstants.PROP_GROUPS_ALLOW_ALL_GLOBAL, false)
-      			|| grid.getScaffolding().getReviewerGroupAccess() == WizardMatrixConstants.UNRESTRICTED_GROUP_ACCESS;
-      List<Group> groupList = new ArrayList<Group>(getGroupList(worksiteId, allowAllGroups));
+      boolean allowAllGroups = getAuthzManager().isAuthorized(getAuthManager().getAgent(), MatrixFunctionConstants.VIEW_ALL_GROUPS, getIdManager().getId(grid.getScaffolding().getReference()));
+      List<Group> groupList = new ArrayList<Group>(getMatrixManager().getGroupList(worksiteId, allowAllGroups));
       //Collections.sort(groupList);
       //TODO: Figure out why ClassCastExceptions fire if we do this the obvious way...  The User list sorts fine
       Collections.sort(groupList, new Comparator<Group>() {
@@ -236,19 +239,25 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
     		  return arg0.getTitle().toLowerCase().compareTo(arg1.getTitle().toLowerCase());
     	  }});
       
-      List userList = new ArrayList(getUserList(worksiteId, filteredGroup, allowAllGroups, groupList));
+      List userList = new ArrayList(getMatrixManager().getUserList(worksiteId, filteredGroup, allowAllGroups, groupList));
 		
-      Collections.sort(userList);
+      Collections.sort(userList, new Comparator<User>(){
+
+		public int compare(User arg0, User arg1) {
+			return arg0.getSortName().compareToIgnoreCase(arg1.getSortName());
+		}
+      });
+      
       model.put("members", userList);
       model.put("userGroups", groupList);
       //TODO: Address why the fn:length() function can't be loaded or another handy way to pull collection size via EL
       model.put("userGroupsCount", groupList.size());
-      model.put("hasGroups", hasGroups(worksiteId));
+      model.put("hasGroups", getMatrixManager().hasGroups(worksiteId));
       model.put("filteredGroup", request.get(GROUP_FILTER));
       //TODO: Clean this up for efficiency.. We're going back to the SiteService too much
       
       if ((owner != null && !owner.equals(getAuthManager().getAgent())) ||
-           !getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING,getWorksiteManager().getCurrentWorksiteId()))
+           !getAuthzManager().isAuthorized(MatrixFunctionConstants.CAN_USE_SCAFFOLDING, getIdManager().getId(grid.getScaffolding().getReference())))
          readOnly = Boolean.valueOf(true);
 
       model.put("worksite", worksiteId );
@@ -268,6 +277,13 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
     	         getStyleManager().createStyleUrlList(getStyleManager().getStyles(grid.getScaffolding().getId())));
       
       
+      
+      model.put("canReviewOrEvaluateIds", getCellsICanReviewOrEvaluate(getMatrixManager().getMatrix(
+				grid.getMatrixId())));
+		model.put("isMyMatrix", getAuthManager().getAgent().getId().getValue()
+				.equals(
+						getMatrixManager().getMatrix(grid.getMatrixId())
+								.getOwner().getId().getValue()));
       
       
       return model;
@@ -325,81 +341,7 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       return null;
 
    } // getCurrentSitePageId
-    
-    private Set getGroupList(String worksiteId, boolean allowAllGroups) {
-    	try {
-			Site site = SiteService.getSite(worksiteId);
-			return getGroupList(site, allowAllGroups);
-		} catch (IdUnusedException e) {
-			logger.error("", e);
-		}
-		return new HashSet();    	
-    }
-    
-    private Set getGroupList(Site site, boolean allowAllGroups) {
-    	Set groups = new HashSet();
-		if (site.hasGroups()) {
-            String currentUser = SessionManager.getCurrentSessionUserId();
-            if (allowAllGroups) {
-            	groups.addAll(site.getGroups());
-            }
-            else {
-            	groups.addAll(site.getGroupsWithMember(currentUser));
-            }
-		}
-		return groups;
-    }
-    
-    private boolean hasGroups(String worksiteId) {
-		try {
-			Site site = SiteService.getSite(worksiteId);
-			return site.hasGroups();
-		} catch (IdUnusedException e) {
-			logger.error("", e);
-		}
-		return false;
-	}
 
-	private Set getUserList(String worksiteId, String filterGroupId, boolean allowAllGroups, List<Group> groups) {
-		Set members = new HashSet();
-		Set users = new HashSet();
-
-		try {
-			Site site = SiteService.getSite(worksiteId);
-			if (site.hasGroups()) {
-				if (allowAllGroups && (filterGroupId == null || filterGroupId.equals(""))) {
-					members.addAll(site.getMembers());
-				}
-				else if ( filterGroupId != null && !filterGroupId.equals("") ) {
-					Group group = site.getGroup(filterGroupId);
-					members.addAll(group.getMembers());
-				}
-				else {
-					for (Iterator iter = groups.iterator(); iter.hasNext();) {
-						Group group = (Group) iter.next();
-						members.addAll(group.getMembers());
-					}
-				}
-			} 
-			else {
-				members.addAll(site.getMembers());
-			}
-
-			for (Iterator memb = members.iterator(); memb.hasNext();) {
-				try {
-					Member member = (Member) memb.next();
-					users.add(UserDirectoryService.getUser(member.getUserId()));
-				} catch (UserNotDefinedException e) {
-					logger.warn("Unable to find user: " + e.getId() + " "
-							+ e.toString());
-				}
-			}
-		} catch (IdUnusedException e) {
-			logger.error("", e);
-		}
-		return users;
-	}
-   
    private Cell getCell(Collection<Cell> cells, Criterion criterion, Level level) {
       for (Iterator<Cell> iter=cells.iterator(); iter.hasNext();) {
          Cell cell = (Cell) iter.next();
@@ -417,6 +359,108 @@ public class ViewMatrixController extends AbstractMatrixController implements Fo
       //model.put("view_user", request.get("view_user"));
       return new ModelAndView("success", model);
    }
+   
+   private List<String> getCellsICanReviewOrEvaluate(Matrix matrix){
+	   List<String> accessIds = new ArrayList<String>();
+	   
+	   
+	   for (Iterator iterator = matrix.getCells().iterator(); iterator
+	   .hasNext();) {
+		   Cell cell = (Cell) iterator.next();
+		   boolean canEval = false;
+		   boolean canFeedback = false;
+
+		   //depending on isDefaultFeedbackEval, either send the scaffolding id or the scaffolding cell's id
+		   canEval = hasPermission(cell.getScaffoldingCell()
+				   .isDefaultEvaluators() ? cell.getScaffoldingCell()
+						   .getScaffolding().getId() : cell.getScaffoldingCell()
+						   .getWizardPageDefinition().getId(), cell
+						   .getScaffoldingCell().getScaffolding().getWorksiteId(),
+						   MatrixFunctionConstants.EVALUATE_MATRIX);
+		   if(!canEval){
+			   // depending on isDefaultFeedbackEval, either send the scaffolding
+			   // id or the scaffolding cell's id
+			   // also, compare first result with the user's cell review list by
+			   // sending the user's cell id
+				boolean allowParticipantFeedback = cell.getScaffoldingCell()
+						.isDefaultReviewers() ? cell.getScaffoldingCell()
+						.getScaffolding().isAllowRequestFeedback() : cell
+						.getScaffoldingCell().getWizardPageDefinition()
+						.isAllowRequestFeedback();
+				
+			   canFeedback = hasPermission(cell.getScaffoldingCell()
+					   .isDefaultReviewers() ? cell.getScaffoldingCell()
+							   .getScaffolding().getId() : cell.getScaffoldingCell()
+							   .getWizardPageDefinition().getId(), cell
+							   .getScaffoldingCell().getScaffolding().getWorksiteId(),
+							   MatrixFunctionConstants.REVIEW_MATRIX)
+							   || (allowParticipantFeedback && hasPermission(cell.getWizardPage().getId(), cell
+									   .getScaffoldingCell().getScaffolding()
+									   .getWorksiteId(),
+									   MatrixFunctionConstants.FEEDBACK_MATRIX));
+		   }
+
+
+			if(canEval || canFeedback){
+				accessIds.add(cell.getId().getValue());
+			}
+		}
+	   
+	   return accessIds;
+   }
+   
+   /**
+	 * finds the list of evaluators/roles of the site id passed and checks against the current user.
+	 * returns true if user or role matches, otherwise false
+	 * 
+	 * @param id
+	 * @param worksiteId
+	 * @param function
+	 * @return
+	 */
+	protected boolean hasPermission(Id id, Id worksiteId, String function){
+		if(getSecurityService().isSuperUser(getAuthManager().getAgent().getId().getValue()))
+			return true;
+		
+		if(id == null)
+			return false;
+		
+		Site site = null;
+		try {
+			site = SiteService.getSite(worksiteId.getValue());
+		} catch (IdUnusedException e) {
+			e.printStackTrace();
+		}
+
+		if(site == null)
+			return false;
+		
+		Role userRole = site.getUserRole(getAuthManager().getAgent().getId().getValue());
+		
+		List evaluators = getAuthzManager().getAuthorizations(null,
+				function, id);
+
+		for (Iterator iter = evaluators.iterator(); iter.hasNext();) {
+			Authorization az = (Authorization) iter.next();
+			Agent agent = az.getAgent();
+			if (agent.isRole()) {
+				if(userRole != null){
+					// see if the user's role matches with the evaluation role: 
+					//(fyi, display name returns the role if the agent is a role)
+					if (userRole.getId().compareTo(
+							agent.getDisplayName()) == 0)
+						return true;
+				}
+			} else {
+				// see if the user matches with the evaluator user
+				if (getAuthManager().getAgent().getId().getValue().compareTo(
+						agent.getId().toString()) == 0)
+					return true;
+			}
+		}
+
+		return false;
+	}
 
    
 
@@ -432,7 +476,16 @@ public StyleManager getStyleManager() {
 	return styleManager;
 }
 
+public SecurityService getSecurityService() {
+	return securityService;
+}
+
 public void setStyleManager(StyleManager styleManager) {
 	this.styleManager = styleManager;
 }
+
+public void setSecurityService(SecurityService securityService) {
+	this.securityService = securityService;
+}
+
 }

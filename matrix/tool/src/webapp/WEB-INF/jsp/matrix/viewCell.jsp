@@ -1,16 +1,108 @@
 <%@ include file="/WEB-INF/jsp/include.jsp"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 
-
 <fmt:setLocale value="${locale}" />
 <fmt:setBundle basename="org.theospi.portfolio.matrix.bundle.Messages" />
+
+
+<osp-c:authZMap	prefix="osp.wizard." var="wizardCan" qualifier="${cell.scaffoldingCell.scaffolding.worksiteId}" />
+<c:set var="canOperateWizard" value="false" /> 
+<c:if test="${wizardId != null}">
+	<osp-c:authZMap	prefix="osp.wizard." var="canOperate" qualifier="${wizardId}" />
+	<c:set var="canOperateWizard" value="${canOperate.operate}" /> 	
+</c:if>
+<c:if test="${(isMatrix == 'true' && matrixCanViewCell) || (isWizard == 'true' && (isWizardOwner || (canOperateWizard && (wizardCan.evaluate || wizardCan.review))))}">
+
+
+
+<%
+  	String thisId = request.getParameter("panel");
+  	if (thisId == null) 
+  	{
+    	thisId = "Main" + org.sakaiproject.tool.cover.ToolManager.getCurrentPlacement().getId();
+ 		 }
+%>
+<script type="text/javascript">
+	function resize(){
+		mySetMainFrameHeightViewCell('<%= org.sakaiproject.util.Web.escapeJavascript(thisId)%>');
+	}
+	
+	
+function mySetMainFrameHeightViewCell(id)
+{
+	// run the script only if this window's name matches the id parameter
+	// this tells us that the iframe in parent by the name of 'id' is the one who spawned us
+	if (typeof window.name != "undefined" && id != window.name) return;
+
+	var frame = parent.document.getElementById(id);
+	if (frame)
+	{
+
+		var objToResize = (frame.style) ? frame.style : frame;
+  
+    // SAK-11014 revert           if ( false ) {
+
+		var height; 		
+		var offsetH = document.body.offsetHeight;
+		var innerDocScrollH = null;
+
+		if (typeof(frame.contentDocument) != 'undefined' || typeof(frame.contentWindow) != 'undefined')
+		{
+			// very special way to get the height from IE on Windows!
+			// note that the above special way of testing for undefined variables is necessary for older browsers
+			// (IE 5.5 Mac) to not choke on the undefined variables.
+ 			var innerDoc = (frame.contentDocument) ? frame.contentDocument : frame.contentWindow.document;
+			innerDocScrollH = (innerDoc != null) ? innerDoc.body.scrollHeight : null;
+		}
+	
+		if (document.all && innerDocScrollH != null)
+		{
+			// IE on Windows only
+			height = innerDocScrollH;
+		}
+		else
+		{
+			// every other browser!
+			height = offsetH;
+		}
+   // SAK-11014 revert		} 
+
+   // SAK-11014 revert             var height = getFrameHeight(frame);
+
+		// here we fudge to get a little bigger
+		var newHeight = height + 40;
+
+		// but not too big!
+		if (newHeight > 32760) newHeight = 32760;
+
+		// capture my current scroll position
+		var scroll = findScroll();
+
+		// resize parent frame (this resets the scroll as well)
+		objToResize.height=newHeight + "px";
+
+		// reset the scroll, unless it was y=0)
+		if (scroll[1] > 0)
+		{
+			var position = findPosition(frame);
+			parent.window.scrollTo(position[0]+scroll[0], position[1]+scroll[1]);
+		}
+	}
+}
+</script> 
+			
+			
+
 
 <c:set var="date_format">
 	<osp:message key="dateFormat_full" />
 </c:set>
 
-<link href="/osp-jsf-resource/css/osp_jsf.css" type="text/css"
-	rel="stylesheet" media="all" />
+
+<script type="text/javascript" language="JavaScript" src="/osp-common-tool/js/thickbox.js"></script>
+<link href="/osp-common-tool/css/thickbox.css" type="text/css" rel="stylesheet" media="all" />
+
+
 <script type="text/javascript"
 	src="/osp-jsf-resource/xheader/xheader.js"></script>
 
@@ -36,15 +128,19 @@
 	<input type="hidden" name="view" value="wizardPage.osp" />
 </c:if> <c:if test="${helperPage != 'true'}">
 	<input type="hidden" name="view" value="viewCell.osp" />
-</c:if> <c:set var="cell" value="${cellBean.cell}" /> <osp-c:authZMap
-	prefix="osp.matrix.scaffolding." var="can"
-	qualifier="${cell.scaffoldingCell.scaffolding.worksiteId}" /> <osp-c:authZMap
-	prefix="osp.matrix." var="matrixCan"
-	qualifier="${cell.scaffoldingCell.scaffolding.worksiteId}" /> <osp-c:authZMap
-	prefix="osp.wizard." var="wizardCan"
-	qualifier="${cell.scaffoldingCell.scaffolding.worksiteId}" /> <%-- TODO - need to see if user gets any of these abilities, if not omit whole toolbar --%>
-<div class="navIntraTool"><c:if
-	test="${(isWizard != 'true' && can.create) || (isWizard == 'true' && wizardCan.create)}">
+</c:if> 
+	<c:set var="cell" value="${cellBean.cell}" /> 
+	<osp-c:authZMap prefix="osp.matrix.scaffoldingSpecific." var="scaffoldingCan" qualifier="${cell.scaffoldingCell.scaffolding.reference}"/>
+	<osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" qualifier="${cell.scaffoldingCell.scaffolding.worksiteId}"/>
+	<osp-c:authZMap prefix="osp.matrix.scaffolding.revise." var="canRevise" qualifier="${cell.scaffoldingCell.scaffolding.worksiteId}"/>
+	<osp-c:authZMap prefix="osp.matrix.scaffolding.delete." var="canDelete" qualifier="${cell.scaffoldingCell.scaffolding.worksiteId}"/>
+	<osp-c:authZMap prefix="osp.matrix.scaffolding.publish." var="canPublish" qualifier="${cell.scaffoldingCell.scaffolding.worksiteId}"/>
+	<osp-c:authZMap prefix="osp.matrix.scaffolding.export." var="canExport" qualifier="${cell.scaffoldingCell.scaffolding.worksiteId}"/> 	
+	
+	
+		<%-- TODO - need to see if user gets any of these abilities, if not omit whole toolbar --%>
+<div class="navIntraTool TB_hideControl"><c:if
+	test="${(isWizard != 'true' && scaffoldingCan.manageStatus) || (isWizard == 'true' && wizardCan.create)}">
 	<a name="linkManageCellStatus" id="linkManageCellStatus"
 		href="<osp:url value="manageCellStatus.osp">
             <osp:param name="page_id" value="${cell.wizardPage.id}"/>
@@ -64,7 +160,7 @@
 	<div class="validation"><fmt:message key="title_cellPreview" /></div>
 </c:if>
 
-<c:if test="${matrixCan.viewOwner || !matrixCan.evaluate}">
+<c:if test="${scaffoldingCan.accessUserList}">
 <h2 class="owner">
    <c:out value="${wizardOwner}" />
 </h2>
@@ -92,149 +188,276 @@
 	</c:if>
 
 </c:if> <osp-h:glossary link="true" hover="true">
-	<h3><c:if test="${isWizard == 'true' and sequential != 'true'}">
-		<c:out value="${categoryTitle}" />
-		<c:if test="${categoryTitle != ''}">:
-          
-          </c:if>
-	</c:if> <c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
-	</h3>
-
-	<div class="instruction"><c:out
-		value="${cell.scaffoldingCell.wizardPageDefinition.description}"
-		escapeXml="false" /></div>
-</osp-h:glossary> <c:if test="${cell.status != 'READY'}">
+	<c:if test="${isWizard == 'true' and sequential != 'true'}">
+		<h3>
+			<c:out value="${categoryTitle}" />
+			<c:if test="${categoryTitle != ''}">:
+	          
+	        </c:if>
+	    </h3>
+	</c:if> 
+	<c:choose>
+		<c:when test="${isMatrix == 'true'}">
+			<br>
+			<h3 style="display: inline"><c:if
+				test="${scaffoldingCan.accessUserList}">
+				<c:out value="${cell.wizardPage.owner.displayName}: "/>
+			</c:if> <c:out
+				value="${cell.scaffoldingCell.scaffolding.title}: ${cell.scaffoldingCell.wizardPageDefinition.title}" />
+			</h3>
+		</c:when>
+		<c:otherwise>
+			<h3 style="display: inline"><osp:message key="label_title" />:&nbsp;</h3>
+			<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}" />
+		</c:otherwise>
+	</c:choose>
+	<br>	
+	<br>
+	
+		
+		
+</osp-h:glossary> <c:if test="${(cell.status != 'READY' && cell.status != 'RETURNED')}">
 	<div class="information"><fmt:message key="status_warning">
 		<fmt:param>
 			<fmt:message key="${cell.status}" />
 		</fmt:param>
 	</fmt:message></div>
-</c:if> <!-- ************* Guidance Area Start, we want to keep an order ************* -->
-<c:if test="${not empty cell.scaffoldingCell.guidance}">
+</c:if> 
+<c:if test="${feedbackSent}">
+	<div class="information"><fmt:message key="feedbackSentMessage"/></div>
+</c:if>
 
-	<c:set value="false" var="oneDisplayed" />
-	<c:set value="0" var="i" />
+	<c:if test="${not empty cell.scaffoldingCell.guidance || not empty cell.scaffoldingCell.wizardPageDefinition.description}">
+	<div>
+		<a name="viewCellInformation" id="viewCellInformation_show" title="<osp:message key="supporting_info" />" class="show" style="display:none"
+				href="#" onclick="$(this).next('.hide').toggle();$('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$(this).toggle();">
+				<osp:message key="matrix_viewing_title_view" />&nbsp;<osp:message key="supporting_info" /></a>
+	
 
-	<!-- ** instruction ** -->
-
-	<c:forEach var="guidanceItem"
-		items="${cell.scaffoldingCell.guidance.items}">
-		<c:if
-			test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
-			<c:if test="${guidanceItem.type == 'instruction'}">
-				<h4 class="xheader"><img
-					src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
-					id="expandImg<c:out value='${i}'/>" alt=""
-					onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
-					<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
-					src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
-					id="collapseImg<c:out value='${i}'/>" alt=""
-					onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
-					<c:if test="${oneDisplayed}"> style="display:none;" </c:if> /> <osp:message
-					key="instructions" /></h4>
-				<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
-					<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
-				<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
-					test="${not empty guidanceItem.attachments}">
-					<ul class="attachList indnt1">
-						<c:forEach var="guidanceItemAtt"
-							items="${guidanceItem.attachments}">
-							<li><img border="0" title="<c:out value="${hover}" />"
-								alt="<c:out value="${guidanceItemAtt.displayName}"/>"
-								src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
-							<a
-								href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
-								target="_blank"> <c:out
-								value="${guidanceItemAtt.displayName}" /> </a></li>
-						</c:forEach>
-					</ul>
-				</c:if></div>
-			</c:if>
+		<a name="hideGuidanceInformation" id="hideGuidanceInformation_hide" title="<osp:message key="supporting_info" />" class="hide" 
+				href="#" onclick="$(this).prev('.show').toggle(); $('div.toggle:first', $(this).parents('div:first')).slideToggle(resize);$(this).toggle();">
+			   <osp:message key="matrix_viewing_title_hide" />&nbsp;<osp:message key="supporting_info" /></a>
+		
+		<div class="toggle">
+		
+		<!-- ** cell description (not part of guidance, but showing it here anyway) ** -->
+		<c:if test="${not empty cell.scaffoldingCell.wizardPageDefinition.description}">
+			<h3><osp:message key="label_description" /></h3>
+			<div class="textPanel indnt1">
+					<c:out value="${cell.scaffoldingCell.wizardPageDefinition.description}" escapeXml="false" />
+			</div>
 		</c:if>
-	</c:forEach>
-
-	<c:set value="1" var="i" />
-
-	<!-- ** rationale ** -->
-
-	<c:forEach var="guidanceItem"
-		items="${cell.scaffoldingCell.guidance.items}">
-		<c:if
-			test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
-			<c:if test="${guidanceItem.type == 'rationale'}">
-				<h4 class="xheader"><img
-					src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
-					id="expandImg<c:out value='${i}'/>" alt=""
-					onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
-					<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
-					src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
-					id="collapseImg<c:out value='${i}'/>" alt=""
-					onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
-					<c:if test="${oneDisplayed}"> style="display:none;" </c:if> /> <osp:message
-					key="rationale" /></h4>
-				<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
-					<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
-				<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
-					test="${not empty guidanceItem.attachments}">
-					<ul class="attachList indnt1">
-						<c:forEach var="guidanceItemAtt"
-							items="${guidanceItem.attachments}">
-							<li><img border="0" title="<c:out value="${hover}" />"
-								alt="<c:out value="${guidanceItemAtt.displayName}"/>"
-								src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
-							<a
-								href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
-								target="_blank"> <c:out
-								value="${guidanceItemAtt.displayName}" /> </a></li>
-						</c:forEach>
-					</ul>
-				</c:if></div>
+		
+		<c:set value="false" var="oneDisplayed" />
+		<c:set value="0" var="i" />
+	
+		<!-- ** instruction ** -->
+	
+		<c:forEach var="guidanceItem"
+			items="${cell.scaffoldingCell.guidance.items}">
+			<c:if
+				test="${(guidanceItem.text != null && guidanceItem.text != '') || not empty guidanceItem.attachments}">
+				<c:if test="${guidanceItem.type == 'instruction'}">
+					<h3>
+				<!--		<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
+						id="expandImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
+						<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
+						src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
+						id="collapseImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if> />	-->
+						<osp:message key="instructions" /></h3>
+					<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+					<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
+						test="${not empty guidanceItem.attachments}">
+						<ul class="attachList indnt1">
+							<c:forEach var="guidanceItemAtt"
+								items="${guidanceItem.attachments}">
+								<li><img border="0" title="<c:out value="${hover}" />"
+									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
+									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
+								<a
+									href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
+									target="_blank"> <c:out
+									value="${guidanceItemAtt.displayName}" /> </a></li>
+							</c:forEach>
+						</ul>
+					</c:if></div>
+				</c:if>
 			</c:if>
-		</c:if>
-	</c:forEach>
-	<c:set value="2" var="i" />
-
-	<!-- ** examples ** -->
-
-	<c:forEach var="guidanceItem"
-		items="${cell.scaffoldingCell.guidance.items}">
-		<c:if
-			test="${guidanceItem.text != '' || not empty guidanceItem.attachments}">
-			<c:if test="${guidanceItem.type == 'example'}">
-				<h4 class="xheader"><img
-					src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
-					id="expandImg<c:out value='${i}'/>" alt=""
-					onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
-					<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
-					src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
-					id="collapseImg<c:out value='${i}'/>" alt=""
-					onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
-					<c:if test="${oneDisplayed}"> style="display:none;" </c:if> /> <osp:message
-					key="examples" /></h4>
-				<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
-					<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
-				<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
-					test="${not empty guidanceItem.attachments}">
-					<ul class="attachList indnt1">
-						<c:forEach var="guidanceItemAtt"
-							items="${guidanceItem.attachments}">
-							<li><img border="0" title="<c:out value="${hover}" />"
-								alt="<c:out value="${guidanceItemAtt.displayName}"/>"
-								src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
-							<a
-								href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
-								target="_blank"> <c:out
-								value="${guidanceItemAtt.displayName}" /> </a></li>
-						</c:forEach>
-					</ul>
-				</c:if></div>
+		</c:forEach>
+	
+		<c:set value="1" var="i" />
+	
+		<!-- ** rationale ** -->
+	
+		<c:forEach var="guidanceItem"
+			items="${cell.scaffoldingCell.guidance.items}">
+			<c:if
+				test="${(guidanceItem.text != null && guidanceItem.text != '') || not empty guidanceItem.attachments}">
+				<c:if test="${guidanceItem.type == 'rationale'}">
+					<h3>
+		<!--						<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
+						id="expandImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
+						<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
+						src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
+						id="collapseImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if> />  -->
+						<osp:message key="rationale" /></h3>
+					<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+						<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
+						test="${not empty guidanceItem.attachments}">
+						<ul class="attachList indnt1">
+							<c:forEach var="guidanceItemAtt"
+								items="${guidanceItem.attachments}">
+								<li><img border="0" title="<c:out value="${hover}" />"
+									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
+									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
+								<a
+									href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
+									target="_blank"> <c:out
+									value="${guidanceItemAtt.displayName}" /> </a></li>
+							</c:forEach>
+						</ul>
+					</c:if></div>
+				</c:if>
 			</c:if>
-		</c:if>
-	</c:forEach>
+		</c:forEach>
+		<c:set value="2" var="i" />
+	
+		<!-- ** examples ** -->
+	
+		<c:forEach var="guidanceItem"
+			items="${cell.scaffoldingCell.guidance.items}">
+			<c:if
+				test="${(guidanceItem.text != null && guidanceItem.text != '') || not empty guidanceItem.attachments}">
+				<c:if test="${guidanceItem.type == 'example'}">
+					<h3>
+	<!--					<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
+						id="expandImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
+						<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
+						src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
+						id="collapseImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if> /> -->
+						<osp:message key="examples" /></h3>
+					<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+					<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
+						test="${not empty guidanceItem.attachments}">
+						<ul class="attachList indnt1">
+							<c:forEach var="guidanceItemAtt"
+								items="${guidanceItem.attachments}">
+								<li><img border="0" title="<c:out value="${hover}" />"
+									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
+									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
+								<a
+									href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
+									target="_blank"> <c:out
+									value="${guidanceItemAtt.displayName}" /> </a></li>
+							</c:forEach>
+						</ul>
+					</c:if></div>
+				</c:if>
+			</c:if>
+		</c:forEach>
+		
+		<!-- ** Rubric ** -->
+	
+		<c:forEach var="guidanceItem"
+			items="${cell.scaffoldingCell.guidance.items}">
+			<c:if
+				test="${(guidanceItem.text != null && guidanceItem.text != '') || not empty guidanceItem.attachments}">
+				<c:if test="${guidanceItem.type == 'rubric'}">
+					<h3>
+	<!--					<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
+						id="expandImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
+						<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
+						src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
+						id="collapseImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if> /> -->
+						<osp:message key="rubrics" /></h3>
+					<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+					<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
+						test="${not empty guidanceItem.attachments}">
+						<ul class="attachList indnt1">
+							<c:forEach var="guidanceItemAtt"
+								items="${guidanceItem.attachments}">
+								<li><img border="0" title="<c:out value="${hover}" />"
+									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
+									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
+								<a
+									href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
+									target="_blank"> <c:out
+									value="${guidanceItemAtt.displayName}" /> </a></li>
+							</c:forEach>
+						</ul>
+					</c:if></div>
+				</c:if>
+			</c:if>
+		</c:forEach>
+		
+		<!-- ** Expectations ** -->
+	
+		<c:forEach var="guidanceItem"
+			items="${cell.scaffoldingCell.guidance.items}">
+			<c:if
+				test="${(guidanceItem.text != null && guidanceItem.text != '') || not empty guidanceItem.attachments}">
+				<c:if test="${guidanceItem.type == 'expectations'}">
+					<h3 >
+	<!--					<img src="/osp-jsf-resource/xheader/images/xheader_mid_hide.gif"
+						id="expandImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='';document.getElementById('expandImg<c:out value='${i}'/>').style.display='none';resizeFrame('shrink')"
+						<c:if test="${!oneDisplayed}"> style="display:none;" </c:if> /> <img
+						src="/osp-jsf-resource/xheader/images/xheader_mid_show.gif"
+						id="collapseImg<c:out value='${i}'/>" alt=""
+						onclick="document.getElementById('textPanel<c:out value='${i}'/>').style.display='none';document.getElementById('collapseImg<c:out value='${i}'/>').style.display='none';document.getElementById('expandImg<c:out value='${i}'/>').style.display='';"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if> /> -->
+						<osp:message key="expectations" /></h3>
+					<div class="textPanel indnt1" id="textPanel<c:out value='${i}'/>"
+						<c:if test="${oneDisplayed}"> style="display:none;" </c:if>>
+					<c:out value="${guidanceItem.text}" escapeXml="false" /> <c:if
+						test="${not empty guidanceItem.attachments}">
+						<ul class="attachList indnt1">
+							<c:forEach var="guidanceItemAtt"
+								items="${guidanceItem.attachments}">
+								<li><img border="0" title="<c:out value="${hover}" />"
+									alt="<c:out value="${guidanceItemAtt.displayName}"/>"
+									src="/library/image/<osp-c:contentTypeMap fileType="${guidanceItemAtt.mimeType}" mapType="image"/>" />
+								<a
+									href="<c:out value="${guidanceItemAtt.fullReference.base.url}" />"
+									target="_blank"> <c:out
+									value="${guidanceItemAtt.displayName}" /> </a></li>
+							</c:forEach>
+						</ul>
+					</c:if></div>
+				</c:if>
+			</c:if>
+		</c:forEach>
+		
+		</div>
+		</div>
+	
+	</c:if> 
 
-</c:if> <!-- ************* Guidance Area End ************* --> <!-- ************* Form Area Start ************* -->
 
-<h3><osp:message key="hdr.table.evidence" /></h3>
+
+
+
+
+
+ <!-- ************* Form Area Start ************* -->
+
+
 <table class="matrixCellList" cellpadding="0" cellspacing="0" border="0"
 	summary="<osp:message key="table.evidence.summary"/>">
 	<tr>
@@ -248,7 +471,7 @@
 			<td colspan="4">
 			<h4><c:choose>
 				<c:when
-					test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+					test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
 					<div class="itemAction"><a
 						href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -295,7 +518,7 @@
 			<c:if
 				test="${node.fileType == cellFormDef.id or allowedNodeType == ''}">
 				<c:set var="canReflect" value="true" />
-				<c:set var="showUserButtons" value="${cell.status == 'READY' and readOnlyMatrix != 'true' and not node.isLocked}" />
+				<c:set var="showUserButtons" value="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true' and not node.isLocked}" />
 
 				<tr>
 					<td>
@@ -328,11 +551,16 @@
                             </osp:url>"
 							title="<fmt:message key="remove"/>">
 							<fmt:message key="remove"/></a>
-					</c:if> 
-				
-					<c:if
-						test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && allowItemFeedback[loopStatus.index]}">
-						<c:if test="${showUserButtons}"> | </c:if>
+						<c:if
+							test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && allowItemFeedback[loopStatus.index] &&
+							((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
+									|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
+                        |
+                        </c:if>
+					</c:if> <c:if
+						test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && allowItemFeedback[loopStatus.index] &&
+								((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
+									|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
 						<a
 							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                           <osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -342,21 +570,17 @@
                           <osp:param name="objectId" value="${objectId}" />
                           <osp:param name="objectTitle" value="${objectTitle}" />
                           <osp:param name="itemId" value="${node.id}" />
+                          <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+				       		<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+				       	  </c:if>
                           </osp:url>"
 							title="<fmt:message key="review"/>"> <fmt:message key="review"/></a>
 					</c:if></div>
 					</td>
 					<td>
-<c:choose>
-<c:when test="${matrixCan.viewOwner || !matrixCan.evaluate}">
-					<c:out value="${node.technicalMetadata.owner.displayName}" />
-</c:when>
-<c:otherwise>
-		<span title="<fmt:message key="blind_evaluation_tooltip"/>">
-		<fmt:message key="blind_evaluation_username"></fmt:message>
-		</span>
-</c:otherwise>
-</c:choose>
+						<c:if test="${scaffoldingCan.accessUserList}">
+							<c:out value="${node.technicalMetadata.owner.displayName}" />
+						</c:if>
 					</td>
 					<td><fmt:formatDate
 						value="${node.technicalMetadata.lastModified}"
@@ -371,16 +595,21 @@
 								test="${object.itemId == node.id}">
 								<img src='/library/image/silk/comment.gif' border='0' hspace='0'
 									alt="" />
-								<a
-									href='<c:out value="${object.reviewContentNode.externalUri}"/>'
-									target="_blank"> <c:out
-									value="${object.reviewContentNode.displayName}" /></a>
+								<c:if test="${object.reviewContentNode.technicalMetadata.owner.id == currentUser || (scaffoldingCan.viewFeedbackOther && isWizard != 'true') || ((wizardCan.evaluate || wizardCan.review) && isWizard == 'true') || cell.wizardPage.owner.id == currentUser}">
+									<a
+										href='<c:out value="${object.reviewContentNode.externalUri}"/>'
+										target="_blank">
+								</c:if>
+									 <c:out	value="${object.reviewContentNode.displayName}" />
+								<c:if test="${object.reviewContentNode.technicalMetadata.owner.id == currentUser || (scaffoldingCan.viewFeedbackOther && isWizard != 'true') || ((wizardCan.evaluate || wizardCan.review) && isWizard == 'true') || cell.wizardPage.owner.id == currentUser}">
+									</a>
+								</c:if>
 							</c:if> </span></h6>
 							</td>
 							<td>
 								<!-- Allow Reviewers to edit/delete feedback -->
 								<c:if
-									test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
+									test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
 									<a
 										href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 												<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -388,6 +617,9 @@
 												<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
 												<osp:param name="review_id" value="${object.id}"/>
 												<osp:param name="process_type_key" value="page_id" />
+												<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 											  </osp:url>"
 										title="<fmt:message key="edit"/>"> 
 												<fmt:message key="edit"/>
@@ -400,6 +632,9 @@
 												 <osp:param name="current_form_id" value="${object.reviewContentNode.resource.id}" />
 												 <osp:param name="review_id" value="${object.id}"/>
 												 <osp:param name="submit" value="deleteReview" />
+												 <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 												 </osp:url>"
 										title="<fmt:message key="delete"/>">
 												<fmt:message key="remove"/>
@@ -420,6 +655,23 @@
 		</c:forEach>
 
 	</c:forEach>
+	
+	
+	<!-- *************** Showing linked artifacts START **************** -->
+	
+	<c:forEach var="taggableItem" items="${taggableItems}" varStatus="taggableItemLoopStatus">
+		<c:set var="canReflect" value="true" />
+		<tr><td colspan="4">
+		<img border="0" src="<c:out value="${taggableItem.iconUrl}" />" />
+		<a class="thickbox"
+					href="<c:out value="${taggableItem.itemDetailUrl}"/><c:if test="${taggableItem.useDecoration}"><c:out value="/${decoWrapper}" /></c:if><c:out value="${taggableItem.itemDetailUrlParams}"/>">
+				<c:out value="${taggableItem.activity.title}" /> </a>
+		</td></tr>
+	</c:forEach>
+	
+	<!-- *************** Showing linked artifacts END **************** -->
+	
+
 	<!-- ***** show the attached resources ***** -->
 
 	<c:if test="${!cell.scaffoldingCell.suppressItems}">
@@ -428,7 +680,7 @@
 			<td colspan="4">
 			<h4><c:choose>
 				<c:when
-					test="${cell.status == 'READY' and readOnlyMatrix != 'true' && !cell.scaffoldingCell.suppressItems}">
+					test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true' && !cell.scaffoldingCell.suppressItems}">
 					<div class="itemAction"><%-- these should be links below--%>
 					<c:choose>
 						<c:when test="${empty cellBean.nodes}">
@@ -449,7 +701,7 @@
 					</c:choose></div>
 				</c:when>
 				<c:otherwise>
-					<fmt:message key="other_items_header" />
+					<fmt:message key="attachments" />
 				</c:otherwise>
 			</c:choose></h4>
 			</td>
@@ -497,7 +749,7 @@
 			</td>
 			<td style="white-space: nowrap">
 			<div class="itemAction"><c:if
-				test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
+				test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
 				<a
 					href="<osp:url value="osp.wizard.page.contents.helper/resourceDelete.osp">
 						   <osp:param name="page_id" value="${cell.wizardPage.id}"/>
@@ -508,8 +760,10 @@
 					title="<fmt:message key="remove"/>"> 
 					<fmt:message key="remove"/></a>
 			</c:if> <c:if
-				test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null}">
-				<a
+				test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && 
+						((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
+									|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
+				<a class="TB_hideControl"
 					href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
                           <osp:param name="page_id" value="${cell.wizardPage.id}" />
                           <osp:param name="org_theospi_portfolio_review_type" value="2" />
@@ -518,21 +772,17 @@
                           <osp:param name="objectId" value="${objectId}" />
                           <osp:param name="objectTitle" value="${objectTitle}" />
                           <osp:param name="itemId" value="${node.id}" />
+                          <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+				       		<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+				          </c:if>
                           </osp:url>"><osp:message
 					key="review" /></a>
 			</c:if></div>
 			</td>
 			<td>
-<c:choose>
-<c:when test="${matrixCan.viewOwner || !matrixCan.evaluate}">
-			<c:out value="${node.technicalMetadata.owner.displayName}" />
-</c:when>
-<c:otherwise>
-		<span title="<fmt:message key="blind_evaluation_tooltip"/>">
-		<fmt:message key="blind_evaluation_username"></fmt:message>
-		</span>
-</c:otherwise>
-</c:choose>
+				<c:if test="${scaffoldingCan.accessUserList}">
+					<c:out value="${node.technicalMetadata.owner.displayName}" />
+				</c:if>
 			</td>
 			<td><fmt:formatDate
 				value="${node.technicalMetadata.lastModified}"
@@ -546,16 +796,23 @@
 
 				<tr>
 					<td>
-					<h6><span class="indnt3"> <img
-						src='/library/image/silk/comment.gif' border='0' hspace='0' alt="" />
-					<a href='<c:out value="${object.reviewContentNode.externalUri}"/>'
-						target="_blank"> <c:out
-						value="${object.reviewContentNode.displayName}" /></a> </span></h6>
+						<h6><span class="indnt3"> <img
+							src='/library/image/silk/comment.gif' border='0' hspace='0' alt="" />
+							<c:if test="${object.reviewContentNode.technicalMetadata.owner.id == currentUser || (scaffoldingCan.viewFeedbackOther && isWizard != 'true') || ((wizardCan.evaluate || wizardCan.review) && isWizard == 'true') || cell.wizardPage.owner.id == currentUser}">
+								<a href='<c:out value="${object.reviewContentNode.externalUri}"/>'
+									target="_blank">
+							</c:if>
+								 <c:out value="${object.reviewContentNode.displayName}" />
+							<c:if test="${object.reviewContentNode.technicalMetadata.owner.id == currentUser || (scaffoldingCan.viewFeedbackOther && isWizard != 'true') || ((wizardCan.evaluate || wizardCan.review) && isWizard == 'true') || cell.wizardPage.owner.id == currentUser}">
+								</a> 
+							</c:if>
+							</span>
+						</h6>
 					</td>
 					<td>
 						<!-- Allow Reviewers to edit/delete feedback -->
 						<c:if
-							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
+							test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
 							<a
 								href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -563,6 +820,9 @@
 										<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
 										<osp:param name="review_id" value="${object.id}"/>
 										<osp:param name="process_type_key" value="page_id" />
+										<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 										</osp:url>"
 								title="<fmt:message key="edit"/>"> 
 										<fmt:message key="edit"/>
@@ -575,6 +835,9 @@
 										<osp:param name="current_form_id" value="${object.reviewContentNode.resource.id}" />
 										<osp:param name="review_id" value="${object.id}"/>
 										<osp:param name="submit" value="deleteReview" />
+										<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 										</osp:url>"
 								title="<fmt:message key="delete"/>">
 										<fmt:message key="remove"/>
@@ -640,147 +903,146 @@
 <!-- *********** Attached Assignments Area End ******** --> <!-- ************* Form Area End ************* -->
 
 
-
-<!-- ************* Reflection Area Start ************* --> <c:if
-	test="${cell.scaffoldingCell.reflectionDevice != null}">
-	<h3><osp:message key="reflection_section_header" /></h3>
+<!-- ************* Reflection Area Start ************* --> 
+<c:if test="${(cell.scaffoldingCell.reflectionDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultReflectionForm) 
+|| (cell.scaffoldingCell.scaffolding.reflectionDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultReflectionForm)}">
+<table class="matrixCellList" cellpadding="0" cellspacing="0" border="0"
+	summary="<osp:message key="table.evidence.summary"/>">
+	<tr>
+		<th colspan="2">
+			<osp:message key="reflection_section_header" />
+			<c:if test="${empty reflections && (cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
+				<span class="itemAction indnt1" style="font-weight:normal"> 
+						<a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
+							   <osp:param name="page_id" value="${cell.wizardPage.id}" />
+							   <osp:param name="org_theospi_portfolio_review_type" value="0" />
+							   <osp:param name="process_type_key" value="page_id" />
+							   <osp:param name="isMatrix" value="${isMatrix}" />
+							   <osp:param name="isWizard" value="${isWizard}" />
+							   <osp:param name="objectId" value="${objectId}" />
+							   <osp:param name="objectTitle" value="${objectTitle}" />
+						       <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultReflectionForm}">
+						       		<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+						       </c:if>
+							   </osp:url>">
+						<osp:message key="reflection_create" /></a> 
+				</span>
+			</c:if>			
+		</th>
+		<th><osp:message key="table_header_createdBy" /></th>
+		<th><osp:message key="table_header_modified" /></th>
+	</tr>	
+	
+	
 	<c:if test="${empty reflections}">
-		<p class="matrixCellList"><span style="padding: .4em 2.6em;">
-		<h4><span class="instruction"><osp:message
-			key="reflection_section_empty" /></span></h4>
-		<c:if
-			test="${empty reflections && cell.status == 'READY' and readOnlyMatrix != 'true'}">
-			<span class="itemAction"> <a
-				href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
-					   <osp:param name="page_id" value="${cell.wizardPage.id}" />
-					   <osp:param name="org_theospi_portfolio_review_type" value="0" />
-					   <osp:param name="process_type_key" value="page_id" />
-					   <osp:param name="isMatrix" value="${isMatrix}" />
-							<osp:param name="isWizard" value="${isWizard}" />
-							<osp:param name="objectId" value="${objectId}" />
-							<osp:param name="objectTitle" value="${objectTitle}" />
-					   </osp:url>">
-			<osp:message key="reflection_create" /></a> </span>
-		</c:if> </span></p>
+		<tr>
+			<td colspan="4">				
+				<p class="instruction indnt2"><osp:message
+					key="reflection_section_empty" />
+				</p>
+			</td>
+		</tr>
 	</c:if>
 	<c:if test="${not empty reflections}">
-		<div class="matrixCellList">
-		<h4><span style="padding: .4em 2.6em;"> 
-			<c:set var="canReflect" value="true" />
-
-			<img src='/library/image/silk/application_form.gif' border='0'
-				hspace='0' alt="" />
-			<a
-				href='<c:out value="${reflections[0].reviewContentNode.externalUri}"/>'
-				target="_blank"> <c:out
-				value="${reflections[0].reviewContentNode.displayName}" /> </a>
-		<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true' && enableReviewEdit}">
-			<span class="itemAction"> 
-				<a
-				href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
-						   <osp:param name="page_id" value="${cell.wizardPage.id}" />
-						   <osp:param name="org_theospi_portfolio_review_type" value="0" />
-						   <osp:param name="current_review_id" value="${reflections[0].reviewContentNode.resource.id}" />
-						   <osp:param name="process_type_key" value="page_id" />
-						   </osp:url>"> <osp:message key="reflection_edit" /></a> 
-											|
-				<a
+		<tr>
+			<td colspan="2">
+				<span class="matrixCellList">
+					<span style="padding: .4em 2.6em;"> 
+						<c:set var="canReflect" value="true" />
+			
+						<img src='/library/image/silk/application_form.gif' border='0'
+							hspace='0' alt="" />
+						<a
+							href='<c:out value="${reflections[0].reviewContentNode.externalUri}"/>'
+							target="_blank"> <c:out
+							value="${reflections[0].reviewContentNode.displayName}" /> </a>
+						<c:if test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true' && enableReviewEdit}">
+							<span class="itemAction"> 
+								<a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
+											   <osp:param name="page_id" value="${cell.wizardPage.id}" />
+											   <osp:param name="org_theospi_portfolio_review_type" value="0" />
+											   <osp:param name="current_review_id" value="${reflections[0].reviewContentNode.resource.id}" />
+											   <osp:param name="process_type_key" value="page_id" />
+											   <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultReflectionForm}">
+									       		 <osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+									       	   </c:if>
+											   </osp:url>">
+									<osp:message key="reflection_edit" /></a> |
+									
+									<a
 				href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
 							 <osp:param name="page_id" value="${cell.wizardPage.id}" />
 							 <osp:param name="formDefId" value="${cell.scaffoldingCell.reflectionDevice}" />
 							 <osp:param name="current_form_id" value="${reflections[0].reviewContentNode.resource.id}" />
 							 <osp:param name="review_id" value="${reflections[0].id}"/>
 							 <osp:param name="submit" value="deleteReview" />
+							 <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultReflectionForm}">
+					       		 <osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+				       	   </c:if>
 							 </osp:url>" title="<fmt:message key="delete"/>">
 							<fmt:message key="remove"/></a>
-			</span>
-		</c:if>
+							</span>
+						</c:if>
+					</span>
+				</span>
+			</td>
+			
+			<td>
+				<c:out value="${reflections[0].reviewContentNode.technicalMetadata.owner.displayName}" />
+			</td>
+			<td>
+				<fmt:formatDate	value="${reflections[0].reviewContentNode.technicalMetadata.lastModified}" pattern="${date_format}" />
+			</td>
+		</tr>
 	</c:if>
+	</table>
 	</span>
 	</h4>
 	</div>
 </c:if> <!-- if status is ready --> <%-- TODO omit the following block if the items inside it are not rendered --%>
-<c:if test="${cell.status == 'READY' and readOnlyMatrix != 'true'}">
 
-	<c:if
-		test="${canReflect == 'true' && cell.scaffoldingCell.evaluationDevice != null}">
-		<p class="act" style="margin:0">
-			<c:choose>
-				<c:when test="${isWizard !='true'}">
-					<input type="submit" name="submit"
-						value="<osp:message key='submit_cell_for_evaluation'/>"
-						<c:if test="${sequential == 'true' && currentStep < (totalSteps)}">
-							  onclick="document.form._next=true"
-						   </c:if>
-					/>
-				</c:when>
-				<c:otherwise>
-					<input type="submit" name="submit"
-						value="<osp:message key='submit_wpage_for_evaluation'/>"
-						<c:if test="${sequential == 'true' && currentStep < (totalSteps)}">
-							  onclick="document.form._next=true"
-						   </c:if>
-					/>
-				</c:otherwise>
-			</c:choose>	
-				   
-		<c:if test="${sequential == 'true'}">
-			<c:if test="${currentStep < (totalSteps)}">
-				<input type="hidden" name="_next" id="_next" />
-			</c:if>
-			<c:if test="${currentStep == (totalSteps)}">
-				<input type="hidden" name="_last" id="_last" value="true" />
-			</c:if>
-		</c:if>
-	</c:if>
-	<%-- TODO: this seems very confusing - being in the last step is no indication that I am done - I may want to go through again and edit unsubmitted pages.--%>
-	<c:if
-		test="${canReflect == 'true' && currentStep == (totalSteps) && sequential == 'true' && evaluationItem != ''}">
-		<input type="submit" name="submitWizard"
-			value="<osp:message key="submit_wizard_for_evaluation"/>" />
-	</c:if>
-	</p>
-</c:if> <input type="hidden" name="page_id"
+
+
+<input type="hidden" name="page_id"
 	value="<c:out value="${cell.wizardPage.id}"/>" /> <!-- ************* Reflection Area End ************* -->
-
 
 <!-- ************* General Review (Feedback) Area Start ************* -->
 
 <c:if
-	test="${( ((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && not generalFeedbackNone) || (not empty reviews && not generalFeedbackNone)}">
+	test="${(((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && 
+	((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
+		|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm && not generalFeedbackNone)))
+	|| (not empty reviews && not generalFeedbackNone)}">
 	<table class="matrixCellList" cellpadding="0" cellspacing="0"
 		border="0" summary="">
 		<tr>
-			<th><osp:message key="reviews_section_general" /></th>
-			<th>&nbsp;</th>
+			<th colspan="2">
+				<osp:message key="reviews_section_general" />
+				<c:if test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && 
+						((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
+							|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
+					<span class="itemAction indnt1"  style="font-weight:normal">				
+						
+						<a class="TB_hideControl"
+							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
+								<osp:param name="page_id" value="${cell.wizardPage.id}" />
+								<osp:param name="org_theospi_portfolio_review_type" value="2" />
+								<osp:param name="process_type_key" value="page_id" />
+								<osp:param name="isWizard" value="${isWizard}" />
+								<osp:param name="objectId" value="${objectId}" />
+								<osp:param name="objectTitle" value="${objectTitle}" />
+								<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+						       		<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+						       </c:if>
+								</osp:url>">
+						<osp:message key="review" /></a>				
+					</span>
+				</c:if>
+			</th>		
 			<th><osp:message key="table_header_createdBy" /></th>
 			<th><fmt:message key="table_header_creationDate" /></th>
 		</tr>
-		<tr>
-			<td>
-			<h5><osp:message key="reviews_section_header" /></h5>
-			</td>
-			<td>
-			
-			<div class="itemAction"><c:if
-				test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && cell.scaffoldingCell.reviewDevice != null && allowGeneralFeedback}">
-				<a
-					href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
-						<osp:param name="page_id" value="${cell.wizardPage.id}" />
-						<osp:param name="org_theospi_portfolio_review_type" value="2" />
-						<osp:param name="process_type_key" value="page_id" />
-						<osp:param name="isWizard" value="${isWizard}" />
-						<osp:param name="objectId" value="${objectId}" />
-						<osp:param name="objectTitle" value="${objectTitle}" />
-						</osp:url>">
-				<osp:message key="review" /></a>
-			</c:if></div>
-			</td>
-			<td></td>
-			<td></td>
 
-
-		</tr>
 		<c:if test="${empty reviews}">
 			<tr>
 				<td colspan="4"><span class="instruction indnt3"><osp:message
@@ -792,22 +1054,33 @@
 				<tr>
 
 					<td>
-					<h5><span class="indnt2"> <img
-						src='/library/image/silk/comment.gif' border='0' hspace='0' alt="" />
-					<a href='<c:out value="${object.reviewContentNode.externalUri}"/>'
-						target="_blank"> <c:out
-						value="${object.reviewContentNode.displayName}" /></a> </span></h5>
+						<h5>
+						<span class="indnt2"> 
+						<img src='/library/image/silk/comment.gif' border='0' hspace='0' alt="" />
+						<c:if test="${object.reviewContentNode.technicalMetadata.owner.id == currentUser || (scaffoldingCan.viewFeedbackOther && isWizard != 'true') || ((wizardCan.evaluate || wizardCan.review) && isWizard == 'true') || cell.wizardPage.owner.id == currentUser}">
+							<a href='<c:out value="${object.reviewContentNode.externalUri}"/>'
+								target="_blank">
+						</c:if>
+						<c:out value="${object.reviewContentNode.displayName}" />
+						<c:if test="${object.reviewContentNode.technicalMetadata.owner.id == currentUser || (scaffoldingCan.viewFeedbackOther && isWizard != 'true') || ((wizardCan.evaluate || wizardCan.review) && isWizard == 'true') || cell.wizardPage.owner.id == currentUser}">
+							</a>
+						</c:if>
+						 </span>
+						 </h5>
 					</td>
 					<td>
 						<!-- Allow Reviewers to edit/delete feedback -->
 						<c:if
-							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit}">
+							test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit}">
 							<a
 								href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
 										<osp:param name="org_theospi_portfolio_review_type" value="2" />
 										<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
 										<osp:param name="process_type_key" value="page_id" />
+										<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 									  </osp:url>"
 								title="<fmt:message key="edit"/>"> 
 										<fmt:message key="edit"/>
@@ -820,6 +1093,9 @@
 										<osp:param name="current_form_id" value="${object.reviewContentNode.resource.id}" />
 										<osp:param name="review_id" value="${object.id}"/>
 										<osp:param name="submit" value="deleteReview" />
+										<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 										</osp:url>"
 								title="<fmt:message key="delete"/>">
 										<fmt:message key="remove"/>
@@ -828,7 +1104,7 @@
 					</td>
 					<td>
 <c:choose>
-<c:when test="${matrixCan.viewOwner || !matrixCan.evaluate}">
+<c:when test="${scaffoldingCan.accessUserList}">
 						<c:out
 						value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
 </c:when>
@@ -847,76 +1123,69 @@
 		</c:forEach>
 	</table>
 </c:if> <!-- ************* General Review (Feedback) Area End ************* -->
-<!-- ************* Evaluation Area Start ************* --> <c:if
-	test="${(((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.scaffoldingCell.evaluationDevice != null)}">
-	<c:if test="${ cell.status == 'PENDING' and empty evaluations}">
-		<h3><osp:message key="evals_section_header" /></h3>
-		<p class="matrixCellList"><span style="padding: .4em 2.6em;">
-		<h4><span class="instruction"><fmt:message
-			key="evaluation_section_empty" /></span> <span class="itemAction"> <a
-			href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
-						   <osp:param name="page_id" value="${cell.wizardPage.id}" />
-						<osp:param name="org_theospi_portfolio_review_type" value="1" />
-						<osp:param name="process_type_key" value="page_id" />
-					<osp:param name="isWizard" value="${isWizard}" />
-					<osp:param name="objectId" value="${objectId}" />
-					<osp:param name="objectTitle" value="${objectTitle}" />
-						</osp:url>">
-		<osp:message key="add_evaluation" /></a> </span></p>
-		</h4>
-	</c:if>
-</c:if> <c:if test="${not empty evaluations}">
-	<h3><osp:message key="evals_section_header" /></h3>
+<!-- ************* Evaluation Area Start ************* --> 
+
+<c:if
+	test="${((((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && 
+	((cell.scaffoldingCell.evaluationDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm) 
+		|| (cell.scaffoldingCell.scaffolding.evaluationDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm))) && cell.status == 'PENDING') || 
+		not empty evaluations }">
+	<c:if test="${((cell.wizardPage.owner.id == currentUser && 
+					((!cell.scaffoldingCell.wizardPageDefinition.hideEvaluations && !cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm) 
+		|| (!cell.scaffoldingCell.scaffolding.hideEvaluations && cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm))) || cell.wizardPage.owner.id != currentUser) || isWizard == 'true'}">
+		
 	<table class="matrixCellList" cellpadding="0" cellspacing="0"
 		border="0" summary="">
 		<tr>
-			<th><osp:message key="eval_items_section_header" /></th>
-			<th>&nbsp;</th>
+			<th colspan="2">
+				<osp:message key="eval_items_section_header" />
+				<span class="itemAction indnt1" style="font-weight:normal">
+					<c:if
+						test="${(((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && 
+						((cell.scaffoldingCell.evaluationDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm) 
+							|| (cell.scaffoldingCell.scaffolding.evaluationDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm))) && cell.status == 'PENDING'}">
+						<a class="TB_hideControl"
+							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
+								    <osp:param name="page_id" value="${cell.wizardPage.id}" />
+									<osp:param name="org_theospi_portfolio_review_type" value="1" />
+									<osp:param name="process_type_key" value="page_id" />
+									<osp:param name="isWizard" value="${isWizard}" />
+									<osp:param name="objectId" value="${objectId}" />
+									<osp:param name="objectTitle" value="${objectTitle}" />
+									<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm}">
+								       		<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+								    </c:if>
+									</osp:url>">
+							<osp:message key="add_evaluation" />
+						</a>
+					</c:if>
+				 </span>
+			</th>
 			<th><osp:message key="table_header_createdBy" /></th>
 			<th><fmt:message key="table_header_modified" /></th>
 		</tr>
-		<tr>
-			<td>
-			<h4><osp:message key="evals_section_header" /></h4>
-			</td>
-			<td>
-			<div class="itemAction"><c:if
-				test="${((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.scaffoldingCell.evaluationDevice != null && cell.status == 'PENDING'}">
-				<a
-					href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
-						   <osp:param name="page_id" value="${cell.wizardPage.id}" />
-						<osp:param name="org_theospi_portfolio_review_type" value="1" />
-						<osp:param name="process_type_key" value="page_id" />
-					<osp:param name="isWizard" value="${isWizard}" />
-					<osp:param name="objectId" value="${objectId}" />
-					<osp:param name="objectTitle" value="${objectTitle}" />
-						</osp:url>">
-				<osp:message key="add_evaluation" /></a>
-			</c:if></div>
-			</td>
-			<td></td>
-			<td></td>
-		</tr>
-		<c:forEach var="object" items="${evaluations}" varStatus="loopStatus">
+
+		<c:if test="${ cell.status == 'PENDING' and empty evaluations}">
 			<tr>
-				<td>
-				<h5><span class="indnt2"> <img
-					src='/library/image/silk/comments.gif' border='0' hspace='0' alt="" />
-				<a href='<c:out value="${object.reviewContentNode.externalUri}"/>'
-					target="_blank"> <c:out
-					value="${object.reviewContentNode.displayName}" /></a> </span></h5>
+				<td colspan="4">						
+					<span class="instruction indnt2">
+						<fmt:message key="evaluation_section_empty" />
+					</span> 
 				</td>
             
 				<td>
 					<!-- Allow Reviewers to edit/delete Evaluations -->
 					<c:if
-						test="${((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.status != 'COMPLETE' && enableReviewEdit}">
+						test="${((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.status != 'COMPLETE' && enableReviewEdit}">
 						<a
 							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 									<osp:param name="page_id" value="${cell.wizardPage.id}" />
 									<osp:param name="org_theospi_portfolio_review_type" value="1" />
 									<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
 									<osp:param name="process_type_key" value="page_id" />
+									<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 								  </osp:url>"
 							title="<fmt:message key="edit"/>"> 
 									<fmt:message key="edit"/>
@@ -929,6 +1198,9 @@
 									 <osp:param name="current_form_id" value="${object.reviewContentNode.resource.id}" />
 									 <osp:param name="review_id" value="${object.id}"/>
 									 <osp:param name="submit" value="deleteReview" />
+									 <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
 									 </osp:url>"
 							title="<fmt:message key="delete"/>">
 									<fmt:message key="remove"/>
@@ -943,10 +1215,40 @@
 					value="${object.reviewContentNode.technicalMetadata.creation}"
 					pattern="${date_format}" /></td>
 			</tr>
-		</c:forEach>
-	</table>
+		</c:if>
 
-</c:if> <!-- ************* Evaluation Area End ************* --> <c:if
+
+		<c:if test="${not empty evaluations}">
+	
+			<c:forEach var="object" items="${evaluations}" varStatus="loopStatus">
+				<tr>
+					<td colspan="2">
+					<h5><span class="indnt2"> <img
+						src='/library/image/silk/comments.gif' border='0' hspace='0' alt="" />
+						<c:if test="${object.reviewContentNode.technicalMetadata.owner.id == currentUser || (scaffoldingCan.viewEvalOther && isWizard != 'true') || (wizardCan.evaluate && isWizard == 'true') || cell.wizardPage.owner.id == currentUser}">
+							<a href='<c:out value="${object.reviewContentNode.externalUri}"/>'
+								target="_blank"> 
+						</c:if>
+							<c:out value="${object.reviewContentNode.displayName}" />
+						<c:if test="${object.reviewContentNode.technicalMetadata.owner.id == currentUser || (scaffoldingCan.viewEvalOther && isWizard != 'true') || (wizardCan.evaluate && isWizard == 'true') || cell.wizardPage.owner.id == currentUser}">
+							</a>
+						</c:if>
+					 </span></h5>
+					</td>
+					<td><c:out
+						value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
+					</td>
+					<td><fmt:formatDate
+						value="${object.reviewContentNode.technicalMetadata.creation}"
+						pattern="${date_format}" /></td>
+				</tr>
+			</c:forEach>
+		</c:if>
+	</table>
+	</c:if>
+</c:if>
+ <!-- ************* Evaluation Area End ************* -->
+<c:if
 	test="${taggable}">
 	<%@ include file="tagLists.jspf"%>
 </c:if>
@@ -954,34 +1256,127 @@
 <div class="act"><c:if test="${sequential == 'true'}">
 	<c:if test="${currentStep < (totalSteps)}">
 		<!-- this is included because evaluating a seq wizard the user can browse all the pages -->
-		<input type="submit" name="_next"
+		<input type="submit" name="_next" class="TB_hideControl"
 			value="<fmt:message key="button_continue"/>" accesskey="s" />
 	</c:if>
 
 	<c:if test="${isEvaluation != 'true'}">
 		<c:if test="${currentStep != 1}">
-			<input type="submit" name="_back"
+			<input type="submit" name="_back" class="TB_hideControl"
 				value="<fmt:message key="button_back"/>" accesskey="b" />
 		</c:if>
-		<input type="submit" name="matrix"
+		<input type="submit" name="matrix" class="TB_hideControl"
 			value="<fmt:message key="button_finish"/>" />
 			
 		<!-- 
 	   <input type="submit" name="cancel" value="<fmt:message key="button_cancel"/>"/>
 	   -->
 	</c:if>
-</c:if> <c:if test="${isEvaluation == 'true'}">
-	<input type="submit" name="matrix" class="active"
+</c:if> 
+
+
+
+<c:if test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
+
+	<c:if test="${canReflect == 'true'}">
+		<span class="act" style="margin:0">
+			<c:choose>
+				<c:when test="${isWizard !='true'}">
+					<c:if test="${((cell.scaffoldingCell.evaluationDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm) 
+									|| (cell.scaffoldingCell.scaffolding.evaluationDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm))}">
+					<input type="submit" name="submit" class="active TB_hideControl"
+						value="<osp:message key='submit_cell_for_evaluation'/>"
+						<c:if test="${sequential == 'true' && currentStep < (totalSteps)}">
+							  onclick="document.form._next=true"
+						   </c:if>
+					/>
+					</c:if>
+				</c:when>
+				<c:otherwise>
+					<c:if test="${cell.scaffoldingCell.evaluationDevice != null}">
+				
+						<input type="submit" name="submit" class="active TB_hideControl"
+							value="<osp:message key='submit_wpage_for_evaluation'/>"
+							<c:if test="${sequential == 'true' && currentStep < (totalSteps)}">
+								  onclick="document.form._next=true"
+							   </c:if>
+						/>
+					</c:if>
+				</c:otherwise>
+			</c:choose>	
+				   
+		<c:if test="${sequential == 'true'}">
+			<c:if test="${currentStep < (totalSteps)}">
+				<input type="hidden" name="_next" id="_next" />
+			</c:if>
+			<c:if test="${currentStep == (totalSteps)}">
+				<input type="hidden" name="_last" id="_last" value="true" />
+			</c:if>
+		</c:if>
+	</c:if>
+	<%-- TODO: this seems very confusing - being in the last step is no indication that I am done - I may want to go through again and edit unsubmitted pages.--%>
+	<c:if
+		test="${canReflect == 'true' && currentStep == (totalSteps) && sequential == 'true' && evaluationItem != '' && evaluationItem != null}">
+		<input type="submit" name="submitWizard" class="TB_hideControl"
+			value="<osp:message key="submit_wizard_for_evaluation"/>" />
+	</c:if>
+	</span>
+</c:if> 
+
+
+
+	<c:if test="${isMatrix == 'true' and (cell.scaffoldingCell.scaffolding.allowRequestFeedback && cell.scaffoldingCell.wizardPageDefinition.defaultReviewers ||
+											cell.scaffoldingCell.wizardPageDefinition.allowRequestFeedback && !cell.scaffoldingCell.wizardPageDefinition.defaultReviewers) &&
+												cell.wizardPage.owner.id == currentUser && 
+												((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
+												|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
+		<input type="submit" name="inviteFeedback" class="active TB_hideControl"
+				value="<fmt:message key="share_collection"/>"/>
+	</c:if> 
+<c:if test="${hasAnyReviewers}">
+	<c:if test="${isMatrix == 'true' and (!cell.scaffoldingCell.scaffolding.allowRequestFeedback && cell.scaffoldingCell.wizardPageDefinition.defaultReviewers ||
+										!cell.scaffoldingCell.wizardPageDefinition.allowRequestFeedback && !cell.scaffoldingCell.wizardPageDefinition.defaultReviewers) &&
+											cell.wizardPage.owner.id == currentUser && 
+											((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
+											|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
+		<input type="submit" name="submitForReview" class="active TB_hideControl"
+			value="<fmt:message key="share_collection"/>" />
+	</c:if>
+</c:if>
+
+<c:if test="${isEvaluation == 'true'}">
+	<input type="submit" name="matrix" class="active TB_hideControl"
 		value="<fmt:message key="button_back_to_evaluation"/>" accesskey="x" />
-</c:if> <c:if test="${sequential != 'true' && isEvaluation != 'true'}">
+</c:if> 
+<c:if test="${sequential != 'true' && isEvaluation != 'true'}">
 	<c:if test="${isWizard == 'true'}">
-		<input type="submit" name="matrix" class="active"
+		<input type="submit" name="matrix" class="active TB_hideControl"
 			value="<fmt:message key="button_back_to_wizard"/>" accesskey="x" />
 	</c:if>
-	<c:if test="${isMatrix == 'true'}">
-		<input type="submit" name="matrix" class="active"
+	<!-- Display back button only if this is the users matrix, or the user has accessUserList permission
+		This extra check is based on review access through a link and not through the matrix.  This avoids
+		giving reviewers more access than allowed
+	 -->
+	<c:if test="${isMatrix == 'true' && (scaffoldingCan.accessUserList || cell.wizardPage.owner.id == currentUser)}">
+		<input type="submit" name="matrix" class="active TB_hideControl"
 			value="<fmt:message key="button_back_to_matrix"/>" accesskey="x" />
 	</c:if>
-</c:if></div>
+</c:if>
+
+	
+</div>
+
+
 
 </form>
+</c:if>
+<c:if test="${isMatrix == 'true' && !matrixCanViewCell}">
+<br>
+<fmt:message key="no_permission"/>
+
+</c:if>
+<c:if test="${(isWizard == 'true' && !(isWizardOwner || (canOperateWizard && (wizardCan.evaluate || wizardCan.review))))}">
+<br>
+<fmt:message key="no_permission"/>
+
+</c:if>

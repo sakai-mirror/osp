@@ -24,18 +24,23 @@ import java.util.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.GroupAlreadyDefinedException;
+import org.sakaiproject.authz.api.GroupIdInvalidException;
 import org.sakaiproject.authz.api.GroupNotDefinedException;
 import org.sakaiproject.authz.api.Role;
 import org.sakaiproject.authz.api.AuthzGroup;
 import org.sakaiproject.authz.api.AuthzPermissionException;
+import org.sakaiproject.authz.api.RoleAlreadyDefinedException;
 import org.sakaiproject.authz.cover.AuthzGroupService;
 import org.sakaiproject.metaobj.shared.mgt.AgentManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.shared.model.OspRole;
 import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.entity.cover.EntityManager;
+import org.sakaiproject.exception.IdUnusedException;
 import org.theospi.portfolio.security.Authorization;
 import org.theospi.portfolio.security.AuthorizationFacade;
 import org.theospi.portfolio.security.mgt.PermissionManager;
@@ -53,7 +58,7 @@ public class PermissionManagerImpl implements PermissionManager {
    private Map tools;
 
    public List getWorksiteRoles(PermissionsEdit edit) {
-      AuthzGroup authzGroup = getAuthzGroup(edit);
+      AuthzGroup authzGroup = getAuthzGroup(edit, false);
       Set roles = authzGroup.getRoles();
       List returned = new ArrayList();
       returned.addAll(roles);
@@ -61,30 +66,34 @@ public class PermissionManagerImpl implements PermissionManager {
    }
 
    public PermissionsEdit fillPermissions(PermissionsEdit edit) {
+	   return fillPermissions(edit, false);
+   }
+   
+   public PermissionsEdit fillPermissions(PermissionsEdit edit, boolean useQualifier) {
       edit.setPermissions(new ArrayList());
 
-      edit = fillPermissionsInternal(edit, edit.getQualifier(), false);
+      edit = fillPermissionsInternal(edit, edit.getQualifier(), false, useQualifier);
 
       ToolPermissionManager mgr = getToolManager(edit);
       List quals = mgr.getReadOnlyQualifiers(edit);
 
       for (Iterator i=quals.iterator();i.hasNext();) {
          Id qualifier = (Id)i.next();
-         fillPermissionsInternal(edit, qualifier, true);
+         fillPermissionsInternal(edit, qualifier, true, useQualifier);
       }
 
       return edit;
    }
 
    protected PermissionsEdit fillPermissionsInternal(
-      PermissionsEdit edit, Id qualifier, boolean readOnly) {
+      PermissionsEdit edit, Id qualifier, boolean readOnly, boolean useQualifier) {
 
       /*Realm siteRealm = RealmService.getRealm("/site/" +
          edit.getSiteId());
 
       Set roles = siteRealm.getRoles();
       */
-      AuthzGroup authzGroup = getAuthzGroup(edit);
+      AuthzGroup authzGroup = getAuthzGroup(edit, useQualifier);
       
       if (authzGroup == null) {
          return edit;
@@ -116,28 +125,84 @@ public class PermissionManagerImpl implements PermissionManager {
       return edit;
    }
 
-   protected AuthzGroup getAuthzGroup(PermissionsEdit edit) {
-      try {
-         return AuthzGroupService.getInstance().getAuthzGroup("/site/" +
-            edit.getSiteId());
-      } catch (GroupNotDefinedException e) {
-         //This should be an okay exception to swallow.  If we can't find the realm, just skip it.
-         // This came up when using the sites tool to create a site.  Since there wasn't 
-         //   a realm yet, couldn't set permissions
-         logger.warn("Cannot find realm corresponding to site: " + e.getId() + ".  Skipping it for setting permissions.", e);
-         //throw new OspException(e);
-      }
-      return null;
-   }
+   protected AuthzGroup getAuthzGroup(PermissionsEdit edit, boolean useQualifier) {
+	      try {
+	    	  String usedId = useQualifier ? edit.getQualifier().getValue() : "/site/" + edit.getSiteId();
+	         return AuthzGroupService.getInstance().getAuthzGroup(usedId);
+	      } catch (GroupNotDefinedException e) {
+	         //This should be an okay exception to swallow.  If we can't find the realm, just skip it.
+	         // This came up when using the sites tool to create a site.  Since there wasn't 
+	         //   a realm yet, couldn't set permissions
+	    	  
+	    	  if (useQualifier) {
+	    		  //need to create one
+	    		  AuthzGroup templateAzg = null;
+	    		  Site site = null;
+	    		  try {
+	    			  String realmTemplate = "!matrix.template.";
+	    			  site = SiteService.getSite(edit.getSiteId());
+	    			  templateAzg = AuthzGroupService.getInstance().getAuthzGroup(realmTemplate + site.getType());
+	    		  }
+	    		  catch (GroupNotDefinedException gnde) {
+	    			  logger.warn("group with id: " + gnde.getId() + " not defined", gnde);
+	    		  } catch (IdUnusedException iue) {
+	    			  logger.warn("id: " + iue.getId() + " not found", iue);
+	    		  }
+	    		  try {
+	    			  AuthzGroup azg = null;
+	    			  if (templateAzg != null) {
+	    				  azg = AuthzGroupService.getInstance().addAuthzGroup(
+	    						  edit.getQualifier().getValue(), templateAzg, null);
+	    				  if (site != null && azg != null) {
+	    					  purgeBadRoles(azg, site);
+	    					  try {
+								AuthzGroupService.save(azg);
+							} catch (GroupNotDefinedException e1) {
+								logger.warn("azg no defined", e1);
+								//shouldn't need to do anything since it was just created
+							}
+	    				  }
 
-   public void updatePermissions(PermissionsEdit edit) {
+	    			  }
+	    			  else {
+	    				  azg = AuthzGroupService.getInstance().addAuthzGroup(
+	    						  edit.getQualifier().getValue());
+	    			  }
+	    			  azg.removeMembers();
+	    			  return azg;
+	    		  } catch (GroupIdInvalidException giie) {
+	    			  logger.warn("group id invalid", giie);
+	    		  } catch (GroupAlreadyDefinedException gade) {
+	    			  logger.warn("group already defined", gade);
+	    		  } catch (AuthzPermissionException ape) {
+	    			  logger.warn("Permission exception", ape);
+	    		  } 
+	    	  }
+	    	  
+	         logger.warn("Cannot find realm corresponding to site: " + e.getId() + ".  Skipping it for setting permissions.", e);
+	         //throw new OspException(e);
+	      }
+	      return null;
+	   }
+   
+   private void purgeBadRoles(AuthzGroup azg, Site site) {
+	   Set<Role> activeRoles = site.getRoles();
+	   Set<Role> azgRoles = azg.getRoles();
+	   for (Role role: azgRoles) {
+		   if (!activeRoles.contains(role))
+			   azg.removeRole(role.getId());
+	   }
+	   
+   }
+   
+   public void updatePermissions(PermissionsEdit edit, boolean useQualifier) {
       AuthorizationFacade manager = getAuthzManager();
       List origPermissions = null;
 
       PermissionsEdit orig = (PermissionsEdit)edit.clone();
-      orig = fillPermissions(orig);
+      orig = fillPermissions(orig, useQualifier);
       origPermissions = orig.getPermissions();
-      AuthzGroup currentGroup = getAuthzGroup(edit);
+      AuthzGroup currentGroup = getAuthzGroup(edit, useQualifier);
 
       for (Iterator i=edit.getPermissions().iterator();i.hasNext();) {
          Permission perm = (Permission)i.next();
@@ -168,10 +233,19 @@ public class PermissionManagerImpl implements PermissionManager {
    }
 
    protected Role getRole(AuthzGroup currentGroup, Permission perm) {
-      if (perm.getAgent() instanceof OspRole) {
-         return currentGroup.getRole(((OspRole)perm.getAgent()).getRoleName());
+      Role role = null;
+	   if (perm.getAgent() instanceof OspRole) {
+         role = currentGroup.getRole(((OspRole)perm.getAgent()).getRoleName());
+         if (role == null) {
+        	 try {
+				role = currentGroup.addRole(((OspRole)perm.getAgent()).getRoleName());
+			} catch (RoleAlreadyDefinedException e) {
+				// This should never happen since we know the role was null already, but log just in case
+				logger.warn(e);
+			}
+         }
       }
-      return null;
+      return role;
    }
 
    public void duplicatePermissions(Id srcQualifier, Id targetQualifier, Site newSite) {

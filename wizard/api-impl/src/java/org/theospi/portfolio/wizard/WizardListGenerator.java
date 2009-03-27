@@ -82,12 +82,12 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
 
    public List getObjects() {
       List userSites = getWorksiteManager().getUserSites(null, getListService().getSiteTypeList());
-      List<Id> siteIds = new ArrayList<Id>(userSites.size());
+      List<String> siteIds = new ArrayList<String>(userSites.size());
       Map<String, Site> siteMap = new HashMap<String, Site>();
       
       for (Iterator i = userSites.iterator(); i.hasNext();) {
          Site site = (Site) i.next();
-         siteIds.add(idManager.getId(site.getId()));
+         siteIds.add(site.getId());
          siteMap.put(site.getId(), site);
       }
       
@@ -110,7 +110,7 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
       
       for (Iterator i = allWizards.iterator(); i.hasNext();) {
          Wizard wizard = (Wizard)i.next();
-         String siteId = wizard.getSiteId().getValue();
+         String siteId = wizard.getSiteId();
          //make sure that the target site gets tested
          getAuthzManager().pushAuthzGroups(siteId);
          
@@ -155,8 +155,8 @@ public class WizardListGenerator extends BaseListGenerator implements Actionable
 //       But check from the cache first
          Boolean authzCheck = sitePermCache.get(siteId.getValue());
          if (authzCheck == null) {
-            authzCheck = getAuthzManager().isAuthorized(MatrixFunctionConstants.USE_SCAFFOLDING, 
-                  siteId);
+            authzCheck = getAuthzManager().isAuthorized(MatrixFunctionConstants.CAN_USE_SCAFFOLDING, 
+                  getIdManager().getId(scaffolding.getReference()));
             sitePermCache.put(siteId.getValue(), authzCheck);
             logger.debug("Pushing site into cache for WizardListGenerator (matrices): " + siteId);
          }

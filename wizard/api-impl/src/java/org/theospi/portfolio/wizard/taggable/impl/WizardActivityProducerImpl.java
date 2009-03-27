@@ -31,6 +31,7 @@ import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableItem;
 import org.sakaiproject.taggable.api.TaggingManager;
 import org.sakaiproject.taggable.api.TaggingProvider;
+import org.sakaiproject.metaobj.security.AuthenticationManager;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.tool.api.SessionManager;
 import org.sakaiproject.util.ResourceLoader;
@@ -64,6 +65,8 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 	TaggingManager taggingManager;
 
 	AuthorizationFacade authzManager;
+	
+	private AuthenticationManager authnManager = null;
 
 	SessionManager sessionManager;
 
@@ -108,8 +111,10 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 					MatrixFunctionConstants.CREATE_SCAFFOLDING, cell
 							.getScaffolding().getId())
 					|| authzManager.isAuthorized(
-							MatrixFunctionConstants.DELETE_SCAFFOLDING, cell
-									.getScaffolding().getId());
+							MatrixFunctionConstants.DELETE_SCAFFOLDING_ANY, cell
+									.getScaffolding().getId()) || (authzManager.isAuthorized(
+											MatrixFunctionConstants.DELETE_SCAFFOLDING_OWN, cell
+											.getScaffolding().getId()) && cell.getScaffolding().getOwner().getId().equals(getAuthnManager().getAgent().getId()));
 		}
 		return authorized;
 	}
@@ -150,7 +155,7 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		// We aren't picky about the provider, so ignore that argument.
 		List<TaggableActivity> activities = new ArrayList<TaggableActivity>();
 		for (WizardPageDefinition def : wizardManager.findWizardPageDefs(
-				idManager.getId(context), true)) {
+				context, true)) {
 			activities.add(getActivity(def));
 		}
 		return activities;
@@ -183,11 +188,11 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		if (reference != null) {
 			if (WizardReference.REF_DEF.equals(reference.getType())) {
 				context = wizardManager.getWizardPageDefinition(
-						idManager.getId(reference.getId())).getSiteId().getValue();
+						idManager.getId(reference.getId())).getSiteId();
 			} else {
 				context = matrixManager.getWizardPage(
 						idManager.getId(reference.getId())).getPageDefinition()
-						.getSiteId().getValue();
+						.getSiteId();
 			}
 		}
 		return context;
@@ -294,6 +299,23 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 		}
 		return items;
 	}
+	
+	public boolean hasSubmissions(TaggableActivity activity,
+			TaggingProvider provider) {
+		List<TaggableItem> items = getItems(activity, provider);
+		return items.size() > 0;
+	}
+	
+	public boolean hasSubmissions(TaggableActivity activity, String userId,
+			TaggingProvider provider) {
+		List<TaggableItem> items = getItems(activity, userId, provider);
+		return items.size() > 0;
+	}
+	
+	public String getItemPermissionOverride() {
+		//TODO figure out what perm to use here
+		return null;
+	}
 
 	public String getName() {
 		return messages.getString("service_name");
@@ -335,5 +357,13 @@ public class WizardActivityProducerImpl implements WizardActivityProducer {
 
 	public void setWizardManager(WizardManager wizardManager) {
 		this.wizardManager = wizardManager;
+	}
+
+	public AuthenticationManager getAuthnManager() {
+		return authnManager;
+	}
+
+	public void setAuthnManager(AuthenticationManager authnManager) {
+		this.authnManager = authnManager;
 	}
 }

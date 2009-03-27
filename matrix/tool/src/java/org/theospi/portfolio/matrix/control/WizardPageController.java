@@ -24,7 +24,6 @@ package org.theospi.portfolio.matrix.control;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.sakaiproject.util.ResourceLoader;
 import org.sakaiproject.metaobj.shared.model.Agent;
@@ -62,10 +61,15 @@ public class WizardPageController extends CellController {
 	 *      java.lang.Object, org.springframework.validation.Errors)
 	 */
 	public Map referenceData(Map request, Object command, Errors errors) {
+		//this is so CellController knows that WizardPageController called it
+		request.put("comingFromWizard", true);
+		
+		
 		// Call superclass first -- code below depends on this
 		Map model = super.referenceData(request, command, errors);
 		
 		ToolSession session = getSessionManager().getCurrentToolSession();
+
 		Boolean wizardPreview = Boolean.valueOf( (String)request.get("wizardPreview") );
 		CellFormBean cell = (CellFormBean) command;
 		String pageId = cell.getCell().getWizardPage().getId().getValue();
@@ -99,6 +103,19 @@ public class WizardPageController extends CellController {
 		model.put("categoryTitle", request.get("categoryTitle"));
 		model.put("wizardTitle", request.get("wizardTitle"));
 		model.put("wizardDescription", request.get("wizardDescription"));
+		
+		
+		//this is for directly linked wizard cells that an evaluator has clicked.  This will avoid a null pointed for
+		//the wizard tool when calling getCurrent().
+		if((session.getAttribute("CURRENT_WIZARD_ID") == null || request.get("directLinked") != null) && request.get("page_id") != null){
+			WizardPage currentWizPage = getMatrixManager().getWizardPage(getIdManager().getId((String) request.get("page_id")));
+			Id wizPageDefId = currentWizPage.getPageDefinition().getId();
+			String wizardId = getWizardManager().getWizardPageSeqByDef(wizPageDefId).getCategory().getWizard().getId().getValue();
+			session.setAttribute("WIZARD_RESET_CURRENT", "true");
+			session.setAttribute("CURRENT_WIZARD_ID", wizardId);		
+			session.setAttribute("WIZARD_USER_ID", currentWizPage.getOwner().getId().getValue());
+		}
+		
 		return model;
 	}
 
@@ -138,11 +155,14 @@ public class WizardPageController extends CellController {
 	 */
 	public Object fillBackingObject(Object incomingModel, Map request,
 			Map session, Map application) throws Exception {
-		WizardPage page = (WizardPage) session
-				.get(WizardPageHelper.WIZARD_PAGE);
 		Id pageId = null;
-		if (page != null)
+		WizardPage page = null;
+		Object pageObj = session.get(WizardPageHelper.WIZARD_PAGE);
+		 
+		if (pageObj != null && pageObj instanceof WizardPage) {
+			page = (WizardPage) pageObj;
 			pageId = page.getId();
+		}
 		else
 			pageId = getIdManager().getId((String) request.get("page_id"));
 		page = getMatrixManager().getWizardPage(pageId);
@@ -164,7 +184,7 @@ public class WizardPageController extends CellController {
 		request.put("wizardDescription", seq.getCategory().getWizard()
 				.getDescription());
 
-		Cell cell = createCellWrapper(page);
+		Cell cell = getMatrixManager().createCellWrapper(page);
 
 		CellFormBean cellBean = (CellFormBean) incomingModel;
 		cellBean.setCell(cell);
@@ -186,29 +206,6 @@ public class WizardPageController extends CellController {
 
 		return super.handleRequest(requestModel, request, session, application,
 				errors);
-	}
-
-	public static Cell createCellWrapper(WizardPage page) {
-		Cell cell = new Cell();
-		cell.setWizardPage(page);
-		if (page.getId() == null) {
-			cell.setId(page.getNewId());
-		} else {
-			cell.setId(page.getId());
-		}
-
-		WizardPageDefinition pageDef = page.getPageDefinition();
-
-		ScaffoldingCell cellDef = new ScaffoldingCell();
-		cellDef.setWizardPageDefinition(pageDef);
-		if (pageDef.getId() == null) {
-			cellDef.setId(pageDef.getNewId());
-		} else {
-			cellDef.setId(pageDef.getId());
-		}
-
-		cell.setScaffoldingCell(cellDef);
-		return cell;
 	}
 
 	public WizardManager getWizardManager() {

@@ -82,6 +82,54 @@
 	   </h:column>
 	</sakai:flat_list>
 	</f:subview>
+	
+	
+	<f:subview id="rubricSV" rendered="#{(guidance.current.rubric.base.text != '' && guidance.current.rubric != null) || not empty guidance.current.rubric.attachments}">
+	<h4>
+	<%--TODO need a rendered attribute below checking for rubric content --%>
+		<h:outputText value="#{common_msgs.rubric_title}" />
+	</h4>
+	
+	
+	<div class="textPanel">	
+		<h:outputText value="#{guidance.current.rubric.base.text}" escape="false" />
+	</div>	
+	<sakai:flat_list value="#{guidance.current.rubric.attachments}" var="material"  summary="">
+	   <h:column>
+		  <h:outputLink title="#{material.displayName}" styleClass="indnt1"
+			 value="#{material.fullReference.base.url}" target="_blank">
+			 <sakai:contentTypeMap fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+			 <h:graphicImage id="rubricFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
+			 <h:outputText value="#{material.displayName}"/>
+		  </h:outputLink>
+	   </h:column>
+	</sakai:flat_list>
+	</f:subview>
+	
+	
+	<f:subview id="expectationsSV" rendered="#{(guidance.current.expectations.base.text != '' && guidance.current.expectations != null) || not empty guidance.current.expectations.attachments}">
+	<h4>
+	<%--TODO need a rendered attribute below checking for expectations content --%>
+		<h:outputText value="#{common_msgs.expectations_title}" />
+	</h4>
+	
+	
+	<div class="textPanel">	
+		<h:outputText value="#{guidance.current.expectations.base.text}" escape="false" />
+	</div>	
+	<sakai:flat_list value="#{guidance.current.expectations.attachments}" var="material"  summary="">
+	   <h:column>
+		  <h:outputLink title="#{material.displayName}" styleClass="indnt1"
+			 value="#{material.fullReference.base.url}" target="_blank">
+			 <sakai:contentTypeMap fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+			 <h:graphicImage id="expectationsFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
+			 <h:outputText value="#{material.displayName}"/>
+		  </h:outputLink>
+	   </h:column>
+	</sakai:flat_list>
+	</f:subview>
+	
+	
 
 	<div class="act">
 		<h:commandButton id="cancel" value="#{common_msgs.button_back}" action="#{guidance.processActionCancel}" accesskey="x" styleClass="active"/>

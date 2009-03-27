@@ -3,7 +3,9 @@
   <comment/>
   <projects>
     <project>osp-common-api</project>
+    <project>sakai-assignment-api</project>
     <project>sakai-metaobj-api</project>
+    <project>sakai-taggable-api</project>
   </projects>
   <buildSpec>
     <buildCommand>

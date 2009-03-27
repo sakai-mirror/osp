@@ -170,7 +170,7 @@ public class DecoratedWizard implements DecoratedListInterface {
       			|| base.getReviewerGroupAccess() == WizardMatrixConstants.UNRESTRICTED_GROUP_ACCESS;
 					
     	try {
-			Site site = SiteService.getSite(base.getSiteId().getValue());
+			Site site = SiteService.getSite(base.getSiteId());
 			if (site.hasGroups()) {
             String currentUser = SessionManager.getCurrentSessionUserId();
             if (allowAllGroups) {
@@ -193,7 +193,7 @@ public class DecoratedWizard implements DecoratedListInterface {
 	
 	public List getUserListForSelect() {
 		Placement placement = ToolManager.getCurrentPlacement();
-		String currentSiteId = base.getSiteId().getValue();
+		String currentSiteId = base.getSiteId();
 		List theList = getUserList(currentSiteId);
 
 		String user = getParent().getCurrentUserId()!=null ? 
@@ -480,9 +480,22 @@ public class DecoratedWizard implements DecoratedListInterface {
 
 	public String processActionEditExamples()
 	{
+		parent.processActionGuidanceHelper(getBase(), 3);
+		return null;
+	}
+	
+	public String processActionEditRubric(){
 		parent.processActionGuidanceHelper(getBase(), 4);
 		return null;
 	}
+	
+	public String processActionEditExpectations(){
+		parent.processActionGuidanceHelper(getBase(), 5);
+		return null;
+	}
+	
+	
+	
 
 	public DecoratedCompletedWizard getRunningWizard() {
 		return runningWizard;
@@ -511,6 +524,20 @@ public class DecoratedWizard implements DecoratedListInterface {
 			return null;
 		}
 		return getBase().getGuidance().getRationale();
+	}
+	
+	public GuidanceItem getRubric() {
+		if (getBase().getGuidance() == null) {
+			return null;
+		}
+		return getBase().getGuidance().getRubric();
+	}
+	
+	public GuidanceItem getExpectations() {
+		if (getBase().getGuidance() == null) {
+			return null;
+		}
+		return getBase().getGuidance().getExpectations();
 	}
 
 	public boolean isGuidanceAvailable() {
@@ -611,6 +638,56 @@ public class DecoratedWizard implements DecoratedListInterface {
 		return item.getAttachments();
 	}
 
+	public String getGuidanceRubric() {
+		Guidance guidance = getBase().getGuidance();
+		if (guidance == null) {
+			return "";
+		}
+		GuidanceItem item = guidance.getRubric();
+		if (item == null) {
+			return "";
+		}
+		return limitString(item.getText(), 100);
+	}
+
+	public List getGuidanceRubricAttachments() {
+		Guidance guidance = getBase().getGuidance();
+		if (guidance == null) {
+			return new ArrayList();
+		}
+		GuidanceItem item = guidance.getRubric();
+		if (item == null) {
+			return new ArrayList();
+		}
+		assureAttachmentAccess(guidance);
+		return item.getAttachments();
+	}
+	
+	public String getGuidanceExpectations() {
+		Guidance guidance = getBase().getGuidance();
+		if (guidance == null) {
+			return "";
+		}
+		GuidanceItem item = guidance.getExpectations();
+		if (item == null) {
+			return "";
+		}
+		return limitString(item.getText(), 100);
+	}
+
+	public List getGuidanceExpectationsAttachments() {
+		Guidance guidance = getBase().getGuidance();
+		if (guidance == null) {
+			return new ArrayList();
+		}
+		GuidanceItem item = guidance.getExpectations();
+		if (item == null) {
+			return new ArrayList();
+		}
+		assureAttachmentAccess(guidance);
+		return item.getAttachments();
+	}
+	
 	public List getEvaluators() {
 		return parent.getEvaluators(getBase());
 	}

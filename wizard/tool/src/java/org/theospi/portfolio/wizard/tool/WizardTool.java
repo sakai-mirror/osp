@@ -129,6 +129,8 @@ public class WizardTool extends BuilderTool {
    
    private boolean loadCompletedWizard = false;
    
+   private int wizardListSize = 0;
+   
    //	import variables
    private String importFilesString = "";
    private List importFiles = new ArrayList();
@@ -334,9 +336,22 @@ public class WizardTool extends BuilderTool {
          setNextWizard(lastWizard.getBase().getSequence() + 1);
       }
 
+      if (wizards != null) 
+    	  setWizardListSize(wizards.size());
+      
       return returned;
    }
    
+   public int getWizardListSize()
+   {
+	   return wizardListSize;
+   }
+
+   public void setWizardListSize(int wizardListSize)
+   {
+	   this.wizardListSize = wizardListSize;
+   }
+
    public void clearInterface()
    {
       lastSaveWizard = "";
@@ -543,7 +558,7 @@ public class WizardTool extends BuilderTool {
 
    public void processActionGuidanceHelper(Wizard w, int types) {
       clearInterface();
-      showGuidance(w, "tool", (types & 1) != 0, (types & 2) != 0, (types & 4) != 0);
+      showGuidance(w, "tool", types == 1, types == 2, types == 3, types == 4, types == 5);
    }
    public void processActionGuidanceHelper() {
       clearInterface();
@@ -552,10 +567,10 @@ public class WizardTool extends BuilderTool {
 
    public void processActionViewGuidance() {
       clearInterface();
-      showGuidance(getCurrent().getBase(), "view", true, true, true);
+      showGuidance(getCurrent().getBase(), "view", true, true, true, true, true);
    }
 
-   protected void showGuidance(Wizard wizard, String view, boolean instructions, boolean rationale, boolean examples) {
+   protected void showGuidance(Wizard wizard, String view, boolean instructions, boolean rationale, boolean examples, boolean rubric, boolean expectations) {
       ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
       //Tool tool = ToolManager.getCurrentTool();
       ToolSession session = SessionManager.getCurrentToolSession();
@@ -576,6 +591,9 @@ public class WizardTool extends BuilderTool {
       session.setAttribute(GuidanceHelper.SHOW_INSTRUCTION_FLAG, new Boolean(instructions));
       session.setAttribute(GuidanceHelper.SHOW_RATIONALE_FLAG, new Boolean(rationale));
       session.setAttribute(GuidanceHelper.SHOW_EXAMPLE_FLAG, new Boolean(examples));
+      session.setAttribute(GuidanceHelper.SHOW_RUBRIC_FLAG, new Boolean(rubric));
+      session.setAttribute(GuidanceHelper.SHOW_EXPECTATIONS_FLAG, new Boolean(expectations));
+      
       
       session.setAttribute(GuidanceManager.CURRENT_GUIDANCE, guidance);
 
@@ -780,7 +798,7 @@ public class WizardTool extends BuilderTool {
             AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD);
       session.setAttribute(AudienceSelectionHelper.AUDIENCE_QUALIFIER,
             wizard.getId().getValue());
-		session.setAttribute(AudienceSelectionHelper.AUDIENCE_SITE, wizard.getSiteId().getValue());
+		session.setAttribute(AudienceSelectionHelper.AUDIENCE_SITE, wizard.getSiteId());
 		
 		session.removeAttribute(AudienceSelectionHelper.CONTEXT);
 		session.removeAttribute(AudienceSelectionHelper.CONTEXT2);
@@ -961,7 +979,7 @@ public class WizardTool extends BuilderTool {
          
          attachments = 
             AssignmentHelper.filterAssignmentsBySite( attachments, 
-                                                      wpd.getSiteId().getValue() );
+                                                      wpd.getSiteId() );
          wpd.setAttachments(attachments);
       }
       wizardManager.saveWizard(wizard);

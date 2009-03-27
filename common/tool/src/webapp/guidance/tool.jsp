@@ -137,6 +137,83 @@
                </f:subview>
       </f:subview>
   </ospx:xheader>
+  <ospx:xheader rendered="#{guidance.rubricRendered}">
+      <ospx:xheadertitle id="rubricTitleAdd" rendered="#{guidance.current.rubric.base.text == ''}" >
+	   		<h:outputText value="#{common_msgs.rubric_title_add}"  />
+	  </ospx:xheadertitle>
+      <ospx:xheadertitle id="rubricTitleEdit" rendered="#{guidance.current.rubric.base.text != ''}">
+	   		<h:outputText value="#{common_msgs.rubric_title_edit}" />
+	  </ospx:xheadertitle>
+      <f:subview id="rubricView">
+               <sakai:instruction_message value="#{common_msgs.rubric_message}" />
+               <sakai:inputRichText value="#{guidance.current.rubric.base.text}"
+                  attachedFiles="#{guidance.current.rubric.attachmentLinks}"
+                  rows="23"  cols="100"  buttonSet="small" showXPath="false" />
+             <f:subview id="rubricItems" rendered="#{not empty guidance.current.rubric.attachments}">
+			 	<sakai:flat_list value="#{guidance.current.rubric.attachments}" var="material"  style="margin:1em 1em 0 1em;width:auto" summary="#{common_msgs.item_list_summary}">
+                  <h:column>
+                     <h:outputLink title="#{material.displayName}"
+                        value="#{material.fullReference.base.url}" target="_blank">
+                        <sakai:contentTypeMap fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+                        <h:graphicImage id="rubricFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
+                        <h:outputText value="#{material.displayName}"/>
+                     </h:outputLink>
+                  </h:column>
+               </sakai:flat_list>
+				<sakai:button_bar rendered="true">
+				   <sakai:button_bar_item id="manageRubricItems" action="#{guidance.current.rubric.processActionManageAttachments}"
+				   value="#{common_msgs.manage_instruction_edit}" />
+				</sakai:button_bar>
+               </f:subview>
+               <f:subview id="rubricNoItems" rendered="#{empty guidance.current.rubric.attachments}">
+				 <sakai:instruction_message value="#{material}"  />
+					<sakai:button_bar rendered="true">
+					   <sakai:button_bar_item id="manageRubricItems" action="#{guidance.current.rubric.processActionManageAttachments}"
+					   value="#{common_msgs.manage_instruction_add}" />
+					</sakai:button_bar>
+               </f:subview>
+      </f:subview>
+  </ospx:xheader>
+
+
+<ospx:xheader rendered="#{guidance.expectationsRendered}">
+      <ospx:xheadertitle id="expectationsTitleAdd" rendered="#{guidance.current.expectations.base.text == ''}" >
+	   		<h:outputText value="#{common_msgs.expectations_title_add}"  />
+	  </ospx:xheadertitle>
+      <ospx:xheadertitle id="expectationsTitleEdit" rendered="#{guidance.current.expectations.base.text != ''}">
+	   		<h:outputText value="#{common_msgs.expectations_title_edit}" />
+	  </ospx:xheadertitle>
+      <f:subview id="expectationsView">
+               <sakai:instruction_message value="#{common_msgs.expectations_message}" />
+               <sakai:inputRichText value="#{guidance.current.expectations.base.text}"
+                  attachedFiles="#{guidance.current.expectations.attachmentLinks}"
+                  rows="23"  cols="100"  buttonSet="small" showXPath="false" />
+             <f:subview id="expectationsItems" rendered="#{not empty guidance.current.expectations.attachments}">
+			 	<sakai:flat_list value="#{guidance.current.expectations.attachments}" var="material"  style="margin:1em 1em 0 1em;width:auto" summary="#{common_msgs.item_list_summary}">
+                  <h:column>
+                     <h:outputLink title="#{material.displayName}"
+                        value="#{material.fullReference.base.url}" target="_blank">
+                        <sakai:contentTypeMap fileType="#{material.mimeType.value}" mapType="image" var="imagePath" pathPrefix="/library/image/"/>
+                        <h:graphicImage id="expectationsFileIcon" value="#{imagePath}" alt="#{material.displayName}" title="#{material.displayName}" />
+                        <h:outputText value="#{material.displayName}"/>
+                     </h:outputLink>
+                  </h:column>
+               </sakai:flat_list>
+				<sakai:button_bar rendered="true">
+				   <sakai:button_bar_item id="manageExpectationsItems" action="#{guidance.current.expectations.processActionManageAttachments}"
+				   value="#{common_msgs.manage_instruction_edit}" />
+				</sakai:button_bar>
+               </f:subview>
+               <f:subview id="expectationsNoItems" rendered="#{empty guidance.current.expectations.attachments}">
+				 <sakai:instruction_message value="#{material}"  />
+					<sakai:button_bar rendered="true">
+					   <sakai:button_bar_item id="manageExpectationsItems" action="#{guidance.current.expectations.processActionManageAttachments}"
+					   value="#{common_msgs.manage_instruction_add}" />
+					</sakai:button_bar>
+               </f:subview>
+      </f:subview>
+  </ospx:xheader>
+
 
    <sakai:button_bar>
       <sakai:button_bar_item id="submit" value="#{common_msgs.button_save}" action="#{guidance.processActionSave}" styleClass="active" accesskey="s"/>

@@ -34,10 +34,16 @@ public interface PermissionManager {
    public List getAppFunctions(PermissionsEdit edit);
 
    public PermissionsEdit fillPermissions(PermissionsEdit edit);
+   
+   public PermissionsEdit fillPermissions(PermissionsEdit edit, boolean useQualifier);
 
-   public void updatePermissions(PermissionsEdit edit);
+   public void updatePermissions(PermissionsEdit edit, boolean useQualifier);
 
    public void duplicatePermissions(Id srcQualifier, Id targetQualifier, Site newSite);
 
    public void addTools(Map newTools);
+   
+   public final static String RETURN_KEY = "returnKey";
+   
+   public final static String RETURN_KEY_VALUE = "returnKeyValue";
 }

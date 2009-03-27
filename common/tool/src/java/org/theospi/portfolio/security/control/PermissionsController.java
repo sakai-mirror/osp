@@ -20,6 +20,7 @@
 **********************************************************************************/
 package org.theospi.portfolio.security.control;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -36,7 +37,6 @@ import org.theospi.portfolio.security.model.PermissionsEdit;
 
 public class PermissionsController extends AbstractFormController implements FormController, LoadObjectController {
    protected final transient Log logger = LogFactory.getLog(getClass());
-
    private PermissionManager permissionManager;
 
    /**
@@ -64,19 +64,48 @@ public class PermissionsController extends AbstractFormController implements For
 
    public ModelAndView processCancel(Map request, Map session, Map application,
                                      Object command, Errors errors) throws Exception {
-      return new ModelAndView("helperDone");
-   }
+		if (request.get(getPermissionManager().RETURN_KEY) != null
+				&& request.get(getPermissionManager().RETURN_KEY) != ""
+				&& request.get(getPermissionManager().RETURN_KEY) instanceof String)
+			return new ModelAndView("helperDone", (String) request
+					.get(getPermissionManager().RETURN_KEY), request
+					.get(getPermissionManager().RETURN_KEY_VALUE));
+		else
+			return new ModelAndView("helperDone");
+	}
 
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       PermissionsEdit edit = (PermissionsEdit)incomingModel;
       edit.setSiteId(ToolManager.getCurrentPlacement().getContext());
-      return getPermissionManager().fillPermissions(edit);
+      
+      return getPermissionManager().fillPermissions(edit, useQualifier(edit));
    }
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       PermissionsEdit edit = (PermissionsEdit)requestModel;
-      getPermissionManager().updatePermissions(edit);
-      return new ModelAndView("helperDone");
+      getPermissionManager().updatePermissions(edit, useQualifier(edit));
+      Map returnMap = new HashMap();
+      returnMap.put("toolPermissionSaved", request.get("toolPermissionsSaved"));
+
+      if (request.get(getPermissionManager().RETURN_KEY) != null
+				&& request.get(getPermissionManager().RETURN_KEY) != "")
+			returnMap.put(request.get(getPermissionManager().RETURN_KEY),
+					request.get(getPermissionManager().RETURN_KEY_VALUE));
+
+		return new ModelAndView("helperDone", returnMap);
+	}
+   
+   /**
+    * Determine if the qualifier is different than the site id
+    * @param edit
+    * @return
+    */
+   private boolean useQualifier(PermissionsEdit edit) {
+	   boolean retVal = false;
+	   if (edit.getSiteId() != null && edit.getQualifier() != null) {
+		   retVal = !edit.getSiteId().equals(edit.getQualifier().getValue());
+	   }
+	   return retVal;
    }
 
    public PermissionManager getPermissionManager() {

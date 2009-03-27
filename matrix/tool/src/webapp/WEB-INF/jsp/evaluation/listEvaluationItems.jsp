@@ -5,7 +5,7 @@
 <fmt:setBundle basename = "org.theospi.portfolio.matrix.bundle.Messages"/>
 
 <osp-c:authZMap prefix="osp.matrix." var="can" />
-<%-- evaluate permission is assumed (cannot view tool without) --%>
+<osp-c:authZMap prefix="osp.portfolio.evaluation." var="canPort" />
 
 <div class="navIntraTool">
     <c:if test="${isMaintainer && !isUserSite}">
@@ -17,13 +17,14 @@
          </osp:param>
 
              <osp:param name="name" value="review"/>
-             <osp:param name="qualifier" value="${tool.id}"/>
+             <osp:param name="qualifier" value="${worksite.id}"/>
              <osp:param name="returnView" value="listEvaluationItemsRedirect"/>
              </osp:url>"
             title="<fmt:message key="action_permissions_title"/>" >
             <fmt:message key="action_permissions"/>
         </a>
     </c:if>
+    <%-- 
     <c:if test="${!isUserSite}" >
        <c:if test="${hasFirstAction}" > | </c:if>
        <c:if test="${currentSiteEvalsKey == evalType}">
@@ -33,29 +34,75 @@
          <a href="<osp:url value="listEvaluationItems.osp"/>&evalTypeKey=<c:out value="${currentSiteEvalsKey}" />"><fmt:message key="show_site_evals"/></a>
        </c:if>
     </c:if>
+    --%>
 </div>
+
+<c:if test="${!canPort.use}">
+	<div class="alertMessage"><fmt:message key="eval_message_notAllowed"/></div>
+</c:if>
 
 <c:if test="${not empty errorMessage}">
    <div class="alertMessage"><c:out value="${errorMessage}" /></div>
 </c:if>
 
 <div class="navPanel">
-   <div class="viewNav">
-       <h3>
-         <fmt:message key="title_evaluationManager"/>
-         <c:if test="${allEvalsKey == evalType}">
-            <span class="highlight"> <fmt:message key="eval_all_evals_suffix"/></span>
-         </c:if>
-         <c:if test="${currentSiteEvalsKey == evalType}">
-            <span class="highlight"> <fmt:message key="eval_site_evals_suffix"/></span> 
-         </c:if>
-      </h3>
-   </div>
-   <osp:url  var="listUrl" value="listEvaluationItems.osp" />
-   <osp:listScroll  listUrl="${listUrl}" className="listNav" />
-</div>   
+	<div class="viewNav">
+	    <h3>
+			<fmt:message key="title_evaluationManager"/>
+			<c:if test="${allEvalsKey == evalType}">
+				<span class="highlight"> <fmt:message key="eval_all_evals_suffix"/></span>
+			</c:if>
+			<c:if test="${currentSiteEvalsKey == evalType}">
+				<span class="highlight"> <fmt:message key="eval_site_evals_suffix"/></span> 
+			</c:if>
+		</h3>
+	</div>
 
-<form method="POST" id="evalList" name="evalList">
+	<c:if test="${canPort.use}">
+		<form method="post" id="reviewList" name="reviewList">
+			<osp:form />
+			<osp:url  var="listUrl" value="listEvaluationItems.osp" />
+			<osp:listScroll  listUrl="${listUrl}" className="listNav" />
+		</form>
+	</c:if>
+</div>	
+
+<c:if test="${canPort.use}">
+	<div class="navPanel">
+			<c:choose>
+				<c:when test="${hasGroups && empty userGroups}">
+					<p class="instruction"><fmt:message key="matrix_groups_unavailable"></fmt:message></p>
+				</c:when>
+				<c:otherwise>
+					<form method="get" action="<osp:url value="listEvaluationItems.osp"/>">
+						<osp:form/>
+						<div class="viewNav">
+							<c:if test="${not empty userGroups && userGroupsCount > 0}">
+								<label for="group_filter-id"><fmt:message key="matrix_viewing_select_group" /></label>
+								<select name="group_filter" id="group_filter-id">
+									<option value="" <c:if test="${empty filteredGroup}">selected="selected"</c:if>>
+									<fmt:message key="matrix_groups_showall"></fmt:message>
+									</option>
+									<c:forEach var="group" items="${userGroups}">
+										<option value="<c:out value="${group.id}"/>" <c:if test="${filteredGroup == group.id}">selected="selected"</c:if>>
+											<c:out value="${group.title}"></c:out>
+										</option>
+									</c:forEach>
+								</select>
+								<input type="submit" name="filter" value="<fmt:message key="button_filter"></fmt:message>"/>
+							</c:if>					
+						</div>
+					</form>
+				</c:otherwise>
+			</c:choose>
+	</div>	
+</c:if>
+
+
+
+<c:if test="${canPort.use}">
+    <form method="POST" id="evalList" name="evalList">
+        <osp:form />
     <input type="hidden" id="action" name="action" value="" />
     <input type="hidden" id="eval_id" name="id" value="" />
     <c:set var="sortDir" value="asc" />
@@ -91,30 +138,27 @@
                      </c:if>
                   </a>
                </th>
-					<%-- show owner header if this site has permission, or if my workspace, or if all sites viewed --%>
-               <c:if test="${can.viewOwner || isUserSite || allEvalsKey == evalType}"> 
-                  <th title='<fmt:message key="eval_sortbyowner"/>' scope="col">                   
-                     <c:if test="${sortByColumn == 'owner'}">
-                        <c:if test="${direction == 'asc'}">
-                           <c:set var="sortDir" value="desc" />
-                           <c:set var="sortDirectionText" value="ascending" />
-                        </c:if>
-                     </c:if>
-                     <a href="<osp:url value="listEvaluationItems.osp"/>&sortByColumn=owner&direction=<c:out value="${sortDir}" />">
-                        <fmt:message key="eval_owner"/>
-                        <c:if test="${sortByColumn == 'owner'}">
-                           <img src="/library/image/sakai/sort<c:out value="${sortDirectionText}" />.gif?panel=Main" border="0"
-                            <c:if test="${sortDirectionText == 'ascending'}">
-                                alt ='<fmt:message key="eval_sortbyownerasc"/>'
+               <th title='<fmt:message key="eval_sortbyowner"/>' scope="col">	                  
+                    <c:if test="${sortByColumn == 'owner'}">
+                       <c:if test="${direction == 'asc'}">
+                          <c:set var="sortDir" value="desc" />
+                          <c:set var="sortDirectionText" value="ascending" />
+                       </c:if>
+                    </c:if>
+                    <a href="<osp:url value="listEvaluationItems.osp"/>&sortByColumn=owner&direction=<c:out value="${sortDir}" />">
+                       <fmt:message key="eval_owner"/>
+                       <c:if test="${sortByColumn == 'owner'}">
+                       <img src="/library/image/sakai/sort<c:out value="${sortDirectionText}" />.gif?panel=Main" border="0"
+                           <c:if test="${sortDirectionText == 'ascending'}">
+                               alt ='<fmt:message key="eval_sortbyownerasc"/>'
                             </c:if>
                             <c:if test="${sortDirectionText == 'descending'}">
-                                alt ='<fmt:message key="eval_sortbyownerdesc"/>'
+                               alt ='<fmt:message key="eval_sortbyownerdesc"/>'
                             </c:if>
-                           />
-                        </c:if>
-                     </a>                    
-                  </th>
-               </c:if>
+                          />
+                       </c:if>
+                    </a>
+                </th>
                 <th title='<fmt:message key="eval_sortbydateReceived"/>' scope="col">
                   <c:if test="${sortByColumn == 'date'}">
                      <c:if test="${direction == 'asc'}">
@@ -184,23 +228,20 @@
         </thead>
         <tbody>
             <c:forEach var="item" items="${reviewerItems}" varStatus="loopCount">
-               <c:if test="${item.url != null}">
-					<%-- tbd verify these checks are unneccessary --%>
-               <c:choose>
-                  <c:when test="${item.evalType == 'matrix_cell_type'}">
-                     <osp-c:authZMap prefix="osp.matrix." var="canEvalCell" qualifier="${item.id}"/>
-                     <c:set var="permCheck" value="${canEvalCell.evaluateSpecificMatrix}" />
-                  </c:when>
-                  <c:when test="${item.evalType == 'wizard_type'}">
-                     <osp-c:authZMap prefix="osp.wizard." var="canEvalWizardTool" qualifier="${item.id}"/>
-                     <c:set var="permCheck" value="${canEvalWizardTool.evaluateSpecificWizard}" />
-                  </c:when>
-                  <c:when test="${item.evalType == 'wizard_page_type'}">
-                     <osp-c:authZMap prefix="osp.wizard." var="canEvalPage" qualifier="${item.id}"/>
-                     <c:set var="permCheck" value="${canEvalPage.evaluateSpecificWizardPage}" />
-                  </c:when>
-               </c:choose>
-					 <osp-c:authZMap prefix="osp.matrix." var="canSite" qualifier="${item.siteId}"/>
+					<c:if test="${item.url != null}">
+					<c:choose>
+						<c:when test="${item.evalType == 'matrix_cell_type'}">
+							<c:set var="permCheck" value="true" />
+						</c:when>
+						<c:when test="${item.evalType == 'wizard_type'}">
+							<osp-c:authZMap prefix="osp.wizard." var="canEvalWizardTool" qualifier="${item.id}"/>
+							<c:set var="permCheck" value="${canEvalWizardTool.evaluateSpecificWizard}" />
+						</c:when>
+						<c:when test="${item.evalType == 'wizard_page_type'}">
+							<osp-c:authZMap prefix="osp.wizard." var="canEvalPage" qualifier="${item.id}"/>
+							<c:set var="permCheck" value="${canEvalPage.evaluateSpecificWizardPage}" />
+						</c:when>
+					</c:choose>
 
                 <tr>
                   <td  class="specialLink">
@@ -222,7 +263,7 @@
                   <c:if test="${can.viewOwner || isUserSite || allEvalsKey == evalType}"> 
                   <td>
                      <c:choose>
-                       <c:when test="${canSite.viewOwner}">
+                       <c:when test="${item.owner != null && !item.hideOwnerDisplay}">
                            <c:out value="${item.owner.sortName}" />
                        </c:when>
                        <c:otherwise>
@@ -263,4 +304,5 @@
     </table>
     </c:otherwise>
     </c:choose>
-</form>
+    </form>
+</c:if>

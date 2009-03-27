@@ -98,7 +98,7 @@ $(document).ready(function() {
 	          <fmt:param><c:out value="${tool.title}"/></fmt:param>
 		  <fmt:param><c:out value="${worksite.title}"/></fmt:param></fmt:message></osp:param>
                 <osp:param name="name" value="presentation"/>
-                <osp:param name="qualifier" value="${tool.id}"/>
+                <osp:param name="qualifier" value="${worksite.id}"/>
                 <osp:param name="returnView" value="listPresentationRedirect"/>
                 <osp:param name="session.${lastViewKey}" value="/listPresentation.osp"/>
                 </osp:url>"

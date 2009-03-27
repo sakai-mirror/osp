@@ -15,11 +15,37 @@
 	function hrefViewCell(pageId) {
 	  window.location="<osp:url value="viewCell.osp?page_id="/>"+pageId;
 	}
+	
+	function noAccess(cellName){
+		
+		document.getElementById('accessTable').style.display = "";
+		deleteColumn('accessTable');
+		addColumn('accessTable', cellName);
+	}
+	
+	function addColumn(tblId, cellName)
+	{
+		var tblBodyObj = document.getElementById(tblId).tBodies[0];
+		for (var i=0; i<tblBodyObj.rows.length; i++) {
+			var newCell = tblBodyObj.rows[i].insertCell(-1);
+			newCell.innerHTML = "<span class='alertMessage'><fmt:message key='no_view_access'/><br>" + cellName + "</span>";
+		}
+	}
+	function deleteColumn(tblId)
+	{
+		var allRows = document.getElementById(tblId).rows;
+		for (var i=0; i<allRows.length; i++) {
+			if (allRows[i].cells.length > 1) {
+				allRows[i].deleteCell(-1);
+			}
+		}
+	}
 
 
 </script>
-<osp-c:authZMap prefix="osp.matrix.scaffolding." var="can" qualifier="${matrixContents.scaffolding.worksiteId}"/>
 <osp-c:authZMap prefix="osp.matrix." var="matrixCan" qualifier="${matrixContents.scaffolding.worksiteId}"/>
+<osp-c:authZMap prefix="osp.matrix.scaffoldingSpecific." var="scaffoldingCan" qualifier="${matrixContents.scaffolding.reference}"/>
+
 <c:if test="${isExposedPage != true}">
 	<div class="navIntraTool">
 		<a href="<osp:url value="listScaffolding.osp"/>"><fmt:message key="action_list"/></a>
@@ -30,7 +56,8 @@
 <h3>
 	<c:set var="readOnly_label"><fmt:message key="matrix_readOnly"/></c:set>
 	<c:choose>
-		<c:when test="${(matrixCan.evaluate || matrixCan.review)}">
+		<%-- if size is greater than 0 than that means you can review or evaluate at least one cell --%>
+		<c:when test="${scaffoldingCan.accessUserList}">
 			<fmt:message key="matrix_viewing_title_eval">
 				<fmt:param>
 					<c:if test="${matrixContents.scaffolding.preview}">
@@ -74,7 +101,7 @@
 
 <c:if test="${(not empty matrixContents.scaffolding)}">
 	<div class="navPanel">
-		<c:if test="${(matrixCan.evaluate || matrixCan.review)}">
+		<c:if test="${scaffoldingCan.accessUserList}">
 			<c:choose>
 				<c:when test="${hasGroups && empty userGroups}">
 					<p class="instruction"><fmt:message key="matrix_groups_unavailable"></fmt:message></p>
@@ -86,6 +113,9 @@
 							<c:if test="${not empty userGroups && userGroupsCount > 1}">
 								<label for="group_filter-id"><fmt:message key="matrix_viewing_select_group" /></label>
 								<select name="group_filter" id="group_filter-id" onchange="this.form.submit()">
+									<option value="">
+										<fmt:message key="matrix_viewing_select_group" />
+									</option>
 									<option value="" <c:if test="${empty filteredGroup}">selected="selected"</c:if>>
 									<fmt:message key="matrix_groups_showall"></fmt:message>
 									</option>
@@ -98,7 +128,10 @@
 							</c:if>
 							 &nbsp;&nbsp;&nbsp;
 							<label for="view_user-id"><fmt:message key="matrix_viewing_select_user" /></label>
-							<select name="view_user"  id="view_user-id" onchange="this.form.submit()">
+							<select name="view_user"  id="view_user-id" onchange="if(this.value != ''){this.form.submit()}">
+								<option value="">
+									<fmt:message key="matrix_viewing_select_user" />
+								</option>
 								<c:forEach var="user" items="${members}">
 									<option value="<c:out value="${user.id}"/>" <c:if test="${matrixOwner.id.value == user.id}"> selected="selected" </c:if>>
 										<c:out value="${user.sortName}"/>
@@ -119,7 +152,17 @@
 		<fmt:message key="instructions_clickOnaCellToEdit"/>
 	</p>
 	<c:set var="columnHeading" value="${matrixContents.columnLabels}" />
-        <table cellspacing="0" width="100%" summary="<fmt:message key="table_summary_matrixScaffolding"/>">
+	
+		<!-- This is used to alert the user if they do not have access to the cell they clicked on -->
+
+		<table id="accessTable" border="0" style="display:none">
+			<tr>
+				<td></td>
+			</tr>
+		</table>
+
+        <table class="matrixTable" cellspacing="0" width="100%" summary="<fmt:message key="table_summary_matrixScaffolding"/>">
+            <thead>
             <tr>
                 <th class="matrix-row-heading" scope="col">
                     <osp-h:glossary link="true" hover="true">
@@ -147,10 +190,31 @@
 
                  <c:forEach var="cellBean" items="${matrixContents.matrixContents[loopStatus.index]}">
                      <c:set var="cell" value="${cellBean.cell}"/>
-                     
-                     <td class="matrix-cell-border matrix-<c:out value="${cell.status}"/>" onclick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') " style="cursor:pointer">
+
+                    <!-- Find out if user has access to this cell -->
+                     <c:set var="hasAccess" value="${scaffoldingCan.accessAll || isMyMatrix}"/>
+                     <c:if test="${!hasAccess}">
+                     <c:forEach var="cellId" items="${canReviewOrEvaluateIds}">
+                     	<c:if test="${cellId == cell.id.value}">
+                     		<c:set var="hasAccess" value="true"/>
+                     	</c:if>                     	
+                     </c:forEach>
+                     </c:if>
+					
+		                     
+                     <td class="matrix-cell-border matrix-<c:out value="${cell.status}"/>" 
+                     	<c:if test="${hasAccess}">
+                     		onclick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') "
+                     	</c:if> 
+                     	
+                     	<c:if test="${!hasAccess}">
+                     		onclick="noAccess('<c:out value="${cell.scaffoldingCell.wizardPageDefinition.title}"/>')"                    		
+                     	</c:if>
+                     	style="cursor:pointer">
                         &nbsp;
-						<a href="#" onclick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') " class="skip"><fmt:message key="table_cell_link_title"/></a>
+                        <c:if test="${hasAccess}">
+							<a href="#" onclick="hrefViewCell('<c:out value="${cell.wizardPage.id}"/>') " class="skip"><fmt:message key="table_cell_link_title"/></a>
+						</c:if>
                         <c:forEach var="node" items="${cellBean.nodes}">
                             <fmt:formatDate value="${node.technicalMetadata.lastModified}" pattern="MM/dd/yyyy" var="date"/>
                                <c:set var="hover" value="Name:${node.name}; Size:${node.technicalMetadata.size} bytes; Last Modified: ${date}"/>

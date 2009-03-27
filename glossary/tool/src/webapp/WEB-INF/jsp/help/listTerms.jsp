@@ -33,7 +33,7 @@
 				  </fmt:message>
 			</osp:param>
 			<osp:param name="name" value="glossary"/>
-			<osp:param name="qualifier" value="${tool.id}"/>
+			<osp:param name="qualifier" value="${worksite.id}"/>
 			<osp:param name="returnView" value="glossaryListRedirect"/>
 		</osp:url>"
             title="<fmt:message key="action_permissions_title"/>">

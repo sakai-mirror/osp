@@ -23,12 +23,15 @@ package org.theospi.portfolio.matrix;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashMap;
 
 import org.sakaiproject.entity.api.Reference;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.shared.model.Id;
+import org.sakaiproject.site.api.Group;
+import org.sakaiproject.site.api.Site;
 import org.theospi.portfolio.matrix.model.Attachment;
 import org.theospi.portfolio.matrix.model.Cell;
 import org.theospi.portfolio.matrix.model.Criterion;
@@ -37,8 +40,10 @@ import org.theospi.portfolio.matrix.model.Matrix;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.ScaffoldingCell;
 import org.theospi.portfolio.matrix.model.WizardPage;
+import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
 import org.theospi.portfolio.shared.model.Node;
+import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
 
 /**
  * @author apple
@@ -98,14 +103,26 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    Scaffolding getScaffolding(Id scaffoldingId);
    
+   Scaffolding loadScaffolding(Id scaffoldingId);
+   
    /**
     * 
     * @param siteIdStr
-    * @param userId
+    * @param user
+    * @param showUnpublished
     * @return
     */
    public List findAvailableScaffolding(String siteIdStr, Agent user, boolean showUnpublished);
+   /**
+    * 
+    * @param sites
+    * @param user
+    * @param showUnpublished
+    * @return
+    */
    public List findAvailableScaffolding(List sites, Agent user, boolean showUnpublished);
+   
+   List<Scaffolding> findPublishedScaffolding(String siteId);
    
    List findPublishedScaffolding(List sites);
    
@@ -113,12 +130,6 @@ public interface MatrixManager extends WorkflowEnabledManager {
          int progressionOption);
    ScaffoldingCell getScaffoldingCell(Criterion criterion, Level level);
    ScaffoldingCell getScaffoldingCell(Id id);
-   
-	/**
-	 * Determine if any matrix cell with the specified scaffoldingCell has
-	 * been 'used' (containing reflections and/or added form items)
-	 */
-   boolean isScaffoldingCellUsed(ScaffoldingCell cell);
    
    /**
     * Get all scaffolding cells for a given scaffolding
@@ -140,7 +151,7 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    WizardPage submitPageForEvaluation(WizardPage page);
 
-   List getEvaluatableCells(Agent agent, List<Agent> roles, List<Id> worksiteIds, HashMap siteHash);
+   List getEvaluatableCells(Agent agent, List<Agent> roles, List<String> worksiteIds, Map siteHash);
 
    /**
     * @param matrixId
@@ -179,5 +190,146 @@ public interface MatrixManager extends WorkflowEnabledManager {
 
    public boolean isUseExperimentalMatrix();
    
-   public boolean isScaffoldingUsed(Scaffolding scaffolding);
+   public boolean isEnableDafaultMatrixOptions();
+   
+   List<WizardPageDefinition> getWizardPageDefs(List<Id> ids);
+   List<ScaffoldingCell> getScaffoldingCells(List<Id> ids);
+   
+   public WizardPageDefinition getWizardPageDefinition(Id pageDefId);
+	/**
+	 * finds the list of evaluators/roles of the site id passed and checks against the current user.
+	 * returns true if user or role matches, otherwise false
+	 * 
+	 * @param id
+	 * @param worksiteId
+	 * @param function
+	 * @return
+	 */
+	public boolean hasPermission(Id id, Id worksiteId, String function);
+	
+	public WizardPageDefinitionEntity createWizardPageDefinitionEntity(WizardPageDefinition wpd, String parentTitle);
+	
+	/**
+	 * returns the count of forms that are associated with the pageDefId
+	 * @param pageDefId
+	 * @return
+	 */
+	public int getFormCountByPageDef(Id pageDefId);
+	
+	/**
+	 * returns the count of set of all reviews associated with the pageDefId
+	 * @param pageDefId
+	 * @return
+	 */
+	public int getReviewCountByPageDef(Id pageDefId);
+	
+	
+	/**
+	 * returns a Map of types and counts.  Each  
+	 * has the type of review it is (eval, feedback, ect..) and how many reviews of that
+	 * type are associated with that pageDefId
+	 * 
+	 * @param pageDefId
+	 * @return
+	 */
+	public Map<Integer, Integer> getReviewCountListByType(Id pageDefId);
+		
+	/**
+	 * returns the count of all attachments associated with the pageDefId
+	 * @param pageDefId
+	 * @return
+	 */
+	public int getAttachmentCountByPageDef(Id pageDefId);
+	
+	/**
+	 * returns true if the scaffolding cell is being used by any users (forms, attachments, reviews, ect..)
+	 * @param cell
+	 * @return
+	 */	
+	public boolean isScaffoldingCellUsed(ScaffoldingCell cell);
+	
+	/**
+	 * returns true if the scaffolding is being used anywhere by any user (forms, attachments, reviews, ect..)
+	 * @param scaffolding
+	 * @return
+	 */	
+	public boolean isScaffoldingUsed(Scaffolding scaffolding);
+	
+	/**
+	 * Get a count of submitted cells per scaffolding cell for a list of scaffolding
+	 * @param scaffolding
+	 * @return
+	 */
+	public Map<Id, Integer> getSubmissionCountByScaffolding(List<Scaffolding> scaffolding);
+	
+	/**
+	 * Returns the set of users that are present in the groups that have been passed
+	 * @param worksiteId
+	 * @param filterGroupId
+	 * @param allowAllGroups
+	 * @param groups
+	 * @return
+	 */
+	public Set getUserList(String worksiteId, String filterGroupId, boolean allowAllGroups, List<Group> groups);
+	
+	/**
+	 * Returns the set of groups the current user has access to
+	 * 
+	 * If allowAllGroups flag is true, the all groups will be returned
+	 * 
+	 * @param worksiteId
+	 * @param allowAllGroups
+	 * @return
+	 */
+	public Set getGroupList(String worksiteId, boolean allowAllGroups);
+	
+	/**
+	 * 
+	 * @param worksiteId
+	 * @return
+	 */
+	public boolean hasGroups(String worksiteId);
+
+	/**	 
+	 * Returns the set of groups the current user has access to
+	 * 
+	 * If allowAllGroups flag is true, the all groups will be returned
+	 * 
+	 * @param site
+	 * @param allowAllGroups
+	 * @return
+	 */
+	public Set getGroupList(Site site, boolean allowAllGroups);
+	
+	/**
+	 * Returns a list of users display names (string) who have access
+	 * to the function and Object combination
+	 * 
+	 * @param oWW
+	 * @param function
+	 * @return
+	 */
+	public List getSelectedUsers(ObjectWithWorkflow oWW, String function);
+	
+	/**
+	 * 
+	 * Will notify an audience who has permission to perform the passed function on the passed objectId.  Each will be emailed specifically
+	 * based on the function.  Any email address listed in sentEmailAddrs will not receive an email.  
+	 * 
+	 * If group aware and the site has groups, then the audience is selected by:
+	 * Must be able to perform the function on the objectId and be in the current users group or have the viewAllGroups permission if its a matrix
+	 * 
+	 * If not group aware or the site doesn't have groups then the audience is selected by the function and objectId authorization. 
+	 * 
+	 * 
+	 * @param wizPage
+	 * @param reviewObjectId
+	 * @param groupAware
+	 * @param sentEmailAddrs
+	 * @param parentTitle
+	 * @param function
+	 */
+	public void notifyAudience(WizardPage wizPage, Id reviewObjectId, boolean groupAware, List sentEmailAddrs, String parentTitle, String function);
+
+	public Cell createCellWrapper(WizardPage page);
 }
