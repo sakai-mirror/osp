@@ -74,6 +74,7 @@ public class PresentationService {
 			return null;
 		}
 		
+		Agent agent = authnManager.getAgent();
 		PresentationTemplate template = presentationManager.getPresentationTemplate(idManager.getId(templateId));
 		if (template == null) {
 			log.warn("Cannot Create Presentation -- Invalid Presentation Template ID: " + templateId);
@@ -87,7 +88,7 @@ public class PresentationService {
 		presentation.setToolId(toolManager.getCurrentPlacement().getId());
 		presentation.setPresentationType(presentationType);
 		presentation.setTemplate(template);
-		presentation.setName(template.getName());
+		presentation.setName(template.getName()+" - "+agent.getDisplayName());
 		presentation.setExpiresOn(new GregorianCalendar(1970, 1, 1).getTime());
 		return presentationManager.storePresentation(presentation);
 	}
