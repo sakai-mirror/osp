@@ -4,7 +4,7 @@
 * $Id: PublishScaffoldingConfirmationController.java 10835 2006-06-17 03:25:03Z lance@indiana.edu $
 ***********************************************************************************
 *
- * Copyright (c) 2005, 2006, 2007 Sakai Foundation
+ * Copyright (c) 2005, 2006, 2007, 2008 The Sakai Foundation
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
