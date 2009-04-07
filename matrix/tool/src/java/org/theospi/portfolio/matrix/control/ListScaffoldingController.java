@@ -3,7 +3,7 @@
 * $Id:ListScaffoldingController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
- * Copyright (c) 2006, 2007, 2008 Sakai Foundation
+ * Copyright (c) 2006, 2007, 2008, 2009 The Sakai Foundation
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,7 @@ import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
 import org.sakaiproject.metaobj.shared.model.Agent;
+import org.sakaiproject.metaobj.shared.model.Id;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
@@ -54,12 +55,13 @@ public class ListScaffoldingController extends AbstractMatrixController {
 	static final String SORT = "sort", ASCENDING = "ascending",  TITLE = "title", OWNER = "owner",
 						PUBLISHED = "published", MODIFIED = "modified", WORKSITE = "worksite";
 	
+	private String previewAuthz = ServerConfigurationService.getString("osp.preview.permission", null );
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Hashtable<String, Object> model = new Hashtable<String, Object>();
       Agent currentAgent = getAuthManager().getAgent();
       String currentToolId = ToolManager.getCurrentPlacement().getId();
-      String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
+      Id worksiteId = getWorksiteManager().getCurrentWorksiteId();
       String sortBy = TITLE;
       boolean sortAscending = true;
 		List scaffolding = null;
@@ -70,7 +72,10 @@ public class ListScaffoldingController extends AbstractMatrixController {
 		}
 		else
 		{
-			scaffolding = getMatrixManager().findAvailableScaffolding(worksiteId, currentAgent, isMaintainer());
+			boolean listPreview = true;
+			if ( previewAuthz != null )
+				listPreview = getAuthzManager().isAuthorized( previewAuthz, worksiteId );
+			scaffolding = getMatrixManager().findAvailableScaffolding(worksiteId.getValue(), currentAgent, listPreview);
 		}
 		
 		if(request.get(SORT) != null){
@@ -94,7 +99,7 @@ public class ListScaffoldingController extends AbstractMatrixController {
       model.put("scaffolding",
          getListScrollIndexer().indexList(request, model, decoratedScaffolding));
 
-      model.put("worksite", getWorksiteManager().getSite(worksiteId));
+      model.put("worksite", getWorksiteManager().getSite(worksiteId.getValue()));
       model.put("tool", getWorksiteManager().getTool(currentToolId));
       model.put("isMaintainer", isMaintainer());
       model.put("osp_agent", currentAgent);

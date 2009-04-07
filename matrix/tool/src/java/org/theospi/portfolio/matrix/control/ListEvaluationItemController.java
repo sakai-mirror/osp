@@ -3,7 +3,7 @@
 * $Id:ListReviewerItemController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
- * Copyright (c) 2005, 2006, 2008 Sakai Foundation
+ * Copyright (c) 2005, 2006, 2008, 2009 The Sakai Foundation
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,6 +88,9 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
    private final static String CURRENT_SITE_EVALS = "org.theospi.portfolio.evaluation.currentSite";
    private final static String ALL_EVALS = "org.theospi.portfolio.evaluation.allSites";
    private final static String EVAL_SITE_FETCH = "org.theospi.portfolio.evaluation.siteEvals";
+   private final static String EVAL_SORT_DIRECTION = "org.theospi.portfolio.evaluation.sortDirection";
+   private final static String EVAL_SORT_COLUMN    = "org.theospi.portfolio.evaluation.sortColumn";
+   private final static String DEFAULT_SORT_DIRECTION = "asc";
    
    public static final String GROUP_FILTER = "group_filter";
    
@@ -98,12 +101,47 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
    public Object fillBackingObject(Object incomingModel, Map request, Map session, Map application) throws Exception {
       
       List list = new ArrayList();
-      
       String evalType = CURRENT_SITE_EVALS; //(String)request.get("evalTypeKey");
-      if (evalType != null)
-         setUserEvalProperty(evalType);
+      String sortColumn = (String)request.get("sortByColumn");
+      String sortDirection = (String)request.get("direction");
       
-      if (ALL_EVALS.equals(getUserEvalProperty())) {
+      // Save user preferences, if any have changed
+      if ( evalType != null || sortColumn != null || sortDirection != null ) {
+         PreferencesEdit prefEdit = getPreferencesEdit();
+         
+         ResourceProperties propEdit = prefEdit.getPropertiesEdit(EVAL_PLACEMENT_PREF + getToolManager().getCurrentPlacement().getId());
+      
+         if (evalType != null)
+            propEdit.addProperty(EVAL_SITE_FETCH, evalType);
+      
+         if (sortColumn != null)
+            propEdit.addProperty(EVAL_SORT_COLUMN, sortColumn);
+         
+         if (sortDirection != null)
+            propEdit.addProperty(EVAL_SORT_DIRECTION, sortDirection);
+
+         try {
+            PreferencesService.commit(prefEdit);
+         }
+         catch (Exception e) {
+            logger.warn("Problem saving preferences for site evals in setSortDirection().", e);
+         }
+      }
+      
+      // Get default or pre-existing values for any unspecified preferences
+      Preferences userPreferences = PreferencesService.getPreferences(authManager.getAgent().getId().getValue());
+      ResourceProperties evalPrefs = userPreferences.getProperties(EVAL_PLACEMENT_PREF + getToolManager().getCurrentPlacement().getId());
+      if (sortColumn == null)
+         sortColumn = getSortColumn(evalPrefs);
+         
+      if (sortDirection == null)
+         sortDirection = getSortDirection(evalPrefs);
+         
+      if (evalType == null)
+         evalType = getUserEvalProperty(evalPrefs);
+      
+      // Get list of reviewer items
+      if (ALL_EVALS.equals(evalType)) {
          list = wizardManager.getEvaluatableItems(authManager.getAgent());
       }
       else {
@@ -112,16 +150,9 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
          list = wizardManager.getEvaluatableItems(authManager.getAgent(), siteIds);
       }
       
-      String sortColumn = (String)request.get("sortByColumn");
-      if (sortColumn == null)
-         sortColumn = EvaluationContentComparator.SORT_TITLE;
-      String strAsc = (String)request.get("direction");
-      boolean asc = true;
-      if (strAsc != null)
-         asc = strAsc.equalsIgnoreCase("asc");
-
-      Collections.sort(list, new EvaluationContentComparator(
-            sortColumn, asc));
+      // Sort list of reviewer items
+      boolean asc = sortDirection.equalsIgnoreCase(DEFAULT_SORT_DIRECTION);
+      Collections.sort(list, new EvaluationContentComparator(sortColumn, asc));
       list = getListScrollIndexer().indexList(request, request, list);
 
       return list; /* goes into 'reviewerItems'  */
@@ -178,22 +209,16 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
    public Map referenceData(Map request, Object command, Errors errors) {
       Map model = new HashMap();
       String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
+      Preferences userPreferences = PreferencesService.getPreferences(authManager.getAgent().getId().getValue());
+      ResourceProperties evalPrefs = userPreferences.getProperties(EVAL_PLACEMENT_PREF + getToolManager().getCurrentPlacement().getId());
+      
       model.put("worksite", getWorksiteManager().getSite(worksiteId));
       model.put("tool", getToolManager().getCurrentPlacement());
       model.put("isMaintainer", isMaintainer());
       model.put("currentUser", authManager.getAgent());
-      
-      String asc = (String)request.get("direction");
-      if (asc == null)
-         asc = "asc";
-      
-      model.put("direction", asc);
-      
-      String sortColumn = (String)request.get("sortByColumn");
-      if (sortColumn == null)
-         sortColumn = EvaluationContentComparator.SORT_TITLE;
-      model.put("sortByColumn", sortColumn);
-      model.put("evalType", getUserEvalProperty());
+      model.put("direction", getSortDirection(evalPrefs));
+      model.put("sortByColumn", getSortColumn(evalPrefs));
+      model.put("evalType", getUserEvalProperty(evalPrefs));
       model.put("currentSiteEvalsKey", CURRENT_SITE_EVALS);
       model.put("allEvalsKey", ALL_EVALS);
       
@@ -278,59 +303,65 @@ public class ListEvaluationItemController implements FormController, LoadObjectC
       
       return model;
    }
-   
-   private String getUserEvalProperty() {
-      String prop = CURRENT_SITE_EVALS;
-      
-      //If the site is a my workapace site, default to all sites
-      //Site site = getWorksiteManager().getSite(getWorksiteManager().getCurrentWorksiteId().getValue());
-      boolean userSite = SiteService.isUserSite(getWorksiteManager().getCurrentWorksiteId().getValue());
-      if (userSite) prop = ALL_EVALS;
-      
-      try {
-         Preferences userPreferences = PreferencesService.getPreferences(authManager.getAgent().getId().getValue());
-         ResourceProperties evalPrefs = userPreferences.getProperties(EVAL_PLACEMENT_PREF + getToolManager().getCurrentPlacement().getId());
-         String tmpProp = evalPrefs.getProperty(EVAL_SITE_FETCH);
-         if (tmpProp != null) prop = tmpProp;
-      }
-      catch (Exception e) {
-         logger.debug("Couldn't get user prefs for the eval tool.  Using defaults.");
-      }
-      return prop;
+
+   /** Returns user preference for sort direction
+    **/
+   private String getSortDirection( ResourceProperties evalPrefs ) {
+      String sortDirection = evalPrefs.getProperty(EVAL_SORT_DIRECTION);
+      if ( sortDirection != null )
+         return sortDirection;
+      else
+         return DEFAULT_SORT_DIRECTION;
    }
 
-   private void setUserEvalProperty(String evalType) {
+   /** Returns user preference for sort column
+    **/
+   private String getSortColumn( ResourceProperties evalPrefs ) {
+      String sortColumn = evalPrefs.getProperty(EVAL_SORT_COLUMN);
+      if ( sortColumn != null )
+         return sortColumn;
+      else
+         return EvaluationContentComparator.SORT_TITLE;
+   }
+    
+   /** Returns user preference for evaluations to display (all sites or just current site)
+    **/
+   private String getUserEvalProperty( ResourceProperties evalPrefs ) {
+      String defaultProp = CURRENT_SITE_EVALS;
+      
+      //If the site is a my workapace site, default to all sites
+      if ( SiteService.isUserSite(getWorksiteManager().getCurrentWorksiteId().getValue()) )
+         defaultProp = ALL_EVALS;
+         
+      String prop = evalPrefs.getProperty(EVAL_SITE_FETCH);
+      if (prop != null) 
+         return prop;
+      else
+         return defaultProp;
+   }
+
+   /** Return PreferencesEdit object for current user
+    **/
+   private PreferencesEdit getPreferencesEdit() {
       PreferencesEdit prefEdit = null;
       try {
          prefEdit = (PreferencesEdit) PreferencesService.add(authManager.getAgent().getId().getValue());
       } catch (PermissionException e) {
-         logger.warn("Problem saving preferences for site evals in setUserEvalProperty().", e);
+         logger.warn("Problem saving preferences for site evals in getPreferences().", e);
       } catch (IdUsedException e) {
          // Preferences already exist, just edit
          try {
             prefEdit = (PreferencesEdit) PreferencesService.edit(authManager.getAgent().getId().getValue());
          } catch (PermissionException e1) {
-            logger.warn("Problem saving preferences for site evals in setUserEvalProperty().", e1);
+            logger.warn("Problem saving preferences for site evals in getPreferences().", e1);
          } catch (InUseException e1) {
-            logger.warn("Problem saving preferences for site evals in setUserEvalProperty().", e1);
+            logger.warn("Problem saving preferences for site evals in getPreferences().", e1);
          } catch (IdUnusedException e1) {
             // This should be safe to ignore since we got here because it existed
-            logger.warn("Problem saving preferences for site evals in setUserEvalProperty().", e1);
+            logger.warn("Problem saving preferences for site evals in getPreferences().", e1);
          }
       }
-      if (prefEdit != null) {
-         ResourceProperties propEdit = prefEdit.getPropertiesEdit(EVAL_PLACEMENT_PREF + getToolManager().getCurrentPlacement().getId());
-         if (evalType.equals(CURRENT_SITE_EVALS))
-            propEdit.removeProperty(EVAL_SITE_FETCH);
-         else
-            propEdit.addProperty(EVAL_SITE_FETCH, evalType);
-         try {
-            PreferencesService.commit(prefEdit);
-         }
-         catch (Exception e) {
-            logger.warn("Problem saving preferences for site evals in setUserEvalProperty().", e);
-         }
-      }
+      return prefEdit;
    }
    
    private Boolean isMaintainer() {

@@ -609,7 +609,8 @@ function mySetMainFrameHeightViewCell(id)
 							<td>
 								<!-- Allow Reviewers to edit/delete feedback -->
 								<c:if
-									test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
+									test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review))
+									        && enableReviewEdit && object.reviewContentNode.technicalMetadata.owner.id == currentUser }">
 									<a
 										href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 												<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -622,8 +623,7 @@ function mySetMainFrameHeightViewCell(id)
 							          	</c:if>
 											  </osp:url>"
 										title="<fmt:message key="edit"/>"> 
-												<fmt:message key="edit"/>
-									</a>
+												<fmt:message key="edit"/></a>
 											|
 									<a
 										href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -812,7 +812,8 @@ function mySetMainFrameHeightViewCell(id)
 					<td>
 						<!-- Allow Reviewers to edit/delete feedback -->
 						<c:if
-							test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
+							test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review))
+							        && enableReviewEdit && object.reviewContentNode.technicalMetadata.owner.id == currentUser }">
 							<a
 								href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -825,8 +826,7 @@ function mySetMainFrameHeightViewCell(id)
 							          	</c:if>
 										</osp:url>"
 								title="<fmt:message key="edit"/>"> 
-										<fmt:message key="edit"/>
-								 </a>
+										<fmt:message key="edit"/></a>
 										 |
 								 <a
 								href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -1071,7 +1071,8 @@ function mySetMainFrameHeightViewCell(id)
 					<td>
 						<!-- Allow Reviewers to edit/delete feedback -->
 						<c:if
-							test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit}">
+							test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review))
+							        && enableReviewEdit && object.reviewContentNode.technicalMetadata.owner.id == currentUser }">
 							<a
 								href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -1083,8 +1084,7 @@ function mySetMainFrameHeightViewCell(id)
 							          	</c:if>
 									  </osp:url>"
 								title="<fmt:message key="edit"/>"> 
-										<fmt:message key="edit"/>
-							</a>
+										<fmt:message key="edit"/></a>
 									|
 							<a
 								href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -1176,7 +1176,8 @@ function mySetMainFrameHeightViewCell(id)
 				<td>
 					<!-- Allow Reviewers to edit/delete Evaluations -->
 					<c:if
-						test="${((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.status != 'COMPLETE' && enableReviewEdit}">
+						test="${((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.status != 'COMPLETE'
+						        && enableReviewEdit && object.reviewContentNode.technicalMetadata.owner.id == currentUser }">
 						<a
 							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 									<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -1188,8 +1189,7 @@ function mySetMainFrameHeightViewCell(id)
 							          	</c:if>
 								  </osp:url>"
 							title="<fmt:message key="edit"/>"> 
-									<fmt:message key="edit"/>
-						</a>
+									<fmt:message key="edit"/></a>
 								|
 						<a
 							href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">

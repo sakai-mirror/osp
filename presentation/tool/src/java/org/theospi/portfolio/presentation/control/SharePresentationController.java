@@ -3,7 +3,7 @@
 * $Id:DeletePresentationController.java 9134 2006-05-08 20:28:42Z chmaurer@iupui.edu $
 ***********************************************************************************
 *
- * Copyright (c) 2008 Sakai Foundation
+ * Copyright (c) 2008, 2009 The Sakai Foundation
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -172,6 +172,7 @@ public class SharePresentationController extends AbstractPresentationController 
 		  
         String emailFrom = getServerConfigurationService().getString("setup.request", 
 																							"postmaster@".concat(getServerConfigurationService().getServerName()));
+        String replyTo = user.getEmail();
         
         for (Iterator it=revisedShareList.iterator(); it.hasNext(); ) 
         {
@@ -190,7 +191,7 @@ public class SharePresentationController extends AbstractPresentationController 
                     {
                        String emailTo = userDirectoryService.getUser(member.getUserId()).getEmail();
                        if ( SharePresentationMoreController.emailPattern.matcher(emailTo).matches() )
-                          emailService.send(emailFrom, emailTo, subject, message.toString(), emailTo, null, null);
+                          emailService.send(emailFrom, emailTo, subject, message.toString(), emailTo, replyTo, null);
                     }
                  }
               }
@@ -198,7 +199,7 @@ public class SharePresentationController extends AbstractPresentationController 
               {
                  String emailTo = userDirectoryService.getUser(shareMember.getId().getValue()).getEmail();
                  if ( SharePresentationMoreController.emailPattern.matcher(emailTo).matches() )
-                    emailService.send(emailFrom, emailTo, subject, message.toString(), emailTo, null, null);
+                    emailService.send(emailFrom, emailTo, subject, message.toString(), emailTo, replyTo, null);
               }
            }
            catch ( Exception e ) 
