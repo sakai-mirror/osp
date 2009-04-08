@@ -224,6 +224,7 @@ function mySetMainFrameHeight(id)
 			 </th>
 			 <c:if test="${!studentView || myworkspace}">
 			 	<th scope="col"></th>
+			</c:if>
 			 <c:if test="${!studentView}">
 			 	<th scope="col">
 			 		<c:if test="${sortBy == 'owner' && sortAscending == true }">
