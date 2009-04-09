@@ -258,8 +258,8 @@ public class HelpTagHelper {
    }
 
    static protected boolean isWordBoundary(char c) {
-      //       matching [\s] means white space
-      return String.valueOf(c).matches("[\\s]");
+      //       matching [\s] means white space and \p{Punct} is for any punctuation
+      return String.valueOf(c).matches("[\\s\\p{Punct}]");
    }
    
 }
