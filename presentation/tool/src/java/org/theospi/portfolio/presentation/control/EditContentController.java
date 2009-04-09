@@ -35,26 +35,18 @@ public class EditContentController extends SimpleFormController {
 	protected Map referenceData(HttpServletRequest request, Object command, Errors errors) throws Exception {
 		Presentation presentation = (Presentation) command;
 		Map model = presentationService.getPresentationArtifacts(presentation.getId().getValue());
-		if ( request.getParameter("save") != null )
-			model.put("actionSave", true ); 
-		else if ( request.getParameter("undo") != null )
-			model.put("actionUndo", true ); 
 		return model;
 	}
-
+   
 	@Override
-	protected boolean isFormSubmission(HttpServletRequest request) {
-		return request.getParameter("undo") == null && super.isFormSubmission(request);
-	}
-
-	@Override
-	protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
+   protected ModelAndView onSubmit(HttpServletRequest request, HttpServletResponse response, Object command, BindException errors) throws Exception {
 		Presentation presentation = presentationService.savePresentation((Presentation) command);
 		if (presentation == null)
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		return showForm(request,response,errors);
+      return showForm(request,response,errors);
 	}
-
+   
+   
 	@Override
 	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
 		binder.registerCustomEditor(Id.class, presentationService.getIdCustomEditor());
