@@ -29,6 +29,7 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.metaobj.shared.model.Agent;
 import org.sakaiproject.metaobj.utils.mvc.intf.ListScrollIndexer;
 import org.sakaiproject.metaobj.shared.mgt.IdManager;
@@ -45,12 +46,13 @@ public class ListScaffoldingController extends AbstractMatrixController {
    private ListScrollIndexer listScrollIndexer;
    private SiteService siteService;
 	private IdManager idManager;
+	private String previewAuthz = ServerConfigurationService.getString("osp.preview.permission", null );
 
    public ModelAndView handleRequest(Object requestModel, Map request, Map session, Map application, Errors errors) {
       Hashtable<String, Object> model = new Hashtable<String, Object>();
       Agent currentAgent = getAuthManager().getAgent();
       String currentToolId = ToolManager.getCurrentPlacement().getId();
-      String worksiteId = getWorksiteManager().getCurrentWorksiteId().getValue();
+      Id worksiteId = getWorksiteManager().getCurrentWorksiteId();
 		List scaffolding = null;
 
 		if ( isOnWorkspaceTab() )
@@ -59,7 +61,10 @@ public class ListScaffoldingController extends AbstractMatrixController {
 		}
 		else
 		{
-			scaffolding = getMatrixManager().findAvailableScaffolding(worksiteId, currentAgent,  isMaintainer());
+			boolean listPreview = true;
+			if ( previewAuthz != null )
+				listPreview = getAuthzManager().isAuthorized( previewAuthz, worksiteId );
+			scaffolding = getMatrixManager().findAvailableScaffolding(worksiteId.getValue(), currentAgent, listPreview);
 		}
       
       // When selecting a matrix the user should start with a fresh user
@@ -68,7 +73,7 @@ public class ListScaffoldingController extends AbstractMatrixController {
       model.put("scaffolding",
          getListScrollIndexer().indexList(request, model, scaffolding));
 
-      model.put("worksite", getWorksiteManager().getSite(worksiteId));
+      model.put("worksite", getWorksiteManager().getSite(worksiteId.getValue()));
       model.put("tool", getWorksiteManager().getTool(currentToolId));
       model.put("isMaintainer", isMaintainer());
       model.put("osp_agent", currentAgent);
