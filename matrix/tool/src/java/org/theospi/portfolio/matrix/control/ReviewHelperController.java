@@ -127,7 +127,9 @@ public class ReviewHelperController implements Controller {
             review.setParent(strId);
             review.setItemId(itemId);
             String strType = (String)session.get(ReviewHelper.REVIEW_TYPE);
-            review.setType(Integer.parseInt(strType));
+            // (note: strType may be null if user hits submit twice)
+            if ( strType != null && ! strType.equals("") )
+               review.setType(Integer.parseInt(strType));
 
             if (FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)) 
                 && session.get(FormHelper.RETURN_REFERENCE_TAG) != null) 
@@ -142,9 +144,10 @@ public class ReviewHelperController implements Controller {
             }
             
             // Lock review content (reflection, feedback, evaluation)
-            getLockManager().lockObject(review.getReviewContent().getValue(),
-                                        strId, "lock all review content", true);
-                  
+            // (note: reviewContent may be null if user hits submit twice)
+            if ( review.getReviewContent() != null )
+               getLockManager().lockObject(review.getReviewContent().getValue(),
+                                           strId, "lock all review content", true);
          }
          
          // otherwise this is an existing review being edited
