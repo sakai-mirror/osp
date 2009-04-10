@@ -380,7 +380,8 @@
 							<td>
 								<!-- Allow Reviewers to edit/delete feedback -->
 								<c:if
-									test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
+									test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review))
+									        && enableReviewEdit && object.reviewContentNode.technicalMetadata.owner.id == currentUser }">
 									<a
 										href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 												<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -390,8 +391,7 @@
 												<osp:param name="process_type_key" value="page_id" />
 											  </osp:url>"
 										title="<fmt:message key="edit"/>"> 
-												<fmt:message key="edit"/>
-									</a>
+												<fmt:message key="edit"/></a>
 											|
 									<a
 										href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -555,7 +555,8 @@
 					<td>
 						<!-- Allow Reviewers to edit/delete feedback -->
 						<c:if
-							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit }">
+							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review))
+							        && enableReviewEdit && object.reviewContentNode.technicalMetadata.owner.id == currentUser }">
 							<a
 								href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -565,8 +566,7 @@
 										<osp:param name="process_type_key" value="page_id" />
 										</osp:url>"
 								title="<fmt:message key="edit"/>"> 
-										<fmt:message key="edit"/>
-								 </a>
+										<fmt:message key="edit"/></a>
 										 |
 								 <a
 								href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -801,7 +801,8 @@
 					<td>
 						<!-- Allow Reviewers to edit/delete feedback -->
 						<c:if
-							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review)) && enableReviewEdit}">
+							test="${((isWizard != 'true' && matrixCan.review) || (isWizard == 'true' && wizardCan.review))
+							        && enableReviewEdit && object.reviewContentNode.technicalMetadata.owner.id == currentUser }">
 							<a
 								href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -810,8 +811,7 @@
 										<osp:param name="process_type_key" value="page_id" />
 									  </osp:url>"
 								title="<fmt:message key="edit"/>"> 
-										<fmt:message key="edit"/>
-							</a>
+										<fmt:message key="edit"/></a>
 									|
 							<a
 								href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
@@ -910,7 +910,8 @@
 				<td>
 					<!-- Allow Reviewers to edit/delete Evaluations -->
 					<c:if
-						test="${((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.status != 'COMPLETE' && enableReviewEdit}">
+						test="${((isWizard != 'true' && matrixCan.evaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.status != 'COMPLETE'
+						        && enableReviewEdit && object.reviewContentNode.technicalMetadata.owner.id == currentUser }">
 						<a
 							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 									<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -919,8 +920,7 @@
 									<osp:param name="process_type_key" value="page_id" />
 								  </osp:url>"
 							title="<fmt:message key="edit"/>"> 
-									<fmt:message key="edit"/>
-						</a>
+									<fmt:message key="edit"/></a>
 								|
 						<a
 							href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
