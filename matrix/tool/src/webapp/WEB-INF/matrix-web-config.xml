@@ -148,6 +148,9 @@
             <property name="securityService">
             	<ref bean="org.sakaiproject.authz.api.SecurityService" />
             </property>
+            <property name="wizardActivityProducer">
+               <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
+            </property>
          </bean>
       </property>
       <property name="customTypedEditors">
@@ -182,9 +185,6 @@
             </property>
             <property name="taggingManager">
                <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
-            </property>
-            <property name="linkManager">
-            	<ref bean="org.sakaiproject.taggable.api.LinkManager" />
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
@@ -256,9 +256,6 @@
             </property>
             <property name="taggingManager">
                <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
-            </property>
-            <property name="linkManager">
-            	<ref bean="org.sakaiproject.taggable.api.LinkManager" />
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
@@ -382,9 +379,6 @@
             </property>
             <property name="taggingManager">
                <ref bean="org.sakaiproject.taggable.api.TaggingManager" />
-            </property>
-            <property name="linkManager">
-            	<ref bean="org.sakaiproject.taggable.api.LinkManager" />
             </property>
             <property name="wizardActivityProducer">
                <ref bean="org.theospi.portfolio.wizard.taggable.api.WizardActivityProducer" />
