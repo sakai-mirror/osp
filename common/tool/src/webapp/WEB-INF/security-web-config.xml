@@ -9,6 +9,9 @@
             <property name="permissionManager">
                <ref bean="org.theospi.portfolio.security.mgt.PermissionManager" />
             </property>
+            <property name="securityService">
+         		<ref bean="org.sakaiproject.authz.api.SecurityService"/>
+      		</property>
          </bean>
       </property>
       <property name="screenMappings">
@@ -33,7 +36,10 @@
          <bean class="org.theospi.portfolio.security.control.PermissionsController">
             <property name="permissionManager">
                <ref bean="org.theospi.portfolio.security.mgt.PermissionManager" />
-            </property>
+            </property>            
+            <property name="securityService">
+         		<ref bean="org.sakaiproject.authz.api.SecurityService"/>
+      		</property>
          </bean>
       </property>
       <property name="screenMappings">
