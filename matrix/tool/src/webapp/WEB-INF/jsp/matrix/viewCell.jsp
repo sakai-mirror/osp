@@ -664,7 +664,16 @@ function mySetMainFrameHeightViewCell(id)
 		<tr><td colspan="4">
 		<img border="0" src="<c:out value="${taggableItem.iconUrl}" />" />
 		<a class="thickbox"
-					href="<c:out value="${taggableItem.itemDetailUrl}"/><c:if test="${taggableItem.useDecoration}"><c:out value="/${decoWrapper}" /></c:if><c:out value="${taggableItem.itemDetailUrlParams}"/>">
+					href="<c:if test="${scaffoldingCan.accessUserList}">
+								<c:out value="${taggableItem.itemDetailUrl}"/>
+							</c:if>
+							<c:if test="${!scaffoldingCan.accessUserList}">
+								<c:out value="${taggableItem.itemDetailPrivateUrl}"/>
+							</c:if>
+							<c:if test="${taggableItem.useDecoration}">
+								<c:out value="/${decoWrapper}" />
+							</c:if>
+							<c:out value="${taggableItem.itemDetailUrlParams}"/>">
 				<c:out value="${taggableItem.activity.title}" /> </a>
 		</td></tr>
 	</c:forEach>

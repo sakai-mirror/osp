@@ -70,6 +70,10 @@ public class WizardItemImpl implements TaggableItem {
 	public String getUserId() {
 		return page.getOwner().getId().getValue();
 	}
+	
+	public String getItemDetailPrivateUrl(){
+		return getItemDetailUrl();
+	}
 
 	public String getItemDetailUrl()
 	{
