@@ -12,13 +12,13 @@
 (function($){$.dimensions={version:'1.2'};$.each(['Height','Width'],function(i,name){$.fn['inner'+name]=function(){if(!this[0])return;var torl=name=='Height'?'Top':'Left',borr=name=='Height'?'Bottom':'Right';return this.is(':visible')?this[0]['client'+name]:num(this,name.toLowerCase())+num(this,'padding'+torl)+num(this,'padding'+borr);};$.fn['outer'+name]=function(options){if(!this[0])return;var torl=name=='Height'?'Top':'Left',borr=name=='Height'?'Bottom':'Right';options=$.extend({margin:false},options||{});var val=this.is(':visible')?this[0]['offset'+name]:num(this,name.toLowerCase())+num(this,'border'+torl+'Width')+num(this,'border'+borr+'Width')+num(this,'padding'+torl)+num(this,'padding'+borr);return val+(options.margin?(num(this,'margin'+torl)+num(this,'margin'+borr)):0);};});$.each(['Left','Top'],function(i,name){$.fn['scroll'+name]=function(val){if(!this[0])return;return val!=undefined?this.each(function(){this==window||this==document?window.scrollTo(name=='Left'?val:$(window)['scrollLeft'](),name=='Top'?val:$(window)['scrollTop']()):this['scroll'+name]=val;}):this[0]==window||this[0]==document?self[(name=='Left'?'pageXOffset':'pageYOffset')]||$.boxModel&&document.documentElement['scroll'+name]||document.body['scroll'+name]:this[0]['scroll'+name];};});$.fn.extend({position:function(){var left=0,top=0,elem=this[0],offset,parentOffset,offsetParent,results;if(elem){offsetParent=this.offsetParent();offset=this.offset();parentOffset=offsetParent.offset();offset.top-=num(elem,'marginTop');offset.left-=num(elem,'marginLeft');parentOffset.top+=num(offsetParent,'borderTopWidth');parentOffset.left+=num(offsetParent,'borderLeftWidth');results={top:offset.top-parentOffset.top,left:offset.left-parentOffset.left};}return results;},offsetParent:function(){var offsetParent=this[0].offsetParent;while(offsetParent&&(!/^body|html$/i.test(offsetParent.tagName)&&$.css(offsetParent,'position')=='static'))offsetParent=offsetParent.offsetParent;return $(offsetParent);}});function num(el,prop){return parseInt($.curCSS(el.jquery?el[0]:el,prop,true))||0;};})(jQuery);
 
 function mySetMainFrameHeight() {
-	if (iframeId != ""){
+	if (localIframeId != ""){
 		if(arguments[0] != null){
 			height = arguments[0];
 		} else {
 			height = jQuery(document).height();// + 10;
 		}
-		jQuery("#" + iframeId, parent.document).height(height);
+		jQuery("#" + localIframeId, parent.document).height(height);
 	}
 }
 
@@ -31,6 +31,8 @@ function mySetMainFrameHeight() {
 */
 		  
 var tb_pathToImage = "/osp-common-tool/img/loadingAnimation.gif";
+
+var localIframeId  = "";
 
 /*!!!!!!!!!!!!!!!!! edit below this line at your own risk !!!!!!!!!!!!!!!!!!!!!!!*/
 
@@ -55,6 +57,8 @@ function tb_init(domChunk){
 		mySetMainFrameHeight(getPageScrollTop() + 600);
 	}
 	//END HACK
+	
+	localIframeId = iframeId;
 	tb_show(t,a,g, this.tagName);
 	this.blur();
 	return false;
@@ -82,7 +86,7 @@ function tb_show(caption, url, imageGroup, tagName) {//function called when the 
 		jQuery("#portalMask", parent.document).click(tb_remove);
 		jQuery("#TB_overlay").click(tb_remove);}
          // now move our iframe zIndex above the portalMask
-		jQuery("#" + iframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
+		jQuery("#" + localIframeId, parent.document).css("z-index", "9001").css("position", "relative").css("background", "#fff");
 		
 		//if(tb_detectMacXFF()){
 		//	jQuery("#TB_overlay").addClass("TB_overlayMacFFBGHack");//use png overlay so hide flash
@@ -328,7 +332,8 @@ function tb_remove() {
 		jQuery("html").css("overflow","");
 	}
 	//set our iframe back
-	jQuery("#" + iframeId, parent.document).css("z-index", "0");
+	jQuery("#" + localIframeId, parent.document).css("z-index", "0");
+	iframeId = localIframeId;
 	document.onkeydown = "";
 	document.onkeyup = "";
 	return false;
