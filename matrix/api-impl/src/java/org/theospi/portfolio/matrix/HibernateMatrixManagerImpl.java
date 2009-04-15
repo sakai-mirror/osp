@@ -692,9 +692,10 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
       WizardPage page = (WizardPage) this.getHibernateTemplate().get(WizardPage.class, pageId);
       
       // check for invalid page (in case wizard/matrix is deleted)
+      // might also be looking up a scaffolding, so removing the logging of the warning
       if ( page == null )
       {
-         logger.warn("Invalid wizard or matrix page: " + pageId.toString() );
+         //logger.warn("Invalid wizard or matrix page: " + pageId.toString() );
          return null;
       }
       
