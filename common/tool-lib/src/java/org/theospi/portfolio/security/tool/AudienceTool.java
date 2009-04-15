@@ -700,20 +700,18 @@ public class AudienceTool extends HelperToolBase {
     public List getRoles() {
         List<SelectItem> returned = new ArrayList<SelectItem>();
         if ( isWorksiteLimited() ) {
-        Site site = getSite();
-        Set roles = site.getRoles();
-           
-        for (Iterator i = roles.iterator(); i.hasNext();) {
-           Role role = (Role) i.next();
-           if ( isWizardAudience() && !role.isAllowed(AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD) )
-              continue;
-           else if ( isMatrixAudience() && !role.isAllowed(AudienceSelectionHelper.AUDIENCE_FUNCTION_MATRIX) )
-              continue;
-           Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), site.getId());
-           returned.add(new SelectItem(roleAgent.getId().getValue(), 
-                                       role.getId(), 
-                                       "role"));
-        }
+	        Site site = getSite();
+	        Set roles = site.getRoles();
+	           
+	        for (Iterator i = roles.iterator(); i.hasNext();) {
+	           Role role = (Role) i.next();
+	           if ( isWizardAudience() && !role.isAllowed(AudienceSelectionHelper.AUDIENCE_FUNCTION_WIZARD) )
+	              continue;
+	           Agent roleAgent = getAgentManager().getWorksiteRole(role.getId(), site.getId());
+	           returned.add(new SelectItem(roleAgent.getId().getValue(), 
+	                                       role.getId(), 
+	                                       "role"));
+	        }
         }
         
         else {
