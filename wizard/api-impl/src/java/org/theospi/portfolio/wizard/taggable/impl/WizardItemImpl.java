@@ -21,11 +21,15 @@
 
 package org.theospi.portfolio.wizard.taggable.impl;
 
+import java.util.Date;
+
 import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.exception.IdUnusedException;
+import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.cover.SiteService;
 import org.sakaiproject.taggable.api.TaggableActivity;
 import org.sakaiproject.taggable.api.TaggableItem;
+import org.sakaiproject.util.ResourceLoader;
 import org.theospi.portfolio.matrix.WizardPageHelper;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
@@ -37,6 +41,9 @@ public class WizardItemImpl implements TaggableItem {
 	WizardPage page;
 
 	WizardReference reference;
+	
+	protected static ResourceLoader messages = new ResourceLoader(
+		"org.theospi.portfolio.wizard.bundle.Messages");
 
 	public WizardItemImpl(WizardPage page, TaggableActivity activity) {
 		this.page = page;
@@ -78,26 +85,17 @@ public class WizardItemImpl implements TaggableItem {
 	public String getItemDetailUrl()
 	{
 		String url = null;
-		try
-		{
-			String placement = SiteService.getSite(page.getPageDefinition().getSiteId()).getToolForCommonId("osp.matrix").getId();
+		String placement = getSite(page.getPageDefinition().getSiteId()).getToolForCommonId("osp.matrix").getId();
 
-			//pick one to start with
-			String view = "viewCell.osp";
-			if (page.getPageDefinition().getType().equals(WizardPageDefinition.WPD_WIZARD_HIER_TYPE))
-				view="wizardPage.osp";
-			else if (page.getPageDefinition().getType().equals(WizardPageDefinition.WPD_WIZARD_SEQ_TYPE))
-				view="sequentialWizardPage.osp";
+		//pick one to start with
+		String view = "viewCell.osp";
+		if (page.getPageDefinition().getType().equals(WizardPageDefinition.WPD_WIZARD_HIER_TYPE))
+			view="wizardPage.osp";
+		else if (page.getPageDefinition().getType().equals(WizardPageDefinition.WPD_WIZARD_SEQ_TYPE))
+			view="sequentialWizardPage.osp";
 
-			url = ServerConfigurationService.getServerUrl() + "/portal/tool/" + 
-				placement + "/osp.wizard.page.helper/" + view;
-
-		}
-		catch (IdUnusedException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		url = ServerConfigurationService.getServerUrl() + "/portal/tool/" + 
+			placement + "/osp.wizard.page.helper/" + view;
 		return url;
 	}
 	
@@ -122,6 +120,14 @@ public class WizardItemImpl implements TaggableItem {
 		return url;
 	}
 	
+	public String getTypeName() {
+		String type = messages.getString("wizard_type");
+		
+		if (page.getPageDefinition().getType().equals(WizardPageDefinition.WPD_MATRIX_TYPE))
+			type = messages.getString("matrix_type");
+		return type;
+	}
+	
 	public boolean equals(Object obj)
 	{
 		if (!(obj instanceof WizardItemImpl))
@@ -135,5 +141,31 @@ public class WizardItemImpl implements TaggableItem {
 	public int hashCode()
 	{
 		return this.getReference().hashCode();
+	}
+
+	public String getOwner() {
+		return ((WizardPage)getObject()).getOwner().getDisplayName();
+	}
+
+	public String getSiteTitle() {
+		String siteId = ((WizardPage)getObject()).getPageDefinition().getSiteId();
+		String title = getSite(siteId).getTitle();
+		
+		return title;
+	}
+	
+	public Date getLastModifiedDate() {
+		return ((WizardPage)getObject()).getModified();
+	}
+	
+	private Site getSite(String siteId) {
+		Site site = null;
+		try {
+			site = SiteService.getSite(siteId);
+		} catch (IdUnusedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return site;
 	}
 }

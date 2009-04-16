@@ -462,13 +462,24 @@ function mySetMainFrameHeightViewCell(id)
 	summary="<osp:message key="table.evidence.summary"/>">
 	<tr>
 		<th colspan="2"><osp:message key="evidence_head" /></th>
+		<th><osp:message key="table_header_actions" /></th>
+		<th><osp:message key="table_header_originating_site" /></th>
 		<th><osp:message key="table_header_createdBy" /></th>
 		<th><osp:message key="table_header_modified" /></th>
 	</tr>
 	<c:forEach var="cellFormDef" items="${cellFormDefs}"
 		varStatus="loopStatus">
 		<tr class="cellItemAddLine">
-			<td colspan="4">
+			<td colspan="2">
+				<h4>
+					<fmt:message key="title_form_with_name">
+						<fmt:param>
+							<c:out value="${cellFormDef.name}" />
+						</fmt:param>
+					</fmt:message>
+				</h4>
+			</td>
+			<td>
 			<h4><c:choose>
 				<c:when
 					test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
@@ -482,46 +493,35 @@ function mySetMainFrameHeightViewCell(id)
 										<osp:param name="objectTitle" value="${objectTitle}" />
 										</osp:url>"
 						onclick="javascript:stopEvents(event)"><fmt:message
-						key="action_createForm" /> <c:out value="${cellFormDef.name}" /></a>
+						key="action_createForm" /></a>
 					| <a
 						href="<osp:url value="osp.wizard.page.contents.helper/cellFormPicker.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
 										<osp:param name="attachFormAction" value="${cellFormDef.id}" />
 										</osp:url>"
 						onclick="javascript:stopEvents(event)"><fmt:message
-						key="action_chooseForms" /> <c:out value="${cellFormDef.name}" /></a>
+						key="action_chooseForms" /></a>
 					</div>
 				</c:when>
-				<c:otherwise>
-					<c:out value="${cellFormDef.name}" />
-				</c:otherwise>
 			</c:choose></h4>
 			</td>
+			<td colspan="3">
+				&nbsp;
+			</td>
 		</tr>
-		<c:if test="${empty cellForms}">
-			<tr>
-				<td colspan="4">
-				<p class="instruction indnt2"><fmt:message
-					key="form_section_empty">
-					<fmt:param>
-						<c:out value="${cellFormDef.name}" />
-					</fmt:param>
-				</fmt:message>
-				</td>
-			</tr>
-		</c:if>
-
+		
 		<!-- ***** Filled-out Forms ***** -->
-
+		<c:set var="isThisFormEmpty" value="true" />
 		<c:forEach var="node" items="${cellForms}" varStatus="loopStatus">
 
 			<c:if
 				test="${node.fileType == cellFormDef.id or allowedNodeType == ''}">
 				<c:set var="canReflect" value="true" />
+				<c:set var="isThisFormEmpty" value="false" />
 				<c:set var="showUserButtons" value="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true' and not node.isLocked}" />
 
 				<tr>
-					<td>
+					<td colspan="2">
 					<h5><span class="indnt2"> <img border="0"
 						src="/library/image/silk/application_form.gif" alt="" /> 
 						<a href='<c:out value="${node.externalUri}"/>' target="_blank">
@@ -577,6 +577,7 @@ function mySetMainFrameHeightViewCell(id)
 							title="<fmt:message key="review"/>"> <fmt:message key="review"/></a>
 					</c:if></div>
 					</td>
+					<td></td>
 					<td>
 						<c:if test="${scaffoldingCan.accessUserList}">
 							<c:out value="${node.technicalMetadata.owner.displayName}" />
@@ -590,7 +591,7 @@ function mySetMainFrameHeightViewCell(id)
 				<c:forEach var="object" items="${reviews}" varStatus="loopStatus">
 					<c:if test="${object.itemId == node.id}">
 						<tr>
-							<td>
+							<td colspan="2">
 							<h6><span class="indnt3"> <c:if
 								test="${object.itemId == node.id}">
 								<img src='/library/image/silk/comment.gif' border='0' hspace='0'
@@ -607,6 +608,7 @@ function mySetMainFrameHeightViewCell(id)
 							</c:if> </span></h6>
 							</td>
 							<td>
+								<div class="itemAction"
 								<!-- Allow Reviewers to edit/delete feedback -->
 								<c:if
 									test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review))
@@ -640,7 +642,9 @@ function mySetMainFrameHeightViewCell(id)
 												<fmt:message key="remove"/>
 									</a>
 								</c:if>
+								</div>
 							</td>
+							<td></td>
 							<td><c:out
 								value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
 							</td>
@@ -653,41 +657,31 @@ function mySetMainFrameHeightViewCell(id)
 			</c:if>
 			<!-- ************* Item-specific Review (Feedback) Area End ************* -->
 		</c:forEach>
+		
+		<c:if test="${empty cellForms || isThisFormEmpty == 'true'}">
+			<tr>
+				<td colspan="6">
+				<p class="instruction indnt2"><fmt:message
+					key="form_section_empty">
+					<fmt:param>
+						<c:out value="${cellFormDef.name}" />
+					</fmt:param>
+				</fmt:message>
+				</td>
+			</tr>
+		</c:if>
 
 	</c:forEach>
 	
 	
-	<!-- *************** Showing linked artifacts START **************** -->
-	
-	<c:forEach var="taggableItem" items="${taggableItems}" varStatus="taggableItemLoopStatus">
-		<c:set var="canReflect" value="true" />
-		<tr><td colspan="4">
-		<img border="0" src="<c:out value="${taggableItem.iconUrl}" />" />
-		<a class="thickbox"
-					href="<c:if test="${scaffoldingCan.accessUserList}">
-								<c:out value="${taggableItem.itemDetailUrl}"/>
-							</c:if>
-							<c:if test="${!scaffoldingCan.accessUserList}">
-								<c:out value="${taggableItem.itemDetailPrivateUrl}"/>
-							</c:if>
-							<c:if test="${taggableItem.useDecoration}">
-								<c:out value="/${decoWrapper}" />
-							</c:if>
-							<c:out value="${taggableItem.itemDetailUrlParams}"/>">
-				<c:out value="${taggableItem.activity.title}" /> </a>
-		</td></tr>
-	</c:forEach>
-	
-	<!-- *************** Showing linked artifacts END **************** -->
-	
-
 	<!-- ***** show the attached resources ***** -->
 
 	<c:if test="${!cell.scaffoldingCell.suppressItems}">
 
 		<tr class="cellItemAddLine">
-			<td colspan="4">
-			<h4><c:choose>
+			<td colspan="2"><h4><fmt:message key="attachments" /></h4></td>
+			<td>
+			<c:choose>
 				<c:when
 					test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true' && !cell.scaffoldingCell.suppressItems}">
 					<div class="itemAction"><%-- these should be links below--%>
@@ -709,18 +703,16 @@ function mySetMainFrameHeightViewCell(id)
 						</c:otherwise>
 					</c:choose></div>
 				</c:when>
-				<c:otherwise>
-					<fmt:message key="attachments" />
-				</c:otherwise>
-			</c:choose></h4>
+			</c:choose>
 			</td>
+			<td colspan="3">&nbsp;</td>
 		</tr>
 	</c:if>
 	<c:if
 		test="${empty cellBean.nodes &&   !cell.scaffoldingCell.suppressItems}">
 		<tr>
 
-			<td colspan="4">
+			<td colspan="6">
 			<p class="instruction indnt2"><fmt:message
 				key="other_items_header_none" /></p>
 			</td>
@@ -731,7 +723,7 @@ function mySetMainFrameHeightViewCell(id)
 		<c:set var="canReflect" value="true" />
 
 		<tr>
-			<td>
+			<td colspan="2">
 			<h5><span class="indnt2"> <img border="0"
 				title="<c:out value="${hover}" />"
 				alt="<c:out value="${node.name}"/>"
@@ -788,6 +780,7 @@ function mySetMainFrameHeightViewCell(id)
 					key="review" /></a>
 			</c:if></div>
 			</td>
+			<td></td>
 			<td>
 				<c:if test="${scaffoldingCan.accessUserList}">
 					<c:out value="${node.technicalMetadata.owner.displayName}" />
@@ -865,6 +858,39 @@ function mySetMainFrameHeightViewCell(id)
 
 		<!-- ************* Attached Resources Review (Feedback) Area End ************* -->
 	</c:forEach>
+	
+	<!-- *************** Showing linked artifacts START **************** -->
+	
+	<c:forEach var="taggableItemType" items="${taggableItems}" varStatus="taggableItemLoopStatus">
+		<c:set var="canReflect" value="true" />
+		<c:if test="${not empty taggableItemType.taggableItems}">
+			<tr class="cellItemAddLine">
+				<td colspan="6">
+					<h4><c:out value="${taggableItemType.typeName}" /></h4>
+				</td>
+			</tr>
+		</c:if>
+		<c:forEach var="taggableItem" items="${taggableItemType.taggableItems}">
+		<tr>
+			<td colspan="2">
+				<span class="indnt2">
+				<img border="0" src="<c:out value="${taggableItem.iconUrl}" />" />
+				<a class="thickbox"
+					href="<c:out value="${taggableItem.itemDetailUrl}"/><c:if test="${taggableItem.useDecoration}"><c:out value="/${decoWrapper}" /></c:if><c:out value="${taggableItem.itemDetailUrlParams}"/>">
+				<c:out value="${taggableItem.activity.title}" /> </a>
+				</span>
+			</td>
+			<td></td>
+			<td><c:out value="${taggableItem.siteTitle}" /></td>
+			<td><c:out value="${taggableItem.owner}" /></td>
+			<td><fmt:formatDate
+						value="${taggableItem.lastModifiedDate}"
+						pattern="${date_format}" /></td>
+		</tr>
+		</c:forEach>
+	</c:forEach>
+	
+	<!-- *************** Showing linked artifacts END **************** -->
 
 
 	<!-- *********** Attached Assignments Area Start ******** -->
@@ -920,6 +946,14 @@ function mySetMainFrameHeightViewCell(id)
 	<tr>
 		<th colspan="2">
 			<osp:message key="reflection_section_header" />
+		</th>
+		<th><osp:message key="table_header_actions" /></th>
+		<th><osp:message key="table_header_createdBy" /></th>
+		<th><osp:message key="table_header_modified" /></th>
+	</tr>
+	<tr>
+		<td colspan="2"><osp:message key="reflection_section_header" /></td>
+		<td>
 			<c:if test="${empty reflections && (cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true'}">
 				<span class="itemAction indnt1" style="font-weight:normal"> 
 						<a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
@@ -936,16 +970,14 @@ function mySetMainFrameHeightViewCell(id)
 							   </osp:url>">
 						<osp:message key="reflection_create" /></a> 
 				</span>
-			</c:if>			
-		</th>
-		<th><osp:message key="table_header_createdBy" /></th>
-		<th><osp:message key="table_header_modified" /></th>
+			</c:if>	
+		</td>
+		<td colspan="2"></td>
 	</tr>	
-	
 	
 	<c:if test="${empty reflections}">
 		<tr>
-			<td colspan="4">				
+			<td colspan="5">				
 				<p class="instruction indnt2"><osp:message
 					key="reflection_section_empty" />
 				</p>
@@ -955,8 +987,7 @@ function mySetMainFrameHeightViewCell(id)
 	<c:if test="${not empty reflections}">
 		<tr>
 			<td colspan="2">
-				<span class="matrixCellList">
-					<span style="padding: .4em 2.6em;"> 
+				<span class="matrixCellList indnt2">
 						<c:set var="canReflect" value="true" />
 			
 						<img src='/library/image/silk/application_form.gif' border='0'
@@ -965,6 +996,9 @@ function mySetMainFrameHeightViewCell(id)
 							href='<c:out value="${reflections[0].reviewContentNode.externalUri}"/>'
 							target="_blank"> <c:out
 							value="${reflections[0].reviewContentNode.displayName}" /> </a>
+							</span>
+							</td>
+							<td>
 						<c:if test="${(cell.status == 'READY' or cell.status == 'RETURNED') and readOnlyMatrix != 'true' && enableReviewEdit}">
 							<span class="itemAction"> 
 								<a href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
@@ -992,8 +1026,6 @@ function mySetMainFrameHeightViewCell(id)
 							<fmt:message key="remove"/></a>
 							</span>
 						</c:if>
-					</span>
-				</span>
 			</td>
 			
 			<td>
@@ -1027,10 +1059,18 @@ function mySetMainFrameHeightViewCell(id)
 		<tr>
 			<th colspan="2">
 				<osp:message key="reviews_section_general" />
+			</th>
+			<th><osp:message key="table_header_actions" /></th>		
+			<th><osp:message key="table_header_createdBy" /></th>
+			<th><fmt:message key="table_header_creationDate" /></th>
+		</tr>
+		<tr>
+			<td colspan="2"><osp:message key="reviews_section_general" /></td>
+			<td>
 				<c:if test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review)) && 
 						((cell.scaffoldingCell.reviewDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm) 
 							|| (cell.scaffoldingCell.scaffolding.reviewDevice != null && cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm))}">
-					<span class="itemAction indnt1"  style="font-weight:normal">				
+					<span class="itemAction">				
 						
 						<a class="TB_hideControl"
 							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
@@ -1047,22 +1087,17 @@ function mySetMainFrameHeightViewCell(id)
 						<osp:message key="review" /></a>				
 					</span>
 				</c:if>
-			</th>		
-			<th><osp:message key="table_header_createdBy" /></th>
-			<th><fmt:message key="table_header_creationDate" /></th>
+			</td>
+			<td colspan="2"></td>
 		</tr>
 
-		<c:if test="${empty reviews}">
-			<tr>
-				<td colspan="4"><span class="instruction indnt3"><osp:message
-					key="review_section_empty" /></span></td>
-			</tr>
-		</c:if>
+		<c:set var="isReviewEmpty" value="true" />
 		<c:forEach var="object" items="${reviews}" varStatus="loopStatus">
 			<c:if test="${empty object.itemId}">
+				<c:set var="isReviewEmpty" value="false" />
 				<tr>
 
-					<td>
+					<td colspan="2">
 						<h5>
 						<span class="indnt2"> 
 						<img src='/library/image/silk/comment.gif' border='0' hspace='0' alt="" />
@@ -1082,6 +1117,7 @@ function mySetMainFrameHeightViewCell(id)
 						<c:if
 							test="${((isWizard != 'true' && matrixCanReview) || (isWizard == 'true' && wizardCan.review))
 							        && enableReviewEdit && object.reviewContentNode.technicalMetadata.owner.id == currentUser }">
+							<div class="itemAction">
 							<a
 								href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
 										<osp:param name="page_id" value="${cell.wizardPage.id}" />
@@ -1109,6 +1145,7 @@ function mySetMainFrameHeightViewCell(id)
 								title="<fmt:message key="delete"/>">
 										<fmt:message key="remove"/>
 							</a>
+							</div>
 						</c:if>
 					</td>
 					<td>
@@ -1130,6 +1167,14 @@ function mySetMainFrameHeightViewCell(id)
 				</tr>
 			</c:if>
 		</c:forEach>
+		
+		<c:if test="${empty reviews || isReviewEmpty == 'true'}">
+			<tr>
+				<td colspan="5"><span class="instruction indnt3"><osp:message
+					key="review_section_empty" /></span></td>
+			</tr>
+		</c:if>
+		
 	</table>
 </c:if> <!-- ************* General Review (Feedback) Area End ************* -->
 <!-- ************* Evaluation Area Start ************* --> 
@@ -1148,7 +1193,15 @@ function mySetMainFrameHeightViewCell(id)
 		<tr>
 			<th colspan="2">
 				<osp:message key="eval_items_section_header" />
-				<span class="itemAction indnt1" style="font-weight:normal">
+			</th>
+			<th><osp:message key="table_header_actions" /></th>
+			<th><osp:message key="table_header_createdBy" /></th>
+			<th><fmt:message key="table_header_modified" /></th>
+		</tr>
+		<tr>
+			<td colspan="2"><osp:message key="eval_items_section_header" /></td>
+			<td>
+				<span class="itemAction">
 					<c:if
 						test="${(((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && 
 						((cell.scaffoldingCell.evaluationDevice != null && !cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm) 
@@ -1169,60 +1222,17 @@ function mySetMainFrameHeightViewCell(id)
 						</a>
 					</c:if>
 				 </span>
-			</th>
-			<th><osp:message key="table_header_createdBy" /></th>
-			<th><fmt:message key="table_header_modified" /></th>
+			</td>
+			<td colspan="2"></td>
 		</tr>
 
 		<c:if test="${ cell.status == 'PENDING' and empty evaluations}">
 			<tr>
-				<td colspan="4">						
+				<td colspan="5">						
 					<span class="instruction indnt2">
 						<fmt:message key="evaluation_section_empty" />
 					</span> 
 				</td>
-            
-				<td>
-					<!-- Allow Reviewers to edit/delete Evaluations -->
-					<c:if
-						test="${((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.status != 'COMPLETE'
-						        && enableReviewEdit && object.reviewContentNode.technicalMetadata.owner.id == currentUser }">
-						<a
-							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
-									<osp:param name="page_id" value="${cell.wizardPage.id}" />
-									<osp:param name="org_theospi_portfolio_review_type" value="1" />
-									<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
-									<osp:param name="process_type_key" value="page_id" />
-									<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
-							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
-							          	</c:if>
-								  </osp:url>"
-							title="<fmt:message key="edit"/>"> 
-									<fmt:message key="edit"/></a>
-								|
-						<a
-							href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
-									 <osp:param name="page_id" value="${cell.wizardPage.id}" />
-									 <osp:param name="formDefId" value="${cell.scaffoldingCell.reviewDevice}" />
-									 <osp:param name="current_form_id" value="${object.reviewContentNode.resource.id}" />
-									 <osp:param name="review_id" value="${object.id}"/>
-									 <osp:param name="submit" value="deleteReview" />
-									 <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultFeedbackForm}">
-							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
-							          	</c:if>
-									 </osp:url>"
-							title="<fmt:message key="delete"/>">
-									<fmt:message key="remove"/>
-						</a>
-					</c:if>
-				</td>
-         
-				<td><c:out
-					value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
-				</td>
-				<td><fmt:formatDate
-					value="${object.reviewContentNode.technicalMetadata.creation}"
-					pattern="${date_format}" /></td>
 			</tr>
 		</c:if>
 
@@ -1244,12 +1254,49 @@ function mySetMainFrameHeightViewCell(id)
 						</c:if>
 					 </span></h5>
 					</td>
-					<td><c:out
-						value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
-					</td>
-					<td><fmt:formatDate
-						value="${object.reviewContentNode.technicalMetadata.creation}"
-						pattern="${date_format}" /></td>
+					<td>
+					<div class="itemAction">
+					<!-- Allow Reviewers to edit/delete Evaluations -->
+					<c:if
+						test="${((isWizard != 'true' && matrixCanEvaluate) || (isWizard == 'true' && wizardCan.evaluate)) && cell.status != 'COMPLETE'
+						        && enableReviewEdit && object.reviewContentNode.technicalMetadata.owner.id == currentUser }">
+						<a
+							href="<osp:url value="osp.review.processor.helper/reviewHelper.osp">
+									<osp:param name="page_id" value="${cell.wizardPage.id}" />
+									<osp:param name="org_theospi_portfolio_review_type" value="1" />
+									<osp:param name="current_review_id" value="${object.reviewContentNode.resource.id}" />
+									<osp:param name="process_type_key" value="page_id" />
+									<c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
+								  </osp:url>"
+							title="<fmt:message key="edit"/>"> 
+									<fmt:message key="edit"/></a>
+								|
+						<a
+							href="<osp:url value="osp.wizard.page.contents.helper/formDelete.osp">
+									 <osp:param name="page_id" value="${cell.wizardPage.id}" />
+									 <osp:param name="formDefId" value="${cell.scaffoldingCell.reviewDevice}" />
+									 <osp:param name="current_form_id" value="${object.reviewContentNode.resource.id}" />
+									 <osp:param name="review_id" value="${object.id}"/>
+									 <osp:param name="submit" value="deleteReview" />
+									 <c:if test="${cell.scaffoldingCell.wizardPageDefinition.defaultEvaluationForm}">
+							       			<osp:param name="scaffoldingId" value="${cell.scaffoldingCell.scaffolding.id}" />
+							          	</c:if>
+									 </osp:url>"
+							title="<fmt:message key="delete"/>">
+									<fmt:message key="remove"/>
+						</a>
+					</c:if>
+					</div>
+				</td>
+         
+				<td><c:out
+					value="${object.reviewContentNode.technicalMetadata.owner.displayName}" />
+				</td>
+				<td><fmt:formatDate
+					value="${object.reviewContentNode.technicalMetadata.creation}"
+					pattern="${date_format}" /></td>
 				</tr>
 			</c:forEach>
 		</c:if>

@@ -159,7 +159,9 @@ import org.theospi.portfolio.shared.model.WizardMatrixConstants;
 import org.theospi.portfolio.style.StyleConsumer;
 import org.theospi.portfolio.style.mgt.StyleManager;
 import org.theospi.portfolio.style.model.Style;
+import org.theospi.portfolio.tagging.api.DecoratedTaggableItem;
 import org.theospi.portfolio.tagging.api.DecoratedTaggingProvider;
+import org.theospi.portfolio.tagging.impl.DecoratedTaggableItemImpl;
 import org.theospi.portfolio.tagging.impl.DecoratedTaggingProviderImpl;
 import org.theospi.portfolio.wizard.WizardFunctionConstants;
 import org.theospi.portfolio.workflow.mgt.WorkflowManager;
@@ -3617,8 +3619,22 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 	}
 	
 	public Set<TaggableItem> getTaggableItems(TaggableItem item, String criteriaRef, String cellOwner) {
+		Set<DecoratedTaggableItem> taggableItems = getTaggableItems(item, criteriaRef, cellOwner, false);
+		Set<TaggableItem> tmpSet = new HashSet<TaggableItem>();
+		for (DecoratedTaggableItem decoItem : taggableItems) {
+			tmpSet.addAll(decoItem.getTaggableItems());
+		}
+		return tmpSet;
+	}
+	
+	public Set<DecoratedTaggableItem> getDecoratedTaggableItems(TaggableItem item, String criteriaRef, String cellOwner) {
+		return getTaggableItems(item, criteriaRef, cellOwner, true);
+	}
+	
+	private Set<DecoratedTaggableItem> getTaggableItems(TaggableItem item, String criteriaRef, String cellOwner, boolean decorate) {
 		Set<TaggableActivity> activities = new HashSet<TaggableActivity>();
-		Set<TaggableItem> taggableItems = new HashSet<TaggableItem>();
+		Map<String, DecoratedTaggableItem> decoTaggableItems = new HashMap<String, DecoratedTaggableItem>();
+		Set<DecoratedTaggableItem> allDecoratedTaggableItems = new HashSet<DecoratedTaggableItem>();
 		List<Link> links;
 		try
 		{
@@ -3643,7 +3659,17 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 									producer.getItemPermissionOverride()));
 						}
 						List<TaggableItem> items = producer.getItems(activity, cellOwner, provider.getProvider());
-						taggableItems.addAll(items);
+						
+						for (TaggableItem tagItem : items) {
+							DecoratedTaggableItem curItem = decoTaggableItems.get(tagItem.getTypeName());
+							if (curItem == null) {
+								curItem = new DecoratedTaggableItemImpl(tagItem.getTypeName());
+								allDecoratedTaggableItems.add(curItem);
+							}
+							curItem.addTaggableItem(tagItem);
+							decoTaggableItems.put(tagItem.getTypeName(), curItem);							
+						}						
+						
 						activities.add(activity);
 						
 						if (producer.getItemPermissionOverride() != null) {
@@ -3662,7 +3688,7 @@ private static final String SCAFFOLDING_ID_TAG = "scaffoldingId";
 		{
 			logger.warn("unable to get links for criteriaRef " + criteriaRef, pe);
 		}
-		return taggableItems;
+		return allDecoratedTaggableItems;
 		
 	}
 	

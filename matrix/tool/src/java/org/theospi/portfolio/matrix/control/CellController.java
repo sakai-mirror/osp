@@ -306,7 +306,7 @@ public class CellController implements FormController, LoadObjectController {
 			model.put("taggable", "true");
 
 			//getMatrixManager().getTaggableItems will put the providers into the session
-			model.put("taggableItems", getMatrixManager().getTaggableItems(item, cell.getCell().getWizardPage().getPageDefinition().getReference(), cell.getCell().getWizardPage().getOwner().getId().getValue()));
+			model.put("taggableItems", getMatrixManager().getDecoratedTaggableItems(item, cell.getCell().getWizardPage().getPageDefinition().getReference(), cell.getCell().getWizardPage().getOwner().getId().getValue()));
 
 			
 			ToolSession toolSession = getSessionManager()

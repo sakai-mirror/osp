@@ -48,6 +48,7 @@ import org.theospi.portfolio.matrix.model.WizardPageDefinition;
 import org.theospi.portfolio.shared.mgt.WorkflowEnabledManager;
 import org.theospi.portfolio.shared.model.Node;
 import org.theospi.portfolio.shared.model.ObjectWithWorkflow;
+import org.theospi.portfolio.tagging.api.DecoratedTaggableItem;
 import org.theospi.portfolio.tagging.api.DecoratedTaggingProvider;
 
 /**
@@ -340,6 +341,8 @@ public interface MatrixManager extends WorkflowEnabledManager {
 	
 	
 	public Set<TaggableItem> getTaggableItems(TaggableItem item, String criteriaRef, String cellOwner);
+	
+	public Set<DecoratedTaggableItem> getDecoratedTaggableItems(TaggableItem item, String criteriaRef, String cellOwner);
 	
 
 	public TaggingManager getTaggingManager();

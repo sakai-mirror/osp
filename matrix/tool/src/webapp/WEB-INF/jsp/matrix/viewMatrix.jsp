@@ -225,7 +225,7 @@
                                	src="/library/image/<osp-c:contentTypeMap fileType="${node.mimeType}" mapType="image" />"/>
                         </c:forEach>
                         <c:forEach var="taggableItem" items="${cellBean.taggableItems}">
-							<c:set var="hover" value="Name:${taggableItem.activity.title};"/>
+							<c:set var="hover" value="Name:${taggableItem.activity.title}; Type:${taggableItem.typeName};"/>
                                <img border="0" title="<c:out value="${hover}" />"
                                	alt="<c:out value="${taggableItem.activity.title}"/>" 
                                	src="<c:out value="${taggableItem.iconUrl}"/>" mapType="image" />
