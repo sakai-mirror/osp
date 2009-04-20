@@ -168,18 +168,22 @@ public class ReviewHelperController implements Controller {
          session.remove(lookupId);
          //session.remove("process_type_key");
          session.remove("secondPass");
-         session.remove(FormHelper.RETURN_ACTION_TAG);
+         
          
          // Check for workflow post process
-         if (session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS) != null) {
+         if (session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS) != null && 
+        		 FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG))) {
             Set workflows = (Set)session.get(ReviewHelper.REVIEW_POST_PROCESSOR_WORKFLOWS);
             List wfList = Arrays.asList(workflows.toArray());
             Collections.sort(wfList, Workflow.getComparator());
             model.put("workflows", wfList);
             model.put("manager", manager);
             model.put("obj_id", strId);
+            session.remove(FormHelper.RETURN_ACTION_TAG);
             return new ModelAndView("postProcessor", model);
          }
+         
+         session.remove(FormHelper.RETURN_ACTION_TAG);
          
          return new ModelAndView(returnView, model);
       }
