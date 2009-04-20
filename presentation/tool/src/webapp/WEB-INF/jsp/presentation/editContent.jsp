@@ -4,100 +4,10 @@
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename="org.theospi.portfolio.presentation.bundle.Messages"/>
 
-<script type="text/javascript" src="/library/js/jquery.js"></script>
-
-<script  type ="text/javascript">
-$(document).ready(function() {
-	setupMessageListener("messageHolder", "messageInformation");
-	$(".multSelectHolder").each(function(){
-		if ($(this).height() > 180) {
-		$(this).addClass("oversize")
-}
-})
-
-	$(".multSelectHolder input:checkbox").click( function() {
-		if ($(this).attr('checked')) {
-		$(this).parents("li").addClass("selected")
-		}
-		else
-		{
-		$(this).parents("li").removeClass("selected")
-		}
-})
-
-	jQuery('body').click(function(e) { 
-			
-		if ( e.target.className !='menuOpen' && e.target.className !='dropdn'  ){
-			$('.makeMenuChild').fadeOut();
-		}
-			else
-			{
-				if( e.target.className =='dropdn' ){
-			targetId=$(e.target).parent('li').attr('id');
-			$('.makeMenuChild').hide();
-			$('#menu-' + targetId).fadeIn(500);
-
-}
-				else{
-			targetId=e.target.id;
-			$('.makeMenuChild').hide();
-			$('#menu-' + targetId).fadeIn(500);
-			}}
-	});
-	});
-
-</script>
-
-<script type="text/javascript" language="JavaScript">
-    function updateItems() {
-       var arrBox = new Array();
-       var i = 0;
-       var j = 0;
-    
-    <c:forEach var="itemDefinition" items="${types}" varStatus="loopCounter">
-       <c:if test="${itemDefinition.allowMultiple == true}">
-          arrBox[i] = ospGetElementById('items_<c:out value="${loopCounter.index}"/>');
-          i++;
-       </c:if>
-    </c:forEach>
-       for (i = 0; i < arrBox.length; i++) {
-          var nextBox = arrBox[i];
-          for (j = 0; j < nextBox.options.length; j++) {
-             nextBox.options[j].selected = true;
-          }
-       }
-       return true;
-    }
-    
-    function getNodeId(elementName){
-       var element = ospGetElementById(elementName);
-       var index = element.selectedIndex;
-    
-       if (index == -1 || undefined == index){
-          return;
-       }
-    
-       var key = element.options[index].value;
-       var values = new Array();
-    <c:forEach var="itemDefinition" items="${types}" varStatus="loopCounter">
-    <c:forEach var="artifact" items="${artifacts[itemDefinition.id.value]}">
-       values["<c:out value="${itemDefinition.id.value}"/>.<c:out value="${artifact.id.value}"/>"] = "<c:out value="${artifact.id.value}"/>";
-       <c:set var="value"><c:out value="${itemDefinition.id.value}"/>.<c:out value="${artifact.id.value}"/></c:set>
-    </c:forEach>
-    </c:forEach>
-    
-       return values[key];
-    }
-    
-    <c:if test="${preview == true}">
-      window.open('<osp:url value="/viewPresentation.osp"/>&id=<c:out value="${presentation.id.value}" />');
-    </c:if>
-</script>
-
 <c:set var="pres_active_page" value="content"/>
 <%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
 
-<script type="text/javascript">
+<script type="text/javascript" language="JavaScript">
 $(document).ready(function() {
 	osp.bag.selections = {};
 	$('select.artifactPicker').change(function() {
@@ -125,32 +35,38 @@ $(document).ready(function() {
 		}		
 	});
 });
+
+	 function updateItems() {
+		 var arrBox = new Array();
+		 var i = 0;
+		 var j = 0;
+	 
+		 <c:forEach var="itemDefinition" items="${types}" varStatus="loopCounter">
+			 <c:if test="${itemDefinition.allowMultiple == true}">
+				 arrBox[i] = ospGetElementById('items_<c:out value="${loopCounter.index}"/>');
+				 i++;
+			 </c:if>
+		 </c:forEach>
+		 for (i = 0; i < arrBox.length; i++) {
+			 var nextBox = arrBox[i];
+			 for (j = 0; j < nextBox.options.length; j++) {
+				 nextBox.options[j].selected = true;
+			 }
+		 }
+		 document.wizardform.submit();		 
+		 return true;
+	 }
 </script>
 
 <div class="tabNavPanel">
- <!-- temp separation; end of tabs -->
 
 <h3>
    <p class="instructionMessage"><fmt:message key="instructions_addPresentation2"/></p>
 </h3>
 
+<form method="post" name="wizardform" action="editContent.osp"> 
 
-<c:if test="${actionSave}">
-	<div class="messageInformation" id="messageHolder" style="width:20em">
-    	<fmt:message key="confirm_save"/>
-	</div>
-</c:if>
-<c:if test="${actionUndo}">
-	<div class="messageInformation" id="messageHolder" style="width:20em">
-    	<fmt:message key="confirm_undo"/>
-	</div>
-</c:if>
-
-<form method="post" name="wizardform" action="editContent.osp" onsubmit="updateItems();">
-<osp:form/>
-    
-    <input type="hidden" name="preview" value="" />
-    <input type="hidden" name="id" value="<c:out value="${presentation.id.value}" />" />    
+<input type="hidden" name="id" value="<c:out value="${presentation.id.value}" />" />    
     
 <div class="editContentPanel">
 	<div class="instruction">
@@ -213,7 +129,7 @@ $(document).ready(function() {
 													</td>
 													<c:if test="${itemDefinition.isFormType}">
 													<td style="text-align:right">
-														<a href="<osp:url value="editPresentationForm.osp"/>&amp;id=<c:out value="${presentation.id.value}" />&amp;formTypeId=<c:out value="${itemDefinition.type}"/>&amp;box=<c:out value="${list1}"/>"
+														<a href="#<c:out value="${list2}"/>"
 													  class="inlineFormEdit"><fmt:message key="edit_selected"/></a>
 													</td>
 													</c:if>
@@ -226,7 +142,7 @@ $(document).ready(function() {
 											<select multiple="multiple"
 													style="width:100%"
 												size="10"
-												ondblclick='move("<c:out value="${list1}"/>","<c:out value="${list2}"/>",false);'
+												ondblclick='move("<c:out value="${list1}"/>","<c:out value="${list2}"/>",false); updateItems();'
 												id="<c:out value="${list1}"/>"
 												name="<c:out value="${list1}"/>">
 												<c:forEach var="artifact"
@@ -254,31 +170,32 @@ $(document).ready(function() {
 										</td>
 										<td style="text-align:center">
 											<input name="add"  type="button"
-												onclick="move('<c:out value="${list1}"/>','<c:out value="${list2}"/>',false)"
+												onclick="move('<c:out value="${list1}"/>','<c:out value="${list2}"/>',false); updateItems();"
 												value="<fmt:message key="button_add"/> &gt;" 
 											/> 
 											<br />
 											<input name="add all" type="button" 
-												onclick="move('<c:out value="${list1}"/>','<c:out value="${list2}"/>',true)" 
+												onclick="move('<c:out value="${list1}"/>','<c:out value="${list2}"/>',true); updateItems();" 
 												value="<fmt:message key="button_addAll"/> &gt;&gt;" 
 											/>
 											<hr class="itemSeparator" />
 											<input name="remove" type="button"
-												onclick="move('<c:out value="${list2}"/>','<c:out value="${list1}"/>',false)"
+												onclick="move('<c:out value="${list2}"/>','<c:out value="${list1}"/>',false); updateItems();"
 												value="<fmt:message key="button_remove"/> &lt;"
 											/>
 											<br />
 											<input name="remove all" type="button" 
-												onclick="move('<c:out value="${list2}"/>','<c:out value="${list1}"/>',true)" 
+												onclick="move('<c:out value="${list2}"/>','<c:out value="${list1}"/>',true); updateItems();" 
 												value="<fmt:message key="button_removeAll"/> &lt;&lt;"
 											/>
 										</td>
 										<td style="width:40%">
 											<select
+												class="artifactPicker"
 												multiple="multiple"
 												style="width:100%"
 												size="10"
-												ondblclick='move("<c:out value="${list2}"/>","<c:out value="${list1}"/>",false);'
+												ondblclick='move("<c:out value="${list2}"/>","<c:out value="${list1}"/>",false); updateItems();'
 												id="<c:out value="${list2}"/>"
 												name="<c:out value="${status.expression}"/>">
 												<c:forEach var="artifact" items="${artifacts[itemDefinition.id.value]}">
@@ -313,6 +230,7 @@ $(document).ready(function() {
 									<div class="listNav">
 										<label  for="<c:out value="${selectBox}"/>" class="itemAction" style="margin-left:0;padding-left:0;display:block"><span><fmt:message key="label_availableItems"/></span></label>
 										<select
+											onchange="document.wizardform.submit()"
 											class="artifactPicker"
 											id="<c:out value="${selectBox}"/>"
 											name="<c:out value="${status.expression}"/>">
@@ -351,10 +269,6 @@ $(document).ready(function() {
 			</c:forEach>
 		</li>
     </spring:bind>
-</div>
-<div class="act">
-   <input name="save" type="submit" value="<fmt:message key="button_saveEdit" />" class="active" accesskey="s" />
-   <input name="undo" type="submit" value="<fmt:message key="button_undo" />"  accesskey="x" />
 </div>
 </form>
 </div>

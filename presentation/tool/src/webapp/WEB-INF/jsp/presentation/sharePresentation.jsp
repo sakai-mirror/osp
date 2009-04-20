@@ -3,8 +3,9 @@
 
 <fmt:setLocale value="${locale}"/>
 <fmt:setBundle basename = "org.theospi.portfolio.presentation.bundle.Messages"/>
-<script type="text/javascript" src="/library/js/jquery.js">
-</script>
+<c:set var="pres_active_page" value="share" />
+<%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
+ 
 <script type="text/javascript">
     $(document).ready(function(){
 		$("#hideUrl").hide();
@@ -72,9 +73,6 @@ $(document).ready(function() {
 
 </script>
 
-<c:set var="pres_active_page" value="share" />
-<%@ include file="/WEB-INF/jsp/presentation/presentationTop.inc"%>
- 
 <div class="tabNavPanel">
 
 <c:if test="${actionSave}">
@@ -163,7 +161,7 @@ $(document).ready(function() {
    <div class="act">
       <input name="save" type="submit" value="<fmt:message key="button_saveEdit" />" class="active" accesskey="s" />
       <input name="notify" type="submit" value="<fmt:message key="button_saveAndNotify" />" class="active" accesskey="n" />
-      <input name="undo" type="submit" value="<fmt:message key="button_undo" />"  accesskey="x" />
+      <input name="undo" type="submit" value="<fmt:message key="button_cancel" />"  accesskey="x" />
    </div>
    </div> <%--end of #tabNavPanel --%>
 </form>

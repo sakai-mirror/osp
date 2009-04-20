@@ -103,7 +103,7 @@ $(document).ready(function() {
 			<span class="itemAction"><a href="#" class="editLink"><fmt:message key="edit"/></a></span>
 			<p class="itemAction">
 				<a href="#" class="saveLink" style="display: none;"><fmt:message key="button_saveEdit"/></a>
-				<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_undo"/></a>
+				<a href="#" class="undoLink" style="display: none;"><fmt:message key="button_cancel"/></a>
 			</p>
 		</td>		
 	</tr>
