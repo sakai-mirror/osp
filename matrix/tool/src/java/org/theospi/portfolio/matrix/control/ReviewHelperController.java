@@ -36,7 +36,6 @@ import org.sakaiproject.component.cover.ServerConfigurationService;
 import org.sakaiproject.content.api.ContentCollection;
 import org.sakaiproject.content.api.ContentCollectionEdit;
 import org.sakaiproject.content.api.ContentHostingService;
-import org.sakaiproject.content.api.ContentResource;
 import org.sakaiproject.content.api.LockManager;
 import org.sakaiproject.content.api.ResourceEditingHelper;
 import org.sakaiproject.email.cover.EmailService;
@@ -64,6 +63,7 @@ import org.theospi.portfolio.matrix.MatrixManager;
 import org.theospi.portfolio.matrix.model.Scaffolding;
 import org.theospi.portfolio.matrix.model.WizardPage;
 import org.theospi.portfolio.matrix.model.WizardPageDefinition;
+import org.theospi.portfolio.matrix.util.FormNameGeneratorUtil;
 import org.theospi.portfolio.review.ReviewHelper;
 import org.theospi.portfolio.review.mgt.ReviewManager;
 import org.theospi.portfolio.review.model.Review;
@@ -218,7 +218,6 @@ public class ReviewHelperController implements Controller {
       // This is the first pass, 
       // so we are presenting the form to create a new [feedback | evaluation | reflection] review
       //
-      String pageTitle = null;
       Id id = getIdManager().getId(strId);
       ObjectWithWorkflow obj = null;
 
@@ -232,7 +231,6 @@ public class ReviewHelperController implements Controller {
        	 }else{
        		obj = page.getPageDefinition();
        	 }
-       	 pageTitle = page.getPageDefinition().getTitle();
        	 
       }else {
     	  CompletedWizard cw = wizardManager.getCompletedWizard(id);
@@ -271,7 +269,7 @@ public class ReviewHelperController implements Controller {
             ResourceEditingHelper.CREATE_TYPE_FORM);
 
 
-      formView = setupSessionInfo(request, session, pageTitle, formTypeId, formTypeTitleKey, strId, placement);
+      formView = setupSessionInfo(request, session, formTypeId, formTypeTitleKey, strId, placement);
       session.put("page_id", strId);
       session.put("secondPass", "true");
       return new ModelAndView(formView);
@@ -407,7 +405,7 @@ public class ReviewHelperController implements Controller {
     * @return
     */
    protected String setupSessionInfo(Map request, Map<String, Object> session,
-                                     String pageTitle, String formTypeId, String formTypeTitleKey,
+                                     String formTypeId, String formTypeTitleKey,
                                      String pageId, Placement placement) {
       String retView = "formCreator";
 
@@ -452,7 +450,7 @@ public class ReviewHelperController implements Controller {
          }
 
          //CWM OSP-UI-09 - for auto naming
-         session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, getFormDisplayName(objectTitle, pageTitle, formTypeTitle, 1, contentResourceList));
+         session.put(FormHelper.NEW_FORM_DISPLAY_NAME_TAG, FormNameGeneratorUtil.getFormDisplayName(formTypeTitle, 1, contentResourceList));
       } 
 		
       // Otherwise, editting an existing review
@@ -477,61 +475,6 @@ public class ReviewHelperController implements Controller {
          getStyleManager().createStyleUrlList(getStyleManager().getStyles(getIdManager().getId(pageId))));
 
       return retView;
-   }
-
-   /**
-    * 
-    * @param objectTitle
-    * @param pageTitle
-    * @param formTypeName
-    * @param count: this keeps track of the number of times getFormDisplayName is called for naming reasons
-    * @param contentResourceList: a list of the resources for looking up the names to compare to the new name
-    * @return
-    */
-   protected String getFormDisplayName(String objectTitle, String pageTitle, String formTypeName, int count, List contentResourceList) {
-      String includePageTitle = "";
-      String name = "";
-
-      if (pageTitle != null && pageTitle.length() > 0) {
-         includePageTitle = pageTitle + "-";
-      }
-
-      name = objectTitle + "-" + includePageTitle + formTypeName;
-      
-      if(count > 1){
-    	  name = name + " (" + count + ")";
-      }
-      
-      count++;
-      
-      //if the name already exists, then recursively loop through this function untill there is an unique name      
-      return formDisplayNameExists(name, contentResourceList) && contentResourceList != null ? 
-    		  getFormDisplayName(objectTitle, pageTitle, formTypeName, count, contentResourceList) : name;
-   }
-   
-   /**
-    * 
-    * @param name
-    * @param contentResourceList
-    * @return
-    * 
-    * returns true if the name passed exists in the list of contentResource
-    * otherwise returns false
-    */
-   protected boolean formDisplayNameExists(String name, List contentResourceList){
-	   
-	   
-	   if(contentResourceList != null){
-		   ContentResource cr;
-		   for(int i = 0; i < contentResourceList.size(); i++){
-			   cr = (ContentResource) contentResourceList.get(i);
-			   if(name.equals(cr.getProperties().getProperty(cr.getProperties().getNamePropDisplayName()).toString())){
-				   return true;
-			   }
-		   }
-	   }
-  
-	   return false;
    }
 
    /**

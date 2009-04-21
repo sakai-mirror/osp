@@ -121,10 +121,10 @@ public class WizardItemImpl implements TaggableItem {
 	}
 	
 	public String getTypeName() {
-		String type = messages.getString("wizard_type");
+		String type = messages.getString("wizard_pages_type");
 		
 		if (page.getPageDefinition().getType().equals(WizardPageDefinition.WPD_MATRIX_TYPE))
-			type = messages.getString("matrix_type");
+			type = messages.getString("matrix_cells_type");
 		return type;
 	}
 	
