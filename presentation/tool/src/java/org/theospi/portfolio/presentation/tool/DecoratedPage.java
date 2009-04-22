@@ -197,7 +197,7 @@ public class DecoratedPage implements Comparable {
          try {
             inputStream.close();
          } catch(IOException ioe) {
-            logger.equals(ioe);
+            logger.error("Failed to close: " + ioe);
          }
       }
       return isNotNull;
