@@ -146,6 +146,14 @@ public interface PresentationManager extends CleanupableService {
    public Document getPresentationPreviewLayoutAsXml(Presentation presentation, String pageId);
 
    /**
+    * Return a list presentation ids of all publicly shared presentations (optionally filtered by site)
+    *
+    * @param siteId return only from this site if specified (may be null)
+    * @return collection of presentations
+    */
+   public Collection findPublicPresentations(String siteId);
+
+   /**
     * Return a list of all presentations agent can view, optionally filtered by toolId.
     *
     * @param owner current user

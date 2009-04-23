@@ -336,7 +336,6 @@ public class SharePresentationController extends AbstractPresentationController 
    private String getPublicUrl( Presentation presentation ) {
       String baseUrl = getServerConfigurationService().getServerUrl();
       String url =  baseUrl + "/osp-presentation-tool/viewPresentation.osp?id=" + presentation.getId().getValue();
-      url += "&" + Tool.PLACEMENT_ID + "=" + SessionManager.getCurrentToolSession().getPlacementId();
       return url;
    }
    

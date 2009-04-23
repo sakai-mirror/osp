@@ -222,6 +222,14 @@
 		from PresentationTemplate where published=? and siteId=? Order by name
    </query>
       
+   <query name="findPublicPortfolios">
+		from Presentation where isPublic != 0
+   </query>
+      
+   <query name="findPublicPortfoliosBySite">
+		from Presentation where isPublic != 0 and siteId=?
+   </query>
+      
    <query name="findPortfolios">
 		from Presentation
    </query>

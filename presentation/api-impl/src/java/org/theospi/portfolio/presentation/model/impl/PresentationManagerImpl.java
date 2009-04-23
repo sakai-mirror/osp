@@ -749,6 +749,26 @@ public class PresentationManagerImpl extends HibernateDaoSupport
    /**
     * {@inheritDoc}
     */
+   public Collection findPublicPresentations(String siteId)
+   {
+      Collection presList;
+      if ( siteId != null )
+      {
+         presList = getHibernateTemplate().findByNamedQuery(
+                                                       "findPublicPortfoliosBySite", 
+                                                       new Object[]{siteId});
+      }
+      else
+      {
+         presList = getHibernateTemplate().findByNamedQuery("findPublicPortfolios"); 
+      }
+      
+      return presList;
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
    public Collection findAllPresentations(Agent viewer, String toolId, String showHidden) {
       Collection ownerList = findOwnerPresentations( viewer, toolId, showHidden );
       Collection sharedList = findSharedPresentations( viewer, toolId, showHidden );
