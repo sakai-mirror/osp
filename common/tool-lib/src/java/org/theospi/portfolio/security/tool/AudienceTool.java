@@ -424,6 +424,8 @@ public class AudienceTool extends HelperToolBase {
                 if (agent != null) {
                     notifyNewUserEmail( agent );
                  }
+                //instantiate userList b/c it is null
+                userList = new ArrayList();
          	    userList.add(agent);
             }
          }
@@ -437,6 +439,7 @@ public class AudienceTool extends HelperToolBase {
         		if (worksiteLimited && !checkWorksiteMember(agent)) {
         			return false;
         		}
+        		addAgent(agent, "user_exists");
         	}
         }
 
