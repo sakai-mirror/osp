@@ -52,7 +52,7 @@ samples			https://source.sakaiproject.org/svn/samples/trunk
 search			https://source.sakaiproject.org/svn/search/trunk
 sections		https://source.sakaiproject.org/svn/sections/trunk
 site			https://source.sakaiproject.org/svn/site/trunk
-site-association	https://source.sakaiproject.org/contrib/iu/site-association/branches/SAK-15710
+site-association	https://source.sakaiproject.org/svn/site-association/branches/SAK-15710
 site-manage		https://source.sakaiproject.org/svn/site-manage/trunk
 syllabus		https://source.sakaiproject.org/svn/syllabus/trunk
 taggable		https://source.sakaiproject.org/svn/taggable/branches/SAK-15710
