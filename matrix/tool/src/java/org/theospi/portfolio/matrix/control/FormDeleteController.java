@@ -4,7 +4,7 @@
 * $Id$
 ***********************************************************************************
 *
- * Copyright (c) 2005, 2006, 2008 Sakai Foundation
+ * Copyright (c) 2005, 2006, 2008, 2009 The Sakai Foundation
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,11 +96,15 @@ public class FormDeleteController implements LoadObjectController, CustomCommand
       {
          Id reviewId = idManager.getId((String)request.get("review_id"));
          Review review = getReviewManager().getReview(reviewId);
-         getReviewManager().deleteReview(review);
+         if ( review != null )
+            getReviewManager().deleteReview(review);
+         else
+            logger.warn("Null feedback form (perhaps multiple submits):" + reviewId );
       }
             
       if (sessionPage) 
          session.put(WizardPageHelper.WIZARD_PAGE, getMatrixManager().getWizardPage(page.getId()));
+         
       try {
          // unlock and delete content
          String reviewContentId = contentHosting.getUuid( formId.getValue() );
@@ -109,7 +113,7 @@ public class FormDeleteController implements LoadObjectController, CustomCommand
          getContentHosting().removeResource(formId.getValue());
       } 
       catch(Exception e) {
-         logger.warn("Error removing form: ", e );
+         logger.warn("Error removing form: "+ e.toString() );
       }
       
       // if not submit, then cancel, but both submit and cancel have the some view, so

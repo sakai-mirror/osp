@@ -3,7 +3,7 @@
 * $Id$
 ***********************************************************************************
 *
- * Copyright (c) 2005, 2006, 2007, 2008 Sakai Foundation
+ * Copyright (c) 2005, 2006, 2007, 2008, 2009 The Sakai Foundation
  *
  * Licensed under the Educational Community License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,7 +145,9 @@ public class ReviewHelperController implements Controller {
             review.setParent(strId);
             review.setItemId(itemId);
             String strType = (String)session.get(ReviewHelper.REVIEW_TYPE);
-            review.setType(Integer.parseInt(strType));
+            // (note: strType may be null if user hits submit twice)
+            if ( strType != null && ! strType.equals("") )
+               review.setType(Integer.parseInt(strType));
 
             if (FormHelper.RETURN_ACTION_SAVE.equals((String)session.get(FormHelper.RETURN_ACTION_TAG)) 
                 && session.get(FormHelper.RETURN_REFERENCE_TAG) != null) 
@@ -160,9 +162,10 @@ public class ReviewHelperController implements Controller {
             }
             
             // Lock review content (reflection, feedback, evaluation)
-            getLockManager().lockObject(review.getReviewContent().getValue(),
-                                        strId, "lock all review content", true);
-                  
+            // (note: reviewContent may be null if user hits submit twice)
+            if ( review.getReviewContent() != null )
+               getLockManager().lockObject(review.getReviewContent().getValue(),
+                                           strId, "lock all review content", true);
             
             boolean isEval = review.getType() == Review.EVALUATION_TYPE;
             boolean isFeedback = review.getType() == Review.FEEDBACK_TYPE;
